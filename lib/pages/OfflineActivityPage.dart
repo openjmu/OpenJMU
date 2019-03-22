@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../utils/NetUtils.dart';
 import '../api/Api.dart';
-import '../pages/CommonWebPage.dart';
+import 'package:jxt/widgets/CommonWebPage.dart';
 
 // 线下活动
 class OfflineActivityPage extends StatefulWidget {

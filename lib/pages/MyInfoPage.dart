@@ -7,7 +7,7 @@ import '../events/ChangeThemeEvent.dart';
 import '../events/LoginEvent.dart';
 import '../events/LogoutEvent.dart';
 import '../model/UserInfo.dart';
-import '../pages/CommonWebPage.dart';
+import 'package:jxt/widgets/CommonWebPage.dart';
 import '../pages/ChangeThemePage.dart';
 import '../pages/NewLoginPage.dart';
 import '../utils/DataUtils.dart';

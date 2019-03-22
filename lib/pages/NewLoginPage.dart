@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../constants/Constants.dart';
-import '../events/LoginEvent.dart';
+import 'package:flutter/cupertino.dart';
+import 'dart:io';
 import '../utils/DataUtils.dart';
 import '../utils/ThemeUtils.dart';
+import 'package:jxt/widgets/CommonWebPage.dart';
 
 class NewLoginPage extends StatefulWidget {
   @override
@@ -13,22 +14,11 @@ class NewLoginPageState extends State<NewLoginPage> {
   final _formKey = GlobalKey<FormState>();
   String _username, _password;
   bool _isObscure = true;
-  Color _defaultIconColor = Colors.grey;
-  bool isUserLogin;
+  Color _defaultIconColor = ThemeUtils.currentColorTheme;
 
   @override
   void initState() {
     super.initState();
-    DataUtils.isLogin().then((isLogin) {
-      setState(() {
-        this.isUserLogin = isLogin;
-      });
-    });
-    Constants.eventBus.on<LoginEvent>().listen((event) {
-      setState(() {
-        this.isUserLogin = true;
-      });
-    });
   }
 
   @override
@@ -45,7 +35,7 @@ class NewLoginPageState extends State<NewLoginPage> {
                           end: Alignment.bottomCenter,
                           colors: const <Color>[
                             ThemeUtils.defaultColor,
-                            Colors.pink
+                            Colors.redAccent
                           ],
                         ),
                       )
@@ -60,7 +50,7 @@ class NewLoginPageState extends State<NewLoginPage> {
                           ),
                           SizedBox(height: 30.0),
                           buildTitle(),
-                          //                      buildTitleLine(),
+//                          buildTitleLine(),
                           SizedBox(height: 60.0),
                           buildUsernameTextField(),
                           SizedBox(height: 30.0),
@@ -156,7 +146,7 @@ class NewLoginPageState extends State<NewLoginPage> {
                     setState(() {
                       _isObscure = !_isObscure;
                       _defaultIconColor = _isObscure
-                          ? Colors.grey
+                          ? ThemeUtils.currentColorTheme
                           : Colors.white;
                     });
                   }
@@ -171,21 +161,28 @@ class NewLoginPageState extends State<NewLoginPage> {
   Column buildLoginButton(BuildContext context) {
     return Column(
       children: <Widget>[
-        FlatButton(
-          child: Icon(
-            Icons.done,
-            color: Colors.white,
+        new Container(
+          child: new FlatButton(
+            padding: EdgeInsets.all(16.0),
+            color: Color.fromRGBO(255,255,255,0.2),
+            highlightColor: Colors.white,
+            textColor: Colors.white,
+            child: new Icon(
+              Icons.send,
+              color: Colors.white,
+              size: 30
+            ),
+            onPressed: () {
+              if (_formKey.currentState.validate()) {
+                ///只有输入的内容符合要求通过才会到达此处
+                _formKey.currentState.save();
+                //TODO 执行登录方法
+                DataUtils.doLogin(context, _username, _password);
+              }
+            },
+            shape: CircleBorder(),
+//          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           ),
-          color: Color.fromRGBO(255,255,255,0.2),
-          onPressed: () {
-            if (_formKey.currentState.validate()) {
-              ///只有输入的内容符合要求通过才会到达此处
-              _formKey.currentState.save();
-              //TODO 执行登录方法
-              DataUtils.doLogin(context, _username, _password);
-            }
-          },
-          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
         ),
       ]
     );
@@ -203,7 +200,7 @@ class NewLoginPageState extends State<NewLoginPage> {
             style: TextStyle(fontSize: 14.0, color: Colors.white70),
           ),
           onPressed: () {
-//            Navigator.pop(context);
+            resetPassword();
           },
         ),
       ),
@@ -238,4 +235,77 @@ class NewLoginPageState extends State<NewLoginPage> {
       ),
     );
   }
+
+  Future<void> resetPassword() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext dialogContext) {
+        if (Platform.isIOS) {
+          return CupertinoAlertDialog(
+            title: Text('忘记密码'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('找回密码详见'),
+                  Text('网络中心主页 -> 集大通行证'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('返回'),
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                },
+              ),
+              FlatButton(
+                child: Text('查看'),
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                  Navigator.of(context).push(new MaterialPageRoute(
+                      builder: (context) {
+                        return new CommonWebPage(title: "集大通行证登录说明", url: "https://net.jmu.edu.cn/info/1309/2476.htm");
+                      }
+                  ));
+                },
+              ),
+            ],
+          );
+        } else if (Platform.isAndroid) {
+          return AlertDialog(
+            title: Text('忘记密码'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text('找回密码详见'),
+                  Text('网络中心主页 -> 集大通行证'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('返回'),
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                },
+              ),
+              FlatButton(
+                child: Text('查看'),
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                  Navigator.of(context).push(new MaterialPageRoute(
+                      builder: (context) {
+                        return new CommonWebPage(title: "集大通行证登录说明", url: "https://net.jmu.edu.cn/info/1309/2476.htm");
+                      }
+                  ));
+                },
+              ),
+            ],
+          );
+        }
+      },
+    );
+  }
+
 }

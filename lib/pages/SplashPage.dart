@@ -38,7 +38,6 @@ class SplashState extends State<SplashPage> {
   }
 
   void navigate() {
-    print(isUserLogin);
     timer = new Timer(const Duration(milliseconds: 1500), () {
       if (!isUserLogin) {
         try {
@@ -81,30 +80,48 @@ class SplashState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Material(
-      color: ThemeUtils.defaultColor,
-      child: new Padding(
-        padding: const EdgeInsets.only(
-          top: 150.0,
-        ),
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 50.0),
-          children: <Widget>[
-            SizedBox(height: 120.0),
-            buildLogo(),
-            SizedBox(height: 30.0),
-            new Text(
-                "集小通",
-                textAlign: TextAlign.center,
-                style: new TextStyle(
-                  color: Colors.white,
-                  fontSize: 50.0,
+    return new Scaffold(
+        body: Builder(
+          builder: (context) =>
+              new Stack(
+                children: <Widget>[
+                  new Container(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomCenter,
+                          colors: const <Color>[
+                            ThemeUtils.defaultColor,
+                            Colors.redAccent
+                          ],
+                        ),
+                      )
+                  ),
+                  new Padding(
+                    padding: const EdgeInsets.only(
+                      top: 150.0,
+                    ),
+                    child: ListView(
+                      padding: EdgeInsets.symmetric(horizontal: 50.0),
+                      children: <Widget>[
+                        SizedBox(height: 120.0),
+                        buildLogo(),
+                        SizedBox(height: 30.0),
+                        new Text(
+                            "集小通",
+                            textAlign: TextAlign.center,
+                            style: new TextStyle(
+                              color: Colors.white,
+                              fontSize: 50.0,
 //                    letterSpacing: 6.0
-                )
-            ),
-          ],
-        ),
-      ),
+                            )
+                        ),
+                      ],
+                    ),
+                  ),
+                ]
+              )
+        )
     );
   }
 }

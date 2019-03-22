@@ -22,7 +22,8 @@ class NewsListPage extends StatefulWidget {
 class NewsListPageState extends State<NewsListPage> {
   final ScrollController _controller = new ScrollController();
   final TextStyle titleTextStyle = new TextStyle(fontSize: 15.0);
-  final TextStyle subtitleStyle = new TextStyle(color: const Color(0xFFB5BDC0), fontSize: 12.0);
+  final TextStyle summaryTextStyle = new TextStyle(color: Colors.black45, fontSize: 14.0);
+  final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 12.0);
 
   String sid;
   var listData;
@@ -93,10 +94,9 @@ class NewsListPageState extends State<NewsListPage> {
 
   // 从网络获取数据，isLoadMore表示是否是加载更多数据
   void getNewsList(bool isLoadMore) async {
-    int uid;
     DataUtils.getUserInfo().then((userInfo) {
       sid = userInfo.sid;
-      uid = userInfo.uid;
+      int uid = userInfo.uid;
       Map<String, dynamic> headers = new Map();
       headers["APIKEY"] = Constants.newsApiKey;
       headers["APPID"] = "273";
@@ -105,7 +105,9 @@ class NewsListPageState extends State<NewsListPage> {
       headers["CUID"] = "$uid";
       headers["SID"] = sid;
       headers["TAGID"] = "1";
-      NetUtils.getWithHeaderSet(Api.newsList, headers: headers).then((response) {
+      String url;
+      isLoadMore ? url = Api.newsList+"/max_ts/"+listData[listData.length-1]['create_time']+"/size/20" : url = Api.newsList+"/size/20";
+      NetUtils.getWithHeaderSet(url, headers: headers).then((response) {
         if (response != null) {
           Map<String, dynamic> map = jsonDecode(response);
           // total表示资讯总条数
@@ -126,7 +128,7 @@ class NewsListPageState extends State<NewsListPage> {
               list1.addAll(_listData);
               // 判断是否获取了所有的数据，如果是，则需要显示底部的"我也是有底线的"布局
               if (list1.length >= listTotalSize) {
-                list1.add(Constants.END_LINE_TAG);
+                list1.add(Constants.endLineTag);
               }
               // 给列表数据赋值
               listData = list1;
@@ -170,7 +172,7 @@ class NewsListPageState extends State<NewsListPage> {
     }
     i = i ~/ 2;
     var itemData = listData[i];
-    if (itemData is String && itemData == Constants.END_LINE_TAG) {
+    if (itemData is String && itemData == Constants.endLineTag) {
       return new CommonEndLine();
     }
     var titleRow = new Row(
@@ -180,24 +182,15 @@ class NewsListPageState extends State<NewsListPage> {
         )
       ],
     );
+    var summaryRow = new Row(
+      children: <Widget>[
+        new Expanded(
+          child: new Text(itemData['summary'], style: summaryTextStyle),
+        )
+      ],
+    );
     var timeRow = new Row(
       children: <Widget>[
-//          new Container(
-//            width: 20.0,
-//            height: 20.0,
-//            decoration: new BoxDecoration(
-//              shape: BoxShape.circle,
-//              color: const Color(0xFFECECEC),
-////              image: new DecorationImage(
-//////                  image: new NetworkImage(Api.newsImageList+itemData['cover_img']['id']+"/sid/$sid"),
-////                  fit: BoxFit.cover
-////              ),
-//              border: new Border.all(
-//                color: const Color(0xFFECECEC),
-//                width: 2.0,
-//              ),
-//            ),
-//          ),
         new Padding(
           padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
           child: new Text(
@@ -219,42 +212,22 @@ class NewsListPageState extends State<NewsListPage> {
     );
     var thumbImgUrl = Api.newsImageList + itemData['cover_img']['id'] + "/sid/$sid";
     var thumbImg = new Container(
-      margin: const EdgeInsets.all(10.0),
-      width: 60.0,
-      height: 60.0,
+//        margin: const EdgeInsets.all(10.0),
+      width: 80.0,
+      height: 80.0,
       decoration: new BoxDecoration(
-        shape: BoxShape.circle,
+//          shape: BoxShape.circle,
         color: const Color(0xFFECECEC),
         image: new DecorationImage(
-            image: new ExactAssetImage('./images/ic_img_default.jpg'),
-            fit: BoxFit.cover),
-        border: new Border.all(
-          color: const Color(0xFFECECEC),
-          width: 2.0,
+            image: new NetworkImage(thumbImgUrl),
+            fit: BoxFit.cover
         ),
+//          border: new Border.all(
+//            color: const Color(0xFFECECEC),
+//            width: 2.0,
+//          ),
       ),
     );
-    if (thumbImgUrl != null && thumbImgUrl.length > 0) {
-      thumbImg = new Container(
-        margin: const EdgeInsets.all(10.0),
-        width: 60.0,
-        height: 60.0,
-        decoration: new BoxDecoration(
-          shape: BoxShape.circle,
-          color: const Color(0xFFECECEC),
-          image: new DecorationImage(
-              image: new NetworkImage(thumbImgUrl),
-//              image: new StreamTransformer(NetUtils.getImage(thumbImgUrl)),
-//              image: new Image.network(thumbImgUrl),
-              fit: BoxFit.cover
-          ),
-          border: new Border.all(
-            color: const Color(0xFFECECEC),
-            width: 2.0,
-          ),
-        ),
-      );
-    }
     var row = new Row(
       children: <Widget>[
         new Expanded(
@@ -264,6 +237,7 @@ class NewsListPageState extends State<NewsListPage> {
             child: new Column(
               children: <Widget>[
                 titleRow,
+                summaryRow,
                 new Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
                   child: timeRow,
@@ -272,17 +246,17 @@ class NewsListPageState extends State<NewsListPage> {
             ),
           ),
         ),
-//        new Padding(
-//          padding: const EdgeInsets.all(6.0),
-//          child: new Container(
-//            width: 100.0,
-//            height: 80.0,
-//            color: const Color(0xFFECECEC),
-//            child: new Center(
-//              child: thumbImg,
-//            ),
-//          ),
-//        )
+        new Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: new Container(
+            width: 80.0,
+            height: 80.0,
+            color: const Color(0xFFECECEC),
+            child: new Center(
+              child: thumbImg,
+            ),
+          ),
+        )
       ],
     );
     return new InkWell(

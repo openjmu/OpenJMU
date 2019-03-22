@@ -1,7 +1,7 @@
 import 'package:event_bus/event_bus.dart';
 
 class Constants {
-  static final String END_LINE_TAG = "COMPLETE";
+  static final String endLineTag = "没有更多了";
 
   // Fow news list.
   static final String newsApiKey = "c2bd7a89a377595c1da3d49a0ca825d5";

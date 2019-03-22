@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 
@@ -8,10 +7,6 @@ Dio dio = new Dio();
 class NetUtils {
 
   static Future<String> get(String url, {data}) async {
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-    };
 //    dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.get(
         url,
@@ -21,10 +16,6 @@ class NetUtils {
   }
 
   static Future<Stream> getImage(String url) async {
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-    };
 //    dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.get(
         url,
@@ -34,10 +25,6 @@ class NetUtils {
   }
 
   static Future<String> getWithCookieSet(String url, {data, cookies}) async {
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-    };
     dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.get(
         url,
@@ -48,10 +35,6 @@ class NetUtils {
   }
 
   static Future<String> getWithHeaderSet(String url, {data, headers}) async {
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-    };
 //    dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.get(
         url,
@@ -62,10 +45,6 @@ class NetUtils {
   }
 
   static Future<String> getWithCookieAndHeaderSet(String url, {data, headers, cookies}) async {
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-    };
 //    dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.get(
         url,
@@ -79,10 +58,6 @@ class NetUtils {
   }
 
   static Future<String> post(String url, {data}) async {
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-    };
 //    dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.post(
         url,
@@ -92,10 +67,6 @@ class NetUtils {
   }
 
   static Future<String> postWithCookieSet(String url, {data, cookies}) async {
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
-      client.badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
-    };
 //    dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.post(
         url,

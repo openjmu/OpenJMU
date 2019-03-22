@@ -26,7 +26,6 @@ class MainPageState extends State<MainPage> {
   Color themeColor = ThemeUtils.currentColorTheme;
   int _tabIndex = 0;
 
-  var tabImages;
   var _body;
   var pages;
 
@@ -107,63 +106,58 @@ class MainPageState extends State<MainPage> {
     }
   }
 
-  mainPage(context) {
+  WillPopScope mainPage(context) {
     _body = new IndexedStack(
       children: pages,
       index: _tabIndex,
     );
-    return new MaterialApp(
-        theme: new ThemeData(
-          primaryColor: themeColor,
-        ),
-        home: new WillPopScope(
-            onWillPop: doubleClickBack,
-            child: new Scaffold(
-              appBar: new AppBar(
-                  title: new Center(
-                      child: new Text(
-                          appBarTitles[_tabIndex],
-                          style: new TextStyle(color: Colors.white)
-                      )
-                  ),
-                  iconTheme: new IconThemeData(color: Colors.white),
-                  backgroundColor: ThemeUtils.currentColorTheme
-              ),
-              body: _body,
-              bottomNavigationBar: new BottomNavigationBar(
-                type: BottomNavigationBarType.fixed,
-                items: <BottomNavigationBarItem>[
-                  BottomNavigationBarItem(
-                      activeIcon: Icon(Icons.fiber_new, color: ThemeUtils.currentColorTheme),
-                      icon: Icon(Icons.fiber_new, color: Colors.grey),
-                      title: getTabTitle(0)
-                  ),
-                  BottomNavigationBarItem(
-                      activeIcon: Icon(Icons.people, color: ThemeUtils.currentColorTheme),
-                      icon: Icon(Icons.people, color: Colors.grey),
-                      title: getTabTitle(1)
-                  ),
-                  BottomNavigationBarItem(
-                      activeIcon: Icon(Icons.chat, color: ThemeUtils.currentColorTheme),
-                      icon: Icon(Icons.chat, color: Colors.grey),
-                      title: getTabTitle(2)
-                  ),
-                  BottomNavigationBarItem(
-                      activeIcon: Icon(Icons.account_circle, color: ThemeUtils.currentColorTheme),
-                      icon: Icon(Icons.account_circle, color: Colors.grey),
-                      title: getTabTitle(3)
+    return new WillPopScope(
+        onWillPop: doubleClickBack,
+        child: new Scaffold(
+          appBar: new AppBar(
+              title: new Center(
+                  child: new Text(
+                      appBarTitles[_tabIndex],
+                      style: new TextStyle(color: Colors.white)
                   )
-                ],
-                currentIndex: _tabIndex,
-                onTap: (index) {
-                  setState((){
-                    _tabIndex = index;
-                  });
-                  print("Selected TabIndex: "+index.toString());
-                },
               ),
+              iconTheme: new IconThemeData(color: Colors.white),
+              backgroundColor: ThemeUtils.currentColorTheme
+          ),
+          body: _body,
+          bottomNavigationBar: new BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                  activeIcon: Icon(Icons.fiber_new, color: ThemeUtils.currentColorTheme),
+                  icon: Icon(Icons.fiber_new, color: Colors.grey),
+                  title: getTabTitle(0)
+              ),
+              BottomNavigationBarItem(
+                  activeIcon: Icon(Icons.people, color: ThemeUtils.currentColorTheme),
+                  icon: Icon(Icons.people, color: Colors.grey),
+                  title: getTabTitle(1)
+              ),
+              BottomNavigationBarItem(
+                  activeIcon: Icon(Icons.chat, color: ThemeUtils.currentColorTheme),
+                  icon: Icon(Icons.chat, color: Colors.grey),
+                  title: getTabTitle(2)
+              ),
+              BottomNavigationBarItem(
+                  activeIcon: Icon(Icons.account_circle, color: ThemeUtils.currentColorTheme),
+                  icon: Icon(Icons.account_circle, color: Colors.grey),
+                  title: getTabTitle(3)
+              )
+            ],
+            currentIndex: _tabIndex,
+            onTap: (index) {
+              setState((){
+                _tabIndex = index;
+              });
+              print("Selected TabIndex: "+index.toString());
+            },
+          ),
 //        drawer: new MyDrawer()
-            )
         )
     );
 //    return new WillPopScope(

@@ -20,7 +20,7 @@ class Api {
   static final String webAppLists = upapiHost + "/91u/psp/sublist?size=100&type=0&start=0&sid=";
 
   // 资讯相关
-  static final String newsList = middle99Host + "/mg/api/aid/posts_list/region_type/1/size/20";
+  static final String newsList = middle99Host + "/mg/api/aid/posts_list/region_type/1";
   static final String newsImageList = file99Host + "/show/file/fid/";
 
   // 微博相关

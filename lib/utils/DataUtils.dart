@@ -180,13 +180,12 @@ class DataUtils {
       };
       NetUtils.post(Api.loginTicket, data: params)
         .then((response) {
-          print(jsonDecode(response)['sid']);
           updateSid(jsonDecode(response));
           Constants.eventBus.fire(new TicketGotEvent());
           return true;
         })
         .catchError((e) {
-          print(e);
+          print(e.toString());
           Constants.eventBus.fire(new TicketFailedEvent());
           return false;
         });

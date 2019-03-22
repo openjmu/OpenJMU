@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'CommonWebPage.dart';
+import 'package:jxt/widgets/CommonWebPage.dart';
 
 // "关于"页面
 

@@ -13,6 +13,7 @@ import '../utils/DataUtils.dart';
 import '../utils/NetUtils.dart';
 import '../utils/ThemeUtils.dart';
 import '../widgets/CommonEndLine.dart';
+import '../widgets/CommonWebPage.dart';
 
 class WeiboListPage extends StatefulWidget {
   @override
@@ -42,25 +43,22 @@ class WeiboListPageState extends State<WeiboListPage> {
       setState(() {
         this.isUserLogin = isLogin;
       });
-      print("Run isLogin");
     });
     Constants.eventBus.on<LoginEvent>().listen((event) {
       setState(() {
         this.isUserLogin = true;
       });
-      print("LoginEvent");
     });
     Constants.eventBus.on<LogoutEvent>().listen((event) {
       setState(() {
         this.isUserLogin = false;
       });
-      print("LogoutEvent");
     });
   }
 
   WeiboListPageState() {
     authorTextStyle =
-        new TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold);
+    new TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold);
     _controller = new ScrollController();
     _controller.addListener(() {
       var maxScroll = _controller.position.maxScrollExtent;
@@ -73,9 +71,33 @@ class WeiboListPageState extends State<WeiboListPage> {
     });
   }
 
+  String removeUrlFromContent(content) {
+    RegExp reg = new RegExp(r"(https://.+?)/.*");
+    Iterable<Match> matches = reg.allMatches(content);
+    String result = content.replaceAllMapped(reg, (match)=>"");
+    return result;
+  }
+
+  String getUrlFromContent(content) {
+//    RegExp reg = new RegExp(r"^(?=^.{3,255}$)(http(s)?:\/\/)?(wb\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\d+)*(\/\w+\.\w+)*([\?&]\w+=\w*)*$");
+    RegExp reg = new RegExp(r"(https://.+?)/.*");
+    Iterable<Match> matches = reg.allMatches(content);
+    String result;
+    for (Match m in matches) {
+      result = m.group(0);
+    }
+    return result;
+  }
+
+  void getForwardPage(context, uri) {
+    Navigator.of(context).push(new MaterialPageRoute(
+        builder: (context) {
+          return new CommonWebPage(url: uri);
+        }
+    ));
+  }
+
   void getWeiboList(bool isLoadMore, bool isFollowed) {
-    print("isLoadMore: $isLoadMore");
-    print("isFollowed: $isFollowed");
     DataUtils.isLogin().then((isLogin) {
       if (isLogin) {
         loading = true;
@@ -104,36 +126,34 @@ class WeiboListPageState extends State<WeiboListPage> {
               requestUrl = Api.weiboFollowedList;
             }
           }
-          print(requestUrl);
           NetUtils.getWithCookieAndHeaderSet(requestUrl, headers: headers, cookies: cookies)
-            .then((response) {
-              print(response);
-              Map<String, dynamic> obj = jsonDecode(response);
-              if (!isLoadMore) {
-                if (!isFollowed) {
-                  weiboList = obj['topics'];
-                } else {
-                  weiboFollowedList = obj['topics'];
-                }
-              } else {
-                if (!isFollowed) {
-                  List list = new List();
-                  list.addAll(weiboList);
-                  list.addAll(obj['topics']);
-                  weiboList = list;
-                } else {
-                  List followedlist = new List();
-                  followedlist.addAll(weiboFollowedList);
-                  followedlist.addAll(obj['topics']);
-                  weiboFollowedList = followedlist;
-                }
-              }
+              .then((response) {
+            Map<String, dynamic> obj = jsonDecode(response);
+            if (!isLoadMore) {
               if (!isFollowed) {
-                filterList(weiboList, false);
+                weiboList = obj['topics'];
               } else {
-                filterList(weiboFollowedList, true);
+                weiboFollowedList = obj['topics'];
               }
-            });
+            } else {
+              if (!isFollowed) {
+                List list = new List();
+                list.addAll(weiboList);
+                list.addAll(obj['topics']);
+                weiboList = list;
+              } else {
+                List followedlist = new List();
+                followedlist.addAll(weiboFollowedList);
+                followedlist.addAll(obj['topics']);
+                weiboFollowedList = followedlist;
+              }
+            }
+            if (!isFollowed) {
+              filterList(weiboList, false);
+            } else {
+              filterList(weiboFollowedList, true);
+            }
+          });
         });
       }
     });
@@ -326,16 +346,16 @@ class WeiboListPageState extends State<WeiboListPage> {
         String imageUrl = "http" + imageOriginalUrl.substring(5, imageOriginalUrl.length);
         imagesWidget.add(
             new Expanded(
-              child: new Padding(
-                padding: EdgeInsets.all(2.0),
-                child: new AspectRatio(
-                  aspectRatio: 1,
-                  child: new Image.network(
-                      imageUrl,
-                      fit: BoxFit.cover
+                child: new Padding(
+                  padding: EdgeInsets.all(2.0),
+                  child: new AspectRatio(
+                    aspectRatio: 1,
+                    child: new Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover
+                    ),
                   ),
-                ),
-              )
+                )
             )
         );
       }
@@ -351,12 +371,30 @@ class WeiboListPageState extends State<WeiboListPage> {
   }
 
   Widget getWeiboContent(itemData) {
-    String content;
+    String content, url;
     if (itemData['category'] == 'longtext') {
       content = itemData['article'];
     } else {
       content = itemData['content'];
     }
+    url = getUrlFromContent(content);
+    url != null ? content = removeUrlFromContent(content) : content = content;
+    List<Widget> widgets = [
+      new Text(content),
+    ];
+    if (url != null) {
+      widgets.add(new FlatButton(
+          child: new Text("网页链接"),
+          onPressed: () {
+            Navigator.of(context).push(new MaterialPageRoute(
+                builder: (context) {
+                  return new CommonWebPage(title: "网页链接", url: url);
+                }
+            ));
+          }
+      ));
+    }
+    widgets.add(getWeiboImages(itemData));
     return new Row(
         children: <Widget>[
           new Expanded(
@@ -365,12 +403,7 @@ class WeiboListPageState extends State<WeiboListPage> {
                   child: new Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        new Text(
-                            content
-                        ),
-                        getWeiboImages(itemData)
-                      ]
+                      children: widgets
                   )
               )
           )
@@ -385,34 +418,34 @@ class WeiboListPageState extends State<WeiboListPage> {
     } else {
       itemData = weiboFollowedList[i]["topic"];
     }
-    if (itemData is String && itemData == Constants.END_LINE_TAG) {
+    if (itemData is String && itemData == Constants.endLineTag) {
       return new CommonEndLine();
     }
     return new Card(
-      margin: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-      child: new InkWell(
-        child: new Row(
-          children: <Widget>[
-            new Expanded(
-              flex: 1,
-              child: new Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: new Column(
-                  children: <Widget>[
-                    getWeiboTitle(itemData),
-                    getWeiboContent(itemData)
-                  ],
+        margin: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
+        child: new InkWell(
+          child: new Row(
+            children: <Widget>[
+              new Expanded(
+                flex: 1,
+                child: new Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: new Column(
+                    children: <Widget>[
+                      getWeiboTitle(itemData),
+                      getWeiboContent(itemData)
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
-        onTap: () {
+            ],
+          ),
+          onTap: () {
 //        Navigator.of(context).push(new MaterialPageRoute(
 //            builder: (context) => new WeiboDetailPage(id: itemData['detailUrl'])
 //        ));
-        },
-      )
+          },
+        )
     );
   }
 
@@ -451,7 +484,11 @@ class WeiboListPageState extends State<WeiboListPage> {
         itemBuilder: (context, i) => renderRow(i, false),
         controller: _controller,
       );
-      return new RefreshIndicator(child: listView, onRefresh: _pullToRefresh);
+      return new RefreshIndicator(
+          color: ThemeUtils.currentColorTheme,
+          child: listView,
+          onRefresh: _pullToRefresh
+      );
       // 普通微博列表
     }
   }
@@ -478,9 +515,9 @@ class WeiboListPageState extends State<WeiboListPage> {
 
     }
     return new Container(
-      child: new Text(
-        content
-      )
+        child: new Text(
+            content
+        )
     );
   }
 
@@ -493,23 +530,23 @@ class WeiboListPageState extends State<WeiboListPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Container(
-              padding: const EdgeInsets.all(10.0),
-              child: new Center(
-                child: new Column(
-                  children: <Widget>[
-                    new Text("由于OSC的openapi限制"),
-                    new Text("必须登录后才能获取微博信息")
-                  ],
-                ),
-              )
+                padding: const EdgeInsets.all(10.0),
+                child: new Center(
+                  child: new Column(
+                    children: <Widget>[
+                      new Text("由于OSC的openapi限制"),
+                      new Text("必须登录后才能获取微博信息")
+                    ],
+                  ),
+                )
             ),
             new InkWell(
               child: new Container(
                 padding: const EdgeInsets.fromLTRB(15.0, 8.0, 15.0, 8.0),
                 child: new Text("去登录"),
                 decoration: new BoxDecoration(
-                  border: new Border.all(color: Colors.black),
-                  borderRadius: new BorderRadius.all(new Radius.circular(5.0))
+                    border: new Border.all(color: Colors.black),
+                    borderRadius: new BorderRadius.all(new Radius.circular(5.0))
                 ),
               ),
               onTap: () async {
@@ -526,23 +563,11 @@ class WeiboListPageState extends State<WeiboListPage> {
         ),
       );
     }
-    return new DefaultTabController(
-      length: 2,
-      child: new Scaffold(
-        appBar: new TabBar(
-          labelColor: Colors.black,
-          indicatorColor: ThemeUtils.currentColorTheme,
-          tabs: <Widget>[
-            new Tab(text: "微博广场"),
-//            new Tab(text: "我的关注")
-          ],
-        ),
-        body: new TabBarView(
-          children: <Widget>[
-            getListView(),
-//            getFollowedListView()
-          ],
-        )),
+    return new Scaffold(
+        body: new Padding(
+          padding: EdgeInsets.only(top: 8.0),
+          child: getListView(),
+        )
     );
   }
 }

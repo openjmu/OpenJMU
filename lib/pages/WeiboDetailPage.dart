@@ -136,7 +136,7 @@ class WeiboDetailPageState extends State<WeiboDetailPage> {
   // 渲染评论列表
   _renderCommentRow(context, i) {
     var listItem = commentList[i];
-    if (listItem is String && listItem == Constants.END_LINE_TAG) {
+    if (listItem is String && listItem == Constants.endLineTag) {
       return new CommonEndLine();
     }
     String avatar = listItem['commentPortrait'];
