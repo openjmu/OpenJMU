@@ -19,7 +19,7 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
-  final appBarTitles = ['新闻', '朋友圈', '消息', '我的'];
+  final appBarTitles = ['首页', '新闻', '消息', '我的'];
   TextStyle tabTextStyleSelected = new TextStyle(color: ThemeUtils.currentColorTheme);
   final tabTextStyleNormal = new TextStyle(color: Colors.grey);
 
@@ -66,8 +66,8 @@ class MainPageState extends State<MainPage> {
       });
     });
     pages = <Widget>[
-      NewsListPage(),
       WeiboListPage(),
+      NewsListPage(),
       DiscoveryPage(),
       MyInfoPage()
     ];
@@ -126,16 +126,16 @@ class MainPageState extends State<MainPage> {
           ),
           body: _body,
           bottomNavigationBar: new BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
+//            type: BottomNavigationBarType.fixed,
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.fiber_new, color: ThemeUtils.currentColorTheme),
-                  icon: Icon(Icons.fiber_new, color: Colors.grey),
+                  activeIcon: Icon(Icons.home, color: ThemeUtils.currentColorTheme),
+                  icon: Icon(Icons.home, color: Colors.grey),
                   title: getTabTitle(0)
               ),
               BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.people, color: ThemeUtils.currentColorTheme),
-                  icon: Icon(Icons.people, color: Colors.grey),
+                  activeIcon: Icon(Icons.fiber_new, color: ThemeUtils.currentColorTheme),
+                  icon: Icon(Icons.fiber_new, color: Colors.grey),
                   title: getTabTitle(1)
               ),
               BottomNavigationBarItem(
@@ -160,109 +160,5 @@ class MainPageState extends State<MainPage> {
 //        drawer: new MyDrawer()
         )
     );
-//    return new WillPopScope(
-//      onWillPop: doubleClickBack,
-//      child: new MaterialApp(
-//        theme: new ThemeData(
-//          primaryColor: themeColor,
-//        ),
-//        home: new Scaffold(
-//          appBar: new AppBar(
-//              title: new Center(
-//                  child: new Text(
-//                      appBarTitles[_tabIndex],
-//                      style: new TextStyle(color: Colors.white)
-//                  )
-//              ),
-//              iconTheme: new IconThemeData(color: Colors.white),
-//              backgroundColor: ThemeUtils.currentColorTheme
-//          ),
-//          body: _body,
-//          bottomNavigationBar: new BottomNavigationBar(
-//            type: BottomNavigationBarType.fixed,
-//            items: <BottomNavigationBarItem>[
-//              BottomNavigationBarItem(
-//                  activeIcon: Icon(Icons.fiber_new, color: ThemeUtils.currentColorTheme),
-//                  icon: Icon(Icons.fiber_new, color: Colors.grey),
-//                  title: getTabTitle(0)
-//              ),
-//              BottomNavigationBarItem(
-//                  activeIcon: Icon(Icons.people, color: ThemeUtils.currentColorTheme),
-//                  icon: Icon(Icons.people, color: Colors.grey),
-//                  title: getTabTitle(1)
-//              ),
-//              BottomNavigationBarItem(
-//                  activeIcon: Icon(Icons.chat, color: ThemeUtils.currentColorTheme),
-//                  icon: Icon(Icons.chat, color: Colors.grey),
-//                  title: getTabTitle(2)
-//              ),
-//              BottomNavigationBarItem(
-//                  activeIcon: Icon(Icons.account_circle, color: ThemeUtils.currentColorTheme),
-//                  icon: Icon(Icons.account_circle, color: Colors.grey),
-//                  title: getTabTitle(3)
-//              )
-//            ],
-//            currentIndex: _tabIndex,
-//            onTap: (index) {
-//              setState((){
-//                _tabIndex = index;
-//              });
-//              print("Selected TabIndex: "+index.toString());
-//            },
-//          ),
-////        drawer: new MyDrawer()
-//        )
-//      )
-//    );
-//    return new MaterialApp(
-//      theme: new ThemeData(
-//        primaryColor: themeColor,
-//      ),
-//      home: new Scaffold(
-//        appBar: new AppBar(
-//            title: new Center(
-//                child: new Text(
-//                    appBarTitles[_tabIndex],
-//                    style: new TextStyle(color: Colors.white)
-//                )
-//            ),
-//            iconTheme: new IconThemeData(color: Colors.white)
-//        ),
-//        body: _body,
-//        bottomNavigationBar: new BottomNavigationBar(
-//          type: BottomNavigationBarType.fixed,
-//          items: <BottomNavigationBarItem>[
-//            BottomNavigationBarItem(
-//                activeIcon: Icon(Icons.fiber_new, color: ThemeUtils.currentColorTheme),
-//                icon: Icon(Icons.fiber_new, color: Colors.grey),
-//                title: getTabTitle(0)
-//            ),
-//            BottomNavigationBarItem(
-//                activeIcon: Icon(Icons.people, color: ThemeUtils.currentColorTheme),
-//                icon: Icon(Icons.people, color: Colors.grey),
-//                title: getTabTitle(1)
-//            ),
-//            BottomNavigationBarItem(
-//                activeIcon: Icon(Icons.chat, color: ThemeUtils.currentColorTheme),
-//                icon: Icon(Icons.chat, color: Colors.grey),
-//                title: getTabTitle(2)
-//            ),
-//            BottomNavigationBarItem(
-//                activeIcon: Icon(Icons.account_circle, color: ThemeUtils.currentColorTheme),
-//                icon: Icon(Icons.account_circle, color: Colors.grey),
-//                title: getTabTitle(3)
-//            )
-//          ],
-//          currentIndex: _tabIndex,
-//          onTap: (index) {
-//            setState((){
-//              _tabIndex = index;
-//            });
-//            print("Selected TabIndex: "+index.toString());
-//          },
-//        ),
-////        drawer: new MyDrawer()
-//      ),
-//    );
   }
 }

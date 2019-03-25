@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'pages/SplashPage.dart';
+import 'package:jxt/pages/SplashPage.dart';
+import 'package:jxt/utils/ThemeUtils.dart';
 
 void main() {
   runApp(new JMUAppClient());
@@ -24,10 +25,11 @@ class JMUAppClientState extends State<JMUAppClient> {
     return new MaterialApp(
         title: "集小通",
         theme: new ThemeData(
+          accentColor: ThemeUtils.currentColorTheme,
+//          primaryColor: ThemeUtils.currentColorTheme,
+//          splashColor: ThemeUtils.currentColorTheme,
           primaryIconTheme: const IconThemeData(color: Colors.white),
           brightness: Brightness.light,
-//          primaryColor: ThemeUtils.defaultColor,
-//          accentColor: ThemeUtils.defaultColor,
         ),
         home: new SplashPage()
     );

@@ -29,38 +29,35 @@ class NewLoginPageState extends State<NewLoginPage> {
             new Stack(
                 children: <Widget>[
                   new Container(
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomCenter,
-                          colors: const <Color>[
-                            ThemeUtils.defaultColor,
-                            Colors.redAccent
-                          ],
-                        ),
-                      )
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomCenter,
+                        colors: const <Color>[
+                          ThemeUtils.defaultColor,
+                          Colors.redAccent
+                        ],
+                      ),
+                    ),
                   ),
                   new Form(
                       key: _formKey,
-                      child: ListView(
-                        padding: EdgeInsets.symmetric(horizontal: 50.0),
+                      child: new Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          SizedBox(
-                            height: kToolbarHeight,
-                          ),
-                          SizedBox(height: 30.0),
                           buildTitle(),
 //                          buildTitleLine(),
-                          SizedBox(height: 60.0),
+                          SizedBox(height: 30.0),
                           buildUsernameTextField(),
                           SizedBox(height: 30.0),
                           buildPasswordTextField(),
                           buildForgetPasswordText(context),
                           SizedBox(height: 30.0),
                           buildLoginButton(context),
-                          SizedBox(height: 30.0),
+                          SizedBox(height: 90.0),
+//                                SizedBox(height: 30.0),
 //                          buildRegisterText(context),
-                        ],
+                        ]
                       )
                   )
                 ]
@@ -76,7 +73,7 @@ class NewLoginPageState extends State<NewLoginPage> {
 //        '登录',
 //        style: TextStyle(fontSize: 42.0),
 //      ),
-        child: Image.asset(
+        child: new Image.asset(
           './images/ic_jmu_logo.png',
           width: 100.0,
           height: 100.0,
@@ -85,11 +82,11 @@ class NewLoginPageState extends State<NewLoginPage> {
   }
 
   Padding buildTitleLine() {
-    return Padding(
+    return new Padding(
       padding: EdgeInsets.all(4.0),
-      child: Align(
+      child: new Align(
         alignment: Alignment.bottomCenter,
-        child: Container(
+        child: new Container(
           color: ThemeUtils.defaultColor,
           width: 100.0,
           height: 2.0,
@@ -98,29 +95,34 @@ class NewLoginPageState extends State<NewLoginPage> {
     );
   }
 
-  Container buildUsernameTextField() {
-    return new Container(
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            color: Color.fromRGBO(255,255,255,0.2)
-        ),
-        child: new TextFormField(
-          decoration: InputDecoration(
-            border: InputBorder.none,
-            contentPadding: EdgeInsets.all(10.0),
-            labelText: '用户名/工号/学号',
-            labelStyle: new TextStyle(color: Colors.white),
+  Padding buildUsernameTextField() {
+    return new Padding(
+      padding: EdgeInsets.symmetric(horizontal: 40.0),
+      child: new Container(
+          decoration: new BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              color: Color.fromRGBO(255,255,255,0.2)
           ),
-          style: new TextStyle(color: Colors.white),
-          cursorColor: Colors.white,
-          onSaved: (String value) => _username = value,
-        )
+          child: new TextFormField(
+            decoration: new InputDecoration(
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.all(10.0),
+              labelText: '用户名/工号/学号',
+              labelStyle: new TextStyle(color: Colors.white),
+            ),
+            style: new TextStyle(color: Colors.white),
+            cursorColor: Colors.white,
+            onSaved: (String value) => _username = value,
+          )
+      )
     );
   }
 
-  Container buildPasswordTextField() {
-    return new Container(
-        decoration: BoxDecoration(
+  Padding buildPasswordTextField() {
+    return new Padding(
+      padding: EdgeInsets.symmetric(horizontal: 40.0),
+      child:  new Container(
+        decoration: new BoxDecoration(
             borderRadius: BorderRadius.circular(10.0),
             color: Color.fromRGBO(255,255,255,0.2)
         ),
@@ -132,13 +134,13 @@ class NewLoginPageState extends State<NewLoginPage> {
               return '请输入密码';
             }
           },
-          decoration: InputDecoration(
+          decoration: new InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.all(10.0),
               labelText: '密码',
               labelStyle: new TextStyle(color: Colors.white),
-              suffixIcon: IconButton(
-                  icon: Icon(
+              suffixIcon: new IconButton(
+                  icon: new Icon(
                     Icons.remove_red_eye,
                     color: _defaultIconColor,
                   ),
@@ -155,11 +157,12 @@ class NewLoginPageState extends State<NewLoginPage> {
           style: new TextStyle(color: Colors.white),
           cursorColor: Colors.white,
         )
+      )
     );
   }
 
   Column buildLoginButton(BuildContext context) {
-    return Column(
+    return new Column(
       children: <Widget>[
         new Container(
           child: new FlatButton(
@@ -189,15 +192,15 @@ class NewLoginPageState extends State<NewLoginPage> {
   }
 
   Padding buildForgetPasswordText(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(0.0),
-      child: Align(
-        alignment: Alignment.centerRight,
-        child: FlatButton(
+    return new Padding(
+      padding: EdgeInsets.symmetric(horizontal: 30.0),
+      child: new Align(
+        alignment: Alignment.center,
+        child: new FlatButton(
           padding: EdgeInsets.all(0.0),
-          child: Text(
-            '忘记密码',
-            style: TextStyle(fontSize: 14.0, color: Colors.white70),
+          child: new Text(
+            '忘记密码？',
+            style: new TextStyle(fontSize: 14.0, color: Colors.white70),
           ),
           onPressed: () {
             resetPassword();
@@ -208,21 +211,21 @@ class NewLoginPageState extends State<NewLoginPage> {
   }
 
   Align buildRegisterText(BuildContext context) {
-    return Align(
+    return new Align(
       alignment: Alignment.center,
-      child: Padding(
+      child: new Padding(
         padding: EdgeInsets.only(top: 10.0),
-        child: Row(
+        child: new Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             new Text(
                 '没有账号？',
                 style: new TextStyle(color: Colors.white)
             ),
-            GestureDetector(
-              child: Text(
+            new GestureDetector(
+              child: new Text(
                 '点击注册',
-                style: TextStyle(color: Colors.white, decoration: TextDecoration.underline),
+                style: new TextStyle(color: Colors.white, decoration: TextDecoration.underline),
               ),
               onTap: () {
                 //TODO 跳转到注册页面
@@ -243,24 +246,24 @@ class NewLoginPageState extends State<NewLoginPage> {
       builder: (BuildContext dialogContext) {
         if (Platform.isIOS) {
           return CupertinoAlertDialog(
-            title: Text('忘记密码'),
+            title: new Text('忘记密码'),
             content: SingleChildScrollView(
-              child: ListBody(
+              child: new ListBody(
                 children: <Widget>[
-                  Text('找回密码详见'),
-                  Text('网络中心主页 -> 集大通行证'),
+                  new Text('找回密码详见'),
+                  new Text('网络中心主页 -> 集大通行证'),
                 ],
               ),
             ),
             actions: <Widget>[
-              FlatButton(
-                child: Text('返回'),
+              new FlatButton(
+                child: new Text('返回'),
                 onPressed: () {
                   Navigator.of(dialogContext).pop();
                 },
               ),
-              FlatButton(
-                child: Text('查看'),
+              new FlatButton(
+                child: new Text('查看'),
                 onPressed: () {
                   Navigator.of(dialogContext).pop();
                   Navigator.of(context).push(new MaterialPageRoute(
@@ -273,24 +276,24 @@ class NewLoginPageState extends State<NewLoginPage> {
             ],
           );
         } else if (Platform.isAndroid) {
-          return AlertDialog(
-            title: Text('忘记密码'),
+          return new AlertDialog(
+            title: new Text('忘记密码'),
             content: SingleChildScrollView(
-              child: ListBody(
+              child: new ListBody(
                 children: <Widget>[
-                  Text('找回密码详见'),
-                  Text('网络中心主页 -> 集大通行证'),
+                  new Text('找回密码详见'),
+                  new Text('网络中心主页 -> 集大通行证'),
                 ],
               ),
             ),
             actions: <Widget>[
-              FlatButton(
-                child: Text('返回'),
+              new FlatButton(
+                child: new Text('返回'),
                 onPressed: () {
                   Navigator.of(dialogContext).pop();
                 },
               ),
-              FlatButton(
+              new FlatButton(
                 child: Text('查看'),
                 onPressed: () {
                   Navigator.of(dialogContext).pop();

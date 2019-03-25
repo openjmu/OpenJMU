@@ -151,7 +151,7 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   _showUserInfoDetail() {}
 
-  renderRow(i) {
+  Widget renderRow(i) {
     if (i == 0) {
       var avatarContainer = new Container(
         color: themeColor,

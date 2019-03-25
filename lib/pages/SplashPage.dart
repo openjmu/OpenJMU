@@ -45,7 +45,6 @@ class SplashState extends State<SplashPage> {
             new MaterialPageRoute(
                 builder: (BuildContext context) => new NewLoginPage()
             ),
-//                    (Route route) => route == null
           );
         } catch (e) {}
       } else {
@@ -54,7 +53,6 @@ class SplashState extends State<SplashPage> {
             new MaterialPageRoute(
                 builder: (BuildContext context) => new MainPage()
             ),
-//                    (Route route) => route == null
           );
         } catch (e) {}
       }
@@ -69,12 +67,12 @@ class SplashState extends State<SplashPage> {
 
   Padding buildLogo() {
     return Padding(
-        padding: EdgeInsets.all(8.0),
-        child: Image.asset(
-          './images/ic_jmu_logo.png',
-          width: 100.0,
-          height: 100.0,
-        )
+      padding: EdgeInsets.all(8.0),
+      child: Image.asset(
+        './images/ic_jmu_logo.png',
+        width: 128.0,
+        height: 128.0,
+      )
     );
   }
 
@@ -86,39 +84,45 @@ class SplashState extends State<SplashPage> {
               new Stack(
                 children: <Widget>[
                   new Container(
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomCenter,
-                          colors: const <Color>[
-                            ThemeUtils.defaultColor,
-                            Colors.redAccent
-                          ],
-                        ),
-                      )
-                  ),
-                  new Padding(
-                    padding: const EdgeInsets.only(
-                      top: 150.0,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomCenter,
+                        colors: const <Color>[
+                          ThemeUtils.defaultColor,
+                          Colors.redAccent
+                        ],
+                      ),
                     ),
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(horizontal: 50.0),
+                    child: new Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        SizedBox(height: 120.0),
-                        buildLogo(),
-                        SizedBox(height: 30.0),
-                        new Text(
-                            "集小通",
-                            textAlign: TextAlign.center,
-                            style: new TextStyle(
-                              color: Colors.white,
-                              fontSize: 50.0,
-//                    letterSpacing: 6.0
+                        new Container(
+                            padding: const EdgeInsets.all(10.0),
+                            child: new Center(
+                              child: new Column(
+                                children: <Widget>[
+                                  buildLogo(),
+                                  new Text(
+                                      "集小通",
+                                      textAlign: TextAlign.center,
+                                      style: new TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 48.0,
+                                        letterSpacing: 4.0
+                                      )
+                                  ),
+                                  SizedBox(height: 90.0),
+                                ],
+                              ),
                             )
                         ),
                       ],
                     ),
                   ),
+//                  new Align(
+//                    alignment: AlignmentGeometry
+//                  )
                 ]
               )
         )

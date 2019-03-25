@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
@@ -386,7 +387,7 @@ class WeiboListPageState extends State<WeiboListPage> {
       widgets.add(new FlatButton(
           child: new Text("网页链接"),
           onPressed: () {
-            Navigator.of(context).push(new MaterialPageRoute(
+            Navigator.of(context).push(new CupertinoPageRoute(
                 builder: (context) {
                   return new CommonWebPage(title: "网页链接", url: url);
                 }
@@ -564,10 +565,7 @@ class WeiboListPageState extends State<WeiboListPage> {
       );
     }
     return new Scaffold(
-        body: new Padding(
-          padding: EdgeInsets.only(top: 8.0),
-          child: getListView(),
-        )
+        body: getListView(),
     );
   }
 }

@@ -12,6 +12,7 @@ class Api {
   static final String login = oa99Host + "/v2/passport/api/user/login1";
   static final String loginTicket = oa99Host + "/v2/passport/api/user/loginticket1";
   static final String logout = oa99pHost + "/v2/passport/api/user/loginticket1";
+
   // 用户相关
   static final String userInfo = oa99Host + "/v2/api/class/studentinfo";
   static final String userFace = oa99pHost + "/face";
@@ -21,6 +22,7 @@ class Api {
 
   // 资讯相关
   static final String newsList = middle99Host + "/mg/api/aid/posts_list/region_type/1";
+  static final String newsDetail = middle99Host + "/mg/api/aid/posts_detail/post_type/3/post_id/";
   static final String newsImageList = file99Host + "/show/file/fid/";
 
   // 微博相关

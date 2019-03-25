@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:jxt/widgets/CommonWebPage.dart';
 import 'package:jxt/utils/DataUtils.dart';
 
@@ -13,11 +14,11 @@ class DiscoveryPage extends StatelessWidget {
   static const double arrowIconWidth = 16.0;
 
   final List<dynamic> items = [
-    {"title": "应用中心", "icon": Icons.web}
+    {"title": "课程表", "icon": Icons.today}
   ];
 
   final rightArrowIcon = new Image.asset('images/ic_arrow_right.png', width: arrowIconWidth, height: arrowIconWidth,);
-  final titleTextStyle = new TextStyle(fontSize: 16.0);
+  final titleTextStyle = new TextStyle(fontSize: 18.0);
   List listData = [];
 
   DiscoveryPage() {
@@ -27,12 +28,20 @@ class DiscoveryPage extends StatelessWidget {
   void initData() {
     listData.add(tagStart);
     for (int i = 0; i < items.length; i++) {
-      listData.add(new ListItem(title: items[i]['title'], icon: new Icon(items[i]['icon'])));
+      listData.add(
+          new ListItem(
+              title: items[i]['title'],
+              icon: new Icon(
+                items[i]['icon'],
+                size: 30.0
+              )
+          )
+      );
+      listData.add(tagEnd);
     }
-    listData.add(tagEnd);
   }
 
-  renderRow(BuildContext ctx, int i) {
+  Widget renderRow(BuildContext ctx, int i) {
     var item = listData[i];
     if (item is String) {
       switch (item) {
@@ -61,7 +70,10 @@ class DiscoveryPage extends StatelessWidget {
           children: <Widget>[
             item.icon,
             new Expanded(
-                child: new Text(item.title, style: titleTextStyle,)
+                child: new Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
+                  child: new Text(item.title, style: titleTextStyle)
+                )
             ),
             rightArrowIcon
           ],
@@ -76,12 +88,12 @@ class DiscoveryPage extends StatelessWidget {
     }
   }
 
-  void handleListItemClick(BuildContext ctx, ListItem item) {
+  void handleListItemClick(BuildContext context, ListItem item) {
     String title = item.title;
     switch (title) {
-      case "应用中心":
+      case "课程表":
         DataUtils.getSid().then((sid) {
-          Navigator.of(ctx).push(new MaterialPageRoute(
+          Navigator.of(context).push(new CupertinoPageRoute(
               builder: (context) {
                 return new CommonWebPage(title: "课程表", url: "http://labs.jmu.edu.cn/CourseSchedule/Course.html?sid=$sid");
               }
@@ -104,12 +116,10 @@ class DiscoveryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
-      child: new ListView.builder(
+    return new ListView.builder(
+        padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
         itemCount: listData.length,
         itemBuilder: (context, i) => renderRow(context, i),
-      ),
     );
 //    return new Center(
 //      child: new Column(

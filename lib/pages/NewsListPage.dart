@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
-import '../api/Api.dart';
-import '../constants/Constants.dart';
-import '../events/LoginEvent.dart';
-import '../events/LogoutEvent.dart';
-import '../widgets/CommonEndLine.dart';
-import '../widgets/SlideView.dart';
-import '../widgets/SlideViewIndicator.dart';
-import '../pages/NewsDetailPage.dart';
-import '../utils/NetUtils.dart';
-import '../utils/DataUtils.dart';
-import '../utils/ThemeUtils.dart';
-import '../utils/ToastUtils.dart';
+import 'package:jxt/api/Api.dart';
+import 'package:jxt/constants/Constants.dart';
+import 'package:jxt/events/LoginEvent.dart';
+import 'package:jxt/events/LogoutEvent.dart';
+import 'package:jxt/widgets/CommonEndLine.dart';
+import 'package:jxt/widgets/CommonWebPage.dart';
+import 'package:jxt/widgets/SlideView.dart';
+import 'package:jxt/widgets/SlideViewIndicator.dart';
+import 'package:jxt/utils/NetUtils.dart';
+import 'package:jxt/utils/DataUtils.dart';
+import 'package:jxt/utils/ThemeUtils.dart';
+import 'package:jxt/utils/ToastUtils.dart';
 
 class NewsListPage extends StatefulWidget {
   @override
@@ -210,24 +210,26 @@ class NewsListPageState extends State<NewsListPage> {
         )
       ],
     );
-    var thumbImgUrl = Api.newsImageList + itemData['cover_img']['id'] + "/sid/$sid";
-    var thumbImg = new Container(
-//        margin: const EdgeInsets.all(10.0),
-      width: 80.0,
-      height: 80.0,
-      decoration: new BoxDecoration(
+    Widget thumbImg;
+    if (itemData['cover_img'] != null) {
+      String thumbImgUrl = Api.newsImageList + itemData['cover_img']['fid'] + "/sid/$sid";
+      thumbImg = new Container(
+        width: 80.0,
+        height: 80.0,
+        decoration: new BoxDecoration(
 //          shape: BoxShape.circle,
-        color: const Color(0xFFECECEC),
-        image: new DecorationImage(
-            image: new NetworkImage(thumbImgUrl),
-            fit: BoxFit.cover
+          color: const Color(0xFFECECEC),
+          image: new DecorationImage(
+              image: new NetworkImage(thumbImgUrl),
+              fit: BoxFit.cover
+          ),
+          border: new Border.all(
+            color: const Color(0xFFECECEC),
+            width: 2.0,
+          ),
         ),
-//          border: new Border.all(
-//            color: const Color(0xFFECECEC),
-//            width: 2.0,
-//          ),
-      ),
-    );
+      );
+    }
     var row = new Row(
       children: <Widget>[
         new Expanded(
@@ -262,8 +264,11 @@ class NewsListPageState extends State<NewsListPage> {
     return new InkWell(
       child: row,
       onTap: () {
+        String newsUrl = Api.newsDetail + itemData['post_id'];
         Navigator.of(context).push(new MaterialPageRoute(
-            builder: (context) => new NewsDetailPage(id: itemData['detailUrl'])
+            builder: (context) {
+              return new CommonWebPage(title: itemData['title'], url: newsUrl);
+            }
         ));
       },
     );
