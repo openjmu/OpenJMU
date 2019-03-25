@@ -12,7 +12,7 @@ class CommonEndLine extends StatelessWidget {
             child: new Divider(height: 10.0,),
             flex: 1,
           ),
-          new Text("我也是有底线的"),
+          new Text("到底啦~不要再划啦"),
           new Expanded(
             child: new Divider(height: 10.0,),
             flex: 1,

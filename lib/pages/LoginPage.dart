@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io';
-import '../utils/DataUtils.dart';
-import '../utils/ThemeUtils.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:jxt/utils/DataUtils.dart';
+import 'package:jxt/utils/ThemeUtils.dart';
 import 'package:jxt/widgets/CommonWebPage.dart';
 
 class NewLoginPage extends StatefulWidget {
@@ -47,15 +48,14 @@ class NewLoginPageState extends State<NewLoginPage> {
                         children: <Widget>[
                           buildTitle(),
 //                          buildTitleLine(),
-                          SizedBox(height: 30.0),
+                          SizedBox(height: 20.0),
                           buildUsernameTextField(),
                           SizedBox(height: 30.0),
                           buildPasswordTextField(),
                           buildForgetPasswordText(context),
-                          SizedBox(height: 30.0),
+                          SizedBox(height: 10.0),
                           buildLoginButton(context),
-                          SizedBox(height: 90.0),
-//                                SizedBox(height: 30.0),
+                          SizedBox(height: 50.0),
 //                          buildRegisterText(context),
                         ]
                       )
@@ -97,7 +97,7 @@ class NewLoginPageState extends State<NewLoginPage> {
 
   Padding buildUsernameTextField() {
     return new Padding(
-      padding: EdgeInsets.symmetric(horizontal: 40.0),
+      padding: EdgeInsets.symmetric(horizontal: 48.0),
       child: new Container(
           decoration: new BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
@@ -108,9 +108,9 @@ class NewLoginPageState extends State<NewLoginPage> {
               border: InputBorder.none,
               contentPadding: EdgeInsets.all(10.0),
               labelText: '用户名/工号/学号',
-              labelStyle: new TextStyle(color: Colors.white),
+              labelStyle: new TextStyle(color: Colors.white, fontSize: 20.0),
             ),
-            style: new TextStyle(color: Colors.white),
+            style: new TextStyle(color: Colors.white, fontSize: 20.0),
             cursorColor: Colors.white,
             onSaved: (String value) => _username = value,
           )
@@ -120,7 +120,7 @@ class NewLoginPageState extends State<NewLoginPage> {
 
   Padding buildPasswordTextField() {
     return new Padding(
-      padding: EdgeInsets.symmetric(horizontal: 40.0),
+      padding: EdgeInsets.symmetric(horizontal: 48.0),
       child:  new Container(
         decoration: new BoxDecoration(
             borderRadius: BorderRadius.circular(10.0),
@@ -138,7 +138,7 @@ class NewLoginPageState extends State<NewLoginPage> {
               border: InputBorder.none,
               contentPadding: EdgeInsets.all(10.0),
               labelText: '密码',
-              labelStyle: new TextStyle(color: Colors.white),
+              labelStyle: new TextStyle(color: Colors.white, fontSize: 20.0),
               suffixIcon: new IconButton(
                   icon: new Icon(
                     Icons.remove_red_eye,
@@ -154,7 +154,7 @@ class NewLoginPageState extends State<NewLoginPage> {
                   }
               )
           ),
-          style: new TextStyle(color: Colors.white),
+          style: new TextStyle(color: Colors.white, fontSize: 20.0),
           cursorColor: Colors.white,
         )
       )
@@ -193,7 +193,7 @@ class NewLoginPageState extends State<NewLoginPage> {
 
   Padding buildForgetPasswordText(BuildContext context) {
     return new Padding(
-      padding: EdgeInsets.symmetric(horizontal: 30.0),
+      padding: EdgeInsets.all(0.0),
       child: new Align(
         alignment: Alignment.center,
         child: new FlatButton(
@@ -228,7 +228,6 @@ class NewLoginPageState extends State<NewLoginPage> {
                 style: new TextStyle(color: Colors.white, decoration: TextDecoration.underline),
               ),
               onTap: () {
-                //TODO 跳转到注册页面
                 print('去注册');
 //                Navigator.pop(context);
               },
@@ -244,69 +243,36 @@ class NewLoginPageState extends State<NewLoginPage> {
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext dialogContext) {
-        if (Platform.isIOS) {
-          return CupertinoAlertDialog(
-            title: new Text('忘记密码'),
-            content: SingleChildScrollView(
-              child: new ListBody(
-                children: <Widget>[
-                  new Text('找回密码详见'),
-                  new Text('网络中心主页 -> 集大通行证'),
-                ],
-              ),
+        return PlatformAlertDialog(
+          title: new Text('忘记密码'),
+          content: SingleChildScrollView(
+            child: new ListBody(
+              children: <Widget>[
+                new Text('找回密码详见'),
+                new Text('网络中心主页 -> 集大通行证'),
+              ],
             ),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text('返回'),
-                onPressed: () {
-                  Navigator.of(dialogContext).pop();
-                },
-              ),
-              new FlatButton(
-                child: new Text('查看'),
-                onPressed: () {
-                  Navigator.of(dialogContext).pop();
-                  Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (context) {
-                        return new CommonWebPage(title: "集大通行证登录说明", url: "https://net.jmu.edu.cn/info/1309/2476.htm");
-                      }
-                  ));
-                },
-              ),
-            ],
-          );
-        } else if (Platform.isAndroid) {
-          return new AlertDialog(
-            title: new Text('忘记密码'),
-            content: SingleChildScrollView(
-              child: new ListBody(
-                children: <Widget>[
-                  new Text('找回密码详见'),
-                  new Text('网络中心主页 -> 集大通行证'),
-                ],
-              ),
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('返回'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+              },
             ),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text('返回'),
-                onPressed: () {
-                  Navigator.of(dialogContext).pop();
-                },
-              ),
-              new FlatButton(
-                child: Text('查看'),
-                onPressed: () {
-                  Navigator.of(dialogContext).pop();
-                  Navigator.of(context).push(new MaterialPageRoute(
-                      builder: (context) {
-                        return new CommonWebPage(title: "集大通行证登录说明", url: "https://net.jmu.edu.cn/info/1309/2476.htm");
-                      }
-                  ));
-                },
-              ),
-            ],
-          );
-        }
+            new FlatButton(
+              child: new Text('查看'),
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (context) {
+                      return new CommonWebPage(title: "集大通行证登录说明", url: "https://net.jmu.edu.cn/info/1309/2476.htm");
+                    }
+                ));
+              },
+            ),
+          ],
+        );
       },
     );
   }

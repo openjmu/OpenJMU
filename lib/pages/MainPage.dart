@@ -1,17 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../constants/Constants.dart';
-import '../events/ChangeThemeEvent.dart';
-import '../events/LoginEvent.dart';
-import '../events/LogoutEvent.dart';
-import '../utils/DataUtils.dart';
-import '../utils/ThemeUtils.dart';
-import '../utils/ToastUtils.dart';
-import 'NewLoginPage.dart';
-import 'NewsListPage.dart';
-import 'WeiboListPage.dart';
-import 'DiscoveryPage.dart';
-import 'MyInfoPage.dart';
+import 'package:jxt/constants/Constants.dart';
+import 'package:jxt/events/ChangeThemeEvent.dart';
+import 'package:jxt/events/LoginEvent.dart';
+import 'package:jxt/events/LogoutEvent.dart';
+import 'package:jxt/utils/DataUtils.dart';
+import 'package:jxt/utils/ThemeUtils.dart';
+import 'package:jxt/utils/ToastUtils.dart';
+import 'package:jxt/pages/LoginPage.dart';
+import 'package:jxt/pages/NewsListPage.dart';
+import 'package:jxt/pages/WeiboListPage.dart';
+import 'package:jxt/pages/AppCenterPage.dart';
+import 'package:jxt/pages/DiscoveryPage.dart';
+import 'package:jxt/pages/MyInfoPage.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -19,12 +20,12 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
-  final appBarTitles = ['首页', '新闻', '消息', '我的'];
+  final appBarTitles = ['首页', '新闻', '应用中心', '消息', '我的'];
   TextStyle tabTextStyleSelected = new TextStyle(color: ThemeUtils.currentColorTheme);
   final tabTextStyleNormal = new TextStyle(color: Colors.grey);
 
   Color themeColor = ThemeUtils.currentColorTheme;
-  int _tabIndex = 0;
+  int _tabIndex = 2;
 
   var _body;
   var pages;
@@ -53,7 +54,6 @@ class MainPageState extends State<MainPage> {
       },));
     });
     DataUtils.getColorThemeIndex().then((index) {
-      print('color theme index = $index');
       if (index != null) {
         ThemeUtils.currentColorTheme = ThemeUtils.supportColors[index];
         Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.supportColors[index]));
@@ -68,6 +68,7 @@ class MainPageState extends State<MainPage> {
     pages = <Widget>[
       WeiboListPage(),
       NewsListPage(),
+      AppCenterPage(),
       DiscoveryPage(),
       MyInfoPage()
     ];
@@ -106,6 +107,40 @@ class MainPageState extends State<MainPage> {
     }
   }
 
+  AppBar pageAppBar() {
+    if (appBarTitles[_tabIndex] == "首页") {
+      return new AppBar(
+          title: new Center(
+              child: new Text(
+                  appBarTitles[_tabIndex],
+                  style: new TextStyle(color: Colors.white)
+              )
+          ),
+          actions: <Widget>[
+            new IconButton(
+                icon: new Icon(
+                  Icons.add_circle,
+                  color: Colors.white
+                ),
+                onPressed: null
+            )
+          ],
+          iconTheme: new IconThemeData(color: Colors.white),
+          backgroundColor: ThemeUtils.currentColorTheme
+      );
+    }
+    return new AppBar(
+        title: new Center(
+            child: new Text(
+                appBarTitles[_tabIndex],
+                style: new TextStyle(color: Colors.white)
+            )
+        ),
+        iconTheme: new IconThemeData(color: Colors.white),
+        backgroundColor: ThemeUtils.currentColorTheme
+    );
+  }
+
   WillPopScope mainPage(context) {
     _body = new IndexedStack(
       children: pages,
@@ -126,7 +161,7 @@ class MainPageState extends State<MainPage> {
           ),
           body: _body,
           bottomNavigationBar: new BottomNavigationBar(
-//            type: BottomNavigationBarType.fixed,
+            type: BottomNavigationBarType.fixed,
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                   activeIcon: Icon(Icons.home, color: ThemeUtils.currentColorTheme),
@@ -134,19 +169,24 @@ class MainPageState extends State<MainPage> {
                   title: getTabTitle(0)
               ),
               BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.fiber_new, color: ThemeUtils.currentColorTheme),
+                activeIcon: Icon(Icons.fiber_new, color: ThemeUtils.currentColorTheme),
                   icon: Icon(Icons.fiber_new, color: Colors.grey),
                   title: getTabTitle(1)
               ),
               BottomNavigationBarItem(
+                backgroundColor: ThemeUtils.currentColorTheme,
+                icon: Icon(Icons.add),
+                title: new Text("")
+              ),
+              BottomNavigationBarItem(
                   activeIcon: Icon(Icons.chat, color: ThemeUtils.currentColorTheme),
                   icon: Icon(Icons.chat, color: Colors.grey),
-                  title: getTabTitle(2)
+                  title: getTabTitle(3)
               ),
               BottomNavigationBarItem(
                   activeIcon: Icon(Icons.account_circle, color: ThemeUtils.currentColorTheme),
                   icon: Icon(Icons.account_circle, color: Colors.grey),
-                  title: getTabTitle(3)
+                  title: getTabTitle(4)
               )
             ],
             currentIndex: _tabIndex,

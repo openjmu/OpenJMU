@@ -3,18 +3,18 @@ import 'package:flutter/cupertino.dart';
 import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
-import '../api/Api.dart';
-import '../constants/Constants.dart';
-import '../events/LoginEvent.dart';
-import '../events/LogoutEvent.dart';
-import '../pages/NewLoginPage.dart';
-import '../pages/WeiboDetailPage.dart';
-import '../utils/BlackListUtils.dart';
-import '../utils/DataUtils.dart';
-import '../utils/NetUtils.dart';
-import '../utils/ThemeUtils.dart';
-import '../widgets/CommonEndLine.dart';
-import '../widgets/CommonWebPage.dart';
+import 'package:jxt/api/Api.dart';
+import 'package:jxt/constants/Constants.dart';
+import 'package:jxt/events/LoginEvent.dart';
+import 'package:jxt/events/LogoutEvent.dart';
+import 'package:jxt/pages/LoginPage.dart';
+import 'package:jxt/pages/WeiboDetailPage.dart';
+import 'package:jxt/utils/BlackListUtils.dart';
+import 'package:jxt/utils/DataUtils.dart';
+import 'package:jxt/utils/NetUtils.dart';
+import 'package:jxt/utils/ThemeUtils.dart';
+import 'package:jxt/widgets/CommonEndLine.dart';
+import 'package:jxt/widgets/CommonWebPage.dart';
 
 class WeiboListPage extends StatefulWidget {
   @override
@@ -74,13 +74,11 @@ class WeiboListPageState extends State<WeiboListPage> {
 
   String removeUrlFromContent(content) {
     RegExp reg = new RegExp(r"(https://.+?)/.*");
-    Iterable<Match> matches = reg.allMatches(content);
     String result = content.replaceAllMapped(reg, (match)=>"");
     return result;
   }
 
   String getUrlFromContent(content) {
-//    RegExp reg = new RegExp(r"^(?=^.{3,255}$)(http(s)?:\/\/)?(wb\.)?[a-zA-Z0-9][-a-zA-Z0-9]{0,62}(\.[a-zA-Z0-9][-a-zA-Z0-9]{0,62})+(:\d+)*(\/\w+\.\w+)*([\?&]\w+=\w*)*$");
     RegExp reg = new RegExp(r"(https://.+?)/.*");
     Iterable<Match> matches = reg.allMatches(content);
     String result;
@@ -254,87 +252,150 @@ class WeiboListPageState extends State<WeiboListPage> {
 //      });
 //  }
 
-  Widget getWeiboTitle(itemData) {
-    String name = itemData['user']['nickname'];
+  Container getWeiboAvatar(itemData) {
     String avatar = Api.userFace+"?uid="+itemData['user']['uid']+"&size=f100";
+    return new Container(
+      width: 40.0,
+      height: 40.0,
+      decoration: new BoxDecoration(
+        shape: BoxShape.circle,
+        color: const Color(0xFFECECEC),
+        image: new DecorationImage(
+            image: new NetworkImage(avatar),
+            fit: BoxFit.cover
+        ),
+        border: new Border.all(
+          color: const Color(0xFFECECEC),
+          width: 2.0,
+        ),
+      ),
+    );
+  }
+
+  Text getWeiboUsername(itemData) {
+    String name = itemData['user']['nickname'];
+    return new Text(
+      name,
+      style: titleTextStyle,
+      textAlign: TextAlign.left,
+    );
+  }
+
+  Row getWeiboInfo(itemData) {
     String time = new DateTime.fromMillisecondsSinceEpoch(int.parse(itemData['post_time']) * 1000).toString().substring(0,16);
     String from = itemData['from_string'];
     String glances = itemData['glances'];
     return new Row(
-      children: <Widget>[
-        new Container(
-          width: 40.0,
-          height: 40.0,
-          decoration: new BoxDecoration(
-            shape: BoxShape.circle,
-            color: const Color(0xFFECECEC),
-            image: new DecorationImage(
-                image: new NetworkImage(avatar),
-                fit: BoxFit.cover
-            ),
-            border: new Border.all(
-              color: const Color(0xFFECECEC),
-              width: 2.0,
-            ),
+        children: <Widget>[
+          new Icon(
+              Icons.access_time,
+              color: Colors.grey,
+              size: 12.0
           ),
-        ),
-        new Padding(
-            padding: EdgeInsets.symmetric(horizontal: 2.0)
-        ),
-        new Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              new Align(
-                alignment: FractionalOffset(0.2, 0.6),
-                child: new Text(
-                  name,
-                  style: titleTextStyle,
-                  textAlign: TextAlign.left,
-                ),
-              ),
-              new Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 4.0),
-                  child: new Row(
-                      children: <Widget>[
-                        new Icon(
-                            Icons.access_time,
-                            color: Colors.grey,
-                            size: 12.0
-                        ),
-                        new Text(
-                            time,
-                            style: subtitleStyle
-                        ),
-                        new Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 5.0)
-                        ),
-                        new Icon(
-                            Icons.smartphone,
-                            color: Colors.grey,
-                            size: 12.0
-                        ),
-                        new Text(
-                            from,
-                            style: subtitleStyle
-                        ),
-                        new Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 5.0)
-                        ),
-                        new Icon(
-                            Icons.remove_red_eye,
-                            color: Colors.grey,
-                            size: 12.0
-                        ),
-                        new Text(
-                            glances,
-                            style: subtitleStyle
-                        )
-                      ]
-                  )
-              )
-            ]
+          new Text(
+              time,
+              style: subtitleStyle
+          ),
+          new Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5.0)
+          ),
+          new Icon(
+              Icons.smartphone,
+              color: Colors.grey,
+              size: 12.0
+          ),
+          new Text(
+              from,
+              style: subtitleStyle
+          ),
+          new Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5.0)
+          ),
+          new Icon(
+              Icons.remove_red_eye,
+              color: Colors.grey,
+              size: 12.0
+          ),
+          new Text(
+              glances,
+              style: subtitleStyle
+          )
+        ]
+    );
+  }
+
+  Widget getWeiboActionsCount(itemData) {
+    List<Widget> forwardsChildren = [
+      new IconButton(
+          icon: new Icon(
+              Icons.directions,
+              color: ThemeUtils.currentColorTheme
+          ),
+          onPressed: null
+      ),
+    ];
+    List<Widget> replysChildren = [
+      new IconButton(
+          icon: new Icon(
+              Icons.comment,
+              color: ThemeUtils.currentColorTheme
+          ),
+          onPressed: null
+      ),
+    ];
+    List<Widget> praisesChildren = [
+      new IconButton(
+          icon: new Icon(
+              Icons.thumb_up,
+              color: ThemeUtils.currentColorTheme
+          ),
+          onPressed: null
+      ),
+    ];
+    if (itemData['forwards'] != '0') {
+      forwardsChildren.add(
+        new Text(
+          itemData['forwards'],
+          style: new TextStyle(color: ThemeUtils.currentColorTheme)
         )
-      ],
+      );
+    }
+    if (itemData['replys'] != '0') {
+      replysChildren.add(
+          new Text(
+              itemData['replys'],
+              style: new TextStyle(color: ThemeUtils.currentColorTheme)
+          )
+      );
+    }
+    if (itemData['praises'] != '0') {
+      praisesChildren.add(
+          new Text(
+              itemData['praises'],
+              style: new TextStyle(color: ThemeUtils.currentColorTheme)
+          )
+      );
+    }
+    Widget forwardRow = new Row(
+      children: forwardsChildren
+    );
+    Widget replysRow = new Row(
+        children: replysChildren
+    );
+    Widget praisesRow = new Row(
+        children: praisesChildren
+    );
+    return ButtonTheme.bar( // make buttons use the appropriate styles for cards
+        child: new Center(
+          child: new ButtonBar(
+            children: <Widget>[
+              forwardRow, replysRow, praisesRow,
+              new Container(
+                width: 4.0
+              )
+            ],
+          ),
+        )
     );
   }
 
@@ -371,6 +432,37 @@ class WeiboListPageState extends State<WeiboListPage> {
     }
   }
 
+  Widget getWeiboImagesNew(itemData) {
+    final imagesData = itemData['image'];
+    if (imagesData != null) {
+      List<Widget> imagesWidget = [];
+      for (var i = 0; i < imagesData.length; i++) {
+        String imageOriginalUrl = imagesData[i]['image_original'];
+        String imageThumbUrl = "http" + imageOriginalUrl.substring(5, imageOriginalUrl.length);
+        imagesWidget.add(
+          new Image.network(imageThumbUrl, fit: BoxFit.cover),
+        );
+      }
+      int itemCount = 3;
+      if (imagesData.length < 3) {
+        itemCount = imagesData.length;
+      }
+      return new Container(
+          padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0.0),
+          child: new GridView.count(
+              shrinkWrap: true,
+              primary: false,
+              mainAxisSpacing: 8.0,
+              crossAxisCount: itemCount,
+              crossAxisSpacing: 8.0,
+              children: imagesWidget
+          )
+      );
+    } else {
+      return new Container();
+    }
+  }
+
   Widget getWeiboContent(itemData) {
     String content, url;
     if (itemData['category'] == 'longtext') {
@@ -384,23 +476,26 @@ class WeiboListPageState extends State<WeiboListPage> {
       new Text(content),
     ];
     if (url != null) {
-      widgets.add(new FlatButton(
+      widgets.add(
+        new FlatButton(
+          padding: EdgeInsets.all(2.0),
+          color: Colors.grey,
           child: new Text("网页链接"),
           onPressed: () {
-            Navigator.of(context).push(new CupertinoPageRoute(
+            Navigator.of(context).push(new MaterialPageRoute(
                 builder: (context) {
                   return new CommonWebPage(title: "网页链接", url: url);
                 }
             ));
           }
-      ));
+        )
+      );
     }
-    widgets.add(getWeiboImages(itemData));
     return new Row(
         children: <Widget>[
           new Expanded(
               child: new Container(
-                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: new Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -422,42 +517,29 @@ class WeiboListPageState extends State<WeiboListPage> {
     if (itemData is String && itemData == Constants.endLineTag) {
       return new CommonEndLine();
     }
-    return new Card(
-        margin: EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0),
-        child: new InkWell(
-          child: new Row(
+    if (itemData['content'] != "此微博已经被屏蔽") {
+      return new Center(
+        child: Card(
+          margin: EdgeInsets.symmetric(vertical: 8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              new Expanded(
-                flex: 1,
-                child: new Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: new Column(
-                    children: <Widget>[
-                      getWeiboTitle(itemData),
-                      getWeiboContent(itemData)
-                    ],
-                  ),
-                ),
+              new ListTile(
+                leading: getWeiboAvatar(itemData),
+                title: getWeiboUsername(itemData),
+                subtitle: getWeiboInfo(itemData),
               ),
+              getWeiboContent(itemData),
+              getWeiboImagesNew(itemData),
+              getWeiboActionsCount(itemData)
             ],
           ),
-          onTap: () {
-//        Navigator.of(context).push(new MaterialPageRoute(
-//            builder: (context) => new WeiboDetailPage(id: itemData['detailUrl'])
-//        ));
-          },
-        )
-    );
+        ),
+      );
+    } else {
+      return new Center();
+    }
   }
-
-//  int getRow(int n) {
-//    int a = n % 3;
-//    int b = n ~/ 3;
-//    if (a != 0) {
-//      return b + 1;
-//    }
-//    return b;
-//  }
 
   Future<Null> _pullToRefresh() async {
     curPage = 1;

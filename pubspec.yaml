@@ -25,9 +25,10 @@ dependencies:
     dio: ^2.1.0
     event_bus: ^1.0.1
     fluttertoast: ^3.0.3
+    flutter_platform_widgets: ^0.9.5
     flutter_webview_plugin: ^0.3.1
-    webview_flutter: ^0.3.5
     http: ^0.12.0
+#    outline_material_icons: ^0.1.0
 #    image_picker: ^0.4.10
     shared_preferences: ^0.4.3
     uuid: ^2.0.0

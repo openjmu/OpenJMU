@@ -6,7 +6,7 @@ import '../events/TicketFailedEvent.dart';
 import '../utils/DataUtils.dart';
 import '../utils/ThemeUtils.dart';
 import 'MainPage.dart';
-import 'NewLoginPage.dart';
+import 'LoginPage.dart';
 
 class SplashPage extends StatefulWidget {
   @override

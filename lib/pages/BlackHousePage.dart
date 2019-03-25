@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/Constants.dart';
 import '../events/LoginEvent.dart';
-import '../pages/NewLoginPage.dart';
+import '../pages/LoginPage.dart';
 import '../utils/BlackListUtils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/NetUtils.dart';

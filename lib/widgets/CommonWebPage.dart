@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+//import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:jxt/utils/ThemeUtils.dart';
 
@@ -48,11 +49,11 @@ class CommonWebPageState extends State<CommonWebPage> {
       });
       print("Page progress: $progress");
     });
-    flutterWebViewPlugin.onUrlChanged.listen((url) {
-      setState(() {
-        loading = false;
-      });
-    });
+//    flutterWebViewPlugin.onUrlChanged.listen((url) {
+//      setState(() {
+//        loading = false;
+//      });
+//    });
   }
 
   Widget progressBar() {
@@ -86,7 +87,7 @@ class CommonWebPageState extends State<CommonWebPage> {
           child: new IconButton(
               icon: new Icon(Icons.refresh),
               onPressed: () {
-                flutterWebViewPlugin.reload();
+//                flutterWebViewPlugin.reload();
               }
           )
       );
@@ -110,5 +111,27 @@ class CommonWebPageState extends State<CommonWebPage> {
         withZoom: true,
       )
     );
+//    return new Scaffold(
+//      appBar: new AppBar(
+//        title: new Center(
+//          child: new Text(
+//            title,
+//            style: new TextStyle(color: Colors.white)
+//          )
+//        ),
+//        actions: <Widget>[trailing],
+//        iconTheme: new IconThemeData(color: Colors.white),
+//        backgroundColor: ThemeUtils.currentColorTheme
+//      ),
+//      body: new WebView(
+//        initialUrl: widget.url,
+//        javascriptMode: JavascriptMode.unrestricted,
+//        onPageFinished: (url) {
+//          setState(() {
+//            loading = false;
+//          });
+//        },
+//      )
+//    );
   }
 }

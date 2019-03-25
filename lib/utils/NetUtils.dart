@@ -34,6 +34,19 @@ class NetUtils {
     return response.toString();
   }
 
+  static Future getPlainWithCookieSet(String url, {data, cookies}) async {
+    dio.interceptors.add(CookieManager(CookieJar()));
+    Response response = await dio.get(
+        url,
+        queryParameters: data,
+        options: Options(
+            cookies: cookies,
+            responseType: ResponseType.plain
+        )
+    );
+    return response;
+  }
+
   static Future<String> getWithHeaderSet(String url, {data, headers}) async {
 //    dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.get(

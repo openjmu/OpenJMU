@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
-import '../api/Api.dart';
-import '../constants/Constants.dart';
-import '../events/ChangeThemeEvent.dart';
-import '../events/LoginEvent.dart';
-import '../events/LogoutEvent.dart';
-import '../model/UserInfo.dart';
-import 'package:jxt/widgets/CommonWebPage.dart';
-import '../pages/ChangeThemePage.dart';
-import '../pages/NewLoginPage.dart';
-import '../utils/DataUtils.dart';
-import '../utils/NetUtils.dart';
-import '../utils/ThemeUtils.dart';
+import 'package:jxt/api/Api.dart';
+import 'package:jxt/constants/Constants.dart';
+import 'package:jxt/events/ChangeThemeEvent.dart';
+import 'package:jxt/events/LoginEvent.dart';
+import 'package:jxt/events/LogoutEvent.dart';
+import 'package:jxt/pages/ChangeThemePage.dart';
+import 'package:jxt/utils/DataUtils.dart';
+import 'package:jxt/utils/ThemeUtils.dart';
 
 class MyInfoPage extends StatefulWidget {
   @override
@@ -54,23 +48,12 @@ class MyInfoPageState extends State<MyInfoPage> {
   void initState() {
     super.initState();
     DataUtils.isLogin().then((isLogin) {
-      setState(() {
-        this.isLogin = isLogin;
-        getUserInfo();
-      });
+      _getUserInfo();
     });
     Constants.eventBus.on<LoginEvent>().listen((event) {
-      // 收到登录的消息，重新获取个人信息
       setState(() {
-        this.isLogin = true;
-        getUserInfo();
-      });
-    });
-    Constants.eventBus.on<LogoutEvent>().listen((event) {
-      // 收到退出登录的消息，刷新个人信息显示
-      setState(() {
-        this.isLogin = false;
-        _showUserInfo();
+        this.isLogin = isLogin;
+        _getUserInfo();
       });
     });
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
@@ -80,21 +63,15 @@ class MyInfoPageState extends State<MyInfoPage> {
     });
   }
 
-  _showUserInfo() {
-    DataUtils.getUserInfo().then((UserInfo userInfo) {
-      if (userInfo != null) {
-        print(userInfo.name);
-//        print(userInfo.avatar);
-        setState(() {
-//          userAvatar = userInfo.avatar;
-          userName = userInfo.name;
-        });
-      } else {
-        setState(() {
-//          userAvatar = null;
-          userName = null;
-        });
-      }
+  _getUserInfo() {
+    DataUtils.getUserInfo().then((userInfo) {
+      print(userInfo);
+      String avatar = Api.userFace+"?uid=${userInfo.uid}&size=f100";
+      setState(() {
+        this.isLogin = isLogin;
+        userAvatar = avatar;
+        userName = userInfo.name;
+      });
     });
   }
 
@@ -115,42 +92,6 @@ class MyInfoPageState extends State<MyInfoPage> {
     return listView;
   }
 
-  // 获取用户信息
-  getUserInfo() async {
-//    SharedPreferences sp = await SharedPreferences.getInstance();
-//    String accessToken = sp.get(DataUtils.SP_AC_TOKEN);
-//    Map<String, String> params = new Map();
-//    params['access_token'] = accessToken;
-//    NetUtils.get(Api.USER_INFO, params: params).then((data) {
-//      if (data != null) {
-//        var map = json.decode(data);
-//        setState(() {
-//          userAvatar = map['avatar'];
-//          userName = map['name'];
-//        });
-//        DataUtils.saveUserInfo(map);
-//      }
-//    });
-  }
-
-  _login() async {
-    // 打开登录页并处理登录成功的回调
-    final result = await Navigator
-        .of(context)
-        .push(new MaterialPageRoute(builder: (context) {
-      return new NewLoginPage();
-    }));
-    // result为"refresh"代表登录成功
-    if (result != null && result == "refresh") {
-      // 刷新用户信息
-      getUserInfo();
-      // 通知动弹页面刷新
-      Constants.eventBus.fire(new LoginEvent());
-    }
-  }
-
-  _showUserInfoDetail() {}
-
   Widget renderRow(i) {
     if (i == 0) {
       var avatarContainer = new Container(
@@ -163,11 +104,11 @@ class MyInfoPageState extends State<MyInfoPage> {
               userAvatar == null
                   ? new Image.asset(
                       "images/ic_avatar_default.png",
-                      width: 60.0,
+                      width: 100.0,
                     )
                   : new Container(
-                      width: 60.0,
-                      height: 60.0,
+                      width: 100.0,
+                      height: 100.0,
                       decoration: new BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.transparent,
@@ -180,26 +121,18 @@ class MyInfoPageState extends State<MyInfoPage> {
                         ),
                       ),
                     ),
+              new Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+              ),
               new Text(
                 userName == null ? "点击头像登录" : userName,
-                style: new TextStyle(color: Colors.white, fontSize: 16.0),
+                style: new TextStyle(color: Colors.white, fontSize: 24.0),
               ),
             ],
           ),
         ),
       );
       return new GestureDetector(
-        onTap: () {
-          DataUtils.isLogin().then((isLogin) {
-            if (isLogin) {
-              // 已登录，显示用户详细信息
-              _showUserInfoDetail();
-            } else {
-              // 未登录，跳转到登录页面
-              _login();
-            }
-          });
-        },
         child: avatarContainer,
       );
     }
@@ -231,38 +164,6 @@ class MyInfoPageState extends State<MyInfoPage> {
         _handleListItemClick(context, title);
       },
     );
-  }
-
-  _showLoginDialog() {
-    showDialog(
-        context: context,
-        builder: (BuildContext ctx) {
-          return new AlertDialog(
-            title: new Text('提示'),
-            content: new Text('没有登录，现在去登录吗？'),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text(
-                  '取消',
-                  style: new TextStyle(color: Colors.grey),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              new FlatButton(
-                child: new Text(
-                  '确定',
-                  style: new TextStyle(color: ThemeUtils.currentColorTheme),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  _login();
-                },
-              )
-            ],
-          );
-        });
   }
 
   _handleListItemClick(context, String title) {

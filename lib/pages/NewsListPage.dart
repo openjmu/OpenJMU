@@ -73,18 +73,15 @@ class NewsListPageState extends State<NewsListPage> {
 
   @override
   Widget build(BuildContext context) {
-    // 无数据时，显示Loading
     if (listData == null) {
       return new Center(
-        // CircularProgressIndicator是一个圆形的Loading进度条
         child: new CircularProgressIndicator(
           valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
         ),
       );
     } else {
-      // 有数据，显示ListView
       Widget listView = new ListView.builder(
-        itemCount: listData.length * 2,
+        itemCount: listData.length,
         itemBuilder: (context, i) => renderRow(i),
         controller: _controller,
       );
@@ -92,7 +89,6 @@ class NewsListPageState extends State<NewsListPage> {
     }
   }
 
-  // 从网络获取数据，isLoadMore表示是否是加载更多数据
   void getNewsList(bool isLoadMore) async {
     DataUtils.getUserInfo().then((userInfo) {
       sid = userInfo.sid;
@@ -146,10 +142,10 @@ class NewsListPageState extends State<NewsListPage> {
     });
   }
 
-  void initSlider() {
-    indicator = new SlideViewIndicator(slideData.length);
-//    slideView = new SlideView(slideData, indicator);
-  }
+//  void initSlider() {
+//    indicator = new SlideViewIndicator(slideData.length);
+////    slideView = new SlideView(slideData, indicator);
+//  }
 
   Widget renderRow(i) {
 //    if (i == 0) {
@@ -166,11 +162,6 @@ class NewsListPageState extends State<NewsListPage> {
 //        ),
 //      );
 //    }
-//    i -= 1;
-    if (i.isOdd) {
-      return new Divider(height: 1.0);
-    }
-    i = i ~/ 2;
     var itemData = listData[i];
     if (itemData is String && itemData == Constants.endLineTag) {
       return new CommonEndLine();

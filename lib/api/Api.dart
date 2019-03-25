@@ -18,7 +18,7 @@ class Api {
   static final String userFace = oa99pHost + "/face";
 
   // 应用中心
-  static final String webAppLists = upapiHost + "/91u/psp/sublist?size=100&type=0&start=0&sid=";
+  static final String webAppLists = oa99pHost + "/app/unitmenu?cfg=1";
 
   // 资讯相关
   static final String newsList = middle99Host + "/mg/api/aid/posts_list/region_type/1";
