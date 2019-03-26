@@ -22,7 +22,7 @@ class NewsListPage extends StatefulWidget {
 class NewsListPageState extends State<NewsListPage> {
   final ScrollController _controller = new ScrollController();
   final TextStyle titleTextStyle = new TextStyle(fontSize: 15.0);
-  final TextStyle summaryTextStyle = new TextStyle(color: Colors.black45, fontSize: 14.0);
+  final TextStyle summaryTextStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
   final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 12.0);
 
   String sid;

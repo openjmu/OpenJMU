@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jxt/api/Api.dart';
 import 'package:jxt/constants/Constants.dart';
+import 'package:jxt/events/ChangeBrightnessEvent.dart';
 import 'package:jxt/events/ChangeThemeEvent.dart';
 import 'package:jxt/events/LoginEvent.dart';
 import 'package:jxt/events/LogoutEvent.dart';
@@ -21,8 +22,9 @@ class MyInfoPageState extends State<MyInfoPage> {
   static const double IMAGE_ICON_WIDTH = 30.0;
   static const double ARROW_ICON_WIDTH = 16.0;
 
-  var titles = ["切换主题", "退出登录"];
+  var titles = ["切换主题", "退出登录", "夜间模式"];
   var imagePaths = [
+    'images/ic_discover_nearby.png',
     'images/ic_discover_nearby.png',
     'images/ic_discover_nearby.png'
   ];
@@ -37,6 +39,11 @@ class MyInfoPageState extends State<MyInfoPage> {
   );
 
   bool isLogin = false;
+  bool isDark = ThemeUtils.currentIsDarkState;
+
+  void changeBrightness(bool isDark) {
+    Constants.eventBus.fire(new ChangeBrightnessEvent(isDark));
+  }
 
   MyInfoPageState() {
     for (int i = 0; i < imagePaths.length; i++) {
@@ -48,22 +55,24 @@ class MyInfoPageState extends State<MyInfoPage> {
   void initState() {
     super.initState();
     DataUtils.isLogin().then((isLogin) {
-      _getUserInfo();
-    });
-    Constants.eventBus.on<LoginEvent>().listen((event) {
       setState(() {
         this.isLogin = isLogin;
-        _getUserInfo();
       });
+      _getUserInfo();
     });
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
       setState(() {
         themeColor = event.color;
       });
     });
+    Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
+      setState(() {
+        isDark = event.isDarkState;
+      });
+    });
   }
 
-  _getUserInfo() {
+  void _getUserInfo() {
     DataUtils.getUserInfo().then((userInfo) {
       print(userInfo);
       String avatar = Api.userFace+"?uid=${userInfo.uid}&size=f100";
@@ -83,15 +92,6 @@ class MyInfoPageState extends State<MyInfoPage> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    var listView = new ListView.builder(
-      itemCount: titles.length * 2,
-      itemBuilder: (context, i) => renderRow(i),
-    );
-    return listView;
-  }
-
   Widget renderRow(i) {
     if (i == 0) {
       var avatarContainer = new Container(
@@ -103,24 +103,24 @@ class MyInfoPageState extends State<MyInfoPage> {
             children: <Widget>[
               userAvatar == null
                   ? new Image.asset(
-                      "images/ic_avatar_default.png",
-                      width: 100.0,
-                    )
+                "images/ic_avatar_default.png",
+                width: 100.0,
+              )
                   : new Container(
-                      width: 100.0,
-                      height: 100.0,
-                      decoration: new BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.transparent,
-                        image: new DecorationImage(
-                            image: new NetworkImage(userAvatar),
-                            fit: BoxFit.cover),
-                        border: new Border.all(
-                          color: Colors.white,
-                          width: 2.0,
-                        ),
-                      ),
-                    ),
+                width: 100.0,
+                height: 100.0,
+                decoration: new BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.transparent,
+                  image: new DecorationImage(
+                      image: new NetworkImage(userAvatar),
+                      fit: BoxFit.cover),
+                  border: new Border.all(
+                    color: Colors.white,
+                    width: 2.0,
+                  ),
+                ),
+              ),
               new Padding(
                 padding: EdgeInsets.symmetric(vertical: 10.0),
               ),
@@ -144,20 +144,46 @@ class MyInfoPageState extends State<MyInfoPage> {
     }
     i = i ~/ 2;
     String title = titles[i];
-    var listItemContent = new Padding(
-      padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-      child: new Row(
-        children: <Widget>[
-          icons[i],
-          new Expanded(
-              child: new Text(
-            title,
-            style: titleTextStyle,
-          )),
-          rightArrowIcon
-        ],
-      ),
-    );
+    var listItemContent;
+    if (title == "夜间模式") {
+      listItemContent = new Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+        child: new Row(
+          children: <Widget>[
+            icons[i],
+            new Expanded(
+                child: new Text(
+                  title,
+                  style: titleTextStyle,
+                )
+            ),
+            new Switch(
+              activeColor: themeColor,
+                value: isDark,
+                onChanged: (isDark) {
+                  DataUtils.setBrightness(isDark);
+                  Constants.eventBus.fire(ChangeBrightnessEvent(isDark));
+                }
+            )
+          ],
+        ),
+      );
+    } else {
+      listItemContent = new Padding(
+        padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
+        child: new Row(
+          children: <Widget>[
+            icons[i],
+            new Expanded(
+                child: new Text(
+                  title,
+                  style: titleTextStyle,
+                )),
+            rightArrowIcon
+          ],
+        ),
+      );
+    }
     return new InkWell(
       child: listItemContent,
       onTap: () {
@@ -166,7 +192,16 @@ class MyInfoPageState extends State<MyInfoPage> {
     );
   }
 
-  _handleListItemClick(context, String title) {
+  @override
+  Widget build(BuildContext context) {
+    var listView = new ListView.builder(
+      itemCount: titles.length * 2,
+      itemBuilder: (context, i) => renderRow(i),
+    );
+    return listView;
+  }
+
+  void _handleListItemClick(context, String title) {
     if (title == "退出登录") {
       DataUtils.doLogout().then(() {
         print("Logged out.");

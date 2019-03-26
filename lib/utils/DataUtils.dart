@@ -30,7 +30,8 @@ class DataUtils {
   static final String spUserWorkId  = "userWorkId";
   static final String spUserClassId = "userClassId";
 
-  static final String spColorThemeIndex = "colorThemeIndex";
+  static final String spBrightness = "theme_brightness";
+  static final String spColorThemeIndex = "theme_colorThemeIndex";
 
 
   static getSid() async {
@@ -247,4 +248,15 @@ class DataUtils {
     sp.setInt(spColorThemeIndex, colorThemeIndex);
   }
 
+  // 获取设置的夜间模式
+  static getBrightness() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    print(sp.getBool(spBrightness));
+    return sp.getBool(spBrightness);
+  }
+  // 设置选择的夜间模式
+  static setBrightness(bool isDark) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    sp.setBool(spBrightness, isDark);
+  }
 }

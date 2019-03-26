@@ -19,6 +19,7 @@ class Api {
 
   // 应用中心
   static final String webAppLists = oa99pHost + "/app/unitmenu?cfg=1";
+  static final String webAppIcons = oa99pHost + "/app/menuicon?unitid=55&";
 
   // 资讯相关
   static final String newsList = middle99Host + "/mg/api/aid/posts_list/region_type/1";

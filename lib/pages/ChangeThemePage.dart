@@ -12,6 +12,7 @@ class ChangeThemePage extends StatefulWidget {
 class ChangeThemePageState extends State<ChangeThemePage> {
   List<Color> colors = ThemeUtils.supportColors;
   Color currentColor = ThemeUtils.currentColorTheme;
+  Brightness currentBrightness = ThemeUtils.currentBrightness;
   changeColorTheme(Color c) {
     Constants.eventBus.fire(new ChangeThemeEvent(c));
   }
@@ -32,29 +33,29 @@ class ChangeThemePageState extends State<ChangeThemePage> {
       appBar: new AppBar(
         title: new Text(
             '切换主题',
-            style: new TextStyle(color: Colors.white)
+            style: new TextStyle(color: currentColor)
         ),
-        iconTheme: new IconThemeData(color: Colors.white),
-        backgroundColor: currentColor
+        iconTheme: new IconThemeData(color: currentColor),
+        brightness: ThemeUtils.currentBrightness,
       ),
       body: new Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: new GridView.count(
-          crossAxisCount: 4,
-          children: new List.generate(colors.length, (index) {
-            return new InkWell(
-              onTap: () {
-                ThemeUtils.currentColorTheme = colors[index];
-                DataUtils.setColorTheme(index);
-                changeColorTheme(colors[index]);
-              },
-              child: new Container(
-                color: colors[index],
-                margin: const EdgeInsets.all(3.0),
-              ),
-            );
-          }),
-        )
+          padding: const EdgeInsets.all(4.0),
+          child: new GridView.count(
+            crossAxisCount: 4,
+            children: new List.generate(colors.length, (index) {
+              return new InkWell(
+                onTap: () {
+                  ThemeUtils.currentColorTheme = colors[index];
+                  DataUtils.setColorTheme(index);
+                  changeColorTheme(colors[index]);
+                },
+                child: new Container(
+                  color: colors[index],
+                  margin: const EdgeInsets.all(3.0),
+                ),
+              );
+            }),
+          )
       )
     );
   }

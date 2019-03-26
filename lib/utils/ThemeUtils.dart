@@ -14,12 +14,19 @@ class ThemeUtils {
     Colors.blue,
     Colors.amber,
     Colors.green,
-    Colors.lime,
     Colors.indigo,
     Colors.cyan,
     Colors.teal
   ];
 
-  // 当前的主题色
+  // 当前的内容色
   static Color currentColorTheme = defaultColor;
+  // 当前的主题色
+//  static Color currentPrimaryColor = Colors.grey[850];
+  static Color currentPrimaryColor = Colors.white;
+
+  // 当前是否夜间模式
+  static bool currentIsDarkState = false;
+  // 当前主题日夜模式
+  static Brightness currentBrightness = Brightness.light;
 }

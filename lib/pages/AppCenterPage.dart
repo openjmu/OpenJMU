@@ -18,7 +18,7 @@ class AppCenterPageState extends State<AppCenterPage> {
   final ScrollController _controller = new ScrollController();
   String sid;
   Color themeColor = ThemeUtils.currentColorTheme;
-  List<Widget> webAppList = [];
+  List<Widget> webAppList;
   List webAppListData;
   int listTotalSize = 0;
 
@@ -45,10 +45,7 @@ class AppCenterPageState extends State<AppCenterPage> {
       new Cookie("PHPSESSID", sid)
     ];
     NetUtils.getPlainWithCookieSet(Api.webAppLists, cookies: cookies).then((response) {
-//      setState(() {
-        webAppListData = jsonDecode(response.toString());
-//      });
-//      List _listData = jsonDecode(response.toString());
+      webAppListData = jsonDecode(response.toString());
       List<Widget> buttons = [];
       for (var i = 0; i < webAppListData.length; i++) {
         Widget button = getWebAppListButton(webAppListData[i]);
@@ -56,9 +53,8 @@ class AppCenterPageState extends State<AppCenterPage> {
           buttons.add(getWebAppListButton(webAppListData[i]));
         }
       }
-      print(buttons);
       setState(() {
-        webAppList.addAll(buttons);
+        webAppList = buttons;
       });
     }).catchError((e) {
       print(e.toString());
@@ -77,19 +73,21 @@ class AppCenterPageState extends State<AppCenterPage> {
     if (appData['url'] != "" && appData['name'] != "") {
       String url = replaceSidInUrl(appData['url']);
       String name = appData['name'];
-      print("$url $name");
+      String imageUrl = Api.webAppIcons + "appid=${appData['appid']}&code=${appData['code']}";
       Widget button = new FlatButton(
         padding: EdgeInsets.all(0.0),
         child: new Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            new Icon(
-                Icons.thumb_up,
-                color: themeColor
+            new Image(
+              width: 64.0,
+              height: 64.0,
+              image: new NetworkImage(imageUrl),
+              fit: BoxFit.cover
             ),
             new Text(
-                name,
-                style: new TextStyle(color: themeColor)
+              name,
+              style: new TextStyle(fontSize: 16.0)
             )
           ],
         ),
@@ -101,40 +99,6 @@ class AppCenterPageState extends State<AppCenterPage> {
           ));
         },
       );
-      print(button);
-      return button;
-    }
-  }
-
-  Widget renderButton(i) {
-    if (webAppListData[i]['url'] != "" && webAppListData[i]['name'] != "") {
-      String url = replaceSidInUrl(webAppListData[i]['url']);
-      String name = webAppListData[i]['name'];
-      print("$url $name");
-      Widget button = new FlatButton(
-        padding: EdgeInsets.all(0.0),
-        child: new Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            new Icon(
-                Icons.apps,
-                color: themeColor
-            ),
-            new Text(
-                name,
-                style: new TextStyle(color: themeColor)
-            )
-          ],
-        ),
-        onPressed: () {
-          Navigator.of(context).push(new MaterialPageRoute(
-              builder: (context) {
-                return new CommonWebPage(title: name, url: url);
-              }
-          ));
-        },
-      );
-      print(button);
       return button;
     }
   }
@@ -147,7 +111,6 @@ class AppCenterPageState extends State<AppCenterPage> {
   @override
   Widget build(BuildContext context) {
     if (webAppList == null) {
-//    if (webAppListData == null) {
       return new Center(
         child: new CircularProgressIndicator(
           valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
@@ -157,18 +120,9 @@ class AppCenterPageState extends State<AppCenterPage> {
       Widget gridview = new GridView.count(
         shrinkWrap: true,
         crossAxisCount: 3,
-        childAspectRatio: 1,
+        childAspectRatio: 1.25 / 1,
         children: webAppList
       );
-//      Widget gridview = new GridView.builder(
-//        shrinkWrap: true,
-//        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-//            crossAxisCount: 3
-//        ),
-//        itemCount: webAppList.length,
-//        itemBuilder: (context, i) => renderButton(i),
-//        controller: _controller,
-//      );
       return new RefreshIndicator(child: gridview, onRefresh: _pullToRefresh);
     }
   }

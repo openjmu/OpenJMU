@@ -25,7 +25,7 @@ class MainPageState extends State<MainPage> {
   final tabTextStyleNormal = new TextStyle(color: Colors.grey);
 
   Color themeColor = ThemeUtils.currentColorTheme;
-  int _tabIndex = 2;
+  int _tabIndex = 4;
 
   var _body;
   var pages;
@@ -107,39 +107,39 @@ class MainPageState extends State<MainPage> {
     }
   }
 
-  AppBar pageAppBar() {
-    if (appBarTitles[_tabIndex] == "首页") {
-      return new AppBar(
-          title: new Center(
-              child: new Text(
-                  appBarTitles[_tabIndex],
-                  style: new TextStyle(color: Colors.white)
-              )
-          ),
-          actions: <Widget>[
-            new IconButton(
-                icon: new Icon(
-                  Icons.add_circle,
-                  color: Colors.white
-                ),
-                onPressed: null
-            )
-          ],
-          iconTheme: new IconThemeData(color: Colors.white),
-          backgroundColor: ThemeUtils.currentColorTheme
-      );
-    }
-    return new AppBar(
-        title: new Center(
-            child: new Text(
-                appBarTitles[_tabIndex],
-                style: new TextStyle(color: Colors.white)
-            )
-        ),
-        iconTheme: new IconThemeData(color: Colors.white),
-        backgroundColor: ThemeUtils.currentColorTheme
-    );
-  }
+//  AppBar pageAppBar() {
+//    if (appBarTitles[_tabIndex] == "首页") {
+//      return new AppBar(
+//          title: new Center(
+//              child: new Text(
+//                  appBarTitles[_tabIndex],
+//                  style: new TextStyle(color: Colors.white)
+//              )
+//          ),
+//          actions: <Widget>[
+//            new IconButton(
+//                icon: new Icon(
+//                  Icons.add_circle,
+//                  color: Colors.white
+//                ),
+//                onPressed: null
+//            )
+//          ],
+//          iconTheme: new IconThemeData(color: Colors.white),
+//          backgroundColor: ThemeUtils.currentColorTheme
+//      );
+//    }
+//    return new AppBar(
+//        title: new Center(
+//            child: new Text(
+//                appBarTitles[_tabIndex],
+//                style: new TextStyle(color: Colors.white)
+//            )
+//        ),
+//        iconTheme: new IconThemeData(color: Colors.white),
+//        backgroundColor: ThemeUtils.currentColorTheme
+//    );
+//  }
 
   WillPopScope mainPage(context) {
     _body = new IndexedStack(
@@ -150,14 +150,14 @@ class MainPageState extends State<MainPage> {
         onWillPop: doubleClickBack,
         child: new Scaffold(
           appBar: new AppBar(
-              title: new Center(
-                  child: new Text(
-                      appBarTitles[_tabIndex],
-                      style: new TextStyle(color: Colors.white)
-                  )
-              ),
-              iconTheme: new IconThemeData(color: Colors.white),
-              backgroundColor: ThemeUtils.currentColorTheme
+            title: new Center(
+              child: new Text(
+                appBarTitles[_tabIndex],
+                style: new TextStyle(color: ThemeUtils.currentColorTheme)
+              )
+            ),
+            iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
+            brightness: ThemeUtils.currentBrightness,
           ),
           body: _body,
           bottomNavigationBar: new BottomNavigationBar(
@@ -169,14 +169,14 @@ class MainPageState extends State<MainPage> {
                   title: getTabTitle(0)
               ),
               BottomNavigationBarItem(
-                activeIcon: Icon(Icons.fiber_new, color: ThemeUtils.currentColorTheme),
+                  activeIcon: Icon(Icons.fiber_new, color: ThemeUtils.currentColorTheme),
                   icon: Icon(Icons.fiber_new, color: Colors.grey),
                   title: getTabTitle(1)
               ),
               BottomNavigationBarItem(
-                backgroundColor: ThemeUtils.currentColorTheme,
-                icon: Icon(Icons.add),
-                title: new Text("")
+                  activeIcon: Icon(Icons.apps, color: ThemeUtils.currentColorTheme),
+                  icon: Icon(Icons.apps, color: Colors.grey),
+                  title: getTabTitle(2)
               ),
               BottomNavigationBarItem(
                   activeIcon: Icon(Icons.chat, color: ThemeUtils.currentColorTheme),
@@ -197,7 +197,6 @@ class MainPageState extends State<MainPage> {
               print("Selected TabIndex: "+index.toString());
             },
           ),
-//        drawer: new MyDrawer()
         )
     );
   }
