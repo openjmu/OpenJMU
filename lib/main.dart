@@ -25,7 +25,7 @@ class JMUAppClientState extends State<JMUAppClient> {
     super.initState();
     DataUtils.getBrightness().then((isDark) {
       if (isDark == null) {
-        DataUtils.setBrightness(false).then(() {
+        DataUtils.setBrightness(false).then((whatever) {
           setState(() {
             currentBrightness = Brightness.light;
             currentPrimaryColor = Colors.white;

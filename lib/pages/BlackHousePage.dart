@@ -152,7 +152,7 @@ class BlackHousePageState extends State<BlackHousePage> {
           ),
           onTap: () async {
             final result = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
-              return NewLoginPage();
+              return LoginPage();
             }));
             if (result != null && result == "refresh") {
               // 通知动弹页面刷新

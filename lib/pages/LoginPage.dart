@@ -6,12 +6,12 @@ import 'package:jxt/utils/DataUtils.dart';
 import 'package:jxt/utils/ThemeUtils.dart';
 import 'package:jxt/widgets/CommonWebPage.dart';
 
-class NewLoginPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
-  NewLoginPageState createState() => NewLoginPageState();
+  LoginPageState createState() => LoginPageState();
 }
 
-class NewLoginPageState extends State<NewLoginPage> {
+class LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   String _username, _password;
   bool _isObscure = true;
@@ -177,7 +177,6 @@ class NewLoginPageState extends State<NewLoginPage> {
             ),
             onPressed: () {
               if (_formKey.currentState.validate()) {
-                ///只有输入的内容符合要求通过才会到达此处
                 _formKey.currentState.save();
                 //TODO 执行登录方法
                 DataUtils.doLogin(context, _username, _password);

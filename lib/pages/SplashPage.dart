@@ -28,12 +28,16 @@ class SplashState extends State<SplashPage> {
       }
     });
     Constants.eventBus.on<TicketGotEvent>().listen((event) {
-      this.isUserLogin = true;
-      navigate();
+      setState(() {
+        this.isUserLogin = true;
+        navigate();
+      });
     });
     Constants.eventBus.on<TicketFailedEvent>().listen((event) {
-      this.isUserLogin = false;
-      navigate();
+      setState(() {
+        this.isUserLogin = false;
+        navigate();
+      });
     });
   }
 
@@ -43,7 +47,7 @@ class SplashState extends State<SplashPage> {
         try {
           Navigator.of(context).pushReplacement(
             new MaterialPageRoute(
-                builder: (BuildContext context) => new NewLoginPage()
+                builder: (BuildContext context) => new LoginPage()
             ),
           );
         } catch (e) {}

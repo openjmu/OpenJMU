@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jxt/constants/Constants.dart';
+import 'package:jxt/events/ChangeBrightnessEvent.dart';
 import 'package:jxt/events/ChangeThemeEvent.dart';
 import 'package:jxt/events/LoginEvent.dart';
 import 'package:jxt/events/LogoutEvent.dart';
@@ -23,12 +24,14 @@ class MainPageState extends State<MainPage> {
   final appBarTitles = ['首页', '新闻', '应用中心', '消息', '我的'];
   TextStyle tabTextStyleSelected = new TextStyle(color: ThemeUtils.currentColorTheme);
   final tabTextStyleNormal = new TextStyle(color: Colors.grey);
+  Brightness currentBrightness = Brightness.light;
 
   Color themeColor = ThemeUtils.currentColorTheme;
-  int _tabIndex = 4;
+  int _tabIndex = 0;
 
   var _body;
   var pages;
+  var userAvatar;
 
   bool isUserLogin = false;
 
@@ -40,17 +43,33 @@ class MainPageState extends State<MainPage> {
         this.isUserLogin = isLogin;
       });
     });
+    DataUtils.getBrightness().then((isDark) {
+      if (isDark == null) {
+        DataUtils.setBrightness(false).then((whatever) {
+          setState(() {
+            currentBrightness = Brightness.light;
+          });
+        });
+      } else {
+        if (isDark) {
+          setState(() {
+            currentBrightness = Brightness.dark;
+          });
+        } else {
+          setState(() {
+            currentBrightness = Brightness.light;
+          });
+        }
+      }
+    });
     Constants.eventBus.on<LoginEvent>().listen((event) {
       setState(() {
         this.isUserLogin = true;
       });
     });
     Constants.eventBus.on<LogoutEvent>().listen((event) {
-      setState(() {
-        this.isUserLogin = false;
-      });
       Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (context) {
-        return new NewLoginPage();
+        return new LoginPage();
       },));
     });
     DataUtils.getColorThemeIndex().then((index) {
@@ -63,6 +82,11 @@ class MainPageState extends State<MainPage> {
       setState(() {
         tabTextStyleSelected = new TextStyle(color: event.color);
         themeColor = event.color;
+      });
+    });
+    Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
+      setState(() {
+        currentBrightness = event.brightness;
       });
     });
     pages = <Widget>[
@@ -157,7 +181,7 @@ class MainPageState extends State<MainPage> {
               )
             ),
             iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
-            brightness: ThemeUtils.currentBrightness,
+            brightness: currentBrightness,
           ),
           body: _body,
           bottomNavigationBar: new BottomNavigationBar(
@@ -194,7 +218,6 @@ class MainPageState extends State<MainPage> {
               setState((){
                 _tabIndex = index;
               });
-              print("Selected TabIndex: "+index.toString());
             },
           ),
         )

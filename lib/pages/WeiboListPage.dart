@@ -1,13 +1,13 @@
+import 'dart:io';
+import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:convert';
-import 'dart:async';
-import 'dart:io';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:jxt/api/Api.dart';
 import 'package:jxt/constants/Constants.dart';
 import 'package:jxt/events/LoginEvent.dart';
 import 'package:jxt/events/LogoutEvent.dart';
-import 'package:jxt/pages/LoginPage.dart';
 import 'package:jxt/pages/WeiboDetailPage.dart';
 import 'package:jxt/utils/BlackListUtils.dart';
 import 'package:jxt/utils/DataUtils.dart';
@@ -26,9 +26,9 @@ class WeiboListPage extends StatefulWidget {
 class WeiboListPageState extends State<WeiboListPage> {
   List weiboList;
   List weiboFollowedList;
-  final TextStyle titleTextStyle = new TextStyle(fontSize: 14.0);
-  final TextStyle subtitleStyle = new TextStyle(color: const Color(0xFFB5BDC0), fontSize: 12.0);
-  final Color subIconColor = const Color(0xFFB5BDC0);
+  final TextStyle titleTextStyle = new TextStyle(fontSize: 18.0);
+  final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 12.0);
+  final Color subIconColor = Colors.grey;
   TextStyle authorTextStyle;
   RegExp regExp1 = new RegExp("</.*>");
   RegExp regExp2 = new RegExp("<.*>");
@@ -89,7 +89,7 @@ class WeiboListPageState extends State<WeiboListPage> {
   }
 
   void getForwardPage(context, uri) {
-    Navigator.of(context).push(new MaterialPageRoute(
+    Navigator.of(context).push(platformPageRoute(
         builder: (context) {
           return new CommonWebPage(url: uri);
         }
@@ -293,7 +293,7 @@ class WeiboListPageState extends State<WeiboListPage> {
               size: 12.0
           ),
           new Text(
-              time,
+              " $time",
               style: subtitleStyle
           ),
           new Padding(
@@ -305,7 +305,7 @@ class WeiboListPageState extends State<WeiboListPage> {
               size: 12.0
           ),
           new Text(
-              from,
+              " $from",
               style: subtitleStyle
           ),
           new Padding(
@@ -317,7 +317,7 @@ class WeiboListPageState extends State<WeiboListPage> {
               size: 12.0
           ),
           new Text(
-              glances,
+              " $glances",
               style: subtitleStyle
           )
         ]
@@ -327,8 +327,10 @@ class WeiboListPageState extends State<WeiboListPage> {
   Widget getWeiboActionsCount(itemData) {
     List<Widget> forwardsChildren = [
       new IconButton(
+          padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 2.0),
           icon: new Icon(
-              Icons.directions,
+              Icons.launch,
+              size: 18.0,
               color: ThemeUtils.currentColorTheme
           ),
           onPressed: null
@@ -336,8 +338,10 @@ class WeiboListPageState extends State<WeiboListPage> {
     ];
     List<Widget> replysChildren = [
       new IconButton(
+          padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 2.0),
           icon: new Icon(
               Icons.comment,
+              size: 18.0,
               color: ThemeUtils.currentColorTheme
           ),
           onPressed: null
@@ -345,8 +349,10 @@ class WeiboListPageState extends State<WeiboListPage> {
     ];
     List<Widget> praisesChildren = [
       new IconButton(
+          padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 2.0),
           icon: new Icon(
               Icons.thumb_up,
+              size: 18.0,
               color: ThemeUtils.currentColorTheme
           ),
           onPressed: null
@@ -377,25 +383,24 @@ class WeiboListPageState extends State<WeiboListPage> {
       );
     }
     Widget forwardRow = new Row(
+      mainAxisSize: MainAxisSize.min,
       children: forwardsChildren
     );
     Widget replysRow = new Row(
+        mainAxisSize: MainAxisSize.min,
         children: replysChildren
     );
     Widget praisesRow = new Row(
+        mainAxisSize: MainAxisSize.min,
         children: praisesChildren
     );
-    return ButtonTheme.bar( // make buttons use the appropriate styles for cards
-        child: new Center(
-          child: new ButtonBar(
-            children: <Widget>[
-              forwardRow, replysRow, praisesRow,
-              new Container(
-                width: 4.0
-              )
-            ],
-          ),
-        )
+    return ButtonTheme.bar(
+      child: new ButtonBar(
+        alignment: MainAxisAlignment.end,
+        children: <Widget>[
+          forwardRow, replysRow, praisesRow,
+        ],
+      ),
     );
   }
 
@@ -473,14 +478,13 @@ class WeiboListPageState extends State<WeiboListPage> {
     url = getUrlFromContent(content);
     url != null ? content = removeUrlFromContent(content) : content = content;
     List<Widget> widgets = [
-      new Text(content),
+      new Text(content, style: new TextStyle(fontSize: 16.0)),
     ];
     if (url != null) {
       widgets.add(
         new FlatButton(
-          padding: EdgeInsets.all(2.0),
-          color: Colors.grey,
-          child: new Text("网页链接"),
+          padding: EdgeInsets.zero,
+          child: new Text("网页链接", style: new TextStyle(color: Colors.indigo, decoration: TextDecoration.underline)),
           onPressed: () {
             Navigator.of(context).push(new MaterialPageRoute(
                 builder: (context) {
@@ -607,45 +611,45 @@ class WeiboListPageState extends State<WeiboListPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (!isUserLogin) {
-      return new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Container(
-                padding: const EdgeInsets.all(10.0),
-                child: new Center(
-                  child: new Column(
-                    children: <Widget>[
-                      new Text("由于OSC的openapi限制"),
-                      new Text("必须登录后才能获取微博信息")
-                    ],
-                  ),
-                )
-            ),
-            new InkWell(
-              child: new Container(
-                padding: const EdgeInsets.fromLTRB(15.0, 8.0, 15.0, 8.0),
-                child: new Text("去登录"),
-                decoration: new BoxDecoration(
-                    border: new Border.all(color: Colors.black),
-                    borderRadius: new BorderRadius.all(new Radius.circular(5.0))
-                ),
-              ),
-              onTap: () async {
-                final result = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
-                  return NewLoginPage();
-                }));
-                if (result != null && result == "refresh") {
-                  // 通知微博页面刷新
-                  Constants.eventBus.fire(new LoginEvent());
-                }
-              },
-            ),
-          ],
-        ),
-      );
-    }
+//    if (!isUserLogin) {
+//      return new Center(
+//        child: new Column(
+//          mainAxisAlignment: MainAxisAlignment.center,
+//          children: <Widget>[
+//            new Container(
+//                padding: const EdgeInsets.all(10.0),
+//                child: new Center(
+//                  child: new Column(
+//                    children: <Widget>[
+//                      new Text("由于OSC的openapi限制"),
+//                      new Text("必须登录后才能获取微博信息")
+//                    ],
+//                  ),
+//                )
+//            ),
+//            new InkWell(
+//              child: new Container(
+//                padding: const EdgeInsets.fromLTRB(15.0, 8.0, 15.0, 8.0),
+//                child: new Text("去登录"),
+//                decoration: new BoxDecoration(
+//                    border: new Border.all(color: Colors.black),
+//                    borderRadius: new BorderRadius.all(new Radius.circular(5.0))
+//                ),
+//              ),
+//              onTap: () async {
+//                final result = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
+//                  return LoginPage();
+//                }));
+//                if (result != null && result == "refresh") {
+//                  // 通知微博页面刷新
+//                  Constants.eventBus.fire(new LoginEvent());
+//                }
+//              },
+//            ),
+//          ],
+//        ),
+//      );
+//    }
     return new Scaffold(
         body: getListView(),
     );

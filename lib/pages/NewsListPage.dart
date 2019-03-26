@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:jxt/api/Api.dart';
 import 'package:jxt/constants/Constants.dart';
 import 'package:jxt/events/LoginEvent.dart';
@@ -26,11 +27,11 @@ class NewsListPageState extends State<NewsListPage> {
   final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 12.0);
 
   String sid;
-  var listData;
-  var slideData;
-  var curPage = 1;
+  List listData;
+  List slideData;
+  int curPage = 1;
   SlideView slideView;
-  var listTotalSize = 0;
+  int listTotalSize = 0;
   SlideViewIndicator indicator;
   bool isUserLogin = false;
 
@@ -48,6 +49,7 @@ class NewsListPageState extends State<NewsListPage> {
       }
     });
     DataUtils.isLogin().then((isLogin) {
+      getNewsList(false);
       setState(() {
         this.isUserLogin = isLogin;
       });
@@ -62,7 +64,6 @@ class NewsListPageState extends State<NewsListPage> {
         this.isUserLogin = false;
       });
     });
-    getNewsList(false);
   }
 
   Future<Null> _pullToRefresh() async {
@@ -102,14 +103,16 @@ class NewsListPageState extends State<NewsListPage> {
       headers["SID"] = sid;
       headers["TAGID"] = "1";
       String url;
-      isLoadMore ? url = Api.newsList+"/max_ts/"+listData[listData.length-1]['create_time']+"/size/20" : url = Api.newsList+"/size/20";
+      isLoadMore
+          ? url = Api.newsList+"/max_ts/"+listData[listData.length-1]['create_time']+"/size/20"
+          : url = Api.newsList+"/size/20";
       NetUtils.getWithHeaderSet(url, headers: headers).then((response) {
         if (response != null) {
           Map<String, dynamic> map = jsonDecode(response);
           // total表示资讯总条数
-          var _listData = map["data"];
+          List _listData = map["data"];
           listTotalSize = map['total'];
-//          var _slideData = data['slide'];
+//          List _slideData = data['slide'];
           setState(() {
             if (!isLoadMore) {
               // 不是加载更多，则直接为变量赋值
@@ -194,7 +197,7 @@ class NewsListPageState extends State<NewsListPage> {
           child: new Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              new Text("${itemData['glances']}", style: subtitleStyle),
+              new Text("${itemData['glances']} ", style: subtitleStyle),
               new Icon(Icons.remove_red_eye, color: Colors.grey, size: 12.0)
             ],
           ),
@@ -209,14 +212,14 @@ class NewsListPageState extends State<NewsListPage> {
         height: 80.0,
         decoration: new BoxDecoration(
 //          shape: BoxShape.circle,
-          color: const Color(0xFFECECEC),
+          color: Colors.white,
           image: new DecorationImage(
               image: new NetworkImage(thumbImgUrl),
               fit: BoxFit.cover
           ),
           border: new Border.all(
-            color: const Color(0xFFECECEC),
-            width: 2.0,
+            color: Colors.white,
+            width: 1.0,
           ),
         ),
       );
@@ -256,7 +259,7 @@ class NewsListPageState extends State<NewsListPage> {
       child: row,
       onTap: () {
         String newsUrl = Api.newsDetail + itemData['post_id'];
-        Navigator.of(context).push(new MaterialPageRoute(
+        Navigator.of(context).push(platformPageRoute(
             builder: (context) {
               return new CommonWebPage(title: itemData['title'], url: newsUrl);
             }

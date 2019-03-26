@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:jxt/api/Api.dart';
 import 'package:jxt/constants/Constants.dart';
 import 'package:jxt/events/ChangeBrightnessEvent.dart';
 import 'package:jxt/events/ChangeThemeEvent.dart';
-import 'package:jxt/events/LoginEvent.dart';
 import 'package:jxt/events/LogoutEvent.dart';
 import 'package:jxt/pages/ChangeThemePage.dart';
 import 'package:jxt/utils/DataUtils.dart';
@@ -22,13 +22,8 @@ class MyInfoPageState extends State<MyInfoPage> {
   static const double IMAGE_ICON_WIDTH = 30.0;
   static const double ARROW_ICON_WIDTH = 16.0;
 
-  var titles = ["切换主题", "退出登录", "夜间模式"];
-  var imagePaths = [
-    'images/ic_discover_nearby.png',
-    'images/ic_discover_nearby.png',
-    'images/ic_discover_nearby.png'
-  ];
-  var icons = [];
+  var titles = ["夜间模式", "切换主题", "退出登录"];
+  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app];
   var userAvatar;
   var userName;
   var titleTextStyle = new TextStyle(fontSize: 16.0);
@@ -39,16 +34,10 @@ class MyInfoPageState extends State<MyInfoPage> {
   );
 
   bool isLogin = false;
-  bool isDark = ThemeUtils.currentIsDarkState;
+  bool isDark = false;
 
   void changeBrightness(bool isDark) {
     Constants.eventBus.fire(new ChangeBrightnessEvent(isDark));
-  }
-
-  MyInfoPageState() {
-    for (int i = 0; i < imagePaths.length; i++) {
-      icons.add(getIconImage(imagePaths[i]));
-    }
   }
 
   @override
@@ -58,7 +47,16 @@ class MyInfoPageState extends State<MyInfoPage> {
       setState(() {
         this.isLogin = isLogin;
       });
-      _getUserInfo();
+      getUserInfo();
+    });
+    DataUtils.getBrightness().then((isDark) {
+      if (isDark != null) {
+        setState(() {
+          this.isDark = isDark;
+        });
+      } else {
+        this.isDark = false;
+      }
     });
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
       setState(() {
@@ -72,9 +70,8 @@ class MyInfoPageState extends State<MyInfoPage> {
     });
   }
 
-  void _getUserInfo() {
+  void getUserInfo() {
     DataUtils.getUserInfo().then((userInfo) {
-      print(userInfo);
       String avatar = Api.userFace+"?uid=${userInfo.uid}&size=f100";
       setState(() {
         this.isLogin = isLogin;
@@ -87,8 +84,11 @@ class MyInfoPageState extends State<MyInfoPage> {
   Widget getIconImage(path) {
     return new Padding(
       padding: const EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-      child: new Image.asset(path,
-          width: IMAGE_ICON_WIDTH, height: IMAGE_ICON_WIDTH),
+      child: new Image.asset(
+          path,
+          width: IMAGE_ICON_WIDTH,
+          height: IMAGE_ICON_WIDTH
+      ),
     );
   }
 
@@ -102,32 +102,33 @@ class MyInfoPageState extends State<MyInfoPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               userAvatar == null
-                  ? new Image.asset(
-                "images/ic_avatar_default.png",
-                width: 100.0,
-              )
-                  : new Container(
-                width: 100.0,
-                height: 100.0,
-                decoration: new BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.transparent,
-                  image: new DecorationImage(
-                      image: new NetworkImage(userAvatar),
-                      fit: BoxFit.cover),
-                  border: new Border.all(
-                    color: Colors.white,
-                    width: 2.0,
+                ? new Image.asset(
+                  "images/ic_avatar_default.png",
+                  width: 100.0,
+                )
+                : new Container(
+                  width: 100.0,
+                  height: 100.0,
+                  decoration: new BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.transparent,
+                    image: new DecorationImage(
+                        image: new NetworkImage(userAvatar),
+                        fit: BoxFit.cover
+                    ),
+                    border: new Border.all(
+                      color: Colors.white,
+                      width: 2.0,
+                    ),
                   ),
                 ),
-              ),
-              new Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
-              ),
-              new Text(
-                userName == null ? "点击头像登录" : userName,
-                style: new TextStyle(color: Colors.white, fontSize: 24.0),
-              ),
+                new Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10.0),
+                ),
+                new Text(
+                  userName == null ? "点击头像登录" : userName,
+                  style: new TextStyle(color: Colors.white, fontSize: 24.0),
+                ),
             ],
           ),
         ),
@@ -144,46 +145,39 @@ class MyInfoPageState extends State<MyInfoPage> {
     }
     i = i ~/ 2;
     String title = titles[i];
-    var listItemContent;
-    if (title == "夜间模式") {
-      listItemContent = new Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-        child: new Row(
-          children: <Widget>[
-            icons[i],
-            new Expanded(
-                child: new Text(
-                  title,
-                  style: titleTextStyle,
-                )
-            ),
-            new Switch(
-              activeColor: themeColor,
+    var listItemContent = new Padding(
+      padding: title == "夜间模式"
+        ? EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0)
+        : EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0)
+      ,
+      child: new Row(
+        children: <Widget>[
+          new Container(
+              padding: EdgeInsets.only(left: 4.0),
+              child: new Icon(icons[i])
+          ),
+          new Expanded(
+              child: new Container(
+                  padding: EdgeInsets.only(left: 10.0),
+                  child: new Text(
+                    title,
+                    style: titleTextStyle,
+                  )
+              )
+          ),
+          title == "夜间模式"
+              ? new Switch(
+                activeColor: themeColor,
                 value: isDark,
                 onChanged: (isDark) {
                   DataUtils.setBrightness(isDark);
                   Constants.eventBus.fire(ChangeBrightnessEvent(isDark));
                 }
-            )
-          ],
-        ),
-      );
-    } else {
-      listItemContent = new Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 15.0, 10.0, 15.0),
-        child: new Row(
-          children: <Widget>[
-            icons[i],
-            new Expanded(
-                child: new Text(
-                  title,
-                  style: titleTextStyle,
-                )),
-            rightArrowIcon
-          ],
-        ),
-      );
-    }
+              )
+              : rightArrowIcon
+        ],
+      ),
+    );
     return new InkWell(
       child: listItemContent,
       onTap: () {
@@ -203,14 +197,14 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   void _handleListItemClick(context, String title) {
     if (title == "退出登录") {
-      DataUtils.doLogout().then(() {
+      DataUtils.doLogout().then((whatever) {
         print("Logged out.");
       });
       DataUtils.clearLoginInfo().then((arg) {
         Constants.eventBus.fire(new LogoutEvent());
       });
     } else if (title == "切换主题") {
-      Navigator.push(context, new MaterialPageRoute(builder: (context) {
+      Navigator.push(context, platformPageRoute(builder: (context) {
         return new ChangeThemePage();
       }));
     }

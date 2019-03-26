@@ -92,22 +92,33 @@ class DataUtils {
             userInfo['userUnitId'] = data['unitid'];
             userInfo['userWorkId'] = user['workid'];
             userInfo['userClassId'] = user['class_id'];
-            saveLoginInfo(userInfo);
-            Constants.eventBus.fire(new LoginEvent());
-            showShortToast("登录成功！");
-            Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (context) {
-              return new MainPage();
-            },));
+            saveLoginInfo(userInfo)
+              .then((whatever) {
+                Constants.eventBus.fire(new LoginEvent());
+                showShortToast("登录成功！");
+                Navigator.of(context).pushReplacement(
+                  new MaterialPageRoute(
+                    builder: (context) { return new MainPage(); }
+                  )
+                );
+              })
+              .catchError((e) {
+                print(e.toString());
+                showShortToast(e.toString());
+                return e;
+              });
         })
           .catchError((e) {
             print(e.toString());
             showShortToast(e.toString());
+            showShortToast("登录失败！");
             return e;
         });
     })
       .catchError((e) {
         print(e.toString());
         showShortToast(e.toString());
+        showShortToast("登录失败！");
         return e;
     });
   }
@@ -118,6 +129,7 @@ class DataUtils {
       NetUtils.postWithCookieSet(Api.logout, cookies: cookies).then((response) {
         clearLoginInfo();
         Constants.eventBus.fire(new LogoutEvent());
+        return;
       });
     });
   }
@@ -135,6 +147,7 @@ class DataUtils {
       await sp.setInt(spUserUnitId, data['userUnitId']);
       await sp.setInt(spUserWorkId, int.parse(data['userWorkId']));
       await sp.setInt(spUserClassId, data['userClassId']);
+      return;
     }
   }
 
@@ -151,6 +164,8 @@ class DataUtils {
     await sp.remove(spUserUnitId);
     await sp.remove(spUserWorkId);
     await sp.remove(spUserClassId);
+    await sp.remove(spBrightness);
+    await sp.remove(spColorThemeIndex);
     showShortToast("注销成功！");
   }
 
@@ -245,18 +260,17 @@ class DataUtils {
   // 设置选择的主题色
   static setColorTheme(int colorThemeIndex) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setInt(spColorThemeIndex, colorThemeIndex);
+    await sp.setInt(spColorThemeIndex, colorThemeIndex);
   }
 
   // 获取设置的夜间模式
   static getBrightness() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    print(sp.getBool(spBrightness));
     return sp.getBool(spBrightness);
   }
   // 设置选择的夜间模式
   static setBrightness(bool isDark) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setBool(spBrightness, isDark);
+    await sp.setBool(spBrightness, isDark);
   }
 }

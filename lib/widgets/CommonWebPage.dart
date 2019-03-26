@@ -92,8 +92,7 @@ class CommonWebPageState extends State<CommonWebPage> {
           )
       );
     }
-    return new Material(
-      child: new WebviewScaffold(
+    return new WebviewScaffold(
         url: widget.url,
         allowFileURLs: true,
         appBar: new AppBar(
@@ -109,8 +108,7 @@ class CommonWebPageState extends State<CommonWebPage> {
         withJavascript: true,
         withLocalStorage: true,
         withZoom: true,
-      )
-    );
+      );
 //    return new Scaffold(
 //      appBar: new AppBar(
 //        title: new Center(
