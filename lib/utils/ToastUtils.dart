@@ -17,16 +17,21 @@ void showShortToast(String text) {
 void showCenterShortToast(String text) {
   Fluttertoast.showToast(
       msg: text,
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.TOP,
-    timeInSecForIos: 1
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIos: 1
+  );
+}
+
+void showTopShortToast(String text) {
+  Fluttertoast.showToast(
+      msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP,
+      timeInSecForIos: 1
   );
 }
 
 void cancelToast() {
   Fluttertoast.cancel();
-}
-void showSnackBar(){
-
-
 }

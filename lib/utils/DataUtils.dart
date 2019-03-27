@@ -5,16 +5,17 @@ import 'package:uuid/uuid.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import '../api/Api.dart';
-import '../constants/Constants.dart';
-import '../events/LoginEvent.dart';
-import '../events/LogoutEvent.dart';
-import '../events/TicketGotEvent.dart';
-import '../events/TicketFailedEvent.dart';
-import '../model/UserInfo.dart';
-import '../pages/MainPage.dart';
-import '../utils/NetUtils.dart';
-import '../utils/ToastUtils.dart';
+import 'package:jxt/api/Api.dart';
+import 'package:jxt/constants/Constants.dart';
+import 'package:jxt/events/LoginEvent.dart';
+import 'package:jxt/events/LogoutEvent.dart';
+import 'package:jxt/events/TicketGotEvent.dart';
+import 'package:jxt/events/TicketFailedEvent.dart';
+import 'package:jxt/model/UserInfo.dart';
+import 'package:jxt/pages/MainPage.dart';
+import 'package:jxt/utils/NetUtils.dart';
+import 'package:jxt/utils/ToastUtils.dart';
+import 'package:jxt/utils/SnackbarUtils.dart';
 
 class DataUtils {
   static final String spIsLogin     = "isLogin";
@@ -104,21 +105,21 @@ class DataUtils {
               })
               .catchError((e) {
                 print(e.toString());
-                showShortToast(e.toString());
+                SnackbarUtils.show(context, "获取用户信息失败！${e.toString()}");
                 return e;
               });
         })
           .catchError((e) {
             print(e.toString());
             showShortToast(e.toString());
-            showShortToast("登录失败！");
+            SnackbarUtils.show(context, "登录失败！${e.toString()}");
             return e;
         });
     })
       .catchError((e) {
         print(e.toString());
         showShortToast(e.toString());
-        showShortToast("登录失败！");
+        SnackbarUtils.show(context, "登录失败！${e.toString()}");
         return e;
     });
   }

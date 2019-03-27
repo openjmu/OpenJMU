@@ -31,14 +31,15 @@ class LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   new Container(
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomCenter,
-                        colors: const <Color>[
-                          ThemeUtils.defaultColor,
-                          Colors.redAccent,
-                        ],
-                      ),
+                      color: ThemeUtils.defaultColor
+//                      gradient: const LinearGradient(
+//                        begin: Alignment.topLeft,
+//                        end: Alignment.bottomCenter,
+//                        colors: const <Color>[
+//                          ThemeUtils.defaultColor,
+//                          Colors.redAccent,
+//                        ],
+//                      ),
                     ),
                   ),
                   new Form(
@@ -108,9 +109,9 @@ class LoginPageState extends State<LoginPage> {
               border: InputBorder.none,
               contentPadding: EdgeInsets.all(10.0),
               labelText: '用户名/工号/学号',
-              labelStyle: new TextStyle(color: Colors.white, fontSize: 20.0),
+              labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0),
             ),
-            style: new TextStyle(color: Colors.white, fontSize: 20.0),
+            style: new TextStyle(color: Colors.white, fontSize: 18.0),
             cursorColor: Colors.white,
             onSaved: (String value) => _username = value,
           )
@@ -133,13 +134,12 @@ class LoginPageState extends State<LoginPage> {
             if (value.isEmpty) {
               return '请输入密码';
             }
-
           },
           decoration: new InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.all(10.0),
               labelText: '密码',
-              labelStyle: new TextStyle(color: Colors.white, fontSize: 20.0),
+              labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0),
               suffixIcon: new IconButton(
                   icon: new Icon(
                     Icons.remove_red_eye,

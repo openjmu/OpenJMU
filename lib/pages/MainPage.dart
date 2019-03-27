@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:jxt/api/Api.dart';
 import 'package:jxt/constants/Constants.dart';
-import 'package:jxt/events/ChangeBrightnessEvent.dart';
 import 'package:jxt/events/ChangeThemeEvent.dart';
 import 'package:jxt/events/LoginEvent.dart';
 import 'package:jxt/events/LogoutEvent.dart';
@@ -25,13 +24,15 @@ class MainPageState extends State<MainPage> {
   final appBarTitles = ['首页', '新闻', '应用中心', '消息', '我的'];
   TextStyle tabTextStyleSelected = new TextStyle(color: ThemeUtils.currentColorTheme);
   final tabTextStyleNormal = new TextStyle(color: Colors.grey);
-  Brightness currentBrightness = Brightness.light;
-
+  Color currentPrimaryColor = ThemeUtils.currentPrimaryColor;
   Color themeColor = ThemeUtils.currentColorTheme;
-  int _tabIndex = 0;
 
+  int _tabIndex = 0;
   var _body;
   var pages;
+
+  int userUid;
+  String userSid;
   var userAvatar;
 
   bool isUserLogin = false;
@@ -43,24 +44,13 @@ class MainPageState extends State<MainPage> {
       setState(() {
         this.isUserLogin = isLogin;
       });
-    });
-    DataUtils.getBrightness().then((isDark) {
-      if (isDark == null) {
-        DataUtils.setBrightness(false).then((whatever) {
+      if (isLogin) {
+        DataUtils.getUserInfo().then((userInfo) {
           setState(() {
-            currentBrightness = Brightness.light;
+            this.userSid = userInfo.sid;
+            this.userUid = userInfo.uid;
           });
         });
-      } else {
-        if (isDark) {
-          setState(() {
-            currentBrightness = Brightness.dark;
-          });
-        } else {
-          setState(() {
-            currentBrightness = Brightness.light;
-          });
-        }
       }
     });
     Constants.eventBus.on<LoginEvent>().listen((event) {
@@ -83,11 +73,6 @@ class MainPageState extends State<MainPage> {
       setState(() {
         tabTextStyleSelected = new TextStyle(color: event.color);
         themeColor = event.color;
-      });
-    });
-    Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
-      setState(() {
-        currentBrightness = event.brightness;
       });
     });
     pages = <Widget>[
@@ -132,69 +117,6 @@ class MainPageState extends State<MainPage> {
     }
   }
 
-//  AppBar pageAppBar() {
-//    if (appBarTitles[_tabIndex] == "首页") {
-//      return new AppBar(
-//          title: new Center(
-//              child: new Text(
-//                  appBarTitles[_tabIndex],
-//                  style: new TextStyle(color: Colors.white)
-//              )
-//          ),
-//          actions: <Widget>[
-//            new IconButton(
-//                icon: new Icon(
-//                  Icons.add_circle,
-//                  color: Colors.white
-//                ),
-//                onPressed: null
-//            )
-//          ],
-//          iconTheme: new IconThemeData(color: Colors.white),
-//          backgroundColor: ThemeUtils.currentColorTheme
-//      );
-//    }
-//    return new AppBar(
-//        title: new Center(
-//            child: new Text(
-//                appBarTitles[_tabIndex],
-//                style: new TextStyle(color: Colors.white)
-//            )
-//        ),
-//        iconTheme: new IconThemeData(color: Colors.white),
-//        backgroundColor: ThemeUtils.currentColorTheme
-//    );
-//  }
-
-  Widget searchBar() {
-    return new Padding(
-      padding: EdgeInsets.all(4.0),
-      child: new Row(
-        children: <Widget>[
-          new Container(
-            width: 40.0,
-            decoration: new BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.transparent,
-              image: new DecorationImage(
-                  image: new NetworkImage(Api.userFace+"?uid=null&size=f100"),
-                  fit: BoxFit.contain
-              ),
-              border: new Border.all(
-                color: Colors.white,
-                width: 2.0,
-              ),
-            ),
-          ),
-          new Text(
-              appBarTitles[_tabIndex],
-              style: new TextStyle(color: themeColor)
-          )
-        ]
-      )
-    );
-  }
-
   WillPopScope mainPage(context) {
     _body = new IndexedStack(
       children: pages,
@@ -203,40 +125,60 @@ class MainPageState extends State<MainPage> {
     return new WillPopScope(
         onWillPop: doubleClickBack,
         child: new Scaffold(
-//          appBar: new AppBar(
-//            title: new Center(
-//                child: new Text(
-//                    appBarTitles[_tabIndex],
-//                    style: new TextStyle(color: themeColor)
-//                )
-//            ),
-//            iconTheme: new IconThemeData(color: themeColor),
-//            brightness: currentBrightness,
-//          ),
-          appBar: new PreferredSize(
-            preferredSize: Size.fromHeight(48.0),
-            child: new Container(
-              color: ThemeUtils.currentPrimaryColor,
-              child: SafeArea(
-                  child: searchBar()
+          appBar: new AppBar(
+            leading: new Padding(
+              padding: EdgeInsets.fromLTRB(16, 12, 8, 12),
+              child: new Container(
+                decoration: new BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.transparent,
+                  image: new DecorationImage(
+                      image: new NetworkImage(Api.userFace+"?uid=$userUid&size=f100"),
+                      fit: BoxFit.contain
+                  ),
+                  border: new Border.all(
+                    color: Colors.white,
+                    width: 2.0,
+                  ),
+                ),
+              ),
+            ),
+            title: new Center(
+                child: new Text(
+                    appBarTitles[_tabIndex],
+                    style: new TextStyle(color: themeColor, fontWeight: FontWeight.bold)
+                )
+            ),
+            actions: <Widget>[
+              new Padding(
+                padding: const EdgeInsets.only(left: 8, right: 8),
+                child: IconButton(
+                  padding: const EdgeInsets.all(0),
+                  icon: Padding(
+                    padding: const EdgeInsets.only(left: 0.0, right: 0.0),
+                    child: CircleAvatar(
+                      child: Icon(
+                        Icons.notifications,
+                        color: themeColor,
+                      ),
+                      backgroundColor: Color(0x0000000),
+                      radius: 16,
+                    ),
+                  ),
+                  onPressed: () {
+                    // TODO: 消息页面
+                  },
+                ),
               )
-            )
-//            title: new Center(
-//                child: new Text(
-//                    appBarTitles[_tabIndex],
-//                    style: new TextStyle(color: themeColor)
-//                )
-//            ),
-//            iconTheme: new IconThemeData(color: themeColor),
-//            brightness: currentBrightness,
+            ],
+            iconTheme: new IconThemeData(color: themeColor),
+            brightness: Theme.of(context).brightness,
           ),
           body: _body,
-          //Tabbarview:new TabBarView(
-
           bottomNavigationBar: new BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
+            fixedColor: Theme.of(context).primaryColor,
+            type: BottomNavigationBarType.fixed,
             items: <BottomNavigationBarItem>[
-
               BottomNavigationBarItem(
                   activeIcon: Icon(Icons.home, color: themeColor),
                   icon: Icon(Icons.home, color: Colors.grey),
