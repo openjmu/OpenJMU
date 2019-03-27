@@ -4,7 +4,6 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:jxt/utils/DataUtils.dart';
 import 'package:jxt/utils/ThemeUtils.dart';
 
-//公共的WebView页面，需要标题和URL参数
 class CommonWebPage extends StatefulWidget {
   String title;
   String url;
