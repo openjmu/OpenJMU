@@ -9,6 +9,8 @@ import 'package:jxt/pages/ChangeThemePage.dart';
 import 'package:jxt/utils/DataUtils.dart';
 import 'package:jxt/utils/ThemeUtils.dart';
 
+import 'package:jxt/pages/Test.dart';
+
 class MyInfoPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -22,8 +24,8 @@ class MyInfoPageState extends State<MyInfoPage> {
   static const double IMAGE_ICON_WIDTH = 30.0;
   static const double ARROW_ICON_WIDTH = 16.0;
 
-  var titles = ["夜间模式", "切换主题", "退出登录"];
-  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app];
+  var titles = ["夜间模式", "切换主题", "退出登录", "测试页"];
+  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad];
   var userAvatar;
   var userName;
   var titleTextStyle = new TextStyle(fontSize: 16.0);
@@ -206,6 +208,10 @@ class MyInfoPageState extends State<MyInfoPage> {
     } else if (title == "切换主题") {
       Navigator.push(context, platformPageRoute(builder: (context) {
         return new ChangeThemePage();
+      }));
+    } else if (title == "测试页") {
+      Navigator.push(context, platformPageRoute(builder: (context) {
+        return new TestPage();
       }));
     }
   }
