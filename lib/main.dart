@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:jxt/constants/Constants.dart';
+import 'package:jxt/events/LogoutEvent.dart';
 import 'package:jxt/events/ChangeBrightnessEvent.dart';
 import 'package:jxt/pages/SplashPage.dart';
 import 'package:jxt/utils/DataUtils.dart';
@@ -17,12 +18,18 @@ class JMUAppClient extends StatefulWidget {
 
 class JMUAppClientState extends State<JMUAppClient> {
   bool isUserLogin = false;
+
   Brightness currentBrightness;
   Color currentPrimaryColor;
 
   @override
   void initState() {
     super.initState();
+    listenToBrightness();
+  }
+
+  // 监听夜间模式变化
+  void listenToBrightness() {
     DataUtils.getBrightness().then((isDark) {
       if (isDark == null) {
         DataUtils.setBrightness(false).then((whatever) {
@@ -45,6 +52,12 @@ class JMUAppClientState extends State<JMUAppClient> {
         }
       }
     });
+    Constants.eventBus.on<LogoutEvent>().listen((event) {
+      setState(() {
+        currentBrightness = Brightness.light;
+        currentPrimaryColor = Colors.white;
+      });
+    });
     Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
       setState(() {
         currentBrightness = event.brightness;
@@ -62,7 +75,6 @@ class JMUAppClientState extends State<JMUAppClient> {
           accentColor: currentPrimaryColor,
           primaryColor: currentPrimaryColor,
           primaryColorBrightness: Brightness.dark,
-//          splashColor: currentPrimaryColor,
           primaryIconTheme: new IconThemeData(color: currentPrimaryColor),
           brightness: currentBrightness,
         ),

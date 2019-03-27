@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../constants/Constants.dart';
-import '../events/TicketGotEvent.dart';
-import '../events/TicketFailedEvent.dart';
-import '../utils/DataUtils.dart';
-import '../utils/ThemeUtils.dart';
-import 'MainPage.dart';
-import 'LoginPage.dart';
+import 'package:jxt/constants/Constants.dart';
+import 'package:jxt/events/TicketGotEvent.dart';
+import 'package:jxt/events/TicketFailedEvent.dart';
+import 'package:jxt/pages/MainPage.dart';
+import 'package:jxt/pages/LoginPage.dart';
+import 'package:jxt/utils/DataUtils.dart';
+import 'package:jxt/utils/ThemeUtils.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -41,13 +41,32 @@ class SplashState extends State<SplashPage> {
     });
   }
 
-
-
-
   @override
   void dispose() {
     timer.cancel();
     super.dispose();
+  }
+
+  void navigate() {
+    timer = new Timer(const Duration(milliseconds: 2000), () {
+      if (!isUserLogin) {
+        try {
+          Navigator.of(context).pushReplacement(
+            new MaterialPageRoute(
+                builder: (BuildContext context) => new LoginPage()
+            ),
+          );
+        } catch (e) {}
+      } else {
+        try {
+          Navigator.of(context).pushReplacement(
+            new MaterialPageRoute(
+                builder: (BuildContext context) => new MainPage()
+            ),
+          );
+        } catch (e) {}
+      }
+    });
   }
 
   Padding buildLogo() {
@@ -70,14 +89,15 @@ class SplashState extends State<SplashPage> {
                 children: <Widget>[
                   new Container(
                     decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomCenter,
-                        colors: const <Color>[
-                          ThemeUtils.defaultColor,
-                          Colors.red
-                        ],
-                      ),
+//                      gradient: const LinearGradient(
+//                        begin: Alignment.topLeft,
+//                        end: Alignment.bottomCenter,
+//                        colors: const <Color>[
+//                          ThemeUtils.defaultColor,
+//                          Colors.red
+//                        ],
+//                      ),
+                      color: ThemeUtils.defaultColor
                     ),
                     child: new Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -88,15 +108,15 @@ class SplashState extends State<SplashPage> {
                               child: new Column(
                                 children: <Widget>[
                                   buildLogo(),
-                                  //new Text(
-                                      //"OpenJMU",
-                                      //textAlign: TextAlign.center,
-                                      //style: new TextStyle(
-                                        //color: Colors.white,
-                                        //fontSize: 48.0,
-                                        //letterSpacing: 4.0
-                                      //)
-                                 // ),
+//                                  new Text(
+//                                      "OpenJMU",
+//                                      textAlign: TextAlign.center,
+//                                      style: new TextStyle(
+//                                        color: Colors.white,
+//                                        fontSize: 48.0,
+//                                        letterSpacing: 4.0
+//                                      )
+//                                  ),
                                   SizedBox(height: 90.0),
                                 ],
                               ),
@@ -112,27 +132,6 @@ class SplashState extends State<SplashPage> {
               )
         )
     );
-  }
-  void navigate() {
-    timer = new Timer(const Duration(milliseconds: 2000), () {
-      if (!isUserLogin) {
-        try {
-          Navigator.of(context).pushReplacement(
-            new MaterialPageRoute(
-                builder: (BuildContext context) => new LoginPage()
-            ),
-          );
-        } catch (e) {}
-      } else {
-        try {
-          Navigator.of(context).pushReplacement(
-            new MaterialPageRoute(
-                builder: (BuildContext context) => new MainPage()
-            ),
-          );
-        } catch (e) {}
-      }
-    });
   }
 }
 

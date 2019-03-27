@@ -95,62 +95,64 @@ class MyInfoPageState extends State<MyInfoPage> {
   }
 
   Widget renderRow(i) {
-    if (i == 0) {
-      var avatarContainer = new Container(
-        color: themeColor,
-        height: 200.0,
-        child: new Center(
-          child: new Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              userAvatar == null
-                ? new Image.asset(
-                  "images/ic_avatar_default.png",
-                  width: 100.0,
-                )
-                : new Container(
-                  width: 100.0,
-                  height: 100.0,
-                  decoration: new BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.transparent,
-                    image: new DecorationImage(
-                        image: new NetworkImage(userAvatar),
-                        fit: BoxFit.cover
-                    ),
-                    border: new Border.all(
-                      color: Colors.white,
-                      width: 2.0,
-                    ),
-                  ),
-                ),
-                new Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10.0),
-                ),
-                new Text(
-                  userName == null ? "点击头像登录" : userName,
-                  style: new TextStyle(color: Colors.white, fontSize: 24.0),
-                ),
-            ],
-          ),
-        ),
-      );
-      return new GestureDetector(
-        child: avatarContainer,
-      );
-    }
-    --i;
+//    if (i == 0) {
+//      var avatarContainer = new Container(
+//        color: themeColor,
+//        height: 200.0,
+//        child: new Center(
+//          child: new Column(
+//            mainAxisAlignment: MainAxisAlignment.center,
+//            children: <Widget>[
+//              userAvatar == null
+//                ? new Image.asset(
+//                  "images/ic_avatar_default.png",
+//                  width: 100.0,
+//                )
+//                : new Container(
+//                  width: 100.0,
+//                  height: 100.0,
+//                  decoration: new BoxDecoration(
+//                    shape: BoxShape.circle,
+//                    color: Colors.transparent,
+//                    image: new DecorationImage(
+//                        image: new NetworkImage(userAvatar),
+//                        fit: BoxFit.cover
+//                    ),
+//                    border: new Border.all(
+//                      color: Colors.white,
+//                      width: 2.0,
+//                    ),
+//                  ),
+//                ),
+//                new Padding(
+//                  padding: EdgeInsets.symmetric(vertical: 10.0),
+//                ),
+//                new Text(
+//                  userName == null ? "点击头像登录" : userName,
+//                  style: new TextStyle(color: Colors.white, fontSize: 24.0),
+//                ),
+//            ],
+//          ),
+//        ),
+//      );
+//      return new GestureDetector(
+//        child: avatarContainer,
+//      );
+//    }
+//    --i;
+    // 添加分割线
     if (i.isOdd) {
       return new Divider(
         height: 1.0,
       );
     }
+    // 恢复正常索引
     i = i ~/ 2;
     String title = titles[i];
     var listItemContent = new Padding(
       padding: title == "夜间模式"
-        ? EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0)
-        : EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0)
+        ? EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0)
+        : EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0)
       ,
       child: new Row(
         children: <Widget>[
@@ -176,7 +178,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                   Constants.eventBus.fire(ChangeBrightnessEvent(isDark));
                 }
               )
-              : rightArrowIcon
+              : new Icon(Icons.keyboard_arrow_right)
         ],
       ),
     );
@@ -191,7 +193,8 @@ class MyInfoPageState extends State<MyInfoPage> {
   @override
   Widget build(BuildContext context) {
     var listView = new ListView.builder(
-      itemCount: titles.length * 2,
+      itemCount: titles.length * 2,  // 此处两倍数量用于添加分割线
+//      itemCount: titles.length,
       itemBuilder: (context, i) => renderRow(i),
     );
     return listView;

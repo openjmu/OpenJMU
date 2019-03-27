@@ -25,7 +25,7 @@ class TestPageState extends State<TestPage> {
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
     var initializationSettingsAndroid =
-    new AndroidInitializationSettings('ic_launcher');
+    new AndroidInitializationSettings('ic_jmu_logo_trans_original');
     var initializationSettingsIOS = new IOSInitializationSettings(
         onDidReceiveLocalNotification: onDidRecieveLocalNotification);
     var initializationSettings = new InitializationSettings(
@@ -236,13 +236,18 @@ class TestPageState extends State<TestPage> {
   Future _showNotification() async {
     var androidPlatformChannelSpecifics = new AndroidNotificationDetails(
         'your channel id', 'your channel name', 'your channel description',
-        importance: Importance.Max, priority: Priority.High);
+        importance: Importance.Max,
+        priority: Priority.High
+    );
     var iOSPlatformChannelSpecifics = new IOSNotificationDetails();
     var platformChannelSpecifics = new NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics
+    );
     await flutterLocalNotificationsPlugin.show(
-        0, 'plain title', 'plain body', platformChannelSpecifics,
-        payload: 'item x');
+        0, 'plain title', 'plain body',
+        platformChannelSpecifics,
+        payload: 'item x'
+    );
   }
 
   Future _cancelNotification() async {
