@@ -57,6 +57,7 @@ class JMUAppClientState extends State<JMUAppClient> {
   Widget build(BuildContext context) {
     return new MaterialApp(
         title: "OpenJMU",
+        debugShowCheckedModeBanner: false,
         theme: new ThemeData(
           accentColor: ThemeUtils.currentColorTheme,
           primaryColor: currentPrimaryColor,
