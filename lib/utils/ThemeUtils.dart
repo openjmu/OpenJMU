@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class ThemeUtils {
   // 默认主题色
-  static const Color defaultColor = const Color(0xFFE5322D);
+  static const Color defaultColor = Colors.red;
 
   // 可选的主题色
   static const List<Color> supportColors = [
@@ -16,7 +16,7 @@ class ThemeUtils {
     Colors.green,
     Colors.indigo,
     Colors.cyan,
-    Colors.teal
+    Colors.teal,
   ];
 
   // 当前的内容色

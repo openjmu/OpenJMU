@@ -36,7 +36,7 @@ class LoginPageState extends State<LoginPage> {
                         end: Alignment.bottomCenter,
                         colors: const <Color>[
                           ThemeUtils.defaultColor,
-                          Colors.redAccent
+                          Colors.redAccent,
                         ],
                       ),
                     ),
@@ -74,7 +74,7 @@ class LoginPageState extends State<LoginPage> {
 //        style: TextStyle(fontSize: 42.0),
 //      ),
         child: new Image.asset(
-          './images/ic_jmu_logo.png',
+          './images/ic_jmu_logo_trans.png',
           width: 100.0,
           height: 100.0,
         )
@@ -133,6 +133,7 @@ class LoginPageState extends State<LoginPage> {
             if (value.isEmpty) {
               return '请输入密码';
             }
+
           },
           decoration: new InputDecoration(
               border: InputBorder.none,

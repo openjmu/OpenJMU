@@ -43,12 +43,12 @@ class CommonWebPageState extends State<CommonWebPage> {
         });
       }
     });
-    flutterWebViewPlugin.onProgressChanged.listen((progress) {
-      setState(() {
-        progress = progress;
-      });
-      print("Page progress: $progress");
-    });
+    //flutterWebViewPlugin.onProgressChanged.listen((progress) {
+     // setState(() {
+     //   progress = progress;
+     // });
+    //  print("Page progress: $progress");
+    //});
 //    flutterWebViewPlugin.onUrlChanged.listen((url) {
 //      setState(() {
 //        loading = false;

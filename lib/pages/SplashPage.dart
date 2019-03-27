@@ -41,27 +41,8 @@ class SplashState extends State<SplashPage> {
     });
   }
 
-  void navigate() {
-    timer = new Timer(const Duration(milliseconds: 1500), () {
-      if (!isUserLogin) {
-        try {
-          Navigator.of(context).pushReplacement(
-            new MaterialPageRoute(
-                builder: (BuildContext context) => new LoginPage()
-            ),
-          );
-        } catch (e) {}
-      } else {
-        try {
-          Navigator.of(context).pushReplacement(
-            new MaterialPageRoute(
-                builder: (BuildContext context) => new MainPage()
-            ),
-          );
-        } catch (e) {}
-      }
-    });
-  }
+
+
 
   @override
   void dispose() {
@@ -71,11 +52,11 @@ class SplashState extends State<SplashPage> {
 
   Padding buildLogo() {
     return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: Image.asset(
-        './images/ic_jmu_logo.png',
-        width: 128.0,
-        height: 128.0,
+      padding: EdgeInsets.all(30.1),
+      child: new Image.asset(
+        './images/ic_jmu_logo_trans.png',
+        width: 120.0,
+        height: 120.0,
       )
     );
   }
@@ -94,7 +75,7 @@ class SplashState extends State<SplashPage> {
                         end: Alignment.bottomCenter,
                         colors: const <Color>[
                           ThemeUtils.defaultColor,
-                          Colors.redAccent
+                          Colors.red
                         ],
                       ),
                     ),
@@ -107,15 +88,15 @@ class SplashState extends State<SplashPage> {
                               child: new Column(
                                 children: <Widget>[
                                   buildLogo(),
-                                  new Text(
-                                      "集小通",
-                                      textAlign: TextAlign.center,
-                                      style: new TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 48.0,
-                                        letterSpacing: 4.0
-                                      )
-                                  ),
+                                  //new Text(
+                                      //"OpenJMU",
+                                      //textAlign: TextAlign.center,
+                                      //style: new TextStyle(
+                                        //color: Colors.white,
+                                        //fontSize: 48.0,
+                                        //letterSpacing: 4.0
+                                      //)
+                                 // ),
                                   SizedBox(height: 90.0),
                                 ],
                               ),
@@ -131,6 +112,27 @@ class SplashState extends State<SplashPage> {
               )
         )
     );
+  }
+  void navigate() {
+    timer = new Timer(const Duration(milliseconds: 2000), () {
+      if (!isUserLogin) {
+        try {
+          Navigator.of(context).pushReplacement(
+            new MaterialPageRoute(
+                builder: (BuildContext context) => new LoginPage()
+            ),
+          );
+        } catch (e) {}
+      } else {
+        try {
+          Navigator.of(context).pushReplacement(
+            new MaterialPageRoute(
+                builder: (BuildContext context) => new MainPage()
+            ),
+          );
+        } catch (e) {}
+      }
+    });
   }
 }
 

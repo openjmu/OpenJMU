@@ -184,9 +184,12 @@ class MainPageState extends State<MainPage> {
             brightness: currentBrightness,
           ),
           body: _body,
+          //Tabbarview:new TabBarView(
+
           bottomNavigationBar: new BottomNavigationBar(
-            type: BottomNavigationBarType.fixed,
+          type: BottomNavigationBarType.fixed,
             items: <BottomNavigationBarItem>[
+
               BottomNavigationBarItem(
                   activeIcon: Icon(Icons.home, color: ThemeUtils.currentColorTheme),
                   icon: Icon(Icons.home, color: Colors.grey),
