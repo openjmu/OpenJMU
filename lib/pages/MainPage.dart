@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:jxt/api/Api.dart';
 import 'package:jxt/constants/Constants.dart';
 import 'package:jxt/events/ChangeBrightnessEvent.dart';
 import 'package:jxt/events/ChangeThemeEvent.dart';
@@ -165,6 +166,35 @@ class MainPageState extends State<MainPage> {
 //    );
 //  }
 
+  Widget searchBar() {
+    return new Padding(
+      padding: EdgeInsets.all(4.0),
+      child: new Row(
+        children: <Widget>[
+          new Container(
+            width: 40.0,
+            decoration: new BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.transparent,
+              image: new DecorationImage(
+                  image: new NetworkImage(Api.userFace+"?uid=null&size=f100"),
+                  fit: BoxFit.contain
+              ),
+              border: new Border.all(
+                color: Colors.white,
+                width: 2.0,
+              ),
+            ),
+          ),
+          new Text(
+              appBarTitles[_tabIndex],
+              style: new TextStyle(color: themeColor)
+          )
+        ]
+      )
+    );
+  }
+
   WillPopScope mainPage(context) {
     _body = new IndexedStack(
       children: pages,
@@ -173,42 +203,59 @@ class MainPageState extends State<MainPage> {
     return new WillPopScope(
         onWillPop: doubleClickBack,
         child: new Scaffold(
-          appBar: new AppBar(
-            title: new Center(
-              child: new Text(
-                appBarTitles[_tabIndex],
-                style: new TextStyle(color: ThemeUtils.currentColorTheme)
+//          appBar: new AppBar(
+//            title: new Center(
+//                child: new Text(
+//                    appBarTitles[_tabIndex],
+//                    style: new TextStyle(color: themeColor)
+//                )
+//            ),
+//            iconTheme: new IconThemeData(color: themeColor),
+//            brightness: currentBrightness,
+//          ),
+          appBar: new PreferredSize(
+            preferredSize: Size.fromHeight(48.0),
+            child: new Container(
+              color: ThemeUtils.currentPrimaryColor,
+              child: SafeArea(
+                  child: searchBar()
               )
-            ),
-            iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
-            brightness: currentBrightness,
+            )
+//            title: new Center(
+//                child: new Text(
+//                    appBarTitles[_tabIndex],
+//                    style: new TextStyle(color: themeColor)
+//                )
+//            ),
+//            iconTheme: new IconThemeData(color: themeColor),
+//            brightness: currentBrightness,
           ),
           body: _body,
           bottomNavigationBar: new BottomNavigationBar(
             type: BottomNavigationBarType.fixed,
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.home, color: ThemeUtils.currentColorTheme),
+                  activeIcon: Icon(Icons.home, color: themeColor),
                   icon: Icon(Icons.home, color: Colors.grey),
                   title: getTabTitle(0)
               ),
               BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.fiber_new, color: ThemeUtils.currentColorTheme),
+                  activeIcon: Icon(Icons.fiber_new, color: themeColor),
                   icon: Icon(Icons.fiber_new, color: Colors.grey),
                   title: getTabTitle(1)
               ),
               BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.apps, color: ThemeUtils.currentColorTheme),
+                  activeIcon: Icon(Icons.apps, color: themeColor),
                   icon: Icon(Icons.apps, color: Colors.grey),
                   title: getTabTitle(2)
               ),
               BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.chat, color: ThemeUtils.currentColorTheme),
+                  activeIcon: Icon(Icons.chat, color: themeColor),
                   icon: Icon(Icons.chat, color: Colors.grey),
                   title: getTabTitle(3)
               ),
               BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.account_circle, color: ThemeUtils.currentColorTheme),
+                  activeIcon: Icon(Icons.account_circle, color: themeColor),
                   icon: Icon(Icons.account_circle, color: Colors.grey),
                   title: getTabTitle(4)
               )
