@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:jxt/api/Api.dart';
 import 'package:jxt/constants/Constants.dart';
@@ -163,14 +164,14 @@ class MyInfoPageState extends State<MyInfoPage> {
           new Expanded(
               child: new Container(
                   padding: EdgeInsets.only(left: 10.0),
-                  child: new Text(
+                  child: new PlatformText(
                     title,
                     style: titleTextStyle,
                   )
               )
           ),
           title == "夜间模式"
-              ? new Switch(
+              ? new PlatformSwitch(
                 activeColor: themeColor,
                 value: isDark,
                 onChanged: (isDark) {

@@ -89,4 +89,30 @@ class NetUtils {
     return response.toString();
   }
 
+  static Future<String> postWithCookieAndHeaderSet(String url, {data, headers, cookies}) async {
+//    dio.interceptors.add(CookieManager(CookieJar()));
+    Response response = await dio.post(
+        url,
+        data: data,
+        options: Options(
+            cookies: cookies,
+            headers: headers
+        )
+    );
+    return response.toString();
+  }
+
+  static Future<String> deleteWithCookieAndHeaderSet(String url, {data, headers, cookies}) async {
+//    dio.interceptors.add(CookieManager(CookieJar()));
+    Response response = await dio.delete(
+        url,
+        data: data,
+        options: Options(
+            cookies: cookies,
+            headers: headers
+        )
+    );
+    return response.toString();
+  }
+
 }
