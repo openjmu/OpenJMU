@@ -5,7 +5,7 @@ class Api {
   static final String wbHost = "https://wb.jmu.edu.cn";
   static final String file99Host = "https://file99.jmu.edu.cn";
   static final String oa99Host = "https://oa99.jmu.edu.cn";
-  static final String oa99pHost = "http://oap99.jmu.edu.cn";
+  static final String oa99pHost = "https://oap99.jmu.edu.cn";
   static final String middle99Host = "https://middle99.jmu.edu.cn";
   static final String upapiHost = "https://upapi.jmu.edu.cn";
 
@@ -29,6 +29,7 @@ class Api {
   // 微博相关
   static final String weiboList = wbHost + "/topic_api/square";
   static final String weiboFollowedList = wbHost + "/topic_api/timeline";
+  static final String weiboPraise = wbHost + "/praise_api/praise/tid/";
 
   // 评论列表
   static final String COMMENT_LIST = oa99Host + "/action/openapi/comment_list";

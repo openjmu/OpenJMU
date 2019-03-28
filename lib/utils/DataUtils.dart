@@ -197,6 +197,7 @@ class DataUtils {
       };
       NetUtils.post(Api.loginTicket, data: params)
         .then((response) {
+          print(response);
           updateSid(jsonDecode(response));
           Constants.eventBus.fire(new TicketGotEvent());
           return true;

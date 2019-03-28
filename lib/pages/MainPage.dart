@@ -99,6 +99,23 @@ class MainPageState extends State<MainPage> {
     return new Text(appBarTitles[curIndex], style: getTabTextStyle(curIndex));
   }
 
+  Container getAvatar() {
+    return new Container(
+      decoration: new BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.transparent,
+        image: new DecorationImage(
+            image: new NetworkImage(Api.userFace+"?uid=$userUid&size=f100"),
+            fit: BoxFit.contain
+        ),
+        border: new Border.all(
+          color: Colors.white,
+          width: 2.0,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return mainPage(context);
@@ -126,7 +143,8 @@ class MainPageState extends State<MainPage> {
         onWillPop: doubleClickBack,
         child: new Scaffold(
           appBar: new AppBar(
-            leading: new Padding(
+              elevation: 1,
+              leading: new Padding(
               padding: EdgeInsets.fromLTRB(16, 12, 8, 12),
               child: new Container(
                 decoration: new BoxDecoration(
