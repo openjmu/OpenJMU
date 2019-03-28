@@ -8,7 +8,7 @@ class ChangeBrightnessEvent {
     if (isDark) {
       isDarkState = true;
       brightness = Brightness.dark;
-      primaryColor = Colors.grey[850];
+      primaryColor = Colors.grey[900];
     } else {
       isDarkState = false;
       brightness = Brightness.light;

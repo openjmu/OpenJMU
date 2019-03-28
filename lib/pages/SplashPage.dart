@@ -48,7 +48,7 @@ class SplashState extends State<SplashPage> {
   }
 
   void navigate() {
-    timer = new Timer(const Duration(milliseconds: 2000), () {
+    timer = new Timer(const Duration(milliseconds: 1000), () {
       if (!isUserLogin) {
         try {
           Navigator.of(context).pushReplacement(

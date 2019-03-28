@@ -24,8 +24,8 @@ class MyInfoPageState extends State<MyInfoPage> {
   static const double IMAGE_ICON_WIDTH = 30.0;
   static const double ARROW_ICON_WIDTH = 16.0;
 
-  var titles = ["夜间模式", "切换主题", "退出登录", "测试页"];
-  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad];
+  var titles = ["夜间模式", "切换主题", "测试页", "退出登录"];
+  var icons = [Icons.invert_colors, Icons.color_lens, Icons.dialpad, Icons.exit_to_app];
   var userAvatar;
   var userName;
   var titleTextStyle = new TextStyle(fontSize: 16.0);
