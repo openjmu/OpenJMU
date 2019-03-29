@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:crypto/crypto.dart';
 import 'package:uuid/uuid.dart';
@@ -16,6 +17,7 @@ import 'package:jxt/pages/MainPage.dart';
 import 'package:jxt/utils/NetUtils.dart';
 import 'package:jxt/utils/ToastUtils.dart';
 import 'package:jxt/utils/SnackbarUtils.dart';
+
 
 class DataUtils {
   static final String spIsLogin     = "isLogin";
@@ -96,7 +98,7 @@ class DataUtils {
             saveLoginInfo(userInfo)
               .then((whatever) {
                 Constants.eventBus.fire(new LoginEvent());
-                showShortToast("登录成功！");
+                SnackbarUtils.show(context,"登录成功！");
                 Navigator.of(context).pushReplacement(
                   new MaterialPageRoute(
                     builder: (context) { return new MainPage(); }
@@ -111,14 +113,14 @@ class DataUtils {
         })
           .catchError((e) {
             print(e.toString());
-            showShortToast(e.toString());
+            //showShortToast(e.toString());
             SnackbarUtils.show(context, "登录失败！${e.toString()}");
             return e;
         });
     })
       .catchError((e) {
         print(e.toString());
-        showShortToast(e.toString());
+        //showShortToast(e.toString());
         SnackbarUtils.show(context, "登录失败！${e.toString()}");
         return e;
     });
@@ -166,8 +168,9 @@ class DataUtils {
     await sp.remove(spUserWorkId);
     await sp.remove(spUserClassId);
     await sp.remove(spBrightness);
-    await sp.remove(spColorThemeIndex);
-    showShortToast("注销成功！");
+    //await sp.remove(spColorThemeIndex);
+    //showShortToast("注销成功！");
+    SnackbarUtils.show(context, "inint");
   }
 
   static getSpTicket() async {

@@ -97,7 +97,7 @@ class SplashState extends State<SplashPage> {
 //                          Colors.red
 //                        ],
 //                      ),
-                      color: ThemeUtils.defaultColor
+                      color: ThemeUtils.currentPrimaryColor
                     ),
                     child: new Column(
                       mainAxisAlignment: MainAxisAlignment.center,

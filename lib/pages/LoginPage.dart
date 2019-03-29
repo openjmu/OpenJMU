@@ -31,7 +31,7 @@ class LoginPageState extends State<LoginPage> {
                 children: <Widget>[
                   new Container(
                     decoration: BoxDecoration(
-                      color: ThemeUtils.defaultColor
+                      color: ThemeUtils.currentColorTheme
 //                      gradient: const LinearGradient(
 //                        begin: Alignment.topLeft,
 //                        end: Alignment.bottomCenter,
@@ -172,7 +172,7 @@ class LoginPageState extends State<LoginPage> {
             highlightColor: Colors.white,
             textColor: Colors.white,
             child: new Icon(
-              Icons.send,
+              Icons.arrow_forward,
               color: Colors.white,
               size: 30
             ),
@@ -248,6 +248,9 @@ class LoginPageState extends State<LoginPage> {
           content: SingleChildScrollView(
             child: new ListBody(
               children: <Widget>[
+
+
+
                 new Text('找回密码详见'),
                 new Text('网络中心主页 -> 集大通行证'),
               ],
