@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:jxt/api/Api.dart';
 import 'package:jxt/constants/Constants.dart';
 import 'package:jxt/model/Bean.dart';
@@ -81,6 +80,24 @@ class _CardItemState extends State<CardItem> {
   }
 
   Row getPostInfo(post) {
+    String _postTime = post.postTime;
+    DateTime now = new DateTime.now();
+    if (int.parse(_postTime.substring(0, 4)) == now.year) {
+      _postTime = _postTime.substring(5, 16);
+    }
+    if (
+      int.parse(_postTime.substring(0, 2)) == now.month
+        &&
+      int.parse(_postTime.substring(3, 5)) == now.day
+    ) {
+      _postTime = "今天${_postTime.substring(5, 11)}";
+    } else if (
+      int.parse(_postTime.substring(0, 2)) == now.month
+        &&
+      int.parse(_postTime.substring(3, 5)) == now.day - 1
+    ) {
+      _postTime = "昨天${_postTime.substring(5, 11)}";
+    }
     return new Row(
         children: <Widget>[
           new Icon(
@@ -89,7 +106,7 @@ class _CardItemState extends State<CardItem> {
               size: 12.0
           ),
           new Text(
-              " ${post.postTime}",
+              " $_postTime",
               style: subtitleStyle
           ),
           new Padding(
