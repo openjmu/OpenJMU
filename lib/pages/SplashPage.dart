@@ -125,9 +125,6 @@ class SplashState extends State<SplashPage> {
                       ],
                     ),
                   ),
-//                  new Align(
-//                    alignment: AlignmentGeometry
-//                  )
                 ]
               )
         )

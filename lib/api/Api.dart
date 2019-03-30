@@ -19,7 +19,7 @@ class Api {
 
   // 应用中心
   static final String webAppLists = oa99pHost + "/app/unitmenu?cfg=1";
-  static final String webAppIcons = oa99pHost + "/app/menuicon?unitid=55&";
+  static final String webAppIcons = oa99pHost + "/app/menuicon?size=f128&unitid=55&";
 
   // 资讯相关
   static final String newsList = middle99Host + "/mg/api/aid/posts_list/region_type/1";
@@ -27,9 +27,10 @@ class Api {
   static final String newsImageList = file99Host + "/show/file/fid/";
 
   // 微博相关
-  static final String weiboList = wbHost + "/topic_api/square";
-  static final String weiboFollowedList = wbHost + "/topic_api/timeline";
-  static final String weiboPraise = wbHost + "/praise_api/praise/tid/";
+  static final String postUnread = wbHost + "/user_api/unread";
+  static final String postList = wbHost + "/topic_api/square";
+  static final String postFollowedList = wbHost + "/topic_api/timeline";
+  static final String postPraise = wbHost + "/praise_api/praise/tid/";
 
   // 评论列表
   static final String COMMENT_LIST = oa99Host + "/action/openapi/comment_list";
@@ -39,10 +40,8 @@ class Api {
   static final String PUB_TWEET = oa99Host + "/action/openapi/tweet_pub";
   // 添加到小黑屋
   static final String ADD_TO_BLACK = "http://osc.yubo725.top/black/add";
-
   // 查询小黑屋
   static final String QUERY_BLACK = "http://osc.yubo725.top/black/query";
-
   // 从小黑屋中删除
   static final String DELETE_BLACK = "http://osc.yubo725.top/black/delete";
   // 开源活动

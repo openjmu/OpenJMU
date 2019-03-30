@@ -1,10 +1,26 @@
+import 'dart:io';
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:jxt/constants/Constants.dart';
 
 Dio dio = new Dio();
 
 class NetUtils {
+
+  static Map<String, dynamic> buildPostHeaders(sid) {
+    Map<String, String> headers = new Map();
+    headers["CLOUDID"] = "jmu";
+    headers["CLOUD-ID"] = "jmu";
+    headers["UAP-SID"] = sid;
+    headers["WEIBO-API-KEY"] = Constants.weiboApiKey;
+    headers["WEIBO-API-SECRET"] = Constants.weiboApiSecret;
+    return headers;
+  }
+
+  static List<Cookie> buildPHPSESSIDCookies(sid) {
+    return [new Cookie("PHPSESSID", sid)];
+  }
 
   static Future<String> get(String url, {data}) async {
 //    dio.interceptors.add(CookieManager(CookieJar()));

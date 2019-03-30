@@ -11,6 +11,7 @@ import 'package:jxt/events/LoginEvent.dart';
 import 'package:jxt/events/LogoutEvent.dart';
 import 'package:jxt/events/TicketGotEvent.dart';
 import 'package:jxt/events/TicketFailedEvent.dart';
+import 'package:jxt/events/NotificationCountChangeEvent.dart';
 import 'package:jxt/model/UserInfo.dart';
 import 'package:jxt/pages/MainPage.dart';
 import 'package:jxt/utils/NetUtils.dart';
@@ -275,4 +276,30 @@ class DataUtils {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.setBool(spBrightness, isDark);
   }
+
+  // 获取未读信息数
+  static getNotifications() async {
+    getSid().then((sid) {
+      Map headers = NetUtils.buildPostHeaders(sid);
+      List cookies = NetUtils.buildPHPSESSIDCookies(sid);
+      NetUtils.getWithCookieAndHeaderSet(
+          Api.postUnread,
+          headers: headers,
+          cookies: cookies
+      ).then((response) {
+        Map<String, dynamic> data = jsonDecode(response);
+        int newFans = int.parse(data['fans']);
+        int comment = int.parse(data['cmt']);
+        int postsAt = int.parse(data['t_at']);
+        int commsAt = int.parse(data['cmt_at']);
+        int praises = int.parse(data['t_praised']);
+        int count = newFans + comment + postsAt + commsAt + praises;
+        Constants.eventBus.fire(new NotificationCountChangeEvent(count));
+      }).catchError((e) {
+        print(e.toString());
+        return e;
+      });
+    });
+  }
+
 }

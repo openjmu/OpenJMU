@@ -69,6 +69,7 @@ class JMUAppClientState extends State<JMUAppClient> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: "OpenJMU",
         theme: new ThemeData(
           accentColor: currentPrimaryColor,

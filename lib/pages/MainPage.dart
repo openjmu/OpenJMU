@@ -1,10 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:badges/badges.dart';
 import 'package:jxt/api/Api.dart';
 import 'package:jxt/constants/Constants.dart';
 import 'package:jxt/events/ChangeThemeEvent.dart';
 import 'package:jxt/events/LoginEvent.dart';
 import 'package:jxt/events/LogoutEvent.dart';
+import 'package:jxt/events/NotificationCountChangeEvent.dart';
 import 'package:jxt/utils/DataUtils.dart';
 import 'package:jxt/utils/ThemeUtils.dart';
 import 'package:jxt/utils/ToastUtils.dart';
@@ -25,7 +28,10 @@ class MainPageState extends State<MainPage> {
   TextStyle tabTextStyleSelected = new TextStyle(color: ThemeUtils.currentColorTheme);
   final tabTextStyleNormal = new TextStyle(color: Colors.grey);
   Color currentPrimaryColor = ThemeUtils.currentPrimaryColor;
-  Color themeColor = ThemeUtils.currentColorTheme;
+  Color currentThemeColor = ThemeUtils.currentColorTheme;
+
+  int currentNotifications = 0;
+  Timer notificationTimer;
 
   int _tabIndex = 0;
   var _body;
@@ -45,6 +51,9 @@ class MainPageState extends State<MainPage> {
         this.isUserLogin = isLogin;
       });
       if (isLogin) {
+        notificationTimer = new Timer(const Duration(milliseconds: 30000), () {
+          DataUtils.getNotifications();
+        });
         DataUtils.getUserInfo().then((userInfo) {
           setState(() {
             this.userSid = userInfo.sid;
@@ -72,7 +81,13 @@ class MainPageState extends State<MainPage> {
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
       setState(() {
         tabTextStyleSelected = new TextStyle(color: event.color);
-        themeColor = event.color;
+        currentThemeColor = event.color;
+      });
+    });
+    Constants.eventBus.on<NotificationCountChangeEvent>().listen((event) {
+      setState(() {
+        currentNotifications = event.notifications;
+
       });
     });
     pages = <Widget>[
@@ -82,6 +97,12 @@ class MainPageState extends State<MainPage> {
       DiscoveryPage(),
       MyInfoPage()
     ];
+  }
+
+  @override
+  void dispose() {
+    notificationTimer.cancel();
+    super.dispose();
   }
 
   Image getTabImage(path) {
@@ -164,32 +185,40 @@ class MainPageState extends State<MainPage> {
             title: new Center(
                 child: new Text(
                     appBarTitles[_tabIndex],
-                    style: new TextStyle(color: themeColor, fontWeight: FontWeight.bold)
+                    style: new TextStyle(color: currentThemeColor, fontWeight: FontWeight.bold)
                 )
             ),
             actions: <Widget>[
-              new Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8),
-                child: IconButton(
-                  padding: const EdgeInsets.all(0),
-                  icon: Padding(
-                    padding: const EdgeInsets.only(left: 0.0, right: 0.0),
-                    child: CircleAvatar(
-                      child: Icon(
-                        Icons.notifications,
-                        color: themeColor,
-                      ),
-                      backgroundColor: Color(0x0000000),
-                      radius: 16,
-                    ),
-                  ),
-                  onPressed: () {
-                    // TODO: 消息页面
-                  },
-                ),
-              )
+//              new Padding(
+//                padding: const EdgeInsets.only(left: 8, right: 8),
+//                child: IconButton(
+//                  padding: const EdgeInsets.all(0),
+//                  icon: Padding(
+//                    padding: const EdgeInsets.only(left: 0.0, right: 0.0),
+//                    child: CircleAvatar(
+//                      child: Icon(
+//                        Icons.notifications,
+//                        color: currentThemeColor,
+//                      ),
+//                      backgroundColor: Color(0x0000000),
+//                      radius: 16,
+//                    ),
+//                  ),
+//                  onPressed: () {
+//                    // TODO: 消息页面
+//                  },
+//                ),
+//              ),
+              BadgeIconButton(
+                  itemCount: currentNotifications,
+                  icon: Icon(Icons.notifications),
+                  badgeColor: currentThemeColor,
+                  badgeTextColor: Colors.white,
+                  hideZeroCount: true, // default: true
+                  onPressed: null
+              ),
             ],
-            iconTheme: new IconThemeData(color: themeColor),
+            iconTheme: new IconThemeData(color: currentThemeColor),
             brightness: Theme.of(context).brightness,
           ),
           body: _body,
@@ -198,27 +227,27 @@ class MainPageState extends State<MainPage> {
             type: BottomNavigationBarType.fixed,
             items: <BottomNavigationBarItem>[
               BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.home, color: themeColor),
+                  activeIcon: Icon(Icons.home, color: currentThemeColor),
                   icon: Icon(Icons.home, color: Colors.grey),
                   title: getTabTitle(0)
               ),
               BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.fiber_new, color: themeColor),
+                  activeIcon: Icon(Icons.fiber_new, color: currentThemeColor),
                   icon: Icon(Icons.fiber_new, color: Colors.grey),
                   title: getTabTitle(1)
               ),
               BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.apps, color: themeColor),
+                  activeIcon: Icon(Icons.apps, color: currentThemeColor),
                   icon: Icon(Icons.apps, color: Colors.grey),
                   title: getTabTitle(2)
               ),
               BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.chat, color: themeColor),
+                  activeIcon: Icon(Icons.chat, color: currentThemeColor),
                   icon: Icon(Icons.chat, color: Colors.grey),
                   title: getTabTitle(3)
               ),
               BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.account_circle, color: themeColor),
+                  activeIcon: Icon(Icons.account_circle, color: currentThemeColor),
                   icon: Icon(Icons.account_circle, color: Colors.grey),
                   title: getTabTitle(4)
               )

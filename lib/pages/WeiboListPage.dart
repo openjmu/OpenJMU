@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -8,6 +7,7 @@ import 'package:jxt/api/Api.dart';
 import 'package:jxt/constants/Constants.dart';
 import 'package:jxt/events/LoginEvent.dart';
 import 'package:jxt/events/LogoutEvent.dart';
+import 'package:jxt/events/NotificationCountChangeEvent.dart';
 import 'package:jxt/model/Bean.dart';
 import 'package:jxt/pages/WeiboDetailPage.dart';
 import 'package:jxt/utils/BlackListUtils.dart';
@@ -34,8 +34,8 @@ class WeiboListPageState extends State<WeiboListPage> {
   RegExp regExp1 = new RegExp("</.*>");
   RegExp regExp2 = new RegExp("<.*>");
   num curPage = 1;
-  bool loading = false;
   ScrollController _controller;
+  bool loading = false;
   bool isUserLogin = false;
 
   @override
@@ -45,6 +45,9 @@ class WeiboListPageState extends State<WeiboListPage> {
       setState(() {
         this.isUserLogin = isLogin;
       });
+      if (isLogin) {
+          DataUtils.getNotifications();
+      }
     });
     Constants.eventBus.on<LoginEvent>().listen((event) {
       setState(() {
@@ -88,26 +91,21 @@ class WeiboListPageState extends State<WeiboListPage> {
         DataUtils.getUserInfo().then((userInfo) {
           String sid, requestUrl;
           sid = userInfo.sid;
-          Map<String, dynamic> headers = new Map();
-          headers["CLOUDID"] = "jmu";
-          headers["CLOUD-ID"] = "jmu";
-          headers["UAP-SID"] = sid;
-          headers["WEIBO-API-KEY"] = Constants.weiboApiKey;
-          headers["WEIBO-API-SECRET"] = Constants.weiboApiSecret;
-          List<Cookie> cookies = [new Cookie("PHPSESSID", sid)];
+          Map headers = NetUtils.buildPostHeaders(sid);
+          List cookies = NetUtils.buildPHPSESSIDCookies(sid);
           if (isLoadMore) {
             if (!isFollowed) {
               int lastId = weiboList[weiboList.length-1]['id'];
-              requestUrl = Api.weiboList + "/id_max/$lastId";
+              requestUrl = Api.postList + "/id_max/$lastId";
             } else {
               int lastId = weiboFollowedList[weiboFollowedList.length-1]['id'];
-              requestUrl = Api.weiboFollowedList + "/id_max/$lastId";
+              requestUrl = Api.postFollowedList + "/id_max/$lastId";
             }
           } else {
             if (!isFollowed) {
-              requestUrl = Api.weiboList;
+              requestUrl = Api.postList;
             } else {
-              requestUrl = Api.weiboFollowedList;
+              requestUrl = Api.postFollowedList;
             }
           }
           NetUtils.getWithCookieAndHeaderSet(requestUrl, headers: headers, cookies: cookies)

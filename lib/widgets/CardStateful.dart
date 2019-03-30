@@ -307,7 +307,7 @@ class _CardItemState extends State<CardItem> {
       List<Cookie> cookies = [new Cookie("PHPSESSID", sid)];
       if (isPraise) {
         NetUtils.postWithCookieAndHeaderSet(
-            "${Api.weiboPraise}$id",
+            "${Api.postPraise}$id",
             headers: headers,
             cookies: cookies
         ).catchError((e) {
@@ -315,7 +315,7 @@ class _CardItemState extends State<CardItem> {
         });
       } else {
         NetUtils.deleteWithCookieAndHeaderSet(
-            "${Api.weiboPraise}$id",
+            "${Api.postPraise}$id",
             headers: headers,
             cookies: cookies
         ).catchError((e) {
