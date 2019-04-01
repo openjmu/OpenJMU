@@ -49,7 +49,7 @@ class DataUtils {
   static doLogin(context, String username, String password) async {
     String blowfish = new Uuid().v4();
     var clientInfo = {
-      "appid": "273",
+      "appid": 273,
       "platform": 30,
       "platformver": "2.3.1",
 //      "deviceid": "${new Random().nextInt(999999999999999)}",
@@ -105,12 +105,14 @@ class DataUtils {
                 );
               })
               .catchError((e) {
+                print(e.response);
                 print(e.toString());
                 SnackbarUtils.show(context, "获取用户信息失败！${e.toString()}");
                 return e;
               });
         })
           .catchError((e) {
+            print(e.response);
             print(e.toString());
             showShortToast(e.toString());
             SnackbarUtils.show(context, "登录失败！${e.toString()}");
@@ -118,6 +120,7 @@ class DataUtils {
         });
     })
       .catchError((e) {
+        print(e.response);
         print(e.toString());
         showShortToast(e.toString());
         SnackbarUtils.show(context, "登录失败！${e.toString()}");
@@ -182,7 +185,7 @@ class DataUtils {
   static getTicket() async {
     getSpTicket().then((infos) {
       var clientInfo = {
-        "appid": "273",
+        "appid": 273,
         "platform": 30,
         "platformver": "2.3.1",
 //      "deviceid": "${new Random().nextInt(999999999999999)}",
@@ -191,14 +194,14 @@ class DataUtils {
         "sysver": "2.1"
       };
       var params = {
-        "appid": "273",
+        "appid": 273,
         "ticket": "${infos['ticket']}",
         "blowfish": "${infos['blowfish']}",
         "clientinfo": jsonEncode(clientInfo)
       };
       NetUtils.post(Api.loginTicket, data: params)
         .then((response) {
-          print(response);
+          print(jsonDecode(response)['sid']);
           updateSid(jsonDecode(response));
           Constants.eventBus.fire(new TicketGotEvent());
           return true;

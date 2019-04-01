@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'dart:convert';
 import 'package:jxt/api/Api.dart';
 import 'package:jxt/utils/DataUtils.dart';
@@ -15,7 +14,6 @@ class AppCenterPage extends StatefulWidget {
 }
 
 class AppCenterPageState extends State<AppCenterPage> {
-  final ScrollController _controller = new ScrollController();
   String sid;
   Color themeColor = ThemeUtils.currentColorTheme;
   List<Widget> webAppList;
@@ -25,26 +23,19 @@ class AppCenterPageState extends State<AppCenterPage> {
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() {
-      var maxScroll = _controller.position.maxScrollExtent;
-      var pixels = _controller.position.pixels;
-      if (maxScroll == pixels && webAppList.length < listTotalSize) {
-        getAppList();
-      }
-    });
     DataUtils.getSid().then((sid) {
       setState(() {
         this.sid = sid;
-        getAppList();
+        getAppList(sid);
       });
     });
   }
 
-  void getAppList() async {
-    List<Cookie> cookies = [
-      new Cookie("PHPSESSID", sid)
-    ];
-    NetUtils.getPlainWithCookieSet(Api.webAppLists, cookies: cookies).then((response) {
+  void getAppList(sid) async {
+    NetUtils.getPlainWithCookieSet(
+        Api.webAppLists,
+        cookies: NetUtils.buildPHPSESSIDCookies(sid)
+    ).then((response) {
       webAppListData = jsonDecode(response.toString());
       List<Widget> buttons = [];
       for (var i = 0; i < webAppListData.length; i++) {
@@ -103,11 +94,6 @@ class AppCenterPageState extends State<AppCenterPage> {
     }
   }
 
-  Future<Null> _pullToRefresh() async {
-    getAppList();
-    return null;
-  }
-
   @override
   Widget build(BuildContext context) {
     if (webAppList == null) {
@@ -117,13 +103,12 @@ class AppCenterPageState extends State<AppCenterPage> {
         ),
       );
     } else {
-      Widget gridview = new GridView.count(
+      return new GridView.count(
         shrinkWrap: true,
         crossAxisCount: 3,
         childAspectRatio: 1.25 / 1,
         children: webAppList
       );
-      return new RefreshIndicator(child: gridview, onRefresh: _pullToRefresh);
     }
   }
 

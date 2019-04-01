@@ -22,19 +22,11 @@ class MyInfoPage extends StatefulWidget {
 class MyInfoPageState extends State<MyInfoPage> {
   Color themeColor = ThemeUtils.currentColorTheme;
 
-  static const double IMAGE_ICON_WIDTH = 30.0;
-  static const double ARROW_ICON_WIDTH = 16.0;
-
   var titles = ["夜间模式", "切换主题", "退出登录", "测试页"];
   var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad];
   var userAvatar;
   var userName;
   var titleTextStyle = new TextStyle(fontSize: 16.0);
-  var rightArrowIcon = new Image.asset(
-    'images/ic_arrow_right.png',
-    width: ARROW_ICON_WIDTH,
-    height: ARROW_ICON_WIDTH,
-  );
 
   bool isLogin = false;
   bool isDark = false;
@@ -75,24 +67,12 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   void getUserInfo() {
     DataUtils.getUserInfo().then((userInfo) {
-      String avatar = Api.userFace+"?uid=${userInfo.uid}&size=f100";
+      String avatar = Api.userFace+"?uid=${userInfo.uid}&size=f128";
       setState(() {
-        this.isLogin = isLogin;
         userAvatar = avatar;
         userName = userInfo.name;
       });
     });
-  }
-
-  Widget getIconImage(path) {
-    return new Padding(
-      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-      child: new Image.asset(
-          path,
-          width: IMAGE_ICON_WIDTH,
-          height: IMAGE_ICON_WIDTH
-      ),
-    );
   }
 
   Widget renderRow(i) {
@@ -175,6 +155,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 activeColor: themeColor,
                 value: isDark,
                 onChanged: (isDark) {
+                  setDarkMode(isDark);
                   DataUtils.setBrightness(isDark);
                   Constants.eventBus.fire(ChangeBrightnessEvent(isDark));
                 }
@@ -189,6 +170,16 @@ class MyInfoPageState extends State<MyInfoPage> {
         _handleListItemClick(context, title);
       },
     );
+  }
+
+  void setDarkMode(isDark) {
+    if (isDark) {
+      ThemeUtils.currentPrimaryColor = Colors.grey[850];
+      ThemeUtils.currentBrightness = Brightness.dark;
+    } else {
+      ThemeUtils.currentPrimaryColor = Colors.white;
+      ThemeUtils.currentBrightness = Brightness.light;
+    }
   }
 
   @override

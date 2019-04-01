@@ -31,6 +31,8 @@ class Api {
   static final String postList = wbHost + "/topic_api/square";
   static final String postFollowedList = wbHost + "/topic_api/timeline";
   static final String postPraise = wbHost + "/praise_api/praise/tid/";
+  static final String postContent = wbHost + "/topic_api/topic";
+  static final String postUploadImage = wbHost + "/upload_api/image";
 
   // 评论列表
   static final String COMMENT_LIST = oa99Host + "/action/openapi/comment_list";

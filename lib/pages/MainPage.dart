@@ -16,6 +16,7 @@ import 'package:jxt/pages/NewsListPage.dart';
 import 'package:jxt/pages/WeiboListPage.dart';
 import 'package:jxt/pages/AppCenterPage.dart';
 import 'package:jxt/pages/DiscoveryPage.dart';
+import 'package:jxt/pages/PublishPostPage.dart';
 import 'package:jxt/pages/MyInfoPage.dart';
 
 class MainPage extends StatefulWidget {
@@ -87,7 +88,6 @@ class MainPageState extends State<MainPage> {
     Constants.eventBus.on<NotificationCountChangeEvent>().listen((event) {
       setState(() {
         currentNotifications = event.notifications;
-
       });
     });
     pages = <Widget>[
@@ -163,6 +163,29 @@ class MainPageState extends State<MainPage> {
     return new WillPopScope(
         onWillPop: doubleClickBack,
         child: new Scaffold(
+          floatingActionButton: _tabIndex == 0
+          ? new Builder(builder: (BuildContext context) {
+            return new FloatingActionButton(
+              child: new Icon(Icons.create),
+              tooltip: "发布新动态",
+              foregroundColor: Colors.white,
+              backgroundColor: currentThemeColor,
+              elevation: 8.0,
+              highlightElevation: 14.0,
+              onPressed: () {
+                Navigator.of(context).push(new MaterialPageRoute(
+                    builder: (context) {
+                      return new PublishPostPage();
+                    }
+                ));
+              },
+              mini: false,
+              shape: new CircleBorder(),
+              isExtended: false,
+            );
+          })
+          : null,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           appBar: new AppBar(
               elevation: 1,
               leading: new Padding(
@@ -183,9 +206,16 @@ class MainPageState extends State<MainPage> {
               ),
             ),
             title: new Center(
-                child: new Text(
-                    appBarTitles[_tabIndex],
-                    style: new TextStyle(color: currentThemeColor, fontWeight: FontWeight.bold)
+                child: new FlatButton(
+                    onPressed: null,
+                    child: new Text(
+                        appBarTitles[_tabIndex],
+                        style: new TextStyle(
+                            color: currentThemeColor,
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.bold
+                        )
+                    )
                 )
             ),
             actions: <Widget>[
@@ -214,7 +244,7 @@ class MainPageState extends State<MainPage> {
                   icon: Icon(Icons.notifications),
                   badgeColor: currentThemeColor,
                   badgeTextColor: Colors.white,
-                  hideZeroCount: true, // default: true
+                  hideZeroCount: true,
                   onPressed: null
               ),
             ],

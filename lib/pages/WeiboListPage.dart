@@ -7,7 +7,6 @@ import 'package:jxt/api/Api.dart';
 import 'package:jxt/constants/Constants.dart';
 import 'package:jxt/events/LoginEvent.dart';
 import 'package:jxt/events/LogoutEvent.dart';
-import 'package:jxt/events/NotificationCountChangeEvent.dart';
 import 'package:jxt/model/Bean.dart';
 import 'package:jxt/pages/WeiboDetailPage.dart';
 import 'package:jxt/utils/BlackListUtils.dart';
@@ -27,6 +26,9 @@ class WeiboListPage extends StatefulWidget {
 }
 
 class WeiboListPageState extends State<WeiboListPage> {
+  Color currentColorTheme = ThemeUtils.currentColorTheme;
+  Color currentPrimaryColor = ThemeUtils.currentPrimaryColor;
+
   List weiboList;
   List weiboFollowedList;
   final Color subIconColor = Colors.grey;
@@ -74,6 +76,116 @@ class WeiboListPageState extends State<WeiboListPage> {
         getWeiboList(true, false);
       }
     });
+  }
+
+  Widget postCategory() {
+    return new Stack(
+        children: <Widget>[
+          new Positioned(
+              left: 0,
+              top: 0.0,
+              right: 0.0,
+              bottom: 0.0,
+              child: new DecoratedBox(
+                  decoration: new BoxDecoration(
+                      color: Colors.grey
+                  )
+              )
+          ),
+          new Positioned(
+              left: 0.0,
+              top: 0.0,
+              right: 0.0,
+              child: new Column(
+                  children: <Widget>[
+                    new Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                      decoration: new BoxDecoration(
+                          color: currentPrimaryColor
+                      ),
+                      child: new Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            new Text(
+                              "默认分组",
+                              style: new TextStyle(
+                                  fontSize: 16.0
+                              ),
+                            ),
+                            new Text(
+                              "编辑",
+                              style: new TextStyle(
+                                  color: currentColorTheme,
+                                  fontSize: 16.0
+                              ),
+                            ),
+                          ]
+                      ),
+                    ),
+                    new Container(
+                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                        decoration: new BoxDecoration(
+                            color: currentPrimaryColor
+                        ),
+                        child: new GridView.count(
+                            crossAxisCount: 4,
+                            shrinkWrap: true,
+                            childAspectRatio: 2.75 / 1,
+                            children: <Widget>[
+                              new Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 6.0),
+                                child: new Container(
+                                    decoration: new BoxDecoration(
+                                        borderRadius: new BorderRadius.all(new Radius.circular(5.0)),
+                                        color: currentColorTheme
+                                    ),
+                                    child: new FlatButton(
+                                        onPressed: () {
+                                          showShortToast("测试");
+                                        },
+                                        child: new Center(
+                                            child: new Text(
+                                                "测试",
+                                                style: new TextStyle(
+                                                    color: currentPrimaryColor,
+                                                    fontSize: 16.0
+                                                )
+                                            )
+                                        )
+                                    )
+                                ),
+                              ),
+                              new Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 6.0),
+                                child: new Container(
+                                    decoration: new BoxDecoration(
+                                        borderRadius: new BorderRadius.all(new Radius.circular(5.0)),
+                                        color: Colors.grey
+                                    ),
+                                    child: new FlatButton(
+                                        onPressed: () {
+                                          showShortToast("测试");
+                                        },
+                                        child: new Center(
+                                            child: new Text(
+                                                "测试",
+                                                style: new TextStyle(
+                                                    color: currentPrimaryColor,
+                                                    fontSize: 16.0
+                                                )
+                                            )
+                                        )
+                                    )
+                                ),
+                              ),
+                            ]
+                        )
+                    )
+                  ]
+              )
+          ),
+        ]
+    );
   }
 
   void getForwardPage(context, uri) {
@@ -320,7 +432,6 @@ class WeiboListPageState extends State<WeiboListPage> {
           child: listView,
           onRefresh: _pullToRefresh
       );
-      // 普通微博列表
     }
   }
 
@@ -331,7 +442,6 @@ class WeiboListPageState extends State<WeiboListPage> {
         child: new CircularProgressIndicator(),
       );
     } else {
-      // 关注的人微博列表
       Widget listView = new ListView.builder(
         itemCount: weiboFollowedList.length,
         itemBuilder: (context, i) => renderRow(i, true),
@@ -355,45 +465,6 @@ class WeiboListPageState extends State<WeiboListPage> {
 
   @override
   Widget build(BuildContext context) {
-//    if (!isUserLogin) {
-//      return new Center(
-//        child: new Column(
-//          mainAxisAlignment: MainAxisAlignment.center,
-//          children: <Widget>[
-//            new Container(
-//                padding: const EdgeInsets.all(10.0),
-//                child: new Center(
-//                  child: new Column(
-//                    children: <Widget>[
-//                      new Text("由于OSC的openapi限制"),
-//                      new Text("必须登录后才能获取微博信息")
-//                    ],
-//                  ),
-//                )
-//            ),
-//            new InkWell(
-//              child: new Container(
-//                padding: const EdgeInsets.fromLTRB(15.0, 8.0, 15.0, 8.0),
-//                child: new Text("去登录"),
-//                decoration: new BoxDecoration(
-//                    border: new Border.all(color: Colors.black),
-//                    borderRadius: new BorderRadius.all(new Radius.circular(5.0))
-//                ),
-//              ),
-//              onTap: () async {
-//                final result = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) {
-//                  return LoginPage();
-//                }));
-//                if (result != null && result == "refresh") {
-//                  // 通知微博页面刷新
-//                  Constants.eventBus.fire(new LoginEvent());
-//                }
-//              },
-//            ),
-//          ],
-//        ),
-//      );
-//    }
     return new Scaffold(
         body: getListView(),
     );

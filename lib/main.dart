@@ -81,6 +81,4 @@ class JMUAppClientState extends State<JMUAppClient> {
         home: new SplashPage()
     );
   }
-
-
 }
