@@ -33,6 +33,7 @@ class MainPageState extends State<MainPage> {
 
   int currentNotifications = 0;
   Timer notificationTimer;
+  Stopwatch watch = new Stopwatch();
 
   int _tabIndex = 0;
   var _body;
@@ -52,7 +53,8 @@ class MainPageState extends State<MainPage> {
         this.isUserLogin = isLogin;
       });
       if (isLogin) {
-        notificationTimer = new Timer(const Duration(milliseconds: 30000), () {
+        watch.start();
+        notificationTimer = new Timer.periodic(const Duration(milliseconds: 10000), (timer) {
           DataUtils.getNotifications();
         });
         DataUtils.getUserInfo().then((userInfo) {
@@ -74,21 +76,25 @@ class MainPageState extends State<MainPage> {
       },));
     });
     DataUtils.getColorThemeIndex().then((index) {
-      if (index != null) {
+      if (this.mounted && index != null) {
         ThemeUtils.currentColorTheme = ThemeUtils.supportColors[index];
         Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.supportColors[index]));
       }
     });
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
-      setState(() {
-        tabTextStyleSelected = new TextStyle(color: event.color);
-        currentThemeColor = event.color;
-      });
+      if (this.mounted) {
+        setState(() {
+          tabTextStyleSelected = new TextStyle(color: event.color);
+          currentThemeColor = event.color;
+        });
+      }
     });
     Constants.eventBus.on<NotificationCountChangeEvent>().listen((event) {
-      setState(() {
-        currentNotifications = event.notifications;
-      });
+      if (this.mounted) {
+        setState(() {
+          currentNotifications = event.notifications;
+        });
+      }
     });
     pages = <Widget>[
       WeiboListPage(),
@@ -101,7 +107,7 @@ class MainPageState extends State<MainPage> {
 
   @override
   void dispose() {
-    notificationTimer.cancel();
+    notificationTimer != null ? notificationTimer.cancel() : null;
     super.dispose();
   }
 
@@ -128,10 +134,6 @@ class MainPageState extends State<MainPage> {
         image: new DecorationImage(
             image: new NetworkImage(Api.userFace+"?uid=$userUid&size=f100"),
             fit: BoxFit.contain
-        ),
-        border: new Border.all(
-          color: Colors.white,
-          width: 2.0,
         ),
       ),
     );
@@ -189,7 +191,7 @@ class MainPageState extends State<MainPage> {
           appBar: new AppBar(
               elevation: 1,
               leading: new Padding(
-              padding: EdgeInsets.fromLTRB(16, 12, 8, 12),
+              padding: EdgeInsets.fromLTRB(14, 10, 6, 10),
               child: new Container(
                 decoration: new BoxDecoration(
                   shape: BoxShape.circle,
@@ -197,10 +199,6 @@ class MainPageState extends State<MainPage> {
                   image: new DecorationImage(
                       image: new NetworkImage(Api.userFace+"?uid=$userUid&size=f100"),
                       fit: BoxFit.contain
-                  ),
-                  border: new Border.all(
-                    color: Colors.white,
-                    width: 2.0,
                   ),
                 ),
               ),
@@ -219,26 +217,6 @@ class MainPageState extends State<MainPage> {
                 )
             ),
             actions: <Widget>[
-//              new Padding(
-//                padding: const EdgeInsets.only(left: 8, right: 8),
-//                child: IconButton(
-//                  padding: const EdgeInsets.all(0),
-//                  icon: Padding(
-//                    padding: const EdgeInsets.only(left: 0.0, right: 0.0),
-//                    child: CircleAvatar(
-//                      child: Icon(
-//                        Icons.notifications,
-//                        color: currentThemeColor,
-//                      ),
-//                      backgroundColor: Color(0x0000000),
-//                      radius: 16,
-//                    ),
-//                  ),
-//                  onPressed: () {
-//                    // TODO: 消息页面
-//                  },
-//                ),
-//              ),
               BadgeIconButton(
                   itemCount: currentNotifications,
                   icon: Icon(Icons.notifications),

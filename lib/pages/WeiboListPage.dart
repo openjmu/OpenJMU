@@ -197,6 +197,7 @@ class WeiboListPageState extends State<WeiboListPage> {
   }
 
   void getWeiboList(bool isLoadMore, bool isFollowed) {
+    DataUtils.getNotifications();
     DataUtils.isLogin().then((isLogin) {
       if (isLogin) {
         loading = true;

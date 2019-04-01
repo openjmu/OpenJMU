@@ -63,10 +63,6 @@ class _CardItemState extends State<CardItem> {
             image: new NetworkImage(post.avatar),
             fit: BoxFit.cover
         ),
-        border: new Border.all(
-          color: const Color(0xFFECECEC),
-          width: 2.0,
-        ),
       ),
     );
   }
@@ -90,13 +86,7 @@ class _CardItemState extends State<CardItem> {
         &&
       int.parse(_postTime.substring(3, 5)) == now.day
     ) {
-      _postTime = "今天${_postTime.substring(5, 11)}";
-    } else if (
-      int.parse(_postTime.substring(0, 2)) == now.month
-        &&
-      int.parse(_postTime.substring(3, 5)) == now.day - 1
-    ) {
-      _postTime = "昨天${_postTime.substring(5, 11)}";
+      _postTime = "${_postTime.substring(5, 11)}";
     }
     return new Row(
         children: <Widget>[
@@ -109,9 +99,7 @@ class _CardItemState extends State<CardItem> {
               " $_postTime",
               style: subtitleStyle
           ),
-          new Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.0)
-          ),
+          new Container(width: 10.0),
           new Icon(
               Icons.smartphone,
               color: Colors.grey,
@@ -121,9 +109,7 @@ class _CardItemState extends State<CardItem> {
               " ${post.from}",
               style: subtitleStyle
           ),
-          new Padding(
-              padding: EdgeInsets.symmetric(horizontal: 5.0)
-          ),
+          new Container(width: 10.0),
           new Icon(
               Icons.remove_red_eye,
               color: Colors.grey,

@@ -20,7 +20,7 @@ import 'package:jxt/utils/SnackbarUtils.dart';
 
 class DataUtils {
   static final String spIsLogin     = "isLogin";
-  static final String spUapAccount  = "uapAccount";
+//  static final String spUapAccount  = "uapAccount";
 
   static final String spUserSid     = "sid";
   static final String spTicket      = "ticket";
@@ -48,26 +48,51 @@ class DataUtils {
 
   static doLogin(context, String username, String password) async {
     String blowfish = new Uuid().v4();
-    var clientInfo = {
-      "appid": 273,
-      "platform": 30,
-      "platformver": "2.3.1",
-//      "deviceid": "${new Random().nextInt(999999999999999)}",
-      "devicetype": "TestDeviceName",
-      "systype": "TestDevice",
-      "sysver": "2.1"
-    };
-    var params = {
-      "appid": "273",
-      "blowfish": "$blowfish",
-      "account": "$username",
-      "password": "${sha1.convert(utf8.encode(password))}",
-      "encrypt": 1,
-      "flag": 1,
-      "unitid": 55,
-      "imgcode": "",
-      "clientinfo": jsonEncode(clientInfo)
-    };
+    Map<String, Object> clientInfo, params;
+    if (Platform.isIOS) {
+      clientInfo = {
+        "appid": 274,
+        "packetid": "",
+        "platform": 40,
+        "platformver": "2.3.2",
+//        "deviceid": "${new Random().nextInt(999999999999999)}",
+        "deviceid": "",
+        "devicetype": "iPhone",
+        "systype": "iPhone OS",
+        "sysver": "12.2"
+      };
+      params = {
+        "blowfish": "$blowfish",
+        "account": "$username",
+        "password": "${sha1.convert(utf8.encode(password))}",
+        "encrypt": 1,
+        "unitcode": "jmu",
+        "clientinfo": jsonEncode(clientInfo)
+      };
+      print(params);
+    } else if (Platform.isAndroid) {
+      clientInfo = {
+        "appid": 273,
+        "platform": 30,
+        "platformver": "2.3.1",
+//        "deviceid": "${new Random().nextInt(999999999999999)}",
+        "deviceid": "",
+        "devicetype": "android",
+        "systype": "TestDevice",
+        "sysver": "9.0"
+      };
+      params = {
+        "appid": 273,
+        "blowfish": "$blowfish",
+        "account": "$username",
+        "password": "${sha1.convert(utf8.encode(password))}",
+        "encrypt": 1,
+        "flag": 1,
+        "unitid": 55,
+        "imgcode": "",
+        "clientinfo": jsonEncode(clientInfo)
+      };
+    }
     NetUtils.post(Api.login, data: params)
       .then((response) {
         Map<String, dynamic> data = jsonDecode(response);
@@ -85,7 +110,7 @@ class DataUtils {
           .then((response) {
             Map<String, dynamic> userInfo = new Map();
             Map<String, dynamic> user = jsonDecode(response);
-            userInfo['uapAccount'] = data['bind_uap_account'];
+//            userInfo['uapAccount'] = data['bind_uap_account'];
             userInfo['sid'] = data['sid'];
             userInfo['ticket'] = data['ticket'];
             userInfo['blowfish'] = blowfish;
@@ -143,7 +168,7 @@ class DataUtils {
     if (data != null) {
       SharedPreferences sp = await SharedPreferences.getInstance();
       await sp.setBool(spIsLogin, true);
-      await sp.setString(spUapAccount, data['uapAccount']);
+//      await sp.setString(spUapAccount, data['uapAccount']);
       await sp.setString(spUserSid, data['sid']);
       await sp.setString(spTicket, data['ticket']);
       await sp.setString(spBlowfish, data['blowfish']);
@@ -160,7 +185,7 @@ class DataUtils {
   static clearLoginInfo() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.setBool(spIsLogin, false);
-    await sp.remove(spUapAccount);
+//    await sp.remove(spUapAccount);
     await sp.remove(spUserSid);
     await sp.remove(spTicket);
     await sp.remove(spBlowfish);
@@ -184,21 +209,43 @@ class DataUtils {
 
   static getTicket() async {
     getSpTicket().then((infos) {
-      var clientInfo = {
-        "appid": 273,
-        "platform": 30,
-        "platformver": "2.3.1",
-//      "deviceid": "${new Random().nextInt(999999999999999)}",
-        "devicetype": "TestDeviceName",
-        "systype": "TestDevice",
-        "sysver": "2.1"
-      };
-      var params = {
-        "appid": 273,
-        "ticket": "${infos['ticket']}",
-        "blowfish": "${infos['blowfish']}",
-        "clientinfo": jsonEncode(clientInfo)
-      };
+      Map<String, Object> clientInfo, params;
+      if (Platform.isIOS) {
+        clientInfo = {
+          "appid": 274,
+          "packetid": "",
+          "platform": 40,
+          "platformver": "2.3.2",
+//          "deviceid": "${new Random().nextInt(999999999999999)}",
+          "deviceid": "",
+          "devicetype": "iPhone",
+          "systype": "iPhone OS",
+          "sysver": "12.2"
+        };
+        params = {
+          "appid": 274,
+          "ticket": "${infos['ticket']}",
+          "blowfish": "${infos['blowfish']}",
+          "clientinfo": jsonEncode(clientInfo)
+        };
+
+      } else if (Platform.isAndroid) {
+        clientInfo = {
+          "appid": 273,
+          "platform": 30,
+          "platformver": "2.3.1",
+//          "deviceid": "${new Random().nextInt(999999999999999)}",
+          "devicetype": "TestDeviceName",
+          "systype": "TestDevice",
+          "sysver": "2.1"
+        };
+        params = {
+          "appid": 273,
+          "ticket": "${infos['ticket']}",
+          "blowfish": "${infos['blowfish']}",
+          "clientinfo": jsonEncode(clientInfo)
+        };
+      }
       NetUtils.post(Api.loginTicket, data: params)
         .then((response) {
           print(jsonDecode(response)['sid']);
