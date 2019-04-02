@@ -1,2 +1,2 @@
-# JMU-JiXiaoTong
+# OpenJMU
 Rebuild from JiDaTong using flutter.
