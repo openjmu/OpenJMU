@@ -208,8 +208,8 @@ class PostListPageState extends State<PostListPage> {
         DataUtils.getUserInfo().then((userInfo) {
           String sid, requestUrl;
           sid = userInfo.sid;
-          Map headers = NetUtils.buildPostHeaders(sid);
-          List cookies = NetUtils.buildPHPSESSIDCookies(sid);
+          Map headers = DataUtils.buildPostHeaders(sid);
+          List cookies = DataUtils.buildPHPSESSIDCookies(sid);
           if (isLoadMore) {
             if (!isFollowed) {
               int lastId = postList[postList.length-1]['id'];
@@ -383,6 +383,7 @@ class PostListPageState extends State<PostListPage> {
       int.parse(itemData['forwards']),
       int.parse(itemData['replys']),
       int.parse(itemData['praises']),
+      itemData['root_topic'],
       isLike: itemData['praised'] == 1 ? true : false
     );
     return _post;

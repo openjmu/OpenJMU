@@ -34,7 +34,7 @@ class AppCenterPageState extends State<AppCenterPage> {
   void getAppList(sid) async {
     NetUtils.getPlainWithCookieSet(
         Api.webAppLists,
-        cookies: NetUtils.buildPHPSESSIDCookies(sid)
+        cookies: DataUtils.buildPHPSESSIDCookies(sid)
     ).then((response) {
       webAppListData = jsonDecode(response.toString());
       List<Widget> buttons = [];

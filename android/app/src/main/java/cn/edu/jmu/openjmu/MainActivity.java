@@ -1,4 +1,4 @@
-package cn.edu.jmu.jxt;
+package cn.edu.jmu.openjmu;
 
 import android.os.Build;
 import android.os.Bundle;

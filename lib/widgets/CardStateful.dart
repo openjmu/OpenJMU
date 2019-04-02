@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/ChangeBrightnessEvent.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class CardItem extends StatefulWidget {
   final Post post;
@@ -22,11 +24,38 @@ class _CardItemState extends State<CardItem> {
   final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 12.0);
   final Color subIconColor = Colors.grey;
 
+  Color currentRootTopicColor = ThemeUtils.currentPrimaryColor;
+
   Color _forwardColor = Colors.grey;
   Color _replysColor = Colors.grey;
   Color _praisesColor = Colors.grey;
 
   Widget pics;
+
+  @override
+  void initState() {
+    super.initState();
+    if (ThemeUtils.currentPrimaryColor == Colors.white) {
+      setState(() {
+        currentRootTopicColor = Colors.grey[200];
+      });
+    }
+    Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
+      if (this.mounted) {
+        setRootTopicColor(event.isDarkState);
+      }
+    });
+  }
+
+  void setRootTopicColor(isDarkState) {
+    setState(() {
+      if (!isDarkState || ThemeUtils.currentPrimaryColor == Colors.white) {
+        currentRootTopicColor = Colors.grey[200];
+      } else {
+        currentRootTopicColor = Colors.grey[850];
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -139,6 +168,20 @@ class _CardItemState extends State<CardItem> {
     return result;
   }
 
+  FlatButton getLinkButton(url) {
+    return new FlatButton(
+        padding: EdgeInsets.zero,
+        child: new Text("网页链接", style: new TextStyle(color: Colors.indigo, decoration: TextDecoration.underline)),
+        onPressed: () {
+          Navigator.of(context).push(new MaterialPageRoute(
+              builder: (context) {
+                return new CommonWebPage(title: "网页链接", url: url);
+              }
+          ));
+        }
+    );
+  }
+
   Widget getPostContent(post) {
     String content = post.content, url;
     url = getUrlFromContent(content);
@@ -146,20 +189,10 @@ class _CardItemState extends State<CardItem> {
     List<Widget> widgets = [
       new Text(content, style: new TextStyle(fontSize: 16.0)),
     ];
-    if (url != null) {
-      widgets.add(
-          new FlatButton(
-              padding: EdgeInsets.zero,
-              child: new Text("网页链接", style: new TextStyle(color: Colors.indigo, decoration: TextDecoration.underline)),
-              onPressed: () {
-//                Navigator.of(context).push(platformPageRoute(
-//                    builder: (context) {
-//                      return new CommonWebPage(title: "网页链接", url: url);
-//                    }
-//                ));
-              }
-          )
-      );
+    if (url != null) widgets.add(getLinkButton(url));
+    if (post.rootTopic != null) {
+      var rootTopic = post.rootTopic['topic'];
+      widgets.add(getRootPost(rootTopic));
     }
     return new Row(
         children: <Widget>[
@@ -167,7 +200,8 @@ class _CardItemState extends State<CardItem> {
               child: new Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: new Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: widgets
                   )
@@ -175,6 +209,56 @@ class _CardItemState extends State<CardItem> {
           )
         ]
     );
+  }
+
+  Widget getRootPost(rootTopic) {
+    return new Container(
+        margin: EdgeInsets.only(top: 8.0),
+        padding: EdgeInsets.all(8.0),
+        decoration: new BoxDecoration(
+            color: currentRootTopicColor,
+            borderRadius: BorderRadius.circular(5.0)
+        ),
+        child: new Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              new Text("@${rootTopic['user']['nickname']}：${rootTopic['content']}"),
+              getRootPostImages(rootTopic)
+            ]
+        )
+    );
+  }
+
+  Widget getRootPostImages(post) {
+    final imagesData = post['image'];
+    if (imagesData != null) {
+      List<Widget> imagesWidget = [];
+      for (var i = 0; i < imagesData.length; i++) {
+        String imageOriginalUrl = imagesData[i]['image_original'];
+        String imageThumbUrl = "http" + imageOriginalUrl.substring(5, imageOriginalUrl.length);
+        imagesWidget.add(
+          new Image.network(imageThumbUrl, fit: BoxFit.cover),
+        );
+      }
+      int itemCount = 3;
+      if (imagesData.length < 3) {
+        itemCount = imagesData.length;
+      }
+      return new Container(
+          margin: EdgeInsets.only(top: 4.0),
+          child: new GridView.count(
+              shrinkWrap: true,
+              primary: false,
+              mainAxisSpacing: 8.0,
+              crossAxisCount: itemCount,
+              crossAxisSpacing: 8.0,
+              children: imagesWidget
+          )
+      );
+    } else {
+      return new Container();
+    }
   }
 
   Widget getPostImages(post) {
@@ -288,8 +372,8 @@ class _CardItemState extends State<CardItem> {
       headers["CLOUDID"] = "jmu";
       headers["CLOUD-ID"] = "jmu";
       headers["UAP-SID"] = sid;
-      headers["WEIBO-API-KEY"] = Constants.weiboApiKey;
-      headers["WEIBO-API-SECRET"] = Constants.weiboApiSecret;
+      headers["WEIBO-API-KEY"] = Constants.postApiKeyAndroid;
+      headers["WEIBO-API-SECRET"] = Constants.postApiSecretAndroid;
       List<Cookie> cookies = [new Cookie("PHPSESSID", sid)];
       if (isPraise) {
         NetUtils.postWithCookieAndHeaderSet(

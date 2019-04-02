@@ -19,8 +19,8 @@ class MyInfoPage extends StatefulWidget {
 class MyInfoPageState extends State<MyInfoPage> {
   Color themeColor = ThemeUtils.currentColorTheme;
 
-  var titles = ["夜间模式", "切换主题", "退出登录", "测试页"];
-  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad];
+  var titles = ["夜间模式", "切换主题", "退出登录", "测试页", "关于"];
+  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad, Icons.info];
   var userAvatar;
   var userName;
   var titleTextStyle = new TextStyle(fontSize: 16.0);
@@ -154,7 +154,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 onChanged: (isDark) {
                   setDarkMode(isDark);
                   DataUtils.setBrightness(isDark);
-                  Constants.eventBus.fire(ChangeBrightnessEvent(isDark));
+                  Constants.eventBus.fire(new ChangeBrightnessEvent(isDark));
                 }
               )
               : new Icon(Icons.keyboard_arrow_right)
@@ -170,13 +170,15 @@ class MyInfoPageState extends State<MyInfoPage> {
   }
 
   void setDarkMode(isDark) {
-    if (isDark) {
-      ThemeUtils.currentPrimaryColor = Colors.grey[850];
-      ThemeUtils.currentBrightness = Brightness.dark;
-    } else {
-      ThemeUtils.currentPrimaryColor = Colors.white;
-      ThemeUtils.currentBrightness = Brightness.light;
-    }
+    setState(() {
+      if (isDark) {
+        ThemeUtils.currentPrimaryColor = Colors.grey[850];
+        ThemeUtils.currentBrightness = Brightness.dark;
+      } else {
+        ThemeUtils.currentPrimaryColor = Colors.white;
+        ThemeUtils.currentBrightness = Brightness.light;
+      }
+    });
   }
 
   @override
@@ -201,6 +203,26 @@ class MyInfoPageState extends State<MyInfoPage> {
       Navigator.pushNamed(context, "/changeTheme");
     } else if (title == "测试页") {
       Navigator.pushNamed(context, "/test");
+    } else if (title == "关于") {
+      showAboutDialog(context);
     }
   }
+
+  void showAboutDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_) =>  AboutDialog(
+            applicationName: 'OpenJMU',
+            applicationIcon: new Image.asset(
+                "images/ic_jmu_logo_trans_original.png",
+              width: 40.0,
+              height: 40.0
+            ),
+            applicationVersion: 'v0.1.1',
+            children: <Widget>[
+              Text('Developed By Alex & Evsio0n.')
+            ]
+        ));
+  }
+
 }

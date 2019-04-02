@@ -14,6 +14,7 @@ class Post {
   int replys;
   int praises;
   bool isLike;
+  Object rootTopic;
 
   Post(
       this.id,
@@ -29,6 +30,7 @@ class Post {
       this.forwards,
       this.replys,
       this.praises,
+      this.rootTopic,
       {this.isLike = false}
   );
 
@@ -55,6 +57,7 @@ class Post {
         forwards,
         replys,
         praises,
+        rootTopic,
         isLike: isLike
     );
   }

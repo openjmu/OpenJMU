@@ -12,7 +12,7 @@ import 'package:OpenJMU/events/LogoutEvent.dart';
 import 'package:OpenJMU/events/TicketGotEvent.dart';
 import 'package:OpenJMU/events/TicketFailedEvent.dart';
 import 'package:OpenJMU/events/NotificationCountChangeEvent.dart';
-import 'package:OpenJMU/model/UserInfo.dart';
+import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
@@ -20,7 +20,6 @@ import 'package:OpenJMU/utils/SnackbarUtils.dart';
 
 class DataUtils {
   static final String spIsLogin     = "isLogin";
-//  static final String spUapAccount  = "uapAccount";
 
   static final String spUserSid     = "sid";
   static final String spTicket      = "ticket";
@@ -110,7 +109,6 @@ class DataUtils {
           .then((response) {
             Map<String, dynamic> userInfo = new Map();
             Map<String, dynamic> user = jsonDecode(response);
-//            userInfo['uapAccount'] = data['bind_uap_account'];
             userInfo['sid'] = data['sid'];
             userInfo['ticket'] = data['ticket'];
             userInfo['blowfish'] = blowfish;
@@ -165,7 +163,6 @@ class DataUtils {
     if (data != null) {
       SharedPreferences sp = await SharedPreferences.getInstance();
       await sp.setBool(spIsLogin, true);
-//      await sp.setString(spUapAccount, data['uapAccount']);
       await sp.setString(spUserSid, data['sid']);
       await sp.setString(spTicket, data['ticket']);
       await sp.setString(spBlowfish, data['blowfish']);
@@ -182,7 +179,6 @@ class DataUtils {
   static clearLoginInfo() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.setBool(spIsLogin, false);
-//    await sp.remove(spUapAccount);
     await sp.remove(spUserSid);
     await sp.remove(spTicket);
     await sp.remove(spBlowfish);
@@ -205,6 +201,8 @@ class DataUtils {
   }
 
   static getTicket() async {
+    print("isIOS: ${Platform.isIOS}");
+    print("isAndroid: ${Platform.isAndroid}");
     getSpTicket().then((infos) {
       Map<String, Object> clientInfo, params;
       if (Platform.isIOS) {
@@ -333,8 +331,8 @@ class DataUtils {
   // 获取未读信息数
   static getNotifications() async {
     getSid().then((sid) {
-      Map headers = NetUtils.buildPostHeaders(sid);
-      List cookies = NetUtils.buildPHPSESSIDCookies(sid);
+      Map headers = buildPostHeaders(sid);
+      List cookies = buildPHPSESSIDCookies(sid);
       NetUtils.getWithCookieAndHeaderSet(
           Api.postUnread,
           headers: headers,
@@ -354,5 +352,25 @@ class DataUtils {
       });
     });
   }
+
+  static Map<String, dynamic> buildPostHeaders(sid) {
+    Map<String, String> headers = new Map();
+    headers["CLOUDID"] = "jmu";
+    headers["CLOUD-ID"] = "jmu";
+    headers["UAP-SID"] = sid;
+    if (Platform.isIOS) {
+      headers["WEIBO-API-KEY"] = Constants.postApiKeyIOS;
+      headers["WEIBO-API-SECRET"] = Constants.postApiSecretIOS;
+    } else if (Platform.isAndroid) {
+      headers["WEIBO-API-KEY"] = Constants.postApiKeyAndroid;
+      headers["WEIBO-API-SECRET"] = Constants.postApiSecretAndroid;
+    }
+    return headers;
+  }
+
+  static List<Cookie> buildPHPSESSIDCookies(sid) {
+    return [new Cookie("PHPSESSID", sid)];
+  }
+
 
 }

@@ -22,7 +22,6 @@ class ThemeUtils {
   // 当前的内容色
   static Color currentColorTheme = defaultColor;
   // 当前的主题色
-//  static Color currentPrimaryColor = Colors.grey[850];
   static Color currentPrimaryColor = Colors.white;
 
   // 当前是否夜间模式
