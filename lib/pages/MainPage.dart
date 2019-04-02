@@ -2,22 +2,23 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:badges/badges.dart';
-import 'package:jxt/api/Api.dart';
-import 'package:jxt/constants/Constants.dart';
-import 'package:jxt/events/ChangeThemeEvent.dart';
-import 'package:jxt/events/LoginEvent.dart';
-import 'package:jxt/events/LogoutEvent.dart';
-import 'package:jxt/events/NotificationCountChangeEvent.dart';
-import 'package:jxt/utils/DataUtils.dart';
-import 'package:jxt/utils/ThemeUtils.dart';
-import 'package:jxt/utils/ToastUtils.dart';
-import 'package:jxt/pages/LoginPage.dart';
-import 'package:jxt/pages/NewsListPage.dart';
-import 'package:jxt/pages/WeiboListPage.dart';
-import 'package:jxt/pages/AppCenterPage.dart';
-import 'package:jxt/pages/DiscoveryPage.dart';
-import 'package:jxt/pages/PublishPostPage.dart';
-import 'package:jxt/pages/MyInfoPage.dart';
+import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/ChangeThemeEvent.dart';
+import 'package:OpenJMU/events/LoginEvent.dart';
+import 'package:OpenJMU/events/LogoutEvent.dart';
+import 'package:OpenJMU/events/NotificationCountChangeEvent.dart';
+import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/pages/LoginPage.dart';
+//import 'package:OpenJMU/pages/NewsListPage.dart';
+import 'package:OpenJMU/pages/PostListPage.dart';
+import 'package:OpenJMU/pages/AppCenterPage.dart';
+import 'package:OpenJMU/pages/DiscoveryPage.dart';
+import 'package:OpenJMU/pages/PublishPostPage.dart';
+import 'package:OpenJMU/pages/MyInfoPage.dart';
+import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -25,7 +26,14 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
-  final appBarTitles = ['首页', '新闻', '应用中心', '消息', '我的'];
+//  final List<String> bottomAppBarTitles = ['首页', '新闻', '应用中心', '消息', '我的'];
+  final List<String> bottomAppBarTitles = ['首页', '应用中心', '消息', '我的'];
+//  final List<IconData> bottomAppBarIcons = [
+//    Icons.home, Icons.fiber_new, Icons.apps, Icons.chat, Icons.account_circle
+//  ];
+  final List<IconData> bottomAppBarIcons = [
+    Icons.home, Icons.apps, Icons.chat, Icons.account_circle
+  ];
   TextStyle tabTextStyleSelected = new TextStyle(color: ThemeUtils.currentColorTheme);
   final tabTextStyleNormal = new TextStyle(color: Colors.grey);
   Color currentPrimaryColor = ThemeUtils.currentPrimaryColor;
@@ -44,6 +52,12 @@ class MainPageState extends State<MainPage> {
   var userAvatar;
 
   bool isUserLogin = false;
+
+  void _selectedTab(int index) {
+    setState(() {
+      _tabIndex = index;
+    });
+  }
 
   @override
   void initState() {
@@ -66,9 +80,11 @@ class MainPageState extends State<MainPage> {
       }
     });
     Constants.eventBus.on<LoginEvent>().listen((event) {
-      setState(() {
-        this.isUserLogin = true;
-      });
+      if (this.mounted) {
+        setState(() {
+          this.isUserLogin = true;
+        });
+      }
     });
     Constants.eventBus.on<LogoutEvent>().listen((event) {
       Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (context) {
@@ -97,8 +113,8 @@ class MainPageState extends State<MainPage> {
       }
     });
     pages = <Widget>[
-      WeiboListPage(),
-      NewsListPage(),
+      PostListPage(),
+//      NewsListPage(),
       AppCenterPage(),
       DiscoveryPage(),
       MyInfoPage()
@@ -122,8 +138,11 @@ class MainPageState extends State<MainPage> {
     return tabTextStyleNormal;
   }
 
-  Text getTabTitle(int curIndex) {
-    return new Text(appBarTitles[curIndex], style: getTabTextStyle(curIndex));
+//  Text getTabTitle(int curIndex) {
+//    return new Text(bottomAppBarTitles[curIndex], style: getTabTextStyle(curIndex));
+//  }
+  String getTabTitle(int curIndex) {
+    return bottomAppBarTitles[curIndex];
   }
 
   Container getAvatar() {
@@ -165,10 +184,49 @@ class MainPageState extends State<MainPage> {
     return new WillPopScope(
         onWillPop: doubleClickBack,
         child: new Scaffold(
-          floatingActionButton: _tabIndex == 0
-          ? new Builder(builder: (BuildContext context) {
+          appBar: new AppBar(
+              elevation: 1,
+              leading: new Padding(
+              padding: EdgeInsets.fromLTRB(14, 10, 6, 10),
+              child: new Container(
+                decoration: new BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.transparent,
+                  image: new DecorationImage(
+                      image: new NetworkImage(Api.userFace+"?uid=$userUid&size=f100"),
+                      fit: BoxFit.contain
+                  ),
+                ),
+              ),
+            ),
+            title: new FlatButton(
+                onPressed: null,
+                child: new Text(
+                    getTabTitle(_tabIndex),
+                    style: new TextStyle(
+                        color: currentThemeColor,
+                        fontSize: 22.0,
+                        fontWeight: FontWeight.bold
+                    )
+                )
+            ),
+            centerTitle: true,
+            actions: <Widget>[
+              BadgeIconButton(
+                  itemCount: currentNotifications,
+                  icon: Icon(Icons.notifications),
+                  badgeColor: currentThemeColor,
+                  badgeTextColor: Colors.white,
+                  hideZeroCount: true,
+                  onPressed: null
+              ),
+            ],
+            iconTheme: new IconThemeData(color: currentThemeColor),
+            brightness: Theme.of(context).brightness,
+          ),
+          floatingActionButton: new Builder(builder: (BuildContext context) {
             return new FloatingActionButton(
-              child: new Icon(Icons.create),
+              child: new Icon(Icons.add),
               tooltip: "发布新动态",
               foregroundColor: Colors.white,
               backgroundColor: currentThemeColor,
@@ -185,88 +243,59 @@ class MainPageState extends State<MainPage> {
               shape: new CircleBorder(),
               isExtended: false,
             );
-          })
-          : null,
-          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-          appBar: new AppBar(
-              elevation: 1,
-              leading: new Padding(
-              padding: EdgeInsets.fromLTRB(14, 10, 6, 10),
-              child: new Container(
-                decoration: new BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.transparent,
-                  image: new DecorationImage(
-                      image: new NetworkImage(Api.userFace+"?uid=$userUid&size=f100"),
-                      fit: BoxFit.contain
-                  ),
-                ),
-              ),
-            ),
-            title: new Center(
-                child: new FlatButton(
-                    onPressed: null,
-                    child: new Text(
-                        appBarTitles[_tabIndex],
-                        style: new TextStyle(
-                            color: currentThemeColor,
-                            fontSize: 22.0,
-                            fontWeight: FontWeight.bold
-                        )
-                    )
-                )
-            ),
-            actions: <Widget>[
-              BadgeIconButton(
-                  itemCount: currentNotifications,
-                  icon: Icon(Icons.notifications),
-                  badgeColor: currentThemeColor,
-                  badgeTextColor: Colors.white,
-                  hideZeroCount: true,
-                  onPressed: null
-              ),
+          }),
+          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          bottomNavigationBar: FABBottomAppBar(
+//            centerItemText: '',
+            color: Colors.grey,
+            selectedColor: ThemeUtils.currentColorTheme,
+            notchedShape: CircularNotchedRectangle(),
+            onTabSelected: _selectedTab,
+            items: [
+              FABBottomAppBarItem(iconData: bottomAppBarIcons[0], text: getTabTitle(0)),
+              FABBottomAppBarItem(iconData: bottomAppBarIcons[1], text: getTabTitle(1)),
+              FABBottomAppBarItem(iconData: bottomAppBarIcons[2], text: getTabTitle(2)),
+              FABBottomAppBarItem(iconData: bottomAppBarIcons[3], text: getTabTitle(3)),
             ],
-            iconTheme: new IconThemeData(color: currentThemeColor),
-            brightness: Theme.of(context).brightness,
           ),
           body: _body,
-          bottomNavigationBar: new BottomNavigationBar(
-            fixedColor: Theme.of(context).primaryColor,
-            type: BottomNavigationBarType.fixed,
-            items: <BottomNavigationBarItem>[
-              BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.home, color: currentThemeColor),
-                  icon: Icon(Icons.home, color: Colors.grey),
-                  title: getTabTitle(0)
-              ),
-              BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.fiber_new, color: currentThemeColor),
-                  icon: Icon(Icons.fiber_new, color: Colors.grey),
-                  title: getTabTitle(1)
-              ),
-              BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.apps, color: currentThemeColor),
-                  icon: Icon(Icons.apps, color: Colors.grey),
-                  title: getTabTitle(2)
-              ),
-              BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.chat, color: currentThemeColor),
-                  icon: Icon(Icons.chat, color: Colors.grey),
-                  title: getTabTitle(3)
-              ),
-              BottomNavigationBarItem(
-                  activeIcon: Icon(Icons.account_circle, color: currentThemeColor),
-                  icon: Icon(Icons.account_circle, color: Colors.grey),
-                  title: getTabTitle(4)
-              )
-            ],
-            currentIndex: _tabIndex,
-            onTap: (index) {
-              setState((){
-                _tabIndex = index;
-              });
-            },
-          ),
+//          bottomNavigationBar: new BottomNavigationBar(
+//            fixedColor: Theme.of(context).primaryColor,
+//            type: BottomNavigationBarType.fixed,
+//            items: <BottomNavigationBarItem>[
+//              BottomNavigationBarItem(
+//                  activeIcon: Icon(Icons.home, color: currentThemeColor),
+//                  icon: Icon(Icons.home, color: Colors.grey),
+//                  title: getTabTitle(0)
+//              ),
+//              BottomNavigationBarItem(
+//                  activeIcon: Icon(Icons.fiber_new, color: currentThemeColor),
+//                  icon: Icon(Icons.fiber_new, color: Colors.grey),
+//                  title: getTabTitle(1)
+//              ),
+//              BottomNavigationBarItem(
+//                  activeIcon: Icon(Icons.apps, color: currentThemeColor),
+//                  icon: Icon(Icons.apps, color: Colors.grey),
+//                  title: getTabTitle(2)
+//              ),
+//              BottomNavigationBarItem(
+//                  activeIcon: Icon(Icons.chat, color: currentThemeColor),
+//                  icon: Icon(Icons.chat, color: Colors.grey),
+//                  title: getTabTitle(3)
+//              ),
+//              BottomNavigationBarItem(
+//                  activeIcon: Icon(Icons.account_circle, color: currentThemeColor),
+//                  icon: Icon(Icons.account_circle, color: Colors.grey),
+//                  title: getTabTitle(4)
+//              )
+//            ],
+//            currentIndex: _tabIndex,
+//            onTap: (index) {
+//              setState((){
+//                _tabIndex = index;
+//              });
+//            },
+//          ),
         )
     );
   }

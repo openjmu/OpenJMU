@@ -5,18 +5,18 @@ import 'package:uuid/uuid.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:jxt/api/Api.dart';
-import 'package:jxt/constants/Constants.dart';
-import 'package:jxt/events/LoginEvent.dart';
-import 'package:jxt/events/LogoutEvent.dart';
-import 'package:jxt/events/TicketGotEvent.dart';
-import 'package:jxt/events/TicketFailedEvent.dart';
-import 'package:jxt/events/NotificationCountChangeEvent.dart';
-import 'package:jxt/model/UserInfo.dart';
-import 'package:jxt/pages/MainPage.dart';
-import 'package:jxt/utils/NetUtils.dart';
-import 'package:jxt/utils/ToastUtils.dart';
-import 'package:jxt/utils/SnackbarUtils.dart';
+import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/LoginEvent.dart';
+import 'package:OpenJMU/events/LogoutEvent.dart';
+import 'package:OpenJMU/events/TicketGotEvent.dart';
+import 'package:OpenJMU/events/TicketFailedEvent.dart';
+import 'package:OpenJMU/events/NotificationCountChangeEvent.dart';
+import 'package:OpenJMU/model/UserInfo.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/utils/SnackbarUtils.dart';
 
 class DataUtils {
   static final String spIsLogin     = "isLogin";
@@ -123,11 +123,7 @@ class DataUtils {
               .then((whatever) {
                 Constants.eventBus.fire(new LoginEvent());
                 showShortToast("登录成功！");
-                Navigator.of(context).pushReplacement(
-                  new MaterialPageRoute(
-                    builder: (context) { return new MainPage(); }
-                  )
-                );
+                Navigator.of(context).pushReplacementNamed("/home");
               })
               .catchError((e) {
                 print(e.response);
@@ -158,6 +154,7 @@ class DataUtils {
       List<Cookie> cookies = [new Cookie("PHPSESSID", sid)];
       NetUtils.postWithCookieSet(Api.logout, cookies: cookies).then((response) {
         clearLoginInfo();
+        resetTheme();
         Constants.eventBus.fire(new LogoutEvent());
         return;
       });
@@ -304,6 +301,12 @@ class DataUtils {
     return b != null && b;
   }
 
+  // 重置主题配置
+  static resetTheme() {
+    ThemeUtils.currentBrightness = Brightness.light;
+    ThemeUtils.currentPrimaryColor = Colors.white;
+    ThemeUtils.currentColorTheme = ThemeUtils.defaultColor;
+  }
   // 获取设置的主题色
   static Future<int> getColorThemeIndex() async {
     SharedPreferences sp = await SharedPreferences.getInstance();

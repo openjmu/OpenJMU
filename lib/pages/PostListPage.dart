@@ -3,34 +3,34 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:jxt/api/Api.dart';
-import 'package:jxt/constants/Constants.dart';
-import 'package:jxt/events/LoginEvent.dart';
-import 'package:jxt/events/LogoutEvent.dart';
-import 'package:jxt/model/Bean.dart';
-import 'package:jxt/pages/WeiboDetailPage.dart';
-import 'package:jxt/utils/BlackListUtils.dart';
-import 'package:jxt/utils/DataUtils.dart';
-import 'package:jxt/utils/NetUtils.dart';
-import 'package:jxt/utils/ThemeUtils.dart';
-import 'package:jxt/utils/ToastUtils.dart';
-import 'package:jxt/widgets/CardStateful.dart';
-import 'package:jxt/widgets/CommonEndLine.dart';
-import 'package:jxt/widgets/CommonWebPage.dart';
+import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/LoginEvent.dart';
+import 'package:OpenJMU/events/LogoutEvent.dart';
+import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/pages/PostDetailPage.dart';
+import 'package:OpenJMU/utils/BlackListUtils.dart';
+import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/widgets/CardStateful.dart';
+import 'package:OpenJMU/widgets/CommonEndLine.dart';
+import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
-class WeiboListPage extends StatefulWidget {
+class PostListPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return new WeiboListPageState();
+    return new PostListPageState();
   }
 }
 
-class WeiboListPageState extends State<WeiboListPage> {
+class PostListPageState extends State<PostListPage> {
   Color currentColorTheme = ThemeUtils.currentColorTheme;
   Color currentPrimaryColor = ThemeUtils.currentPrimaryColor;
 
-  List weiboList;
-  List weiboFollowedList;
+  List postList;
+  List postFollowedList;
   final Color subIconColor = Colors.grey;
   TextStyle authorTextStyle;
   RegExp regExp1 = new RegExp("</.*>");
@@ -52,18 +52,22 @@ class WeiboListPageState extends State<WeiboListPage> {
       }
     });
     Constants.eventBus.on<LoginEvent>().listen((event) {
-      setState(() {
-        this.isUserLogin = true;
-      });
+      if (this.mounted) {
+        setState(() {
+          this.isUserLogin = true;
+        });
+      }
     });
     Constants.eventBus.on<LogoutEvent>().listen((event) {
-      setState(() {
-        this.isUserLogin = false;
-      });
+      if (this.mounted) {
+        setState(() {
+          this.isUserLogin = false;
+        });
+      }
     });
   }
 
-  WeiboListPageState() {
+  PostListPageState() {
     authorTextStyle =
     new TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold);
     _controller = new ScrollController();
@@ -208,10 +212,10 @@ class WeiboListPageState extends State<WeiboListPage> {
           List cookies = NetUtils.buildPHPSESSIDCookies(sid);
           if (isLoadMore) {
             if (!isFollowed) {
-              int lastId = weiboList[weiboList.length-1]['id'];
+              int lastId = postList[postList.length-1]['id'];
               requestUrl = Api.postList + "/id_max/$lastId";
             } else {
-              int lastId = weiboFollowedList[weiboFollowedList.length-1]['id'];
+              int lastId = postFollowedList[postFollowedList.length-1]['id'];
               requestUrl = Api.postFollowedList + "/id_max/$lastId";
             }
           } else {
@@ -226,27 +230,27 @@ class WeiboListPageState extends State<WeiboListPage> {
             Map<String, dynamic> obj = jsonDecode(response);
             if (!isLoadMore) {
               if (!isFollowed) {
-                weiboList = obj['topics'];
+                postList = obj['topics'];
               } else {
-                weiboFollowedList = obj['topics'];
+                postFollowedList = obj['topics'];
               }
             } else {
               if (!isFollowed) {
                 List list = new List();
-                list.addAll(weiboList);
+                list.addAll(postList);
                 list.addAll(obj['topics']);
-                weiboList = list;
+                postList = list;
               } else {
                 List followedlist = new List();
-                followedlist.addAll(weiboFollowedList);
+                followedlist.addAll(postFollowedList);
                 followedlist.addAll(obj['topics']);
-                weiboFollowedList = followedlist;
+                postFollowedList = followedlist;
               }
             }
             if (!isFollowed) {
-              filterList(weiboList, false);
+              filterList(postList, false);
             } else {
-              filterList(weiboFollowedList, true);
+              filterList(postFollowedList, true);
             }
           })
           .catchError((e) {
@@ -278,9 +282,9 @@ class WeiboListPageState extends State<WeiboListPage> {
         }
         setState(() {
           if (!isFollowed) {
-            weiboList = newList;
+            postList = newList;
           } else {
-            weiboFollowedList = newList;
+            postFollowedList = newList;
           }
           loading = false;
         });
@@ -288,9 +292,9 @@ class WeiboListPageState extends State<WeiboListPage> {
         // 黑名单为空，直接返回原始数据
         setState(() {
           if (!isFollowed) {
-            weiboList = objList;
+            postList = objList;
           } else {
-            weiboFollowedList = objList;
+            postFollowedList = objList;
           }
           loading = false;
         });
@@ -387,9 +391,9 @@ class WeiboListPageState extends State<WeiboListPage> {
   Widget renderRow(i, bool isFollowed) {
     var itemData;
     if (!isFollowed) {
-      itemData = weiboList[i]["topic"];
+      itemData = postList[i]["topic"];
     } else {
-      itemData = weiboFollowedList[i]["topic"];
+      itemData = postFollowedList[i]["topic"];
     }
     if (itemData is String && itemData == Constants.endLineTag) {
       return new CommonEndLine();
@@ -415,7 +419,7 @@ class WeiboListPageState extends State<WeiboListPage> {
   }
 
   Widget getListView() {
-    if (weiboList == null) {
+    if (postList == null) {
       getWeiboList(false, false);
       return new Center(
         child: new CircularProgressIndicator(
@@ -424,7 +428,7 @@ class WeiboListPageState extends State<WeiboListPage> {
       );
     } else {
       Widget listView = new ListView.builder(
-        itemCount: weiboList.length,
+        itemCount: postList.length,
         itemBuilder: (context, i) => renderRow(i, false),
         controller: _controller,
       );
@@ -437,14 +441,14 @@ class WeiboListPageState extends State<WeiboListPage> {
   }
 
   Widget getFollowedListView() {
-    if (weiboFollowedList == null) {
+    if (postFollowedList == null) {
       getWeiboList(false, true);
       return new Center(
         child: new CircularProgressIndicator(),
       );
     } else {
       Widget listView = new ListView.builder(
-        itemCount: weiboFollowedList.length,
+        itemCount: postFollowedList.length,
         itemBuilder: (context, i) => renderRow(i, true),
         controller: _controller,
       );

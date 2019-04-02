@@ -9,11 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:jxt/api/Api.dart';
-import 'package:jxt/utils/DataUtils.dart';
-import 'package:jxt/utils/NetUtils.dart';
-import 'package:jxt/utils/ThemeUtils.dart';
-import 'package:jxt/utils/ToastUtils.dart';
+import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
 
 class PublishPostPage extends StatefulWidget {
   @override

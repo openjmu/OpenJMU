@@ -1,12 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:jxt/api/Api.dart';
-import 'package:jxt/utils/DataUtils.dart';
-import 'package:jxt/utils/NetUtils.dart';
-import 'package:jxt/utils/ThemeUtils.dart';
-import 'package:jxt/utils/ToastUtils.dart';
-import 'package:jxt/widgets/CommonWebPage.dart';
+import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class AppCenterPage extends StatefulWidget {
   @override

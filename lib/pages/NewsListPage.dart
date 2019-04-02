@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:jxt/api/Api.dart';
-import 'package:jxt/constants/Constants.dart';
-import 'package:jxt/events/LoginEvent.dart';
-import 'package:jxt/events/LogoutEvent.dart';
-import 'package:jxt/widgets/CommonEndLine.dart';
-import 'package:jxt/widgets/CommonWebPage.dart';
-import 'package:jxt/widgets/SlideView.dart';
-import 'package:jxt/widgets/SlideViewIndicator.dart';
-import 'package:jxt/utils/NetUtils.dart';
-import 'package:jxt/utils/DataUtils.dart';
-import 'package:jxt/utils/ThemeUtils.dart';
-import 'package:jxt/utils/ToastUtils.dart';
+import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/LoginEvent.dart';
+import 'package:OpenJMU/events/LogoutEvent.dart';
+import 'package:OpenJMU/widgets/CommonEndLine.dart';
+import 'package:OpenJMU/widgets/CommonWebPage.dart';
+import 'package:OpenJMU/widgets/SlideView.dart';
+import 'package:OpenJMU/widgets/SlideViewIndicator.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
+import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
 
 class NewsListPage extends StatefulWidget {
   @override

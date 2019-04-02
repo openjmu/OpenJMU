@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:jxt/api/Api.dart';
-import 'package:jxt/constants/Constants.dart';
-import 'package:jxt/events/ChangeBrightnessEvent.dart';
-import 'package:jxt/events/ChangeThemeEvent.dart';
-import 'package:jxt/events/LogoutEvent.dart';
-import 'package:jxt/pages/ChangeThemePage.dart';
-import 'package:jxt/utils/DataUtils.dart';
-import 'package:jxt/utils/ThemeUtils.dart';
-
-import 'package:jxt/pages/Test.dart';
+import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/ChangeBrightnessEvent.dart';
+import 'package:OpenJMU/events/ChangeThemeEvent.dart';
+import 'package:OpenJMU/events/LogoutEvent.dart';
+import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class MyInfoPage extends StatefulWidget {
   @override
@@ -201,13 +198,9 @@ class MyInfoPageState extends State<MyInfoPage> {
         Constants.eventBus.fire(new LogoutEvent());
       });
     } else if (title == "切换主题") {
-      Navigator.push(context, platformPageRoute(builder: (context) {
-        return new ChangeThemePage();
-      }));
+      Navigator.pushNamed(context, "/changeTheme");
     } else if (title == "测试页") {
-      Navigator.push(context, platformPageRoute(builder: (context) {
-        return new TestPage();
-      }));
+      Navigator.pushNamed(context, "/test");
     }
   }
 }

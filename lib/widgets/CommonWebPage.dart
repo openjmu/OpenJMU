@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:jxt/utils/DataUtils.dart';
-import 'package:jxt/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class CommonWebPage extends StatefulWidget {
   String title;

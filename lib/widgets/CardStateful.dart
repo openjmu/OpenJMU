@@ -1,12 +1,12 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:jxt/api/Api.dart';
-import 'package:jxt/constants/Constants.dart';
-import 'package:jxt/model/Bean.dart';
-import 'package:jxt/utils/DataUtils.dart';
-import 'package:jxt/utils/NetUtils.dart';
-import 'package:jxt/utils/ThemeUtils.dart';
+import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class CardItem extends StatefulWidget {
   final Post post;

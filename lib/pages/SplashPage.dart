@@ -1,12 +1,10 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:jxt/constants/Constants.dart';
-import 'package:jxt/events/TicketGotEvent.dart';
-import 'package:jxt/events/TicketFailedEvent.dart';
-import 'package:jxt/pages/MainPage.dart';
-import 'package:jxt/pages/LoginPage.dart';
-import 'package:jxt/utils/DataUtils.dart';
-import 'package:jxt/utils/ThemeUtils.dart';
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/TicketGotEvent.dart';
+import 'package:OpenJMU/events/TicketFailedEvent.dart';
+import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class SplashPage extends StatefulWidget {
   @override
@@ -51,19 +49,11 @@ class SplashState extends State<SplashPage> {
     timer = new Timer(const Duration(milliseconds: 2000), () {
       if (!isUserLogin) {
         try {
-          Navigator.of(context).pushReplacement(
-            new MaterialPageRoute(
-                builder: (BuildContext context) => new LoginPage()
-            ),
-          );
+          Navigator.of(context).pushReplacementNamed("/login");
         } catch (e) {}
       } else {
         try {
-          Navigator.of(context).pushReplacement(
-            new MaterialPageRoute(
-                builder: (BuildContext context) => new MainPage()
-            ),
-          );
+          Navigator.of(context).pushReplacementNamed("/home");
         } catch (e) {}
       }
     });

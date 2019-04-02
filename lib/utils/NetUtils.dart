@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:cookie_jar/cookie_jar.dart';
-import 'package:jxt/constants/Constants.dart';
+import 'package:OpenJMU/constants/Constants.dart';
 
 Dio dio = new Dio();
 
