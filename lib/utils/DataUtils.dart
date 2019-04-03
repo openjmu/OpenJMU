@@ -318,12 +318,12 @@ class DataUtils {
   }
 
   // 获取设置的夜间模式
-  static getBrightness() async {
+  static getBrightnessDark() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     return sp.getBool(spBrightness);
   }
   // 设置选择的夜间模式
-  static setBrightness(bool isDark) async {
+  static setBrightnessDark(bool isDark) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.setBool(spBrightness, isDark);
   }

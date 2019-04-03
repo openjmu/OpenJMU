@@ -41,7 +41,7 @@ class MyInfoPageState extends State<MyInfoPage> {
       });
       getUserInfo();
     });
-    DataUtils.getBrightness().then((isDark) {
+    DataUtils.getBrightnessDark().then((isDark) {
       if (isDark != null) {
         setState(() {
           this.isDark = isDark;
@@ -153,7 +153,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 value: isDark,
                 onChanged: (isDark) {
                   setDarkMode(isDark);
-                  DataUtils.setBrightness(isDark);
+                  DataUtils.setBrightnessDark(isDark);
                   Constants.eventBus.fire(new ChangeBrightnessEvent(isDark));
                 }
               )

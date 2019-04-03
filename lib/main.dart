@@ -5,6 +5,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/LogoutEvent.dart';
 import 'package:OpenJMU/events/ChangeBrightnessEvent.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 // Routes Pages
 import 'package:OpenJMU/pages/SplashPage.dart';
@@ -37,9 +38,9 @@ class JMUAppClientState extends State<JMUAppClient> {
 
   // 监听夜间模式变化
   void listenToBrightness() {
-    DataUtils.getBrightness().then((isDark) {
+    DataUtils.getBrightnessDark().then((isDark) {
       if (isDark == null) {
-        DataUtils.setBrightness(false).then((whatever) {
+        DataUtils.setBrightnessDark(false).then((whatever) {
           setState(() {
             currentBrightness = Brightness.light;
             currentPrimaryColor = Colors.white;
@@ -48,11 +49,15 @@ class JMUAppClientState extends State<JMUAppClient> {
       } else {
         if (isDark) {
           setState(() {
+            ThemeUtils.currentBrightness = Brightness.dark;
+            ThemeUtils.currentPrimaryColor = Colors.grey[850];
             currentBrightness = Brightness.dark;
             currentPrimaryColor = Colors.grey[850];
           });
         } else {
           setState(() {
+            ThemeUtils.currentBrightness = Brightness.light;
+            ThemeUtils.currentPrimaryColor = Colors.white;
             currentBrightness = Brightness.light;
             currentPrimaryColor = Colors.white;
           });
@@ -61,12 +66,16 @@ class JMUAppClientState extends State<JMUAppClient> {
     });
     Constants.eventBus.on<LogoutEvent>().listen((event) {
       setState(() {
+        ThemeUtils.currentBrightness = Brightness.light;
+        ThemeUtils.currentPrimaryColor = Colors.white;
         currentBrightness = Brightness.light;
         currentPrimaryColor = Colors.white;
       });
     });
     Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
       setState(() {
+        ThemeUtils.currentBrightness = event.brightness;
+        ThemeUtils.currentPrimaryColor = event.primaryColor;
         currentBrightness = event.brightness;
         currentPrimaryColor = event.primaryColor;
       });

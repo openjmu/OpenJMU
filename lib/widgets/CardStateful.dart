@@ -29,7 +29,7 @@ class _CardItemState extends State<CardItem> {
   final TextStyle rootTopicMentionStyle = new TextStyle(color: Colors.blue, fontSize: 14.0);
   final Color subIconColor = Colors.grey;
 
-  Color currentRootTopicColor = ThemeUtils.currentPrimaryColor;
+  Color currentRootTopicColor = Colors.grey[200];
 
   Color _forwardColor = Colors.grey;
   Color _replysColor = Colors.grey;
@@ -40,11 +40,11 @@ class _CardItemState extends State<CardItem> {
   @override
   void initState() {
     super.initState();
-    if (ThemeUtils.currentPrimaryColor == Colors.white) {
-      setState(() {
-        currentRootTopicColor = Colors.grey[200];
-      });
-    }
+    DataUtils.getBrightnessDark().then((isDark) {
+      if (this.mounted) {
+        setRootTopicColor(isDark);
+      }
+    });
     Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
       if (this.mounted) {
         setRootTopicColor(event.isDarkState);

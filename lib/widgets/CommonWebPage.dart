@@ -39,9 +39,9 @@ class CommonWebPageState extends State<CommonWebPage> {
   @override
   void initState() {
     super.initState();
-    DataUtils.getBrightness().then((isDark) {
+    DataUtils.getBrightnessDark().then((isDark) {
       if (isDark == null) {
-        DataUtils.setBrightness(false).then((whatever) {
+        DataUtils.setBrightnessDark(false).then((whatever) {
           setState(() {
             currentBrightness = Brightness.light;
           });
