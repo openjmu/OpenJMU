@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:io';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -25,7 +26,13 @@ class CommonWebPageState extends State<CommonWebPage> {
   String title = "@defaultTitle_jxt";
   Widget refreshIndicator = new Container(
     width: 56.0,
-    child: new CupertinoActivityIndicator()
+    padding: EdgeInsets.all(16.0),
+    child: Platform.isAndroid
+      ? new CircularProgressIndicator(
+        valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
+        strokeWidth: 3.0,
+      )
+      : new CupertinoActivityIndicator()
   );
 
 
@@ -91,34 +98,26 @@ class CommonWebPageState extends State<CommonWebPage> {
     if (title == "@defaultTitle_jxt") {
       title = widget.title;
     }
-    List<Widget> titleContent = [
-      new Text(
-        title,
-        style: new TextStyle(color: ThemeUtils.currentColorTheme),
-      ),
-    ];
     Widget trailing = refreshIndicator;
-    if (loading) {
-      trailing = refreshIndicator;
-    } else {
-      trailing = new Container(
-          width: 56.0,
-          child: new IconButton(
-              icon: new Icon(Icons.refresh),
-              onPressed: () {
-                flutterWebViewPlugin.reload();
-              }
-          )
-      );
-    }
+//    trailing = refreshIndicator;
+//        : new Container(
+//        width: 56.0,
+//        child: new IconButton(
+//            icon: new Icon(Icons.refresh),
+//            onPressed: () {
+//              flutterWebViewPlugin.reload();
+//            }
+//        )
+//    );
     return new WebviewScaffold(
         url: widget.url,
         allowFileURLs: true,
         appBar: new AppBar(
-          title: new Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: titleContent,
+          title: new Text(
+            title,
+            style: new TextStyle(color: ThemeUtils.currentColorTheme),
           ),
+          centerTitle: true,
           actions: <Widget>[trailing],
           iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
           brightness: currentBrightness,

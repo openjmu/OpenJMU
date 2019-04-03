@@ -1,447 +1,611 @@
-import 'package:flutter/material.dart';
-import '../utils/NetUtils.dart';
-import '../api/Api.dart';
-import '../constants/Constants.dart';
-import 'dart:convert';
-import '../widgets/CommonEndLine.dart';
-import '../utils/DataUtils.dart';
-
-// 动弹详情
-
-class WeiboDetailPage extends StatefulWidget {
-  Map<String, dynamic> weiboData;
-
-  WeiboDetailPage({Key key, this.weiboData}):super(key: key);
-
-  @override
-  State<StatefulWidget> createState() {
-    return new WeiboDetailPageState(weiboData: weiboData);
-  }
-}
-
-class WeiboDetailPageState extends State<WeiboDetailPage> {
-
-  Map<String, dynamic> weiboData;
-  List commentList;
-  RegExp regExp1 = new RegExp("</.*>");
-  RegExp regExp2 = new RegExp("<.*>");
-  TextStyle subtitleStyle = new TextStyle(
-      fontSize: 12.0,
-      color: const Color(0xFFB5BDC0)
-  );
-  TextStyle contentStyle = new TextStyle(
-      fontSize: 15.0,
-      color: Colors.black
-  );
-  num curPage = 1;
-  ScrollController _controller = new ScrollController();
-  TextEditingController _inputController = new TextEditingController();
-
-  WeiboDetailPageState({Key key, this.weiboData});
-
-  // 获取动弹的回复
-//  getReply(bool isLoadMore) {
-//    DataUtils.isLogin().then((isLogin) {
-//      if (isLogin) {
-//        DataUtils.getAccessToken().then((token) {
-//          if (token == null || token.length == 0) {
-//            return;
-//          }
-//          Map<String, String> params = new Map();
-//          var id = this.tweetData['id'];
-//          params['id'] = '$id';
-//          params['catalog'] = '3';// 3是动弹评论
-//          params['access_token'] = token;
-//          params['page'] = '$curPage';
-//          params['pageSize'] = '20';
-//          params['dataType'] = 'json';
-////          NetUtils.get(Api.COMMENT_LIST, params: params).then((data) {
-////            setState(() {
-////              if (!isLoadMore) {
-////                commentList = json.decode(data)['commentList'];
-////                if (commentList == null) {
-////                  commentList = new List();
-////                }
-////              } else {
-////                // 加载更多数据
-////                List list = new List();
-////                list.addAll(commentList);
-////                list.addAll(json.decode(data)['commentList']);
-////                if (list.length >= tweetData['commentCount']) {
-////                  list.add(Constants.END_LINE_TAG);
-////                }
-////                commentList = list;
-////              }
-////            });
-////          });
+//import 'package:flutter/material.dart';
+//import 'package:flutter/cupertino.dart';
+//import 'dart:async';
+//import 'package:OpenJMU/model/Bean.dart';
+//
+//
+//class PostContentPage extends StatefulWidget {
+//  final int id;
+//  final bool scrollToComments;
+//
+//  PostContentPage(this.id, {Key key, this.scrollToComments = false}) : super(key: key);
+//
+//  @override
+//  State createState() => _PostContentState();
+//}
+//
+//class _PostContentState extends State<PostContentPage> {
+//  Post _post;
+//  Widget _body = Center(
+//    child: CircularProgressIndicator(),
+//  );
+//  RichTextView _richTextView;
+//  Widget _userInfoLayer;
+//  Widget _commentWidget = Text('');
+//  Widget _commentLayer;
+//  GlobalKey _rtKey;
+//  GlobalKey _userKey;
+//  GlobalKey _commentKey;
+//
+//  TextEditingController _textController;
+//
+//  List<PostComment> comments = [];
+//
+//  bool _commentLayerVisible = false;
+//  Map<String, dynamic> _commentLayerInfo = {
+//    'hintText': '评论',
+//    'commentId': 0,
+//    'uid': 0
+//  };
+//  Map<int, String> _tempInputComments = {};
+//
+//  ScrollController _scrollController;
+//
+//  double _scrollOffset = 0.0;
+//
+//  List<Widget> _actions = <Widget>[];
+//
+//  BuildContext _context;
+//
+//  @override
+//  void initState() {
+//    super.initState();
+//
+//    _fetchPostContent(widget.id);
+//    _commentLayer = Container(width: 0, height: 0,);
+//    _textController = TextEditingController();
+//
+//    _textController.addListener(() {
+//      if (_textController.text != '') {
+//        _tempInputComments.addAll({
+//          _commentLayerInfo['commentId']: _textController.text
 //        });
+//      } else {
+//        _tempInputComments.remove( _commentLayerInfo['commentId']);
 //      }
 //    });
+//
+//    // 监听绘制完毕并进行滚动
+//    _rtKey = GlobalKey();
+//    _userKey = GlobalKey();
+//    _commentKey = GlobalKey();
+//    if (widget.scrollToComments) {
+//      WidgetsBinding.instance.addPostFrameCallback((duration) {
+//        WidgetsBinding.instance.addPersistentFrameCallback((duration) {
+//          if (_scrollOffset == 0.0 &&
+//              _rtKey.currentContext != null && _userKey.currentContext != null &&
+//              _commentKey.currentContext != null) {
+//            _scrollOffset = _rtKey.currentContext.size.height + _userKey.currentContext.size.height;
+//
+//            _scrollController.jumpTo(_scrollOffset);
+//
+//          }
+//          WidgetsBinding.instance.scheduleFrame();
+//        });
+//      });
+//    }
+//
+//    _initActions();
 //  }
-
-  @override
-  void initState() {
-    super.initState();
-//    getReply(false);
-    _controller.addListener(() {
-      var max = _controller.position.maxScrollExtent;
-      var pixels = _controller.position.pixels;
-      if (max == pixels && commentList.length < weiboData['commentCount']) {
-        // scroll to end, load next page
-        curPage++;
-//        getReply(true);
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var _body = commentList == null ? new Center(
-      child: new CircularProgressIndicator(),
-    ) : new ListView.builder(
-      itemCount: commentList.length == 0 ? 1 : commentList.length * 2,
-      itemBuilder: renderListItem,
-      controller: _controller,
-    );
-    return new Scaffold(
-        appBar: new AppBar(
-          title: new Text("动弹详情", style: new TextStyle(color: Colors.white)),
-          iconTheme: new IconThemeData(color: Colors.white),
-          actions: <Widget>[
-            new IconButton(
-              icon: new Icon(Icons.send),
-              onPressed: () {
-                // 回复楼主
-                showReplyBottomView(context, true);
-              },
-            )
-          ],
-        ),
-        body: _body
-    );
-  }
-
-  Widget renderListItem(BuildContext context, int i) {
-    if (i == 0) {
-      return getTweetView(this.weiboData);
-    }
-    i -= 1;
-    if (i.isOdd) {
-      return new Divider(height: 1.0,);
-    }
-    i ~/= 2;
-    return _renderCommentRow(context, i);
-  }
-
-  // 渲染评论列表
-  _renderCommentRow(context, i) {
-    var listItem = commentList[i];
-    if (listItem is String && listItem == Constants.endLineTag) {
-      return new CommonEndLine();
-    }
-    String avatar = listItem['commentPortrait'];
-    String author = listItem['commentAuthor'];
-    String date = listItem['pubDate'];
-    String content = listItem['content'];
-    content = clearHtmlContent(content);
-    var row = new Row(
-      children: <Widget>[
-        new Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: new Image.network(avatar, width: 35.0, height: 35.0,)
-        ),
-        new Expanded(
-            child: new Container(
-              margin: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 5.0),
-              child: new Column(
-                children: <Widget>[
-                  new Row(
-                    children: <Widget>[
-                      new Expanded(
-                        child: new Text(author, style: new TextStyle(color: const Color(0xFF63CA6C)),),
-                      ),
-                      new Padding(
-                          padding: const EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-                          child: new Text(date, style: subtitleStyle,)
-                      )
-                    ],
-                  ),
-                  new Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 0.0, 10.0, 0.0),
-                      child: new Row(
-                        children: <Widget>[
-                          new Expanded(
-                              child: new Text(content, style: contentStyle,)
-                          )
-                        ],
-                      )
-                  )
-                ],
-              ),
-            )
-        )
-      ],
-    );
-    return new Builder(
-      builder: (ctx) {
-        return new InkWell(
-          onTap: () {
-            showReplyBottomView(ctx, false, data: listItem);
-          },
-          child: row,
-        );
-      },
-    );
-  }
-
-  showReplyBottomView(ctx, bool isMainFloor, {data}) {
-    String title;
-    String authorId;
-    if (isMainFloor) {
-      title = "@${weiboData['author']}";
-      authorId = "${weiboData['authorid']}";
-    } else {
-      title = "@${data['commentAuthor']}";
-      authorId = "${data['commentAuthorId']}";
-    }
-    print("authorId = $authorId");
-    showModalBottomSheet(
-        context: ctx,
-        builder: (sheetCtx) {
-          return new Container(
-              height: 230.0,
-              padding: const EdgeInsets.all(20.0),
-              child: new Column(
-                children: <Widget>[
-                  new Row(
-                    children: <Widget>[
-                      new Text(isMainFloor ? "回复楼主" : "回复"),
-                      new Expanded(child: new Text(title, style: new TextStyle(color: const Color(0xFF63CA6C)),)),
-                      new InkWell(
-                        child: new Container(
-                          padding: const EdgeInsets.fromLTRB(10.0, 6.0, 10.0, 6.0),
-                          decoration: new BoxDecoration(
-                              border: new Border.all(
-                                color: const Color(0xFF63CA6C),
-                                width: 1.0,
-                              ),
-                              borderRadius: new BorderRadius.all(new Radius.circular(6.0))
-                          ),
-                          child: new Text("发送", style: new TextStyle(color: const Color(0xFF63CA6C)),),
-                        ),
-                        onTap: () {
-                          // 发送回复
-//                      sendReply(authorId);
-                        },
-                      )
-                    ],
-                  ),
-                  new Container(
-                    height: 10.0,
-                  ),
-                  new TextField(
-                    maxLines: 5,
-                    controller: _inputController,
-                    decoration: new InputDecoration(
-                        hintText: "说点啥～",
-                        hintStyle: new TextStyle(
-                            color: const Color(0xFF808080)
-                        ),
-                        border: new OutlineInputBorder(
-                          borderRadius: const BorderRadius.all(const Radius.circular(10.0)),
-                        )
-                    ),
-                  )
-                ],
-              )
-          );
-        }
-    );
-  }
-
-//  void sendReply(authorId) {
-//    String replyStr = _inputController.text;
-//    if (replyStr == null || replyStr.length == 0 || replyStr.trim().length == 0) {
-//      return;
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    if (_context == null) {
+//      _context = context;
+//    }
+//    var thumbUpColor = _post?.isLike ?? false ? PrimaryColorScheme().secondary : Colors.grey;
+//    var collectColor = _post?.isCollect ?? false ? PrimaryColorScheme().secondary : Colors.grey;
+//
+//    if (_commentLayerVisible) {
+//      _textController.text = _tempInputComments[_commentLayerInfo['commentId']];
+//      _commentLayer = WillPopScope(
+//        onWillPop: () async {
+//          _cancelCommentLayer();
+//        },
+//        child: GestureDetector(
+//          onTap: _cancelCommentLayer,
+//          child: Scaffold(
+//            backgroundColor: Color(0x7F000000),
+//            body: Column(
+//              children: <Widget>[
+//
+//                Flexible(
+//                    child: Container()
+//                ),
+//
+//                Container(
+//                  child: Card(
+//                    child: Column(
+//                      children: <Widget>[
+//
+//                        Row(
+//                          mainAxisSize: MainAxisSize.max,
+//                          crossAxisAlignment: CrossAxisAlignment.center,
+//                          children: <Widget>[
+//
+//                            Padding(
+//                              padding: EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
+//                              child: Text('回复', style: TextStyle(color: Colors.black87, fontSize: 16),),
+//                            ),
+//
+//                            Expanded(flex: 1, child: Container(),),
+//
+//                            RawMaterialButton(
+//                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+//                              constraints: BoxConstraints(minHeight: 0, minWidth: 0),
+//                              padding: EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
+//                              splashColor: Colors.grey[350],
+//                              child: Text('发送',
+//                                style: TextStyle(color: PrimaryColorScheme().primaryVariant, fontSize: 16),),
+//                              onPressed: () {
+//                                var text = _textController.text;
+//                                if (text.isEmpty) {
+//                                  Fluttertoast.showToast(msg: '内容不能为空');
+//                                } else {
+//                                  _requestComment(_commentLayerInfo['commentId']);
+//                                }
+//                              },
+//                            )
+//
+//                          ],
+//                        ),
+//
+//                        TextField(
+//                          controller: _textController,
+//                          maxLines: 6,
+//                          autofocus: true,
+//                          cursorColor: PrimaryColorScheme().primaryVariant,
+//                          decoration: InputDecoration(
+//                            hintText: _commentLayerInfo['hintText'],
+//                            border: InputBorder.none,
+//                            contentPadding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+//                          ),
+//                          style: TextStyle(fontSize: 14, color: Colors.grey),
+//                        ),
+//
+//                        // 输入框快捷按钮
+//                        Row(
+//                          mainAxisSize: MainAxisSize.max,
+//                          crossAxisAlignment: CrossAxisAlignment.center,
+//                          children: <Widget>[
+//
+//                          ],
+//                        )
+//
+//
+//                      ],
+//                    ),
+//                  ),
+//                ),
+//              ],
+//            ),
+//          ),
+//        ),
+//      );
+//      _textController.selection =
+//          TextSelection.fromPosition(TextPosition(offset: _textController.text.length));
 //    } else {
-//      DataUtils.isLogin().then((isLogin) {
-//        if (isLogin) {
-//          DataUtils.getAccessToken().then((token) {
-//            Map<String, String> params = new Map();
-//            params['access_token'] = token;
-//            params['id'] = "${tweetData['id']}";
-//            print("id: ${tweetData['id']}");
-//            params['catalog'] = "3";
-//            params['content'] = replyStr;
-//            params['authorid'] = "$authorId";
-//            print("authorId: $authorId");
-//            params['isPostToMyZone'] = "0";
-//            params['dataType'] = "json";
-////            NetUtils.get(Api.COMMENT_REPLY, params: params).then((data) {
-////              if (data != null) {
-////                var obj = json.decode(data);
-////                var error = obj['error'];
-////                if (error != null && error == '200') {
-////                  // 回复成功
-////                  Navigator.of(context).pop();
-////                  getReply(false);
-////                }
-////              }
-////            });
-//          });
+//      _commentLayer = Container(width: 0, height: 0,);
+//    }
+//
+//    return Stack(
+//      children: <Widget>[
+//        Scaffold(
+//            appBar: AppBar(
+//              title: Text('浏览帖子'),
+//              leading: IconButton(
+//                  icon: Icon(
+//                    Icons.arrow_back,
+//                  ),
+//                  onPressed: () {
+//                    Navigator.pop(context);
+//                  }),
+//              centerTitle: false,
+//              backgroundColor: PrimaryColorScheme().primaryVariant,
+//              actions: _actions,
+//            ),
+//            body: _body,
+//            bottomNavigationBar: SizedBox.fromSize(
+//              child: Row(
+//                mainAxisSize: MainAxisSize.max,
+//                children: <Widget>[
+//                  // 评论
+//                  Expanded(
+//                      flex: 1,
+//                      child: RawMaterialButton(
+//                        onPressed: () => _clickComment('评论帖子：${_post.title}', -1, _post.userId),
+//
+//                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+//                        constraints: BoxConstraints(minHeight: 48, minWidth: 0, maxHeight: 48),
+//                        padding: EdgeInsets.only(left: 16, right: 16),
+//                        child: Row(
+//                          crossAxisAlignment: CrossAxisAlignment.center,
+//                          mainAxisSize: MainAxisSize.max,
+//                          children: <Widget>[
+//
+//                            Icon(Icons.reply, color: Colors.grey,),
+//                            Container(width: 8,),
+//                            Text('评论(${_post?.comments ?? 0})', style: TextStyle(color: Colors.grey,),)
+//
+//                          ],
+//                        ),
+//                      )
+//                  ),
+//
+//                  // 点赞
+//                  Expanded(
+//                      flex: 0,
+//                      child: RawMaterialButton(
+//                        onPressed: _clickThumpUp,
+//
+//                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+//                        constraints: BoxConstraints(minHeight: 48, minWidth: 0, maxHeight: 48),
+//                        padding: EdgeInsets.only(left: 16, right: 16),
+//                        child: Row(
+//                          crossAxisAlignment: CrossAxisAlignment.center,
+//                          mainAxisSize: MainAxisSize.max,
+//                          children: <Widget>[
+//
+//                            Icon(Icons.thumb_up, color: thumbUpColor, size: 18,),
+//                            Container(width: 8,),
+//                            Text('${_post?.thumpUps ?? 0}', style: TextStyle(color: thumbUpColor,),)
+//
+//                          ],
+//                        ),
+//                      )
+//                  ),
+//
+//                  // 收藏
+//                  Expanded(
+//                      flex: 0,
+//                      child: RawMaterialButton(
+//                        onPressed: _clickCollect,
+//
+//                        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+//                        constraints: BoxConstraints(minHeight: 48, minWidth: 0, maxHeight: 48),
+//                        padding: EdgeInsets.only(left: 16, right: 16),
+//                        child: Row(
+//                          crossAxisAlignment: CrossAxisAlignment.center,
+//                          mainAxisSize: MainAxisSize.max,
+//                          children: <Widget>[
+//
+//                            Icon(Icons.star, color: collectColor, size: 22,),
+//                            Container(width: 8,),
+//                            Text('${_post?.collects ?? 0}', style: TextStyle(color: collectColor,),)
+//
+//                          ],
+//                        ),
+//                      )
+//                  ),
+//                ],
+//              ),
+//              size: Size.fromHeight(48),
+//            )
+//        ),
+//
+//        _commentLayer,
+//      ],
+//    );
+//  }
+//
+//  @override
+//  void dispose() {
+//    super.dispose();
+//    _scrollController?.dispose();
+//  }
+//
+//  Future<Null> _fetchPostContent(id) async {
+//    _post = await PostAPI.getPostContent(id);
+//    if (_post == null) {
+//      if (mounted) {
+//        setState(() {
+//          _body = Container(
+//            child: Center(
+//              child: Text('获取信息出错', style: TextStyle(color: PrimaryColorScheme().primaryVariant),),
+//            ),
+//          );
+//        });
+//      }
+//    } else {
+//      _richTextView = RichTextView(_post.title, _post.content, key: _rtKey,);
+//      comments = _post.postCommentList;
+//
+//      // 添加用户信息层
+//      _userInfoLayer = Padding(
+//        key: _userKey,
+//        padding: EdgeInsets.only(top: 16, bottom: 0, left: 8, right: 8),
+//        child: Row(
+//          crossAxisAlignment: CrossAxisAlignment.center,
+//          children: <Widget>[
+//            // 用户头像
+//            IconButton(
+//              icon: CircleAvatar(
+//                radius: 20,
+//                backgroundImage: (_post.avatar != null && _post.avatar != '')
+//                    ? CachedNetworkImageProvider(_post.avatar, cacheManager: DefaultCacheManager())
+//                    : AssetImage('assets/default_head.jpg'),
+//              ),
+//              padding: const EdgeInsets.all(0),
+//              onPressed: () {
+//                UserPage.jump(context, _post.userId);
+//              },
+//              splashColor: Color(0x00000000),
+//            ),
+//
+//            Expanded(
+//              flex: 1,
+//              child: Padding(
+//                padding: const EdgeInsets.only(left: 8, right: 8),
+//                child: Column(
+//                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                  crossAxisAlignment: CrossAxisAlignment.start,
+//                  children: <Widget>[
+//                    // 用户昵称
+//                    Text(
+//                      _post.nickname ?? _post.userId.toString(),
+//                      style: TextStyle(
+//                          fontSize: 16,
+//                          color: PrimaryColorScheme().primary,
+//                          fontWeight: FontWeight.normal),
+//                      maxLines: 1,
+//                      overflow: TextOverflow.ellipsis,
+//                    ),
+//
+//                    SizedBox(
+//                      width: 0,
+//                      height: 4,
+//                    ),
+//
+//                    // 发布时间
+//                    Text(
+//                      TimeConverter.getExpressionDate(_post.releaseTime),
+//                      style: TextStyle(fontSize: 12, color: Colors.grey),
+//                      maxLines: 1,
+//                      overflow: TextOverflow.ellipsis,
+//                    ),
+//                  ],
+//                ),
+//              ),
+//            ),
+//          ],
+//        ),
+//      );
+//
+//      _commentWidget = Column(
+//        key: _commentKey,
+//        children: <Widget>[
+//          Container(height: 8, color: Colors.grey[350],)
+//        ]..addAll(
+//            comments.isNotEmpty ? comments.map((comment) {
+//
+//              // 所有父级评论
+//              return PostCommentCard(
+//                fatherComment: comment,
+//                commentCallback: (comment) =>
+//                    _clickComment('回复@${comment.userNickname}：${comment.content}'
+//                        , comment.id, comment.userId),
+//                postId: _post.id,
+//              );
+//            }).toList() : [
+//              Container(
+//                height: 300,
+//                child: Center(
+//                  child: Text('评论区空空如也~快来抢占沙发吧！', style: TextStyle(color: Colors.grey),),
+//                ),
+//              )
+//            ]
+//        ),
+//      );
+//
+//      if (mounted) {
+//        setState(() {
+//          if (_scrollController == null) {
+//            _scrollController = ScrollController();
+//          }
+//
+//          _body = Scrollbar(
+//            child: SingleChildScrollView(
+//              controller: _scrollController,
+//              child: Column(
+//                children: <Widget>[
+//                  _userInfoLayer,
+//                  _richTextView,
+//                  _commentWidget
+//                ],
+//              ),
+//            ),
+//          );
+//        });
+//      }
+//    }
+//  }
+//
+//  void _initActions() async {
+//    if ((await UserAPI.getVerification()) & 1 == 1) {
+//      if (mounted) {
+//        setState(() {
+//          _actions = [
+//            IconButton(
+//              icon: Icon(Icons.more_horiz),
+//              onPressed: () => _clickMoreOptions(true),
+//            )
+//          ];
+//        });
+//      }
+//    } else {
+//      if (mounted) {
+//        setState(() {
+//          _actions = [
+//            IconButton(
+//              icon: Icon(Icons.more_horiz),
+//              onPressed: () => _clickMoreOptions(_post.userId == UserAPI.curUser?.id ?? 0),
+//            )
+//          ];
+//        });
+//      }
+//    }
+//  }
+//
+//  void _clickThumpUp() async {
+//    if (await UserAPI.isLogin()) {
+//      await PostAPI.thumpUp(_post.id);
+//      if (_post.isLike) {
+//        _post.thumpUps--;
+//      } else {
+//        _post.thumpUps++;
+//      }
+//      if (mounted) {
+//        setState(() {
+//          _post.isLike = !_post.isLike;
+//        });
+//      }
+//    }
+//  }
+//
+//  void _clickCollect() async {
+//    if (await UserAPI.isLogin()) {
+//      await PostAPI.collect(_post.id);
+//      if (_post.isCollect) {
+//        _post.collects--;
+//      } else {
+//        _post.collects++;
+//      }
+//      if (mounted) {
+//        setState(() {
+//          _post.isCollect = !_post.isCollect;
+//        });
+//      }
+//    }
+//  }
+//
+//  void _clickComment(hintText, commentId, uid) async {
+//    if (await UserAPI.isLogin()) {
+//      setState(() {
+//        _commentLayerInfo['commentId'] = commentId;
+//        _commentLayerInfo['hintText'] = hintText;
+//        _commentLayerInfo['uid'] = uid;
+//        if (_tempInputComments[commentId] == null) {
+//          _tempInputComments[commentId] = '';
 //        }
+//        _commentLayerVisible = true;
 //      });
 //    }
 //  }
-
-  Widget getTweetView(Map<String, dynamic> listItem) {
-    var authorRow = new Row(
-      children: <Widget>[
-        new Container(
-          width: 35.0,
-          height: 35.0,
-          decoration: new BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.blue,
-            image: new DecorationImage(
-                image: new NetworkImage(listItem['portrait']),
-                fit: BoxFit.cover
-            ),
-            border: new Border.all(
-              color: Colors.white,
-              width: 2.0,
-            ),
-          ),
-        ),
-        new Padding(
-            padding: const EdgeInsets.fromLTRB(6.0, 0.0, 0.0, 0.0),
-            child: new Text(listItem['author'], style: new TextStyle(
-              fontSize: 16.0,
-            ))
-        ),
-        new Expanded(
-          child: new Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              new Text('${listItem['commentCount']}', style: subtitleStyle,),
-              new Image.asset('./images/ic_comment.png', width: 20.0, height: 20.0,)
-            ],
-          ),
-        )
-      ],
-    );
-    var _body = listItem['body'];
-    _body = clearHtmlContent(_body);
-    var contentRow = new Row(
-      children: <Widget>[
-        new Expanded(child: new Text(_body),)
-      ],
-    );
-    var timeRow = new Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        new Text(listItem['pubDate'], style: subtitleStyle,)
-      ],
-    );
-    var columns = <Widget>[
-      new Padding(
-        padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 2.0),
-        child: authorRow,
-      ),
-      new Padding(
-        padding: const EdgeInsets.fromLTRB(52.0, 0.0, 10.0, 0.0),
-        child: contentRow,
-      ),
-    ];
-    String imgSmall = listItem['imgSmall'];
-    if (imgSmall != null && imgSmall.length > 0) {
-      // 动弹中有图片
-      List<String> list = imgSmall.split(",");
-      List<String> imgUrlList = new List<String>();
-      for (String s in list) {
-        if (s.startsWith("http")) {
-          imgUrlList.add(s);
-        } else {
-          imgUrlList.add("https://static.oschina.net/uploads/space/" + s);
-        }
-      }
-      List<Widget> imgList = [];
-      List rows = [];
-      num len = imgUrlList.length;
-      for (var row = 0; row < getRow(len); row++) {
-        List<Widget> rowArr = [];
-        for (var col = 0; col < 3; col++) {
-          num index = row * 3 + col;
-          num screenWidth = MediaQuery.of(context).size.width;
-          double cellWidth = (screenWidth - 100) / 3;
-          if (index < len) {
-            rowArr.add(new Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: new Image.network(imgUrlList[index], width: cellWidth, height: cellWidth),
-            ));
-          }
-        }
-        rows.add(rowArr);
-      }
-      for (var row in rows) {
-        imgList.add(new Row(
-          children: row,
-        ));
-      }
-      columns.add(new Padding(
-        padding: const EdgeInsets.fromLTRB(52.0, 5.0, 10.0, 0.0),
-        child: new Column(
-          children: imgList,
-        ),
-      ));
-    }
-    columns.add(new Padding(
-      padding: const EdgeInsets.fromLTRB(52.0, 10.0, 10.0, 6.0),
-      child: timeRow,
-    ));
-    columns.add(new Divider(height: 5.0,));
-    columns.add(new Container(
-      margin: const EdgeInsets.fromLTRB(0.0, 6.0, 0.0, 0.0),
-      child: new Row(
-        children: <Widget>[
-          new Container(
-            width: 4.0,
-            height: 20.0,
-            color: const Color(0xFF63CA6C),
-          ),
-          new Expanded(
-            flex: 1,
-            child: new Container(
-                height: 20.0,
-                color: const Color(0xFFECECEC),
-                child: new Text("评论列表", style: new TextStyle(color: const Color(0xFF63CA6C)),)
-            ),
-          )
-        ],
-      ),
-    ));
-    return new Column(
-      children: columns,
-    );
-  }
-
-  int getRow(int n) {
-    int a = n % 3;
-    int b = n ~/ 3;
-    if (a != 0) {
-      return b + 1;
-    }
-    return b;
-  }
-
-  // 去掉文本中的html代码
-  String clearHtmlContent(String str) {
-    if (str.startsWith("<emoji")) {
-      return "[emoji]";
-    }
-    var s = str.replaceAll(regExp1, "");
-    s = s.replaceAll(regExp2, "");
-    s = s.replaceAll("\n", "");
-    return s;
-  }
-}
+//
+//  void _cancelCommentLayer() {
+//    setState(() {
+//      _commentLayerVisible = false;
+//    });
+//  }
+//
+//  void _requestComment(commentId) async {
+//    var content = _tempInputComments[commentId];
+//    var dialog = LoadingDialog(
+//      message: '正在发送……',
+//      cancelable: false,
+//    );
+//    showDialog(
+//        context: context,
+//        barrierDismissible: false,
+//        builder: (context) => dialog
+//    );
+//
+//    var result = await PostAPI.addComment(
+//        content: content,
+//        postId: _post.id,
+//        fatherCommentId: commentId == 0 ? -1 : commentId,
+//        time: DateTime.now().millisecondsSinceEpoch,
+//        toUserId: _commentLayerInfo['uid']
+//    );
+//
+//    if (result) {
+//      await _fetchPostContent(widget.id);
+//      Fluttertoast.showToast(msg: '发送成功');
+//
+//      _tempInputComments.remove(commentId);
+//      _cancelCommentLayer();
+//    } else {
+//      Fluttertoast.showToast(msg: '发送失败');
+//    }
+//
+//    dialog.dismiss();
+//  }
+//
+//  void _clickMoreOptions(admin) async {
+//    var buttons = <Widget>[]..add(ListTile(
+//      title: Text('复制 @${_post.nickname}'),
+//      onTap: () {
+//        Clipboard.setData(ClipboardData(text: '@${_post.nickname}'));
+//        Fluttertoast.showToast(msg: '复制成功');
+//        Navigator.of(context).pop();
+//      },
+//    ))..add(ListTile(
+//      title: Text('复制 ${_post.title}'),
+//      onTap: () {
+//        Clipboard.setData(ClipboardData(text: '${_post.title}'));
+//        Fluttertoast.showToast(msg: '复制成功');
+//        Navigator.of(context).pop();
+//      },
+//    ))..add(ListTile(
+//      title: Text('复制帖子内容'),
+//      onTap: () {
+//        Clipboard.setData(ClipboardData(text: _richTextView.buildContent()));
+//        Fluttertoast.showToast(msg: '复制成功');
+//        Navigator.of(context).pop();
+//      },
+//    ));
+//
+//    if (admin) {
+//      buttons..add(ListTile(
+//        title: Text('删除帖子', style: TextStyle(color: Colors.red),),
+//        onTap: () async {
+//          Navigator.of(context).pop();
+//
+//          showDialog(
+//              context: context,
+//              builder: (context) => AlertDialog(
+//                title: Text('删除帖子'),
+//                content: Text('确定要删除帖子吗？该操作不可逆!'),
+//                actions: <Widget>[
+//
+//                  FlatButton(
+//                    child: Text('删除', style: TextStyle(color: Colors.red),),
+//                    onPressed: () async {
+//                      Navigator.of(context).pop();
+//                      var res = await PostAPI.deletePost(_post);
+//
+//                      if (res) {
+//                        Fluttertoast.showToast(msg: '删除成功');
+//
+//                        Navigator.of(_context).pop();
+//                      } else {
+//                        Fluttertoast.showToast(msg: '删除失败');
+//                      }
+//                    },
+//                  ),
+//
+//                  FlatButton(
+//                    child: Text('取消'),
+//                    onPressed: () async {
+//                      Navigator.of(context).pop();
+//                    },
+//                  )
+//
+//                ],
+//              )
+//          );
+//
+//
+//        },
+//      ));
+//    }
+//
+//    showModalBottomSheet(
+//        context: context,
+//        builder: (context) => Column(
+//          mainAxisSize: MainAxisSize.min,
+//          children: buttons,
+//        )
+//    );
+//  }
+//}

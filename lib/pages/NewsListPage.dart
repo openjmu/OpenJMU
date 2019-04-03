@@ -42,8 +42,6 @@ class NewsListPageState extends State<NewsListPage> {
       var maxScroll = _controller.position.maxScrollExtent;
       var pixels = _controller.position.pixels;
       if (maxScroll == pixels && listData.length < listTotalSize) {
-        // scroll to bottom, get next page data
-//        print("load more ... ");
         curPage++;
         getNewsList(true);
       }
@@ -109,27 +107,19 @@ class NewsListPageState extends State<NewsListPage> {
       NetUtils.getWithHeaderSet(url, headers: headers).then((response) {
         if (response != null) {
           Map<String, dynamic> map = jsonDecode(response);
-          // total表示资讯总条数
           List _listData = map["data"];
           listTotalSize = map['total'];
 //          List _slideData = data['slide'];
           setState(() {
             if (!isLoadMore) {
-              // 不是加载更多，则直接为变量赋值
               listData = _listData;
 //              slideData = _slideData;
             } else {
-              // 是加载更多，则需要将取到的news数据追加到原来的数据后面
               List list1 = new List();
-              // 添加原来的数据
-              list1.addAll(listData);
-              // 添加新取到的数据
-              list1.addAll(_listData);
-              // 判断是否获取了所有的数据，如果是，则需要显示底部的"我也是有底线的"布局
+              list1..addAll(listData)..addAll(_listData);
               if (list1.length >= listTotalSize) {
                 list1.add(Constants.endLineTag);
               }
-              // 给列表数据赋值
               listData = list1;
               // 轮播图数据
 //              slideData = _slideData;

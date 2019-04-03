@@ -20,6 +20,7 @@ import 'package:OpenJMU/pages/PublishPostPage.dart';
 import 'package:OpenJMU/pages/MyInfoPage.dart';
 import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 
+
 class MainPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new MainPageState();
@@ -138,9 +139,6 @@ class MainPageState extends State<MainPage> {
     return tabTextStyleNormal;
   }
 
-//  Text getTabTitle(int curIndex) {
-//    return new Text(bottomAppBarTitles[curIndex], style: getTabTextStyle(curIndex));
-//  }
   String getTabTitle(int curIndex) {
     return bottomAppBarTitles[curIndex];
   }
@@ -188,16 +186,7 @@ class MainPageState extends State<MainPage> {
               elevation: 1,
               leading: new Padding(
               padding: EdgeInsets.fromLTRB(14, 10, 6, 10),
-              child: new Container(
-                decoration: new BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.transparent,
-                  image: new DecorationImage(
-                      image: new NetworkImage(Api.userFace+"?uid=$userUid&size=f100"),
-                      fit: BoxFit.contain
-                  ),
-                ),
-              ),
+              child: getAvatar()
             ),
             title: new FlatButton(
                 onPressed: null,
@@ -259,43 +248,6 @@ class MainPageState extends State<MainPage> {
             ],
           ),
           body: _body,
-//          bottomNavigationBar: new BottomNavigationBar(
-//            fixedColor: Theme.of(context).primaryColor,
-//            type: BottomNavigationBarType.fixed,
-//            items: <BottomNavigationBarItem>[
-//              BottomNavigationBarItem(
-//                  activeIcon: Icon(Icons.home, color: currentThemeColor),
-//                  icon: Icon(Icons.home, color: Colors.grey),
-//                  title: getTabTitle(0)
-//              ),
-//              BottomNavigationBarItem(
-//                  activeIcon: Icon(Icons.fiber_new, color: currentThemeColor),
-//                  icon: Icon(Icons.fiber_new, color: Colors.grey),
-//                  title: getTabTitle(1)
-//              ),
-//              BottomNavigationBarItem(
-//                  activeIcon: Icon(Icons.apps, color: currentThemeColor),
-//                  icon: Icon(Icons.apps, color: Colors.grey),
-//                  title: getTabTitle(2)
-//              ),
-//              BottomNavigationBarItem(
-//                  activeIcon: Icon(Icons.chat, color: currentThemeColor),
-//                  icon: Icon(Icons.chat, color: Colors.grey),
-//                  title: getTabTitle(3)
-//              ),
-//              BottomNavigationBarItem(
-//                  activeIcon: Icon(Icons.account_circle, color: currentThemeColor),
-//                  icon: Icon(Icons.account_circle, color: Colors.grey),
-//                  title: getTabTitle(4)
-//              )
-//            ],
-//            currentIndex: _tabIndex,
-//            onTap: (index) {
-//              setState((){
-//                _tabIndex = index;
-//              });
-//            },
-//          ),
         )
     );
   }

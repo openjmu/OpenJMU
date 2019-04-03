@@ -1,13 +1,16 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:extended_text/extended_text.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/ChangeBrightnessEvent.dart';
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class CardItem extends StatefulWidget {
@@ -21,7 +24,9 @@ class CardItem extends StatefulWidget {
 
 class _CardItemState extends State<CardItem> {
   final TextStyle titleTextStyle = new TextStyle(fontSize: 18.0);
-  final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 12.0);
+  final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
+  final TextStyle rootTopicTextStyle = new TextStyle(fontSize: 14.0);
+  final TextStyle rootTopicMentionStyle = new TextStyle(color: Colors.blue, fontSize: 14.0);
   final Color subIconColor = Colors.grey;
 
   Color currentRootTopicColor = ThemeUtils.currentPrimaryColor;
@@ -60,7 +65,6 @@ class _CardItemState extends State<CardItem> {
   @override
   Widget build(BuildContext context) {
     _praisesColor = widget.post.isLike ? ThemeUtils.currentColorTheme : Colors.grey;
-
     return new Container(
       child: Card(
         margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -98,7 +102,7 @@ class _CardItemState extends State<CardItem> {
 
   Text getPostNickname(post) {
     return new Text(
-      post.nickname,
+      post.nickname ?? post.userId,
       style: titleTextStyle,
       textAlign: TextAlign.left,
     );
@@ -187,13 +191,23 @@ class _CardItemState extends State<CardItem> {
     url = getUrlFromContent(content);
     url != null ? content = removeUrlFromContent(content) : content = content;
     List<Widget> widgets = [
-      new Text(content, style: new TextStyle(fontSize: 16.0)),
+      ExtendedText(
+        content,
+        style: new TextStyle(fontSize: 16.0),
+        onSpecialTextTap: (String content, [data]) {
+          if (content.startsWith("#")) {
+            showCenterShortToast(content.substring(1, content.length-1));
+          } else if (content.startsWith("@")) {
+            _goUserPage(data);
+          }
+        },
+        specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+        overflow: ExtendedTextOverflow.ellipsis,
+        maxLines: 10,
+      ),
     ];
     if (url != null) widgets.add(getLinkButton(url));
-    if (post.rootTopic != null) {
-      var rootTopic = post.rootTopic['topic'];
-      widgets.add(getRootPost(rootTopic));
-    }
+    if (post.rootTopic != null) widgets.add(getRootPost(post.rootTopic));
     return new Row(
         children: <Widget>[
           new Expanded(
@@ -212,6 +226,9 @@ class _CardItemState extends State<CardItem> {
   }
 
   Widget getRootPost(rootTopic) {
+    var content = rootTopic['topic'];
+    String topic = "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid'].toString()}<\/M>: ";
+    topic += content['article'] ?? content['content'];
     return new Container(
         margin: EdgeInsets.only(top: 8.0),
         padding: EdgeInsets.all(8.0),
@@ -222,10 +239,25 @@ class _CardItemState extends State<CardItem> {
         child: new Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              new Text("@${rootTopic['user']['nickname']}：${rootTopic['content']}"),
-              getRootPostImages(rootTopic)
-            ]
+            children: rootTopic['exists'] == 1
+                ? <Widget>[
+                  ExtendedText(
+                    topic,
+                    style: new TextStyle(fontSize: 16.0),
+                    onSpecialTextTap: (String content, [data]) {
+                      if (content.startsWith("#")) {
+                        showCenterShortToast(content.substring(1, content.length-1));
+                      } else if (content.startsWith("@")) {
+                        _goUserPage(data);
+                      }
+                    },
+                    specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+                    overflow: ExtendedTextOverflow.ellipsis,
+                    maxLines: 10,
+                  ),
+                  getRootPostImages(rootTopic)
+                ]
+                : <Widget>[new Text("/// 此动态已被删除 ///")]
         )
     );
   }
@@ -395,4 +427,8 @@ class _CardItemState extends State<CardItem> {
     });
   }
 
+  void _goUserPage(uid) {
+    showCenterShortToast(uid.toString());
+    return;
+  }
 }
