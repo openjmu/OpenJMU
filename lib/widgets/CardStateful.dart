@@ -54,7 +54,7 @@ class _CardItemState extends State<CardItem> {
 
   void setRootTopicColor(isDarkState) {
     setState(() {
-      if (!isDarkState || ThemeUtils.currentPrimaryColor == Colors.white) {
+      if (isDarkState == null || !isDarkState || ThemeUtils.currentPrimaryColor == Colors.white) {
         currentRootTopicColor = Colors.grey[200];
       } else {
         currentRootTopicColor = Colors.grey[850];
@@ -194,11 +194,12 @@ class _CardItemState extends State<CardItem> {
       ExtendedText(
         content,
         style: new TextStyle(fontSize: 16.0),
-        onSpecialTextTap: (String content, [data]) {
-          if (content.startsWith("#")) {
-            showCenterShortToast(content.substring(1, content.length-1));
-          } else if (content.startsWith("@")) {
-            _goUserPage(data);
+        onSpecialTextTap: (dynamic data) {
+          String text = data['content'];
+          if (text.startsWith("#")) {
+            showCenterShortToast(text.substring(1, text.length-1));
+          } else if (text.startsWith("@")) {
+            _goUserPage(data['uid']);
           }
         },
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
@@ -244,26 +245,27 @@ class _CardItemState extends State<CardItem> {
                   ExtendedText(
                     topic,
                     style: new TextStyle(fontSize: 16.0),
-                    onSpecialTextTap: (String content, [data]) {
-                      if (content.startsWith("#")) {
-                        showCenterShortToast(content.substring(1, content.length-1));
-                      } else if (content.startsWith("@")) {
-                        _goUserPage(data);
+                    onSpecialTextTap: (dynamic data) {
+                      String text = data['content'];
+                      if (text.startsWith("#")) {
+                        showCenterShortToast(text.substring(1, text.length-1));
+                      } else if (text.startsWith("@")) {
+                        _goUserPage(data['uid']);
                       }
                     },
                     specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
                     overflow: ExtendedTextOverflow.ellipsis,
                     maxLines: 10,
                   ),
-                  getRootPostImages(rootTopic)
+                  getRootPostImages(rootTopic['topic'])
                 ]
                 : <Widget>[new Text("/// 此动态已被删除 ///")]
         )
     );
   }
 
-  Widget getRootPostImages(post) {
-    final imagesData = post['image'];
+  Widget getRootPostImages(rootTopic) {
+    final imagesData = rootTopic['image'];
     if (imagesData != null) {
       List<Widget> imagesWidget = [];
       for (var i = 0; i < imagesData.length; i++) {

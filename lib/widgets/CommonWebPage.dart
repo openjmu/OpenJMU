@@ -69,12 +69,12 @@ class CommonWebPageState extends State<CommonWebPage> {
         });
       }
     });
-    flutterWebViewPlugin.onProgressChanged.listen((progress) {
-      setState(() {
-        progress = progress;
-      });
-      print("Page progress: $progress");
-    });
+//    flutterWebViewPlugin.onProgressChanged.listen((progress) {
+//      setState(() {
+//        progress = progress;
+//      });
+//      print("Page progress: $progress");
+//    });
     flutterWebViewPlugin.onUrlChanged.listen((url) {
       setState(() {
         loading = false;
@@ -98,17 +98,17 @@ class CommonWebPageState extends State<CommonWebPage> {
     if (title == "@defaultTitle_jxt") {
       title = widget.title;
     }
-    Widget trailing = refreshIndicator;
-//    trailing = refreshIndicator;
-//        : new Container(
-//        width: 56.0,
-//        child: new IconButton(
-//            icon: new Icon(Icons.refresh),
-//            onPressed: () {
-//              flutterWebViewPlugin.reload();
-//            }
-//        )
-//    );
+    Widget trailing = loading
+        ? refreshIndicator
+        : new Container(
+        width: 56.0,
+        child: new IconButton(
+            icon: new Icon(Icons.refresh),
+            onPressed: () {
+              flutterWebViewPlugin.reload();
+            }
+        )
+    );
     return new WebviewScaffold(
         url: widget.url,
         allowFileURLs: true,

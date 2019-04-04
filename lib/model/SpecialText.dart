@@ -43,7 +43,10 @@ class MentionText extends SpecialText {
         style: textStyle?.copyWith(color: Colors.blue, fontSize: _fontSize),
         recognizer: new TapGestureRecognizer()
           ..onTap = () {
-            if (onTap != null) onTap(mentionText, uid);
+            Map<String, dynamic> data = new Map();
+            data['content'] = mentionText;
+            data['uid'] = uid;
+            if (onTap != null) onTap(data);
           });
   }
 }
@@ -61,7 +64,9 @@ class PoundText extends SpecialText {
         style: textStyle?.copyWith(color: Colors.orangeAccent, fontSize: _fontSize),
         recognizer: TapGestureRecognizer()
           ..onTap = () {
-            if (onTap != null) onTap(toString());
+            Map<String, dynamic> data = new Map();
+            data['content'] = toString();
+            if (onTap != null) onTap(data);
           });
   }
 }
