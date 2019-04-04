@@ -5,8 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/LoginEvent.dart';
-import 'package:OpenJMU/events/LogoutEvent.dart';
+import 'package:OpenJMU/events/ScrollToTopEvent.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/utils/BlackListUtils.dart';
@@ -26,6 +25,7 @@ class PostListPage extends StatefulWidget {
 }
 
 class PostListPageState extends State<PostListPage> {
+  final ScrollController _scrollController = new ScrollController();
   Color currentColorTheme = ThemeUtils.currentColorTheme;
   Color currentPrimaryColor = ThemeUtils.currentPrimaryColor;
 
@@ -36,33 +36,14 @@ class PostListPageState extends State<PostListPage> {
   RegExp regExp1 = new RegExp("</.*>");
   RegExp regExp2 = new RegExp("<.*>");
   num curPage = 1;
-  ScrollController _controller;
   bool loading = false;
-  bool isUserLogin = false;
 
   @override
   void initState() {
     super.initState();
-    DataUtils.isLogin().then((isLogin) {
-      setState(() {
-        this.isUserLogin = isLogin;
-      });
-      if (isLogin) {
-          DataUtils.getNotifications();
-      }
-    });
-    Constants.eventBus.on<LoginEvent>().listen((event) {
-      if (this.mounted) {
-        setState(() {
-          this.isUserLogin = true;
-        });
-      }
-    });
-    Constants.eventBus.on<LogoutEvent>().listen((event) {
-      if (this.mounted) {
-        setState(() {
-          this.isUserLogin = false;
-        });
+    Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
+      if (this.mounted && event.tabIndex == 0) {
+        _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
       }
     });
   }
@@ -70,14 +51,13 @@ class PostListPageState extends State<PostListPage> {
   PostListPageState() {
     authorTextStyle =
     new TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold);
-    _controller = new ScrollController();
-    _controller.addListener(() {
-      var maxScroll = _controller.position.maxScrollExtent;
-      var pixels = _controller.position.pixels;
+    _scrollController.addListener(() {
+      var maxScroll = _scrollController.position.maxScrollExtent;
+      var pixels = _scrollController.position.pixels;
       if (maxScroll == pixels) {
         // load next page
         curPage++;
-        getWeiboList(true, false);
+        getPostList(true, false);
       }
     });
   }
@@ -192,114 +172,108 @@ class PostListPageState extends State<PostListPage> {
     );
   }
 
-  void getForwardPage(context, uri) {
-    Navigator.of(context).push(platformPageRoute(
-        builder: (context) {
-          return new CommonWebPage(url: uri);
+  Future getPostList(bool isLoadMore, bool isFollowed) {
+    loading = true;
+    DataUtils.getSid().then((sid) {
+      String requestUrl;
+      Map headers = DataUtils.buildPostHeaders(sid);
+      List cookies = DataUtils.buildPHPSESSIDCookies(sid);
+      if (isLoadMore) {
+        if (!isFollowed) {
+          int lastId = postList[postList.length-1]['id'];
+          requestUrl = Api.postList + "/id_max/$lastId";
+        } else {
+          int lastId = postFollowedList[postFollowedList.length-1]['id'];
+          requestUrl = Api.postFollowedList + "/id_max/$lastId";
         }
-    ));
-  }
-
-  void getWeiboList(bool isLoadMore, bool isFollowed) {
-    DataUtils.getNotifications();
-    DataUtils.isLogin().then((isLogin) {
-      if (isLogin) {
-        loading = true;
-        DataUtils.getUserInfo().then((userInfo) {
-          String sid, requestUrl;
-          sid = userInfo.sid;
-          Map headers = DataUtils.buildPostHeaders(sid);
-          List cookies = DataUtils.buildPHPSESSIDCookies(sid);
-          if (isLoadMore) {
-            if (!isFollowed) {
-              int lastId = postList[postList.length-1]['id'];
-              requestUrl = Api.postList + "/id_max/$lastId";
-            } else {
-              int lastId = postFollowedList[postFollowedList.length-1]['id'];
-              requestUrl = Api.postFollowedList + "/id_max/$lastId";
-            }
-          } else {
-            if (!isFollowed) {
-              requestUrl = Api.postList;
-            } else {
-              requestUrl = Api.postFollowedList;
-            }
-          }
-          NetUtils.getWithCookieAndHeaderSet(requestUrl, headers: headers, cookies: cookies)
-              .then((response) {
-            Map<String, dynamic> obj = jsonDecode(response);
-            if (!isLoadMore) {
-              if (!isFollowed) {
-                postList = obj['topics'];
-              } else {
-                postFollowedList = obj['topics'];
-              }
-            } else {
-              if (!isFollowed) {
-                List list = new List();
-                list.addAll(postList);
-                list.addAll(obj['topics']);
-                postList = list;
-              } else {
-                List followedlist = new List();
-                followedlist.addAll(postFollowedList);
-                followedlist.addAll(obj['topics']);
-                postFollowedList = followedlist;
-              }
-            }
-            if (!isFollowed) {
-              filterList(postList, false);
-            } else {
-              filterList(postFollowedList, true);
-            }
-          })
-          .catchError((e) {
-            if (jsonDecode(e.response.toString())['msg'] == "用户验证不通过.") {
-              showCenterShortToast("用户身份已失效\n正在更新用户身份");
-              DataUtils.getTicket().then((status) {
-                getWeiboList(isLoadMore, isFollowed);
-              }).catchError((e) {
-                showCenterShortToast("身份校验失败\n请重新登录");
-                DataUtils.doLogout();
-              });
-            }
-          });
-        });
+      } else {
+        if (!isFollowed) {
+          requestUrl = Api.postList;
+        } else {
+          requestUrl = Api.postFollowedList;
+        }
       }
+      return NetUtils.getWithCookieAndHeaderSet(requestUrl, headers: headers, cookies: cookies)
+          .then((response) {
+        Map<String, dynamic> obj = jsonDecode(response);
+        if (!isLoadMore) {
+          if (!isFollowed) {
+            postList = obj['topics'];
+          } else {
+            postFollowedList = obj['topics'];
+          }
+        } else {
+          if (!isFollowed) {
+            List list = new List();
+            list.addAll(postList);
+            list.addAll(obj['topics']);
+            setState(() {
+              postList = list;
+            });
+          } else {
+            List followedlist = new List();
+            followedlist.addAll(postFollowedList);
+            followedlist.addAll(obj['topics']);
+            setState(() {
+              postFollowedList = followedlist;
+            });
+          }
+        }
+        setState(() {
+          loading = false;
+        });
+//        if (!isFollowed) {
+//          filterList(postList, false);
+//        } else {
+//          filterList(postFollowedList, true);
+//        }
+      })
+          .catchError((e) {
+        if (jsonDecode(e.response.toString())['msg'] == "用户验证不通过.") {
+          showCenterShortToast("用户身份已失效\n正在更新用户身份");
+          DataUtils.getTicket().then((status) {
+            getPostList(isLoadMore, isFollowed);
+          }).catchError((e) {
+            showCenterShortToast("身份校验失败\n请重新登录");
+            DataUtils.doLogout();
+          });
+        }
+      });
     });
+    DataUtils.getNotifications();
   }
 
   // 根据黑名单过滤出新的数组
   filterList(List<dynamic> objList, bool isFollowed) {
-    BlackListUtils.getBlackListIds().then((intList) {
-      if (intList != null && intList.isNotEmpty && objList != null) {
-        List newList = new List();
-        for (dynamic item in objList) {
-          int authorId = item['uid'];
-          if (!intList.contains(authorId)) {
-            newList.add(item);
-          }
-        }
-        setState(() {
-          if (!isFollowed) {
-            postList = newList;
-          } else {
-            postFollowedList = newList;
-          }
-          loading = false;
-        });
+//    BlackListUtils.getBlackListIds().then((intList) {
+//      if (intList != null && intList.isNotEmpty && objList != null) {
+//        List newList = new List();
+//        for (dynamic item in objList) {
+//          int authorId = item['uid'];
+//          if (!intList.contains(authorId)) {
+//            newList.add(item);
+//          }
+//        }
+//        setState(() {
+//          if (!isFollowed) {
+//            postList = newList;
+//          } else {
+//            postFollowedList = newList;
+//          }
+//          loading = false;
+//        });
+//      } else {
+    // 黑名单为空，直接返回原始数据
+    setState(() {
+      if (!isFollowed) {
+        postList = objList;
       } else {
-        // 黑名单为空，直接返回原始数据
-        setState(() {
-          if (!isFollowed) {
-            postList = objList;
-          } else {
-            postFollowedList = objList;
-          }
-          loading = false;
-        });
+        postFollowedList = objList;
       }
+      loading = false;
     });
+//      }
+//    });
   }
 
   // 关进小黑屋
@@ -367,24 +341,24 @@ class PostListPageState extends State<PostListPage> {
     var _user = itemData['user'];
     String _avatar = "${Api.userFace}?uid=${_user['uid']}&size=f100";
     String _postTime = new DateTime.fromMillisecondsSinceEpoch(int.parse(itemData['post_time']) * 1000)
-      .toString()
-      .substring(0,16);
+        .toString()
+        .substring(0,16);
     Post _post = new Post(
-      int.parse(itemData['tid']),
-      int.parse(_user['uid']),
-      _user['nickname'],
-      _avatar,
-      _postTime,
-      itemData['from_string'],
-      int.parse(itemData['glances']),
-      itemData['category'],
-      itemData['category'] == "longtext" ? itemData['article'] : itemData['content'],
-      itemData['image'],
-      int.parse(itemData['forwards']),
-      int.parse(itemData['replys']),
-      int.parse(itemData['praises']),
-      itemData['root_topic'],
-      isLike: itemData['praised'] == 1 ? true : false
+        int.parse(itemData['tid']),
+        int.parse(_user['uid']),
+        _user['nickname'],
+        _avatar,
+        _postTime,
+        itemData['from_string'],
+        int.parse(itemData['glances']),
+        itemData['category'],
+        itemData['category'] == "longtext" ? itemData['article'] : itemData['content'],
+        itemData['image'],
+        int.parse(itemData['forwards']),
+        int.parse(itemData['replys']),
+        int.parse(itemData['praises']),
+        itemData['root_topic'],
+        isLike: itemData['praised'] == 1 ? true : false
     );
     return _post;
   }
@@ -409,19 +383,17 @@ class PostListPageState extends State<PostListPage> {
 
   Future<Null> _pullToRefresh() async {
     curPage = 1;
-    getWeiboList(false, false);
-    return null;
+    return await getPostList(false, false);
   }
 
   Future<Null> _pullToRefreshFollowed() async {
     curPage = 1;
-    getWeiboList(false, true);
-    return null;
+    return await getPostList(false, true);
   }
 
   Widget getListView() {
     if (postList == null) {
-      getWeiboList(false, false);
+      getPostList(false, false);
       return new Center(
         child: new CircularProgressIndicator(
           valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
@@ -431,7 +403,7 @@ class PostListPageState extends State<PostListPage> {
       Widget listView = new ListView.builder(
         itemCount: postList.length,
         itemBuilder: (context, i) => renderRow(i, false),
-        controller: _controller,
+        controller: _scrollController,
       );
       return new RefreshIndicator(
           color: ThemeUtils.currentColorTheme,
@@ -443,7 +415,7 @@ class PostListPageState extends State<PostListPage> {
 
   Widget getFollowedListView() {
     if (postFollowedList == null) {
-      getWeiboList(false, true);
+      getPostList(false, true);
       return new Center(
         child: new CircularProgressIndicator(),
       );
@@ -451,7 +423,7 @@ class PostListPageState extends State<PostListPage> {
       Widget listView = new ListView.builder(
         itemCount: postFollowedList.length,
         itemBuilder: (context, i) => renderRow(i, true),
-        controller: _controller,
+        controller: _scrollController,
       );
       return new RefreshIndicator(child: listView, onRefresh: _pullToRefreshFollowed);
     }
@@ -472,7 +444,7 @@ class PostListPageState extends State<PostListPage> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-        body: getListView(),
+      body: getListView(),
     );
   }
 }

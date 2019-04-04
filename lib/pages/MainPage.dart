@@ -8,6 +8,7 @@ import 'package:OpenJMU/events/ChangeThemeEvent.dart';
 import 'package:OpenJMU/events/LoginEvent.dart';
 import 'package:OpenJMU/events/LogoutEvent.dart';
 import 'package:OpenJMU/events/NotificationCountChangeEvent.dart';
+import 'package:OpenJMU/events/ScrollToTopEvent.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
@@ -161,15 +162,27 @@ class MainPageState extends State<MainPage> {
     return mainPage(context);
   }
 
-  int last = 0;
-  Future<bool> doubleClickBack() {
+  int lastBack = 0;
+  Future<bool> doubleBackExit() {
     int now = DateTime.now().millisecondsSinceEpoch;
-    if (now - last > 800) {
+    if (now - lastBack > 800) {
       showShortToast("再按一次退出应用");
-      last = DateTime.now().millisecondsSinceEpoch;
+      lastBack = DateTime.now().millisecondsSinceEpoch;
       return Future.value(false);
     } else {
       cancelToast();
+      return Future.value(true);
+    }
+  }
+
+  int lastAppBarTap = 0;
+  Future<bool> doubleTapScrollToTop() {
+    int now = DateTime.now().millisecondsSinceEpoch;
+    if (now - lastAppBarTap > 400) {
+      lastAppBarTap = DateTime.now().millisecondsSinceEpoch;
+      return Future.value(false);
+    } else {
+      Constants.eventBus.fire(new ScrollToTopEvent(_tabIndex));
       return Future.value(true);
     }
   }
@@ -180,38 +193,43 @@ class MainPageState extends State<MainPage> {
       index: _tabIndex,
     );
     return new WillPopScope(
-        onWillPop: doubleClickBack,
+        onWillPop: doubleBackExit,
         child: new Scaffold(
-          appBar: new AppBar(
+          appBar: GestureAppBar(
+            appBar: new AppBar(
               elevation: 1,
               leading: new Padding(
-              padding: EdgeInsets.fromLTRB(14, 10, 6, 10),
-              child: getAvatar()
-            ),
-            title: new FlatButton(
-                onPressed: null,
-                child: new Text(
-                    getTabTitle(_tabIndex),
-                    style: new TextStyle(
-                        color: currentThemeColor,
-                        fontSize: 22.0,
-                        fontWeight: FontWeight.bold
-                    )
-                )
-            ),
-            centerTitle: true,
-            actions: <Widget>[
-              BadgeIconButton(
-                  itemCount: currentNotifications,
-                  icon: Icon(Icons.notifications),
-                  badgeColor: currentThemeColor,
-                  badgeTextColor: Colors.white,
-                  hideZeroCount: true,
-                  onPressed: null
+                  padding: EdgeInsets.fromLTRB(14, 10, 6, 10),
+                  child: getAvatar()
               ),
-            ],
-            iconTheme: new IconThemeData(color: currentThemeColor),
-            brightness: Theme.of(context).brightness,
+              title: new FlatButton(
+                  onPressed: null,
+                  child: new Text(
+                      getTabTitle(_tabIndex),
+                      style: new TextStyle(
+                          color: currentThemeColor,
+                          fontSize: 22.0,
+                          fontWeight: FontWeight.bold
+                      )
+                  )
+              ),
+              centerTitle: true,
+              actions: <Widget>[
+                BadgeIconButton(
+                    itemCount: currentNotifications,
+                    icon: Icon(Icons.notifications),
+                    badgeColor: currentThemeColor,
+                    badgeTextColor: Colors.white,
+                    hideZeroCount: true,
+                    onPressed: null
+                ),
+              ],
+              iconTheme: new IconThemeData(color: currentThemeColor),
+              brightness: Theme.of(context).brightness,
+            ),
+            onTap: () {
+              doubleTapScrollToTop();
+            }
           ),
           floatingActionButton: new Builder(builder: (BuildContext context) {
             return new FloatingActionButton(
@@ -251,4 +269,19 @@ class MainPageState extends State<MainPage> {
         )
     );
   }
+}
+
+class GestureAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final VoidCallback onTap;
+  final AppBar appBar;
+
+  const GestureAppBar({Key key, this.onTap,this.appBar}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(onTap: onTap, child: appBar);
+  }
+
+  @override
+  Size get preferredSize => new Size.fromHeight(kToolbarHeight);
 }

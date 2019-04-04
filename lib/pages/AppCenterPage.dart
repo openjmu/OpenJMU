@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/ScrollToTopEvent.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -14,6 +16,7 @@ class AppCenterPage extends StatefulWidget {
 }
 
 class AppCenterPageState extends State<AppCenterPage> {
+  final ScrollController _scrollController = new ScrollController();
   String sid;
   Color themeColor = ThemeUtils.currentColorTheme;
   List<Widget> webAppList;
@@ -51,6 +54,11 @@ class AppCenterPageState extends State<AppCenterPage> {
       print(e.toString());
       showShortToast(e.toString());
       return e;
+    });
+    Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
+      if (this.mounted && event.tabIndex == 1) {
+        _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
+      }
     });
   }
 
@@ -104,6 +112,7 @@ class AppCenterPageState extends State<AppCenterPage> {
       );
     } else {
       return new GridView.count(
+        controller: _scrollController,
         shrinkWrap: true,
         crossAxisCount: 3,
         childAspectRatio: 1.25 / 1,

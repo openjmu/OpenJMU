@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class CommonWebPage extends StatefulWidget {
-  String title;
-  String url;
+  final String title;
+  final String url;
 
-  CommonWebPage({Key key, this.title, this.url}) : super(key: key);
+  const CommonWebPage({Key key, @required this.title, @required this.url}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -18,12 +17,12 @@ class CommonWebPage extends StatefulWidget {
 }
 
 class CommonWebPageState extends State<CommonWebPage> {
+  String title;
   final flutterWebViewPlugin = new FlutterWebviewPlugin();
-  Brightness currentBrightness = Brightness.light;
 
-  bool loading = true;
   double progress = 0.0;
-  String title = "@defaultTitle_jxt";
+  bool loading = true;
+
   Widget refreshIndicator = new Container(
     width: 56.0,
     padding: EdgeInsets.all(16.0),
@@ -39,29 +38,16 @@ class CommonWebPageState extends State<CommonWebPage> {
   @override
   void initState() {
     super.initState();
-    DataUtils.getBrightnessDark().then((isDark) {
-      if (isDark == null) {
-        DataUtils.setBrightnessDark(false).then((whatever) {
-          setState(() {
-            currentBrightness = Brightness.light;
-          });
-        });
-      } else {
-        if (isDark) {
-          setState(() {
-            currentBrightness = Brightness.dark;
-          });
-        } else {
-          setState(() {
-            currentBrightness = Brightness.light;
-          });
-        }
-      }
-    });
-    flutterWebViewPlugin.onStateChanged.listen((state) {
+    title = widget.title;
+    flutterWebViewPlugin.onStateChanged.listen((state) async {
       if (state.type == WebViewState.finishLoad) {
         setState(() {
           loading = false;
+        });
+        String script = 'window.document.title';
+        String title = await flutterWebViewPlugin.evalJavascript(script);
+        setState(() {
+          this.title = title.substring(1, title.length - 1);
         });
       } else if (state.type == WebViewState.startLoad) {
         setState(() {
@@ -120,7 +106,7 @@ class CommonWebPageState extends State<CommonWebPage> {
           centerTitle: true,
           actions: <Widget>[trailing],
           iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
-          brightness: currentBrightness,
+          brightness: ThemeUtils.currentBrightness,
         ),
         enableAppScheme: true,
         withJavascript: true,

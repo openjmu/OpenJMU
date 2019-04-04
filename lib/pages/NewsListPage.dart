@@ -6,6 +6,7 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/LoginEvent.dart';
 import 'package:OpenJMU/events/LogoutEvent.dart';
+import 'package:OpenJMU/events/ScrollToTopEvent.dart';
 import 'package:OpenJMU/widgets/CommonEndLine.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/SlideView.dart';
@@ -21,7 +22,7 @@ class NewsListPage extends StatefulWidget {
 }
 
 class NewsListPageState extends State<NewsListPage> {
-  final ScrollController _controller = new ScrollController();
+  final ScrollController _scrollController = new ScrollController();
   final TextStyle titleTextStyle = new TextStyle(fontSize: 15.0);
   final TextStyle summaryTextStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
   final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 12.0);
@@ -31,16 +32,16 @@ class NewsListPageState extends State<NewsListPage> {
   List slideData;
   int curPage = 1;
   SlideView slideView;
-  int listTotalSize = 0;
   SlideViewIndicator indicator;
+  int listTotalSize = 0;
   bool isUserLogin = false;
 
   @override
   void initState() {
     super.initState();
-    _controller.addListener(() {
-      var maxScroll = _controller.position.maxScrollExtent;
-      var pixels = _controller.position.pixels;
+    _scrollController.addListener(() {
+      var maxScroll = _scrollController.position.maxScrollExtent;
+      var pixels = _scrollController.position.pixels;
       if (maxScroll == pixels && listData.length < listTotalSize) {
         curPage++;
         getNewsList(true);
@@ -62,6 +63,11 @@ class NewsListPageState extends State<NewsListPage> {
         this.isUserLogin = false;
       });
     });
+    Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
+      if (this.mounted) {
+        _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
+      }
+    });
   }
 
   Future<Null> _pullToRefresh() async {
@@ -82,7 +88,7 @@ class NewsListPageState extends State<NewsListPage> {
       Widget listView = new ListView.builder(
         itemCount: listData.length,
         itemBuilder: (context, i) => renderRow(i),
-        controller: _controller,
+        controller: _scrollController,
       );
       return new RefreshIndicator(child: listView, onRefresh: _pullToRefresh);
     }

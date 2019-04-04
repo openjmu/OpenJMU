@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class LoginPage extends StatefulWidget {
@@ -22,46 +23,54 @@ class LoginPageState extends State<LoginPage> {
     super.initState();
   }
 
+  int last = 0;
+  Future<bool> doubleBackExit() {
+    int now = DateTime.now().millisecondsSinceEpoch;
+    if (now - last > 800) {
+      showShortToast("再按一次退出应用");
+      last = DateTime.now().millisecondsSinceEpoch;
+      return Future.value(false);
+    } else {
+      cancelToast();
+      return Future.value(true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Builder(
-            builder: (context) =>
-            new Stack(
-                children: <Widget>[
-                  new Container(
-                    decoration: BoxDecoration(
-                      color: ThemeUtils.defaultColor
-//                      gradient: const LinearGradient(
-//                        begin: Alignment.topLeft,
-//                        end: Alignment.bottomCenter,
-//                        colors: const <Color>[
-//                          ThemeUtils.defaultColor,
-//                          Colors.redAccent,
-//                        ],
-//                      ),
-                    ),
-                  ),
-                  new Form(
-                      key: _formKey,
-                      child: new Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          buildTitle(),
+    return new WillPopScope(
+        onWillPop: doubleBackExit,
+        child: new Scaffold(
+            body: Builder(
+                builder: (context) =>
+                new Stack(
+                    children: <Widget>[
+                      new Container(
+                        decoration: BoxDecoration(
+                            color: ThemeUtils.defaultColor
+                        ),
+                      ),
+                      new Form(
+                          key: _formKey,
+                          child: new Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                buildTitle(),
 //                          buildTitleLine(),
-                          SizedBox(height: 20.0),
-                          buildUsernameTextField(),
-                          SizedBox(height: 30.0),
-                          buildPasswordTextField(),
-                          buildForgetPasswordText(context),
-                          SizedBox(height: 10.0),
-                          buildLoginButton(context),
-                          SizedBox(height: 50.0),
+                                SizedBox(height: 20.0),
+                                buildUsernameTextField(),
+                                SizedBox(height: 30.0),
+                                buildPasswordTextField(),
+                                buildForgetPasswordText(context),
+                                SizedBox(height: 10.0),
+                                buildLoginButton(context),
+                                SizedBox(height: 50.0),
 //                          buildRegisterText(context),
-                        ]
+                              ]
+                          )
                       )
-                  )
-                ]
+                    ]
+                )
             )
         )
     );
@@ -98,96 +107,96 @@ class LoginPageState extends State<LoginPage> {
 
   Padding buildUsernameTextField() {
     return new Padding(
-      padding: EdgeInsets.symmetric(horizontal: 48.0),
-      child: new Container(
-          decoration: new BoxDecoration(
-              borderRadius: BorderRadius.circular(10.0),
-              color: Color.fromRGBO(255,255,255,0.2)
-          ),
-          child: new TextFormField(
-            decoration: new InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.all(10.0),
-              labelText: '用户名/工号/学号',
-              labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0),
+        padding: EdgeInsets.symmetric(horizontal: 48.0),
+        child: new Container(
+            decoration: new BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Color.fromRGBO(255,255,255,0.2)
             ),
-            style: new TextStyle(color: Colors.white, fontSize: 18.0),
-            cursorColor: Colors.white,
-            onSaved: (String value) => _username = value,
-          )
-      )
+            child: new TextFormField(
+              decoration: new InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.all(10.0),
+                labelText: '用户名/工号/学号',
+                labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0),
+              ),
+              style: new TextStyle(color: Colors.white, fontSize: 18.0),
+              cursorColor: Colors.white,
+              onSaved: (String value) => _username = value,
+            )
+        )
     );
   }
 
   Padding buildPasswordTextField() {
     return new Padding(
-      padding: EdgeInsets.symmetric(horizontal: 48.0),
-      child:  new Container(
-        decoration: new BoxDecoration(
-            borderRadius: BorderRadius.circular(10.0),
-            color: Color.fromRGBO(255,255,255,0.2)
-        ),
-        child: new TextFormField(
-          onSaved: (String value) => _password = value,
-          obscureText: _isObscure,
-          validator: (String value) {
-            if (value.isEmpty) {
-              return '请输入密码';
-            }
-          },
-          decoration: new InputDecoration(
-              border: InputBorder.none,
-              contentPadding: EdgeInsets.all(10.0),
-              labelText: '密码',
-              labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0),
-              suffixIcon: new IconButton(
-                  icon: new Icon(
-                    Icons.remove_red_eye,
-                    color: _defaultIconColor,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _isObscure = !_isObscure;
-                      _defaultIconColor = _isObscure
-                          ? ThemeUtils.currentColorTheme
-                          : Colors.white;
-                    });
-                  }
-              )
-          ),
-          style: new TextStyle(color: Colors.white, fontSize: 20.0),
-          cursorColor: Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 48.0),
+        child:  new Container(
+            decoration: new BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                color: Color.fromRGBO(255,255,255,0.2)
+            ),
+            child: new TextFormField(
+              onSaved: (String value) => _password = value,
+              obscureText: _isObscure,
+              validator: (String value) {
+                if (value.isEmpty) {
+                  return '请输入密码';
+                }
+              },
+              decoration: new InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(10.0),
+                  labelText: '密码',
+                  labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0),
+                  suffixIcon: new IconButton(
+                      icon: new Icon(
+                        Icons.remove_red_eye,
+                        color: _defaultIconColor,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _isObscure = !_isObscure;
+                          _defaultIconColor = _isObscure
+                              ? ThemeUtils.currentColorTheme
+                              : Colors.white;
+                        });
+                      }
+                  )
+              ),
+              style: new TextStyle(color: Colors.white, fontSize: 20.0),
+              cursorColor: Colors.white,
+            )
         )
-      )
     );
   }
 
   Column buildLoginButton(BuildContext context) {
     return new Column(
-      children: <Widget>[
-        new Container(
-          child: new FlatButton(
-            padding: EdgeInsets.all(16.0),
-            color: Color.fromRGBO(255,255,255,0.2),
-            highlightColor: Colors.white,
-            textColor: Colors.white,
-            child: new Icon(
-              Icons.send,
-              color: Colors.white,
-              size: 30
-            ),
-            onPressed: () {
-              if (_formKey.currentState.validate()) {
-                _formKey.currentState.save();
-                //TODO 执行登录方法
-                DataUtils.doLogin(context, _username, _password);
-              }
-            },
-            shape: CircleBorder(),
+        children: <Widget>[
+          new Container(
+            child: new FlatButton(
+              padding: EdgeInsets.all(16.0),
+              color: Color.fromRGBO(255,255,255,0.2),
+              highlightColor: Colors.white,
+              textColor: Colors.white,
+              child: new Icon(
+                  Icons.send,
+                  color: Colors.white,
+                  size: 30
+              ),
+              onPressed: () {
+                if (_formKey.currentState.validate()) {
+                  _formKey.currentState.save();
+                  //TODO 执行登录方法
+                  DataUtils.doLogin(context, _username, _password);
+                }
+              },
+              shape: CircleBorder(),
 //          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+            ),
           ),
-        ),
-      ]
+        ]
     );
   }
 
