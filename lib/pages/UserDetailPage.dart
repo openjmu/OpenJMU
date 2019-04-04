@@ -1,18 +1,15 @@
 //import 'dart:async';
 //import 'package:flutter/material.dart';
+//import 'package:OpenJMU/api/Api.dart';
 //import 'package:OpenJMU/utils/ToastUtils.dart';
-//import 'package:isdu_flutter/api/server.dart';
 //import 'package:OpenJMU/model/bean.dart';
-//import 'package:isdu_flutter/api/api.dart';
 //import 'package:isdu_flutter/settings/color_scheme.dart';
 //import 'package:isdu_flutter/ui/post.dart';
-//import 'package:isdu_flutter/widget/app_bar.dart'
+//import 'package:OpenJMU/widgets/AppBar.dart'
 //    show FlexibleSpaceBarWithUserInfo;
-//import 'package:OpenJMU/widgets/CardStateful.dart';
+//import 'package:OpenJMU/widgets/PostCard.dart';
 //import 'package:isdu_flutter/widget/collpase_layout.dart';
 //import 'package:isdu_flutter/widget/marquee_text.dart';
-//import 'package:uni_links/uni_links.dart';
-//import 'package:marquee_flutter/marquee_flutter.dart';
 //
 //class UserPage extends StatefulWidget {
 //  final int id;

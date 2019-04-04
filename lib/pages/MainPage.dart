@@ -89,9 +89,7 @@ class MainPageState extends State<MainPage> {
       }
     });
     Constants.eventBus.on<LogoutEvent>().listen((event) {
-      Navigator.of(context).pushReplacement(new MaterialPageRoute(builder: (context) {
-        return new LoginPage();
-      },));
+      Navigator.of(context).pushReplacementNamed("/login");
     });
     DataUtils.getColorThemeIndex().then((index) {
       if (this.mounted && index != null) {

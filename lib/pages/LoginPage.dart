@@ -1,3 +1,4 @@
+import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
@@ -12,7 +13,11 @@ class LoginPage extends StatefulWidget {
   LoginPageState createState() => LoginPageState();
 }
 
-class LoginPageState extends State<LoginPage> {
+class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+
+  Animation<double> _animation;
+  AnimationController _animationController;
+
   final _formKey = GlobalKey<FormState>();
   String _username, _password;
   bool _isObscure = true;
@@ -21,8 +26,26 @@ class LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
+    _animationController =
+        AnimationController(duration: const Duration(seconds: 1), vsync: this);
+    // #docregion addListener
+    _animation = Tween<double>(begin: 120, end: 100).animate(_animationController)
+      ..addListener(() {
+        // #enddocregion addListener
+        setState(() {
+          // The state that has changed here is the animation object’s value.
+        });
+        // #docregion addListener
+      });
+    // #enddocregion addListener
+    _animationController.forward();
   }
 
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
   int last = 0;
   Future<bool> doubleBackExit() {
     int now = DateTime.now().millisecondsSinceEpoch;
@@ -55,7 +78,7 @@ class LoginPageState extends State<LoginPage> {
                           child: new Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                buildTitle(),
+                                buildLogo(),
 //                          buildTitleLine(),
                                 SizedBox(height: 20.0),
                                 buildUsernameTextField(),
@@ -76,13 +99,11 @@ class LoginPageState extends State<LoginPage> {
     );
   }
 
-  Padding buildTitle() {
-    return Padding(
-        padding: EdgeInsets.all(8.0),
-//      child: Text(
-//        '登录',
-//        style: TextStyle(fontSize: 42.0),
-//      ),
+  Container buildLogo() {
+    return new Container(
+      margin: EdgeInsets.only(bottom: 8.0),
+        height: _animation.value,
+        width: _animation.value,
         child: new Image.asset(
           './images/ic_jmu_logo_trans.png',
           width: 100.0,

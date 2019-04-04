@@ -59,14 +59,17 @@ class SplashState extends State<SplashPage> {
     });
   }
 
-  Padding buildLogo() {
-    return Padding(
-      padding: EdgeInsets.all(30.1),
-      child: new Image.asset(
-        './images/ic_jmu_logo_trans.png',
-        width: 120.0,
-        height: 120.0,
-      )
+  Hero buildLogo() {
+    return new Hero(
+        tag: "Logo",
+        child: Padding(
+            padding: EdgeInsets.all(30.1),
+            child: new Image.asset(
+              './images/ic_jmu_logo_trans.png',
+              width: 120.0,
+              height: 120.0,
+            )
+        )
     );
   }
 

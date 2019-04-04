@@ -13,7 +13,7 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
-import 'package:OpenJMU/widgets/CardStateful.dart';
+import 'package:OpenJMU/widgets/PostCard.dart';
 import 'package:OpenJMU/widgets/CommonEndLine.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
