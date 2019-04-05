@@ -339,7 +339,7 @@ class PostListPageState extends State<PostListPage> {
 
   Post createPost(itemData) {
     var _user = itemData['user'];
-    String _avatar = "${Api.userFace}?uid=${_user['uid']}&size=f100";
+    String _avatar = "${Api.userAvatar}?uid=${_user['uid']}&size=f100";
     String _postTime = new DateTime.fromMillisecondsSinceEpoch(int.parse(itemData['post_time']) * 1000)
         .toString()
         .substring(0,16);

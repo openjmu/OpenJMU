@@ -12,6 +12,7 @@ import 'package:OpenJMU/events/ScrollToTopEvent.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/pages/LoginPage.dart';
 //import 'package:OpenJMU/pages/NewsListPage.dart';
 import 'package:OpenJMU/pages/PostListPage.dart';
@@ -73,11 +74,9 @@ class MainPageState extends State<MainPage> {
         notificationTimer = new Timer.periodic(const Duration(milliseconds: 10000), (timer) {
           DataUtils.getNotifications();
         });
-        DataUtils.getUserInfo().then((userInfo) {
-          setState(() {
-            this.userSid = userInfo.sid;
-            this.userUid = userInfo.uid;
-          });
+        setState(() {
+          this.userSid = UserUtils.currentUser.sid;
+          this.userUid = UserUtils.currentUser.uid;
         });
       }
     });
@@ -148,7 +147,7 @@ class MainPageState extends State<MainPage> {
         shape: BoxShape.circle,
         color: Colors.transparent,
         image: new DecorationImage(
-            image: new NetworkImage(Api.userFace+"?uid=$userUid&size=f100"),
+            image: new NetworkImage(Api.userAvatar+"?uid=$userUid&size=f100"),
             fit: BoxFit.contain
         ),
       ),
@@ -194,40 +193,40 @@ class MainPageState extends State<MainPage> {
         onWillPop: doubleBackExit,
         child: new Scaffold(
           appBar: GestureAppBar(
-            appBar: new AppBar(
-              elevation: 1,
-              leading: new Padding(
-                  padding: EdgeInsets.fromLTRB(14, 10, 6, 10),
-                  child: getAvatar()
-              ),
-              title: new FlatButton(
-                  onPressed: null,
-                  child: new Text(
-                      getTabTitle(_tabIndex),
-                      style: new TextStyle(
-                          color: currentThemeColor,
-                          fontSize: 22.0,
-                          fontWeight: FontWeight.bold
-                      )
-                  )
-              ),
-              centerTitle: true,
-              actions: <Widget>[
-                BadgeIconButton(
-                    itemCount: currentNotifications,
-                    icon: Icon(Icons.notifications),
-                    badgeColor: currentThemeColor,
-                    badgeTextColor: Colors.white,
-                    hideZeroCount: true,
-                    onPressed: null
+              appBar: new AppBar(
+                elevation: 1,
+                leading: new Padding(
+                    padding: EdgeInsets.fromLTRB(14, 10, 6, 10),
+                    child: getAvatar()
                 ),
-              ],
-              iconTheme: new IconThemeData(color: currentThemeColor),
-              brightness: Theme.of(context).brightness,
-            ),
-            onTap: () {
-              doubleTapScrollToTop();
-            }
+                title: new FlatButton(
+                    onPressed: null,
+                    child: new Text(
+                        getTabTitle(_tabIndex),
+                        style: new TextStyle(
+                            color: currentThemeColor,
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.bold
+                        )
+                    )
+                ),
+                centerTitle: true,
+                actions: <Widget>[
+                  BadgeIconButton(
+                      itemCount: currentNotifications,
+                      icon: Icon(Icons.notifications),
+                      badgeColor: currentThemeColor,
+                      badgeTextColor: Colors.white,
+                      hideZeroCount: true,
+                      onPressed: null
+                  ),
+                ],
+                iconTheme: new IconThemeData(color: currentThemeColor),
+                brightness: Theme.of(context).brightness,
+              ),
+              onTap: () {
+                doubleTapScrollToTop();
+              }
           ),
           floatingActionButton: new Builder(builder: (BuildContext context) {
             return new FloatingActionButton(

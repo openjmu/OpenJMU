@@ -15,6 +15,7 @@ import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 
 class NewsListPage extends StatefulWidget {
   @override
@@ -95,50 +96,49 @@ class NewsListPageState extends State<NewsListPage> {
   }
 
   void getNewsList(bool isLoadMore) async {
-    DataUtils.getUserInfo().then((userInfo) {
-      sid = userInfo.sid;
-      int uid = userInfo.uid;
-      Map<String, dynamic> headers = new Map();
-      headers["APIKEY"] = Constants.newsApiKey;
-      headers["APPID"] = "273";
-      headers["CLIENTTYPE"] = "android";
-      headers["CLOUDID"] = "jmu";
-      headers["CUID"] = "$uid";
-      headers["SID"] = sid;
-      headers["TAGID"] = "1";
-      String url;
-      isLoadMore
-          ? url = Api.newsList+"/max_ts/"+listData[listData.length-1]['create_time']+"/size/20"
-          : url = Api.newsList+"/size/20";
-      NetUtils.getWithHeaderSet(url, headers: headers).then((response) {
-        if (response != null) {
-          Map<String, dynamic> map = jsonDecode(response);
-          List _listData = map["data"];
-          listTotalSize = map['total'];
+    sid = UserUtils.currentUser.sid;
+    int uid = UserUtils.currentUser.uid;
+    Map<String, dynamic> headers = new Map();
+    headers["APIKEY"] = Constants.newsApiKey;
+    headers["APPID"] = "273";
+    headers["CLIENTTYPE"] = "android";
+    headers["CLOUDID"] = "jmu";
+    headers["CUID"] = "$uid";
+    headers["SID"] = sid;
+    headers["TAGID"] = "1";
+    String url;
+    isLoadMore
+        ? url = Api.newsList+"/max_ts/"+listData[listData.length-1]['create_time']+"/size/20"
+        : url = Api.newsList+"/size/20";
+    NetUtils.getWithHeaderSet(url, headers: headers).then((response) {
+      if (response != null) {
+        Map<String, dynamic> map = jsonDecode(response);
+        List _listData = map["data"];
+        listTotalSize = map['total'];
 //          List _slideData = data['slide'];
-          setState(() {
-            if (!isLoadMore) {
-              listData = _listData;
+        setState(() {
+          if (!isLoadMore) {
+            listData = _listData;
 //              slideData = _slideData;
-            } else {
-              List list1 = new List();
-              list1..addAll(listData)..addAll(_listData);
-              if (list1.length >= listTotalSize) {
-                list1.add(Constants.endLineTag);
-              }
-              listData = list1;
-              // 轮播图数据
-//              slideData = _slideData;
+          } else {
+            List list1 = new List();
+            list1..addAll(listData)..addAll(_listData);
+            if (list1.length >= listTotalSize) {
+              list1.add(Constants.endLineTag);
             }
+            listData = list1;
+            // 轮播图数据
+//              slideData = _slideData;
+          }
 //            initSlider();
-          });
-        }
-      }).catchError((e) {
-        print(e.toString());
-        showShortToast(e.toString());
-        return e;
-      });
+        });
+      }
+    }).catchError((e) {
+      print(e.toString());
+      showShortToast(e.toString());
+      return e;
     });
+//    });
   }
 
 //  void initSlider() {

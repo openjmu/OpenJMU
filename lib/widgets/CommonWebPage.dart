@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
+import 'dart:async';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class CommonWebPage extends StatefulWidget {
-  final String title;
   final String url;
+  final String title;
 
-  const CommonWebPage({Key key, @required this.title, @required this.url}) : super(key: key);
+  const CommonWebPage({Key key, @required this.url, @required this.title}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -17,37 +18,45 @@ class CommonWebPage extends StatefulWidget {
 }
 
 class CommonWebPageState extends State<CommonWebPage> {
-  String title;
+  Timer _timer;
+  Color currentColor = ThemeUtils.currentColorTheme;
+  String _url, _title;
+  double currentProgress = 0.0;
+  bool loading = true;
   final flutterWebViewPlugin = new FlutterWebviewPlugin();
 
-  double progress = 0.0;
-  bool loading = true;
 
   Widget refreshIndicator = new Container(
-    width: 56.0,
-    padding: EdgeInsets.all(16.0),
-    child: Platform.isAndroid
-      ? new CircularProgressIndicator(
+      width: 56.0,
+      padding: EdgeInsets.all(16.0),
+      child: Platform.isAndroid
+          ? new CircularProgressIndicator(
         valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
         strokeWidth: 3.0,
       )
-      : new CupertinoActivityIndicator()
+          : new CupertinoActivityIndicator()
   );
 
 
   @override
   void initState() {
     super.initState();
-    title = widget.title;
+    _url = widget.url;
+    _title = widget.title;
     flutterWebViewPlugin.onStateChanged.listen((state) async {
       if (state.type == WebViewState.finishLoad) {
         setState(() {
           loading = false;
         });
+        _timer = new Timer(const Duration(milliseconds: 500), () {
+          setState(() {
+            currentProgress = 0.0;
+          });
+        });
         String script = 'window.document.title';
         String title = await flutterWebViewPlugin.evalJavascript(script);
         setState(() {
-          this.title = title.substring(1, title.length - 1);
+          _title = title.substring(1, title.length-1);
         });
       } else if (state.type == WebViewState.startLoad) {
         setState(() {
@@ -55,35 +64,39 @@ class CommonWebPageState extends State<CommonWebPage> {
         });
       }
     });
-//    flutterWebViewPlugin.onProgressChanged.listen((progress) {
-//      setState(() {
-//        progress = progress;
-//      });
-//      print("Page progress: $progress");
-//    });
+    flutterWebViewPlugin.onProgressChanged.listen((progress) {
+      setState(() {
+        currentProgress = progress;
+      });
+    });
     flutterWebViewPlugin.onUrlChanged.listen((url) {
       setState(() {
+        _url = url;
         loading = false;
       });
     });
+
   }
 
-  Widget progressBar() {
-    if (progress == 1.0) {
-      return new Container();
-    } else {
-      return new Container(
-        height: 1.0,
-        child: new LinearProgressIndicator(value: progress / 1.0)
-      );
-    }
+//  Widget progressBar() {
+//    if (progress == 1.0) {
+//      return new Container();
+//    } else {
+//      return new Container(
+//        height: 1.0,
+//        child: new LinearProgressIndicator(value: progress / 1.0)
+//      );
+//    }
+//  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (title == "@defaultTitle_jxt") {
-      title = widget.title;
-    }
     Widget trailing = loading
         ? refreshIndicator
         : new Container(
@@ -96,22 +109,40 @@ class CommonWebPageState extends State<CommonWebPage> {
         )
     );
     return new WebviewScaffold(
-        url: widget.url,
-        allowFileURLs: true,
-        appBar: new AppBar(
-          title: new Text(
-            title,
-            style: new TextStyle(color: ThemeUtils.currentColorTheme),
-          ),
-          centerTitle: true,
-          actions: <Widget>[trailing],
-          iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
-          brightness: ThemeUtils.currentBrightness,
+      url: widget.url,
+      allowFileURLs: true,
+      appBar: new AppBar(
+        title: new Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              new Text(_title,
+                  style: new TextStyle(color: ThemeUtils.currentColorTheme)
+              ),
+              new Text(_url,
+                  style: new TextStyle(color: ThemeUtils.currentColorTheme, fontSize: 14.0)
+              )
+            ]
         ),
-        enableAppScheme: true,
-        withJavascript: true,
-        withLocalStorage: true,
-        withZoom: true,
-      );
+        actions: <Widget>[trailing],
+        bottom: new PreferredSize(
+            child: new SizedBox(
+              height: 2.0,
+              child: new LinearProgressIndicator(
+                  backgroundColor: ThemeUtils.currentPrimaryColor,
+                  value: currentProgress,
+                  valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
+              )
+            ),
+            preferredSize: null
+        ),
+        iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
+        brightness: ThemeUtils.currentBrightness,
+      ),
+      enableAppScheme: true,
+      withJavascript: true,
+      withLocalStorage: true,
+      withZoom: true,
+    );
   }
 }

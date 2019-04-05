@@ -9,14 +9,14 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/LoginEvent.dart';
 import 'package:OpenJMU/events/LogoutEvent.dart';
+import 'package:OpenJMU/events/NotificationCountChangeEvent.dart';
 import 'package:OpenJMU/events/TicketGotEvent.dart';
 import 'package:OpenJMU/events/TicketFailedEvent.dart';
-import 'package:OpenJMU/events/NotificationCountChangeEvent.dart';
-import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/SnackbarUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 
 class DataUtils {
   static final String spIsLogin     = "isLogin";
@@ -33,7 +33,6 @@ class DataUtils {
 
   static final String spBrightness = "theme_brightness";
   static final String spColorThemeIndex = "theme_colorThemeIndex";
-
 
   static getSid() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
@@ -93,57 +92,61 @@ class DataUtils {
       };
     }
     NetUtils.post(Api.login, data: params)
-      .then((response) {
-        Map<String, dynamic> data = jsonDecode(response);
-        Map<String, dynamic> userInfo = new Map();
-        userInfo["uid"] = data["uid"];
-        List<Cookie> cookies = [
-          new Cookie("OAPSID", data["sid"]),
-          new Cookie("PHPSESSID", data["sid"])
-        ];
-        NetUtils.getWithCookieSet(
-            Api.userInfo,
-            data: userInfo,
-            cookies: cookies
-        )
+        .then((response) {
+      Map<String, dynamic> data = jsonDecode(response);
+      Map<String, dynamic> _map = new Map();
+      _map["uid"] = data["uid"];
+      List<Cookie> cookies = [
+        new Cookie("OAPSID", data["sid"]),
+        new Cookie("PHPSESSID", data["sid"])
+      ];
+      NetUtils.getWithCookieSet(
+          Api.userInfo,
+          data: _map,
+          cookies: cookies
+      )
           .then((response) {
-            Map<String, dynamic> userInfo = new Map();
-            Map<String, dynamic> user = jsonDecode(response);
-            userInfo['sid'] = data['sid'];
-            userInfo['ticket'] = data['ticket'];
-            userInfo['blowfish'] = blowfish;
-            userInfo['userUid'] = data['uid'];
-            userInfo['userName'] = user['username'];
-            userInfo['userUnitId'] = data['unitid'];
-            userInfo['userWorkId'] = user['workid'];
-            userInfo['userClassId'] = user['class_id'];
-            saveLoginInfo(userInfo)
-              .then((whatever) {
-                Constants.eventBus.fire(new LoginEvent());
-                showShortToast("登录成功！");
-                Navigator.of(context).pushReplacementNamed("/home");
-              })
-              .catchError((e) {
-                print(e.response);
-                print(e.toString());
-                SnackbarUtils.show(context, "获取用户信息失败！${e.toString()}");
-                return e;
-              });
+        Map<String, dynamic> userInfo = new Map();
+        Map<String, dynamic> user = jsonDecode(response);
+        userInfo['sid'] = data['sid'];
+        userInfo['ticket'] = data['ticket'];
+        userInfo['blowfish'] = blowfish;
+        userInfo['userUid'] = data['uid'];
+        userInfo['userName'] = user['username'];
+        userInfo['userUnitId'] = data['unitid'];
+        userInfo['userWorkId'] = user['workid'];
+        userInfo['userClassId'] = user['class_id'];
+        UserUtils.currentUser.sid = data['sid'];
+        UserUtils.currentUser.uid = data['uid'];
+        UserUtils.currentUser.classId = user['class_id'];
+        saveLoginInfo(userInfo)
+            .then((whatever) {
+          Constants.eventBus.fire(new LoginEvent());
+          showShortToast("登录成功！");
+          Navigator.of(context).pushReplacementNamed("/home");
         })
-          .catchError((e) {
-            print(e.response);
-            print(e.toString());
-            showShortToast(e.toString());
-            SnackbarUtils.show(context, "登录失败！${e.toString()}");
-            return e;
+            .catchError((e) {
+          print(e.response);
+          print(e.toString());
+          SnackbarUtils.show(context, "获取用户信息失败！${e.toString()}");
+          return e;
         });
-    })
-      .catchError((e) {
+        getUserBasicInfo();
+      })
+          .catchError((e) {
         print(e.response);
         print(e.toString());
         showShortToast(e.toString());
         SnackbarUtils.show(context, "登录失败！${e.toString()}");
         return e;
+      });
+    })
+        .catchError((e) {
+      print(e.response);
+      print(e.toString());
+      showShortToast(e.toString());
+      SnackbarUtils.show(context, "登录失败！${e.toString()}");
+      return e;
     });
   }
 
@@ -157,6 +160,27 @@ class DataUtils {
         return;
       });
     });
+  }
+
+  static getUserBasicInfo([uid]) async {
+    NetUtils.getWithCookieSet(
+        "${Api.userBasicInfo}?uid=${uid ?? UserUtils.currentUser.uid}",
+        cookies: buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+    ).then((response) {
+      setUserBasicInfo(jsonDecode(response));
+    }).catchError((e) {
+      print(e);
+      print(e.toString());
+      showShortToast(e.toString());
+      return e;
+    });
+  }
+
+  static setUserBasicInfo(data) {
+    UserUtils.currentUser.unitId = data['unitid'];
+    UserUtils.currentUser.workId = int.parse(data['workid']);
+    UserUtils.currentUser.name = data['nickname'] ?? data['username'] ?? data['uid'].toString();
+    UserUtils.currentUser.signature = data['signature'];
   }
 
   static saveLoginInfo(Map data) async {
@@ -223,7 +247,6 @@ class DataUtils {
           "blowfish": "${infos['blowfish']}",
           "clientinfo": jsonEncode(clientInfo)
         };
-
       } else if (Platform.isAndroid) {
         clientInfo = {
           "appid": 273,
@@ -242,54 +265,27 @@ class DataUtils {
         };
       }
       NetUtils.post(Api.loginTicket, data: params)
-        .then((response) {
-          print(jsonDecode(response)['sid']);
-          updateSid(jsonDecode(response));
-          Constants.eventBus.fire(new TicketGotEvent());
-          return true;
-        })
-        .catchError((e) {
-          print(e.toString());
-          Constants.eventBus.fire(new TicketFailedEvent());
-          return false;
+          .then((response) {
+        print(jsonDecode(response)['sid']);
+        updateSid(jsonDecode(response)).then((whatever) {
+          getUserBasicInfo();
         });
+        Constants.eventBus.fire(new TicketGotEvent());
+        return true;
+      })
+          .catchError((e) {
+        print(e.toString());
+        Constants.eventBus.fire(new TicketFailedEvent());
+        return false;
+      });
     });
   }
 
   static updateSid(response) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    await sp.setString(spUserSid, response['sid']);
-  }
-
-  // 保存用户个人信息
-//  static Future<UserInfo> saveUserInfo(Map data) async {
-//    if (data != null) {
-//      SharedPreferences sp = await SharedPreferences.getInstance();
-//      await sp.setString(spUserName, data['userName']);
-//      num uid = data['uid'];
-//      String name = data['name'];
-//      await sp.setInt(spUserUid, uid);
-//      UserInfo userInfo = new UserInfo(
-//          uid: uid,
-//          name: name,
-//      );
-//      return userInfo;
-//    }
-//    return null;
-//  }
-
-  // 获取用户信息
-  static Future<UserInfo> getUserInfo() async {
-    SharedPreferences sp = await SharedPreferences.getInstance();
-    bool isLogin = sp.getBool(spIsLogin);
-    if (isLogin == null || !isLogin) {
-      return null;
-    }
-    UserInfo userInfo = new UserInfo();
-    userInfo.sid = sp.getString(spUserSid);
-    userInfo.uid = sp.getInt(spUserUid);
-    userInfo.name = sp.getString(spUserName);
-    return userInfo;
+    UserUtils.currentUser.sid = response['sid'];
+    UserUtils.currentUser.uid = sp.getInt(spUserUid);
+    return await sp.setString(spUserSid, response['sid']);
   }
 
   // 是否登录
@@ -371,6 +367,5 @@ class DataUtils {
   static List<Cookie> buildPHPSESSIDCookies(sid) {
     return [new Cookie("PHPSESSID", sid)];
   }
-
 
 }

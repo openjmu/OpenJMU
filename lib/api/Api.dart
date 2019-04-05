@@ -15,7 +15,8 @@ class Api {
 
   // 用户相关
   static final String userInfo = oa99Host + "/v2/api/class/studentinfo";
-  static final String userFace = oa99pHost + "/face";
+  static final String userBasicInfo = oa99pHost + "/user/info";
+  static final String userAvatar = oa99pHost + "/face";
 
   // 应用中心
   static final String webAppLists = oa99pHost + "/app/unitmenu?cfg=1";

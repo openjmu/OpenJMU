@@ -94,21 +94,30 @@ class PostComment {
 
 class UserInfo {
 
-  String uapAccount;
-
   /// For Login Process
   String sid;
   String ticket;
   String blowfish;
 
   /// Common Object
-  num uid;
-  num unitId;
-  num workId;
-  num classId;
+  int uid;
+  int unitId;
+  int workId;
+  int classId;
   String name;
+  String signature;
 
-  UserInfo({this.sid, this.uid, this.name, this.ticket, this.blowfish, this.unitId, this.workId, this.classId, this.uapAccount});
+  UserInfo(
+      this.sid,
+      this.uid,
+      this.name,
+      this.signature,
+      this.ticket,
+      this.blowfish,
+      this.unitId,
+      this.workId,
+      this.classId
+  );
 
   @override
   bool operator == (Object other) =>

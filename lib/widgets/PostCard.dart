@@ -7,6 +7,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/ChangeBrightnessEvent.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
+import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -430,7 +431,11 @@ class _CardItemState extends State<CardItem> {
   }
 
   void _goUserPage(uid) {
-    showCenterShortToast(uid.toString());
+    Navigator.of(context).push(new MaterialPageRoute(
+        builder: (context) {
+          return new UserPage(uid);
+        }
+    ));
     return;
   }
 }

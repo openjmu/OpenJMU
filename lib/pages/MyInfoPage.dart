@@ -8,6 +8,7 @@ import 'package:OpenJMU/events/ChangeThemeEvent.dart';
 import 'package:OpenJMU/events/LogoutEvent.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 
 class MyInfoPage extends StatefulWidget {
   @override
@@ -65,12 +66,10 @@ class MyInfoPageState extends State<MyInfoPage> {
   }
 
   void getUserInfo() {
-    DataUtils.getUserInfo().then((userInfo) {
-      String avatar = Api.userFace+"?uid=${userInfo.uid}&size=f128";
-      setState(() {
-        userAvatar = avatar;
-        userName = userInfo.name;
-      });
+    String avatar = Api.userAvatar+"?uid=${UserUtils.currentUser.uid}&size=f128";
+    setState(() {
+      userAvatar = avatar;
+      userName = UserUtils.currentUser.name;
     });
   }
 

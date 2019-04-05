@@ -1,15 +1,15 @@
 //import 'dart:async';
 //import 'package:flutter/material.dart';
 //import 'package:OpenJMU/api/Api.dart';
-//import 'package:OpenJMU/utils/ToastUtils.dart';
 //import 'package:OpenJMU/model/bean.dart';
-//import 'package:isdu_flutter/settings/color_scheme.dart';
-//import 'package:isdu_flutter/ui/post.dart';
 //import 'package:OpenJMU/widgets/AppBar.dart'
 //    show FlexibleSpaceBarWithUserInfo;
 //import 'package:OpenJMU/widgets/PostCard.dart';
-//import 'package:isdu_flutter/widget/collpase_layout.dart';
-//import 'package:isdu_flutter/widget/marquee_text.dart';
+//import 'package:OpenJMU/utils/DataUtils.dart';
+//import 'package:OpenJMU/utils/ThemeUtils.dart';
+//import 'package:OpenJMU/utils/ToastUtils.dart';
+//import 'package:OpenJMU/utils/UserUtils.dart';
+////import 'package:isdu_flutter/widget/collpase_layout.dart';
 //
 //class UserPage extends StatefulWidget {
 //  final int id;
@@ -93,11 +93,11 @@
 //    } else {
 //      return Scaffold(
 //        appBar: AppBar(
-//          backgroundColor: PrimaryColorScheme().primaryVariant,
+//          backgroundColor: ThemeUtils.currentPrimaryColor,
 //        ),
 //        body: Container(
 //          child: Center(
-//            child: Text('用户不存在', style: TextStyle(color: PrimaryColorScheme().primaryVariant),),
+//            child: Text('用户不存在', style: TextStyle(color: ThemeUtils.currentColorTheme),),
 //          ),
 //        ),
 //      );
@@ -167,9 +167,9 @@
 //      });
 //    }
 //
-//    if (await UserAPI.isLogin()) {
+//    if (await DataUtils.isLogin()) {
 //      if (widget.id == 0) {
-//        _fetchUserInformation(UserAPI.curUser.id);
+//        _fetchUserInformation(UserUtils.currentUser.uid);
 //      } else {
 //        _fetchUserInformation(widget.id);
 //      }
@@ -215,8 +215,8 @@
 //      }
 //    } else {
 //      await _getFCount(id);
-//      if (await UserAPI.isLogin()) {
-//        if (id == UserAPI.curUser.id) {
+//      if (await DataUtils.isLogin()) {
+//        if (id == UserUtils.currentUser.uid) {
 //          _infoNextNameButton = RawMaterialButton(
 //            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
 //            constraints: BoxConstraints(minWidth: 0, minHeight: 0),
@@ -334,33 +334,23 @@
 //              ],
 //            ),
 //            infoNextNickname: _infoNextNameButton,
-//            avatar: CachedNetworkImageProvider(_user.avatar, cacheManager: DefaultCacheManager()),
+//            avatar: new NetworkImage("${Api.userAvatar}?uid=${_user.uid}&size=f100)"),
 //            titlePadding: EdgeInsets.only(left: 100, bottom: 48),
 //            title: _nicknameMarquee ? Container(
 //              constraints: BoxConstraints(maxWidth: maxNicknameWidth),
-//              child: MarqueeText(
-//                _user.nickname,
-//                key: _nicknameKey,
-//                style: TextStyle(fontSize: 14),
-//                gap: maxNicknameWidth / 4,
-//                speed: 16,
-//              ),
+//              child: new Text(
+//                _user.name,
+//              )
 //            ) : Text(
-//              _user.nickname,
+//              _user.name,
 //              key: _nicknameKey,
 //              style: TextStyle(fontSize: 14),
 //              maxLines: 1,
 //            ),
-//            background: CachedNetworkImage(
-//              cacheManager: DefaultCacheManager(),
-//              imageUrl: _user.avatar,
+//            background: new Image(
+//              image: new NetworkImage("${Api.userAvatar}?uid=${_user.uid}&size=f100)"),
 //              fit: BoxFit.fitWidth,
 //              width: MediaQuery.of(context).size.width,
-//              placeholder: (context, url) {
-//                return Container(
-//                  color: Colors.grey,
-//                );
-//              },
 //            ),
 //            bottomInfo: Container(
 ////                  height: 37,

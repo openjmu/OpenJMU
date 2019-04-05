@@ -7,7 +7,7 @@ Dio dio = new Dio();
 class NetUtils {
 
   static Future<String> get(String url, {data}) async {
-//    dio.interceptors.add(CookieManager(CookieJar()));
+    if (dio.interceptors.length == 0) dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.get(
         url,
         queryParameters: data
@@ -15,17 +15,8 @@ class NetUtils {
     return response.toString();
   }
 
-  static Future<Stream> getImage(String url) async {
-//    dio.interceptors.add(CookieManager(CookieJar()));
-    Response response = await dio.get(
-        url,
-        options: Options(responseType: ResponseType.stream)
-    );
-    return response.data.stream;
-  }
-
   static Future<String> getWithHeaderSet(String url, {data, headers}) async {
-//    dio.interceptors.add(CookieManager(CookieJar()));
+    if (dio.interceptors.length == 0) dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.get(
         url,
         queryParameters: data,
@@ -35,7 +26,7 @@ class NetUtils {
   }
 
   static Future<String> getWithCookieSet(String url, {data, cookies}) async {
-    dio.interceptors.add(CookieManager(CookieJar()));
+    if (dio.interceptors.length == 0) dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.get(
         url,
         queryParameters: data,
@@ -45,7 +36,7 @@ class NetUtils {
   }
 
   static Future getPlainWithCookieSet(String url, {data, cookies}) async {
-    dio.interceptors.add(CookieManager(CookieJar()));
+    if (dio.interceptors.length == 0) dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.get(
         url,
         queryParameters: data,
@@ -58,7 +49,7 @@ class NetUtils {
   }
 
   static Future<String> getWithCookieAndHeaderSet(String url, {data, headers, cookies}) async {
-//    dio.interceptors.add(CookieManager(CookieJar()));
+    if (dio.interceptors.length == 0) dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.get(
         url,
         queryParameters: data,
@@ -71,7 +62,7 @@ class NetUtils {
   }
 
   static Future<String> post(String url, {data}) async {
-//    dio.interceptors.add(CookieManager(CookieJar()));
+    if (dio.interceptors.length == 0) dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.post(
         url,
         data: data
@@ -80,7 +71,7 @@ class NetUtils {
   }
 
   static Future<String> postWithCookieSet(String url, {data, cookies}) async {
-//    dio.interceptors.add(CookieManager(CookieJar()));
+    if (dio.interceptors.length == 0) dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.post(
         url,
         data: data,
@@ -90,7 +81,7 @@ class NetUtils {
   }
 
   static Future<String> postWithCookieAndHeaderSet(String url, {data, headers, cookies}) async {
-//    dio.interceptors.add(CookieManager(CookieJar()));
+    if (dio.interceptors.length == 0) dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.post(
         url,
         data: data,
@@ -103,7 +94,7 @@ class NetUtils {
   }
 
   static Future<String> deleteWithCookieAndHeaderSet(String url, {data, headers, cookies}) async {
-//    dio.interceptors.add(CookieManager(CookieJar()));
+    if (dio.interceptors.length == 0) dio.interceptors.add(CookieManager(CookieJar()));
     Response response = await dio.delete(
         url,
         data: data,
