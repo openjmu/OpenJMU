@@ -31,9 +31,9 @@ class CommonWebPageState extends State<CommonWebPage> {
       padding: EdgeInsets.all(16.0),
       child: Platform.isAndroid
           ? new CircularProgressIndicator(
-        valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-        strokeWidth: 3.0,
-      )
+            valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
+            strokeWidth: 3.0,
+          )
           : new CupertinoActivityIndicator()
   );
 
@@ -75,24 +75,26 @@ class CommonWebPageState extends State<CommonWebPage> {
         loading = false;
       });
     });
-
   }
-
-//  Widget progressBar() {
-//    if (progress == 1.0) {
-//      return new Container();
-//    } else {
-//      return new Container(
-//        height: 1.0,
-//        child: new LinearProgressIndicator(value: progress / 1.0)
-//      );
-//    }
-//  }
 
   @override
   void dispose() {
     _timer.cancel();
     super.dispose();
+  }
+
+  PreferredSize progressBar() {
+    return new PreferredSize(
+        child: new SizedBox(
+            height: 2.0,
+            child: new LinearProgressIndicator(
+                backgroundColor: ThemeUtils.currentPrimaryColor,
+                value: currentProgress,
+                valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
+            )
+        ),
+        preferredSize: null
+    );
   }
 
   @override
@@ -125,17 +127,7 @@ class CommonWebPageState extends State<CommonWebPage> {
             ]
         ),
         actions: <Widget>[trailing],
-        bottom: new PreferredSize(
-            child: new SizedBox(
-              height: 2.0,
-              child: new LinearProgressIndicator(
-                  backgroundColor: ThemeUtils.currentPrimaryColor,
-                  value: currentProgress,
-                  valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
-              )
-            ),
-            preferredSize: null
-        ),
+        bottom: progressBar(),
         iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
         brightness: ThemeUtils.currentBrightness,
       ),

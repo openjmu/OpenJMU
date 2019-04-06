@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/TicketGotEvent.dart';
-import 'package:OpenJMU/events/TicketFailedEvent.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 

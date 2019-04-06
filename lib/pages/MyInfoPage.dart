@@ -3,9 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/ChangeBrightnessEvent.dart';
-import 'package:OpenJMU/events/ChangeThemeEvent.dart';
-import 'package:OpenJMU/events/LogoutEvent.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
@@ -130,8 +128,8 @@ class MyInfoPageState extends State<MyInfoPage> {
     String title = titles[i];
     var listItemContent = new Padding(
       padding: title == "夜间模式"
-        ? EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0)
-        : EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0)
+          ? EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0)
+          : EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0)
       ,
       child: new Row(
         children: <Widget>[
@@ -150,14 +148,14 @@ class MyInfoPageState extends State<MyInfoPage> {
           ),
           title == "夜间模式"
               ? new PlatformSwitch(
-                activeColor: themeColor,
-                value: isDark,
-                onChanged: (isDark) {
-                  setDarkMode(isDark);
-                  DataUtils.setBrightnessDark(isDark);
-                  Constants.eventBus.fire(new ChangeBrightnessEvent(isDark));
-                }
-              )
+              activeColor: themeColor,
+              value: isDark,
+              onChanged: (isDark) {
+                setDarkMode(isDark);
+                DataUtils.setBrightnessDark(isDark);
+                Constants.eventBus.fire(new ChangeBrightnessEvent(isDark));
+              }
+          )
               : new Icon(Icons.keyboard_arrow_right)
         ],
       ),
@@ -210,20 +208,52 @@ class MyInfoPageState extends State<MyInfoPage> {
   }
 
   void showAboutDialog(BuildContext context) {
+    final String name = 'OpenJMU';
+    final String version = '0.1.1';
+    final String content = 'Developed By Alex & Evsio0n.';
+    final Widget icon = new Image.asset(
+        "images/ic_jmu_logo_trans_original.png",
+        width: 40.0,
+        height: 40.0
+    );
+    List<Widget> body = <Widget>[];
+    if (icon != null)
+      body.add(IconTheme(data: const IconThemeData(size: 48.0), child: icon));
+    body.add(Expanded(
+        child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: ListBody(
+                children: <Widget>[
+                  Text(name, style: Theme.of(context).textTheme.headline),
+                  Text(version, style: Theme.of(context).textTheme.body1),
+                  Container(height: 18.0)
+                ]
+            )
+        )
+    ));
+    body = <Widget>[
+      Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: body
+      ),
+      Text(content)
+    ];
     showDialog(
         context: context,
-        builder: (_) =>  AboutDialog(
-            applicationName: 'OpenJMU',
-            applicationIcon: new Image.asset(
-                "images/ic_jmu_logo_trans_original.png",
-              width: 40.0,
-              height: 40.0
+        builder: (_) => AlertDialog(
+            content: SingleChildScrollView(
+              child: ListBody(children: body),
             ),
-            applicationVersion: 'v0.1.1',
-            children: <Widget>[
-              Text('Developed By Alex & Evsio0n.')
+            actions: <Widget>[
+              FlatButton(
+                  child: Text(MaterialLocalizations.of(context).closeButtonLabel, style: TextStyle(color:ThemeUtils.currentColorTheme)),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }
+              ),
             ]
-        ));
+        )
+    );
   }
 
 }

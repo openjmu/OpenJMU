@@ -4,11 +4,7 @@ import 'dart:async';
 import 'package:badges/badges.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/ChangeThemeEvent.dart';
-import 'package:OpenJMU/events/LoginEvent.dart';
-import 'package:OpenJMU/events/LogoutEvent.dart';
-import 'package:OpenJMU/events/NotificationCountChangeEvent.dart';
-import 'package:OpenJMU/events/ScrollToTopEvent.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
@@ -20,6 +16,7 @@ import 'package:OpenJMU/pages/AppCenterPage.dart';
 import 'package:OpenJMU/pages/DiscoveryPage.dart';
 import 'package:OpenJMU/pages/PublishPostPage.dart';
 import 'package:OpenJMU/pages/MyInfoPage.dart';
+import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 
 
@@ -112,7 +109,7 @@ class MainPageState extends State<MainPage> {
       }
     });
     pages = <Widget>[
-      PostListPage(),
+      PostListPage("square"),
 //      NewsListPage(),
       AppCenterPage(),
       DiscoveryPage(),
@@ -141,16 +138,24 @@ class MainPageState extends State<MainPage> {
     return bottomAppBarTitles[curIndex];
   }
 
-  Container getAvatar() {
-    return new Container(
-      decoration: new BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.transparent,
-        image: new DecorationImage(
-            image: new NetworkImage(Api.userAvatar+"?uid=$userUid&size=f100"),
-            fit: BoxFit.contain
+  GestureDetector getAvatar() {
+    return new GestureDetector(
+        child: new Padding(
+          padding: EdgeInsets.fromLTRB(14, 10, 6, 10),
+          child: new Container(
+            decoration: new BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.transparent,
+              image: new DecorationImage(
+                  image: new NetworkImage(Api.userAvatar+"?uid=$userUid&size=f100"),
+                  fit: BoxFit.contain
+              ),
+            ),
+          ),
         ),
-      ),
+        onTap: () {
+          return UserPage.jump(context, UserUtils.currentUser.uid);
+        }
     );
   }
 
@@ -195,10 +200,7 @@ class MainPageState extends State<MainPage> {
           appBar: GestureAppBar(
               appBar: new AppBar(
                 elevation: 1,
-                leading: new Padding(
-                    padding: EdgeInsets.fromLTRB(14, 10, 6, 10),
-                    child: getAvatar()
-                ),
+                leading: getAvatar(),
                 title: new FlatButton(
                     onPressed: null,
                     child: new Text(

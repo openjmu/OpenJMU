@@ -17,6 +17,8 @@ class Api {
   static final String userInfo = oa99Host + "/v2/api/class/studentinfo";
   static final String userBasicInfo = oa99pHost + "/user/info";
   static final String userAvatar = oa99pHost + "/face";
+  static final String userFans = wbHost + "/relation_api/fans/uid/";
+  static final String userFollowing = wbHost + "/relation_api/idols/uid/";
 
   // 应用中心
   static final String webAppLists = oa99pHost + "/app/unitmenu?cfg=1";
@@ -34,6 +36,7 @@ class Api {
   static final String postPraise = wbHost + "/praise_api/praise/tid/";
   static final String postContent = wbHost + "/topic_api/topic";
   static final String postUploadImage = wbHost + "/upload_api/image";
+  static final String postListByUid = wbHost + "/topic_api/user/uid/";
 
   // 评论列表
   static final String COMMENT_LIST = oa99Host + "/action/openapi/comment_list";

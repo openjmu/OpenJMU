@@ -7,11 +7,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/LoginEvent.dart';
-import 'package:OpenJMU/events/LogoutEvent.dart';
-import 'package:OpenJMU/events/NotificationCountChangeEvent.dart';
-import 'package:OpenJMU/events/TicketGotEvent.dart';
-import 'package:OpenJMU/events/TicketFailedEvent.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
@@ -179,7 +175,7 @@ class DataUtils {
   static setUserBasicInfo(data) {
     UserUtils.currentUser.unitId = data['unitid'];
     UserUtils.currentUser.workId = int.parse(data['workid']);
-    UserUtils.currentUser.name = data['nickname'] ?? data['username'] ?? data['uid'].toString();
+    UserUtils.currentUser.name = data['username'] ?? data['uid'].toString();
     UserUtils.currentUser.signature = data['signature'];
   }
 

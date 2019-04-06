@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/Constants.dart';
-import '../events/LogoutEvent.dart';
+import 'package:OpenJMU/events/Events.dart';
 import '../pages/ChangeThemePage.dart';
 import '../utils/DataUtils.dart';
 

@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/LogoutEvent.dart';
-import 'package:OpenJMU/events/ChangeBrightnessEvent.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 

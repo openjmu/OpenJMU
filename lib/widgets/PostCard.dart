@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/ChangeBrightnessEvent.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
@@ -14,16 +14,17 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
-class CardItem extends StatefulWidget {
+class PostCardItem extends StatefulWidget {
   final Post post;
 
-  CardItem(this.post, {Key key}) : super(key: key);
+  PostCardItem(this.post, {Key key}) : super(key: key);
 
   @override
-  State createState() => _CardItemState();
+  State createState() => _PostCardItemState();
 }
 
-class _CardItemState extends State<CardItem> {
+class _PostCardItemState extends State<PostCardItem> {
+  int _postUid = 0;
   final TextStyle titleTextStyle = new TextStyle(fontSize: 18.0);
   final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
   final TextStyle rootTopicTextStyle = new TextStyle(fontSize: 14.0);
@@ -41,6 +42,7 @@ class _CardItemState extends State<CardItem> {
   @override
   void initState() {
     super.initState();
+    _postUid = widget.post.userId;
     DataUtils.getBrightnessDark().then((isDark) {
       if (this.mounted) {
         setRootTopicColor(isDark);
@@ -63,41 +65,23 @@ class _CardItemState extends State<CardItem> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    _praisesColor = widget.post.isLike ? ThemeUtils.currentColorTheme : Colors.grey;
-    return new Container(
-      child: Card(
-        margin: EdgeInsets.symmetric(vertical: 8.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            new ListTile(
-              leading: getPostAvatar(widget.post),
-              title: getPostNickname(widget.post),
-              subtitle: getPostInfo(widget.post),
-            ),
-            getPostContent(widget.post),
-            getPostImages(widget.post),
-            getPostActions(widget.post)
-          ],
+  GestureDetector getPostAvatar(context, post) {
+    return new GestureDetector(
+      child: new Container(
+        width: 40.0,
+        height: 40.0,
+        decoration: new BoxDecoration(
+          shape: BoxShape.circle,
+          color: const Color(0xFFECECEC),
+          image: new DecorationImage(
+              image: new NetworkImage(post.avatar),
+              fit: BoxFit.cover
+          ),
         ),
       ),
-    );
-  }
-
-  Container getPostAvatar(post) {
-    return new Container(
-      width: 40.0,
-      height: 40.0,
-      decoration: new BoxDecoration(
-        shape: BoxShape.circle,
-        color: const Color(0xFFECECEC),
-        image: new DecorationImage(
-            image: new NetworkImage(post.avatar),
-            fit: BoxFit.cover
-        ),
-      ),
+      onTap: () {
+        return UserPage.jump(context, _postUid);
+      }
     );
   }
 
@@ -116,9 +100,9 @@ class _CardItemState extends State<CardItem> {
       _postTime = _postTime.substring(5, 16);
     }
     if (
-      int.parse(_postTime.substring(0, 2)) == now.month
+    int.parse(_postTime.substring(0, 2)) == now.month
         &&
-      int.parse(_postTime.substring(3, 5)) == now.day
+        int.parse(_postTime.substring(3, 5)) == now.day
     ) {
       _postTime = "${_postTime.substring(5, 11)}";
     }
@@ -187,7 +171,7 @@ class _CardItemState extends State<CardItem> {
     );
   }
 
-  Widget getPostContent(post) {
+  Widget getPostContent(context, post) {
     String content = post.content, url;
     url = getUrlFromContent(content);
     url != null ? content = removeUrlFromContent(content) : content = content;
@@ -200,7 +184,7 @@ class _CardItemState extends State<CardItem> {
           if (text.startsWith("#")) {
             showCenterShortToast(text.substring(1, text.length-1));
           } else if (text.startsWith("@")) {
-            _goUserPage(data['uid']);
+            return UserPage.jump(context, data['uid']);
           }
         },
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
@@ -209,7 +193,7 @@ class _CardItemState extends State<CardItem> {
       ),
     ];
     if (url != null) widgets.add(getLinkButton(url));
-    if (post.rootTopic != null) widgets.add(getRootPost(post.rootTopic));
+    if (post.rootTopic != null) widgets.add(getRootPost(context, post.rootTopic));
     return new Row(
         children: <Widget>[
           new Expanded(
@@ -227,7 +211,7 @@ class _CardItemState extends State<CardItem> {
     );
   }
 
-  Widget getRootPost(rootTopic) {
+  Widget getRootPost(context, rootTopic) {
     var content = rootTopic['topic'];
     String topic = "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid'].toString()}<\/M>: ";
     topic += content['article'] ?? content['content'];
@@ -243,23 +227,23 @@ class _CardItemState extends State<CardItem> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: rootTopic['exists'] == 1
                 ? <Widget>[
-                  ExtendedText(
-                    topic,
-                    style: new TextStyle(fontSize: 16.0),
-                    onSpecialTextTap: (dynamic data) {
-                      String text = data['content'];
-                      if (text.startsWith("#")) {
-                        showCenterShortToast(text.substring(1, text.length-1));
-                      } else if (text.startsWith("@")) {
-                        _goUserPage(data['uid']);
-                      }
-                    },
-                    specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-                    overflow: ExtendedTextOverflow.ellipsis,
-                    maxLines: 10,
-                  ),
-                  getRootPostImages(rootTopic['topic'])
-                ]
+              ExtendedText(
+                topic,
+                style: new TextStyle(fontSize: 16.0),
+                onSpecialTextTap: (dynamic data) {
+                  String text = data['content'];
+                  if (text.startsWith("#")) {
+                    showCenterShortToast(text.substring(1, text.length-1));
+                  } else if (text.startsWith("@")) {
+                    return UserPage.jump(context, data['uid']);
+                  }
+                },
+                specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+                overflow: ExtendedTextOverflow.ellipsis,
+                maxLines: 10,
+              ),
+              getRootPostImages(rootTopic['topic'])
+            ]
                 : <Widget>[new Text("/// 此动态已被删除 ///")]
         )
     );
@@ -430,12 +414,28 @@ class _CardItemState extends State<CardItem> {
     });
   }
 
-  void _goUserPage(uid) {
-    Navigator.of(context).push(new MaterialPageRoute(
-        builder: (context) {
-          return new UserPage(uid);
-        }
-    ));
-    return;
+  @override
+  Widget build(BuildContext context) {
+    _praisesColor = widget.post.isLike ? ThemeUtils.currentColorTheme : Colors.grey;
+    return new Container(
+      child: Card(
+          margin: EdgeInsets.symmetric(vertical: 4.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              new ListTile(
+                leading: getPostAvatar(context, widget.post),
+                title: getPostNickname(widget.post),
+                subtitle: getPostInfo(widget.post),
+              ),
+              getPostContent(context, widget.post),
+              getPostImages(widget.post),
+              getPostActions(widget.post)
+            ],
+          ),
+          elevation: 0
+      ),
+    );
   }
+
 }

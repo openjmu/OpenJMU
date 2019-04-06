@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/ScrollToTopEvent.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/utils/BlackListUtils.dart';
@@ -13,11 +13,16 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/PostCard.dart';
 import 'package:OpenJMU/widgets/CommonEndLine.dart';
-import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class PostListPage extends StatefulWidget {
+  final String postListType;
+  final int uid = 0;
+
+  PostListPage(this.postListType, {int uid, Key key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return new PostListPageState();
@@ -174,10 +179,8 @@ class PostListPageState extends State<PostListPage> {
 
   Future getPostList(bool isLoadMore, bool isFollowed) {
     loading = true;
-    DataUtils.getSid().then((sid) {
-      String requestUrl;
-      Map headers = DataUtils.buildPostHeaders(sid);
-      List cookies = DataUtils.buildPHPSESSIDCookies(sid);
+    String requestUrl;
+    if (widget.postListType == "square") {
       if (isLoadMore) {
         if (!isFollowed) {
           int lastId = postList[postList.length-1]['id'];
@@ -193,54 +196,65 @@ class PostListPageState extends State<PostListPage> {
           requestUrl = Api.postFollowedList;
         }
       }
-      return NetUtils.getWithCookieAndHeaderSet(requestUrl, headers: headers, cookies: cookies)
-          .then((response) {
-        Map<String, dynamic> obj = jsonDecode(response);
-        if (!isLoadMore) {
-          if (!isFollowed) {
-            postList = obj['topics'];
-          } else {
-            postFollowedList = obj['topics'];
-          }
+    } else if (widget.postListType == "user") {
+      if (isLoadMore) {
+        int lastId = postList[postList.length-1]['id'];
+        requestUrl = "${Api.postListByUid}${widget.uid}/id_max/$lastId";
+      } else {
+        requestUrl = "${Api.postListByUid}${widget.uid}";
+      }
+    }
+    return NetUtils.getWithCookieAndHeaderSet(
+        requestUrl,
+        headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+        cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+    )
+        .then((response) {
+      Map<String, dynamic> obj = jsonDecode(response);
+      if (!isLoadMore) {
+        if (!isFollowed) {
+          postList = obj['topics'];
         } else {
-          if (!isFollowed) {
-            List list = new List();
-            list.addAll(postList);
-            list.addAll(obj['topics']);
-            setState(() {
-              postList = list;
-            });
-          } else {
-            List followedlist = new List();
-            followedlist.addAll(postFollowedList);
-            followedlist.addAll(obj['topics']);
-            setState(() {
-              postFollowedList = followedlist;
-            });
-          }
+          postFollowedList = obj['topics'];
         }
-        setState(() {
-          loading = false;
-        });
+      } else {
+        if (!isFollowed) {
+          List list = new List();
+          list.addAll(postList);
+          list.addAll(obj['topics']);
+          setState(() {
+            postList = list;
+          });
+        } else {
+          List followedlist = new List();
+          followedlist.addAll(postFollowedList);
+          followedlist.addAll(obj['topics']);
+          setState(() {
+            postFollowedList = followedlist;
+          });
+        }
+      }
+      setState(() {
+        loading = false;
+      });
+      DataUtils.getNotifications();
 //        if (!isFollowed) {
 //          filterList(postList, false);
 //        } else {
 //          filterList(postFollowedList, true);
 //        }
-      })
-          .catchError((e) {
-        if (jsonDecode(e.response.toString())['msg'] == "用户验证不通过.") {
-          showCenterShortToast("用户身份已失效\n正在更新用户身份");
-          DataUtils.getTicket().then((status) {
-            getPostList(isLoadMore, isFollowed);
-          }).catchError((e) {
-            showCenterShortToast("身份校验失败\n请重新登录");
-            DataUtils.doLogout();
-          });
-        }
-      });
+    })
+        .catchError((e) {
+      if (jsonDecode(e.response.toString())['msg'] == "用户验证不通过.") {
+        showCenterShortToast("用户身份已失效\n正在更新用户身份");
+        DataUtils.getTicket().then((status) {
+          getPostList(isLoadMore, isFollowed);
+        }).catchError((e) {
+          showCenterShortToast("身份校验失败\n请重新登录");
+          DataUtils.doLogout();
+        });
+      }
     });
-    DataUtils.getNotifications();
   }
 
   // 根据黑名单过滤出新的数组
@@ -375,7 +389,7 @@ class PostListPageState extends State<PostListPage> {
     }
     if (itemData['content'] != "此微博已经被屏蔽") {
       Post _post = createPost(itemData);
-      return CardItem(_post);
+      return PostCardItem(_post);
     } else {
       return new Container(height: 0);
     }
