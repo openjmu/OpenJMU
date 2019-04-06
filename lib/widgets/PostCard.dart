@@ -24,7 +24,6 @@ class PostCardItem extends StatefulWidget {
 }
 
 class _PostCardItemState extends State<PostCardItem> {
-  int _postUid = 0;
   final TextStyle titleTextStyle = new TextStyle(fontSize: 18.0);
   final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
   final TextStyle rootTopicTextStyle = new TextStyle(fontSize: 14.0);
@@ -42,7 +41,6 @@ class _PostCardItemState extends State<PostCardItem> {
   @override
   void initState() {
     super.initState();
-    _postUid = widget.post.userId;
     DataUtils.getBrightnessDark().then((isDark) {
       if (this.mounted) {
         setRootTopicColor(isDark);
@@ -67,21 +65,21 @@ class _PostCardItemState extends State<PostCardItem> {
 
   GestureDetector getPostAvatar(context, post) {
     return new GestureDetector(
-      child: new Container(
-        width: 40.0,
-        height: 40.0,
-        decoration: new BoxDecoration(
-          shape: BoxShape.circle,
-          color: const Color(0xFFECECEC),
-          image: new DecorationImage(
-              image: new NetworkImage(post.avatar),
-              fit: BoxFit.cover
+        child: new Container(
+          width: 40.0,
+          height: 40.0,
+          decoration: new BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color(0xFFECECEC),
+            image: new DecorationImage(
+                image: new NetworkImage(post.avatar),
+                fit: BoxFit.cover
+            ),
           ),
         ),
-      ),
-      onTap: () {
-        return UserPage.jump(context, _postUid);
-      }
+        onTap: () {
+          return UserPage.jump(context, widget.post.userId);
+        }
     );
   }
 
@@ -141,58 +139,9 @@ class _PostCardItemState extends State<PostCardItem> {
     );
   }
 
-  String getUrlFromContent(content) {
-    RegExp reg = new RegExp(r"(https://.+?)/.*");
-    Iterable<Match> matches = reg.allMatches(content);
-    String result;
-    for (Match m in matches) {
-      result = m.group(0);
-    }
-    return result;
-  }
-
-  String removeUrlFromContent(content) {
-    RegExp reg = new RegExp(r"(https://.+?)/.*");
-    String result = content.replaceAllMapped(reg, (match)=>"");
-    return result;
-  }
-
-  FlatButton getLinkButton(url) {
-    return new FlatButton(
-        padding: EdgeInsets.zero,
-        child: new Text("网页链接", style: new TextStyle(color: Colors.indigo, decoration: TextDecoration.underline)),
-        onPressed: () {
-          Navigator.of(context).push(new MaterialPageRoute(
-              builder: (context) {
-                return new CommonWebPage(title: "网页链接", url: url);
-              }
-          ));
-        }
-    );
-  }
-
   Widget getPostContent(context, post) {
-    String content = post.content, url;
-    url = getUrlFromContent(content);
-    url != null ? content = removeUrlFromContent(content) : content = content;
-    List<Widget> widgets = [
-      ExtendedText(
-        content,
-        style: new TextStyle(fontSize: 16.0),
-        onSpecialTextTap: (dynamic data) {
-          String text = data['content'];
-          if (text.startsWith("#")) {
-            showCenterShortToast(text.substring(1, text.length-1));
-          } else if (text.startsWith("@")) {
-            return UserPage.jump(context, data['uid']);
-          }
-        },
-        specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-        overflow: ExtendedTextOverflow.ellipsis,
-        maxLines: 10,
-      ),
-    ];
-    if (url != null) widgets.add(getLinkButton(url));
+    String content = post.content;
+    List<Widget> widgets = [getExtendedText(content)];
     if (post.rootTopic != null) widgets.add(getRootPost(context, post.rootTopic));
     return new Row(
         children: <Widget>[
@@ -213,40 +162,28 @@ class _PostCardItemState extends State<PostCardItem> {
 
   Widget getRootPost(context, rootTopic) {
     var content = rootTopic['topic'];
-    String topic = "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid'].toString()}<\/M>: ";
-    topic += content['article'] ?? content['content'];
-    return new Container(
-        margin: EdgeInsets.only(top: 8.0),
-        padding: EdgeInsets.all(8.0),
-        decoration: new BoxDecoration(
-            color: currentRootTopicColor,
-            borderRadius: BorderRadius.circular(5.0)
-        ),
-        child: new Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: rootTopic['exists'] == 1
-                ? <Widget>[
-              ExtendedText(
-                topic,
-                style: new TextStyle(fontSize: 16.0),
-                onSpecialTextTap: (dynamic data) {
-                  String text = data['content'];
-                  if (text.startsWith("#")) {
-                    showCenterShortToast(text.substring(1, text.length-1));
-                  } else if (text.startsWith("@")) {
-                    return UserPage.jump(context, data['uid']);
-                  }
-                },
-                specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-                overflow: ExtendedTextOverflow.ellipsis,
-                maxLines: 10,
-              ),
-              getRootPostImages(rootTopic['topic'])
-            ]
-                : <Widget>[new Text("/// 此动态已被删除 ///")]
-        )
-    );
+    if (content != null && content.length > 0) {
+      String topic = "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ";
+      topic += content['article'] ?? content['content'];
+      return new Container(
+          margin: EdgeInsets.only(top: 8.0),
+          padding: EdgeInsets.all(8.0),
+          decoration: new BoxDecoration(
+              color: currentRootTopicColor,
+              borderRadius: BorderRadius.circular(5.0)
+          ),
+          child: new Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                getExtendedText(topic),
+                getRootPostImages(rootTopic['topic'])
+              ]
+          )
+      );
+    } else {
+      return getPostDeleted();
+    }
   }
 
   Widget getRootPostImages(rootTopic) {
@@ -298,11 +235,12 @@ class _PostCardItemState extends State<PostCardItem> {
       return new Container(
           padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0.0),
           child: new GridView.count(
+              padding: EdgeInsets.zero,
               shrinkWrap: true,
               primary: false,
               mainAxisSpacing: 8.0,
               crossAxisCount: itemCount,
-              crossAxisSpacing: 8.0,
+              crossAxisSpacing: 4.0,
               children: imagesWidget
           )
       );
@@ -372,6 +310,52 @@ class _PostCardItemState extends State<PostCardItem> {
     );
   }
 
+  Widget getPostShield() {
+    return new Container(
+        color: const Color(0xffaa4444),
+        padding: EdgeInsets.all(30.0),
+        child: new Center(
+            child: new Text(
+                "————— 该条微博已被屏蔽 —————",
+                style: new TextStyle(fontSize: 20.0)
+            )
+        )
+    );
+  }
+
+  Widget getPostDeleted() {
+    return new Container(
+        color: const Color(0xffaa4444),
+        padding: EdgeInsets.all(30.0),
+        child: new Center(
+            child: new Text(
+                "————— 该条微博已被删除 —————",
+                style: new TextStyle(fontSize: 20.0)
+            )
+        )
+    );
+  }
+
+  Widget getExtendedText(content) {
+    return new ExtendedText(
+        content,
+        style: new TextStyle(fontSize: 16.0),
+        onSpecialTextTap: (dynamic data) {
+          String text = data['content'];
+          if (text.startsWith("#")) {
+            showCenterShortToast("话题：${text.substring(1, text.length-1)}");
+          } else if (text.startsWith("@")) {
+            return UserPage.jump(context, data['uid']);
+          } else if (text.startsWith("https://wb.jmu.edu.cn")) {
+            return CommonWebPage.jump(context, text, "网页链接");
+          }
+        },
+        specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+        overflow: ExtendedTextOverflow.ellipsis,
+        maxLines: 10,
+      );
+  }
+
   void _praise() {
     int id = widget.post.id;
     setState(() {
@@ -417,23 +401,30 @@ class _PostCardItemState extends State<PostCardItem> {
   @override
   Widget build(BuildContext context) {
     _praisesColor = widget.post.isLike ? ThemeUtils.currentColorTheme : Colors.grey;
+    List<Widget> _widgets = [];
+    if (widget.post.content != "此微博已经被屏蔽") {
+      _widgets = [
+        new ListTile(
+          leading: getPostAvatar(context, widget.post),
+          title: getPostNickname(widget.post),
+          subtitle: getPostInfo(widget.post),
+        ),
+        getPostContent(context, widget.post),
+        getPostImages(widget.post),
+        getPostActions(widget.post)
+      ];
+    } else {
+      _widgets = [getPostShield()];
+    }
     return new Container(
       child: Card(
           margin: EdgeInsets.symmetric(vertical: 4.0),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              new ListTile(
-                leading: getPostAvatar(context, widget.post),
-                title: getPostNickname(widget.post),
-                subtitle: getPostInfo(widget.post),
-              ),
-              getPostContent(context, widget.post),
-              getPostImages(widget.post),
-              getPostActions(widget.post)
-            ],
+            children: _widgets,
           ),
-          elevation: 0
+          elevation: 0,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)
       ),
     );
   }

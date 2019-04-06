@@ -91,11 +91,7 @@ class AppCenterPageState extends State<AppCenterPage> {
           ],
         ),
         onPressed: () {
-          Navigator.of(context).push(new MaterialPageRoute(
-              builder: (context) {
-                return new CommonWebPage(title: name, url: url);
-              }
-          ));
+          return CommonWebPage.jump(context, url, name);
         },
       );
       return button;

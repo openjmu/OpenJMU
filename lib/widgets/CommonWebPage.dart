@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class CommonWebPage extends StatefulWidget {
@@ -14,6 +15,15 @@ class CommonWebPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return new CommonWebPageState();
+  }
+
+  static void jump(BuildContext context, String url, String title) {
+    Navigator.of(context).push(platformPageRoute(builder: (context) {
+      return CommonWebPage(
+        url: url,
+        title: title
+      );
+    }));
   }
 }
 
@@ -101,15 +111,7 @@ class CommonWebPageState extends State<CommonWebPage> {
   Widget build(BuildContext context) {
     Widget trailing = loading
         ? refreshIndicator
-        : new Container(
-        width: 56.0,
-        child: new IconButton(
-            icon: new Icon(Icons.refresh),
-            onPressed: () {
-              flutterWebViewPlugin.reload();
-            }
-        )
-    );
+        : new Container(width: 56.0);
     return new WebviewScaffold(
       url: widget.url,
       allowFileURLs: true,
@@ -131,10 +133,55 @@ class CommonWebPageState extends State<CommonWebPage> {
         iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
         brightness: ThemeUtils.currentBrightness,
       ),
+      persistentFooterButtons: <Widget>[
+        new Container(
+          margin: EdgeInsets.zero,
+          padding: EdgeInsets.zero,
+          width: MediaQuery.of(context).size.width - 16.0,
+          height: 24.0,
+          child: new Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                new IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: new Icon(
+                        Icons.keyboard_arrow_left,
+                        color: ThemeUtils.currentColorTheme
+                    ),
+                    onPressed: () {
+                      flutterWebViewPlugin.goBack();
+                    }
+                ),
+                new IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: new Icon(
+                        Icons.keyboard_arrow_right,
+                        color: ThemeUtils.currentColorTheme
+                    ),
+                    onPressed: () {
+                      flutterWebViewPlugin.goForward();
+                    }
+                ),
+                new IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: new Icon(
+                        Icons.refresh,
+                        color: ThemeUtils.currentColorTheme
+                    ),
+                    onPressed: () {
+                      flutterWebViewPlugin.reload();
+                    }
+                ),
+              ]
+          )
+        )
+      ],
       enableAppScheme: true,
       withJavascript: true,
       withLocalStorage: true,
       withZoom: true,
+      resizeToAvoidBottomInset: true
     );
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
@@ -14,36 +16,38 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
-
   Animation<double> _animation;
   AnimationController _animationController;
 
   final _formKey = GlobalKey<FormState>();
   String _username, _password;
+  bool _loginButtonDisabled = false;
   bool _isObscure = true;
   Color _defaultIconColor = ThemeUtils.currentColorTheme;
 
   @override
   void initState() {
     super.initState();
-    _animationController =
-        AnimationController(duration: const Duration(seconds: 1), vsync: this);
-    // #docregion addListener
-    _animation = Tween<double>(begin: 120, end: 100).animate(_animationController)
-      ..addListener(() {
-        // #enddocregion addListener
-        setState(() {
-          // The state that has changed here is the animation object’s value.
-        });
-        // #docregion addListener
-      });
-    // #enddocregion addListener
-    _animationController.forward();
+//    _animationController =
+//        AnimationController(duration: const Duration(seconds: 1), vsync: this);
+//    _animation = Tween<double>(begin: 120, end: 100).animate(_animationController)
+//      ..addListener(() {
+//        setState(() {
+//        });
+//      });
+//    _animationController.forward();
+//    Constants.eventBus.on<LoginFailedEvent>().listen((event) {
+//      if (this.mounted) {
+//        setState(() {
+//          _loginButtonDisabled = false;
+//        });
+//      }
+//    });
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _animationController?.dispose();
     super.dispose();
   }
   int last = 0;
@@ -59,53 +63,13 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return new WillPopScope(
-        onWillPop: doubleBackExit,
-        child: new Scaffold(
-            body: Builder(
-                builder: (context) =>
-                new Stack(
-                    children: <Widget>[
-                      new Container(
-                        decoration: BoxDecoration(
-                            color: ThemeUtils.defaultColor
-                        ),
-                      ),
-                      new Form(
-                          key: _formKey,
-                          child: new Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                buildLogo(),
-//                          buildTitleLine(),
-                                SizedBox(height: 20.0),
-                                buildUsernameTextField(),
-                                SizedBox(height: 30.0),
-                                buildPasswordTextField(),
-                                buildForgetPasswordText(context),
-                                SizedBox(height: 10.0),
-                                buildLoginButton(context),
-                                SizedBox(height: 50.0),
-//                          buildRegisterText(context),
-                              ]
-                          )
-                      )
-                    ]
-                )
-            )
-        )
-    );
-  }
-
   Container buildLogo() {
     return new Container(
       margin: EdgeInsets.only(bottom: 8.0),
-        height: _animation.value,
-        width: _animation.value,
         child: new Image.asset(
           './images/ic_jmu_logo_trans.png',
+//          width: _animation.value,
+//          height: _animation.value,
           width: 100.0,
           height: 100.0,
         )
@@ -138,12 +102,13 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               decoration: new InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(10.0),
-                labelText: '用户名/工号/学号',
+                labelText: '工号/学号',
                 labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0),
               ),
               style: new TextStyle(color: Colors.white, fontSize: 18.0),
               cursorColor: Colors.white,
               onSaved: (String value) => _username = value,
+              keyboardType: TextInputType.number,
             )
         )
     );
@@ -192,30 +157,46 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     );
   }
 
-  Column buildLoginButton(BuildContext context) {
+  Column buildLoginButton(context) {
     return new Column(
         children: <Widget>[
-          new Container(
-            child: new FlatButton(
-              padding: EdgeInsets.all(16.0),
-              color: Color.fromRGBO(255,255,255,0.2),
-              highlightColor: Colors.white,
-              textColor: Colors.white,
-              child: new Icon(
-                  Icons.send,
-                  color: Colors.white,
-                  size: 30
-              ),
-              onPressed: () {
-                if (_formKey.currentState.validate()) {
-                  _formKey.currentState.save();
-                  //TODO 执行登录方法
-                  DataUtils.doLogin(context, _username, _password);
-                }
-              },
-              shape: CircleBorder(),
-//          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          !_loginButtonDisabled
+          ? new Container(
+              padding: EdgeInsets.all(8.0),
+              child: new IconButton(
+                highlightColor: Colors.white,
+                icon: new Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
+                    size: 30
+                ),
+                onPressed: () {
+                  if (_loginButtonDisabled) {
+                     return null;
+                  } else {
+                    loginButtonPressed(context);
+                  }
+                },
             ),
+            decoration: new BoxDecoration(
+                color: Color.fromRGBO(255,255,255,0.2),
+                shape: BoxShape.circle
+            )
+          )
+          : new Container(
+              padding: EdgeInsets.all(20.0),
+              child: new SizedBox(
+                  width: 24.0,
+                  height: 24.0,
+                  child: new CircularProgressIndicator(
+                      strokeWidth: 3.0,
+                      valueColor: new AlwaysStoppedAnimation<Color>(Colors.white)
+                  )
+              ),
+              decoration: new BoxDecoration(
+                  color: Color.fromRGBO(255,255,255,0.2),
+                  shape: BoxShape.circle
+              )
           ),
         ]
     );
@@ -240,32 +221,42 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     );
   }
 
-  Align buildRegisterText(BuildContext context) {
-    return new Align(
-      alignment: Alignment.center,
-      child: new Padding(
-        padding: EdgeInsets.only(top: 10.0),
-        child: new Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Text(
-                '没有账号？',
-                style: new TextStyle(color: Colors.white)
-            ),
-            new GestureDetector(
-              child: new Text(
-                '点击注册',
-                style: new TextStyle(color: Colors.white, decoration: TextDecoration.underline),
-              ),
-              onTap: () {
-                print('去注册');
-//                Navigator.pop(context);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
+//  Align buildRegisterText(BuildContext context) {
+//    return new Align(
+//      alignment: Alignment.center,
+//      child: new Padding(
+//        padding: EdgeInsets.only(top: 10.0),
+//        child: new Row(
+//          mainAxisAlignment: MainAxisAlignment.center,
+//          children: <Widget>[
+//            new Text(
+//                '没有账号？',
+//                style: new TextStyle(color: Colors.white)
+//            ),
+//            new GestureDetector(
+//              child: new Text(
+//                '点击注册',
+//                style: new TextStyle(color: Colors.white, decoration: TextDecoration.underline),
+//              ),
+//              onTap: () {
+//                print('去注册');
+////                Navigator.pop(context);
+//              },
+//            ),
+//          ],
+//        ),
+//      ),
+//    );
+//  }
+
+  void loginButtonPressed(context) {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      setState(() {
+        _loginButtonDisabled = true;
+      });
+      DataUtils.doLogin(context, _username, _password);
+    }
   }
 
   Future<void> resetPassword() async {
@@ -294,16 +285,52 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               child: new Text('查看'),
               onPressed: () {
                 Navigator.of(dialogContext).pop();
-                Navigator.of(context).push(new MaterialPageRoute(
-                    builder: (context) {
-                      return new CommonWebPage(title: "集大通行证登录说明", url: "https://net.jmu.edu.cn/info/1309/2476.htm");
-                    }
-                ));
+                return CommonWebPage.jump(context, "https://net.jmu.edu.cn/info/1309/2476.htm", "集大通行证登录说明");
               },
             ),
           ],
         );
       },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new WillPopScope(
+        onWillPop: doubleBackExit,
+        child: new Scaffold(
+            body: Builder(
+                builder: (context) =>
+                new Stack(
+                    children: <Widget>[
+                      new Container(
+                        decoration: BoxDecoration(
+                            color: ThemeUtils.defaultColor
+                        ),
+                      ),
+                      new Form(
+                          key: _formKey,
+                          child: new Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                buildLogo(),
+//                          buildTitleLine(),
+                                SizedBox(height: 20.0),
+                                buildUsernameTextField(),
+                                SizedBox(height: 30.0),
+                                buildPasswordTextField(),
+                                buildForgetPasswordText(context),
+                                SizedBox(height: 10.0),
+                                buildLoginButton(context),
+                                SizedBox(height: 50.0),
+//                          buildRegisterText(context),
+                              ]
+                          )
+                      )
+                    ]
+                )
+            )
+        )
     );
   }
 

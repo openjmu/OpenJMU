@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:OpenJMU/api/Api.dart';
@@ -12,29 +11,24 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/PostCard.dart';
 
-/// 用于控制帖子的刷新和加载URL
 class PostController {
-  /// 帖子获取地址
   final String postType;
 
-  /// 是否加载关注的人
   final bool isFollowed;
 
-  /// 是否加载更多
   final bool isMore;
 
-  /// 分页最后一个帖子的Value值
-  /// 用于指定加载下一页的初始Value
   final Function lastValue;
 
   final Map<String, dynamic> additionAttrs;
 
-  PostController(
-      {@required this.postType,
-        @required this.isFollowed,
-        @required this.isMore,
-        @required this.lastValue,
-        this.additionAttrs});
+  PostController({
+    @required this.postType,
+    @required this.isFollowed,
+    @required this.isMore,
+    @required this.lastValue,
+    this.additionAttrs
+  });
 }
 
 
@@ -43,10 +37,8 @@ class PostList extends StatefulWidget {
   final bool needRefreshIndicator;
 
   PostList(this._postController, {
-    Key key,
-    this.needRefreshIndicator = true
-  })
-      : super(key: key);
+    Key key, this.needRefreshIndicator = true
+  }) : super(key: key);
 
   @override
   State createState() => _PostListState();
@@ -67,7 +59,9 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   bool error = false;
 
   Widget _body = Center(
-    child: CircularProgressIndicator(),
+    child: CircularProgressIndicator(
+      valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
+    ),
   );
 
   List<Post> _postList = [];
@@ -131,7 +125,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     if (!_showLoading) {
       if (_firstLoadComplete) {
         _itemList = ListView.builder(
-          padding: EdgeInsets.all(4.0),
+          padding: EdgeInsets.symmetric(vertical: 4.0),
           itemBuilder: (context, index) {
             if (index == _postList.length - 1) {
               _loadData();
@@ -169,14 +163,14 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       var result = await PostAPI.getPostList(
           widget._postController.postType,
           widget._postController.isFollowed,
-          widget._postController.isMore,
+          true,
           _lastValue,
           additionAttrs: widget._postController.additionAttrs
       );
       List<Post> postList = [];
       List _topics = jsonDecode(result)['topics'];
-      for (var post in _topics) {
-        postList.add(PostAPI.createPost(post['topic']));
+      for (var postData in _topics) {
+        postList.add(PostAPI.createPost(postData['topic']));
       }
       _postList.addAll(postList);
 //      error = !result['success'];
@@ -186,7 +180,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
           _showLoading = false;
           _firstLoadComplete = true;
           _isLoading = false;
-          _canLoadMore = result['list'].isNotEmpty;
+          _canLoadMore = _topics.isNotEmpty;
           _lastValue = _postList.isEmpty
               ? 0
               : widget._postController.lastValue(_postList.last);
@@ -205,14 +199,14 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       var result = await PostAPI.getPostList(
           widget._postController.postType,
           widget._postController.isFollowed,
-          widget._postController.isMore,
+          false,
           _lastValue,
           additionAttrs: widget._postController.additionAttrs
       );
       List<Post> postList = [];
       List _topics = jsonDecode(result)['topics'];
-      for (var post in _topics) {
-        postList.add(PostAPI.createPost(post['topic']));
+      for (var postData in _topics) {
+        postList.add(PostAPI.createPost(postData['topic']));
       }
       _postList.addAll(postList);
 //      error = !result['success'] ?? false;
@@ -222,7 +216,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
           _showLoading = false;
           _firstLoadComplete = true;
           _isLoading = false;
-          _canLoadMore = true;
+          _canLoadMore = _topics.isNotEmpty;
           _lastValue = _postList.isEmpty
               ? 0
               : widget._postController.lastValue(_postList.last);
@@ -279,7 +273,7 @@ class PostAPI {
         itemData['from_string'],
         int.parse(itemData['glances']),
         itemData['category'],
-        itemData['category'] == "longtext" ? itemData['article'] : itemData['content'],
+        itemData['article'] ?? itemData['content'],
         itemData['image'],
         int.parse(itemData['forwards']),
         int.parse(itemData['replys']),

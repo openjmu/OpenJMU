@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -31,8 +30,8 @@ class PostListPage extends StatefulWidget {
 
 class PostListPageState extends State<PostListPage> {
   final ScrollController _scrollController = new ScrollController();
-  Color currentColorTheme = ThemeUtils.currentColorTheme;
   Color currentPrimaryColor = ThemeUtils.currentPrimaryColor;
+  Color currentColor = ThemeUtils.currentColorTheme;
 
   List postList;
   List postFollowedList;
@@ -51,6 +50,19 @@ class PostListPageState extends State<PostListPage> {
         _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
       }
     });
+    Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
+      if (this.mounted) {
+        setState(() {
+          currentColor = event.color;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController?.dispose();
   }
 
   PostListPageState() {
@@ -67,115 +79,115 @@ class PostListPageState extends State<PostListPage> {
     });
   }
 
-  Widget postCategory() {
-    return new Stack(
-        children: <Widget>[
-          new Positioned(
-              left: 0,
-              top: 0.0,
-              right: 0.0,
-              bottom: 0.0,
-              child: new DecoratedBox(
-                  decoration: new BoxDecoration(
-                      color: Colors.grey
-                  )
-              )
-          ),
-          new Positioned(
-              left: 0.0,
-              top: 0.0,
-              right: 0.0,
-              child: new Column(
-                  children: <Widget>[
-                    new Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                      decoration: new BoxDecoration(
-                          color: currentPrimaryColor
-                      ),
-                      child: new Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            new Text(
-                              "默认分组",
-                              style: new TextStyle(
-                                  fontSize: 16.0
-                              ),
-                            ),
-                            new Text(
-                              "编辑",
-                              style: new TextStyle(
-                                  color: currentColorTheme,
-                                  fontSize: 16.0
-                              ),
-                            ),
-                          ]
-                      ),
-                    ),
-                    new Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                        decoration: new BoxDecoration(
-                            color: currentPrimaryColor
-                        ),
-                        child: new GridView.count(
-                            crossAxisCount: 4,
-                            shrinkWrap: true,
-                            childAspectRatio: 2.75 / 1,
-                            children: <Widget>[
-                              new Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 6.0),
-                                child: new Container(
-                                    decoration: new BoxDecoration(
-                                        borderRadius: new BorderRadius.all(new Radius.circular(5.0)),
-                                        color: currentColorTheme
-                                    ),
-                                    child: new FlatButton(
-                                        onPressed: () {
-                                          showShortToast("测试");
-                                        },
-                                        child: new Center(
-                                            child: new Text(
-                                                "测试",
-                                                style: new TextStyle(
-                                                    color: currentPrimaryColor,
-                                                    fontSize: 16.0
-                                                )
-                                            )
-                                        )
-                                    )
-                                ),
-                              ),
-                              new Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 6.0),
-                                child: new Container(
-                                    decoration: new BoxDecoration(
-                                        borderRadius: new BorderRadius.all(new Radius.circular(5.0)),
-                                        color: Colors.grey
-                                    ),
-                                    child: new FlatButton(
-                                        onPressed: () {
-                                          showShortToast("测试");
-                                        },
-                                        child: new Center(
-                                            child: new Text(
-                                                "测试",
-                                                style: new TextStyle(
-                                                    color: currentPrimaryColor,
-                                                    fontSize: 16.0
-                                                )
-                                            )
-                                        )
-                                    )
-                                ),
-                              ),
-                            ]
-                        )
-                    )
-                  ]
-              )
-          ),
-        ]
-    );
-  }
+//  Widget postCategory() {
+//    return new Stack(
+//        children: <Widget>[
+//          new Positioned(
+//              left: 0,
+//              top: 0.0,
+//              right: 0.0,
+//              bottom: 0.0,
+//              child: new DecoratedBox(
+//                  decoration: new BoxDecoration(
+//                      color: Colors.grey
+//                  )
+//              )
+//          ),
+//          new Positioned(
+//              left: 0.0,
+//              top: 0.0,
+//              right: 0.0,
+//              child: new Column(
+//                  children: <Widget>[
+//                    new Container(
+//                      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+//                      decoration: new BoxDecoration(
+//                          color: currentPrimaryColor
+//                      ),
+//                      child: new Row(
+//                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                          children: <Widget>[
+//                            new Text(
+//                              "默认分组",
+//                              style: new TextStyle(
+//                                  fontSize: 16.0
+//                              ),
+//                            ),
+//                            new Text(
+//                              "编辑",
+//                              style: new TextStyle(
+//                                  color: currentColor,
+//                                  fontSize: 16.0
+//                              ),
+//                            ),
+//                          ]
+//                      ),
+//                    ),
+//                    new Container(
+//                        padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+//                        decoration: new BoxDecoration(
+//                            color: currentPrimaryColor
+//                        ),
+//                        child: new GridView.count(
+//                            crossAxisCount: 4,
+//                            shrinkWrap: true,
+//                            childAspectRatio: 2.75 / 1,
+//                            children: <Widget>[
+//                              new Padding(
+//                                padding: EdgeInsets.symmetric(horizontal: 6.0),
+//                                child: new Container(
+//                                    decoration: new BoxDecoration(
+//                                        borderRadius: new BorderRadius.all(new Radius.circular(5.0)),
+//                                        color: currentColor
+//                                    ),
+//                                    child: new FlatButton(
+//                                        onPressed: () {
+//                                          showShortToast("测试");
+//                                        },
+//                                        child: new Center(
+//                                            child: new Text(
+//                                                "测试",
+//                                                style: new TextStyle(
+//                                                    color: currentPrimaryColor,
+//                                                    fontSize: 16.0
+//                                                )
+//                                            )
+//                                        )
+//                                    )
+//                                ),
+//                              ),
+//                              new Padding(
+//                                padding: EdgeInsets.symmetric(horizontal: 6.0),
+//                                child: new Container(
+//                                    decoration: new BoxDecoration(
+//                                        borderRadius: new BorderRadius.all(new Radius.circular(5.0)),
+//                                        color: Colors.grey
+//                                    ),
+//                                    child: new FlatButton(
+//                                        onPressed: () {
+//                                          showShortToast("测试");
+//                                        },
+//                                        child: new Center(
+//                                            child: new Text(
+//                                                "测试",
+//                                                style: new TextStyle(
+//                                                    color: currentPrimaryColor,
+//                                                    fontSize: 16.0
+//                                                )
+//                                            )
+//                                        )
+//                                    )
+//                                ),
+//                              ),
+//                            ]
+//                        )
+//                    )
+//                  ]
+//              )
+//          ),
+//        ]
+//    );
+//  }
 
   Future getPostList(bool isLoadMore, bool isFollowed) {
     loading = true;
@@ -212,27 +224,29 @@ class PostListPageState extends State<PostListPage> {
         .then((response) {
       Map<String, dynamic> obj = jsonDecode(response);
       if (!isLoadMore) {
-        if (!isFollowed) {
-          postList = obj['topics'];
-        } else {
-          postFollowedList = obj['topics'];
-        }
+//        if (!isFollowed) {
+          setState(() {
+            postList = obj['topics'];
+          });
+//        } else {
+//          postFollowedList = obj['topics'];
+//        }
       } else {
-        if (!isFollowed) {
+//        if (!isFollowed) {
           List list = new List();
           list.addAll(postList);
           list.addAll(obj['topics']);
           setState(() {
             postList = list;
           });
-        } else {
-          List followedlist = new List();
-          followedlist.addAll(postFollowedList);
-          followedlist.addAll(obj['topics']);
-          setState(() {
-            postFollowedList = followedlist;
-          });
-        }
+//        } else {
+//          List followedlist = new List();
+//          followedlist.addAll(postFollowedList);
+//          followedlist.addAll(obj['topics']);
+//          setState(() {
+//            postFollowedList = followedlist;
+//          });
+//        }
       }
       setState(() {
         loading = false;
@@ -257,38 +271,38 @@ class PostListPageState extends State<PostListPage> {
     });
   }
 
-  // 根据黑名单过滤出新的数组
-  filterList(List<dynamic> objList, bool isFollowed) {
-//    BlackListUtils.getBlackListIds().then((intList) {
-//      if (intList != null && intList.isNotEmpty && objList != null) {
-//        List newList = new List();
-//        for (dynamic item in objList) {
-//          int authorId = item['uid'];
-//          if (!intList.contains(authorId)) {
-//            newList.add(item);
-//          }
-//        }
-//        setState(() {
-//          if (!isFollowed) {
-//            postList = newList;
-//          } else {
-//            postFollowedList = newList;
-//          }
-//          loading = false;
-//        });
+//  // 根据黑名单过滤出新的数组
+//  filterList(List<dynamic> objList, bool isFollowed) {
+////    BlackListUtils.getBlackListIds().then((intList) {
+////      if (intList != null && intList.isNotEmpty && objList != null) {
+////        List newList = new List();
+////        for (dynamic item in objList) {
+////          int authorId = item['uid'];
+////          if (!intList.contains(authorId)) {
+////            newList.add(item);
+////          }
+////        }
+////        setState(() {
+////          if (!isFollowed) {
+////            postList = newList;
+////          } else {
+////            postFollowedList = newList;
+////          }
+////          loading = false;
+////        });
+////      } else {
+//    // 黑名单为空，直接返回原始数据
+//    setState(() {
+//      if (!isFollowed) {
+//        postList = objList;
 //      } else {
-    // 黑名单为空，直接返回原始数据
-    setState(() {
-      if (!isFollowed) {
-        postList = objList;
-      } else {
-        postFollowedList = objList;
-      }
-      loading = false;
-    });
+//        postFollowedList = objList;
 //      }
+//      loading = false;
 //    });
-  }
+////      }
+////    });
+//  }
 
   // 关进小黑屋
 //  putIntoBlackHouse(item) {
@@ -387,12 +401,8 @@ class PostListPageState extends State<PostListPage> {
     if (itemData is String && itemData == Constants.endLineTag) {
       return new CommonEndLine();
     }
-    if (itemData['content'] != "此微博已经被屏蔽") {
-      Post _post = createPost(itemData);
-      return PostCardItem(_post);
-    } else {
-      return new Container(height: 0);
-    }
+    Post _post = createPost(itemData);
+    return PostCardItem(_post);
   }
 
   Future<Null> _pullToRefresh() async {
@@ -410,7 +420,7 @@ class PostListPageState extends State<PostListPage> {
       getPostList(false, false);
       return new Center(
         child: new CircularProgressIndicator(
-          valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
+          valueColor: new AlwaysStoppedAnimation<Color>(currentColor),
         ),
       );
     } else {
@@ -420,7 +430,7 @@ class PostListPageState extends State<PostListPage> {
         controller: _scrollController,
       );
       return new RefreshIndicator(
-          color: ThemeUtils.currentColorTheme,
+          color: currentColor,
           child: listView,
           onRefresh: _pullToRefresh
       );
@@ -431,7 +441,9 @@ class PostListPageState extends State<PostListPage> {
     if (postFollowedList == null) {
       getPostList(false, true);
       return new Center(
-        child: new CircularProgressIndicator(),
+        child: new CircularProgressIndicator(
+          valueColor: new AlwaysStoppedAnimation<Color>(currentColor),
+        ),
       );
     } else {
       Widget listView = new ListView.builder(
@@ -439,7 +451,11 @@ class PostListPageState extends State<PostListPage> {
         itemBuilder: (context, i) => renderRow(i, true),
         controller: _scrollController,
       );
-      return new RefreshIndicator(child: listView, onRefresh: _pullToRefreshFollowed);
+      return new RefreshIndicator(
+          color: currentColor,
+          child: listView,
+          onRefresh: _pullToRefreshFollowed
+      );
     }
   }
 

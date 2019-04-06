@@ -52,14 +52,18 @@ class MyInfoPageState extends State<MyInfoPage> {
       }
     });
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
-      setState(() {
-        themeColor = event.color;
-      });
+      if (this.mounted) {
+        setState(() {
+          themeColor = event.color;
+        });
+      }
     });
     Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
-      setState(() {
-        isDark = event.isDarkState;
-      });
+      if (this.mounted) {
+        setState(() {
+          isDark = event.isDarkState;
+        });
+      }
     });
   }
 

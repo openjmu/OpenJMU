@@ -6,12 +6,9 @@ import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/widgets/AppBar.dart'
     show FlexibleSpaceBarWithUserInfo;
-import 'package:OpenJMU/widgets/PostCard.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
-//import 'package:isdu_flutter/widget/collpase_layout.dart';
 
 class UserPage extends StatefulWidget {
   final int uid;
@@ -34,33 +31,26 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
   UserInfo _user;
 
   SliverAppBar _appBar;
-//  Widget _body;
   List<Widget> _actions;
   Widget _infoNextNameButton;
-//  TabController _tabController;
   var _fansCount = '-';
   var _followingCount = '-';
-//  var _tabs = ['帖子', '评论'];
-//  var _children;
 
   List<int> _fansIds = List();
   List<int> _followingIds = List();
 
-  // 用户帖子
   Widget _post;
 
   bool isError = false;
 
   GlobalKey _nicknameKey;
   GlobalKey _signKey;
-  bool _nicknameMarquee = false;
   double maxNicknameWidth;
   double maxSignWidth;
 
   @override
   void dispose() {
     super.dispose();
-//    _tabController.dispose();
   }
 
   @override
@@ -82,7 +72,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         ),
         body: Container(
           child: Center(
-            child: Text('用户不存在', style: TextStyle(color: ThemeUtils.currentColorTheme),),
+            child: Text('用户不存在', style: TextStyle(color: ThemeUtils.currentColorTheme)),
           ),
         ),
       );
@@ -93,10 +83,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-//    _tabController = TabController(
-//        length: _tabs.length,
-//        vsync: this
-//    );
     _checkLogin();
 
     if (widget.uid != null && widget.uid != 0) {
@@ -121,7 +107,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
             _signKey.currentContext != null) {
           maxNicknameWidth = MediaQuery.of(context).size.width - 4 * 16 - 3 * 64 - 8;
           maxSignWidth = MediaQuery.of(context).size.width - 2 * 8;
-          _nicknameMarquee = maxNicknameWidth - 1 < _nicknameKey.currentContext.size.width;
 
           setState(() {
             _updateAppBar();
@@ -188,7 +173,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         _user = UserUtils.currentUser;
       });
     } else {
-      print(uid);
       var user = jsonDecode(await UserUtils.getUserInfo(uid: uid));
       setState(() {
         _user = UserUtils.createUser(user);
@@ -215,7 +199,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
               padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
               decoration: BoxDecoration(
                   color: Colors.transparent,
-                  border: Border.all(color: Colors.white,),
+                  border: Border.all(color: Colors.white),
                   borderRadius: BorderRadius.circular(4)
               ),
               child: Center(
@@ -254,7 +238,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
 
   }
 
-  /// 获取粉丝和关注数量
   Future<Null> _getFollowingAndFansCount(id) async {
     var fans = await UserUtils.getFans(id);
     var followings = await UserUtils.getFollowing(id);
@@ -271,11 +254,11 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
       followingIds.add(int.parse(following['id']));
     }
     setState(() {
-      _fansCount = fans['count'].toString();
+      _fansCount = fans['total'].toString();
       _fansIds.clear();
       _fansIds = fansIds;
 
-      _followingCount = followings['count'].toString();
+      _followingCount = followings['total'].toString();
       _followingIds.clear();
       _followingIds = followingIds;
     });
@@ -292,6 +275,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
           floating: false,
           pinned: true,
           backgroundColor: ThemeUtils.currentColorTheme,
+          iconTheme: new IconThemeData(color: Colors.white),
           expandedHeight: 187 + bottomSize,
           flexibleSpace: FlexibleSpaceBarWithUserInfo(
             titleFontSize: 14,
@@ -308,8 +292,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                     EdgeInsets.only(left: 0, right: 8, bottom: 4, top: 4),
                     child: Text(
                       '关注 $_followingCount',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.normal),
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
                     ),
                   ),
                   onTap: () {
@@ -322,8 +305,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                     EdgeInsets.only(left: 8, right: 0, bottom: 4, top: 4),
                     child: Text(
                       '粉丝 $_fansCount',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.normal),
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
                     ),
                   ),
                   onTap: () {
@@ -348,22 +330,17 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
             ),
             bottomInfo: Container(
 //                  height: 37,
-              color: Colors.white,
-              padding: EdgeInsets.all(8),
+              color: Theme.of(context).cardColor,
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Text(
-                _user?.signature ?? '',
+                _user?.signature ?? '这个人还没写下TA的第一句...',
                 key: _signKey,
-                style: TextStyle(color: Colors.black54),
+                style: TextStyle(color: Colors.grey),
               ),
             ),
             bottomSize: bottomSize,
           ),
           actions: _actions,
-//          bottom: TabBar(
-//            isScrollable: true,
-//            tabs: _tabs.map((t) => Tab(child: Text(t, style: TextStyle(color: ThemeUtils.currentColorTheme),),)).toList(),
-//            controller: _tabController,
-//          ),
         );
       });
     }

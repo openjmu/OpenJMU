@@ -122,26 +122,37 @@ class DataUtils {
           Navigator.of(context).pushReplacementNamed("/home");
         })
             .catchError((e) {
+          Constants.eventBus.fire(new LoginFailedEvent());
           print(e.response);
           print(e.toString());
-          SnackbarUtils.show(context, "获取用户信息失败！${e.toString()}");
+          SnackbarUtils.show(
+              context,
+              "设置用户信息失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}"
+          );
           return e;
         });
         getUserBasicInfo();
       })
           .catchError((e) {
+        Constants.eventBus.fire(new LoginFailedEvent());
         print(e.response);
         print(e.toString());
-        showShortToast(e.toString());
-        SnackbarUtils.show(context, "登录失败！${e.toString()}");
+        SnackbarUtils.show(
+            context,
+            "登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}"
+        );
         return e;
       });
     })
         .catchError((e) {
+      Constants.eventBus.fire(new LoginFailedEvent());
       print(e.response);
       print(e.toString());
       showShortToast(e.toString());
-      SnackbarUtils.show(context, "登录失败！${e.toString()}");
+      SnackbarUtils.show(
+          context,
+          "登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}"
+      );
       return e;
     });
   }

@@ -5,17 +5,17 @@ import 'package:extended_text/extended_text.dart';
 final double _fontSize = 16.0;
 
 class LinkText extends SpecialText {
-  static const String flag = "https://wb.jmu.edu.cn/";
+  static const String startKey = "https://wb.jmu.edu.cn/";
+  static const String endKey = " ";
 
   LinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
-      : super(flag, flag, textStyle, onTap: onTap);
+      : super(startKey, endKey, textStyle, onTap: onTap);
 
   @override
   TextSpan finishText() {
-    final String linkText = getContent();
     return TextSpan(
-        text: linkText,
-        style: textStyle?.copyWith(color: Colors.orangeAccent, fontSize: _fontSize),
+        text: " 网页链接 ",
+        style: textStyle?.copyWith(color: Colors.blue, fontSize: _fontSize),
         recognizer: TapGestureRecognizer()
           ..onTap = () {
             Map<String, dynamic> data = new Map();
@@ -213,6 +213,7 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     if (data == null || data == "") return null;
     List<TextSpan> inlineList = new List<TextSpan>();
     if (data != null && data.length > 0) {
+      data += " ";
       SpecialText specialText;
       String textStack = "";
       for (int i = 0; i < data.length; i++) {
@@ -265,6 +266,9 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     }
     else if (isStart(flag, EmojiText.flag)) {
       return EmojiText(textStyle);
+    }
+    else if (isStart(flag, LinkText.startKey)) {
+      return LinkText(textStyle, onTap);
     }
     return null;
   }

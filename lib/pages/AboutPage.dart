@@ -80,9 +80,7 @@ class AboutPageState extends State<AboutPage> {
     String url = urls[index];
     String title = titles[index];
     return () {
-      Navigator.of(context).push(new MaterialPageRoute(builder: (ctx) {
-        return new CommonWebPage(title: title, url: url);
-      }));
+      return CommonWebPage.jump(context, url, title);
     };
   }
 

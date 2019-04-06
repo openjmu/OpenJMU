@@ -21,9 +21,12 @@ class ChangeThemePageState extends State<ChangeThemePage> {
   void initState() {
     super.initState();
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
-      setState(() {
-        currentColor = event.color;
-      });
+      if (this.mounted) {
+        setState(() {
+          ThemeUtils.currentColorTheme = event.color;
+          currentColor = event.color;
+        });
+      }
     });
   }
 
@@ -45,7 +48,6 @@ class ChangeThemePageState extends State<ChangeThemePage> {
             children: new List.generate(colors.length, (index) {
               return new InkWell(
                 onTap: () {
-                  ThemeUtils.currentColorTheme = colors[index];
                   DataUtils.setColorTheme(index);
                   changeColorTheme(colors[index]);
                 },

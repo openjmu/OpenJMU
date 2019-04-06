@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -89,7 +88,11 @@ class NewsListPageState extends State<NewsListPage> {
         itemBuilder: (context, i) => renderRow(i),
         controller: _scrollController,
       );
-      return new RefreshIndicator(child: listView, onRefresh: _pullToRefresh);
+      return new RefreshIndicator(
+          color: ThemeUtils.currentColorTheme,
+          child: listView,
+          onRefresh: _pullToRefresh
+      );
     }
   }
 
@@ -252,12 +255,7 @@ class NewsListPageState extends State<NewsListPage> {
     return new InkWell(
       child: row,
       onTap: () {
-        String newsUrl = Api.newsDetail + itemData['post_id'];
-        Navigator.of(context).push(platformPageRoute(
-            builder: (context) {
-              return new CommonWebPage(title: itemData['title'], url: newsUrl);
-            }
-        ));
+        return CommonWebPage.jump(context, Api.newsDetail + itemData['post_id'], itemData['title']);
       },
     );
   }

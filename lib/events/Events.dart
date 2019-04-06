@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class LoginEvent {}
 class LogoutEvent {}
+class LoginFailedEvent {}
 class TicketGotEvent {}
 class TicketFailedEvent {}
 

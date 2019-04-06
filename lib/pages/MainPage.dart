@@ -9,7 +9,6 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
-import 'package:OpenJMU/pages/LoginPage.dart';
 //import 'package:OpenJMU/pages/NewsListPage.dart';
 import 'package:OpenJMU/pages/PostListPage.dart';
 import 'package:OpenJMU/pages/AppCenterPage.dart';
@@ -89,7 +88,9 @@ class MainPageState extends State<MainPage> {
     });
     DataUtils.getColorThemeIndex().then((index) {
       if (this.mounted && index != null) {
-        ThemeUtils.currentColorTheme = ThemeUtils.supportColors[index];
+        setState(() {
+          ThemeUtils.currentColorTheme = ThemeUtils.supportColors[index];
+        });
         Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.supportColors[index]));
       }
     });

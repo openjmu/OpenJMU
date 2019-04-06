@@ -195,7 +195,9 @@ class PublishPostPageState extends State<PublishPostPage> {
       children.add(new Container(
         margin: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
         child: new Center(
-          child: new CircularProgressIndicator(),
+          child: new CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
+          ),
         ),
       ));
     }
