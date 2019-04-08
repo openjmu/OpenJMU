@@ -19,6 +19,7 @@ class Api {
   static final String userAvatar = oa99pHost + "/face";
   static final String userFans = wbHost + "/relation_api/fans/uid/";
   static final String userFollowing = wbHost + "/relation_api/idols/uid/";
+  static final String userFansAndFollowings = wbHost + "/user_api/tally/uid/";
 
   // 应用中心
   static final String webAppLists = oa99pHost + "/app/unitmenu?cfg=1";

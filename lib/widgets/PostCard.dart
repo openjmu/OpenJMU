@@ -13,6 +13,7 @@ import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
+import 'package:OpenJMU/widgets/InAppBrowser.dart';
 
 class PostCardItem extends StatefulWidget {
   final Post post;
@@ -55,7 +56,7 @@ class _PostCardItemState extends State<PostCardItem> {
 
   void setRootTopicColor(isDarkState) {
     setState(() {
-      if (isDarkState == null || !isDarkState || ThemeUtils.currentPrimaryColor == Colors.white) {
+      if (isDarkState == null || !isDarkState) {
         currentRootTopicColor = Colors.grey[200];
       } else {
         currentRootTopicColor = Colors.grey[850];
@@ -316,7 +317,7 @@ class _PostCardItemState extends State<PostCardItem> {
         padding: EdgeInsets.all(30.0),
         child: new Center(
             child: new Text(
-                "————— 该条微博已被屏蔽 —————",
+                "该条微博已被屏蔽",
                 style: new TextStyle(fontSize: 20.0)
             )
         )
@@ -329,7 +330,7 @@ class _PostCardItemState extends State<PostCardItem> {
         padding: EdgeInsets.all(30.0),
         child: new Center(
             child: new Text(
-                "————— 该条微博已被删除 —————",
+                "该条微博已被删除",
                 style: new TextStyle(fontSize: 20.0)
             )
         )
@@ -348,6 +349,7 @@ class _PostCardItemState extends State<PostCardItem> {
             return UserPage.jump(context, data['uid']);
           } else if (text.startsWith("https://wb.jmu.edu.cn")) {
             return CommonWebPage.jump(context, text, "网页链接");
+//            return InAppBrowserUtils.open(text);
           }
         },
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),

@@ -49,6 +49,14 @@ class UserUtils {
     );
   }
 
+  static Future getFansAndFollowingsCount(int uid) {
+    return NetUtils.getWithCookieAndHeaderSet(
+        "${Api.userFansAndFollowings}$uid",
+        headers: DataUtils.buildPostHeaders(currentUser.sid),
+        cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid)
+    );
+  }
+
   static Future follow(int uid) {
     print("Follow: $uid");
   }

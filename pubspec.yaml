@@ -17,6 +17,7 @@ dependencies:
         sdk: flutter
 
     badges: ^0.0.6
+    cached_network_image: ^0.7.0
     cookie_jar: ^1.0.0
     crypto: ^2.0.6
     cupertino_icons: ^0.1.2
@@ -25,7 +26,9 @@ dependencies:
     extended_text: ^0.2.8
     image_picker: ^0.5.0+9
     fluttertoast: ^3.0.3
+    flutter_cache_manager: ^0.3.2
     flutter_local_notifications: ^0.6.0
+    flutter_inappbrowser: ^1.1.1
     flutter_platform_widgets: ^0.9.5
     flutter_webview_plugin: ^0.3.3
     flutter_svg: ^0.12.1

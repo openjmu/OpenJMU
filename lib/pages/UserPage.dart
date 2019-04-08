@@ -102,12 +102,10 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
     _signKey = GlobalKey();
     WidgetsBinding.instance.addPostFrameCallback((callback) {
       WidgetsBinding.instance.addPersistentFrameCallback((callback) {
-
         if (_nicknameKey.currentContext != null &&
             _signKey.currentContext != null) {
           maxNicknameWidth = MediaQuery.of(context).size.width - 4 * 16 - 3 * 64 - 8;
           maxSignWidth = MediaQuery.of(context).size.width - 2 * 8;
-
           setState(() {
             _updateAppBar();
           });
@@ -421,3 +419,259 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
     ),
   );
 }
+
+//class UserList extends StatefulWidget {
+//  final List<int> userIds;
+//
+//  UserList(this.userIds);
+//
+//  @override
+//  State createState() => _UserListState();
+//}
+//
+//class _UserListState extends State<UserList>
+//    with AutomaticKeepAliveClientMixin {
+//  final List<Map<String, dynamic>> userList = <Map<String, dynamic>>[];
+//
+//  @override
+//  bool get wantKeepAlive => true;
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    super.build(context);
+//
+//    return ListView.builder(
+//      itemCount: userList.length + 1,
+//      itemBuilder: (context, index) {
+//        if (index == userList.length) {
+//          if (userList.length == widget.userIds.length) {
+//            // 已经到底了
+//            return Container(height: 0,);
+//          } else {
+//            // 正在加载
+//            return ListTile(
+//              title: Text('正在加载更多……', style: TextStyle(color: Colors.grey[350]),),
+//            );
+//          }
+//        } else {
+//          return UserListItem(
+//            user: userList[index]['user'],
+//            extra: userList[index]['extra'],
+//          );
+//        }
+//      },
+//    );
+//  }
+//
+//  @override
+//  void initState() {
+//    super.initState();
+//    _fetchUserList();
+//  }
+//
+//  void _fetchUserList() async {
+//    for (int id in widget.userIds) {
+//      _fetchUser(id);
+//    }
+//  }
+//
+//  void _fetchUser(id) async {
+//    var user = await UserAPI.getMinUserInformation(id);
+//    Widget extra = Container(width: 0, height: 0,);
+//    if (user != null) {
+//      // 判断是否是本人
+//      if (await UserAPI.isLogin()) {
+//        if (user.id == UserUtils.currentUser.uid) {
+//          extra = Text('我', style: TextStyle(color: Colors.grey),);
+//        } else if (user.followed) {
+//          extra = _unFollowButton(id);
+//        } else {
+//          extra = _followButton(id);
+//        }
+//      }
+//    }
+//
+//    if (mounted) {
+//      setState(() {
+//        userList.add({
+//          'user': user,
+//          'extra': extra
+//        });
+//      });
+//    }
+//  }
+//
+//  void _follow(id) async {
+//    // Request
+//    UserAPI.requestFollow(id);
+//
+//    if (mounted) {
+//      setState(() {
+//        var index = userList.indexWhere((map) => (map['user'] as User).id == id);
+//        (userList[index]['user'] as User).fansCount++;
+//        userList[index]['extra'] = _unFollowButton(id);
+//      });
+//    }
+//  }
+//
+//  void _unFollow(id) async {
+//    // Request
+//    UserAPI.requestFollow(id);
+//
+//    if (mounted) {
+//      setState(() {
+//        var index = userList.indexWhere((map) => (map['user'] as User).id == id);
+//        (userList[index]['user'] as User).fansCount--;
+//        userList[index]['extra'] = _followButton(id);
+//      });
+//    }
+//  }
+//
+//  Widget _followButton(id) => RawMaterialButton(
+//    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+//    constraints: BoxConstraints(minWidth: 0, minHeight: 0),
+//    onPressed: () {
+//      _follow(id);
+//    },
+//    child: Container(
+//      constraints: BoxConstraints(minWidth: 64, maxWidth: double.infinity),
+//      padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+//      decoration: BoxDecoration(
+//          color: Colors.transparent,
+//          border: Border.all(color: ThemeUtils.currentColorTheme),
+//          borderRadius: BorderRadius.circular(4)
+//      ),
+//      child: Center(
+//        child: Text('关注', style: TextStyle(color: ThemeUtils.currentColorTheme, fontSize: 12),),
+//      ),
+//    ),
+//  );
+//
+//  Widget _unFollowButton(id) => RawMaterialButton(
+//    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+//    constraints: BoxConstraints(minWidth: 0, minHeight: 0),
+//    onPressed: () {
+//      _unFollow(id);
+//    },
+//    child: Container(
+//      constraints: BoxConstraints(minWidth: 64, maxWidth: double.infinity),
+//      padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+//      decoration: BoxDecoration(
+//          color: ThemeUtils.currentColorTheme,
+//          border: Border.all(color: ThemeUtils.currentColorTheme),
+//          borderRadius: BorderRadius.circular(4)
+//      ),
+//      child: Center(
+//        child: Text('取消关注', style: TextStyle(color: Colors.white, fontSize: 12),),
+//      ),
+//    ),
+//  );
+//
+//}
+//
+//
+//class UserListItem extends StatelessWidget {
+//  final User user;
+//  final Widget extra;
+//
+//  UserListItem({@required this.user, @required this.extra});
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    if (user == null) {
+//      return Container(height: 0, width: 0);
+//    }
+//    return RawMaterialButton(
+//      child: Container(
+//        padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
+//        decoration: BoxDecoration(
+//            border: Border(bottom: BorderSide(color: Colors.grey[350], width: 0.5))
+//        ),
+//        child: Row(
+//          mainAxisSize: MainAxisSize.max,
+//          crossAxisAlignment: CrossAxisAlignment.center,
+//          children: <Widget>[
+//            // 头像
+//            CircleAvatar(
+//              backgroundImage: new NetworkImage("${Api.userAvatar}?uid=${user.id}&size=f100)"),
+//              radius: 32,
+//            ),
+//            Container(width: 16,),
+//            // 昵称属性和签名
+//            Expanded(
+//              child: Column(
+//                mainAxisSize: MainAxisSize.max,
+//                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                crossAxisAlignment: CrossAxisAlignment.start,
+//                children: <Widget>[
+//
+//                  Text(user.nickname, style: TextStyle(color: Colors.black87, fontSize: 16,), maxLines: 1, overflow: TextOverflow.ellipsis,),
+//                  Text('关注 ${user.followingCount}  粉丝 ${user.fansCount}', style: TextStyle(color: Colors.grey, fontSize: 14),),
+//                  Text(user.signature, style: TextStyle(color: Colors.grey, fontSize: 14), maxLines: 1, overflow: TextOverflow.ellipsis,),
+//
+//                ],
+//              ),
+//              flex: 1,
+//            ),
+//            Container(width: 16,),
+//            // 附加区域
+//            extra
+//          ],
+//        ),
+//      ),
+//      onPressed: () {
+//        UserPage.jump(context, user.id);
+//      },
+//      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+//      constraints: BoxConstraints(minHeight: 0, minWidth: 0),
+//    );
+//  }
+//}
+//
+//class UserFPage extends StatefulWidget {
+//  final int initPage;
+//  final List<int> fansIds;
+//  final List<int> followingIds;
+//
+//
+//  UserFPage({this.initPage, this.fansIds, this.followingIds});
+//
+//  @override
+//  State createState() => _UserFState();
+//
+//}
+//
+//class _UserFState extends State<UserFPage>
+//    with TickerProviderStateMixin {
+//  final List<String> tabTexts = ['TA的关注', 'TA的粉丝'];
+//  TabController _tabController;
+//
+//  @override
+//  void initState() {
+//    super.initState();
+//    _tabController = TabController(length: tabTexts.length, vsync: this,
+//        initialIndex: widget.initPage);
+//  }
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    return Scaffold(
+//      appBar: AppBar(
+//        title: Text(''),
+//        backgroundColor: ThemeUtils.currentPrimaryColor,
+//        bottom: TabBar(
+//          tabs: tabTexts.map((t) => Tab(text: t,)).toList(),
+//          controller: _tabController,
+//          indicatorColor: ThemeUtils.currentColorTheme,
+//        ),
+//      ),
+//      body: TabBarView(
+//        controller: _tabController,
+//        children: <Widget>[
+//          UserList(widget.followingIds),
+//          UserList(widget.fansIds)
+//        ],
+//      ),
+//    );
+//  }
+//}

@@ -46,6 +46,9 @@ class PostList extends StatefulWidget {
 
 
 class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
+  final ScrollController _scrollController = new ScrollController();
+  Color currentColorTheme = ThemeUtils.currentColorTheme;
+
   num _lastValue = 0;
   bool _isLoading = false;
   bool _canLoadMore = true;
@@ -73,6 +76,11 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   void initState() {
     super.initState();
 
+    Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
+      if (this.mounted && event.tabIndex == 0) {
+        _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
+      }
+    });
     Constants.eventBus.on<PostChangeEvent>().listen((event) {
       if (event.remove) {
         if (mounted) {
@@ -87,6 +95,13 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             _postList.replaceRange(index, index + 1, [event.post.copy()]);
           });
         }
+      }
+    });
+    Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
+      if (mounted) {
+        setState(() {
+          currentColorTheme = event.color;
+        });
       }
     });
 
@@ -121,7 +136,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
     if (!_showLoading) {
       if (_firstLoadComplete) {
         _itemList = ListView.builder(
@@ -133,11 +147,12 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             return PostCardItem(_postList[index]);
           },
           itemCount: _postList.length,
-//            controller: _scrollController,
+          controller: _scrollController,
         );
 
         if (widget.needRefreshIndicator) {
           _body = RefreshIndicator(
+            color: currentColorTheme,
             onRefresh: _refreshData,
             child: _postList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList,
           );

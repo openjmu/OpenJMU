@@ -20,8 +20,8 @@ class CommonWebPage extends StatefulWidget {
   static void jump(BuildContext context, String url, String title) {
     Navigator.of(context).push(platformPageRoute(builder: (context) {
       return CommonWebPage(
-        url: url,
-        title: title
+          url: url,
+          title: title
       );
     }));
   }
@@ -41,12 +41,16 @@ class CommonWebPageState extends State<CommonWebPage> {
       padding: EdgeInsets.all(16.0),
       child: Platform.isAndroid
           ? new CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-            strokeWidth: 3.0,
-          )
+        valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
+        strokeWidth: 3.0,
+      )
           : new CupertinoActivityIndicator()
   );
 
+  Future<bool> waitForClose() async {
+    print("here");
+    return await flutterWebViewPlugin.close();
+  }
 
   @override
   void initState() {
@@ -112,76 +116,79 @@ class CommonWebPageState extends State<CommonWebPage> {
     Widget trailing = loading
         ? refreshIndicator
         : new Container(width: 56.0);
-    return new WebviewScaffold(
-      url: widget.url,
-      allowFileURLs: true,
-      appBar: new AppBar(
-        title: new Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              new Text(_title,
-                  style: new TextStyle(color: ThemeUtils.currentColorTheme)
+    return new WillPopScope(
+        onWillPop: waitForClose,
+        child: new WebviewScaffold(
+            url: widget.url,
+            allowFileURLs: true,
+            appBar: new AppBar(
+              title: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    new Text(_title,
+                        style: new TextStyle(color: ThemeUtils.currentColorTheme)
+                    ),
+                    new Text(_url,
+                        style: new TextStyle(color: ThemeUtils.currentColorTheme, fontSize: 14.0)
+                    )
+                  ]
               ),
-              new Text(_url,
-                  style: new TextStyle(color: ThemeUtils.currentColorTheme, fontSize: 14.0)
+              actions: <Widget>[trailing],
+              bottom: progressBar(),
+              iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
+              brightness: ThemeUtils.currentBrightness,
+            ),
+            persistentFooterButtons: <Widget>[
+              new Container(
+                  margin: EdgeInsets.zero,
+                  padding: EdgeInsets.zero,
+                  width: MediaQuery.of(context).size.width - 16.0,
+                  height: 24.0,
+                  child: new Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        new IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: new Icon(
+                                Icons.keyboard_arrow_left,
+                                color: ThemeUtils.currentColorTheme
+                            ),
+                            onPressed: () {
+                              flutterWebViewPlugin.goBack();
+                            }
+                        ),
+                        new IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: new Icon(
+                                Icons.keyboard_arrow_right,
+                                color: ThemeUtils.currentColorTheme
+                            ),
+                            onPressed: () {
+                              flutterWebViewPlugin.goForward();
+                            }
+                        ),
+                        new IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: new Icon(
+                                Icons.refresh,
+                                color: ThemeUtils.currentColorTheme
+                            ),
+                            onPressed: () {
+                              flutterWebViewPlugin.reload();
+                            }
+                        ),
+                      ]
+                  )
               )
-            ]
-        ),
-        actions: <Widget>[trailing],
-        bottom: progressBar(),
-        iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
-        brightness: ThemeUtils.currentBrightness,
-      ),
-      persistentFooterButtons: <Widget>[
-        new Container(
-          margin: EdgeInsets.zero,
-          padding: EdgeInsets.zero,
-          width: MediaQuery.of(context).size.width - 16.0,
-          height: 24.0,
-          child: new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                new IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: new Icon(
-                        Icons.keyboard_arrow_left,
-                        color: ThemeUtils.currentColorTheme
-                    ),
-                    onPressed: () {
-                      flutterWebViewPlugin.goBack();
-                    }
-                ),
-                new IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: new Icon(
-                        Icons.keyboard_arrow_right,
-                        color: ThemeUtils.currentColorTheme
-                    ),
-                    onPressed: () {
-                      flutterWebViewPlugin.goForward();
-                    }
-                ),
-                new IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: new Icon(
-                        Icons.refresh,
-                        color: ThemeUtils.currentColorTheme
-                    ),
-                    onPressed: () {
-                      flutterWebViewPlugin.reload();
-                    }
-                ),
-              ]
-          )
+            ],
+            enableAppScheme: true,
+            withJavascript: true,
+            withLocalStorage: true,
+            withZoom: true,
+            resizeToAvoidBottomInset: true
         )
-      ],
-      enableAppScheme: true,
-      withJavascript: true,
-      withLocalStorage: true,
-      withZoom: true,
-      resizeToAvoidBottomInset: true
     );
   }
 }

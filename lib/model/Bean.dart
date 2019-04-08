@@ -92,6 +92,52 @@ class PostComment {
   int get hashCode => id.hashCode;
 }
 
+class User {
+  int id;
+  String nickname;
+  int gender;
+  String studentNumber;
+  String name;
+  String avatar;
+  String signature;
+  String passwd;
+  String major;
+  String depart;
+  bool bindCard;
+  int verification;
+  String token;
+  int fansCount;
+  int followingCount;
+  bool followed;
+
+  User.name({
+    this.id,
+    this.nickname,
+    this.gender,
+    this.studentNumber,
+    this.name,
+    this.avatar,
+    this.signature,
+    this.passwd,
+    this.major,
+    this.depart,
+    this.bindCard,
+    this.verification,
+    this.token,
+    this.fansCount = 0,
+    this.followingCount = 0,
+    this.followed = false
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is User && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+}
+
 class UserInfo {
 
   /// For Login Process

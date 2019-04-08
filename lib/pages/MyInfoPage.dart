@@ -7,6 +7,7 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/widgets/InAppBrowser.dart';
 
 class MyInfoPage extends StatefulWidget {
   @override
@@ -205,7 +206,10 @@ class MyInfoPageState extends State<MyInfoPage> {
     } else if (title == "切换主题") {
       Navigator.pushNamed(context, "/changeTheme");
     } else if (title == "测试页") {
-      Navigator.pushNamed(context, "/test");
+//      Navigator.of(context).push(platformPageRoute(builder: (context) {
+//        return new InAppBrowserPage();
+//      }));
+      InAppBrowserUtils.open("https://net.jmu.edu.cn");
     } else if (title == "关于") {
       showAboutDialog(context);
     }

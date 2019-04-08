@@ -10,7 +10,7 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 //import 'package:OpenJMU/pages/NewsListPage.dart';
-import 'package:OpenJMU/pages/PostListPage.dart';
+import 'package:OpenJMU/pages/PostSquareListPage.dart';
 import 'package:OpenJMU/pages/AppCenterPage.dart';
 import 'package:OpenJMU/pages/DiscoveryPage.dart';
 import 'package:OpenJMU/pages/PublishPostPage.dart';
@@ -110,7 +110,7 @@ class MainPageState extends State<MainPage> {
       }
     });
     pages = <Widget>[
-      PostListPage("square"),
+      PostSquareListPage(),
 //      NewsListPage(),
       AppCenterPage(),
       DiscoveryPage(),

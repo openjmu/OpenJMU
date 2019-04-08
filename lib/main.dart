@@ -28,11 +28,24 @@ class JMUAppClientState extends State<JMUAppClient> {
 
   Brightness currentBrightness;
   Color currentPrimaryColor;
+  Color currentThemeColor;
 
   @override
   void initState() {
     super.initState();
     listenToBrightness();
+    currentThemeColor = ThemeUtils.currentColorTheme;
+    Constants.eventBus.on<LogoutEvent>().listen((event) {
+      setState(() {
+        currentBrightness = Brightness.light;
+        currentPrimaryColor = Colors.white;
+      });
+    });
+    Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
+      setState(() {
+        currentThemeColor = event.color;
+      });
+    });
   }
 
   // 监听夜间模式变化
@@ -48,33 +61,19 @@ class JMUAppClientState extends State<JMUAppClient> {
       } else {
         if (isDark) {
           setState(() {
-            ThemeUtils.currentBrightness = Brightness.dark;
-            ThemeUtils.currentPrimaryColor = Colors.grey[850];
             currentBrightness = Brightness.dark;
             currentPrimaryColor = Colors.grey[850];
           });
         } else {
           setState(() {
-            ThemeUtils.currentBrightness = Brightness.light;
-            ThemeUtils.currentPrimaryColor = Colors.white;
             currentBrightness = Brightness.light;
             currentPrimaryColor = Colors.white;
           });
         }
       }
     });
-    Constants.eventBus.on<LogoutEvent>().listen((event) {
-      setState(() {
-        ThemeUtils.currentBrightness = Brightness.light;
-        ThemeUtils.currentPrimaryColor = Colors.white;
-        currentBrightness = Brightness.light;
-        currentPrimaryColor = Colors.white;
-      });
-    });
     Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
       setState(() {
-        ThemeUtils.currentBrightness = event.brightness;
-        ThemeUtils.currentPrimaryColor = event.primaryColor;
         currentBrightness = event.brightness;
         currentPrimaryColor = event.primaryColor;
       });
@@ -95,7 +94,7 @@ class JMUAppClientState extends State<JMUAppClient> {
         },
         title: "OpenJMU",
         theme: new ThemeData(
-          accentColor: currentPrimaryColor,
+          accentColor: currentThemeColor,
           primaryColor: currentPrimaryColor,
           primaryColorBrightness: Brightness.dark,
           primaryIconTheme: new IconThemeData(color: currentPrimaryColor),
