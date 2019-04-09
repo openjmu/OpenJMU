@@ -7,6 +7,8 @@ import 'package:badges/badges.dart';
 import 'package:ota_update/ota_update.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+
 
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -233,8 +235,7 @@ class MainPageState extends State<MainPage> {
                         getTabTitle(_tabIndex),
                         style: new TextStyle(
                             color: currentThemeColor,
-                            fontSize: 22.0,
-                            fontWeight: FontWeight.bold
+                            fontSize: 22.0
                         )
                     )
                 ),
@@ -252,9 +253,7 @@ class MainPageState extends State<MainPage> {
                 iconTheme: new IconThemeData(color: currentThemeColor),
                 brightness: Theme.of(context).brightness,
               ),
-              onTap: () {
-                doubleTapScrollToTop();
-              }
+              onTap: doubleTapScrollToTop
           ),
           floatingActionButton: new Builder(builder: (BuildContext context) {
             return new FloatingActionButton(
@@ -262,10 +261,10 @@ class MainPageState extends State<MainPage> {
               tooltip: "发布新动态",
               foregroundColor: Colors.white,
               backgroundColor: currentThemeColor,
-              elevation: 8.0,
+              elevation: 0,
               highlightElevation: 14.0,
               onPressed: () {
-                Navigator.of(context).push(new MaterialPageRoute(
+                Navigator.of(context).push(platformPageRoute(
                     builder: (context) {
                       return new PublishPostPage();
                     }

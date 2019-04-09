@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <base-config>
+    <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
-            <certificates src="system" overridePins="true" />
-            <certificates src="user" overridePins="true" />
+            <certificates src="system" />
+            <certificates src="user" />
         </trust-anchors>
     </base-config>
-    <domain-config>
-        <domain includeSubdomains="true">jmu.edu.cn</domain>
-        <pin-set>
-            <pin digest="SHA-256">47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=</pin>
-            <pin digest="SHA-256">PbNCVpVasMJxps3IqFfLTRKkVnRCLrTlZVc5kspqlkw=</pin>
-        </pin-set>
-    </domain-config>
 </network-security-config>

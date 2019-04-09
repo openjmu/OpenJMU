@@ -1,4 +1,3 @@
-
 class Post {
   int id;
   int userId;
@@ -168,11 +167,49 @@ class UserInfo {
   @override
   bool operator == (Object other) =>
       identical(this, other) ||
-          other is PostComment &&
+          other is UserInfo &&
               runtimeType == other.runtimeType &&
-              uid == other.id;
+              uid == other.uid;
 
   @override
   int get hashCode => uid.hashCode;
+
+}
+
+class WebApp {
+  int id;
+  int sequence;
+  String code;
+  String name;
+  String url;
+  String menuType;
+
+  WebApp(
+      this.id,
+      this.sequence,
+      this.code,
+      this.name,
+      this.url,
+      this.menuType
+  );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is WebApp && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  static Map category() {
+    return {
+      "10": "个人事务",
+      "A4": "我的服务",
+      "A3": "我的系统",
+      "A8": "流程服务",
+      "A2": "我的媒体",
+      "A5": "其他",
+    };
+  }
 
 }

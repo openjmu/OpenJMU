@@ -43,6 +43,11 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 //        });
 //      }
 //    });
+    Constants.eventBus.on<LoginFailedEvent>().listen((event) {
+      setState(() {
+        _loginButtonDisabled = false;
+      });
+    });
   }
 
   @override
@@ -172,7 +177,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 ),
                 onPressed: () {
                   if (_loginButtonDisabled) {
-                     return null;
+                    return null;
                   } else {
                     loginButtonPressed(context);
                   }

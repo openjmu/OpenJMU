@@ -28,8 +28,8 @@ class Api {
 
   // 应用中心
   static final String webAppLists = oa99pHost + "/app/unitmenu?cfg=1";
-  static final String webAppIcons = oa99pHost + "/app/menuicon?size=f128&unitid=55&";
-  static final String webAppIconsInsecure = oa99pHostInSecure + "/app/menuicon?size=f128&unitid=55&";
+  static final String webAppIcons = oa99pHost + "/app/menuicon?size=f100&unitid=55&";
+  static final String webAppIconsInsecure = oa99pHostInSecure + "/app/menuicon?size=f100&unitid=55&";
 
   // 资讯相关
   static final String newsList = middle99Host + "/mg/api/aid/posts_list/region_type/1";
