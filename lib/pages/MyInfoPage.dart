@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:OpenJMU/utils/OTAUpdate.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
-import 'package:OpenJMU/widgets/InAppBrowser.dart';
 
 class MyInfoPage extends StatefulWidget {
   @override
@@ -19,10 +19,10 @@ class MyInfoPage extends StatefulWidget {
 class MyInfoPageState extends State<MyInfoPage> {
   Color themeColor = ThemeUtils.currentColorTheme;
 
-//  var titles = ["夜间模式", "切换主题", "退出登录", "测试页", "关于"];
-  var titles = ["夜间模式", "切换主题", "退出登录", "关于"];
-//  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad, Icons.info];
-  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.info];
+  var titles = ["夜间模式", "切换主题", "退出登录", "测试页", "关于"];
+//  var titles = ["夜间模式", "切换主题", "退出登录", "关于"];
+  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad, Icons.info];
+//  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.info];
   var userAvatar;
   var userName;
   var titleTextStyle = new TextStyle(fontSize: 16.0);
@@ -197,21 +197,17 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   void _handleListItemClick(context, String title) {
     if (title == "退出登录") {
-      DataUtils.doLogout().then((whatever) {
-        print("Logged out.");
-      });
-      DataUtils.clearLoginInfo().then((arg) {
-        Constants.eventBus.fire(new LogoutEvent());
-      });
+      DataUtils.doLogout();
     } else if (title == "切换主题") {
       Navigator.pushNamed(context, "/changeTheme");
     } else if (title == "测试页") {
-//      Navigator.of(context).push(platformPageRoute(builder: (context) {
-//        return new InAppBrowserPage();
-//      }));
-      InAppBrowserUtils.open("https://net.jmu.edu.cn");
+      Navigator.pushNamed(context, "/test");
+//      InAppBrowserPage.open(context, "https://www.jmu.edu.cn/", "集美大学");
+//      InAppBrowserUtils.open("https://net.jmu.edu.cn");
     } else if (title == "关于") {
       showAboutDialog(context);
+    } else if (title == "检查更新") {
+      OTAUpdate.checkUpdate();
     }
   }
 

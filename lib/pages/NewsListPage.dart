@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -211,7 +213,7 @@ class NewsListPageState extends State<NewsListPage> {
 //          shape: BoxShape.circle,
           color: Colors.white,
           image: new DecorationImage(
-              image: new NetworkImage(thumbImgUrl),
+              image: CachedNetworkImageProvider(thumbImgUrl, cacheManager: DefaultCacheManager()),
               fit: BoxFit.cover
           ),
           border: new Border.all(

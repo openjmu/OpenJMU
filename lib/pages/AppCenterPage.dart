@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -8,7 +10,9 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
+import 'package:OpenJMU/widgets/InAppBrowser.dart';
 
 class AppCenterPage extends StatefulWidget {
   @override
@@ -62,17 +66,25 @@ class AppCenterPageState extends State<AppCenterPage> {
     });
   }
 
-  String replaceSidInUrl(url) {
-    RegExp reg = new RegExp(r"{SID}");
-    String result = url.replaceAllMapped(reg, (match) => sid);
+  String replaceParamsInUrl(url) {
+    RegExp sidReg = new RegExp(r"{SID}");
+    RegExp uidReg = new RegExp(r"{UID}");
+    String result;
+    result = url.replaceAllMapped(sidReg, (match) => UserUtils.currentUser.sid);
+    result = url.replaceAllMapped(uidReg, (match) => UserUtils.currentUser.uid);
     return result;
   }
 
   Widget getWebAppListButton(appData) {
-    if (appData['url'] != "" && appData['name'] != "") {
-      String url = replaceSidInUrl(appData['url']);
+    if (
+      (appData['url'] != "" && appData['url'] != null)
+        &&
+      (appData['name'] != "" && appData['name'] != null))
+    {
+      print(appData['url']);
+      String url = replaceParamsInUrl(appData['url']);
       String name = appData['name'];
-      String imageUrl = Api.webAppIcons + "appid=${appData['appid']}&code=${appData['code']}";
+      String imageUrl = Api.webAppIconsInsecure + "appid=${appData['appid']}&code=${appData['code']}";
       Widget button = new FlatButton(
         padding: EdgeInsets.all(0.0),
         child: new Column(
@@ -81,7 +93,7 @@ class AppCenterPageState extends State<AppCenterPage> {
             new Image(
               width: 64.0,
               height: 64.0,
-              image: new NetworkImage(imageUrl),
+              image: CachedNetworkImageProvider(imageUrl, cacheManager: DefaultCacheManager()),
               fit: BoxFit.cover
             ),
             new Text(
@@ -92,6 +104,7 @@ class AppCenterPageState extends State<AppCenterPage> {
         ),
         onPressed: () {
           return CommonWebPage.jump(context, url, name);
+//          return InAppBrowserPage.open(context, url, name);
         },
       );
       return button;

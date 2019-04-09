@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -73,7 +75,8 @@ class _PostCardItemState extends State<PostCardItem> {
             shape: BoxShape.circle,
             color: const Color(0xFFECECEC),
             image: new DecorationImage(
-                image: new NetworkImage(post.avatar),
+//                image: new NetworkImage(post.avatar),
+                image: CachedNetworkImageProvider(post.avatar, cacheManager: DefaultCacheManager()),
                 fit: BoxFit.cover
             ),
           ),
@@ -161,6 +164,38 @@ class _PostCardItemState extends State<PostCardItem> {
     );
   }
 
+  Widget getPostImages(post) {
+    final imagesData = post.pics;
+    if (imagesData != null) {
+      List<Widget> imagesWidget = [];
+      for (var i = 0; i < imagesData.length; i++) {
+        String imageOriginalUrl = imagesData[i]['image_original'];
+        String imageThumbUrl = "http" + imageOriginalUrl.substring(5, imageOriginalUrl.length);
+        imagesWidget.add(
+            new Image(image: CachedNetworkImageProvider(imageThumbUrl, cacheManager: DefaultCacheManager()), fit: BoxFit.cover)
+        );
+      }
+      int itemCount = 3;
+      if (imagesData.length < 3) {
+        itemCount = imagesData.length;
+      }
+      return new Container(
+          padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0.0),
+          child: new GridView.count(
+              padding: EdgeInsets.zero,
+              shrinkWrap: true,
+              primary: false,
+              mainAxisSpacing: 8.0,
+              crossAxisCount: itemCount,
+              crossAxisSpacing: 4.0,
+              children: imagesWidget
+          )
+      );
+    } else {
+      return new Container();
+    }
+  }
+
   Widget getRootPost(context, rootTopic) {
     var content = rootTopic['topic'];
     if (content != null && content.length > 0) {
@@ -195,7 +230,7 @@ class _PostCardItemState extends State<PostCardItem> {
         String imageOriginalUrl = imagesData[i]['image_original'];
         String imageThumbUrl = "http" + imageOriginalUrl.substring(5, imageOriginalUrl.length);
         imagesWidget.add(
-          new Image.network(imageThumbUrl, fit: BoxFit.cover),
+            new Image(image: CachedNetworkImageProvider(imageThumbUrl, cacheManager: DefaultCacheManager()), fit: BoxFit.cover)
         );
       }
       int itemCount = 3;
@@ -203,45 +238,13 @@ class _PostCardItemState extends State<PostCardItem> {
         itemCount = imagesData.length;
       }
       return new Container(
-          margin: EdgeInsets.only(top: 4.0),
           child: new GridView.count(
+              padding: EdgeInsets.only(top: 8.0),
               shrinkWrap: true,
               primary: false,
               mainAxisSpacing: 8.0,
               crossAxisCount: itemCount,
               crossAxisSpacing: 8.0,
-              children: imagesWidget
-          )
-      );
-    } else {
-      return new Container();
-    }
-  }
-
-  Widget getPostImages(post) {
-    final imagesData = post.pics;
-    if (imagesData != null) {
-      List<Widget> imagesWidget = [];
-      for (var i = 0; i < imagesData.length; i++) {
-        String imageOriginalUrl = imagesData[i]['image_original'];
-        String imageThumbUrl = "http" + imageOriginalUrl.substring(5, imageOriginalUrl.length);
-        imagesWidget.add(
-          new Image.network(imageThumbUrl, fit: BoxFit.cover),
-        );
-      }
-      int itemCount = 3;
-      if (imagesData.length < 3) {
-        itemCount = imagesData.length;
-      }
-      return new Container(
-          padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0.0),
-          child: new GridView.count(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              primary: false,
-              mainAxisSpacing: 8.0,
-              crossAxisCount: itemCount,
-              crossAxisSpacing: 4.0,
               children: imagesWidget
           )
       );

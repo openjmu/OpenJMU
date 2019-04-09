@@ -1,102 +1,118 @@
-import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
-
-class JMUInAppBrowser extends InAppBrowser {
-
-  @override
-  Future onLoadStart(String url) async {
-    print("\n\nStarted $url\n\n");
-  }
-
-  @override
-  Future onLoadStop(String url) async {
-    print("\n\nStopped $url\n\n");
-  }
-
-  @override
-  void onLoadError(String url, int code, String message) {
-    print("\n\nCan't load $url.. Error: $message\n\n");
-  }
-
-  @override
-  void onExit() {
-    print("\n\nBrowser closed!\n\n");
-  }
-
-}
-
-JMUInAppBrowser inAppBrowserFallback = new JMUInAppBrowser();
-
-class JMUChromeSafariBrowser extends ChromeSafariBrowser {
-
-  JMUChromeSafariBrowser(browserFallback) : super(browserFallback);
-
-  @override
-  void onOpened() {
-    print("ChromeSafari browser opened");
-  }
-
-  @override
-  void onLoaded() {
-    print("ChromeSafari browser loaded");
-  }
-
-  @override
-  void onClosed() {
-    print("ChromeSafari browser closed");
-  }
-}
-
-JMUChromeSafariBrowser chromeSafariBrowser = new JMUChromeSafariBrowser(inAppBrowserFallback);
-
-
-class InAppBrowserUtils {
-  static void open(url) {
-    DataUtils.getBrightnessDark().then((isDark) {
-      String colorStr = ThemeUtils.currentColorTheme.toString();
-      if (isDark) {
-        colorStr = "000000";
-      } else {
-        colorStr.length > 18 ? colorStr = colorStr.substring(39, 45) : colorStr = colorStr.substring(10, 16);
-      }
-      chromeSafariBrowser.open(
-          url,
-          options: {
-            "addShareButton": false,
-            "toolbarBackgroundColor": "#$colorStr",
-            "dismissButtonStyle": 1,
-            "preferredBarTintColor": "#$colorStr",
-          },
-          optionsFallback: {
-            "toolbarTopBackgroundColor": "#$colorStr",
-            "closeButtonCaption": "Close"
-          }
-      );
-    });
-  }
-}
+//import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
+//import 'package:OpenJMU/utils/DataUtils.dart';
+//import 'package:OpenJMU/utils/ThemeUtils.dart';
+//
+//class JMUInAppBrowser extends InAppBrowser {
+//
+//  @override
+//  Future onLoadStart(String url) async {
+//    print("\n\nStarted $url\n\n");
+//  }
+//
+//  @override
+//  Future onLoadStop(String url) async {
+//    print("\n\nStopped $url\n\n");
+//  }
+//
+//  @override
+//  void onLoadError(String url, int code, String message) {
+//    print("\n\nCan't load $url.. Error: $message\n\n");
+//  }
+//
+//  @override
+//  void onExit() {
+//    print("\n\nBrowser closed!\n\n");
+//  }
+//
+//}
+//
+//JMUInAppBrowser inAppBrowserFallback = new JMUInAppBrowser();
+//
+//class JMUChromeSafariBrowser extends ChromeSafariBrowser {
+//
+//  JMUChromeSafariBrowser(browserFallback) : super(browserFallback);
+//
+//  @override
+//  void onOpened() {
+//    print("ChromeSafari browser opened");
+//  }
+//
+//  @override
+//  void onLoaded() {
+//    print("ChromeSafari browser loaded");
+//  }
+//
+//  @override
+//  void onClosed() {
+//    print("ChromeSafari browser closed");
+//  }
+//}
+//
+//JMUChromeSafariBrowser chromeSafariBrowser = new JMUChromeSafariBrowser(inAppBrowserFallback);
+//
+//
+//class InAppBrowserUtils {
+//  static void open(url) {
+//    DataUtils.getBrightnessDark().then((isDark) {
+//      String colorStr = ThemeUtils.currentColorTheme.toString();
+//      if (isDark) {
+//        colorStr = "000000";
+//      } else {
+//        colorStr.length > 18 ? colorStr = colorStr.substring(39, 45) : colorStr = colorStr.substring(10, 16);
+//      }
+//      chromeSafariBrowser.open(
+//          url,
+//          options: {
+//            "addShareButton": false,
+//            "toolbarBackgroundColor": "#$colorStr",
+//            "dismissButtonStyle": 1,
+//            "preferredBarTintColor": "#$colorStr",
+//          },
+//          optionsFallback: {
+//            "toolbarTopBackgroundColor": "#$colorStr",
+//            "closeButtonCaption": "Close"
+//          }
+//      );
+//    });
+//  }
+//}
 
 //import 'dart:async';
 //import 'package:flutter/material.dart';
+//import 'package:flutter/cupertino.dart';
+//import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 //import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 //import 'package:OpenJMU/utils/ThemeUtils.dart';
 //
 //class InAppBrowserPage extends StatefulWidget {
+//  final String url;
+//  final String title;
+//
+//  InAppBrowserPage({Key key, @required this.url, @required this.title}) : super(key: key);
+//
 //  @override
 //  _InAppBrowserPageState createState() => new _InAppBrowserPageState();
+//
+//  static void open(BuildContext context, String url, String title) {
+//    Navigator.of(context).push(platformPageRoute(builder: (context) {
+//      return InAppBrowserPage(
+//          url: url,
+//          title: title
+//      );
+//    }));
+//  }
 //}
 //
 //class _InAppBrowserPageState extends State<InAppBrowserPage> {
-//
 //  InAppWebViewController webView;
-//  String title = "测试标题";
-//  String url = "https://www.jmu.edu.cn/";
+//  String title, url;
 //  double progress = 0;
 //
 //  @override
 //  void initState() {
 //    super.initState();
+//    url = widget.url;
+//    title = widget.title;
 //  }
 //
 //  @override
@@ -183,35 +199,38 @@ class InAppBrowserUtils {
 //                ),
 //              ),
 //            ),
-//            ButtonBar(
-//              alignment: MainAxisAlignment.spaceEvenly,
-//              children: <Widget>[
-//                IconButton(
-//                  icon: Icon(Icons.arrow_back, color: ThemeUtils.currentColorTheme),
-//                  onPressed: () {
-//                    if (webView != null) {
-//                      webView.goBack();
-//                    }
-//                  },
-//                ),
-//                IconButton(
-//                  icon: Icon(Icons.arrow_forward, color: ThemeUtils.currentColorTheme),
-//                  onPressed: () {
-//                    if (webView != null) {
-//                      webView.goForward();
-//                    }
-//                  },
-//                ),
-//                IconButton(
-//                  icon: Icon(Icons.refresh, color: ThemeUtils.currentColorTheme),
-//                  onPressed: () {
-//                    if (webView != null) {
-//                      webView.reload();
-//                    }
-//                  },
-//                ),
-//              ],
-//            ),
+//            SizedBox(
+//              height: 24.0,
+//              child: ButtonBar(
+//                alignment: MainAxisAlignment.spaceEvenly,
+//                children: <Widget>[
+//                  IconButton(
+//                    icon: Icon(Icons.arrow_back, color: ThemeUtils.currentColorTheme),
+//                    onPressed: () {
+//                      if (webView != null) {
+//                        webView.goBack();
+//                      }
+//                    },
+//                  ),
+//                  IconButton(
+//                    icon: Icon(Icons.arrow_forward, color: ThemeUtils.currentColorTheme),
+//                    onPressed: () {
+//                      if (webView != null) {
+//                        webView.goForward();
+//                      }
+//                    },
+//                  ),
+//                  IconButton(
+//                    icon: Icon(Icons.refresh, color: ThemeUtils.currentColorTheme),
+//                    onPressed: () {
+//                      if (webView != null) {
+//                        webView.reload();
+//                      }
+//                    },
+//                  ),
+//                ],
+//              ),
+//            )
 //          ].where((Object o) => o != null).toList(),
 //        ),
 //      ),

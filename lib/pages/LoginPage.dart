@@ -255,7 +255,11 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
       setState(() {
         _loginButtonDisabled = true;
       });
-      DataUtils.doLogin(context, _username, _password);
+      DataUtils.doLogin(context, _username, _password).catchError((e) {
+        setState(() {
+          _loginButtonDisabled = false;
+        });
+      });
     }
   }
 

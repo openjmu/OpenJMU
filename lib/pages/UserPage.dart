@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
@@ -313,7 +316,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
               ],
             ),
             infoNextNickname: _infoNextNameButton,
-            avatar: new NetworkImage("${Api.userAvatar}?uid=${_user.uid}&size=f100)"),
+            avatar: CachedNetworkImageProvider("${Api.userAvatarInSecure}?uid=${_user.uid}&size=f100)", cacheManager: DefaultCacheManager()),
             titlePadding: EdgeInsets.only(left: 100, bottom: 48),
             title: Text(
               _user.name,
@@ -322,7 +325,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
               maxLines: 1,
             ),
             background: new Image(
-              image: new NetworkImage("${Api.userAvatar}?uid=${_user.uid}&size=f100)"),
+              image: CachedNetworkImageProvider("${Api.userAvatarInSecure}?uid=${_user.uid}&size=f100)", cacheManager: DefaultCacheManager()),
               fit: BoxFit.fitWidth,
               width: MediaQuery.of(context).size.width,
             ),

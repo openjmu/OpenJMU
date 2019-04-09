@@ -1,7 +1,13 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'dart:async';
+import 'dart:io';
 import 'package:badges/badges.dart';
+import 'package:ota_update/ota_update.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -9,6 +15,7 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/utils/OTAUpdate.dart';
 //import 'package:OpenJMU/pages/NewsListPage.dart';
 import 'package:OpenJMU/pages/PostSquareListPage.dart';
 import 'package:OpenJMU/pages/AppCenterPage.dart';
@@ -18,6 +25,7 @@ import 'package:OpenJMU/pages/MyInfoPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 
+var flutterLocalNotificationsPlugin;
 
 class MainPage extends StatefulWidget {
   @override
@@ -25,6 +33,8 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
+  var platform = MethodChannel('crossingthestreams.io/resourceResolver');
+
 //  final List<String> bottomAppBarTitles = ['首页', '新闻', '应用中心', '消息', '我的'];
   final List<String> bottomAppBarTitles = ['首页', '应用中心', '消息', '我的'];
 //  final List<IconData> bottomAppBarIcons = [
@@ -44,7 +54,13 @@ class MainPageState extends State<MainPage> {
 
   int _tabIndex = 0;
   var _body;
-  var pages;
+  var pages = [
+    PostSquareListPage(),
+//      NewsListPage(),
+    AppCenterPage(),
+    DiscoveryPage(),
+    MyInfoPage()
+  ];
 
   int userUid;
   String userSid;
@@ -52,15 +68,12 @@ class MainPageState extends State<MainPage> {
 
   bool isUserLogin = false;
 
-  void _selectedTab(int index) {
-    setState(() {
-      _tabIndex = index;
-    });
-  }
+  OtaEvent otaEvent;
 
   @override
   void initState() {
     super.initState();
+//    OTAUpdate.checkUpdate();
     DataUtils.isLogin().then((isLogin) {
       setState(() {
         this.isUserLogin = isLogin;
@@ -86,6 +99,19 @@ class MainPageState extends State<MainPage> {
     Constants.eventBus.on<LogoutEvent>().listen((event) {
       Navigator.of(context).pushReplacementNamed("/login");
     });
+    Constants.eventBus.on<HasUpdateEvent>().listen((event) {
+      if (this.mounted) {
+        showDialog(context: context, builder: (_) => OTAUpdate.updateDialog(context, event.response));
+      }
+    });
+    Constants.eventBus.on<OTAEvent>().listen((event) {
+      if (this.mounted) {
+        setState(() {
+          this.otaEvent = event.otaEvent;
+          print('OTA status: ${this.otaEvent.status} : ${this.otaEvent.value}');
+        });
+      }
+    });
     DataUtils.getColorThemeIndex().then((index) {
       if (this.mounted && index != null) {
         setState(() {
@@ -109,19 +135,18 @@ class MainPageState extends State<MainPage> {
         });
       }
     });
-    pages = <Widget>[
-      PostSquareListPage(),
-//      NewsListPage(),
-      AppCenterPage(),
-      DiscoveryPage(),
-      MyInfoPage()
-    ];
   }
 
   @override
   void dispose() {
     notificationTimer != null ? notificationTimer.cancel() : null;
     super.dispose();
+  }
+
+  void _selectedTab(int index) {
+    setState(() {
+      _tabIndex = index;
+    });
   }
 
   Image getTabImage(path) {
@@ -148,7 +173,7 @@ class MainPageState extends State<MainPage> {
               shape: BoxShape.circle,
               color: Colors.transparent,
               image: new DecorationImage(
-                  image: new NetworkImage(Api.userAvatar+"?uid=$userUid&size=f100"),
+                  image: CachedNetworkImageProvider(Api.userAvatarInSecure+"?uid=$userUid&size=f100", cacheManager: DefaultCacheManager()),
                   fit: BoxFit.contain
               ),
             ),
@@ -269,6 +294,7 @@ class MainPageState extends State<MainPage> {
         )
     );
   }
+
 }
 
 class GestureAppBar extends StatelessWidget implements PreferredSizeWidget {

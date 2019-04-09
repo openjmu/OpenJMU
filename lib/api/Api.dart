@@ -1,4 +1,7 @@
 class Api {
+  static final String checkUpdate = "https://project.alexv525.com/openjmu/latest-version";
+  static final String latestAndroid = "https://project.alexv525.com/openjmu/android/openjmu-latest.apk";
+  static final String latestIOS = "https://project.alexv525.com/openjmu/ios/openjmu-latest.ipa";
 
   /// Use https for json request with dio, other with http.
   /// Hosts.
@@ -6,8 +9,9 @@ class Api {
   static final String file99Host = "https://file99.jmu.edu.cn";
   static final String oa99Host = "https://oa99.jmu.edu.cn";
   static final String oa99pHost = "https://oap99.jmu.edu.cn";
+  static final String oa99pHostInSecure = "http://oap99.jmu.edu.cn";
   static final String middle99Host = "https://middle99.jmu.edu.cn";
-  static final String upapiHost = "https://upapi.jmu.edu.cn";
+  static final String upApiHost = "https://upapi.jmu.edu.cn";
 
   static final String login = oa99Host + "/v2/passport/api/user/login1";
   static final String loginTicket = oa99Host + "/v2/passport/api/user/loginticket1";
@@ -17,6 +21,7 @@ class Api {
   static final String userInfo = oa99Host + "/v2/api/class/studentinfo";
   static final String userBasicInfo = oa99pHost + "/user/info";
   static final String userAvatar = oa99pHost + "/face";
+  static final String userAvatarInSecure = oa99pHostInSecure + "/face";
   static final String userFans = wbHost + "/relation_api/fans/uid/";
   static final String userFollowing = wbHost + "/relation_api/idols/uid/";
   static final String userFansAndFollowings = wbHost + "/user_api/tally/uid/";
@@ -24,6 +29,7 @@ class Api {
   // 应用中心
   static final String webAppLists = oa99pHost + "/app/unitmenu?cfg=1";
   static final String webAppIcons = oa99pHost + "/app/menuicon?size=f128&unitid=55&";
+  static final String webAppIconsInsecure = oa99pHostInSecure + "/app/menuicon?size=f128&unitid=55&";
 
   // 资讯相关
   static final String newsList = middle99Host + "/mg/api/aid/posts_list/region_type/1";

@@ -7,7 +7,7 @@ description: A JMU Flutter application.
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 0.1.1
+version: 0.1.2
 
 environment:
     sdk: ">=2.0.0-dev.68.0 <3.0.0"
@@ -24,14 +24,18 @@ dependencies:
     dio: ^2.1.0
     event_bus: ^1.1.0
     extended_text: ^0.2.8
+    extended_image: ^0.2.1
     image_picker: ^0.5.0+9
+#    image_saver: ^1.0.0
     fluttertoast: ^3.0.3
     flutter_cache_manager: ^0.3.2
     flutter_local_notifications: ^0.6.0
-    flutter_inappbrowser: ^1.1.1
     flutter_platform_widgets: ^0.9.5
     flutter_webview_plugin: ^0.3.3
     flutter_svg: ^0.12.1
+#    get_version: ^0.1.0
+    ota_update: ^1.0.2
+    package_info: ^0.4.0+2
     shared_preferences: ^0.5.1+2
     uuid: ^2.0.0
 

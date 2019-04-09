@@ -96,8 +96,8 @@ class JMUAppClientState extends State<JMUAppClient> {
         theme: new ThemeData(
           accentColor: currentThemeColor,
           primaryColor: currentPrimaryColor,
-          primaryColorBrightness: Brightness.dark,
-          primaryIconTheme: new IconThemeData(color: currentPrimaryColor),
+          primaryColorBrightness: currentBrightness,
+          primaryIconTheme: new IconThemeData(color: currentThemeColor),
           brightness: currentBrightness,
         ),
         home: new SplashPage()

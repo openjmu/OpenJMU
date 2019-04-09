@@ -23,14 +23,11 @@ class TestPageState extends State<TestPage> {
   initState() {
     super.initState();
     // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-    var initializationSettingsAndroid =
-    AndroidInitializationSettings('ic_jmu_logo_trans_original');
-    var initializationSettingsIOS = IOSInitializationSettings(
-        onDidReceiveLocalNotification: onDidRecieveLocalNotification);
+    var initializationSettingsAndroid = AndroidInitializationSettings('ic_jmu_logo_trans_original');
+    var initializationSettingsIOS = IOSInitializationSettings( onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     var initializationSettings = InitializationSettings(
         initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: onSelectNotification);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: onSelectNotification);
   }
 
   @override
@@ -673,7 +670,7 @@ class TestPageState extends State<TestPage> {
     return value.toString().padLeft(2, '0');
   }
 
-  Future onDidRecieveLocalNotification(
+  Future onDidReceiveLocalNotification(
       int id, String title, String body, String payload) async {
     // display a dialog with the notification details, tap ok to go to another page
     await showDialog(

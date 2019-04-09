@@ -14,6 +14,14 @@ class NetUtils {
     );
     return response.toString();
   }
+  static Future<Response> getTemp(String url, {data}) async {
+    if (dio.interceptors.length == 0) dio.interceptors.add(CookieManager(CookieJar()));
+    Response response = await dio.get(
+        url,
+        queryParameters: data
+    );
+    return response;
+  }
 
   static Future<String> getWithHeaderSet(String url, {data, headers}) async {
     if (dio.interceptors.length == 0) dio.interceptors.add(CookieManager(CookieJar()));

@@ -1,6 +1,6 @@
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:flutter/material.dart';
-
+import 'package:ota_update/ota_update.dart';
 
 class LoginEvent {}
 class LogoutEvent {}
@@ -8,10 +8,24 @@ class LoginFailedEvent {}
 class TicketGotEvent {}
 class TicketFailedEvent {}
 
+class HasUpdateEvent {
+  Map<String, dynamic> response;
+  HasUpdateEvent(Map<String, dynamic> response) {
+    this.response = response;
+  }
+}
+
+class OTAEvent {
+  OtaEvent otaEvent;
+  OTAEvent(OtaEvent _otaEvent) {
+    this.otaEvent = _otaEvent;
+  }
+}
+
 class UserInfoGotEvent {
   UserInfo currentUser;
   UserInfoGotEvent(UserInfo userInfo) {
-    currentUser = userInfo;
+    this.currentUser = userInfo;
   }
 }
 
@@ -19,7 +33,7 @@ class NotificationCountChangeEvent {
   int notifications;
 
   NotificationCountChangeEvent(int count) {
-    notifications = count;
+    this.notifications = count;
   }
 }
 
@@ -27,7 +41,7 @@ class ChangeThemeEvent {
   Color color;
 
   ChangeThemeEvent(Color c) {
-    color = c;
+    this.color = c;
   }
 }
 
@@ -38,13 +52,13 @@ class ChangeBrightnessEvent {
 
   ChangeBrightnessEvent(bool isDark) {
     if (isDark) {
-      isDarkState = true;
-      brightness = Brightness.dark;
-      primaryColor = Colors.grey[850];
+      this.isDarkState = true;
+      this.brightness = Brightness.dark;
+      this.primaryColor = Colors.grey[850];
     } else {
-      isDarkState = false;
-      brightness = Brightness.light;
-      primaryColor = Colors.white;
+      this.isDarkState = false;
+      this.brightness = Brightness.light;
+      this.primaryColor = Colors.white;
     }
   }
 }
@@ -53,7 +67,7 @@ class ScrollToTopEvent {
   int tabIndex;
 
   ScrollToTopEvent(int currentTabIndex) {
-    tabIndex = currentTabIndex;
+    this.tabIndex = currentTabIndex;
   }
 }
 

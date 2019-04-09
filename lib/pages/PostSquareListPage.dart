@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
+import 'dart:convert';
 
 class PostSquareListPage extends StatefulWidget {
   PostSquareListPage({Key key}) : super(key: key);
