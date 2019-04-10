@@ -9,7 +9,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -27,7 +26,6 @@ import 'package:OpenJMU/pages/MyInfoPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 
-var flutterLocalNotificationsPlugin;
 
 class MainPage extends StatefulWidget {
   @override
@@ -35,7 +33,6 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> {
-  var platform = MethodChannel('crossingthestreams.io/resourceResolver');
 
 //  final List<String> bottomAppBarTitles = ['首页', '新闻', '应用中心', '消息', '我的'];
   final List<String> bottomAppBarTitles = ['首页', '应用中心', '消息', '我的'];

@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
+import 'package:extended_image/extended_image.dart';
+
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -15,7 +18,8 @@ import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
-import 'package:OpenJMU/widgets/InAppBrowser.dart';
+//import 'package:OpenJMU/widgets/InAppBrowser.dart';
+import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
 class PostCardItem extends StatefulWidget {
   final Post post;
@@ -75,7 +79,6 @@ class _PostCardItemState extends State<PostCardItem> {
             shape: BoxShape.circle,
             color: const Color(0xFFECECEC),
             image: new DecorationImage(
-//                image: new NetworkImage(post.avatar),
                 image: CachedNetworkImageProvider(post.avatar, cacheManager: DefaultCacheManager()),
                 fit: BoxFit.cover
             ),
@@ -166,34 +169,10 @@ class _PostCardItemState extends State<PostCardItem> {
 
   Widget getPostImages(post) {
     final imagesData = post.pics;
-    if (imagesData != null) {
-      List<Widget> imagesWidget = [];
-      for (var i = 0; i < imagesData.length; i++) {
-        String imageOriginalUrl = imagesData[i]['image_original'];
-        String imageThumbUrl = "http" + imageOriginalUrl.substring(5, imageOriginalUrl.length);
-        imagesWidget.add(
-            new Image(image: CachedNetworkImageProvider(imageThumbUrl, cacheManager: DefaultCacheManager()), fit: BoxFit.cover)
-        );
-      }
-      int itemCount = 3;
-      if (imagesData.length < 3) {
-        itemCount = imagesData.length;
-      }
-      return new Container(
-          padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 0.0),
-          child: new GridView.count(
-              padding: EdgeInsets.zero,
-              shrinkWrap: true,
-              primary: false,
-              mainAxisSpacing: 8.0,
-              crossAxisCount: itemCount,
-              crossAxisSpacing: 4.0,
-              children: imagesWidget
-          )
-      );
-    } else {
-      return new Container();
-    }
+    return new Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      child: getImages(imagesData)
+    );
   }
 
   Widget getRootPost(context, rootTopic) {
@@ -224,18 +203,49 @@ class _PostCardItemState extends State<PostCardItem> {
 
   Widget getRootPostImages(rootTopic) {
     final imagesData = rootTopic['image'];
-    if (imagesData != null) {
+    return getImages(imagesData);
+  }
+
+  Widget getImages(data) {
+    if (data != null) {
       List<Widget> imagesWidget = [];
-      for (var i = 0; i < imagesData.length; i++) {
-        String imageOriginalUrl = imagesData[i]['image_original'];
-        String imageThumbUrl = "http" + imageOriginalUrl.substring(5, imageOriginalUrl.length);
+      for (var index = 0; index < data.length; index++) {
+        String imageUrl = data[index]['image_original'];
+        String urlInsecure = imageUrl.replaceAllMapped(new RegExp(r"https://"), (match) => "http://");
         imagesWidget.add(
-            new Image(image: CachedNetworkImageProvider(imageThumbUrl, cacheManager: DefaultCacheManager()), fit: BoxFit.cover)
+            new GestureDetector(
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) {
+                    return ImageViewer(
+                      index,
+                      data.map<ImageBean>((f) {
+                        String _httpsUrl = f['image_original'];
+                        String url = _httpsUrl.replaceAllMapped(new RegExp(r"https://"), (match) => "http://");
+                        return ImageBean(url, widget.post.id);
+                      }).toList(),
+                    );
+                  }));
+                },
+                child: new Hero(
+                    tag: "$urlInsecure${index.toString()}${widget.post.id.toString()}",
+                    child: ExtendedImage.network(
+                      urlInsecure,
+                      fit: BoxFit.cover,
+                      cache: true,
+                    )
+//                    child: new Image(image: CachedNetworkImageProvider(urlInsecure, cacheManager: DefaultCacheManager()), fit: BoxFit.cover)
+                )
+            )
         );
       }
       int itemCount = 3;
-      if (imagesData.length < 3) {
-        itemCount = imagesData.length;
+      if (data.length == 1) {
+        return new Container(
+            padding: EdgeInsets.only(top: 8.0),
+            child: imagesWidget[0]
+        );
+      } else if (data.length < 3) {
+        itemCount = data.length;
       }
       return new Container(
           child: new GridView.count(
@@ -352,12 +362,12 @@ class _PostCardItemState extends State<PostCardItem> {
             return UserPage.jump(context, data['uid']);
           } else if (text.startsWith("https://wb.jmu.edu.cn")) {
             return CommonWebPage.jump(context, text, "网页链接");
-//            return InAppBrowserUtils.open(text);
+//            return InAppBrowserPage.open(context, text, "网页链接");
           }
         },
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-        overflow: ExtendedTextOverflow.ellipsis,
-        maxLines: 10,
+//        overflow: ExtendedTextOverflow.ellipsis,
+//        maxLines: 10,
       );
   }
 

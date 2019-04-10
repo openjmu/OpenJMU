@@ -147,7 +147,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             return PostCardItem(_postList[index]);
           },
           itemCount: _postList.length,
-          controller: _scrollController,
+          controller: widget._postController.postType == "user" ? null : _scrollController,
         );
 
         if (widget.needRefreshIndicator) {

@@ -47,8 +47,6 @@
     <string>请求访问日历</string>
     <key>NSRemindersUsageDescription</key>
     <string>请求访问注意事项</string>
-    <key>NSBluetoothPeripheralUsageDescription</key>
-    <string>请求访问蓝牙</string>
     <key>NSAppTransportSecurity</key>
     <dict>
         <key>NSAllowsArbitraryLoads</key>

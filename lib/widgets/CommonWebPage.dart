@@ -48,8 +48,8 @@ class CommonWebPageState extends State<CommonWebPage> {
   );
 
   Future<bool> waitForClose() async {
-    print("here");
-    return await flutterWebViewPlugin.close();
+    await flutterWebViewPlugin.close();
+    return false;
   }
 
   @override
@@ -120,6 +120,7 @@ class CommonWebPageState extends State<CommonWebPage> {
         onWillPop: waitForClose,
         child: new WebviewScaffold(
             url: widget.url,
+            userAgent: "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) OpenJMU/0.1.3",
             allowFileURLs: true,
             appBar: new AppBar(
               title: new Column(

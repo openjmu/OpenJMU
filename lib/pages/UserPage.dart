@@ -72,6 +72,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
       return Scaffold(
         appBar: AppBar(
           backgroundColor: ThemeUtils.currentPrimaryColor,
+          brightness: ThemeUtils.currentBrightness,
         ),
         body: Container(
           child: Center(
@@ -321,7 +322,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
             title: Text(
               _user.name,
               key: _nicknameKey,
-              style: TextStyle(fontSize: 14),
+              style: TextStyle(color: Colors.white, fontSize: 14),
               maxLines: 1,
             ),
             background: new Image(
