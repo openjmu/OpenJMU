@@ -28,29 +28,13 @@ class CommonWebPage extends StatefulWidget {
 }
 
 class CommonWebPageState extends State<CommonWebPage> {
-  Timer _timer;
-  Color currentColor = ThemeUtils.currentColorTheme;
-  String _url, _title;
-  double currentProgress = 0.0;
   bool loading = true;
+  Timer _timer;
+  String _url, _title;
+  Color primaryColor = Colors.white;
+  double currentProgress = 0.0;
+
   final flutterWebViewPlugin = new FlutterWebviewPlugin();
-
-
-  Widget refreshIndicator = new Container(
-      width: 56.0,
-      padding: EdgeInsets.all(16.0),
-      child: Platform.isAndroid
-          ? new CircularProgressIndicator(
-        valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-        strokeWidth: 3.0,
-      )
-          : new CupertinoActivityIndicator()
-  );
-
-  Future<bool> waitForClose() async {
-    await flutterWebViewPlugin.close();
-    return false;
-  }
 
   @override
   void initState() {
@@ -97,14 +81,31 @@ class CommonWebPageState extends State<CommonWebPage> {
     super.dispose();
   }
 
+  Widget refreshIndicator = new Container(
+      width: 56.0,
+      padding: EdgeInsets.all(16.0),
+      child: Platform.isAndroid
+          ? new CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+            strokeWidth: 3.0,
+          )
+          : new CupertinoActivityIndicator()
+  );
+
+  Future<bool> waitForClose() async {
+    await flutterWebViewPlugin.close();
+    return false;
+  }
+
   PreferredSize progressBar() {
     return new PreferredSize(
-        child: new SizedBox(
+        child: new Container(
+            color: ThemeUtils.currentColorTheme,
             height: 2.0,
             child: new LinearProgressIndicator(
-                backgroundColor: ThemeUtils.currentPrimaryColor,
+                backgroundColor: ThemeUtils.currentColorTheme,
                 value: currentProgress,
-                valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
+                valueColor: AlwaysStoppedAnimation<Color>(primaryColor)
             )
         ),
         preferredSize: null
@@ -120,25 +121,31 @@ class CommonWebPageState extends State<CommonWebPage> {
         onWillPop: waitForClose,
         child: new WebviewScaffold(
             url: widget.url,
-            userAgent: "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) OpenJMU/0.1.3",
             allowFileURLs: true,
             appBar: new AppBar(
+              backgroundColor: ThemeUtils.currentColorTheme,
+              leading: new IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }
+              ),
               title: new Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     new Text(_title,
-                        style: new TextStyle(color: ThemeUtils.currentColorTheme)
+                        style: new TextStyle(color: primaryColor)
                     ),
                     new Text(_url,
-                        style: new TextStyle(color: ThemeUtils.currentColorTheme, fontSize: 14.0)
+                        style: new TextStyle(color: primaryColor, fontSize: 14.0)
                     )
                   ]
               ),
               actions: <Widget>[trailing],
               bottom: progressBar(),
-              iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
-              brightness: ThemeUtils.currentBrightness,
+              iconTheme: new IconThemeData(color: primaryColor),
+              brightness: Brightness.dark,
             ),
             persistentFooterButtons: <Widget>[
               new Container(

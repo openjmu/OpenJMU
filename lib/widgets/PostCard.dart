@@ -12,6 +12,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
+import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
@@ -357,7 +358,7 @@ class _PostCardItemState extends State<PostCardItem> {
         onSpecialTextTap: (dynamic data) {
           String text = data['content'];
           if (text.startsWith("#")) {
-            showCenterShortToast("话题：${text.substring(1, text.length-1)}");
+            return SearchPage.search(context, text.substring(1, text.length-1));
           } else if (text.startsWith("@")) {
             return UserPage.jump(context, data['uid']);
           } else if (text.startsWith("https://wb.jmu.edu.cn")) {

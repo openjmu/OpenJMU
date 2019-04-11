@@ -75,7 +75,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   @override
   void initState() {
     super.initState();
-
     Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
       if (this.mounted && event.tabIndex == 0) {
         _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
@@ -264,6 +263,12 @@ class PostAPI {
         _postUrl = "${Api.postListByUid}${additionAttrs['uid']}/id_max/$lastValue";
       } else {
         _postUrl = "${Api.postListByUid}${additionAttrs['uid']}";
+      }
+    } else if (postType == "search") {
+      if (isMore) {
+        _postUrl = "${Api.postListByWords}${additionAttrs['words']}/id_max/$lastValue";
+      } else {
+        _postUrl = "${Api.postListByWords}${additionAttrs['words']}";
       }
     }
     return NetUtils.getWithCookieAndHeaderSet(

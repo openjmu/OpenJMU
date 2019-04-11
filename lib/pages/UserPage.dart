@@ -52,39 +52,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
   double maxSignWidth;
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (!isError) {
-      return Scaffold(
-        body: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) =>
-          <Widget>[
-            _appBar
-          ],
-          body: _post,
-        ),
-      );
-    } else {
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: ThemeUtils.currentPrimaryColor,
-          brightness: ThemeUtils.currentBrightness,
-        ),
-        body: Container(
-          child: Center(
-            child: Text('用户不存在', style: TextStyle(color: ThemeUtils.currentColorTheme)),
-          ),
-        ),
-      );
-    }
-
-  }
-
-  @override
   void initState() {
     super.initState();
     _checkLogin();
@@ -117,6 +84,39 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         WidgetsBinding.instance.scheduleFrame();
       });
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!isError) {
+      return Scaffold(
+        body: NestedScrollView(
+          headerSliverBuilder: (context, innerBoxIsScrolled) =>
+          <Widget>[
+            _appBar
+          ],
+          body: _post,
+        ),
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: ThemeUtils.currentPrimaryColor,
+          brightness: ThemeUtils.currentBrightness,
+        ),
+        body: Container(
+          child: Center(
+            child: Text('用户不存在', style: TextStyle(color: ThemeUtils.currentColorTheme)),
+          ),
+        ),
+      );
+    }
+
   }
 
   void _checkLogin() async {
@@ -176,6 +176,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
       });
     } else {
       var user = jsonDecode(await UserUtils.getUserInfo(uid: uid));
+      print(user);
       setState(() {
         _user = UserUtils.createUser(user);
       });
@@ -209,7 +210,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
               ),
             ),
           );
-
           _actions = <Widget>[
             PopupMenuButton(
               onSelected: (val) {

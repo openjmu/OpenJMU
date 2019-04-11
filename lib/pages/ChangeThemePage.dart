@@ -12,7 +12,6 @@ class ChangeThemePage extends StatefulWidget {
 class ChangeThemePageState extends State<ChangeThemePage> {
   List<Color> colors = ThemeUtils.supportColors;
   Color currentColor = ThemeUtils.currentColorTheme;
-  Brightness currentBrightness = ThemeUtils.currentBrightness;
   changeColorTheme(Color c) {
     Constants.eventBus.fire(new ChangeThemeEvent(c));
   }
@@ -34,12 +33,10 @@ class ChangeThemePageState extends State<ChangeThemePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text(
-            '切换主题',
-            style: new TextStyle(color: currentColor)
-        ),
-        iconTheme: new IconThemeData(color: currentColor),
-        brightness: ThemeUtils.currentBrightness,
+        title: new Text('切换主题'),
+        centerTitle: true,
+        iconTheme: new IconThemeData(color: Colors.white),
+        brightness: Brightness.dark,
       ),
       body: new Padding(
           padding: const EdgeInsets.all(4.0),

@@ -224,6 +224,7 @@ class MainPageState extends State<MainPage> {
         child: new Scaffold(
           appBar: GestureAppBar(
               appBar: new AppBar(
+                backgroundColor: currentThemeColor,
                 elevation: 1,
                 leading: getAvatar(),
                 title: new FlatButton(
@@ -231,16 +232,24 @@ class MainPageState extends State<MainPage> {
                     child: new Text(
                         getTabTitle(_tabIndex),
                         style: new TextStyle(
-                            color: currentThemeColor,
+                            color: Colors.white,
                             fontSize: 22.0
                         )
                     )
                 ),
                 centerTitle: true,
                 actions: <Widget>[
+                  _tabIndex == 0
+                  ? IconButton(
+                    icon: Icon(Icons.search, color: Colors.white),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed("/search");
+                    },
+                  )
+                  : Container(),
                   BadgeIconButton(
                       itemCount: currentNotifications,
-                      icon: Icon(Icons.notifications),
+                      icon: Icon(Icons.notifications, color: Colors.white),
                       badgeColor: currentThemeColor,
                       badgeTextColor: Colors.white,
                       hideZeroCount: true,
@@ -248,7 +257,7 @@ class MainPageState extends State<MainPage> {
                   ),
                 ],
                 iconTheme: new IconThemeData(color: currentThemeColor),
-                brightness: Theme.of(context).brightness,
+                brightness: Brightness.dark,
               ),
               onTap: doubleTapScrollToTop
           ),
@@ -261,11 +270,9 @@ class MainPageState extends State<MainPage> {
               elevation: 0,
               highlightElevation: 14.0,
               onPressed: () {
-                Navigator.of(context).push(platformPageRoute(
-                    builder: (context) {
-                      return new PublishPostPage();
-                    }
-                ));
+                Navigator.of(context).push(platformPageRoute(builder: (context) {
+                  return new PublishPostPage();
+                }));
               },
               mini: false,
               shape: new CircleBorder(),

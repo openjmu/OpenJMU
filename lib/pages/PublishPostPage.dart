@@ -296,32 +296,26 @@ class PublishPostPageState extends State<PublishPostPage> {
     return new Scaffold(
         appBar: new AppBar(
           elevation: 1,
-          leading: new BackButton(color: ThemeUtils.currentColorTheme),
+          backgroundColor: ThemeUtils.currentColorTheme,
+          leading: new BackButton(color: Colors.white),
           title: new Center(
               child: new Text(
                   "发布动态",
                   style: new TextStyle(
-                      color: ThemeUtils.currentColorTheme,
-                      fontSize: 22.0,
-                      fontWeight: FontWeight.bold
+                      color: Colors.white,
+                      fontSize: 22.0
                   )
               )
           ),
-          iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
-          brightness: ThemeUtils.currentBrightness,
+          iconTheme: new IconThemeData(color: Colors.white),
+          brightness: Brightness.dark,
           actions: <Widget>[
             new Builder(
               builder: (ctx) {
                 return new IconButton(icon: new Icon(Icons.send), onPressed: () {
-                  DataUtils.isLogin().then((isLogin) {
-                    if (isLogin) {
-                      return null;
-                    } else {
-                      return null;
-                    }
-                  }).then((token) {
-                    post(ctx);
-                  });
+                  DataUtils.isLogin()
+                      .then((isLogin) => null)
+                      .then((token) { post(ctx); });
                 });
               },
             )

@@ -7,6 +7,8 @@ class UserUtils {
   static UserInfo currentUser = new UserInfo(null, null, null, null, null, null, null, null, null);
 
   static UserInfo createUser(userData) {
+    int _workId = 0;
+    userData['workid'] == "" ? _workId = userData['uid'] : _workId = int.parse(userData['workid']);
     return new UserInfo(
         null,
         userData['uid'],
@@ -15,7 +17,7 @@ class UserUtils {
         null,
         null,
         userData['unitid'],
-        int.parse(userData['workid']),
+        _workId,
         null
     );
   }

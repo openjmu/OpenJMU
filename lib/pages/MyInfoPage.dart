@@ -12,21 +12,20 @@ import 'package:OpenJMU/widgets/InAppBrowser.dart';
 
 class MyInfoPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return new MyInfoPageState();
-  }
+  State<StatefulWidget> createState() => new MyInfoPageState();
 }
 
 class MyInfoPageState extends State<MyInfoPage> {
   Color themeColor = ThemeUtils.currentColorTheme;
 
-  var titles = ["夜间模式", "切换主题", "退出登录", "测试页", "关于"];
-//  var titles = ["夜间模式", "切换主题", "退出登录", "关于"];
-  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad, Icons.info];
-//  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.info];
+//  var titles = ["夜间模式", "切换主题", "退出登录", "测试页", "关于"];
+  var titles = ["夜间模式", "切换主题", "退出登录", "关于"];
+//  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad, Icons.info];
+  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.info];
   var userAvatar;
   var userName;
   var titleTextStyle = new TextStyle(fontSize: 16.0);
+  var currentVersion;
 
   bool isLogin = false;
   bool isDark = false;
@@ -38,6 +37,11 @@ class MyInfoPageState extends State<MyInfoPage> {
   @override
   void initState() {
     super.initState();
+    OTAUpdate.getCurrentVersion().then((version) {
+      setState(() {
+        currentVersion = version;
+      });
+    });
     DataUtils.isLogin().then((isLogin) {
       setState(() {
         this.isLogin = isLogin;
@@ -45,13 +49,13 @@ class MyInfoPageState extends State<MyInfoPage> {
       getUserInfo();
     });
     DataUtils.getBrightnessDark().then((isDark) {
-      if (isDark != null) {
-        setState(() {
-          this.isDark = isDark;
-        });
-      } else {
-        this.isDark = false;
-      }
+      setState(() {
+        if (isDark != null) {
+            this.isDark = isDark;
+        } else {
+            this.isDark = false;
+        }
+      });
     });
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
       if (this.mounted) {
@@ -214,7 +218,7 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   void showAboutDialog(BuildContext context) {
     final String name = 'OpenJMU';
-    final String version = '0.1.1';
+    final String version = currentVersion;
     final String content = 'Developed By Alex & Evsio0n.';
     final Widget icon = new Image.asset(
         "images/ic_jmu_logo_trans_original.png",

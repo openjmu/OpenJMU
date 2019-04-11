@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
-import 'dart:convert';
 
 class PostSquareListPage extends StatefulWidget {
   PostSquareListPage({Key key}) : super(key: key);
@@ -20,7 +18,7 @@ class PostSquareListPageState extends State<PostSquareListPage> {
   @override
   void initState() {
     super.initState();
-    _post = PostList(
+    _post = new PostList(
         PostController(
             postType: "square",
             isFollowed: false,

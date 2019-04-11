@@ -1,18 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
+import 'package:OpenJMU/pages/SplashPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-
-// Routes Pages
-import 'package:OpenJMU/pages/SplashPage.dart';
-import 'package:OpenJMU/pages/LoginPage.dart';
-import 'package:OpenJMU/pages/MainPage.dart';
-import 'package:OpenJMU/pages/ChangeThemePage.dart';
-import 'package:OpenJMU/pages/PublishPostPage.dart';
-import 'package:OpenJMU/pages/Test.dart';
+import 'package:OpenJMU/utils/RouteUtils.dart';
 
 void main() {
   runApp(new JMUAppClient());
@@ -84,18 +79,11 @@ class JMUAppClientState extends State<JMUAppClient> {
   Widget build(BuildContext context) {
     return new MaterialApp(
         debugShowCheckedModeBanner: false,
-        routes: <String,WidgetBuilder>{
-          "/splash": (BuildContext context) => new SplashPage(),
-          "/login": (BuildContext context) => new LoginPage(),
-          "/home": (BuildContext context) => new MainPage(),
-          "/changeTheme": (BuildContext context) => new ChangeThemePage(),
-          "/publishPost": (BuildContext context) => new PublishPostPage(),
-          "/test": (BuildContext context) => new TestPage(),
-        },
+        routes: RouteUtils.routes,
         title: "OpenJMU",
         theme: new ThemeData(
           accentColor: currentThemeColor,
-          primaryColor: currentPrimaryColor,
+          primaryColor: currentThemeColor,
           primaryColorBrightness: currentBrightness,
           primaryIconTheme: new IconThemeData(color: currentThemeColor),
           brightness: currentBrightness,

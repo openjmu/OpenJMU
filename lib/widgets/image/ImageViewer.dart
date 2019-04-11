@@ -21,17 +21,19 @@ class ImageViewer extends StatefulWidget {
 }
 
 class _ImageViewerState extends State<ImageViewer> {
-  var rebuild = StreamController<int>.broadcast();
+  StreamController<int> rebuild = StreamController<int>.broadcast();
   int currentIndex;
 
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     currentIndex = widget.index;
     super.initState();
   }
 
   @override
   void dispose() {
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     rebuild.close();
 //    clearGestureDetailsCache();
     super.dispose();
@@ -47,7 +49,6 @@ class _ImageViewerState extends State<ImageViewer> {
             destination: AndroidDestinationType.custom(directory: 'OpenJMU')
           )
           : imageId = await ImageDownloader.downloadImage(url);
-
       if (imageId == null) {
         return;
       }
@@ -58,6 +59,7 @@ class _ImageViewerState extends State<ImageViewer> {
     }
     if (!mounted) return;
     showCenterShortToast("图片保存至：$path");
+    return;
   }
 
   @override
@@ -90,30 +92,37 @@ class _ImageViewerState extends State<ImageViewer> {
                   children: <Widget>[
                     ExtendedImageGesturePageView.builder(
                       itemBuilder: (BuildContext context, int index) {
-                        var item = widget.pics[index].imageUrl;
-                        Widget image = ExtendedImage.network(
-                          item,
-                          fit: BoxFit.contain,
-                          cache: true,
-                          mode: ExtendedImageMode.Gesture,
-                          gestureConfig: GestureConfig(
+                        String item = widget.pics[index].imageUrl;
+                        Widget image = new Container(
+                          child: ExtendedImage.network(
+                            item,
+                            fit: BoxFit.contain,
+                            cache: true,
+                            mode: ExtendedImageMode.Gesture,
+                            gestureConfig: GestureConfig(
+                              cacheGesture: false,
                               inPageView: true,
                               initialScale: 1.0,
-                              cacheGesture: false
+                              minScale: 1.0,
+                            ),
                           ),
-                        );
-                        image = new Container(
-                          child: image,
                           padding: EdgeInsets.all(5.0),
                         );
                         if (index == currentIndex) {
-                          return Hero(
+                          image = Hero(
                             tag: "${widget.pics[index].imageUrl}${index.toString()}${widget.pics[index].postId.toString()}",
                             child: image,
                           );
-                        } else {
-                          return image;
                         }
+                        return new GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            onLongPress: () {
+                              print("longpress");
+                            },
+                            child: image
+                        );
                       },
                       itemCount: widget.pics.length,
                       onPageChanged: (int index) {
