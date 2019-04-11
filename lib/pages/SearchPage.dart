@@ -68,7 +68,7 @@ class SearchPageState extends State<SearchPage> {
           cursorColor: primaryColor,
           decoration: InputDecoration(
               border: InputBorder.none,
-              hintText: "输入搜索的动态内容...",
+              hintText: "输入要搜索的内容...",
               hintStyle: TextStyle(color: Colors.white70, fontStyle: FontStyle.italic)
           ),
           keyboardType: TextInputType.text,
