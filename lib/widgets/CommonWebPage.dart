@@ -54,7 +54,11 @@ class CommonWebPageState extends State<CommonWebPage> {
         String script = 'window.document.title';
         String title = await flutterWebViewPlugin.evalJavascript(script);
         setState(() {
-          _title = title.substring(1, title.length-1);
+          if (Platform.isAndroid) {
+            this._title = title.substring(1, title.length-1);
+          } else {
+            this._title = title;
+          }
         });
       } else if (state.type == WebViewState.startLoad) {
         setState(() {
@@ -142,6 +146,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                     )
                   ]
               ),
+              centerTitle: false,
               actions: <Widget>[trailing],
               bottom: progressBar(),
               iconTheme: new IconThemeData(color: primaryColor),

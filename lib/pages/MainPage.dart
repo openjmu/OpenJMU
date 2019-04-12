@@ -100,6 +100,7 @@ class MainPageState extends State<MainPage> {
       }
     });
     Constants.eventBus.on<LogoutEvent>().listen((event) {
+      notificationTimer != null ? notificationTimer.cancel() : null;
       Navigator.of(context).pushReplacementNamed("/login");
     });
     Constants.eventBus.on<HasUpdateEvent>().listen((event) {

@@ -202,7 +202,27 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   void _handleListItemClick(context, String title) {
     if (title == "退出登录") {
-      DataUtils.doLogout();
+      showDialog(
+          context: context,
+          builder: (_) => PlatformAlertDialog(
+            title: Text("注销"),
+            content: Text("是否确认注销？"),
+            actions: <Widget>[
+              FlatButton(
+                child: Text('取消'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text('确认'),
+                onPressed: () {
+                  DataUtils.doLogout();
+                },
+              ),
+            ],
+          )
+      );
     } else if (title == "切换主题") {
       Navigator.pushNamed(context, "/changeTheme");
     } else if (title == "测试页") {
