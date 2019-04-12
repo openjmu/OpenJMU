@@ -65,9 +65,11 @@ class ChangeBrightnessEvent {
 
 class ScrollToTopEvent {
   int tabIndex;
+  String type;
 
-  ScrollToTopEvent(int currentTabIndex) {
-    this.tabIndex = currentTabIndex;
+  ScrollToTopEvent({int tabIndex, String type}) {
+    this.tabIndex = tabIndex;
+    this.type = type;
   }
 }
 

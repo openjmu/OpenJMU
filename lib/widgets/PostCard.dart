@@ -198,7 +198,7 @@ class _PostCardItemState extends State<PostCardItem> {
           )
       );
     } else {
-      return getPostDeleted();
+      return getPostBanned("delete");
     }
   }
 
@@ -266,7 +266,7 @@ class _PostCardItemState extends State<PostCardItem> {
 
   Widget getPostActions(post) {
     int forwards = post.forwards;
-    int replys = post.replys;
+    int replies = post.replies;
     int praises = post.praises;
 
     return new Flex(
@@ -299,7 +299,7 @@ class _PostCardItemState extends State<PostCardItem> {
               size: 18,
             ),
             label: Text(
-              replys == 0 ? "评论" : "$replys",
+              replies == 0 ? "评论" : "$replies",
               style: TextStyle(color: _replysColor),
             ),
             splashColor: Colors.grey,
@@ -325,27 +325,24 @@ class _PostCardItemState extends State<PostCardItem> {
     );
   }
 
-  Widget getPostShield() {
+  Widget getPostBanned(String type) {
+    String content = "该条微博已被";
+    switch (type) {
+      case "shield":
+        content += "屏蔽";
+        break;
+      case "delete":
+        content += "删除";
+        break;
+    }
     return new Container(
         color: const Color(0xffaa4444),
+        margin: EdgeInsets.only(top: 8.0),
         padding: EdgeInsets.all(30.0),
         child: new Center(
             child: new Text(
-                "该条微博已被屏蔽",
-                style: new TextStyle(fontSize: 20.0)
-            )
-        )
-    );
-  }
-
-  Widget getPostDeleted() {
-    return new Container(
-        color: const Color(0xffaa4444),
-        padding: EdgeInsets.all(30.0),
-        child: new Center(
-            child: new Text(
-                "该条微博已被删除",
-                style: new TextStyle(fontSize: 20.0)
+                content,
+                style: new TextStyle(fontSize: 20.0, color: Colors.white)
             )
         )
     );
@@ -430,7 +427,7 @@ class _PostCardItemState extends State<PostCardItem> {
         getPostActions(widget.post)
       ];
     } else {
-      _widgets = [getPostShield()];
+      _widgets = [getPostBanned("shield")];
     }
     return new Container(
       child: Card(

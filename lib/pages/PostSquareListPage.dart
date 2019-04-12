@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+
+import 'dart:convert';
+
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
 
@@ -34,6 +37,7 @@ class PostSquareListPageState extends State<PostSquareListPage> {
     super.dispose();
     _post = null;
   }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(

@@ -11,15 +11,87 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/PostCard.dart';
 
+class PostAPI {
+  static getPostList(String postType, bool isFollowed, bool isMore, int lastValue, {additionAttrs}) async {
+    String _postUrl;
+    switch (postType) {
+      case "square":
+        if (isMore) {
+          if (!isFollowed) {
+            _postUrl = Api.postList + "/id_max/$lastValue";
+          } else {
+            _postUrl = Api.postFollowedList + "/id_max/$lastValue";
+          }
+        } else {
+          if (!isFollowed) {
+            _postUrl = Api.postList;
+          } else {
+            _postUrl = Api.postFollowedList;
+          }
+        }
+        break;
+      case "user":
+        if (isMore) {
+          _postUrl = "${Api.postListByUid}${additionAttrs['uid']}/id_max/$lastValue";
+        } else {
+          _postUrl = "${Api.postListByUid}${additionAttrs['uid']}";
+        }
+        break;
+      case "search":
+        if (isMore) {
+          _postUrl = "${Api.postListByWords}${additionAttrs['words']}/id_max/$lastValue";
+        } else {
+          _postUrl = "${Api.postListByWords}${additionAttrs['words']}";
+        }
+        break;
+      case "mention":
+        if (isMore) {
+          _postUrl = "${Api.postListByMention}/id_max/$lastValue";
+        } else {
+          _postUrl = "${Api.postListByMention}";
+        }
+        break;
+    }
+    return NetUtils.getWithCookieAndHeaderSet(
+        _postUrl,
+        headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+        cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+    );
+  }
+
+  static Post createPost(itemData) {
+    var _user = itemData['user'];
+    String _avatar = "${Api.userAvatarInSecure}?uid=${_user['uid']}&size=f100";
+    String _postTime = new DateTime.fromMillisecondsSinceEpoch(int.parse(itemData['post_time']) * 1000)
+        .toString()
+        .substring(0,16);
+    Post _post = new Post(
+        int.parse(itemData['tid']),
+        int.parse(_user['uid']),
+        _user['nickname'],
+        _avatar,
+        _postTime,
+        itemData['from_string'],
+        int.parse(itemData['glances']),
+        itemData['category'],
+        itemData['article'] ?? itemData['content'],
+        itemData['image'],
+        int.parse(itemData['forwards']),
+        int.parse(itemData['replys']),
+        int.parse(itemData['praises']),
+        itemData['root_topic'],
+        isLike: itemData['praised'] == 1 ? true : false
+    );
+    return _post;
+  }
+
+}
+
 class PostController {
   final String postType;
-
   final bool isFollowed;
-
   final bool isMore;
-
   final Function lastValue;
-
   final Map<String, dynamic> additionAttrs;
 
   PostController({
@@ -30,7 +102,6 @@ class PostController {
     this.additionAttrs
   });
 }
-
 
 class PostList extends StatefulWidget {
   final PostController _postController;
@@ -43,7 +114,6 @@ class PostList extends StatefulWidget {
   @override
   State createState() => _PostListState();
 }
-
 
 class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
   final ScrollController _scrollController = new ScrollController();
@@ -76,7 +146,11 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   void initState() {
     super.initState();
     Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
-      if (this.mounted && event.tabIndex == 0) {
+      if (
+        this.mounted
+          &&
+        ((event.tabIndex == 0 && widget._postController.postType == "square") || (event.type == "Post"))
+      ) {
         _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
       }
     });
@@ -239,69 +313,4 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       }
     }
   }
-}
-
-class PostAPI {
-  static getPostList(String postType, bool isFollowed, bool isMore, int lastValue, {additionAttrs}) async {
-    String _postUrl;
-    if (postType == "square") {
-      if (isMore) {
-        if (!isFollowed) {
-          _postUrl = Api.postList + "/id_max/$lastValue";
-        } else {
-          _postUrl = Api.postFollowedList + "/id_max/$lastValue";
-        }
-      } else {
-        if (!isFollowed) {
-          _postUrl = Api.postList;
-        } else {
-          _postUrl = Api.postFollowedList;
-        }
-      }
-    } else if (postType == "user") {
-      if (isMore) {
-        _postUrl = "${Api.postListByUid}${additionAttrs['uid']}/id_max/$lastValue";
-      } else {
-        _postUrl = "${Api.postListByUid}${additionAttrs['uid']}";
-      }
-    } else if (postType == "search") {
-      if (isMore) {
-        _postUrl = "${Api.postListByWords}${additionAttrs['words']}/id_max/$lastValue";
-      } else {
-        _postUrl = "${Api.postListByWords}${additionAttrs['words']}";
-      }
-    }
-    return NetUtils.getWithCookieAndHeaderSet(
-      _postUrl,
-      headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-      cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
-    );
-  }
-
-  static Post createPost(itemData) {
-    var _user = itemData['user'];
-    String _avatar = "${Api.userAvatarInSecure}?uid=${_user['uid']}&size=f100";
-    String _postTime = new DateTime.fromMillisecondsSinceEpoch(int.parse(itemData['post_time']) * 1000)
-        .toString()
-        .substring(0,16);
-    Post _post = new Post(
-        int.parse(itemData['tid']),
-        int.parse(_user['uid']),
-        _user['nickname'],
-        _avatar,
-        _postTime,
-        itemData['from_string'],
-        int.parse(itemData['glances']),
-        itemData['category'],
-        itemData['article'] ?? itemData['content'],
-        itemData['image'],
-        int.parse(itemData['forwards']),
-        int.parse(itemData['replys']),
-        int.parse(itemData['praises']),
-        itemData['root_topic'],
-        isLike: itemData['praised'] == 1 ? true : false
-    );
-    return _post;
-  }
-
 }

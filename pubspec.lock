@@ -85,6 +85,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.2"
+  extended_tabs:
+    dependency: "direct main"
+    description:
+      name: extended_tabs
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.6"
   extended_text:
     dependency: "direct main"
     description:

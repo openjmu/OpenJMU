@@ -44,5 +44,9 @@ class Api {
   static final String postUploadImage = wbHost + "/upload_api/image";
   static final String postListByUid = wbHost + "/topic_api/user/uid/";
   static final String postListByWords = wbHost + "/search_api/topic/keyword/";
+  static final String postListByMention = wbHost + "/topic_api/mentionme";
+
+  static final String commentListByReply = wbHost + "/reply_api/replyme";
+  static final String commentListByMention = wbHost + "/reply_api/mentionme";
 
 }

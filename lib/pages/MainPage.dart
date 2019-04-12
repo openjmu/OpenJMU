@@ -209,7 +209,7 @@ class MainPageState extends State<MainPage> {
       lastAppBarTap = DateTime.now().millisecondsSinceEpoch;
       return Future.value(false);
     } else {
-      Constants.eventBus.fire(new ScrollToTopEvent(_tabIndex));
+      Constants.eventBus.fire(new ScrollToTopEvent(tabIndex: _tabIndex, type: "MainPage"));
       return Future.value(true);
     }
   }
@@ -253,7 +253,9 @@ class MainPageState extends State<MainPage> {
                       badgeColor: currentThemeColor,
                       badgeTextColor: Colors.white,
                       hideZeroCount: true,
-                      onPressed: null
+                      onPressed: () {
+                        Navigator.pushNamed(context, "/notification");
+                      }
                   ),
                 ],
                 iconTheme: new IconThemeData(color: currentThemeColor),

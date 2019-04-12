@@ -7,6 +7,7 @@ import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/ChangeThemePage.dart';
 import 'package:OpenJMU/pages/PublishPostPage.dart';
+import 'package:OpenJMU/pages/NotificationPage.dart';
 import 'package:OpenJMU/pages/Test.dart';
 
 class RouteUtils {
@@ -17,6 +18,7 @@ class RouteUtils {
     "/search": (BuildContext context) => new SearchPage(),
     "/changeTheme": (BuildContext context) => new ChangeThemePage(),
     "/publishPost": (BuildContext context) => new PublishPostPage(),
+    "/notification": (BuildContext context) => new NotificationPage(),
     "/test": (BuildContext context) => new TestPage(),
   };
 }

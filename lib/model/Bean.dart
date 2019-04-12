@@ -10,7 +10,7 @@ class Post {
   String content;
   List pics;
   int forwards;
-  int replys;
+  int replies;
   int praises;
   bool isLike;
   Object rootTopic;
@@ -27,7 +27,7 @@ class Post {
       this.content,
       this.pics,
       this.forwards,
-      this.replys,
+      this.replies,
       this.praises,
       this.rootTopic,
       {this.isLike = false}
@@ -54,7 +54,7 @@ class Post {
         content,
         pics.sublist(0),
         forwards,
-        replys,
+        replies,
         praises,
         rootTopic,
         isLike: isLike
@@ -62,28 +62,45 @@ class Post {
   }
 }
 
-class PostComment {
-  int id;
-  int userId;
-  PostComment theComment;
-  List<PostComment> children;
-  int childCount;
-  int time;
-  String userNickname;
-  String userAvatar;
+class Comment {
+  int id, fromUserUid;
+  String fromUserName;
+  String fromUserAvatar;
   String content;
+  String postTime;
+  String from;
 
-  String fatherNickname;
-  String fatherAvatar;
-  int fatherId;
+  bool toReplyExist;
+  int toReplyUid;
+  String toReplyUserName;
+  var toReplyContent;
+  bool toTopicExist;
+  int toTopicUid;
+  String toTopicUserName;
+  var toTopicContent;
 
-
-  PostComment({this.id, this.userId, this.theComment, this.children, this.childCount, this.time, this.userNickname, this.userAvatar, this.content, this.fatherNickname, this.fatherAvatar, this.fatherId});
+  Comment(
+      this.id,
+      this.fromUserUid,
+      this.fromUserName,
+      this.fromUserAvatar,
+      this.content,
+      this.postTime,
+      this.from,
+      this.toReplyExist,
+      this.toReplyUid,
+      this.toReplyUserName,
+      this.toReplyContent,
+      this.toTopicExist,
+      this.toTopicUid,
+      this.toTopicUserName,
+      this.toTopicContent,
+  );
 
   @override
   bool operator == (Object other) =>
       identical(this, other) ||
-          other is PostComment &&
+          other is Comment &&
               runtimeType == other.runtimeType &&
               id == other.id;
 
@@ -91,51 +108,51 @@ class PostComment {
   int get hashCode => id.hashCode;
 }
 
-class User {
-  int id;
-  String nickname;
-  int gender;
-  String studentNumber;
-  String name;
-  String avatar;
-  String signature;
-  String passwd;
-  String major;
-  String depart;
-  bool bindCard;
-  int verification;
-  String token;
-  int fansCount;
-  int followingCount;
-  bool followed;
-
-  User.name({
-    this.id,
-    this.nickname,
-    this.gender,
-    this.studentNumber,
-    this.name,
-    this.avatar,
-    this.signature,
-    this.passwd,
-    this.major,
-    this.depart,
-    this.bindCard,
-    this.verification,
-    this.token,
-    this.fansCount = 0,
-    this.followingCount = 0,
-    this.followed = false
-  });
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is User && runtimeType == other.runtimeType && id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
-}
+//class User {
+//  int id;
+//  String nickname;
+//  int gender;
+//  String studentNumber;
+//  String name;
+//  String avatar;
+//  String signature;
+//  String passwd;
+//  String major;
+//  String depart;
+//  bool bindCard;
+//  int verification;
+//  String token;
+//  int fansCount;
+//  int followingCount;
+//  bool followed;
+//
+//  User.name({
+//    this.id,
+//    this.nickname,
+//    this.gender,
+//    this.studentNumber,
+//    this.name,
+//    this.avatar,
+//    this.signature,
+//    this.passwd,
+//    this.major,
+//    this.depart,
+//    this.bindCard,
+//    this.verification,
+//    this.token,
+//    this.fansCount = 0,
+//    this.followingCount = 0,
+//    this.followed = false
+//  });
+//
+//  @override
+//  bool operator ==(Object other) =>
+//      identical(this, other) ||
+//          other is User && runtimeType == other.runtimeType && id == other.id;
+//
+//  @override
+//  int get hashCode => id.hashCode;
+//}
 
 class UserInfo {
 
