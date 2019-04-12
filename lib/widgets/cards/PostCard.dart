@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:extended_image/extended_image.dart';
 
@@ -14,18 +14,18 @@ import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
+import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
-//import 'package:OpenJMU/widgets/InAppBrowser.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
 class PostCardItem extends StatefulWidget {
   final Post post;
+  final bool isDetail;
 
-  PostCardItem(this.post, {Key key}) : super(key: key);
+  PostCardItem(this.post, {this.isDetail, Key key}) : super(key: key);
 
   @override
   State createState() => _PostCardItemState();
@@ -45,10 +45,20 @@ class _PostCardItemState extends State<PostCardItem> {
   Color _praisesColor = Colors.grey;
 
   Widget pics;
+  bool isDetail;
 
   @override
   void initState() {
     super.initState();
+    if (widget.isDetail != null && widget.isDetail == true) {
+      setState(() {
+        isDetail = true;
+      });
+    } else {
+      setState(() {
+        isDetail = false;
+      });
+    }
     DataUtils.getBrightnessDark().then((isDark) {
       if (this.mounted) {
         setRootTopicColor(isDark);
@@ -424,21 +434,32 @@ class _PostCardItemState extends State<PostCardItem> {
         ),
         getPostContent(context, widget.post),
         getPostImages(widget.post),
-        getPostActions(widget.post)
+        isDetail ? Container(width: MediaQuery.of(context).size.width, padding: EdgeInsets.symmetric(vertical: 8.0)) : getPostActions(widget.post)
       ];
     } else {
       _widgets = [getPostBanned("shield")];
     }
-    return new Container(
-      child: Card(
-          margin: EdgeInsets.symmetric(vertical: 4.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _widgets,
-          ),
-          elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)
-      ),
+    return new GestureDetector(
+      onTap: () {
+        if (isDetail) {
+          return null;
+        } else {
+          Navigator.of(context).push(platformPageRoute(builder: (context) {
+            return PostDetailPage(widget.post);
+          }));
+        }
+      },
+      child: new Container(
+        child: Card(
+            margin: EdgeInsets.symmetric(vertical: 4.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: _widgets,
+            ),
+            elevation: 0,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)
+        ),
+      )
     );
   }
 

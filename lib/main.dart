@@ -78,6 +78,16 @@ class JMUAppClientState extends State<JMUAppClient> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
+        onGenerateRoute: (RouteSettings settings) {
+          final String name = settings.name;
+          final Function pageContentBuilder = RouteUtils.routes[name];
+          if (pageContentBuilder != null) {
+            final Route route = MaterialPageRoute(builder: (context) =>
+                pageContentBuilder(context, arguments: settings.arguments)
+            );
+            return route;
+          }
+        },
         debugShowCheckedModeBanner: false,
         routes: RouteUtils.routes,
         title: "OpenJMU",

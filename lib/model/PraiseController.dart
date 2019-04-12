@@ -9,96 +9,70 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
-import 'package:OpenJMU/widgets/cards/CommentCard.dart';
+import 'package:OpenJMU/widgets/cards/PraiseCard.dart';
 
-class CommentAPI {
-  static getCommentList(String commentType, bool isMore, int lastValue, {additionAttrs}) async {
-    String _commentUrl;
-    switch (commentType) {
-      case "reply":
-        if (isMore) {
-          _commentUrl = "${Api.commentListByReply}/id_max/$lastValue";
-        } else {
-          _commentUrl = "${Api.commentListByReply}";
-        }
-        break;
-      case "mention":
-        if (isMore) {
-          _commentUrl = "${Api.commentListByMention}/id_max/$lastValue";
-        } else {
-          _commentUrl = "${Api.commentListByMention}";
-        }
-        break;
+class PraiseAPI {
+  static getPraiseList(bool isMore, int lastValue, {additionAttrs}) async {
+    String _praiseUrl;
+    if (isMore) {
+      _praiseUrl = "${Api.praiseList}/id_max/$lastValue";
+    } else {
+      _praiseUrl = "${Api.praiseList}";
     }
     return NetUtils.getWithCookieAndHeaderSet(
-        _commentUrl,
+        _praiseUrl,
         headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
         cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
     );
   }
 
-  static Comment createComment(itemData) {
+  static Praise createPraise(itemData) {
     String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";
-    String _commentTime = new DateTime.fromMillisecondsSinceEpoch(itemData['post_time'] * 1000)
+    String _praiseTime = new DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
         .toString()
         .substring(0,16);
-    bool replyExist = itemData['to_reply']['exists'] == 1 ? true : false;
-    bool topicExist = itemData['to_topic']['exists'] == 1 ? true : false;
-    Comment _comment = new Comment(
-      itemData['rid'],
+    Praise _praise = new Praise(
+      itemData['id'],
       itemData['user']['uid'],
-      itemData['user']['nickname'],
       _avatar,
-      itemData['content'],
-      _commentTime,
-      itemData['from_string'],
-      replyExist,
-      replyExist ? itemData['to_reply']['reply']['user']['uid'] : 0,
-      replyExist ? itemData['to_reply']['reply']['user']['nickname'] : null,
-      replyExist ? itemData['to_reply']['reply']['content'] : null,
-      topicExist,
-      topicExist ? int.parse(itemData['to_topic']['topic']['user']['uid']) : 0,
-      topicExist ? itemData['to_topic']['topic']['user']['nickname'] : null,
-      topicExist
-          ?
-            itemData['to_topic']['topic']['article']
-              ??
-            itemData['to_topic']['topic']['content']
-          : null,
-
+      int.parse(itemData['topic']['tid']),
+      _praiseTime,
+      itemData['user']['nickname'],
+      itemData['topic']['article'] ?? itemData['topic']['content'],
+      int.parse(itemData['topic']['user']['uid']),
+      itemData['topic']['user']['nickname'],
+      itemData['topic']['image'],
     );
-    return _comment;
+    return _praise;
   }
 
 }
 
-class CommentController {
-  final String commentType;
+class PraiseController {
   final bool isMore;
   final Function lastValue;
   final Map<String, dynamic> additionAttrs;
 
-  CommentController({
-    @required this.commentType,
+  PraiseController({
     @required this.isMore,
     @required this.lastValue,
     this.additionAttrs
   });
 }
 
-class CommentList extends StatefulWidget {
-  final CommentController _commentController;
+class PraiseList extends StatefulWidget {
+  final PraiseController _praiseController;
   final bool needRefreshIndicator;
 
-  CommentList(this._commentController, {
+  PraiseList(this._praiseController, {
     Key key, this.needRefreshIndicator = true
   }) : super(key: key);
 
   @override
-  State createState() => _CommentListState();
+  State createState() => _PraiseListState();
 }
 
-class _CommentListState extends State<CommentList> with AutomaticKeepAliveClientMixin {
+class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMixin {
   final ScrollController _scrollController = new ScrollController();
   Color currentColorTheme = ThemeUtils.currentColorTheme;
 
@@ -120,7 +94,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
     ),
   );
 
-  List<Comment> _commentList = [];
+  List<Praise> _praiseList = [];
 
   @override
   bool get wantKeepAlive => true;
@@ -129,11 +103,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
   void initState() {
     super.initState();
     Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
-      if (
-      this.mounted
-          &&
-          ((event.tabIndex == 0 && widget._commentController.commentType == "square") || (event.type == "Post"))
-      ) {
+      if ( this.mounted && event.type == "Praise" ) {
         _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
       }
     });
@@ -173,23 +143,23 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
         _itemList = ListView.builder(
           padding: EdgeInsets.symmetric(vertical: 4.0),
           itemBuilder: (context, index) {
-            if (index == _commentList.length - 1) {
+            if (index == _praiseList.length - 1) {
               _loadData();
             }
-            return CommentCardItem(_commentList[index]);
+            return PraiseCardItem(_praiseList[index]);
           },
-          itemCount: _commentList.length,
-          controller: widget._commentController.commentType == "mention" ? null : _scrollController,
+          itemCount: _praiseList.length,
+          controller: _scrollController,
         );
 
         if (widget.needRefreshIndicator) {
           _body = RefreshIndicator(
             color: currentColorTheme,
             onRefresh: _refreshData,
-            child: _commentList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList,
+            child: _praiseList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList,
           );
         } else {
-          _body = _commentList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList;
+          _body = _praiseList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList;
         }
       }
       return _body;
@@ -207,18 +177,17 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
     if (!_isLoading && _canLoadMore) {
       _isLoading = true;
 
-      var result = await CommentAPI.getCommentList(
-          widget._commentController.commentType,
+      var result = await PraiseAPI.getPraiseList(
           true,
           _lastValue,
-          additionAttrs: widget._commentController.additionAttrs
+          additionAttrs: widget._praiseController.additionAttrs
       );
-      List<Comment> commentList = [];
-      List _topics = jsonDecode(result)['replylist'];
-      for (var commentData in _topics) {
-        commentList.add(CommentAPI.createComment(commentData['reply']));
+      List<Praise> praiseList = [];
+      List _topics = jsonDecode(result)['topics'];
+      for (var praiseData in _topics) {
+        praiseList.add(PraiseAPI.createPraise(praiseData));
       }
-      _commentList.addAll(commentList);
+      _praiseList.addAll(praiseList);
 //      error = !result['success'];
 
       if (mounted) {
@@ -227,9 +196,9 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _topics.isNotEmpty;
-          _lastValue = _commentList.isEmpty
+          _lastValue = _praiseList.isEmpty
               ? 0
-              : widget._commentController.lastValue(_commentList.last);
+              : widget._praiseController.lastValue(_praiseList.last);
         });
       }
     }
@@ -238,22 +207,21 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
   Future<Null> _refreshData() async {
     if (!_isLoading) {
       _isLoading = true;
-      _commentList.clear();
+      _praiseList.clear();
 
       _lastValue = 0;
 
-      var result = await CommentAPI.getCommentList(
-          widget._commentController.commentType,
+      var result = await PraiseAPI.getPraiseList(
           false,
           _lastValue,
-          additionAttrs: widget._commentController.additionAttrs
+          additionAttrs: widget._praiseController.additionAttrs
       );
-      List<Comment> commentList = [];
-      List _topics = jsonDecode(result)['replylist'];
-      for (var commentData in _topics) {
-        commentList.add(CommentAPI.createComment(commentData['reply']));
+      List<Praise> praiseList = [];
+      List _topics = jsonDecode(result)['topics'];
+      for (var praiseData in _topics) {
+        praiseList.add(PraiseAPI.createPraise(praiseData));
       }
-      _commentList.addAll(commentList);
+      _praiseList.addAll(praiseList);
 //      error = !result['success'] ?? false;
 
       if (mounted) {
@@ -262,9 +230,9 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _topics.isNotEmpty;
-          _lastValue = _commentList.isEmpty
+          _lastValue = _praiseList.isEmpty
               ? 0
-              : widget._commentController.lastValue(_commentList.last);
+              : widget._praiseController.lastValue(_praiseList.last);
 
         });
       }

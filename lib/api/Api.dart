@@ -49,4 +49,6 @@ class Api {
   static final String commentListByReply = wbHost + "/reply_api/replyme";
   static final String commentListByMention = wbHost + "/reply_api/mentionme";
 
+  static final String praiseList = wbHost + "/praise_api/tome";
+
 }

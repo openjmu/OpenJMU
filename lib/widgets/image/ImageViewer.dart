@@ -26,14 +26,12 @@ class _ImageViewerState extends State<ImageViewer> {
 
   @override
   void initState() {
-    SystemChrome.setEnabledSystemUIOverlays([]);
     currentIndex = widget.index;
     super.initState();
   }
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     rebuild.close();
 //    clearGestureDetailsCache();
     super.dispose();

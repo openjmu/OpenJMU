@@ -9,7 +9,7 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
-import 'package:OpenJMU/widgets/PostCard.dart';
+import 'package:OpenJMU/widgets/cards/PostCard.dart';
 
 class PostAPI {
   static getPostList(String postType, bool isFollowed, bool isMore, int lastValue, {additionAttrs}) async {

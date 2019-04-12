@@ -1,12 +1,9 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:extended_text/extended_text.dart';
-import 'package:extended_image/extended_image.dart';
 
-import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -14,11 +11,7 @@ import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
-//import 'package:OpenJMU/widgets/InAppBrowser.dart';
 
 class CommentCardItem extends StatefulWidget {
   final Comment comment;
@@ -94,7 +87,7 @@ class _CommentCardItemState extends State<CommentCardItem> {
   }
 
   Row getCommentInfo(comment) {
-    String _commentTime = comment.postTime;
+    String _commentTime = comment.commentTime;
     DateTime now = new DateTime.now();
     if (int.parse(_commentTime.substring(0, 4)) == now.year) {
       _commentTime = _commentTime.substring(5, 16);
@@ -163,21 +156,26 @@ class _CommentCardItemState extends State<CommentCardItem> {
         topic = "<M ${comment.toTopicUid}>@${comment.toTopicUserName}<\/M>: ";
       }
       topic += content;
-      return new Container(
-          width: MediaQuery.of(context).size.width,
-          margin: EdgeInsets.only(top: 8.0),
-          padding: EdgeInsets.all(8.0),
-          decoration: new BoxDecoration(
-              color: currentRootContentColor,
-              borderRadius: BorderRadius.circular(5.0)
-          ),
-          child: new Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                getExtendedText(topic),
-              ]
-          )
+      return new GestureDetector(
+        onTap: () {
+
+        },
+        child: Container(
+            width: MediaQuery.of(context).size.width,
+            margin: EdgeInsets.only(top: 8.0),
+            padding: EdgeInsets.all(8.0),
+            decoration: new BoxDecoration(
+                color: currentRootContentColor,
+                borderRadius: BorderRadius.circular(5.0)
+            ),
+            child: new Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  getExtendedText(topic),
+                ]
+            )
+        )
       );
     } else {
       return getPostBanned();

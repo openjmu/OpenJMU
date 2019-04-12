@@ -18,7 +18,7 @@ class RouteUtils {
     "/search": (BuildContext context) => new SearchPage(),
     "/changeTheme": (BuildContext context) => new ChangeThemePage(),
     "/publishPost": (BuildContext context) => new PublishPostPage(),
-    "/notification": (BuildContext context) => new NotificationPage(),
+//    "/notification": (BuildContext context, {arguments}) => new NotificationPage(arguments: arguments),
     "/test": (BuildContext context) => new TestPage(),
   };
 }

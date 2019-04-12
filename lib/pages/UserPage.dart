@@ -55,7 +55,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
   void initState() {
     super.initState();
     _checkLogin();
-
     if (widget.uid != null && widget.uid != 0) {
       _post = PostList(
           PostController(
@@ -68,7 +67,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
           needRefreshIndicator: false
       );
     }
-
     _nicknameKey = GlobalKey();
     _signKey = GlobalKey();
     WidgetsBinding.instance.addPostFrameCallback((callback) {
@@ -77,9 +75,11 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
             _signKey.currentContext != null) {
           maxNicknameWidth = MediaQuery.of(context).size.width - 4 * 16 - 3 * 64 - 8;
           maxSignWidth = MediaQuery.of(context).size.width - 2 * 8;
-          setState(() {
-            _updateAppBar();
-          });
+          if (this.mounted) {
+            setState(() {
+              _updateAppBar();
+            });
+          }
         }
         WidgetsBinding.instance.scheduleFrame();
       });

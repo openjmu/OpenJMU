@@ -29,11 +29,11 @@ class UserInfoGotEvent {
   }
 }
 
-class NotificationCountChangeEvent {
-  int notifications;
+class NotificationsChangeEvent {
+  Notifications notifications;
 
-  NotificationCountChangeEvent(int count) {
-    this.notifications = count;
+  NotificationsChangeEvent(Notifications notifications) {
+    this.notifications = notifications;
   }
 }
 

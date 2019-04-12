@@ -12,17 +12,19 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
+import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/utils/OTAUpdate.dart';
-//import 'package:OpenJMU/pages/NewsListPage.dart';
+
 import 'package:OpenJMU/pages/PostSquareListPage.dart';
 import 'package:OpenJMU/pages/AppCenterPage.dart';
 import 'package:OpenJMU/pages/DiscoveryPage.dart';
 import 'package:OpenJMU/pages/PublishPostPage.dart';
 import 'package:OpenJMU/pages/MyInfoPage.dart';
+import 'package:OpenJMU/pages/NotificationPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 
@@ -42,12 +44,13 @@ class MainPageState extends State<MainPage> {
   final List<IconData> bottomAppBarIcons = [
     Icons.home, Icons.apps, Icons.chat, Icons.account_circle
   ];
+
   TextStyle tabTextStyleSelected = new TextStyle(color: ThemeUtils.currentColorTheme);
   final tabTextStyleNormal = new TextStyle(color: Colors.grey);
   Color currentPrimaryColor = ThemeUtils.currentPrimaryColor;
   Color currentThemeColor = ThemeUtils.currentColorTheme;
 
-  int currentNotifications = 0;
+  Notifications notifications = new Notifications(0, 0, 0, 0);
   Timer notificationTimer;
   Stopwatch watch = new Stopwatch();
 
@@ -77,6 +80,7 @@ class MainPageState extends State<MainPage> {
       setState(() {
         this.isUserLogin = isLogin;
       });
+      DataUtils.getNotifications();
       if (isLogin) {
         watch.start();
         notificationTimer = new Timer.periodic(const Duration(milliseconds: 10000), (timer) {
@@ -127,10 +131,10 @@ class MainPageState extends State<MainPage> {
         });
       }
     });
-    Constants.eventBus.on<NotificationCountChangeEvent>().listen((event) {
+    Constants.eventBus.on<NotificationsChangeEvent>().listen((event) {
       if (this.mounted) {
         setState(() {
-          currentNotifications = event.notifications;
+          notifications = event.notifications;
         });
       }
     });
@@ -248,13 +252,16 @@ class MainPageState extends State<MainPage> {
                   )
                   : Container(),
                   BadgeIconButton(
-                      itemCount: currentNotifications,
+                      itemCount: notifications.count,
                       icon: Icon(Icons.notifications, color: Colors.white),
                       badgeColor: currentThemeColor,
                       badgeTextColor: Colors.white,
                       hideZeroCount: true,
                       onPressed: () {
-                        Navigator.pushNamed(context, "/notification");
+                        Navigator.of(context).push(platformPageRoute(builder: (context) {
+                          return new NotificationPage(arguments: {"notifications": notifications});
+                        }));
+//                        Navigator.pushNamed(context, "/notification", arguments: {"notifications": notifications});
                       }
                   ),
                 ],

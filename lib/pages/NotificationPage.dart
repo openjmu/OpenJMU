@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart';
+import 'package:extended_tabs/extended_tabs.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/model/CommentController.dart';
+import 'package:OpenJMU/model/PraiseController.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class NotificationPage extends StatefulWidget {
+  final Map arguments;
+
+  NotificationPage({this.arguments});
+
   @override
   State<StatefulWidget> createState() => new NotificationPageState();
 }
@@ -18,27 +25,34 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
 
   Color themeColor = ThemeUtils.currentColorTheme;
   Color primaryColor = Colors.white;
-  int currentNotifications = 0;
+  Notifications currentNotifications;
 
   PostList _mentionPost;
   CommentList _mentionComment;
   CommentList _replyComment;
+  PraiseList _praiseList;
 
   @override
   void initState() {
     super.initState();
+    if (widget.arguments != null) {
+      currentNotifications = widget.arguments['notifications'];
+    } else {
+      currentNotifications = new Notifications(0,0,0,0);
+    }
     _tabController = new TabController(length: 3, vsync: this);
     _mentionTabController = new TabController(length: 2, vsync: this);
     postByMention();
     commentByMention();
     commentByReply();
-//    Constants.eventBus.on<NotificationCountChangeEvent>().listen((event) {
-//      if (this.mounted) {
-//        setState(() {
-//          currentNotifications = event.notifications;
-//        });
-//      }
-//    });
+    praiseList();
+    Constants.eventBus.on<NotificationsChangeEvent>().listen((event) {
+      if (this.mounted) {
+        setState(() {
+          currentNotifications = event.notifications;
+        });
+      }
+    });
   }
 
   @override
@@ -47,10 +61,53 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
   }
 
   List<Widget> actions() {
-    List<Tab> _tabs = [];
-    actionsIcons.forEach((icon) => _tabs.add(
-      Tab(icon: new Icon(icon, color: primaryColor))
-    ));
+    List<Tab> _tabs = [
+      Tab(child: BadgeIconButton(
+        itemCount: currentNotifications.at,
+        icon: Icon(actionsIcons[0], color: primaryColor),
+        badgeColor: themeColor,
+        badgeTextColor: primaryColor,
+        hideZeroCount: true,
+        onPressed: () {
+          _tabController.animateTo(0);
+          var _notify = currentNotifications;
+          setState(() {
+            currentNotifications = new Notifications(_notify.count - _notify.at, 0, _notify.comment, _notify.praise);
+          });
+        },
+      )),
+      Tab(child: BadgeIconButton(
+        itemCount: currentNotifications.comment,
+        icon: Icon(actionsIcons[1], color: primaryColor),
+        badgeColor: themeColor,
+        badgeTextColor: primaryColor,
+        hideZeroCount: true,
+        onPressed: () {
+          _tabController.animateTo(1);
+          var _notify = currentNotifications;
+          setState(() {
+            currentNotifications = new Notifications(_notify.count - _notify.comment, _notify.at, 0, _notify.praise);
+          });
+        },
+      )),
+      Tab(child: BadgeIconButton(
+        itemCount: currentNotifications.praise,
+        icon: Icon(actionsIcons[2], color: primaryColor),
+        badgeColor: themeColor,
+        badgeTextColor: primaryColor,
+        hideZeroCount: true,
+        onPressed: () {
+          _tabController.animateTo(2);
+          var _notify = currentNotifications;
+          setState(() {
+            currentNotifications = new Notifications(_notify.count - _notify.praise, _notify.at, _notify.comment, 0);
+          });
+        },
+      )),
+    ];
+//    actionsIcons.forEach((icon) => _tabs.add(
+//      Tab(icon: new Icon(icon, color: primaryColor))
+//    ));
     return [
       new Container(
         width: 200.0,
@@ -100,6 +157,16 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
     );
   }
 
+  void praiseList() {
+    _praiseList = new PraiseList(
+        PraiseController(
+            isMore: false,
+            lastValue: (Praise praise) => praise.id
+        ),
+        needRefreshIndicator: true
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -110,7 +177,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
         iconTheme: new IconThemeData(color: primaryColor),
         brightness: Brightness.dark,
       ),
-      body: TabBarView(
+      body: ExtendedTabBarView(
         controller: _tabController,
         children: <Widget>[
           Column(
@@ -129,7 +196,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                   )
               ),
               Expanded(
-                  child: TabBarView(
+                  child: ExtendedTabBarView(
                       controller: _mentionTabController,
                       children: <Widget>[
                         _mentionPost,
@@ -140,7 +207,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
             ],
           ),
           _replyComment,
-          Center(child: Text("赞")),
+          _praiseList,
         ],
       ),
     );

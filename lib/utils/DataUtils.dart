@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
+import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
@@ -341,14 +342,17 @@ class DataUtils {
           headers: headers,
           cookies: cookies
       ).then((response) {
+        print(response);
         Map<String, dynamic> data = jsonDecode(response);
-        int newFans = int.parse(data['fans']);
+//        int newFans = int.parse(data['fans']);
         int comment = int.parse(data['cmt']);
         int postsAt = int.parse(data['t_at']);
         int commsAt = int.parse(data['cmt_at']);
         int praises = int.parse(data['t_praised']);
-        int count = newFans + comment + postsAt + commsAt + praises;
-        Constants.eventBus.fire(new NotificationCountChangeEvent(count));
+//        int count = newFans + comment + postsAt + commsAt + praises;
+        int count = comment + postsAt + commsAt + praises;
+        Notifications notifications = new Notifications(count, postsAt+commsAt, comment, praises);
+        Constants.eventBus.fire(new NotificationsChangeEvent(notifications));
       }).catchError((e) {
         print(e.toString());
         return e;
