@@ -58,33 +58,47 @@ class PostAPI {
         cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
     );
   }
-
-  static Post createPost(itemData) {
-    var _user = itemData['user'];
+  static getPostInPostList(int postId) async {
+    return NetUtils.getWithCookieAndHeaderSet(
+        "${Api.postForwardsList}$postId",
+        headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+        cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+    );
+  }
+  static glancePost(int postId) {
+    List<int> postIds = [postId];
+    return NetUtils.postWithCookieAndHeaderSet(
+      Api.postGlance,
+      data: jsonEncode({"tids": postIds}),
+      headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+      cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+    );
+  }
+  static Post createPost(postData) {
+    var _user = postData['user'];
     String _avatar = "${Api.userAvatarInSecure}?uid=${_user['uid']}&size=f100";
-    String _postTime = new DateTime.fromMillisecondsSinceEpoch(int.parse(itemData['post_time']) * 1000)
+    String _postTime = new DateTime.fromMillisecondsSinceEpoch(int.parse(postData['post_time']) * 1000)
         .toString()
         .substring(0,16);
     Post _post = new Post(
-        int.parse(itemData['tid']),
+        int.parse(postData['tid']),
         int.parse(_user['uid']),
         _user['nickname'],
         _avatar,
         _postTime,
-        itemData['from_string'],
-        int.parse(itemData['glances']),
-        itemData['category'],
-        itemData['article'] ?? itemData['content'],
-        itemData['image'],
-        int.parse(itemData['forwards']),
-        int.parse(itemData['replys']),
-        int.parse(itemData['praises']),
-        itemData['root_topic'],
-        isLike: itemData['praised'] == 1 ? true : false
+        postData['from_string'],
+        int.parse(postData['glances']),
+        postData['category'],
+        postData['article'] ?? postData['content'],
+        postData['image'],
+        int.parse(postData['forwards']),
+        int.parse(postData['replys']),
+        int.parse(postData['praises']),
+        postData['root_topic'],
+        isLike: postData['praised'] == 1 ? true : false
     );
     return _post;
   }
-
 }
 
 class PostController {
@@ -217,7 +231,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             if (index == _postList.length - 1) {
               _loadData();
             }
-            return PostCardItem(_postList[index]);
+            return PostCard(_postList[index]);
           },
           itemCount: _postList.length,
           controller: widget._postController.postType == "user" ? null : _scrollController,
@@ -313,4 +327,56 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       }
     }
   }
+}
+
+class PostInPostList extends StatefulWidget {
+  final Post post;
+
+  PostInPostList(this.post, {Key key}) : super(key: key);
+
+  @override
+  State createState() => _PostInPostListState();
+}
+
+class _PostInPostListState extends State<PostInPostList> {
+  List<Post> _posts = [];
+
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _getPostList();
+  }
+
+  Future<Null> _getPostList() async {
+    var list = await PostAPI.getPostInPostList(widget.post.id);
+    List<dynamic> response = jsonDecode(list)['topics'];
+    List<Post> posts = [];
+    response.forEach((post) {
+      posts.add(PostAPI.createPost(post['topic']));
+    });
+    setState(() {
+      isLoading = false;
+      _posts = posts;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    return new Container(
+        color: ThemeUtils.currentCardColor,
+        width: MediaQuery.of(context).size.width,
+        padding: isLoading
+            ? EdgeInsets.symmetric(horizontal: width - 245,  vertical: 100)
+            : EdgeInsets.zero,
+        child: isLoading
+            ? CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
+        )
+            : PostCardInPost(widget.post, _posts)
+    );
+  }
+
 }

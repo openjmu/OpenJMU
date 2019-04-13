@@ -26,6 +26,34 @@ class PraiseAPI {
     );
   }
 
+  static getPraiseInPostList(postId) {
+    return NetUtils.getWithCookieAndHeaderSet(
+      "${Api.postPraisesList}$postId",
+      headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+      cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+    );
+  }
+
+  static Praise createPraiseInPost(itemData) {
+    String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";
+    String _praiseTime = new DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
+      .toString()
+      .substring(0,16);
+    Praise _praise = new Praise(
+      itemData['id'],
+      itemData['user']['uid'],
+      _avatar,
+      null,
+      _praiseTime,
+      itemData['user']['nickname'],
+      null,
+      null,
+      null,
+      null,
+    );
+    return _praise;
+
+  }
   static Praise createPraise(itemData) {
     String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";
     String _praiseTime = new DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
@@ -38,7 +66,7 @@ class PraiseAPI {
       int.parse(itemData['topic']['tid']),
       _praiseTime,
       itemData['user']['nickname'],
-      itemData['topic']['article'] ?? itemData['topic']['content'],
+      itemData['topic'],
       int.parse(itemData['topic']['user']['uid']),
       itemData['topic']['user']['nickname'],
       itemData['topic']['image'],
@@ -146,7 +174,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
             if (index == _praiseList.length - 1) {
               _loadData();
             }
-            return PraiseCardItem(_praiseList[index]);
+            return PraiseCard(_praiseList[index]);
           },
           itemCount: _praiseList.length,
           controller: _scrollController,
@@ -238,4 +266,57 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
       }
     }
   }
+}
+
+
+class PraiseInPostList extends StatefulWidget {
+  final Post post;
+
+  PraiseInPostList(this.post, {Key key}) : super(key: key);
+
+  @override
+  State createState() => _PraiseInPostListState();
+}
+
+class _PraiseInPostListState extends State<PraiseInPostList> {
+  List<Praise> _praises = [];
+
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _getPraiseList();
+  }
+
+  Future<Null> _getPraiseList() async {
+    var list = await PraiseAPI.getPraiseInPostList(widget.post.id);
+    List<dynamic> response = jsonDecode(list)['praisors'];
+    List<Praise> praises = [];
+    response.forEach((praise) {
+      praises.add(PraiseAPI.createPraiseInPost(praise));
+    });
+    setState(() {
+      isLoading = false;
+      _praises = praises;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    return new Container(
+        color: ThemeUtils.currentCardColor,
+        width: MediaQuery.of(context).size.width,
+        padding: isLoading
+            ? EdgeInsets.symmetric(horizontal: width - 245,  vertical: 100)
+            : EdgeInsets.zero,
+        child: isLoading
+            ? CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
+        )
+            : PraiseCardInPost(_praises)
+    );
+  }
+
 }

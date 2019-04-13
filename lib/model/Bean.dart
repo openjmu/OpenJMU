@@ -10,7 +10,7 @@ class Post {
   String content;
   List pics;
   int forwards;
-  int replies;
+  int comments;
   int praises;
   bool isLike;
   Object rootTopic;
@@ -27,7 +27,7 @@ class Post {
       this.content,
       this.pics,
       this.forwards,
-      this.replies,
+      this.comments,
       this.praises,
       this.rootTopic,
       {this.isLike = false}
@@ -54,7 +54,7 @@ class Post {
         content,
         pics.sublist(0),
         forwards,
-        replies,
+        comments,
         praises,
         rootTopic,
         isLike: isLike
@@ -113,11 +113,10 @@ class Praise {
   String avatar;
   String praiseTime;
   String nickname;
-  String content;
+  Map<String, dynamic> post;
   int topicUid;
   String topicNickname;
   List pics;
-
 
   Praise(
       this.id,
@@ -126,7 +125,7 @@ class Praise {
       this.postId,
       this.praiseTime,
       this.nickname,
-      this.content,
+      this.post,
       this.topicUid,
       this.topicNickname,
       this.pics,

@@ -32,6 +32,8 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
   CommentList _replyComment;
   PraiseList _praiseList;
 
+  int testIndex;
+
   @override
   void initState() {
     super.initState();
@@ -41,6 +43,13 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
       currentNotifications = new Notifications(0,0,0,0);
     }
     _tabController = new TabController(length: 3, vsync: this);
+    _tabController.animation.addListener(() {
+      if (_tabController.indexIsChanging) {
+        setState(() {
+          testIndex = _tabController.index;
+        });
+      }
+    });
     _mentionTabController = new TabController(length: 2, vsync: this);
     postByMention();
     commentByMention();

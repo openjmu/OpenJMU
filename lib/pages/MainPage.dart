@@ -22,7 +22,7 @@ import 'package:OpenJMU/utils/OTAUpdate.dart';
 import 'package:OpenJMU/pages/PostSquareListPage.dart';
 import 'package:OpenJMU/pages/AppCenterPage.dart';
 import 'package:OpenJMU/pages/DiscoveryPage.dart';
-import 'package:OpenJMU/pages/PublishPostPage.dart';
+import 'package:OpenJMU/pages/publish/PublishPostPage.dart';
 import 'package:OpenJMU/pages/MyInfoPage.dart';
 import 'package:OpenJMU/pages/NotificationPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
@@ -115,6 +115,15 @@ class MainPageState extends State<MainPage> {
           print('OTA status: ${this.otaEvent.status} : ${this.otaEvent.value}');
         });
       }
+    });
+    DataUtils.getBrightnessDark().then((isDark) {
+      setState(() {
+        if (isDark) {
+          ThemeUtils.currentCardColor = const Color(0xff424242);
+        } else {
+          ThemeUtils.currentCardColor = const Color(0xffffffff);
+        }
+      });
     });
     DataUtils.getColorThemeIndex().then((index) {
       if (this.mounted && index != null) {
@@ -291,7 +300,6 @@ class MainPageState extends State<MainPage> {
           }),
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: FABBottomAppBar(
-//            centerItemText: '',
             color: Colors.grey,
             selectedColor: ThemeUtils.currentColorTheme,
             notchedShape: CircularNotchedRectangle(),

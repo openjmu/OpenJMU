@@ -126,6 +126,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
           floating: false,
           pinned: true,
           backgroundColor: ThemeUtils.currentColorTheme,
+          brightness: ThemeUtils.currentBrightness,
           expandedHeight: 187,
           flexibleSpace: FlexibleSpaceBarWithUserInfo(
             background: Container(
@@ -154,6 +155,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
               floating: false,
               pinned: true,
               backgroundColor: ThemeUtils.currentColorTheme,
+              brightness: ThemeUtils.currentBrightness,
               expandedHeight: 187,
               flexibleSpace: FlexibleSpaceBarWithUserInfo(
                 background: Container(
@@ -277,6 +279,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
           floating: false,
           pinned: true,
           backgroundColor: ThemeUtils.currentColorTheme,
+          brightness: ThemeUtils.currentBrightness,
           iconTheme: new IconThemeData(color: Colors.white),
           expandedHeight: 187 + bottomSize,
           flexibleSpace: FlexibleSpaceBarWithUserInfo(
@@ -663,6 +666,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
 //      appBar: AppBar(
 //        title: Text(''),
 //        backgroundColor: ThemeUtils.currentPrimaryColor,
+//        brightness: ThemeUtils.currentBrightness,
 //        bottom: TabBar(
 //          tabs: tabTexts.map((t) => Tab(text: t,)).toList(),
 //          controller: _tabController,

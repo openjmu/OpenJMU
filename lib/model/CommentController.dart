@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -36,7 +40,13 @@ class CommentAPI {
         cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
     );
   }
-
+  static getCommentInPostList(int id) async {
+    return NetUtils.getWithCookieAndHeaderSet(
+        "${Api.postCommentsList}$id",
+        headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+        cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+    );
+  }
   static Comment createComment(itemData) {
     String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";
     String _commentTime = new DateTime.fromMillisecondsSinceEpoch(itemData['post_time'] * 1000)
@@ -66,6 +76,31 @@ class CommentAPI {
             itemData['to_topic']['topic']['content']
           : null,
 
+    );
+    return _comment;
+  }
+  static Comment createCommentInPost(itemData) {
+    String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";
+    String _commentTime = new DateTime.fromMillisecondsSinceEpoch(itemData['post_time'] * 1000)
+        .toString()
+        .substring(0,16);
+    bool replyExist = itemData['to_reply']['exists'] == 1 ? true : false;
+    Comment _comment = new Comment(
+      itemData['rid'],
+      itemData['user']['uid'],
+      itemData['user']['nickname'],
+      _avatar,
+      itemData['content'],
+      _commentTime,
+      itemData['from_string'],
+      replyExist,
+      replyExist ? itemData['to_reply']['reply']['user']['uid'] : 0,
+      replyExist ? itemData['to_reply']['reply']['user']['nickname'] : null,
+      replyExist ? itemData['to_reply']['reply']['content'] : null,
+      false,
+      0,
+      null,
+      null,
     );
     return _comment;
   }
@@ -176,7 +211,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
             if (index == _commentList.length - 1) {
               _loadData();
             }
-            return CommentCardItem(_commentList[index]);
+            return CommentCard(_commentList[index]);
           },
           itemCount: _commentList.length,
           controller: widget._commentController.commentType == "mention" ? null : _scrollController,
@@ -270,4 +305,56 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
       }
     }
   }
+}
+
+class CommentInPostList extends StatefulWidget {
+  final Post post;
+
+  CommentInPostList(this.post, {Key key}) : super(key: key);
+
+  @override
+  State createState() => _CommentInPostListState();
+}
+
+class _CommentInPostListState extends State<CommentInPostList> {
+  List<Comment> _comments = [];
+
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _getCommentList();
+  }
+
+  Future<Null> _getCommentList() async {
+    var list = await CommentAPI.getCommentInPostList(widget.post.id);
+    List<dynamic> response = jsonDecode(list)['replylist'];
+    List<Comment> comments = [];
+    response.forEach((comment) {
+      comments.add(CommentAPI.createCommentInPost(comment['reply']));
+    });
+    setState(() {
+      isLoading = false;
+      _comments = comments;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    return new Container(
+        color: ThemeUtils.currentCardColor,
+        width: MediaQuery.of(context).size.width,
+        padding: isLoading
+            ? EdgeInsets.symmetric(horizontal: width - 245,  vertical: 100)
+            : EdgeInsets.zero,
+        child: isLoading
+            ? CircularProgressIndicator(
+            valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
+        )
+            : CommentCardInPost(widget.post, _comments)
+    );
+  }
+
 }

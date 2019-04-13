@@ -2,27 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:extended_image/extended_image.dart';
 
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
+import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
+import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
-class PraiseCardItem extends StatefulWidget {
+class PraiseCard extends StatefulWidget {
   final Praise praise;
 
-  PraiseCardItem(this.praise, {Key key}) : super(key: key);
+  PraiseCard(this.praise, {Key key}) : super(key: key);
 
   @override
-  State createState() => _PraiseCardItemState();
+  State createState() => _PraiseCardState();
 }
 
-class _PraiseCardItemState extends State<PraiseCardItem> {
+class _PraiseCardState extends State<PraiseCard> {
   final TextStyle titleTextStyle = new TextStyle(fontSize: 18.0);
   final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
   final TextStyle rootTopicTextStyle = new TextStyle(fontSize: 14.0);
@@ -131,44 +135,23 @@ class _PraiseCardItemState extends State<PraiseCardItem> {
   }
 
   Widget getRootContent(context, praise) {
-    var content = praise.content;
-    if (content != null && content.length > 0) {
-      String topic = "<M ${praise.topicUid}>@${praise.topicNickname}<\/M>: ";
-      topic += content;
-      return new GestureDetector(
-          onTap: null,
-          child: Container(
-              width: MediaQuery.of(context).size.width,
-              margin: EdgeInsets.only(top: 8.0),
-              padding: EdgeInsets.all(8.0),
-              decoration: new BoxDecoration(
-                  color: currentRootContentColor,
-                  borderRadius: BorderRadius.circular(5.0)
-              ),
-              child: new Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    getExtendedText(topic),
-                  ]
-              )
-          )
-      );
-    } else {
-      return getPostBanned();
-    }
-  }
-
-  Widget getPostBanned() {
+    Post _post = PostAPI.createPost(praise.post);
+    String topic = "<M ${_post.userId}>@${_post.nickname}<\/M>: ";
+    topic += _post.content;
     return new Container(
-        color: const Color(0xffaa4444),
+        width: MediaQuery.of(context).size.width,
         margin: EdgeInsets.only(top: 8.0),
-        padding: EdgeInsets.all(12.0),
-        child: new Center(
-            child: new Text(
-                "该条微博已被屏蔽或删除",
-                style: new TextStyle(fontSize: 20.0, color: Colors.white)
-            )
+        padding: EdgeInsets.all(8.0),
+        decoration: new BoxDecoration(
+            color: currentRootContentColor,
+            borderRadius: BorderRadius.circular(5.0)
+        ),
+        child: new Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              getExtendedText(topic),
+            ]
         )
     );
   }
@@ -263,9 +246,12 @@ class _PraiseCardItemState extends State<PraiseCardItem> {
       ),
       getCommentContent(context, widget.praise),
     ];
+    Post _post = PostAPI.createPost(widget.praise.post);
     return new GestureDetector(
       onTap: () {
-        print("Outside");
+        Navigator.of(context).push(platformPageRoute(builder: (context) {
+          return PostDetailPage(_post);
+        }));
       },
       child: Container(
         child: Card(
@@ -278,6 +264,97 @@ class _PraiseCardItemState extends State<PraiseCardItem> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)
         ),
       )
+    );
+  }
+
+}
+
+
+class PraiseCardInPost extends StatefulWidget {
+  final List<Praise> praises;
+
+  PraiseCardInPost(this.praises, {Key key}) : super(key: key);
+
+  @override
+  State createState() => _PraiseCardInPostState();
+}
+
+class _PraiseCardInPostState extends State<PraiseCardInPost> {
+
+  @override
+  void initState() {
+    super.initState();
+    print(widget.praises);
+  }
+
+  GestureDetector getPostAvatar(context, praise) {
+    return new GestureDetector(
+        child: new Container(
+          width: 40.0,
+          height: 40.0,
+          margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+          decoration: new BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color(0xFFECECEC),
+            image: new DecorationImage(
+                image: CachedNetworkImageProvider(praise.avatar, cacheManager: DefaultCacheManager()),
+                fit: BoxFit.cover
+            ),
+          ),
+        ),
+        onTap: () {
+          return UserPage.jump(context, praise.uid);
+        }
+    );
+  }
+
+  Text getPostNickname(praise) {
+    return new Text(praise.nickname, style: Theme.of(context).primaryTextTheme.title);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+        color: ThemeUtils.currentCardColor,
+        padding: EdgeInsets.zero,
+        child: widget.praises.length > 0
+            ? ListView.separated(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            separatorBuilder: (context, index) => Container(
+              color: Theme.of(context).dividerColor,
+              height: 1.0,
+            ),
+            itemCount: widget.praises.length,
+            itemBuilder: (context, index) => Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                getPostAvatar(context, widget.praises[index]),
+                Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        getPostNickname(widget.praises[index]),
+                      ],
+                    )
+                )
+              ],
+            )
+        )
+            : Container(
+            height: 120.0,
+            child: Center(
+                child: Text(
+                    "暂无内容",
+                    style: TextStyle(
+                        color: Theme.of(context).primaryTextTheme.caption.color,
+                        fontSize: 18.0
+                    )
+                )
+            )
+        )
     );
   }
 

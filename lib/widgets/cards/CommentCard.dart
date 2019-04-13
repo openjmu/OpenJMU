@@ -11,18 +11,19 @@ import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
-class CommentCardItem extends StatefulWidget {
+class CommentCard extends StatefulWidget {
   final Comment comment;
 
-  CommentCardItem(this.comment, {Key key}) : super(key: key);
+  CommentCard(this.comment, {Key key}) : super(key: key);
 
   @override
-  State createState() => _CommentCardItemState();
+  State createState() => _CommentCardState();
 }
 
-class _CommentCardItemState extends State<CommentCardItem> {
+class _CommentCardState extends State<CommentCard> {
   final TextStyle titleTextStyle = new TextStyle(fontSize: 18.0);
   final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
   final TextStyle rootTopicTextStyle = new TextStyle(fontSize: 14.0);
@@ -212,8 +213,6 @@ class _CommentCardItemState extends State<CommentCardItem> {
         }
       },
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-//        overflow: ExtendedTextOverflow.ellipsis,
-//        maxLines: 10,
     );
   }
 
@@ -238,6 +237,130 @@ class _CommentCardItemState extends State<CommentCardItem> {
           elevation: 0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)
       ),
+    );
+  }
+}
+
+
+class CommentCardInPost extends StatefulWidget {
+  final Post post;
+  final List<Comment> comments;
+
+  CommentCardInPost(this.post, this.comments, {Key key}) : super(key: key);
+
+  @override
+  State createState() => _CommentCardInPostState();
+}
+
+class _CommentCardInPostState extends State<CommentCardInPost> {
+
+  @override
+  void initState() {
+    super.initState();
+    print(widget.comments);
+  }
+
+  GestureDetector getCommentAvatar(context, comment) {
+    return new GestureDetector(
+        child: new Container(
+          width: 40.0,
+          height: 40.0,
+          margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+          decoration: new BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color(0xFFECECEC),
+            image: new DecorationImage(
+                image: CachedNetworkImageProvider(comment.fromUserAvatar, cacheManager: DefaultCacheManager()),
+                fit: BoxFit.cover
+            ),
+          ),
+        ),
+        onTap: () {
+          return UserPage.jump(context, widget.post.userId);
+        }
+    );
+  }
+
+  Text getCommentNickname(comment) {
+    return new Text(comment.fromUserName, style: Theme.of(context).primaryTextTheme.title);
+  }
+  Text getCommentTime(comment) {
+    return new Text(comment.commentTime, style: Theme.of(context).primaryTextTheme.caption);
+  }
+  Widget getExtendedText(content) {
+    return new ExtendedText(
+      content,
+      style: new TextStyle(fontSize: 16.0),
+      onSpecialTextTap: (dynamic data) {
+        String text = data['content'];
+        if (text.startsWith("#")) {
+          return SearchPage.search(context, text.substring(1, text.length-1));
+        } else if (text.startsWith("@")) {
+          return UserPage.jump(context, data['uid']);
+        } else if (text.startsWith("https://wb.jmu.edu.cn")) {
+          return CommonWebPage.jump(context, text, "网页链接");
+//            return InAppBrowserPage.open(context, text, "网页链接");
+        }
+      },
+      specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+      overflow: ExtendedTextOverflow.ellipsis,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+        color: ThemeUtils.currentCardColor,
+        padding: EdgeInsets.zero,
+        child: widget.comments.length > 0
+          ? ListView.separated(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            separatorBuilder: (context, index) => Container(
+              color: Theme.of(context).dividerColor,
+              height: 1.0,
+            ),
+            itemCount: widget.comments.length,
+            itemBuilder: (context, index) => Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                getCommentAvatar(context, widget.comments[index]),
+                Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(height: 10.0),
+                        getCommentNickname(widget.comments[index]),
+                        Container(height: 4.0),
+                        getExtendedText(widget.comments[index].content),
+                        Container(height: 6.0),
+                        getCommentTime(widget.comments[index]),
+                        Container(height: 10.0),
+                      ],
+                    )
+                ),
+                IconButton(
+                  padding: EdgeInsets.all(26.0),
+                  icon: Icon(Icons.comment, color: Colors.grey),
+                  onPressed: () {},
+                )
+              ],
+            )
+        )
+          : Container(
+          height: 120.0,
+          child: Center(
+            child: Text(
+                "暂无内容",
+                style: TextStyle(
+                    color: Theme.of(context).primaryTextTheme.caption.color,
+                    fontSize: 18.0
+                )
+            )
+          )
+        )
     );
   }
 

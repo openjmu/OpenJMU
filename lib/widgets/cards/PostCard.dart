@@ -11,6 +11,7 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
@@ -21,18 +22,19 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
-class PostCardItem extends StatefulWidget {
+class PostCard extends StatefulWidget {
   final Post post;
   final bool isDetail;
+  final bool isRootContent;
 
-  PostCardItem(this.post, {this.isDetail, Key key}) : super(key: key);
+  PostCard(this.post, {this.isDetail, this.isRootContent, Key key}) : super(key: key);
 
   @override
-  State createState() => _PostCardItemState();
+  State createState() => _PostCardState();
 }
 
-class _PostCardItemState extends State<PostCardItem> {
-  final TextStyle titleTextStyle = new TextStyle(fontSize: 18.0);
+class _PostCardState extends State<PostCard> {
+  final TextStyle titleTextStyle = new TextStyle(fontSize: 20.0);
   final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
   final TextStyle rootTopicTextStyle = new TextStyle(fontSize: 14.0);
   final TextStyle rootTopicMentionStyle = new TextStyle(color: Colors.blue, fontSize: 14.0);
@@ -188,24 +190,32 @@ class _PostCardItemState extends State<PostCardItem> {
 
   Widget getRootPost(context, rootTopic) {
     var content = rootTopic['topic'];
-    if (content != null && content.length > 0) {
+    if (rootTopic['exists'] == 1) {
+      Post _post = PostAPI.createPost(content);
       String topic = "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ";
       topic += content['article'] ?? content['content'];
-      return new Container(
-          margin: EdgeInsets.only(top: 8.0),
-          padding: EdgeInsets.all(8.0),
-          decoration: new BoxDecoration(
-              color: currentRootTopicColor,
-              borderRadius: BorderRadius.circular(5.0)
-          ),
-          child: new Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                getExtendedText(topic),
-                getRootPostImages(rootTopic['topic'])
-              ]
-          )
+      return new GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(platformPageRoute(builder: (context) {
+            return PostDetailPage(_post);
+          }));
+        },
+        child: new Container(
+            margin: EdgeInsets.only(top: 8.0),
+            padding: EdgeInsets.all(8.0),
+            decoration: new BoxDecoration(
+                color: currentRootTopicColor,
+                borderRadius: BorderRadius.circular(5.0)
+            ),
+            child: new Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  getExtendedText(topic),
+                  getRootPostImages(rootTopic['topic'])
+                ]
+            )
+        )
       );
     } else {
       return getPostBanned("delete");
@@ -237,15 +247,14 @@ class _PostCardItemState extends State<PostCardItem> {
                     );
                   }));
                 },
-                child: new Hero(
-                    tag: "$urlInsecure${index.toString()}${widget.post.id.toString()}",
+//                child: new Hero(
+//                    tag: "$urlInsecure${index.toString()}${widget.post.id.toString()}",
                     child: ExtendedImage.network(
                       urlInsecure,
                       fit: BoxFit.cover,
                       cache: true,
                     )
-//                    child: new Image(image: CachedNetworkImageProvider(urlInsecure, cacheManager: DefaultCacheManager()), fit: BoxFit.cover)
-                )
+//                )
             )
         );
       }
@@ -276,7 +285,7 @@ class _PostCardItemState extends State<PostCardItem> {
 
   Widget getPostActions(post) {
     int forwards = post.forwards;
-    int replies = post.replies;
+    int comments = post.comments;
     int praises = post.praises;
 
     return new Flex(
@@ -309,7 +318,7 @@ class _PostCardItemState extends State<PostCardItem> {
               size: 18,
             ),
             label: Text(
-              replies == 0 ? "评论" : "$replies",
+              comments == 0 ? "评论" : "$comments",
               style: TextStyle(color: _replysColor),
             ),
             splashColor: Colors.grey,
@@ -392,6 +401,7 @@ class _PostCardItemState extends State<PostCardItem> {
       widget.post.isLike = !widget.post.isLike;
     });
   }
+
   void _requestPraise(id, isPraise) {
     DataUtils.getSid().then((sid) {
       Map<String, dynamic> headers = new Map();
@@ -403,7 +413,7 @@ class _PostCardItemState extends State<PostCardItem> {
       List<Cookie> cookies = [new Cookie("PHPSESSID", sid)];
       if (isPraise) {
         NetUtils.postWithCookieAndHeaderSet(
-            "${Api.postPraise}$id",
+            "${Api.postRequestPraise}$id",
             headers: headers,
             cookies: cookies
         ).catchError((e) {
@@ -411,7 +421,7 @@ class _PostCardItemState extends State<PostCardItem> {
         });
       } else {
         NetUtils.deleteWithCookieAndHeaderSet(
-            "${Api.postPraise}$id",
+            "${Api.postRequestPraise}$id",
             headers: headers,
             cookies: cookies
         ).catchError((e) {
@@ -460,6 +470,126 @@ class _PostCardItemState extends State<PostCardItem> {
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)
         ),
       )
+    );
+  }
+}
+
+
+class PostCardInPost extends StatefulWidget {
+  final Post post;
+  final List<Post> posts;
+
+  PostCardInPost(this.post, this.posts, {Key key}) : super(key: key);
+
+  @override
+  State createState() => _PostCardInPostState();
+}
+
+class _PostCardInPostState extends State<PostCardInPost> {
+
+  @override
+  void initState() {
+    super.initState();
+    print(widget.posts);
+  }
+
+  GestureDetector getPostAvatar(context, post) {
+    return new GestureDetector(
+        child: new Container(
+          width: 40.0,
+          height: 40.0,
+          margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+          decoration: new BoxDecoration(
+            shape: BoxShape.circle,
+            color: const Color(0xFFECECEC),
+            image: new DecorationImage(
+                image: CachedNetworkImageProvider(post.avatar, cacheManager: DefaultCacheManager()),
+                fit: BoxFit.cover
+            ),
+          ),
+        ),
+        onTap: () {
+          return UserPage.jump(context, widget.post.userId);
+        }
+    );
+  }
+
+  Text getPostNickname(post) {
+    return new Text(post.nickname, style: Theme.of(context).primaryTextTheme.title);
+  }
+  Text getPostTime(post) {
+    return new Text(post.postTime, style: Theme.of(context).primaryTextTheme.caption);
+  }
+  Widget getExtendedText(content) {
+    return new ExtendedText(
+      content,
+      style: new TextStyle(fontSize: 16.0),
+      onSpecialTextTap: (dynamic data) {
+        String text = data['content'];
+        if (text.startsWith("#")) {
+          return SearchPage.search(context, text.substring(1, text.length-1));
+        } else if (text.startsWith("@")) {
+          return UserPage.jump(context, data['uid']);
+        } else if (text.startsWith("https://wb.jmu.edu.cn")) {
+          return CommonWebPage.jump(context, text, "网页链接");
+//            return InAppBrowserPage.open(context, text, "网页链接");
+        }
+      },
+      specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+      overflow: ExtendedTextOverflow.ellipsis,
+    );
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    return new Container(
+        color: ThemeUtils.currentCardColor,
+        padding: EdgeInsets.zero,
+        child: widget.posts.length > 0
+            ? ListView.separated(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            separatorBuilder: (context, index) => Container(
+              color: Theme.of(context).dividerColor,
+              height: 1.0,
+            ),
+            itemCount: widget.posts.length,
+            itemBuilder: (context, index) => Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                getPostAvatar(context, widget.posts[index]),
+                Expanded(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Container(height: 10.0),
+                        getPostNickname(widget.posts[index]),
+                        Container(height: 4.0),
+                        getExtendedText(widget.posts[index].content),
+                        Container(height: 6.0),
+                        getPostTime(widget.posts[index]),
+                        Container(height: 10.0),
+                      ],
+                    )
+                )
+              ],
+            )
+        )
+            : Container(
+            height: 120.0,
+            child: Center(
+                child: Text(
+                    "暂无内容",
+                    style: TextStyle(
+                        color: Theme.of(context).primaryTextTheme.caption.color,
+                        fontSize: 18.0
+                    )
+                )
+            )
+        )
     );
   }
 

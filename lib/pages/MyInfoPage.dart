@@ -18,10 +18,10 @@ class MyInfoPage extends StatefulWidget {
 class MyInfoPageState extends State<MyInfoPage> {
   Color themeColor = ThemeUtils.currentColorTheme;
 
-//  var titles = ["夜间模式", "切换主题", "退出登录", "测试页", "关于"];
-  var titles = ["夜间模式", "切换主题", "退出登录", "关于"];
-//  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad, Icons.info];
-  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.info];
+  var titles = ["夜间模式", "切换主题", "退出登录", "测试页", "关于"];
+//  var titles = ["夜间模式", "切换主题", "退出登录", "关于"];
+  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad, Icons.info];
+//  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.info];
   var userAvatar;
   var userName;
   var titleTextStyle = new TextStyle(fontSize: 16.0);
@@ -182,10 +182,10 @@ class MyInfoPageState extends State<MyInfoPage> {
     setState(() {
       if (isDark) {
         ThemeUtils.currentPrimaryColor = Colors.grey[850];
-        ThemeUtils.currentBrightness = Brightness.dark;
+        ThemeUtils.currentCardColor = const Color(0xff424242);
       } else {
         ThemeUtils.currentPrimaryColor = Colors.white;
-        ThemeUtils.currentBrightness = Brightness.light;
+        ThemeUtils.currentCardColor = const Color(0xffffffff);
       }
     });
   }

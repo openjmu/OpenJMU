@@ -27,5 +27,7 @@ class ThemeUtils {
   // 当前是否夜间模式
   static bool currentIsDarkState = false;
   // 当前主题日夜模式
-  static Brightness currentBrightness = Brightness.light;
+  static Brightness currentBrightness = Brightness.dark;
+  // 当前卡片颜色
+  static Color currentCardColor = const Color(0xffffffff);
 }

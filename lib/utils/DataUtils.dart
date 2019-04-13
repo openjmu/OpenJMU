@@ -305,7 +305,6 @@ class DataUtils {
 
   // 重置主题配置
   static resetTheme() {
-    ThemeUtils.currentBrightness = Brightness.light;
     ThemeUtils.currentPrimaryColor = Colors.white;
     ThemeUtils.currentColorTheme = ThemeUtils.defaultColor;
   }
@@ -342,7 +341,6 @@ class DataUtils {
           headers: headers,
           cookies: cookies
       ).then((response) {
-        print(response);
         Map<String, dynamic> data = jsonDecode(response);
 //        int newFans = int.parse(data['fans']);
         int comment = int.parse(data['cmt']);
@@ -351,6 +349,7 @@ class DataUtils {
         int praises = int.parse(data['t_praised']);
 //        int count = newFans + comment + postsAt + commsAt + praises;
         int count = comment + postsAt + commsAt + praises;
+//        print("Count: $count, At: ${postsAt+commsAt}, Comment: $comment, Praise: $praises");
         Notifications notifications = new Notifications(count, postsAt+commsAt, comment, praises);
         Constants.eventBus.fire(new NotificationsChangeEvent(notifications));
       }).catchError((e) {

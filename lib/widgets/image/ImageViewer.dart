@@ -26,12 +26,14 @@ class _ImageViewerState extends State<ImageViewer> {
 
   @override
   void initState() {
+    SystemChrome.setEnabledSystemUIOverlays([]);
     currentIndex = widget.index;
     super.initState();
   }
 
   @override
   void dispose() {
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     rebuild.close();
 //    clearGestureDetailsCache();
     super.dispose();
@@ -64,26 +66,30 @@ class _ImageViewerState extends State<ImageViewer> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
-        appBar: new AppBar(
-          backgroundColor: Colors.black,
-          title: ViewAppBar(widget.pics, currentIndex, rebuild),
-          centerTitle: true,
-          actions: <Widget>[
-            GestureDetector(
-              child: Container(
-                padding: EdgeInsets.only(right: 10.0),
-                alignment: Alignment.center,
-                child: Icon(Icons.save, color: Colors.white),
-              ),
-              onTap: () {
-                _downloadImage(widget.pics[currentIndex].imageUrl);
-              },
-            )
-          ],
-          iconTheme: IconThemeData(color: Colors.white),
-        ),
         body: Column(
           children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                ViewAppBar(widget.pics, currentIndex, rebuild),
+                GestureDetector(
+                  child: Container(
+                    padding: EdgeInsets.only(right: 10.0),
+                    alignment: Alignment.center,
+                    child: Icon(Icons.save, color: Colors.white),
+                  ),
+                  onTap: () {
+                    _downloadImage(widget.pics[currentIndex].imageUrl);
+                  },
+                )
+              ],
+            ),
             Expanded(
                 child: Stack(
                   fit: StackFit.expand,
@@ -106,12 +112,12 @@ class _ImageViewerState extends State<ImageViewer> {
                           ),
                           padding: EdgeInsets.all(5.0),
                         );
-                        if (index == currentIndex) {
-                          image = Hero(
-                            tag: "${widget.pics[index].imageUrl}${index.toString()}${widget.pics[index].postId.toString()}",
-                            child: image,
-                          );
-                        }
+//                        if (index == currentIndex) {
+//                          image = Hero(
+//                            tag: "${widget.pics[index].imageUrl}${index.toString()}${widget.pics[index].postId.toString()}",
+//                            child: image,
+//                          );
+//                        }
                         return new GestureDetector(
                             onTap: () {
                               Navigator.of(context).pop();

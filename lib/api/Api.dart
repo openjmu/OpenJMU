@@ -38,17 +38,21 @@ class Api {
   /// 微博相关
   static final String postUnread = wbHost + "/user_api/unread";
   static final String postList = wbHost + "/topic_api/square";
-  static final String postFollowedList = wbHost + "/topic_api/timeline";
-  static final String postPraise = wbHost + "/praise_api/praise/tid/";
-  static final String postContent = wbHost + "/topic_api/topic";
-  static final String postUploadImage = wbHost + "/upload_api/image";
   static final String postListByUid = wbHost + "/topic_api/user/uid/";
   static final String postListByWords = wbHost + "/search_api/topic/keyword/";
-  static final String postListByMention = wbHost + "/topic_api/mentionme";
+  static final String postFollowedList = wbHost + "/topic_api/timeline";
+  static final String postGlance = wbHost + "/topic_api/glances";
+  static final String postContent = wbHost + "/topic_api/topic";
+  static final String postUploadImage = wbHost + "/upload_api/image";
+  static final String postRequestPraise = wbHost + "/praise_api/praise/tid/";
+  static final String postForwardsList = wbHost + "/topic_api/repolist/tid/";
+  static final String postCommentsList = wbHost + "/reply_api/replylist/tid/";
+  static final String postPraisesList = wbHost + "/praise_api/praisors/tid/";
 
+  /// 通知相关
+  static final String postListByMention = wbHost + "/topic_api/mentionme";
   static final String commentListByReply = wbHost + "/reply_api/replyme";
   static final String commentListByMention = wbHost + "/reply_api/mentionme";
-
   static final String praiseList = wbHost + "/praise_api/tome";
 
 }
