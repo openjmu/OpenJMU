@@ -305,8 +305,8 @@ class DataUtils {
 
   // 重置主题配置
   static resetTheme() {
-    ThemeUtils.currentPrimaryColor = Colors.white;
     ThemeUtils.currentColorTheme = ThemeUtils.defaultColor;
+    ThemeUtils.currentPrimaryColor = Colors.white;
   }
   // 获取设置的主题色
   static Future<int> getColorThemeIndex() async {

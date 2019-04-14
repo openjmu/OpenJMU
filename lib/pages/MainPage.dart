@@ -1,8 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'dart:async';
-import 'dart:io';
 import 'package:badges/badges.dart';
 import 'package:ota_update/ota_update.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -68,8 +67,6 @@ class MainPageState extends State<MainPage> {
   String userSid;
   var userAvatar;
 
-  bool isUserLogin = false;
-
   OtaEvent otaEvent;
 
   @override
@@ -77,9 +74,6 @@ class MainPageState extends State<MainPage> {
     super.initState();
 //    OTAUpdate.checkUpdate();
     DataUtils.isLogin().then((isLogin) {
-      setState(() {
-        this.isUserLogin = isLogin;
-      });
       DataUtils.getNotifications();
       if (isLogin) {
         watch.start();
@@ -89,13 +83,6 @@ class MainPageState extends State<MainPage> {
         setState(() {
           this.userSid = UserUtils.currentUser.sid;
           this.userUid = UserUtils.currentUser.uid;
-        });
-      }
-    });
-    Constants.eventBus.on<LoginEvent>().listen((event) {
-      if (this.mounted) {
-        setState(() {
-          this.isUserLogin = true;
         });
       }
     });
@@ -118,7 +105,7 @@ class MainPageState extends State<MainPage> {
     });
     DataUtils.getBrightnessDark().then((isDark) {
       setState(() {
-        if (isDark) {
+        if (isDark != null && isDark) {
           ThemeUtils.currentCardColor = const Color(0xff424242);
         } else {
           ThemeUtils.currentCardColor = const Color(0xffffffff);

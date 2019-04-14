@@ -168,7 +168,6 @@ class _PraiseCardState extends State<PraiseCard> {
           return UserPage.jump(context, data['uid']);
         } else if (text.startsWith("https://wb.jmu.edu.cn")) {
           return CommonWebPage.jump(context, text, "网页链接");
-//            return InAppBrowserPage.open(context, text, "网页链接");
         }
       },
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
@@ -280,12 +279,6 @@ class PraiseCardInPost extends StatefulWidget {
 }
 
 class _PraiseCardInPostState extends State<PraiseCardInPost> {
-
-  @override
-  void initState() {
-    super.initState();
-    print(widget.praises);
-  }
 
   GestureDetector getPostAvatar(context, praise) {
     return new GestureDetector(

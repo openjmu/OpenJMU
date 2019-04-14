@@ -168,70 +168,79 @@ class PostDetailPageState extends State<PostDetailPage> {
             ],
           ),
           Positioned(
-            bottom: 0.0,
+            bottom: MediaQuery.of(context).padding.bottom ?? 0,
             left: 0.0,
             right: 0.0,
-            child: Flex(
-              direction: Axis.horizontal,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            child: Column(
               children: <Widget>[
-                Expanded(
-                    flex: 1,
-                    child: Container(
-                      color: ThemeUtils.currentCardColor,
-                      child: FlatButton.icon(
-                        onPressed: null,
-                        icon: Icon(
-                          Icons.launch,
-                          color: Theme.of(context).textTheme.title.color,
-                          size: 24,
-                        ),
-                        label: Text("转发", style: TextStyle(
-                            color: Theme.of(context).textTheme.title.color
-                        )),
-                        splashColor: Colors.grey,
-                      )
-                    )
-                ),
-                Expanded(
-                    flex: 1,
-                    child: Container(
-                        color: ThemeUtils.currentCardColor,
-                        child: FlatButton.icon(
-                          onPressed: null,
-                          icon: Icon(
-                            Icons.comment,
-                            color: Theme.of(context).textTheme.title.color,
-                            size: 24,
-                          ),
-                          label: Text("评论", style: TextStyle(
-                              color: Theme.of(context).textTheme.title.color,
-                          )),
-                          splashColor: Colors.grey,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Expanded(
+                        flex: 1,
+                        child: Container(
+                            color: ThemeUtils.currentCardColor,
+                            child: FlatButton.icon(
+                              onPressed: null,
+                              icon: Icon(
+                                Icons.launch,
+                                color: Theme.of(context).textTheme.title.color,
+                                size: 24,
+                              ),
+                              label: Text("转发", style: TextStyle(
+                                  color: Theme.of(context).textTheme.title.color
+                              )),
+                              splashColor: Colors.grey,
+                            )
                         )
-                    )
-                ),
-                Expanded(
-                    flex: 1,
-                    child: Container(
-                        color: ThemeUtils.currentCardColor,
-                        child: FlatButton.icon(
-                          onPressed: null,
-                          icon: Icon(
-                            Icons.thumb_up,
-                            color: _praisesColor,
-                            size: 24,
-                          ),
-                          label: Text("赞", style: TextStyle(
-                              color: _praisesColor
-                          )),
-                          splashColor: Colors.grey,
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: Container(
+                            color: ThemeUtils.currentCardColor,
+                            child: FlatButton.icon(
+                              onPressed: null,
+                              icon: Icon(
+                                Icons.comment,
+                                color: Theme.of(context).textTheme.title.color,
+                                size: 24,
+                              ),
+                              label: Text("评论", style: TextStyle(
+                                color: Theme.of(context).textTheme.title.color,
+                              )),
+                              splashColor: Colors.grey,
+                            )
                         )
-                    )
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: Container(
+                            color: ThemeUtils.currentCardColor,
+                            child: FlatButton.icon(
+                              onPressed: null,
+                              icon: Icon(
+                                Icons.thumb_up,
+                                color: _praisesColor,
+                                size: 24,
+                              ),
+                              label: Text("赞", style: TextStyle(
+                                  color: _praisesColor
+                              )),
+                              splashColor: Colors.grey,
+                            )
+                        )
+                    ),
+                  ],
                 ),
+                Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).padding.bottom ?? 0,
+                    color: ThemeUtils.currentCardColor
+                )
               ]
             )
-          )
+          ),
         ],
       ),
     );

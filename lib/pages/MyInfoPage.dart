@@ -162,8 +162,6 @@ class MyInfoPageState extends State<MyInfoPage> {
               value: isDark,
               onChanged: (isDark) {
                 setDarkMode(isDark);
-                DataUtils.setBrightnessDark(isDark);
-                Constants.eventBus.fire(new ChangeBrightnessEvent(isDark));
               }
           )
               : new Icon(Icons.keyboard_arrow_right)
@@ -188,6 +186,8 @@ class MyInfoPageState extends State<MyInfoPage> {
         ThemeUtils.currentCardColor = const Color(0xffffffff);
       }
     });
+    DataUtils.setBrightnessDark(isDark);
+    Constants.eventBus.fire(new ChangeBrightnessEvent(isDark));
   }
 
   @override
@@ -223,6 +223,8 @@ class MyInfoPageState extends State<MyInfoPage> {
             ],
           )
       );
+    } else if (title == "夜间模式") {
+      setDarkMode(!isDark);
     } else if (title == "切换主题") {
       Navigator.pushNamed(context, "/changeTheme");
     } else if (title == "测试页") {

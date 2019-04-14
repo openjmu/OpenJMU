@@ -33,7 +33,6 @@ class _ImageViewerState extends State<ImageViewer> {
 
   @override
   void dispose() {
-    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     rebuild.close();
 //    clearGestureDetailsCache();
     super.dispose();
@@ -45,9 +44,9 @@ class _ImageViewerState extends State<ImageViewer> {
       String imageId;
       Platform.isAndroid
           ? imageId = await ImageDownloader.downloadImage(
-            url,
-            destination: AndroidDestinationType.custom(directory: 'OpenJMU')
-          )
+          url,
+          destination: AndroidDestinationType.custom(directory: 'OpenJMU')
+      )
           : imageId = await ImageDownloader.downloadImage(url);
       if (imageId == null) {
         return;
@@ -62,87 +61,92 @@ class _ImageViewerState extends State<ImageViewer> {
     return;
   }
 
+  Future<bool> _pop(context, bool fromImageTap) {
+    SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    if (fromImageTap) {
+      Navigator.of(context).pop();
+      return Future.value(true);
+    } else {
+      return Future.value(true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.black,
-        body: Column(
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return new WillPopScope(
+        onWillPop: () => _pop(context, false),
+        child: Scaffold(
+            appBar: AppBar(
+                backgroundColor: Colors.black,
+                title: ViewAppBar(widget.pics, currentIndex, rebuild),
+                centerTitle: true,
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.save, color: Colors.white),
+                    onPressed: () {
+                      _downloadImage(widget.pics[currentIndex].imageUrl);
+                    },
+                  )
+                ]
+            ),
+            backgroundColor: Colors.black,
+            body: Column(
               children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                ViewAppBar(widget.pics, currentIndex, rebuild),
-                GestureDetector(
-                  child: Container(
-                    padding: EdgeInsets.only(right: 10.0),
-                    alignment: Alignment.center,
-                    child: Icon(Icons.save, color: Colors.white),
-                  ),
-                  onTap: () {
-                    _downloadImage(widget.pics[currentIndex].imageUrl);
-                  },
+                Expanded(
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: <Widget>[
+                        ExtendedImageGesturePageView.builder(
+                          itemBuilder: (BuildContext context, int index) {
+                            String item = widget.pics[index].imageUrl;
+                            Widget image = new Container(
+                              child: ExtendedImage.network(
+                                item,
+                                fit: BoxFit.contain,
+                                cache: true,
+                                mode: ExtendedImageMode.Gesture,
+                                gestureConfig: GestureConfig(
+                                  cacheGesture: false,
+                                  inPageView: true,
+                                  initialScale: 1.0,
+                                  minScale: 1.0,
+                                ),
+                              ),
+                              padding: EdgeInsets.all(5.0),
+                            );
+//                            if (index == currentIndex) {
+//                              image = Hero(
+//                                tag: "${widget.pics[index].imageUrl}${index.toString()}${widget.pics[index].postId.toString()}",
+//                                child: image,
+//                              );
+//                            }
+                            return new GestureDetector(
+                                onTap: () {
+                                  _pop(context, true);
+                                },
+                                onLongPress: () {
+                                  print("longpress");
+                                },
+                                child: image
+                            );
+                          },
+                          itemCount: widget.pics.length,
+                          onPageChanged: (int index) {
+                            currentIndex = index;
+                            rebuild.add(index);
+                          },
+                          controller: PageController(
+                            initialPage: currentIndex,
+                          ),
+                          scrollDirection: Axis.horizontal,
+                        ),
+                      ],
+                    )
                 )
               ],
-            ),
-            Expanded(
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: <Widget>[
-                    ExtendedImageGesturePageView.builder(
-                      itemBuilder: (BuildContext context, int index) {
-                        String item = widget.pics[index].imageUrl;
-                        Widget image = new Container(
-                          child: ExtendedImage.network(
-                            item,
-                            fit: BoxFit.contain,
-                            cache: true,
-                            mode: ExtendedImageMode.Gesture,
-                            gestureConfig: GestureConfig(
-                              cacheGesture: false,
-                              inPageView: true,
-                              initialScale: 1.0,
-                              minScale: 1.0,
-                            ),
-                          ),
-                          padding: EdgeInsets.all(5.0),
-                        );
-//                        if (index == currentIndex) {
-//                          image = Hero(
-//                            tag: "${widget.pics[index].imageUrl}${index.toString()}${widget.pics[index].postId.toString()}",
-//                            child: image,
-//                          );
-//                        }
-                        return new GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                            onLongPress: () {
-                              print("longpress");
-                            },
-                            child: image
-                        );
-                      },
-                      itemCount: widget.pics.length,
-                      onPageChanged: (int index) {
-                        currentIndex = index;
-                        rebuild.add(index);
-                      },
-                      controller: PageController(
-                        initialPage: currentIndex,
-                      ),
-                      scrollDirection: Axis.horizontal,
-                    ),
-                  ],
-                )
             )
-          ],
-        ));
+        )
+    );
   }
 }
 

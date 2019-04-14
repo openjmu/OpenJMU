@@ -194,7 +194,9 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
     } else {
       return Container(
         child: Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(currentColorTheme)
+          ),
         ),
       );
     }
@@ -296,10 +298,12 @@ class _PraiseInPostListState extends State<PraiseInPostList> {
     response.forEach((praise) {
       praises.add(PraiseAPI.createPraiseInPost(praise));
     });
-    setState(() {
-      isLoading = false;
-      _praises = praises;
-    });
+    if (this.mounted) {
+      setState(() {
+        isLoading = false;
+        _praises = praises;
+      });
+    }
   }
 
   @override
@@ -308,7 +312,7 @@ class _PraiseInPostListState extends State<PraiseInPostList> {
         color: ThemeUtils.currentCardColor,
         width: MediaQuery.of(context).size.width,
         padding: isLoading
-            ? EdgeInsets.symmetric(vertical: 100)
+            ? EdgeInsets.symmetric(vertical: 42)
             : EdgeInsets.zero,
         child: isLoading
             ? Center(child: CircularProgressIndicator(

@@ -314,7 +314,6 @@ class _CommentCardInPostState extends State<CommentCardInPost> {
           return UserPage.jump(context, data['uid']);
         } else if (text.startsWith("https://wb.jmu.edu.cn")) {
           return CommonWebPage.jump(context, text, "网页链接");
-//            return InAppBrowserPage.open(context, text, "网页链接");
         }
       },
       specialTextSpanBuilder: StackSpecialTextSpanBuilder()

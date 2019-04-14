@@ -231,7 +231,9 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
     } else {
       return Container(
         child: Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+              valueColor: new AlwaysStoppedAnimation<Color>(currentColorTheme)
+          ),
         ),
       );
     }
@@ -334,10 +336,12 @@ class _CommentInPostListState extends State<CommentInPostList> {
     response.forEach((comment) {
       comments.add(CommentAPI.createCommentInPost(comment['reply']));
     });
-    setState(() {
-      isLoading = false;
-      _comments = comments;
-    });
+    if (this.mounted) {
+      setState(() {
+        isLoading = false;
+        _comments = comments;
+      });
+    }
   }
 
   @override
@@ -346,7 +350,7 @@ class _CommentInPostListState extends State<CommentInPostList> {
         color: ThemeUtils.currentCardColor,
         width: MediaQuery.of(context).size.width,
         padding: isLoading
-            ? EdgeInsets.symmetric(vertical: 100)
+            ? EdgeInsets.symmetric(vertical: 42)
             : EdgeInsets.zero,
         child: isLoading
             ? Center(child: CircularProgressIndicator(

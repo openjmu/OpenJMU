@@ -31,6 +31,7 @@ class CommonWebPageState extends State<CommonWebPage> {
   bool loading = true;
   String _url, _title;
   Color primaryColor = Colors.white;
+  Color currentColorTheme = ThemeUtils.currentColorTheme;
   double currentProgress = 0.0;
 
   final flutterWebViewPlugin = new FlutterWebviewPlugin();
@@ -106,10 +107,10 @@ class CommonWebPageState extends State<CommonWebPage> {
   PreferredSize progressBar() {
     return new PreferredSize(
         child: new Container(
-            color: ThemeUtils.currentColorTheme,
+            color: currentColorTheme,
             height: 2.0,
             child: new LinearProgressIndicator(
-                backgroundColor: ThemeUtils.currentColorTheme,
+                backgroundColor: currentColorTheme,
                 value: currentProgress,
                 valueColor: AlwaysStoppedAnimation<Color>(primaryColor)
             )
@@ -129,6 +130,7 @@ class CommonWebPageState extends State<CommonWebPage> {
             url: widget.url,
             allowFileURLs: true,
             appBar: new AppBar(
+              backgroundColor: currentColorTheme,
               leading: new IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
@@ -136,7 +138,6 @@ class CommonWebPageState extends State<CommonWebPage> {
                   }
               ),
               title: new Container(
-                  width: MediaQuery.of(context).size.width - 144,
                   child: new Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -151,7 +152,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                       ]
                   )
               ),
-              centerTitle: false,
+              centerTitle: true,
               actions: <Widget>[trailing],
               bottom: progressBar(),
             ),
@@ -169,7 +170,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                             padding: EdgeInsets.zero,
                             icon: new Icon(
                                 Icons.keyboard_arrow_left,
-                                color: ThemeUtils.currentColorTheme
+                                color: currentColorTheme
                             ),
                             onPressed: () {
                               flutterWebViewPlugin.goBack();
@@ -179,7 +180,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                             padding: EdgeInsets.zero,
                             icon: new Icon(
                                 Icons.keyboard_arrow_right,
-                                color: ThemeUtils.currentColorTheme
+                                color: currentColorTheme
                             ),
                             onPressed: () {
                               flutterWebViewPlugin.goForward();
@@ -189,7 +190,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                             padding: EdgeInsets.zero,
                             icon: new Icon(
                                 Icons.refresh,
-                                color: ThemeUtils.currentColorTheme
+                                color: currentColorTheme
                             ),
                             onPressed: () {
                               flutterWebViewPlugin.reload();

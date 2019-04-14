@@ -16,7 +16,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
-  Animation<double> _animation;
+//  Animation<double> _animation;
   AnimationController _animationController;
 
   final _formKey = GlobalKey<FormState>();
@@ -28,6 +28,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   @override
   void initState() {
     super.initState();
+    DataUtils.resetTheme();
 //    _animationController =
 //        AnimationController(duration: const Duration(seconds: 1), vsync: this);
 //    _animation = Tween<double>(begin: 120, end: 100).animate(_animationController)
@@ -55,6 +56,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     _animationController?.dispose();
     super.dispose();
   }
+
   int last = 0;
   Future<bool> doubleBackExit() {
     int now = DateTime.now().millisecondsSinceEpoch;
@@ -105,6 +107,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             ),
             child: new TextFormField(
               decoration: new InputDecoration(
+                prefixIcon: Icon(Icons.person, color: Colors.white),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(10.0),
                 labelText: '工号/学号',
@@ -138,6 +141,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               decoration: new InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(10.0),
+                  prefixIcon: Icon(Icons.lock, color: Colors.white),
                   labelText: '密码',
                   labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0),
                   suffixIcon: new IconButton(
