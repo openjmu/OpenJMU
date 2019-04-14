@@ -121,7 +121,7 @@ class PostDetailPageState extends State<PostDetailPage> {
   Widget build(BuildContext context) {
     Color _praisesColor = widget.post.isLike
         ? ThemeUtils.currentColorTheme
-        : Theme.of(context).primaryTextTheme.body1.color
+        : Theme.of(context).textTheme.title.color
     ;
     return new Scaffold(
       appBar: new AppBar(
@@ -177,11 +177,11 @@ class PostDetailPageState extends State<PostDetailPage> {
                         onPressed: null,
                         icon: Icon(
                           Icons.launch,
-                          color: Theme.of(context).primaryTextTheme.body1.color,
+                          color: Theme.of(context).textTheme.title.color,
                           size: 24,
                         ),
                         label: Text("转发", style: TextStyle(
-                            color: Theme.of(context).primaryTextTheme.body1.color
+                            color: Theme.of(context).textTheme.title.color
                         )),
                         splashColor: Colors.grey,
                       )
@@ -195,11 +195,11 @@ class PostDetailPageState extends State<PostDetailPage> {
                           onPressed: null,
                           icon: Icon(
                             Icons.comment,
-                            color: Theme.of(context).primaryTextTheme.body1.color,
+                            color: Theme.of(context).textTheme.title.color,
                             size: 24,
                           ),
                           label: Text("评论", style: TextStyle(
-                              color: Theme.of(context).primaryTextTheme.body1.color
+                              color: Theme.of(context).textTheme.title.color,
                           )),
                           splashColor: Colors.grey,
                         )

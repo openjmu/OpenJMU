@@ -309,7 +309,13 @@ class _PraiseCardInPostState extends State<PraiseCardInPost> {
   }
 
   Text getPostNickname(praise) {
-    return new Text(praise.nickname, style: Theme.of(context).primaryTextTheme.title);
+    return new Text(
+        praise.nickname,
+        style: TextStyle(
+            color: Theme.of(context).textTheme.body1.color,
+            fontSize: 18.0
+        )
+    );
   }
 
   @override
@@ -349,7 +355,7 @@ class _PraiseCardInPostState extends State<PraiseCardInPost> {
                 child: Text(
                     "暂无内容",
                     style: TextStyle(
-                        color: Theme.of(context).primaryTextTheme.caption.color,
+                        color: Colors.grey,
                         fontSize: 18.0
                     )
                 )

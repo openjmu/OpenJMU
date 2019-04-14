@@ -34,7 +34,6 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  final TextStyle titleTextStyle = new TextStyle(fontSize: 20.0);
   final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
   final TextStyle rootTopicTextStyle = new TextStyle(fontSize: 14.0);
   final TextStyle rootTopicMentionStyle = new TextStyle(color: Colors.blue, fontSize: 14.0);
@@ -106,7 +105,10 @@ class _PostCardState extends State<PostCard> {
   Text getPostNickname(post) {
     return new Text(
       post.nickname ?? post.userId,
-      style: titleTextStyle,
+      style: TextStyle(
+          color: Theme.of(context).textTheme.body1.color,
+          fontSize: 18.0
+      ),
       textAlign: TextAlign.left,
     );
   }
@@ -201,6 +203,7 @@ class _PostCardState extends State<PostCard> {
           }));
         },
         child: new Container(
+            width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.only(top: 8.0),
             padding: EdgeInsets.all(8.0),
             decoration: new BoxDecoration(
@@ -261,6 +264,7 @@ class _PostCardState extends State<PostCard> {
       int itemCount = 3;
       if (data.length == 1) {
         return new Container(
+            width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.only(top: 8.0),
             child: imagesWidget[0]
         );
@@ -487,12 +491,6 @@ class PostCardInPost extends StatefulWidget {
 
 class _PostCardInPostState extends State<PostCardInPost> {
 
-  @override
-  void initState() {
-    super.initState();
-    print(widget.posts);
-  }
-
   GestureDetector getPostAvatar(context, post) {
     return new GestureDetector(
         child: new Container(
@@ -509,16 +507,33 @@ class _PostCardInPostState extends State<PostCardInPost> {
           ),
         ),
         onTap: () {
-          return UserPage.jump(context, widget.post.userId);
+          return UserPage.jump(context, post.userId);
         }
     );
   }
 
   Text getPostNickname(post) {
-    return new Text(post.nickname, style: Theme.of(context).primaryTextTheme.title);
+    return new Text(post.nickname,
+        style: TextStyle(
+          color: Theme.of(context).textTheme.title.color,
+          fontSize: 18.0
+        )
+    );
   }
   Text getPostTime(post) {
-    return new Text(post.postTime, style: Theme.of(context).primaryTextTheme.caption);
+    String _postTime = post.postTime;
+    DateTime now = new DateTime.now();
+    if (int.parse(_postTime.substring(0, 4)) == now.year) {
+      _postTime = _postTime.substring(5, 16);
+    }
+    if (
+    int.parse(_postTime.substring(0, 2)) == now.month
+        &&
+        int.parse(_postTime.substring(3, 5)) == now.day
+    ) {
+      _postTime = "${_postTime.substring(5, 11)}";
+    }
+    return new Text(_postTime, style: Theme.of(context).textTheme.caption);
   }
   Widget getExtendedText(content) {
     return new ExtendedText(
@@ -532,11 +547,9 @@ class _PostCardInPostState extends State<PostCardInPost> {
           return UserPage.jump(context, data['uid']);
         } else if (text.startsWith("https://wb.jmu.edu.cn")) {
           return CommonWebPage.jump(context, text, "网页链接");
-//            return InAppBrowserPage.open(context, text, "网页链接");
         }
       },
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-      overflow: ExtendedTextOverflow.ellipsis,
     );
   }
 
@@ -584,7 +597,7 @@ class _PostCardInPostState extends State<PostCardInPost> {
                 child: Text(
                     "暂无内容",
                     style: TextStyle(
-                        color: Theme.of(context).primaryTextTheme.caption.color,
+                        color: Colors.grey,
                         fontSize: 18.0
                     )
                 )

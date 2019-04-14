@@ -304,17 +304,16 @@ class _PraiseInPostListState extends State<PraiseInPostList> {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
     return new Container(
         color: ThemeUtils.currentCardColor,
         width: MediaQuery.of(context).size.width,
         padding: isLoading
-            ? EdgeInsets.symmetric(horizontal: width - 245,  vertical: 100)
+            ? EdgeInsets.symmetric(vertical: 100)
             : EdgeInsets.zero,
         child: isLoading
-            ? CircularProgressIndicator(
+            ? Center(child: CircularProgressIndicator(
             valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
-        )
+        ))
             : PraiseCardInPost(_praises)
     );
   }

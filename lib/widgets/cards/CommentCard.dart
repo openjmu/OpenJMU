@@ -254,12 +254,6 @@ class CommentCardInPost extends StatefulWidget {
 
 class _CommentCardInPostState extends State<CommentCardInPost> {
 
-  @override
-  void initState() {
-    super.initState();
-    print(widget.comments);
-  }
-
   GestureDetector getCommentAvatar(context, comment) {
     return new GestureDetector(
         child: new Container(
@@ -276,16 +270,37 @@ class _CommentCardInPostState extends State<CommentCardInPost> {
           ),
         ),
         onTap: () {
-          return UserPage.jump(context, widget.post.userId);
+          return UserPage.jump(context, comment.fromUserUid);
         }
     );
   }
 
   Text getCommentNickname(comment) {
-    return new Text(comment.fromUserName, style: Theme.of(context).primaryTextTheme.title);
+    return new Text(
+        comment.fromUserName,
+        style: TextStyle(
+          color: Theme.of(context).textTheme.title.color,
+          fontSize: 18.0
+        )
+    );
   }
   Text getCommentTime(comment) {
-    return new Text(comment.commentTime, style: Theme.of(context).primaryTextTheme.caption);
+    String _commentTime = comment.commentTime;
+    DateTime now = new DateTime.now();
+    if (int.parse(_commentTime.substring(0, 4)) == now.year) {
+      _commentTime = _commentTime.substring(5, 16);
+    }
+    if (
+    int.parse(_commentTime.substring(0, 2)) == now.month
+        &&
+        int.parse(_commentTime.substring(3, 5)) == now.day
+    ) {
+      _commentTime = "${_commentTime.substring(5, 11)}";
+    }
+    return new Text(
+        _commentTime,
+        style: Theme.of(context).textTheme.caption
+    );
   }
   Widget getExtendedText(content) {
     return new ExtendedText(
@@ -302,8 +317,7 @@ class _CommentCardInPostState extends State<CommentCardInPost> {
 //            return InAppBrowserPage.open(context, text, "网页链接");
         }
       },
-      specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-      overflow: ExtendedTextOverflow.ellipsis,
+      specialTextSpanBuilder: StackSpecialTextSpanBuilder()
     );
   }
 
@@ -355,7 +369,7 @@ class _CommentCardInPostState extends State<CommentCardInPost> {
             child: Text(
                 "暂无内容",
                 style: TextStyle(
-                    color: Theme.of(context).primaryTextTheme.caption.color,
+                    color: Colors.grey,
                     fontSize: 18.0
                 )
             )
