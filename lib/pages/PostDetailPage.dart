@@ -125,7 +125,13 @@ class PostDetailPageState extends State<PostDetailPage> {
     ;
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("动态正文", style: TextStyle(color: Colors.white)),
+        title: new Text(
+            "动态正文",
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: Theme.of(context).textTheme.title.fontSize
+            )
+        ),
         centerTitle: true,
         iconTheme: IconThemeData(color: Colors.white),
         brightness: ThemeUtils.currentBrightness,

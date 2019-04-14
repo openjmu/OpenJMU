@@ -29,7 +29,6 @@ class CommonWebPage extends StatefulWidget {
 
 class CommonWebPageState extends State<CommonWebPage> {
   bool loading = true;
-  Timer _timer;
   String _url, _title;
   Color primaryColor = Colors.white;
   double currentProgress = 0.0;
@@ -46,7 +45,7 @@ class CommonWebPageState extends State<CommonWebPage> {
         setState(() {
           loading = false;
         });
-        _timer = new Timer(const Duration(milliseconds: 500), () {
+        new Timer(const Duration(milliseconds: 500), () {
           setState(() {
             currentProgress = 0.0;
           });
@@ -74,14 +73,17 @@ class CommonWebPageState extends State<CommonWebPage> {
     flutterWebViewPlugin.onUrlChanged.listen((url) {
       setState(() {
         _url = url;
-        loading = false;
+        new Timer(const Duration(milliseconds: 500), () {
+          setState(() {
+            loading = false;
+          });
+        });
       });
     });
   }
 
   @override
   void dispose() {
-    _timer.cancel();
     super.dispose();
   }
 
@@ -127,30 +129,31 @@ class CommonWebPageState extends State<CommonWebPage> {
             url: widget.url,
             allowFileURLs: true,
             appBar: new AppBar(
-              backgroundColor: ThemeUtils.currentColorTheme,
               leading: new IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
                     Navigator.of(context).pop();
                   }
               ),
-              title: new Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Text(_title,
-                        style: new TextStyle(color: primaryColor)
-                    ),
-                    new Text(_url,
-                        style: new TextStyle(color: primaryColor, fontSize: 14.0)
-                    )
-                  ]
+              title: new Container(
+                  width: MediaQuery.of(context).size.width - 144,
+                  child: new Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        new Text(_title,
+                            style: new TextStyle(color: primaryColor)
+                        ),
+                        new Text(_url,
+                          style: new TextStyle(color: primaryColor, fontSize: 14.0),
+                          overflow: TextOverflow.fade,
+                        )
+                      ]
+                  )
               ),
               centerTitle: false,
               actions: <Widget>[trailing],
               bottom: progressBar(),
-              iconTheme: new IconThemeData(color: primaryColor),
-              brightness: Brightness.dark,
             ),
             persistentFooterButtons: <Widget>[
               new Container(

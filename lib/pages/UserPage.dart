@@ -278,9 +278,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         _appBar = SliverAppBar(
           floating: false,
           pinned: true,
-          backgroundColor: ThemeUtils.currentColorTheme,
-          brightness: ThemeUtils.currentBrightness,
-          iconTheme: new IconThemeData(color: Colors.white),
           expandedHeight: 187 + bottomSize,
           flexibleSpace: FlexibleSpaceBarWithUserInfo(
             titleFontSize: 14,

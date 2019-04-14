@@ -125,14 +125,6 @@ class MainPageState extends State<MainPage> {
         }
       });
     });
-    DataUtils.getColorThemeIndex().then((index) {
-      if (this.mounted && index != null) {
-        setState(() {
-          ThemeUtils.currentColorTheme = ThemeUtils.supportColors[index];
-        });
-        Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.supportColors[index]));
-      }
-    });
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
       if (this.mounted) {
         setState(() {
@@ -247,7 +239,7 @@ class MainPageState extends State<MainPage> {
                         getTabTitle(_tabIndex),
                         style: new TextStyle(
                             color: Colors.white,
-                            fontSize: 22.0
+                            fontSize: Theme.of(context).textTheme.title.fontSize
                         )
                     )
                 ),
@@ -275,7 +267,6 @@ class MainPageState extends State<MainPage> {
                       }
                   ),
                 ],
-                iconTheme: new IconThemeData(color: currentThemeColor),
                 brightness: Brightness.dark,
               ),
               onTap: doubleTapScrollToTop

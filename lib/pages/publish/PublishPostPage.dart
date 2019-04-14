@@ -303,11 +303,10 @@ class PublishPostPageState extends State<PublishPostPage> {
                   "发布动态",
                   style: new TextStyle(
                       color: Colors.white,
-                      fontSize: 22.0
+                      fontSize: Theme.of(context).textTheme.title.fontSize
                   )
               )
           ),
-          iconTheme: new IconThemeData(color: Colors.white),
           brightness: Brightness.dark,
           actions: <Widget>[
             new Builder(

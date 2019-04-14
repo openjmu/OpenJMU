@@ -29,7 +29,14 @@ class JMUAppClientState extends State<JMUAppClient> {
   void initState() {
     super.initState();
     listenToBrightness();
-    currentThemeColor = ThemeUtils.currentColorTheme;
+    DataUtils.getColorThemeIndex().then((index) {
+      if (this.mounted && index != null) {
+        setState(() {
+          ThemeUtils.currentColorTheme = ThemeUtils.supportColors[index];
+        });
+        Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.supportColors[index]));
+      }
+    });
     Constants.eventBus.on<LogoutEvent>().listen((event) {
       setState(() {
         currentBrightness = Brightness.light;
@@ -95,8 +102,12 @@ class JMUAppClientState extends State<JMUAppClient> {
           accentColor: currentThemeColor,
           primaryColor: currentThemeColor,
           primaryColorBrightness: currentBrightness,
-          primaryIconTheme: new IconThemeData(color: currentThemeColor),
+          primaryIconTheme: new IconThemeData(color: Colors.white),
           brightness: currentBrightness,
+          appBarTheme: AppBarTheme(
+              color: currentThemeColor,
+              brightness: ThemeUtils.currentBrightness
+          )
         ),
         home: new SplashPage()
     );

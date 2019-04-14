@@ -13,10 +13,20 @@ class SplashPage extends StatefulWidget {
 class SplashState extends State<SplashPage> {
   Timer timer;
   bool isUserLogin = false;
+  Color currentThemeColor;
 
   @override
   void initState() {
     super.initState();
+    DataUtils.getColorThemeIndex().then((index) {
+      setState(() {
+        if (index != null) {
+          currentThemeColor = ThemeUtils.supportColors[index];
+        } else {
+          currentThemeColor = ThemeUtils.defaultColor;
+        }
+      });
+    });
     DataUtils.isLogin().then((isLogin) {
       if (isLogin) {
         DataUtils.getTicket();
@@ -74,13 +84,13 @@ class SplashState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        body: Builder(
-          builder: (context) =>
+      return new Scaffold(
+          body: Builder(
+              builder: (context) =>
               new Stack(
-                children: <Widget>[
-                  new Container(
-                    decoration: BoxDecoration(
+                  children: <Widget>[
+                    new Container(
+                      decoration: BoxDecoration(
 //                      gradient: const LinearGradient(
 //                        begin: Alignment.topLeft,
 //                        end: Alignment.bottomCenter,
@@ -89,17 +99,17 @@ class SplashState extends State<SplashPage> {
 //                          Colors.red
 //                        ],
 //                      ),
-                      color: ThemeUtils.defaultColor
-                    ),
-                    child: new Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        new Container(
-                            padding: const EdgeInsets.all(10.0),
-                            child: new Center(
-                              child: new Column(
-                                children: <Widget>[
-                                  buildLogo(),
+                          color: currentThemeColor
+                      ),
+                      child: new Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          new Container(
+                              padding: const EdgeInsets.all(10.0),
+                              child: new Center(
+                                child: new Column(
+                                  children: <Widget>[
+                                    buildLogo(),
 //                                  new Text(
 //                                      "OpenJMU",
 //                                      textAlign: TextAlign.center,
@@ -109,18 +119,18 @@ class SplashState extends State<SplashPage> {
 //                                        letterSpacing: 4.0
 //                                      )
 //                                  ),
-                                  SizedBox(height: 90.0),
-                                ],
-                              ),
-                            )
-                        ),
-                      ],
+                                    SizedBox(height: 90.0),
+                                  ],
+                                ),
+                              )
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ]
+                  ]
               )
-        )
-    );
+          )
+      );
   }
 }
 
