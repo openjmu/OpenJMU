@@ -1,3 +1,4 @@
+mkdir ./Distribution
 flutter build ios --release
 rm -rf OpenJmu.app
 cp -r ./build/ios/iphoneos/Runner.app ./Distribution/OpenJmu.app
