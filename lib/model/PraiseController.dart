@@ -25,7 +25,6 @@ class PraiseAPI {
         cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
     );
   }
-
   static getPraiseInPostList(postId) {
     return NetUtils.getWithCookieAndHeaderSet(
       "${Api.postPraisesList}$postId",
@@ -33,6 +32,28 @@ class PraiseAPI {
       cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
     );
   }
+
+
+  static requestPraise(id, isPraise) async {
+    if (isPraise) {
+      return NetUtils.postWithCookieAndHeaderSet(
+          "${Api.postRequestPraise}$id",
+          headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+          cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+      ).catchError((e) {
+        print(e.response);
+      });
+    } else {
+      return NetUtils.deleteWithCookieAndHeaderSet(
+          "${Api.postRequestPraise}$id",
+          headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+          cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+      ).catchError((e) {
+        print(e.response);
+      });
+    }
+  }
+
 
   static Praise createPraiseInPost(itemData) {
     String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";

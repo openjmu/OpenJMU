@@ -12,6 +12,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
+import 'package:OpenJMU/model/PraiseController.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
@@ -19,6 +20,7 @@ import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
@@ -397,41 +399,12 @@ class _PostCardState extends State<PostCard> {
     setState(() {
       if (widget.post.isLike) {
         widget.post.praises--;
-        _requestPraise(id, false);
+        PraiseAPI.requestPraise(id, false);
       } else {
         widget.post.praises++;
-        _requestPraise(id, true);
+        PraiseAPI.requestPraise(id, true);
       }
       widget.post.isLike = !widget.post.isLike;
-    });
-  }
-
-  void _requestPraise(id, isPraise) {
-    DataUtils.getSid().then((sid) {
-      Map<String, dynamic> headers = new Map();
-      headers["CLOUDID"] = "jmu";
-      headers["CLOUD-ID"] = "jmu";
-      headers["UAP-SID"] = sid;
-      headers["WEIBO-API-KEY"] = Constants.postApiKeyAndroid;
-      headers["WEIBO-API-SECRET"] = Constants.postApiSecretAndroid;
-      List<Cookie> cookies = [new Cookie("PHPSESSID", sid)];
-      if (isPraise) {
-        NetUtils.postWithCookieAndHeaderSet(
-            "${Api.postRequestPraise}$id",
-            headers: headers,
-            cookies: cookies
-        ).catchError((e) {
-          print(e.response);
-        });
-      } else {
-        NetUtils.deleteWithCookieAndHeaderSet(
-            "${Api.postRequestPraise}$id",
-            headers: headers,
-            cookies: cookies
-        ).catchError((e) {
-          print(e.response);
-        });
-      }
     });
   }
 

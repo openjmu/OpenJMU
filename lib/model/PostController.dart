@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -74,6 +75,22 @@ class PostAPI {
       cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
     );
   }
+
+  static postForward(String content, int postId, bool replyAtTheMeanTime) async {
+    Map<String, dynamic> data = {
+      "content": Uri.encodeFull(content),
+      "root_tid": postId,
+      "relay": replyAtTheMeanTime ? 3 : 0
+    };
+    return NetUtils.postWithCookieAndHeaderSet(
+        "${Api.postRequestForward}",
+        data: data,
+        headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+        cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+    );
+  }
+
+
   static Post createPost(postData) {
     var _user = postData['user'];
     String _avatar = "${Api.userAvatarInSecure}?uid=${_user['uid']}&size=f100";

@@ -71,10 +71,6 @@ class PublishPostPageState extends State<PublishPostPage> {
     return new Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
-//          new IconButton(
-//              onPressed: null,
-//              icon: new Icon(Icons.add_circle_outline)
-//          ),
           new IconButton(
               onPressed: () {},
 //              icon: new Icon(Icons.add_comment)
@@ -106,6 +102,10 @@ class PublishPostPageState extends State<PublishPostPage> {
                 Icons.add_photo_alternate,
                 color: _iconColor,
               )
+          ),
+          new IconButton(
+              onPressed: null,
+              icon: new Icon(Icons.mood)
           ),
         ]
     );

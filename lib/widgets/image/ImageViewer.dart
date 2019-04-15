@@ -23,10 +23,7 @@ class ImageViewer extends StatefulWidget {
 class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStateMixin {
   StreamController<int> rebuild = StreamController<int>.broadcast();
   int currentIndex;
-  GestureDetails _gestureDetails = GestureDetails(
-    offset: Offset.zero,
-    totalScale: 1.0,
-  );
+
   AnimationController _animationController;
   Animation _curveAnimation;
   Animation<double> _animation;
@@ -86,19 +83,19 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
     return new WillPopScope(
         onWillPop: () => _pop(context, false),
         child: Scaffold(
-            appBar: AppBar(
-                backgroundColor: Colors.black,
-                title: ViewAppBar(widget.pics, currentIndex, rebuild),
-                centerTitle: true,
-                actions: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.save, color: Colors.white),
-                    onPressed: () {
-                      _downloadImage(widget.pics[currentIndex].imageUrl);
-                    },
-                  )
-                ]
-            ),
+//            appBar: AppBar(
+//                backgroundColor: Colors.black,
+//                title: ViewAppBar(widget.pics, currentIndex, rebuild),
+//                centerTitle: true,
+//                actions: <Widget>[
+//                  IconButton(
+//                    icon: Icon(Icons.save, color: Colors.white),
+//                    onPressed: () {
+//                      _downloadImage(widget.pics[currentIndex].imageUrl);
+//                    },
+//                  )
+//                ]
+//            ),
             backgroundColor: Colors.black,
             body: Column(
               children: <Widget>[
@@ -142,7 +139,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                                   }
                                 },
                                 gestureConfig: GestureConfig(
-                                  animationMinScale: 1.0,
+                                  animationMinScale: 0.8,
                                   cacheGesture: false,
                                   inPageView: true,
                                   initialScale: 1.0,
@@ -176,6 +173,31 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                             initialPage: currentIndex,
                           ),
                           scrollDirection: Axis.horizontal,
+                        ),
+                        Positioned(
+                            top: 0.0,
+                            left: 0.0,
+                            right: 0.0,
+                            height: kToolbarHeight,
+                            child: Row(
+                              children: <Widget>[
+                                IconButton(
+                                  icon: Icon(Icons.arrow_back, color: Colors.white),
+                                  onPressed: () {
+                                    _pop(context, true);
+                                  },
+                                ),
+                                Expanded(
+                                    child: ViewAppBar(widget.pics, currentIndex, rebuild)
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.save, color: Colors.white),
+                                  onPressed: () {
+                                    _downloadImage(widget.pics[currentIndex].imageUrl);
+                                  },
+                                )
+                              ],
+                            )
                         ),
                       ],
                     )

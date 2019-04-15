@@ -44,6 +44,8 @@ class Api {
   static final String postGlance = wbHost + "/topic_api/glances";
   static final String postContent = wbHost + "/topic_api/topic";
   static final String postUploadImage = wbHost + "/upload_api/image";
+  static final String postRequestForward = wbHost + "/topic_api/repost";
+  static final String postRequestComment = wbHost + "/reply_api/reply/tid/";
   static final String postRequestPraise = wbHost + "/praise_api/praise/tid/";
   static final String postForwardsList = wbHost + "/topic_api/repolist/tid/";
   static final String postCommentsList = wbHost + "/reply_api/replylist/tid/";

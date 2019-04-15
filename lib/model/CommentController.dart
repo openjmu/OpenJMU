@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -47,6 +44,21 @@ class CommentAPI {
         cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
     );
   }
+
+  static postComment(String content, int postId, bool forwardAtTheMeanTime) async {
+    Map<String, dynamic> data = {
+      "content": Uri.encodeFull(content),
+      "reflag": 0,
+      "relay": forwardAtTheMeanTime ? 1 : 0
+    };
+    return NetUtils.postWithCookieAndHeaderSet(
+      "${Api.postRequestComment}$postId",
+      data: data,
+      headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+      cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+    );
+  }
+
   static Comment createComment(itemData) {
     String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";
     String _commentTime = new DateTime.fromMillisecondsSinceEpoch(itemData['post_time'] * 1000)
