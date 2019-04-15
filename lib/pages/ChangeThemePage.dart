@@ -33,6 +33,7 @@ class ChangeThemePageState extends State<ChangeThemePage> {
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
+        backgroundColor: currentColor,
         title: new Text(
             '切换主题',
             style: TextStyle(

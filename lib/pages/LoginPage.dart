@@ -153,7 +153,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         setState(() {
                           _isObscure = !_isObscure;
                           _defaultIconColor = _isObscure
-                              ? ThemeUtils.currentColorTheme
+                              ? ThemeUtils.defaultColor
                               : Colors.white;
                         });
                       }

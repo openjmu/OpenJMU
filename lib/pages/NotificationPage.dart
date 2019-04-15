@@ -114,9 +114,6 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
         },
       )),
     ];
-//    actionsIcons.forEach((icon) => _tabs.add(
-//      Tab(icon: new Icon(icon, color: primaryColor))
-//    ));
     return [
       new Container(
         width: 200.0,

@@ -22,8 +22,8 @@ class PostDetailPageState extends State<PostDetailPage> {
   int _tabIndex = 1;
   Widget _post;
   int forwards, comments, praises;
+  bool _commentVisible = false;
 
-  Color forwardsColor, commentsColor, praisesColor;
   TextStyle forwardsStyle, commentsStyle, praisesStyle;
 
   TextStyle textActiveStyle = TextStyle(
@@ -36,6 +36,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       fontSize: 18.0
   );
 
+  Color forwardsColor, commentsColor, praisesColor;
   Color activeColor = ThemeUtils.currentColorTheme;
   Color inActiveColor = ThemeUtils.currentCardColor;
 
@@ -125,6 +126,7 @@ class PostDetailPageState extends State<PostDetailPage> {
     ;
     return new Scaffold(
       appBar: new AppBar(
+        backgroundColor: ThemeUtils.currentColorTheme,
         title: new Text(
             "动态正文",
             style: TextStyle(
@@ -133,8 +135,6 @@ class PostDetailPageState extends State<PostDetailPage> {
             )
         ),
         centerTitle: true,
-        iconTheme: IconThemeData(color: Colors.white),
-        brightness: ThemeUtils.currentBrightness,
       ),
       body: new Stack(
         children: <Widget>[
@@ -200,7 +200,11 @@ class PostDetailPageState extends State<PostDetailPage> {
                         child: Container(
                             color: ThemeUtils.currentCardColor,
                             child: FlatButton.icon(
-                              onPressed: null,
+                              onPressed: () {
+                                setState(() {
+                                  _commentVisible = !_commentVisible;
+                                });
+                              },
                               icon: Icon(
                                 Icons.comment,
                                 color: Theme.of(context).textTheme.title.color,
@@ -241,6 +245,14 @@ class PostDetailPageState extends State<PostDetailPage> {
               ]
             )
           ),
+          Positioned(
+              bottom: 0.0,
+              left: 0.0,
+              right: 0.0,
+              child: Visibility(visible: _commentVisible, child: TextField(
+                autofocus: true,
+              ))
+          )
         ],
       ),
     );

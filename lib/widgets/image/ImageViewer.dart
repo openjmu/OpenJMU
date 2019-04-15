@@ -20,20 +20,30 @@ class ImageViewer extends StatefulWidget {
   _ImageViewerState createState() => _ImageViewerState();
 }
 
-class _ImageViewerState extends State<ImageViewer> {
+class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStateMixin {
   StreamController<int> rebuild = StreamController<int>.broadcast();
   int currentIndex;
+  GestureDetails _gestureDetails = GestureDetails(
+    offset: Offset.zero,
+    totalScale: 1.0,
+  );
+  AnimationController _animationController;
+  Animation _curveAnimation;
+  Animation<double> _animation;
 
   @override
   void initState() {
     SystemChrome.setEnabledSystemUIOverlays([]);
     currentIndex = widget.index;
+    _animationController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
+    _curveAnimation = new CurvedAnimation(parent: _animationController, curve: Curves.linear);
     super.initState();
   }
 
   @override
   void dispose() {
     rebuild.close();
+    _animationController.dispose();
 //    clearGestureDetailsCache();
     super.dispose();
   }
@@ -105,7 +115,34 @@ class _ImageViewerState extends State<ImageViewer> {
                                 fit: BoxFit.contain,
                                 cache: true,
                                 mode: ExtendedImageMode.Gesture,
+                                onDoubleTap: (ExtendedImageGestureState state) {
+                                  double begin, end;
+                                  void listener() {
+                                    state.gestureDetails = GestureDetails(
+                                        offset: Offset.zero,
+                                        totalScale: _animation.value
+                                    );
+                                  }
+                                  if (state.gestureDetails.totalScale == 1.0) {
+                                    begin = state.gestureDetails.totalScale.toDouble();
+                                    end = 2.0;
+//                                    setScale(state.gestureDetails.totalScale, 2.0);
+                                  } else {
+                                    begin = 1.0;
+                                    end = state.gestureDetails.totalScale.toDouble();
+//                                    setScale(state.gestureDetails.totalScale, 1.0);
+                                  }
+                                  _animation = new Tween(begin: begin, end: end).animate(_curveAnimation)
+                                    ..removeListener(listener)
+                                    ..addListener(() {listener();});
+                                  if (state.gestureDetails.totalScale == 1.0) {
+                                    _animationController.forward();
+                                  } else {
+                                    _animationController.reverse();
+                                  }
+                                },
                                 gestureConfig: GestureConfig(
+                                  animationMinScale: 1.0,
                                   cacheGesture: false,
                                   inPageView: true,
                                   initialScale: 1.0,

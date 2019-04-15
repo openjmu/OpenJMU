@@ -41,6 +41,8 @@ class JMUAppClientState extends State<JMUAppClient> {
       setState(() {
         currentBrightness = Brightness.light;
         currentPrimaryColor = Colors.white;
+        currentThemeColor = ThemeUtils.defaultColor;
+        print(currentThemeColor);
       });
     });
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {

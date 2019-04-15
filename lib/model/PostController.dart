@@ -159,7 +159,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   @override
   void initState() {
     super.initState();
-    print(ThemeUtils.currentColorTheme);
     Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
       if (
         this.mounted

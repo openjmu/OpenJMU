@@ -17,7 +17,7 @@ dependencies:
     crypto: ^2.0.6
     dio: ^2.1.2
     event_bus: ^1.1.0
-    extended_image: ^0.2.2
+    extended_image: ^0.2.6
     extended_tabs: ^0.1.6
     extended_text: ^0.3.0
     image_downloader: ^0.13.2

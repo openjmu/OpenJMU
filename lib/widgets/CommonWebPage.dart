@@ -43,14 +43,6 @@ class CommonWebPageState extends State<CommonWebPage> {
     _title = widget.title;
     flutterWebViewPlugin.onStateChanged.listen((state) async {
       if (state.type == WebViewState.finishLoad) {
-        setState(() {
-          loading = false;
-        });
-        new Timer(const Duration(milliseconds: 500), () {
-          setState(() {
-            currentProgress = 0.0;
-          });
-        });
         String script = 'window.document.title';
         String title = await flutterWebViewPlugin.evalJavascript(script);
         setState(() {
@@ -59,6 +51,12 @@ class CommonWebPageState extends State<CommonWebPage> {
           } else {
             this._title = title;
           }
+        });
+        new Timer(const Duration(milliseconds: 500), () {
+          setState(() {
+            loading = false;
+            currentProgress = 0.0;
+          });
         });
       } else if (state.type == WebViewState.startLoad) {
         setState(() {
