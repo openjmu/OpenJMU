@@ -23,7 +23,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   String _username, _password;
   bool _loginButtonDisabled = false;
   bool _isObscure = true;
-  Color _defaultIconColor = ThemeUtils.currentColorTheme;
+  Color _defaultIconColor = ThemeUtils.defaultColor;
 
   @override
   void initState() {

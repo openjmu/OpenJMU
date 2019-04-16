@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 
@@ -164,7 +166,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
 
   Widget _body = Center(
     child: CircularProgressIndicator(
-      valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
+      valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
     ),
   );
 
@@ -214,7 +216,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       },
       child: Container(
         child: Center(
-          child: Text('这里空空如也~', style: TextStyle(color: ThemeUtils.currentColorTheme),),
+          child: Text('这里空空如也~', style: TextStyle(color: currentColorTheme)),
         ),
       ),
     );
@@ -229,7 +231,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       },
       child: Container(
         child: Center(
-          child: Text('加载失败，轻触重试', style: TextStyle(color: ThemeUtils.currentColorTheme),),
+          child: Text('加载失败，轻触重试', style: TextStyle(color: currentColorTheme)),
         ),
       ),
     );
@@ -248,9 +250,35 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             if (index == _postList.length - 1) {
               _loadData();
             }
-            return PostCard(_postList[index]);
+            if (index == _postList.length) {
+              if (widget._postController.isMore) {
+                return Container(
+                    height: 40.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                            width: 15.0,
+                            height: 15.0,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(
+                                strokeWidth: 2.0,
+                                valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme)
+                            )
+                                : CupertinoActivityIndicator()
+                        ),
+                        Text("　正在加载", style: TextStyle(fontSize: 14.0))
+                      ],
+                    )
+                );
+              } else {
+                return Container(height: 0);
+              }
+            } else {
+              return PostCard(_postList[index]);
+            }
           },
-          itemCount: _postList.length,
+          itemCount: _postList.length + 1,
           controller: widget._postController.postType == "user" ? null : _scrollController,
         );
 
@@ -327,7 +355,9 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       List<Post> postList = [];
       List _topics = jsonDecode(result)['topics'];
       for (var postData in _topics) {
-        postList.add(PostAPI.createPost(postData['topic']));
+        if (postData['topic'] != null && postData != "") {
+          postList.add(PostAPI.createPost(postData['topic']));
+        }
       }
       _postList.addAll(postList);
 //      error = !result['success'] ?? false;

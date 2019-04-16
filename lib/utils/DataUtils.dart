@@ -163,8 +163,8 @@ class DataUtils {
       List<Cookie> cookies = [new Cookie("PHPSESSID", sid)];
       NetUtils.postWithCookieSet(Api.logout, cookies: cookies).then((response) {
         clearLoginInfo();
-        resetTheme();
         Constants.eventBus.fire(new LogoutEvent());
+        resetTheme();
         return;
       });
     });
@@ -304,9 +304,11 @@ class DataUtils {
   }
 
   // 重置主题配置
-  static resetTheme() {
+  static resetTheme() async {
     ThemeUtils.currentColorTheme = ThemeUtils.defaultColor;
     ThemeUtils.currentPrimaryColor = Colors.white;
+    Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.defaultColor));
+    setColorTheme(0);
   }
   // 获取设置的主题色
   static Future<int> getColorThemeIndex() async {

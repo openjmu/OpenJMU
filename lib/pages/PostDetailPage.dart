@@ -36,12 +36,12 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   TextStyle textActiveStyle = TextStyle(
       color: Colors.white,
-      fontSize: 18.0,
+      fontSize: 16.0,
       fontWeight: FontWeight.bold
   );
   TextStyle textInActiveStyle = TextStyle(
       color: Colors.grey,
-      fontSize: 18.0
+      fontSize: 16.0
   );
 
   Color forwardsColor, commentsColor, praisesColor;
@@ -154,6 +154,56 @@ class PostDetailPageState extends State<PostDetailPage> {
     );
   }
 
+  void _requestForward() {
+    PostAPI.postForward(
+        _forwardController.text,
+        widget.post.id,
+        commentAtTheMeanTime
+    ).then((response) {
+      showShortToast("转发成功");
+      setState(() {
+        forwards++;
+        _forwardsList = new Container();
+        new Timer(const Duration(milliseconds: 50), () {
+          _forwardsList = new PostInPostList(widget.post);
+        });
+        _forwardVisible = false;
+      });
+    });
+  }
+
+  void _requestComment() {
+    CommentAPI.postComment(
+        _commentController.text,
+        widget.post.id,
+        forwardAtTheMeanTime
+    ).then((response) {
+      showShortToast("评论成功");
+      setState(() {
+        comments++;
+        _commentsList = new Container();
+        new Timer(const Duration(milliseconds: 50), () {
+          _commentsList = new CommentInPostList(widget.post);
+        });
+        _commentVisible = false;
+      });
+    });
+  }
+
+  void _requestPraise() {
+    bool _l = isLike;
+    setState(() {
+      praises++;
+      this.isLike = !isLike;
+    });
+    PraiseAPI.requestPraise(widget.post.id, !_l).catchError((e) {
+      setState(() {
+        praises--;
+        this.isLike = _l;
+      });
+    });
+  }
+
   Positioned toolbar(context) {
     return new Positioned(
         bottom: MediaQuery.of(context).padding.bottom ?? 0,
@@ -170,7 +220,11 @@ class PostDetailPageState extends State<PostDetailPage> {
                       child: Container(
                           color: ThemeUtils.currentCardColor,
                           child: FlatButton.icon(
-                            onPressed: null,
+                            onPressed: () {
+                              setState(() {
+                                _forwardVisible = true;
+                              });
+                            },
                             icon: Icon(
                               Icons.launch,
                               color: Theme.of(context).textTheme.title.color,
@@ -238,57 +292,6 @@ class PostDetailPageState extends State<PostDetailPage> {
         )
     );
   }
-
-  void _requestForward() {
-    PostAPI.postForward(
-        _forwardController.text,
-        widget.post.id,
-        commentAtTheMeanTime
-    ).then((response) {
-      showShortToast("转发成功");
-      setState(() {
-        forwards++;
-        _forwardsList = new Container();
-        new Timer(const Duration(milliseconds: 50), () {
-          _forwardsList = new PostInPostList(widget.post);
-        });
-        _forwardVisible = false;
-      });
-    });
-  }
-
-  void _requestComment() {
-    CommentAPI.postComment(
-        _commentController.text,
-        widget.post.id,
-        forwardAtTheMeanTime
-    ).then((response) {
-      showShortToast("评论成功");
-      setState(() {
-        comments++;
-        _commentsList = new Container();
-        new Timer(const Duration(milliseconds: 50), () {
-          _commentsList = new CommentInPostList(widget.post);
-        });
-        _commentVisible = false;
-      });
-    });
-  }
-
-  void _requestPraise() {
-    bool _l = isLike;
-    setState(() {
-      praises++;
-      this.isLike = !isLike;
-    });
-    PraiseAPI.requestPraise(widget.post.id, !_l).catchError((e) {
-      setState(() {
-        praises--;
-        this.isLike = _l;
-      });
-    });
-  }
-
   Positioned forwardTextField() {
     return Positioned(
         bottom: 0.0,
@@ -359,7 +362,6 @@ class PostDetailPageState extends State<PostDetailPage> {
         )
     );
   }
-
   Positioned commentTextField() {
     return Positioned(
         bottom: 0.0,
@@ -430,6 +432,30 @@ class PostDetailPageState extends State<PostDetailPage> {
         )
     );
   }
+  Positioned backdrop() {
+    return Positioned(
+        top: 0.0,
+        left: 0.0,
+        right: 0.0,
+        height: MediaQuery.of(context).size.height,
+        child: Visibility(
+            visible: _forwardVisible || _commentVisible,
+            child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _forwardVisible = false;
+                    _commentVisible = false;
+                  });
+                },
+                child: Container(
+                  color: Color.fromRGBO(0,0,0,0.5),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                )
+            )
+        )
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -471,34 +497,11 @@ class PostDetailPageState extends State<PostDetailPage> {
                   )
                 ],
               ),
-              Container(
-                  height: 56.0
-              ),
+              Container(height: 56.0),
             ],
           ),
           toolbar(context),
-          Positioned(
-              top: 0.0,
-              left: 0.0,
-              right: 0.0,
-              height: MediaQuery.of(context).size.height,
-              child: Visibility(
-                  visible: _forwardVisible || _commentVisible,
-                  child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _forwardVisible = false;
-                          _commentVisible = false;
-                        });
-                      },
-                      child: Container(
-                        color: Color.fromRGBO(0,0,0,0.5),
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                      )
-                  )
-              )
-          ),
+          backdrop(),
           forwardTextField(),
           commentTextField(),
         ],

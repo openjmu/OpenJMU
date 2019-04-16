@@ -7,28 +7,31 @@ class Api {
   static final String wbHost = "https://wb.jmu.edu.cn";
   static final String file99Host = "https://file99.jmu.edu.cn";
   static final String oa99Host = "https://oa99.jmu.edu.cn";
-  static final String oa99pHost = "https://oap99.jmu.edu.cn";
-  static final String oa99pHostInSecure = "http://oap99.jmu.edu.cn";
+  static final String oap99Host = "https://oap99.jmu.edu.cn";
+  static final String oap99HostInSecure = "http://oap99.jmu.edu.cn";
   static final String middle99Host = "https://middle99.jmu.edu.cn";
   static final String upApiHost = "https://upapi.jmu.edu.cn";
 
   static final String login = oa99Host + "/v2/passport/api/user/login1";
   static final String loginTicket = oa99Host + "/v2/passport/api/user/loginticket1";
-  static final String logout = oa99pHost + "/v2/passport/api/user/loginticket1";
+  static final String logout = oap99Host + "/v2/passport/api/user/loginticket1";
 
   /// 用户相关
   static final String userInfo = oa99Host + "/v2/api/class/studentinfo";
-  static final String userBasicInfo = oa99pHost + "/user/info";
-  static final String userAvatar = oa99pHost + "/face";
-  static final String userAvatarInSecure = oa99pHostInSecure + "/face";
+  static final String userBasicInfo = oap99Host + "/user/info";
+  static final String userAvatar = oap99Host + "/face";
+  static final String userAvatarInSecure = oap99HostInSecure + "/face";
   static final String userFans = wbHost + "/relation_api/fans/uid/";
-  static final String userFollowing = wbHost + "/relation_api/idols/uid/";
-  static final String userFansAndFollowings = wbHost + "/user_api/tally/uid/";
+  static final String userIdols = wbHost + "/relation_api/idols/uid/";
+  static final String userFansAndIdols = wbHost + "/user_api/tally/uid/";
+  static final String userRequestFollow = wbHost + "/relation_api/idol/idol_uid/";
+  static final String userFollowAdd = oap99Host + "/friend/followadd/";
+  static final String userFollowDel = oap99Host + "/friend/followdel/";
 
   /// 应用中心
-  static final String webAppLists = oa99pHost + "/app/unitmenu?cfg=1";
-  static final String webAppIcons = oa99pHost + "/app/menuicon?size=f128&unitid=55&";
-  static final String webAppIconsInsecure = oa99pHostInSecure + "/app/menuicon?size=f128&unitid=55&";
+  static final String webAppLists = oap99Host + "/app/unitmenu?cfg=1";
+  static final String webAppIcons = oap99Host + "/app/menuicon?size=f128&unitid=55&";
+  static final String webAppIconsInsecure = oap99HostInSecure + "/app/menuicon?size=f128&unitid=55&";
 
   /// 资讯相关
   static final String newsList = middle99Host + "/mg/api/aid/posts_list/region_type/1";

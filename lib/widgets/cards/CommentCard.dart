@@ -280,7 +280,7 @@ class _CommentCardInPostState extends State<CommentCardInPost> {
         comment.fromUserName,
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
-          fontSize: 18.0
+          fontSize: 16.0
         )
     );
   }

@@ -23,7 +23,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
   TabController _tabController, _mentionTabController;
   final List<IconData> actionsIcons = [Icons.alternate_email, Icons.comment, Icons.thumb_up];
 
-  Color themeColor = ThemeUtils.currentColorTheme;
+  Color badgeColor = Colors.redAccent;
   Color primaryColor = Colors.white;
   Notifications currentNotifications;
 
@@ -74,7 +74,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
       Tab(child: BadgeIconButton(
         itemCount: currentNotifications.at,
         icon: Icon(actionsIcons[0], color: primaryColor),
-        badgeColor: themeColor,
+        badgeColor: badgeColor,
         badgeTextColor: primaryColor,
         hideZeroCount: true,
         onPressed: () {
@@ -88,7 +88,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
       Tab(child: BadgeIconButton(
         itemCount: currentNotifications.comment,
         icon: Icon(actionsIcons[1], color: primaryColor),
-        badgeColor: themeColor,
+        badgeColor: badgeColor,
         badgeTextColor: primaryColor,
         hideZeroCount: true,
         onPressed: () {
@@ -102,7 +102,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
       Tab(child: BadgeIconButton(
         itemCount: currentNotifications.praise,
         icon: Icon(actionsIcons[2], color: primaryColor),
-        badgeColor: themeColor,
+        badgeColor: badgeColor,
         badgeTextColor: primaryColor,
         hideZeroCount: true,
         onPressed: () {
@@ -118,6 +118,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
       new Container(
         width: 200.0,
         child: new TabBar(
+          indicatorColor: primaryColor,
           tabs: _tabs,
           controller: _tabController,
         )
@@ -177,7 +178,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        backgroundColor: themeColor,
+        backgroundColor: ThemeUtils.currentColorTheme,
         elevation: 0,
         actions: actions(),
         iconTheme: new IconThemeData(color: primaryColor),
@@ -191,8 +192,9 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
               Container(
                   width: MediaQuery.of(context).size.width,
                   height: 42.0,
-                  color: themeColor,
+                  color: ThemeUtils.currentColorTheme,
                   child: TabBar(
+                    indicatorColor: primaryColor,
                     labelColor: primaryColor,
                     tabs: <Tab>[
                       Tab(text: "@我的动态"),

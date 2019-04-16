@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -38,9 +39,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
   Widget _infoNextNameButton;
   var _fansCount = '-';
   var _followingCount = '-';
-
-  List<int> _fansIds = List();
-  List<int> _followingIds = List();
 
   Widget _post;
 
@@ -106,7 +104,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
     } else {
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: ThemeUtils.currentPrimaryColor,
+          backgroundColor: ThemeUtils.currentColorTheme,
           brightness: ThemeUtils.currentBrightness,
         ),
         body: Container(
@@ -180,7 +178,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
       var user = jsonDecode(await UserUtils.getUserInfo(uid: uid));
       print(user);
       setState(() {
-        _user = UserUtils.createUser(user);
+        _user = UserUtils.createUserInfo(user);
       });
     }
 
@@ -212,27 +210,27 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
               ),
             ),
           );
-          _actions = <Widget>[
-            PopupMenuButton(
-              onSelected: (val) {
-//                UserAPI.logout(pop: true, context: context);
-              },
-              itemBuilder: (context) {
-                return <PopupMenuItem>[
-                  PopupMenuItem<int>(
-                    value: 0,
-                    child: Text('注销'),
-                  )
-                ];
-              },
-            ),
-          ];
+//          _actions = <Widget>[
+//            PopupMenuButton(
+//              onSelected: (val) {
+////                UserAPI.logout(pop: true, context: context);
+//              },
+//              itemBuilder: (context) {
+//                return <PopupMenuItem>[
+//                  PopupMenuItem<int>(
+//                    value: 0,
+//                    child: Text('注销'),
+//                  )
+//                ];
+//              },
+//            ),
+//          ];
         } else {
-//          if (_user.followed) {
-//            _infoNextNameButton = _unFollowButton();
-//          } else {
+          if (_user.isFollowing) {
+            _infoNextNameButton = _unFollowButton();
+          } else {
             _infoNextNameButton = _followButton();
-//          }
+          }
         }
       } else {
         _infoNextNameButton = null;
@@ -243,28 +241,11 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
   }
 
   Future<Null> _getFollowingAndFansCount(id) async {
-    var fans = await UserUtils.getFans(id);
-    var followings = await UserUtils.getFollowing(id);
-    fans = jsonDecode(fans);
-    followings = jsonDecode(followings);
-    List fansList = fans['fans'];
-    List followingsList = followings['idols'];
-    List<int> fansIds = [];
-    List<int> followingIds = [];
-    for (var fan in fansList) {
-      fansIds.add(int.parse(fan['id']));
-    }
-    for (var following in followingsList) {
-      followingIds.add(int.parse(following['id']));
-    }
+    var data = jsonDecode(await UserUtils.getFansAndFollowingsCount(id));
     setState(() {
-      _fansCount = fans['total'].toString();
-      _fansIds.clear();
-      _fansIds = fansIds;
-
-      _followingCount = followings['total'].toString();
-      _followingIds.clear();
-      _followingIds = followingIds;
+      _user.isFollowing = data['is_following'] == 1 ? true : false;
+      _fansCount = data['fans'].toString();
+      _followingCount = data['idols'].toString();
     });
   }
 
@@ -298,7 +279,9 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                     ),
                   ),
                   onTap: () {
-//                    _showFansAndFollowings(context, 0);
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                      return UserListPage(_user, 1);
+                    }));
                   },
                 ),
                 GestureDetector(
@@ -311,7 +294,9 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                     ),
                   ),
                   onTap: () {
-//                    _showFansAndFollowings(context, 1);
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                      return UserListPage(_user, 2);
+                    }));
                   },
                 ),
               ],
@@ -348,18 +333,15 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
     }
   }
 
-//  void _showFansAndFollowings(context, index) {
-//    Navigator.of(context).push(MaterialPageRoute(
-//        builder: (context) => UserFPage(
-//            initPage: index,
-//            fansIds: _fansIds,
-//            followingIds: _followingIds)
-//    ));
-//  }
-
   void _follow() async {
-    // Request
-//    UserAPI.requestFollow(widget.uid);
+    UserUtils.follow(widget.uid)
+    .catchError((e) {
+      setState(() {
+        _fansCount = _fansCount != '-' ? (int.parse(_fansCount) - 1).toString() : '-';
+        _infoNextNameButton = _followButton();
+        _updateAppBar();
+      });
+    });
 
     if (mounted) {
       setState(() {
@@ -371,8 +353,14 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
   }
 
   void _unFollow() async {
-    // Request
-//    UserAPI.requestFollow(widget.uid);
+    UserUtils.unFollow(widget.uid)
+        .catchError((e) {
+      setState(() {
+        _fansCount = _fansCount != '-' ? (int.parse(_fansCount) + 1).toString() : '-';
+        _infoNextNameButton = _unFollowButton();
+        _updateAppBar();
+      });
+    });
 
     if (mounted) {
       setState(() {
@@ -424,259 +412,199 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
   );
 }
 
-//class UserList extends StatefulWidget {
-//  final List<int> userIds;
-//
-//  UserList(this.userIds);
-//
-//  @override
-//  State createState() => _UserListState();
-//}
-//
-//class _UserListState extends State<UserList>
-//    with AutomaticKeepAliveClientMixin {
-//  final List<Map<String, dynamic>> userList = <Map<String, dynamic>>[];
-//
-//  @override
-//  bool get wantKeepAlive => true;
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    super.build(context);
-//
-//    return ListView.builder(
-//      itemCount: userList.length + 1,
-//      itemBuilder: (context, index) {
-//        if (index == userList.length) {
-//          if (userList.length == widget.userIds.length) {
-//            // 已经到底了
-//            return Container(height: 0,);
-//          } else {
-//            // 正在加载
-//            return ListTile(
-//              title: Text('正在加载更多……', style: TextStyle(color: Colors.grey[350]),),
-//            );
-//          }
-//        } else {
-//          return UserListItem(
-//            user: userList[index]['user'],
-//            extra: userList[index]['extra'],
-//          );
-//        }
-//      },
-//    );
-//  }
-//
-//  @override
-//  void initState() {
-//    super.initState();
-//    _fetchUserList();
-//  }
-//
-//  void _fetchUserList() async {
-//    for (int id in widget.userIds) {
-//      _fetchUser(id);
-//    }
-//  }
-//
-//  void _fetchUser(id) async {
-//    var user = await UserAPI.getMinUserInformation(id);
-//    Widget extra = Container(width: 0, height: 0,);
-//    if (user != null) {
-//      // 判断是否是本人
-//      if (await UserAPI.isLogin()) {
-//        if (user.id == UserUtils.currentUser.uid) {
-//          extra = Text('我', style: TextStyle(color: Colors.grey),);
-//        } else if (user.followed) {
-//          extra = _unFollowButton(id);
-//        } else {
-//          extra = _followButton(id);
-//        }
-//      }
-//    }
-//
-//    if (mounted) {
-//      setState(() {
-//        userList.add({
-//          'user': user,
-//          'extra': extra
-//        });
-//      });
-//    }
-//  }
-//
-//  void _follow(id) async {
-//    // Request
-//    UserAPI.requestFollow(id);
-//
-//    if (mounted) {
-//      setState(() {
-//        var index = userList.indexWhere((map) => (map['user'] as User).id == id);
-//        (userList[index]['user'] as User).fansCount++;
-//        userList[index]['extra'] = _unFollowButton(id);
-//      });
-//    }
-//  }
-//
-//  void _unFollow(id) async {
-//    // Request
-//    UserAPI.requestFollow(id);
-//
-//    if (mounted) {
-//      setState(() {
-//        var index = userList.indexWhere((map) => (map['user'] as User).id == id);
-//        (userList[index]['user'] as User).fansCount--;
-//        userList[index]['extra'] = _followButton(id);
-//      });
-//    }
-//  }
-//
-//  Widget _followButton(id) => RawMaterialButton(
-//    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-//    constraints: BoxConstraints(minWidth: 0, minHeight: 0),
-//    onPressed: () {
-//      _follow(id);
-//    },
-//    child: Container(
-//      constraints: BoxConstraints(minWidth: 64, maxWidth: double.infinity),
-//      padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-//      decoration: BoxDecoration(
-//          color: Colors.transparent,
-//          border: Border.all(color: ThemeUtils.currentColorTheme),
-//          borderRadius: BorderRadius.circular(4)
-//      ),
-//      child: Center(
-//        child: Text('关注', style: TextStyle(color: ThemeUtils.currentColorTheme, fontSize: 12),),
-//      ),
-//    ),
-//  );
-//
-//  Widget _unFollowButton(id) => RawMaterialButton(
-//    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-//    constraints: BoxConstraints(minWidth: 0, minHeight: 0),
-//    onPressed: () {
-//      _unFollow(id);
-//    },
-//    child: Container(
-//      constraints: BoxConstraints(minWidth: 64, maxWidth: double.infinity),
-//      padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-//      decoration: BoxDecoration(
-//          color: ThemeUtils.currentColorTheme,
-//          border: Border.all(color: ThemeUtils.currentColorTheme),
-//          borderRadius: BorderRadius.circular(4)
-//      ),
-//      child: Center(
-//        child: Text('取消关注', style: TextStyle(color: Colors.white, fontSize: 12),),
-//      ),
-//    ),
-//  );
-//
-//}
-//
-//
-//class UserListItem extends StatelessWidget {
-//  final User user;
-//  final Widget extra;
-//
-//  UserListItem({@required this.user, @required this.extra});
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    if (user == null) {
-//      return Container(height: 0, width: 0);
-//    }
-//    return RawMaterialButton(
-//      child: Container(
-//        padding: EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
-//        decoration: BoxDecoration(
-//            border: Border(bottom: BorderSide(color: Colors.grey[350], width: 0.5))
-//        ),
-//        child: Row(
-//          mainAxisSize: MainAxisSize.max,
-//          crossAxisAlignment: CrossAxisAlignment.center,
-//          children: <Widget>[
-//            // 头像
-//            CircleAvatar(
-//              backgroundImage: new NetworkImage("${Api.userAvatar}?uid=${user.id}&size=f100)"),
-//              radius: 32,
-//            ),
-//            Container(width: 16,),
-//            // 昵称属性和签名
-//            Expanded(
-//              child: Column(
-//                mainAxisSize: MainAxisSize.max,
-//                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                crossAxisAlignment: CrossAxisAlignment.start,
-//                children: <Widget>[
-//
-//                  Text(user.nickname, style: TextStyle(color: Colors.black87, fontSize: 16,), maxLines: 1, overflow: TextOverflow.ellipsis,),
-//                  Text('关注 ${user.followingCount}  粉丝 ${user.fansCount}', style: TextStyle(color: Colors.grey, fontSize: 14),),
-//                  Text(user.signature, style: TextStyle(color: Colors.grey, fontSize: 14), maxLines: 1, overflow: TextOverflow.ellipsis,),
-//
-//                ],
-//              ),
-//              flex: 1,
-//            ),
-//            Container(width: 16,),
-//            // 附加区域
-//            extra
-//          ],
-//        ),
-//      ),
-//      onPressed: () {
-//        UserPage.jump(context, user.id);
-//      },
-//      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-//      constraints: BoxConstraints(minHeight: 0, minWidth: 0),
-//    );
-//  }
-//}
-//
-//class UserFPage extends StatefulWidget {
-//  final int initPage;
-//  final List<int> fansIds;
-//  final List<int> followingIds;
-//
-//
-//  UserFPage({this.initPage, this.fansIds, this.followingIds});
-//
-//  @override
-//  State createState() => _UserFState();
-//
-//}
-//
-//class _UserFState extends State<UserFPage>
-//    with TickerProviderStateMixin {
-//  final List<String> tabTexts = ['TA的关注', 'TA的粉丝'];
-//  TabController _tabController;
-//
-//  @override
-//  void initState() {
-//    super.initState();
-//    _tabController = TabController(length: tabTexts.length, vsync: this,
-//        initialIndex: widget.initPage);
-//  }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//      appBar: AppBar(
-//        title: Text(''),
-//        backgroundColor: ThemeUtils.currentPrimaryColor,
-//        brightness: ThemeUtils.currentBrightness,
-//        bottom: TabBar(
-//          tabs: tabTexts.map((t) => Tab(text: t,)).toList(),
-//          controller: _tabController,
-//          indicatorColor: ThemeUtils.currentColorTheme,
-//        ),
-//      ),
-//      body: TabBarView(
-//        controller: _tabController,
-//        children: <Widget>[
-//          UserList(widget.followingIds),
-//          UserList(widget.fansIds)
-//        ],
-//      ),
-//    );
-//  }
-//}
+
+class UserListPage extends StatefulWidget {
+  final UserInfo user;
+  final int type; // 0 is search, 1 is idols, 2 is fans.
+
+  UserListPage(this.user, this.type, {Key key}) : super(key: key);
+
+  @override
+  State createState() => _UserListState();
+}
+
+class _UserListState extends State<UserListPage> {
+  List<Widget> _users;
+  Color cardColor = Colors.white;
+
+  @override
+  void initState() {
+    super.initState();
+    DataUtils.getBrightnessDark().then((isDark) {
+      setState(() {
+        if (isDark != null && isDark) {
+          cardColor = Color(0xff424242);
+        } else {
+          cardColor = Colors.white;
+        }
+      });
+    });
+    switch (widget.type) {
+      case 1:
+        UserUtils.getIdolsList(widget.user.uid, 1).then((response) {
+          var data = jsonDecode(response)['idols'];
+          List<Widget> users = [];
+          for (int i = 0; i < data.length; i++) {
+            users.add(userCard(data[i]));
+          }
+          setState(() {
+            _users = users;
+          });
+        });
+        break;
+      case 2:
+        UserUtils.getFansList(widget.user.uid, 1).then((response) {
+          var data = jsonDecode(response)['fans'];
+          List<Widget> users = [];
+          for (int i = 0; i < data.length; i++) {
+            users.add(userCard(data[i]));
+          }
+          setState(() {
+            _users = users;
+          });
+        });
+        break;
+    }
+  }
+
+  Widget userCard(userData) {
+    var _user = userData['user'];
+    TextStyle _textStyle = TextStyle(fontSize: 16.0);
+    return new Container(
+        margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15.0),
+            color: cardColor,
+            boxShadow: [BoxShadow(
+                color: Colors.grey[850],
+                blurRadius: 3.0,
+                offset: Offset.fromDirection(1.5, 1.0)
+            )]
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () {
+                    return UserPage.jump(context, _user['uid']);
+                  },
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(17.0, 12.0, 8.0, 12.0),
+                    width: 70.0,
+                    height: 70.0,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(
+                          image: CachedNetworkImageProvider("${Api.userAvatarInSecure}?uid=${_user['uid']}&size=f100", cacheManager: DefaultCacheManager()),
+                        )
+                    ),
+                  ),
+                ),
+                Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: <Widget>[
+                        Text(_user['nickname'], style: TextStyle(fontSize: 18.0), overflow: TextOverflow.ellipsis),
+                        Container(height: 7.0),
+                        Divider(height: 1.0),
+                        Container(height: 7.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: <Widget>[
+                            Column(
+                              children: <Widget>[
+                                Text("关注", style: _textStyle),
+                                Text(userData['idols'], style: _textStyle),
+                              ],
+                            ),
+                            Column(
+                              children: <Widget>[
+                                Text("粉丝", style: _textStyle),
+                                Text(userData['fans'], style: _textStyle),
+                              ],
+                            ),
+                          ],
+                        )
+                      ],
+                    )
+                ),
+              ]
+            ),
+            Divider(height: 1.0),
+            Container(
+              decoration: BoxDecoration(
+                  color: ThemeUtils.currentColorTheme,
+                  borderRadius: BorderRadiusDirectional.vertical(
+                      bottom: Radius.circular(15.0)
+                  )
+              ),
+              width: MediaQuery.of(context).size.width,
+              child: FlatButton(
+                        onPressed: () {},
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Icon(Icons.person_add, color: Colors.white),
+                            Text(
+                                "　关注",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16.0
+                                )
+                            )
+                          ],
+                        )
+                    )
+            )
+          ],
+        )
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String _type;
+    switch (widget.type) {
+      case 0:
+        _type = "用户";
+        break;
+      case 1:
+        _type = "关注";
+        break;
+      case 2:
+        _type = "粉丝";
+        break;
+    }
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: ThemeUtils.currentColorTheme,
+        centerTitle: true,
+        elevation: 0,
+        title: Text(
+            "$_type列表",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      body: _users != null
+        ? _users.length != 0
+          ? GridView.count(
+            shrinkWrap: true,
+            mainAxisSpacing: 10.0,
+            crossAxisCount: 2,
+            childAspectRatio: 1.33,
+            children: _users,
+          )
+          : Center(child: Text("暂无内容", style: TextStyle(fontSize: 20.0)))
+        : Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
+          )
+        )
+    );
+  }
+}

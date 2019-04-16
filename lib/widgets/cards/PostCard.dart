@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -7,7 +6,6 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:extended_image/extended_image.dart';
 
-import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -18,9 +16,7 @@ import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
@@ -44,7 +40,7 @@ class _PostCardState extends State<PostCard> {
   Color currentRootTopicColor = Colors.grey[200];
 
   Color _forwardColor = Colors.grey;
-  Color _replysColor = Colors.grey;
+  Color _repliesColor = Colors.grey;
   Color _praisesColor = Colors.grey;
 
   Widget pics;
@@ -109,7 +105,7 @@ class _PostCardState extends State<PostCard> {
       post.nickname ?? post.userId,
       style: TextStyle(
           color: Theme.of(context).textTheme.body1.color,
-          fontSize: 18.0
+          fontSize: 16.0
       ),
       textAlign: TextAlign.left,
     );
@@ -320,12 +316,12 @@ class _PostCardState extends State<PostCard> {
             onPressed: null,
             icon: Icon(
               Icons.mode_comment,
-              color: _replysColor,
+              color: _repliesColor,
               size: 18,
             ),
             label: Text(
               comments == 0 ? "评论" : "$comments",
-              style: TextStyle(color: _replysColor),
+              style: TextStyle(color: _repliesColor),
             ),
             splashColor: Colors.grey,
           ),
@@ -362,7 +358,7 @@ class _PostCardState extends State<PostCard> {
     }
     return new Container(
         color: const Color(0xffaa4444),
-        margin: EdgeInsets.only(top: 8.0),
+//        margin: EdgeInsets.only(top: 8.0),
         padding: EdgeInsets.all(30.0),
         child: new Center(
             child: new Text(
@@ -385,11 +381,9 @@ class _PostCardState extends State<PostCard> {
             return UserPage.jump(context, data['uid']);
           } else if (text.startsWith("https://wb.jmu.edu.cn")) {
             return CommonWebPage.jump(context, text, "网页链接");
-//            return InAppBrowserPage.open(context, text, "网页链接");
           }
         },
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-//        overflow: ExtendedTextOverflow.ellipsis,
 //        maxLines: 10,
       );
   }
@@ -489,7 +483,7 @@ class _PostCardInPostState extends State<PostCardInPost> {
     return new Text(post.nickname,
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
-          fontSize: 18.0
+          fontSize: 16.0
         )
     );
   }

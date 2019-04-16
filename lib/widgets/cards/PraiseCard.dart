@@ -306,7 +306,7 @@ class _PraiseCardInPostState extends State<PraiseCardInPost> {
         praise.nickname,
         style: TextStyle(
             color: Theme.of(context).textTheme.body1.color,
-            fontSize: 18.0
+            fontSize: 16.0
         )
     );
   }

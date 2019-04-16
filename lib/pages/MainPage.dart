@@ -225,7 +225,7 @@ class MainPageState extends State<MainPage> {
                     child: new Text(
                         getTabTitle(_tabIndex),
                         style: new TextStyle(
-                            color: Colors.white,
+                            color: currentPrimaryColor,
                             fontSize: Theme.of(context).textTheme.title.fontSize
                         )
                     )

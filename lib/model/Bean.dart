@@ -142,6 +142,38 @@ class Praise {
   int get hashCode => id.hashCode;
 }
 
+class User {
+  int id;
+  String nickname;
+  int gender;
+  int topics;
+  int latestTid;
+  int fans, idols;
+  bool isFollowing;
+
+  User(
+      this.id,
+      this.nickname,
+      this.gender,
+      this.topics,
+      this.latestTid,
+      this.fans,
+      this.idols,
+      this.isFollowing
+  );
+
+  @override
+  bool operator == (Object other) =>
+      identical(this, other) ||
+          other is User &&
+              runtimeType == other.runtimeType &&
+              id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+}
+
 class UserInfo {
 
   /// For Login Process
@@ -156,6 +188,7 @@ class UserInfo {
   int classId;
   String name;
   String signature;
+  bool isFollowing;
 
   UserInfo(
       this.sid,
@@ -166,7 +199,8 @@ class UserInfo {
       this.blowfish,
       this.unitId,
       this.workId,
-      this.classId
+      this.classId,
+      this.isFollowing
   );
 
   @override
