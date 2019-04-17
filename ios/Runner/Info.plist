@@ -29,22 +29,12 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>NSCalendarsUsageDescription</key>
-	<string>请求访问日历</string>
 	<key>NSCameraUsageDescription</key>
-	<string>请求访问相机</string>
-	<key>NSContactsUsageDescription</key>
-	<string>请求访问通讯录</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>始终访问地理位置</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>在使用期间访问地理位置</string>
+	<string>方便您使用微博发表图片</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>请求访问麦克风</string>
+	<string>方便您使用微博拍照</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>请求访问相册</string>
-	<key>NSRemindersUsageDescription</key>
-	<string>请求访问注意事项</string>
+	<string>方便您使用微博发表图片</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
