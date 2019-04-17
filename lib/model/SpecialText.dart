@@ -21,7 +21,8 @@ class LinkText extends SpecialText {
             Map<String, dynamic> data = new Map();
             data['content'] = toString();
             if (onTap != null) onTap(data);
-          });
+          }
+    );
   }
 }
 

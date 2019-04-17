@@ -176,7 +176,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
       });
     } else {
       var user = jsonDecode(await UserUtils.getUserInfo(uid: uid));
-      print(user);
       setState(() {
         _user = UserUtils.createUserInfo(user);
       });
@@ -471,96 +470,55 @@ class _UserListState extends State<UserListPage> {
     var _user = userData['user'];
     TextStyle _textStyle = TextStyle(fontSize: 16.0);
     return new Container(
-        margin: EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
+        margin: EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
             color: cardColor,
             boxShadow: [BoxShadow(
                 color: Colors.grey[850],
-                blurRadius: 3.0,
-                offset: Offset.fromDirection(1.5, 1.0)
+                blurRadius: 0.0,
             )]
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            GestureDetector(
+              onTap: () {
+                return UserPage.jump(context, int.parse(_user['uid']));
+              },
+              child: Container(
+                margin: EdgeInsets.all(12.0),
+                width: 70.0,
+                height: 70.0,
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                      image: CachedNetworkImageProvider("${Api.userAvatarInSecure}?uid=${_user['uid']}&size=f100", cacheManager: DefaultCacheManager()),
+                    )
+                ),
+              ),
+            ),
+            Divider(height: 1.0),
+            Container(height: 10.0),
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    return UserPage.jump(context, _user['uid']);
-                  },
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(17.0, 12.0, 8.0, 12.0),
-                    width: 70.0,
-                    height: 70.0,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        image: DecorationImage(
-                          image: CachedNetworkImageProvider("${Api.userAvatarInSecure}?uid=${_user['uid']}&size=f100", cacheManager: DefaultCacheManager()),
-                        )
-                    ),
-                  ),
+                Column(
+                  children: <Widget>[
+                    Text("关注", style: _textStyle),
+                    Text(userData['idols'], style: _textStyle),
+                  ],
                 ),
-                Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Text(_user['nickname'], style: TextStyle(fontSize: 18.0), overflow: TextOverflow.ellipsis),
-                        Container(height: 7.0),
-                        Divider(height: 1.0),
-                        Container(height: 7.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Column(
-                              children: <Widget>[
-                                Text("关注", style: _textStyle),
-                                Text(userData['idols'], style: _textStyle),
-                              ],
-                            ),
-                            Column(
-                              children: <Widget>[
-                                Text("粉丝", style: _textStyle),
-                                Text(userData['fans'], style: _textStyle),
-                              ],
-                            ),
-                          ],
-                        )
-                      ],
-                    )
+                Column(
+                  children: <Widget>[
+                    Text("粉丝", style: _textStyle),
+                    Text(userData['fans'], style: _textStyle),
+                  ],
                 ),
               ]
             ),
-            Divider(height: 1.0),
-            Container(
-              decoration: BoxDecoration(
-                  color: ThemeUtils.currentColorTheme,
-                  borderRadius: BorderRadiusDirectional.vertical(
-                      bottom: Radius.circular(15.0)
-                  )
-              ),
-              width: MediaQuery.of(context).size.width,
-              child: FlatButton(
-                        onPressed: () {},
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Icon(Icons.person_add, color: Colors.white),
-                            Text(
-                                "　关注",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16.0
-                                )
-                            )
-                          ],
-                        )
-                    )
-            )
           ],
         )
     );
@@ -595,9 +553,9 @@ class _UserListState extends State<UserListPage> {
           ? GridView.count(
             shrinkWrap: true,
             mainAxisSpacing: 10.0,
-            crossAxisCount: 2,
-            childAspectRatio: 1.33,
+            crossAxisCount: 3,
             children: _users,
+            childAspectRatio: 0.88,
           )
           : Center(child: Text("暂无内容", style: TextStyle(fontSize: 20.0)))
         : Center(

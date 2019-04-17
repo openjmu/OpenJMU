@@ -95,7 +95,6 @@ class UserUtils {
         headers: DataUtils.buildPostHeaders(currentUser.sid),
         cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid)
     ).then((response) {
-      print(response);
       Map<String, dynamic> data = {
         "fid": uid,
         "tagid": 0

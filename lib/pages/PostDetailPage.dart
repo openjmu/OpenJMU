@@ -21,6 +21,8 @@ class PostDetailPage extends StatefulWidget {
 }
 
 class PostDetailPageState extends State<PostDetailPage> {
+  final ScrollController _scrollController = new ScrollController();
+
   Widget _forwardsList;
   Widget _commentsList;
   Widget _praisesList;
@@ -63,13 +65,9 @@ class PostDetailPageState extends State<PostDetailPage> {
       forwards = widget.post.forwards;
       comments = widget.post.comments;
       praises = widget.post.praises;
-
-      _forwardsList = new PostInPostList(widget.post);
-      _commentsList = new CommentInPostList(widget.post);
-      _praisesList = new PraiseInPostList(widget.post);
-
-      this.isLike = widget.post.isLike;
+      isLike = widget.post.isLike;
     });
+    _requestData();
 
     _forwardController..addListener(() {
       setState(() {
@@ -93,6 +91,14 @@ class PostDetailPageState extends State<PostDetailPage> {
     _forwardController.dispose();
     _commentController.dispose();
     _post = null;
+  }
+
+  void _requestData() {
+    setState(() {
+      _forwardsList = new PostInPostList(widget.post);
+      _commentsList = new CommentInPostList(widget.post);
+      _praisesList = new PraiseInPostList(widget.post);
+    });
   }
 
   void setTabIndex(index) {
@@ -383,6 +389,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                           border: OutlineInputBorder(),
                         ),
                         style: TextStyle(fontSize: 18.0),
+                        cursorColor: ThemeUtils.currentColorTheme,
                         autofocus: true,
                         maxLines: 3,
                         maxLength: 140
@@ -474,6 +481,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       body: new Stack(
         children: <Widget>[
           new ListView(
+            controller: _scrollController,
             children: <Widget>[
               new Row(
                 mainAxisSize: MainAxisSize.max,

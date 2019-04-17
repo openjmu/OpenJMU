@@ -2,7 +2,9 @@ import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
@@ -220,13 +222,27 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
           padding: EdgeInsets.all(0.0),
           child: new Text(
             '忘记密码？',
-            style: new TextStyle(fontSize: 14.0, color: Colors.white70),
+            style: new TextStyle(color: Colors.white70),
           ),
           onPressed: () {
             resetPassword();
           },
         ),
       ),
+    );
+  }
+
+  RichText buildUserAgreement(context) {
+    return new RichText(
+      text: TextSpan(children: <TextSpan>[
+        TextSpan(text: "登录即表明同意", style: TextStyle(color: Colors.white70)),
+        TextSpan(text: "用户协议", style: TextStyle(color: Colors.lightBlueAccent),
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              return CommonWebPage.jump(context, "https://openjmu.xyz/license.html", "OpenJMU用户协议");
+            }
+        ),
+      ])
     );
   }
 
@@ -324,16 +340,19 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                       new Form(
                           key: _formKey,
                           child: new Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
+                                SizedBox(height: 100.0),
                                 buildLogo(),
 //                          buildTitleLine(),
-                                SizedBox(height: 20.0),
+                                SizedBox(height: 30.0),
                                 buildUsernameTextField(),
                                 SizedBox(height: 30.0),
                                 buildPasswordTextField(),
                                 buildForgetPasswordText(context),
                                 SizedBox(height: 10.0),
+                                buildUserAgreement(context),
+                                SizedBox(height: 20.0),
                                 buildLoginButton(context),
                                 SizedBox(height: 50.0),
 //                          buildRegisterText(context),

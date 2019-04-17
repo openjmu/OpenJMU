@@ -274,7 +274,7 @@ class DataUtils {
       }
       NetUtils.post(Api.loginTicket, data: params)
           .then((response) {
-        print(jsonDecode(response)['sid']);
+        print("sid: ${jsonDecode(response)['sid']}");
         updateSid(jsonDecode(response)).then((whatever) {
           getUserBasicInfo();
         });
