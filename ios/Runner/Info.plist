@@ -30,11 +30,11 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>方便您使用微博发表图片</string>
+	<string>方便您拍照分享至动态</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>方便您使用微博拍照</string>
+	<string>方便您录像分享至动态</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>方便您使用微博发表图片</string>
+	<string>方便您分享图片至动态</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
