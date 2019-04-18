@@ -21,18 +21,25 @@ class PostDetailPage extends StatefulWidget {
 }
 
 class PostDetailPageState extends State<PostDetailPage> {
+
   final ScrollController _scrollController = new ScrollController();
 
   Widget _forwardsList;
   Widget _commentsList;
   Widget _praisesList;
+//  Comment _replyToComment;
+//  String _replyToPrefix;
 
   int _tabIndex = 1;
   Widget _post;
   bool isLike;
   int forwards, comments, praises;
+  bool _forwarding = false;
+  bool _commenting = false;
   bool _forwardVisible = false;
   bool _commentVisible = false;
+  bool forwardAtTheMeanTime = false;
+  bool commentAtTheMeanTime = false;
 
   TextStyle forwardsStyle, commentsStyle, praisesStyle;
 
@@ -50,8 +57,6 @@ class PostDetailPageState extends State<PostDetailPage> {
   Color activeColor = ThemeUtils.currentColorTheme;
   Color inActiveColor = ThemeUtils.currentCardColor;
 
-  bool forwardAtTheMeanTime = false;
-  bool commentAtTheMeanTime = false;
 
   TextEditingController _forwardController = new TextEditingController();
   TextEditingController _commentController = new TextEditingController();
@@ -100,6 +105,17 @@ class PostDetailPageState extends State<PostDetailPage> {
       _praisesList = new PraiseInPostList(widget.post);
     });
   }
+
+//  void initialReplyToComment(Comment comment) {
+//    setState(() {
+//      _replyToComment = comment;
+//      _replyToPrefix = "回复:@${comment.fromUserName} ";
+//    });
+//  }
+
+//  void replyToComment(Comment comment) {
+//    print("回复:<M ${comment.fromUserUid}>@${comment.fromUserName}</M> ");
+//  }
 
   void setTabIndex(index) {
     setState(() {
@@ -161,6 +177,9 @@ class PostDetailPageState extends State<PostDetailPage> {
   }
 
   void _requestForward() {
+    setState(() {
+      _forwarding = true;
+    });
     PostAPI.postForward(
         _forwardController.text,
         widget.post.id,
@@ -169,16 +188,20 @@ class PostDetailPageState extends State<PostDetailPage> {
       showShortToast("转发成功");
       setState(() {
         forwards++;
+        _forwarding = false;
+        _forwardVisible = false;
         _forwardsList = new Container();
         new Timer(const Duration(milliseconds: 50), () {
           _forwardsList = new PostInPostList(widget.post);
         });
-        _forwardVisible = false;
       });
     });
   }
 
   void _requestComment() {
+    setState(() {
+      _commenting = true;
+    });
     CommentAPI.postComment(
         _commentController.text,
         widget.post.id,
@@ -187,11 +210,12 @@ class PostDetailPageState extends State<PostDetailPage> {
       showShortToast("评论成功");
       setState(() {
         comments++;
+        _commenting = false;
+        _commentVisible = false;
         _commentsList = new Container();
         new Timer(const Duration(milliseconds: 50), () {
           _commentsList = new CommentInPostList(widget.post);
         });
-        _commentVisible = false;
       });
     });
   }
@@ -199,19 +223,27 @@ class PostDetailPageState extends State<PostDetailPage> {
   void _requestPraise() {
     bool _l = isLike;
     setState(() {
-      praises++;
+      if (isLike) {
+        praises--;
+      } else {
+        praises++;
+      }
       this.isLike = !isLike;
     });
     PraiseAPI.requestPraise(widget.post.id, !_l).catchError((e) {
       setState(() {
-        praises--;
+        if (isLike) {
+          praises++;
+        } else {
+          praises--;
+        }
         this.isLike = _l;
       });
     });
   }
 
   Positioned toolbar(context) {
-    return new Positioned(
+    return Positioned(
         bottom: MediaQuery.of(context).padding.bottom ?? 0,
         left: 0.0,
         right: 0.0,
@@ -318,6 +350,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                           contentPadding: EdgeInsets.all(12.0),
                           border: OutlineInputBorder(),
                         ),
+                        enabled: !_forwarding,
                         style: TextStyle(fontSize: 18.0),
                         autofocus: true,
                         maxLines: 3,
@@ -336,7 +369,6 @@ class PostDetailPageState extends State<PostDetailPage> {
                                   setState(() {
                                     commentAtTheMeanTime = value;
                                   });
-                                  print(value);
                                 }
                             ),
                             Text("同时评论到微博", style: TextStyle(fontSize: 16.0)),
@@ -353,10 +385,19 @@ class PostDetailPageState extends State<PostDetailPage> {
                                 onPressed: null,
                                 icon: new Icon(Icons.mood)
                             ),
-                            IconButton(
+                            !_forwarding
+                                ? IconButton(
                               icon: Icon(Icons.send),
                               color: ThemeUtils.currentColorTheme,
                               onPressed: _forwardContent.length > 0 ? _requestForward : null,
+                            )
+                                : Container(
+                                padding: EdgeInsets.symmetric(horizontal: 14.0),
+                                child: SizedBox(
+                                    width: 18.0,
+                                    height: 18.0,
+                                    child: CircularProgressIndicator(strokeWidth: 2.0)
+                                )
                             )
                           ],
                         )
@@ -387,7 +428,9 @@ class PostDetailPageState extends State<PostDetailPage> {
                         decoration: InputDecoration(
                           contentPadding: EdgeInsets.all(12.0),
                           border: OutlineInputBorder(),
+//                          prefixText: _replyToPrefix ?? null
                         ),
+                        enabled: !_commenting,
                         style: TextStyle(fontSize: 18.0),
                         cursorColor: ThemeUtils.currentColorTheme,
                         autofocus: true,
@@ -407,7 +450,6 @@ class PostDetailPageState extends State<PostDetailPage> {
                                   setState(() {
                                     forwardAtTheMeanTime = value;
                                   });
-                                  print(value);
                                 }
                             ),
                             Text("同时转发到微博", style: TextStyle(fontSize: 16.0)),
@@ -424,11 +466,20 @@ class PostDetailPageState extends State<PostDetailPage> {
                                 onPressed: null,
                                 icon: new Icon(Icons.mood)
                             ),
-                            IconButton(
-                              icon: Icon(Icons.send),
-                              color: ThemeUtils.currentColorTheme,
-                              onPressed: _commentContent.length > 0 ? _requestComment : null,
-                            )
+                            !_commenting
+                                ? IconButton(
+                                  icon: Icon(Icons.send),
+                                  color: ThemeUtils.currentColorTheme,
+                                  onPressed: _commentContent.length > 0 ? _requestComment : null,
+                                )
+                                : Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 14.0),
+                                  child: SizedBox(
+                                      width: 18.0,
+                                      height: 18.0,
+                                      child: CircularProgressIndicator(strokeWidth: 2.0)
+                                  )
+                                )
                           ],
                         )
                       ],
@@ -466,10 +517,10 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
+    return Scaffold(
+      appBar: AppBar(
         backgroundColor: ThemeUtils.currentColorTheme,
-        title: new Text(
+        title: Text(
             "动态正文",
             style: TextStyle(
                 color: Colors.white,
@@ -478,35 +529,39 @@ class PostDetailPageState extends State<PostDetailPage> {
         ),
         centerTitle: true,
       ),
-      body: new Stack(
+      body: Stack(
         children: <Widget>[
-          new ListView(
-            controller: _scrollController,
-            children: <Widget>[
-              new Row(
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  new Expanded(
-                      child: new Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          _post,
-                          actionLists(),
-                          new IndexedStack(
-                            children: <Widget>[
-                              _forwardsList,
-                              _commentsList,
-                              _praisesList,
-                            ],
-                            index: _tabIndex,
-                          )
-                        ],
-                      )
-                  )
-                ],
-              ),
-              Container(height: 56.0),
-            ],
+//          RefreshIndicator(
+            SingleChildScrollView(
+//                controller: _scrollController,
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                _post,
+                                actionLists(),
+                                IndexedStack(
+                                  children: <Widget>[
+                                    _forwardsList,
+                                    _commentsList,
+                                    _praisesList,
+                                  ],
+                                  index: _tabIndex,
+                                )
+                              ],
+                            )
+                        )
+                      ],
+                    ),
+                    Container(height: 56.0),
+                  ],
+                ),
+//            onRefresh: () {},
           ),
           toolbar(context),
           backdrop(),

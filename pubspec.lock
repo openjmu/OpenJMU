@@ -111,6 +111,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.2"
+  flutter_colorpicker:
+    dependency: "direct main"
+    description:
+      name: flutter_colorpicker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.3"
   flutter_local_notifications:
     dependency: "direct main"
     description:
@@ -150,7 +157,7 @@ packages:
       name: fluttertoast
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.3"
+    version: "3.0.4"
   http:
     dependency: transitive
     description:
@@ -178,7 +185,7 @@ packages:
       name: image_downloader
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.13.4"
+    version: "0.14.1"
   image_picker:
     dependency: "direct main"
     description:

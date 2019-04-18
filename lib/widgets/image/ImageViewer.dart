@@ -175,7 +175,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                           scrollDirection: Axis.horizontal,
                         ),
                         Positioned(
-                            top: 0.0,
+                            top: MediaQuery.of(context).padding.top ?? 0.0,
                             left: 0.0,
                             right: 0.0,
                             height: kToolbarHeight,

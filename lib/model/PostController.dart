@@ -8,10 +8,8 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
 
 class PostAPI {
@@ -55,27 +53,20 @@ class PostAPI {
         }
         break;
     }
-    return NetUtils.getWithCookieAndHeaderSet(
-        _postUrl,
-        headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
-    );
+    return NetUtils.getWithCookieAndHeaderSet(_postUrl);
   }
   static getPostInPostList(int postId) async {
-    return NetUtils.getWithCookieAndHeaderSet(
-        "${Api.postForwardsList}$postId",
-        headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
-    );
+    return NetUtils.getWithCookieAndHeaderSet("${Api.postForwardsList}$postId");
   }
   static glancePost(int postId) {
     List<int> postIds = [postId];
     return NetUtils.postWithCookieAndHeaderSet(
       Api.postGlance,
-      data: jsonEncode({"tids": postIds}),
-      headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-      cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+      data: jsonEncode({"tids": postIds})
     );
+  }
+  static deletePost(int postId) {
+    return NetUtils.deleteWithCookieAndHeaderSet("${Api.postContent}/tid/$postId");
   }
 
   static postForward(String content, int postId, bool replyAtTheMeanTime) async {
@@ -86,9 +77,7 @@ class PostAPI {
     };
     return NetUtils.postWithCookieAndHeaderSet(
         "${Api.postRequestForward}",
-        data: data,
-        headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+        data: data
     );
   }
 

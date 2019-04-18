@@ -17,6 +17,8 @@ import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
@@ -44,7 +46,7 @@ class _PostCardState extends State<PostCard> {
   Color _praisesColor = Colors.grey;
 
   Widget pics;
-  bool isDetail;
+  bool isDetail, isDeleting = false;
 
   @override
   void initState() {
@@ -82,17 +84,20 @@ class _PostCardState extends State<PostCard> {
 
   GestureDetector getPostAvatar(context, post) {
     return new GestureDetector(
-        child: new Container(
-          width: 40.0,
-          height: 40.0,
-          decoration: new BoxDecoration(
-            shape: BoxShape.circle,
-            color: const Color(0xFFECECEC),
-            image: new DecorationImage(
-                image: CachedNetworkImageProvider(post.avatar, cacheManager: DefaultCacheManager()),
-                fit: BoxFit.cover
-            ),
-          ),
+        child: Container(
+            width: 40.0,
+            height: 40.0,
+            child: CircleAvatar(
+              backgroundImage: CachedNetworkImageProvider(post.avatar, cacheManager: DefaultCacheManager()),
+            )
+//            decoration: new BoxDecoration(
+//              shape: BoxShape.circle,
+//              color: const Color(0xFFECECEC),
+//              image: new DecorationImage(
+//                  image: CachedNetworkImageProvider(post.avatar, cacheManager: DefaultCacheManager()),
+//                  fit: BoxFit.cover
+//              ),
+//            ),
         ),
         onTap: () {
           return UserPage.jump(context, widget.post.userId);
@@ -358,7 +363,6 @@ class _PostCardState extends State<PostCard> {
     }
     return new Container(
         color: const Color(0xffaa4444),
-//        margin: EdgeInsets.only(top: 8.0),
         padding: EdgeInsets.all(30.0),
         child: new Center(
             child: new Text(
@@ -402,6 +406,65 @@ class _PostCardState extends State<PostCard> {
     });
   }
 
+  Positioned deleteButton() {
+    return Positioned(
+        top: 6.0,
+        right: 6.0,
+        child: IconButton(
+            icon: Icon(Icons.delete, color: Colors.grey, size: 18.0),
+            onPressed: () {
+              confirmDelete();
+            }
+        )
+    );
+  }
+
+  void confirmDelete() {
+    showDialog(
+        context: context,
+        builder: (_) => PlatformAlertDialog(
+          title: Text("删除动态"),
+          content: Text("是否确认删除该动态？"),
+          actions: <Widget>[
+            FlatButton(
+              child: !isDeleting
+                  ? Text('确认', style: TextStyle(fontWeight: FontWeight.bold))
+                  : Container(
+                    child: SizedBox(
+                      width: 18.0,
+                      height: 18.0,
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
+                        strokeWidth: 3.0,
+                      )
+                    )
+                  )
+              ,
+              onPressed: () {
+                setState(() {
+                  isDeleting = true;
+                });
+                PostAPI.deletePost(widget.post.id).then((response) {
+                  showShortToast("动态删除成功");
+                  setState(() {
+                    isDeleting = false;
+                  });
+                  Navigator.of(context).pop();
+                });
+              },
+            ),
+            FlatButton(
+              color: ThemeUtils.currentColorTheme,
+              child: Text('取消', style: TextStyle(color: Colors.white)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     _praisesColor = widget.post.isLike ? ThemeUtils.currentColorTheme : Colors.grey;
@@ -433,9 +496,16 @@ class _PostCardState extends State<PostCard> {
       child: new Container(
         child: Card(
             margin: EdgeInsets.symmetric(vertical: 4.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: _widgets,
+            child: Stack(
+              children: <Widget>[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: _widgets,
+                ),
+                widget.post.userId == UserUtils.currentUser.uid
+                    ? deleteButton()
+                    : Container()
+              ],
             ),
             elevation: 0,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)

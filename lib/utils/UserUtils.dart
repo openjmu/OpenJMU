@@ -1,7 +1,6 @@
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
 
 class UserUtils {
   static UserInfo currentUser = new UserInfo(null, null, null, null, null, null, null, null, null, null);
@@ -42,58 +41,44 @@ class UserUtils {
     } else {
       return NetUtils.getWithCookieAndHeaderSet(
         Api.userBasicInfo,
-        data: {'uid': uid},
-        headers: DataUtils.buildPostHeaders(currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid)
+        data: {'uid': uid}
       );
     }
   }
 
   static Future getFans(int uid) {
     return NetUtils.getWithCookieAndHeaderSet(
-        "${Api.userFans}$uid",
-        headers: DataUtils.buildPostHeaders(currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid)
+        "${Api.userFans}$uid"
     );
   }
 
   static Future getIdols(int uid) {
     return NetUtils.getWithCookieAndHeaderSet(
-        "${Api.userIdols}$uid",
-        headers: DataUtils.buildPostHeaders(currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid)
+        "${Api.userIdols}$uid"
     );
   }
 
   static Future getFansList(int uid, int page) {
     return NetUtils.getWithCookieAndHeaderSet(
-        "${Api.userFans}$uid/page/$page/page_size/20",
-        headers: DataUtils.buildPostHeaders(currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid)
+        "${Api.userFans}$uid/page/$page/page_size/20"
     );
   }
 
   static Future getIdolsList(int uid, int page) {
     return NetUtils.getWithCookieAndHeaderSet(
-        "${Api.userIdols}$uid/page/$page/page_size/20",
-        headers: DataUtils.buildPostHeaders(currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid)
+        "${Api.userIdols}$uid/page/$page/page_size/20"
     );
   }
 
   static Future getFansAndFollowingsCount(int uid) {
     return NetUtils.getWithCookieAndHeaderSet(
-        "${Api.userFansAndIdols}$uid",
-        headers: DataUtils.buildPostHeaders(currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid)
+        "${Api.userFansAndIdols}$uid"
     );
   }
 
   static Future follow(int uid) async {
     NetUtils.postWithCookieAndHeaderSet(
-        "${Api.userRequestFollow}$uid",
-        headers: DataUtils.buildPostHeaders(currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid)
+        "${Api.userRequestFollow}$uid"
     ).then((response) {
       Map<String, dynamic> data = {
         "fid": uid,
@@ -101,9 +86,7 @@ class UserUtils {
       };
       return NetUtils.postWithCookieAndHeaderSet(
           Api.userFollowAdd,
-          data: data,
-          headers: DataUtils.buildPostHeaders(currentUser.sid),
-          cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid)
+          data: data
       );
     }).catchError((e) {
       print(e.toString());
@@ -113,18 +96,14 @@ class UserUtils {
 
   static Future unFollow(int uid) async {
     NetUtils.deleteWithCookieAndHeaderSet(
-        "${Api.userRequestFollow}$uid",
-        headers: DataUtils.buildPostHeaders(currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid)
+        "${Api.userRequestFollow}$uid"
     ).then((response) {
       Map<String, dynamic> data = {
         "fid": uid
       };
       return NetUtils.postWithCookieAndHeaderSet(
           Api.userFollowDel,
-          data: data,
-          headers: DataUtils.buildPostHeaders(currentUser.sid),
-          cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid)
+          data: data
       );
     }).catchError((e) {
       print(e.toString());

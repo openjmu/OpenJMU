@@ -113,7 +113,7 @@ class NewsListPageState extends State<NewsListPage> {
     isLoadMore
         ? url = Api.newsList+"/max_ts/"+listData[listData.length-1]['create_time']+"/size/20"
         : url = Api.newsList+"/size/20";
-    NetUtils.getWithHeaderSet(url, headers: headers).then((response) {
+    NetUtils.getWithHeaderSet(url).then((response) {
       if (response != null) {
         Map<String, dynamic> map = jsonDecode(response);
         List _listData = map["data"];

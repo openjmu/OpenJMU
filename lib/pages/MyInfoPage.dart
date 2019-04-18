@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+
 import 'package:OpenJMU/utils/OTAUpdate.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -8,7 +10,7 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
-import 'package:OpenJMU/widgets/InAppBrowser.dart';
+import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class MyInfoPage extends StatefulWidget {
   @override
@@ -241,7 +243,6 @@ class MyInfoPageState extends State<MyInfoPage> {
   void showAboutDialog(BuildContext context) {
     final String name = 'OpenJMU';
     final String version = currentVersion;
-    final String content = 'Developed By Alex & Evsio0n.';
     final Widget icon = new Image.asset(
         "images/ic_jmu_logo_trans_original.png",
         width: 40.0,
@@ -267,7 +268,31 @@ class MyInfoPageState extends State<MyInfoPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: body
       ),
-      Text(content)
+      RichText(
+          text: TextSpan(
+            children: <TextSpan>[
+              TextSpan(text: "Developed By ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
+              TextSpan(
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    return CommonWebPage.jump(context, "https://blog.alexv525.com/", "Alex Vincent");
+                  },
+                  text: "Alex Vincent",
+                  style: TextStyle(color: Colors.lightBlue)
+              ),
+              TextSpan(text: " And ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
+              TextSpan(
+                  recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                      return CommonWebPage.jump(context, "https://135792468.xyz/", "Evsio0n");
+                    },
+                  text: "Evsio0n",
+                  style: TextStyle(color: Colors.lightBlue)
+              ),
+              TextSpan(text: ".", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
+            ]
+          )
+      )
     ];
     showDialog(
         context: context,

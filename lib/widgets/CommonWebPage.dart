@@ -9,20 +9,22 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 class CommonWebPage extends StatefulWidget {
   final String url;
   final String title;
+  final bool withCookie;
 
-  const CommonWebPage({Key key, @required this.url, @required this.title}) : super(key: key);
+  const CommonWebPage(
+      this.url,
+      this.title,
+      {this.withCookie, Key key}
+      ) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
     return new CommonWebPageState();
   }
 
-  static void jump(BuildContext context, String url, String title) {
+  static void jump(BuildContext context, String url, String title, {bool withCookie}) {
     Navigator.of(context).push(platformPageRoute(builder: (context) {
-      return CommonWebPage(
-          url: url,
-          title: title
-      );
+      return CommonWebPage(url, title, withCookie: withCookie);
     }));
   }
 }
@@ -119,12 +121,20 @@ class CommonWebPageState extends State<CommonWebPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool _clear;
+    if (widget.withCookie != null && !widget.withCookie) {
+      _clear = true;
+    } else {
+      _clear = false;
+    }
     Widget trailing = loading
         ? refreshIndicator
         : new Container(width: 56.0);
     return new WillPopScope(
         onWillPop: waitForClose,
         child: new WebviewScaffold(
+            clearCache: _clear,
+            clearCookies: _clear,
             url: widget.url,
             allowFileURLs: true,
             appBar: new AppBar(
@@ -153,6 +163,14 @@ class CommonWebPageState extends State<CommonWebPage> {
               centerTitle: true,
               actions: <Widget>[trailing],
               bottom: progressBar(),
+            ),
+            initialChild: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: Theme.of(context).backgroundColor,
+              child: Center(
+                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme))
+              ),
             ),
             persistentFooterButtons: <Widget>[
               new Container(

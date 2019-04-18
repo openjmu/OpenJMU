@@ -7,13 +7,11 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
-import 'package:OpenJMU/widgets/InAppBrowser.dart';
 
 class AppCenterPage extends StatefulWidget {
   @override
@@ -58,8 +56,7 @@ class AppCenterPageState extends State<AppCenterPage> {
 
   void getAppList() async {
     NetUtils.getPlainWithCookieSet(
-        Api.webAppLists,
-        cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+        Api.webAppLists
     ).then((response) {
       webAppListData = jsonDecode(response.toString());
       for (var i = 0; i < webAppListData.length; i++) {

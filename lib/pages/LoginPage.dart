@@ -314,7 +314,12 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               child: new Text('查看'),
               onPressed: () {
                 Navigator.of(dialogContext).pop();
-                return CommonWebPage.jump(context, "https://net.jmu.edu.cn/info/1309/2476.htm", "集大通行证登录说明");
+                return CommonWebPage.jump(
+                  context,
+                  "https://net.jmu.edu.cn/info/1309/2476.htm",
+                  "集大通行证登录说明",
+                  withCookie: false,
+                );
               },
             ),
           ],

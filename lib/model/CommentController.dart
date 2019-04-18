@@ -6,10 +6,8 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/cards/CommentCard.dart';
 
 class CommentAPI {
@@ -31,18 +29,10 @@ class CommentAPI {
         }
         break;
     }
-    return NetUtils.getWithCookieAndHeaderSet(
-        _commentUrl,
-        headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
-    );
+    return NetUtils.getWithCookieAndHeaderSet(_commentUrl);
   }
   static getCommentInPostList(int id) async {
-    return NetUtils.getWithCookieAndHeaderSet(
-        "${Api.postCommentsList}$id",
-        headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
-    );
+    return NetUtils.getWithCookieAndHeaderSet("${Api.postCommentsList}$id");
   }
 
   static postComment(String content, int postId, bool forwardAtTheMeanTime) async {
@@ -53,9 +43,7 @@ class CommentAPI {
     };
     return NetUtils.postWithCookieAndHeaderSet(
       "${Api.postRequestComment}$postId",
-      data: data,
-      headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-      cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
+      data: data
     );
   }
 

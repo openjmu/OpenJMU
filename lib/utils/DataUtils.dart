@@ -160,8 +160,7 @@ class DataUtils {
 
   static doLogout() async {
     getSid().then((sid) {
-      List<Cookie> cookies = [new Cookie("PHPSESSID", sid)];
-      NetUtils.postWithCookieSet(Api.logout, cookies: cookies).then((response) {
+      NetUtils.postWithCookieSet(Api.logout).then((response) {
         clearLoginInfo();
         Constants.eventBus.fire(new LogoutEvent());
         resetTheme();
@@ -336,12 +335,8 @@ class DataUtils {
   // 获取未读信息数
   static getNotifications() async {
     getSid().then((sid) {
-      Map headers = buildPostHeaders(sid);
-      List cookies = buildPHPSESSIDCookies(sid);
       NetUtils.getWithCookieAndHeaderSet(
-          Api.postUnread,
-          headers: headers,
-          cookies: cookies
+          Api.postUnread
       ).then((response) {
         Map<String, dynamic> data = jsonDecode(response);
 //        int newFans = int.parse(data['fans']);

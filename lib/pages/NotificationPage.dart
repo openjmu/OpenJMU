@@ -116,7 +116,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
     ];
     return [
       new Container(
-        width: 200.0,
+        width: 220.0,
         child: new TabBar(
           indicatorColor: primaryColor,
           tabs: _tabs,

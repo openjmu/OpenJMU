@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
@@ -12,9 +14,6 @@ class ChangeThemePage extends StatefulWidget {
 class ChangeThemePageState extends State<ChangeThemePage> {
   List<Color> colors = ThemeUtils.supportColors;
   Color currentColor = ThemeUtils.currentColorTheme;
-  changeColorTheme(Color c) {
-    Constants.eventBus.fire(new ChangeThemeEvent(c));
-  }
 
   @override
   void initState() {
@@ -27,6 +26,10 @@ class ChangeThemePageState extends State<ChangeThemePage> {
         });
       }
     });
+  }
+
+  void changeColorTheme(Color c) {
+    Constants.eventBus.fire(new ChangeThemeEvent(c));
   }
 
   @override
@@ -45,7 +48,7 @@ class ChangeThemePageState extends State<ChangeThemePage> {
         brightness: Brightness.dark,
       ),
       body: new Padding(
-          padding: const EdgeInsets.all(4.0),
+          padding: EdgeInsets.all(8.0),
           child: new GridView.count(
             crossAxisCount: 4,
             children: new List.generate(colors.length, (index) {
@@ -56,7 +59,7 @@ class ChangeThemePageState extends State<ChangeThemePage> {
                 },
                 child: new Container(
                   color: colors[index],
-                  margin: const EdgeInsets.all(3.0),
+                  margin: const EdgeInsets.all(5.0),
                 ),
               );
             }),

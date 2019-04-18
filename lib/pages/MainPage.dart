@@ -243,7 +243,7 @@ class MainPageState extends State<MainPage> {
                   BadgeIconButton(
                       itemCount: notifications.count,
                       icon: Icon(Icons.notifications, color: Colors.white),
-                      badgeColor: currentThemeColor,
+                      badgeColor: Colors.redAccent,
                       badgeTextColor: Colors.white,
                       hideZeroCount: true,
                       onPressed: () {

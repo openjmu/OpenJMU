@@ -987,7 +987,7 @@ class _SearchBarState extends State<SearchBar> {
                           padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                           child: CircleAvatar(
                             backgroundImage: new NetworkImage(
-                                Api.userAvatar+"?uid=${UserUtils.currentUser.uid}&size=f128"
+                                Api.userAvatar+"?uid=${UserUtils.currentUser.uid}"
                             ),
                             radius: 16,
                           ),

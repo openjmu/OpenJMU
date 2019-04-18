@@ -259,9 +259,7 @@ class PublishPostPageState extends State<PublishPostPage> {
   Future getImageRequest(image, sid) async {
     return NetUtils.postWithCookieAndHeaderSet(
         Api.postUploadImage,
-        data: createForm(image),
-        headers: DataUtils.buildPostHeaders(sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(sid)
+        data: createForm(image)
     ).then((response) {
       int imageId = int.parse(jsonDecode(response)['image_id']);
       _imageIdList.add(imageId);
@@ -276,9 +274,7 @@ class PublishPostPageState extends State<PublishPostPage> {
   Future _postContent(content, sid, context) async {
     NetUtils.postWithCookieAndHeaderSet(
       Api.postContent,
-      data: content,
-      headers: DataUtils.buildPostHeaders(sid),
-      cookies: DataUtils.buildPHPSESSIDCookies(sid),
+      data: content
     ).then((response) {
       print(response);
       if (jsonDecode(response)["tid"] != null) {

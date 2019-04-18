@@ -5,10 +5,8 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/cards/PraiseCard.dart';
 
 class PraiseAPI {
@@ -19,38 +17,24 @@ class PraiseAPI {
     } else {
       _praiseUrl = "${Api.praiseList}";
     }
-    return NetUtils.getWithCookieAndHeaderSet(
-        _praiseUrl,
-        headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-        cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
-    );
+    return NetUtils.getWithCookieAndHeaderSet(_praiseUrl);
   }
   static getPraiseInPostList(postId) {
-    return NetUtils.getWithCookieAndHeaderSet(
-      "${Api.postPraisesList}$postId",
-      headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-      cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
-    );
+    return NetUtils.getWithCookieAndHeaderSet("${Api.postPraisesList}$postId");
   }
 
 
   static requestPraise(id, isPraise) async {
     if (isPraise) {
-      return NetUtils.postWithCookieAndHeaderSet(
-          "${Api.postRequestPraise}$id",
-          headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-          cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
-      ).catchError((e) {
-        print(e.response);
-      });
+      return NetUtils.postWithCookieAndHeaderSet("${Api.postRequestPraise}$id")
+          .catchError((e) {
+            print(e.response);
+          });
     } else {
-      return NetUtils.deleteWithCookieAndHeaderSet(
-          "${Api.postRequestPraise}$id",
-          headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-          cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid)
-      ).catchError((e) {
-        print(e.response);
-      });
+      return NetUtils.deleteWithCookieAndHeaderSet("${Api.postRequestPraise}$id")
+          .catchError((e) {
+            print(e.response);
+          });
     }
   }
 

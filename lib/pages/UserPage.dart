@@ -1,7 +1,8 @@
+import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -42,12 +43,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
 
   Widget _post;
 
-  bool isError = false;
-
-  GlobalKey _nicknameKey;
-  GlobalKey _signKey;
-  double maxNicknameWidth;
-  double maxSignWidth;
+  bool isError = false, isLoading = false;
 
   @override
   void initState() {
@@ -65,23 +61,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
           needRefreshIndicator: false
       );
     }
-    _nicknameKey = GlobalKey();
-    _signKey = GlobalKey();
-    WidgetsBinding.instance.addPostFrameCallback((callback) {
-      WidgetsBinding.instance.addPersistentFrameCallback((callback) {
-        if (_nicknameKey.currentContext != null &&
-            _signKey.currentContext != null) {
-          maxNicknameWidth = MediaQuery.of(context).size.width - 4 * 16 - 3 * 64 - 8;
-          maxSignWidth = MediaQuery.of(context).size.width - 2 * 8;
-          if (this.mounted) {
-            setState(() {
-              _updateAppBar();
-            });
-          }
-        }
-        WidgetsBinding.instance.scheduleFrame();
-      });
-    });
   }
 
   @override
@@ -132,9 +111,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
             ),
           ),
         );
-//        _body = Center(
-//          child: CircularProgressIndicator(),
-//        );
       });
     }
 
@@ -205,14 +181,41 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                   borderRadius: BorderRadius.circular(4)
               ),
               child: Center(
-                child: Text('编辑资料', style: TextStyle(color: Colors.white, fontSize: 12),),
+                child: Text('编辑资料', style: TextStyle(color: Colors.white, fontSize: 12)),
               ),
             ),
           );
-//          _actions = <Widget>[
+          _actions = <Widget>[
+//            isLoading
+//                ?
+//              Platform.isAndroid ? CircularProgressIndicator(
+//                valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+//                strokeWidth: 3.0,
+//              ) : CupertinoActivityIndicator()
+//                : IconButton(
+//              onPressed: () {
+//                setState(() {
+//                  isLoading = true;
+//                  new Timer(const Duration(milliseconds: 50), () {
+//                    _post = PostList(
+//                        PostController(
+//                            postType: "user",
+//                            isFollowed: false,
+//                            isMore: false,
+//                            lastValue: (Post post) => post.id,
+//                            additionAttrs: {'uid': widget.uid}
+//                        ),
+//                        needRefreshIndicator: false
+//                    );
+//                    isLoading = false;
+//                  });
+//                });
+//              },
+//              icon: Icon(Icons.refresh)
+//            )
 //            PopupMenuButton(
 //              onSelected: (val) {
-////                UserAPI.logout(pop: true, context: context);
+//                UserAPI.logout(pop: true, context: context);
 //              },
 //              itemBuilder: (context) {
 //                return <PopupMenuItem>[
@@ -223,7 +226,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
 //                ];
 //              },
 //            ),
-//          ];
+          ];
         } else {
           if (_user.isFollowing) {
             _infoNextNameButton = _unFollowButton();
@@ -250,15 +253,12 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
 
   void _updateAppBar() {
     if (mounted) {
-      var bottomSize = 0.0;
-      maxNicknameWidth = MediaQuery.of(context).size.width - 4 * 16 - 3 * 64 - 8;
-      maxSignWidth = MediaQuery.of(context).size.width - 2 * 8;
-
       setState(() {
         _appBar = SliverAppBar(
+          centerTitle: true,
           floating: false,
           pinned: true,
-          expandedHeight: 187 + bottomSize,
+          expandedHeight: 187,
           flexibleSpace: FlexibleSpaceBarWithUserInfo(
             titleFontSize: 14,
             paddingStart: 100,
@@ -305,26 +305,23 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
             titlePadding: EdgeInsets.only(left: 100, bottom: 48),
             title: Text(
               _user.name,
-              key: _nicknameKey,
               style: TextStyle(color: Colors.white, fontSize: 14),
               maxLines: 1,
             ),
             background: new Image(
-              image: CachedNetworkImageProvider("${Api.userAvatarInSecure}?uid=${_user.uid}&size=f100)", cacheManager: DefaultCacheManager()),
+              image: CachedNetworkImageProvider("${Api.userAvatarInSecure}?uid=${_user.uid}&size=f152)", cacheManager: DefaultCacheManager()),
               fit: BoxFit.fitWidth,
               width: MediaQuery.of(context).size.width,
             ),
             bottomInfo: Container(
-//                  height: 37,
               color: Theme.of(context).cardColor,
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Text(
                 _user?.signature ?? '这个人还没写下TA的第一句...',
-                key: _signKey,
                 style: TextStyle(color: Colors.grey),
               ),
             ),
-            bottomSize: bottomSize,
+            bottomSize: 0,
           ),
           actions: _actions,
         );

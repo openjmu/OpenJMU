@@ -6,6 +6,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/pages/SplashPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/RouteUtils.dart';
 
@@ -29,6 +30,7 @@ class JMUAppClientState extends State<JMUAppClient> {
   void initState() {
     super.initState();
     listenToBrightness();
+    NetUtils.initConfig();
     DataUtils.getColorThemeIndex().then((index) {
       if (this.mounted && index != null) {
         setState(() {
@@ -37,17 +39,18 @@ class JMUAppClientState extends State<JMUAppClient> {
         Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.supportColors[index]));
       }
     });
+    Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
+      setState(() {
+        currentThemeColor = event.color;
+      });
+    });
+
     Constants.eventBus.on<LogoutEvent>().listen((event) {
       setState(() {
         currentBrightness = Brightness.light;
         currentPrimaryColor = Colors.white;
         currentThemeColor = ThemeUtils.defaultColor;
         print(currentThemeColor);
-      });
-    });
-    Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
-      setState(() {
-        currentThemeColor = event.color;
       });
     });
   }
@@ -87,24 +90,15 @@ class JMUAppClientState extends State<JMUAppClient> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        onGenerateRoute: (RouteSettings settings) {
-          final String name = settings.name;
-          final Function pageContentBuilder = RouteUtils.routes[name];
-          if (pageContentBuilder != null) {
-            final Route route = MaterialPageRoute(builder: (context) =>
-                pageContentBuilder(context, arguments: settings.arguments)
-            );
-            return route;
-          }
-        },
         debugShowCheckedModeBanner: false,
         routes: RouteUtils.routes,
         title: "OpenJMU",
-        theme: new ThemeData(
+        theme: ThemeData(
           accentColor: currentThemeColor,
           primaryColor: currentThemeColor,
           primaryColorBrightness: currentBrightness,
-          primaryIconTheme: new IconThemeData(color: Colors.white),
+          primaryIconTheme: IconThemeData(color: Colors.white),
+          primarySwatch: Colors.red,
           brightness: currentBrightness,
           appBarTheme: AppBarTheme(
               color: currentThemeColor,
