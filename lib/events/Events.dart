@@ -8,6 +8,25 @@ class LoginFailedEvent {}
 class TicketGotEvent {}
 class TicketFailedEvent {}
 
+class PostDeletedEvent {
+  int postId;
+  PostDeletedEvent(int id) {
+    this.postId = id;
+  }
+}
+class PostForwardedEvent {
+  int postId;
+  PostForwardedEvent(int id) {
+    this.postId = id;
+  }
+}
+class PostCommentedEvent {
+  int postId;
+  PostCommentedEvent(int id) {
+    this.postId = id;
+  }
+}
+
 class HasUpdateEvent {
   Map<String, dynamic> response;
   HasUpdateEvent(Map<String, dynamic> response) {
@@ -39,9 +58,8 @@ class NotificationsChangeEvent {
 
 class ChangeThemeEvent {
   Color color;
-
-  ChangeThemeEvent(Color c) {
-    this.color = c;
+  ChangeThemeEvent(Color color) {
+    this.color = color;
   }
 }
 

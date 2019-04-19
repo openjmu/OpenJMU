@@ -359,7 +359,10 @@ class _CommentCardInPostState extends State<CommentCardInPost> {
                   padding: EdgeInsets.all(26.0),
                   icon: Icon(Icons.comment, color: Colors.grey),
                   onPressed: () {
-//                    PostDetailPageState().initialReplyToComment(widget.comments[index]);
+                    showDialog<Null>(
+                        context: context,
+                        builder: (BuildContext context) => CommentPositioned(widget.post, comment: widget.comments[index])
+                    );
                   },
                 )
               ],

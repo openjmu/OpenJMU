@@ -46,11 +46,14 @@ class _PostCardState extends State<PostCard> {
   Color _praisesColor = Colors.grey;
 
   Widget pics;
-  bool isDetail, isDeleting = false;
+  bool isDetail, isDeleting;
 
   @override
   void initState() {
     super.initState();
+    setState(() {
+      isDeleting = false;
+    });
     if (widget.isDetail != null && widget.isDetail == true) {
       setState(() {
         isDetail = true;
@@ -426,32 +429,32 @@ class _PostCardState extends State<PostCard> {
           title: Text("删除动态"),
           content: Text("是否确认删除该动态？"),
           actions: <Widget>[
-            FlatButton(
-              child: !isDeleting
-                  ? Text('确认', style: TextStyle(fontWeight: FontWeight.bold))
-                  : Container(
-                    child: SizedBox(
-                      width: 18.0,
-                      height: 18.0,
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-                        strokeWidth: 3.0,
-                      )
-                    )
-                  )
-              ,
-              onPressed: () {
-                setState(() {
-                  isDeleting = true;
-                });
-                PostAPI.deletePost(widget.post.id).then((response) {
-                  showShortToast("动态删除成功");
+            !isDeleting
+                ? FlatButton(
+                child: Text('确认', style: TextStyle(fontWeight: FontWeight.bold)),
+                onPressed: () {
                   setState(() {
-                    isDeleting = false;
+                    isDeleting = true;
                   });
-                  Navigator.of(context).pop();
-                });
-              },
+                  PostAPI.deletePost(widget.post.id).then((response) {
+                    showShortToast("动态删除成功");
+                    setState(() {
+                      isDeleting = false;
+                    });
+                    Navigator.of(context).pop();
+                    Constants.eventBus.fire(new PostDeletedEvent(widget.post.id));
+                  });
+                }
+            )
+                : Container(
+              child: SizedBox(
+                  width: 18.0,
+                  height: 18.0,
+                  child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
+                    strokeWidth: 3.0,
+                  )
+              ),
             ),
             FlatButton(
               color: ThemeUtils.currentColorTheme,
@@ -502,7 +505,7 @@ class _PostCardState extends State<PostCard> {
                   mainAxisSize: MainAxisSize.min,
                   children: _widgets,
                 ),
-                widget.post.userId == UserUtils.currentUser.uid
+                widget.post.userId == UserUtils.currentUser.uid && isDetail
                     ? deleteButton()
                     : Container()
               ],

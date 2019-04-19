@@ -8,7 +8,7 @@ import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/ChangeThemePage.dart';
 import 'package:OpenJMU/pages/publish/PublishPostPage.dart';
 import 'package:OpenJMU/pages/NotificationPage.dart';
-import 'package:OpenJMU/pages/Test.dart';
+import 'package:OpenJMU/pages/NotificationTest.dart';
 
 class RouteUtils {
   static Map<String, WidgetBuilder> routes = {
@@ -19,6 +19,6 @@ class RouteUtils {
     "/changeTheme": (BuildContext context) => new ChangeThemePage(),
     "/publishPost": (BuildContext context) => new PublishPostPage(),
 //    "/notification": (BuildContext context, {arguments}) => new NotificationPage(arguments: arguments),
-    "/test": (BuildContext context) => new TestPage(),
+    "/test": (BuildContext context) => new NotificationTestPage(),
   };
 }

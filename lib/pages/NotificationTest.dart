@@ -26,12 +26,12 @@ class PaddedRaisedButton extends StatelessWidget {
   }
 }
 
-class TestPage extends StatefulWidget {
+class NotificationTestPage extends StatefulWidget {
   @override
-  TestPageState createState() => new TestPageState();
+  NotificationTestPageState createState() => new NotificationTestPageState();
 }
 
-class TestPageState extends State<TestPage> {
+class NotificationTestPageState extends State<NotificationTestPage> {
   var platform = MethodChannel('crossingthestreams.io/resourceResolver');
 
   @override
