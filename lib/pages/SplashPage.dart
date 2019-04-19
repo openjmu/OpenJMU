@@ -74,7 +74,7 @@ class SplashState extends State<SplashPage> {
         child: Padding(
             padding: EdgeInsets.all(30.1),
             child: new Image.asset(
-              './images/trans.png',
+              './images/trans.jpg',
               width: 120.0,
               height: 120.0,
             )
