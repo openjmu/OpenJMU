@@ -76,7 +76,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     return new Container(
       margin: EdgeInsets.only(bottom: 8.0),
         child: new Image.asset(
-          './images/ic_jmu_logo_trans.png',
+          './images/trans.png',
 //          width: _animation.value,
 //          height: _animation.value,
           width: 100.0,
