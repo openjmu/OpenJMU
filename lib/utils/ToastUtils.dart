@@ -1,5 +1,7 @@
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'package:OpenJMU/utils/ThemeUtils.dart';
+
 void showLongToast(String text) {
   Fluttertoast.showToast(
       msg: text,
@@ -17,6 +19,16 @@ void showShortToast(String text) {
 void showCenterShortToast(String text) {
   Fluttertoast.showToast(
       msg: text,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIos: 1
+  );
+}
+
+void showCenterErrorShortToast(String text) {
+  Fluttertoast.showToast(
+      msg: text,
+      backgroundColor: ThemeUtils.defaultColor,
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.CENTER,
       timeInSecForIos: 1

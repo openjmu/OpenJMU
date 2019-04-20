@@ -30,4 +30,5 @@ class ThemeUtils {
   static Brightness currentBrightness = Brightness.dark;
   // 当前卡片颜色
   static Color currentCardColor = const Color(0xffffffff);
+
 }

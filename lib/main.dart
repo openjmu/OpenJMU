@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -90,10 +91,10 @@ class JMUAppClientState extends State<JMUAppClient> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        debugShowCheckedModeBanner: false,
-        routes: RouteUtils.routes,
-        title: "OpenJMU",
-        theme: ThemeData(
+      debugShowCheckedModeBanner: false,
+      routes: RouteUtils.routes,
+      title: "OpenJMU",
+      theme: ThemeData(
           accentColor: currentThemeColor,
           primaryColor: currentThemeColor,
           primaryColorBrightness: currentBrightness,
@@ -104,8 +105,15 @@ class JMUAppClientState extends State<JMUAppClient> {
               color: currentThemeColor,
               brightness: ThemeUtils.currentBrightness
           )
-        ),
-        home: new SplashPage()
+      ),
+      home: new SplashPage(),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('zh', 'CN'),
+      ],
     );
   }
 }

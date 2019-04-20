@@ -35,16 +35,20 @@ class CommentAPI {
     return NetUtils.getWithCookieAndHeaderSet("${Api.postCommentsList}$id");
   }
 
-  static postComment(String content, int postId, bool forwardAtTheMeanTime) async {
+  static postComment(String content, int postId, bool forwardAtTheMeanTime, {int replyToId}) async {
     Map<String, dynamic> data = {
       "content": Uri.encodeFull(content),
       "reflag": 0,
       "relay": forwardAtTheMeanTime ? 1 : 0
     };
-    return NetUtils.postWithCookieAndHeaderSet(
-      "${Api.postRequestComment}$postId",
-      data: data
-    );
+    String url;
+    if (replyToId != null) {
+      url = "${Api.postRequestCommentTo}$postId/rid/$replyToId";
+      data["without_mention"] = 1;
+    } else {
+      url = "${Api.postRequestComment}$postId";
+    }
+    return NetUtils.postWithCookieAndHeaderSet(url, data: data);
   }
 
   static Comment createComment(itemData) {

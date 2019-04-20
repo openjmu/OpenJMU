@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:async';
 
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/model/CommentController.dart';
@@ -22,22 +24,14 @@ class PostDetailPage extends StatefulWidget {
 
 class PostDetailPageState extends State<PostDetailPage> {
 
-  final ScrollController _scrollController = new ScrollController();
-
   Widget _forwardsList;
   Widget _commentsList;
   Widget _praisesList;
-//  Comment _replyToComment;
-//  String _replyToPrefix;
 
   int _tabIndex = 1;
   Widget _post;
   bool isLike;
   int forwards, comments, praises;
-  bool _forwarding = false;
-  bool _commenting = false;
-  bool _forwardVisible = false;
-  bool _commentVisible = false;
   bool forwardAtTheMeanTime = false;
   bool commentAtTheMeanTime = false;
 
@@ -57,12 +51,6 @@ class PostDetailPageState extends State<PostDetailPage> {
   Color activeColor = ThemeUtils.currentColorTheme;
   Color inActiveColor = ThemeUtils.currentCardColor;
 
-
-  TextEditingController _forwardController = new TextEditingController();
-  TextEditingController _commentController = new TextEditingController();
-  String _forwardContent = "";
-  String _commentContent = "";
-
   @override
   void initState() {
     super.initState();
@@ -74,27 +62,20 @@ class PostDetailPageState extends State<PostDetailPage> {
     });
     _requestData();
 
-    _forwardController..addListener(() {
-      setState(() {
-        _forwardContent = _forwardController.text;
-      });
-    });
-    _commentController..addListener(() {
-      setState(() {
-        _commentContent = _commentController.text;
-      });
-    });
-
     PostAPI.glancePost(widget.post.id);
     setCurrentTabActive(1, "comments");
     _post = new PostCard(widget.post, isDetail: true);
+
+    Constants.eventBus.on<PostDeletedEvent>().listen((event) {
+      if (event.postId == widget.post.id) {
+        Navigator.of(context).pop();
+      }
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _forwardController.dispose();
-    _commentController.dispose();
     _post = null;
   }
 
@@ -105,17 +86,6 @@ class PostDetailPageState extends State<PostDetailPage> {
       _praisesList = new PraiseInPostList(widget.post);
     });
   }
-
-//  void initialReplyToComment(Comment comment) {
-//    setState(() {
-//      _replyToComment = comment;
-//      _replyToPrefix = "回复:@${comment.fromUserName} ";
-//    });
-//  }
-
-//  void replyToComment(Comment comment) {
-//    print("回复:<M ${comment.fromUserUid}>@${comment.fromUserName}</M> ");
-//  }
 
   void setTabIndex(index) {
     setState(() {
@@ -176,50 +146,6 @@ class PostDetailPageState extends State<PostDetailPage> {
     );
   }
 
-  void _requestForward() {
-    setState(() {
-      _forwarding = true;
-    });
-    PostAPI.postForward(
-        _forwardController.text,
-        widget.post.id,
-        commentAtTheMeanTime
-    ).then((response) {
-      showShortToast("转发成功");
-      setState(() {
-        forwards++;
-        _forwarding = false;
-        _forwardVisible = false;
-        _forwardsList = new Container();
-        new Timer(const Duration(milliseconds: 50), () {
-          _forwardsList = new PostInPostList(widget.post);
-        });
-      });
-    });
-  }
-
-  void _requestComment() {
-    setState(() {
-      _commenting = true;
-    });
-    CommentAPI.postComment(
-        _commentController.text,
-        widget.post.id,
-        forwardAtTheMeanTime
-    ).then((response) {
-      showShortToast("评论成功");
-      setState(() {
-        comments++;
-        _commenting = false;
-        _commentVisible = false;
-        _commentsList = new Container();
-        new Timer(const Duration(milliseconds: 50), () {
-          _commentsList = new CommentInPostList(widget.post);
-        });
-      });
-    });
-  }
-
   void _requestPraise() {
     bool _l = isLike;
     setState(() {
@@ -259,9 +185,10 @@ class PostDetailPageState extends State<PostDetailPage> {
                           color: ThemeUtils.currentCardColor,
                           child: FlatButton.icon(
                             onPressed: () {
-                              setState(() {
-                                _forwardVisible = true;
-                              });
+                              showDialog<Null>(
+                                context: context,
+                                builder: (BuildContext context) => ForwardPositioned(widget.post)
+                              );
                             },
                             icon: Icon(
                               Icons.launch,
@@ -281,9 +208,10 @@ class PostDetailPageState extends State<PostDetailPage> {
                           color: ThemeUtils.currentCardColor,
                           child: FlatButton.icon(
                             onPressed: () {
-                              setState(() {
-                                _commentVisible = true;
-                              });
+                              showDialog<Null>(
+                                  context: context,
+                                  builder: (BuildContext context) => CommentPositioned(widget.post)
+                              );
                             },
                             icon: Icon(
                               Icons.comment,
@@ -330,190 +258,6 @@ class PostDetailPageState extends State<PostDetailPage> {
         )
     );
   }
-  Positioned forwardTextField() {
-    return Positioned(
-        bottom: 0.0,
-        left: 0.0,
-        right: 0.0,
-        child: Visibility(
-            visible: _forwardVisible,
-            child: Container(
-                padding: EdgeInsets.all(10.0),
-                color: ThemeUtils.currentCardColor,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    TextField(
-                        controller: _forwardController,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(12.0),
-                          border: OutlineInputBorder(),
-                        ),
-                        enabled: !_forwarding,
-                        style: TextStyle(fontSize: 18.0),
-                        autofocus: true,
-                        maxLines: 3,
-                        maxLength: 140
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Checkbox(
-                                activeColor: ThemeUtils.currentColorTheme,
-                                value: commentAtTheMeanTime,
-                                onChanged: (value) {
-                                  setState(() {
-                                    commentAtTheMeanTime = value;
-                                  });
-                                }
-                            ),
-                            Text("同时评论到微博", style: TextStyle(fontSize: 16.0)),
-                          ],
-                        ),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            new IconButton(
-                                onPressed: null,
-                                icon: new Icon(Icons.alternate_email)
-                            ),
-                            new IconButton(
-                                onPressed: null,
-                                icon: new Icon(Icons.mood)
-                            ),
-                            !_forwarding
-                                ? IconButton(
-                              icon: Icon(Icons.send),
-                              color: ThemeUtils.currentColorTheme,
-                              onPressed: _forwardContent.length > 0 ? _requestForward : null,
-                            )
-                                : Container(
-                                padding: EdgeInsets.symmetric(horizontal: 14.0),
-                                child: SizedBox(
-                                    width: 18.0,
-                                    height: 18.0,
-                                    child: CircularProgressIndicator(strokeWidth: 2.0)
-                                )
-                            )
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                )
-            )
-        )
-    );
-  }
-  Positioned commentTextField() {
-    return Positioned(
-        bottom: 0.0,
-        left: 0.0,
-        right: 0.0,
-        child: Visibility(
-            visible: _commentVisible,
-            child: Container(
-                padding: EdgeInsets.all(10.0),
-                color: ThemeUtils.currentCardColor,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    TextField(
-                        controller: _commentController,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(12.0),
-                          border: OutlineInputBorder(),
-//                          prefixText: _replyToPrefix ?? null
-                        ),
-                        enabled: !_commenting,
-                        style: TextStyle(fontSize: 18.0),
-                        cursorColor: ThemeUtils.currentColorTheme,
-                        autofocus: true,
-                        maxLines: 3,
-                        maxLength: 140
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Checkbox(
-                                activeColor: ThemeUtils.currentColorTheme,
-                                value: forwardAtTheMeanTime,
-                                onChanged: (value) {
-                                  setState(() {
-                                    forwardAtTheMeanTime = value;
-                                  });
-                                }
-                            ),
-                            Text("同时转发到微博", style: TextStyle(fontSize: 16.0)),
-                          ],
-                        ),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            new IconButton(
-                                onPressed: null,
-                                icon: new Icon(Icons.alternate_email)
-                            ),
-                            new IconButton(
-                                onPressed: null,
-                                icon: new Icon(Icons.mood)
-                            ),
-                            !_commenting
-                                ? IconButton(
-                                  icon: Icon(Icons.send),
-                                  color: ThemeUtils.currentColorTheme,
-                                  onPressed: _commentContent.length > 0 ? _requestComment : null,
-                                )
-                                : Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 14.0),
-                                  child: SizedBox(
-                                      width: 18.0,
-                                      height: 18.0,
-                                      child: CircularProgressIndicator(strokeWidth: 2.0)
-                                  )
-                                )
-                          ],
-                        )
-                      ],
-                    )
-                  ],
-                )
-            )
-        )
-    );
-  }
-  Positioned backdrop() {
-    return Positioned(
-        top: 0.0,
-        left: 0.0,
-        right: 0.0,
-        height: MediaQuery.of(context).size.height,
-        child: Visibility(
-            visible: _forwardVisible || _commentVisible,
-            child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _forwardVisible = false;
-                    _commentVisible = false;
-                  });
-                },
-                child: Container(
-                  color: Color.fromRGBO(0,0,0,0.5),
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                )
-            )
-        )
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -531,10 +275,9 @@ class PostDetailPageState extends State<PostDetailPage> {
       ),
       body: Stack(
         children: <Widget>[
-//          RefreshIndicator(
-            SingleChildScrollView(
-//                controller: _scrollController,
-                child: Column(
+            RefreshIndicator(
+              onRefresh: () {},
+                child: ListView(
                   children: <Widget>[
                     Row(
                       mainAxisSize: MainAxisSize.max,
@@ -561,12 +304,319 @@ class PostDetailPageState extends State<PostDetailPage> {
                     Container(height: 56.0),
                   ],
                 ),
-//            onRefresh: () {},
           ),
           toolbar(context),
-          backdrop(),
-          forwardTextField(),
-          commentTextField(),
+        ],
+      ),
+    );
+  }
+}
+
+class ForwardPositioned extends StatefulWidget {
+  final Post post;
+
+  ForwardPositioned(this.post, {Key key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => ForwardPositionedState();
+
+}
+
+class ForwardPositionedState extends State<ForwardPositioned> {
+  final TextEditingController _forwardController = new TextEditingController();
+
+  bool _forwarding = false;
+  bool commentAtTheMeanTime = false;
+
+  @override
+  void dispose() {
+    super.dispose();
+    _forwardController?.dispose();
+  }
+
+  Widget textField() {
+    return TextField(
+        controller: _forwardController,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(12.0),
+          border: OutlineInputBorder(),
+        ),
+        enabled: !_forwarding,
+        style: TextStyle(fontSize: 18.0),
+        cursorColor: ThemeUtils.currentColorTheme,
+        autofocus: true,
+        maxLines: 3,
+        maxLength: 140
+    );
+  }
+
+  void _requestForward(context) {
+    setState(() {
+      _forwarding = true;
+    });
+    String _content;
+    if (_forwardController.text.length == 0) {
+      _content = "转发";
+    } else {
+      _content = _forwardController.text;
+    }
+    PostAPI.postForward(
+        _content,
+        widget.post.id,
+        commentAtTheMeanTime
+    ).then((response) {
+      showShortToast("转发成功");
+      setState(() {
+        _forwarding = false;
+      });
+      Navigator.of(context).pop();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Material(
+      type: MaterialType.transparency,
+      child: new Stack(
+        children: <Widget>[
+          GestureDetector(onTap: () => Navigator.of(context).pop()),
+          Positioned(
+            /// viewInsets for keyboard pop up, padding bottom for iOS navigator.
+              bottom: MediaQuery.of(context).viewInsets.bottom ?? MediaQuery.of(context).padding.bottom ?? 0.0,
+              left: 0.0,
+              right: 0.0,
+              child: Container(
+                  padding: EdgeInsets.all(10.0),
+                  color: ThemeUtils.currentCardColor,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      textField(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Checkbox(
+                                  activeColor: ThemeUtils.currentColorTheme,
+                                  value: commentAtTheMeanTime,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      commentAtTheMeanTime = value;
+                                    });
+                                  }
+                              ),
+                              Text("同时评论到微博", style: TextStyle(fontSize: 16.0)),
+                            ],
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              new IconButton(
+                                  onPressed: null,
+                                  icon: new Icon(Icons.alternate_email)
+                              ),
+                              new IconButton(
+                                  onPressed: null,
+                                  icon: new Icon(Icons.mood)
+                              ),
+                              !_forwarding
+                                  ? IconButton(
+                                icon: Icon(Icons.send),
+                                color: ThemeUtils.currentColorTheme,
+                                onPressed: () => _requestForward(context),
+                              )
+                                  : Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 14.0),
+                                  child: SizedBox(
+                                      width: 18.0,
+                                      height: 18.0,
+                                      child: CircularProgressIndicator(strokeWidth: 2.0)
+                                  )
+                              )
+                            ],
+                          )
+                        ],
+                      )
+                    ],
+                  )
+              )
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class CommentPositioned extends StatefulWidget {
+  final Post post;
+  final Comment comment;
+
+  CommentPositioned(this.post, {this.comment, Key key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => CommentPositionedState();
+
+}
+
+class CommentPositionedState extends State<CommentPositioned> {
+  final TextEditingController _commentController = new TextEditingController();
+
+  Comment toComment;
+
+  bool _commenting = false;
+  bool forwardAtTheMeanTime = false;
+
+  String commentContent = "";
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.comment != null) setState(() {
+      toComment = widget.comment;
+    });
+    _commentController..addListener(() {
+      setState(() {
+        commentContent = _commentController.text;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _commentController?.dispose();
+  }
+
+  Widget textField() {
+    String _prefixText;
+    toComment != null ? _prefixText = "回复:@${toComment.fromUserName} " : _prefixText = null;
+    return TextField(
+        controller: _commentController,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.all(12.0),
+          border: OutlineInputBorder(),
+          prefixText: _prefixText
+        ),
+        enabled: !_commenting,
+        style: TextStyle(fontSize: 18.0),
+        cursorColor: ThemeUtils.currentColorTheme,
+        autofocus: true,
+        maxLines: 3,
+        maxLength: 140
+    );
+  }
+
+  void _requestComment(context) {
+    if (commentContent.length <= 0) {
+      showCenterErrorShortToast("内容不能为空！");
+    } else {
+      setState(() {
+        _commenting = true;
+      });
+      if (toComment != null) {
+        Comment _c = widget.comment;
+        CommentAPI.postComment(
+            "回复:<M ${_c.fromUserUid}>@${_c.fromUserName}</M> ${_commentController.text}",
+            widget.post.id,
+            forwardAtTheMeanTime,
+            replyToId: _c.id
+        ).then((response) {
+          showShortToast("评论成功");
+          setState(() {
+            _commenting = false;
+          });
+          Navigator.of(context).pop();
+        });
+      } else {
+        CommentAPI.postComment(
+            _commentController.text,
+            widget.post.id,
+            forwardAtTheMeanTime
+        ).then((response) {
+          showShortToast("评论成功");
+          setState(() {
+            _commenting = false;
+          });
+          Navigator.of(context).pop();
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Material(
+      type: MaterialType.transparency,
+      child: new Stack(
+        children: <Widget>[
+          GestureDetector(onTap: () => Navigator.of(context).pop()),
+          Positioned(
+            /// viewInsets for keyboard pop up, padding bottom for iOS navigator.
+              bottom: MediaQuery.of(context).viewInsets.bottom ?? MediaQuery.of(context).padding.bottom ?? 0.0,
+              left: 0.0,
+              right: 0.0,
+              child: Container(
+                  padding: EdgeInsets.all(10.0),
+                  color: ThemeUtils.currentCardColor,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      textField(),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Checkbox(
+                                  activeColor: ThemeUtils.currentColorTheme,
+                                  value: forwardAtTheMeanTime,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      forwardAtTheMeanTime = value;
+                                    });
+                                  }
+                              ),
+                              Text("同时转发到微博", style: TextStyle(fontSize: 16.0)),
+                            ],
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              new IconButton(
+                                  onPressed: null,
+                                  icon: new Icon(Icons.alternate_email)
+                              ),
+                              new IconButton(
+                                  onPressed: null,
+                                  icon: new Icon(Icons.mood)
+                              ),
+                              !_commenting
+                                  ? IconButton(
+                                icon: Icon(Icons.send),
+                                color: ThemeUtils.currentColorTheme,
+                                onPressed: () => _requestComment(context),
+                              )
+                                  : Container(
+                                  padding: EdgeInsets.symmetric(horizontal: 14.0),
+                                  child: SizedBox(
+                                      width: 18.0,
+                                      height: 18.0,
+                                      child: CircularProgressIndicator(strokeWidth: 2.0)
+                                  )
+                              )
+                            ],
+                          )
+                        ],
+                      )
+                    ],
+                  )
+              )
+          )
         ],
       ),
     );

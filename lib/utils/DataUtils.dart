@@ -64,7 +64,6 @@ class DataUtils {
         "unitcode": "jmu",
         "clientinfo": jsonEncode(clientInfo)
       };
-      print(params);
     } else if (Platform.isAndroid) {
       clientInfo = {
         "appid": 273,
@@ -309,6 +308,7 @@ class DataUtils {
     Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.defaultColor));
     setColorTheme(0);
   }
+
   // 获取设置的主题色
   static Future<int> getColorThemeIndex() async {
     SharedPreferences sp = await SharedPreferences.getInstance();

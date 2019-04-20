@@ -14,6 +14,7 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 
 class PublishPostPage extends StatefulWidget {
   @override
@@ -132,6 +133,7 @@ class PublishPostPageState extends State<PublishPostPage> {
             padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
             child: new TextField(
               decoration: new InputDecoration(
+                  enabled: !isLoading,
                   hintText: "分享新鲜事...",
                   hintStyle: new TextStyle(
                       color: Colors.grey,
@@ -191,16 +193,6 @@ class PublishPostPageState extends State<PublishPostPage> {
         padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom)
       )
     ];
-    if (isLoading) {
-      children.add(new Container(
-        margin: const EdgeInsets.fromLTRB(0.0, 20.0, 0.0, 0.0),
-        child: new Center(
-          child: new CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-          ),
-        ),
-      ));
-    }
     return new Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: children
@@ -232,27 +224,27 @@ class PublishPostPageState extends State<PublishPostPage> {
       Scaffold.of(context).showSnackBar(new SnackBar(
         content: new Text("内容不能为空！"),
       ));
-    }
-    try {
-      DataUtils.getSid().then((sid) {
-        List<Future> query = [];
-        _imageIdList = [];
-        for (File image in _imageList) {
-          query.add(getImageRequest(image, sid));
-        }
-        _postImagesQuery(query).then((isComplete) {
-          if (isComplete != null) {
-            Map<String, dynamic> data = new Map();
-            data['category'] = "text";
-            data['content'] = Uri.encodeFull(content);
-            String extraId = _imageIdList.toString();
-            data['extra_id'] = extraId.substring(1, extraId.length - 1);
-            _postContent(data, sid, context);
+    } else {
+      setState(() { isLoading = true; });
+      try {
+          List<Future> query = [];
+          _imageIdList = [];
+          for (File image in _imageList) {
+            query.add(getImageRequest(image, UserUtils.currentUser.sid));
           }
-        });
-      });
-    } catch (exception) {
-      showCenterShortToast(exception);
+          _postImagesQuery(query).then((isComplete) {
+            if (isComplete != null) {
+              Map<String, dynamic> data = new Map();
+              data['category'] = "text";
+              data['content'] = Uri.encodeFull(content);
+              String extraId = _imageIdList.toString();
+              data['extra_id'] = extraId.substring(1, extraId.length - 1);
+              _postContent(data, UserUtils.currentUser.sid, context);
+            }
+          });
+      } catch (exception) {
+        showCenterShortToast(exception);
+      }
     }
   }
 
@@ -277,6 +269,7 @@ class PublishPostPageState extends State<PublishPostPage> {
       data: content
     ).then((response) {
       print(response);
+      setState(() { isLoading = false; });
       if (jsonDecode(response)["tid"] != null) {
         showShortToast("动态发布成功！");
         Navigator.of(context).pop();
@@ -284,6 +277,10 @@ class PublishPostPageState extends State<PublishPostPage> {
         showShortToast("动态发布失败！");
       }
       return response;
+    }).catchError((e) {
+      setState(() { isLoading = false; });
+      print(e.toString());
+      showShortToast("动态发布失败！");
     });
   }
 
@@ -305,14 +302,15 @@ class PublishPostPageState extends State<PublishPostPage> {
           ),
           brightness: Brightness.dark,
           actions: <Widget>[
-            new Builder(
-              builder: (ctx) {
-                return new IconButton(icon: new Icon(Icons.send), onPressed: () {
-                  DataUtils.isLogin()
-                      .then((isLogin) => null)
-                      .then((token) { post(ctx); });
-                });
-              },
+            !isLoading
+                ? IconButton(icon: new Icon(Icons.send), onPressed: () => post(context))
+                : Container(
+                width: 56.0,
+                padding: EdgeInsets.all(18.0),
+                child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    strokeWidth: 3.0
+                )
             )
           ],
         ),

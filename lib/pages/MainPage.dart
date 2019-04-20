@@ -47,7 +47,7 @@ class MainPageState extends State<MainPage> {
   TextStyle tabTextStyleSelected = new TextStyle(color: ThemeUtils.currentColorTheme);
   final tabTextStyleNormal = new TextStyle(color: Colors.grey);
   Color currentPrimaryColor = ThemeUtils.currentPrimaryColor;
-  Color currentThemeColor = ThemeUtils.currentColorTheme;
+  Color currentThemeColor =ThemeUtils.currentColorTheme;
 
   Notifications notifications = new Notifications(0, 0, 0, 0);
   Timer notificationTimer;
@@ -225,7 +225,7 @@ class MainPageState extends State<MainPage> {
                     child: new Text(
                         getTabTitle(_tabIndex),
                         style: new TextStyle(
-                            color: currentPrimaryColor,
+                            color: Colors.white,
                             fontSize: Theme.of(context).textTheme.title.fontSize
                         )
                     )
@@ -234,7 +234,7 @@ class MainPageState extends State<MainPage> {
                 actions: <Widget>[
                   _tabIndex == 0
                   ? IconButton(
-                    icon: Icon(Icons.search, color: Colors.white),
+                    icon: Icon(Icons.search),
                     onPressed: () {
                       Navigator.of(context).pushNamed("/search");
                     },
@@ -242,7 +242,7 @@ class MainPageState extends State<MainPage> {
                   : Container(),
                   BadgeIconButton(
                       itemCount: notifications.count,
-                      icon: Icon(Icons.notifications, color: Colors.white),
+                      icon: Icon(Icons.notifications),
                       badgeColor: Colors.redAccent,
                       badgeTextColor: Colors.white,
                       hideZeroCount: true,
@@ -254,6 +254,7 @@ class MainPageState extends State<MainPage> {
                       }
                   ),
                 ],
+                iconTheme: IconThemeData(color: Colors.white),
                 brightness: Brightness.dark,
               ),
               onTap: doubleTapScrollToTop
@@ -279,7 +280,7 @@ class MainPageState extends State<MainPage> {
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: FABBottomAppBar(
             color: Colors.grey,
-            selectedColor: ThemeUtils.currentColorTheme,
+            selectedColor: currentThemeColor,
             notchedShape: CircularNotchedRectangle(),
             onTabSelected: _selectedTab,
             items: [
