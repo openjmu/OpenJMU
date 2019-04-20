@@ -113,9 +113,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(10.0),
                 labelText: '工号/学号',
-                labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0),
+                labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0,fontFamily: 'pinghei'),
               ),
-              style: new TextStyle(color: Colors.white, fontSize: 18.0),
+              style: new TextStyle(color: Colors.white, fontSize: 18.0,fontFamily: 'chocolate'),
               cursorColor: Colors.white,
               onSaved: (String value) => _username = value,
               keyboardType: TextInputType.number,
@@ -145,7 +145,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                   contentPadding: EdgeInsets.all(10.0),
                   prefixIcon: Icon(Icons.lock, color: Colors.white),
                   labelText: '密码',
-                  labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0),
+                  labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0,fontFamily: 'pinghei'),
                   suffixIcon: new IconButton(
                       icon: new Icon(
                         Icons.remove_red_eye,
@@ -222,7 +222,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
           padding: EdgeInsets.all(0.0),
           child: new Text(
             '忘记密码？',
-            style: new TextStyle(color: Colors.white70),
+            style: new TextStyle(color: Colors.white70,fontFamily: 'pinghei'),
           ),
           onPressed: () {
             resetPassword();
@@ -235,8 +235,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   RichText buildUserAgreement(context) {
     return new RichText(
       text: TextSpan(children: <TextSpan>[
-        TextSpan(text: "登录即表明同意", style: TextStyle(color: Colors.white70)),
-        TextSpan(text: "用户协议", style: TextStyle(color: Colors.lightBlueAccent),
+        TextSpan(text: "登录即表明同意", style: TextStyle(color: Colors.white70,fontFamily: 'pinghei')),
+        TextSpan(text: "用户协议", style: TextStyle(color: Colors.lightBlueAccent,fontFamily: 'pinghei'),
           recognizer: TapGestureRecognizer()
             ..onTap = () {
               return CommonWebPage.jump(context, "https://openjmu.xyz/license.html", "OpenJMU用户协议");
