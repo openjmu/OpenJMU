@@ -127,7 +127,7 @@ class CommonWebPageState extends State<CommonWebPage> {
     } else {
       _clear = false;
     }
-    Widget trailing = !isLoading
+    Widget trailing = isLoading
         ? refreshIndicator
         : new Container(width: 56.0);
     return new WillPopScope(
