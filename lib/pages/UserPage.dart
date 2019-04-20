@@ -82,10 +82,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
       );
     } else {
       return Scaffold(
-        appBar: AppBar(
-          backgroundColor: ThemeUtils.currentColorTheme,
-          brightness: ThemeUtils.currentBrightness,
-        ),
+        appBar: AppBar(),
         body: Container(
           child: Center(
             child: Text('用户不存在', style: TextStyle(color: ThemeUtils.currentColorTheme)),
@@ -103,7 +100,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
           floating: false,
           pinned: true,
           backgroundColor: ThemeUtils.currentColorTheme,
-          brightness: ThemeUtils.currentBrightness,
           expandedHeight: 187,
           flexibleSpace: FlexibleSpaceBarWithUserInfo(
             background: Container(
@@ -129,7 +125,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
               floating: false,
               pinned: true,
               backgroundColor: ThemeUtils.currentColorTheme,
-              brightness: ThemeUtils.currentBrightness,
               expandedHeight: 187,
               flexibleSpace: FlexibleSpaceBarWithUserInfo(
                 background: Container(

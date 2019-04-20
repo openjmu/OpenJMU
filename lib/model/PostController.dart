@@ -55,7 +55,7 @@ class PostAPI {
     }
     return NetUtils.getWithCookieAndHeaderSet(_postUrl);
   }
-  static getPostInPostList(int postId) async {
+  static getForwardInPostList(int postId) async {
     return NetUtils.getWithCookieAndHeaderSet("${Api.postForwardsList}$postId");
   }
   static glancePost(int postId) {
@@ -367,16 +367,16 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   }
 }
 
-class PostInPostList extends StatefulWidget {
+class ForwardInPostList extends StatefulWidget {
   final Post post;
 
-  PostInPostList(this.post, {Key key}) : super(key: key);
+  ForwardInPostList(this.post, {Key key}) : super(key: key);
 
   @override
-  State createState() => _PostInPostListState();
+  State createState() => _ForwardInPostListState();
 }
 
-class _PostInPostListState extends State<PostInPostList> {
+class _ForwardInPostListState extends State<ForwardInPostList> {
   List<Post> _posts = [];
 
   bool isLoading = true;
@@ -384,11 +384,11 @@ class _PostInPostListState extends State<PostInPostList> {
   @override
   void initState() {
     super.initState();
-    _getPostList();
+    _getForwardList();
   }
 
-  Future<Null> _getPostList() async {
-    var list = await PostAPI.getPostInPostList(widget.post.id);
+  Future<Null> _getForwardList() async {
+    var list = await PostAPI.getForwardInPostList(widget.post.id);
     List<dynamic> response = jsonDecode(list)['topics'];
     List<Post> posts = [];
     response.forEach((post) {
@@ -405,7 +405,7 @@ class _PostInPostListState extends State<PostInPostList> {
   @override
   Widget build(BuildContext context) {
     return new Container(
-        color: ThemeUtils.currentCardColor,
+        color: Theme.of(context).cardColor,
         width: MediaQuery.of(context).size.width,
         padding: isLoading
             ? EdgeInsets.symmetric(vertical: 42)
@@ -414,7 +414,7 @@ class _PostInPostListState extends State<PostInPostList> {
             ? Center(child: CircularProgressIndicator(
               valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
         ))
-            : PostCardInPost(widget.post, _posts)
+            : ForwardCardInPost(widget.post, _posts)
     );
   }
 

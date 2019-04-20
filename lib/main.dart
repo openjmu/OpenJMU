@@ -95,15 +95,17 @@ class JMUAppClientState extends State<JMUAppClient> {
       routes: RouteUtils.routes,
       title: "OpenJMU",
       theme: ThemeData(
+          brightness: currentBrightness,
           accentColor: currentThemeColor,
+          buttonColor: currentThemeColor,
+          cursorColor: currentThemeColor,
           primaryColor: currentThemeColor,
           primaryColorBrightness: currentBrightness,
+          textSelectionHandleColor: currentThemeColor,
           primaryIconTheme: IconThemeData(color: Colors.white),
-          primarySwatch: Colors.red,
-          brightness: currentBrightness,
           appBarTheme: AppBarTheme(
               color: currentThemeColor,
-              brightness: ThemeUtils.currentBrightness
+              brightness: Brightness.dark
           )
       ),
       home: new SplashPage(),

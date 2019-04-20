@@ -12,7 +12,6 @@ import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/pages/PostDetailPage.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
@@ -278,7 +277,7 @@ class PraiseCardInPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Container(
-        color: ThemeUtils.currentCardColor,
+        color: Theme.of(context).cardColor,
         padding: EdgeInsets.zero,
         child: this.praises.length > 0
             ? ListView.separated(

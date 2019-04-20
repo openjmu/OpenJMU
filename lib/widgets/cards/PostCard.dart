@@ -496,17 +496,11 @@ class _PostCardState extends State<PostCard> {
 }
 
 
-class PostCardInPost extends StatefulWidget {
+class ForwardCardInPost extends StatelessWidget {
   final Post post;
   final List<Post> posts;
 
-  PostCardInPost(this.post, this.posts, {Key key}) : super(key: key);
-
-  @override
-  State createState() => _PostCardInPostState();
-}
-
-class _PostCardInPostState extends State<PostCardInPost> {
+  ForwardCardInPost(this.post, this.posts, {Key key}) : super(key: key);
 
   GestureDetector getPostAvatar(context, post) {
     return new GestureDetector(
@@ -529,7 +523,7 @@ class _PostCardInPostState extends State<PostCardInPost> {
     );
   }
 
-  Text getPostNickname(post) {
+  Text getPostNickname(context, post) {
     return new Text(post.nickname,
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
@@ -537,7 +531,8 @@ class _PostCardInPostState extends State<PostCardInPost> {
         )
     );
   }
-  Text getPostTime(post) {
+
+  Text getPostTime(context, post) {
     String _postTime = post.postTime;
     DateTime now = new DateTime.now();
     if (int.parse(_postTime.substring(0, 4)) == now.year) {
@@ -552,7 +547,8 @@ class _PostCardInPostState extends State<PostCardInPost> {
     }
     return new Text(_postTime, style: Theme.of(context).textTheme.caption);
   }
-  Widget getExtendedText(content) {
+
+  Widget getExtendedText(context, content) {
     return new ExtendedText(
       content,
       style: new TextStyle(fontSize: 16.0),
@@ -574,9 +570,9 @@ class _PostCardInPostState extends State<PostCardInPost> {
   @override
   Widget build(BuildContext context) {
     return new Container(
-        color: ThemeUtils.currentCardColor,
+        color: Theme.of(context).cardColor,
         padding: EdgeInsets.zero,
-        child: widget.posts.length > 0
+        child: this.posts.length > 0
             ? ListView.separated(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -584,23 +580,23 @@ class _PostCardInPostState extends State<PostCardInPost> {
               color: Theme.of(context).dividerColor,
               height: 1.0,
             ),
-            itemCount: widget.posts.length,
+            itemCount: this.posts.length,
             itemBuilder: (context, index) => Row(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                getPostAvatar(context, widget.posts[index]),
+                getPostAvatar(context, this.posts[index]),
                 Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(height: 10.0),
-                        getPostNickname(widget.posts[index]),
+                        getPostNickname(context, this.posts[index]),
                         Container(height: 4.0),
-                        getExtendedText(widget.posts[index].content),
+                        getExtendedText(context, this.posts[index].content),
                         Container(height: 6.0),
-                        getPostTime(widget.posts[index]),
+                        getPostTime(context, this.posts[index]),
                         Container(height: 10.0),
                       ],
                     )

@@ -13,20 +13,10 @@ class SplashPage extends StatefulWidget {
 class SplashState extends State<SplashPage> {
   Timer timer;
   bool isUserLogin = false;
-  Color currentThemeColor;
 
   @override
   void initState() {
     super.initState();
-    DataUtils.getColorThemeIndex().then((index) {
-      setState(() {
-        if (index != null) {
-          currentThemeColor = ThemeUtils.supportColors[index];
-        } else {
-          currentThemeColor = ThemeUtils.defaultColor;
-        }
-      });
-    });
     DataUtils.isLogin().then((isLogin) {
       if (isLogin) {
         DataUtils.getTicket();
@@ -99,7 +89,7 @@ class SplashState extends State<SplashPage> {
 //                          Colors.red
 //                        ],
 //                      ),
-                          color: currentThemeColor
+                          color: ThemeUtils.currentColorTheme
                       ),
                       child: new Column(
                         mainAxisAlignment: MainAxisAlignment.center,

@@ -46,7 +46,6 @@ class MainPageState extends State<MainPage> {
 
   TextStyle tabTextStyleSelected = new TextStyle(color: ThemeUtils.currentColorTheme);
   final tabTextStyleNormal = new TextStyle(color: Colors.grey);
-  Color currentPrimaryColor = ThemeUtils.currentPrimaryColor;
   Color currentThemeColor =ThemeUtils.currentColorTheme;
 
   Notifications notifications = new Notifications(0, 0, 0, 0);
@@ -102,15 +101,6 @@ class MainPageState extends State<MainPage> {
           print('OTA status: ${this.otaEvent.status} : ${this.otaEvent.value}');
         });
       }
-    });
-    DataUtils.getBrightnessDark().then((isDark) {
-      setState(() {
-        if (isDark != null && isDark) {
-          ThemeUtils.currentCardColor = const Color(0xff424242);
-        } else {
-          ThemeUtils.currentCardColor = const Color(0xffffffff);
-        }
-      });
     });
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
       if (this.mounted) {

@@ -6,7 +6,6 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/widgets/CommonEndLine.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/SlideView.dart';
 import 'package:OpenJMU/widgets/SlideViewIndicator.dart';
@@ -165,9 +164,6 @@ class NewsListPageState extends State<NewsListPage> {
 //      );
 //    }
     var itemData = listData[i];
-    if (itemData is String && itemData == Constants.endLineTag) {
-      return new CommonEndLine();
-    }
     var titleRow = new Row(
       children: <Widget>[
         new Expanded(

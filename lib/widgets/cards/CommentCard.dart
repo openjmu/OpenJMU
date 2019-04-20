@@ -282,7 +282,7 @@ class CommentCardInPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new Container(
-        color: ThemeUtils.currentCardColor,
+        color: Theme.of(context).cardColor,
         padding: EdgeInsets.zero,
         child: this.comments.length > 0
           ? ListView.separated(

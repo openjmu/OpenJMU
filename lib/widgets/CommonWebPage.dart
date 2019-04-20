@@ -30,7 +30,7 @@ class CommonWebPage extends StatefulWidget {
 }
 
 class CommonWebPageState extends State<CommonWebPage> {
-  bool loading = true;
+  bool isLoading = true;
   String _url, _title;
   Color primaryColor = Colors.white;
   Color currentColorTheme = ThemeUtils.currentColorTheme;
@@ -56,13 +56,13 @@ class CommonWebPageState extends State<CommonWebPage> {
         });
         new Timer(const Duration(milliseconds: 500), () {
           setState(() {
-            loading = false;
+            isLoading = false;
             currentProgress = 0.0;
           });
         });
       } else if (state.type == WebViewState.startLoad) {
         setState(() {
-          loading = true;
+          isLoading = true;
         });
       }
     });
@@ -76,7 +76,7 @@ class CommonWebPageState extends State<CommonWebPage> {
         _url = url;
         new Timer(const Duration(milliseconds: 500), () {
           setState(() {
-            loading = false;
+            isLoading = false;
           });
         });
       });
@@ -89,8 +89,8 @@ class CommonWebPageState extends State<CommonWebPage> {
   }
 
   Widget refreshIndicator = new Container(
-      width: 56.0,
-      padding: EdgeInsets.all(16.0),
+      width: 54.0,
+      padding: EdgeInsets.all(17.0),
       child: Platform.isAndroid
           ? new CircularProgressIndicator(
             valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
@@ -127,7 +127,7 @@ class CommonWebPageState extends State<CommonWebPage> {
     } else {
       _clear = false;
     }
-    Widget trailing = loading
+    Widget trailing = !isLoading
         ? refreshIndicator
         : new Container(width: 56.0);
     return new WillPopScope(
@@ -167,10 +167,14 @@ class CommonWebPageState extends State<CommonWebPage> {
             initialChild: Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
-              color: Theme.of(context).backgroundColor,
-              child: Center(
-                child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme))
-              ),
+              color: Theme.of(context).canvasColor,
+              child: isLoading
+                  ? Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme)
+                    )
+                  )
+                  : Container(),
             ),
             persistentFooterButtons: <Widget>[
               new Container(
@@ -219,7 +223,6 @@ class CommonWebPageState extends State<CommonWebPage> {
             enableAppScheme: true,
             withJavascript: true,
             withLocalStorage: true,
-            withZoom: true,
             resizeToAvoidBottomInset: true
         )
     );

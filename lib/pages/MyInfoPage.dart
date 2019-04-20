@@ -20,10 +20,10 @@ class MyInfoPage extends StatefulWidget {
 class MyInfoPageState extends State<MyInfoPage> {
   Color themeColor = ThemeUtils.currentColorTheme;
 
-//  var titles = ["夜间模式", "切换主题", "退出登录", "测试页", "关于"];
-  var titles = ["夜间模式", "切换主题", "退出登录", "关于"];
-//  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad, Icons.info];
-  var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.info];
+//  List<String> titles = ["夜间模式", "切换主题", "退出登录", "测试页", "关于"];
+  List<String> titles = ["夜间模式", "切换主题", "退出登录", "关于"];
+//  List<IconData> icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad, Icons.info];
+  List<IconData> icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.info];
   var userAvatar;
   var userName;
   var titleTextStyle = new TextStyle(fontSize: 16.0);
@@ -126,15 +126,6 @@ class MyInfoPageState extends State<MyInfoPage> {
   }
 
   void setDarkMode(isDark) {
-    setState(() {
-      if (isDark) {
-        ThemeUtils.currentPrimaryColor = Colors.grey[850];
-        ThemeUtils.currentCardColor = const Color(0xff424242);
-      } else {
-        ThemeUtils.currentPrimaryColor = Colors.white;
-        ThemeUtils.currentCardColor = const Color(0xffffffff);
-      }
-    });
     DataUtils.setBrightnessDark(isDark);
     Constants.eventBus.fire(new ChangeBrightnessEvent(isDark));
   }

@@ -314,7 +314,7 @@ class _PraiseInPostListState extends State<PraiseInPostList> {
   @override
   Widget build(BuildContext context) {
     return new Container(
-        color: ThemeUtils.currentCardColor,
+        color: Theme.of(context).cardColor,
         width: MediaQuery.of(context).size.width,
         padding: isLoading
             ? EdgeInsets.symmetric(vertical: 42)

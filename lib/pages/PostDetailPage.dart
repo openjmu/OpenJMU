@@ -47,9 +47,8 @@ class PostDetailPageState extends State<PostDetailPage> {
       fontSize: 16.0
   );
 
-  Color forwardsColor, commentsColor, praisesColor;
+  Color forwardsColor, commentsColor = ThemeUtils.currentColorTheme, praisesColor;
   Color activeColor = ThemeUtils.currentColorTheme;
-  Color inActiveColor = ThemeUtils.currentCardColor;
 
   @override
   void initState() {
@@ -63,7 +62,6 @@ class PostDetailPageState extends State<PostDetailPage> {
     _requestData();
 
     PostAPI.glancePost(widget.post.id);
-    setCurrentTabActive(1, "comments");
     _post = new PostCard(widget.post, isDetail: true);
 
     Constants.eventBus.on<PostDeletedEvent>().listen((event) {
@@ -81,7 +79,7 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   void _requestData() {
     setState(() {
-      _forwardsList = new PostInPostList(widget.post);
+      _forwardsList = new ForwardInPostList(widget.post);
       _commentsList = new CommentInPostList(widget.post);
       _praisesList = new PraiseInPostList(widget.post);
     });
@@ -93,13 +91,13 @@ class PostDetailPageState extends State<PostDetailPage> {
     });
   }
 
-  void setCurrentTabActive(index, tab) {
+  void setCurrentTabActive(context, index, tab) {
     setState(() {
       _tabIndex = index;
 
-      forwardsColor = tab == "forwards" ? activeColor : inActiveColor;
-      commentsColor = tab == "comments" ? activeColor : inActiveColor;
-      praisesColor  = tab == "praises" ? activeColor : inActiveColor;
+      forwardsColor = tab == "forwards" ? activeColor : Theme.of(context).cardColor;
+      commentsColor = tab == "comments" ? activeColor : Theme.of(context).cardColor;
+      praisesColor  = tab == "praises" ? activeColor : Theme.of(context).cardColor;
 
       forwardsStyle = tab == "forwards" ? textActiveStyle : textInActiveStyle;
       commentsStyle = tab == "comments" ? textActiveStyle : textInActiveStyle;
@@ -107,7 +105,7 @@ class PostDetailPageState extends State<PostDetailPage> {
     });
   }
 
-  Widget actionLists() {
+  Widget actionLists(context) {
     return new Container(
         color: Theme.of(context).cardColor,
         margin: EdgeInsets.only(top: 4.0),
@@ -122,14 +120,14 @@ class PostDetailPageState extends State<PostDetailPage> {
                     minWidth: 10.0,
                     elevation: 0,
                     child: Text("转发 $forwards", style: forwardsStyle),
-                    onPressed: () { setCurrentTabActive(0, "forwards"); },
+                    onPressed: () { setCurrentTabActive(context, 0, "forwards"); },
                   ),
                   MaterialButton(
                     color: commentsColor,
                     minWidth: 10.0,
                     elevation: 0,
                     child: Text("评论 $comments", style: commentsStyle),
-                    onPressed: () { setCurrentTabActive(1, "comments"); },
+                    onPressed: () { setCurrentTabActive(context, 1, "comments"); },
                   ),
                   Expanded(child: Container()),
                   MaterialButton(
@@ -137,7 +135,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                     minWidth: 10.0,
                     elevation: 0,
                     child: Text("赞 $praises", style: praisesStyle),
-                    onPressed: () { setCurrentTabActive(2, "praises"); },
+                    onPressed: () { setCurrentTabActive(context, 2, "praises"); },
                   ),
                 ]
             )
@@ -182,7 +180,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                   Expanded(
                       flex: 1,
                       child: Container(
-                          color: ThemeUtils.currentCardColor,
+                          color: Theme.of(context).cardColor,
                           child: FlatButton.icon(
                             onPressed: () {
                               showDialog<Null>(
@@ -205,7 +203,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                   Expanded(
                       flex: 1,
                       child: Container(
-                          color: ThemeUtils.currentCardColor,
+                          color: Theme.of(context).cardColor,
                           child: FlatButton.icon(
                             onPressed: () {
                               showDialog<Null>(
@@ -228,7 +226,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                   Expanded(
                       flex: 1,
                       child: Container(
-                          color: ThemeUtils.currentCardColor,
+                          color: Theme.of(context).cardColor,
                           child: FlatButton.icon(
                             onPressed: _requestPraise,
                             icon: Icon(
@@ -252,7 +250,7 @@ class PostDetailPageState extends State<PostDetailPage> {
               Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).padding.bottom ?? 0,
-                  color: ThemeUtils.currentCardColor
+                color: Theme.of(context).cardColor,
               )
             ]
         )
@@ -287,7 +285,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                               mainAxisSize: MainAxisSize.min,
                               children: <Widget>[
                                 _post,
-                                actionLists(),
+                                actionLists(context),
                                 IndexedStack(
                                   children: <Widget>[
                                     _forwardsList,
@@ -387,7 +385,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
               right: 0.0,
               child: Container(
                   padding: EdgeInsets.all(10.0),
-                  color: ThemeUtils.currentCardColor,
+                  color: Theme.of(context).cardColor,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -560,7 +558,7 @@ class CommentPositionedState extends State<CommentPositioned> {
               right: 0.0,
               child: Container(
                   padding: EdgeInsets.all(10.0),
-                  color: ThemeUtils.currentCardColor,
+                  color: Theme.of(context).cardColor,
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,

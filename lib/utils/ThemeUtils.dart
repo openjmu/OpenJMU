@@ -1,34 +1,42 @@
 import 'package:flutter/material.dart';
 
 class ThemeUtils {
-  // 默认主题色
   static const Color defaultColor = const Color(0xFFE5322D);
 
-  // 可选的主题色
   static const List<Color> supportColors = [
     defaultColor,
-    Colors.purple,
-    Colors.orange,
-    Colors.deepPurpleAccent,
+    Colors.redAccent,
+    Colors.pink,
     Colors.pinkAccent,
-    Colors.blue,
-    Colors.amber,
-    Colors.green,
+    Colors.purple,
+    Colors.purpleAccent,
+    Colors.deepPurple,
+    Colors.deepPurpleAccent,
     Colors.indigo,
+    Colors.indigoAccent,
+    Colors.blue,
+    Colors.blueAccent,
+    Colors.lightBlue,
+    Colors.lightBlueAccent,
     Colors.cyan,
+    Colors.cyanAccent,
     Colors.teal,
+    Colors.tealAccent,
+    Colors.green,
+    Colors.greenAccent,
+    Colors.lightGreen,
+    Colors.lightGreenAccent,
+    Colors.lime,
+    Colors.limeAccent,
+    Colors.yellow,
+    Colors.yellowAccent,
+    Colors.amberAccent,
+    Colors.orange,
+    Colors.orangeAccent,
+    Colors.deepOrange,
+    Colors.deepOrangeAccent,
   ];
 
-  // 当前的内容色
   static Color currentColorTheme = defaultColor;
-  // 当前的主题色
-  static Color currentPrimaryColor = Colors.white;
-
-  // 当前是否夜间模式
-  static bool currentIsDarkState = false;
-  // 当前主题日夜模式
-  static Brightness currentBrightness = Brightness.dark;
-  // 当前卡片颜色
-  static Color currentCardColor = const Color(0xffffffff);
 
 }
