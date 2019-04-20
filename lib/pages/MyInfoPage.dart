@@ -84,59 +84,6 @@ class MyInfoPageState extends State<MyInfoPage> {
   }
 
   Widget renderRow(i) {
-//    if (i == 0) {
-//      var avatarContainer = new Container(
-//        color: themeColor,
-//        height: 200.0,
-//        child: new Center(
-//          child: new Column(
-//            mainAxisAlignment: MainAxisAlignment.center,
-//            children: <Widget>[
-//              userAvatar == null
-//                ? new Image.asset(
-//                  "images/ic_avatar_default.png",
-//                  width: 100.0,
-//                )
-//                : new Container(
-//                  width: 100.0,
-//                  height: 100.0,
-//                  decoration: new BoxDecoration(
-//                    shape: BoxShape.circle,
-//                    color: Colors.transparent,
-//                    image: new DecorationImage(
-//                        image: new NetworkImage(userAvatar),
-//                        fit: BoxFit.cover
-//                    ),
-//                    border: new Border.all(
-//                      color: Colors.white,
-//                      width: 2.0,
-//                    ),
-//                  ),
-//                ),
-//                new Padding(
-//                  padding: EdgeInsets.symmetric(vertical: 10.0),
-//                ),
-//                new Text(
-//                  userName == null ? "点击头像登录" : userName,
-//                  style: new TextStyle(color: Colors.white, fontSize: 24.0),
-//                ),
-//            ],
-//          ),
-//        ),
-//      );
-//      return new GestureDetector(
-//        child: avatarContainer,
-//      );
-//    }
-//    --i;
-    // 添加分割线
-    if (i.isOdd) {
-      return new Divider(
-        height: 1.0,
-      );
-    }
-    // 恢复正常索引
-    i = i ~/ 2;
     String title = titles[i];
     var listItemContent = new Padding(
       padding: title == "夜间模式"
@@ -194,9 +141,13 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   @override
   Widget build(BuildContext context) {
-    var listView = new ListView.builder(
-      itemCount: titles.length * 2,  // 此处两倍数量用于添加分割线
-//      itemCount: titles.length,
+    var listView = new ListView.separated(
+      shrinkWrap: true,
+      separatorBuilder: (context, index) => Container(
+        color: Theme.of(context).dividerColor,
+        height: 1.0,
+      ),
+      itemCount: titles.length,
       itemBuilder: (context, i) => renderRow(i),
     );
     return listView;
@@ -204,7 +155,7 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   void _handleListItemClick(context, String title) {
     if (title == "退出登录") {
-      showDialog(
+      showPlatformDialog(
           context: context,
           builder: (_) => PlatformAlertDialog(
             title: Text("注销"),
@@ -231,8 +182,6 @@ class MyInfoPageState extends State<MyInfoPage> {
       Navigator.pushNamed(context, "/changeTheme");
     } else if (title == "测试页") {
       Navigator.pushNamed(context, "/test");
-//      InAppBrowserPage.open(context, "https://net.jmu.edu.cn/", "集美大学");
-//      InAppBrowserUtils.open("https://net.jmu.edu.cn");
     } else if (title == "关于") {
       showAboutDialog(context);
     } else if (title == "检查更新") {

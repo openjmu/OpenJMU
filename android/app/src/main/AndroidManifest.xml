@@ -40,5 +40,13 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="UPA_MPA_CHANNELID"
+            android:value="57859yMfUBr">
+        </meta-data>
+        <meta-data
+            android:name="UPA_MPA_APPKEY"
+            android:value="AJ3Uvy">
+        </meta-data>
     </application>
 </manifest>

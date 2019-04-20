@@ -4,61 +4,24 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:extended_text/extended_text.dart';
 
-import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
+import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
-class CommentCard extends StatefulWidget {
+class CommentCard extends StatelessWidget {
   final Comment comment;
 
   CommentCard(this.comment, {Key key}) : super(key: key);
 
-  @override
-  State createState() => _CommentCardState();
-}
-
-class _CommentCardState extends State<CommentCard> {
   final TextStyle titleTextStyle = new TextStyle(fontSize: 18.0);
   final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
   final TextStyle rootTopicTextStyle = new TextStyle(fontSize: 14.0);
   final TextStyle rootTopicMentionStyle = new TextStyle(color: Colors.blue, fontSize: 14.0);
   final Color subIconColor = Colors.grey;
-
-  Color currentRootContentColor = Colors.grey[200];
-
-  Widget pics;
-
-  @override
-  void initState() {
-    super.initState();
-    DataUtils.getBrightnessDark().then((isDark) {
-      if (this.mounted) {
-        setRootContentColor(isDark);
-      }
-    });
-    Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
-      if (this.mounted) {
-        setRootContentColor(event.isDarkState);
-      }
-    });
-  }
-
-  void setRootContentColor(isDarkState) {
-    setState(() {
-      if (isDarkState == null || !isDarkState) {
-        currentRootContentColor = Colors.grey[200];
-      } else {
-        currentRootContentColor = Colors.grey[850];
-      }
-    });
-  }
 
   GestureDetector getCommentAvatar(context, comment) {
     return new GestureDetector(
@@ -138,7 +101,7 @@ class _CommentCardState extends State<CommentCard> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        getExtendedText(content),
+                        getExtendedText(context, content),
                         getRootContent(context, comment)
                       ]
                   )
@@ -167,14 +130,14 @@ class _CommentCardState extends State<CommentCard> {
             margin: EdgeInsets.only(top: 8.0),
             padding: EdgeInsets.all(8.0),
             decoration: new BoxDecoration(
-                color: currentRootContentColor,
+                color: Theme.of(context).canvasColor,
                 borderRadius: BorderRadius.circular(5.0)
             ),
             child: new Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  getExtendedText(topic),
+                  getExtendedText(context, topic),
                 ]
             )
         )
@@ -198,7 +161,7 @@ class _CommentCardState extends State<CommentCard> {
     );
   }
 
-  Widget getExtendedText(content) {
+  Widget getExtendedText(context, content) {
     return new ExtendedText(
       content,
       style: new TextStyle(fontSize: 16.0),
@@ -210,7 +173,6 @@ class _CommentCardState extends State<CommentCard> {
           return UserPage.jump(context, data['uid']);
         } else if (text.startsWith("https://wb.jmu.edu.cn")) {
           return CommonWebPage.jump(context, text, "网页链接");
-//            return InAppBrowserPage.open(context, text, "网页链接");
         }
       },
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
@@ -222,11 +184,11 @@ class _CommentCardState extends State<CommentCard> {
     List<Widget> _widgets = [];
     _widgets = [
       new ListTile(
-        leading: getCommentAvatar(context, widget.comment),
-        title: getCommentNickname(widget.comment),
-        subtitle: getCommentInfo(widget.comment),
+        leading: getCommentAvatar(context, this.comment),
+        title: getCommentNickname(this.comment),
+        subtitle: getCommentInfo(this.comment),
       ),
-      getCommentContent(context, widget.comment),
+      getCommentContent(context, this.comment),
     ];
     return new Container(
       child: Card(
@@ -243,17 +205,11 @@ class _CommentCardState extends State<CommentCard> {
 }
 
 
-class CommentCardInPost extends StatefulWidget {
+class CommentCardInPost extends StatelessWidget {
   final Post post;
   final List<Comment> comments;
 
   CommentCardInPost(this.post, this.comments, {Key key}) : super(key: key);
-
-  @override
-  State createState() => _CommentCardInPostState();
-}
-
-class _CommentCardInPostState extends State<CommentCardInPost> {
 
   GestureDetector getCommentAvatar(context, comment) {
     return new GestureDetector(
@@ -276,7 +232,7 @@ class _CommentCardInPostState extends State<CommentCardInPost> {
     );
   }
 
-  Text getCommentNickname(comment) {
+  Text getCommentNickname(context, comment) {
     return new Text(
         comment.fromUserName,
         style: TextStyle(
@@ -285,7 +241,8 @@ class _CommentCardInPostState extends State<CommentCardInPost> {
         )
     );
   }
-  Text getCommentTime(comment) {
+
+  Text getCommentTime(context, comment) {
     String _commentTime = comment.commentTime;
     DateTime now = new DateTime.now();
     if (int.parse(_commentTime.substring(0, 4)) == now.year) {
@@ -303,7 +260,8 @@ class _CommentCardInPostState extends State<CommentCardInPost> {
         style: Theme.of(context).textTheme.caption
     );
   }
-  Widget getExtendedText(content) {
+
+  Widget getExtendedText(context, content) {
     return new ExtendedText(
       content,
       style: new TextStyle(fontSize: 16.0),
@@ -326,7 +284,7 @@ class _CommentCardInPostState extends State<CommentCardInPost> {
     return new Container(
         color: ThemeUtils.currentCardColor,
         padding: EdgeInsets.zero,
-        child: widget.comments.length > 0
+        child: this.comments.length > 0
           ? ListView.separated(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -334,23 +292,23 @@ class _CommentCardInPostState extends State<CommentCardInPost> {
               color: Theme.of(context).dividerColor,
               height: 1.0,
             ),
-            itemCount: widget.comments.length,
+            itemCount: this.comments.length,
             itemBuilder: (context, index) => Row(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                getCommentAvatar(context, widget.comments[index]),
+                getCommentAvatar(context, this.comments[index]),
                 Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Container(height: 10.0),
-                        getCommentNickname(widget.comments[index]),
+                        getCommentNickname(context, this.comments[index]),
                         Container(height: 4.0),
-                        getExtendedText(widget.comments[index].content),
+                        getExtendedText(context, this.comments[index].content),
                         Container(height: 6.0),
-                        getCommentTime(widget.comments[index]),
+                        getCommentTime(context, this.comments[index]),
                         Container(height: 10.0),
                       ],
                     )
@@ -361,7 +319,7 @@ class _CommentCardInPostState extends State<CommentCardInPost> {
                   onPressed: () {
                     showDialog<Null>(
                         context: context,
-                        builder: (BuildContext context) => CommentPositioned(widget.post, comment: widget.comments[index])
+                        builder: (BuildContext context) => CommentPositioned(this.post, comment: this.comments[index])
                     );
                   },
                 )

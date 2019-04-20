@@ -12,50 +12,20 @@ import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/pages/PostDetailPage.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
-class PraiseCard extends StatefulWidget {
+class PraiseCard extends StatelessWidget {
   final Praise praise;
 
   PraiseCard(this.praise, {Key key}) : super(key: key);
 
-  @override
-  State createState() => _PraiseCardState();
-}
-
-class _PraiseCardState extends State<PraiseCard> {
   final TextStyle titleTextStyle = new TextStyle(fontSize: 18.0);
   final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
   final TextStyle rootTopicTextStyle = new TextStyle(fontSize: 14.0);
   final TextStyle rootTopicMentionStyle = new TextStyle(color: Colors.blue, fontSize: 14.0);
   final Color subIconColor = Colors.grey;
-
-  Color currentRootContentColor = Colors.grey[200];
-
-  Widget pics;
-
-  @override
-  void initState() {
-    super.initState();
-    DataUtils.getBrightnessDark().then((isDark) {
-      if (this.mounted) {
-        setRootContentColor(isDark);
-      }
-    });
-  }
-
-  void setRootContentColor(isDarkState) {
-    setState(() {
-      if (isDarkState == null || !isDarkState) {
-        currentRootContentColor = Colors.grey[200];
-      } else {
-        currentRootContentColor = Colors.grey[850];
-      }
-    });
-  }
 
   GestureDetector getCommentAvatar(context, praise) {
     return new GestureDetector(
@@ -143,20 +113,20 @@ class _PraiseCardState extends State<PraiseCard> {
         margin: EdgeInsets.only(top: 8.0),
         padding: EdgeInsets.all(8.0),
         decoration: new BoxDecoration(
-            color: currentRootContentColor,
+            color: Theme.of(context).canvasColor,
             borderRadius: BorderRadius.circular(5.0)
         ),
         child: new Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              getExtendedText(topic),
+              getExtendedText(context, topic),
             ]
         )
     );
   }
 
-  Widget getExtendedText(content) {
+  Widget getExtendedText(context, content) {
     return new ExtendedText(
       content,
       style: new TextStyle(fontSize: 16.0),
@@ -176,7 +146,7 @@ class _PraiseCardState extends State<PraiseCard> {
     );
   }
 
-  Widget getImages(data) {
+  Widget getImages(context, data) {
     if (data != null) {
       List<Widget> imagesWidget = [];
       for (var index = 0; index < data.length; index++) {
@@ -191,13 +161,13 @@ class _PraiseCardState extends State<PraiseCard> {
                       data.map<ImageBean>((f) {
                         String _httpsUrl = f['image_original'];
                         String url = _httpsUrl.replaceAllMapped(new RegExp(r"https://"), (match) => "http://");
-                        return ImageBean(url, widget.praise.postId);
+                        return ImageBean(url, this.praise.postId);
                       }).toList(),
                     );
                   }));
                 },
                 child: new Hero(
-                    tag: "$urlInsecure${index.toString()}${widget.praise.postId.toString()}",
+                    tag: "$urlInsecure${index.toString()}${this.praise.postId.toString()}",
                     child: ExtendedImage.network(
                       urlInsecure,
                       fit: BoxFit.cover,
@@ -239,13 +209,13 @@ class _PraiseCardState extends State<PraiseCard> {
     List<Widget> _widgets = [];
     _widgets = [
       new ListTile(
-        leading: getCommentAvatar(context, widget.praise),
-        title: getCommentNickname(widget.praise),
-        subtitle: getCommentInfo(widget.praise),
+        leading: getCommentAvatar(context, this.praise),
+        title: getCommentNickname(this.praise),
+        subtitle: getCommentInfo(this.praise),
       ),
-      getCommentContent(context, widget.praise),
+      getCommentContent(context, this.praise),
     ];
-    Post _post = PostAPI.createPost(widget.praise.post);
+    Post _post = PostAPI.createPost(this.praise.post);
     return new GestureDetector(
       onTap: () {
         Navigator.of(context).push(platformPageRoute(builder: (context) {
@@ -269,16 +239,10 @@ class _PraiseCardState extends State<PraiseCard> {
 }
 
 
-class PraiseCardInPost extends StatefulWidget {
+class PraiseCardInPost extends StatelessWidget {
   final List<Praise> praises;
 
   PraiseCardInPost(this.praises, {Key key}) : super(key: key);
-
-  @override
-  State createState() => _PraiseCardInPostState();
-}
-
-class _PraiseCardInPostState extends State<PraiseCardInPost> {
 
   GestureDetector getPostAvatar(context, praise) {
     return new GestureDetector(
@@ -301,7 +265,7 @@ class _PraiseCardInPostState extends State<PraiseCardInPost> {
     );
   }
 
-  Text getPostNickname(praise) {
+  Text getPostNickname(context, praise) {
     return new Text(
         praise.nickname,
         style: TextStyle(
@@ -316,7 +280,7 @@ class _PraiseCardInPostState extends State<PraiseCardInPost> {
     return new Container(
         color: ThemeUtils.currentCardColor,
         padding: EdgeInsets.zero,
-        child: widget.praises.length > 0
+        child: this.praises.length > 0
             ? ListView.separated(
             physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -324,18 +288,18 @@ class _PraiseCardInPostState extends State<PraiseCardInPost> {
               color: Theme.of(context).dividerColor,
               height: 1.0,
             ),
-            itemCount: widget.praises.length,
+            itemCount: this.praises.length,
             itemBuilder: (context, index) => Row(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                getPostAvatar(context, widget.praises[index]),
+                getPostAvatar(context, this.praises[index]),
                 Expanded(
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        getPostNickname(widget.praises[index]),
+                        getPostNickname(context, this.praises[index]),
                       ],
                     )
                 )

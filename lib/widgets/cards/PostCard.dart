@@ -15,7 +15,6 @@ import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/pages/PostDetailPage.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
@@ -39,8 +38,6 @@ class _PostCardState extends State<PostCard> {
   final TextStyle rootTopicMentionStyle = new TextStyle(color: Colors.blue, fontSize: 14.0);
   final Color subIconColor = Colors.grey;
 
-  Color currentRootTopicColor = Colors.grey[200];
-
   Color _forwardColor = Colors.grey;
   Color _repliesColor = Colors.grey;
   Color _praisesColor = Colors.grey;
@@ -63,26 +60,6 @@ class _PostCardState extends State<PostCard> {
         isDetail = false;
       });
     }
-    DataUtils.getBrightnessDark().then((isDark) {
-      if (this.mounted) {
-        setRootTopicColor(isDark);
-      }
-    });
-    Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
-      if (this.mounted) {
-        setRootTopicColor(event.isDarkState);
-      }
-    });
-  }
-
-  void setRootTopicColor(isDarkState) {
-    setState(() {
-      if (isDarkState == null || !isDarkState) {
-        currentRootTopicColor = Colors.grey[200];
-      } else {
-        currentRootTopicColor = Colors.grey[850];
-      }
-    });
   }
 
   GestureDetector getPostAvatar(context, post) {
@@ -213,7 +190,7 @@ class _PostCardState extends State<PostCard> {
             margin: EdgeInsets.only(top: 8.0),
             padding: EdgeInsets.all(8.0),
             decoration: new BoxDecoration(
-                color: currentRootTopicColor,
+                color: Theme.of(context).canvasColor,
                 borderRadius: BorderRadius.circular(5.0)
             ),
             child: new Column(
@@ -423,7 +400,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   void confirmDelete() {
-    showDialog(
+    showPlatformDialog(
         context: context,
         builder: (_) => PlatformAlertDialog(
           title: Text("删除动态"),

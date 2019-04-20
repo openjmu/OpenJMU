@@ -18,8 +18,6 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
-//  Animation<double> _animation;
-  AnimationController _animationController;
 
   final _formKey = GlobalKey<FormState>();
   String _username, _password;
@@ -31,21 +29,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   void initState() {
     super.initState();
     DataUtils.resetTheme();
-//    _animationController =
-//        AnimationController(duration: const Duration(seconds: 1), vsync: this);
-//    _animation = Tween<double>(begin: 120, end: 100).animate(_animationController)
-//      ..addListener(() {
-//        setState(() {
-//        });
-//      });
-//    _animationController.forward();
-//    Constants.eventBus.on<LoginFailedEvent>().listen((event) {
-//      if (this.mounted) {
-//        setState(() {
-//          _loginButtonDisabled = false;
-//        });
-//      }
-//    });
     Constants.eventBus.on<LoginFailedEvent>().listen((event) {
       setState(() {
         _loginButtonDisabled = false;
@@ -55,7 +38,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 
   @override
   void dispose() {
-    _animationController?.dispose();
     super.dispose();
   }
 
@@ -77,8 +59,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
       margin: EdgeInsets.only(bottom: 8.0),
         child: new Image.asset(
           './images/ic_jmu_logo_trans.png',
-//          width: _animation.value,
-//          height: _animation.value,
           width: 100.0,
           height: 100.0,
         )
@@ -288,10 +268,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
   }
 
-  Future<void> resetPassword() async {
-    return showDialog<void>(
+  void resetPassword() async {
+    return showPlatformDialog<Null>(
       context: context,
-      barrierDismissible: false, // user must tap button!
       builder: (BuildContext dialogContext) {
         return PlatformAlertDialog(
           title: new Text('忘记密码'),
