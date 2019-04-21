@@ -212,57 +212,37 @@ class CommentCard extends StatelessWidget {
                                   ||
                                 this.comment.post.userId == UserUtils.currentUser.uid
                               ) {
-                                showDialog<Null>(
+                                showPlatformDialog(
                                     context: context,
-                                    builder: (BuildContext context) => SimpleDialog(
-                                        backgroundColor: ThemeUtils.currentColorTheme,
-                                        children: <Widget>[Center(
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
-                                              IconButton(
-                                                icon: Icon(Icons.delete, size: 36.0),
-                                                padding: EdgeInsets.all(6.0),
-                                                onPressed: () {
-                                                  showPlatformDialog(
-                                                      context: context,
-                                                      builder: (_) => PlatformAlertDialog(
-                                                        title: Text("删除动态"),
-                                                        content: Text("是否确认删除这条动态？"),
-                                                        actions: <Widget>[
-                                                          PlatformButton(
-                                                            android: (BuildContext context) => MaterialRaisedButtonData(
-                                                              color: ThemeUtils.currentColorTheme,
-                                                              elevation: 0,
-                                                            ),
-                                                            child: Text('确认', style: TextStyle(color: Colors.white)),
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop();
-                                                              Navigator.of(context).pop();
-                                                              CommentAPI.deleteComment(this.comment.post.id, this.comment.id)
-                                                                  .then((response) { showCenterShortToast("评论删除成功"); })
-                                                                  .catchError((e) { showCenterErrorShortToast("评论删除失败"); });
-                                                            },
-                                                          ),
-                                                          PlatformButton(
-                                                            android: (BuildContext context) => MaterialRaisedButtonData(
-                                                              color: Theme.of(context).dialogBackgroundColor,
-                                                              elevation: 0,
-                                                            ),
-                                                            child: Text('取消'),
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop();
-                                                            },
-                                                          ),
-                                                        ],
-                                                      )
-                                                  );
-                                                },
-                                              ),
-                                              Text("删除评论", style: TextStyle(fontSize: 16.0))
-                                            ],
+                                    builder: (_) => PlatformAlertDialog(
+                                      title: Text("删除动态"),
+                                      content: Text("是否确认删除这条动态？"),
+                                      actions: <Widget>[
+                                        PlatformButton(
+                                          android: (BuildContext context) => MaterialRaisedButtonData(
+                                            color: ThemeUtils.currentColorTheme,
+                                            elevation: 0,
                                           ),
-                                        )]
+                                          child: Text('确认', style: TextStyle(color: Colors.white)),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
+                                            CommentAPI.deleteComment(this.comment.post.id, this.comment.id)
+                                                .then((response) { showCenterShortToast("评论删除成功"); })
+                                                .catchError((e) { showCenterErrorShortToast("评论删除失败"); });
+                                          },
+                                        ),
+                                        PlatformButton(
+                                          android: (BuildContext context) => MaterialRaisedButtonData(
+                                            color: Theme.of(context).dialogBackgroundColor,
+                                            elevation: 0,
+                                          ),
+                                          child: Text('取消'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
                                     )
                                 );
                               }

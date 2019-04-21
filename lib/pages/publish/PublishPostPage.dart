@@ -113,8 +113,8 @@ class PublishPostPageState extends State<PublishPostPage> {
     return Expanded(
         child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
-            child: new TextField(
-              decoration: new InputDecoration(
+            child: TextField(
+              decoration: InputDecoration(
                   enabled: !isLoading,
                   hintText: "分享你的动态...",
                   hintStyle: TextStyle(
@@ -154,7 +154,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     return Container(
         margin: EdgeInsets.only(bottom: 80),
         height: MediaQuery.of(context).size.width / gridCount * (imagesBin.length / gridCount).ceil(),
-        child: new DragAbleGridView(
+        child: DragAbleGridView(
           childAspectRatio: 1,
           crossAxisCount: gridCount,
           itemBins: imagesBin,
@@ -171,7 +171,7 @@ class PublishPostPageState extends State<PublishPostPage> {
               child: Icon(Icons.delete, color: Colors.white, size: (10.0+16*(1/gridCount)))
           ),
           child: (int position) {
-            return new Container(
+            return Container(
                 margin: EdgeInsets.all(4.0),
                 padding: EdgeInsets.zero,
                 child: AssetThumb(
@@ -196,7 +196,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                 children: <Widget>[
                   Text(
                       "$currentLength/$maxLength",
-                      style: new TextStyle(
+                      style: TextStyle(
                           color: counterTextColor
                       )
                   )
@@ -215,18 +215,18 @@ class PublishPostPageState extends State<PublishPostPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              new IconButton(
+              IconButton(
                   onPressed: null,
                   icon: poundIcon(context)
               ),
-              new IconButton(
+              IconButton(
                   onPressed: null,
                   icon: Icon(
                       Icons.alternate_email,
                       color: Theme.of(context).iconTheme.color
                   )
               ),
-              new IconButton(
+              IconButton(
                   onPressed: () {
                     loadAssets();
                   },
@@ -235,7 +235,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                       color: Theme.of(context).iconTheme.color
                   )
               ),
-              new IconButton(
+              IconButton(
                   onPressed: () => setState(() {emoticonPadActive = !emoticonPadActive;}),
                   icon: Icon(
                       Icons.mood,
@@ -268,7 +268,20 @@ class PublishPostPageState extends State<PublishPostPage> {
                               fit: BoxFit.fill,
                             ),
                             onPressed: () {
-                              _controller.text = _controller.text + emoticonNames[index];
+                              int currentPosition = _controller.selection.baseOffset;
+                              int offset = _controller.selection.extentOffset + emoticonNames[index].length;
+                              String result;
+                              if (_controller.text.length > 0) {
+                                String leftText = _controller.text.substring(0, currentPosition);
+                                String rightText = _controller.text.substring(currentPosition, _controller.text.length);
+                                result = "$leftText${emoticonNames[index]}$rightText";
+                              } else {
+                                result = "${emoticonNames[index]}";
+                              }
+                              _controller.text = result;
+                              _controller.selection = TextSelection.fromPosition(
+                                  TextPosition(offset: offset)
+                              );
                             }
                         )
                     ),
@@ -403,20 +416,20 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: new AppBar(
+    return Scaffold(
+        appBar: AppBar(
           elevation: 1,
-          title: new Center(
-              child: new Text(
+          title: Center(
+              child: Text(
                   "发布动态",
-                  style: new TextStyle(
+                  style: TextStyle(
                       color: Colors.white,
                       fontSize: Theme.of(context).textTheme.title.fontSize
                   )
               )
           ),
           actions: <Widget>[
-            IconButton(icon: new Icon(Icons.send), onPressed: () => post(context))
+            IconButton(icon: Icon(Icons.send), onPressed: () => post(context))
           ],
         ),
         body: Stack(
