@@ -26,7 +26,7 @@ class MyInfoPageState extends State<MyInfoPage> {
   var icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.info];
   var userAvatar;
   var userName;
-  var titleTextStyle = new TextStyle(fontSize: 16.0);
+  var titleTextStyle = new TextStyle(fontSize: 16.0,fontFamily: 'pinghei');
   var currentVersion;
 
   bool isLogin = false;
@@ -206,17 +206,17 @@ class MyInfoPageState extends State<MyInfoPage> {
     if (title == "退出登录") {
       showDialog(
           context: context,
-          builder: (_) => PlatformAlertDialog(
+          builder: (_) =>  PlatformAlertDialog(
             title: Text("注销"),
             content: Text("是否确认注销？"),
             actions: <Widget>[
-              FlatButton(
+              CupertinoButton(
                 child: Text('取消'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
+              CupertinoButton(
                 child: Text('确认'),
                 onPressed: () {
                   DataUtils.doLogout();
@@ -296,7 +296,7 @@ class MyInfoPageState extends State<MyInfoPage> {
     ];
     showDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        builder: (_) => PlatformAlertDialog(
             content: SingleChildScrollView(
               child: ListBody(children: body),
             ),

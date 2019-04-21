@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/pages/SplashPage.dart';
@@ -112,8 +113,10 @@ class JMUAppClientState extends State<JMUAppClient> {
         GlobalWidgetsLocalizations.delegate,
       ],
       supportedLocales: [
-        const Locale('zh', 'CN'),
+        const Locale('zh', ''),
+        const Locale('en','US')
       ],
     );
   }
 }
+
