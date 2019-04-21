@@ -186,13 +186,7 @@ class MyInfoPageState extends State<MyInfoPage> {
 //      Navigator.pushNamed(context, "/test");
       Navigator.pushNamed(context, "/notificationTest");
     } else if (title == "关于") {
-      LoadingDialogController _c = LoadingDialogController();
-      showDialog(
-        context: context,
-        builder: (BuildContext context) => LoadingDialog("测试", _c)
-      );
-      Timer(const Duration(seconds: 2), () { _c.changeState("success", "成功"); });
-//      showAboutDialog(context);
+      showAboutDialog(context);
     } else if (title == "检查更新") {
       OTAUpdate.checkUpdate();
     }
