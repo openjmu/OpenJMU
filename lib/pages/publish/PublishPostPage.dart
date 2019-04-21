@@ -12,6 +12,7 @@ import 'package:dragablegridview_flutter/dragablegridview_flutter.dart';
 import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
 
 import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/utils/EmojiUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -39,6 +40,11 @@ class PublishPostPageState extends State<PublishPostPage> {
   int currentLength = 0;
   int maxLength = 300;
 
+  bool emoticonPadActive = false;
+  double emoticonPadHeight = 178;
+  List<String> emoticonNames = [];
+  List<String> emoticonPaths = [];
+
   String msg = "";
   String sid = UserUtils.currentUser.sid;
   Color counterTextColor = Colors.grey;
@@ -47,14 +53,22 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   static double _iconWidth = 24.0;
   static double _iconHeight = 24.0;
-  static Color _iconColor = Colors.white;
 
-  final Widget poundIcon = SvgPicture.asset(
+  Widget poundIcon(context) => SvgPicture.asset(
       "assets/icons/Topic.svg",
-      color: _iconColor,
+      color: Theme.of(context).iconTheme.color,
       width: _iconWidth,
       height: _iconHeight
   );
+
+  @override
+  void initState() {
+    super.initState();
+    EmojiUtils.instance.emojiMap.forEach((name, path) {
+      emoticonNames.add(name);
+      emoticonPaths.add(path);
+    });
+  }
 
   @override
   void dispose() {
@@ -97,48 +111,48 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   Widget textField() {
     return Expanded(
-      child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
-          child: new TextField(
-            decoration: new InputDecoration(
-                enabled: !isLoading,
-                hintText: "分享你的动态...",
-                hintStyle: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 18.0
-                ),
-                border: InputBorder.none,
-                labelStyle: TextStyle(color: Colors.white, fontSize: 18.0),
-                counterStyle: TextStyle(color: Colors.transparent)
-            ),
-            style: TextStyle(fontSize: 18.0),
-            maxLength: maxLength,
-            controller: _controller,
-            onChanged: (content) {
-              if (content.length == maxLength) {
-                setState(() {
-                  counterTextColor = Colors.red;
-                });
-              } else {
-                if (counterTextColor != Colors.grey) {
+        child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
+            child: new TextField(
+              decoration: new InputDecoration(
+                  enabled: !isLoading,
+                  hintText: "分享你的动态...",
+                  hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 18.0
+                  ),
+                  border: InputBorder.none,
+                  labelStyle: TextStyle(color: Colors.white, fontSize: 18.0),
+                  counterStyle: TextStyle(color: Colors.transparent)
+              ),
+              style: TextStyle(fontSize: 18.0),
+              maxLength: maxLength,
+              controller: _controller,
+              onChanged: (content) {
+                if (content.length == maxLength) {
                   setState(() {
-                    counterTextColor = Colors.grey;
+                    counterTextColor = Colors.red;
                   });
+                } else {
+                  if (counterTextColor != Colors.grey) {
+                    setState(() {
+                      counterTextColor = Colors.grey;
+                    });
+                  }
                 }
-              }
-              setState(() {
-                currentLength = content.length;
-              });
-            },
-          )
-      )
+                setState(() {
+                  currentLength = content.length;
+                });
+              },
+            )
+        )
     );
   }
 
   Widget customGridView(context) {
     int size = (MediaQuery.of(context).size.width / gridCount).floor() - (18 - gridCount);
     return Container(
-      margin: EdgeInsets.only(bottom: 80),
+        margin: EdgeInsets.only(bottom: 80),
         height: MediaQuery.of(context).size.width / gridCount * (imagesBin.length / gridCount).ceil(),
         child: new DragAbleGridView(
           childAspectRatio: 1,
@@ -173,7 +187,7 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   Widget _counter(context) {
     return Positioned(
-        bottom: MediaQuery.of(context).padding.bottom + 60.0 ?? 60.0,
+        bottom: MediaQuery.of(context).padding.bottom + 60.0 + (emoticonPadActive?emoticonPadHeight:0) ?? 60.0 + (emoticonPadActive?emoticonPadHeight:0),
         right: 0.0,
         child: Padding(
             padding: EdgeInsets.only(right: 11.0),
@@ -194,22 +208,22 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   Widget _toolbar(context) {
     return Positioned(
-        bottom: MediaQuery.of(context).padding.bottom ?? 0,
+        bottom: MediaQuery.of(context).padding.bottom + (emoticonPadActive?emoticonPadHeight:0) ?? (emoticonPadActive?emoticonPadHeight:0),
         left: 0.0,
         right: 0.0,
         child: Row(
-          mainAxisSize: MainAxisSize.max,
+            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               new IconButton(
                   onPressed: null,
-                  icon: poundIcon
+                  icon: poundIcon(context)
               ),
               new IconButton(
-                  onPressed: () {},
+                  onPressed: null,
                   icon: Icon(
                       Icons.alternate_email,
-                      color: _iconColor
+                      color: Theme.of(context).iconTheme.color
                   )
               ),
               new IconButton(
@@ -218,17 +232,49 @@ class PublishPostPageState extends State<PublishPostPage> {
                   },
                   icon: Icon(
                       Icons.add_photo_alternate,
-                      color: _iconColor
+                      color: Theme.of(context).iconTheme.color
                   )
               ),
               new IconButton(
-                  onPressed: null,
+                  onPressed: () => setState(() {emoticonPadActive = !emoticonPadActive;}),
                   icon: Icon(
                       Icons.mood,
-                      color: _iconColor
+                      color: Theme.of(context).iconTheme.color
                   )
               ),
             ]
+        )
+    );
+  }
+
+  Widget emoticonPad(context) {
+    return Positioned(
+        bottom: MediaQuery.of(context).padding.bottom ?? 0,
+        left: 0.0,
+        right: 0.0,
+        child: Visibility(
+            visible: emoticonPadActive,
+            child: Container(
+                height: emoticonPadHeight,
+                child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 8
+                    ),
+                    itemBuilder: (context, index) => Container(
+                        margin: EdgeInsets.all(4.0),
+                        child: IconButton(
+                            icon: Image.asset(
+                              emoticonPaths[index],
+                              fit: BoxFit.fill,
+                            ),
+                            onPressed: () {
+                              _controller.text = _controller.text + emoticonNames[index];
+                            }
+                        )
+                    ),
+                    itemCount: emoticonPaths.length
+                )
+            )
         )
     );
   }
@@ -337,8 +383,8 @@ class PublishPostPageState extends State<PublishPostPage> {
       _loadingDialogController.updateText("正在发布动态...");
     }
     NetUtils.postWithCookieAndHeaderSet(
-      Api.postContent,
-      data: content
+        Api.postContent,
+        data: content
     ).then((response) {
       setState(() { isLoading = false; });
       if (jsonDecode(response)["tid"] != null) {
@@ -364,6 +410,7 @@ class PublishPostPageState extends State<PublishPostPage> {
               child: new Text(
                   "发布动态",
                   style: new TextStyle(
+                      color: Colors.white,
                       fontSize: Theme.of(context).textTheme.title.fontSize
                   )
               )
@@ -381,6 +428,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                 ],
               ),
               _counter(context), _toolbar(context),
+              emoticonPad(context)
             ]
         )
     );

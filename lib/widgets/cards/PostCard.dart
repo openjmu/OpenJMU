@@ -72,14 +72,6 @@ class _PostCardState extends State<PostCard> {
             child: CircleAvatar(
               backgroundImage: CachedNetworkImageProvider(post.avatar, cacheManager: DefaultCacheManager()),
             )
-//            decoration: new BoxDecoration(
-//              shape: BoxShape.circle,
-//              color: const Color(0xFFECECEC),
-//              image: new DecorationImage(
-//                  image: CachedNetworkImageProvider(post.avatar, cacheManager: DefaultCacheManager()),
-//                  fit: BoxFit.cover
-//              ),
-//            ),
         ),
         onTap: () {
           return UserPage.jump(context, widget.post.userId);
