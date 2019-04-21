@@ -115,6 +115,7 @@ class JMUAppClientState extends State<JMUAppClient> {
       ],
       supportedLocales: [
         const Locale('zh', 'CN'),
+        const Locale('en','US')
       ],
     );
   }

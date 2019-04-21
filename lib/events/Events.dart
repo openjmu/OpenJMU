@@ -8,8 +8,6 @@ class LoginFailedEvent {}
 class TicketGotEvent {}
 class TicketFailedEvent {}
 
-class PostSuccessEvent {}
-class PostFailedEvent {}
 class PostDeletedEvent {
   int postId;
   PostDeletedEvent(int id) {

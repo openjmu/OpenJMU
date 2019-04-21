@@ -5,7 +5,6 @@ import 'dart:async';
 import 'dart:core';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart';
-import 'package:image_picker/image_picker.dart';
 
 class DiscoveryPage extends StatefulWidget {
   @override

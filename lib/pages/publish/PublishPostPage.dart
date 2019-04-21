@@ -1,22 +1,17 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:ui';
 import 'dart:core';
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:dragablegridview_flutter/dragablegridview_flutter.dart';
 import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
 
 import 'package:OpenJMU/api/Api.dart';
-import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -32,22 +27,23 @@ class PublishPostPage extends StatefulWidget {
 
 class PublishPostPageState extends State<PublishPostPage> {
   List<ItemBin> imagesBin = List<ItemBin>();
-  int imagesLength = 0, maxImagesLength = 9;
+  int imagesLength = 0, maxImagesLength = 9, uploadedImages = 1;
   List _imageIdList = [];
   TextEditingController _controller = new TextEditingController();
-  EditSwitchController editSwitchController = new EditSwitchController();
+  EditSwitchController _editSwitchController = new EditSwitchController();
+  LoadingDialogController _loadingDialogController = new LoadingDialogController();
 
   bool isLoading = false;
 
   int gridCount = 5;
   int currentLength = 0;
   int maxLength = 300;
-  String actionTxt, actionTxtEdit = "编辑", actionTxtComplete = "完成";
 
   String msg = "";
   String sid = UserUtils.currentUser.sid;
   Color counterTextColor = Colors.grey;
 
+  Timer _timer;
 
   static double _iconWidth = 24.0;
   static double _iconHeight = 24.0;
@@ -61,47 +57,14 @@ class PublishPostPageState extends State<PublishPostPage> {
   );
 
   @override
-  void initState() {
-    super.initState();
-    actionTxt = actionTxtEdit;
+  void dispose() {
+    super.dispose();
+    _timer?.cancel();
+    _controller?.dispose();
   }
-
-  Future uploadAssets(Asset asset) async {
-    ByteData byteData = await asset.requestOriginal();
-    List<int> imageData = byteData.buffer.asUint8List();
-
-    FormData _form = FormData.from({
-      "image": UploadFileInfo.fromBytes(imageData, asset.name),
-      "image_type": 0
-    });
-
-    NetUtils.postWithCookieAndHeaderSet(
-        Api.postUploadImage,
-        data: _form
-    ).then((response) {
-      print(response);
-    }).catchError((e) {
-      print("Error: ${e.toString()}");
-    });
-  }
-
-//  Future _addImage(imageSource) async {
-//    num size = imagesBin.length;
-//    if (size >= 9) {
-//      showCenterShortToast("最多只能添加9张图片！");
-//      return;
-//    }
-//    var image = await ImagePicker.pickImage(source: imageSource);
-//    if (image != null) {
-//      setState(() {
-//        imagesBin.add(image);
-//      });
-//    }
-//  }
 
   Future<void> loadAssets() async {
     List<Asset> resultList = List<Asset>();
-
     try {
       resultList = await MultiImagePicker.pickImages(
           maxImages: maxImagesLength - imagesLength,
@@ -129,19 +92,7 @@ class PublishPostPageState extends State<PublishPostPage> {
       imagesBin.addAll(_bin);
       imagesLength = imagesBin.length;
     });
-    editSwitchController.itemBinUpdated();
-  }
-
-  void changeActionState(){
-    if (actionTxt == actionTxtEdit) {
-      setState(() {
-        actionTxt = actionTxtComplete;
-      });
-    } else {
-      setState(() {
-        actionTxt = actionTxtEdit;
-      });
-    }
+    _editSwitchController.itemBinUpdated();
   }
 
   Widget textField() {
@@ -193,7 +144,7 @@ class PublishPostPageState extends State<PublishPostPage> {
           childAspectRatio: 1,
           crossAxisCount: gridCount,
           itemBins: imagesBin,
-          editSwitchController: editSwitchController,
+          editSwitchController: _editSwitchController,
           isOpenDragAble: true,
           animationDuration: 300,
           longPressDuration: 800,
@@ -215,9 +166,6 @@ class PublishPostPageState extends State<PublishPostPage> {
                   height: size,
                 )
             );
-          },
-          editChangeListener: () {
-            changeActionState();
           },
         )
     );
@@ -290,7 +238,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     List<int> imageData = byteData.buffer.asUint8List();
 
     return FormData.from({
-      "image": UploadFileInfo.fromBytes(imageData, "${asset.name}.png"),
+      "image": UploadFileInfo.fromBytes(imageData, "${asset.name}.jpg"),
       "image_type": 0
     });
   }
@@ -300,14 +248,25 @@ class PublishPostPageState extends State<PublishPostPage> {
     if (content.length == 0 || content.trim().length == 0) {
       showCenterShortToast("内容不能为空");
     } else {
+      setState(() { isLoading = true; });
       showDialog<Null>(
           context: context,
+          barrierDismissible: false,
           builder: (BuildContext context) {
-            return LoadingDialog("正在发布动态...");
+            return StatefulBuilder(builder: (BuildContext ctx, state) {
+              if (imagesBin.length > 0) {
+                return LoadingDialog("正在上传图片 (1/${imagesBin.length})", _loadingDialogController);
+              } else {
+                return LoadingDialog("正在发布动态...", _loadingDialogController);
+              }
+            });
           }
       );
-      setState(() { isLoading = true; });
-      try {
+      Map<String, dynamic> data = new Map();
+      data['category'] = "text";
+      data['content'] = Uri.encodeFull(content);
+      if (imagesBin.length > 0) {
+        try {
           List<Future> query = new List(imagesBin.length);
           _imageIdList = new List(imagesBin.length);
           for (var i=0; i < imagesBin.length; i++) {
@@ -315,18 +274,32 @@ class PublishPostPageState extends State<PublishPostPage> {
             FormData _form = await createForm(imageData);
             query[i] = getImageRequest(_form, i);
           }
-          _postImagesQuery(query).then((isComplete) {
-            if (isComplete != null) {
-              Map<String, dynamic> data = new Map();
-              data['category'] = "text";
-              data['content'] = Uri.encodeFull(content);
+          _postImagesQuery(query).then((responses) {
+            if (responses != null && responses.length == imagesBin.length) {
               String extraId = _imageIdList.toString();
               data['extra_id'] = extraId.substring(1, extraId.length - 1);
-              _postContent(context, data, sid);
+              _postContent(data);
+            } else {
+              _loadingDialogController.changeState("failed", "图片上传失败");
+              setState(() {
+                isLoading = false;
+              });
             }
+          }).catchError((e) {
+            _loadingDialogController.changeState("failed", "图片上传失败");
+            setState(() {
+              isLoading = false;
+            });
+            print(e.toString());
           });
-      } catch (exception) {
-        showCenterErrorShortToast(exception);
+        } catch (exception) {
+          showCenterErrorShortToast(exception);
+        }
+      } else {
+        Map<String, dynamic> data = new Map();
+        data['category'] = "text";
+        data['content'] = Uri.encodeFull(content);
+        _postContent(data);
       }
     }
   }
@@ -336,43 +309,49 @@ class PublishPostPageState extends State<PublishPostPage> {
         Api.postUploadImage,
         data: formData
     ).then((response) {
-      print(response.toString());
+      _incrementImagesCounter();
       int imageId = int.parse(jsonDecode(response)['image_id']);
       _imageIdList[index] = imageId;
       return response;
     }).catchError((e) {
-      Constants.eventBus.fire(new PostFailedEvent());
-      setState(() {
-        isLoading = false;
-      });
       print(e.toString());
+      print(e.response.toString());
+      print(formData);
       showCenterErrorShortToast(e.response.toString());
     });
+  }
+
+  void _incrementImagesCounter() {
+    setState(() {
+      uploadedImages++;
+    });
+    _loadingDialogController.updateText("正在上传图片 ($uploadedImages/${imagesBin.length})");
   }
 
   Future _postImagesQuery(query) async {
     return await Future.wait(query);
   }
 
-  Future _postContent(context, content, sid) async {
+  Future _postContent(content) async {
+    if (imagesBin.length > 0) {
+      _loadingDialogController.updateText("正在发布动态...");
+    }
     NetUtils.postWithCookieAndHeaderSet(
       Api.postContent,
       data: content
     ).then((response) {
-      Constants.eventBus.fire(new PostSuccessEvent());
       setState(() { isLoading = false; });
       if (jsonDecode(response)["tid"] != null) {
-        showShortToast("动态发布成功！");
-        Navigator.of(context).pop();
+        _timer = Timer(Duration(milliseconds: 2100), () { Navigator.pop(context); });
+        _loadingDialogController.changeState("success", "动态发布成功");
       } else {
-        showShortToast("动态发布失败！");
+        _loadingDialogController.changeState("failed", "动态发布失败");
       }
       return response;
     }).catchError((e) {
-      Constants.eventBus.fire(new PostFailedEvent());
       setState(() { isLoading = false; });
+      _loadingDialogController.changeState("failed", "动态发布失败");
       print(e.toString());
-      showShortToast("动态发布失败！");
     });
   }
 
@@ -390,16 +369,7 @@ class PublishPostPageState extends State<PublishPostPage> {
               )
           ),
           actions: <Widget>[
-            !isLoading
-                ? IconButton(icon: new Icon(Icons.send), onPressed: () => post(context))
-                : Container(
-                width: 56.0,
-                padding: EdgeInsets.all(18.0),
-                child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    strokeWidth: 3.0
-                )
-            )
+            IconButton(icon: new Icon(Icons.send), onPressed: () => post(context))
           ],
         ),
         body: Stack(

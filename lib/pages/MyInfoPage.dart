@@ -11,6 +11,9 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
+import 'package:OpenJMU/widgets/LoadingDialog.dart';
+
+import 'dart:async';
 
 class MyInfoPage extends StatefulWidget {
   @override
@@ -152,13 +155,13 @@ class MyInfoPageState extends State<MyInfoPage> {
             title: Text("注销"),
             content: Text("是否确认注销？"),
             actions: <Widget>[
-              FlatButton(
+              PlatformButton(
                 child: Text('取消'),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
+              PlatformButton(
                 child: Text('确认'),
                 onPressed: () {
                   DataUtils.doLogout();
@@ -172,9 +175,16 @@ class MyInfoPageState extends State<MyInfoPage> {
     } else if (title == "切换主题") {
       Navigator.pushNamed(context, "/changeTheme");
     } else if (title == "测试页") {
-      Navigator.pushNamed(context, "/test");
+//      Navigator.pushNamed(context, "/test");
+      Navigator.pushNamed(context, "/notificationTest");
     } else if (title == "关于") {
-      showAboutDialog(context);
+      LoadingDialogController _c = LoadingDialogController();
+      showDialog(
+        context: context,
+        builder: (BuildContext context) => LoadingDialog("测试", _c)
+      );
+      Timer(const Duration(seconds: 2), () { _c.changeState("success", "成功"); });
+//      showAboutDialog(context);
     } else if (title == "检查更新") {
       OTAUpdate.checkUpdate();
     }
@@ -236,7 +246,7 @@ class MyInfoPageState extends State<MyInfoPage> {
     ];
     showDialog(
         context: context,
-        builder: (_) => AlertDialog(
+        builder: (_) => PlatformAlertDialog(
             content: SingleChildScrollView(
               child: ListBody(children: body),
             ),

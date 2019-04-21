@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -16,10 +17,10 @@ import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
+import 'package:OpenJMU/widgets/LoadingDialog.dart';
 
 class PostCard extends StatefulWidget {
   final Post post;
@@ -37,6 +38,7 @@ class _PostCardState extends State<PostCard> {
   final TextStyle rootTopicTextStyle = new TextStyle(fontSize: 14.0);
   final TextStyle rootTopicMentionStyle = new TextStyle(color: Colors.blue, fontSize: 14.0);
   final Color subIconColor = Colors.grey;
+  Timer deleteTimer;
 
   Color _forwardColor = Colors.grey;
   Color _repliesColor = Colors.grey;
@@ -406,32 +408,24 @@ class _PostCardState extends State<PostCard> {
           title: Text("删除动态"),
           content: Text("是否确认删除该动态？"),
           actions: <Widget>[
-            !isDeleting
-                ? FlatButton(
+            FlatButton(
                 child: Text('确认', style: TextStyle(fontWeight: FontWeight.bold)),
                 onPressed: () {
-                  setState(() {
-                    isDeleting = true;
-                  });
+                  Navigator.pop(_);
+                  LoadingDialogController _loadingDialogController = new LoadingDialogController();
+                  showDialog(
+                    context: _,
+                    builder: (BuildContext dialogContext) => LoadingDialog("正在删除动态", _loadingDialogController)
+                  );
                   PostAPI.deletePost(widget.post.id).then((response) {
-                    showShortToast("动态删除成功");
-                    setState(() {
-                      isDeleting = false;
-                    });
-                    Navigator.of(context).pop();
+                    _loadingDialogController.changeState("success", "动态删除成功");
                     Constants.eventBus.fire(new PostDeletedEvent(widget.post.id));
+                  }).catchError((e) {
+                    print(e.toString());
+                    print(e.response?.toString());
+                    _loadingDialogController.changeState("failed", "动态删除失败");
                   });
                 }
-            )
-                : Container(
-              child: SizedBox(
-                  width: 18.0,
-                  height: 18.0,
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-                    strokeWidth: 3.0,
-                  )
-              ),
             ),
             FlatButton(
               color: ThemeUtils.currentColorTheme,

@@ -33,7 +33,7 @@ class MainPage extends StatefulWidget {
   State<StatefulWidget> createState() => new MainPageState();
 }
 
-class MainPageState extends State<MainPage> {
+class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
 //  final List<String> bottomAppBarTitles = ['首页', '新闻', '应用中心', '消息', '我的'];
   final List<String> bottomAppBarTitles = ['首页', '应用中心', '消息', '我的'];
@@ -67,6 +67,9 @@ class MainPageState extends State<MainPage> {
   var userAvatar;
 
   OtaEvent otaEvent;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
