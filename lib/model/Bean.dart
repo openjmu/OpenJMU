@@ -79,6 +79,8 @@ class Comment {
   String toTopicUserName;
   var toTopicContent;
 
+  Post post;
+
   Comment(
       this.id,
       this.fromUserUid,
@@ -95,6 +97,7 @@ class Comment {
       this.toTopicUid,
       this.toTopicUserName,
       this.toTopicContent,
+      this.post,
   );
 
   @override

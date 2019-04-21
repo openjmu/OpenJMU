@@ -6,6 +6,7 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/cards/CommentCard.dart';
@@ -51,6 +52,12 @@ class CommentAPI {
     return NetUtils.postWithCookieAndHeaderSet(url, data: data);
   }
 
+  static deleteComment(int postId, int commentId) async {
+    return NetUtils.deleteWithCookieAndHeaderSet(
+        "${Api.postRequestComment}$postId/rid/$commentId"
+    );
+  }
+
   static Comment createComment(itemData) {
     String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";
     String _commentTime = new DateTime.fromMillisecondsSinceEpoch(itemData['post_time'] * 1000)
@@ -79,7 +86,7 @@ class CommentAPI {
               ??
             itemData['to_topic']['topic']['content']
           : null,
-
+      itemData['to_topic']['topic'] != null ? PostAPI.createPost(itemData['to_topic']['topic']) : null
     );
     return _comment;
   }
@@ -105,6 +112,7 @@ class CommentAPI {
       0,
       null,
       null,
+      null
     );
     return _comment;
   }

@@ -156,15 +156,23 @@ class MyInfoPageState extends State<MyInfoPage> {
             content: Text("是否确认注销？"),
             actions: <Widget>[
               PlatformButton(
-                child: Text('取消'),
+                android: (BuildContext context) => MaterialRaisedButtonData(
+                  color: ThemeUtils.currentColorTheme,
+                  elevation: 0,
+                ),
+                child: Text('确认', style: TextStyle(color: Colors.white)),
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  DataUtils.doLogout();
                 },
               ),
               PlatformButton(
-                child: Text('确认'),
+                android: (BuildContext context) => MaterialRaisedButtonData(
+                  color: Theme.of(context).dialogBackgroundColor,
+                  elevation: 0,
+                ),
+                child: Text('取消'),
                 onPressed: () {
-                  DataUtils.doLogout();
+                  Navigator.of(context).pop();
                 },
               ),
             ],

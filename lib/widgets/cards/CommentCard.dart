@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/model/CommentController.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class CommentCard extends StatelessWidget {
@@ -121,11 +125,7 @@ class CommentCard extends StatelessWidget {
         topic = "<M ${comment.toTopicUid}>@${comment.toTopicUserName}<\/M>: ";
       }
       topic += content;
-      return new GestureDetector(
-        onTap: () {
-
-        },
-        child: Container(
+      return new Container(
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.only(top: 8.0),
             padding: EdgeInsets.all(8.0),
@@ -140,8 +140,7 @@ class CommentCard extends StatelessWidget {
                   getExtendedText(context, topic),
                 ]
             )
-        )
-      );
+        );
     } else {
       return getPostBanned();
     }
@@ -190,16 +189,150 @@ class CommentCard extends StatelessWidget {
       ),
       getCommentContent(context, this.comment),
     ];
-    return new Container(
-      child: Card(
-          margin: EdgeInsets.symmetric(vertical: 4.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: _widgets,
-          ),
-          elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)
-      ),
+    return new InkWell(
+      onTap: () {
+        showDialog<Null>(
+          context: context,
+          builder: (BuildContext context) {
+            if (this.comment.post != null) {
+              return SimpleDialog(
+                  backgroundColor: ThemeUtils.currentColorTheme,
+                  children: <Widget>[Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.delete, size: 36.0),
+                            padding: EdgeInsets.all(6.0),
+                            onPressed: () {
+                              if (
+                                this.comment.fromUserUid == UserUtils.currentUser.uid
+                                  ||
+                                this.comment.post.userId == UserUtils.currentUser.uid
+                              ) {
+                                showDialog<Null>(
+                                    context: context,
+                                    builder: (BuildContext context) => SimpleDialog(
+                                        backgroundColor: ThemeUtils.currentColorTheme,
+                                        children: <Widget>[Center(
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              IconButton(
+                                                icon: Icon(Icons.delete, size: 36.0),
+                                                padding: EdgeInsets.all(6.0),
+                                                onPressed: () {
+                                                  showPlatformDialog(
+                                                      context: context,
+                                                      builder: (_) => PlatformAlertDialog(
+                                                        title: Text("删除动态"),
+                                                        content: Text("是否确认删除这条动态？"),
+                                                        actions: <Widget>[
+                                                          PlatformButton(
+                                                            android: (BuildContext context) => MaterialRaisedButtonData(
+                                                              color: ThemeUtils.currentColorTheme,
+                                                              elevation: 0,
+                                                            ),
+                                                            child: Text('确认', style: TextStyle(color: Colors.white)),
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop();
+                                                              Navigator.of(context).pop();
+                                                              CommentAPI.deleteComment(this.comment.post.id, this.comment.id)
+                                                                  .then((response) { showCenterShortToast("评论删除成功"); })
+                                                                  .catchError((e) { showCenterErrorShortToast("评论删除失败"); });
+                                                            },
+                                                          ),
+                                                          PlatformButton(
+                                                            android: (BuildContext context) => MaterialRaisedButtonData(
+                                                              color: Theme.of(context).dialogBackgroundColor,
+                                                              elevation: 0,
+                                                            ),
+                                                            child: Text('取消'),
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop();
+                                                            },
+                                                          ),
+                                                        ],
+                                                      )
+                                                  );
+                                                },
+                                              ),
+                                              Text("删除评论", style: TextStyle(fontSize: 16.0))
+                                            ],
+                                          ),
+                                        )]
+                                    )
+                                );
+                              }
+                            },
+                          ),
+                          Text("删除评论", style: TextStyle(fontSize: 16.0))
+                        ],
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.reply, size: 36.0),
+                            padding: EdgeInsets.all(6.0),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              showDialog<Null>(
+                                  context: context,
+                                  builder: (BuildContext context) => CommentPositioned(this.comment.post, comment: this.comment)
+                              );
+                            },
+                          ),
+                          Text("回复评论", style: TextStyle(fontSize: 16.0))
+                        ],
+                      ),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.pageview, size: 36.0),
+                            padding: EdgeInsets.all(6.0),
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.of(context).push(platformPageRoute(builder: (context) {
+                                return PostDetailPage(this.comment.post);
+                              }));
+                            },
+                          ),
+                          Text("查看动态", style: TextStyle(fontSize: 16.0))
+                        ],
+                      ),
+                    ],
+                  )]
+              );
+            } else {
+              return SimpleDialog(
+                backgroundColor: Colors.redAccent,
+                contentPadding: EdgeInsets.symmetric(vertical: 16.0),
+                children: <Widget>[Center(
+                    child: Text(
+                      "该动态已被屏蔽或删除",
+                      style: TextStyle(color: Colors.white, fontSize: 20.0),
+                    )
+                )]
+              );
+            }
+          }
+        );
+      },
+      child: Container(
+        child: Card(
+            margin: EdgeInsets.symmetric(vertical: 4.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: _widgets,
+            ),
+            elevation: 0,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero)
+        ),
+      )
     );
   }
 }
@@ -293,37 +426,104 @@ class CommentCardInPost extends StatelessWidget {
               height: 1.0,
             ),
             itemCount: this.comments.length,
-            itemBuilder: (context, index) => Row(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                getCommentAvatar(context, this.comments[index]),
-                Expanded(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Container(height: 10.0),
-                        getCommentNickname(context, this.comments[index]),
-                        Container(height: 4.0),
-                        getExtendedText(context, this.comments[index].content),
-                        Container(height: 6.0),
-                        getCommentTime(context, this.comments[index]),
-                        Container(height: 10.0),
-                      ],
+            itemBuilder: (context, index) => InkWell(
+              onTap: () {
+                if (
+                this.comments[index].fromUserUid == UserUtils.currentUser.uid
+                ||
+                this.post.userId == UserUtils.currentUser.uid
+                ) {
+                  showDialog<Null>(
+                    context: context,
+                    builder: (BuildContext context) => SimpleDialog(
+                        backgroundColor: ThemeUtils.currentColorTheme,
+                        children: <Widget>[Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              IconButton(
+                                icon: Icon(Icons.delete, size: 36.0),
+                                padding: EdgeInsets.all(6.0),
+                                onPressed: () {
+                                  showPlatformDialog(
+                                      context: context,
+                                      builder: (_) => PlatformAlertDialog(
+                                        title: Text("删除动态"),
+                                        content: Text("是否确认删除这条动态？"),
+                                        actions: <Widget>[
+                                          PlatformButton(
+                                            android: (BuildContext context) => MaterialRaisedButtonData(
+                                              color: ThemeUtils.currentColorTheme,
+                                              elevation: 0,
+                                            ),
+                                            child: Text('确认', style: TextStyle(color: Colors.white)),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                              Navigator.of(context).pop();
+                                              CommentAPI.deleteComment(this.post.id, this.comments[index].id)
+                                                  .then((response) { showCenterShortToast("评论删除成功"); })
+                                                  .catchError((e) { showCenterErrorShortToast("评论删除失败"); });
+                                            },
+                                          ),
+                                          PlatformButton(
+                                            android: (BuildContext context) => MaterialRaisedButtonData(
+                                              color: Theme.of(context).dialogBackgroundColor,
+                                              elevation: 0,
+                                            ),
+                                            child: Text('取消'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                        ],
+                                      )
+                                  );
+                                },
+                              ),
+                              Text("删除评论", style: TextStyle(fontSize: 16.0))
+                            ],
+                          ),
+                        )]
                     )
-                ),
-                IconButton(
-                  padding: EdgeInsets.all(26.0),
-                  icon: Icon(Icons.comment, color: Colors.grey),
-                  onPressed: () {
-                    showDialog<Null>(
-                        context: context,
-                        builder: (BuildContext context) => CommentPositioned(this.post, comment: this.comments[index])
-                    );
-                  },
+                  );
+                } else {
+                  return null;
+                }
+              },
+              child: Container(
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    getCommentAvatar(context, this.comments[index]),
+                    Expanded(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(height: 10.0),
+                            getCommentNickname(context, this.comments[index]),
+                            Container(height: 4.0),
+                            getExtendedText(context, this.comments[index].content),
+                            Container(height: 6.0),
+                            getCommentTime(context, this.comments[index]),
+                            Container(height: 10.0),
+                          ],
+                        )
+                    ),
+                    IconButton(
+                      padding: EdgeInsets.all(26.0),
+                      icon: Icon(Icons.comment, color: Colors.grey),
+                      onPressed: () {
+                        showDialog<Null>(
+                            context: context,
+                            builder: (BuildContext context) => CommentPositioned(this.post, comment: this.comments[index])
+                        );
+                      },
+                    )
+                  ],
                 )
-              ],
+              )
             )
         )
           : Container(

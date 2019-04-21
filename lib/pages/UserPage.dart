@@ -142,14 +142,18 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
 
   void _fetchUserInformation(uid) async {
     if (uid == UserUtils.currentUser.uid) {
-      setState(() {
-        _user = UserUtils.currentUser;
-      });
+      if (mounted) {
+        setState(() {
+          _user = UserUtils.currentUser;
+        });
+      }
     } else {
       var user = jsonDecode(await UserUtils.getUserInfo(uid: uid));
-      setState(() {
-        _user = UserUtils.createUserInfo(user);
-      });
+      if (mounted) {
+        setState(() {
+          _user = UserUtils.createUserInfo(user);
+        });
+      }
     }
 
     if (_user == null) {

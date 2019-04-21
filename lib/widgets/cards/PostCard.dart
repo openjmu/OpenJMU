@@ -284,7 +284,12 @@ class _PostCardState extends State<PostCard> {
         Expanded(
             flex: 1,
             child: FlatButton.icon(
-              onPressed: null,
+              onPressed: () {
+                showDialog<Null>(
+                  context: context,
+                  builder: (BuildContext context) => ForwardPositioned(widget.post)
+                );
+              },
               icon: Icon(
                 Icons.launch,
                 color: _forwardColor,
@@ -300,7 +305,12 @@ class _PostCardState extends State<PostCard> {
         Expanded(
           flex: 1,
           child: FlatButton.icon(
-            onPressed: null,
+            onPressed: () {
+              showDialog<Null>(
+                  context: context,
+                  builder: (BuildContext context) => CommentPositioned(widget.post)
+              );
+            },
             icon: Icon(
               Icons.mode_comment,
               color: _repliesColor,
