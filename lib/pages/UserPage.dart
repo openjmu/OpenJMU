@@ -13,6 +13,7 @@ import 'package:OpenJMU/widgets/AppBar.dart'
     show FlexibleSpaceBarWithUserInfo;
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 
 class UserPage extends StatefulWidget {
@@ -36,30 +37,29 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
   UserInfo _user;
 
   SliverAppBar _appBar;
-  List<Widget> _actions;
   Widget _infoNextNameButton;
   var _fansCount = '-';
   var _followingCount = '-';
 
   Widget _post;
 
-  bool isError = false, isLoading = false;
+  bool isError = false, isLoading = false, isReloading = false;
+
+  PostController postController;
 
   @override
   void initState() {
     super.initState();
     _checkLogin();
     if (widget.uid != null && widget.uid != 0) {
-      _post = PostList(
-          PostController(
-              postType: "user",
-              isFollowed: false,
-              isMore: false,
-              lastValue: (Post post) => post.id,
-              additionAttrs: {'uid': widget.uid}
-          ),
-          needRefreshIndicator: false
+      postController = new PostController(
+          postType: "user",
+          isFollowed: false,
+          isMore: false,
+          lastValue: (int id) => id,
+          additionAttrs: {'uid': widget.uid}
       );
+      _post = PostList(postController, needRefreshIndicator: false);
     }
   }
 
@@ -166,66 +166,25 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
       await _getFollowingAndFansCount(uid);
       if (await DataUtils.isLogin()) {
         if (uid == UserUtils.currentUser.uid) {
-          _infoNextNameButton = RawMaterialButton(
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            constraints: BoxConstraints(minWidth: 0, minHeight: 0),
-            onPressed: () {
-            },
-            child: Container(
-              constraints: BoxConstraints(minWidth: 64, maxWidth: double.infinity),
-              padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-              decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  border: Border.all(color: Colors.white),
-                  borderRadius: BorderRadius.circular(4)
-              ),
-              child: Center(
-                child: Text('编辑资料', style: TextStyle(color: Colors.white, fontSize: 12)),
-              ),
-            ),
-          );
-          _actions = <Widget>[
-//            isLoading
-//                ?
-//              Platform.isAndroid ? CircularProgressIndicator(
-//                valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
-//                strokeWidth: 3.0,
-//              ) : CupertinoActivityIndicator()
-//                : IconButton(
-//              onPressed: () {
-//                setState(() {
-//                  isLoading = true;
-//                  new Timer(const Duration(milliseconds: 50), () {
-//                    _post = PostList(
-//                        PostController(
-//                            postType: "user",
-//                            isFollowed: false,
-//                            isMore: false,
-//                            lastValue: (Post post) => post.id,
-//                            additionAttrs: {'uid': widget.uid}
-//                        ),
-//                        needRefreshIndicator: false
-//                    );
-//                    isLoading = false;
-//                  });
-//                });
-//              },
-//              icon: Icon(Icons.refresh)
-//            )
-//            PopupMenuButton(
-//              onSelected: (val) {
-//                UserAPI.logout(pop: true, context: context);
-//              },
-//              itemBuilder: (context) {
-//                return <PopupMenuItem>[
-//                  PopupMenuItem<int>(
-//                    value: 0,
-//                    child: Text('注销'),
-//                  )
-//                ];
-//              },
+//          _infoNextNameButton = RawMaterialButton(
+//            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+//            constraints: BoxConstraints(minWidth: 0, minHeight: 0),
+//            onPressed: () {
+//            },
+//            child: Container(
+//              constraints: BoxConstraints(minWidth: 64, maxWidth: double.infinity),
+//              padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+//              decoration: BoxDecoration(
+//                  color: Colors.transparent,
+//                  border: Border.all(color: Colors.white),
+//                  borderRadius: BorderRadius.circular(4)
+//              ),
+//              child: Center(
+//                child: Text('编辑资料', style: TextStyle(color: Colors.white, fontSize: 12)),
+//              ),
 //            ),
-          ];
+//          );
+          _infoNextNameButton = Container();
         } else {
           if (_user.isFollowing) {
             _infoNextNameButton = _unFollowButton();
@@ -314,15 +273,54 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
             ),
             bottomInfo: Container(
               color: Theme.of(context).cardColor,
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              child: Text(
-                _user?.signature ?? '这个人还没写下TA的第一句...',
-                style: TextStyle(color: Colors.grey),
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    _user?.signature ?? '这个人还没写下TA的第一句...',
+                    style: TextStyle(color: Theme.of(context).textTheme.body1.color),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+
+                    },
+                    child: Text("修改", style: TextStyle(color: Colors.grey))
+                  )
+                ],
               ),
             ),
             bottomSize: 0,
           ),
-          actions: _actions,
+          actions: <Widget>[
+            !isReloading
+                ? IconButton(
+                icon: Icon(Icons.refresh),
+                onPressed: () {
+                  isReloading = true;
+                  _updateAppBar();
+                  postController.reload(needLoader: true).then((response) {
+                    isReloading = false;
+                    _updateAppBar();
+                  }).catchError((e) {
+                    isReloading = false;
+                    _updateAppBar();
+                    showCenterErrorShortToast("动态更新失败");
+                  });
+                }
+            )
+                : Container(
+                  width: 56.0,
+                  padding: EdgeInsets.all(17.0),
+                  child: Platform.isAndroid
+                      ? CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    strokeWidth: 3.0,
+                  )
+                      : CupertinoActivityIndicator()
+                ),
+          ],
         );
       });
     }

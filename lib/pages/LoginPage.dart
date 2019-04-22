@@ -54,14 +54,17 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
   }
 
-  Container buildLogo() {
-    return new Container(
-      margin: EdgeInsets.only(bottom: 8.0),
-        child: new Image.asset(
-          './images/ic_jmu_logo_trans.png',
-          width: 100.0,
-          height: 100.0,
-        )
+  Hero buildLogo() {
+    return new Hero(
+      tag: "Logo",
+      child: Container(
+          margin: EdgeInsets.only(bottom: 10.0),
+          child: new Image.asset(
+            'images/ic_jmu_logo_trans.png',
+            width: 100.0,
+            height: 100.0,
+          )
+      )
     );
   }
 

@@ -17,7 +17,7 @@ import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
-import 'package:OpenJMU/widgets/LoadingDialog.dart';
+import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
 class PublishPostPage extends StatefulWidget {
   @override

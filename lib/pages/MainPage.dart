@@ -16,7 +16,7 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
-import 'package:OpenJMU/utils/OTAUpdate.dart';
+//import 'package:OpenJMU/utils/OTAUpdate.dart';
 
 import 'package:OpenJMU/pages/PostSquareListPage.dart';
 import 'package:OpenJMU/pages/AppCenterPage.dart';
@@ -92,11 +92,11 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       notificationTimer != null ? notificationTimer.cancel() : null;
       Navigator.of(context).pushReplacementNamed("/login");
     });
-    Constants.eventBus.on<HasUpdateEvent>().listen((event) {
-      if (this.mounted) {
-        showDialog(context: context, builder: (_) => OTAUpdate.updateDialog(context, event.response));
-      }
-    });
+//    Constants.eventBus.on<HasUpdateEvent>().listen((event) {
+//      if (this.mounted) {
+//        showDialog(context: context, builder: (_) => OTAUpdate.updateDialog(context, event.response));
+//      }
+//    });
     Constants.eventBus.on<OTAEvent>().listen((event) {
       if (this.mounted) {
         setState(() {

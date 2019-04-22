@@ -41,17 +41,16 @@ class JMUAppClientState extends State<JMUAppClient> {
       }
     });
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
-      setState(() {
-        currentThemeColor = event.color;
-      });
+      if (this.mounted) {
+        setState(() {
+          currentThemeColor = event.color;
+        });
+      }
     });
-
     Constants.eventBus.on<LogoutEvent>().listen((event) {
       setState(() {
         currentBrightness = Brightness.light;
         currentPrimaryColor = Colors.white;
-        currentThemeColor = ThemeUtils.defaultColor;
-        print(currentThemeColor);
       });
     });
   }
@@ -100,12 +99,20 @@ class JMUAppClientState extends State<JMUAppClient> {
           buttonColor: currentThemeColor,
           cursorColor: currentThemeColor,
           primaryColor: currentThemeColor,
+          primaryColorLight: currentThemeColor,
+          primaryColorDark: currentThemeColor,
           primaryColorBrightness: currentBrightness,
+          textSelectionColor: currentThemeColor,
           textSelectionHandleColor: currentThemeColor,
           primaryIconTheme: IconThemeData(color: Colors.white),
           appBarTheme: AppBarTheme(
               color: currentThemeColor,
-              brightness: Brightness.dark
+              brightness: Brightness.dark,
+              elevation: 0,
+              iconTheme: IconThemeData(color: Colors.white)
+          ),
+          buttonTheme: ButtonThemeData(
+              textTheme: ButtonTextTheme.primary
           )
       ),
       home: new SplashPage(),
@@ -115,7 +122,7 @@ class JMUAppClientState extends State<JMUAppClient> {
       ],
       supportedLocales: [
         const Locale('zh', 'CN'),
-        const Locale('en','US')
+        const Locale('en', 'US')
       ],
     );
   }

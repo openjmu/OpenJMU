@@ -5,6 +5,8 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/CommentController.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
@@ -15,6 +17,9 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
+import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
+import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
+import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 
 class CommentCard extends StatelessWidget {
   final Comment comment;
@@ -41,9 +46,7 @@ class CommentCard extends StatelessWidget {
             ),
           ),
         ),
-        onTap: () {
-          return UserPage.jump(context, comment.fromUserUid);
-        }
+        onTap: () => UserPage.jump(context, comment.fromUserUid)
     );
   }
 
@@ -178,6 +181,80 @@ class CommentCard extends StatelessWidget {
     );
   }
 
+  Widget dialog(context) {
+    if (this.comment.post != null) {
+      return SimpleDialog(
+          backgroundColor: ThemeUtils.currentColorTheme,
+          children: <Widget>[Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.delete, size: 36.0, color: Colors.white),
+                    padding: EdgeInsets.all(6.0),
+                    onPressed: () {
+                      if (
+                      this.comment.fromUserUid == UserUtils.currentUser.uid
+                          ||
+                          this.comment.post.userId == UserUtils.currentUser.uid
+                      ) {
+                        showPlatformDialog(context: context, builder: (_) => DeleteDialog("评论", comment: this.comment));
+                      }
+                    },
+                  ),
+                  Text("删除评论", style: TextStyle(fontSize: 16.0, color: Colors.white))
+                ],
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.reply, size: 36.0, color: Colors.white),
+                    padding: EdgeInsets.all(6.0),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      showDialog<Null>(
+                          context: context,
+                          builder: (BuildContext context) => CommentPositioned(this.comment.post, comment: this.comment)
+                      );
+                    },
+                  ),
+                  Text("回复评论", style: TextStyle(fontSize: 16.0, color: Colors.white))
+                ],
+              ),
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.pageview, size: 36.0, color: Colors.white),
+                    padding: EdgeInsets.all(6.0),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.of(context).push(platformPageRoute(builder: (context) => PostDetailPage(this.comment.post)));
+                    },
+                  ),
+                  Text("查看动态", style: TextStyle(fontSize: 16.0, color: Colors.white))
+                ],
+              ),
+            ],
+          )]
+      );
+    } else {
+      return SimpleDialog(
+          backgroundColor: Colors.redAccent,
+          contentPadding: EdgeInsets.symmetric(vertical: 16.0),
+          children: <Widget>[Center(
+              child: Text(
+                "该动态已被屏蔽或删除",
+                style: TextStyle(color: Colors.white, fontSize: 20.0),
+              )
+          )]
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> _widgets = [];
@@ -190,118 +267,7 @@ class CommentCard extends StatelessWidget {
       getCommentContent(context, this.comment),
     ];
     return new InkWell(
-      onTap: () {
-        showDialog<Null>(
-          context: context,
-          builder: (BuildContext context) {
-            if (this.comment.post != null) {
-              return SimpleDialog(
-                  backgroundColor: ThemeUtils.currentColorTheme,
-                  children: <Widget>[Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.delete, size: 36.0),
-                            padding: EdgeInsets.all(6.0),
-                            onPressed: () {
-                              if (
-                                this.comment.fromUserUid == UserUtils.currentUser.uid
-                                  ||
-                                this.comment.post.userId == UserUtils.currentUser.uid
-                              ) {
-                                showPlatformDialog(
-                                    context: context,
-                                    builder: (_) => PlatformAlertDialog(
-                                      title: Text("删除动态"),
-                                      content: Text("是否确认删除这条动态？"),
-                                      actions: <Widget>[
-                                        PlatformButton(
-                                          android: (BuildContext context) => MaterialRaisedButtonData(
-                                            color: ThemeUtils.currentColorTheme,
-                                            elevation: 0,
-                                          ),
-                                          child: Text('确认', style: TextStyle(color: Colors.white)),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                            Navigator.of(context).pop();
-                                            CommentAPI.deleteComment(this.comment.post.id, this.comment.id)
-                                                .then((response) { showCenterShortToast("评论删除成功"); })
-                                                .catchError((e) { showCenterErrorShortToast("评论删除失败"); });
-                                          },
-                                        ),
-                                        PlatformButton(
-                                          android: (BuildContext context) => MaterialRaisedButtonData(
-                                            color: Theme.of(context).dialogBackgroundColor,
-                                            elevation: 0,
-                                          ),
-                                          child: Text('取消'),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                      ],
-                                    )
-                                );
-                              }
-                            },
-                          ),
-                          Text("删除评论", style: TextStyle(fontSize: 16.0))
-                        ],
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.reply, size: 36.0),
-                            padding: EdgeInsets.all(6.0),
-                            onPressed: () {
-                              Navigator.pop(context);
-                              showDialog<Null>(
-                                  context: context,
-                                  builder: (BuildContext context) => CommentPositioned(this.comment.post, comment: this.comment)
-                              );
-                            },
-                          ),
-                          Text("回复评论", style: TextStyle(fontSize: 16.0))
-                        ],
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.pageview, size: 36.0),
-                            padding: EdgeInsets.all(6.0),
-                            onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.of(context).push(platformPageRoute(builder: (context) {
-                                return PostDetailPage(this.comment.post);
-                              }));
-                            },
-                          ),
-                          Text("查看动态", style: TextStyle(fontSize: 16.0))
-                        ],
-                      ),
-                    ],
-                  )]
-              );
-            } else {
-              return SimpleDialog(
-                backgroundColor: Colors.redAccent,
-                contentPadding: EdgeInsets.symmetric(vertical: 16.0),
-                children: <Widget>[Center(
-                    child: Text(
-                      "该动态已被屏蔽或删除",
-                      style: TextStyle(color: Colors.white, fontSize: 20.0),
-                    )
-                )]
-              );
-            }
-          }
-        );
-      },
+      onTap: () => showDialog<Null>(context: context, builder: (BuildContext context) => dialog(context)),
       child: Container(
         child: Card(
             margin: EdgeInsets.symmetric(vertical: 4.0),
@@ -339,9 +305,7 @@ class CommentCardInPost extends StatelessWidget {
             ),
           ),
         ),
-        onTap: () {
-          return UserPage.jump(context, comment.fromUserUid);
-        }
+        onTap: () => UserPage.jump(context, comment.fromUserUid)
     );
   }
 
@@ -428,8 +392,8 @@ class CommentCardInPost extends StatelessWidget {
                                   showPlatformDialog(
                                       context: context,
                                       builder: (_) => PlatformAlertDialog(
-                                        title: Text("删除动态"),
-                                        content: Text("是否确认删除这条动态？"),
+                                        title: Text("删除评论"),
+                                        content: Text("是否确认删除这条评论？"),
                                         actions: <Widget>[
                                           PlatformButton(
                                             android: (BuildContext context) => MaterialRaisedButtonData(
@@ -440,9 +404,19 @@ class CommentCardInPost extends StatelessWidget {
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                               Navigator.of(context).pop();
+                                              LoadingDialogController _loadingDialogController = new LoadingDialogController();
+                                              showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext dialogContext) => LoadingDialog("正在删除评论", _loadingDialogController)
+                                              );
                                               CommentAPI.deleteComment(this.post.id, this.comments[index].id)
-                                                  .then((response) { showCenterShortToast("评论删除成功"); })
-                                                  .catchError((e) { showCenterErrorShortToast("评论删除失败"); });
+                                                  .then((response) {
+                                                    Constants.eventBus.fire(new PostCommentedEvent(this.post.id));
+                                                    _loadingDialogController.changeState("success", "评论删除成功");
+                                                  })
+                                                  .catchError((e) {
+                                                    showCenterErrorShortToast("评论删除失败");
+                                                  });
                                             },
                                           ),
                                           PlatformButton(

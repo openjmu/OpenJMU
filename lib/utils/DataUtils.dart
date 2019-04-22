@@ -303,9 +303,9 @@ class DataUtils {
 
   // 重置主题配置
   static resetTheme() async {
+    setColorTheme(0);
     ThemeUtils.currentColorTheme = ThemeUtils.defaultColor;
     Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.defaultColor));
-    setColorTheme(0);
   }
 
   // 获取设置的主题色

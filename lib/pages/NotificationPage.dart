@@ -136,7 +136,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
             postType: "mention",
             isFollowed: false,
             isMore: false,
-            lastValue: (Post post) => post.id
+            lastValue: (int id) => id
         ),
         needRefreshIndicator: true
     );

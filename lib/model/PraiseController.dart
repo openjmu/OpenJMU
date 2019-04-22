@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -176,12 +179,36 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
         _itemList = ListView.builder(
           padding: EdgeInsets.symmetric(vertical: 4.0),
           itemBuilder: (context, index) {
-            if (index == _praiseList.length - 1) {
-              _loadData();
+            if (index == _praiseList.length) {
+              if (this._canLoadMore) {
+                _loadData();
+                return Container(
+                    height: 40.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                            width: 15.0,
+                            height: 15.0,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(
+                                strokeWidth: 2.0,
+                                valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme)
+                            )
+                                : CupertinoActivityIndicator()
+                        ),
+                        Text("　正在加载", style: TextStyle(fontSize: 14.0))
+                      ],
+                    )
+                );
+              } else {
+                return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
+              }
+            } else {
+              return PraiseCard(_praiseList[index]);
             }
-            return PraiseCard(_praiseList[index]);
           },
-          itemCount: _praiseList.length,
+          itemCount: _praiseList.length + 1,
           controller: _scrollController,
         );
 
@@ -276,10 +303,19 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
 }
 
 
+class PraiseInPostController {
+  _PraiseInPostListState _praiseInPostListState;
+
+  void reload() {
+    _praiseInPostListState?._refreshData();
+  }
+}
+
 class PraiseInPostList extends StatefulWidget {
   final Post post;
+  final PraiseInPostController praiseInPostController;
 
-  PraiseInPostList(this.post, {Key key}) : super(key: key);
+  PraiseInPostList(this.post, this.praiseInPostController, {Key key}) : super(key: key);
 
   @override
   State createState() => _PraiseInPostListState();
@@ -296,7 +332,18 @@ class _PraiseInPostListState extends State<PraiseInPostList> {
     _getPraiseList();
   }
 
+  void _refreshData() {
+    setState(() {
+      isLoading = true;
+      _praises = [];
+    });
+    _getPraiseList();
+  }
+
   Future<Null> _getPraiseList() async {
+    setState(() {
+      isLoading = true;
+    });
     var list = await PraiseAPI.getPraiseInPostList(widget.post.id);
     List<dynamic> response = jsonDecode(list)['praisors'];
     List<Praise> praises = [];
@@ -307,6 +354,7 @@ class _PraiseInPostListState extends State<PraiseInPostList> {
       setState(() {
         isLoading = false;
         _praises = praises;
+        Constants.eventBus.fire(new PraiseInPostUpdatedEvent(widget.post.id, praises.length));
       });
     }
   }

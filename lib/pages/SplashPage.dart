@@ -40,7 +40,7 @@ class SplashState extends State<SplashPage> {
 
   @override
   void dispose() {
-    timer.cancel();
+    timer?.cancel();
     super.dispose();
   }
 
@@ -61,10 +61,10 @@ class SplashState extends State<SplashPage> {
   Hero buildLogo() {
     return new Hero(
         tag: "Logo",
-        child: Padding(
-            padding: EdgeInsets.all(30.1),
+        child: Container(
+            margin: EdgeInsets.all(30.0),
             child: new Image.asset(
-              './images/ic_jmu_logo_trans.png',
+              'images/ic_jmu_logo_trans.png',
               width: 120.0,
               height: 120.0,
             )

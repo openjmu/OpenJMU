@@ -9,8 +9,10 @@ import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/model/CommentController.dart';
 import 'package:OpenJMU/model/PraiseController.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
+import 'package:OpenJMU/widgets/dialogs/ForwardPositioned.dart';
+import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
+
 
 class PostDetailPage extends StatefulWidget {
   final Post post;
@@ -51,6 +53,10 @@ class PostDetailPageState extends State<PostDetailPage> {
   Color forwardsColor, commentsColor = ThemeUtils.currentColorTheme, praisesColor;
   Color activeColor = ThemeUtils.currentColorTheme;
 
+  ForwardInPostController forwardInPostController = new ForwardInPostController();
+  CommentInPostController commentInPostController = new CommentInPostController();
+  PraiseInPostController praiseInPostController = new PraiseInPostController();
+
   @override
   void initState() {
     super.initState();
@@ -70,6 +76,33 @@ class PostDetailPageState extends State<PostDetailPage> {
         deleteTimer = Timer(Duration(milliseconds: 2100), () { Navigator.of(context).pop(); });
       }
     });
+    Constants.eventBus.on<PostForwardedEvent>().listen((event) {
+      if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
+        setState(() { this.forwards++; });
+        forwardInPostController.reload();
+      }
+    });
+    Constants.eventBus.on<PostCommentedEvent>().listen((event) {
+      if (this.mounted && event.postId == widget.post.id && this.comments != null) {
+        setState(() { this.comments++; });
+        commentInPostController.reload();
+      }
+    });
+    Constants.eventBus.on<ForwardInPostUpdatedEvent>().listen((event) {
+      if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
+        setState(() { this.forwards = event.count; });
+      }
+    });
+    Constants.eventBus.on<CommentInPostUpdatedEvent>().listen((event) {
+      if (this.mounted && event.postId == widget.post.id && this.comments != null) {
+        setState(() { this.comments = event.count; });
+      }
+    });
+    Constants.eventBus.on<PraiseInPostUpdatedEvent>().listen((event) {
+      if (this.mounted && event.postId == widget.post.id && this.praises != null) {
+        setState(() { this.praises = event.count; });
+      }
+    });
   }
 
   @override
@@ -81,9 +114,9 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   void _requestData() {
     setState(() {
-      _forwardsList = new ForwardInPostList(widget.post);
-      _commentsList = new CommentInPostList(widget.post);
-      _praisesList = new PraiseInPostList(widget.post);
+      _forwardsList = new ForwardInPostList(widget.post, forwardInPostController);
+      _commentsList = new CommentInPostList(widget.post, commentInPostController);
+      _praisesList = new PraiseInPostList(widget.post, praiseInPostController);
     });
   }
 
@@ -306,317 +339,6 @@ class PostDetailPageState extends State<PostDetailPage> {
                 ),
           ),
           toolbar(context),
-        ],
-      ),
-    );
-  }
-}
-
-class ForwardPositioned extends StatefulWidget {
-  final Post post;
-
-  ForwardPositioned(this.post, {Key key}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => ForwardPositionedState();
-
-}
-
-class ForwardPositionedState extends State<ForwardPositioned> {
-  final TextEditingController _forwardController = new TextEditingController();
-
-  bool _forwarding = false;
-  bool commentAtTheMeanTime = false;
-
-  @override
-  void dispose() {
-    super.dispose();
-    _forwardController?.dispose();
-  }
-
-  Widget textField() {
-    return TextField(
-        controller: _forwardController,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(12.0),
-          border: OutlineInputBorder(),
-        ),
-        enabled: !_forwarding,
-        style: TextStyle(fontSize: 18.0),
-        cursorColor: ThemeUtils.currentColorTheme,
-        autofocus: true,
-        maxLines: 3,
-        maxLength: 140
-    );
-  }
-
-  void _requestForward(context) {
-    setState(() {
-      _forwarding = true;
-    });
-    String _content;
-    if (_forwardController.text.length == 0) {
-      _content = "转发";
-    } else {
-      _content = _forwardController.text;
-    }
-    PostAPI.postForward(
-        _content,
-        widget.post.id,
-        commentAtTheMeanTime
-    ).then((response) {
-      showShortToast("转发成功");
-      setState(() {
-        _forwarding = false;
-      });
-      Navigator.of(context).pop();
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Material(
-      type: MaterialType.transparency,
-      child: new Stack(
-        children: <Widget>[
-          GestureDetector(onTap: () => Navigator.of(context).pop()),
-          Positioned(
-            /// viewInsets for keyboard pop up, padding bottom for iOS navigator.
-              bottom: MediaQuery.of(context).viewInsets.bottom ?? MediaQuery.of(context).padding.bottom ?? 0.0,
-              left: 0.0,
-              right: 0.0,
-              child: Container(
-                  padding: EdgeInsets.all(10.0),
-                  color: Theme.of(context).cardColor,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      textField(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Checkbox(
-                                  activeColor: ThemeUtils.currentColorTheme,
-                                  value: commentAtTheMeanTime,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      commentAtTheMeanTime = value;
-                                    });
-                                  }
-                              ),
-                              Text("同时评论到微博", style: TextStyle(fontSize: 16.0)),
-                            ],
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              new IconButton(
-                                  onPressed: null,
-                                  icon: new Icon(Icons.alternate_email)
-                              ),
-                              new IconButton(
-                                  onPressed: null,
-                                  icon: new Icon(Icons.mood)
-                              ),
-                              !_forwarding
-                                  ? IconButton(
-                                icon: Icon(Icons.send),
-                                color: ThemeUtils.currentColorTheme,
-                                onPressed: () => _requestForward(context),
-                              )
-                                  : Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 14.0),
-                                  child: SizedBox(
-                                      width: 18.0,
-                                      height: 18.0,
-                                      child: CircularProgressIndicator(strokeWidth: 2.0)
-                                  )
-                              )
-                            ],
-                          )
-                        ],
-                      )
-                    ],
-                  )
-              )
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class CommentPositioned extends StatefulWidget {
-  final Post post;
-  final Comment comment;
-
-  CommentPositioned(this.post, {this.comment, Key key}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => CommentPositionedState();
-
-}
-
-class CommentPositionedState extends State<CommentPositioned> {
-  final TextEditingController _commentController = new TextEditingController();
-
-  Comment toComment;
-
-  bool _commenting = false;
-  bool forwardAtTheMeanTime = false;
-
-  String commentContent = "";
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.comment != null) setState(() {
-      toComment = widget.comment;
-    });
-    _commentController..addListener(() {
-      setState(() {
-        commentContent = _commentController.text;
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _commentController?.dispose();
-  }
-
-  Widget textField() {
-    String _prefixText;
-    toComment != null ? _prefixText = "回复:@${toComment.fromUserName} " : _prefixText = null;
-    return TextField(
-        controller: _commentController,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(12.0),
-          border: OutlineInputBorder(),
-          prefixText: _prefixText
-        ),
-        enabled: !_commenting,
-        style: TextStyle(fontSize: 18.0),
-        cursorColor: ThemeUtils.currentColorTheme,
-        autofocus: true,
-        maxLines: 3,
-        maxLength: 140
-    );
-  }
-
-  void _requestComment(context) {
-    if (commentContent.length <= 0) {
-      showCenterErrorShortToast("内容不能为空！");
-    } else {
-      setState(() {
-        _commenting = true;
-      });
-      if (toComment != null) {
-        Comment _c = widget.comment;
-        CommentAPI.postComment(
-            "回复:<M ${_c.fromUserUid}>@${_c.fromUserName}</M> ${_commentController.text}",
-            widget.post.id,
-            forwardAtTheMeanTime,
-            replyToId: _c.id
-        ).then((response) {
-          showShortToast("评论成功");
-          setState(() {
-            _commenting = false;
-          });
-          Navigator.of(context).pop();
-        });
-      } else {
-        CommentAPI.postComment(
-            _commentController.text,
-            widget.post.id,
-            forwardAtTheMeanTime
-        ).then((response) {
-          showShortToast("评论成功");
-          setState(() {
-            _commenting = false;
-          });
-          Navigator.of(context).pop();
-        });
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return new Material(
-      type: MaterialType.transparency,
-      child: new Stack(
-        children: <Widget>[
-          GestureDetector(onTap: () => Navigator.of(context).pop()),
-          Positioned(
-            /// viewInsets for keyboard pop up, padding bottom for iOS navigator.
-              bottom: MediaQuery.of(context).viewInsets.bottom ?? MediaQuery.of(context).padding.bottom ?? 0.0,
-              left: 0.0,
-              right: 0.0,
-              child: Container(
-                  padding: EdgeInsets.all(10.0),
-                  color: Theme.of(context).cardColor,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      textField(),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Checkbox(
-                                  activeColor: ThemeUtils.currentColorTheme,
-                                  value: forwardAtTheMeanTime,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      forwardAtTheMeanTime = value;
-                                    });
-                                  }
-                              ),
-                              Text("同时转发到微博", style: TextStyle(fontSize: 16.0)),
-                            ],
-                          ),
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              new IconButton(
-                                  onPressed: null,
-                                  icon: new Icon(Icons.alternate_email)
-                              ),
-                              new IconButton(
-                                  onPressed: null,
-                                  icon: new Icon(Icons.mood)
-                              ),
-                              !_commenting
-                                  ? IconButton(
-                                icon: Icon(Icons.send),
-                                color: ThemeUtils.currentColorTheme,
-                                onPressed: () => _requestComment(context),
-                              )
-                                  : Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 14.0),
-                                  child: SizedBox(
-                                      width: 18.0,
-                                      height: 18.0,
-                                      child: CircularProgressIndicator(strokeWidth: 2.0)
-                                  )
-                              )
-                            ],
-                          )
-                        ],
-                      )
-                    ],
-                  )
-              )
-          )
         ],
       ),
     );

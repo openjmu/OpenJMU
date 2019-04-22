@@ -52,7 +52,7 @@ class SearchPageState extends State<SearchPage> {
                 postType: "search",
                 isFollowed: false,
                 isMore: false,
-                lastValue: (Post post) => post.id,
+                lastValue: (int id) => id,
                 additionAttrs: {'words': content}
             ),
             needRefreshIndicator: true
@@ -89,17 +89,18 @@ class SearchPageState extends State<SearchPage> {
 
   GestureDetector searchTitle(content) {
     return new GestureDetector(
-      onTap: () {
-        setState(() {
-          title = searchTextField(content: content);
-        });
-      },
-      onDoubleTap: () {
-        Constants.eventBus.fire(new ScrollToTopEvent(type: "Post"));
-      },
-      child: new Center(
-        child: new Text("\"$content\"的结果", style: TextStyle(color: primaryColor))
-      )
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          setState(() {
+            title = searchTextField(content: content);
+          });
+        },
+        onDoubleTap: () {
+          Constants.eventBus.fire(new ScrollToTopEvent(type: "Post"));
+        },
+        child: new Center(
+            child: new Text("\"$content\"的结果", style: TextStyle(color: primaryColor))
+        )
     );
   }
 

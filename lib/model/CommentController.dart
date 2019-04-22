@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 
@@ -131,6 +133,16 @@ class CommentController {
     @required this.lastValue,
     this.additionAttrs
   });
+
+  _CommentListState _commentListState;
+
+  void reload() {
+    _commentListState._refreshData();
+  }
+
+  int getCount() {
+    return _commentListState._commentList.length;
+  }
 }
 
 class CommentList extends StatefulWidget {
@@ -175,6 +187,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
   @override
   void initState() {
     super.initState();
+    widget._commentController._commentListState = this;
     Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
       if (
       this.mounted
@@ -220,12 +233,36 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
         _itemList = ListView.builder(
           padding: EdgeInsets.symmetric(vertical: 4.0),
           itemBuilder: (context, index) {
-            if (index == _commentList.length - 1) {
-              _loadData();
+            if (index == _commentList.length) {
+              if (this._canLoadMore) {
+                _loadData();
+                return Container(
+                    height: 40.0,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        SizedBox(
+                            width: 15.0,
+                            height: 15.0,
+                            child: Platform.isAndroid
+                                ? CircularProgressIndicator(
+                                strokeWidth: 2.0,
+                                valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme)
+                            )
+                                : CupertinoActivityIndicator()
+                        ),
+                        Text("　正在加载", style: TextStyle(fontSize: 14.0))
+                      ],
+                    )
+                );
+              } else {
+                return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
+              }
+            } else {
+              return CommentCard(_commentList[index]);
             }
-            return CommentCard(_commentList[index]);
           },
-          itemCount: _commentList.length,
+          itemCount: _commentList.length + 1,
           controller: widget._commentController.commentType == "mention" ? null : _scrollController,
         );
 
@@ -275,7 +312,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
           _showLoading = false;
           _firstLoadComplete = true;
           _isLoading = false;
-          _canLoadMore = _topics.isNotEmpty;
+          _canLoadMore = _topics.length == 20;
           _lastValue = _commentList.isEmpty
               ? 0
               : widget._commentController.lastValue(_commentList.last);
@@ -310,7 +347,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
           _showLoading = false;
           _firstLoadComplete = true;
           _isLoading = false;
-          _canLoadMore = _topics.isNotEmpty;
+          _canLoadMore = _topics.length == 20;
           _lastValue = _commentList.isEmpty
               ? 0
               : widget._commentController.lastValue(_commentList.last);
@@ -321,10 +358,20 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
   }
 }
 
+
+class CommentInPostController {
+  _CommentInPostListState _commentInPostListState;
+
+  void reload() {
+    _commentInPostListState?._refreshData();
+  }
+}
+
 class CommentInPostList extends StatefulWidget {
   final Post post;
+  final CommentInPostController commentInPostController;
 
-  CommentInPostList(this.post, {Key key}) : super(key: key);
+  CommentInPostList(this.post, this.commentInPostController, {Key key}) : super(key: key);
 
   @override
   State createState() => _CommentInPostListState();
@@ -338,6 +385,15 @@ class _CommentInPostListState extends State<CommentInPostList> {
   @override
   void initState() {
     super.initState();
+    widget.commentInPostController._commentInPostListState = this;
+    _getCommentList();
+  }
+
+  void _refreshData() {
+    setState(() {
+      isLoading = true;
+      _comments = [];
+    });
     _getCommentList();
   }
 
@@ -350,10 +406,19 @@ class _CommentInPostListState extends State<CommentInPostList> {
     });
     if (this.mounted) {
       setState(() {
+        Constants.eventBus.fire(new CommentInPostUpdatedEvent(widget.post.id, comments.length));
         isLoading = false;
         _comments = comments;
       });
     }
+  }
+
+  Widget commentList() {
+    return isLoading
+        ? Center(child: CircularProgressIndicator(
+        valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
+    ))
+        : CommentCardInPost(widget.post, _comments);
   }
 
   @override
@@ -364,11 +429,7 @@ class _CommentInPostListState extends State<CommentInPostList> {
         padding: isLoading
             ? EdgeInsets.symmetric(vertical: 42)
             : EdgeInsets.zero,
-        child: isLoading
-            ? Center(child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
-        ))
-            : CommentCardInPost(widget.post, _comments)
+        child: commentList()
     );
   }
 

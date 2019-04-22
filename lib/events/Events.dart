@@ -8,12 +8,6 @@ class LoginFailedEvent {}
 class TicketGotEvent {}
 class TicketFailedEvent {}
 
-class PostDeletedEvent {
-  int postId;
-  PostDeletedEvent(int id) {
-    this.postId = id;
-  }
-}
 class PostForwardedEvent {
   int postId;
   PostForwardedEvent(int id) {
@@ -24,6 +18,34 @@ class PostCommentedEvent {
   int postId;
   PostCommentedEvent(int id) {
     this.postId = id;
+  }
+}
+class PostDeletedEvent {
+  int postId;
+  PostDeletedEvent(int id) {
+    this.postId = id;
+  }
+}
+
+class ForwardInPostUpdatedEvent {
+  int postId, count;
+  ForwardInPostUpdatedEvent(int id, int length) {
+    this.postId = id;
+    this.count = length;
+  }
+}
+class CommentInPostUpdatedEvent {
+  int postId, count;
+  CommentInPostUpdatedEvent(int id, int length) {
+    this.postId = id;
+    this.count = length;
+  }
+}
+class PraiseInPostUpdatedEvent {
+  int postId, count;
+  PraiseInPostUpdatedEvent(int id, int length) {
+    this.postId = id;
+    this.count = length;
   }
 }
 

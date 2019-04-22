@@ -3,17 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-import 'package:OpenJMU/utils/OTAUpdate.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/OTAUpdate.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
-import 'package:OpenJMU/widgets/LoadingDialog.dart';
 
-import 'dart:async';
 
 class MyInfoPage extends StatefulWidget {
   @override
@@ -56,9 +54,9 @@ class MyInfoPageState extends State<MyInfoPage> {
     DataUtils.getBrightnessDark().then((isDark) {
       setState(() {
         if (isDark != null) {
-            this.isDark = isDark;
+          this.isDark = isDark;
         } else {
-            this.isDark = false;
+          this.isDark = false;
         }
       });
     });
@@ -170,7 +168,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                   color: Theme.of(context).dialogBackgroundColor,
                   elevation: 0,
                 ),
-                child: Text('取消'),
+                child: Text('取消', style: TextStyle(color: ThemeUtils.currentColorTheme)),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
@@ -187,9 +185,10 @@ class MyInfoPageState extends State<MyInfoPage> {
       Navigator.pushNamed(context, "/notificationTest");
     } else if (title == "关于") {
       showAboutDialog(context);
-    } else if (title == "检查更新") {
-      OTAUpdate.checkUpdate();
     }
+//    else if (title == "检查更新") {
+//      OTAUpdate.checkUpdate();
+//    }
   }
 
   void showAboutDialog(BuildContext context) {
@@ -201,8 +200,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         height: 40.0
     );
     List<Widget> body = <Widget>[];
-    if (icon != null)
-      body.add(IconTheme(data: const IconThemeData(size: 48.0), child: icon));
+    if (icon != null) body.add(IconTheme(data: const IconThemeData(size: 48.0), child: icon));
     body.add(Expanded(
         child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -222,27 +220,27 @@ class MyInfoPageState extends State<MyInfoPage> {
       ),
       RichText(
           text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(text: "Developed By ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
-              TextSpan(
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    return CommonWebPage.jump(context, "https://blog.alexv525.com/", "Alex Vincent");
-                  },
-                  text: "Alex Vincent",
-                  style: TextStyle(color: Colors.lightBlue)
-              ),
-              TextSpan(text: " And ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
-              TextSpan(
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                      return CommonWebPage.jump(context, "https://135792468.xyz/", "Evsio0n");
-                    },
-                  text: "Evsio0n",
-                  style: TextStyle(color: Colors.lightBlue)
-              ),
-              TextSpan(text: ".", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
-            ]
+              children: <TextSpan>[
+                TextSpan(text: "Developed By ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
+                TextSpan(
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        return CommonWebPage.jump(context, "https://blog.alexv525.com/", "Alex Vincent");
+                      },
+                    text: "Alex Vincent",
+                    style: TextStyle(color: Colors.lightBlue)
+                ),
+                TextSpan(text: " And ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
+                TextSpan(
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        return CommonWebPage.jump(context, "https://135792468.xyz/", "Evsio0n");
+                      },
+                    text: "Evsio0n",
+                    style: TextStyle(color: Colors.lightBlue)
+                ),
+                TextSpan(text: ".", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
+              ]
           )
       )
     ];
@@ -254,7 +252,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             ),
             actions: <Widget>[
               FlatButton(
-                  child: Text(MaterialLocalizations.of(context).closeButtonLabel, style: TextStyle(color:ThemeUtils.currentColorTheme)),
+                  child: Text("关闭", style: TextStyle(color:ThemeUtils.currentColorTheme)),
                   onPressed: () {
                     Navigator.pop(context);
                   }

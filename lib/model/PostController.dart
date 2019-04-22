@@ -11,6 +11,7 @@ import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
+import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
 class PostAPI {
   static getPostList(String postType, bool isFollowed, bool isMore, int lastValue, {additionAttrs}) async {
@@ -123,6 +124,12 @@ class PostController {
     @required this.lastValue,
     this.additionAttrs
   });
+
+  _PostListState _postListState;
+
+  Future reload({bool needLoader}) {
+    return _postListState._refreshData();
+  }
 }
 
 class PostList extends StatefulWidget {
@@ -135,6 +142,10 @@ class PostList extends StatefulWidget {
 
   @override
   State createState() => _PostListState();
+
+  PostList newController(_controller) {
+    return PostList(_controller);
+  }
 }
 
 class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
@@ -147,7 +158,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   bool _firstLoadComplete = false;
   bool _showLoading = true;
 
-  var _itemList;
+  ListView _itemList;
 
   Widget _emptyChild;
   Widget _errorChild;
@@ -159,6 +170,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     ),
   );
 
+  List<int> _idList = [];
   List<Post> _postList = [];
 
   @override
@@ -167,6 +179,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   @override
   void initState() {
     super.initState();
+    widget._postController._postListState = this;
     Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
       if (
         this.mounted
@@ -174,6 +187,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
         ((event.tabIndex == 0 && widget._postController.postType == "square") || (event.type == "Post"))
       ) {
         _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
+        _refreshData(needLoader: true);
       }
     });
     Constants.eventBus.on<PostChangeEvent>().listen((event) {
@@ -236,11 +250,9 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
         _itemList = ListView.builder(
           padding: EdgeInsets.symmetric(vertical: 4.0),
           itemBuilder: (context, index) {
-            if (index == _postList.length - 1) {
-              _loadData();
-            }
             if (index == _postList.length) {
-              if (widget._postController.isMore) {
+              if (this._canLoadMore) {
+                _loadData();
                 return Container(
                     height: 40.0,
                     child: Row(
@@ -261,7 +273,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                     )
                 );
               } else {
-                return Container(height: 0);
+                return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
               }
             } else {
               return PostCard(_postList[index]);
@@ -309,6 +321,11 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       List _topics = jsonDecode(result)['topics'];
       for (var postData in _topics) {
         postList.add(PostAPI.createPost(postData['topic']));
+        if (widget._postController.postType == "mention") {
+          _idList.add(int.parse(postData['id']));
+        } else {
+          _idList.add(postData['id']);
+        }
       }
       _postList.addAll(postList);
 //      error = !result['success'];
@@ -318,20 +335,28 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
           _showLoading = false;
           _firstLoadComplete = true;
           _isLoading = false;
-          _canLoadMore = _topics.isNotEmpty;
-          _lastValue = _postList.isEmpty
+          _canLoadMore = _topics.length == 20;
+          _lastValue = _idList.isEmpty
               ? 0
-              : widget._postController.lastValue(_postList.last);
+              : widget._postController.lastValue(_idList.last);
         });
       }
     }
   }
 
-  Future<Null> _refreshData() async {
+  Future<Null> _refreshData({bool needLoader}) async {
     if (!_isLoading) {
+      LoadingDialogController _controller;
+      if (needLoader != null && needLoader) {
+        _controller = new LoadingDialogController();
+        showDialog<Null>(
+            context: context,
+            builder: (BuildContext context) => LoadingDialog("正在更新动态", _controller)
+        );
+      }
+
       _isLoading = true;
       _postList.clear();
-
       _lastValue = 0;
 
       var result = await PostAPI.getPostList(
@@ -342,13 +367,29 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
           additionAttrs: widget._postController.additionAttrs
       );
       List<Post> postList = [];
+      List<int> idList = [];
       List _topics = jsonDecode(result)['topics'];
       for (var postData in _topics) {
         if (postData['topic'] != null && postData != "") {
           postList.add(PostAPI.createPost(postData['topic']));
+          if (widget._postController.postType == "mention" || widget._postController.postType == "search") {
+            idList.add(int.parse(postData['id']));
+          } else {
+            idList.add(postData['id']);
+          }
         }
       }
-      _postList.addAll(postList);
+      _postList = postList;
+      if (needLoader != null && needLoader) {
+        if (idList.toString() == _idList.toString()) {
+          _controller.changeState("success", "无更新内容");
+        } else {
+          _controller.changeState("dismiss", "正在更新动态");
+          _idList = idList;
+        }
+      } else {
+        _idList = idList;
+      }
 //      error = !result['success'] ?? false;
 
       if (mounted) {
@@ -356,10 +397,10 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
           _showLoading = false;
           _firstLoadComplete = true;
           _isLoading = false;
-          _canLoadMore = _topics.isNotEmpty;
-          _lastValue = _postList.isEmpty
+          _canLoadMore = _topics.length == 20;
+          _lastValue = _idList.isEmpty
               ? 0
-              : widget._postController.lastValue(_postList.last);
+              : widget._postController.lastValue(_idList.last);
 
         });
       }
@@ -367,10 +408,20 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   }
 }
 
+
+class ForwardInPostController {
+  _ForwardInPostListState _forwardInPostListState;
+
+  void reload() {
+    _forwardInPostListState?._refreshData();
+  }
+}
+
 class ForwardInPostList extends StatefulWidget {
   final Post post;
+  final ForwardInPostController forwardInPostController;
 
-  ForwardInPostList(this.post, {Key key}) : super(key: key);
+  ForwardInPostList(this.post, this.forwardInPostController, {Key key}) : super(key: key);
 
   @override
   State createState() => _ForwardInPostListState();
@@ -384,6 +435,15 @@ class _ForwardInPostListState extends State<ForwardInPostList> {
   @override
   void initState() {
     super.initState();
+    widget.forwardInPostController._forwardInPostListState = this;
+    _getForwardList();
+  }
+
+  void _refreshData() {
+    setState(() {
+      isLoading = true;
+      _posts = [];
+    });
     _getForwardList();
   }
 
@@ -396,10 +456,19 @@ class _ForwardInPostListState extends State<ForwardInPostList> {
     });
     if (this.mounted) {
       setState(() {
+        Constants.eventBus.fire(new ForwardInPostUpdatedEvent(widget.post.id, posts.length));
         isLoading = false;
         _posts = posts;
       });
     }
+  }
+
+  Widget forwardList() {
+    return isLoading
+        ? Center(child: CircularProgressIndicator(
+        valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
+    ))
+        : ForwardCardInPost(widget.post, _posts);
   }
 
   @override
@@ -410,11 +479,7 @@ class _ForwardInPostListState extends State<ForwardInPostList> {
         padding: isLoading
             ? EdgeInsets.symmetric(vertical: 42)
             : EdgeInsets.zero,
-        child: isLoading
-            ? Center(child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
-        ))
-            : ForwardCardInPost(widget.post, _posts)
+        child: forwardList()
     );
   }
 

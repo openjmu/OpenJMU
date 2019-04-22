@@ -64,7 +64,9 @@ class LoadingDialogState extends State<LoadingDialog> {
   @override
   Widget build(BuildContext context) {
     if (this.type != null && this.type != "loading") {
-        timer = _timer(() { Navigator.pop(context); });
+      timer = _timer(() { Navigator.pop(context); });
+    } else if (this.type == "dismiss") {
+      Navigator.pop(context);
     }
     return WillPopScope(
       onWillPop: () async => false,
@@ -134,6 +136,15 @@ class LoadingDialogController {
         break;
       case 'loading':
         _loadingDialogState.updateContent("loading",
+            CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(
+                  ThemeUtils.currentColorTheme),
+            ),
+            text
+        );
+        break;
+      case 'dismiss':
+        _loadingDialogState.updateContent("dismiss",
             CircularProgressIndicator(
               valueColor: AlwaysStoppedAnimation<Color>(
                   ThemeUtils.currentColorTheme),

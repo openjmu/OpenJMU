@@ -7,8 +7,6 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:extended_image/extended_image.dart';
 
-import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/model/PraiseController.dart';
@@ -20,7 +18,9 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
-import 'package:OpenJMU/widgets/LoadingDialog.dart';
+import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
+import 'package:OpenJMU/widgets/dialogs/ForwardPositioned.dart';
+import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 
 class PostCard extends StatefulWidget {
   final Post post;
@@ -406,38 +406,7 @@ class _PostCardState extends State<PostCard> {
   void confirmDelete() {
     showPlatformDialog(
         context: context,
-        builder: (_) => PlatformAlertDialog(
-          title: Text("删除动态"),
-          content: Text("是否确认删除该动态？"),
-          actions: <Widget>[
-            FlatButton(
-                child: Text('确认', style: TextStyle(fontWeight: FontWeight.bold)),
-                onPressed: () {
-                  Navigator.pop(_);
-                  LoadingDialogController _loadingDialogController = new LoadingDialogController();
-                  showDialog(
-                    context: _,
-                    builder: (BuildContext dialogContext) => LoadingDialog("正在删除动态", _loadingDialogController)
-                  );
-                  PostAPI.deletePost(widget.post.id).then((response) {
-                    _loadingDialogController.changeState("success", "动态删除成功");
-                    Constants.eventBus.fire(new PostDeletedEvent(widget.post.id));
-                  }).catchError((e) {
-                    print(e.toString());
-                    print(e.response?.toString());
-                    _loadingDialogController.changeState("failed", "动态删除失败");
-                  });
-                }
-            ),
-            FlatButton(
-              color: ThemeUtils.currentColorTheme,
-              child: Text('取消', style: TextStyle(color: Colors.white)),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        )
+        builder: (_) => DeleteDialog("动态", post: widget.post)
     );
   }
 
