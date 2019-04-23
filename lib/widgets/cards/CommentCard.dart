@@ -232,7 +232,7 @@ class CommentCard extends StatelessWidget {
                     padding: EdgeInsets.all(6.0),
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.of(context).push(platformPageRoute(builder: (context) => PostDetailPage(this.comment.post)));
+                      Navigator.of(context).push(platformPageRoute(builder: (context) => PostDetailPage(this.comment.post, beforeContext: context)));
                     },
                   ),
                   Text("查看动态", style: TextStyle(fontSize: 16.0, color: Colors.white))

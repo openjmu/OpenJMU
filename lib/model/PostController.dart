@@ -150,6 +150,7 @@ class PostList extends StatefulWidget {
 
 class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
   final ScrollController _scrollController = new ScrollController();
+  LoadingDialogController _controller = new LoadingDialogController();
   Color currentColorTheme = ThemeUtils.currentColorTheme;
 
   num _lastValue = 0;
@@ -189,6 +190,10 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
         ((event.tabIndex == 0 && widget._postController.postType == "square") || (event.type == "Post"))
       ) {
         _scrollController.animateTo(0.0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
+        showDialog<Null>(
+            context: context,
+            builder: (BuildContext context) => LoadingDialog("正在更新动态", _controller)
+        );
         _refreshTimer = Timer(Duration(milliseconds: 500), () {
           _refreshData(needLoader: true);
         });
@@ -357,14 +362,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
 
   Future<Null> _refreshData({bool needLoader}) async {
     if (!_isLoading) {
-      LoadingDialogController _controller;
-      if (needLoader != null && needLoader) {
-        _controller = new LoadingDialogController();
-        showDialog<Null>(
-            context: context,
-            builder: (BuildContext context) => LoadingDialog("正在更新动态", _controller)
-        );
-      }
 
       _isLoading = true;
       _postList.clear();

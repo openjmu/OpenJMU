@@ -21,12 +21,14 @@ class Api {
   static final String userBasicInfo = oap99Host + "/user/info";
   static final String userAvatar = oap99Host + "/face";
   static final String userAvatarInSecure = oap99HostInSecure + "/face";
+  static final String userTags = oa99Host + "/v2/api/usertag/getusertags";
   static final String userFans = wbHost + "/relation_api/fans/uid/";
   static final String userIdols = wbHost + "/relation_api/idols/uid/";
   static final String userFansAndIdols = wbHost + "/user_api/tally/uid/";
   static final String userRequestFollow = wbHost + "/relation_api/idol/idol_uid/";
   static final String userFollowAdd = oap99Host + "/friend/followadd/";
   static final String userFollowDel = oap99Host + "/friend/followdel/";
+  static final String userSignature = oa99Host + "/v2/api/user/signature_edit";
 
   /// 应用中心
   static final String webAppLists = oap99Host + "/app/unitmenu?cfg=1";

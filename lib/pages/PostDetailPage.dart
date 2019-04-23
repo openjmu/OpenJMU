@@ -16,7 +16,8 @@ import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 
 class PostDetailPage extends StatefulWidget {
   final Post post;
-  PostDetailPage(this.post, {Key key}) : super(key: key);
+  final BuildContext beforeContext;
+  PostDetailPage(this.post, {this.beforeContext, Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -67,7 +68,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       isLike = widget.post.isLike;
     });
     _requestData();
-
+    setCurrentTabActive(widget.beforeContext, 1, "comments");
     PostAPI.glancePost(widget.post.id);
     _post = new PostCard(widget.post, isDetail: true);
 

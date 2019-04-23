@@ -35,6 +35,10 @@ class UserUtils {
     );
   }
 
+  static UserTag createUserTag(tagData) {
+    return new UserTag(tagData['id'], tagData['tagname']);
+  }
+
   static Future getUserInfo({int uid}) async {
     if (uid == null) {
       return currentUser;
@@ -44,6 +48,13 @@ class UserUtils {
         data: {'uid': uid}
       );
     }
+  }
+
+  static Future getTags(int uid) {
+    return NetUtils.getWithCookieAndHeaderSet(
+        Api.userTags,
+        data: {"uid" : uid}
+    );
   }
 
   static Future getFans(int uid) {
@@ -80,13 +91,9 @@ class UserUtils {
     NetUtils.postWithCookieAndHeaderSet(
         "${Api.userRequestFollow}$uid"
     ).then((response) {
-      Map<String, dynamic> data = {
-        "fid": uid,
-        "tagid": 0
-      };
       return NetUtils.postWithCookieAndHeaderSet(
           Api.userFollowAdd,
-          data: data
+          data: {"fid": uid, "tagid": 0}
       );
     }).catchError((e) {
       print(e.toString());
@@ -98,16 +105,20 @@ class UserUtils {
     NetUtils.deleteWithCookieAndHeaderSet(
         "${Api.userRequestFollow}$uid"
     ).then((response) {
-      Map<String, dynamic> data = {
-        "fid": uid
-      };
       return NetUtils.postWithCookieAndHeaderSet(
           Api.userFollowDel,
-          data: data
+          data: {"fid": uid}
       );
     }).catchError((e) {
       print(e.toString());
     });
+  }
+
+  static Future setSignature(content) async {
+    return NetUtils.postWithCookieAndHeaderSet(
+      Api.userSignature,
+      data: {"signature": content}
+    );
   }
 
 }

@@ -218,7 +218,7 @@ class PraiseCard extends StatelessWidget {
     return new GestureDetector(
       onTap: () {
         Navigator.of(context).push(platformPageRoute(builder: (context) {
-          return PostDetailPage(_post);
+          return PostDetailPage(_post, beforeContext: context);
         }));
       },
       child: Container(

@@ -7,6 +7,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/widgets/AppBar.dart'
@@ -15,6 +17,7 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/widgets/dialogs/EditSignatureDialog.dart';
 
 class UserPage extends StatefulWidget {
   final int uid;
@@ -38,6 +41,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
 
   SliverAppBar _appBar;
   Widget _infoNextNameButton;
+  List<UserTag> _tags = [];
   var _fansCount = '-';
   var _followingCount = '-';
 
@@ -46,6 +50,8 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
   bool isError = false, isLoading = false, isReloading = false;
 
   PostController postController;
+
+  Timer updateTimer;
 
   @override
   void initState() {
@@ -61,6 +67,17 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
       );
       _post = PostList(postController, needRefreshIndicator: false);
     }
+    Constants.eventBus.on<SignatureUpdatedEvent>().listen((event) {
+      updateTimer = Timer(Duration(milliseconds: 2400), () {
+        _fetchUserInformation(UserUtils.currentUser.uid);
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    updateTimer?.cancel();
   }
 
   @override
@@ -151,6 +168,15 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
       }
     }
 
+    var tags = jsonDecode(await UserUtils.getTags(uid));
+    List<UserTag> _userTags = [];
+    tags['data'].forEach((tag) {
+      _userTags.add(UserUtils.createUserTag(tag));
+    });
+    setState(() {
+      _tags = _userTags;
+    });
+
     if (_user == null) {
       if (mounted) {
         setState(() {
@@ -205,13 +231,27 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
   }
 
   void _updateAppBar() {
+    List<Widget> chips = [];
+    if (_tags?.length != 0) {
+      for (var i=0; i < _tags.length; i++) {
+        chips.add(Container(
+          margin: EdgeInsets.symmetric(horizontal: 4.0),
+          child: Chip(
+            label: Text(_tags[i].name, style: new TextStyle(fontSize: 16.0)),
+            avatar: Icon(Icons.label),
+            padding: EdgeInsets.only(left: 4.0),
+            labelPadding: EdgeInsets.fromLTRB(2.0, 0.0, 10.0, 0.0),
+          )
+        ));
+      }
+    }
     if (mounted) {
       setState(() {
         _appBar = SliverAppBar(
           centerTitle: true,
           floating: false,
           pinned: true,
-          expandedHeight: 187,
+          expandedHeight: _tags?.length != 0 ? 217 : 187,
           flexibleSpace: FlexibleSpaceBarWithUserInfo(
             titleFontSize: 14,
             paddingStart: 100,
@@ -266,6 +306,18 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
               fit: BoxFit.fitWidth,
               width: MediaQuery.of(context).size.width,
             ),
+            tags: _tags?.length != 0
+              ? Container(
+              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: chips,
+                ),
+              )
+            )
+            : null,
             bottomInfo: Container(
               color: Theme.of(context).cardColor,
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
@@ -279,7 +331,10 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                   ),
                   GestureDetector(
                     onTap: () {
-
+                      showDialog<Null>(
+                        context: context,
+                        builder: (BuildContext context) => EditSignatureDialog(_user?.signature)
+                      );
                     },
                     child: Text("修改", style: TextStyle(color: Colors.grey))
                   )
@@ -295,6 +350,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                 onPressed: () {
                   isReloading = true;
                   _updateAppBar();
+                  _fetchUserInformation(UserUtils.currentUser.uid);
                   postController.reload(needLoader: true).then((response) {
                     isReloading = false;
                     _updateAppBar();

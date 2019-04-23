@@ -120,7 +120,7 @@ class LoadingDialogController {
       case 'success':
         _loadingDialogState.updateContent("success",
             Icon(
-                Icons.check_circle, color: Colors.lightGreenAccent, size: 50.0),
+                Icons.check_circle, color: Colors.green, size: 50.0),
             text
         );
         break;

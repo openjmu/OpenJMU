@@ -21,7 +21,7 @@ import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/pages/PostSquareListPage.dart';
 import 'package:OpenJMU/pages/AppCenterPage.dart';
 import 'package:OpenJMU/pages/DiscoveryPage.dart';
-import 'package:OpenJMU/pages/publish/PublishPostPage.dart';
+import 'package:OpenJMU/pages/PublishPostPage.dart';
 import 'package:OpenJMU/pages/MyInfoPage.dart';
 import 'package:OpenJMU/pages/NotificationPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
@@ -129,6 +129,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   }
 
   void _selectedTab(int index) {
+    if (_tabIndex == index && index == 0) {
+      Constants.eventBus.fire(new ScrollToTopEvent(tabIndex: _tabIndex, type: "MainPage"));
+    }
     setState(() {
       _tabIndex = index;
     });

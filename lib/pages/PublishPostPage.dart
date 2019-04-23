@@ -12,6 +12,8 @@ import 'package:dragablegridview_flutter/dragablegridview_flutter.dart';
 import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
 
 import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/EmojiUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
@@ -41,9 +43,6 @@ class PublishPostPageState extends State<PublishPostPage> {
   int maxLength = 300;
 
   bool emoticonPadActive = false;
-  double emoticonPadHeight = 178;
-  List<String> emoticonNames = [];
-  List<String> emoticonPaths = [];
 
   String msg = "";
   String sid = UserUtils.currentUser.sid;
@@ -64,9 +63,10 @@ class PublishPostPageState extends State<PublishPostPage> {
   @override
   void initState() {
     super.initState();
-    EmojiUtils.instance.emojiMap.forEach((name, path) {
-      emoticonNames.add(name);
-      emoticonPaths.add(path);
+    Constants.eventBus.on<AddEmoticonEvent>().listen((event) {
+      if (mounted && event.route == "publish") {
+        EmojiUtils.addEmoticon(event.emoticon, _controller);
+      }
     });
   }
 
@@ -75,6 +75,22 @@ class PublishPostPageState extends State<PublishPostPage> {
     super.dispose();
     _timer?.cancel();
     _controller?.dispose();
+  }
+
+  void addTopic() {
+    int currentPosition = _controller.selection.baseOffset;
+    String result;
+    if (_controller.text.length > 0) {
+      String leftText = _controller.text.substring(0, currentPosition);
+      String rightText = _controller.text.substring(currentPosition, _controller.text.length);
+      result = "$leftText##$rightText";
+    } else {
+      result = "##";
+    }
+    _controller.text = result;
+    _controller.selection = TextSelection.fromPosition(
+        TextPosition(offset: currentPosition + 1)
+    );
   }
 
   Future<void> loadAssets() async {
@@ -106,7 +122,6 @@ class PublishPostPageState extends State<PublishPostPage> {
       imagesBin.addAll(_bin);
       imagesLength = imagesBin.length;
     });
-    _editSwitchController.itemBinUpdated();
   }
 
   Widget textField() {
@@ -144,6 +159,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                   currentLength = content.length;
                 });
               },
+              maxLines: null,
             )
         )
     );
@@ -187,7 +203,7 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   Widget _counter(context) {
     return Positioned(
-        bottom: MediaQuery.of(context).padding.bottom + 60.0 + (emoticonPadActive?emoticonPadHeight:0) ?? 60.0 + (emoticonPadActive?emoticonPadHeight:0),
+        bottom: MediaQuery.of(context).padding.bottom + 60.0 + (emoticonPadActive?EmotionPadState.emoticonPadHeight:0) ?? 60.0 + (emoticonPadActive?EmotionPadState.emoticonPadHeight:0),
         right: 0.0,
         child: Padding(
             padding: EdgeInsets.only(right: 11.0),
@@ -208,7 +224,7 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   Widget _toolbar(context) {
     return Positioned(
-        bottom: MediaQuery.of(context).padding.bottom + (emoticonPadActive?emoticonPadHeight:0) ?? (emoticonPadActive?emoticonPadHeight:0),
+        bottom: MediaQuery.of(context).padding.bottom + (emoticonPadActive?EmotionPadState.emoticonPadHeight:0) ?? (emoticonPadActive?EmotionPadState.emoticonPadHeight:0),
         left: 0.0,
         right: 0.0,
         child: Row(
@@ -216,7 +232,7 @@ class PublishPostPageState extends State<PublishPostPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
               IconButton(
-                  onPressed: null,
+                  onPressed: addTopic,
                   icon: poundIcon(context)
               ),
               IconButton(
@@ -254,40 +270,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         right: 0.0,
         child: Visibility(
             visible: emoticonPadActive,
-            child: Container(
-                height: emoticonPadHeight,
-                child: GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 8
-                    ),
-                    itemBuilder: (context, index) => Container(
-                        margin: EdgeInsets.all(4.0),
-                        child: IconButton(
-                            icon: Image.asset(
-                              emoticonPaths[index],
-                              fit: BoxFit.fill,
-                            ),
-                            onPressed: () {
-                              int currentPosition = _controller.selection.baseOffset;
-                              int offset = _controller.selection.extentOffset + emoticonNames[index].length;
-                              String result;
-                              if (_controller.text.length > 0) {
-                                String leftText = _controller.text.substring(0, currentPosition);
-                                String rightText = _controller.text.substring(currentPosition, _controller.text.length);
-                                result = "$leftText${emoticonNames[index]}$rightText";
-                              } else {
-                                result = "${emoticonNames[index]}";
-                              }
-                              _controller.text = result;
-                              _controller.selection = TextSelection.fromPosition(
-                                  TextPosition(offset: offset)
-                              );
-                            }
-                        )
-                    ),
-                    itemCount: emoticonPaths.length
-                )
-            )
+            child: EmotionPad("publish")
         )
     );
   }

@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/Events.dart';
+
 class EmojiUtils {
   final Map<String, String> _emojiMap = new Map<String, String>();
 
@@ -117,5 +122,74 @@ class EmojiUtils {
     /// 献舞
     /// 左太极
     /// 右太极
+  }
+
+  static void addEmoticon(String emoticon, TextEditingController controller) {
+    int currentPosition = controller.selection.extentOffset;
+    int offset = controller.selection.extentOffset + emoticon.length;
+    String result;
+    if (controller.text.length > 0) {
+      String leftText = controller.text.substring(0, currentPosition);
+      String rightText = controller.text.substring(currentPosition, controller.text.length);
+      result = "$leftText$emoticon$rightText";
+    } else {
+      result = "$emoticon";
+    }
+    controller.text = result;
+    controller.selection = TextSelection.fromPosition(
+        TextPosition(offset: offset)
+    );
+  }
+
+}
+
+
+class EmotionPad extends StatefulWidget {
+  final String route;
+  EmotionPad(this.route, {Key key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => EmotionPadState();
+}
+
+class EmotionPadState extends State<EmotionPad> {
+
+  static double emoticonPadHeight = 178;
+  static List<String> emoticonNames = [];
+  static List<String> emoticonPaths = [];
+
+  @override
+  void initState() {
+    super.initState();
+    EmojiUtils.instance.emojiMap.forEach((name, path) {
+      emoticonNames.add(name);
+      emoticonPaths.add(path);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        color: Theme.of(context).canvasColor,
+        height: emoticonPadHeight,
+        child: GridView.builder(
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 8
+            ),
+            itemBuilder: (context, index) => Container(
+                margin: EdgeInsets.all(4.0),
+                child: IconButton(
+                    icon: Image.asset(
+                      emoticonPaths[index],
+                      fit: BoxFit.fill,
+                    ),
+                    onPressed: () {
+                      Constants.eventBus.fire(new AddEmoticonEvent(emoticonNames[index], widget.route));
+                    }
+                )
+            ),
+            itemCount: emoticonPaths.length
+        )
+    );
   }
 }

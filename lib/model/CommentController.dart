@@ -180,6 +180,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
   );
 
   List<Comment> _commentList = [];
+  List<int> _idList = [];
 
   @override
   bool get wantKeepAlive => true;
@@ -303,9 +304,9 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
       List _topics = jsonDecode(result)['replylist'];
       for (var commentData in _topics) {
         commentList.add(CommentAPI.createComment(commentData['reply']));
+        _idList.add(commentData['id']);
       }
       _commentList.addAll(commentList);
-//      error = !result['success'];
 
       if (mounted) {
         setState(() {
@@ -313,9 +314,9 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _topics.length == 20;
-          _lastValue = _commentList.isEmpty
+          _lastValue = _idList.isEmpty
               ? 0
-              : widget._commentController.lastValue(_commentList.last);
+              : widget._commentController.lastValue(_idList.last);
         });
       }
     }
@@ -335,12 +336,14 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
           additionAttrs: widget._commentController.additionAttrs
       );
       List<Comment> commentList = [];
+      List<int> idList = [];
       List _topics = jsonDecode(result)['replylist'];
       for (var commentData in _topics) {
         commentList.add(CommentAPI.createComment(commentData['reply']));
+        idList.add(commentData['id']);
       }
       _commentList.addAll(commentList);
-//      error = !result['success'] ?? false;
+      _idList.addAll(idList);
 
       if (mounted) {
         setState(() {
@@ -348,9 +351,9 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _topics.length == 20;
-          _lastValue = _commentList.isEmpty
+          _lastValue = _idList.isEmpty
               ? 0
-              : widget._commentController.lastValue(_commentList.last);
+              : widget._commentController.lastValue(_idList.last);
 
         });
       }

@@ -1087,6 +1087,7 @@ class FlexibleSpaceBarWithUserInfo extends StatefulWidget {
       this.avatar,
       this.infoUnderNickname,
       this.infoNextNickname,
+      this.tags,
       this.bottomInfo,
       this.bottomSize = 0.0,
       this.avatarRadius = 48})
@@ -1105,6 +1106,7 @@ class FlexibleSpaceBarWithUserInfo extends StatefulWidget {
   final Widget infoUnderNickname;
   final Widget infoNextNickname;
   final double avatarRadius;
+  final Widget tags;
   final Widget bottomInfo;
   final double bottomSize;
 
@@ -1259,7 +1261,7 @@ class _FlexibleSpaceBarWithUserInfoState
         final double paddingXScaleValue =
             Tween<double>(begin: widget.paddingStart, end: 72).transform(t);
         final double paddingYScaleValue =
-            Tween<double>(begin: widget.paddingBottom + 37 + widget.bottomSize, end: 16 + widget.bottomSize).transform(t);
+            Tween<double>(begin: widget.paddingBottom + (widget.tags != null ? 80 : 58) + widget.bottomSize, end: 16 + widget.bottomSize).transform(t);
 
         final EdgeInsetsGeometry transformedPadding =
             EdgeInsetsDirectional.only(
@@ -1268,7 +1270,7 @@ class _FlexibleSpaceBarWithUserInfoState
         children.add(Positioned(
             left: 16.0,
             right: MediaQuery.of(context).size.width - 24 - widget.avatarRadius + 8,
-            bottom: 20 + 37.0 + widget.bottomSize,
+            bottom: (widget.tags != null ? 97 : 73) + widget.bottomSize,
             height: widget.avatarRadius,
             child: Opacity(
               opacity: outOpacity,
@@ -1279,14 +1281,21 @@ class _FlexibleSpaceBarWithUserInfoState
             )));
         children.add(Positioned(
             left: widget.paddingStart,
-            bottom: 20 + 37.0 + widget.bottomSize,
+            bottom: (widget.tags != null ? 97 : 73) + widget.bottomSize,
             child:
                 Opacity(opacity: outOpacity, child: widget.infoUnderNickname)));
         children.add(Positioned(
             right: 16,
-            bottom: 20 + 37.0 + widget.bottomSize + 16,
+            bottom: (widget.tags != null ? 97 : 73) + widget.bottomSize + 16,
             child:
                 Opacity(opacity: outOpacity, child: widget.infoNextNickname)));
+        if (widget.tags != null) {
+          children.add(Positioned(
+              right: 0,
+              left: 0,
+              bottom: widget.bottomSize + 42,
+              child: Opacity(opacity: outOpacity, child: widget.tags)));
+        }
         children.add(Positioned(
             right: 0,
             left: 0,

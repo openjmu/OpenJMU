@@ -6,8 +6,8 @@ import 'package:OpenJMU/pages/LoginPage.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/ChangeThemePage.dart';
-import 'package:OpenJMU/pages/publish/PublishPostPage.dart';
-import 'package:OpenJMU/pages/NotificationPage.dart';
+import 'package:OpenJMU/pages/PublishPostPage.dart';
+//import 'package:OpenJMU/pages/NotificationPage.dart';
 import 'package:OpenJMU/pages/NotificationTest.dart';
 import 'package:OpenJMU/pages/Test.dart';
 

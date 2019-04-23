@@ -176,7 +176,7 @@ class _PostCardState extends State<PostCard> {
       return new GestureDetector(
         onTap: () {
           Navigator.of(context).push(platformPageRoute(builder: (context) {
-            return PostDetailPage(_post);
+            return PostDetailPage(_post, beforeContext: context);
           }));
         },
         child: new Container(
@@ -434,7 +434,7 @@ class _PostCardState extends State<PostCard> {
           return null;
         } else {
           Navigator.of(context).push(platformPageRoute(builder: (context) {
-            return PostDetailPage(widget.post);
+            return PostDetailPage(widget.post, beforeContext: context);
           }));
         }
       },

@@ -49,6 +49,17 @@ class PraiseInPostUpdatedEvent {
   }
 }
 
+class SignatureUpdatedEvent {}
+
+class AddEmoticonEvent {
+  String emoticon;
+  String route;
+  AddEmoticonEvent(String emoticon, String route) {
+    this.emoticon = emoticon;
+    this.route = route;
+  }
+}
+
 class HasUpdateEvent {
   Map<String, dynamic> response;
   HasUpdateEvent(Map<String, dynamic> response) {
