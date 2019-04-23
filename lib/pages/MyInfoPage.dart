@@ -155,20 +155,26 @@ class MyInfoPageState extends State<MyInfoPage> {
             actions: <Widget>[
               PlatformButton(
                 android: (BuildContext context) => MaterialRaisedButtonData(
-                  color: ThemeUtils.currentColorTheme,
+                  color: Theme.of(context).dialogBackgroundColor,
                   elevation: 0,
+                  child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme)),
                 ),
-                child: Text('确认', style: TextStyle(color: Colors.white)),
+                ios: (BuildContext context) => CupertinoButtonData(
+                  child: Text("确认"),
+                ),
                 onPressed: () {
                   DataUtils.doLogout();
                 },
               ),
               PlatformButton(
                 android: (BuildContext context) => MaterialRaisedButtonData(
-                  color: Theme.of(context).dialogBackgroundColor,
+                  color: ThemeUtils.currentColorTheme,
                   elevation: 0,
+                  child: Text('取消', style: TextStyle(color: Colors.white)),
                 ),
-                child: Text('取消', style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                ios: (BuildContext context) => CupertinoButtonData(
+                  child: Text("取消", style: TextStyle(color: ThemeUtils.currentColorTheme))
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },

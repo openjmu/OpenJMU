@@ -42,7 +42,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
   void dispose() {
     super.dispose();
     rebuild.close();
-    _animationController.dispose();
+    _animationController?.dispose();
 //    clearGestureDetailsCache();
   }
 
@@ -84,19 +84,6 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
     return new WillPopScope(
         onWillPop: () => _pop(context, false),
         child: Scaffold(
-//            appBar: AppBar(
-//                backgroundColor: Colors.black,
-//                title: ViewAppBar(widget.pics, currentIndex, rebuild),
-//                centerTitle: true,
-//                actions: <Widget>[
-//                  IconButton(
-//                    icon: Icon(Icons.save, color: Colors.white),
-//                    onPressed: () {
-//                      _downloadImage(widget.pics[currentIndex].imageUrl);
-//                    },
-//                  )
-//                ]
-//            ),
             backgroundColor: Colors.black,
             body: Column(
               children: <Widget>[
@@ -123,8 +110,9 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                                     begin = 1.0;
                                     end = state.gestureDetails.totalScale.toDouble();
                                   }
+                                  _animation.removeListener(doubleTapListener);
                                   _animation = new Tween(begin: begin, end: end).animate(_curveAnimation)
-                                    ..removeListener(doubleTapListener);
+                                    ..addListener(doubleTapListener);
                                   setState(() {
                                     doubleTapListener = () {
                                       state.handleDoubleTap(
@@ -142,6 +130,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                                 },
                                 gestureConfig: GestureConfig(
                                   animationMinScale: 0.8,
+                                  animationMaxScale: 3.4,
                                   cacheGesture: false,
                                   inPageView: true,
                                   initialScale: 1.0,
