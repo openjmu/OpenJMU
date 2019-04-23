@@ -40,8 +40,8 @@ class SplashState extends State<SplashPage> {
 
   @override
   void dispose() {
-    timer?.cancel();
     super.dispose();
+    timer?.cancel();
   }
 
   void navigate() {

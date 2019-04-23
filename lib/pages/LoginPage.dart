@@ -36,11 +36,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   int last = 0;
   Future<bool> doubleBackExit() {
     int now = DateTime.now().millisecondsSinceEpoch;

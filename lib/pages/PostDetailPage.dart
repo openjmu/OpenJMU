@@ -107,9 +107,9 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   @override
   void dispose() {
+    super.dispose();
     _post = null;
     deleteTimer?.cancel();
-    super.dispose();
   }
 
   void _requestData() {

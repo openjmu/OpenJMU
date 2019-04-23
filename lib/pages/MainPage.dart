@@ -124,8 +124,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   @override
   void dispose() {
-    notificationTimer != null ? notificationTimer.cancel() : null;
     super.dispose();
+    notificationTimer?.cancel();
   }
 
   void _selectedTab(int index) {

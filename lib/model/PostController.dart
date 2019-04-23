@@ -173,6 +173,8 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   List<int> _idList = [];
   List<Post> _postList = [];
 
+  Timer _refreshTimer;
+
   @override
   bool get wantKeepAlive => true;
 
@@ -186,8 +188,10 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
           &&
         ((event.tabIndex == 0 && widget._postController.postType == "square") || (event.type == "Post"))
       ) {
-        _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
-        _refreshData(needLoader: true);
+        _scrollController.animateTo(0.0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
+        _refreshTimer = Timer(Duration(milliseconds: 500), () {
+          _refreshData(needLoader: true);
+        });
       }
     });
     Constants.eventBus.on<PostChangeEvent>().listen((event) {
@@ -243,6 +247,12 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _refreshTimer?.cancel();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     if (!_showLoading) {
@@ -275,8 +285,10 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
               } else {
                 return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
               }
-            } else {
+            } else if (index < _postList.length) {
               return PostCard(_postList[index]);
+            } else {
+              return Container();
             }
           },
           itemCount: _postList.length + 1,
@@ -328,7 +340,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
         }
       }
       _postList.addAll(postList);
-//      error = !result['success'];
 
       if (mounted) {
         setState(() {
@@ -390,7 +401,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       } else {
         _idList = idList;
       }
-//      error = !result['success'] ?? false;
 
       if (mounted) {
         setState(() {
@@ -401,7 +411,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
           _lastValue = _idList.isEmpty
               ? 0
               : widget._postController.lastValue(_idList.last);
-
         });
       }
     }

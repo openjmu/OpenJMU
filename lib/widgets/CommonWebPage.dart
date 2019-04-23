@@ -86,6 +86,9 @@ class CommonWebPageState extends State<CommonWebPage> {
   @override
   void dispose() {
     super.dispose();
+    flutterWebViewPlugin?.hide();
+    flutterWebViewPlugin?.close();
+    flutterWebViewPlugin?.dispose();
   }
 
   Widget refreshIndicator = new Container(

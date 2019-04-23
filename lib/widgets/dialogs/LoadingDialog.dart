@@ -33,8 +33,8 @@ class LoadingDialogState extends State<LoadingDialog> {
 
   @override
   void dispose() {
-    timer?.cancel();
     super.dispose();
+    timer?.cancel();
   }
 
   void updateContent(String type, Widget icon, String text) {

@@ -502,9 +502,9 @@ class _FloatingAppBarState extends State<_FloatingAppBar> {
 
   @override
   void dispose() {
+    super.dispose();
     if (_position != null)
       _position.isScrollingNotifier.removeListener(_isScrollingListener);
-    super.dispose();
   }
 
   RenderSliverFloatingPersistentHeader _headerRenderer() {

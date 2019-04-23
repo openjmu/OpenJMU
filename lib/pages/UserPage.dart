@@ -64,11 +64,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
   }
 
   @override
-  void dispose() {
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     if (!isError) {
       return Scaffold(

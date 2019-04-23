@@ -35,8 +35,8 @@ class SlideViewState extends State<SlideView> with SingleTickerProviderStateMixi
 
   @override
   void dispose() {
-    tabController.dispose();
     super.dispose();
+    tabController.dispose();
   }
 
   Widget generateCard() {

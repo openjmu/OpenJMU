@@ -27,6 +27,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
   AnimationController _animationController;
   Animation _curveAnimation;
   Animation<double> _animation;
+  Function doubleTapListener;
 
   @override
   void initState() {
@@ -39,10 +40,10 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
 
   @override
   void dispose() {
+    super.dispose();
     rebuild.close();
     _animationController.dispose();
 //    clearGestureDetailsCache();
-    super.dispose();
   }
 
   Future<void> _downloadImage(url, {AndroidDestinationType destination}) async {
@@ -114,24 +115,25 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                                 mode: ExtendedImageMode.Gesture,
                                 onDoubleTap: (ExtendedImageGestureState state) {
                                   double begin, end;
-                                  void listener() {
-                                    state.gestureDetails = GestureDetails(
-                                        offset: Offset.zero,
-                                        totalScale: _animation.value
-                                    );
-                                  }
+                                  var pointerDownPosition = state.pointerDownPosition;
                                   if (state.gestureDetails.totalScale == 1.0) {
                                     begin = state.gestureDetails.totalScale.toDouble();
-                                    end = 2.0;
-//                                    setScale(state.gestureDetails.totalScale, 2.0);
+                                    end = 3.0;
                                   } else {
                                     begin = 1.0;
                                     end = state.gestureDetails.totalScale.toDouble();
-//                                    setScale(state.gestureDetails.totalScale, 1.0);
                                   }
                                   _animation = new Tween(begin: begin, end: end).animate(_curveAnimation)
-                                    ..removeListener(listener)
-                                    ..addListener(() {listener();});
+                                    ..removeListener(doubleTapListener);
+                                  setState(() {
+                                    doubleTapListener = () {
+                                      state.handleDoubleTap(
+                                          scale: _animation.value,
+                                          doubleTapPosition: pointerDownPosition
+                                      );
+                                    };
+                                  });
+                                  _animation.addListener(doubleTapListener);
                                   if (state.gestureDetails.totalScale == 1.0) {
                                     _animationController.forward();
                                   } else {
@@ -144,6 +146,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                                   inPageView: true,
                                   initialScale: 1.0,
                                   minScale: 1.0,
+                                  maxScale: 3.0,
                                 ),
                               ),
                               padding: EdgeInsets.all(5.0),
