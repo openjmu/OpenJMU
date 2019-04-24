@@ -33,10 +33,6 @@ class MyInfoPageState extends State<MyInfoPage> {
   bool isLogin = false;
   bool isDark = false;
 
-  void changeBrightness(bool isDark) {
-    Constants.eventBus.fire(new ChangeBrightnessEvent(isDark));
-  }
-
   @override
   void initState() {
     super.initState();

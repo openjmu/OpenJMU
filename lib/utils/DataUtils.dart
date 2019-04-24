@@ -304,7 +304,9 @@ class DataUtils {
   // 重置主题配置
   static resetTheme() async {
     setColorTheme(0);
+    setBrightnessDark(false);
     ThemeUtils.currentColorTheme = ThemeUtils.defaultColor;
+    Constants.eventBus.fire(new ChangeBrightnessEvent(false));
     Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.defaultColor));
   }
 

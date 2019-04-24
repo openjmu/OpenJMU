@@ -89,7 +89,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       }
     });
     Constants.eventBus.on<LogoutEvent>().listen((event) {
-      notificationTimer != null ? notificationTimer.cancel() : null;
+      notificationTimer?.cancel();
       Navigator.of(context).pushReplacementNamed("/login");
     });
 //    Constants.eventBus.on<HasUpdateEvent>().listen((event) {
@@ -173,8 +173,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
+    super.build(context);
     return mainPage(context);
   }
 

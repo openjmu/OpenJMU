@@ -172,8 +172,9 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
     _refreshData();
   }
 
-  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
+    super.build(context);
     if (!_showLoading) {
       if (_firstLoadComplete) {
         _itemList = ListView.builder(

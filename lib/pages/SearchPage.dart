@@ -3,7 +3,6 @@ import 'dart:async';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
