@@ -183,8 +183,8 @@ class DataUtils {
   }
 
   static setUserBasicInfo(data) {
-    UserUtils.currentUser.unitId = data['unitid'];
-    UserUtils.currentUser.workId = int.parse(data['workid']);
+    UserUtils.currentUser.unitId = data['unitid'] is String ? int.parse(data['unitid']) : data['unitid'];
+    UserUtils.currentUser.workId = data['workid'] is String ? int.parse(data['workid']) : data['workid'];
     UserUtils.currentUser.name = data['username'] ?? data['uid'].toString();
     UserUtils.currentUser.signature = data['signature'];
   }
