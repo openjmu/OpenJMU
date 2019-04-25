@@ -68,7 +68,7 @@ class CommentAPI {
     bool replyExist = itemData['to_reply']['exists'] == 1 ? true : false;
     bool topicExist = itemData['to_topic']['exists'] == 1 ? true : false;
     Map<String, dynamic> replyData = itemData['to_reply']['reply'];
-    Map<String, dynamic> topicData = itemData['to_reply']['topic'];
+    Map<String, dynamic> topicData = itemData['to_topic']['topic'];
     Comment _comment = new Comment(
       itemData['rid'] is String ? int.parse(itemData['rid']) : itemData['rid'],
       itemData['user']['uid'] is String ? int.parse(itemData['user']['uid']) : itemData['user']['uid'],

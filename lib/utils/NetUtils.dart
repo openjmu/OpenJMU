@@ -30,14 +30,6 @@ class NetUtils {
     return response.toString();
   }
 
-  static Future<Response> getTemp(String url, {data}) async {
-    Response response = await dio.get(
-        url,
-        queryParameters: data
-    );
-    return response;
-  }
-
   static Future<String> getWithHeaderSet(String url, {data}) async {
     Response response = await dio.get(
         url,
