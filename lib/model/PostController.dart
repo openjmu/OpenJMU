@@ -222,6 +222,15 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
         });
       }
     });
+    Constants.eventBus.on<PostDeletedEvent>().listen((event) {
+      print("PostDeleted: ${event.postId} / ${event.page} / ${event.index}");
+      if (mounted && (event.page == "user") && event.index != null) {
+        setState(() {
+          _idList.removeAt(event.index);
+          _postList.removeAt(event.index);
+        });
+      }
+    });
 
     _emptyChild = GestureDetector(
       onTap: () {
@@ -291,7 +300,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                 return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
               }
             } else if (index < _postList.length) {
-              return PostCard(_postList[index]);
+              return PostCard(_postList[index], fromPage: widget._postController.postType, index: index);
             } else {
               return Container();
             }

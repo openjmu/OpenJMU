@@ -227,8 +227,9 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
     _refreshData();
   }
 
-  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
+    super.build(context);
     if (!_showLoading) {
       if (_firstLoadComplete) {
         _itemList = ListView.builder(

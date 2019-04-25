@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io';
-import 'dart:async';
 import 'dart:core';
-import 'package:dio/dio.dart';
-import 'package:path/path.dart';
 
 class DiscoveryPage extends StatefulWidget {
   @override

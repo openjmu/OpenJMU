@@ -88,12 +88,13 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                     Container(
                       padding: EdgeInsets.all(20.0),
                       child: TextField(
-                          style: TextStyle(
-                              fontSize: 16.0
-                          ),
-                          controller: _textEditingController,
-                          maxLength: 127,
-                          maxLines: null,
+                        autofocus: true,
+                        style: TextStyle(
+                            fontSize: 16.0
+                        ),
+                        controller: _textEditingController,
+                        maxLength: 127,
+                        maxLines: null,
                       ),
                     ),
                     Row(

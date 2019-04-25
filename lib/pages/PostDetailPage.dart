@@ -16,8 +16,10 @@ import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 
 class PostDetailPage extends StatefulWidget {
   final Post post;
+  final int index;
+  final String fromPage;
   final BuildContext beforeContext;
-  PostDetailPage(this.post, {this.beforeContext, Key key}) : super(key: key);
+  PostDetailPage(this.post, {this.index, this.fromPage, this.beforeContext, Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -70,16 +72,22 @@ class PostDetailPageState extends State<PostDetailPage> {
     _requestData();
     setCurrentTabActive(widget.beforeContext, 1, "comments");
     PostAPI.glancePost(widget.post.id);
-    _post = new PostCard(widget.post, isDetail: true);
+    _post = new PostCard(widget.post, index: widget.index, fromPage: widget.fromPage, isDetail: true);
 
     Constants.eventBus.on<PostDeletedEvent>().listen((event) {
-      if (event.postId == widget.post.id) {
-        deleteTimer = Timer(Duration(milliseconds: 2100), () { Navigator.of(context).pop(); });
+      if (this.mounted && event.postId == widget.post.id) {
+        deleteTimer = Timer(Duration(milliseconds: 2200), () { Navigator.of(context).pop(); });
       }
     });
     Constants.eventBus.on<PostForwardedEvent>().listen((event) {
       if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
         setState(() { this.forwards++; });
+        forwardInPostController.reload();
+      }
+    });
+    Constants.eventBus.on<PostForwardDeletedEvent>().listen((event) {
+      if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
+        setState(() { this.forwards--; });
         forwardInPostController.reload();
       }
     });
@@ -89,8 +97,17 @@ class PostDetailPageState extends State<PostDetailPage> {
         commentInPostController.reload();
       }
     });
+    Constants.eventBus.on<PostCommentDeletedEvent>().listen((event) {
+      if (this.mounted && event.postId == widget.post.id && this.comments != null) {
+        setState(() { this.comments--; });
+        commentInPostController.reload();
+      }
+    });
     Constants.eventBus.on<ForwardInPostUpdatedEvent>().listen((event) {
       if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
+        if (event.count < this.forwards) {
+          Constants.eventBus.fire(new PostForwardDeletedEvent(widget.post.id, event.count));
+        }
         setState(() { this.forwards = event.count; });
       }
     });
@@ -181,6 +198,7 @@ class PostDetailPageState extends State<PostDetailPage> {
   }
 
   void _requestPraise() {
+    print("Request praise: ${widget.post.id}");
     bool _l = isLike;
     setState(() {
       if (isLike) {
@@ -190,7 +208,17 @@ class PostDetailPageState extends State<PostDetailPage> {
       }
       this.isLike = !isLike;
     });
-    PraiseAPI.requestPraise(widget.post.id, !_l).catchError((e) {
+    PraiseAPI.requestPraise(widget.post.id, !_l)
+    .then((response) {
+      Constants.eventBus.fire(
+          new PraiseInPostUpdatedEvent(
+              widget.post.id,
+              praises,
+              isLike: !_l
+          )
+      );
+    })
+    .catchError((e) {
       setState(() {
         if (isLike) {
           praises++;

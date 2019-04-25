@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -28,7 +29,7 @@ class UserPage extends StatefulWidget {
   State createState() => _UserPageState();
 
   static void jump(BuildContext context, int uid) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+    Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
       return UserPage(
         uid: uid,
       );
@@ -271,7 +272,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                     ),
                   ),
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                    Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                       return UserListPage(_user, 1);
                     }));
                   },
@@ -286,7 +287,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                     ),
                   ),
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                    Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                       return UserListPage(_user, 2);
                     }));
                   },

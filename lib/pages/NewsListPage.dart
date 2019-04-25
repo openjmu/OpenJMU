@@ -7,8 +7,6 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
-import 'package:OpenJMU/widgets/SlideView.dart';
-import 'package:OpenJMU/widgets/SlideViewIndicator.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -30,8 +28,6 @@ class NewsListPageState extends State<NewsListPage> {
   List listData;
   List slideData;
   int curPage = 1;
-  SlideView slideView;
-  SlideViewIndicator indicator;
   int listTotalSize = 0;
   bool isUserLogin = false;
 

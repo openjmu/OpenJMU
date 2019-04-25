@@ -154,7 +154,7 @@ class PraiseCard extends StatelessWidget {
         imagesWidget.add(
             new GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) {
+                  Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
                     return ImageViewer(
                       index,
                       data.map<ImageBean>((f) {
@@ -217,7 +217,7 @@ class PraiseCard extends StatelessWidget {
     Post _post = PostAPI.createPost(this.praise.post);
     return new GestureDetector(
       onTap: () {
-        Navigator.of(context).push(platformPageRoute(builder: (context) {
+        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
           return PostDetailPage(_post, beforeContext: context);
         }));
       },

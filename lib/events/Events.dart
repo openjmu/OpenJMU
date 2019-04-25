@@ -10,20 +10,52 @@ class TicketFailedEvent {}
 
 class PostForwardedEvent {
   int postId;
-  PostForwardedEvent(int id) {
+  int forwards;
+  PostForwardedEvent(int id, int forwards) {
     this.postId = id;
+    this.forwards = forwards;
+  }
+}
+class PostForwardDeletedEvent {
+  int postId;
+  int forwards;
+  PostForwardDeletedEvent(int id, int forwards) {
+    this.postId = id;
+    this.forwards = forwards;
   }
 }
 class PostCommentedEvent {
   int postId;
-  PostCommentedEvent(int id) {
+  PostCommentedEvent(int id, int comments) {
+    this.postId = id;
+  }
+}
+class PostCommentDeletedEvent {
+  int postId;
+  PostCommentDeletedEvent(int id, int comments) {
+    this.postId = id;
+  }
+}
+class PostPraisedEvent {
+  int postId;
+  PostPraisedEvent(int id) {
+    this.postId = id;
+  }
+}
+class PostUnPraisedEvent {
+  int postId;
+  PostUnPraisedEvent(int id) {
     this.postId = id;
   }
 }
 class PostDeletedEvent {
   int postId;
-  PostDeletedEvent(int id) {
+  String page;
+  int index;
+  PostDeletedEvent(int id, String page, int index) {
     this.postId = id;
+    this.page = page;
+    this.index = index;
   }
 }
 
@@ -43,9 +75,11 @@ class CommentInPostUpdatedEvent {
 }
 class PraiseInPostUpdatedEvent {
   int postId, count;
-  PraiseInPostUpdatedEvent(int id, int length) {
+  bool isLike;
+  PraiseInPostUpdatedEvent(int id, int length, {bool isLike}) {
     this.postId = id;
     this.count = length;
+    this.isLike = isLike;
   }
 }
 

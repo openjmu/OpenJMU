@@ -1,7 +1,3 @@
-// Copyright 2015 The Chromium Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'dart:math' as math;
 import 'dart:ui';
 
@@ -12,8 +8,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:OpenJMU/api//Api.dart';
 import 'package:OpenJMU/constants/AppBarConstants.dart';
-import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/userUtils.dart';
 import 'package:flutter/src/material/text_theme.dart';
 import 'package:flutter/src/material/back_button.dart';
@@ -28,16 +22,8 @@ import 'package:flutter/src/material/tabs.dart';
 import 'package:flutter/src/material/theme.dart';
 import 'package:flutter/src/material/circle_avatar.dart';
 
+const double _kLeadingWidth = kToolbarHeight;
 
-// Examples can assume:
-// void _airDress() { }
-// void _restitchDress() { }
-// void _repairDress() { }
-
-const double _kLeadingWidth =
-    kToolbarHeight; // So the leading button is square.
-
-// Bottom justify the kToolbarHeight child which may overflow the top.
 class _ToolbarContainerLayout extends SingleChildLayoutDelegate {
   const _ToolbarContainerLayout();
 

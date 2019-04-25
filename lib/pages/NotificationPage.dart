@@ -158,7 +158,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
         CommentController(
             commentType: "reply",
             isMore: false,
-            lastValue: (Comment comment) => comment.id
+            lastValue: (int id) => id
         ),
         needRefreshIndicator: true
     );

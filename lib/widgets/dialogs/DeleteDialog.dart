@@ -14,8 +14,19 @@ class DeleteDialog extends Dialog {
   final Post post;
   final Comment comment;
   final String whatToDelete;
+  final String fromPage;
+  final int index;
 
-  DeleteDialog(this.whatToDelete, {this.post, this.comment, Key key}) : super(key: key);
+  DeleteDialog(
+      this.whatToDelete,
+      {
+        this.post,
+        this.comment,
+        this.fromPage,
+        this.index,
+        Key key
+      }
+  ) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,13 +54,13 @@ class DeleteDialog extends Dialog {
               CommentAPI.deleteComment(this.comment.post.id, this.comment.id)
                   .then((response) {
                     _loadingDialogController.changeState("success", "$whatToDelete删除成功");
-                    Constants.eventBus.fire(new PostCommentedEvent(this.post.id));
+                    Constants.eventBus.fire(new PostCommentDeletedEvent(this.post.id, this.post.comments));
                   })
                   .catchError((e) { showCenterErrorShortToast("$whatToDelete删除失败"); });
             } else if (this.post != null) {
               PostAPI.deletePost(this.post.id).then((response) {
                 _loadingDialogController.changeState("success", "$whatToDelete删除成功");
-                Constants.eventBus.fire(new PostDeletedEvent(this.post.id));
+                Constants.eventBus.fire(new PostDeletedEvent(this.post.id, this.fromPage, this.index));
               }).catchError((e) {
                 print(e.toString());
                 print(e.response?.toString());

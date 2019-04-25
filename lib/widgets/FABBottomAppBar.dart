@@ -96,7 +96,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
         height: widget.height,
         child: Material(
           type: MaterialType.transparency,
-          child: InkWell(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
             onTap: () => onPressed(index),
             child: Column(
               mainAxisSize: MainAxisSize.min,

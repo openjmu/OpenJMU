@@ -89,7 +89,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       }
     });
     Constants.eventBus.on<LogoutEvent>().listen((event) {
-      notificationTimer != null ? notificationTimer.cancel() : null;
+      notificationTimer?.cancel();
       Navigator.of(context).pushReplacementNamed("/login");
     });
 //    Constants.eventBus.on<HasUpdateEvent>().listen((event) {
@@ -173,8 +173,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
+    super.build(context);
     return mainPage(context);
   }
 
@@ -264,7 +265,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
               elevation: 0,
               highlightElevation: 14.0,
               onPressed: () {
-                Navigator.of(context).push(platformPageRoute(builder: (context) {
+                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                   return new PublishPostPage();
                 }));
               },

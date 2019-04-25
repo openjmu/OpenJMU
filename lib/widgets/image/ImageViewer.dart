@@ -42,7 +42,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
   void dispose() {
     super.dispose();
     rebuild.close();
-    _animationController.dispose();
+    _animationController?.dispose();
 //    clearGestureDetailsCache();
   }
 
@@ -84,19 +84,6 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
     return new WillPopScope(
         onWillPop: () => _pop(context, false),
         child: Scaffold(
-//            appBar: AppBar(
-//                backgroundColor: Colors.black,
-//                title: ViewAppBar(widget.pics, currentIndex, rebuild),
-//                centerTitle: true,
-//                actions: <Widget>[
-//                  IconButton(
-//                    icon: Icon(Icons.save, color: Colors.white),
-//                    onPressed: () {
-//                      _downloadImage(widget.pics[currentIndex].imageUrl);
-//                    },
-//                  )
-//                ]
-//            ),
             backgroundColor: Colors.black,
             body: Column(
               children: <Widget>[
@@ -114,39 +101,34 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                                 cache: true,
                                 mode: ExtendedImageMode.Gesture,
                                 onDoubleTap: (ExtendedImageGestureState state) {
-                                  double begin, end;
-                                  var pointerDownPosition = state.pointerDownPosition;
-                                  if (state.gestureDetails.totalScale == 1.0) {
-                                    begin = state.gestureDetails.totalScale.toDouble();
-                                    end = 3.0;
-                                  } else {
-                                    begin = 1.0;
-                                    end = state.gestureDetails.totalScale.toDouble();
-                                  }
+                                  double begin = state.gestureDetails.totalScale;
+                                  double end;
+                                  Offset pointerDownPosition = state.pointerDownPosition;
+                                  end = state.gestureDetails.totalScale == 1.0 ? 3.0 : 1.0;
+
+                                  _animationController..stop()..reset();
+
+                                  _animation?.removeListener(doubleTapListener);
+
+                                  doubleTapListener = () {
+                                    state.handleDoubleTap(
+                                        scale: _animation.value,
+                                        doubleTapPosition: pointerDownPosition
+                                    );
+                                  };
                                   _animation = new Tween(begin: begin, end: end).animate(_curveAnimation)
-                                    ..removeListener(doubleTapListener);
-                                  setState(() {
-                                    doubleTapListener = () {
-                                      state.handleDoubleTap(
-                                          scale: _animation.value,
-                                          doubleTapPosition: pointerDownPosition
-                                      );
-                                    };
-                                  });
-                                  _animation.addListener(doubleTapListener);
-                                  if (state.gestureDetails.totalScale == 1.0) {
-                                    _animationController.forward();
-                                  } else {
-                                    _animationController.reverse();
-                                  }
+                                    ..addListener(doubleTapListener);
+
+                                  _animationController.forward();
                                 },
                                 gestureConfig: GestureConfig(
-                                  animationMinScale: 0.8,
-                                  cacheGesture: false,
-                                  inPageView: true,
                                   initialScale: 1.0,
                                   minScale: 1.0,
                                   maxScale: 3.0,
+                                  animationMinScale: 0.5,
+                                  animationMaxScale: 4.0,
+                                  cacheGesture: false,
+                                  inPageView: true,
                                 ),
                               ),
                               padding: EdgeInsets.all(5.0),
@@ -182,24 +164,27 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                             left: 0.0,
                             right: 0.0,
                             height: kToolbarHeight,
-                            child: Row(
-                              children: <Widget>[
-                                IconButton(
-                                  icon: Icon(Icons.arrow_back, color: Colors.white),
-                                  onPressed: () {
-                                    _pop(context, true);
-                                  },
-                                ),
-                                Expanded(
-                                    child: ViewAppBar(widget.pics, currentIndex, rebuild)
-                                ),
-                                IconButton(
-                                  icon: Icon(Icons.save, color: Colors.white),
-                                  onPressed: () {
-                                    _downloadImage(widget.pics[currentIndex].imageUrl);
-                                  },
-                                )
-                              ],
+                            child: Container(
+                              color: Color(0x44000000),
+                              child: Row(
+                                children: <Widget>[
+                                  IconButton(
+                                    icon: Icon(Icons.arrow_back, color: Colors.white),
+                                    onPressed: () {
+                                      _pop(context, true);
+                                    },
+                                  ),
+                                  Expanded(
+                                      child: ViewAppBar(widget.pics, currentIndex, rebuild)
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.save, color: Colors.white),
+                                    onPressed: () {
+                                      _downloadImage(widget.pics[currentIndex].imageUrl);
+                                    },
+                                  )
+                                ],
+                              )
                             )
                         ),
                       ],

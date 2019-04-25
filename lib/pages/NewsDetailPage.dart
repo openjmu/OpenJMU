@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-//import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 class NewsDetailPage extends StatefulWidget {
-
-  String id;
+  final String id;
 
   NewsDetailPage({Key key, this.id}):super(key: key);
 
@@ -44,18 +43,18 @@ class NewsDetailPageState extends State<NewsDetailPage> {
       titleContent.add(new CupertinoActivityIndicator());
     }
     titleContent.add(new Container(width: 50.0));
-//    return new WebviewScaffold(
-//      url: this.id,
-//      appBar: new AppBar(
-//        title: new Row(
-//          mainAxisAlignment: MainAxisAlignment.center,
-//          children: titleContent,
-//        ),
-//        iconTheme: new IconThemeData(color: Colors.white),
-//      ),
-//      withZoom: false,
-//      withLocalStorage: true,
-//      withJavascript: true,
-//    );
+    return new WebviewScaffold(
+      url: this.id,
+      appBar: new AppBar(
+        title: new Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: titleContent,
+        ),
+        iconTheme: new IconThemeData(color: Colors.white),
+      ),
+      withZoom: false,
+      withLocalStorage: true,
+      withJavascript: true,
+    );
   }
 }

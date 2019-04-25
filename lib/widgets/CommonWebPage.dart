@@ -23,7 +23,7 @@ class CommonWebPage extends StatefulWidget {
   }
 
   static void jump(BuildContext context, String url, String title, {bool withCookie}) {
-    Navigator.of(context).push(platformPageRoute(builder: (context) {
+    Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
       return CommonWebPage(url, title, withCookie: withCookie);
     }));
   }
@@ -66,11 +66,11 @@ class CommonWebPageState extends State<CommonWebPage> {
         });
       }
     });
-    flutterWebViewPlugin.onProgressChanged.listen((progress) {
-      setState(() {
-        currentProgress = progress;
-      });
-    });
+//    flutterWebViewPlugin.onProgressChanged.listen((progress) {
+//      setState(() {
+//        currentProgress = progress;
+//      });
+//    });
     flutterWebViewPlugin.onUrlChanged.listen((url) {
       setState(() {
         _url = url;

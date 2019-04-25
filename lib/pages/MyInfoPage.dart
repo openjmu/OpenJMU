@@ -33,10 +33,6 @@ class MyInfoPageState extends State<MyInfoPage> {
   bool isLogin = false;
   bool isDark = false;
 
-  void changeBrightness(bool isDark) {
-    Constants.eventBus.fire(new ChangeBrightnessEvent(isDark));
-  }
-
   @override
   void initState() {
     super.initState();
@@ -156,11 +152,13 @@ class MyInfoPageState extends State<MyInfoPage> {
               PlatformButton(
                 android: (BuildContext context) => MaterialRaisedButtonData(
                   color: Theme.of(context).dialogBackgroundColor,
-                  child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme)),
                   elevation: 0,
+                  disabledElevation: 0.0,
+                  highlightElevation: 0.0,
+                  child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme)),
                 ),
                 ios: (BuildContext context) => CupertinoButtonData(
-                  child: Text("确认",style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                  child: Text("确认"),
                 ),
                 onPressed: () {
                   DataUtils.doLogout();
@@ -169,11 +167,13 @@ class MyInfoPageState extends State<MyInfoPage> {
               PlatformButton(
                 android: (BuildContext context) => MaterialRaisedButtonData(
                   color: ThemeUtils.currentColorTheme,
-                  child: Text('取消', style: TextStyle(color: Colors.white)),
                   elevation: 0,
+                  disabledElevation: 0.0,
+                  highlightElevation: 0.0,
+                  child: Text('取消', style: TextStyle(color: Colors.white)),
                 ),
                 ios: (BuildContext context) => CupertinoButtonData(
-                    child: Text("取消",style: TextStyle(color: ThemeUtils.currentColorTheme),)
+                    child: Text("取消", style: TextStyle(color: ThemeUtils.currentColorTheme))
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -259,8 +259,10 @@ class MyInfoPageState extends State<MyInfoPage> {
             actions: <Widget>[
               PlatformButton(
                   android: (BuildContext context) => MaterialRaisedButtonData(
-                  color: Theme.of(context).dialogBackgroundColor,
-                  elevation: 0,
+                      color: Theme.of(context).dialogBackgroundColor,
+                      elevation: 0,
+                      disabledElevation: 0.0,
+                      highlightElevation: 0.0
                   ),
                   child: Text("关闭", style: TextStyle(color:ThemeUtils.currentColorTheme)),
                   onPressed: () {
