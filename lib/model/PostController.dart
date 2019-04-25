@@ -90,21 +90,21 @@ class PostAPI {
         .toString()
         .substring(0,16);
     Post _post = new Post(
-        int.parse(postData['tid']),
-        int.parse(_user['uid']),
+        postData['tid'] is String ? int.parse(postData['tid']) : postData['tid'],
+        postData['uid'] is String ? int.parse(postData['uid']) : postData['uid'],
         _user['nickname'],
         _avatar,
         _postTime,
         postData['from_string'],
-        int.parse(postData['glances']),
+        postData['glances'] is String ? int.parse(postData['glances']) : postData['glances'],
         postData['category'],
         postData['article'] ?? postData['content'],
         postData['image'],
-        int.parse(postData['forwards']),
-        int.parse(postData['replys']),
-        int.parse(postData['praises']),
+        postData['forwards'] is String ? int.parse(postData['forwards']) : postData['forwards'],
+        postData['replys'] is String ? int.parse(postData['replys']) : postData['replys'],
+        postData['praises'] is String ? int.parse(postData['praises']) : postData['praises'],
         postData['root_topic'],
-        isLike: postData['praised'] == 1 ? true : false
+        isLike: (postData['praised'] == 1 || postData['praised'] == "1") ? true : false
     );
     return _post;
   }
@@ -347,11 +347,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       List _topics = jsonDecode(result)['topics'];
       for (var postData in _topics) {
         postList.add(PostAPI.createPost(postData['topic']));
-        if (widget._postController.postType == "mention") {
-          _idList.add(int.parse(postData['id']));
-        } else {
-          _idList.add(postData['id']);
-        }
+        _idList.add(postData['id'] is String ? int.parse(postData['id']) : postData['id']);
       }
       _postList.addAll(postList);
 
@@ -389,11 +385,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       for (var postData in _topics) {
         if (postData['topic'] != null && postData != "") {
           postList.add(PostAPI.createPost(postData['topic']));
-          if (widget._postController.postType == "mention" || widget._postController.postType == "search") {
-            idList.add(int.parse(postData['id']));
-          } else {
-            idList.add(postData['id']);
-          }
+          idList.add(postData['id'] is String ? int.parse(postData['id']) : postData['id']);
         }
       }
       _postList = postList;

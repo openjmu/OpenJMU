@@ -71,11 +71,11 @@ class PraiseAPI {
       itemData['id'],
       itemData['user']['uid'],
       _avatar,
-      int.parse(itemData['topic']['tid']),
+      itemData['topic']['tid'] is String ? int.parse(itemData['topic']['tid']) : itemData['topic']['tid'],
       _praiseTime,
       itemData['user']['nickname'],
       itemData['topic'],
-      int.parse(itemData['topic']['user']['uid']),
+      itemData['topic']['user']['uid'] is String ? int.parse(itemData['topic']['user']['uid']) : itemData['topic']['user']['uid'],
       itemData['topic']['user']['nickname'],
       itemData['topic']['image'],
     );

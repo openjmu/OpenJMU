@@ -7,7 +7,9 @@ class UserUtils {
 
   static UserInfo createUserInfo(userData) {
     int _workId = 0;
-    userData['workid'] == "" ? _workId = userData['uid'] : _workId = int.parse(userData['workid']);
+    userData['workid'] == ""
+        ? _workId = userData['uid'] is String ? int.parse(userData['uid']) : userData['uid']
+        : _workId = userData['workid']is String ? int.parse(userData['workid']) : userData['workid'];
     return new UserInfo(
         null,
         userData['uid'],

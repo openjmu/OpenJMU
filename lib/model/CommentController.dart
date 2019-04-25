@@ -67,21 +67,23 @@ class CommentAPI {
         .substring(0,16);
     bool replyExist = itemData['to_reply']['exists'] == 1 ? true : false;
     bool topicExist = itemData['to_topic']['exists'] == 1 ? true : false;
+    Map<String, dynamic> replyData = itemData['to_reply']['reply'];
+    Map<String, dynamic> topicData = itemData['to_reply']['topic'];
     Comment _comment = new Comment(
-      itemData['rid'],
-      itemData['user']['uid'],
+      itemData['rid'] is String ? int.parse(itemData['rid']) : itemData['rid'],
+      itemData['user']['uid'] is String ? int.parse(itemData['user']['uid']) : itemData['user']['uid'],
       itemData['user']['nickname'],
       _avatar,
       itemData['content'],
       _commentTime,
       itemData['from_string'],
       replyExist,
-      replyExist ? itemData['to_reply']['reply']['user']['uid'] : 0,
-      replyExist ? itemData['to_reply']['reply']['user']['nickname'] : null,
-      replyExist ? itemData['to_reply']['reply']['content'] : null,
+      replyExist ? replyData['user']['uid'] is String ? int.parse(replyData['user']['uid']) : replyData['user']['uid'] : 0,
+      replyExist ? replyData['user']['nickname'] : null,
+      replyExist ? replyData['content'] : null,
       topicExist,
-      topicExist ? int.parse(itemData['to_topic']['topic']['user']['uid']) : 0,
-      topicExist ? itemData['to_topic']['topic']['user']['nickname'] : null,
+      topicExist ? topicData['user']['uid'] is String ? int.parse(topicData['user']['uid']) : topicData['user']['uid'] : 0,
+      topicExist ? topicData['user']['nickname'] : null,
       topicExist
           ?
             itemData['to_topic']['topic']['article']
