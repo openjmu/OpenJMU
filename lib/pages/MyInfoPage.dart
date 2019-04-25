@@ -173,7 +173,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                   child: Text('取消', style: TextStyle(color: Colors.white)),
                 ),
                 ios: (BuildContext context) => CupertinoButtonData(
-                  child: Text("取消", style: TextStyle(color: ThemeUtils.currentColorTheme))
+                    child: Text("取消", style: TextStyle(color: ThemeUtils.currentColorTheme))
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -259,10 +259,10 @@ class MyInfoPageState extends State<MyInfoPage> {
             actions: <Widget>[
               PlatformButton(
                   android: (BuildContext context) => MaterialRaisedButtonData(
-                    color: Theme.of(context).dialogBackgroundColor,
-                    elevation: 0,
-                    disabledElevation: 0.0,
-                    highlightElevation: 0.0
+                      color: Theme.of(context).dialogBackgroundColor,
+                      elevation: 0,
+                      disabledElevation: 0.0,
+                      highlightElevation: 0.0
                   ),
                   child: Text("关闭", style: TextStyle(color:ThemeUtils.currentColorTheme)),
                   onPressed: () {

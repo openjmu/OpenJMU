@@ -1,4 +1,9 @@
 PODS:
+  - BSGridCollectionViewLayout (1.2.3)
+  - BSImagePicker (2.10.0):
+    - BSGridCollectionViewLayout (= 1.2.3)
+    - BSImageView (= 1.0.3)
+  - BSImageView (1.0.3)
   - Flutter (1.0.0)
   - flutter_local_notifications (0.0.1):
     - Flutter
@@ -11,7 +16,8 @@ PODS:
   - FMDB/standard (2.7.5)
   - image_downloader (0.0.1):
     - Flutter
-  - image_picker (0.0.1):
+  - multi_image_picker (4.2.0):
+    - BSImagePicker (~> 2.10.0)
     - Flutter
   - ota_update (0.0.1):
     - Flutter
@@ -31,7 +37,7 @@ DEPENDENCIES:
   - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_downloader (from `.symlinks/plugins/image_downloader/ios`)
-  - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
   - ota_update (from `.symlinks/plugins/ota_update/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -40,6 +46,9 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - BSGridCollectionViewLayout
+    - BSImagePicker
+    - BSImageView
     - FMDB
 
 EXTERNAL SOURCES:
@@ -53,8 +62,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/fluttertoast/ios"
   image_downloader:
     :path: ".symlinks/plugins/image_downloader/ios"
-  image_picker:
-    :path: ".symlinks/plugins/image_picker/ios"
+  multi_image_picker:
+    :path: ".symlinks/plugins/multi_image_picker/ios"
   ota_update:
     :path: ".symlinks/plugins/ota_update/ios"
   package_info:
@@ -67,13 +76,16 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/ios"
 
 SPEC CHECKSUMS:
+  BSGridCollectionViewLayout: 568273e113fbc815f868f1898ef0465aee68f955
+  BSImagePicker: fa0c15b6740e8aa7a7b7f0fe38a71ad4cfa0ec4a
+  BSImageView: a149459433a2687157d034c78e059d30ac7f2544
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
   flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   image_downloader: e5e747da37f5270b2d549747fcef9d276224d7b1
-  image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
+  multi_image_picker: c2c07c7a384c160111576341eb75ea38ec5cafca
   ota_update: 025311773f7e5d8a36cf0d4fc1d1694f7bc75958
   package_info: 78cabb3c322943c55d39676f4a5bfc748c01d055
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
