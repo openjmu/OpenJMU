@@ -165,38 +165,43 @@ class PublishPostPageState extends State<PublishPostPage> {
     );
   }
 
-  Widget customGridView(context) {
+  Positioned customGridView(context) {
     int size = (MediaQuery.of(context).size.width / gridCount).floor() - (18 - gridCount);
-    return Container(
-        margin: EdgeInsets.only(bottom: 80),
-        height: MediaQuery.of(context).size.width / gridCount * (imagesBin.length / gridCount).ceil(),
-        child: DragAbleGridView(
-          childAspectRatio: 1,
-          crossAxisCount: gridCount,
-          itemBins: imagesBin,
-          editSwitchController: _editSwitchController,
-          isOpenDragAble: true,
-          animationDuration: 300,
-          longPressDuration: 800,
-          deleteIcon: Container(
-              padding: EdgeInsets.all(3.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.redAccent,
+    return Positioned(
+        bottom: MediaQuery.of(context).padding.bottom + (emoticonPadActive?EmotionPadState.emoticonPadHeight:0) ?? (emoticonPadActive?EmotionPadState.emoticonPadHeight:0),
+        left: 0.0,
+        right: 0.0,
+        child: Container(
+            margin: EdgeInsets.only(bottom: 80),
+            height: MediaQuery.of(context).size.width / gridCount * (imagesBin.length / gridCount).ceil(),
+            child: DragAbleGridView(
+              childAspectRatio: 1,
+              crossAxisCount: gridCount,
+              itemBins: imagesBin,
+              editSwitchController: _editSwitchController,
+              isOpenDragAble: true,
+              animationDuration: 300,
+              longPressDuration: 500,
+              deleteIcon: Container(
+                  padding: EdgeInsets.all(3.0),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.redAccent,
+                  ),
+                  child: Icon(Icons.delete, color: Colors.white, size: (10.0+16*(1/gridCount)))
               ),
-              child: Icon(Icons.delete, color: Colors.white, size: (10.0+16*(1/gridCount)))
-          ),
-          child: (int position) {
-            return Container(
-                margin: EdgeInsets.all(4.0),
-                padding: EdgeInsets.zero,
-                child: AssetThumb(
-                  asset: imagesBin[position].data,
-                  width: size,
-                  height: size,
-                )
-            );
-          },
+              child: (int position) {
+                return Container(
+                    margin: EdgeInsets.all(4.0),
+                    padding: EdgeInsets.zero,
+                    child: AssetThumb(
+                      asset: imagesBin[position].data,
+                      width: size,
+                      height: size,
+                    )
+                );
+              },
+            )
         )
     );
   }
@@ -227,38 +232,40 @@ class PublishPostPageState extends State<PublishPostPage> {
         bottom: MediaQuery.of(context).padding.bottom + (emoticonPadActive?EmotionPadState.emoticonPadHeight:0) ?? (emoticonPadActive?EmotionPadState.emoticonPadHeight:0),
         left: 0.0,
         right: 0.0,
-        child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              IconButton(
-                  onPressed: addTopic,
-                  icon: poundIcon(context)
-              ),
-              IconButton(
-                  onPressed: null,
-                  icon: Icon(
-                      Icons.alternate_email,
-                      color: Theme.of(context).iconTheme.color
-                  )
-              ),
-              IconButton(
-                  onPressed: () {
-                    loadAssets();
-                  },
-                  icon: Icon(
-                      Icons.add_photo_alternate,
-                      color: Theme.of(context).iconTheme.color
-                  )
-              ),
-              IconButton(
-                  onPressed: () => setState(() {emoticonPadActive = !emoticonPadActive;}),
-                  icon: Icon(
-                      Icons.mood,
-                      color: Theme.of(context).iconTheme.color
-                  )
-              ),
-            ]
+        child: Container(
+          child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                IconButton(
+                    onPressed: addTopic,
+                    icon: poundIcon(context)
+                ),
+                IconButton(
+                    onPressed: null,
+                    icon: Icon(
+                        Icons.alternate_email,
+                        color: Theme.of(context).iconTheme.color
+                    )
+                ),
+                IconButton(
+                    onPressed: () {
+                      loadAssets();
+                    },
+                    icon: Icon(
+                        Icons.add_photo_alternate,
+                        color: Theme.of(context).iconTheme.color
+                    )
+                ),
+                IconButton(
+                    onPressed: () => setState(() {emoticonPadActive = !emoticonPadActive;}),
+                    icon: Icon(
+                        Icons.mood,
+                        color: Theme.of(context).iconTheme.color
+                    )
+                ),
+              ]
+          )
         )
     );
   }
@@ -420,9 +427,9 @@ class PublishPostPageState extends State<PublishPostPage> {
               Column(
                 children: <Widget>[
                   textField(),
-                  customGridView(context),
                 ],
               ),
+              customGridView(context),
               _counter(context), _toolbar(context),
               emoticonPad(context)
             ]

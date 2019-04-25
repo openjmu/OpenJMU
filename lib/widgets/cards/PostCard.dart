@@ -7,6 +7,8 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:extended_image/extended_image.dart';
 
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/model/PraiseController.dart';
@@ -26,8 +28,10 @@ class PostCard extends StatefulWidget {
   final Post post;
   final bool isDetail;
   final bool isRootContent;
+  final String fromPage;
+  final int index;
 
-  PostCard(this.post, {this.isDetail, this.isRootContent, Key key}) : super(key: key);
+  PostCard(this.post, {this.isDetail, this.isRootContent, this.fromPage, this.index, Key key}) : super(key: key);
 
   @override
   State createState() => _PostCardState();
@@ -45,14 +49,11 @@ class _PostCardState extends State<PostCard> {
   Color _praisesColor = Colors.grey;
 
   Widget pics;
-  bool isDetail, isDeleting;
+  bool isDetail;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
-      isDeleting = false;
-    });
     if (widget.isDetail != null && widget.isDetail == true) {
       setState(() {
         isDetail = true;
@@ -62,6 +63,30 @@ class _PostCardState extends State<PostCard> {
         isDetail = false;
       });
     }
+    Constants.eventBus.on<ForwardInPostUpdatedEvent>().listen((event) {
+      if (mounted && event.postId == widget.post.id) {
+        setState(() { widget.post.forwards = event.count; });
+      }
+    });
+    Constants.eventBus.on<CommentInPostUpdatedEvent>().listen((event) {
+      if (mounted && event.postId == widget.post.id) {
+        setState(() { widget.post.comments = event.count; });
+      }
+    });
+    Constants.eventBus.on<PraiseInPostUpdatedEvent>().listen((event) {
+      if (this.mounted && event.postId == widget.post.id) {
+        setState(() {
+          if (event.isLike != null) widget.post.isLike = event.isLike;
+          widget.post.praises = event.count;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    deleteTimer?.cancel();
   }
 
   GestureDetector getPostAvatar(context, post) {
@@ -175,8 +200,13 @@ class _PostCardState extends State<PostCard> {
       topic += content['article'] ?? content['content'];
       return new GestureDetector(
         onTap: () {
-          Navigator.of(context).push(platformPageRoute(builder: (context) {
-            return PostDetailPage(_post, beforeContext: context);
+          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+            return PostDetailPage(
+                _post,
+                index: widget.index,
+                fromPage: widget.fromPage,
+                beforeContext: context
+            );
           }));
         },
         child: new Container(
@@ -216,7 +246,7 @@ class _PostCardState extends State<PostCard> {
         imagesWidget.add(
             new GestureDetector(
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) {
+                  Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
                     return ImageViewer(
                       index,
                       data.map<ImageBean>((f) {
@@ -264,10 +294,10 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  Widget getPostActions(post) {
-    int forwards = post.forwards;
-    int comments = post.comments;
-    int praises = post.praises;
+  Widget getPostActions() {
+    int forwards = widget.post.forwards;
+    int comments = widget.post.comments;
+    int praises = widget.post.praises;
 
     return new Flex(
       direction: Axis.horizontal,
@@ -406,7 +436,7 @@ class _PostCardState extends State<PostCard> {
   void confirmDelete() {
     showPlatformDialog(
         context: context,
-        builder: (_) => DeleteDialog("动态", post: widget.post)
+        builder: (_) => DeleteDialog("动态", post: widget.post, fromPage: widget.fromPage, index: widget.index)
     );
   }
 
@@ -423,7 +453,7 @@ class _PostCardState extends State<PostCard> {
         ),
         getPostContent(context, widget.post),
         getPostImages(widget.post),
-        isDetail ? Container(width: MediaQuery.of(context).size.width, padding: EdgeInsets.symmetric(vertical: 8.0)) : getPostActions(widget.post)
+        isDetail ? Container(width: MediaQuery.of(context).size.width, padding: EdgeInsets.symmetric(vertical: 8.0)) : getPostActions()
       ];
     } else {
       _widgets = [getPostBanned("shield")];
@@ -433,12 +463,12 @@ class _PostCardState extends State<PostCard> {
         if (isDetail) {
           return null;
         } else {
-          Navigator.of(context).push(platformPageRoute(builder: (context) {
-            return PostDetailPage(widget.post, beforeContext: context);
+          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+            return PostDetailPage(widget.post, index: widget.index, fromPage: widget.fromPage, beforeContext: context);
           }));
         }
       },
-      child: new Container(
+      child: Container(
         child: Card(
             margin: EdgeInsets.symmetric(vertical: 4.0),
             child: Stack(

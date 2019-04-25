@@ -265,7 +265,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
               elevation: 0,
               highlightElevation: 14.0,
               onPressed: () {
-                Navigator.of(context).push(platformPageRoute(builder: (context) {
+                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                   return new PublishPostPage();
                 }));
               },

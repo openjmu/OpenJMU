@@ -232,7 +232,7 @@ class CommentCard extends StatelessWidget {
                     padding: EdgeInsets.all(6.0),
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.of(context).push(platformPageRoute(builder: (context) => PostDetailPage(this.comment.post, beforeContext: context)));
+                      Navigator.of(context).push(CupertinoPageRoute(builder: (context) => PostDetailPage(this.comment.post, beforeContext: context)));
                     },
                   ),
                   Text("查看动态", style: TextStyle(fontSize: 16.0, color: Colors.white))
@@ -411,7 +411,7 @@ class CommentCardInPost extends StatelessWidget {
                                               );
                                               CommentAPI.deleteComment(this.post.id, this.comments[index].id)
                                                   .then((response) {
-                                                    Constants.eventBus.fire(new PostCommentedEvent(this.post.id));
+                                                    Constants.eventBus.fire(new PostCommentDeletedEvent(this.post.id, this.post.comments));
                                                     _loadingDialogController.changeState("success", "评论删除成功");
                                                   })
                                                   .catchError((e) {

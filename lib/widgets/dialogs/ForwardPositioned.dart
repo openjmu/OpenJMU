@@ -79,7 +79,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         _forwarding = false;
       });
       Navigator.of(context).pop();
-      Constants.eventBus.fire(new PostForwardedEvent(widget.post.id));
+      Constants.eventBus.fire(new PostForwardedEvent(widget.post.id, widget.post.forwards));
     });
   }
 

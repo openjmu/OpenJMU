@@ -94,6 +94,7 @@ class JMUAppClientState extends State<JMUAppClient> {
       routes: RouteUtils.routes,
       title: "OpenJMU",
       theme: ThemeData(
+          platform: TargetPlatform.iOS,
           brightness: currentBrightness,
           accentColor: currentThemeColor,
           buttonColor: currentThemeColor,
@@ -112,7 +113,7 @@ class JMUAppClientState extends State<JMUAppClient> {
               iconTheme: IconThemeData(color: Colors.white)
           ),
           buttonTheme: ButtonThemeData(
-              textTheme: ButtonTextTheme.primary
+              textTheme: ButtonTextTheme.primary,
           )
       ),
       home: new SplashPage(),

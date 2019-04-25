@@ -102,7 +102,7 @@ class CommentPositionedState extends State<CommentPositioned> {
           _commenting = false;
         });
         Navigator.of(context).pop();
-        Constants.eventBus.fire(new PostCommentedEvent(widget.post.id));
+        Constants.eventBus.fire(new PostCommentedEvent(widget.post.id, widget.post.comments));
       });
     }
   }
