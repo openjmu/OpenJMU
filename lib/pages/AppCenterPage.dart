@@ -113,7 +113,7 @@ class AppCenterPageState extends State<AppCenterPage> {
           ),
           new Text(
               webApp.name,
-              style: new TextStyle(fontSize: 16.0)
+              style: new TextStyle(fontSize: 16.0, color: themeColor)
           )
         ],
       ),
@@ -142,6 +142,7 @@ class AppCenterPageState extends State<AppCenterPage> {
                     child: new Text(
                         WebApp.category()[name],
                         style: TextStyle(
+                            color: Theme.of(context).textTheme.title.color,
                             fontSize: 18.0,
                             fontWeight: FontWeight.bold
                         )
