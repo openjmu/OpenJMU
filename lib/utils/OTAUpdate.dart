@@ -22,7 +22,6 @@ class OTAUpdate {
       final PackageInfo packageInfo = await PackageInfo.fromPlatform();
       final String version = packageInfo.version;
       return version;
-//      return await GetVersion.projectVersion;
     } on PlatformException {
       return 'Failed to get project version.';
     }

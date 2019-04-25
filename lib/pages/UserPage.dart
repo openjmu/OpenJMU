@@ -351,7 +351,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                 onPressed: () {
                   isReloading = true;
                   _updateAppBar();
-                  _fetchUserInformation(UserUtils.currentUser.uid);
+                  _fetchUserInformation(widget.uid);
                   postController.reload(needLoader: true).then((response) {
                     isReloading = false;
                     _updateAppBar();
