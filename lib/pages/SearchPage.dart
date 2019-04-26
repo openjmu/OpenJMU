@@ -115,7 +115,7 @@ class SearchPageState extends State<SearchPage> {
         title: title,
         actions: <Widget>[
           IconButton(
-            icon: Platform.isAndroid ? Icon(Icons.search) : Ionicons.getIconData("ios-search"),
+            icon: Icon(Platform.isAndroid ? Icons.search : Ionicons.getIconData("ios-search")),
             onPressed: () {
               if (_controller.text != null && _controller.text != "") {
                 search(_controller.text);

@@ -425,7 +425,9 @@ class PublishPostPageState extends State<PublishPostPage> {
           ),
           actions: <Widget>[
             IconButton(
-                icon: Platform.isAndroid ? Icon(Icons.send) : Ionicons.getIconData("ios-send"),
+                icon: Icon(
+                    Platform.isAndroid ? Icons.send : Ionicons.getIconData("ios-send")
+                ),
                 onPressed: () => post(context)
             )
           ],
