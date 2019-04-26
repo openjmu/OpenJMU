@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:badges/badges.dart';
 import 'package:extended_tabs/extended_tabs.dart';
 
@@ -6,6 +8,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
+
 import 'package:OpenJMU/model/CommentController.dart';
 import 'package:OpenJMU/model/PraiseController.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -21,7 +24,11 @@ class NotificationPage extends StatefulWidget {
 
 class NotificationPageState extends State<NotificationPage> with TickerProviderStateMixin {
   TabController _tabController, _mentionTabController;
-  final List<IconData> actionsIcons = [Icons.alternate_email, Icons.comment, Icons.thumb_up];
+  final List<IconData> actionsIcons = [
+    Platform.isAndroid ? Ionicons.getIconData("ios-at") : Ionicons.getIconData("md-at"),
+    Platform.isAndroid ? Icons.comment : Foundation.getIconData("comment"),
+    Platform.isAndroid ? Icons.thumb_up : Ionicons.getIconData("ios-thumbs-up")
+  ];
 
   Color badgeColor = Colors.redAccent;
   Color primaryColor = Colors.white;

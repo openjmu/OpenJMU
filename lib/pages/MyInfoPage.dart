@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/api/Api.dart';
@@ -24,7 +26,12 @@ class MyInfoPageState extends State<MyInfoPage> {
 //  List<String> titles = ["夜间模式", "切换主题", "退出登录", "测试页", "关于"];
   List<String> titles = ["夜间模式", "切换主题", "退出登录", "关于"];
 //  List<IconData> icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.dialpad, Icons.info];
-  List<IconData> icons = [Icons.invert_colors, Icons.color_lens, Icons.exit_to_app, Icons.info];
+  List<IconData> icons = [
+    Platform.isAndroid ? Icons.brightness_medium : Ionicons.getIconData("ios-moon"),
+    Platform.isAndroid ? Icons.color_lens : Ionicons.getIconData("ios-color-palette"),
+    Platform.isAndroid ? Icons.exit_to_app : Ionicons.getIconData("ios-exit"),
+    Platform.isAndroid ? Icons.info : Ionicons.getIconData("ios-information-circle")
+  ];
   var userAvatar;
   var userName;
   var titleTextStyle = new TextStyle(fontSize: 16.0);
@@ -110,7 +117,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 setDarkMode(isDark);
               }
           )
-              : new Icon(Icons.keyboard_arrow_right)
+              : new Icon(Platform.isAndroid ? Icons.keyboard_arrow_right : FontAwesome.getIconData("angle-right"))
         ],
       ),
     );

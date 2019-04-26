@@ -97,7 +97,7 @@ class AppCenterPageState extends State<AppCenterPage> {
     return result;
   }
 
-  Widget getWebAppButton(webApp) {
+  Widget getWebAppButton( webApp) {
     String url = replaceParamsInUrl(webApp.url);
     String imageUrl = Api.webAppIconsInsecure + "appid=${webApp.id}&code=${webApp.code}";
     Widget button = new FlatButton(
@@ -113,7 +113,7 @@ class AppCenterPageState extends State<AppCenterPage> {
           ),
           new Text(
               webApp.name,
-              style: new TextStyle(fontSize: 16.0, color: themeColor)
+              style: new TextStyle(fontSize: 16.0, color: Theme.of(context).textTheme.body1.color)
           )
         ],
       ),

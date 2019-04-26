@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class CommonWebPage extends StatefulWidget {

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'dart:io';
 import 'dart:core';
 import 'dart:convert';
 import 'package:dio/dio.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:dragablegridview_flutter/dragablegridview_flutter.dart';
 import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
@@ -188,7 +190,10 @@ class PublishPostPageState extends State<PublishPostPage> {
                     shape: BoxShape.circle,
                     color: Colors.redAccent,
                   ),
-                  child: Icon(Icons.delete, color: Colors.white, size: (10.0+16*(1/gridCount)))
+                  child: Icon(
+                      Platform.isAndroid ? Icons.delete : Ionicons.getIconData("ios-trash"),
+                      color: Colors.white, size: (10.0+16*(1/gridCount))
+                  )
               ),
               child: (int position) {
                 return Container(
@@ -244,7 +249,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                 IconButton(
                     onPressed: null,
                     icon: Icon(
-                        Icons.alternate_email,
+                        Platform.isAndroid ? Ionicons.getIconData("ios-at") : Ionicons.getIconData("md-at"),
                         color: Theme.of(context).iconTheme.color
                     )
                 ),
@@ -419,7 +424,10 @@ class PublishPostPageState extends State<PublishPostPage> {
               )
           ),
           actions: <Widget>[
-            IconButton(icon: Icon(Icons.send), onPressed: () => post(context))
+            IconButton(
+                icon: Platform.isAndroid ? Icon(Icons.send) : Ionicons.getIconData("ios-send"),
+                onPressed: () => post(context)
+            )
           ],
         ),
         body: Stack(

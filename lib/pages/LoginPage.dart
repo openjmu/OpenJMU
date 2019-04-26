@@ -1,8 +1,10 @@
+import 'dart:io';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -87,7 +89,10 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             ),
             child: new TextFormField(
               decoration: new InputDecoration(
-                prefixIcon: Icon(Icons.person, color: Colors.white),
+                prefixIcon: Icon(
+                    Platform.isAndroid ? Icons.person : Ionicons.getIconData("ios-person"),
+                    color: Colors.white
+                ),
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(10.0),
                 labelText: '工号/学号',
@@ -121,12 +126,17 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               decoration: new InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(10.0),
-                  prefixIcon: Icon(Icons.lock, color: Colors.white),
+                  prefixIcon: Icon(
+                      Platform.isAndroid ? Icons.lock : Ionicons.getIconData("ios-lock"),
+                      color: Colors.white
+                  ),
                   labelText: '密码',
                   labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0),
                   suffixIcon: new IconButton(
                       icon: new Icon(
-                        Icons.remove_red_eye,
+                        _isObscure
+                          ? Platform.isAndroid ? Ionicons.getIconData("md-eye-off") : Ionicons.getIconData("ios-eye-off")
+                          : Platform.isAndroid ? Ionicons.getIconData("md-eye") : Ionicons.getIconData("ios-eye"),
                         color: _defaultIconColor,
                       ),
                       onPressed: () {
@@ -155,7 +165,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               child: new IconButton(
                 highlightColor: Colors.white,
                 icon: new Icon(
-                    Icons.arrow_forward,
+                    Platform.isAndroid ? Icons.arrow_forward : FontAwesome.getIconData("arrow-right"),
                     color: Colors.white,
                     size: 30
                 ),

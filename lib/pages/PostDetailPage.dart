@@ -1,6 +1,8 @@
+import 'dart:io';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:async';
+import 'package:flutter_icons/flutter_icons.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -276,7 +278,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                               );
                             },
                             icon: Icon(
-                              Icons.comment,
+                              Platform.isAndroid ? Icons.comment : Foundation.getIconData("comment"),
                               color: Theme.of(context).textTheme.title.color,
                               size: 24,
                             ),
@@ -294,7 +296,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                           child: FlatButton.icon(
                             onPressed: _requestPraise,
                             icon: Icon(
-                              Icons.thumb_up,
+                              Platform.isAndroid ? Icons.thumb_up : Ionicons.getIconData("ios-thumbs-up"),
                               color: isLike
                                   ? ThemeUtils.currentColorTheme
                                   : Theme.of(context).textTheme.title.color,

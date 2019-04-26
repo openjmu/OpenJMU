@@ -195,38 +195,42 @@ class _PostCardState extends State<PostCard> {
   Widget getRootPost(context, rootTopic) {
     var content = rootTopic['topic'];
     if (rootTopic['exists'] == 1) {
-      Post _post = PostAPI.createPost(content);
-      String topic = "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ";
-      topic += content['article'] ?? content['content'];
-      return new GestureDetector(
-        onTap: () {
-          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-            return PostDetailPage(
-                _post,
-                index: widget.index,
-                fromPage: widget.fromPage,
-                beforeContext: context
-            );
-          }));
-        },
-        child: new Container(
-            width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.only(top: 8.0),
-            padding: EdgeInsets.all(8.0),
-            decoration: new BoxDecoration(
-                color: Theme.of(context).canvasColor,
-                borderRadius: BorderRadius.circular(5.0)
-            ),
-            child: new Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  getExtendedText(topic),
-                  getRootPostImages(rootTopic['topic'])
-                ]
+      if (content['article'] == "此微博已经被屏蔽" || content['content'] == "此微博已经被屏蔽") {
+        return getPostBanned("shield");
+      } else {
+        Post _post = PostAPI.createPost(content);
+        String topic = "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ";
+        topic += content['article'] ?? content['content'];
+        return new GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                return PostDetailPage(
+                    _post,
+                    index: widget.index,
+                    fromPage: widget.fromPage,
+                    beforeContext: context
+                );
+              }));
+            },
+            child: new Container(
+                width: MediaQuery.of(context).size.width,
+                margin: EdgeInsets.only(top: 8.0),
+                padding: EdgeInsets.all(8.0),
+                decoration: new BoxDecoration(
+                    color: Theme.of(context).canvasColor,
+                    borderRadius: BorderRadius.circular(5.0)
+                ),
+                child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      getExtendedText(topic),
+                      getRootPostImages(rootTopic['topic'])
+                    ]
+                )
             )
-        )
-      );
+        );
+      }
     } else {
       return getPostBanned("delete");
     }

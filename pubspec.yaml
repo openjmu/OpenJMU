@@ -28,6 +28,7 @@ dependencies:
     flutter_cache_manager: ^0.3.2
     flutter_colorpicker: ^0.2.3
     flutter_local_notifications: ^0.6.1
+    flutter_icons: ^0.1.4
     flutter_platform_widgets: ^0.9.5
     flutter_webview_plugin: ^0.3.4
     flutter_svg: ^0.12.4

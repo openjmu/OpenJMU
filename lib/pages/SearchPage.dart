@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -113,7 +115,7 @@ class SearchPageState extends State<SearchPage> {
         title: title,
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.search),
+            icon: Platform.isAndroid ? Icon(Icons.search) : Ionicons.getIconData("ios-search"),
             onPressed: () {
               if (_controller.text != null && _controller.text != "") {
                 search(_controller.text);

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:badges/badges.dart';
 import 'package:ota_update/ota_update.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
@@ -41,7 +43,10 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 //    Icons.home, Icons.fiber_new, Icons.apps, Icons.chat, Icons.account_circle
 //  ];
   final List<IconData> bottomAppBarIcons = [
-    Icons.home, Icons.apps, Icons.chat, Icons.account_circle
+    Platform.isAndroid ? Icons.home : Ionicons.getIconData("ios-home"),
+    Platform.isAndroid ? Icons.apps : Ionicons.getIconData("ios-apps"),
+    Platform.isAndroid ? Icons.chat : Ionicons.getIconData("ios-chatboxes"),
+    Platform.isAndroid ? Icons.account_circle : Ionicons.getIconData("ios-contact")
   ];
 
   TextStyle tabTextStyleSelected = new TextStyle(color: ThemeUtils.currentColorTheme);
@@ -231,7 +236,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 actions: <Widget>[
                   _tabIndex == 0
                   ? IconButton(
-                    icon: Icon(Icons.search),
+                    icon: Icon(Platform.isAndroid ? Icons.search : FontAwesome.getIconData("search")),
                     onPressed: () {
                       Navigator.of(context).pushNamed("/search");
                     },
@@ -239,7 +244,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                   : Container(),
                   BadgeIconButton(
                       itemCount: notifications.count,
-                      icon: Icon(Icons.notifications),
+                      icon: Icon(Platform.isAndroid ? Icons.notifications : Ionicons.getIconData("ios-notifications")),
                       badgeColor: Colors.redAccent,
                       badgeTextColor: Colors.white,
                       hideZeroCount: true,
@@ -258,7 +263,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           ),
           floatingActionButton: new Builder(builder: (BuildContext context) {
             return new FloatingActionButton(
-              child: new Icon(Icons.add),
+              child: new Icon(Platform.isAndroid ? Icons.add : Ionicons.getIconData("ios-add")),
               tooltip: "发布新动态",
               foregroundColor: Colors.white,
               backgroundColor: currentThemeColor,
