@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/pages/LoginPage.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -48,7 +50,15 @@ class SplashState extends State<SplashPage> {
     timer = new Timer(const Duration(milliseconds: 2000), () {
       if (!isUserLogin) {
         try {
-          Navigator.of(context).pushReplacementNamed("/login");
+          Navigator.of(context).pushReplacement(PageRouteBuilder(
+              transitionDuration: Duration(milliseconds: 500),
+              pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
+                return new FadeTransition(
+                    opacity: animation,
+                    child: LoginPage()
+                );
+              })
+          );
         } catch (e) {}
       } else {
         try {
