@@ -49,12 +49,12 @@ class EmojiUtils {
     _emojiMap["[大兵]"] = "$_emojiFilePath/大兵.png";
     /// 奋斗1
     _emojiMap["[咒骂]"] = "$_emojiFilePath/咒骂.png";
-    /// 疑问2
+    _emojiMap["[疑问2]"] = "$_emojiFilePath/疑问2.png";
     _emojiMap["[嘘]"] = "$_emojiFilePath/嘘.png";
     _emojiMap["[晕3]"] = "$_emojiFilePath/晕3.png";
     _emojiMap["[折磨1]"] = "$_emojiFilePath/折磨1.png";
     _emojiMap["[衰1]"] = "$_emojiFilePath/衰1.png";
-    /// 骷髅
+    _emojiMap["[骷髅]"] = "$_emojiFilePath/骷髅.png";
     /// 敲打
     _emojiMap["[再见]"] = "$_emojiFilePath/再见.png";
     /// 擦汗
@@ -65,10 +65,10 @@ class EmojiUtils {
     /// 左哼哼
     /// 右哼哼
     _emojiMap["[哈欠]"] = "$_emojiFilePath/哈欠.png";
-    /// 鄙视2
+    _emojiMap["[鄙视2]"] = "$_emojiFilePath/鄙视2.png";
     _emojiMap["[委屈1]"] = "$_emojiFilePath/委屈1.png";
     _emojiMap["[快哭了]"] = "$_emojiFilePath/快哭了.png";
-    /// 阴险
+    _emojiMap["[阴险]"] = "$_emojiFilePath/阴险.png";
     _emojiMap["[亲亲]"] = "$_emojiFilePath/亲亲.png";
     _emojiMap["[吓]"] = "$_emojiFilePath/吓.png";
     _emojiMap["[可怜2]"] = "$_emojiFilePath/可怜2.png";
@@ -91,7 +91,7 @@ class EmojiUtils {
     _emojiMap["[刀]"] = "$_emojiFilePath/刀.png";
     _emojiMap["[足球]"] = "$_emojiFilePath/足球.png";
     _emojiMap["[瓢虫]"] = "$_emojiFilePath/瓢虫.png";
-    /// 便便
+    _emojiMap["[便便]"] = "$_emojiFilePath/便便.png";
     _emojiMap["[月亮]"] = "$_emojiFilePath/月亮.png";
     _emojiMap["[太阳]"] = "$_emojiFilePath/太阳.png";
     _emojiMap["[礼物]"] = "$_emojiFilePath/礼物.png";
@@ -105,7 +105,7 @@ class EmojiUtils {
     _emojiMap["[拳头]"] = "$_emojiFilePath/拳头.png";
     /// 差劲
     _emojiMap["[爱你]"] = "$_emojiFilePath/爱你.png";
-    /// NO
+    _emojiMap["[NO]"] = "$_emojiFilePath/NO.png";
     _emojiMap["[OK]"] = "$_emojiFilePath/OK.png";
     _emojiMap["[爱情]"] = "$_emojiFilePath/爱情.png";
     /// 飞吻1
