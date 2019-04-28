@@ -9,7 +9,6 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
@@ -20,17 +19,19 @@ class AppCenterPage extends StatefulWidget {
 
 class AppCenterPageState extends State<AppCenterPage> {
   final ScrollController _scrollController = new ScrollController();
-  String sid;
   Color themeColor = ThemeUtils.currentColorTheme;
   Map<String, List<Widget>> webAppWidgetList = new Map();
   List<Widget> webAppList = [];
   List webAppListData;
   int listTotalSize = 0;
 
+  var _futureBuilderFuture;
+
+
   @override
   void initState() {
     super.initState();
-    getAppList();
+    _futureBuilderFuture = getAppList();
     Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
       if (this.mounted && event.tabIndex == 1) {
         _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
@@ -54,38 +55,57 @@ class AppCenterPageState extends State<AppCenterPage> {
     );
   }
 
-  void getAppList() async {
-    NetUtils.getPlainWithCookieSet(
-        Api.webAppLists
-    ).then((response) {
-      webAppListData = jsonDecode(response.toString());
-      for (var i = 0; i < webAppListData.length; i++) {
-        String url = webAppListData[i]['url'];
-        String name = webAppListData[i]['name'];
-        if ((url != "" && url != null) && (name != "" && name != null)) {
-          WebApp _app = createWebApp(webAppListData[i]);
-          WebApp.category().forEach((name, value) {
-            if (_app.menuType == name) {
-              if (webAppWidgetList[name] == null) {
-                webAppWidgetList[name] = [];
-              }
-              webAppWidgetList[name].add(getWebAppButton(_app));
+  Future getAppList() async {
+    return NetUtils.getPlainWithCookieSet(Api.webAppLists);
+  }
+
+  Widget categoryListView(BuildContext context, AsyncSnapshot snapshot) {
+    List<dynamic> data = jsonDecode(snapshot.data.toString());
+    Map<String, List<Widget>> appList = {};
+    for (var i = 0; i < data.length; i++) {
+      String url = data[i]['url'];
+      String name = data[i]['name'];
+      if ((url != "" && url != null) && (name != "" && name != null)) {
+        WebApp _app = createWebApp(data[i]);
+        WebApp.category().forEach((name, value) {
+          if (_app.menuType == name) {
+            if (appList[name.toString()] == null) {
+              appList[name.toString()] = [];
             }
-          });
-        }
+            appList[name].add(getWebAppButton(_app));
+          }
+        });
       }
-      List<Widget> _list = [];
-      WebApp.category().forEach((name, value) {
-        _list.add(getSectionColumn(name));
-      });
-      setState(() {
-        webAppList = _list;
-      });
-    }).catchError((e) {
-      print(e.toString());
-      showShortToast(e.toString());
-      return e;
+    }
+    webAppWidgetList = appList;
+    List<Widget> _list = [];
+    WebApp.category().forEach((name, value) {
+      _list.add(getSectionColumn(name));
     });
+    return ListView.builder(
+        itemCount: _list.length,
+        itemBuilder: (BuildContext context, index) => _list[index]
+    );
+  }
+
+  Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot) {
+    switch (snapshot.connectionState) {
+      case ConnectionState.none:
+        return Center(child: Text('尚未加载'));
+      case ConnectionState.active:
+        return Center(child: Text('正在加载'));
+      case ConnectionState.waiting:
+        return Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(themeColor),
+          ),
+        );
+      case ConnectionState.done:
+        if (snapshot.hasError) return Text('错误: ${snapshot.error}');
+        return categoryListView(context, snapshot);
+      default:
+        return Center(child: Text('尚未加载'));
+    }
   }
 
   String replaceParamsInUrl(url) {
@@ -97,7 +117,7 @@ class AppCenterPageState extends State<AppCenterPage> {
     return result;
   }
 
-  Widget getWebAppButton( webApp) {
+  Widget getWebAppButton(webApp) {
     String url = replaceParamsInUrl(webApp.url);
     String imageUrl = Api.webAppIconsInsecure + "appid=${webApp.id}&code=${webApp.code}";
     Widget button = new FlatButton(
@@ -150,7 +170,7 @@ class AppCenterPageState extends State<AppCenterPage> {
                 ),
                 decoration: new BoxDecoration(
                   border: Border(
-                    bottom: Divider.createBorderSide(context, color: Colors.grey, width: 2.0),
+                    bottom: Divider.createBorderSide(context, color: Theme.of(context).dividerColor, width: 2.0),
                   ),
                 ),
               ),
@@ -171,18 +191,13 @@ class AppCenterPageState extends State<AppCenterPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (webAppList.length == 0) {
-      return new Center(
-        child: new CircularProgressIndicator(
-          valueColor: new AlwaysStoppedAnimation<Color>(themeColor),
+    return new RefreshIndicator(
+        child: FutureBuilder(
+          builder: _buildFuture,
+          future: _futureBuilderFuture,
         ),
-      );
-    } else {
-      return new ListView(
-        controller: _scrollController,
-        children: webAppList
-      );
-    }
+        onRefresh: getAppList
+    );
   }
 
 }

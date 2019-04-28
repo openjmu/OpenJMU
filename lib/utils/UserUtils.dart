@@ -3,7 +3,8 @@ import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 
 class UserUtils {
-  static UserInfo currentUser = new UserInfo(null, null, null, null, null, null, null, null, null, null);
+  static final UserInfo emptyUser = new UserInfo(null, null, null, null, null, null, null, null, null, null);
+  static UserInfo currentUser = emptyUser;
 
   static UserInfo createUserInfo(userData) {
     int _workId = 0;

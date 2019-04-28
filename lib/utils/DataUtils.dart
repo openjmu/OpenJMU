@@ -207,6 +207,7 @@ class DataUtils {
 
   // 清除登录信息
   static clearLoginInfo() async {
+    UserUtils.currentUser = UserUtils.emptyUser;
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.setBool(spIsLogin, false);
     await sp.remove(spUserSid);
