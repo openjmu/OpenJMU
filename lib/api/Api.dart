@@ -63,4 +63,9 @@ class Api {
   static final String commentListByMention = wbHost + "/reply_api/mentionme";
   static final String praiseList = wbHost + "/praise_api/tome";
 
+  /// 签到相关
+  static final String sign = oa99Host + "/ajax/sign/usersign";
+  static final String signList = oa99Host + "/ajax/sign/getsignlist";
+  static final String signStatus = oa99Host + "/ajax/sign/gettodaystatus";
+  static final String signSummary = oa99Host + "/ajax/sign/usersign";
 }

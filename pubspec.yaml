@@ -1,7 +1,7 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.3.10+32
+version: 0.3.11+33
 
 environment:
     sdk: ">=2.1.0 <3.0.0"
@@ -26,6 +26,7 @@ dependencies:
     image_downloader: ^0.14.1
     fluttertoast: ^3.0.4
     flutter_cache_manager: ^0.3.2
+    flutter_calendar_carousel: ^1.3.16
     flutter_colorpicker: ^0.2.3
     flutter_local_notifications: ^0.6.1
     flutter_icons: ^0.1.4

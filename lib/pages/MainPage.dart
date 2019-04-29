@@ -37,15 +37,15 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
-//  final List<String> bottomAppBarTitles = ['首页', '新闻', '应用中心', '消息', '我的'];
-  final List<String> bottomAppBarTitles = ['首页', '应用中心', '消息', '我的'];
+//  final List<String> bottomAppBarTitles = ['首页', '新闻', '应用中心', '发现', '我的'];
+  final List<String> bottomAppBarTitles = ['首页', '应用中心', '发现', '我的'];
 //  final List<IconData> bottomAppBarIcons = [
 //    Icons.home, Icons.fiber_new, Icons.apps, Icons.chat, Icons.account_circle
 //  ];
   final List<IconData> bottomAppBarIcons = [
     Platform.isAndroid ? Icons.home : Ionicons.getIconData("ios-home"),
     Platform.isAndroid ? Icons.apps : Ionicons.getIconData("ios-apps"),
-    Platform.isAndroid ? Icons.chat : Ionicons.getIconData("ios-chatboxes"),
+    Platform.isAndroid ? Ionicons.getIconData("md-cube") : Ionicons.getIconData("ios-cube"),
     Platform.isAndroid ? Icons.account_circle : Ionicons.getIconData("ios-contact")
   ];
 
