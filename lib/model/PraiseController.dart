@@ -8,81 +8,8 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/cards/PraiseCard.dart';
-
-class PraiseAPI {
-  static getPraiseList(bool isMore, int lastValue, {additionAttrs}) async {
-    String _praiseUrl;
-    if (isMore) {
-      _praiseUrl = "${Api.praiseList}/id_max/$lastValue";
-    } else {
-      _praiseUrl = "${Api.praiseList}";
-    }
-    return NetUtils.getWithCookieAndHeaderSet(_praiseUrl);
-  }
-  static getPraiseInPostList(postId) {
-    return NetUtils.getWithCookieAndHeaderSet("${Api.postPraisesList}$postId");
-  }
-
-
-  static requestPraise(id, isPraise) async {
-    if (isPraise) {
-      return NetUtils.postWithCookieAndHeaderSet("${Api.postRequestPraise}$id")
-          .catchError((e) {
-            print(e.response);
-          });
-    } else {
-      return NetUtils.deleteWithCookieAndHeaderSet("${Api.postRequestPraise}$id")
-          .catchError((e) {
-            print(e.response);
-          });
-    }
-  }
-
-
-  static Praise createPraiseInPost(itemData) {
-    String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";
-    String _praiseTime = new DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
-      .toString()
-      .substring(0,16);
-    Praise _praise = new Praise(
-      itemData['id'],
-      itemData['user']['uid'],
-      _avatar,
-      null,
-      _praiseTime,
-      itemData['user']['nickname'],
-      null,
-      null,
-      null,
-      null,
-    );
-    return _praise;
-
-  }
-  static Praise createPraise(itemData) {
-    String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";
-    String _praiseTime = new DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
-        .toString()
-        .substring(0,16);
-    Praise _praise = new Praise(
-      itemData['id'],
-      itemData['user']['uid'],
-      _avatar,
-      itemData['topic']['tid'] is String ? int.parse(itemData['topic']['tid']) : itemData['topic']['tid'],
-      _praiseTime,
-      itemData['user']['nickname'],
-      itemData['topic'],
-      itemData['topic']['user']['uid'] is String ? int.parse(itemData['topic']['user']['uid']) : itemData['topic']['user']['uid'],
-      itemData['topic']['user']['nickname'],
-      itemData['topic']['image'],
-    );
-    return _praise;
-  }
-
-}
 
 class PraiseController {
   final bool isMore;

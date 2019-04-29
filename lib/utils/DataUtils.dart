@@ -125,7 +125,7 @@ class DataUtils {
           Constants.eventBus.fire(new LoginFailedEvent());
           print(e.response);
           print(e.toString());
-          SnackbarUtils.show(
+          SnackBarUtils.show(
               context,
               "设置用户信息失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}"
           );
@@ -137,7 +137,7 @@ class DataUtils {
         Constants.eventBus.fire(new LoginFailedEvent());
         print(e.response);
         print(e.toString());
-        SnackbarUtils.show(
+        SnackBarUtils.show(
             context,
             "登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}"
         );
@@ -149,7 +149,7 @@ class DataUtils {
       print(e.response);
       print(e.toString());
       showShortToast(e.toString());
-      SnackbarUtils.show(
+      SnackBarUtils.show(
           context,
           "登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}"
       );

@@ -139,7 +139,6 @@ class AppCenterPageState extends State<AppCenterPage> {
       ),
       onPressed: () {
         return CommonWebPage.jump(context, url, webApp.name);
-//        return InAppBrowserPage.open(context, url, name);
       },
     );
     return button;

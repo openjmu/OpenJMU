@@ -135,8 +135,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                   suffixIcon: new IconButton(
                       icon: new Icon(
                         _isObscure
-                          ? Platform.isAndroid ? Ionicons.getIconData("md-eye-off") : Ionicons.getIconData("ios-eye-off")
-                          : Platform.isAndroid ? Ionicons.getIconData("md-eye") : Ionicons.getIconData("ios-eye"),
+                          ? Platform.isAndroid ? Icons.visibility_off : Ionicons.getIconData("ios-eye-off")
+                          : Platform.isAndroid ? Icons.visibility : Ionicons.getIconData("ios-eye"),
                         color: _defaultIconColor,
                       ),
                       onPressed: () {

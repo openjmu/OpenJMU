@@ -140,7 +140,6 @@ class EmojiUtils {
         TextPosition(offset: offset)
     );
   }
-
 }
 
 
