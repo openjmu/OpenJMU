@@ -1,14 +1,16 @@
 import 'dart:async';
-import 'dart:ui';
-import 'dart:io';
 import 'dart:core';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+import 'dart:ui';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:extended_text_field/extended_text_field.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:dragablegridview_flutter/dragablegridview_flutter.dart';
 import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
@@ -16,41 +18,48 @@ import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
+import 'package:OpenJMU/model/SpecialTextField.dart';
 import 'package:OpenJMU/utils/EmojiUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/widgets/ToggleButton.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
+import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
 
 class PublishPostPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() {
-    return new PublishPostPageState();
-  }
+  State<StatefulWidget> createState() => PublishPostPageState();
 }
 
 class PublishPostPageState extends State<PublishPostPage> {
   List<ItemBin> imagesBin = List<ItemBin>();
-  int imagesLength = 0, maxImagesLength = 9, uploadedImages = 1;
   List _imageIdList = [];
-  TextEditingController _controller = new TextEditingController();
+
+  int imagesLength = 0, maxImagesLength = 9, uploadedImages = 1;
+
+  TextEditingController _textEditingController = new TextEditingController();
   EditSwitchController _editSwitchController = new EditSwitchController();
   LoadingDialogController _loadingDialogController = new LoadingDialogController();
+  FocusNode _focusNode = new FocusNode();
 
   bool isLoading = false;
+  bool isFocus = false;
 
   int gridCount = 5;
-  int currentLength = 0;
-  int maxLength = 300;
+
+  int currentLength = 0, maxLength = 300, currentOffset;
+  Color counterTextColor = Colors.grey;
+  double _keyboardHeight = EmotionPadState.emoticonPadDefaultHeight;
 
   bool emoticonPadActive = false;
 
   String msg = "";
   String sid = UserUtils.currentUser.sid;
-  Color counterTextColor = Colors.grey;
 
   Timer _timer;
+  Timer _mentionTimer;
 
   static double _iconWidth = 24.0;
   static double _iconHeight = 24.0;
@@ -67,7 +76,15 @@ class PublishPostPageState extends State<PublishPostPage> {
     super.initState();
     Constants.eventBus.on<AddEmoticonEvent>().listen((event) {
       if (mounted && event.route == "publish") {
-        EmojiUtils.addEmoticon(event.emoticon, _controller);
+        insertText(event.emoticon);
+      }
+    });
+    Constants.eventBus.on<MentionPeopleEvent>().listen((event) {
+      if (mounted) {
+        FocusScope.of(context).requestFocus(_focusNode);
+        _mentionTimer = Timer(Duration(milliseconds: 300), () {
+          insertText("<M ${event.user.id}>@${event.user.nickname}</M>");
+        });
       }
     });
   }
@@ -76,26 +93,36 @@ class PublishPostPageState extends State<PublishPostPage> {
   void dispose() {
     super.dispose();
     _timer?.cancel();
-    _controller?.dispose();
+    _mentionTimer?.cancel();
+    _textEditingController?.dispose();
   }
 
   void addTopic() {
-    int currentPosition = _controller.selection.baseOffset;
+    int currentPosition = _textEditingController.selection.baseOffset;
     String result;
-    if (_controller.text.length > 0) {
-      String leftText = _controller.text.substring(0, currentPosition);
-      String rightText = _controller.text.substring(currentPosition, _controller.text.length);
+    if (_textEditingController.text.length > 0) {
+      String leftText = _textEditingController.text.substring(0, currentPosition);
+      String rightText = _textEditingController.text.substring(currentPosition, _textEditingController.text.length);
       result = "$leftText##$rightText";
     } else {
       result = "##";
     }
-    _controller.text = result;
-    _controller.selection = TextSelection.fromPosition(
+    _textEditingController.text = result;
+    _textEditingController.selection = TextSelection.fromPosition(
         TextPosition(offset: currentPosition + 1)
     );
   }
 
+  void mentionPeople() {
+    currentOffset = _textEditingController.selection.extentOffset;
+    showDialog<Null>(
+      context: context,
+      builder: (BuildContext context) => MentionPeopleDialog()
+    );
+  }
+
   Future<void> loadAssets() async {
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
     List<Asset> resultList = List<Asset>();
     try {
       resultList = await MultiImagePicker.pickImages(
@@ -129,8 +156,14 @@ class PublishPostPageState extends State<PublishPostPage> {
   Widget textField() {
     return Expanded(
         child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
-            child: TextField(
+          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
+          child: ExtendedTextField(
+              specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(
+                  showAtBackground: false
+              ),
+              controller: _textEditingController,
+              focusNode: _focusNode,
+              autofocus: true,
               decoration: InputDecoration(
                   enabled: !isLoading,
                   hintText: "分享你的动态...",
@@ -144,7 +177,7 @@ class PublishPostPageState extends State<PublishPostPage> {
               ),
               style: TextStyle(fontSize: 18.0),
               maxLength: maxLength,
-              controller: _controller,
+              maxLines: null,
               onChanged: (content) {
                 if (content.length == maxLength) {
                   setState(() {
@@ -160,9 +193,9 @@ class PublishPostPageState extends State<PublishPostPage> {
                 setState(() {
                   currentLength = content.length;
                 });
-              },
-              maxLines: null,
-            )
+              }
+            //textDirection: TextDirection.rtl,
+          ),
         )
     );
   }
@@ -170,7 +203,7 @@ class PublishPostPageState extends State<PublishPostPage> {
   Positioned customGridView(context) {
     int size = (MediaQuery.of(context).size.width / gridCount).floor() - (18 - gridCount);
     return Positioned(
-        bottom: MediaQuery.of(context).padding.bottom + (emoticonPadActive?EmotionPadState.emoticonPadHeight:0) ?? (emoticonPadActive?EmotionPadState.emoticonPadHeight:0),
+        bottom: (emoticonPadActive ? _keyboardHeight : 0.0) + MediaQuery.of(context).padding.bottom ?? 0.0,
         left: 0.0,
         right: 0.0,
         child: Container(
@@ -213,7 +246,7 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   Widget _counter(context) {
     return Positioned(
-        bottom: MediaQuery.of(context).padding.bottom + 60.0 + (emoticonPadActive?EmotionPadState.emoticonPadHeight:0) ?? 60.0 + (emoticonPadActive?EmotionPadState.emoticonPadHeight:0),
+        bottom: (emoticonPadActive ? _keyboardHeight : 0.0) + (MediaQuery.of(context).padding.bottom ?? 0) + 60.0,
         right: 0.0,
         child: Padding(
             padding: EdgeInsets.only(right: 11.0),
@@ -234,7 +267,7 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   Widget _toolbar(context) {
     return Positioned(
-        bottom: MediaQuery.of(context).padding.bottom + (emoticonPadActive?EmotionPadState.emoticonPadHeight:0) ?? (emoticonPadActive?EmotionPadState.emoticonPadHeight:0),
+        bottom: (emoticonPadActive ? _keyboardHeight : 0.0) + MediaQuery.of(context).padding.bottom ?? 60.0,
         left: 0.0,
         right: 0.0,
         child: Container(
@@ -247,32 +280,56 @@ class PublishPostPageState extends State<PublishPostPage> {
                     icon: poundIcon(context)
                 ),
                 IconButton(
-                    onPressed: null,
+                    onPressed: mentionPeople,
                     icon: Icon(
                         Platform.isAndroid ? Ionicons.getIconData("ios-at") : Ionicons.getIconData("md-at"),
                         color: Theme.of(context).iconTheme.color
                     )
                 ),
                 IconButton(
-                    onPressed: () {
-                      loadAssets();
-                    },
+                    onPressed: loadAssets,
                     icon: Icon(
                         Icons.add_photo_alternate,
                         color: Theme.of(context).iconTheme.color
                     )
                 ),
-                IconButton(
-                    onPressed: () => setState(() {emoticonPadActive = !emoticonPadActive;}),
-                    icon: Icon(
-                        Icons.mood,
-                        color: Theme.of(context).iconTheme.color
-                    )
+                ToggleButton(
+                  activeWidget: Icon(
+                    Icons.sentiment_very_satisfied,
+                    color: ThemeUtils.currentColorTheme,
+                  ),
+                  unActiveWidget: Icon(
+                      Icons.sentiment_very_satisfied,
+                      color: Theme.of(context).iconTheme.color
+                  ),
+                  activeChanged: (bool active) {
+                    Function change = () {
+                      setState(() {
+                        if (active) FocusScope.of(context).requestFocus(_focusNode);
+                        emoticonPadActive = active;
+                      });
+                    };
+                    updatePadStatus(change);
+                  },
+                  active: emoticonPadActive,
                 ),
               ]
           )
         )
     );
+  }
+
+  void updatePadStatus(Function change) {
+    emoticonPadActive
+      ? change()
+      : SystemChannels.textInput.invokeMethod('TextInput.hide').whenComplete(() {
+        Future.delayed(Duration(milliseconds: 200)).whenComplete(change);
+      });
+  }
+
+  Widget buildEmoticonPad() {
+    if (!emoticonPadActive) return Container();
+    return EmotionPad("publish", _keyboardHeight);
   }
 
   Widget emoticonPad(context) {
@@ -282,7 +339,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         right: 0.0,
         child: Visibility(
             visible: emoticonPadActive,
-            child: EmotionPad("publish")
+            child: EmotionPad("publish", _keyboardHeight)
         )
     );
   }
@@ -297,8 +354,37 @@ class PublishPostPageState extends State<PublishPostPage> {
     });
   }
 
+  void insertText(String text) {
+    var value = _textEditingController.value;
+    int start = value.selection.baseOffset;
+    int end = value.selection.extentOffset;
+    if (value.selection.isValid) {
+      String newText = "";
+      if (value.selection.isCollapsed) {
+        if (end > 0) {
+          newText += value.text.substring(0, end);
+        }
+        newText += text;
+        if (value.text.length > end) {
+          newText += value.text.substring(end, value.text.length);
+        }
+      } else {
+        newText = value.text.replaceRange(start, end, text);
+      }
+      setState(() {
+        _textEditingController.value = value.copyWith(
+            text: newText,
+            selection: value.selection.copyWith(
+                baseOffset: end + text.length,
+                extentOffset: end + text.length
+            )
+        );
+      });
+    }
+  }
+
   void post(context) async {
-    String content = _controller.text;
+    String content = _textEditingController.text;
     if (content.length == 0 || content.trim().length == 0) {
       showCenterShortToast("内容不能为空");
     } else {
@@ -323,7 +409,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         try {
           List<Future> query = new List(imagesBin.length);
           _imageIdList = new List(imagesBin.length);
-          for (var i=0; i < imagesBin.length; i++) {
+          for (int i=0; i < imagesBin.length; i++) {
             Asset imageData = imagesBin[i].data;
             FormData _form = await createForm(imageData);
             query[i] = getImageRequest(_form, i);
@@ -411,6 +497,12 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   @override
   Widget build(BuildContext context) {
+    double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    if (keyboardHeight > 0) {
+      emoticonPadActive = false;
+    }
+    _keyboardHeight = max(_keyboardHeight, keyboardHeight);
+
     return Scaffold(
         appBar: AppBar(
           elevation: 1,

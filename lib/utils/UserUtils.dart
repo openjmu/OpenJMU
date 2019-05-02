@@ -27,13 +27,13 @@ class UserUtils {
 
   static User createUser(userData) {
     return new User(
-        userData["uid"],
-        userData["nickname"],
-        userData["gender"],
-        userData["topics"],
-        userData["latest_tid"],
-        userData["fans"],
-        userData["idols"],
+        userData["uid"] is String ? int.parse(userData['uid']) : userData['uid'],
+        userData["nickname"] ?? userData["username"] ?? userData["name"] ?? userData["uid"].toString(),
+        userData["gender"] ?? 0,
+        userData["topics"] ?? 0,
+        userData["latest_tid"] ?? null,
+        userData["fans"] ?? 0,
+        userData["idols"] ?? 0,
         userData["is_following"] == 1 ? true : false
     );
   }
@@ -124,4 +124,7 @@ class UserUtils {
     );
   }
 
+  static Future searchUser(name) async {
+      return NetUtils.getWithCookieSet(Api.searchUser, data: {"keyword": name});
+  }
 }

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -123,29 +124,12 @@ class EmojiUtils {
     /// 左太极
     /// 右太极
   }
-
-  static void addEmoticon(String emoticon, TextEditingController controller) {
-    int currentPosition = controller.selection.extentOffset;
-    int offset = controller.selection.extentOffset + emoticon.length;
-    String result;
-    if (controller.text.length > 0) {
-      String leftText = controller.text.substring(0, currentPosition);
-      String rightText = controller.text.substring(currentPosition, controller.text.length);
-      result = "$leftText$emoticon$rightText";
-    } else {
-      result = "$emoticon";
-    }
-    controller.text = result;
-    controller.selection = TextSelection.fromPosition(
-        TextPosition(offset: offset)
-    );
-  }
 }
-
 
 class EmotionPad extends StatefulWidget {
   final String route;
-  EmotionPad(this.route, {Key key}) : super(key: key);
+  final double height;
+  EmotionPad(this.route, this.height, {Key key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => EmotionPadState();
@@ -153,7 +137,8 @@ class EmotionPad extends StatefulWidget {
 
 class EmotionPadState extends State<EmotionPad> {
 
-  static double emoticonPadHeight = 178;
+  static double emoticonPadDefaultHeight = 260;
+  static double emoticonPadHeight;
   static List<String> emoticonNames = [];
   static List<String> emoticonPaths = [];
 
@@ -168,9 +153,10 @@ class EmotionPadState extends State<EmotionPad> {
 
   @override
   Widget build(BuildContext context) {
+    double height = max(emoticonPadDefaultHeight, widget.height);
     return Container(
         color: Theme.of(context).canvasColor,
-        height: emoticonPadHeight,
+        height: height,
         child: GridView.builder(
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 8

@@ -94,6 +94,13 @@ class AddEmoticonEvent {
   }
 }
 
+class MentionPeopleEvent {
+  User user;
+  MentionPeopleEvent(User user) {
+    this.user = user;
+  }
+}
+
 class HasUpdateEvent {
   Map<String, dynamic> response;
   HasUpdateEvent(Map<String, dynamic> response) {

@@ -59,9 +59,12 @@ class MentionText extends SpecialText {
 
   @override
   TextSpan finishText() {
-    final String mentionOriginalText = toString();
-    int uid = getUidFromContent(mentionOriginalText);
+    String mentionOriginalText = toString();
     String mentionText = removeUidFromContent(mentionOriginalText);
+    int uid = getUidFromContent(mentionOriginalText);
+
+    mentionOriginalText = "${mentionOriginalText.substring(0, mentionOriginalText.length - 2)}>";
+
     return TextSpan(
         text: mentionText,
         style: textStyle?.copyWith(color: Colors.blue, fontSize: _fontSize),
@@ -71,7 +74,8 @@ class MentionText extends SpecialText {
             data['content'] = mentionText;
             data['uid'] = uid;
             if (onTap != null) onTap(data);
-          });
+          }
+    );
   }
 }
 
@@ -91,20 +95,20 @@ class PoundText extends SpecialText {
             Map<String, dynamic> data = new Map();
             data['content'] = toString();
             if (onTap != null) onTap(data);
-          });
+          }
+    );
   }
 }
 
-class EmojiText extends SpecialText {
+class EmoticonText extends SpecialText {
   static const String flag = "[";
 
-  EmojiText(TextStyle textStyle) : super(EmojiText.flag, "]", textStyle);
+  EmoticonText(TextStyle textStyle) : super(EmoticonText.flag, "]", textStyle);
 
   @override
   TextSpan finishText() {
     var key = toString();
     if (EmojiUtils.instance.emojiMap.containsKey(key)) {
-//      final double size = 18.0;
       final double size = 30.0/27.0 * _fontSize;
 
       return ImageSpan(AssetImage(EmojiUtils.instance.emojiMap[key]),
@@ -138,8 +142,12 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
           }
         } else {
           textStack += char;
-          specialText =
-              createSpecialText(textStack, textStyle: textStyle, onTap: onTap);
+          specialText = createSpecialText(
+              textStack,
+              textStyle: textStyle,
+              onTap: onTap,
+              index: i - (textStack.length - 1)
+          );
           if (specialText != null) {
             if (textStack.length - specialText.startFlag.length >= 0) {
               textStack = textStack.substring(
@@ -155,7 +163,8 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       if (specialText != null) {
         inlineList.add(TextSpan(
             text: specialText.startFlag + specialText.getContent(),
-            style: textStyle));
+            style: textStyle)
+        );
       } else if (textStack.length > 0) {
         inlineList.add(TextSpan(text: textStack, style: textStyle));
       }
@@ -166,7 +175,7 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
 
   @override
   SpecialText createSpecialText(String flag,
-      {TextStyle textStyle, SpecialTextGestureTapCallback onTap}) {
+      {TextStyle textStyle, SpecialTextGestureTapCallback onTap, int index}) {
     if (flag == null || flag == "") return null;
 
     if (isStart(flag, MentionText.startKey)) {
@@ -175,8 +184,8 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     else if (isStart(flag, PoundText.flag)) {
       return PoundText(textStyle, onTap);
     }
-    else if (isStart(flag, EmojiText.flag)) {
-      return EmojiText(textStyle);
+    else if (isStart(flag, EmoticonText.flag)) {
+      return EmoticonText(textStyle);
     }
     else if (isStart(flag, LinkText.startKey)) {
       return LinkText(textStyle, onTap);

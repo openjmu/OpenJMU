@@ -37,6 +37,7 @@ class Api {
   static final String userFollowAdd = oap99Host + "/friend/followadd/";
   static final String userFollowDel = oap99Host + "/friend/followdel/";
   static final String userSignature = oa99Host + "/v2/api/user/signature_edit";
+  static final String searchUser = oa99Host + "/v2/api/search/users";
 
   /// 应用中心
   static final String webAppLists = oap99Host + "/app/unitmenu?cfg=1";

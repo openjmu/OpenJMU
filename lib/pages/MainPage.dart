@@ -57,7 +57,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   Timer notificationTimer;
   Stopwatch watch = new Stopwatch();
 
-  int _tabIndex = 2;
+  int _tabIndex = 0;
   var _body;
   var pages = [
     PostSquareListPage(),
