@@ -86,8 +86,7 @@ class MentionText extends SpecialText {
   TextSpan finishText() {
     String mentionOriginalText = toString();
     String mentionText = removeUidFromContent(mentionOriginalText);
-    int indentLength = MentionText.startKey.length + MentionText.endKey.length;
-    mentionOriginalText = "${mentionOriginalText.substring(0, mentionOriginalText.length - indentLength)}>";
+    mentionOriginalText = "${mentionOriginalText.substring(0, mentionOriginalText.length - MentionText.endKey.length)}>";
 
     if (type == BuilderType.extendedTextField) {
       print("mentionText: $mentionText");
