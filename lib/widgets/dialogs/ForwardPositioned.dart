@@ -9,7 +9,7 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/model/SpecialTextField.dart';
+import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/utils/EmojiUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
@@ -67,9 +67,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
 
   Widget textField() {
     return ExtendedTextField(
-        specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(
-            showAtBackground: false
-        ),
+        specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
         focusNode: _focusNode,
         controller: _forwardController,
         decoration: InputDecoration(
@@ -86,24 +84,16 @@ class ForwardPositionedState extends State<ForwardPositioned> {
   }
 
   void _requestForward(context) {
-    setState(() {
-      _forwarding = true;
-    });
+    setState(() { _forwarding = true; });
     String _content;
-    if (_forwardController.text.length == 0) {
-      _content = "转发";
-    } else {
-      _content = _forwardController.text;
-    }
+    _forwardController.text.length == 0 ? _content = "转发" : _content = _forwardController.text;
     PostAPI.postForward(
         _content,
         widget.post.id,
         commentAtTheMeanTime
     ).then((response) {
       showShortToast("转发成功");
-      setState(() {
-        _forwarding = false;
-      });
+      setState(() { _forwarding = false; });
       Navigator.of(context).pop();
       Constants.eventBus.fire(new PostForwardedEvent(widget.post.id, widget.post.forwards));
     });

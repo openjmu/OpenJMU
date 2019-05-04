@@ -165,7 +165,7 @@ class CommentCard extends StatelessWidget {
 
   Widget getExtendedText(context, content) {
     return new ExtendedText(
-      content,
+      content != null ? "$content " : null,
       style: new TextStyle(fontSize: 16.0),
       onSpecialTextTap: (dynamic data) {
         String text = data['content'];
@@ -340,19 +340,19 @@ class CommentCardInPost extends StatelessWidget {
 
   Widget getExtendedText(context, content) {
     return new ExtendedText(
-      content,
-      style: new TextStyle(fontSize: 16.0),
-      onSpecialTextTap: (dynamic data) {
-        String text = data['content'];
-        if (text.startsWith("#")) {
-          return SearchPage.search(context, text.substring(1, text.length-1));
-        } else if (text.startsWith("@")) {
-          return UserPage.jump(context, data['uid']);
-        } else if (text.startsWith("https://wb.jmu.edu.cn")) {
-          return CommonWebPage.jump(context, text, "网页链接");
-        }
-      },
-      specialTextSpanBuilder: StackSpecialTextSpanBuilder()
+        content != null ? "$content " : null,
+        style: new TextStyle(fontSize: 16.0),
+        onSpecialTextTap: (dynamic data) {
+          String text = data['content'];
+          if (text.startsWith("#")) {
+            return SearchPage.search(context, text.substring(1, text.length-1));
+          } else if (text.startsWith("@")) {
+            return UserPage.jump(context, data['uid']);
+          } else if (text.startsWith("https://wb.jmu.edu.cn")) {
+            return CommonWebPage.jump(context, text, "网页链接");
+          }
+        },
+        specialTextSpanBuilder: StackSpecialTextSpanBuilder()
     );
   }
 

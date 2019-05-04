@@ -18,7 +18,7 @@ import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/SpecialTextField.dart';
+import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/utils/EmojiUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
@@ -158,9 +158,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
           child: ExtendedTextField(
-              specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(
-                  showAtBackground: false
-              ),
+              specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
               controller: _textEditingController,
               focusNode: _focusNode,
               autofocus: true,

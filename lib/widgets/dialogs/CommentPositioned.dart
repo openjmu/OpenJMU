@@ -9,7 +9,7 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/model/SpecialTextField.dart';
+import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/utils/EmojiUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
@@ -80,9 +80,7 @@ class CommentPositionedState extends State<CommentPositioned> {
     String _prefixText;
     toComment != null ? _prefixText = "回复:@${toComment.fromUserName} " : _prefixText = null;
     return ExtendedTextField(
-        specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(
-            showAtBackground: false
-        ),
+        specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
         focusNode: _focusNode,
         controller: _commentController,
         decoration: InputDecoration(
@@ -103,9 +101,7 @@ class CommentPositionedState extends State<CommentPositioned> {
     if (commentContent.length <= 0) {
       showCenterErrorShortToast("内容不能为空！");
     } else {
-      setState(() {
-        _commenting = true;
-      });
+      setState(() { _commenting = true; });
       Comment _c = widget.comment;
       String content;
       int _cid;
@@ -122,9 +118,7 @@ class CommentPositionedState extends State<CommentPositioned> {
           replyToId: _cid
       ).then((response) {
         showShortToast("评论成功");
-        setState(() {
-          _commenting = false;
-        });
+        setState(() { _commenting = false; });
         Navigator.of(context).pop();
         Constants.eventBus.fire(new PostCommentedEvent(widget.post.id, widget.post.comments));
       });

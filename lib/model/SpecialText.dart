@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:extended_text/extended_text.dart';
+import 'package:extended_text_library/extended_text_library.dart';
 
 import 'package:OpenJMU/utils/EmojiUtils.dart';
 
 final double _fontSize = 16.0;
+final double _fontSizeField = 18.0;
 
 class LinkText extends SpecialText {
   static const String startKey = "https://wb.jmu.edu.cn/";
@@ -28,13 +29,37 @@ class LinkText extends SpecialText {
   }
 }
 
+class LinkOlderText extends SpecialText {
+  static const String startKey = "http://wb.jmu.edu.cn/";
+  static const String endKey = " ";
+
+  LinkOlderText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
+      : super(startKey, endKey, textStyle, onTap: onTap);
+
+  @override
+  TextSpan finishText() {
+    return TextSpan(
+        text: " 网页链接 ",
+        style: textStyle?.copyWith(color: Colors.blue, fontSize: _fontSize),
+        recognizer: TapGestureRecognizer()
+          ..onTap = () {
+            Map<String, dynamic> data = new Map();
+            data['content'] = toString();
+            if (onTap != null) onTap(data);
+          }
+    );
+  }
+}
+
 class MentionText extends SpecialText {
   static const String startKey = "<M";
   static const String endKey = "<\/M>";
   final RegExp mTagStartReg = new RegExp(r"<M?\w+.*?\/?>");
   final RegExp mTagEndReg = new RegExp(r"<\/M?\w+.*?\/?>");
+  final int start;
+  final BuilderType type;
 
-  MentionText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
+  MentionText(TextStyle textStyle, SpecialTextGestureTapCallback onTap, {this.start, this.type})
       : super(startKey, endKey, textStyle, onTap: onTap);
 
   @override
@@ -61,61 +86,99 @@ class MentionText extends SpecialText {
   TextSpan finishText() {
     String mentionOriginalText = toString();
     String mentionText = removeUidFromContent(mentionOriginalText);
-    int uid = getUidFromContent(mentionOriginalText);
+    int indentLength = MentionText.startKey.length + MentionText.endKey.length;
+    mentionOriginalText = "${mentionOriginalText.substring(0, mentionOriginalText.length - indentLength)}>";
 
-    mentionOriginalText = "${mentionOriginalText.substring(0, mentionOriginalText.length - 2)}>";
-
-    return TextSpan(
+    if (type == BuilderType.extendedTextField) {
+      print("mentionText: $mentionText");
+      print("mentionOriginalText: $mentionOriginalText");
+      return SpecialTextSpan(
         text: mentionText,
-        style: textStyle?.copyWith(color: Colors.blue, fontSize: _fontSize),
-        recognizer: new TapGestureRecognizer()
-          ..onTap = () {
-            Map<String, dynamic> data = new Map();
-            data['content'] = mentionText;
-            data['uid'] = uid;
-            if (onTap != null) onTap(data);
-          }
-    );
+        actualText: mentionOriginalText,
+        start: start,
+        deleteAll: true,
+        style: TextStyle(color: Colors.blue, fontSize: _fontSizeField),
+      );
+    } else {
+      int uid = getUidFromContent(mentionOriginalText);
+      return TextSpan(
+          text: mentionText,
+          style: TextStyle(color: Colors.blue, fontSize: _fontSize),
+          recognizer: new TapGestureRecognizer()
+            ..onTap = () {
+              Map<String, dynamic> data = new Map();
+              data['content'] = mentionText;
+              data['uid'] = uid;
+              if (onTap != null) onTap(data);
+            }
+      );
+    }
   }
 }
 
 class PoundText extends SpecialText {
   static const String flag = "#";
-  PoundText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
+  final int start;
+  final BuilderType type;
+  PoundText(TextStyle textStyle, SpecialTextGestureTapCallback onTap, {this.start, this.type})
       : super(flag, flag, textStyle, onTap: onTap);
 
   @override
   TextSpan finishText() {
     final String poundText = getContent();
-    return TextSpan(
-        text: "#$poundText#",
-        style: textStyle?.copyWith(color: Colors.orangeAccent, fontSize: _fontSize),
-        recognizer: TapGestureRecognizer()
-          ..onTap = () {
-            Map<String, dynamic> data = new Map();
-            data['content'] = toString();
-            if (onTap != null) onTap(data);
-          }
-    );
+    if (type == BuilderType.extendedTextField) {
+      return SpecialTextSpan(
+          text: "#$poundText#",
+          actualText: "#$poundText#",
+          start: start,
+          deleteAll: true,
+        style: TextStyle(color: Colors.orangeAccent, fontSize: _fontSizeField),
+      );
+    } else {
+      return TextSpan(
+          text: "#$poundText#",
+          style: TextStyle(color: Colors.orangeAccent, fontSize: _fontSize),
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              Map<String, dynamic> data = new Map();
+              data['content'] = toString();
+              if (onTap != null) onTap(data);
+            }
+      );
+    }
   }
 }
 
 class EmoticonText extends SpecialText {
   static const String flag = "[";
+  final int start;
+  final BuilderType type;
 
-  EmoticonText(TextStyle textStyle) : super(EmoticonText.flag, "]", textStyle);
+  EmoticonText(TextStyle textStyle, {this.start, this.type}) : super(EmoticonText.flag, "]", textStyle);
 
   @override
   TextSpan finishText() {
     var key = toString();
     if (EmojiUtils.instance.emojiMap.containsKey(key)) {
-      final double size = 30.0/27.0 * _fontSize;
+      final double size = 30.0/27.0 * (type == BuilderType.extendedText ? _fontSize : _fontSizeField);
 
-      return ImageSpan(AssetImage(EmojiUtils.instance.emojiMap[key]),
-          imageWidth: size,
-          imageHeight: size,
-          margin: EdgeInsets.only(left: 1.0, bottom: 2.0, right: 1.0)
-      );
+      if (type == BuilderType.extendedTextField) {
+        return ImageSpan(AssetImage(EmojiUtils.instance.emojiMap[key]),
+            actualText: key,
+            imageWidth: size,
+            imageHeight: size,
+            start: start,
+            deleteAll: true,
+            fit: BoxFit.fill,
+            margin: EdgeInsets.only(left: 1.0, bottom: 2.0, right: 1.0)
+        );
+      } else {
+        return ImageSpan(AssetImage(EmojiUtils.instance.emojiMap[key]),
+            imageWidth: size,
+            imageHeight: size,
+            margin: EdgeInsets.only(left: 1.0, bottom: 2.0, right: 1.0)
+        );
+      }
     }
 
     return TextSpan(text: toString(), style: textStyle);
@@ -123,73 +186,65 @@ class EmoticonText extends SpecialText {
 }
 
 class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
+  final BuilderType type;
+  StackSpecialTextSpanBuilder({this.type: BuilderType.extendedText});
+
   @override
   TextSpan build(String data, {TextStyle textStyle, SpecialTextGestureTapCallback onTap}) {
-    if (data == null || data == "") return null;
-    List<TextSpan> inlineList = new List<TextSpan>();
-    if (data != null && data.length > 0) {
-      data += " ";
-      SpecialText specialText;
-      String textStack = "";
-      for (int i = 0; i < data.length; i++) {
-        String char = data[i];
-        if (specialText != null) {
-          if (!specialText.isEnd(char)) {
-            specialText.appendContent(char);
-          } else {
-            inlineList.add(specialText.finishText());
-            specialText = null;
-          }
-        } else {
-          textStack += char;
-          specialText = createSpecialText(
-              textStack,
-              textStyle: textStyle,
-              onTap: onTap,
-              index: i - (textStack.length - 1)
-          );
-          if (specialText != null) {
-            if (textStack.length - specialText.startFlag.length >= 0) {
-              textStack = textStack.substring(
-                  0, textStack.length - specialText.startFlag.length);
-              if (textStack.length > 0) {
-                inlineList.add(TextSpan(text: textStack, style: textStyle));
-              }
-            }
-            textStack = "";
-          }
-        }
-      }
-      if (specialText != null) {
-        inlineList.add(TextSpan(
-            text: specialText.startFlag + specialText.getContent(),
-            style: textStyle)
-        );
-      } else if (textStack.length > 0) {
-        inlineList.add(TextSpan(text: textStack, style: textStyle));
-      }
-    }
-    return TextSpan(children: inlineList, style: textStyle);
+    var textSpan = super.build(data, textStyle: textStyle, onTap: onTap);
+    return textSpan;
   }
 
 
   @override
-  SpecialText createSpecialText(String flag,
-      {TextStyle textStyle, SpecialTextGestureTapCallback onTap, int index}) {
+  SpecialText createSpecialText(String flag, {TextStyle textStyle, SpecialTextGestureTapCallback onTap, int index}) {
     if (flag == null || flag == "") return null;
 
     if (isStart(flag, MentionText.startKey)) {
-      return MentionText(textStyle, onTap);
+      return MentionText(textStyle, onTap, type: BuilderType.extendedText);
     }
     else if (isStart(flag, PoundText.flag)) {
-      return PoundText(textStyle, onTap);
+      return PoundText(textStyle, onTap, type: BuilderType.extendedText);
     }
     else if (isStart(flag, EmoticonText.flag)) {
-      return EmoticonText(textStyle);
+      return EmoticonText(textStyle, type: BuilderType.extendedText);
     }
     else if (isStart(flag, LinkText.startKey)) {
       return LinkText(textStyle, onTap);
     }
+    else if (isStart(flag, LinkOlderText.startKey)) {
+      return LinkOlderText(textStyle, onTap);
+    }
     return null;
   }
 }
+
+class StackSpecialTextFieldSpanBuilder extends SpecialTextSpanBuilder {
+  @override
+  TextSpan build(String data, {TextStyle textStyle, onTap}) {
+    var textSpan = super.build(data, textStyle: textStyle, onTap: onTap);
+    return textSpan;
+  }
+
+  @override
+  SpecialText createSpecialText(String flag, {TextStyle textStyle, SpecialTextGestureTapCallback onTap, int index}) {
+    if (flag == null || flag == "") return null;
+
+    if (isStart(flag, MentionText.startKey)) {
+      return MentionText(
+          textStyle, onTap,
+          start: index - (MentionText.startKey.length - 1),  // Using minus to keep position correct.
+          type: BuilderType.extendedTextField
+      );
+    }
+    else if (isStart(flag, PoundText.flag)) {
+      return PoundText(textStyle, onTap, start: index, type: BuilderType.extendedTextField);
+    }
+    else if (isStart(flag, EmoticonText.flag)) {
+      return EmoticonText(textStyle, start: index, type: BuilderType.extendedTextField);
+    }
+    return null;
+  }
+}
+
+enum BuilderType { extendedText, extendedTextField }

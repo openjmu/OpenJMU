@@ -7,7 +7,7 @@ packages:
       name: async
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.2.0"
+    version: "2.1.0"
   badges:
     dependency: "direct main"
     description:
@@ -64,13 +64,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.6"
-  date_utils:
-    dependency: transitive
-    description:
-      name: date_utils
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.1.0+2"
   dio:
     dependency: "direct main"
     description:
@@ -98,7 +91,7 @@ packages:
       name: extended_image
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.9"
+    version: "0.3.1"
   extended_tabs:
     dependency: "direct main"
     description:
@@ -112,21 +105,21 @@ packages:
       name: extended_text
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.8"
+    version: "0.4.0"
   extended_text_field:
     dependency: "direct main"
     description:
       name: extended_text_field
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.2"
+    version: "0.2.0"
   extended_text_library:
     dependency: transitive
     description:
       name: extended_text_library
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.5"
+    version: "0.2.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -139,20 +132,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.3.2"
-  flutter_calendar_carousel:
-    dependency: "direct main"
-    description:
-      name: flutter_calendar_carousel
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.3.16"
-  flutter_colorpicker:
-    dependency: "direct main"
-    description:
-      name: flutter_colorpicker
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.2.3"
   flutter_icons:
     dependency: "direct main"
     description:
@@ -166,7 +145,7 @@ packages:
       name: flutter_local_notifications
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.1"
+    version: "0.7.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -178,7 +157,7 @@ packages:
       name: flutter_platform_widgets
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.9.5"
+    version: "0.9.6"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -232,7 +211,7 @@ packages:
       name: image_downloader
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.14.1"
+    version: "0.15.2"
   intl:
     dependency: transitive
     description:
@@ -260,7 +239,7 @@ packages:
       name: multi_image_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.2.0"
+    version: "4.2.1"
   ota_update:
     dependency: "direct main"
     description:
@@ -330,7 +309,7 @@ packages:
       name: quiver
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.0.3"
+    version: "2.0.2"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -398,7 +377,7 @@ packages:
       name: test_api
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.5"
+    version: "0.2.4"
   transparent_image:
     dependency: transitive
     description:

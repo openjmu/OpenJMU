@@ -37,11 +37,7 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
-//  final List<String> bottomAppBarTitles = ['首页', '新闻', '应用中心', '发现', '我的'];
   final List<String> bottomAppBarTitles = ['首页', '应用中心', '发现', '我的'];
-//  final List<IconData> bottomAppBarIcons = [
-//    Icons.home, Icons.fiber_new, Icons.apps, Icons.chat, Icons.account_circle
-//  ];
   final List<IconData> bottomAppBarIcons = [
     Platform.isAndroid ? Icons.home : Ionicons.getIconData("ios-home"),
     Platform.isAndroid ? Icons.apps : Ionicons.getIconData("ios-apps"),
@@ -235,13 +231,13 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 centerTitle: true,
                 actions: <Widget>[
                   _tabIndex == 0
-                  ? IconButton(
+                      ? IconButton(
                     icon: Icon(Platform.isAndroid ? Icons.search : FontAwesome.getIconData("search")),
                     onPressed: () {
                       Navigator.of(context).pushNamed("/search");
                     },
                   )
-                  : Container(),
+                      : Container(),
                   BadgeIconButton(
                       itemCount: notifications.count,
                       icon: Icon(Platform.isAndroid ? Icons.notifications : Ionicons.getIconData("ios-notifications")),
@@ -252,7 +248,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                         Navigator.of(context).push(platformPageRoute(builder: (context) {
                           return new NotificationPage(arguments: {"notifications": notifications});
                         }));
-//                        Navigator.pushNamed(context, "/notification", arguments: {"notifications": notifications});
                       }
                   ),
                 ],

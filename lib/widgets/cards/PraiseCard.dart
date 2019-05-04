@@ -126,7 +126,7 @@ class PraiseCard extends StatelessWidget {
 
   Widget getExtendedText(context, content) {
     return new ExtendedText(
-      content,
+      content != null ? "$content " : null,
       style: new TextStyle(fontSize: 16.0),
       onSpecialTextTap: (dynamic data) {
         String text = data['content'];
