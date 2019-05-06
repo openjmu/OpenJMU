@@ -63,9 +63,9 @@
 //      },
 //    );
 //
-//    return new Scaffold(
-//        appBar: new AppBar(
-//          title: new Text("Calendar"),
+//    return Scaffold(
+//        appBar: AppBar(
+//          title: Text("Calendar"),
 //        ),
 //        body: SingleChildScrollView(
 //          child: Column(
@@ -79,7 +79,7 @@
 //                  left: 16.0,
 //                  right: 16.0,
 //                ),
-//                child: new Row(
+//                child: Row(
 //                  children: <Widget>[
 //                    Expanded(
 //                        child: Text(

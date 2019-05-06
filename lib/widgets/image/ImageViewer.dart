@@ -13,8 +13,9 @@ import 'package:OpenJMU/utils/ToastUtils.dart';
 class ImageViewer extends StatefulWidget {
   final int index;
   final List<ImageBean> pics;
+  final bool needsClear;
 
-  ImageViewer(this.index, this.pics);
+  ImageViewer(this.index, this.pics, {this.needsClear});
 
   @override
   _ImageViewerState createState() => _ImageViewerState();
@@ -31,10 +32,14 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
 
   @override
   void initState() {
+    if (widget.needsClear) {
+      clearMemoryImageCache();
+      clearDiskCachedImages();
+    }
     SystemChrome.setEnabledSystemUIOverlays([]);
     currentIndex = widget.index;
     _animationController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
-    _curveAnimation = new CurvedAnimation(parent: _animationController, curve: Curves.linear);
+    _curveAnimation = CurvedAnimation(parent: _animationController, curve: Curves.linear);
     super.initState();
   }
 
@@ -81,7 +86,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    return new WillPopScope(
+    return WillPopScope(
         onWillPop: () => _pop(context, false),
         child: Scaffold(
             backgroundColor: Colors.black,
@@ -94,7 +99,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                         ExtendedImageGesturePageView.builder(
                           itemBuilder: (BuildContext context, int index) {
                             String item = widget.pics[index].imageUrl;
-                            Widget image = new Container(
+                            Widget image = Container(
                               child: ExtendedImage.network(
                                 item,
                                 fit: BoxFit.contain,
@@ -116,7 +121,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                                         doubleTapPosition: pointerDownPosition
                                     );
                                   };
-                                  _animation = new Tween(begin: begin, end: end).animate(_curveAnimation)
+                                  _animation = Tween(begin: begin, end: end).animate(_curveAnimation)
                                     ..addListener(doubleTapListener);
 
                                   _animationController.forward();
@@ -139,7 +144,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
 //                                child: image,
 //                              );
 //                            }
-                            return new GestureDetector(
+                            return GestureDetector(
                                 onTap: () {
                                   _pop(context, true);
                                 },
@@ -201,7 +206,7 @@ class ViewAppBar extends StatelessWidget {
   final List<ImageBean> pics;
   final int index;
   final StreamController<int> reBuild;
-  final TextStyle indicatorStyle = new TextStyle(color: Colors.white, fontSize: 20.0);
+  final TextStyle indicatorStyle = TextStyle(color: Colors.white, fontSize: 20.0);
   ViewAppBar(this.pics, this.index, this.reBuild);
   @override
   Widget build(BuildContext context) {
@@ -211,8 +216,7 @@ class ViewAppBar extends StatelessWidget {
           style: TextStyle(color: Colors.white),
           child: Container(
             height: 50.0,
-//            width: double.infinity,
-            child: new Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[

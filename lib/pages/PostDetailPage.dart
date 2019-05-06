@@ -31,8 +31,6 @@ class PostDetailPage extends StatefulWidget {
 }
 
 class PostDetailPageState extends State<PostDetailPage> {
-  Timer deleteTimer;
-
   Widget _forwardsList;
   Widget _commentsList;
   Widget _praisesList;
@@ -79,7 +77,7 @@ class PostDetailPageState extends State<PostDetailPage> {
 
     Constants.eventBus.on<PostDeletedEvent>().listen((event) {
       if (this.mounted && event.postId == widget.post.id) {
-        deleteTimer = Timer(Duration(milliseconds: 2200), () { Navigator.of(context).pop(); });
+        Future.delayed(Duration(milliseconds: 2200), () { Navigator.of(context).pop(); });
       }
     });
     Constants.eventBus.on<PostForwardedEvent>().listen((event) {
@@ -130,7 +128,6 @@ class PostDetailPageState extends State<PostDetailPage> {
   void dispose() {
     super.dispose();
     _post = null;
-    deleteTimer?.cancel();
   }
 
   void _requestData() {

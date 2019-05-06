@@ -1,10 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -126,10 +123,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                                   child: Container(
                                                     decoration: BoxDecoration(
                                                         image: DecorationImage(
-                                                            image: CachedNetworkImageProvider(
-                                                                "${Api.userAvatarInSecure}?uid=${people[index].id}&size=f100",
-                                                                cacheManager: DefaultCacheManager()
-                                                            ),
+                                                            image: UserUtils.getAvatarProvider(people[index].id),
                                                             fit: BoxFit.contain
                                                         ),
                                                         shape: BoxShape.circle

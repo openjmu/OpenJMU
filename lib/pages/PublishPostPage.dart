@@ -39,10 +39,10 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   int imagesLength = 0, maxImagesLength = 9, uploadedImages = 1;
 
-  TextEditingController _textEditingController = new TextEditingController();
-  EditSwitchController _editSwitchController = new EditSwitchController();
-  LoadingDialogController _loadingDialogController = new LoadingDialogController();
-  FocusNode _focusNode = new FocusNode();
+  TextEditingController _textEditingController = TextEditingController();
+  EditSwitchController _editSwitchController = EditSwitchController();
+  LoadingDialogController _loadingDialogController = LoadingDialogController();
+  FocusNode _focusNode = FocusNode();
 
   bool isLoading = false;
   bool isFocus = false;
@@ -57,9 +57,6 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   String msg = "";
   String sid = UserUtils.currentUser.sid;
-
-  Timer _timer;
-  Timer _mentionTimer;
 
   static double _iconWidth = 24.0;
   static double _iconHeight = 24.0;
@@ -82,7 +79,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     Constants.eventBus.on<MentionPeopleEvent>().listen((event) {
       if (mounted) {
         FocusScope.of(context).requestFocus(_focusNode);
-        _mentionTimer = Timer(Duration(milliseconds: 300), () {
+        Future.delayed(Duration(milliseconds: 300), () {
           insertText("<M ${event.user.id}>@${event.user.nickname}</M>");
         });
       }
@@ -92,8 +89,6 @@ class PublishPostPageState extends State<PublishPostPage> {
   @override
   void dispose() {
     super.dispose();
-    _timer?.cancel();
-    _mentionTimer?.cancel();
     _textEditingController?.dispose();
   }
 
@@ -400,13 +395,13 @@ class PublishPostPageState extends State<PublishPostPage> {
             });
           }
       );
-      Map<String, dynamic> data = new Map();
+      Map<String, dynamic> data = {};
       data['category'] = "text";
       data['content'] = Uri.encodeFull(content);
       if (imagesBin.length > 0) {
         try {
-          List<Future> query = new List(imagesBin.length);
-          _imageIdList = new List(imagesBin.length);
+          List<Future> query = List(imagesBin.length);
+          _imageIdList = List(imagesBin.length);
           for (int i=0; i < imagesBin.length; i++) {
             Asset imageData = imagesBin[i].data;
             FormData _form = await createForm(imageData);
@@ -434,7 +429,7 @@ class PublishPostPageState extends State<PublishPostPage> {
           showCenterErrorShortToast(exception);
         }
       } else {
-        Map<String, dynamic> data = new Map();
+        Map<String, dynamic> data = {};
         data['category'] = "text";
         data['content'] = Uri.encodeFull(content);
         _postContent(data);
@@ -480,7 +475,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     ).then((response) {
       setState(() { isLoading = false; });
       if (jsonDecode(response)["tid"] != null) {
-        _timer = Timer(Duration(milliseconds: 2100), () { Navigator.pop(context); });
+        Future.delayed(Duration(milliseconds: 2100), () { Navigator.pop(context); });
         _loadingDialogController.changeState("success", "动态发布成功");
       } else {
         _loadingDialogController.changeState("failed", "动态发布失败");

@@ -27,8 +27,10 @@ class Api {
   /// 用户相关
   static final String userInfo = oa99Host + "/v2/api/class/studentinfo";
   static final String userBasicInfo = oap99Host + "/user/info";
-  static final String userAvatar = oap99Host + "/face";
+//  static final String userAvatar = oap99Host + "/face";
   static final String userAvatarInSecure = oap99HostInSecure + "/face";
+  static final String userAvatarUpload = oap99Host + "/face/upload";
+  static final String userPhotoWallUpload = oap99Host + "/photowall/upload";
   static final String userTags = oa99Host + "/v2/api/usertag/getusertags";
   static final String userFans = wbHost + "/relation_api/fans/uid/";
   static final String userIdols = wbHost + "/relation_api/idols/uid/";
@@ -163,7 +165,7 @@ class PostAPI {
 
   static Post createPost(postData) {
     var _user = postData['user'];
-    String _avatar = "${Api.userAvatarInSecure}?uid=${_user['uid']}&size=f100";
+    String _avatar = "${Api.userAvatarInSecure}?uid=${_user['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
     String _postTime = new DateTime.fromMillisecondsSinceEpoch(int.parse(postData['post_time']) * 1000)
         .toString()
         .substring(0,16);
@@ -236,7 +238,7 @@ class CommentAPI {
   }
 
   static Comment createComment(itemData) {
-    String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";
+    String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
     String _commentTime = new DateTime.fromMillisecondsSinceEpoch(itemData['post_time'] * 1000)
         .toString()
         .substring(0,16);
@@ -270,7 +272,7 @@ class CommentAPI {
     return _comment;
   }
   static Comment createCommentInPost(itemData) {
-    String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";
+    String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
     String _commentTime = new DateTime.fromMillisecondsSinceEpoch(itemData['post_time'] * 1000)
         .toString()
         .substring(0,16);
@@ -330,7 +332,7 @@ class PraiseAPI {
 
 
   static Praise createPraiseInPost(itemData) {
-    String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";
+    String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
     String _praiseTime = new DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
         .toString()
         .substring(0,16);
@@ -350,7 +352,7 @@ class PraiseAPI {
 
   }
   static Praise createPraise(itemData) {
-    String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f100";
+    String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
     String _praiseTime = new DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
         .toString()
         .substring(0,16);

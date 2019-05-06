@@ -7,13 +7,13 @@ class LoadingDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    return new Material(
+    return Material(
       type: MaterialType.transparency,
-      child: new Center(
-        child: new SizedBox(
+      child: Center(
+        child: SizedBox(
           width: 120.0,
           height: 120.0,
-          child: new Container(
+          child: Container(
             decoration: ShapeDecoration(
               color: Color(0xffffffff),
               shape: RoundedRectangleBorder(
@@ -22,18 +22,18 @@ class LoadingDialog extends Dialog {
                 ),
               ),
             ),
-            child: new Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                new CircularProgressIndicator(),
-                new Padding(
+                CircularProgressIndicator(),
+                Padding(
                   padding: const EdgeInsets.only(
                     top: 20.0,
                   ),
-                  child: new Text(
+                  child: Text(
                     text,
-                    style: new TextStyle(fontSize: 12.0),
+                    style: TextStyle(fontSize: 12.0),
                   ),
                 ),
               ],

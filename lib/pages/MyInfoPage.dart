@@ -5,13 +5,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/OTAUpdate.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 
@@ -48,12 +46,6 @@ class MyInfoPageState extends State<MyInfoPage> {
         currentVersion = version;
       });
     });
-    DataUtils.isLogin().then((isLogin) {
-      setState(() {
-        this.isLogin = isLogin;
-      });
-      getUserInfo();
-    });
     DataUtils.getBrightnessDark().then((isDark) {
       setState(() {
         if (isDark != null) {
@@ -76,14 +68,6 @@ class MyInfoPageState extends State<MyInfoPage> {
           isDark = event.isDarkState;
         });
       }
-    });
-  }
-
-  void getUserInfo() {
-    String avatar = Api.userAvatar+"?uid=${UserUtils.currentUser.uid}&size=f128";
-    setState(() {
-      userAvatar = avatar;
-      userName = UserUtils.currentUser.name;
     });
   }
 

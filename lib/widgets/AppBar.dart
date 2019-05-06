@@ -6,9 +6,9 @@ import 'package:flutter/material.dart' show Colors;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:OpenJMU/api//Api.dart';
+
 import 'package:OpenJMU/constants/AppBarConstants.dart';
-import 'package:OpenJMU/utils/userUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:flutter/src/material/text_theme.dart';
 import 'package:flutter/src/material/back_button.dart';
 import 'package:flutter/src/material/debug.dart';
@@ -954,7 +954,6 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
-//    DataUtils.getUserInfo().then((userInfo) {
       return Padding(
         padding:
         const EdgeInsets.only(left: 0.0, right: 0, top: 8.0, bottom: 8.0),
@@ -972,9 +971,7 @@ class _SearchBarState extends State<SearchBar> {
                         icon: Padding(
                           padding: const EdgeInsets.only(left: 8.0, right: 8.0),
                           child: CircleAvatar(
-                            backgroundImage: new NetworkImage(
-                                Api.userAvatar+"?uid=${UserUtils.currentUser.uid}"
-                            ),
+                            backgroundImage: UserUtils.getAvatarProvider(UserUtils.currentUser.uid),
                             radius: 16,
                           ),
                         ),
@@ -1049,7 +1046,6 @@ class _SearchBarState extends State<SearchBar> {
               ],
             )),
       );
-//    });
   }
 }
 
@@ -1071,6 +1067,7 @@ class FlexibleSpaceBarWithUserInfo extends StatefulWidget {
       this.paddingStart = 72,
       this.paddingBottom = 16,
       this.avatar,
+      this.avatarTap,
       this.infoUnderNickname,
       this.infoNextNickname,
       this.tags,
@@ -1089,6 +1086,7 @@ class FlexibleSpaceBarWithUserInfo extends StatefulWidget {
   final double paddingBottom;
   final double paddingStart;
   final ImageProvider avatar;
+  final Function avatarTap;
   final Widget infoUnderNickname;
   final Widget infoNextNickname;
   final double avatarRadius;
@@ -1118,8 +1116,7 @@ class FlexibleSpaceBarWithUserInfo extends StatefulWidget {
       _FlexibleSpaceBarWithUserInfoState();
 }
 
-class _FlexibleSpaceBarWithUserInfoState
-    extends State<FlexibleSpaceBarWithUserInfo> {
+class _FlexibleSpaceBarWithUserInfoState extends State<FlexibleSpaceBarWithUserInfo> {
   bool _getEffectiveCenterTitle(ThemeData theme) {
     if (widget.centerTitle != null) return widget.centerTitle;
     assert(theme.platform != null);
@@ -1176,9 +1173,6 @@ class _FlexibleSpaceBarWithUserInfoState
         (1.0 - (settings.currentExtent - settings.minExtent) / deltaExtent)
             .clamp(0.0, 1.0);
 
-    // background image
-    // It should always be true in my specified settings
-//    if (widget.background != null) {
     final double fadeStart = math.max(0.0, 1.0 - kToolbarHeight / deltaExtent);
     const double fadeEnd = 1.0;
     assert(fadeStart <= fadeEnd);
@@ -1204,9 +1198,10 @@ class _FlexibleSpaceBarWithUserInfoState
                     ),
                   )
                 ],
-              ))));
+              )
+          )
+      ));
     }
-//    }
 
     // It should always be true in my specified settings
     if (widget.title != null) {
@@ -1260,9 +1255,12 @@ class _FlexibleSpaceBarWithUserInfoState
             height: widget.avatarRadius,
             child: Opacity(
               opacity: outOpacity,
-              child: CircleAvatar(
-                backgroundImage: widget.avatar,
-                radius: widget.avatarRadius,
+              child: GestureDetector(
+                onTap: widget.avatarTap,
+                child: CircleAvatar(
+                  backgroundImage: widget.avatar,
+                  radius: widget.avatarRadius,
+                )
               ),
             )));
         children.add(Positioned(

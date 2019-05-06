@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 
@@ -26,22 +24,22 @@ class CommentCard extends StatelessWidget {
 
   CommentCard(this.comment, {Key key}) : super(key: key);
 
-  final TextStyle titleTextStyle = new TextStyle(fontSize: 18.0);
-  final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
-  final TextStyle rootTopicTextStyle = new TextStyle(fontSize: 14.0);
-  final TextStyle rootTopicMentionStyle = new TextStyle(color: Colors.blue, fontSize: 14.0);
+  final TextStyle titleTextStyle = TextStyle(fontSize: 18.0);
+  final TextStyle subtitleStyle = TextStyle(color: Colors.grey, fontSize: 14.0);
+  final TextStyle rootTopicTextStyle = TextStyle(fontSize: 14.0);
+  final TextStyle rootTopicMentionStyle = TextStyle(color: Colors.blue, fontSize: 14.0);
   final Color subIconColor = Colors.grey;
 
   GestureDetector getCommentAvatar(context, comment) {
-    return new GestureDetector(
-        child: new Container(
+    return GestureDetector(
+        child: Container(
           width: 40.0,
           height: 40.0,
-          decoration: new BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: const Color(0xFFECECEC),
-            image: new DecorationImage(
-                image: CachedNetworkImageProvider(comment.fromUserAvatar, cacheManager: DefaultCacheManager()),
+            image: DecorationImage(
+                image: UserUtils.getAvatarProvider(comment.fromUserUid),
                 fit: BoxFit.cover
             ),
           ),
@@ -51,7 +49,7 @@ class CommentCard extends StatelessWidget {
   }
 
   Text getCommentNickname(comment) {
-    return new Text(
+    return Text(
       comment.fromUserName ?? comment.fromUid,
       style: titleTextStyle,
       textAlign: TextAlign.left,
@@ -60,7 +58,7 @@ class CommentCard extends StatelessWidget {
 
   Row getCommentInfo(comment) {
     String _commentTime = comment.commentTime;
-    DateTime now = new DateTime.now();
+    DateTime now = DateTime.now();
     if (int.parse(_commentTime.substring(0, 4)) == now.year) {
       _commentTime = _commentTime.substring(5, 16);
     }
@@ -71,24 +69,24 @@ class CommentCard extends StatelessWidget {
     ) {
       _commentTime = "${_commentTime.substring(5, 11)}";
     }
-    return new Row(
+    return Row(
         children: <Widget>[
-          new Icon(
+          Icon(
               Icons.access_time,
               color: Colors.grey,
               size: 12.0
           ),
-          new Text(
+          Text(
               " $_commentTime",
               style: subtitleStyle
           ),
-          new Container(width: 10.0),
-          new Icon(
+          Container(width: 10.0),
+          Icon(
               Icons.smartphone,
               color: Colors.grey,
               size: 12.0
           ),
-          new Text(
+          Text(
               " ${comment.from}",
               style: subtitleStyle
           ),
@@ -98,13 +96,13 @@ class CommentCard extends StatelessWidget {
 
   Widget getCommentContent(context, comment) {
     String content = comment.content;
-    return new Row(
+    return Row(
         children: <Widget>[
-          new Expanded(
-              child: new Container(
+          Expanded(
+              child: Container(
                   margin: EdgeInsets.only(bottom: 8.0),
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: new Column(
+                  child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -128,15 +126,15 @@ class CommentCard extends StatelessWidget {
         topic = "<M ${comment.toTopicUid}>@${comment.toTopicUserName}<\/M>: ";
       }
       topic += content;
-      return new Container(
+      return Container(
             width: MediaQuery.of(context).size.width,
             margin: EdgeInsets.only(top: 8.0),
             padding: EdgeInsets.all(8.0),
-            decoration: new BoxDecoration(
+            decoration: BoxDecoration(
                 color: Theme.of(context).canvasColor,
                 borderRadius: BorderRadius.circular(5.0)
             ),
-            child: new Column(
+            child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -150,23 +148,23 @@ class CommentCard extends StatelessWidget {
   }
 
   Widget getPostBanned() {
-    return new Container(
+    return Container(
         color: const Color(0xffaa4444),
         margin: EdgeInsets.only(top: 8.0),
         padding: EdgeInsets.all(12.0),
-        child: new Center(
-            child: new Text(
+        child: Center(
+            child: Text(
                 "该条微博已被屏蔽或删除",
-                style: new TextStyle(fontSize: 20.0, color: Colors.white)
+                style: TextStyle(fontSize: 20.0, color: Colors.white)
             )
         )
     );
   }
 
   Widget getExtendedText(context, content) {
-    return new ExtendedText(
+    return ExtendedText(
       content != null ? "$content " : null,
-      style: new TextStyle(fontSize: 16.0),
+      style: TextStyle(fontSize: 16.0),
       onSpecialTextTap: (dynamic data) {
         String text = data['content'];
         if (text.startsWith("#")) {
@@ -198,7 +196,7 @@ class CommentCard extends StatelessWidget {
                       if (
                       this.comment.fromUserUid == UserUtils.currentUser.uid
                           ||
-                          this.comment.post.userId == UserUtils.currentUser.uid
+                          this.comment.post.uid == UserUtils.currentUser.uid
                       ) {
                         showPlatformDialog(context: context, builder: (_) => DeleteDialog("评论", comment: this.comment));
                       }
@@ -259,14 +257,14 @@ class CommentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> _widgets = [];
     _widgets = [
-      new ListTile(
+      ListTile(
         leading: getCommentAvatar(context, this.comment),
         title: getCommentNickname(this.comment),
         subtitle: getCommentInfo(this.comment),
       ),
       getCommentContent(context, this.comment),
     ];
-    return new InkWell(
+    return InkWell(
       onTap: () => showDialog<Null>(context: context, builder: (BuildContext context) => dialog(context)),
       child: Container(
         child: Card(
@@ -291,16 +289,16 @@ class CommentCardInPost extends StatelessWidget {
   CommentCardInPost(this.post, this.comments, {Key key}) : super(key: key);
 
   GestureDetector getCommentAvatar(context, comment) {
-    return new GestureDetector(
-        child: new Container(
+    return GestureDetector(
+        child: Container(
           width: 40.0,
           height: 40.0,
           margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-          decoration: new BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: const Color(0xFFECECEC),
-            image: new DecorationImage(
-                image: CachedNetworkImageProvider(comment.fromUserAvatar, cacheManager: DefaultCacheManager()),
+            image: DecorationImage(
+                image: UserUtils.getAvatarProvider(comment.fromUserUid),
                 fit: BoxFit.cover
             ),
           ),
@@ -310,7 +308,7 @@ class CommentCardInPost extends StatelessWidget {
   }
 
   Text getCommentNickname(context, comment) {
-    return new Text(
+    return Text(
         comment.fromUserName,
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
@@ -321,7 +319,7 @@ class CommentCardInPost extends StatelessWidget {
 
   Text getCommentTime(context, comment) {
     String _commentTime = comment.commentTime;
-    DateTime now = new DateTime.now();
+    DateTime now = DateTime.now();
     if (int.parse(_commentTime.substring(0, 4)) == now.year) {
       _commentTime = _commentTime.substring(5, 16);
     }
@@ -332,16 +330,16 @@ class CommentCardInPost extends StatelessWidget {
     ) {
       _commentTime = "${_commentTime.substring(5, 11)}";
     }
-    return new Text(
+    return Text(
         _commentTime,
         style: Theme.of(context).textTheme.caption
     );
   }
 
   Widget getExtendedText(context, content) {
-    return new ExtendedText(
+    return ExtendedText(
         content != null ? "$content " : null,
-        style: new TextStyle(fontSize: 16.0),
+        style: TextStyle(fontSize: 16.0),
         onSpecialTextTap: (dynamic data) {
           String text = data['content'];
           if (text.startsWith("#")) {
@@ -358,7 +356,7 @@ class CommentCardInPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
         color: Theme.of(context).cardColor,
         padding: EdgeInsets.zero,
         child: this.comments.length > 0
@@ -375,7 +373,7 @@ class CommentCardInPost extends StatelessWidget {
                 if (
                 this.comments[index].fromUserUid == UserUtils.currentUser.uid
                 ||
-                this.post.userId == UserUtils.currentUser.uid
+                this.post.uid == UserUtils.currentUser.uid
                 ) {
                   showDialog<Null>(
                     context: context,
@@ -404,7 +402,7 @@ class CommentCardInPost extends StatelessWidget {
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                               Navigator.of(context).pop();
-                                              LoadingDialogController _loadingDialogController = new LoadingDialogController();
+                                              LoadingDialogController _loadingDialogController = LoadingDialogController();
                                               showDialog(
                                                   context: context,
                                                   builder: (BuildContext dialogContext) => LoadingDialog("正在删除评论", _loadingDialogController)

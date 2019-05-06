@@ -26,7 +26,7 @@
 //
 //}
 //
-//JMUInAppBrowser inAppBrowserFallback = new JMUInAppBrowser();
+//JMUInAppBrowser inAppBrowserFallback = JMUInAppBrowser();
 //
 //class JMUChromeSafariBrowser extends ChromeSafariBrowser {
 //
@@ -48,7 +48,7 @@
 //  }
 //}
 //
-//JMUChromeSafariBrowser chromeSafariBrowser = new JMUChromeSafariBrowser(inAppBrowserFallback);
+//JMUChromeSafariBrowser chromeSafariBrowser = JMUChromeSafariBrowser(inAppBrowserFallback);
 //
 //
 //class InAppBrowserUtils {
@@ -91,7 +91,7 @@
 //  InAppBrowserPage({Key key, @required this.url, @required this.title}) : super(key: key);
 //
 //  @override
-//  _InAppBrowserPageState createState() => new _InAppBrowserPageState();
+//  _InAppBrowserPageState createState() => _InAppBrowserPageState();
 //
 //  static void open(BuildContext context, String url, String title) {
 //    Navigator.of(context).push(platformPageRoute(builder: (context) {
@@ -121,10 +121,10 @@
 //  }
 //
 //  PreferredSize progressBar() {
-//    return new PreferredSize(
-//        child: new SizedBox(
+//    return PreferredSize(
+//        child: SizedBox(
 //            height: 2.0,
-//            child: new LinearProgressIndicator(
+//            child: LinearProgressIndicator(
 //                backgroundColor: ThemeUtils.currentPrimaryColor,
 //                value: progress,
 //                valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
@@ -136,20 +136,20 @@
 //
 //  @override
 //  Widget build(BuildContext context) {
-//    return new Scaffold(
+//    return Scaffold(
 //      appBar: AppBar(
 //          backgroundColor: ThemeUtils.currentPrimaryColor,
-//          iconTheme: new IconThemeData(color: ThemeUtils.currentColorTheme),
+//          iconTheme: IconThemeData(color: ThemeUtils.currentColorTheme),
 //          brightness: ThemeUtils.currentBrightness,
-//          title: new Column(
+//          title: Column(
 //              mainAxisAlignment: MainAxisAlignment.center,
 //              crossAxisAlignment: CrossAxisAlignment.start,
 //              children: <Widget>[
-//                new Text(title,
-//                    style: new TextStyle(color: ThemeUtils.currentColorTheme)
+//                Text(title,
+//                    style: TextStyle(color: ThemeUtils.currentColorTheme)
 //                ),
-//                new Text(url,
-//                    style: new TextStyle(color: ThemeUtils.currentColorTheme, fontSize: 14.0)
+//                Text(url,
+//                    style: TextStyle(color: ThemeUtils.currentColorTheme, fontSize: 14.0)
 //                )
 //              ]
 //          ),

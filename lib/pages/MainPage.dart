@@ -5,12 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:badges/badges.dart';
 import 'package:ota_update/ota_update.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -32,7 +29,7 @@ import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 
 class MainPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new MainPageState();
+  State<StatefulWidget> createState() => MainPageState();
 }
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
@@ -45,13 +42,13 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     Platform.isAndroid ? Icons.account_circle : Ionicons.getIconData("ios-contact")
   ];
 
-  TextStyle tabTextStyleSelected = new TextStyle(color: ThemeUtils.currentColorTheme);
-  final tabTextStyleNormal = new TextStyle(color: Colors.grey);
+  TextStyle tabTextStyleSelected = TextStyle(color: ThemeUtils.currentColorTheme);
+  final tabTextStyleNormal = TextStyle(color: Colors.grey);
   Color currentThemeColor =ThemeUtils.currentColorTheme;
 
-  Notifications notifications = new Notifications(0, 0, 0, 0);
+  Notifications notifications = Notifications(0, 0, 0, 0);
   Timer notificationTimer;
-  Stopwatch watch = new Stopwatch();
+  Stopwatch watch = Stopwatch();
 
   int _tabIndex = 0;
   var _body;
@@ -80,7 +77,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       DataUtils.getNotifications();
       if (isLogin) {
         watch.start();
-        notificationTimer = new Timer.periodic(const Duration(milliseconds: 10000), (timer) {
+        notificationTimer = Timer.periodic(const Duration(milliseconds: 10000), (timer) {
           DataUtils.getNotifications();
         });
         setState(() {
@@ -109,7 +106,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
       if (this.mounted) {
         setState(() {
-          tabTextStyleSelected = new TextStyle(color: event.color);
+          tabTextStyleSelected = TextStyle(color: event.color);
           currentThemeColor = event.color;
         });
       }
@@ -139,7 +136,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   }
 
   Image getTabImage(path) {
-    return new Image.asset(path, width: 20.0, height: 20.0);
+    return Image.asset(path, width: 20.0, height: 20.0);
   }
 
   TextStyle getTabTextStyle(int curIndex) {
@@ -154,15 +151,15 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   }
 
   GestureDetector getAvatar() {
-    return new GestureDetector(
-        child: new Padding(
+    return GestureDetector(
+        child: Padding(
           padding: EdgeInsets.fromLTRB(14, 10, 6, 10),
-          child: new Container(
-            decoration: new BoxDecoration(
+          child: Container(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.transparent,
-              image: new DecorationImage(
-                  image: CachedNetworkImageProvider(Api.userAvatarInSecure+"?uid=$userUid&size=f100", cacheManager: DefaultCacheManager()),
+              image: DecorationImage(
+                  image: UserUtils.getAvatarProvider(userUid),
                   fit: BoxFit.contain
               ),
             ),
@@ -206,23 +203,23 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   }
 
   WillPopScope mainPage(context) {
-    _body = new IndexedStack(
+    _body = IndexedStack(
       children: pages,
       index: _tabIndex,
     );
-    return new WillPopScope(
+    return WillPopScope(
         onWillPop: doubleBackExit,
-        child: new Scaffold(
+        child: Scaffold(
           appBar: GestureAppBar(
-              appBar: new AppBar(
+              appBar: AppBar(
                 backgroundColor: currentThemeColor,
                 elevation: 1,
                 leading: getAvatar(),
-                title: new FlatButton(
+                title: FlatButton(
                     onPressed: null,
-                    child: new Text(
+                    child: Text(
                         getTabTitle(_tabIndex),
-                        style: new TextStyle(
+                        style: TextStyle(
                             color: Colors.white,
                             fontSize: Theme.of(context).textTheme.title.fontSize
                         )
@@ -246,7 +243,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                       hideZeroCount: true,
                       onPressed: () {
                         Navigator.of(context).push(platformPageRoute(builder: (context) {
-                          return new NotificationPage(arguments: {"notifications": notifications});
+                          return NotificationPage(arguments: {"notifications": notifications});
                         }));
                       }
                   ),
@@ -256,9 +253,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
               ),
               onTap: doubleTapScrollToTop
           ),
-          floatingActionButton: new Builder(builder: (BuildContext context) {
-            return new FloatingActionButton(
-              child: new Icon(Platform.isAndroid ? Icons.add : Ionicons.getIconData("ios-add")),
+          floatingActionButton: Builder(builder: (BuildContext context) {
+            return FloatingActionButton(
+              child: Icon(Platform.isAndroid ? Icons.add : Ionicons.getIconData("ios-add")),
               tooltip: "发布新动态",
               foregroundColor: Colors.white,
               backgroundColor: currentThemeColor,
@@ -266,11 +263,11 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
               highlightElevation: 14.0,
               onPressed: () {
                 Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                  return new PublishPostPage();
+                  return PublishPostPage();
                 }));
               },
               mini: false,
-              shape: new CircleBorder(),
+              shape: CircleBorder(),
               isExtended: false,
             );
           }),
@@ -306,5 +303,5 @@ class GestureAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => new Size.fromHeight(kToolbarHeight);
+  Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }

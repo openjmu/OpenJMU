@@ -36,7 +36,7 @@ class PraiseList extends StatefulWidget {
 }
 
 class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMixin {
-  final ScrollController _scrollController = new ScrollController();
+  final ScrollController _scrollController = ScrollController();
   Color currentColorTheme = ThemeUtils.currentColorTheme;
 
   num _lastValue = 0;
@@ -53,7 +53,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
 
   Widget _body = Center(
     child: CircularProgressIndicator(
-        valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
+        valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
     ),
   );
 
@@ -67,7 +67,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
     super.initState();
     Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
       if ( this.mounted && event.type == "Praise" ) {
-        _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
+        _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
       }
     });
 
@@ -155,7 +155,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
       return Container(
         child: Center(
           child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(currentColorTheme)
+              valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme)
           ),
         ),
       );
@@ -289,7 +289,7 @@ class _PraiseInPostListState extends State<PraiseInPostList> {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
         color: Theme.of(context).cardColor,
         width: MediaQuery.of(context).size.width,
         padding: isLoading
@@ -297,7 +297,7 @@ class _PraiseInPostListState extends State<PraiseInPostList> {
             : EdgeInsets.zero,
         child: isLoading
             ? Center(child: CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
+            valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
         ))
             : PraiseCardInPost(_praises)
     );

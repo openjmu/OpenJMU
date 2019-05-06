@@ -66,7 +66,7 @@ class DiscoveryPageState extends State<DiscoveryPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Text(
-              new DateFormat("MMMM dd, EE", "zh_CN").format(new DateTime.now()),
+              DateFormat("MMMM dd, EE", "zh_CN").format(DateTime.now()),
               style: TextStyle(fontSize: 28, color: Theme.of(context).textTheme.caption.color)
           ),
           Text(
@@ -79,9 +79,7 @@ class DiscoveryPageState extends State<DiscoveryPage> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text("我的", style: TextStyle(
-                      fontSize: 20
-                  )),
+                  Text("我的", style: TextStyle(fontSize: 20)),
                   Container(width: 34, height: 2, color: ThemeUtils.currentColorTheme)
                 ],
               )
@@ -107,8 +105,8 @@ class DiscoveryPageState extends State<DiscoveryPage> {
                   Expanded(child: Container()),
                   RichText(text: TextSpan(
                       children: <TextSpan>[
-                        TextSpan(text: "Lv.", style: TextStyle(fontSize: 28.0)),
-                        TextSpan(text: "$userLevel", style: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold)),
+                        TextSpan(text: "Lv.", style: TextStyle(fontSize: 30.0)),
+                        TextSpan(text: "$userLevel", style: TextStyle(fontSize: 64.0, fontWeight: FontWeight.bold)),
                       ]
                   )),
                   Text("$userLevelExpCurrent/$userLevelExpUpBound", style: TextStyle(
@@ -202,7 +200,7 @@ class IconPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    List<Color> colorPairing = new List(2);
+    List<Color> colorPairing = List(2);
 //    if (Theme.of(context).brightness == Brightness.light) {
       colorPairing[0] = Color(0xccffffff);
       colorPairing[1] = Color(0x88ffffff);

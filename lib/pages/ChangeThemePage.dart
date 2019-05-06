@@ -33,10 +33,10 @@ class ChangeThemePageState extends State<ChangeThemePage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: new AppBar(
+    return Scaffold(
+        appBar: AppBar(
           backgroundColor: currentColor,
-          title: new Text(
+          title: Text(
               '切换主题',
               style: TextStyle(
                   color: Colors.white,
@@ -46,17 +46,17 @@ class ChangeThemePageState extends State<ChangeThemePage> {
           centerTitle: true,
           brightness: Brightness.dark,
         ),
-        body: new Padding(
+        body: Padding(
             padding: EdgeInsets.all(8.0),
-            child: new GridView.count(
+            child: GridView.count(
               crossAxisCount: 4,
-              children: new List.generate(colors.length, (index) {
-                return new InkWell(
+              children: List.generate(colors.length, (index) {
+                return InkWell(
                   onTap: () {
                     DataUtils.setColorTheme(index);
                     changeColorTheme(colors[index]);
                   },
-                  child: new Container(
+                  child: Container(
                     color: colors[index],
                     margin: const EdgeInsets.all(5.0),
                   ),

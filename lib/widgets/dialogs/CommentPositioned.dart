@@ -29,14 +29,13 @@ class CommentPositioned extends StatefulWidget {
 }
 
 class CommentPositionedState extends State<CommentPositioned> {
-  final TextEditingController _commentController = new TextEditingController();
+  final TextEditingController _commentController = TextEditingController();
   FocusNode _focusNode = FocusNode();
 
   Comment toComment;
 
   bool _commenting = false;
   bool forwardAtTheMeanTime = false;
-  Timer _mentionTimer;
 
   String commentContent = "";
   bool emoticonPadActive = false;
@@ -62,7 +61,7 @@ class CommentPositionedState extends State<CommentPositioned> {
     Constants.eventBus.on<MentionPeopleEvent>().listen((event) {
       if (mounted) {
         FocusScope.of(context).requestFocus(_focusNode);
-        _mentionTimer = Timer(Duration(milliseconds: 300), () {
+        Future.delayed(Duration(milliseconds: 300), () {
           insertText("<M ${event.user.id}>@${event.user.nickname}</M>");
         });
       }
@@ -73,7 +72,6 @@ class CommentPositionedState extends State<CommentPositioned> {
   void dispose() {
     super.dispose();
     _commentController?.dispose();
-    _mentionTimer?.cancel();
   }
 
   Widget textField() {
@@ -182,9 +180,9 @@ class CommentPositionedState extends State<CommentPositioned> {
     }
     _keyboardHeight = max(keyboardHeight, _keyboardHeight ?? 0);
 
-    return new Material(
+    return Material(
       type: MaterialType.transparency,
-      child: new Stack(
+      child: Stack(
         children: <Widget>[
           GestureDetector(onTap: () => Navigator.of(context).pop()),
           Positioned(
@@ -223,12 +221,12 @@ class CommentPositionedState extends State<CommentPositioned> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              new IconButton(
+                              IconButton(
                                   onPressed: () => showDialog(
                                     context: context,
                                     builder: (BuildContext context) => MentionPeopleDialog()
                                   ),
-                                  icon: new Icon(Icons.alternate_email)
+                                  icon: Icon(Icons.alternate_email)
                               ),
                               ToggleButton(
                                 activeWidget: Icon(

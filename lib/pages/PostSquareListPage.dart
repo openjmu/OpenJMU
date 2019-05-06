@@ -7,9 +7,7 @@ class PostSquareListPage extends StatefulWidget {
   PostSquareListPage({Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return new PostSquareListPageState();
-  }
+  State<StatefulWidget> createState() => PostSquareListPageState();
 }
 
 class PostSquareListPageState extends State<PostSquareListPage> {
@@ -18,7 +16,7 @@ class PostSquareListPageState extends State<PostSquareListPage> {
   @override
   void initState() {
     super.initState();
-    _post = PostList(
+    _post = new PostList(
         PostController(
             postType: "square",
             isFollowed: false,
@@ -37,8 +35,6 @@ class PostSquareListPageState extends State<PostSquareListPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: CupertinoScrollbar(child: _post),
-    );
+    return Scaffold(body: CupertinoScrollbar(child: _post));
   }
 }

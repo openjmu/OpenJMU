@@ -1,9 +1,6 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:extended_image/extended_image.dart';
 
@@ -37,11 +34,10 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
-  final TextStyle rootTopicTextStyle = new TextStyle(fontSize: 14.0);
-  final TextStyle rootTopicMentionStyle = new TextStyle(color: Colors.blue, fontSize: 14.0);
+  final TextStyle subtitleStyle = TextStyle(color: Colors.grey, fontSize: 14.0);
+  final TextStyle rootTopicTextStyle = TextStyle(fontSize: 14.0);
+  final TextStyle rootTopicMentionStyle = TextStyle(color: Colors.blue, fontSize: 14.0);
   final Color subIconColor = Colors.grey;
-  Timer deleteTimer;
 
   Color _forwardColor = Colors.grey;
   Color _repliesColor = Colors.grey;
@@ -82,30 +78,24 @@ class _PostCardState extends State<PostCard> {
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    deleteTimer?.cancel();
-  }
-
   GestureDetector getPostAvatar(context, post) {
-    return new GestureDetector(
+    return GestureDetector(
         child: Container(
             width: 40.0,
             height: 40.0,
             child: CircleAvatar(
-              backgroundImage: CachedNetworkImageProvider(post.avatar, cacheManager: DefaultCacheManager()),
+              backgroundImage: UserUtils.getAvatarProvider(post.uid),
             )
         ),
         onTap: () {
-          return UserPage.jump(context, widget.post.userId);
+          return UserPage.jump(context, widget.post.uid);
         }
     );
   }
 
   Text getPostNickname(post) {
-    return new Text(
-      post.nickname ?? post.userId,
+    return Text(
+      post.nickname ?? post.uid,
       style: TextStyle(
           color: Theme.of(context).textTheme.body1.color,
           fontSize: 16.0
@@ -116,7 +106,7 @@ class _PostCardState extends State<PostCard> {
 
   Row getPostInfo(post) {
     String _postTime = post.postTime;
-    DateTime now = new DateTime.now();
+    DateTime now = DateTime.now();
     if (int.parse(_postTime.substring(0, 4)) == now.year) {
       _postTime = _postTime.substring(5, 16);
     }
@@ -127,34 +117,34 @@ class _PostCardState extends State<PostCard> {
     ) {
       _postTime = "${_postTime.substring(5, 11)}";
     }
-    return new Row(
+    return Row(
         children: <Widget>[
-          new Icon(
+          Icon(
               Icons.access_time,
               color: Colors.grey,
               size: 12.0
           ),
-          new Text(
+          Text(
               " $_postTime",
               style: subtitleStyle
           ),
-          new Container(width: 10.0),
-          new Icon(
+          Container(width: 10.0),
+          Icon(
               Icons.smartphone,
               color: Colors.grey,
               size: 12.0
           ),
-          new Text(
+          Text(
               " ${post.from}",
               style: subtitleStyle
           ),
-          new Container(width: 10.0),
-          new Icon(
+          Container(width: 10.0),
+          Icon(
               Icons.remove_red_eye,
               color: Colors.grey,
               size: 12.0
           ),
-          new Text(
+          Text(
               " ${post.glances}",
               style: subtitleStyle
           )
@@ -166,12 +156,12 @@ class _PostCardState extends State<PostCard> {
     String content = post.content;
     List<Widget> widgets = [getExtendedText(content)];
     if (post.rootTopic != null) widgets.add(getRootPost(context, post.rootTopic));
-    return new Row(
+    return Row(
         children: <Widget>[
-          new Expanded(
-              child: new Container(
+          Expanded(
+              child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: new Column(
+                  child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -185,7 +175,7 @@ class _PostCardState extends State<PostCard> {
 
   Widget getPostImages(post) {
     final imagesData = post.pics;
-    return new Container(
+    return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.0),
       child: getImages(imagesData)
     );
@@ -200,7 +190,7 @@ class _PostCardState extends State<PostCard> {
         Post _post = PostAPI.createPost(content);
         String topic = "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ";
         topic += content['article'] ?? content['content'];
-        return new GestureDetector(
+        return GestureDetector(
             onTap: () {
               Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
                 return PostDetailPage(
@@ -211,15 +201,15 @@ class _PostCardState extends State<PostCard> {
                 );
               }));
             },
-            child: new Container(
+            child: Container(
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(top: 8.0),
                 padding: EdgeInsets.all(8.0),
-                decoration: new BoxDecoration(
+                decoration: BoxDecoration(
                     color: Theme.of(context).canvasColor,
                     borderRadius: BorderRadius.circular(5.0)
                 ),
-                child: new Column(
+                child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -245,22 +235,22 @@ class _PostCardState extends State<PostCard> {
       List<Widget> imagesWidget = [];
       for (var index = 0; index < data.length; index++) {
         String imageUrl = data[index]['image_original'];
-        String urlInsecure = imageUrl.replaceAllMapped(new RegExp(r"https://"), (match) => "http://");
+        String urlInsecure = imageUrl.replaceAllMapped(RegExp(r"https://"), (match) => "http://");
         imagesWidget.add(
-            new GestureDetector(
+            GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
                     return ImageViewer(
                       index,
                       data.map<ImageBean>((f) {
                         String _httpsUrl = f['image_original'];
-                        String url = _httpsUrl.replaceAllMapped(new RegExp(r"https://"), (match) => "http://");
+                        String url = _httpsUrl.replaceAllMapped(RegExp(r"https://"), (match) => "http://");
                         return ImageBean(url, widget.post.id);
                       }).toList(),
                     );
                   }));
                 },
-//                child: new Hero(
+//                child: Hero(
 //                    tag: "$urlInsecure${index.toString()}${widget.post.id.toString()}",
                     child: ExtendedImage.network(
                       urlInsecure,
@@ -273,7 +263,7 @@ class _PostCardState extends State<PostCard> {
       }
       int itemCount = 3;
       if (data.length == 1) {
-        return new Container(
+        return Container(
             width: MediaQuery.of(context).size.width,
             padding: EdgeInsets.only(top: 8.0),
             child: imagesWidget[0]
@@ -281,8 +271,8 @@ class _PostCardState extends State<PostCard> {
       } else if (data.length < 3) {
         itemCount = data.length;
       }
-      return new Container(
-          child: new GridView.count(
+      return Container(
+          child: GridView.count(
               padding: EdgeInsets.only(top: 8.0),
               shrinkWrap: true,
               primary: false,
@@ -293,7 +283,7 @@ class _PostCardState extends State<PostCard> {
           )
       );
     } else {
-      return new Container();
+      return Container();
     }
   }
 
@@ -302,7 +292,7 @@ class _PostCardState extends State<PostCard> {
     int comments = widget.post.comments;
     int praises = widget.post.praises;
 
-    return new Flex(
+    return Flex(
       direction: Axis.horizontal,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
@@ -378,22 +368,22 @@ class _PostCardState extends State<PostCard> {
         content += "删除";
         break;
     }
-    return new Container(
+    return Container(
         color: const Color(0xffaa4444),
         padding: EdgeInsets.all(30.0),
-        child: new Center(
-            child: new Text(
+        child: Center(
+            child: Text(
                 content,
-                style: new TextStyle(fontSize: 20.0, color: Colors.white)
+                style: TextStyle(fontSize: 20.0, color: Colors.white)
             )
         )
     );
   }
 
   Widget getExtendedText(content) {
-    return new ExtendedText(
+    return ExtendedText(
       content != null ? "$content " : null,
-      style: new TextStyle(fontSize: 16.0),
+      style: TextStyle(fontSize: 16.0),
       onSpecialTextTap: (dynamic data) {
         String text = data['content'];
         if (text.startsWith("#")) {
@@ -449,7 +439,7 @@ class _PostCardState extends State<PostCard> {
     List<Widget> _widgets = [];
     if (widget.post.content != "此微博已经被屏蔽") {
       _widgets = [
-        new ListTile(
+        ListTile(
           leading: getPostAvatar(context, widget.post),
           title: getPostNickname(widget.post),
           subtitle: getPostInfo(widget.post),
@@ -461,7 +451,7 @@ class _PostCardState extends State<PostCard> {
     } else {
       _widgets = [getPostBanned("shield")];
     }
-    return new GestureDetector(
+    return GestureDetector(
       onTap: () {
         if (isDetail) {
           return null;
@@ -480,7 +470,7 @@ class _PostCardState extends State<PostCard> {
                   mainAxisSize: MainAxisSize.min,
                   children: _widgets,
                 ),
-                widget.post.userId == UserUtils.currentUser.uid && isDetail
+                widget.post.uid == UserUtils.currentUser.uid && isDetail
                     ? deleteButton()
                     : Container()
               ],
@@ -501,28 +491,28 @@ class ForwardCardInPost extends StatelessWidget {
   ForwardCardInPost(this.post, this.posts, {Key key}) : super(key: key);
 
   GestureDetector getPostAvatar(context, post) {
-    return new GestureDetector(
-        child: new Container(
+    return GestureDetector(
+        child: Container(
           width: 40.0,
           height: 40.0,
           margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-          decoration: new BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: const Color(0xFFECECEC),
-            image: new DecorationImage(
-                image: CachedNetworkImageProvider(post.avatar, cacheManager: DefaultCacheManager()),
+            image: DecorationImage(
+                image: UserUtils.getAvatarProvider(post.uid),
                 fit: BoxFit.cover
             ),
           ),
         ),
         onTap: () {
-          return UserPage.jump(context, post.userId);
+          return UserPage.jump(context, post.uid);
         }
     );
   }
 
   Text getPostNickname(context, post) {
-    return new Text(post.nickname,
+    return Text(post.nickname,
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
           fontSize: 16.0
@@ -532,7 +522,7 @@ class ForwardCardInPost extends StatelessWidget {
 
   Text getPostTime(context, post) {
     String _postTime = post.postTime;
-    DateTime now = new DateTime.now();
+    DateTime now = DateTime.now();
     if (int.parse(_postTime.substring(0, 4)) == now.year) {
       _postTime = _postTime.substring(5, 16);
     }
@@ -543,13 +533,13 @@ class ForwardCardInPost extends StatelessWidget {
     ) {
       _postTime = "${_postTime.substring(5, 11)}";
     }
-    return new Text(_postTime, style: Theme.of(context).textTheme.caption);
+    return Text(_postTime, style: Theme.of(context).textTheme.caption);
   }
 
   Widget getExtendedText(context, content) {
-    return new ExtendedText(
+    return ExtendedText(
       content != null ? "$content " : null,
-      style: new TextStyle(fontSize: 16.0),
+      style: TextStyle(fontSize: 16.0),
       onSpecialTextTap: (dynamic data) {
         String text = data['content'];
         if (text.startsWith("#")) {
@@ -567,7 +557,7 @@ class ForwardCardInPost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
         color: Theme.of(context).cardColor,
         padding: EdgeInsets.zero,
         child: this.posts.length > 0

@@ -25,9 +25,9 @@ class SearchPage extends StatefulWidget {
 }
 
 class SearchPageState extends State<SearchPage> {
-  TextEditingController _controller = new TextEditingController();
+  TextEditingController _controller = TextEditingController();
   Color primaryColor = Colors.white;
-  Widget _result = new Container();
+  Widget _result = Container();
   bool _autoFocus = true;
   Widget title;
 
@@ -37,7 +37,7 @@ class SearchPageState extends State<SearchPage> {
     title = searchTextField();
     if (widget.content != null) {
       _autoFocus = false;
-      _controller = new TextEditingController(text: widget.content);
+      _controller = TextEditingController(text: widget.content);
       search(widget.content);
     }
   }
@@ -45,9 +45,9 @@ class SearchPageState extends State<SearchPage> {
   void search(content) {
     setState(() {
       title = searchTitle(content);
-      _result = new Container();
+      _result = Container();
     });
-    new Timer(const Duration(milliseconds: 50), () {
+    Future.delayed(const Duration(milliseconds: 50), () {
       setState(() {
         _result = PostList(
             PostController(
@@ -65,7 +65,7 @@ class SearchPageState extends State<SearchPage> {
 
   TextField searchTextField({content}) {
     if (content != null) {
-      _controller = new TextEditingController(text: content);
+      _controller = TextEditingController(text: content);
     }
     return TextField(
       autofocus: _autoFocus,
@@ -90,7 +90,7 @@ class SearchPageState extends State<SearchPage> {
   }
 
   GestureDetector searchTitle(content) {
-    return new GestureDetector(
+    return GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () {
           setState(() {
@@ -100,16 +100,16 @@ class SearchPageState extends State<SearchPage> {
         onDoubleTap: () {
           Constants.eventBus.fire(new ScrollToTopEvent(type: "Post"));
         },
-        child: new Center(
-            child: new Text("\"$content\"的结果", style: TextStyle(color: primaryColor))
+        child: Center(
+            child: Text("\"$content\"的结果", style: TextStyle(color: primaryColor))
         )
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
+    return Scaffold(
+      appBar: AppBar(
         backgroundColor: ThemeUtils.currentColorTheme,
         elevation: 1,
         title: title,

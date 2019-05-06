@@ -52,11 +52,11 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   }
 
   Hero buildLogo() {
-    return new Hero(
+    return Hero(
       tag: "Logo",
       child: Container(
           margin: EdgeInsets.only(bottom: 10.0),
-          child: new Image.asset(
+          child: Image.asset(
             'images/ic_jmu_logo_trans.png',
             width: 100.0,
             height: 100.0,
@@ -66,11 +66,11 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   }
 
   Padding buildTitleLine() {
-    return new Padding(
+    return Padding(
       padding: EdgeInsets.all(4.0),
-      child: new Align(
+      child: Align(
         alignment: Alignment.bottomCenter,
-        child: new Container(
+        child: Container(
           color: ThemeUtils.defaultColor,
           width: 100.0,
           height: 2.0,
@@ -80,15 +80,15 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   }
 
   Padding buildUsernameTextField() {
-    return new Padding(
+    return Padding(
         padding: EdgeInsets.symmetric(horizontal: 48.0),
-        child: new Container(
-            decoration: new BoxDecoration(
+        child: Container(
+            decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
                 color: Color.fromRGBO(255,255,255,0.2)
             ),
-            child: new TextFormField(
-              decoration: new InputDecoration(
+            child: TextFormField(
+              decoration: InputDecoration(
                 prefixIcon: Icon(
                     Platform.isAndroid ? Icons.person : Ionicons.getIconData("ios-person"),
                     color: Colors.white
@@ -96,9 +96,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.all(10.0),
                 labelText: '工号/学号',
-                labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0),
+                labelStyle: TextStyle(color: Colors.white, fontSize: 18.0),
               ),
-              style: new TextStyle(color: Colors.white, fontSize: 18.0),
+              style: TextStyle(color: Colors.white, fontSize: 18.0),
               cursorColor: Colors.white,
               onSaved: (String value) => _username = value,
               keyboardType: TextInputType.number,
@@ -108,14 +108,14 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   }
 
   Padding buildPasswordTextField() {
-    return new Padding(
+    return Padding(
         padding: EdgeInsets.symmetric(horizontal: 48.0),
-        child:  new Container(
-            decoration: new BoxDecoration(
+        child:  Container(
+            decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10.0),
                 color: Color.fromRGBO(255,255,255,0.2)
             ),
-            child: new TextFormField(
+            child: TextFormField(
               onSaved: (String value) => _password = value,
               obscureText: _isObscure,
               validator: (String value) {
@@ -123,7 +123,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                   return '请输入密码';
                 }
               },
-              decoration: new InputDecoration(
+              decoration: InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.all(10.0),
                   prefixIcon: Icon(
@@ -131,9 +131,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                       color: Colors.white
                   ),
                   labelText: '密码',
-                  labelStyle: new TextStyle(color: Colors.white, fontSize: 18.0),
-                  suffixIcon: new IconButton(
-                      icon: new Icon(
+                  labelStyle: TextStyle(color: Colors.white, fontSize: 18.0),
+                  suffixIcon: IconButton(
+                      icon: Icon(
                         _isObscure
                           ? Platform.isAndroid ? Icons.visibility_off : Ionicons.getIconData("ios-eye-off")
                           : Platform.isAndroid ? Icons.visibility : Ionicons.getIconData("ios-eye"),
@@ -149,7 +149,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                       }
                   )
               ),
-              style: new TextStyle(color: Colors.white, fontSize: 20.0),
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
               cursorColor: Colors.white,
             )
         )
@@ -157,14 +157,14 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   }
 
   Column buildLoginButton(context) {
-    return new Column(
+    return Column(
         children: <Widget>[
           !_loginButtonDisabled
-          ? new Container(
+          ? Container(
               padding: EdgeInsets.all(8.0),
-              child: new IconButton(
+              child: IconButton(
                 highlightColor: Colors.white,
-                icon: new Icon(
+                icon: Icon(
                     Platform.isAndroid ? Icons.arrow_forward : FontAwesome.getIconData("arrow-right"),
                     color: Colors.white,
                     size: 30
@@ -177,22 +177,22 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                   }
                 },
             ),
-            decoration: new BoxDecoration(
+            decoration: BoxDecoration(
                 color: Color.fromRGBO(255,255,255,0.2),
                 shape: BoxShape.circle
             )
           )
-          : new Container(
+          : Container(
               padding: EdgeInsets.all(20.0),
-              child: new SizedBox(
+              child: SizedBox(
                   width: 24.0,
                   height: 24.0,
-                  child: new CircularProgressIndicator(
+                  child: CircularProgressIndicator(
                       strokeWidth: 3.0,
-                      valueColor: new AlwaysStoppedAnimation<Color>(Colors.white)
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white)
                   )
               ),
-              decoration: new BoxDecoration(
+              decoration: BoxDecoration(
                   color: Color.fromRGBO(255,255,255,0.2),
                   shape: BoxShape.circle
               )
@@ -202,15 +202,15 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   }
 
   Padding buildForgetPasswordText(BuildContext context) {
-    return new Padding(
+    return Padding(
       padding: EdgeInsets.all(0.0),
-      child: new Align(
+      child: Align(
         alignment: Alignment.center,
-        child: new FlatButton(
+        child: FlatButton(
           padding: EdgeInsets.all(0.0),
-          child: new Text(
+          child: Text(
             '忘记密码？',
-            style: new TextStyle(color: Colors.white70),
+            style: TextStyle(color: Colors.white70),
           ),
           onPressed: () {
             resetPassword();
@@ -221,7 +221,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   }
 
   RichText buildUserAgreement(context) {
-    return new RichText(
+    return RichText(
       text: TextSpan(children: <TextSpan>[
         TextSpan(text: "登录即表明同意", style: TextStyle(color: Colors.white70)),
         TextSpan(text: "用户协议", style: TextStyle(color: Colors.lightBlueAccent),
@@ -235,21 +235,21 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   }
 
 //  Align buildRegisterText(BuildContext context) {
-//    return new Align(
+//    return Align(
 //      alignment: Alignment.center,
-//      child: new Padding(
+//      child: Padding(
 //        padding: EdgeInsets.only(top: 10.0),
-//        child: new Row(
+//        child: Row(
 //          mainAxisAlignment: MainAxisAlignment.center,
 //          children: <Widget>[
-//            new Text(
+//            Text(
 //                '没有账号？',
-//                style: new TextStyle(color: Colors.white)
+//                style: TextStyle(color: Colors.white)
 //            ),
-//            new GestureDetector(
-//              child: new Text(
+//            GestureDetector(
+//              child: Text(
 //                '点击注册',
-//                style: new TextStyle(color: Colors.white, decoration: TextDecoration.underline),
+//                style: TextStyle(color: Colors.white, decoration: TextDecoration.underline),
 //              ),
 //              onTap: () {
 //                print('去注册');
@@ -281,24 +281,24 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
       context: context,
       builder: (BuildContext dialogContext) {
         return PlatformAlertDialog(
-          title: new Text('忘记密码'),
+          title: Text('忘记密码'),
           content: SingleChildScrollView(
-            child: new ListBody(
+            child: ListBody(
               children: <Widget>[
-                new Text('找回密码详见'),
-                new Text('网络中心主页 -> 集大通行证'),
+                Text('找回密码详见'),
+                Text('网络中心主页 -> 集大通行证'),
               ],
             ),
           ),
           actions: <Widget>[
-            new FlatButton(
-              child: new Text('返回'),
+            FlatButton(
+              child: Text('返回'),
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
             ),
-            new FlatButton(
-              child: new Text('查看'),
+            FlatButton(
+              child: Text('查看'),
               onPressed: () {
                 Navigator.of(dialogContext).pop();
                 return CommonWebPage.jump(
@@ -317,21 +317,21 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
-    return new WillPopScope(
+    return WillPopScope(
         onWillPop: doubleBackExit,
-        child: new Scaffold(
+        child: Scaffold(
             body: Builder(
                 builder: (context) =>
-                new Stack(
+                Stack(
                     children: <Widget>[
-                      new Container(
+                      Container(
                         decoration: BoxDecoration(
                             color: ThemeUtils.defaultColor
                         ),
                       ),
-                      new Form(
+                      Form(
                           key: _formKey,
-                          child: new Column(
+                          child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: <Widget>[
                                 SizedBox(height: 100.0),

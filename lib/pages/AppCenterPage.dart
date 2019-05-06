@@ -14,13 +14,13 @@ import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class AppCenterPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new AppCenterPageState();
+  State<StatefulWidget> createState() => AppCenterPageState();
 }
 
 class AppCenterPageState extends State<AppCenterPage> {
-  final ScrollController _scrollController = new ScrollController();
+  final ScrollController _scrollController = ScrollController();
   Color themeColor = ThemeUtils.currentColorTheme;
-  Map<String, List<Widget>> webAppWidgetList = new Map();
+  Map<String, List<Widget>> webAppWidgetList = {};
   List<Widget> webAppList = [];
   List webAppListData;
   int listTotalSize = 0;
@@ -34,7 +34,7 @@ class AppCenterPageState extends State<AppCenterPage> {
     _futureBuilderFuture = getAppList();
     Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
       if (this.mounted && event.tabIndex == 1) {
-        _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
+        _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
       }
     });
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
@@ -45,7 +45,7 @@ class AppCenterPageState extends State<AppCenterPage> {
   }
 
   WebApp createWebApp(webAppData) {
-    return new WebApp(
+    return WebApp(
       webAppData['appid'],
       webAppData['sequence'],
       webAppData['code'],
@@ -109,8 +109,8 @@ class AppCenterPageState extends State<AppCenterPage> {
   }
 
   String replaceParamsInUrl(url) {
-    RegExp sidReg = new RegExp(r"{SID}");
-    RegExp uidReg = new RegExp(r"{UID}");
+    RegExp sidReg = RegExp(r"{SID}");
+    RegExp uidReg = RegExp(r"{UID}");
     String result = url;
     result = result.replaceAllMapped(sidReg, (match) => UserUtils.currentUser.sid.toString());
     result = result.replaceAllMapped(uidReg, (match) => UserUtils.currentUser.uid.toString());
@@ -120,20 +120,20 @@ class AppCenterPageState extends State<AppCenterPage> {
   Widget getWebAppButton(webApp) {
     String url = replaceParamsInUrl(webApp.url);
     String imageUrl = Api.webAppIconsInsecure + "appid=${webApp.id}&code=${webApp.code}";
-    Widget button = new FlatButton(
+    Widget button = FlatButton(
       padding: EdgeInsets.all(0.0),
-      child: new Column(
+      child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          new Image(
+          Image(
               width: 64.0,
               height: 64.0,
               image: CachedNetworkImageProvider(imageUrl, cacheManager: DefaultCacheManager()),
               fit: BoxFit.cover
           ),
-          new Text(
+          Text(
               webApp.name,
-              style: new TextStyle(fontSize: 16.0, color: Theme.of(context).textTheme.body1.color)
+              style: TextStyle(fontSize: 16.0, color: Theme.of(context).textTheme.body1.color)
           )
         ],
       ),
@@ -149,16 +149,16 @@ class AppCenterPageState extends State<AppCenterPage> {
     if (webAppWidgetList[name].length != 0 && rows == 0) rows += 1;
     num _width = MediaQuery.of(context).size.width / 3;
     num _height = (_width / 1.3 * rows) + 58;
-    return new Container(
+    return Container(
       height: _height,
-        child: new Column(
+        child: Column(
             children: <Widget>[
-              new Container(
+              Container(
                 margin: EdgeInsets.symmetric(horizontal: 36.0, vertical: 8.0),
                 padding: EdgeInsets.symmetric(vertical: 8.0),
                 width: MediaQuery.of(context).size.width,
-                child: new Center(
-                    child: new Text(
+                child: Center(
+                    child: Text(
                         WebApp.category()[name],
                         style: TextStyle(
                             color: Theme.of(context).textTheme.title.color,
@@ -167,14 +167,14 @@ class AppCenterPageState extends State<AppCenterPage> {
                         )
                     )
                 ),
-                decoration: new BoxDecoration(
+                decoration: BoxDecoration(
                   border: Border(
                     bottom: Divider.createBorderSide(context, color: Theme.of(context).dividerColor, width: 2.0),
                   ),
                 ),
               ),
-              new Container(
-                  child: new GridView.count(
+              Container(
+                  child: GridView.count(
                       physics: NeverScrollableScrollPhysics(),
                       padding: EdgeInsets.zero,
                       shrinkWrap: true,
@@ -190,7 +190,7 @@ class AppCenterPageState extends State<AppCenterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new RefreshIndicator(
+    return RefreshIndicator(
         child: FutureBuilder(
           builder: _buildFuture,
           future: _futureBuilderFuture,

@@ -1,9 +1,13 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/utils/CacheUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 
 class UserUtils {
-  static final UserInfo emptyUser = new UserInfo(null, null, null, null, null, null, null, null, null, null);
+  static final UserInfo emptyUser = UserInfo(null, null, null, null, null, null, null, null, null, null);
   static UserInfo currentUser = emptyUser;
 
   static UserInfo createUserInfo(userData) {
@@ -11,7 +15,7 @@ class UserUtils {
     userData['workid'] == ""
         ? _workId = userData['uid'] is String ? int.parse(userData['uid']) : userData['uid']
         : _workId = userData['workid']is String ? int.parse(userData['workid']) : userData['workid'];
-    return new UserInfo(
+    return UserInfo(
         null,
         userData['uid'],
         userData['username'] ?? userData['uid'],
@@ -26,7 +30,7 @@ class UserUtils {
   }
 
   static User createUser(userData) {
-    return new User(
+    return User(
         userData["uid"] is String ? int.parse(userData['uid']) : userData['uid'],
         userData["nickname"] ?? userData["username"] ?? userData["name"] ?? userData["uid"].toString(),
         userData["gender"] ?? 0,
@@ -38,8 +42,20 @@ class UserUtils {
     );
   }
 
-  static UserTag createUserTag(tagData) {
-    return new UserTag(tagData['id'], tagData['tagname']);
+  static UserTag createUserTag(tagData) => UserTag(tagData['id'], tagData['tagname']);
+
+  /// Update cache network image provider after avatar is updated.
+  static int avatarLastModified = DateTime.now().millisecondsSinceEpoch;
+  static CachedNetworkImageProvider getAvatarProvider(int uid, {int size, int t}) {
+    String _url = "${Api.userAvatarInSecure}?uid=$uid";
+    size != null ? _url += "&size=f$size" : _url += "&size=f152";
+    t != null ? _url += "&_t=$t" : _url = _url += "&_t=$avatarLastModified";
+    return CachedNetworkImageProvider(_url, cacheManager: DefaultCacheManager());
+  }
+  static void updateAvatarProvider() {
+    CacheUtils.remove("${Api.userAvatarInSecure}?uid=${currentUser.uid}&size=f152&_t=$avatarLastModified");
+    CacheUtils.remove("${Api.userAvatarInSecure}?uid=${currentUser.uid}&size=f640&_t=$avatarLastModified");
+    avatarLastModified = DateTime.now().millisecondsSinceEpoch;
   }
 
   static Future getUserInfo({int uid}) async {

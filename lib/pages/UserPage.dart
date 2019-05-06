@@ -3,21 +3,20 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
-import 'package:OpenJMU/widgets/AppBar.dart'
-    show FlexibleSpaceBarWithUserInfo;
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/widgets/AppBar.dart' show FlexibleSpaceBarWithUserInfo;
 import 'package:OpenJMU/widgets/dialogs/EditSignatureDialog.dart';
+import 'package:OpenJMU/widgets/image/ImageCropPage.dart';
+import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
 class UserPage extends StatefulWidget {
   final int uid;
@@ -51,8 +50,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
 
   PostController postController;
 
-  Timer updateTimer;
-
   @override
   void initState() {
     super.initState();
@@ -68,16 +65,14 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
       _post = PostList(postController, needRefreshIndicator: false);
     }
     Constants.eventBus.on<SignatureUpdatedEvent>().listen((event) {
-      updateTimer = Timer(Duration(milliseconds: 2400), () {
+      Future.delayed(Duration(milliseconds: 2400), () {
         _fetchUserInformation(UserUtils.currentUser.uid);
       });
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    updateTimer?.cancel();
+    Constants.eventBus.on<AvatarUpdatedEvent>().listen((event) {
+      UserUtils.updateAvatarProvider();
+      _fetchUserInformation(widget.uid);
+    });
   }
 
   @override
@@ -173,9 +168,11 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
     tags['data'].forEach((tag) {
       _userTags.add(UserUtils.createUserTag(tag));
     });
-    setState(() {
-      _tags = _userTags;
-    });
+    if (mounted) {
+      setState(() {
+        _tags = _userTags;
+      });
+    }
 
     if (_user == null) {
       if (mounted) {
@@ -187,24 +184,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
       await _getFollowingAndFansCount(uid);
       if (await DataUtils.isLogin()) {
         if (uid == UserUtils.currentUser.uid) {
-//          _infoNextNameButton = RawMaterialButton(
-//            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-//            constraints: BoxConstraints(minWidth: 0, minHeight: 0),
-//            onPressed: () {
-//            },
-//            child: Container(
-//              constraints: BoxConstraints(minWidth: 64, maxWidth: double.infinity),
-//              padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
-//              decoration: BoxDecoration(
-//                  color: Colors.transparent,
-//                  border: Border.all(color: Colors.white),
-//                  borderRadius: BorderRadius.circular(4)
-//              ),
-//              child: Center(
-//                child: Text('编辑资料', style: TextStyle(color: Colors.white, fontSize: 12)),
-//              ),
-//            ),
-//          );
           _infoNextNameButton = Container();
         } else {
           if (_user.isFollowing) {
@@ -237,7 +216,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         chips.add(Container(
           margin: EdgeInsets.symmetric(horizontal: 4.0),
           child: Chip(
-            label: Text(_tags[i].name, style: new TextStyle(fontSize: 16.0)),
+            label: Text(_tags[i].name, style: TextStyle(fontSize: 16.0)),
             avatar: Icon(Icons.label),
             padding: EdgeInsets.only(left: 4.0),
             labelPadding: EdgeInsets.fromLTRB(2.0, 0.0, 10.0, 0.0),
@@ -294,15 +273,16 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
               ],
             ),
             infoNextNickname: _infoNextNameButton,
-            avatar: CachedNetworkImageProvider("${Api.userAvatarInSecure}?uid=${_user.uid}&size=f100)", cacheManager: DefaultCacheManager()),
+            avatar: UserUtils.getAvatarProvider(_user.uid),
+            avatarTap: avatarTap,
             titlePadding: EdgeInsets.only(left: 100, bottom: 48),
             title: Text(
               _user.name,
               style: TextStyle(color: Colors.white, fontSize: 14),
               maxLines: 1,
             ),
-            background: new Image(
-              image: CachedNetworkImageProvider("${Api.userAvatarInSecure}?uid=${_user.uid}&size=f152)", cacheManager: DefaultCacheManager()),
+            background: Image(
+              image: UserUtils.getAvatarProvider(_user.uid),
               fit: BoxFit.fitWidth,
               width: MediaQuery.of(context).size.width,
             ),
@@ -375,6 +355,47 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         );
       });
     }
+  }
+
+  void avatarTap() {
+    widget.uid == UserUtils.currentUser.uid ?
+    showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context){
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.account_circle),
+                title: Text("查看大头像"),
+                onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+                    builder: (_) => ImageViewer(
+                        0, [ImageBean(Api.userAvatarInSecure+"?uid=${widget.uid}&size=f640", 0)],
+                        needsClear: true
+                    )
+                )),
+              ),
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text("更换头像"),
+                onTap: () {
+                  Navigator.of(context)..pop()..push(CupertinoPageRoute(
+                      builder: (_) => ImageCropperPage()
+                  ));
+                },
+              ),
+            ],
+          );
+        }
+    )
+    : Navigator.of(context).push(
+        CupertinoPageRoute(
+            builder: (_) => ImageViewer(
+                0, [ImageBean(Api.userAvatarInSecure+"?uid=${widget.uid}&size=f640", 0)],
+                needsClear: true
+            )
+        )
+    );
   }
 
   void _follow() async {
@@ -514,7 +535,7 @@ class _UserListState extends State<UserListPage> {
   Widget userCard(userData) {
     var _user = userData['user'];
     TextStyle _textStyle = TextStyle(fontSize: 16.0);
-    return new Container(
+    return Container(
         margin: EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(15.0),
@@ -539,7 +560,7 @@ class _UserListState extends State<UserListPage> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: CachedNetworkImageProvider("${Api.userAvatarInSecure}?uid=${_user['uid']}&size=f100", cacheManager: DefaultCacheManager()),
+                      image: UserUtils.getAvatarProvider(_user['uid']),
                     )
                 ),
               ),

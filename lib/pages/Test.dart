@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class TestPage extends StatefulWidget {
   @override
-  _TestPageState createState() => new _TestPageState();
+  _TestPageState createState() => _TestPageState();
 }
 
 class _TestPageState extends State<TestPage> {

@@ -51,8 +51,8 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
-  final ScrollController _scrollController = new ScrollController();
-  LoadingDialogController _controller = new LoadingDialogController();
+  final ScrollController _scrollController = ScrollController();
+  LoadingDialogController _controller = LoadingDialogController();
   Color currentColorTheme = ThemeUtils.currentColorTheme;
 
   num _lastValue = 0;
@@ -76,8 +76,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   List<int> _idList = [];
   List<Post> _postList = [];
 
-  Timer _refreshTimer;
-
   @override
   bool get wantKeepAlive => true;
 
@@ -91,12 +89,12 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
           &&
         ((event.tabIndex == 0 && widget._postController.postType == "square") || (event.type == "Post"))
       ) {
-        _scrollController.animateTo(0.0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
+        _scrollController.animateTo(0.0, duration: Duration(milliseconds: 500), curve: Curves.ease);
         showDialog<Null>(
             context: context,
             builder: (BuildContext context) => LoadingDialog("正在更新动态", _controller)
         );
-        _refreshTimer = Timer(Duration(milliseconds: 500), () {
+        Future.delayed(Duration(milliseconds: 500), () {
           _refreshData(needLoader: true);
         });
       }
@@ -163,12 +161,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   }
 
   @override
-  void dispose() {
-    super.dispose();
-    _refreshTimer?.cancel();
-  }
-
-  @override
   Widget build(BuildContext context) {
     super.build(context);
     if (!_showLoading) {
@@ -226,7 +218,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       return Container(
         child: Center(
           child: CircularProgressIndicator(
-              valueColor: new AlwaysStoppedAnimation<Color>(currentColorTheme)
+              valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme)
           ),
         ),
       );
@@ -375,14 +367,14 @@ class _ForwardInPostListState extends State<ForwardInPostList> {
   Widget forwardList() {
     return isLoading
         ? Center(child: CircularProgressIndicator(
-        valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
+        valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)
     ))
         : ForwardCardInPost(widget.post, _posts);
   }
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
         color: Theme.of(context).cardColor,
         width: MediaQuery.of(context).size.width,
         padding: isLoading

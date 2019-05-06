@@ -28,12 +28,11 @@ class ForwardPositioned extends StatefulWidget {
 }
 
 class ForwardPositionedState extends State<ForwardPositioned> {
-  final TextEditingController _forwardController = new TextEditingController();
+  final TextEditingController _forwardController = TextEditingController();
   FocusNode _focusNode = FocusNode();
 
   bool _forwarding = false;
   bool commentAtTheMeanTime = false;
-  Timer _mentionTimer;
 
   bool emoticonPadActive = false;
 
@@ -51,7 +50,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
     Constants.eventBus.on<MentionPeopleEvent>().listen((event) {
       if (mounted) {
         FocusScope.of(context).requestFocus(_focusNode);
-        _mentionTimer = Timer(Duration(milliseconds: 300), () {
+        Future.delayed(Duration(milliseconds: 300), () {
           insertText("<M ${event.user.id}>@${event.user.nickname}</M>");
         });
       }
@@ -62,7 +61,6 @@ class ForwardPositionedState extends State<ForwardPositioned> {
   void dispose() {
     super.dispose();
     _forwardController?.dispose();
-    _mentionTimer?.cancel();
   }
 
   Widget textField() {
@@ -156,9 +154,9 @@ class ForwardPositionedState extends State<ForwardPositioned> {
     }
     _keyboardHeight = max(keyboardHeight, _keyboardHeight ?? 0);
 
-    return new Material(
+    return Material(
       type: MaterialType.transparency,
-      child: new Stack(
+      child: Stack(
         children: <Widget>[
           GestureDetector(onTap: () => Navigator.of(context).pop()),
           Positioned(
@@ -197,12 +195,12 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
-                              new IconButton(
+                              IconButton(
                                   onPressed: () => showDialog(
                                       context: context,
                                       builder: (BuildContext context) => MentionPeopleDialog()
                                   ),
-                                  icon: new Icon(Icons.alternate_email)
+                                  icon: Icon(Icons.alternate_email)
                               ),
                               ToggleButton(
                                 activeWidget: Icon(

@@ -17,9 +17,7 @@ class CommonWebPage extends StatefulWidget {
       ) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    return new CommonWebPageState();
-  }
+  State<StatefulWidget> createState() => CommonWebPageState();
 
   static void jump(BuildContext context, String url, String title, {bool withCookie}) {
     Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
@@ -35,7 +33,7 @@ class CommonWebPageState extends State<CommonWebPage> {
   Color currentColorTheme = ThemeUtils.currentColorTheme;
   double currentProgress = 0.0;
 
-  final flutterWebViewPlugin = new FlutterWebviewPlugin();
+  final flutterWebViewPlugin = FlutterWebviewPlugin();
 
   @override
   void initState() {
@@ -53,7 +51,7 @@ class CommonWebPageState extends State<CommonWebPage> {
             this._title = title;
           }
         });
-        new Timer(const Duration(milliseconds: 500), () {
+        Future.delayed(const Duration(milliseconds: 500), () {
           setState(() {
             isLoading = false;
             currentProgress = 0.0;
@@ -73,7 +71,7 @@ class CommonWebPageState extends State<CommonWebPage> {
     flutterWebViewPlugin.onUrlChanged.listen((url) {
       setState(() {
         _url = url;
-        new Timer(const Duration(milliseconds: 500), () {
+        Future.delayed(const Duration(milliseconds: 500), () {
           setState(() {
             isLoading = false;
           });
@@ -90,15 +88,15 @@ class CommonWebPageState extends State<CommonWebPage> {
     flutterWebViewPlugin?.dispose();
   }
 
-  Widget refreshIndicator = new Container(
+  Widget refreshIndicator = Container(
       width: 54.0,
       padding: EdgeInsets.all(17.0),
       child: Platform.isAndroid
-          ? new CircularProgressIndicator(
-            valueColor: new AlwaysStoppedAnimation<Color>(Colors.white),
+          ? CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
             strokeWidth: 3.0,
           )
-          : new CupertinoActivityIndicator()
+          : CupertinoActivityIndicator()
   );
 
   Future<bool> waitForClose() async {
@@ -107,11 +105,11 @@ class CommonWebPageState extends State<CommonWebPage> {
   }
 
   PreferredSize progressBar() {
-    return new PreferredSize(
-        child: new Container(
+    return PreferredSize(
+        child: Container(
             color: currentColorTheme,
             height: 2.0,
-            child: new LinearProgressIndicator(
+            child: LinearProgressIndicator(
                 backgroundColor: currentColorTheme,
                 value: currentProgress,
                 valueColor: AlwaysStoppedAnimation<Color>(primaryColor)
@@ -131,32 +129,32 @@ class CommonWebPageState extends State<CommonWebPage> {
     }
     Widget trailing = isLoading
         ? refreshIndicator
-        : new Container(width: 56.0);
-    return new WillPopScope(
+        : Container(width: 56.0);
+    return WillPopScope(
         onWillPop: waitForClose,
-        child: new WebviewScaffold(
+        child: WebviewScaffold(
             clearCache: _clear,
             clearCookies: _clear,
             url: widget.url,
             allowFileURLs: true,
-            appBar: new AppBar(
+            appBar: AppBar(
               backgroundColor: currentColorTheme,
-              leading: new IconButton(
+              leading: IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () {
                     Navigator.of(context).pop();
                   }
               ),
-              title: new Container(
-                  child: new Column(
+              title: Container(
+                  child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        new Text(_title,
-                            style: new TextStyle(color: primaryColor)
+                        Text(_title,
+                            style: TextStyle(color: primaryColor)
                         ),
-                        new Text(_url,
-                          style: new TextStyle(color: primaryColor, fontSize: 14.0),
+                        Text(_url,
+                          style: TextStyle(color: primaryColor, fontSize: 14.0),
                           overflow: TextOverflow.fade,
                         )
                       ]
@@ -179,18 +177,18 @@ class CommonWebPageState extends State<CommonWebPage> {
                   : Container(),
             ),
             persistentFooterButtons: <Widget>[
-              new Container(
+              Container(
                   margin: EdgeInsets.zero,
                   padding: EdgeInsets.zero,
                   width: MediaQuery.of(context).size.width - 16.0,
                   height: 24.0,
-                  child: new Row(
+                  child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        new IconButton(
+                        IconButton(
                             padding: EdgeInsets.zero,
-                            icon: new Icon(
+                            icon: Icon(
                                 Icons.keyboard_arrow_left,
                                 color: currentColorTheme
                             ),
@@ -198,9 +196,9 @@ class CommonWebPageState extends State<CommonWebPage> {
                               flutterWebViewPlugin.goBack();
                             }
                         ),
-                        new IconButton(
+                        IconButton(
                             padding: EdgeInsets.zero,
-                            icon: new Icon(
+                            icon: Icon(
                                 Icons.keyboard_arrow_right,
                                 color: currentColorTheme
                             ),
@@ -208,9 +206,9 @@ class CommonWebPageState extends State<CommonWebPage> {
                               flutterWebViewPlugin.goForward();
                             }
                         ),
-                        new IconButton(
+                        IconButton(
                             padding: EdgeInsets.zero,
-                            icon: new Icon(
+                            icon: Icon(
                                 Icons.refresh,
                                 color: currentColorTheme
                             ),

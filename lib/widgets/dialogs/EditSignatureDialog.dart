@@ -20,12 +20,11 @@ class EditSignatureDialog extends StatefulWidget {
 class EditSignatureDialogState extends State<EditSignatureDialog> {
   TextEditingController _textEditingController;
   bool canSave = false;
-  Timer popTimer;
 
   @override
   void initState() {
     super.initState();
-    _textEditingController = new TextEditingController(text: widget.signature ?? "")
+    _textEditingController = TextEditingController(text: widget.signature ?? "")
     ..addListener(() {
       setState(() {
         if (_textEditingController.text != widget.signature) {
@@ -37,14 +36,8 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    popTimer?.cancel();
-  }
-
   void updateSignature() {
-    LoadingDialogController _loadingDialogController = new LoadingDialogController();
+    LoadingDialogController _loadingDialogController = LoadingDialogController();
     showDialog<Null>(
         context: context,
         builder: (BuildContext context) => LoadingDialog("正在更新签名", _loadingDialogController)
@@ -56,7 +49,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
         UserUtils.currentUser.signature = _textEditingController.text;
       });
       Constants.eventBus.fire(new SignatureUpdatedEvent());
-      popTimer = Timer(Duration(milliseconds: 2300), () {
+      Future.delayed(Duration(milliseconds: 2300), () {
         Navigator.of(context).pop();
       });
     })

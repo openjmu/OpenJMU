@@ -19,7 +19,7 @@ class NotificationPage extends StatefulWidget {
   NotificationPage({this.arguments});
 
   @override
-  State<StatefulWidget> createState() => new NotificationPageState();
+  State<StatefulWidget> createState() => NotificationPageState();
 }
 
 class NotificationPageState extends State<NotificationPage> with TickerProviderStateMixin {
@@ -47,9 +47,9 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
     if (widget.arguments != null) {
       currentNotifications = widget.arguments['notifications'];
     } else {
-      currentNotifications = new Notifications(0,0,0,0);
+      currentNotifications = Notifications(0,0,0,0);
     }
-    _tabController = new TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.animation.addListener(() {
       if (_tabController.indexIsChanging) {
         setState(() {
@@ -57,7 +57,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
         });
       }
     });
-    _mentionTabController = new TabController(length: 2, vsync: this);
+    _mentionTabController = TabController(length: 2, vsync: this);
     postByMention();
     commentByMention();
     commentByReply();
@@ -86,9 +86,9 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
         hideZeroCount: true,
         onPressed: () {
           _tabController.animateTo(0);
-          var _notify = currentNotifications;
+          Notifications _notify = currentNotifications;
           setState(() {
-            currentNotifications = new Notifications(_notify.count - _notify.at, 0, _notify.comment, _notify.praise);
+            currentNotifications = Notifications(_notify.count - _notify.at, 0, _notify.comment, _notify.praise);
           });
         },
       )),
@@ -100,9 +100,9 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
         hideZeroCount: true,
         onPressed: () {
           _tabController.animateTo(1);
-          var _notify = currentNotifications;
+          Notifications _notify = currentNotifications;
           setState(() {
-            currentNotifications = new Notifications(_notify.count - _notify.comment, _notify.at, 0, _notify.praise);
+            currentNotifications = Notifications(_notify.count - _notify.comment, _notify.at, 0, _notify.praise);
           });
         },
       )),
@@ -114,17 +114,17 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
         hideZeroCount: true,
         onPressed: () {
           _tabController.animateTo(2);
-          var _notify = currentNotifications;
+          Notifications _notify = currentNotifications;
           setState(() {
-            currentNotifications = new Notifications(_notify.count - _notify.praise, _notify.at, _notify.comment, 0);
+            currentNotifications = Notifications(_notify.count - _notify.praise, _notify.at, _notify.comment, 0);
           });
         },
       )),
     ];
     return [
-      new Container(
+      Container(
         width: 220.0,
-        child: new TabBar(
+        child: TabBar(
           indicatorColor: primaryColor,
           tabs: _tabs,
           controller: _tabController,
@@ -134,7 +134,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
   }
 
   Icon getActionIcon(int curIndex) {
-    return new Icon(actionsIcons[curIndex], color: primaryColor);
+    return Icon(actionsIcons[curIndex], color: primaryColor);
   }
 
   void postByMention() {
@@ -183,12 +183,11 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
+    return Scaffold(
+      appBar: AppBar(
         backgroundColor: ThemeUtils.currentColorTheme,
         elevation: 0,
         actions: actions(),
-        iconTheme: new IconThemeData(color: primaryColor),
         brightness: Brightness.dark,
       ),
       body: ExtendedTabBarView(

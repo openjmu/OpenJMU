@@ -5,7 +5,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 
 class EmojiUtils {
-  final Map<String, String> _emojiMap = new Map<String, String>();
+  final Map<String, String> _emojiMap = Map<String, String>();
 
   Map<String, String> get emojiMap => _emojiMap;
 
@@ -13,7 +13,7 @@ class EmojiUtils {
 
   static EmojiUtils _instance;
   static EmojiUtils get instance {
-    if (_instance == null) _instance = new EmojiUtils._();
+    if (_instance == null) _instance = EmojiUtils._();
     return _instance;
   }
 

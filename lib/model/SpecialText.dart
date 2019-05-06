@@ -19,12 +19,10 @@ class LinkText extends SpecialText {
     return TextSpan(
         text: " 网页链接 ",
         style: textStyle?.copyWith(color: Colors.blue, fontSize: _fontSize),
-        recognizer: TapGestureRecognizer()
-          ..onTap = () {
-            Map<String, dynamic> data = new Map();
-            data['content'] = toString();
-            if (onTap != null) onTap(data);
-          }
+        recognizer: TapGestureRecognizer()..onTap = () {
+          Map<String, dynamic> data = { 'content': toString() };
+          if (onTap != null) onTap(data);
+        }
     );
   }
 }
@@ -43,8 +41,7 @@ class LinkOlderText extends SpecialText {
         style: textStyle?.copyWith(color: Colors.blue, fontSize: _fontSize),
         recognizer: TapGestureRecognizer()
           ..onTap = () {
-            Map<String, dynamic> data = new Map();
-            data['content'] = toString();
+            Map<String, dynamic> data = { 'content': toString() };
             if (onTap != null) onTap(data);
           }
     );
@@ -54,8 +51,8 @@ class LinkOlderText extends SpecialText {
 class MentionText extends SpecialText {
   static const String startKey = "<M";
   static const String endKey = "<\/M>";
-  final RegExp mTagStartReg = new RegExp(r"<M?\w+.*?\/?>");
-  final RegExp mTagEndReg = new RegExp(r"<\/M?\w+.*?\/?>");
+  final RegExp mTagStartReg = RegExp(r"<M?\w+.*?\/?>");
+  final RegExp mTagEndReg = RegExp(r"<\/M?\w+.*?\/?>");
   final int start;
   final BuilderType type;
 
@@ -103,11 +100,12 @@ class MentionText extends SpecialText {
       return TextSpan(
           text: mentionText,
           style: TextStyle(color: Colors.blue, fontSize: _fontSize),
-          recognizer: new TapGestureRecognizer()
+          recognizer: TapGestureRecognizer()
             ..onTap = () {
-              Map<String, dynamic> data = new Map();
-              data['content'] = mentionText;
-              data['uid'] = uid;
+              Map<String, dynamic> data = {
+                'content': mentionText,
+                'uid': uid
+              };
               if (onTap != null) onTap(data);
             }
       );
@@ -139,8 +137,9 @@ class PoundText extends SpecialText {
           style: TextStyle(color: Colors.orangeAccent, fontSize: _fontSize),
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              Map<String, dynamic> data = new Map();
-              data['content'] = toString();
+              Map<String, dynamic> data = {
+                'content': toString()
+              };
               if (onTap != null) onTap(data);
             }
       );

@@ -1,6 +1,6 @@
 class Post {
   int id;
-  int userId;
+  int uid;
   String nickname;
   String avatar;
   String postTime;
@@ -17,7 +17,7 @@ class Post {
 
   Post(
       this.id,
-      this.userId,
+      this.uid,
       this.nickname,
       this.avatar,
       this.postTime,
@@ -44,7 +44,7 @@ class Post {
   Post copy() {
     return Post(
         id,
-        userId,
+        uid,
         nickname,
         avatar,
         postTime,

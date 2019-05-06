@@ -10,14 +10,13 @@ class LoadingDialog extends StatefulWidget {
   LoadingDialog(this.text, this.controller, {Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => new LoadingDialogState();
+  State<StatefulWidget> createState() => LoadingDialogState();
 }
 
 class LoadingDialogState extends State<LoadingDialog> {
   String type;
   Widget icon;
   String text;
-  Timer timer;
 
   @override
   void initState() {
@@ -29,12 +28,6 @@ class LoadingDialogState extends State<LoadingDialog> {
         valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
       );
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    timer?.cancel();
   }
 
   void updateContent(String type, Widget icon, String text) {
@@ -57,14 +50,10 @@ class LoadingDialogState extends State<LoadingDialog> {
     });
   }
 
-  Timer _timer(callback) {
-    return new Timer(const Duration(milliseconds: 2000), callback);
-  }
-
   @override
   Widget build(BuildContext context) {
     if (this.type != null && this.type != "loading") {
-      timer = _timer(() { Navigator.pop(context); });
+      Future.delayed(const Duration(milliseconds: 2000), () { Navigator.pop(context); });
     } else if (this.type == "dismiss") {
       Navigator.pop(context);
     }
@@ -126,8 +115,8 @@ class LoadingDialogController {
         break;
       case 'failed':
         _loadingDialogState.updateContent("failed",
-            new RotationTransition(
-              turns: new AlwaysStoppedAnimation(45 / 360),
+            RotationTransition(
+              turns: AlwaysStoppedAnimation(45 / 360),
               child: Icon(
                   Icons.add_circle, color: Colors.redAccent, size: 50.0),
             ),

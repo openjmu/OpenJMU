@@ -15,14 +15,14 @@ import 'package:OpenJMU/utils/UserUtils.dart';
 
 class NewsListPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new NewsListPageState();
+  State<StatefulWidget> createState() => NewsListPageState();
 }
 
 class NewsListPageState extends State<NewsListPage> {
-  final ScrollController _scrollController = new ScrollController();
-  final TextStyle titleTextStyle = new TextStyle(fontSize: 15.0);
-  final TextStyle summaryTextStyle = new TextStyle(color: Colors.grey, fontSize: 14.0);
-  final TextStyle subtitleStyle = new TextStyle(color: Colors.grey, fontSize: 12.0);
+  final ScrollController _scrollController = ScrollController();
+  final TextStyle titleTextStyle = TextStyle(fontSize: 15.0);
+  final TextStyle summaryTextStyle = TextStyle(color: Colors.grey, fontSize: 14.0);
+  final TextStyle subtitleStyle = TextStyle(color: Colors.grey, fontSize: 12.0);
 
   String sid;
   List listData;
@@ -60,7 +60,7 @@ class NewsListPageState extends State<NewsListPage> {
     });
     Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
       if (this.mounted) {
-        _scrollController.animateTo(0, duration: new Duration(milliseconds: 500), curve: Curves.ease);
+        _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
       }
     });
   }
@@ -74,18 +74,18 @@ class NewsListPageState extends State<NewsListPage> {
   @override
   Widget build(BuildContext context) {
     if (listData == null) {
-      return new Center(
-        child: new CircularProgressIndicator(
-          valueColor: new AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
+      return Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
         ),
       );
     } else {
-      Widget listView = new ListView.builder(
+      Widget listView = ListView.builder(
         itemCount: listData.length,
         itemBuilder: (context, i) => renderRow(i),
         controller: _scrollController,
       );
-      return new RefreshIndicator(
+      return RefreshIndicator(
           color: ThemeUtils.currentColorTheme,
           child: listView,
           onRefresh: _pullToRefresh
@@ -96,14 +96,15 @@ class NewsListPageState extends State<NewsListPage> {
   void getNewsList(bool isLoadMore) async {
     sid = UserUtils.currentUser.sid;
     int uid = UserUtils.currentUser.uid;
-    Map<String, dynamic> headers = new Map();
-    headers["APIKEY"] = Constants.newsApiKey;
-    headers["APPID"] = "273";
-    headers["CLIENTTYPE"] = "android";
-    headers["CLOUDID"] = "jmu";
-    headers["CUID"] = "$uid";
-    headers["SID"] = sid;
-    headers["TAGID"] = "1";
+    Map<String, dynamic> headers = {
+      "APIKEY": Constants.newsApiKey,
+      "APPID": "273",
+      "CLIENTTYPE": "android",
+      "CLOUDID": "jmu",
+      "CUID": "$uid",
+      "SID": sid,
+      "TAGID": "1"
+    };
     String url;
     isLoadMore
         ? url = Api.newsList+"/max_ts/"+listData[listData.length-1]['create_time']+"/size/20"
@@ -119,7 +120,7 @@ class NewsListPageState extends State<NewsListPage> {
             listData = _listData;
 //              slideData = _slideData;
           } else {
-            List list1 = new List();
+            List list1 = [];
             list1..addAll(listData)..addAll(_listData);
             if (list1.length >= listTotalSize) {
               list1.add(Constants.endLineTag);
@@ -140,18 +141,18 @@ class NewsListPageState extends State<NewsListPage> {
   }
 
 //  void initSlider() {
-//    indicator = new SlideViewIndicator(slideData.length);
-////    slideView = new SlideView(slideData, indicator);
+//    indicator = SlideViewIndicator(slideData.length);
+////    slideView = SlideView(slideData, indicator);
 //  }
 
   Widget renderRow(i) {
 //    if (i == 0) {
-//      return new Container(
+//      return Container(
 //        height: 180.0,
-//        child: new Stack(
+//        child: Stack(
 //          children: <Widget>[
 ////            slideView,
-//            new Container(
+//            Container(
 //              alignment: Alignment.bottomCenter,
 //              child: indicator,
 //            )
@@ -160,36 +161,36 @@ class NewsListPageState extends State<NewsListPage> {
 //      );
 //    }
     var itemData = listData[i];
-    var titleRow = new Row(
+    var titleRow = Row(
       children: <Widget>[
-        new Expanded(
-          child: new Text(itemData['title'], style: titleTextStyle),
+        Expanded(
+          child: Text(itemData['title'], style: titleTextStyle),
         )
       ],
     );
-    var summaryRow = new Row(
+    var summaryRow = Row(
       children: <Widget>[
-        new Expanded(
-          child: new Text(itemData['summary'], style: summaryTextStyle),
+        Expanded(
+          child: Text(itemData['summary'], style: summaryTextStyle),
         )
       ],
     );
-    var timeRow = new Row(
+    var timeRow = Row(
       children: <Widget>[
-        new Padding(
+        Padding(
           padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
-          child: new Text(
-            new DateTime.fromMillisecondsSinceEpoch(int.parse(itemData['post_time'])).toString().substring(0,16),
+          child: Text(
+            DateTime.fromMillisecondsSinceEpoch(int.parse(itemData['post_time'])).toString().substring(0,16),
             style: subtitleStyle,
           ),
         ),
-        new Expanded(
+        Expanded(
           flex: 1,
-          child: new Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              new Text("${itemData['glances']} ", style: subtitleStyle),
-              new Icon(Icons.remove_red_eye, color: Colors.grey, size: 12.0)
+              Text("${itemData['glances']} ", style: subtitleStyle),
+              Icon(Icons.remove_red_eye, color: Colors.grey, size: 12.0)
             ],
           ),
         )
@@ -198,34 +199,34 @@ class NewsListPageState extends State<NewsListPage> {
     Widget thumbImg;
     if (itemData['cover_img'] != null) {
       String thumbImgUrl = Api.newsImageList + itemData['cover_img']['fid'] + "/sid/$sid";
-      thumbImg = new Container(
+      thumbImg = Container(
         width: 80.0,
         height: 80.0,
-        decoration: new BoxDecoration(
+        decoration: BoxDecoration(
 //          shape: BoxShape.circle,
           color: Colors.white,
-          image: new DecorationImage(
+          image: DecorationImage(
               image: CachedNetworkImageProvider(thumbImgUrl, cacheManager: DefaultCacheManager()),
               fit: BoxFit.cover
           ),
-          border: new Border.all(
+          border: Border.all(
             color: Colors.white,
             width: 1.0,
           ),
         ),
       );
     }
-    var row = new Row(
+    var row = Row(
       children: <Widget>[
-        new Expanded(
+        Expanded(
           flex: 1,
-          child: new Padding(
+          child: Padding(
             padding: const EdgeInsets.all(10.0),
-            child: new Column(
+            child: Column(
               children: <Widget>[
                 titleRow,
                 summaryRow,
-                new Padding(
+                Padding(
                   padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
                   child: timeRow,
                 )
@@ -233,20 +234,20 @@ class NewsListPageState extends State<NewsListPage> {
             ),
           ),
         ),
-        new Padding(
+        Padding(
           padding: const EdgeInsets.all(4.0),
-          child: new Container(
+          child: Container(
             width: 80.0,
             height: 80.0,
             color: const Color(0xFFECECEC),
-            child: new Center(
+            child: Center(
               child: thumbImg,
             ),
           ),
         )
       ],
     );
-    return new InkWell(
+    return InkWell(
       child: row,
       onTap: () {
         return CommonWebPage.jump(context, Api.newsDetail + itemData['post_id'], itemData['title']);

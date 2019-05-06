@@ -49,7 +49,7 @@ class DeleteDialog extends Dialog {
             if (this.comment != null) {
               Navigator.of(context).pop();
             }
-            LoadingDialogController _loadingDialogController = new LoadingDialogController();
+            LoadingDialogController _loadingDialogController = LoadingDialogController();
             showDialog(
                 context: context,
                 builder: (BuildContext dialogContext) => LoadingDialog("正在删除$whatToDelete", _loadingDialogController)

@@ -9,11 +9,10 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class SplashPage extends StatefulWidget {
   @override
-  SplashState createState() => new SplashState();
+  SplashState createState() => SplashState();
 }
 
 class SplashState extends State<SplashPage> {
-  Timer timer;
   bool isUserLogin = false;
 
   @override
@@ -40,20 +39,15 @@ class SplashState extends State<SplashPage> {
     });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    timer?.cancel();
-  }
 
   void navigate() {
-    timer = new Timer(const Duration(milliseconds: 2000), () {
+    Future.delayed(const Duration(milliseconds: 2000), () {
       if (!isUserLogin) {
         try {
           Navigator.of(context).pushReplacement(PageRouteBuilder(
               transitionDuration: Duration(milliseconds: 500),
               pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
-                return new FadeTransition(
+                return FadeTransition(
                     opacity: animation,
                     child: LoginPage()
                 );
@@ -69,11 +63,11 @@ class SplashState extends State<SplashPage> {
   }
 
   Hero buildLogo() {
-    return new Hero(
+    return Hero(
         tag: "Logo",
         child: Container(
             margin: EdgeInsets.all(30.0),
-            child: new Image.asset(
+            child: Image.asset(
               'images/ic_jmu_logo_trans.png',
               width: 120.0,
               height: 120.0,
@@ -84,12 +78,12 @@ class SplashState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-      return new Scaffold(
+      return Scaffold(
           body: Builder(
               builder: (context) =>
-              new Stack(
+              Stack(
                   children: <Widget>[
-                    new Container(
+                    Container(
                       decoration: BoxDecoration(
 //                      gradient: const LinearGradient(
 //                        begin: Alignment.topLeft,
@@ -101,19 +95,19 @@ class SplashState extends State<SplashPage> {
 //                      ),
                           color: ThemeUtils.currentColorTheme
                       ),
-                      child: new Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          new Container(
+                          Container(
                               padding: const EdgeInsets.all(10.0),
-                              child: new Center(
-                                child: new Column(
+                              child: Center(
+                                child: Column(
                                   children: <Widget>[
                                     buildLogo(),
-//                                  new Text(
+//                                  Text(
 //                                      "OpenJMU",
 //                                      textAlign: TextAlign.center,
-//                                      style: new TextStyle(
+//                                      style: TextStyle(
 //                                        color: Colors.white,
 //                                        fontSize: 48.0,
 //                                        letterSpacing: 4.0

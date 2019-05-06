@@ -42,7 +42,7 @@ class DataUtils {
   }
 
   static doLogin(context, String username, String password) async {
-    String blowfish = new Uuid().v4();
+    String blowfish = Uuid().v4();
     Map<String, Object> clientInfo, params;
     if (Platform.isIOS) {
       clientInfo = {
@@ -50,7 +50,7 @@ class DataUtils {
         "packetid": "",
         "platform": 40,
         "platformver": "2.3.2",
-//        "deviceid": "${new Random().nextInt(999999999999999)}",
+//        "deviceid": "${Random().nextInt(999999999999999)}",
         "deviceid": "",
         "devicetype": "iPhone",
         "systype": "iPhone OS",
@@ -69,7 +69,7 @@ class DataUtils {
         "appid": 273,
         "platform": 30,
         "platformver": "2.3.1",
-//        "deviceid": "${new Random().nextInt(999999999999999)}",
+//        "deviceid": "${Random().nextInt(999999999999999)}",
         "deviceid": "",
         "devicetype": "android",
         "systype": "TestDevice",
@@ -90,11 +90,12 @@ class DataUtils {
     NetUtils.post(Api.login, data: params)
         .then((response) {
       Map<String, dynamic> data = jsonDecode(response);
-      Map<String, dynamic> _map = new Map();
-      _map["uid"] = data["uid"];
+      Map<String, dynamic> _map = {
+        "uid": data["uid"]
+      };
       List<Cookie> cookies = [
-        new Cookie("OAPSID", data["sid"]),
-        new Cookie("PHPSESSID", data["sid"])
+        Cookie("OAPSID", data["sid"]),
+        Cookie("PHPSESSID", data["sid"])
       ];
       NetUtils.getWithCookieSet(
           Api.userInfo,
@@ -102,16 +103,17 @@ class DataUtils {
           cookies: cookies
       )
           .then((response) {
-        Map<String, dynamic> userInfo = new Map();
         Map<String, dynamic> user = jsonDecode(response);
-        userInfo['sid'] = data['sid'];
-        userInfo['ticket'] = data['ticket'];
-        userInfo['blowfish'] = blowfish;
-        userInfo['userUid'] = data['uid'];
-        userInfo['userName'] = user['username'];
-        userInfo['userUnitId'] = data['unitid'];
-        userInfo['userWorkId'] = user['workid'];
-        userInfo['userClassId'] = user['class_id'];
+        Map<String, dynamic> userInfo = {
+          'sid': data['sid'],
+          'ticket': data['ticket'],
+          'blowfish': blowfish,
+          'userUid': data['uid'],
+          'userName': user['username'],
+          'userUnitId': data['unitid'],
+          'userWorkId': user['workid'],
+          'userClassId': user['class_id']
+        };
         UserUtils.currentUser.sid = data['sid'];
         UserUtils.currentUser.uid = data['uid'];
         UserUtils.currentUser.classId = user['class_id'];
@@ -225,16 +227,17 @@ class DataUtils {
 
   static getSpTicket() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    Map<String, String> tickets = new Map();
-    tickets['ticket'] = sp.getString(spTicket);
-    tickets['blowfish'] = sp.getString(spBlowfish);
+    Map<String, String> tickets = {
+      'ticket': sp.getString(spTicket),
+      'blowfish': sp.getString(spBlowfish)
+    };
     return tickets;
   }
 
   static getTicket() async {
     print("isIOS: ${Platform.isIOS}");
     print("isAndroid: ${Platform.isAndroid}");
-    getSpTicket().then((infos) {
+    getSpTicket().then((info) {
       Map<String, Object> clientInfo, params;
       if (Platform.isIOS) {
         clientInfo = {
@@ -242,7 +245,7 @@ class DataUtils {
           "packetid": "",
           "platform": 40,
           "platformver": "2.3.2",
-//          "deviceid": "${new Random().nextInt(999999999999999)}",
+//          "deviceid": "${Random().nextInt(999999999999999)}",
           "deviceid": "",
           "devicetype": "iPhone",
           "systype": "iPhone OS",
@@ -250,8 +253,8 @@ class DataUtils {
         };
         params = {
           "appid": 274,
-          "ticket": "${infos['ticket']}",
-          "blowfish": "${infos['blowfish']}",
+          "ticket": "${info['ticket']}",
+          "blowfish": "${info['blowfish']}",
           "clientinfo": jsonEncode(clientInfo)
         };
       } else if (Platform.isAndroid) {
@@ -259,15 +262,15 @@ class DataUtils {
           "appid": 273,
           "platform": 30,
           "platformver": "2.3.1",
-//          "deviceid": "${new Random().nextInt(999999999999999)}",
+//          "deviceid": "${Random().nextInt(999999999999999)}",
           "devicetype": "TestDeviceName",
           "systype": "TestDevice",
           "sysver": "2.1"
         };
         params = {
           "appid": 273,
-          "ticket": "${infos['ticket']}",
-          "blowfish": "${infos['blowfish']}",
+          "ticket": "${info['ticket']}",
+          "blowfish": "${info['blowfish']}",
           "clientinfo": jsonEncode(clientInfo)
         };
       }
@@ -349,7 +352,7 @@ class DataUtils {
 //        int count = newFans + comment + postsAt + commsAt + praises;
         int count = comment + postsAt + commsAt + praises;
 //        print("Count: $count, At: ${postsAt+commsAt}, Comment: $comment, Praise: $praises");
-        Notifications notifications = new Notifications(count, postsAt+commsAt, comment, praises);
+        Notifications notifications = Notifications(count, postsAt+commsAt, comment, praises);
         Constants.eventBus.fire(new NotificationsChangeEvent(notifications));
       }).catchError((e) {
         print(e.toString());
@@ -359,10 +362,11 @@ class DataUtils {
   }
 
   static Map<String, dynamic> buildPostHeaders(sid) {
-    Map<String, String> headers = new Map();
-    headers["CLOUDID"] = "jmu";
-    headers["CLOUD-ID"] = "jmu";
-    headers["UAP-SID"] = sid;
+    Map<String, String> headers = {
+      "CLOUDID": "jmu",
+      "CLOUD-ID": "jmu",
+      "UAP-SID": sid
+    };
     if (Platform.isIOS) {
       headers["WEIBO-API-KEY"] = Constants.postApiKeyIOS;
       headers["WEIBO-API-SECRET"] = Constants.postApiSecretIOS;
@@ -374,7 +378,7 @@ class DataUtils {
   }
 
   static List<Cookie> buildPHPSESSIDCookies(sid) {
-    return [new Cookie("PHPSESSID", sid)];
+    return [Cookie("PHPSESSID", sid)];
   }
 
 }

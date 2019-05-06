@@ -12,12 +12,12 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/RouteUtils.dart';
 
 void main() {
-  runApp(new JMUAppClient());
+  runApp(JMUAppClient());
 }
 
 class JMUAppClient extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new JMUAppClientState();
+  State<StatefulWidget> createState() => JMUAppClientState();
 }
 
 class JMUAppClientState extends State<JMUAppClient> {
@@ -89,7 +89,7 @@ class JMUAppClientState extends State<JMUAppClient> {
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: RouteUtils.routes,
       title: "OpenJMU",
@@ -116,7 +116,7 @@ class JMUAppClientState extends State<JMUAppClient> {
               textTheme: ButtonTextTheme.primary,
           )
       ),
-      home: new SplashPage(),
+      home: SplashPage(),
       localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,

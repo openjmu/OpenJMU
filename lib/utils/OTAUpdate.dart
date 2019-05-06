@@ -39,20 +39,20 @@ class OTAUpdate {
   }
   
   static AlertDialog updateDialog(context, response) {
-    return new AlertDialog(
+    return AlertDialog(
       backgroundColor: ThemeUtils.currentColorTheme,
-      title: new Center(child: new Text("应用更新 -> ${response['version']}", style: TextStyle(color: Colors.white))),
+      title: Center(child: Text("应用更新 -> ${response['version']}", style: TextStyle(color: Colors.white))),
       content:
-      new RichText(
-          text: new TextSpan(
+      RichText(
+          text: TextSpan(
               text: response['updateLog'],
-              style: new TextStyle(color: Colors.white)
+              style: TextStyle(color: Colors.white)
           )
       ),
       contentPadding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
       actions: <Widget>[
-        new FlatButton(onPressed: () {Navigator.pop(context);}, child: Text("取消", style: TextStyle(color: Colors.white))),
-        new FlatButton(onPressed: () {tryOtaUpdate();}, child: Text("更新"), color: Colors.white),
+        FlatButton(onPressed: () {Navigator.pop(context);}, child: Text("取消", style: TextStyle(color: Colors.white))),
+        FlatButton(onPressed: () {tryOtaUpdate();}, child: Text("更新"), color: Colors.white),
       ],
       elevation: 0
     );

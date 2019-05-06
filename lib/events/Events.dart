@@ -83,6 +83,7 @@ class PraiseInPostUpdatedEvent {
   }
 }
 
+class AvatarUpdatedEvent {}
 class SignatureUpdatedEvent {}
 
 class AddEmoticonEvent {

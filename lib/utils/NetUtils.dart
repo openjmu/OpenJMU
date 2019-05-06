@@ -6,7 +6,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 
-Dio dio = new Dio();
+Dio dio = Dio();
 
 class NetUtils {
 

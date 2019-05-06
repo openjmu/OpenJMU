@@ -13,14 +13,14 @@ import 'package:OpenJMU/pages/Test.dart';
 
 class RouteUtils {
   static Map<String, WidgetBuilder> routes = {
-    "/splash": (BuildContext context) => new SplashPage(),
-    "/login": (BuildContext context) => new LoginPage(),
-    "/home": (BuildContext context) => new MainPage(),
-    "/search": (BuildContext context) => new SearchPage(),
-    "/changeTheme": (BuildContext context) => new ChangeThemePage(),
-    "/publishPost": (BuildContext context) => new PublishPostPage(),
-//    "/notification": (BuildContext context, {arguments}) => new NotificationPage(arguments: arguments),
-    "/notificationTest": (BuildContext context) => new NotificationTestPage(),
-    "/test": (BuildContext context) => new TestPage(),
+    "/splash": (BuildContext context) => SplashPage(),
+    "/login": (BuildContext context) => LoginPage(),
+    "/home": (BuildContext context) => MainPage(),
+    "/search": (BuildContext context) => SearchPage(),
+    "/changeTheme": (BuildContext context) => ChangeThemePage(),
+    "/publishPost": (BuildContext context) => PublishPostPage(),
+//    "/notification": (BuildContext context, {arguments}) => NotificationPage(arguments: arguments),
+    "/notificationTest": (BuildContext context) => NotificationTestPage(),
+    "/test": (BuildContext context) => TestPage(),
   };
 }
