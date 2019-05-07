@@ -376,7 +376,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
               ListTile(
                 leading: Icon(Icons.account_circle),
                 title: Text("查看大头像"),
-                onTap: () => Navigator.of(context).push(CupertinoPageRoute(
+                onTap: () => Navigator.of(context)..pop()..push(CupertinoPageRoute(
                     builder: (_) => ImageViewer(
                         0, [ImageBean(Api.userAvatarInSecure+"?uid=${widget.uid}&size=f640", 0)],
                         needsClear: true
