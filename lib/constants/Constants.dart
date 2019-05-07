@@ -1,6 +1,8 @@
 import 'package:event_bus/event_bus.dart';
 
 class Constants {
+  static int homeSplashIndex = 0;
+
   static final String endLineTag = "没有更多了";
 
   // Fow news list.
@@ -13,4 +15,5 @@ class Constants {
   static final String postApiSecretIOS = "773958E5CFE0FF8252808C417A8ECCAB";
 
   static EventBus eventBus = new EventBus();
+
 }

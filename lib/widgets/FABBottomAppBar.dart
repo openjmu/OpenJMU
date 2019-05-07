@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:OpenJMU/constants/Constants.dart';
+
 class FABBottomAppBarItem {
   FABBottomAppBarItem({this.iconData, this.text});
   IconData iconData;
@@ -35,7 +37,7 @@ class FABBottomAppBar extends StatefulWidget {
 }
 
 class FABBottomAppBarState extends State<FABBottomAppBar> {
-  int _selectedIndex = 0;
+  int _selectedIndex = Constants.homeSplashIndex;
 
   _updateIndex(int index) {
     widget.onTabSelected(index);

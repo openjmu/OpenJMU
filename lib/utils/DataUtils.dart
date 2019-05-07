@@ -30,18 +30,19 @@ class DataUtils {
 
   static final String spBrightness = "theme_brightness";
   static final String spColorThemeIndex = "theme_colorThemeIndex";
+  static final String spHomeSplashIndex = "home_splash_index";
 
-  static getSid() async {
+  static Future getSid() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     return sp.getString(spUserSid);
   }
 
-  static setSid(String phpSessId) async {
+  static Future setSid(String phpSessId) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     return sp.setString(spUserSid, phpSessId);
   }
 
-  static doLogin(context, String username, String password) async {
+  static Future doLogin(context, String username, String password) async {
     String blowfish = Uuid().v4();
     Map<String, Object> clientInfo, params;
     if (Platform.isIOS) {
@@ -159,18 +160,18 @@ class DataUtils {
     });
   }
 
-  static doLogout() async {
+  static Future<Null> doLogout() async {
     getSid().then((sid) {
       NetUtils.postWithCookieSet(Api.logout).then((response) {
-        clearLoginInfo();
         Constants.eventBus.fire(new LogoutEvent());
+        setHomeSplashIndex(0);
+        clearLoginInfo();
         resetTheme();
-        return;
       });
     });
   }
 
-  static getUserBasicInfo([uid]) async {
+  static Future getUserBasicInfo([uid]) async {
     NetUtils.getWithCookieSet(
         "${Api.userBasicInfo}?uid=${uid ?? UserUtils.currentUser.uid}",
         cookies: buildPHPSESSIDCookies(UserUtils.currentUser.sid)
@@ -184,14 +185,14 @@ class DataUtils {
     });
   }
 
-  static setUserBasicInfo(data) {
+  static void setUserBasicInfo(data) {
     UserUtils.currentUser.unitId = data['unitid'] is String ? int.parse(data['unitid']) : data['unitid'];
     UserUtils.currentUser.workId = data['workid'] is String ? int.parse(data['workid']) : data['workid'];
     UserUtils.currentUser.name = data['username'] ?? data['uid'].toString();
     UserUtils.currentUser.signature = data['signature'];
   }
 
-  static saveLoginInfo(Map data) async {
+  static Future<Null> saveLoginInfo(Map data) async {
     if (data != null) {
       SharedPreferences sp = await SharedPreferences.getInstance();
       await sp.setBool(spIsLogin, true);
@@ -208,7 +209,7 @@ class DataUtils {
   }
 
   // 清除登录信息
-  static clearLoginInfo() async {
+  static Future clearLoginInfo() async {
     UserUtils.currentUser = UserUtils.emptyUser;
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.setBool(spIsLogin, false);
@@ -225,7 +226,7 @@ class DataUtils {
     showShortToast("注销成功！");
   }
 
-  static getSpTicket() async {
+  static Future<Map> getSpTicket() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     Map<String, String> tickets = {
       'ticket': sp.getString(spTicket),
@@ -234,7 +235,7 @@ class DataUtils {
     return tickets;
   }
 
-  static getTicket() async {
+  static Future getTicket() async {
     print("isIOS: ${Platform.isIOS}");
     print("isAndroid: ${Platform.isAndroid}");
     getSpTicket().then((info) {
@@ -291,7 +292,7 @@ class DataUtils {
     });
   }
 
-  static updateSid(response) async {
+  static Future updateSid(response) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     UserUtils.currentUser.sid = response['sid'];
     UserUtils.currentUser.uid = sp.getInt(spUserUid);
@@ -306,9 +307,9 @@ class DataUtils {
   }
 
   // 重置主题配置
-  static resetTheme() async {
-    setColorTheme(0);
-    setBrightnessDark(false);
+  static Future resetTheme() async {
+    await setColorTheme(0);
+    await setBrightnessDark(false);
     ThemeUtils.currentColorTheme = ThemeUtils.defaultColor;
     Constants.eventBus.fire(new ChangeBrightnessEvent(false));
     Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.defaultColor));
@@ -321,35 +322,33 @@ class DataUtils {
   }
 
   // 设置选择的主题色
-  static setColorTheme(int colorThemeIndex) async {
+  static Future setColorTheme(int colorThemeIndex) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.setInt(spColorThemeIndex, colorThemeIndex);
   }
 
   // 获取设置的夜间模式
-  static getBrightnessDark() async {
+  static Future getBrightnessDark() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     return sp.getBool(spBrightness);
   }
   // 设置选择的夜间模式
-  static setBrightnessDark(bool isDark) async {
+  static Future setBrightnessDark(bool isDark) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     await sp.setBool(spBrightness, isDark);
   }
 
   // 获取未读信息数
-  static getNotifications() async {
+  static Future getNotifications() async {
     getSid().then((sid) {
       NetUtils.getWithCookieAndHeaderSet(
           Api.postUnread
       ).then((response) {
         Map<String, dynamic> data = jsonDecode(response);
-//        int newFans = int.parse(data['fans']);
         int comment = int.parse(data['cmt']);
         int postsAt = int.parse(data['t_at']);
         int commsAt = int.parse(data['cmt_at']);
         int praises = int.parse(data['t_praised']);
-//        int count = newFans + comment + postsAt + commsAt + praises;
         int count = comment + postsAt + commsAt + praises;
 //        print("Count: $count, At: ${postsAt+commsAt}, Comment: $comment, Praise: $praises");
         Notifications notifications = Notifications(count, postsAt+commsAt, comment, praises);
@@ -359,6 +358,19 @@ class DataUtils {
         return e;
       });
     });
+  }
+
+  // 获取默认启动页index
+  static Future<int> getHomeSplashIndex() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    int index = sp.getInt(spHomeSplashIndex);
+    return index;
+  }
+
+  static Future<Null> setHomeSplashIndex(int index) async {
+    Constants.homeSplashIndex = index;
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    await sp.setInt(spHomeSplashIndex, index);
   }
 
   static Map<String, dynamic> buildPostHeaders(sid) {

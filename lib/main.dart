@@ -40,6 +40,9 @@ class JMUAppClientState extends State<JMUAppClient> {
         Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.supportColors[index]));
       }
     });
+    DataUtils.getHomeSplashIndex().then((index) {
+      Constants.homeSplashIndex = index ?? 0;
+    });
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
       if (this.mounted) {
         setState(() {

@@ -305,19 +305,27 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    _user?.signature ?? '这个人还没写下TA的第一句...',
-                    style: TextStyle(color: Theme.of(context).textTheme.body1.color),
+                  Expanded(
+                    flex: 10,
+                    child: Text(
+                      _user?.signature ?? '这个人还没写下TA的第一句...',
+                      style: TextStyle(color: Theme.of(context).textTheme.body1.color),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      showDialog<Null>(
-                        context: context,
-                        builder: (BuildContext context) => EditSignatureDialog(_user?.signature)
-                      );
-                    },
-                    child: Text("修改", style: TextStyle(color: Colors.grey))
-                  )
+                  widget.uid == UserUtils.currentUser.uid ? Expanded(
+                    flex: 1,
+                    child: GestureDetector(
+                        onTap: () {
+                          showDialog<Null>(
+                              context: context,
+                              builder: (BuildContext context) => EditSignatureDialog(_user?.signature)
+                          );
+                        },
+                        child: Text("修改", textAlign: TextAlign.right, style: TextStyle(color: Colors.grey))
+                    ),
+                  ) : Container()
                 ],
               ),
             ),

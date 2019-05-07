@@ -106,7 +106,7 @@ class DiscoveryPageState extends State<DiscoveryPage> {
                   RichText(text: TextSpan(
                       children: <TextSpan>[
                         TextSpan(text: "Lv.", style: TextStyle(fontSize: 30.0)),
-                        TextSpan(text: "$userLevel", style: TextStyle(fontSize: 64.0, fontWeight: FontWeight.bold)),
+                        TextSpan(text: "$userLevel", style: TextStyle(fontSize: 64.0, fontWeight: FontWeight.bold))
                       ]
                   )),
                   Text("$userLevelExpCurrent/$userLevelExpUpBound", style: TextStyle(

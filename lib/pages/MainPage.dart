@@ -17,12 +17,12 @@ import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 //import 'package:OpenJMU/utils/OTAUpdate.dart';
 
-import 'package:OpenJMU/pages/PostSquareListPage.dart';
 import 'package:OpenJMU/pages/AppCenterPage.dart';
 import 'package:OpenJMU/pages/DiscoveryPage.dart';
-import 'package:OpenJMU/pages/PublishPostPage.dart';
 import 'package:OpenJMU/pages/MyInfoPage.dart';
 import 'package:OpenJMU/pages/NotificationPage.dart';
+import 'package:OpenJMU/pages/PostSquareListPage.dart';
+import 'package:OpenJMU/pages/PublishPostPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 
@@ -34,7 +34,7 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
-  final List<String> bottomAppBarTitles = ['首页', '应用中心', '发现', '我的'];
+  final List<String> bottomAppBarTitles = ['首页', '应用', '发现', '我的'];
   final List<IconData> bottomAppBarIcons = [
     Platform.isAndroid ? Icons.home : Ionicons.getIconData("ios-home"),
     Platform.isAndroid ? Icons.apps : Ionicons.getIconData("ios-apps"),
@@ -48,9 +48,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   Notifications notifications = Notifications(0, 0, 0, 0);
   Timer notificationTimer;
-  Stopwatch watch = Stopwatch();
 
-  int _tabIndex = 0;
+  int _tabIndex = Constants.homeSplashIndex;
   var _body;
   var pages = [
     PostSquareListPage(),
@@ -76,7 +75,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     DataUtils.isLogin().then((isLogin) {
       DataUtils.getNotifications();
       if (isLogin) {
-        watch.start();
         notificationTimer = Timer.periodic(const Duration(milliseconds: 10000), (timer) {
           DataUtils.getNotifications();
         });
@@ -171,12 +169,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     );
   }
 
-  @mustCallSuper
-  Widget build(BuildContext context) {
-    super.build(context);
-    return mainPage(context);
-  }
-
   int lastBack = 0;
   Future<bool> doubleBackExit() {
     int now = DateTime.now().millisecondsSinceEpoch;
@@ -202,7 +194,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     }
   }
 
-  WillPopScope mainPage(context) {
+  @mustCallSuper
+  Widget build(BuildContext context) {
+    super.build(context);
     _body = IndexedStack(
       children: pages,
       index: _tabIndex,

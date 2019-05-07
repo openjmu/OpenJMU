@@ -32,7 +32,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
 
   @override
   void initState() {
-    if (widget.needsClear) {
+    if (widget.needsClear ?? false) {
       clearMemoryImageCache();
       clearDiskCachedImages();
     }

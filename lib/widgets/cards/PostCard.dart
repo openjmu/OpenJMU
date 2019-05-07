@@ -18,7 +18,6 @@ import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/ForwardPositioned.dart';
-import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 
 class PostCard extends StatefulWidget {
   final Post post;
@@ -320,12 +319,7 @@ class _PostCardState extends State<PostCard> {
         Expanded(
           flex: 1,
           child: FlatButton.icon(
-            onPressed: () {
-              showDialog<Null>(
-                  context: context,
-                  builder: (BuildContext context) => CommentPositioned(widget.post)
-              );
-            },
+            onPressed: null,
             icon: Icon(
               Icons.mode_comment,
               color: _repliesColor,
