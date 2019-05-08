@@ -568,7 +568,7 @@ class _UserListState extends State<UserListPage> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     image: DecorationImage(
-                      image: UserUtils.getAvatarProvider(_user['uid']),
+                      image: UserUtils.getAvatarProvider(_user['uid'] is String ? int.parse(_user['uid']) : _user['uid']),
                     )
                 ),
               ),
@@ -629,7 +629,7 @@ class _UserListState extends State<UserListPage> {
             mainAxisSpacing: 10.0,
             crossAxisCount: 3,
             children: _users,
-            childAspectRatio: 0.88,
+            childAspectRatio: 0.80,
           )
           : Center(child: Text("暂无内容", style: TextStyle(fontSize: 20.0)))
         : Center(

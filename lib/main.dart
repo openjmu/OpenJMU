@@ -117,6 +117,8 @@ class JMUAppClientState extends State<JMUAppClient> {
           ),
           buttonTheme: ButtonThemeData(
               textTheme: ButtonTextTheme.primary,
+              splashColor: currentThemeColor,
+              highlightColor: currentThemeColor
           )
       ),
       home: SplashPage(),

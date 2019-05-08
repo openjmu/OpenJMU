@@ -16,7 +16,7 @@ class _SelectSplashDialogState extends State<SelectSplashDialog> {
   final BoxDecoration activePageShadow = BoxDecoration(
       boxShadow: <BoxShadow>[
         BoxShadow(
-            blurRadius: 3.0,
+            blurRadius: 10.0,
             color: ThemeUtils.currentColorTheme
         )
       ]
@@ -86,7 +86,9 @@ class _SelectSplashDialogState extends State<SelectSplashDialog> {
                   children: <Widget>[
                     Expanded(
                       child: FlatButton(
-                        child: Text("取消", style: TextStyle(fontSize: 18.0)),
+                        child: Text("取消", style: TextStyle(
+                            color: ThemeUtils.currentColorTheme,
+                            fontSize: 18.0)),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
@@ -94,7 +96,10 @@ class _SelectSplashDialogState extends State<SelectSplashDialog> {
                     ),
                     Expanded(
                       child: FlatButton(
-                        child: Text("保存", style: TextStyle(color: ThemeUtils.currentColorTheme, fontSize: 18.0)),
+                        child: Text("保存", style: TextStyle(
+                            color: Theme.of(context).textTheme.body1.color,
+                            fontSize: 18.0)
+                        ),
                         onPressed: () {
                           Navigator.of(context).pop();
                           DataUtils.setHomeSplashIndex(tabIndex);

@@ -125,15 +125,26 @@ class AppCenterPageState extends State<AppCenterPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Image(
-              width: 64.0,
-              height: 64.0,
-              image: CachedNetworkImageProvider(imageUrl, cacheManager: DefaultCacheManager()),
-              fit: BoxFit.cover
+          Container(
+              width: 64,
+              height: 64,
+              child: CircleAvatar(
+                backgroundColor: Theme.of(context).dividerColor,
+                child: Image(
+                    width: 44.0,
+                    height: 44.0,
+                    image: CachedNetworkImageProvider(imageUrl, cacheManager: DefaultCacheManager()),
+                    fit: BoxFit.cover
+                ),
+              )
           ),
           Text(
               webApp.name,
-              style: TextStyle(fontSize: 16.0, color: Theme.of(context).textTheme.body1.color)
+              style: TextStyle(
+                  fontSize: 16.0,
+                  color: Theme.of(context).textTheme.body1.color,
+                fontWeight: FontWeight.normal
+              )
           )
         ],
       ),

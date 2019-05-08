@@ -105,14 +105,7 @@ packages:
       name: extended_image
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.2"
-  extended_image_library:
-    dependency: transitive
-    description:
-      name: extended_image_library
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.1.0"
+    version: "0.3.1"
   extended_tabs:
     dependency: "direct main"
     description:
@@ -126,21 +119,21 @@ packages:
       name: extended_text
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.5"
+    version: "0.4.2"
   extended_text_field:
     dependency: "direct main"
     description:
       name: extended_text_field
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.2"
+    version: "0.2.1"
   extended_text_library:
     dependency: transitive
     description:
       name: extended_text_library
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.6"
+    version: "0.2.2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -194,7 +187,7 @@ packages:
       name: flutter_svg
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.12.4+1"
+    version: "0.12.4"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -318,14 +311,14 @@ packages:
       name: path_drawing
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.1"
+    version: "0.4.0"
   path_parsing:
     dependency: transitive
     description:
       name: path_parsing
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.4"
+    version: "0.1.3"
   path_provider:
     dependency: transitive
     description:

@@ -163,7 +163,7 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).canvasColor,
+      backgroundColor: Colors.black,
       body: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
