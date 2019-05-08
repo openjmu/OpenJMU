@@ -28,22 +28,20 @@ Flutter is a framework which can cross platform, it can create features when the
 ![Transition_2.gif](screenshots/Transition_2.gif)
 
 ## 截图 ScreenShots
-![Screenshot_1.jpg](screenshots/Screenshot_1.jpg)
-![Screenshot_2.jpg](screenshots/Screenshot_2.jpg)
-![Screenshot_3.jpg](screenshots/Screenshot_3.jpg)
-
-![Screenshot_4.jpg](screenshots/Screenshot_4.jpg)
-![Screenshot_5.jpg](screenshots/Screenshot_5.jpg)
-![Screenshot_6.jpg](screenshots/Screenshot_6.jpg)
-
-![Screenshot_7.jpg](screenshots/Screenshot_7.jpg)
-![Screenshot_8.jpg](screenshots/Screenshot_8.jpg)
-![Screenshot_9.jpg](screenshots/Screenshot_9.jpg)
-
-![Screenshot_10.jpg](screenshots/Screenshot_10.jpg)
-![Screenshot_11.jpg](screenshots/Screenshot_11.jpg)
-![Screenshot_12.jpg](screenshots/Screenshot_12.jpg)
-
-![Screenshot_13.jpg](screenshots/Screenshot_13.jpg)
-![Screenshot_14.jpg](screenshots/Screenshot_14.jpg)
-![Screenshot_15.jpg](screenshots/Screenshot_15.jpg)
+<div align="center">
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_1.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_2.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_3.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_4.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_5.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_6.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_7.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_8.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_9.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_10.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_11.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_12.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_13.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_14.jpg"/>
+    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_15.jpg"/>
+</div>
