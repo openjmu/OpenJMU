@@ -26,7 +26,7 @@ Flutter is a framework which can cross platform, it can create features when the
 
 ![Transition_1.gif](screenshots/Transition_1.gif)
 
-![Transition_1.gif](screenshots/Transition_1.gif)
+![Transition_2.gif](screenshots/Transition_2.gif)
 
 ## 截图 ScreenShots
 ![Screenshot_1.jpg](screenshots/Screenshot_1.jpg)
