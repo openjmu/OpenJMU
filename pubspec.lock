@@ -139,6 +139,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.3.2"
+  flutter_downloader:
+    dependency: "direct main"
+    description:
+      name: flutter_downloader
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.7"
   flutter_icons:
     dependency: "direct main"
     description:
@@ -270,13 +277,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "4.2.2"
-  ota_update:
-    dependency: "direct main"
-    description:
-      name: ota_update
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.2"
   package_info:
     dependency: "direct main"
     description:
@@ -319,6 +319,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.5.0"
+  permission_handler:
+    dependency: "direct main"
+    description:
+      name: permission_handler
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.0.1"
   petitparser:
     dependency: transitive
     description:

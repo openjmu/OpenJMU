@@ -7,9 +7,9 @@ import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 
 class Api {
-  static final String checkUpdate = "https://project.alexv525.com/openjmu/latest-version";
-  static final String latestAndroid = "https://project.alexv525.com/openjmu/android/openjmu-latest.apk";
-  static final String latestIOS = "https://project.alexv525.com/openjmu/ios/openjmu-latest.ipa";
+  static final String checkUpdate = "https://github.com/openjmu/OpenJMU/raw/master/release/latest-version";
+  static final String latestAndroid = "https://github.com/openjmu/OpenJMU/raw/master/release/openjmu-latest.apk";
+//  static final String latestIOS = "https://project.alexv525.com/openjmu/ios/openjmu-latest.ipa";
 
   /// Hosts.
   static final String wbHost = "https://wb.jmu.edu.cn";

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:badges/badges.dart';
-import 'package:ota_update/ota_update.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
@@ -15,7 +14,7 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
-//import 'package:OpenJMU/utils/OTAUpdate.dart';
+import 'package:OpenJMU/utils/OTAUtils.dart';
 
 import 'package:OpenJMU/pages/AppCenterPage.dart';
 import 'package:OpenJMU/pages/DiscoveryPage.dart';
@@ -63,15 +62,13 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   String userSid;
   var userAvatar;
 
-  OtaEvent otaEvent;
-
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
     super.initState();
-//    OTAUpdate.checkUpdate();
+    OTAUtils.checkUpdate(fromStart: true);
     DataUtils.isLogin().then((isLogin) {
       DataUtils.getNotifications();
       if (isLogin) {
@@ -88,17 +85,12 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       notificationTimer?.cancel();
       Navigator.of(context).pushReplacementNamed("/login");
     });
-//    Constants.eventBus.on<HasUpdateEvent>().listen((event) {
-//      if (this.mounted) {
-//        showDialog(context: context, builder: (_) => OTAUpdate.updateDialog(context, event.response));
-//      }
-//    });
-    Constants.eventBus.on<OTAEvent>().listen((event) {
+    Constants.eventBus.on<HasUpdateEvent>().listen((event) {
       if (this.mounted) {
-        setState(() {
-          this.otaEvent = event.otaEvent;
-          print('OTA status: ${this.otaEvent.status} : ${this.otaEvent.value}');
-        });
+        showDialog(
+            context: context,
+            builder: (_) => OTAUtils.updateDialog(context, event)
+        );
       }
     });
     Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
