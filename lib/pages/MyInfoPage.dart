@@ -165,7 +165,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme)),
               ),
               ios: (BuildContext context) => CupertinoButtonData(
-                child: Text("确认"),
+                child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme),),
               ),
               onPressed: () {
                 DataUtils.doLogout();
@@ -214,7 +214,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                     Container(
                       margin: EdgeInsets.only(bottom: 12.0),
                       child: RichText(text: TextSpan(children: <TextSpan>[
-                        TextSpan(text: "OpenJMU", style: Theme.of(context).textTheme.title),
+                        TextSpan(text: "OpenJmu", style: new TextStyle(fontFamily: 'chocolate',color:ThemeUtils.currentColorTheme,fontSize: 35.0)),
                         TextSpan(text: "　v$currentVersion", style: Theme.of(context).textTheme.subtitle),
                       ]))
                     ),
@@ -227,7 +227,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                                   return CommonWebPage.jump(context, "https://blog.alexv525.com/", "Alex Vincent");
                                 },
                               text: "Alex Vincent",
-                              style: TextStyle(color: Colors.lightBlue)
+                              style: TextStyle(color: Colors.lightBlue,fontFamily: 'chocolate')
                           ),
                           TextSpan(text: " And ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
                           TextSpan(
@@ -236,7 +236,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                                   return CommonWebPage.jump(context, "https://135792468.xyz/", "Evsio0n");
                                 },
                               text: "Evsio0n",
-                              style: TextStyle(color: Colors.lightBlue)
+                              style: TextStyle(color: Colors.lightBlue,fontFamily: 'chocolate')
                           ),
                           TextSpan(text: ".", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
                         ]

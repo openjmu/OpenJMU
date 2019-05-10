@@ -42,7 +42,7 @@ class DeleteDialog extends Dialog {
             child: Text('确认', style: TextStyle(color: ThemeUtils.currentColorTheme)),
           ),
           ios: (BuildContext context) => CupertinoButtonData(
-            child: Text('取消'),
+            child: Text('确认', style: TextStyle(color: ThemeUtils.currentColorTheme)),
           ),
           onPressed: () {
             Navigator.of(context).pop();

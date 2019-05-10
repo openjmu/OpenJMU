@@ -397,8 +397,11 @@ class CommentCardInPost extends StatelessWidget {
                                             android: (BuildContext context) => MaterialRaisedButtonData(
                                               color: ThemeUtils.currentColorTheme,
                                               elevation: 0,
+                                              child: Text('确认', style: TextStyle(color: Colors.white)),
                                             ),
-                                            child: Text('确认', style: TextStyle(color: Colors.white)),
+                                            ios: (BuildContext context) => CupertinoButtonData(
+                                              child: Text('确认', style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                                            ),
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                               Navigator.of(context).pop();
@@ -421,8 +424,11 @@ class CommentCardInPost extends StatelessWidget {
                                             android: (BuildContext context) => MaterialRaisedButtonData(
                                               color: Theme.of(context).dialogBackgroundColor,
                                               elevation: 0,
+                                              child: Text('取消'),
                                             ),
-                                            child: Text('取消'),
+                                            ios: (BuildContext context) => CupertinoButtonData(
+                                              child: Text('取消',style: TextStyle(color: ThemeUtils.currentColorTheme))
+                                            ),
                                             onPressed: () {
                                               Navigator.of(context).pop();
                                             },
