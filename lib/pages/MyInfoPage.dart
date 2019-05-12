@@ -30,7 +30,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         Platform.isAndroid ? Icons.color_lens : Ionicons.getIconData("ios-color-palette"),
         Platform.isAndroid ? Ionicons.getIconData("md-today") : Ionicons.getIconData("ios-today"),
         Platform.isAndroid ? Icons.exit_to_app : Ionicons.getIconData("ios-exit"),
-        Platform.isAndroid ? Ionicons.getIconData("ios-system-update") : Icons.system_update,
+        Icons.system_update,
 //        Icons.dialpad
     ];
 
