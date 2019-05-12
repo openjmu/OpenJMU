@@ -81,4 +81,12 @@
     NSLog(@"%s", __func__);
 }
 
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+    UNMutableNotificationContent *content = [[UNMutableNotificationContent alloc] init];
+    content.badge = @(-1);
+    UNNotificationRequest *request = [UNNotificationRequest requestWithIdentifier:@"clearBadge" content:content trigger:0];
+    [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+    }];
+}
+
 @end
