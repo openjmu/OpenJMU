@@ -7,140 +7,112 @@ import 'package:OpenJMU/utils/CacheUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 
 class UserUtils {
-  static final UserInfo emptyUser = UserInfo(null, null, null, null, null, null, null, null, null, null);
-  static UserInfo currentUser = emptyUser;
+    static final UserInfo emptyUser = UserInfo(null, null, null, null, null, null, null, null, null, null);
+    static UserInfo currentUser = emptyUser;
 
-  static UserInfo createUserInfo(userData) {
-    int _workId = 0;
-    userData['workid'] == ""
-        ? _workId = userData['uid'] is String ? int.parse(userData['uid']) : userData['uid']
-        : _workId = userData['workid']is String ? int.parse(userData['workid']) : userData['workid'];
-    return UserInfo(
-        null,
-        userData['uid'],
-        userData['username'] ?? userData['uid'],
-        userData['signature'],
-        null,
-        null,
-        userData['unitid'],
-        _workId,
-        null,
-        false
-    );
-  }
-
-  static User createUser(userData) {
-    return User(
-        userData["uid"] is String ? int.parse(userData['uid']) : userData['uid'],
-        userData["nickname"] ?? userData["username"] ?? userData["name"] ?? userData["uid"].toString(),
-        userData["gender"] ?? 0,
-        userData["topics"] ?? 0,
-        userData["latest_tid"] ?? null,
-        userData["fans"] ?? 0,
-        userData["idols"] ?? 0,
-        userData["is_following"] == 1 ? true : false
-    );
-  }
-
-  static UserTag createUserTag(tagData) => UserTag(tagData['id'], tagData['tagname']);
-
-  /// Update cache network image provider after avatar is updated.
-  static int avatarLastModified = DateTime.now().millisecondsSinceEpoch;
-  static CachedNetworkImageProvider getAvatarProvider(int uid, {int size, int t}) {
-    String _url = "${Api.userAvatarInSecure}?uid=$uid";
-    size != null ? _url += "&size=f$size" : _url += "&size=f152";
-    t != null ? _url += "&_t=$t" : _url = _url += "&_t=$avatarLastModified";
-    return CachedNetworkImageProvider(_url, cacheManager: DefaultCacheManager());
-  }
-  static void updateAvatarProvider() {
-    CacheUtils.remove("${Api.userAvatarInSecure}?uid=${currentUser.uid}&size=f152&_t=$avatarLastModified");
-    CacheUtils.remove("${Api.userAvatarInSecure}?uid=${currentUser.uid}&size=f640&_t=$avatarLastModified");
-    avatarLastModified = DateTime.now().millisecondsSinceEpoch;
-  }
-
-  static Future getUserInfo({int uid}) async {
-    if (uid == null) {
-      return currentUser;
-    } else {
-      return NetUtils.getWithCookieAndHeaderSet(
-        Api.userBasicInfo,
-        data: {'uid': uid}
-      );
+    static UserInfo createUserInfo(userData) {
+        int _workId = 0;
+        userData['workid'] == ""
+                ? _workId = userData['uid'] is String ? int.parse(userData['uid']) : userData['uid']
+                : _workId = userData['workid'] is String ? int.parse(userData['workid']) : userData['workid'];
+        return UserInfo(
+            null,
+            userData['uid'],
+            userData['username'] ?? userData['uid'],
+            userData['signature'],
+            null,
+            null,
+            userData['unitid'],
+            _workId,
+            null,
+            false,
+        );
     }
-  }
 
-  static Future getTags(int uid) {
-    return NetUtils.getWithCookieAndHeaderSet(
-        Api.userTags,
-        data: {"uid" : uid}
-    );
-  }
+    static User createUser(userData) {
+        return User(
+            userData["uid"] is String ? int.parse(userData['uid']) : userData['uid'],
+            userData["nickname"] ?? userData["username"] ?? userData["name"] ?? userData["uid"].toString(),
+            userData["gender"] ?? 0,
+            userData["topics"] ?? 0,
+            userData["latest_tid"] ?? null,
+            userData["fans"] ?? 0,
+            userData["idols"] ?? 0,
+            userData["is_following"] == 1 ? true : false,
+        );
+    }
 
-  static Future getFans(int uid) {
-    return NetUtils.getWithCookieAndHeaderSet(
-        "${Api.userFans}$uid"
-    );
-  }
+    static UserTag createUserTag(tagData) => UserTag(tagData['id'], tagData['tagname']);
 
-  static Future getIdols(int uid) {
-    return NetUtils.getWithCookieAndHeaderSet(
-        "${Api.userIdols}$uid"
-    );
-  }
+    /// Update cache network image provider after avatar is updated.
+    static int avatarLastModified = DateTime.now().millisecondsSinceEpoch;
+    static CachedNetworkImageProvider getAvatarProvider(int uid, {int size, int t}) {
+        String _url = "${Api.userAvatarInSecure}?uid=$uid";
+        size != null ? _url += "&size=f$size" : _url += "&size=f152";
+        t != null ? _url += "&_t=$t" : _url = _url += "&_t=$avatarLastModified";
+        return CachedNetworkImageProvider(_url, cacheManager: DefaultCacheManager());
+    }
 
-  static Future getFansList(int uid, int page) {
-    return NetUtils.getWithCookieAndHeaderSet(
-        "${Api.userFans}$uid/page/$page/page_size/20"
-    );
-  }
+    static void updateAvatarProvider() {
+        CacheUtils.remove("${Api.userAvatarInSecure}?uid=${currentUser.uid}&size=f152&_t=$avatarLastModified");
+        CacheUtils.remove("${Api.userAvatarInSecure}?uid=${currentUser.uid}&size=f640&_t=$avatarLastModified");
+        avatarLastModified = DateTime.now().millisecondsSinceEpoch;
+    }
 
-  static Future getIdolsList(int uid, int page) {
-    return NetUtils.getWithCookieAndHeaderSet(
-        "${Api.userIdols}$uid/page/$page/page_size/20"
-    );
-  }
+    static Future getUserInfo({int uid}) async {
+        if (uid == null) {
+            return currentUser;
+        } else {
+            return NetUtils.getWithCookieAndHeaderSet(Api.userBasicInfo, data: {'uid': uid});
+        }
+    }
 
-  static Future getFansAndFollowingsCount(int uid) {
-    return NetUtils.getWithCookieAndHeaderSet(
-        "${Api.userFansAndIdols}$uid"
-    );
-  }
+    static Future getTags(int uid) {
+        return NetUtils.getWithCookieAndHeaderSet(Api.userTags, data: {"uid": uid});
+    }
 
-  static Future follow(int uid) async {
-    NetUtils.postWithCookieAndHeaderSet(
-        "${Api.userRequestFollow}$uid"
-    ).then((response) {
-      return NetUtils.postWithCookieAndHeaderSet(
-          Api.userFollowAdd,
-          data: {"fid": uid, "tagid": 0}
-      );
-    }).catchError((e) {
-      print(e.toString());
-      return Future.value(false);
-    });
-  }
+    static Future getFans(int uid) {
+        return NetUtils.getWithCookieAndHeaderSet("${Api.userFans}$uid");
+    }
 
-  static Future unFollow(int uid) async {
-    NetUtils.deleteWithCookieAndHeaderSet(
-        "${Api.userRequestFollow}$uid"
-    ).then((response) {
-      return NetUtils.postWithCookieAndHeaderSet(
-          Api.userFollowDel,
-          data: {"fid": uid}
-      );
-    }).catchError((e) {
-      print(e.toString());
-    });
-  }
+    static Future getIdols(int uid) {
+        return NetUtils.getWithCookieAndHeaderSet("${Api.userIdols}$uid");
+    }
 
-  static Future setSignature(content) async {
-    return NetUtils.postWithCookieAndHeaderSet(
-      Api.userSignature,
-      data: {"signature": content}
-    );
-  }
+    static Future getFansList(int uid, int page) {
+        return NetUtils.getWithCookieAndHeaderSet("${Api.userFans}$uid/page/$page/page_size/20");
+    }
 
-  static Future searchUser(name) async {
-      return NetUtils.getWithCookieSet(Api.searchUser, data: {"keyword": name});
-  }
+    static Future getIdolsList(int uid, int page) {
+        return NetUtils.getWithCookieAndHeaderSet("${Api.userIdols}$uid/page/$page/page_size/20");
+    }
+
+    static Future getFansAndFollowingsCount(int uid) {
+        return NetUtils.getWithCookieAndHeaderSet("${Api.userFansAndIdols}$uid");
+    }
+
+    static Future follow(int uid) async {
+        NetUtils.postWithCookieAndHeaderSet("${Api.userRequestFollow}$uid").then((response) {
+            return NetUtils.postWithCookieAndHeaderSet(Api.userFollowAdd, data: {"fid": uid, "tagid": 0});
+        }).catchError((e) {
+            print(e.toString());
+            return Future.value(false);
+        });
+    }
+
+    static Future unFollow(int uid) async {
+        NetUtils.deleteWithCookieAndHeaderSet("${Api.userRequestFollow}$uid").then((response) {
+            return NetUtils.postWithCookieAndHeaderSet(Api.userFollowDel, data: {"fid": uid});
+        }).catchError((e) {
+            print(e.toString());
+        });
+    }
+
+    static Future setSignature(content) async {
+        return NetUtils.postWithCookieAndHeaderSet(Api.userSignature, data: {"signature": content});
+    }
+
+    static Future searchUser(name) async {
+        return NetUtils.getWithCookieSet(Api.searchUser, data: {"keyword": name});
+    }
 }

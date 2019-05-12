@@ -36,7 +36,6 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
       clearMemoryImageCache();
       clearDiskCachedImages();
     }
-    SystemChrome.setEnabledSystemUIOverlays([]);
     currentIndex = widget.index;
     _animationController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
     _curveAnimation = CurvedAnimation(parent: _animationController, curve: Curves.linear);
@@ -48,7 +47,6 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
     super.dispose();
     rebuild.close();
     _animationController?.dispose();
-//    clearGestureDetailsCache();
   }
 
   Future<void> _downloadImage(url, {AndroidDestinationType destination}) async {
@@ -165,7 +163,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                           scrollDirection: Axis.horizontal,
                         ),
                         Positioned(
-                            top: MediaQuery.of(context).padding.top ?? 0.0,
+                            top: (MediaQuery.of(context).padding.top ?? 0.0) + 50.0,
                             left: 0.0,
                             right: 0.0,
                             height: kToolbarHeight,

@@ -12,15 +12,15 @@ import 'package:OpenJMU/pages/NotificationTest.dart';
 import 'package:OpenJMU/pages/Test.dart';
 
 class RouteUtils {
-  static Map<String, WidgetBuilder> routes = {
-    "/splash": (BuildContext context) => SplashPage(),
-    "/login": (BuildContext context) => LoginPage(),
-    "/home": (BuildContext context) => MainPage(),
-    "/search": (BuildContext context) => SearchPage(),
-    "/changeTheme": (BuildContext context) => ChangeThemePage(),
-    "/publishPost": (BuildContext context) => PublishPostPage(),
+    static Map<String, WidgetBuilder> routes = {
+        "/splash": (BuildContext context) => SplashPage(),
+        "/login": (BuildContext context) => LoginPage(),
+        "/home": (BuildContext context) => MainPage(),
+        "/search": (BuildContext context) => SearchPage(),
+        "/changeTheme": (BuildContext context) => ChangeThemePage(),
+        "/publishPost": (BuildContext context) => PublishPostPage(),
 //    "/notification": (BuildContext context, {arguments}) => NotificationPage(arguments: arguments),
-    "/notificationTest": (BuildContext context) => NotificationTestPage(),
-    "/test": (BuildContext context) => TestPage(),
-  };
+        "/notificationTest": (BuildContext context) => NotificationTestPage(),
+        "/test": (BuildContext context) => TestPage(),
+    };
 }

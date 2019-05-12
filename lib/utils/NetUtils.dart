@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:dio/dio.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:cookie_jar/cookie_jar.dart';
+
 
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
@@ -9,6 +11,7 @@ import 'package:OpenJMU/utils/UserUtils.dart';
 Dio dio = Dio();
 
 class NetUtils {
+  static ConnectivityResult currentConnectivity;
 
   static void initConfig() {
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
@@ -17,6 +20,7 @@ class NetUtils {
     dio.interceptors.add(CookieManager(CookieJar()));
     dio.interceptors.add(InterceptorsWrapper(
         onError: (DioError e) {
+          print("Error: ${e.message}");
           return e;
         }
     ));

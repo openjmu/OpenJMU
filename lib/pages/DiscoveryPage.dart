@@ -12,220 +12,220 @@ import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class DiscoveryPage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => DiscoveryPageState();
+    @override
+    State<StatefulWidget> createState() => DiscoveryPageState();
 }
 
 class DiscoveryPageState extends State<DiscoveryPage> {
-  int signedCount = 0;
-  bool signing = false, signed = false;
+    int signedCount = 0;
+    bool signing = false, signed = false;
 
-  int userLevel = 0, userLevelExpCurrent = 0, userLevelExpUpBound = 0;
+    int userLevel = 0, userLevelExpCurrent = 0, userLevelExpUpBound = 0;
 
-  @override
-  void initState() {
-    super.initState();
-    getSignStatus();
-  }
-
-  Future<Null> getSignStatus() async {
-    var _signed = jsonDecode(await SignAPI.getTodayStatus())['status'];
-    var _signedCount = jsonDecode(await SignAPI.getSignList())['signdata']?.length;
-    var _userTasks = jsonDecode(await NetUtils.getWithCookieSet(Api.task));
-    setState(() {
-      this.signedCount = _signedCount;
-      this.signed = _signed == 1 ? true : false;
-      this.userLevel = _userTasks['level'];
-      this.userLevelExpCurrent = _userTasks['exp'];
-      this.userLevelExpUpBound = _userTasks['exp_up'];
-    });
-  }
-
-  void requestSign() async {
-    if (!signed) {
-      setState(() {
-        signing = true;
-      });
-      SignAPI.requestSign().then((response) {
-        setState(() {
-          signed = true;
-          signing = false;
-          signedCount++;
-        });
-      }).catchError((e) {
-        print(e.toString());
-      });
+    @override
+    void initState() {
+        super.initState();
+        getSignStatus();
     }
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-              DateFormat("MMMM dd, EE", "zh_CN").format(DateTime.now()),
-              style: TextStyle(fontSize: 28, color: Theme.of(context).textTheme.caption.color)
-          ),
-          Text(
-              "你好，${UserUtils.currentUser.name}",
-              style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold)
-          ),
-          Container(
-              margin: EdgeInsets.only(top: 40, bottom: 20),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+    Future<Null> getSignStatus() async {
+        var _signed = jsonDecode(await SignAPI.getTodayStatus())['status'];
+        var _signedCount = jsonDecode(await SignAPI.getSignList())['signdata']?.length;
+        var _userTasks = jsonDecode(await NetUtils.getWithCookieSet(Api.task));
+        setState(() {
+            this.signedCount = _signedCount;
+            this.signed = _signed == 1 ? true : false;
+            this.userLevel = _userTasks['level'];
+            this.userLevelExpCurrent = _userTasks['exp'];
+            this.userLevelExpUpBound = _userTasks['exp_up'];
+        });
+    }
+
+    void requestSign() async {
+        if (!signed) {
+            setState(() {
+                signing = true;
+            });
+            SignAPI.requestSign().then((response) {
+                setState(() {
+                    signed = true;
+                    signing = false;
+                    signedCount++;
+                });
+            }).catchError((e) {
+                print(e.toString());
+            });
+        }
+    }
+
+    @override
+    Widget build(BuildContext context) {
+        return Container(
+            padding: EdgeInsets.all(16),
+            child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text("我的", style: TextStyle(fontSize: 20)),
-                  Container(width: 34, height: 2, color: ThemeUtils.currentColorTheme)
+                    Text(
+                        DateFormat("MMMM dd, EE", "zh_CN").format(DateTime.now()),
+                        style: TextStyle(fontSize: 28, color: Theme.of(context).textTheme.caption.color),
+                    ),
+                    Text(
+                        "你好，${UserUtils.currentUser.name}",
+                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                    ),
+                    Container(
+                        margin: EdgeInsets.only(top: 40, bottom: 20),
+                        child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                                Text("我的", style: TextStyle(fontSize: 20)),
+                                Container(width: 34, height: 2, color: ThemeUtils.currentColorTheme),
+                            ],
+                        ),
+                    ),
+                    GridView(
+                        physics: NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 26,
+                            mainAxisSpacing: 26,
+                        ),
+                        shrinkWrap: true,
+                        children: <Widget>[
+                            GridItem(
+                                onTap: requestSign,
+                                children: <Widget>[
+                                    Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                            Icon(Icons.person_pin, size: 32, color: ThemeUtils.currentColorTheme),
+                                        ],
+                                    ),
+                                    Expanded(child: Container()),
+                                    RichText(text: TextSpan(
+                                        children: <TextSpan>[
+                                            TextSpan(text: "Lv.", style: TextStyle(fontSize: 30.0)),
+                                            TextSpan(text: "$userLevel", style: TextStyle(fontSize: 64.0, fontWeight: FontWeight.bold))
+                                        ],
+                                    )),
+                                    Text("$userLevelExpCurrent/$userLevelExpUpBound", style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                    )),
+                                ],
+                            ),
+                            GridItem(
+                                onTap: requestSign,
+                                children: <Widget>[
+                                    Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                            Icon(Icons.place, size: 32, color: ThemeUtils.currentColorTheme),
+                                            !signed ? !signing
+                                                    ? Icon(Icons.arrow_forward, color: Colors.white)
+                                                    : SizedBox(
+                                                width: 20,
+                                                height: 20,
+                                                child: CircularProgressIndicator(
+                                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                                    strokeWidth: 3,
+                                                ),
+                                            )
+                                                    : Icon(Icons.check_circle_outline, color: Colors.white),
+                                        ],
+                                    ),
+                                    Expanded(child: Container()),
+                                    Text(signed ? "已签到" : "未签到", style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.bold,
+                                    )),
+                                    Text("本月已签$signedCount天", style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                    )),
+                                ],
+                            ),
+                        ],
+                    ),
                 ],
-              )
-          ),
-          GridView(
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 26,
-                mainAxisSpacing: 26
             ),
-            shrinkWrap: true,
-            children: <Widget>[
-              GridItem(
-                onTap: requestSign,
-                children: <Widget>[
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Icon(Icons.person_pin, size: 32, color: ThemeUtils.currentColorTheme)
-                      ]
-                  ),
-                  Expanded(child: Container()),
-                  RichText(text: TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(text: "Lv.", style: TextStyle(fontSize: 30.0)),
-                        TextSpan(text: "$userLevel", style: TextStyle(fontSize: 64.0, fontWeight: FontWeight.bold))
-                      ]
-                  )),
-                  Text("$userLevelExpCurrent/$userLevelExpUpBound", style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20
-                  )),
-                ],
-              ),
-              GridItem(
-                onTap: requestSign,
-                children: <Widget>[
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Icon(Icons.place, size: 32, color: ThemeUtils.currentColorTheme),
-                        !signed ? !signing
-                            ? Icon(Icons.arrow_forward, color: Colors.white)
-                            : SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                              strokeWidth: 3,
-                            )
-                        )
-                            : Icon(Icons.check_circle_outline, color: Colors.white)
-                      ]
-                  ),
-                  Expanded(child: Container()),
-                  Text(signed ? "已签到" : "未签到", style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold
-                  )),
-                  Text("本月已签$signedCount天", style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20
-                  )),
-                ],
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
+        );
+    }
 }
 
 class GridItem extends StatefulWidget {
-  final List<Widget> children;
-  final Function onTap;
+    final List<Widget> children;
+    final Function onTap;
 
-  GridItem({@required this.children, @required this.onTap, Key key}) : super(key: key);
+    GridItem({@required this.children, @required this.onTap, Key key}) : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() => _GridItemState();
+    @override
+    State<StatefulWidget> createState() => _GridItemState();
 }
 
 class _GridItemState extends State<GridItem> {
 
-  @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-        borderRadius: BorderRadius.circular(15),
-        child: Container(
-            color: ThemeUtils.currentColorTheme,
-            child: CustomPaint(
-                painter: IconPainter(context),
-                child: InkWell(
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
-                      padding: EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: widget.children,
-                      ),
+    @override
+    Widget build(BuildContext context) {
+        return ClipRRect(
+            borderRadius: BorderRadius.circular(15),
+            child: Container(
+                color: ThemeUtils.currentColorTheme,
+                child: CustomPaint(
+                    painter: IconPainter(context),
+                    child: InkWell(
+                        child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            padding: EdgeInsets.all(10),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: widget.children,
+                            ),
+                        ),
+                        onTap: widget.onTap,
                     ),
-                    onTap: widget.onTap
-                )
-            )
-        )
-    );
-  }
+                ),
+            ),
+        );
+    }
 }
 
 class IconPainter extends CustomPainter {
-  final BuildContext context;
+    final BuildContext context;
 
-  IconPainter(this.context);
+    IconPainter(this.context);
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    List<Color> colorPairing = List(2);
+    @override
+    void paint(Canvas canvas, Size size) {
+        List<Color> colorPairing = List(2);
 //    if (Theme.of(context).brightness == Brightness.light) {
-      colorPairing[0] = Color(0xccffffff);
-      colorPairing[1] = Color(0x88ffffff);
+        colorPairing[0] = Color(0xccffffff);
+        colorPairing[1] = Color(0x88ffffff);
 //    } else {
 //      colorPairing[0] = Color(0xccbbbbbb);
 //      colorPairing[1] = Color(0x99bbbbbb);
 //    }
-    Paint paint = Paint()
-      ..isAntiAlias = true
-      ..style = PaintingStyle.fill
-      ..color = colorPairing[0];
-    canvas.drawCircle(Offset(26, 26), size.width / 6.6, paint);
+        Paint paint = Paint()
+            ..isAntiAlias = true
+            ..style = PaintingStyle.fill
+            ..color = colorPairing[0];
+        canvas.drawCircle(Offset(26, 26), size.width / 6.6, paint);
 
-    paint = Paint()
-      ..isAntiAlias = true
-      ..style = PaintingStyle.fill
-      ..color = colorPairing[1];
-    canvas.drawCircle(Offset(26, 26), size.width / 5, paint);
-    paint = Paint()
-      ..isAntiAlias = true
-      ..style = PaintingStyle.fill
-      ..color = colorPairing[1];
-    canvas.drawCircle(Offset(26, 26), size.width / 4.2, paint);
-  }
+        paint = Paint()
+            ..isAntiAlias = true
+            ..style = PaintingStyle.fill
+            ..color = colorPairing[1];
+        canvas.drawCircle(Offset(26, 26), size.width / 5, paint);
+        paint = Paint()
+            ..isAntiAlias = true
+            ..style = PaintingStyle.fill
+            ..color = colorPairing[1];
+        canvas.drawCircle(Offset(26, 26), size.width / 4.2, paint);
+    }
 
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => true;
+    @override
+    bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
