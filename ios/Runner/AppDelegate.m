@@ -88,5 +88,9 @@
     [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
     }];
 }
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)pToken {
+    //保存deviceToken
+    NSLog(@"regisger success:%@",pToken);
+}
 
 @end
