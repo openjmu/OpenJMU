@@ -8,7 +8,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/utils/OTAUpdate.dart';
+import 'package:OpenJMU/utils/OTAUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/dialogs/SelectSplashDialog.dart';
@@ -23,19 +23,21 @@ class MyInfoPageState extends State<MyInfoPage> {
   Color themeColor = ThemeUtils.currentColorTheme;
 
 //  List<String> titles = ["夜间模式", "切换主题", "启动页", "退出登录", "测试页";
-  List<String> titles = ["夜间模式", "切换主题", "启动页", "退出登录"];
+  List<String> titles = ["夜间模式", "切换主题", "启动页", "退出登录", "检查更新"];
 //  List<IconData> icons = [
 //    Platform.isAndroid ? Icons.brightness_medium : Ionicons.getIconData("ios-moon"),
 //    Platform.isAndroid ? Icons.color_lens : Ionicons.getIconData("ios-color-palette"),
 //    Platform.isAndroid ? Ionicons.getIconData("md-today") : Ionicons.getIconData("ios-today"),
 //    Platform.isAndroid ? Icons.exit_to_app : Ionicons.getIconData("ios-exit"),
+//    Icons.system_update,
 //    Icons.dialpad
 //  ];
   List<IconData> icons = [
     Platform.isAndroid ? Icons.brightness_medium : Ionicons.getIconData("ios-moon"),
     Platform.isAndroid ? Icons.color_lens : Ionicons.getIconData("ios-color-palette"),
     Platform.isAndroid ? Ionicons.getIconData("md-today") : Ionicons.getIconData("ios-today"),
-    Platform.isAndroid ? Icons.exit_to_app : Ionicons.getIconData("ios-exit")
+    Platform.isAndroid ? Icons.exit_to_app : Ionicons.getIconData("ios-exit"),
+    Icons.system_update
   ];
 
   TextStyle titleTextStyle = TextStyle(fontSize: 16.0);
@@ -47,7 +49,7 @@ class MyInfoPageState extends State<MyInfoPage> {
   @override
   void initState() {
     super.initState();
-    OTAUpdate.getCurrentVersion().then((version) {
+    OTAUtils.getCurrentVersion().then((version) {
       setState(() {
         currentVersion = version;
       });
@@ -136,6 +138,8 @@ class MyInfoPageState extends State<MyInfoPage> {
       Navigator.pushNamed(context, "/notificationTest");
     } else if (title == "退出登录") {
       showLogoutDialog(context);
+    } else if (title == "检查更新") {
+      OTAUtils.checkUpdate();
     }
 //    else if (title == "检查更新") {
 //      OTAUpdate.checkUpdate();

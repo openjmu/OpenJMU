@@ -1,6 +1,6 @@
-import 'package:OpenJMU/model/Bean.dart';
 import 'package:flutter/material.dart';
-import 'package:ota_update/ota_update.dart';
+
+import 'package:OpenJMU/model/Bean.dart';
 
 class LoginEvent {}
 class LogoutEvent {}
@@ -103,15 +103,17 @@ class MentionPeopleEvent {
 }
 
 class HasUpdateEvent {
+  String currentVersion;
   Map<String, dynamic> response;
-  HasUpdateEvent(Map<String, dynamic> response) {
+  HasUpdateEvent(String version, Map<String, dynamic> response) {
+    this.currentVersion = version;
     this.response = response;
   }
 }
 
 class OTAEvent {
-  OtaEvent otaEvent;
-  OTAEvent(OtaEvent _otaEvent) {
+  dynamic otaEvent;
+  OTAEvent(dynamic _otaEvent) {
     this.otaEvent = _otaEvent;
   }
 }

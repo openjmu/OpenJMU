@@ -76,6 +76,19 @@ class SplashState extends State<SplashPage> {
     );
   }
 
+  Text buildTitle() {
+    return Text(
+        "OpenJMU",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            color: Colors.white,
+            fontSize: 54.0,
+            letterSpacing: 4.0,
+            fontFamily: "chocolate"
+        )
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
       return Scaffold(
@@ -85,35 +98,26 @@ class SplashState extends State<SplashPage> {
                   children: <Widget>[
                     Container(
                       decoration: BoxDecoration(
-//                      gradient: const LinearGradient(
-//                        begin: Alignment.topLeft,
-//                        end: Alignment.bottomCenter,
-//                        colors: const <Color>[
-//                          ThemeUtils.defaultColor,
-//                          Colors.red
-//                        ],
-//                      ),
-                          color: ThemeUtils.currentColorTheme
+//                        gradient: LinearGradient(
+//                          begin: Alignment.topLeft,
+//                          end: Alignment.bottomRight,
+//                          colors: <Color>[
+//                            ThemeUtils.currentColorTheme,
+//                            Colors.red
+//                          ],
+//                        ),
+                        color: ThemeUtils.currentColorTheme
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Container(
-                              padding: const EdgeInsets.all(10.0),
+                              padding: const EdgeInsets.only(bottom: 100.0),
                               child: Center(
                                 child: Column(
                                   children: <Widget>[
                                     buildLogo(),
-//                                  Text(
-//                                      "OpenJMU",
-//                                      textAlign: TextAlign.center,
-//                                      style: TextStyle(
-//                                        color: Colors.white,
-//                                        fontSize: 48.0,
-//                                        letterSpacing: 4.0
-//                                      )
-//                                  ),
-                                    SizedBox(height: 90.0),
+                                    buildTitle()
                                   ],
                                 ),
                               )
