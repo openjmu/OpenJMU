@@ -22,22 +22,16 @@ class MyInfoPage extends StatefulWidget {
 class MyInfoPageState extends State<MyInfoPage> {
     Color themeColor = ThemeUtils.currentColorTheme;
 
-//  List<String> titles = ["夜间模式", "切换主题", "启动页", "退出登录", "测试页";
-    List<String> titles = ["夜间模式", "切换主题", "启动页", "退出登录", "检查更新"];
-//  List<IconData> icons = [
-//    Platform.isAndroid ? Icons.brightness_medium : Ionicons.getIconData("ios-moon"),
-//    Platform.isAndroid ? Icons.color_lens : Ionicons.getIconData("ios-color-palette"),
-//    Platform.isAndroid ? Ionicons.getIconData("md-today") : Ionicons.getIconData("ios-today"),
-//    Platform.isAndroid ? Icons.exit_to_app : Ionicons.getIconData("ios-exit"),
-//    Icons.system_update,
-//    Icons.dialpad
-//  ];
+    List<String> titles = ["夜间模式", "切换主题", "启动页", "退出登录", "检查更新",
+//        "测试页"
+    ];
     List<IconData> icons = [
         Platform.isAndroid ? Icons.brightness_medium : Ionicons.getIconData("ios-moon"),
         Platform.isAndroid ? Icons.color_lens : Ionicons.getIconData("ios-color-palette"),
         Platform.isAndroid ? Ionicons.getIconData("md-today") : Ionicons.getIconData("ios-today"),
         Platform.isAndroid ? Icons.exit_to_app : Ionicons.getIconData("ios-exit"),
-        Icons.system_update
+        Platform.isAndroid ? Ionicons.getIconData("ios-system-update") : Icons.system_update,
+//        Icons.dialpad
     ];
 
     TextStyle titleTextStyle = TextStyle(fontSize: 16.0);
@@ -135,7 +129,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         } else if (title == "启动页") {
             showSelectSplashDialog(context);
         } else if (title == "测试页") {
-//      Navigator.pushNamed(context, "/test");
+//            Navigator.pushNamed(context, "/test");
             Navigator.pushNamed(context, "/notificationTest");
         } else if (title == "退出登录") {
             showLogoutDialog(context);

@@ -158,7 +158,7 @@ class AppCenterPageState extends State<AppCenterPage> {
         int rows = (webAppWidgetList[name].length / 3).ceil();
         if (webAppWidgetList[name].length != 0 && rows == 0) rows += 1;
         num _width = MediaQuery.of(context).size.width / 3;
-        num _height = (_width / 1.3 * rows) + 58;
+        num _height = (_width / 1.3 * rows) + 59;
         return Container(
             height: _height,
             child: Column(

@@ -38,9 +38,13 @@ class OTAUtils {
     }
 
     static void checkUpdate({bool fromStart}) {
+        debugPrint("Checking update...");
         NetUtils.get(Api.checkUpdate).then((response) {
+            debugPrint("Got response.");
             getCurrentBuildNumber().then((buildNumber) {
                 Map<String, dynamic> _response = jsonDecode(response);
+                debugPrint("Current build: $buildNumber");
+                debugPrint("Remote build: ${_response['buildNumber']}");
                 if (buildNumber < int.parse(_response['buildNumber'])) {
                     getCurrentVersion().then((version) {
                         Constants.eventBus.fire(new HasUpdateEvent(version, _response));
@@ -49,7 +53,10 @@ class OTAUtils {
                     if (!(fromStart ?? false)) showShortToast("已更新为最新版本");
                 }
             });
-        }).catchError((e) => print(e.toString()));
+        }).catchError((e) {
+            debugPrint(e);
+            showCenterErrorShortToast("检查更新失败\n${e.toString()}");
+        });
     }
 
     static Future<Null> _checkPermission(_) async {
