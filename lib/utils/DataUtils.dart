@@ -122,7 +122,6 @@ class DataUtils {
                 saveLoginInfo(userInfo).then((whatever) {
                     Constants.eventBus.fire(new LoginEvent());
                     showShortToast("登录成功！");
-                    Navigator.of(context).pushReplacementNamed("/home");
                 }).catchError((e) {
                     Constants.eventBus.fire(new LoginFailedEvent());
                     print(e.response);

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:quick_actions/quick_actions.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -25,8 +26,9 @@ class JMUAppClient extends StatefulWidget {
 }
 
 class JMUAppClientState extends State<JMUAppClient> {
-    StreamSubscription<ConnectivityResult> subscription;
+    StreamSubscription<ConnectivityResult> connectivitySubscription;
     bool isUserLogin = false;
+    int initIndex;
 
     Brightness currentBrightness;
     Color currentPrimaryColor;
@@ -35,13 +37,11 @@ class JMUAppClientState extends State<JMUAppClient> {
     @override
     void initState() {
         super.initState();
-        subscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+        connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
             NetUtils.currentConnectivity = result;
             Constants.eventBus.fire(new ConnectivityChangeEvent(result));
-            print("Connectity: $result");
+            debugPrint("Connectity: $result");
         });
-        listenToBrightness();
-        NetUtils.initConfig();
         DataUtils.getColorThemeIndex().then((index) {
             if (this.mounted && index != null) {
                 setState(() {
@@ -66,13 +66,44 @@ class JMUAppClientState extends State<JMUAppClient> {
                 currentPrimaryColor = Colors.white;
             });
         });
+        Constants.eventBus.on<ActionsEvent>().listen((event) {
+            if (event.type == "action_home") {
+                initIndex = 0;
+            } else if (event.type == "action_apps") {
+                initIndex = 1;
+            } else if (event.type == "action_discover") {
+                initIndex = 2;
+            } else if (event.type == "action_mine") {
+                initIndex = 3;
+            }
+        });
+        listenToBrightness();
+        NetUtils.initConfig();
+        initQuickActions();
     }
 
     @override
     void dispose() {
-        super.dispose();
-        subscription?.cancel();
+        connectivitySubscription?.cancel();
         print("Main dart disposed.");
+        super.dispose();
+    }
+
+    void initQuickActions() {
+        final QuickActions quickActions = const QuickActions();
+        quickActions.initialize((String shortcutType) {
+            main();
+            debugPrint("QuickActions triggered: $shortcutType");
+            Constants.eventBus.fire(new ActionsEvent(shortcutType));
+        });
+        quickActions.setShortcutItems(<ShortcutItem>[
+            const ShortcutItem(type: 'action_home', localizedTitle: '主页', icon: 'actions_home'),
+            const ShortcutItem(type: 'action_apps', localizedTitle: '应用', icon: 'actions_home'),
+            const ShortcutItem(type: 'action_discover', localizedTitle: '发现', icon: 'actions_home'),
+            const ShortcutItem(type: 'action_mine', localizedTitle: '我的', icon: 'actions_home'),
+//            const ShortcutItem(type: 'action_publish', localizedTitle: '发布新动态', icon: 'actions_home'),
+        ]);
+
     }
 
     void listenToBrightness() {
@@ -137,7 +168,7 @@ class JMUAppClientState extends State<JMUAppClient> {
                     highlightColor: currentThemeColor,
                 ),
             ),
-            home: SplashPage(),
+            home: SplashPage(initIndex: initIndex),
             localizationsDelegates: [
                 GlobalMaterialLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,

@@ -40,6 +40,7 @@ dependencies:
     multi_image_picker: ^4.3.0
     package_info: any
     permission_handler: ^3.0.1
+    quick_actions: ^0.3.0+1
     shared_preferences: any
     uuid: ^2.0.1
 

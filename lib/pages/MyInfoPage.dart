@@ -22,16 +22,13 @@ class MyInfoPage extends StatefulWidget {
 class MyInfoPageState extends State<MyInfoPage> {
     Color themeColor = ThemeUtils.currentColorTheme;
 
-    List<String> titles = ["夜间模式", "切换主题", "启动页", "退出登录", "检查更新",
-//        "测试页"
-    ];
+    List<String> titles = ["夜间模式", "切换主题", "启动页", "退出登录", if (Platform.isAndroid) "检查更新"];
     List<IconData> icons = [
         Platform.isAndroid ? Icons.brightness_medium : Ionicons.getIconData("ios-moon"),
         Platform.isAndroid ? Icons.color_lens : Ionicons.getIconData("ios-color-palette"),
         Platform.isAndroid ? Ionicons.getIconData("md-today") : Ionicons.getIconData("ios-today"),
         Platform.isAndroid ? Icons.exit_to_app : Ionicons.getIconData("ios-exit"),
-        Icons.system_update,
-//        Icons.dialpad
+        if (Platform.isAndroid) Icons.system_update
     ];
 
     TextStyle titleTextStyle = TextStyle(fontSize: 16.0);
@@ -40,9 +37,16 @@ class MyInfoPageState extends State<MyInfoPage> {
     bool isLogin = false;
     bool isDark = false;
 
+    /// For test page.
+    bool isTest = false;
+
     @override
     void initState() {
         super.initState();
+        if (this.isTest) {
+            titles.add("测试页");
+            icons.add(Icons.dialpad);
+        }
         OTAUtils.getCurrentVersion().then((version) {
             setState(() {
                 currentVersion = version;

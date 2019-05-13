@@ -9,6 +9,12 @@ class ConnectivityChangeEvent {
         this.type = type;
     }
 }
+class ActionsEvent {
+    String type;
+    ActionsEvent(String type) {
+        this.type = type;
+    }
+}
 class LoginEvent {}
 class LogoutEvent {}
 class LoginFailedEvent {}

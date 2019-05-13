@@ -27,6 +27,10 @@ import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 
 
 class MainPage extends StatefulWidget {
+    final int initIndex;
+
+    MainPage({this.initIndex, Key key}) : super(key: key);
+
     @override
     State<StatefulWidget> createState() => MainPageState();
 }
@@ -51,7 +55,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     var _body;
     var pages = [
         PostSquareListPage(),
-//      NewsListPage(),
+//        NewsListPage(),
         AppCenterPage(),
         DiscoveryPage(),
         MyInfoPage()
@@ -67,7 +71,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     @override
     void initState() {
         super.initState();
-        OTAUtils.checkUpdate(fromStart: true);
+        if (widget.initIndex != null) _tabIndex = widget.initIndex;
+        if (Platform.isAndroid) OTAUtils.checkUpdate(fromStart: true);
         DataUtils.isLogin().then((isLogin) {
             DataUtils.getNotifications();
             if (isLogin) {
@@ -78,6 +83,17 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                     this.userSid = UserUtils.currentUser.sid;
                     this.userUid = UserUtils.currentUser.uid;
                 });
+            }
+        });
+        Constants.eventBus.on<ActionsEvent>().listen((event) {
+            if (event.type == "action_home") {
+                _selectedTab(0);
+            } else if (event.type == "action_apps") {
+                _selectedTab(1);
+            } else if (event.type == "action_discover") {
+                _selectedTab(2);
+            } else if (event.type == "action_mine") {
+                _selectedTab(3);
             }
         });
         Constants.eventBus.on<LogoutEvent>().listen((event) {

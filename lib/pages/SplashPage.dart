@@ -6,12 +6,17 @@ import 'package:connectivity/connectivity.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/LoginPage.dart';
+import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class SplashPage extends StatefulWidget {
+    final int initIndex;
+
+    SplashPage({this.initIndex, Key key}) : super(key: key);
+
     @override
     SplashState createState() => SplashState();
 }
@@ -84,7 +89,7 @@ class SplashState extends State<SplashPage> {
                 } catch (e) {}
             } else {
                 try {
-                    Navigator.of(context).pushReplacementNamed("/home");
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)));
                 } catch (e) {}
             }
         });

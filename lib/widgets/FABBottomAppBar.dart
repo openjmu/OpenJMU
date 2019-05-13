@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/Events.dart';
 
 class FABBottomAppBarItem {
     FABBottomAppBarItem({this.iconData, this.text});
@@ -43,6 +44,24 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
         widget.onTabSelected(index);
         setState(() {
             _selectedIndex = index;
+        });
+    }
+
+    @override
+    void initState() {
+        super.initState();
+        Constants.eventBus.on<ActionsEvent>().listen((event) {
+            setState(() {
+                if (event.type == "action_home") {
+                    _selectedIndex = 0;
+                } else if (event.type == "action_apps") {
+                    _selectedIndex = 1;
+                } else if (event.type == "action_discover") {
+                    _selectedIndex = 2;
+                } else if (event.type == "action_mine") {
+                    _selectedIndex = 3;
+                }
+            });
         });
     }
 
