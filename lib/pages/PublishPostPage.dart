@@ -117,16 +117,21 @@ class PublishPostPageState extends State<PublishPostPage> {
     }
 
     Future<void> loadAssets() async {
+        String currentColorValue = "#${ThemeUtils.currentColorTheme.value.toRadixString(16).substring(2, 8)}";
         SystemChannels.textInput.invokeMethod('TextInput.hide');
         List<Asset> resultList = List<Asset>();
         try {
             resultList = await MultiImagePicker.pickImages(
                 maxImages: maxImagesLength - imagesLength,
                 enableCamera: true,
-                cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
+                cupertinoOptions: CupertinoOptions(
+                    backgroundColor: currentColorValue,
+                    selectionFillColor: currentColorValue,
+                    takePhotoIcon: "chat",
+                ),
                 materialOptions: MaterialOptions(
-                    actionBarColor: "#${ThemeUtils.currentColorTheme.value.toRadixString(16).substring(2, 8)}",
-                    statusBarColor: "#${ThemeUtils.currentColorTheme.value.toRadixString(16).substring(2, 8)}",
+                    actionBarColor: currentColorValue,
+                    statusBarColor: currentColorValue,
                     actionBarTitle: "选择图片",
                     allViewTitle: "所有图片",
                 ),
@@ -249,7 +254,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                         Text(
                             "$currentLength/$maxLength",
                             style: TextStyle(
-                                    color: counterTextColor
+                                color: counterTextColor,
                             ),
                         ),
                     ],
@@ -520,11 +525,7 @@ class PublishPostPageState extends State<PublishPostPage> {
             ),
             body: Stack(
                 children: <Widget>[
-                    Column(
-                        children: <Widget>[
-                            textField(),
-                        ],
-                    ),
+                    Column(children: <Widget>[textField()]),
                     customGridView(context),
                     _counter(context), _toolbar(context),
                     emoticonPad(context),
