@@ -9,12 +9,17 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
+import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class LoginPage extends StatefulWidget {
+    final int initIndex;
+
+    LoginPage({this.initIndex, Key key}) : super(key: key);
+
     @override
     LoginPageState createState() => LoginPageState();
 }
@@ -31,6 +36,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     void initState() {
         super.initState();
         DataUtils.resetTheme();
+        Constants.eventBus.on<LoginEvent>().listen((event) {
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)));
+        });
         Constants.eventBus.on<LoginFailedEvent>().listen((event) {
             setState(() {
                 _loginButtonDisabled = false;
@@ -112,8 +120,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             padding: EdgeInsets.symmetric(horizontal: 48.0),
             child:  Container(
                 decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0),
-                        color: Color.fromRGBO(255,255,255,0.2)
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Color.fromRGBO(255,255,255,0.2),
                 ),
                 child: TextFormField(
                     onSaved: (String value) => _password = value,
@@ -133,20 +141,20 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         labelText: '密码',
                         labelStyle: TextStyle(color: Colors.white, fontSize: 18.0),
                         suffixIcon: IconButton(
-                                icon: Icon(
-                                    _isObscure
-                                            ? Platform.isAndroid ? Icons.visibility_off : Ionicons.getIconData("ios-eye-off")
-                                            : Platform.isAndroid ? Icons.visibility : Ionicons.getIconData("ios-eye"),
-                                    color: _defaultIconColor,
-                                ),
-                                onPressed: () {
-                                    setState(() {
-                                        _isObscure = !_isObscure;
-                                        _defaultIconColor = _isObscure
-                                                ? ThemeUtils.defaultColor
-                                                : Colors.white;
-                                    });
-                                }
+                            icon: Icon(
+                                _isObscure
+                                        ? Platform.isAndroid ? Icons.visibility_off : Ionicons.getIconData("ios-eye-off")
+                                        : Platform.isAndroid ? Icons.visibility : Ionicons.getIconData("ios-eye"),
+                                color: _defaultIconColor,
+                            ),
+                            onPressed: () {
+                                setState(() {
+                                    _isObscure = !_isObscure;
+                                    _defaultIconColor = _isObscure
+                                            ? ThemeUtils.defaultColor
+                                            : Colors.white;
+                                });
+                            },
                         ),
                     ),
                     style: TextStyle(color: Colors.white, fontSize: 20.0),
