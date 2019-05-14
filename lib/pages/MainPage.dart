@@ -270,7 +270,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                         isExtended: false,
                     );
                 }),
-                floatingActionButtonLocation: CustomCenterDockedFloatingActionButtonLocation(),
+                floatingActionButtonLocation: const CustomCenterDockedFloatingActionButtonLocation(),
                 bottomNavigationBar: FABBottomAppBar(
                     color: Colors.grey,
                     selectedColor: currentThemeColor,
