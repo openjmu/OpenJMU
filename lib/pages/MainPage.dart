@@ -92,7 +92,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 _selectedTab(1);
             } else if (event.type == "action_discover") {
                 _selectedTab(2);
-            } else if (event.type == "action_mine") {
+            } else if (event.type == "action_user") {
                 _selectedTab(3);
             }
         });
@@ -213,8 +213,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
             child: Scaffold(
                 appBar: GestureAppBar(
                     appBar: AppBar(
-                        backgroundColor: currentThemeColor,
-                        elevation: 1,
                         leading: getAvatar(),
                         title: FlatButton(
                             onPressed: null,
@@ -272,7 +270,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                         isExtended: false,
                     );
                 }),
-                floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+                floatingActionButtonLocation: CustomCenterDockedFloatingActionButtonLocation(),
                 bottomNavigationBar: FABBottomAppBar(
                     color: Colors.grey,
                     selectedColor: currentThemeColor,

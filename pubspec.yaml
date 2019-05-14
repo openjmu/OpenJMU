@@ -37,7 +37,7 @@ dependencies:
     flutter_platform_widgets: ^0.9.6
     flutter_webview_plugin: ^0.3.5
     flutter_svg: ^0.12.4+1
-    multi_image_picker: ^4.3.0
+    multi_image_picker: ^4.3.1
     package_info: any
     permission_handler: ^3.0.1
     quick_actions: ^0.3.0+1

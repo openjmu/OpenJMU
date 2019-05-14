@@ -310,6 +310,7 @@ class PraiseAPI {
         }
         return NetUtils.getWithCookieAndHeaderSet(_praiseUrl);
     }
+
     static getPraiseInPostList(postId) {
         return NetUtils.getWithCookieAndHeaderSet("${Api.postPraisesList}$postId");
     }
@@ -329,7 +330,6 @@ class PraiseAPI {
         }
     }
 
-
     static Praise createPraiseInPost(itemData) {
         String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
         String _praiseTime = new DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
@@ -348,8 +348,8 @@ class PraiseAPI {
             null,
         );
         return _praise;
-
     }
+
     static Praise createPraise(itemData) {
         String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
         String _praiseTime = new DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
