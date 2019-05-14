@@ -58,7 +58,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
                     _selectedIndex = 1;
                 } else if (event.type == "action_discover") {
                     _selectedIndex = 2;
-                } else if (event.type == "action_mine") {
+                } else if (event.type == "action_user") {
                     _selectedIndex = 3;
                 }
             });

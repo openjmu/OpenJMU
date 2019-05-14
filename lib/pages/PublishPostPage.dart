@@ -503,8 +503,6 @@ class PublishPostPageState extends State<PublishPostPage> {
 
         return Scaffold(
             appBar: AppBar(
-                backgroundColor: ThemeUtils.currentColorTheme,
-                elevation: 1,
                 title: Center(
                     child: Text(
                         "发布动态",

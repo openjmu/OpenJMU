@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:dio/dio.dart';
 
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -243,18 +244,30 @@ class _PraiseInPostListState extends State<PraiseInPostList> {
         setState(() {
             isLoading = true;
         });
-        var list = await PraiseAPI.getPraiseInPostList(widget.post.id);
-        List<dynamic> response = jsonDecode(list)['praisors'];
-        List<Praise> praises = [];
-        response.forEach((praise) {
-            praises.add(PraiseAPI.createPraiseInPost(praise));
-        });
-        if (this.mounted) {
-            setState(() {
-                isLoading = false;
-                _praises = praises;
-                Constants.eventBus.fire(new PraiseInPostUpdatedEvent(widget.post.id, praises.length));
+        try {
+            var list = await PraiseAPI.getPraiseInPostList(widget.post.id);
+            List<dynamic> response = jsonDecode(list)['praisors'];
+            List<Praise> praises = [];
+            response.forEach((praise) {
+                praises.add(PraiseAPI.createPraiseInPost(praise));
             });
+            if (this.mounted) {
+                setState(() {
+                    isLoading = false;
+                    _praises = praises;
+                    Constants.eventBus.fire(new PraiseInPostUpdatedEvent(widget.post.id, praises.length));
+                });
+            }
+        } on DioError catch (e) {
+            if (e.response != null) {
+                print(e.response.data);
+//                print(e.response.headers);
+//                print(e.response.request);
+            } else {
+                print(e.request);
+                print(e.message);
+            }
+            return;
         }
     }
 

@@ -45,9 +45,12 @@ class JMUAppClientState extends State<JMUAppClient> {
         DataUtils.getColorThemeIndex().then((index) {
             if (this.mounted && index != null) {
                 setState(() {
-                    ThemeUtils.currentColorTheme = ThemeUtils.supportColors[index];
+                    currentThemeColor = ThemeUtils.supportColors[index];
                 });
+                ThemeUtils.currentColorTheme = ThemeUtils.supportColors[index];
                 Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.supportColors[index]));
+            } else {
+
             }
         });
         DataUtils.getHomeSplashIndex().then((index) {
@@ -73,7 +76,7 @@ class JMUAppClientState extends State<JMUAppClient> {
                 initIndex = 1;
             } else if (event.type == "action_discover") {
                 initIndex = 2;
-            } else if (event.type == "action_mine") {
+            } else if (event.type == "action_user") {
                 initIndex = 3;
             }
         });
@@ -98,12 +101,10 @@ class JMUAppClientState extends State<JMUAppClient> {
         });
         quickActions.setShortcutItems(<ShortcutItem>[
             const ShortcutItem(type: 'action_home', localizedTitle: '主页', icon: 'actions_home'),
-            const ShortcutItem(type: 'action_apps', localizedTitle: '应用', icon: 'actions_home'),
-            const ShortcutItem(type: 'action_discover', localizedTitle: '发现', icon: 'actions_home'),
-            const ShortcutItem(type: 'action_mine', localizedTitle: '我的', icon: 'actions_home'),
-//            const ShortcutItem(type: 'action_publish', localizedTitle: '发布新动态', icon: 'actions_home'),
+            const ShortcutItem(type: 'action_apps', localizedTitle: '应用', icon: 'actions_apps'),
+            const ShortcutItem(type: 'action_discover', localizedTitle: '发现', icon: 'actions_discover'),
+            const ShortcutItem(type: 'action_user', localizedTitle: '我的', icon: 'actions_user'),
         ]);
-
     }
 
     void listenToBrightness() {
@@ -157,10 +158,12 @@ class JMUAppClientState extends State<JMUAppClient> {
                 textSelectionHandleColor: currentThemeColor,
                 primaryIconTheme: IconThemeData(color: Colors.white),
                 appBarTheme: AppBarTheme(
-                    color: currentThemeColor,
+                    actionsIconTheme: IconThemeData(color: Colors.white),
                     brightness: Brightness.dark,
+                    color: currentThemeColor,
                     elevation: 0,
                     iconTheme: IconThemeData(color: Colors.white),
+                    textTheme: Typography.dense2014,
                 ),
                 buttonTheme: ButtonThemeData(
                     textTheme: ButtonTextTheme.primary,

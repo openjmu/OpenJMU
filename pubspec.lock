@@ -283,7 +283,7 @@ packages:
       name: multi_image_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.3.0"
+    version: "4.3.1"
   package_info:
     dependency: "direct main"
     description:
