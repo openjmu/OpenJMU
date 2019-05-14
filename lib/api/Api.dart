@@ -7,8 +7,15 @@ import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 
 class Api {
-    static final String checkUpdate = "https://raw.githubusercontent.com/openjmu/OpenJMU/master/release/latest-version";
-    static final String latestAndroid = "https://raw.githubusercontent.com/openjmu/OpenJMU/master/release/openjmu-latest.apk";
+
+    /// github channel.
+//    static final String firstDayOfTerm = "https://raw.githubusercontent.com/openjmu/OpenJMU/master/release/first-day-of-term";
+//    static final String checkUpdate = "https://raw.githubusercontent.com/openjmu/OpenJMU/master/release/latest-version";
+//    static final String latestAndroid = "https://raw.githubusercontent.com/openjmu/OpenJMU/master/release/openjmu-latest.apk";
+    /// custom channel.
+    static final String firstDayOfTerm = "https://project.alexv525.com/openjmu/first-day-of-term";
+    static final String checkUpdate = "https://project.alexv525.com/openjmu/latest-version";
+    static final String latestAndroid = "https://project.alexv525.com/openjmu/openjmu-latest.apk";
 
     /// Hosts.
     static final String wbHost = "https://wb.jmu.edu.cn";
@@ -26,7 +33,7 @@ class Api {
     /// 用户相关
     static final String userInfo = oa99Host + "/v2/api/class/studentinfo";
     static final String userBasicInfo = oap99Host + "/user/info";
-//  static final String userAvatar = oap99Host + "/face";
+//    static final String userAvatar = oap99Host + "/face";
     static final String userAvatarInSecure = oap99HostInSecure + "/face";
     static final String userAvatarUpload = oap99Host + "/face/upload";
     static final String userPhotoWallUpload = oap99Host + "/photowall/upload";
@@ -85,11 +92,15 @@ class Api {
 class SignAPI {
     static Future requestSign() async => NetUtils.postWithCookieAndHeaderSet(Api.sign);
     static Future getSignList() async => NetUtils.postWithCookieAndHeaderSet(
-            Api.signList,
-            data: {"signmonth": "${new DateFormat("yyyy-MM").format(new DateTime.now())}"}
+        Api.signList,
+        data: {"signmonth": "${DateFormat("yyyy-MM").format(DateTime.now())}"},
     );
     static Future getTodayStatus() async => NetUtils.postWithCookieAndHeaderSet(Api.signStatus);
     static Future getSignSummary() async => NetUtils.postWithCookieAndHeaderSet(Api.signSummary);
+}
+
+class DateAPI {
+    static Future getCurrentWeek () async => NetUtils.get(Api.firstDayOfTerm);
 }
 
 class PostAPI {
@@ -141,8 +152,8 @@ class PostAPI {
     static glancePost(int postId) {
         List<int> postIds = [postId];
         return NetUtils.postWithCookieAndHeaderSet(
-                Api.postGlance,
-                data: jsonEncode({"tids": postIds})
+            Api.postGlance,
+            data: jsonEncode({"tids": postIds}),
         );
     }
     static deletePost(int postId) {
@@ -156,8 +167,8 @@ class PostAPI {
             "relay": replyAtTheMeanTime ? 3 : 0
         };
         return NetUtils.postWithCookieAndHeaderSet(
-                "${Api.postRequestForward}",
-                data: data
+            "${Api.postRequestForward}",
+            data: data,
         );
     }
 
@@ -165,25 +176,25 @@ class PostAPI {
     static Post createPost(postData) {
         var _user = postData['user'];
         String _avatar = "${Api.userAvatarInSecure}?uid=${_user['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
-        String _postTime = new DateTime.fromMillisecondsSinceEpoch(int.parse(postData['post_time']) * 1000)
-                .toString()
-                .substring(0,16);
-        Post _post = new Post(
-                postData['tid'] is String ? int.parse(postData['tid']) : postData['tid'],
-                postData['uid'] is String ? int.parse(postData['uid']) : postData['uid'],
-                _user['nickname'],
-                _avatar,
-                _postTime,
-                postData['from_string'],
-                postData['glances'] is String ? int.parse(postData['glances']) : postData['glances'],
-                postData['category'],
-                postData['article'] ?? postData['content'],
-                postData['image'],
-                postData['forwards'] is String ? int.parse(postData['forwards']) : postData['forwards'],
-                postData['replys'] is String ? int.parse(postData['replys']) : postData['replys'],
-                postData['praises'] is String ? int.parse(postData['praises']) : postData['praises'],
-                postData['root_topic'],
-                isLike: (postData['praised'] == 1 || postData['praised'] == "1") ? true : false
+        String _postTime = DateTime.fromMillisecondsSinceEpoch(
+            int.parse(postData['post_time']) * 1000,
+        ).toString().substring(0,16);
+        Post _post = Post(
+            postData['tid'] is String ? int.parse(postData['tid']) : postData['tid'],
+            postData['uid'] is String ? int.parse(postData['uid']) : postData['uid'],
+            _user['nickname'],
+            _avatar,
+            _postTime,
+            postData['from_string'],
+            postData['glances'] is String ? int.parse(postData['glances']) : postData['glances'],
+            postData['category'],
+            postData['article'] ?? postData['content'],
+            postData['image'],
+            postData['forwards'] is String ? int.parse(postData['forwards']) : postData['forwards'],
+            postData['replys'] is String ? int.parse(postData['replys']) : postData['replys'],
+            postData['praises'] is String ? int.parse(postData['praises']) : postData['praises'],
+            postData['root_topic'],
+            isLike: (postData['praised'] == 1 || postData['praised'] == "1") ? true : false,
         );
         return _post;
     }
@@ -218,7 +229,7 @@ class CommentAPI {
         Map<String, dynamic> data = {
             "content": Uri.encodeFull(content),
             "reflag": 0,
-            "relay": forwardAtTheMeanTime ? 1 : 0
+            "relay": forwardAtTheMeanTime ? 1 : 0,
         };
         String url;
         if (replyToId != null) {
@@ -231,69 +242,64 @@ class CommentAPI {
     }
 
     static deleteComment(int postId, int commentId) async {
-        return NetUtils.deleteWithCookieAndHeaderSet(
-                "${Api.postRequestComment}$postId/rid/$commentId"
-        );
+        return NetUtils.deleteWithCookieAndHeaderSet("${Api.postRequestComment}$postId/rid/$commentId");
     }
 
     static Comment createComment(itemData) {
         String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
-        String _commentTime = new DateTime.fromMillisecondsSinceEpoch(itemData['post_time'] * 1000)
-                .toString()
-                .substring(0,16);
+        String _commentTime = DateTime.fromMillisecondsSinceEpoch(
+            itemData['post_time'] * 1000,
+        ).toString().substring(0,16);
         bool replyExist = itemData['to_reply']['exists'] == 1 ? true : false;
         bool topicExist = itemData['to_topic']['exists'] == 1 ? true : false;
         Map<String, dynamic> replyData = itemData['to_reply']['reply'];
         Map<String, dynamic> topicData = itemData['to_topic']['topic'];
-        Comment _comment = new Comment(
-                itemData['rid'] is String ? int.parse(itemData['rid']) : itemData['rid'],
-                itemData['user']['uid'] is String ? int.parse(itemData['user']['uid']) : itemData['user']['uid'],
-                itemData['user']['nickname'],
-                _avatar,
-                itemData['content'],
-                _commentTime,
-                itemData['from_string'],
-                replyExist,
-                replyExist ? replyData['user']['uid'] is String ? int.parse(replyData['user']['uid']) : replyData['user']['uid'] : 0,
-                replyExist ? replyData['user']['nickname'] : null,
-                replyExist ? replyData['content'] : null,
-                topicExist,
-                topicExist ? topicData['user']['uid'] is String ? int.parse(topicData['user']['uid']) : topicData['user']['uid'] : 0,
-                topicExist ? topicData['user']['nickname'] : null,
-                topicExist
-                        ?
-                itemData['to_topic']['topic']['article']
-                        ??
-                        itemData['to_topic']['topic']['content']
-                        : null,
-                itemData['to_topic']['topic'] != null ? PostAPI.createPost(itemData['to_topic']['topic']) : null
+        Comment _comment = Comment(
+            itemData['rid'] is String ? int.parse(itemData['rid']) : itemData['rid'],
+            itemData['user']['uid'] is String ? int.parse(itemData['user']['uid']) : itemData['user']['uid'],
+            itemData['user']['nickname'],
+            _avatar,
+            itemData['content'],
+            _commentTime,
+            itemData['from_string'],
+            replyExist,
+            replyExist ? replyData['user']['uid'] is String ? int.parse(replyData['user']['uid']) : replyData['user']['uid'] : 0,
+            replyExist ? replyData['user']['nickname'] : null,
+            replyExist ? replyData['content'] : null,
+            topicExist,
+            topicExist ? topicData['user']['uid'] is String ? int.parse(topicData['user']['uid']) : topicData['user']['uid'] : 0,
+            topicExist ? topicData['user']['nickname'] : null,
+            topicExist
+                    ? itemData['to_topic']['topic']['article'] ?? itemData['to_topic']['topic']['content']
+                    : null,
+            itemData['to_topic']['topic'] != null ? PostAPI.createPost(itemData['to_topic']['topic']) : null,
         );
         return _comment;
     }
     static Comment createCommentInPost(itemData) {
         String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
-        String _commentTime = new DateTime.fromMillisecondsSinceEpoch(itemData['post_time'] * 1000)
-                .toString()
-                .substring(0,16);
+        String _commentTime = DateTime.fromMillisecondsSinceEpoch(
+            itemData['post_time'] * 1000,
+        ).toString().substring(0,16);
         bool replyExist = itemData['to_reply']['exists'] == 1 ? true : false;
         Map<String, dynamic> replyData = itemData['to_reply']['reply'];
-        Comment _comment = new Comment(
-                itemData['rid'] is String ? int.parse(itemData['rid']) : itemData['rid'],
-                itemData['user']['uid'] is String ? int.parse(itemData['user']['uid']) : itemData['user']['uid'],
-                itemData['user']['nickname'],
-                _avatar,
-                itemData['content'],
-                _commentTime,
-                itemData['from_string'],
-                replyExist,
-                replyExist ? replyData['user']['uid'] is String ? int.parse(replyData['user']['uid']) : replyData['user']['uid'] : 0,
-                replyExist ? replyData['user']['nickname'] : null,
-                replyExist ? replyData['content'] : null,
-                false,
-                0,
-                null,
-                null,
-                null
+        Comment _comment = Comment(
+            itemData['rid'] is String ? int.parse(itemData['rid']) : itemData['rid'],
+            itemData['user']['uid'] is String ? int.parse(itemData['user']['uid']) : itemData['user']['uid'],
+            itemData['user']['nickname'],
+            _avatar,
+            itemData['content'],
+            _commentTime,
+            itemData['from_string'],
+            replyExist,
+            replyExist ? replyData['user']['uid'] is String ? int.parse(replyData['user']['uid']) : replyData['user']['uid'] : 0,
+            replyExist ? replyData['user']['nickname'] : null,
+            replyExist ? replyData['content'] : null,
+            false,
+            0,
+            null,
+            null,
+            null,
         );
         return _comment;
     }
@@ -318,13 +324,15 @@ class PraiseAPI {
 
     static requestPraise(id, isPraise) async {
         if (isPraise) {
-            return NetUtils.postWithCookieAndHeaderSet("${Api.postRequestPraise}$id")
-                    .catchError((e) {
+            return NetUtils.postWithCookieAndHeaderSet(
+                "${Api.postRequestPraise}$id",
+            ).catchError((e) {
                 print(e.response);
             });
         } else {
-            return NetUtils.deleteWithCookieAndHeaderSet("${Api.postRequestPraise}$id")
-                    .catchError((e) {
+            return NetUtils.deleteWithCookieAndHeaderSet(
+                "${Api.postRequestPraise}$id",
+            ).catchError((e) {
                 print(e.response);
             });
         }
@@ -332,10 +340,10 @@ class PraiseAPI {
 
     static Praise createPraiseInPost(itemData) {
         String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
-        String _praiseTime = new DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
-                .toString()
-                .substring(0,16);
-        Praise _praise = new Praise(
+        String _praiseTime = DateTime.fromMillisecondsSinceEpoch(
+            itemData['praise_time'] * 1000,
+        ).toString().substring(0,16);
+        Praise _praise = Praise(
             itemData['id'],
             itemData['user']['uid'],
             _avatar,
@@ -352,10 +360,10 @@ class PraiseAPI {
 
     static Praise createPraise(itemData) {
         String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
-        String _praiseTime = new DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
-                .toString()
-                .substring(0,16);
-        Praise _praise = new Praise(
+        String _praiseTime = DateTime.fromMillisecondsSinceEpoch(
+            itemData['praise_time'] * 1000,
+        ).toString().substring(0,16);
+        Praise _praise = Praise(
             itemData['id'],
             itemData['user']['uid'],
             _avatar,

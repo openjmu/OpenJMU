@@ -18,12 +18,10 @@ class ChangeThemePageState extends State<ChangeThemePage> {
     void initState() {
         super.initState();
         Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
-            if (this.mounted) {
-                setState(() {
-                    ThemeUtils.currentColorTheme = event.color;
-                    currentColor = event.color;
-                });
-            }
+            if (this.mounted) setState(() {
+                ThemeUtils.currentColorTheme = event.color;
+                currentColor = event.color;
+            });
         });
     }
 

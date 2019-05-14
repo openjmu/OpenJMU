@@ -21,11 +21,13 @@ class DiscoveryPageState extends State<DiscoveryPage> {
     bool signing = false, signed = false;
 
     int userLevel = 0, userLevelExpCurrent = 0, userLevelExpUpBound = 0;
+    int currentWeek;
 
     @override
     void initState() {
         super.initState();
         getSignStatus();
+        getCurrentWeek();
     }
 
     Future<Null> getSignStatus() async {
@@ -39,6 +41,18 @@ class DiscoveryPageState extends State<DiscoveryPage> {
             this.userLevelExpCurrent = _userTasks['exp'];
             this.userLevelExpUpBound = _userTasks['exp_up'];
         });
+    }
+
+    Future<Null> getCurrentWeek() async {
+        String _day = jsonDecode(await DateAPI.getCurrentWeek())['start'];
+        DateTime startDate = DateTime.parse(_day);
+        int difference = startDate.difference(DateTime.now()).inDays;
+        if (difference < 0) {
+            int week = (difference / 7).floor().abs();
+            if (week <= 20) setState(() {
+              this.currentWeek = week;
+            });
+        }
     }
 
     void requestSign() async {
@@ -60,15 +74,20 @@ class DiscoveryPageState extends State<DiscoveryPage> {
 
     @override
     Widget build(BuildContext context) {
+        DateTime now = DateTime.now();
         return Container(
             padding: EdgeInsets.all(16),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                    Text(
-                        DateFormat("MMMM dd, EE", "zh_CN").format(DateTime.now()),
+                    RichText(text: TextSpan(
+                        children: <TextSpan>[
+                            TextSpan(text: "${DateFormat("MMM dd日，", "zh_CN").format(now)}"),
+                            if (currentWeek != null) TextSpan(text: "第$currentWeek周，"),
+                            TextSpan(text: "${DateFormat("EEEE", "zh_CN").format(now)}"),
+                        ],
                         style: TextStyle(fontSize: 28, color: Theme.of(context).textTheme.caption.color),
-                    ),
+                    )),
                     Text(
                         "你好，${UserUtils.currentUser.name}",
                         style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
@@ -201,19 +220,14 @@ class IconPainter extends CustomPainter {
     @override
     void paint(Canvas canvas, Size size) {
         List<Color> colorPairing = List(2);
-//    if (Theme.of(context).brightness == Brightness.light) {
         colorPairing[0] = Color(0xccffffff);
         colorPairing[1] = Color(0x88ffffff);
-//    } else {
-//      colorPairing[0] = Color(0xccbbbbbb);
-//      colorPairing[1] = Color(0x99bbbbbb);
-//    }
+
         Paint paint = Paint()
             ..isAntiAlias = true
             ..style = PaintingStyle.fill
             ..color = colorPairing[0];
         canvas.drawCircle(Offset(26, 26), size.width / 6.6, paint);
-
         paint = Paint()
             ..isAntiAlias = true
             ..style = PaintingStyle.fill
