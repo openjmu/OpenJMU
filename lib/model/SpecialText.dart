@@ -16,13 +16,14 @@ class LinkText extends SpecialText {
     @override
     TextSpan finishText() {
         return TextSpan(
-                text: " 网页链接 ",
-                style: textStyle?.copyWith(color: Colors.blue, fontSize: _fontSize),
-                recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                        Map<String, dynamic> data = {'content': toString()};
-                        if (onTap != null) onTap(data);
-                    });
+            text: " 网页链接 ",
+            style: textStyle?.copyWith(color: Colors.blue, fontSize: _fontSize),
+            recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                    Map<String, dynamic> data = {'content': toString()};
+                    if (onTap != null) onTap(data);
+                },
+        );
     }
 }
 
@@ -35,13 +36,14 @@ class LinkOlderText extends SpecialText {
     @override
     TextSpan finishText() {
         return TextSpan(
-                text: " 网页链接 ",
-                style: textStyle?.copyWith(color: Colors.blue, fontSize: _fontSize),
-                recognizer: TapGestureRecognizer()
-                    ..onTap = () {
-                        Map<String, dynamic> data = {'content': toString()};
-                        if (onTap != null) onTap(data);
-                    });
+            text: " 网页链接 ",
+            style: textStyle?.copyWith(color: Colors.blue, fontSize: _fontSize),
+            recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                    Map<String, dynamic> data = {'content': toString()};
+                    if (onTap != null) onTap(data);
+                },
+        );
     }
 }
 
@@ -93,13 +95,14 @@ class MentionText extends SpecialText {
         } else {
             int uid = getUidFromContent(mentionOriginalText);
             return TextSpan(
-                    text: mentionText,
-                    style: TextStyle(color: Colors.blue, fontSize: _fontSize),
-                    recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                            Map<String, dynamic> data = {'content': mentionText, 'uid': uid};
-                            if (onTap != null) onTap(data);
-                        });
+                text: mentionText,
+                style: TextStyle(color: Colors.blue, fontSize: _fontSize),
+                recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                        Map<String, dynamic> data = {'content': mentionText, 'uid': uid};
+                        if (onTap != null) onTap(data);
+                    },
+            );
         }
     }
 }
@@ -123,13 +126,14 @@ class PoundText extends SpecialText {
             );
         } else {
             return TextSpan(
-                    text: "#$poundText#",
-                    style: TextStyle(color: Colors.orangeAccent, fontSize: _fontSize),
-                    recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                            Map<String, dynamic> data = {'content': toString()};
-                            if (onTap != null) onTap(data);
-                        });
+                text: "#$poundText#",
+                style: TextStyle(color: Colors.orangeAccent, fontSize: _fontSize),
+                recognizer: TapGestureRecognizer()
+                    ..onTap = () {
+                        Map<String, dynamic> data = {'content': toString()};
+                        if (onTap != null) onTap(data);
+                    },
+            );
         }
     }
 }
@@ -215,8 +219,8 @@ class StackSpecialTextFieldSpanBuilder extends SpecialTextSpanBuilder {
 
         if (isStart(flag, MentionText.startKey)) {
             return MentionText(textStyle, onTap,
-                    start: index - (MentionText.startKey.length - 1), // Using minus to keep position correct.
-                    type: BuilderType.extendedTextField
+                start: index - (MentionText.startKey.length - 1), // Using minus to keep position correct.
+                type: BuilderType.extendedTextField,
             );
         } else if (isStart(flag, PoundText.flag)) {
             return PoundText(textStyle, onTap, start: index, type: BuilderType.extendedTextField);
