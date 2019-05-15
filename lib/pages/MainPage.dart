@@ -259,6 +259,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                     child: FloatingActionButton(
                         child: Icon(
                             Platform.isAndroid ? Icons.add : Ionicons.getIconData("ios-add"),
+                            size: 28.0
                         ),
                         tooltip: "发布新动态",
                         foregroundColor: Colors.white,

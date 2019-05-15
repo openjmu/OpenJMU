@@ -137,35 +137,36 @@ class SplashState extends State<SplashPage> {
                                                 children: <Widget>[
                                                     buildLogo(),
                                                     SizedBox(height: 20.0),
-                                                    if (isOnline != null && isOnline && showLoading) Column(
-                                                        children: <Widget>[
-                                                            Container(
-                                                                margin: EdgeInsets.only(bottom: 20.0),
-                                                                width: 24.0,
-                                                                height: 24.0,
-                                                                child: Platform.isAndroid ? CircularProgressIndicator(
-                                                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                                                ) : CupertinoActivityIndicator(),
-                                                            ),
-                                                            Text(
-                                                                "正在登录",
-                                                                style: TextStyle(color: Colors.white, fontSize: 20.0),
-                                                            )
-                                                        ],
-                                                    ) else if (isOnline != null && !isOnline) Column(
-                                                        children: <Widget>[
-                                                            Container(
-                                                                margin: EdgeInsets.only(bottom: 20.0),
-                                                                width: 30.0,
-                                                                height: 30.0,
-                                                                child: Icon(Icons.warning, size: 46, color: Colors.white),
-                                                            ),
-                                                            Text(
-                                                                "请检查联网状态",
-                                                                style: TextStyle(color: Colors.white, fontSize: 20.0),
-                                                            )
-                                                        ],
-                                                    ) else SizedBox(height: 68)
+                                                    if (showLoading)
+                                                        if (isOnline != null && isOnline) Column(
+                                                            children: <Widget>[
+                                                                Container(
+                                                                    margin: EdgeInsets.only(bottom: 20.0),
+                                                                    width: 24.0,
+                                                                    height: 24.0,
+                                                                    child: Platform.isAndroid ? CircularProgressIndicator(
+                                                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                                                    ) : CupertinoActivityIndicator(),
+                                                                ),
+                                                                Text(
+                                                                    "正在登录",
+                                                                    style: TextStyle(color: Colors.white, fontSize: 20.0),
+                                                                )
+                                                            ],
+                                                        ) else if (isOnline != null && !isOnline) Column(
+                                                            children: <Widget>[
+                                                                Container(
+                                                                    margin: EdgeInsets.only(bottom: 20.0),
+                                                                    width: 30.0,
+                                                                    height: 30.0,
+                                                                    child: Icon(Icons.warning, size: 46, color: Colors.white),
+                                                                ),
+                                                                Text(
+                                                                    "请检查联网状态",
+                                                                    style: TextStyle(color: Colors.white, fontSize: 20.0),
+                                                                )
+                                                            ],
+                                                        ) else SizedBox(height: 68)
                                                 ],
                                             ),
                                         ),
