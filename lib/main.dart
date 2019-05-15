@@ -100,7 +100,7 @@ class JMUAppClientState extends State<JMUAppClient> {
             Constants.eventBus.fire(new ActionsEvent(shortcutType));
         });
         quickActions.setShortcutItems(<ShortcutItem>[
-            const ShortcutItem(type: 'action_home', localizedTitle: '主页', icon: 'actions_home'),
+            const ShortcutItem(type: 'action_home', localizedTitle: '广场', icon: 'actions_home'),
             const ShortcutItem(type: 'action_apps', localizedTitle: '应用', icon: 'actions_apps'),
             const ShortcutItem(type: 'action_discover', localizedTitle: '发现', icon: 'actions_discover'),
             const ShortcutItem(type: 'action_user', localizedTitle: '我的', icon: 'actions_user'),
