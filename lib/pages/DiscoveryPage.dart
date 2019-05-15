@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:core';
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -23,11 +24,25 @@ class DiscoveryPageState extends State<DiscoveryPage> {
     int userLevel = 0, userLevelExpCurrent = 0, userLevelExpUpBound = 0;
     int currentWeek;
 
+    String hello = "你好";
+
+    Timer updateHelloTimer;
+
     @override
     void initState() {
         super.initState();
+        updateHello();
         getSignStatus();
         getCurrentWeek();
+        if (this.mounted) updateHelloTimer = Timer.periodic(Duration(minutes: 1), (timer) {
+            updateHello();
+        });
+    }
+
+    @override
+    void dispose() {
+        super.dispose();
+        updateHelloTimer?.cancel();
     }
 
     Future<Null> getSignStatus() async {
@@ -53,6 +68,27 @@ class DiscoveryPageState extends State<DiscoveryPage> {
               this.currentWeek = week;
             });
         }
+    }
+
+    void updateHello() {
+        int hour = DateTime.now().hour;
+        setState(() {
+            if (hour >= 0 && hour < 6) {
+                this.hello = "深夜了，注意休息";
+            } else if (hour >= 6 && hour < 8) {
+                this.hello = "早上好";
+            } else if (hour >= 8 && hour < 11) {
+                this.hello = "上午好";
+            } else if (hour >= 11 && hour < 14) {
+                this.hello = "中午好";
+            } else if (hour >= 14 && hour < 18) {
+                this.hello = "下午好";
+            } else if (hour >= 18 && hour < 20) {
+                this.hello = "傍晚好";
+            } else if (hour >= 20 && hour <= 24) {
+                this.hello = "晚上好";
+            }
+        });
     }
 
     void requestSign() async {
@@ -82,14 +118,14 @@ class DiscoveryPageState extends State<DiscoveryPage> {
                 children: <Widget>[
                     RichText(text: TextSpan(
                         children: <TextSpan>[
-                            TextSpan(text: "${DateFormat("MMM dd日，", "zh_CN").format(now)}"),
-                            if (currentWeek != null) TextSpan(text: "第$currentWeek周，"),
-                            TextSpan(text: "${DateFormat("EEEE", "zh_CN").format(now)}"),
+                            TextSpan(text: "${DateFormat("MMMdd日 ", "zh_CN").format(now)}"),
+                            if (currentWeek != null) TextSpan(text: "第$currentWeek周 "),
+                            TextSpan(text: "${DateFormat("EE", "zh_CN").format(now)}"),
                         ],
                         style: TextStyle(fontSize: 28, color: Theme.of(context).textTheme.caption.color),
                     )),
                     Text(
-                        "你好，${UserUtils.currentUser.name}",
+                        "${UserUtils.currentUser.name}，${this.hello}",
                         style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                     ),
                     Container(
