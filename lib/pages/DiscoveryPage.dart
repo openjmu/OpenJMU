@@ -82,8 +82,8 @@ class DiscoveryPageState extends State<DiscoveryPage> {
                 children: <Widget>[
                     RichText(text: TextSpan(
                         children: <TextSpan>[
-                            TextSpan(text: "${DateFormat("MMM dd日，", "zh_CN").format(now)}"),
-                            if (currentWeek != null) TextSpan(text: "第$currentWeek周，"),
+                            TextSpan(text: "${DateFormat("MMMdd日,","zh_CN").format(now)}"),
+                            if (currentWeek != null) TextSpan(text: "第$currentWeek周,"),
                             TextSpan(text: "${DateFormat("EEEE", "zh_CN").format(now)}"),
                         ],
                         style: TextStyle(fontSize: 28, color: Theme.of(context).textTheme.caption.color),
