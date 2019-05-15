@@ -252,9 +252,14 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                     ),
                     onTap: doubleTapScrollToTop,
                 ),
-                floatingActionButton: Builder(builder: (BuildContext context) {
-                    return FloatingActionButton(
-                        child: Icon(Platform.isAndroid ? Icons.add : Ionicons.getIconData("ios-add")),
+                floatingActionButton: Container(
+                    width: 48.0,
+                    height: 40.0,
+                    padding: EdgeInsets.symmetric(vertical: 2.0),
+                    child: FloatingActionButton(
+                        child: Icon(
+                            Platform.isAndroid ? Icons.add : Ionicons.getIconData("ios-add"),
+                        ),
                         tooltip: "发布新动态",
                         foregroundColor: Colors.white,
                         backgroundColor: currentThemeColor,
@@ -265,22 +270,20 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                                 return PublishPostPage();
                             }));
                         },
-                        mini: false,
-                        shape: CircleBorder(),
+                        mini: true,
                         isExtended: false,
-                    );
-                }),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                    ),
+                ),
                 floatingActionButtonLocation: const CustomCenterDockedFloatingActionButtonLocation(),
                 bottomNavigationBar: FABBottomAppBar(
-                    color: Colors.grey,
+                    backgroundColor: Theme.of(context).canvasColor,
+                    color: Colors.grey[600],
                     selectedColor: currentThemeColor,
-                    notchedShape: CircularNotchedRectangle(),
                     onTabSelected: _selectedTab,
                     items: [
-                        FABBottomAppBarItem(iconData: bottomAppBarIcons[0], text: getTabTitle(0)),
-                        FABBottomAppBarItem(iconData: bottomAppBarIcons[1], text: getTabTitle(1)),
-                        FABBottomAppBarItem(iconData: bottomAppBarIcons[2], text: getTabTitle(2)),
-                        FABBottomAppBarItem(iconData: bottomAppBarIcons[3], text: getTabTitle(3)),
+                        for (int i = 0; i < bottomAppBarIcons.length; i++)
+                            FABBottomAppBarItem(iconData: bottomAppBarIcons[i], text: getTabTitle(i)),
                     ],
                 ),
                 body: _body,
