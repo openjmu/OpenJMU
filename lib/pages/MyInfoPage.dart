@@ -191,60 +191,64 @@ class MyInfoPageState extends State<MyInfoPage> {
         );
     }
 
+    Widget about() {
+        return Container(
+            padding: EdgeInsets.all(20.0),
+            child: Center(
+                child: Column(
+                    children: <Widget>[
+                        Container(
+                            margin: EdgeInsets.only(bottom: 12.0),
+                            child: Image.asset(
+                                "images/ic_jmu_logo_trans.png",
+                                color: ThemeUtils.currentColorTheme,
+                                width: 80.0,
+                                height: 80.0,
+                            ),
+                            decoration: BoxDecoration(shape: BoxShape.circle),
+                        ),
+                        Container(
+                            margin: EdgeInsets.only(bottom: 12.0),
+                            child: RichText(text: TextSpan(children: <TextSpan>[
+                                TextSpan(text: "OpenJmu", style: new TextStyle(fontFamily: 'chocolate',color:ThemeUtils.currentColorTheme,fontSize: 35.0)),
+                                TextSpan(text: "　v$currentVersion", style: Theme.of(context).textTheme.subtitle),
+                            ])),
+                        ),
+                        RichText(text: TextSpan(
+                            children: <TextSpan>[
+                                TextSpan(text: "Developed By ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
+                                TextSpan(
+                                    recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                            return CommonWebPage.jump(context, "https://blog.alexv525.com/", "Alex Vincent");
+                                        },
+                                    text: "Alex Vincent",
+                                    style: TextStyle(color: Colors.lightBlue,fontFamily: 'chocolate'),
+                                ),
+                                TextSpan(text: " And ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
+                                TextSpan(
+                                    recognizer: TapGestureRecognizer()
+                                        ..onTap = () {
+                                            return CommonWebPage.jump(context, "https://135792468.xyz/", "Evsio0n");
+                                        },
+                                    text: "Evsio0n",
+                                    style: TextStyle(color: Colors.lightBlue,fontFamily: 'chocolate'),
+                                ),
+                                TextSpan(text: ".", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
+                            ],
+                        )),
+                    ],
+                ),
+            ),
+        );
+    }
+
     @override
     Widget build(BuildContext context) {
         return Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-                Container(
-                    padding: EdgeInsets.all(20.0),
-                    child: Center(
-                        child: Column(
-                            children: <Widget>[
-                                Container(
-                                    margin: EdgeInsets.only(bottom: 12.0),
-                                    child: Image.asset(
-                                        "images/ic_jmu_logo_trans.png",
-                                        color: ThemeUtils.currentColorTheme,
-                                        width: 80.0,
-                                        height: 80.0,
-                                    ),
-                                    decoration: BoxDecoration(shape: BoxShape.circle),
-                                ),
-                                Container(
-                                    margin: EdgeInsets.only(bottom: 12.0),
-                                    child: RichText(text: TextSpan(children: <TextSpan>[
-                                        TextSpan(text: "OpenJmu", style: new TextStyle(fontFamily: 'chocolate',color:ThemeUtils.currentColorTheme,fontSize: 35.0)),
-                                        TextSpan(text: "　v$currentVersion", style: Theme.of(context).textTheme.subtitle),
-                                    ])),
-                                ),
-                                RichText(text: TextSpan(
-                                    children: <TextSpan>[
-                                        TextSpan(text: "Developed By ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
-                                        TextSpan(
-                                            recognizer: TapGestureRecognizer()
-                                                ..onTap = () {
-                                                    return CommonWebPage.jump(context, "https://blog.alexv525.com/", "Alex Vincent");
-                                                },
-                                            text: "Alex Vincent",
-                                            style: TextStyle(color: Colors.lightBlue,fontFamily: 'chocolate'),
-                                        ),
-                                        TextSpan(text: " And ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
-                                        TextSpan(
-                                            recognizer: TapGestureRecognizer()
-                                                ..onTap = () {
-                                                    return CommonWebPage.jump(context, "https://135792468.xyz/", "Evsio0n");
-                                                },
-                                            text: "Evsio0n",
-                                            style: TextStyle(color: Colors.lightBlue,fontFamily: 'chocolate'),
-                                        ),
-                                        TextSpan(text: ".", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
-                                    ],
-                                )),
-                            ],
-                        ),
-                    ),
-                ),
+                about(),
                 Container(
                     color: Theme.of(context).dividerColor,
                     height: 1.0,

@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'dart:async';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:quick_actions/quick_actions.dart';
@@ -145,7 +146,7 @@ class JMUAppClientState extends State<JMUAppClient> {
             routes: RouteUtils.routes,
             title: "OpenJMU",
             theme: ThemeData(
-                platform: TargetPlatform.iOS,
+                platform: defaultTargetPlatform,
                 brightness: currentBrightness,
                 accentColor: currentThemeColor,
                 buttonColor: currentThemeColor,
