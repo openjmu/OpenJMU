@@ -22,14 +22,14 @@
             
             // Create the custom actions for expired timer notifications.
             UNNotificationAction* snoozeAction = [UNNotificationAction
-                                                  actionWithIdentifier:@"SNOOZE_ACTION"
-                                                  title:@"删除通知" 
-                                                  options:UNNotificationActionOptionAuthenticationRequired];
+                                                  actionWithIdentifier:@"STOP_ACTION"
+                                                  title:@"删除通知"
+                                                  options:UNNotificationActionOptionDestructive];
             
             UNNotificationAction* stopAction = [UNNotificationAction
-                                                actionWithIdentifier:@"STOP_ACTION"
-                                                title:@"停止"
-                                                options:UNNotificationActionOptionDestructive];
+                                                actionWithIdentifier:@"SNOOZE_ACTION"
+                                                title:@"取消"
+                                                options:UNNotificationActionOptionAuthenticationRequired];
             UNNotificationAction* forAction = [UNNotificationAction
                                                actionWithIdentifier:@"FOR_ACTION"
                                                title:@"一键签到"

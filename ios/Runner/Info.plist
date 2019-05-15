@@ -2,6 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>仅在使用应用程序期间访问您的位置服务</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>始终访问您的位置服务</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>使用语音转文字服务</string>
+	<key>NSMotionUsageDescription</key>
+	<string>访问您的运动和健身数据</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>访问您的Apple Music库</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>访问您的日历</string>
+	<key>NSContactsUsageDescription</key>
+	<string>访问您的通讯录和联系人数据</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
