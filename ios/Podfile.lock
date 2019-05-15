@@ -4,7 +4,12 @@ PODS:
     - BSGridCollectionViewLayout (= 1.2.3)
     - BSImageView (= 1.0.3)
   - BSImageView (1.0.3)
+  - connectivity (0.0.1):
+    - Flutter
+    - Reachability
   - Flutter (1.0.0)
+  - flutter_downloader (0.0.1):
+    - Flutter
   - flutter_local_notifications (0.0.1):
     - Flutter
   - flutter_native_image (0.0.1):
@@ -22,15 +27,18 @@ PODS:
     - Flutter
   - image_picker (0.0.1):
     - Flutter
-  - multi_image_picker (4.2.2):
+  - multi_image_picker (4.3.1):
     - BSImagePicker (~> 2.10.0)
-    - Flutter
-  - ota_update (0.0.1):
     - Flutter
   - package_info (0.0.1):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
+  - permission_handler (3.0.1):
+    - Flutter
+  - quick_actions (0.0.1):
+    - Flutter
+  - Reachability (3.2)
   - shared_preferences (0.0.1):
     - Flutter
   - sqflite (0.0.1):
@@ -38,7 +46,9 @@ PODS:
     - FMDB (~> 2.7.2)
 
 DEPENDENCIES:
-  - Flutter (from `.symlinks/flutter/ios-release`)
+  - connectivity (from `.symlinks/plugins/connectivity/ios`)
+  - Flutter (from `.symlinks/flutter/ios`)
+  - flutter_downloader (from `.symlinks/plugins/flutter_downloader/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_native_image (from `.symlinks/plugins/flutter_native_image/ios`)
   - flutter_webview_plugin (from `.symlinks/plugins/flutter_webview_plugin/ios`)
@@ -47,9 +57,10 @@ DEPENDENCIES:
   - image_downloader (from `.symlinks/plugins/image_downloader/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
-  - ota_update (from `.symlinks/plugins/ota_update/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
+  - quick_actions (from `.symlinks/plugins/quick_actions/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
 
@@ -59,10 +70,15 @@ SPEC REPOS:
     - BSImagePicker
     - BSImageView
     - FMDB
+    - Reachability
 
 EXTERNAL SOURCES:
+  connectivity:
+    :path: ".symlinks/plugins/connectivity/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios-release"
+    :path: ".symlinks/flutter/ios"
+  flutter_downloader:
+    :path: ".symlinks/plugins/flutter_downloader/ios"
   flutter_local_notifications:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_native_image:
@@ -79,12 +95,14 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker/ios"
   multi_image_picker:
     :path: ".symlinks/plugins/multi_image_picker/ios"
-  ota_update:
-    :path: ".symlinks/plugins/ota_update/ios"
   package_info:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  permission_handler:
+    :path: ".symlinks/plugins/permission_handler/ios"
+  quick_actions:
+    :path: ".symlinks/plugins/quick_actions/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
   sqflite:
@@ -94,7 +112,9 @@ SPEC CHECKSUMS:
   BSGridCollectionViewLayout: 568273e113fbc815f868f1898ef0465aee68f955
   BSImagePicker: fa0c15b6740e8aa7a7b7f0fe38a71ad4cfa0ec4a
   BSImageView: a149459433a2687157d034c78e059d30ac7f2544
+  connectivity: c72716e202a1225ec4810740d5cb56b8ae3bf4cc
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
   flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
   flutter_native_image: 9c0b7451838484458e5b0fae007b86a4c2d4bdfe
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
@@ -103,10 +123,12 @@ SPEC CHECKSUMS:
   image_crop: e0a67085d3ebf3cf46ca46d61c53a082507b0bc3
   image_downloader: e5e747da37f5270b2d549747fcef9d276224d7b1
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
-  multi_image_picker: edce20ba9ff5dfefeadc3c3fc172f9a31ba536f1
-  ota_update: 025311773f7e5d8a36cf0d4fc1d1694f7bc75958
+  multi_image_picker: 842f47263fa8877eb7035d8eea6a20c53eda7b24
   package_info: 78cabb3c322943c55d39676f4a5bfc748c01d055
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
+  permission_handler: 6e56ded745f5a0b9dcc0327c65c4acd6a33b776b
+  quick_actions: 07414f1e5cb71fc4d32a0670b62c460e619366b2
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
   sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
 
