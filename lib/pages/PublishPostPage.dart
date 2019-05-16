@@ -117,8 +117,8 @@ class PublishPostPageState extends State<PublishPostPage> {
     }
 
     Future<void> loadAssets() async {
+        _focusNode.unfocus();
         String currentColorValue = "#${ThemeUtils.currentColorTheme.value.toRadixString(16).substring(2, 8)}";
-        SystemChannels.textInput.invokeMethod('TextInput.hide');
         List<Asset> resultList = List<Asset>();
         try {
             resultList = await MultiImagePicker.pickImages(
@@ -278,11 +278,11 @@ class PublishPostPageState extends State<PublishPostPage> {
                             icon: poundIcon(context),
                         ),
                         IconButton(
-                                onPressed: mentionPeople,
-                                icon: Icon(
-                                    Platform.isAndroid ? Ionicons.getIconData("ios-at") : Ionicons.getIconData("md-at"),
-                                    color: Theme.of(context).iconTheme.color,
-                                )
+                            onPressed: mentionPeople,
+                            icon: Icon(
+                                Platform.isAndroid ? Ionicons.getIconData("ios-at") : Ionicons.getIconData("md-at"),
+                                color: Theme.of(context).iconTheme.color,
+                            ),
                         ),
                         IconButton(
                             onPressed: loadAssets,

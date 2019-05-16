@@ -365,7 +365,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         widget.uid == UserUtils.currentUser.uid ?
         showModalBottomSheet(
             context: context,
-            builder: (BuildContext context){
+            builder: (BuildContext context) {
                 return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[

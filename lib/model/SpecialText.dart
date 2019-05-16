@@ -182,12 +182,6 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     StackSpecialTextSpanBuilder({this.type: BuilderType.extendedText});
 
     @override
-    TextSpan build(String data, {TextStyle textStyle, SpecialTextGestureTapCallback onTap}) {
-        var textSpan = super.build(data, textStyle: textStyle, onTap: onTap);
-        return textSpan;
-    }
-
-    @override
     SpecialText createSpecialText(String flag, {TextStyle textStyle, SpecialTextGestureTapCallback onTap, int index}) {
         if (flag == null || flag == "") return null;
 
@@ -207,12 +201,6 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
 }
 
 class StackSpecialTextFieldSpanBuilder extends SpecialTextSpanBuilder {
-    @override
-    TextSpan build(String data, {TextStyle textStyle, onTap}) {
-        var textSpan = super.build(data, textStyle: textStyle, onTap: onTap);
-        return textSpan;
-    }
-
     @override
     SpecialText createSpecialText(String flag, {TextStyle textStyle, SpecialTextGestureTapCallback onTap, int index}) {
         if (flag == null || flag == "") return null;

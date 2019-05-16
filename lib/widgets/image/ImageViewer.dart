@@ -143,13 +143,25 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
 //                              );
 //                            }
                             return GestureDetector(
-                                onTap: () {
-                                  _pop(context, true);
-                                },
-                                onLongPress: () {
-                                  print("longpress");
-                                },
-                                child: image
+                              onTap: () {
+                                _pop(context, true);
+                              },
+                              onLongPress: () {
+                                showModalBottomSheet(context: context, builder: (_) => Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    ListTile(
+                                      leading: Icon(Icons.account_circle),
+                                      title: Text("保存图片"),
+                                      onTap: () {
+                                        _downloadImage(widget.pics[currentIndex].imageUrl);
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ],
+                                ));
+                              },
+                              child: image,
                             );
                           },
                           itemCount: widget.pics.length,
@@ -168,7 +180,6 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                             right: 0.0,
                             height: kToolbarHeight,
                             child: Container(
-                              color: Color(0x44000000),
                               child: Row(
                                 children: <Widget>[
                                   IconButton(
@@ -178,14 +189,9 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                                     },
                                   ),
                                   Expanded(
-                                      child: ViewAppBar(widget.pics, currentIndex, rebuild)
+                                    child: ViewAppBar(widget.pics, currentIndex, rebuild),
                                   ),
-                                  IconButton(
-                                    icon: Icon(Icons.save, color: Colors.white),
-                                    onPressed: () {
-                                      _downloadImage(widget.pics[currentIndex].imageUrl);
-                                    },
-                                  )
+                                  Container(width: 52.0),
                                 ],
                               )
                             )
