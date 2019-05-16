@@ -2,7 +2,7 @@
 #include "GeneratedPluginRegistrant.h"
 #import <UserNotifications/UserNotifications.h>
 @implementation AppDelegate
-
+static NSString *SendTime;
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
   [GeneratedPluginRegistrant registerWithRegistry:self];
@@ -89,8 +89,28 @@
     }];
 }
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)pToken {
-    //保存deviceToken
-    NSLog(@"regisger success:%@",pToken);
+    //保存deviceToken并上传token
+    NSLog(@"regisger success:%@",pToken);//log当前的token
+    NSDate *now = [NSDate date];//获取现在的时间
+    NSDateFormatter *forMatter = [[NSDateFormatter alloc] init];
+    [forMatter setDateFormat:@"yyyyMMddHH"];
+    NSString *SendTime = [forMatter stringFromDate:now];//转换系统现在的时间
+    NSString *pushToken = [[[[pToken description]
+                             stringByReplacingOccurrencesOfString:@"<" withString:@""]
+                            stringByReplacingOccurrencesOfString:@">" withString:@""]
+                           stringByReplacingOccurrencesOfString:@" " withString:@""];//把空格和<>去掉
+    NSURL *url = [NSURL URLWithString:@"https://openjmu.xyz/push"];//创建请求IP
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+    request.HTTPMethod = @"POST";//采用POST
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    NSDictionary *json = @{
+                           @"token" : pushToken,
+                           @"Date" : SendTime,
+                           };
+    NSData *data = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingPrettyPrinted error:nil];
+    request.HTTPBody = data;
+    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    }];
 }
 
 /// Temporary migration with `quick_actions` package's event not triggered. See https://github.com/flutter/flutter/issues/13634#issuecomment-392303964
