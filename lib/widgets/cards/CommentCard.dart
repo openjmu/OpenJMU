@@ -397,7 +397,7 @@ class CommentCardInPost extends StatelessWidget {
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: <Widget>[
                                                         IconButton(
-                                                            icon: Icon(Icons.delete, size: 36.0),
+                                                            icon: Icon(Icons.delete, size: 36.0, color: Colors.white),
                                                             padding: EdgeInsets.all(6.0),
                                                             onPressed: () {
                                                                 showPlatformDialog(
@@ -456,7 +456,7 @@ class CommentCardInPost extends StatelessWidget {
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: <Widget>[
                                                         IconButton(
-                                                            icon: Icon(Icons.content_copy, size: 36.0),
+                                                            icon: Icon(Icons.content_copy, size: 36.0, color: Colors.white),
                                                             padding: EdgeInsets.all(6.0),
                                                             onPressed: () {
                                                                 Clipboard.setData(ClipboardData(
