@@ -101,7 +101,7 @@ class CommonWebPageState extends State<CommonWebPage> {
 
     Future<bool> waitForClose() async {
         await flutterWebViewPlugin.close();
-        return false;
+        return true;
     }
 
     PreferredSize progressBar() {

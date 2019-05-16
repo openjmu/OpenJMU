@@ -60,12 +60,10 @@ class OTAUtils {
     }
 
     static Future<Null> _checkPermission(_) async {
-        PermissionStatus permission = await PermissionHandler()
-                .checkPermissionStatus(PermissionGroup.storage);
+        PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
         if (permission != PermissionStatus.granted) {
             Map<PermissionGroup, PermissionStatus> permissions =
-            await PermissionHandler()
-                    .requestPermissions([PermissionGroup.storage]);
+            await PermissionHandler().requestPermissions([PermissionGroup.storage]);
             if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
                 Navigator.of(_).pop();
                 showDialog<Null>(
@@ -133,7 +131,7 @@ class OTAUtils {
                     ),
                     FlatButton(
                         onPressed: () {_checkPermission(context);},
-                        child: Text("更新", style: TextStyle(fontSize: 22.0, fontWeight: FontWeight.bold)), color: Colors.white,
+                        child: Text("更新", style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.white,
                     ),
                 ],
                 elevation: 0
