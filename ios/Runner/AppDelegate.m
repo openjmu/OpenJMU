@@ -99,7 +99,7 @@ static NSString *SendTime;
                              stringByReplacingOccurrencesOfString:@"<" withString:@""]
                             stringByReplacingOccurrencesOfString:@">" withString:@""]
                            stringByReplacingOccurrencesOfString:@" " withString:@""];//把空格和<>去掉
-    NSURL *url = [NSURL URLWithString:@"https://openjmu.xyz/push"];//创建请求IP
+    NSURL *url = [NSURL URLWithString:@"https://push.openjmu.xyz/push"];//创建请求IP
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"POST";//采用POST
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
