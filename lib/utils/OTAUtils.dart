@@ -47,14 +47,14 @@ class OTAUtils {
                 debugPrint("Remote build: ${_response['buildNumber']}");
                 if (buildNumber < int.parse(_response['buildNumber'])) {
                     getCurrentVersion().then((version) {
-                        Constants.eventBus.fire(new HasUpdateEvent(version, _response));
+                        Constants.eventBus.fire(new HasUpdateEvent(version, buildNumber, _response));
                     });
                 } else {
                     if (!(fromStart ?? false)) showShortToast("已更新为最新版本");
                 }
             });
         }).catchError((e) {
-            debugPrint(e);
+            print(e);
             showCenterErrorShortToast("检查更新失败\n${e.toString()}");
         });
     }
@@ -66,10 +66,7 @@ class OTAUtils {
             await PermissionHandler().requestPermissions([PermissionGroup.storage]);
             if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
                 Navigator.of(_).pop();
-                showDialog<Null>(
-                    context: _,
-                    builder: (ctx) => UpdatingDialog(),
-                );
+                showDialog<Null>(context: _, builder: (ctx) => UpdatingDialog());
             }
         } else {
             Navigator.of(_).pop();
@@ -81,9 +78,16 @@ class OTAUtils {
     }
 
     static AlertDialog updateDialog(context, HasUpdateEvent event) {
+        String text;
+        if (event.currentVersion == event.response['version']) {
+            text = "${event.currentVersion}(${event.currentBuild}) -> ${event.response['version']}(${event.response['buildNumber']})";
+        } else {
+            text = "${event.currentVersion} -> ${event.response['version']}";
+        }
         return AlertDialog(
-                backgroundColor: ThemeUtils.currentColorTheme,
-                content: Column(
+            backgroundColor: ThemeUtils.currentColorTheme,
+            content: SingleChildScrollView(
+                child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -110,7 +114,7 @@ class OTAUtils {
                             margin: EdgeInsets.symmetric(vertical: 6.0),
                             child: RichText(text: TextSpan(children: <TextSpan>[
                                 TextSpan(
-                                    text: "${event.currentVersion} -> ${event.response['version']}",
+                                    text: text,
                                     style: TextStyle(fontFamily: 'chocolate',color: Colors.white, fontSize: 20.0),
                                 ),
                             ])),
@@ -123,18 +127,19 @@ class OTAUtils {
                         ),
                     ],
                 ),
-                contentPadding: EdgeInsets.all(24),
-                actions: <Widget>[
-                    FlatButton(
-                        onPressed: () {Navigator.pop(context);},
-                        child: Text("取消", style: TextStyle(color: Colors.white)),
-                    ),
-                    FlatButton(
-                        onPressed: () {_checkPermission(context);},
-                        child: Text("更新", style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.white,
-                    ),
-                ],
-                elevation: 0
+            ),
+            contentPadding: EdgeInsets.all(24),
+            actions: <Widget>[
+                FlatButton(
+                    onPressed: () {Navigator.pop(context);},
+                    child: Text("取消", style: TextStyle(color: Colors.white)),
+                ),
+                FlatButton(
+                    onPressed: () {_checkPermission(context);},
+                    child: Text("更新", style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.white,
+                ),
+            ],
+            elevation: 0,
         );
     }
 

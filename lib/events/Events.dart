@@ -111,9 +111,11 @@ class MentionPeopleEvent {
 }
 class HasUpdateEvent {
     String currentVersion;
+    int currentBuild;
     Map<String, dynamic> response;
-    HasUpdateEvent(String version, Map<String, dynamic> response) {
+    HasUpdateEvent(String version, int buildNumber, Map<String, dynamic> response) {
         this.currentVersion = version;
+        this.currentBuild = buildNumber;
         this.response = response;
     }
 }

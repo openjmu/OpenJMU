@@ -228,12 +228,10 @@ class PostDetailPageState extends State<PostDetailPage> {
         });
     }
 
-    Positioned toolbar(context) {
-        return Positioned(
-            bottom: MediaQuery.of(context).padding.bottom ?? 0,
-            left: 0.0,
-            right: 0.0,
+    Widget toolbar(context) {
+        return Container(
             child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -256,7 +254,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                                             size: 24,
                                         ),
                                         label: Text("转发", style: TextStyle(
-                                                color: Theme.of(context).textTheme.title.color
+                                            color: Theme.of(context).textTheme.title.color,
                                         )),
                                         splashColor: Colors.grey,
                                     ),
@@ -325,44 +323,45 @@ class PostDetailPageState extends State<PostDetailPage> {
             appBar: AppBar(
                 backgroundColor: ThemeUtils.currentColorTheme,
                 title: Text(
-                        "动态正文",
-                        style: TextStyle(
-                                color: Colors.white,
-                                fontSize: Theme.of(context).textTheme.title.fontSize
-                        )
+                    "动态正文",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: Theme.of(context).textTheme.title.fontSize,
+                    ),
                 ),
                 centerTitle: true,
             ),
-            body: Stack(
+            body: Column(
                 children: <Widget>[
-                    RefreshIndicator(
-                        onRefresh: () {},
-                        child: ListView(
-                            children: <Widget>[
-                                Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
-                                        Expanded(
-                                            child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                    _post,
-                                                    actionLists(context),
-                                                    IndexedStack(
-                                                        children: <Widget>[
-                                                            _forwardsList,
-                                                            _commentsList,
-                                                            _praisesList,
-                                                        ],
-                                                        index: _tabIndex,
-                                                    )
-                                                ],
+                    Expanded(
+                        child: RefreshIndicator(
+                            onRefresh: () {},
+                            child: ListView(
+                                children: <Widget>[
+                                    Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: <Widget>[
+                                            Expanded(
+                                                child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                        _post,
+                                                        actionLists(context),
+                                                        IndexedStack(
+                                                            children: <Widget>[
+                                                                _forwardsList,
+                                                                _commentsList,
+                                                                _praisesList,
+                                                            ],
+                                                            index: _tabIndex,
+                                                        )
+                                                    ],
+                                                ),
                                             ),
-                                        ),
-                                    ],
-                                ),
-                                Container(height: 56.0),
-                            ],
+                                        ],
+                                    ),
+                                ],
+                            ),
                         ),
                     ),
                     toolbar(context),

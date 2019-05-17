@@ -16,7 +16,7 @@ class PostSquareListPageState extends State<PostSquareListPage> {
     @override
     void initState() {
         super.initState();
-        _post = new PostList(
+        _post = PostList(
             PostController(
                 postType: "square",
                 isFollowed: false,

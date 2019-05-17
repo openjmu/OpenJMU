@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:crypto/crypto.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -38,9 +39,9 @@ class DataUtils {
         return sp.getString(spUserSid);
     }
 
-    static Future setSid(String phpSessId) async {
+    static Future setSid(String sid) async {
         SharedPreferences sp = await SharedPreferences.getInstance();
-        return sp.setString(spUserSid, phpSessId);
+        return sp.setString(spUserSid, sid);
     }
 
     static Future doLogin(context, String username, String password) async {
@@ -230,8 +231,8 @@ class DataUtils {
     }
 
     static Future getTicket() async {
-        print("isIOS: ${Platform.isIOS}");
-        print("isAndroid: ${Platform.isAndroid}");
+        debugPrint("isIOS: ${Platform.isIOS}");
+        debugPrint("isAndroid: ${Platform.isAndroid}");
         getSpTicket().then((info) {
             Map<String, Object> clientInfo, params;
             if (Platform.isIOS) {
@@ -240,7 +241,7 @@ class DataUtils {
                     "packetid": "",
                     "platform": 40,
                     "platformver": "2.3.2",
-//          "deviceid": "${Random().nextInt(999999999999999)}",
+//                    "deviceid": "${Random().nextInt(999999999999999)}",
                     "deviceid": "",
                     "devicetype": "iPhone",
                     "systype": "iPhone OS",
@@ -257,7 +258,7 @@ class DataUtils {
                     "appid": 273,
                     "platform": 30,
                     "platformver": "2.3.1",
-//          "deviceid": "${Random().nextInt(999999999999999)}",
+//                    "deviceid": "${Random().nextInt(999999999999999)}",
                     "devicetype": "TestDeviceName",
                     "systype": "TestDevice",
                     "sysver": "2.1",
@@ -270,7 +271,7 @@ class DataUtils {
                 };
             }
             NetUtils.post(Api.loginTicket, data: params).then((response) {
-                print("sid: ${jsonDecode(response)['sid']}");
+                debugPrint("sid: ${jsonDecode(response)['sid']}");
                 updateSid(jsonDecode(response)).then((whatever) {
                     getUserBasicInfo();
                 });
@@ -347,7 +348,7 @@ class DataUtils {
                 int commsAt = int.parse(data['cmt_at']);
                 int praises = int.parse(data['t_praised']);
                 int count = comment + postsAt + commsAt + praises;
-//                print("Count: $count, At: ${postsAt+commsAt}, Comment: $comment, Praise: $praises");
+//                debugPrint("Count: $count, At: ${postsAt+commsAt}, Comment: $comment, Praise: $praises");
                 Notifications notifications = Notifications(count, postsAt+commsAt, comment, praises);
                 Constants.eventBus.fire(new NotificationsChangeEvent(notifications));
             }).catchError((e) {

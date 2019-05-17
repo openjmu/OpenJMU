@@ -44,8 +44,7 @@ class ChangeThemePageState extends State<ChangeThemePage> {
                 centerTitle: true,
                 brightness: Brightness.dark,
             ),
-            body: Padding(
-                padding: EdgeInsets.all(8.0),
+            body: Container(
                 child: GridView.count(
                     crossAxisCount: 4,
                     children: List.generate(colors.length, (index) {
@@ -56,7 +55,7 @@ class ChangeThemePageState extends State<ChangeThemePage> {
                             },
                             child: Container(
                                 color: colors[index],
-                                margin: const EdgeInsets.all(5.0),
+                                margin: EdgeInsets.all(10.0),
                             ),
                         );
                     }),

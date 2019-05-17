@@ -133,8 +133,8 @@ class MyInfoPageState extends State<MyInfoPage> {
         } else if (title == "启动页") {
             showSelectSplashDialog(context);
         } else if (title == "测试页") {
-//            Navigator.pushNamed(context, "/test");
-            Navigator.pushNamed(context, "/notificationTest");
+            Navigator.pushNamed(context, "/test");
+//            Navigator.pushNamed(context, "/notificationTest");
         } else if (title == "退出登录") {
             showLogoutDialog(context);
         } else if (title == "检查更新") {
@@ -245,25 +245,27 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     @override
     Widget build(BuildContext context) {
-        return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-                about(),
-                Container(
-                    color: Theme.of(context).dividerColor,
-                    height: 1.0,
-                ),
-                ListView.separated(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    separatorBuilder: (context, index) => Container(
+        return SingleChildScrollView(
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                    about(),
+                    Container(
                         color: Theme.of(context).dividerColor,
                         height: 1.0,
                     ),
-                    itemCount: titles.length,
-                    itemBuilder: (context, i) => renderRow(i),
-                ),
-            ],
+                    ListView.separated(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        separatorBuilder: (context, index) => Container(
+                            color: Theme.of(context).dividerColor,
+                            height: 1.0,
+                        ),
+                        itemCount: titles.length,
+                        itemBuilder: (context, i) => renderRow(i),
+                    ),
+                ],
+            )
         );
     }
 

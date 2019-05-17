@@ -20,10 +20,10 @@ dependencies:
     dio: ^2.1.3
     dragablegridview_flutter: ^0.2.0
     event_bus: ^1.1.0
-    extended_image: any
-    extended_tabs: any
-    extended_text: any
-    extended_text_field: any
+    extended_image: ^0.3.3
+    extended_tabs: ^0.1.6
+    extended_text: ^0.4.7
+    extended_text_field: ^0.2.4
     image_crop: ^0.2.0
     image_downloader: ^0.15.2
     image_picker: ^0.6.0+2
