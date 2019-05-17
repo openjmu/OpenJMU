@@ -47,7 +47,7 @@ class OTAUtils {
                 debugPrint("Remote build: ${_response['buildNumber']}");
                 if (buildNumber < int.parse(_response['buildNumber'])) {
                     getCurrentVersion().then((version) {
-                        Constants.eventBus.fire(new HasUpdateEvent(version, _response));
+                        Constants.eventBus.fire(new HasUpdateEvent(version, buildNumber, _response));
                     });
                 } else {
                     if (!(fromStart ?? false)) showShortToast("已更新为最新版本");
@@ -66,10 +66,7 @@ class OTAUtils {
             await PermissionHandler().requestPermissions([PermissionGroup.storage]);
             if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
                 Navigator.of(_).pop();
-                showDialog<Null>(
-                    context: _,
-                    builder: (ctx) => UpdatingDialog(),
-                );
+                showDialog<Null>(context: _, builder: (ctx) => UpdatingDialog());
             }
         } else {
             Navigator.of(_).pop();
@@ -81,6 +78,12 @@ class OTAUtils {
     }
 
     static AlertDialog updateDialog(context, HasUpdateEvent event) {
+        String text;
+        if (event.currentVersion == event.response['version']) {
+            text = "${event.currentVersion}(${event.currentBuild}) -> ${event.response['version']}(${event.response['buildNumber']})";
+        } else {
+            text = "${event.currentVersion} -> ${event.response['version']}";
+        }
         return AlertDialog(
             backgroundColor: ThemeUtils.currentColorTheme,
             content: SingleChildScrollView(
@@ -111,7 +114,7 @@ class OTAUtils {
                             margin: EdgeInsets.symmetric(vertical: 6.0),
                             child: RichText(text: TextSpan(children: <TextSpan>[
                                 TextSpan(
-                                    text: "${event.currentVersion} -> ${event.response['version']}",
+                                    text: text,
                                     style: TextStyle(fontFamily: 'chocolate',color: Colors.white, fontSize: 20.0),
                                 ),
                             ])),
