@@ -335,14 +335,18 @@ class _PostCardState extends State<PostCard> {
                 }
             },
             maxLines: widget.isDetail ?? false ? null : 10,
-//            overFlowTextSpan: widget.isDetail ?? false ? null : OverFlowTextSpan(
-//                text: "查看全文",
-//                style: TextStyle(
-//                    color: ThemeUtils.currentColorTheme,
-//                    fontSize: 16.0,
-//                ),
-//                background: isRoot ?? false ? Theme.of(context).canvasColor : Theme.of(context).cardColor
-//            ),
+            overFlowTextSpan: widget.isDetail ?? false ? null : OverFlowTextSpan(
+                children: <TextSpan>[
+                    TextSpan(text: "... "),
+                    TextSpan(
+                        text: "查看全文",
+                        style: TextStyle(
+                            color: ThemeUtils.currentColorTheme,
+                        )
+                    )
+                ],
+                background: isRoot ?? false ? Theme.of(context).canvasColor : Theme.of(context).cardColor,
+            ),
             specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
         );
     }

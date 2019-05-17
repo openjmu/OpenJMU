@@ -7,6 +7,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
+//import 'package:OpenJMU/pages/Test.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -133,6 +134,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         } else if (title == "启动页") {
             showSelectSplashDialog(context);
         } else if (title == "测试页") {
+//            showDialog(context: context, builder: (_) => TestPage());
             Navigator.pushNamed(context, "/test");
 //            Navigator.pushNamed(context, "/notificationTest");
         } else if (title == "退出登录") {
@@ -180,7 +182,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                                 child: Text('取消', style: TextStyle(color: Colors.white)),
                             ),
                             ios: (BuildContext context) => CupertinoButtonData(
-                                    child: Text("取消", style: TextStyle(color: ThemeUtils.currentColorTheme))
+                                child: Text("取消", style: TextStyle(color: ThemeUtils.currentColorTheme)),
                             ),
                             onPressed: () {
                                 Navigator.of(context).pop();
@@ -246,6 +248,7 @@ class MyInfoPageState extends State<MyInfoPage> {
     @override
     Widget build(BuildContext context) {
         return SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
             child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
