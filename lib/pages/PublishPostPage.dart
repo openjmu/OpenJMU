@@ -466,9 +466,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         _loadingDialogController.updateText("正在上传图片 ($uploadedImages/${imagesBin.length})");
     }
 
-    Future _postImagesQuery(query) async {
-        return await Future.wait(query);
-    }
+    Future _postImagesQuery(query) async => await Future.wait(query);
 
     Future _postContent(content) async {
         if (imagesBin.length > 0) {
@@ -536,9 +534,4 @@ class PublishPostPageState extends State<PublishPostPage> {
 class ItemBin extends DragAbleGridViewBin{
     Asset data;
     ItemBin(this.data);
-
-    @override
-    String toString() {
-        return 'ItemBin{data: $data, dragPointX: $dragPointX, dragPointY: $dragPointY, lastTimePositionX: $lastTimePositionX, lastTimePositionY: $lastTimePositionY, containerKey: $containerKey, containerKeyChild: $containerKeyChild, isLongPress: $isLongPress, dragAble: $dragAble}';
-    }
 }

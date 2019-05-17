@@ -112,6 +112,7 @@ class DiscoveryPageState extends State<DiscoveryPage> {
     Widget build(BuildContext context) {
         DateTime now = DateTime.now();
         return SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
             child: Padding(
                 padding: EdgeInsets.all(16),
                 child: Column(
