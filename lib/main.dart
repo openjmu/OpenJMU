@@ -88,9 +88,9 @@ class JMUAppClientState extends State<JMUAppClient> {
 
     @override
     void dispose() {
-        connectivitySubscription?.cancel();
-        print("Main dart disposed.");
         super.dispose();
+        connectivitySubscription?.cancel();
+        debugPrint("Main dart disposed.");
     }
 
     void initQuickActions() {

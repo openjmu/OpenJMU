@@ -6,10 +6,14 @@ class TestPage extends StatefulWidget {
 }
 
 class _TestPageState extends State<TestPage> {
-
     @override
     void initState() {
         super.initState();
+    }
+
+    @override
+    void dispose() {
+        super.dispose();
     }
 
     @override

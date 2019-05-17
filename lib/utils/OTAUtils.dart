@@ -54,7 +54,7 @@ class OTAUtils {
                 }
             });
         }).catchError((e) {
-            debugPrint(e);
+            print(e);
             showCenterErrorShortToast("检查更新失败\n${e.toString()}");
         });
     }
@@ -82,8 +82,9 @@ class OTAUtils {
 
     static AlertDialog updateDialog(context, HasUpdateEvent event) {
         return AlertDialog(
-                backgroundColor: ThemeUtils.currentColorTheme,
-                content: Column(
+            backgroundColor: ThemeUtils.currentColorTheme,
+            content: SingleChildScrollView(
+                child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -123,18 +124,19 @@ class OTAUtils {
                         ),
                     ],
                 ),
-                contentPadding: EdgeInsets.all(24),
-                actions: <Widget>[
-                    FlatButton(
-                        onPressed: () {Navigator.pop(context);},
-                        child: Text("取消", style: TextStyle(color: Colors.white)),
-                    ),
-                    FlatButton(
-                        onPressed: () {_checkPermission(context);},
-                        child: Text("更新", style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.white,
-                    ),
-                ],
-                elevation: 0
+            ),
+            contentPadding: EdgeInsets.all(24),
+            actions: <Widget>[
+                FlatButton(
+                    onPressed: () {Navigator.pop(context);},
+                    child: Text("取消", style: TextStyle(color: Colors.white)),
+                ),
+                FlatButton(
+                    onPressed: () {_checkPermission(context);},
+                    child: Text("更新", style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.white,
+                ),
+            ],
+            elevation: 0,
         );
     }
 

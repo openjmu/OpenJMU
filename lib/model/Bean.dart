@@ -253,8 +253,8 @@ class Notifications {
 ///
 /// Inherit from default centerDockedLocation.
 ///
-abstract class CustomCenterDockedPosition extends FloatingActionButtonLocation {
-    const CustomCenterDockedPosition();
+abstract class CustomDockedPosition extends FloatingActionButtonLocation {
+    const CustomDockedPosition();
 
     @protected
     double getDockedY(ScaffoldPrelayoutGeometry scaffoldGeometry) {
@@ -274,7 +274,20 @@ abstract class CustomCenterDockedPosition extends FloatingActionButtonLocation {
     }
 }
 
-class CustomCenterDockedFloatingActionButtonLocation extends CustomCenterDockedPosition {
+class CustomEndDockedFloatingActionButtonLocation extends CustomDockedPosition {
+    const CustomEndDockedFloatingActionButtonLocation();
+
+    @override
+    Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
+        final double fabX = _endOffset(scaffoldGeometry);
+        return Offset(fabX, getDockedY(scaffoldGeometry) + 10.0);
+    }
+
+    @override
+    String toString() => 'FloatingActionButtonLocation.endDocked';
+}
+
+class CustomCenterDockedFloatingActionButtonLocation extends CustomDockedPosition {
     const CustomCenterDockedFloatingActionButtonLocation();
 
     @override
@@ -285,4 +298,27 @@ class CustomCenterDockedFloatingActionButtonLocation extends CustomCenterDockedP
 
     @override
     String toString() => 'FloatingActionButtonLocation.customCenterDocked';
+}
+
+double _leftOffset(ScaffoldPrelayoutGeometry scaffoldGeometry, { double offset = 0.0 }) {
+    return 16 + scaffoldGeometry.minInsets.left - offset;
+}
+
+double _rightOffset(ScaffoldPrelayoutGeometry scaffoldGeometry, { double offset = 0.0 }) {
+    return scaffoldGeometry.scaffoldSize.width
+            - 16
+            - scaffoldGeometry.minInsets.right
+            - scaffoldGeometry.floatingActionButtonSize.width
+            + offset;
+}
+
+double _endOffset(ScaffoldPrelayoutGeometry scaffoldGeometry, { double offset = 0.0 }) {
+    assert(scaffoldGeometry.textDirection != null);
+    switch (scaffoldGeometry.textDirection) {
+        case TextDirection.rtl:
+            return _leftOffset(scaffoldGeometry, offset: offset);
+        case TextDirection.ltr:
+            return _rightOffset(scaffoldGeometry, offset: offset);
+    }
+    return null;
 }

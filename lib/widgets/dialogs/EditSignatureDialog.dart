@@ -39,11 +39,10 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
     void updateSignature() {
         LoadingDialogController _loadingDialogController = LoadingDialogController();
         showDialog<Null>(
-                context: context,
-                builder: (BuildContext context) => LoadingDialog("正在更新签名", _loadingDialogController),
+            context: context,
+            builder: (BuildContext context) => LoadingDialog("正在更新签名", _loadingDialogController),
         );
-        UserUtils.setSignature(_textEditingController.text)
-                .then((response) {
+        UserUtils.setSignature(_textEditingController.text).then((response) {
             _loadingDialogController.changeState("success", "签名更新成功");
             setState(() {
                 UserUtils.currentUser.signature = _textEditingController.text;
@@ -52,8 +51,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
             Future.delayed(Duration(milliseconds: 2300), () {
                 Navigator.of(context).pop();
             });
-        })
-                .catchError((e) {
+        }).catchError((e) {
             print(e.toString());
             _loadingDialogController.changeState("failed", "签名更新失败");
         });

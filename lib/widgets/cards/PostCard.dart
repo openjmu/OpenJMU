@@ -172,7 +172,7 @@ class _PostCardState extends State<PostCard> {
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[getExtendedText(topic), getRootPostImages(rootTopic['topic'])],
+                            children: <Widget>[getExtendedText(topic, isRoot: true), getRootPostImages(rootTopic['topic'])],
                         ),
                     ),
                 );
@@ -320,7 +320,7 @@ class _PostCardState extends State<PostCard> {
         );
     }
 
-    Widget getExtendedText(content) {
+    Widget getExtendedText(content, {isRoot}) {
         return ExtendedText(
             content != null ? "$content " : null,
             style: TextStyle(fontSize: 16.0),
@@ -335,14 +335,14 @@ class _PostCardState extends State<PostCard> {
                 }
             },
             maxLines: widget.isDetail ?? false ? null : 10,
-            overFlowTextSpan: widget.isDetail ?? false ? null : OverFlowTextSpan(
-                text: "查看全文",
-                style: TextStyle(
-                    color: ThemeUtils.currentColorTheme,
-                    fontSize: 16.0,
-                ),
-                background: Theme.of(context).cardColor,
-            ),
+//            overFlowTextSpan: widget.isDetail ?? false ? null : OverFlowTextSpan(
+//                text: "查看全文",
+//                style: TextStyle(
+//                    color: ThemeUtils.currentColorTheme,
+//                    fontSize: 16.0,
+//                ),
+//                background: isRoot ?? false ? Theme.of(context).canvasColor : Theme.of(context).cardColor
+//            ),
             specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
         );
     }

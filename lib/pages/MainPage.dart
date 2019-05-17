@@ -52,8 +52,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     Timer notificationTimer;
 
     int _tabIndex = Constants.homeSplashIndex;
-    var _body;
-    var pages = [
+    Widget _body;
+    List<Widget> pages = [
         PostSquareListPage(),
 //        NewsListPage(),
         AppCenterPage(),
@@ -63,7 +63,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
     int userUid;
     String userSid;
-    var userAvatar;
 
     @override
     bool get wantKeepAlive => true;
@@ -287,12 +286,87 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                             FABBottomAppBarItem(iconData: bottomAppBarIcons[i], text: getTabTitle(i)),
                     ],
                 ),
+//                bottomNavigationBar: MainBottomAppBar(
+//                    icons: this.bottomAppBarIcons,
+//                    titles: this.bottomAppBarTitles,
+//                    color: Theme.of(context).canvasColor,
+//                    pageState: this,
+//                ),
                 body: _body,
             ),
         );
     }
-
 }
+
+//class MainBottomAppBar extends StatefulWidget {
+//    final List<IconData> icons;
+//    final List<String> titles;
+//    final Color color;
+//    final NotchedShape shape;
+//    final MainPageState pageState;
+//
+//    MainBottomAppBar({
+//        this.icons,
+//        this.titles,
+//        this.color,
+//        this.shape,
+//        this.pageState,
+//        Key key
+//    }) : super(key: key);
+//
+//    @override
+//    _MainBottomAppBarState createState() => _MainBottomAppBarState();
+//}
+//
+//class _MainBottomAppBarState extends State<MainBottomAppBar> {
+//    int selectedIndex = 0;
+//
+//    void setSelected(int index) {
+//        widget.pageState._selectedTab(index);
+//        setState(() {
+//            selectedIndex = index;
+//        });
+//    }
+//
+//    @override
+//    Widget build(BuildContext context) {
+//        final List<Widget> rowContents = <Widget>[
+//            for (int index = 0; index < widget.icons.length; index++)
+//                FlatButton(
+//                    child: Padding(
+//                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+//                        child: Column(
+//                            mainAxisSize: MainAxisSize.min,
+//                            crossAxisAlignment: CrossAxisAlignment.center,
+//                            children: <Widget>[
+//                                Icon(
+//                                    widget.icons[index],
+//                                    color: selectedIndex == index ? ThemeUtils.currentColorTheme : Colors.grey[600],
+//                                ),
+//                                Text(
+//                                    widget.titles[index],
+//                                    style: TextStyle(
+//                                        color: selectedIndex == index ? ThemeUtils.currentColorTheme : Colors.grey[600],
+//                                    ),
+//                                ),
+//                            ],
+//                        ),
+//                    ),
+//                    onPressed: () {setSelected(index);},
+//                ),
+//            SizedBox(width: 56.0),
+//        ];
+//
+//        return BottomAppBar(
+//            color: widget.color,
+//            child: Row(
+//                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                children: rowContents,
+//            ),
+//            shape: widget.shape,
+//        );
+//    }
+//}
 
 class GestureAppBar extends StatelessWidget implements PreferredSizeWidget {
     final VoidCallback onTap;
