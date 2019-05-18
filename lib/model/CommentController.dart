@@ -193,7 +193,8 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
             );
             List<Comment> commentList = [];
             List _topics = jsonDecode(result)['replylist'];
-            int _total = int.parse(jsonDecode(result)['total']);
+            var _total = jsonDecode(result)['total'];
+            if (_total is String) _total = int.parse(_total);
             for (var commentData in _topics) {
                 commentList.add(CommentAPI.createComment(commentData['reply']));
                 _idList.add(commentData['id']);
@@ -228,7 +229,8 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
             List<Comment> commentList = [];
             List<int> idList = [];
             List _topics = jsonDecode(result)['replylist'];
-            int _total = int.parse(jsonDecode(result)['total']);
+            var _total = jsonDecode(result)['total'];
+            if (_total is String) _total = int.parse(_total);
             for (var commentData in _topics) {
                 commentList.add(CommentAPI.createComment(commentData['reply']));
                 idList.add(commentData['id']);
