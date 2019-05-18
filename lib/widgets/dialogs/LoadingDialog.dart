@@ -107,7 +107,7 @@ class LoadingDialogController {
         _loadingDialogState.updateContent(type, icon, text);
     }
 
-    void changeState(String type, String text) {
+    void changeState(String type, String text, {int duration}) {
         switch (type) {
             case 'success':
                 _loadingDialogState.updateContent("success",
