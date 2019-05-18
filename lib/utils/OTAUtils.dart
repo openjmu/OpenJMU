@@ -45,7 +45,7 @@ class OTAUtils {
                 Map<String, dynamic> _response = jsonDecode(response);
                 debugPrint("Current build: $buildNumber");
                 debugPrint("Remote build: ${_response['buildNumber']}");
-                if (buildNumber < int.parse(_response['buildNumber'])) {
+                if (buildNumber < _response['buildNumber']) {
                     getCurrentVersion().then((version) {
                         Constants.eventBus.fire(new HasUpdateEvent(version, buildNumber, _response));
                     });
@@ -77,7 +77,7 @@ class OTAUtils {
         }
     }
 
-    static AlertDialog updateDialog(context, HasUpdateEvent event) {
+    static AlertDialog updateDialog(_, HasUpdateEvent event) {
         String text;
         if (event.currentVersion == event.response['version']) {
             text = "${event.currentVersion}(${event.currentBuild}) -> ${event.response['version']}(${event.response['buildNumber']})";
@@ -131,11 +131,11 @@ class OTAUtils {
             contentPadding: EdgeInsets.all(24),
             actions: <Widget>[
                 FlatButton(
-                    onPressed: () {Navigator.pop(context);},
+                    onPressed: () {Navigator.pop(_);},
                     child: Text("取消", style: TextStyle(color: Colors.white)),
                 ),
                 FlatButton(
-                    onPressed: () {_checkPermission(context);},
+                    onPressed: () {_checkPermission(_);},
                     child: Text("更新", style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.white,
                 ),
             ],

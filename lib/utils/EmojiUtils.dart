@@ -4,111 +4,111 @@ import 'package:flutter/material.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 
-class EmojiUtils {
-    final Map<String, String> _emojiMap = Map<String, String>();
+class EmoticonUtils {
+    final Map<String, String> _emoticonMap = Map<String, String>();
 
-    Map<String, String> get emojiMap => _emojiMap;
+    Map<String, String> get emoticonMap => _emoticonMap;
 
-    final String _emojiFilePath = "assets/emotionIcons";
+    final String _emoticonFilePath = "assets/emotionIcons";
 
-    static EmojiUtils _instance;
-    static EmojiUtils get instance {
-        if (_instance == null) _instance = EmojiUtils._();
+    static EmoticonUtils _instance;
+    static EmoticonUtils get instance {
+        if (_instance == null) _instance = EmoticonUtils._();
         return _instance;
     }
 
-    EmojiUtils._() {
-        _emojiMap["[微笑2]"] = "$_emojiFilePath/微笑2.png";
-        _emojiMap["[撇嘴1]"] = "$_emojiFilePath/撇嘴1.png";
-        _emojiMap["[色4]"] = "$_emojiFilePath/色4.png";
-        _emojiMap["[发呆2]"] = "$_emojiFilePath/发呆2.png";
-        _emojiMap["[得意1]"] = "$_emojiFilePath/得意1.png";
-        _emojiMap["[流泪2]"] = "$_emojiFilePath/流泪2.png";
-        _emojiMap["[害羞5]"] = "$_emojiFilePath/害羞5.png";
-        _emojiMap["[闭嘴1]"] = "$_emojiFilePath/闭嘴1.png";
-        _emojiMap["[睡]"] = "$_emojiFilePath/睡.png";
-        _emojiMap["[大哭7]"] = "$_emojiFilePath/大哭7.png";
-        _emojiMap["[尴尬1]"] = "$_emojiFilePath/尴尬1.png";
-        _emojiMap["[发怒]"] = "$_emojiFilePath/发怒.png";
-        _emojiMap["[调皮1]"] = "$_emojiFilePath/调皮1.png";
-        _emojiMap["[呲牙]"] = "$_emojiFilePath/呲牙.png";
-        _emojiMap["[惊讶4]"] = "$_emojiFilePath/惊讶4.png";
-        _emojiMap["[难过]"] = "$_emojiFilePath/难过.png";
-        _emojiMap["[酷]"] = "$_emojiFilePath/酷.png";
-        _emojiMap["[冷汗]"] = "$_emojiFilePath/冷汗.png";
-        _emojiMap["[抓狂]"] = "$_emojiFilePath/抓狂.png";
-        _emojiMap["[吐]"] = "$_emojiFilePath/吐.png";
-        _emojiMap["[偷笑2]"] = "$_emojiFilePath/偷笑2.png";
-        _emojiMap["[可爱1]"] = "$_emojiFilePath/可爱1.png";
-        _emojiMap["[白眼1]"] = "$_emojiFilePath/白眼1.png";
-        _emojiMap["[傲慢]"] = "$_emojiFilePath/傲慢.png";
-        _emojiMap["[饥饿2]"] = "$_emojiFilePath/饥饿2.png";
-        _emojiMap["[困]"] = "$_emojiFilePath/困.png";
-        _emojiMap["[惊恐1]"] = "$_emojiFilePath/惊恐1.png";
-        _emojiMap["[流汗2]"] = "$_emojiFilePath/流汗2.png";
-        _emojiMap["[憨笑]"] = "$_emojiFilePath/憨笑.png";
-        _emojiMap["[大兵]"] = "$_emojiFilePath/大兵.png";
+    EmoticonUtils._() {
+        _emoticonMap["[微笑2]"] = "$_emoticonFilePath/微笑2.png";
+        _emoticonMap["[撇嘴1]"] = "$_emoticonFilePath/撇嘴1.png";
+        _emoticonMap["[色4]"] = "$_emoticonFilePath/色4.png";
+        _emoticonMap["[发呆2]"] = "$_emoticonFilePath/发呆2.png";
+        _emoticonMap["[得意1]"] = "$_emoticonFilePath/得意1.png";
+        _emoticonMap["[流泪2]"] = "$_emoticonFilePath/流泪2.png";
+        _emoticonMap["[害羞5]"] = "$_emoticonFilePath/害羞5.png";
+        _emoticonMap["[闭嘴1]"] = "$_emoticonFilePath/闭嘴1.png";
+        _emoticonMap["[睡]"] = "$_emoticonFilePath/睡.png";
+        _emoticonMap["[大哭7]"] = "$_emoticonFilePath/大哭7.png";
+        _emoticonMap["[尴尬1]"] = "$_emoticonFilePath/尴尬1.png";
+        _emoticonMap["[发怒]"] = "$_emoticonFilePath/发怒.png";
+        _emoticonMap["[调皮1]"] = "$_emoticonFilePath/调皮1.png";
+        _emoticonMap["[呲牙]"] = "$_emoticonFilePath/呲牙.png";
+        _emoticonMap["[惊讶4]"] = "$_emoticonFilePath/惊讶4.png";
+        _emoticonMap["[难过]"] = "$_emoticonFilePath/难过.png";
+        _emoticonMap["[酷]"] = "$_emoticonFilePath/酷.png";
+        _emoticonMap["[冷汗]"] = "$_emoticonFilePath/冷汗.png";
+        _emoticonMap["[抓狂]"] = "$_emoticonFilePath/抓狂.png";
+        _emoticonMap["[吐]"] = "$_emoticonFilePath/吐.png";
+        _emoticonMap["[偷笑2]"] = "$_emoticonFilePath/偷笑2.png";
+        _emoticonMap["[可爱1]"] = "$_emoticonFilePath/可爱1.png";
+        _emoticonMap["[白眼1]"] = "$_emoticonFilePath/白眼1.png";
+        _emoticonMap["[傲慢]"] = "$_emoticonFilePath/傲慢.png";
+        _emoticonMap["[饥饿2]"] = "$_emoticonFilePath/饥饿2.png";
+        _emoticonMap["[困]"] = "$_emoticonFilePath/困.png";
+        _emoticonMap["[惊恐1]"] = "$_emoticonFilePath/惊恐1.png";
+        _emoticonMap["[流汗2]"] = "$_emoticonFilePath/流汗2.png";
+        _emoticonMap["[憨笑]"] = "$_emoticonFilePath/憨笑.png";
+        _emoticonMap["[大兵]"] = "$_emoticonFilePath/大兵.png";
         /// 奋斗1
-        _emojiMap["[咒骂]"] = "$_emojiFilePath/咒骂.png";
-        _emojiMap["[疑问2]"] = "$_emojiFilePath/疑问2.png";
-        _emojiMap["[嘘]"] = "$_emojiFilePath/嘘.png";
-        _emojiMap["[晕3]"] = "$_emojiFilePath/晕3.png";
-        _emojiMap["[折磨1]"] = "$_emojiFilePath/折磨1.png";
-        _emojiMap["[衰1]"] = "$_emojiFilePath/衰1.png";
-        _emojiMap["[骷髅]"] = "$_emojiFilePath/骷髅.png";
+        _emoticonMap["[咒骂]"] = "$_emoticonFilePath/咒骂.png";
+        _emoticonMap["[疑问2]"] = "$_emoticonFilePath/疑问2.png";
+        _emoticonMap["[嘘]"] = "$_emoticonFilePath/嘘.png";
+        _emoticonMap["[晕3]"] = "$_emoticonFilePath/晕3.png";
+        _emoticonMap["[折磨1]"] = "$_emoticonFilePath/折磨1.png";
+        _emoticonMap["[衰1]"] = "$_emoticonFilePath/衰1.png";
+        _emoticonMap["[骷髅]"] = "$_emoticonFilePath/骷髅.png";
         /// 敲打
-        _emojiMap["[再见]"] = "$_emojiFilePath/再见.png";
+        _emoticonMap["[再见]"] = "$_emoticonFilePath/再见.png";
         /// 擦汗
         /// 抠鼻
-        _emojiMap["[鼓掌1]"] = "$_emojiFilePath/鼓掌1.png";
-        _emojiMap["[糗大了]"] = "$_emojiFilePath/糗大了.png";
-        _emojiMap["[坏笑1]"] = "$_emojiFilePath/坏笑1.png";
+        _emoticonMap["[鼓掌1]"] = "$_emoticonFilePath/鼓掌1.png";
+        _emoticonMap["[糗大了]"] = "$_emoticonFilePath/糗大了.png";
+        _emoticonMap["[坏笑1]"] = "$_emoticonFilePath/坏笑1.png";
         /// 左哼哼
         /// 右哼哼
-        _emojiMap["[哈欠]"] = "$_emojiFilePath/哈欠.png";
-        _emojiMap["[鄙视2]"] = "$_emojiFilePath/鄙视2.png";
-        _emojiMap["[委屈1]"] = "$_emojiFilePath/委屈1.png";
-        _emojiMap["[快哭了]"] = "$_emojiFilePath/快哭了.png";
-        _emojiMap["[阴险]"] = "$_emojiFilePath/阴险.png";
-        _emojiMap["[亲亲]"] = "$_emojiFilePath/亲亲.png";
-        _emojiMap["[吓]"] = "$_emojiFilePath/吓.png";
-        _emojiMap["[可怜2]"] = "$_emojiFilePath/可怜2.png";
+        _emoticonMap["[哈欠]"] = "$_emoticonFilePath/哈欠.png";
+        _emoticonMap["[鄙视2]"] = "$_emoticonFilePath/鄙视2.png";
+        _emoticonMap["[委屈1]"] = "$_emoticonFilePath/委屈1.png";
+        _emoticonMap["[快哭了]"] = "$_emoticonFilePath/快哭了.png";
+        _emoticonMap["[阴险]"] = "$_emoticonFilePath/阴险.png";
+        _emoticonMap["[亲亲]"] = "$_emoticonFilePath/亲亲.png";
+        _emoticonMap["[吓]"] = "$_emoticonFilePath/吓.png";
+        _emoticonMap["[可怜2]"] = "$_emoticonFilePath/可怜2.png";
         /// 菜刀
-        _emojiMap["[西瓜]"] = "$_emojiFilePath/西瓜.png";
-        _emojiMap["[啤酒]"] = "$_emojiFilePath/啤酒.png";
-        _emojiMap["[篮球]"] = "$_emojiFilePath/篮球.png";
-        _emojiMap["[乒乓]"] = "$_emojiFilePath/乒乓.png";
-        _emojiMap["[咖啡]"] = "$_emojiFilePath/咖啡.png";
-        _emojiMap["[饭]"] = "$_emojiFilePath/饭.png";
-        _emojiMap["[猪头]"] = "$_emojiFilePath/猪头.png";
-        _emojiMap["[玫瑰]"] = "$_emojiFilePath/玫瑰.png";
-        _emojiMap["[凋谢]"] = "$_emojiFilePath/凋谢.png";
-        _emojiMap["[示爱]"] = "$_emojiFilePath/示爱.png";
-        _emojiMap["[爱心]"] = "$_emojiFilePath/爱心.png";
-        _emojiMap["[心碎]"] = "$_emojiFilePath/心碎.png";
-        _emojiMap["[蛋糕]"] = "$_emojiFilePath/蛋糕.png";
-        _emojiMap["[闪电]"] = "$_emojiFilePath/闪电.png";
-        _emojiMap["[炸弹]"] = "$_emojiFilePath/炸弹.png";
-        _emojiMap["[刀]"] = "$_emojiFilePath/刀.png";
-        _emojiMap["[足球]"] = "$_emojiFilePath/足球.png";
-        _emojiMap["[瓢虫]"] = "$_emojiFilePath/瓢虫.png";
-        _emojiMap["[便便]"] = "$_emojiFilePath/便便.png";
-        _emojiMap["[月亮]"] = "$_emojiFilePath/月亮.png";
-        _emojiMap["[太阳]"] = "$_emojiFilePath/太阳.png";
-        _emojiMap["[礼物]"] = "$_emojiFilePath/礼物.png";
-        _emojiMap["[拥抱]"] = "$_emojiFilePath/拥抱.png";
-        _emojiMap["[强]"] = "$_emojiFilePath/强.png";
-        _emojiMap["[弱]"] = "$_emojiFilePath/弱.png";
-        _emojiMap["[握手]"] = "$_emojiFilePath/握手.png";
-        _emojiMap["[胜利]"] = "$_emojiFilePath/胜利.png";
-        _emojiMap["[抱拳]"] = "$_emojiFilePath/抱拳.png";
+        _emoticonMap["[西瓜]"] = "$_emoticonFilePath/西瓜.png";
+        _emoticonMap["[啤酒]"] = "$_emoticonFilePath/啤酒.png";
+        _emoticonMap["[篮球]"] = "$_emoticonFilePath/篮球.png";
+        _emoticonMap["[乒乓]"] = "$_emoticonFilePath/乒乓.png";
+        _emoticonMap["[咖啡]"] = "$_emoticonFilePath/咖啡.png";
+        _emoticonMap["[饭]"] = "$_emoticonFilePath/饭.png";
+        _emoticonMap["[猪头]"] = "$_emoticonFilePath/猪头.png";
+        _emoticonMap["[玫瑰]"] = "$_emoticonFilePath/玫瑰.png";
+        _emoticonMap["[凋谢]"] = "$_emoticonFilePath/凋谢.png";
+        _emoticonMap["[示爱]"] = "$_emoticonFilePath/示爱.png";
+        _emoticonMap["[爱心]"] = "$_emoticonFilePath/爱心.png";
+        _emoticonMap["[心碎]"] = "$_emoticonFilePath/心碎.png";
+        _emoticonMap["[蛋糕]"] = "$_emoticonFilePath/蛋糕.png";
+        _emoticonMap["[闪电]"] = "$_emoticonFilePath/闪电.png";
+        _emoticonMap["[炸弹]"] = "$_emoticonFilePath/炸弹.png";
+        _emoticonMap["[刀]"] = "$_emoticonFilePath/刀.png";
+        _emoticonMap["[足球]"] = "$_emoticonFilePath/足球.png";
+        _emoticonMap["[瓢虫]"] = "$_emoticonFilePath/瓢虫.png";
+        _emoticonMap["[便便]"] = "$_emoticonFilePath/便便.png";
+        _emoticonMap["[月亮]"] = "$_emoticonFilePath/月亮.png";
+        _emoticonMap["[太阳]"] = "$_emoticonFilePath/太阳.png";
+        _emoticonMap["[礼物]"] = "$_emoticonFilePath/礼物.png";
+        _emoticonMap["[拥抱]"] = "$_emoticonFilePath/拥抱.png";
+        _emoticonMap["[强]"] = "$_emoticonFilePath/强.png";
+        _emoticonMap["[弱]"] = "$_emoticonFilePath/弱.png";
+        _emoticonMap["[握手]"] = "$_emoticonFilePath/握手.png";
+        _emoticonMap["[胜利]"] = "$_emoticonFilePath/胜利.png";
+        _emoticonMap["[抱拳]"] = "$_emoticonFilePath/抱拳.png";
         /// 勾引
-        _emojiMap["[拳头]"] = "$_emojiFilePath/拳头.png";
+        _emoticonMap["[拳头]"] = "$_emoticonFilePath/拳头.png";
         /// 差劲
-        _emojiMap["[爱你]"] = "$_emojiFilePath/爱你.png";
-        _emojiMap["[NO]"] = "$_emojiFilePath/NO.png";
-        _emojiMap["[OK]"] = "$_emojiFilePath/OK.png";
-        _emojiMap["[爱情]"] = "$_emojiFilePath/爱情.png";
+        _emoticonMap["[爱你]"] = "$_emoticonFilePath/爱你.png";
+        _emoticonMap["[NO]"] = "$_emoticonFilePath/NO.png";
+        _emoticonMap["[OK]"] = "$_emoticonFilePath/OK.png";
+        _emoticonMap["[爱情]"] = "$_emoticonFilePath/爱情.png";
         /// 飞吻1
         /// 跳跳
         /// 发抖
@@ -145,7 +145,7 @@ class EmotionPadState extends State<EmotionPad> {
     @override
     void initState() {
         super.initState();
-        EmojiUtils.instance.emojiMap.forEach((name, path) {
+        EmoticonUtils.instance.emoticonMap.forEach((name, path) {
             emoticonNames.add(name);
             emoticonPaths.add(path);
         });
