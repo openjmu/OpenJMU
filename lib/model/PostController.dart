@@ -238,7 +238,8 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             );
             List<Post> postList = [];
             List _topics = jsonDecode(result)['topics'];
-            int _total = jsonDecode(result)['total'];
+            var _total = jsonDecode(result)['total'];
+            if (_total is String) _total = int.parse(_total);
             for (var postData in _topics) {
                 postList.add(PostAPI.createPost(postData['topic']));
                 _idList.add(
@@ -277,7 +278,8 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             List<Post> postList = [];
             List<int> idList = [];
             List _topics = jsonDecode(result)['topics'];
-            int _total = jsonDecode(result)['total'];
+            var _total = jsonDecode(result)['total'];
+            if (_total is String) _total = int.parse(_total);
             for (var postData in _topics) {
                 if (postData['topic'] != null && postData != "") {
                     postList.add(PostAPI.createPost(postData['topic']));

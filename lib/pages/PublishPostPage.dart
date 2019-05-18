@@ -127,42 +127,35 @@ class PublishPostPageState extends State<PublishPostPage> {
         String currentColorValue = "#${ThemeUtils.currentColorTheme.value.toRadixString(16).substring(2, 8)}";
         List<Asset> resultList = List<Asset>();
         /// Prompt permissions.
-        PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
-        if (permission != PermissionStatus.granted) {
-            Map<PermissionGroup, PermissionStatus> permissions =
-            await PermissionHandler().requestPermissions([
-                PermissionGroup.camera,
-                PermissionGroup.photos,
-                PermissionGroup.mediaLibrary,
-            ]);
-            if (
-                permissions[PermissionGroup.camera] == PermissionStatus.granted
+        Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([
+            PermissionGroup.camera,
+            PermissionGroup.photos,
+        ]);
+        if (
+            permissions[PermissionGroup.camera] == PermissionStatus.granted
                 &&
-                permissions[PermissionGroup.photos] == PermissionStatus.granted
-                &&
-                permissions[PermissionGroup.mediaLibrary] == PermissionStatus.granted
-            ) {
-                try {
-                    resultList = await MultiImagePicker.pickImages(
-                        maxImages: maxImagesLength - imagesLength,
-                        enableCamera: true,
-                        cupertinoOptions: CupertinoOptions(
-                            backgroundColor: currentColorValue,
-                            selectionFillColor: currentColorValue,
-                            takePhotoIcon: "chat",
-                        ),
-                        materialOptions: MaterialOptions(
-                            actionBarColor: currentColorValue,
-                            statusBarColor: currentColorValue,
-                            actionBarTitle: "选择图片",
-                            allViewTitle: "所有图片",
-                        ),
-                    );
-                } on PlatformException catch (e) {
-                    showCenterErrorShortToast(e.message);
-                }
-            } else return;
-        }
+            permissions[PermissionGroup.photos] == PermissionStatus.granted
+        ) {
+            try {
+                resultList = await MultiImagePicker.pickImages(
+                    maxImages: maxImagesLength - imagesLength,
+                    enableCamera: true,
+                    cupertinoOptions: CupertinoOptions(
+                        backgroundColor: currentColorValue,
+                        selectionFillColor: currentColorValue,
+                        takePhotoIcon: "chat",
+                    ),
+                    materialOptions: MaterialOptions(
+                        actionBarColor: currentColorValue,
+                        statusBarColor: currentColorValue,
+                        actionBarTitle: "选择图片",
+                        allViewTitle: "所有图片",
+                    ),
+                );
+            } on PlatformException catch (e) {
+                showCenterErrorShortToast(e.message);
+            }
+        } else return;
         setState(() {
             textFieldEnable = true;
         });

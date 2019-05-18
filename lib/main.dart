@@ -66,6 +66,7 @@ class JMUAppClientState extends State<JMUAppClient> {
         });
         Constants.eventBus.on<LogoutEvent>().listen((event) {
             setState(() {
+                currentThemeColor = ThemeUtils.defaultColor;
                 currentBrightness = Brightness.light;
                 currentPrimaryColor = Colors.white;
             });
