@@ -193,6 +193,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
             );
             List<Comment> commentList = [];
             List _topics = jsonDecode(result)['replylist'];
+            int _total = int.parse(jsonDecode(result)['total']);
             for (var commentData in _topics) {
                 commentList.add(CommentAPI.createComment(commentData['reply']));
                 _idList.add(commentData['id']);
@@ -204,7 +205,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
                     _showLoading = false;
                     _firstLoadComplete = true;
                     _isLoading = false;
-                    _canLoadMore = _topics.length == 20;
+                    _canLoadMore = _idList.length < _total;
                     _lastValue = _idList.isEmpty ? 0 : widget._commentController.lastValue(_idList.last);
                 });
             }
@@ -227,6 +228,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
             List<Comment> commentList = [];
             List<int> idList = [];
             List _topics = jsonDecode(result)['replylist'];
+            int _total = int.parse(jsonDecode(result)['total']);
             for (var commentData in _topics) {
                 commentList.add(CommentAPI.createComment(commentData['reply']));
                 idList.add(commentData['id']);
@@ -239,7 +241,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
                     _showLoading = false;
                     _firstLoadComplete = true;
                     _isLoading = false;
-                    _canLoadMore = _topics.length == 20;
+                    _canLoadMore = _idList.length < _total;
                     _lastValue = _idList.isEmpty ? 0 : widget._commentController.lastValue(_idList.last);
 
                 });

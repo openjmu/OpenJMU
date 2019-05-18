@@ -10,7 +10,6 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
-import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
 class PostController {
     final String postType;
@@ -45,8 +44,8 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
+    GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
     final ScrollController _scrollController = ScrollController();
-    LoadingDialogController _controller = LoadingDialogController();
     Color currentColorTheme = ThemeUtils.currentColorTheme;
 
     num _lastValue = 0;
@@ -85,11 +84,10 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                     ||
                 (event.type == "Post"))
             ) {
-                _scrollController.animateTo(0.0, duration: Duration(milliseconds: 500), curve: Curves.ease);
-                showDialog<Null>(
-                    context: context,
-                    builder: (BuildContext context) => LoadingDialog("正在更新动态", _controller),
-                );
+                _scrollController.jumpTo(0.0);
+                Future.delayed(Duration(milliseconds: 50), () {
+                    refreshIndicatorKey.currentState.show();
+                });
                 Future.delayed(Duration(milliseconds: 500), () {
                     _refreshData(needLoader: true);
                 });
@@ -203,6 +201,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
 
                 if (widget.needRefreshIndicator) {
                     _body = RefreshIndicator(
+                        key: refreshIndicatorKey,
                         color: currentColorTheme,
                         onRefresh: _refreshData,
                         child: _postList.isEmpty
@@ -239,6 +238,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             );
             List<Post> postList = [];
             List _topics = jsonDecode(result)['topics'];
+            int _total = jsonDecode(result)['total'];
             for (var postData in _topics) {
                 postList.add(PostAPI.createPost(postData['topic']));
                 _idList.add(
@@ -254,7 +254,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                     _showLoading = false;
                     _firstLoadComplete = true;
                     _isLoading = false;
-                    _canLoadMore = _topics.length == 20;
+                    _canLoadMore = _idList.length < _total;
                     _lastValue = _idList.isEmpty
                             ? 0
                             : widget._postController.lastValue(_idList.last);
@@ -277,6 +277,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             List<Post> postList = [];
             List<int> idList = [];
             List _topics = jsonDecode(result)['topics'];
+            int _total = jsonDecode(result)['total'];
             for (var postData in _topics) {
                 if (postData['topic'] != null && postData != "") {
                     postList.add(PostAPI.createPost(postData['topic']));
@@ -289,10 +290,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             }
             _postList = postList;
             if (needLoader != null && needLoader) {
-                if (idList.toString() == _idList.toString()) {
-                    _controller.changeState("success", "无更新内容");
-                } else {
-                    _controller.changeState("dismiss", "正在更新动态");
+                if (idList.toString() != _idList.toString()) {
                     _idList = idList;
                 }
             } else {
@@ -304,7 +302,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                     _showLoading = false;
                     _firstLoadComplete = true;
                     _isLoading = false;
-                    _canLoadMore = _topics.length == 20;
+                    _canLoadMore = _idList.length < _total;
                     _lastValue = _idList.isEmpty
                             ? 0
                             : widget._postController.lastValue(_idList.last);
