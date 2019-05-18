@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -76,14 +79,32 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
         });
         items.insert(items.length >> 1, _buildMiddleTabItem());
 
+        Widget appBar = Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: items,
+        );
+
+        if (Platform.isIOS) {
+            appBar = ClipRect(
+                child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
+                    child: Container(
+                        decoration: BoxDecoration(
+                            border: Border(top: BorderSide(
+                                color: Color.fromARGB(255, 169, 169, 169),
+                            )),
+                        ),
+                        child: appBar,
+                    ),
+                ),
+            );
+        }
+
         return BottomAppBar(
-            shape: widget.notchedShape,
-            child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: items,
-            ),
             color: widget.backgroundColor,
+            shape: widget.notchedShape,
+            child: appBar,
         );
     }
 
@@ -128,7 +149,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
                                 Text(
                                     item.text,
                                     style: TextStyle(color: color),
-                                )
+                                ),
                             ],
                         ),
                     ),

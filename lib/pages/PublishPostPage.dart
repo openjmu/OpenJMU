@@ -4,16 +4,18 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
-import 'package:dio/dio.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:dio/dio.dart';
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:dragablegridview_flutter/dragablegridview_flutter.dart';
 import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -46,6 +48,7 @@ class PublishPostPageState extends State<PublishPostPage> {
 
     bool isLoading = false;
     bool isFocus = false;
+    bool textFieldEnable = true;
 
     int gridCount = 5;
 
@@ -118,27 +121,51 @@ class PublishPostPageState extends State<PublishPostPage> {
 
     Future<void> loadAssets() async {
         _focusNode.unfocus();
+        setState(() {
+            textFieldEnable = false;
+        });
         String currentColorValue = "#${ThemeUtils.currentColorTheme.value.toRadixString(16).substring(2, 8)}";
         List<Asset> resultList = List<Asset>();
-        try {
-            resultList = await MultiImagePicker.pickImages(
-                maxImages: maxImagesLength - imagesLength,
-                enableCamera: true,
-                cupertinoOptions: CupertinoOptions(
-                    backgroundColor: currentColorValue,
-                    selectionFillColor: currentColorValue,
-                    takePhotoIcon: "chat",
-                ),
-                materialOptions: MaterialOptions(
-                    actionBarColor: currentColorValue,
-                    statusBarColor: currentColorValue,
-                    actionBarTitle: "选择图片",
-                    allViewTitle: "所有图片",
-                ),
-            );
-        } on PlatformException catch (e) {
-            showCenterErrorShortToast(e.message);
+        /// Prompt permissions.
+        PermissionStatus permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
+        if (permission != PermissionStatus.granted) {
+            Map<PermissionGroup, PermissionStatus> permissions =
+            await PermissionHandler().requestPermissions([
+                PermissionGroup.camera,
+                PermissionGroup.photos,
+                PermissionGroup.mediaLibrary,
+            ]);
+            if (
+                permissions[PermissionGroup.camera] == PermissionStatus.granted
+                &&
+                permissions[PermissionGroup.photos] == PermissionStatus.granted
+                &&
+                permissions[PermissionGroup.mediaLibrary] == PermissionStatus.granted
+            ) {
+                try {
+                    resultList = await MultiImagePicker.pickImages(
+                        maxImages: maxImagesLength - imagesLength,
+                        enableCamera: true,
+                        cupertinoOptions: CupertinoOptions(
+                            backgroundColor: currentColorValue,
+                            selectionFillColor: currentColorValue,
+                            takePhotoIcon: "chat",
+                        ),
+                        materialOptions: MaterialOptions(
+                            actionBarColor: currentColorValue,
+                            statusBarColor: currentColorValue,
+                            actionBarTitle: "选择图片",
+                            allViewTitle: "所有图片",
+                        ),
+                    );
+                } on PlatformException catch (e) {
+                    showCenterErrorShortToast(e.message);
+                }
+            } else return;
         }
+        setState(() {
+            textFieldEnable = true;
+        });
 
         if (!mounted) return;
 
@@ -162,6 +189,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                     controller: _textEditingController,
                     focusNode: _focusNode,
                     autofocus: true,
+                    enabled: textFieldEnable,
                     decoration: InputDecoration(
                         enabled: !isLoading,
                         hintText: "分享你的动态...",

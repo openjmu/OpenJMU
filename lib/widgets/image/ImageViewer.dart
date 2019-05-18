@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'dart:io';
 import 'package:flutter/material.dart' hide Image;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 
@@ -95,6 +96,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                       fit: StackFit.expand,
                       children: <Widget>[
                         ExtendedImageGesturePageView.builder(
+                          physics: BouncingScrollPhysics(),
                           itemBuilder: (BuildContext context, int index) {
                             String item = widget.pics[index].imageUrl;
                             Widget image = Container(
