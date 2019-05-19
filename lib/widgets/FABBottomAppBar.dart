@@ -85,11 +85,10 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
             children: items,
         );
 
-        Color _color = widget.backgroundColor;
         if (Platform.isIOS) {
             appBar = ClipRect(
                 child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                    filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
                     child: Container(
                         decoration: BoxDecoration(
                             border: Border(top: BorderSide(
@@ -100,11 +99,10 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
                     ),
                 ),
             );
-            _color = Color(widget.backgroundColor.value - int.parse("22000000", radix: 16));
         }
 
         return BottomAppBar(
-            color: _color,
+            color: widget.backgroundColor,
             shape: widget.notchedShape,
             child: appBar,
         );
