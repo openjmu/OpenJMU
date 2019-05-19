@@ -119,21 +119,21 @@ packages:
       name: extended_text
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.9"
+    version: "0.5.0"
   extended_text_field:
     dependency: "direct main"
     description:
       name: extended_text_field
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.4"
+    version: "0.2.5"
   extended_text_library:
     dependency: transitive
     description:
       name: extended_text_library
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.0"
+    version: "0.3.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -178,7 +178,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: "249357866afda4d9d41623a8152947fa19877836"
-      url: "https://github.com/btastic/flutter_native_image"
+      url: "https://github.com/btastic/flutter_native_image/"
     source: git
     version: "0.0.4"
   flutter_platform_widgets:
@@ -283,7 +283,7 @@ packages:
       name: multi_image_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.3.1"
+    version: "4.3.2"
   package_info:
     dependency: "direct main"
     description:
