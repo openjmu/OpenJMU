@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:core';
 import 'dart:convert';
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -63,7 +62,7 @@ class DiscoveryPageState extends State<DiscoveryPage> {
         DateTime startDate = DateTime.parse(_day);
         int difference = startDate.difference(DateTime.now()).inDays;
         if (difference < 0) {
-            int week = (difference / 7).floor().abs();
+            int week = (difference / 7).floor().abs() + 1;
             if (week <= 20) setState(() {
               this.currentWeek = week;
             });
@@ -102,6 +101,7 @@ class DiscoveryPageState extends State<DiscoveryPage> {
                     signing = false;
                     signedCount++;
                 });
+                getSignStatus();
             }).catchError((e) {
                 print(e.toString());
             });
