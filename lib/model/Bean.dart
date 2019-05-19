@@ -288,12 +288,13 @@ class CustomEndDockedFloatingActionButtonLocation extends CustomDockedPosition {
 }
 
 class CustomCenterDockedFloatingActionButtonLocation extends CustomDockedPosition {
-    const CustomCenterDockedFloatingActionButtonLocation();
+    final double paddingBottom;
+    const CustomCenterDockedFloatingActionButtonLocation({this.paddingBottom});
 
     @override
     Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
         final double fabX = (scaffoldGeometry.scaffoldSize.width - scaffoldGeometry.floatingActionButtonSize.width) / 2.0;
-        return Offset(fabX, getDockedY(scaffoldGeometry) - 10.0);
+        return Offset(fabX, getDockedY(scaffoldGeometry) + 10.0 + (paddingBottom ?? 0.0));
     }
 
     @override
