@@ -152,20 +152,18 @@ class EmoticonText extends SpecialText {
             final double size = 30.0 / 27.0 * (type == BuilderType.extendedText ? _fontSize : _fontSizeField);
 
             if (type == BuilderType.extendedTextField) {
-                return ImageSpan(AssetImage(EmoticonUtils.instance.emoticonMap[key]),
+                return ImageSpan(
+                    AssetImage(EmoticonUtils.instance.emoticonMap[key]),
                     actualText: key,
                     imageWidth: size,
                     imageHeight: size,
                     start: start,
-                    deleteAll: true,
                     fit: BoxFit.fill,
                     margin: EdgeInsets.only(left: 1.0, bottom: 2.0, right: 1.0),
                 );
             } else {
                 return ImageSpan(
-                    AssetImage(
-                        EmoticonUtils.instance.emoticonMap[key],
-                    ),
+                    AssetImage(EmoticonUtils.instance.emoticonMap[key]),
                     imageWidth: size,
                     imageHeight: size,
                     margin: EdgeInsets.only(left: 1.0, bottom: 2.0, right: 1.0),
