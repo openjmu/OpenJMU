@@ -293,7 +293,7 @@ class CustomCenterDockedFloatingActionButtonLocation extends CustomDockedPositio
     @override
     Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
         final double fabX = (scaffoldGeometry.scaffoldSize.width - scaffoldGeometry.floatingActionButtonSize.width) / 2.0;
-        return Offset(fabX, getDockedY(scaffoldGeometry) - 10.0);
+        return Offset(fabX, getDockedY(scaffoldGeometry) + 30.0);
     }
 
     @override

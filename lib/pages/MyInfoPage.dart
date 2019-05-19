@@ -127,29 +127,20 @@ class MyInfoPageState extends State<MyInfoPage> {
     }
 
     void _handleListItemClick(context, String title) {
-        switch (title) {
-            case "测试页":
-//                showDialog(context: context, builder: (_) => TestPage());
-                Navigator.pushNamed(context, "/test");
-//                Navigator.pushNamed(context, "/notificationTest");
-                break;
-            case "夜间模式":
-                setDarkMode(!isDark);
-                break;
-            case "切换主题":
-                Navigator.pushNamed(context, "/changeTheme");
-                break;
-            case "启动页":
-                showSelectSplashDialog(context);
-                break;
-            case "退出登录":
-                showLogoutDialog(context);
-                break;
-            case "检查更新":
-                OTAUtils.checkUpdate();
-                break;
-            default:
-                break;
+        if (title == "夜间模式") {
+            setDarkMode(!isDark);
+        } else if (title == "切换主题") {
+            Navigator.pushNamed(context, "/changeTheme");
+        } else if (title == "启动页") {
+            showSelectSplashDialog(context);
+        } else if (title == "测试页") {
+//            showDialog(context: context, builder: (_) => TestPage());
+            Navigator.pushNamed(context, "/test");
+//            Navigator.pushNamed(context, "/notificationTest");
+        } else if (title == "退出登录") {
+            showLogoutDialog(context);
+        } else if (title == "检查更新") {
+            OTAUtils.checkUpdate();
         }
     }
 
@@ -169,6 +160,21 @@ class MyInfoPageState extends State<MyInfoPage> {
                     actions: <Widget>[
                         PlatformButton(
                             android: (BuildContext context) => MaterialRaisedButtonData(
+                                color: Theme.of(context).dialogBackgroundColor,
+                                elevation: 0,
+                                disabledElevation: 0.0,
+                                highlightElevation: 0.0,
+                                child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                            ),
+                            ios: (BuildContext context) => CupertinoButtonData(
+                                child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme),),
+                            ),
+                            onPressed: () {
+                                DataUtils.doLogout();
+                            },
+                        ),
+                        PlatformButton(
+                            android: (BuildContext context) => MaterialRaisedButtonData(
                                 color: ThemeUtils.currentColorTheme,
                                 elevation: 0,
                                 disabledElevation: 0.0,
@@ -180,24 +186,6 @@ class MyInfoPageState extends State<MyInfoPage> {
                             ),
                             onPressed: () {
                                 Navigator.of(context).pop();
-                            },
-                        ),
-                        PlatformButton(
-                            android: (BuildContext context) => MaterialRaisedButtonData(
-                                color: Theme.of(context).dialogBackgroundColor,
-                                elevation: 0,
-                                disabledElevation: 0.0,
-                                highlightElevation: 0.0,
-                                child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme)),
-                            ),
-                            ios: (BuildContext context) => CupertinoButtonData(
-                                child: Text("确认", style: TextStyle(
-                                    color: ThemeUtils.currentColorTheme,
-                                    fontWeight: FontWeight.bold,
-                                )),
-                            ),
-                            onPressed: () {
-                                DataUtils.doLogout();
                             },
                         ),
                     ],
