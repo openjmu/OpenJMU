@@ -203,9 +203,28 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     @mustCallSuper
     Widget build(BuildContext context) {
         super.build(context);
-        _body = IndexedStack(
-            children: pages,
-            index: _tabIndex,
+        _body = Stack(
+            children: <Widget>[
+                IndexedStack(
+                    children: pages,
+                    index: _tabIndex,
+                ),
+                Positioned(
+                    bottom: MediaQuery.of(context).padding.bottom ?? 0.0,
+                    left: 0.0,
+                    right: 0.0,
+                    child: FABBottomAppBar(
+                        backgroundColor: Theme.of(context).canvasColor,
+                        color: Colors.grey[600],
+                        selectedColor: currentThemeColor,
+                        onTabSelected: _selectedTab,
+                        items: [
+                            for (int i = 0; i < bottomAppBarIcons.length; i++)
+                                FABBottomAppBarItem(iconData: bottomAppBarIcons[i], text: getTabTitle(i)),
+                        ],
+                    ),
+                )
+            ],
         );
         return WillPopScope(
             onWillPop: doubleBackExit,
@@ -276,16 +295,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                     ),
                 ),
                 floatingActionButtonLocation: const CustomCenterDockedFloatingActionButtonLocation(),
-                bottomNavigationBar: FABBottomAppBar(
-                    backgroundColor: Theme.of(context).canvasColor,
-                    color: Colors.grey[600],
-                    selectedColor: currentThemeColor,
-                    onTabSelected: _selectedTab,
-                    items: [
-                        for (int i = 0; i < bottomAppBarIcons.length; i++)
-                            FABBottomAppBarItem(iconData: bottomAppBarIcons[i], text: getTabTitle(i)),
-                    ],
-                ),
 //                bottomNavigationBar: MainBottomAppBar(
 //                    icons: this.bottomAppBarIcons,
 //                    titles: this.bottomAppBarTitles,
