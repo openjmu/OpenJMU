@@ -380,103 +380,99 @@ class CommentCardInPost extends StatelessWidget {
                 itemCount: this.comments.length,
                 itemBuilder: (context, index) => InkWell(
                     onTap: () {
-                        if (
-                        this.comments[index].fromUserUid == UserUtils.currentUser.uid
-                                ||
-                                this.post.uid == UserUtils.currentUser.uid
-                        ) {
-                            showDialog<Null>(
-                                context: context,
-                                builder: (BuildContext context) => SimpleDialog(
-                                    backgroundColor: ThemeUtils.currentColorTheme,
-                                    children: <Widget>[Center(
-                                        child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            children: <Widget>[
-                                                Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: <Widget>[
-                                                        IconButton(
-                                                            icon: Icon(Icons.delete, size: 36.0, color: Colors.white),
-                                                            padding: EdgeInsets.all(6.0),
-                                                            onPressed: () {
-                                                                showPlatformDialog(
-                                                                    context: context,
-                                                                    builder: (_) => PlatformAlertDialog(
-                                                                        title: Text("删除评论", style: TextStyle(color: Colors.white)),
-                                                                        content: Text("是否确认删除这条评论？"),
-                                                                        actions: <Widget>[
-                                                                            PlatformButton(
-                                                                                android: (BuildContext context) => MaterialRaisedButtonData(
-                                                                                    color: ThemeUtils.currentColorTheme,
-                                                                                    elevation: 0,
-                                                                                    child: Text('确认', style: TextStyle(color: Colors.white)),
-                                                                                ),
-                                                                                ios: (BuildContext context) => CupertinoButtonData(
-                                                                                    child: Text('确认', style: TextStyle(color: ThemeUtils.currentColorTheme)),
-                                                                                ),
-                                                                                onPressed: () {
-                                                                                    Navigator.of(context).pop();
-                                                                                    Navigator.of(context).pop();
-                                                                                    LoadingDialogController _loadingDialogController = LoadingDialogController();
-                                                                                    showDialog(
-                                                                                        context: context,
-                                                                                        builder: (BuildContext dialogContext) => LoadingDialog("正在删除评论", _loadingDialogController),
-                                                                                    );
-                                                                                    CommentAPI.deleteComment(this.post.id, this.comments[index].id).then((response) {
-                                                                                        Constants.eventBus.fire(new PostCommentDeletedEvent(this.post.id, this.post.comments));
-                                                                                        _loadingDialogController.changeState("success", "评论删除成功");
-                                                                                    }).catchError((e) {
-                                                                                        showCenterErrorShortToast("评论删除失败");
-                                                                                    });
-                                                                                },
+                        showDialog<Null>(
+                            context: context,
+                            builder: (BuildContext context) => SimpleDialog(
+                                backgroundColor: ThemeUtils.currentColorTheme,
+                                children: <Widget>[Center(
+                                    child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                            if (
+                                            this.comments[index].fromUserUid == UserUtils.currentUser.uid
+                                                    ||
+                                                    this.post.uid == UserUtils.currentUser.uid
+                                            ) Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                    IconButton(
+                                                        icon: Icon(Icons.delete, size: 36.0, color: Colors.white),
+                                                        padding: EdgeInsets.all(6.0),
+                                                        onPressed: () {
+                                                            showPlatformDialog(
+                                                                context: context,
+                                                                builder: (_) => PlatformAlertDialog(
+                                                                    title: Text("删除评论", style: TextStyle(color: Colors.white)),
+                                                                    content: Text("是否确认删除这条评论？"),
+                                                                    actions: <Widget>[
+                                                                        PlatformButton(
+                                                                            android: (BuildContext context) => MaterialRaisedButtonData(
+                                                                                color: ThemeUtils.currentColorTheme,
+                                                                                elevation: 0,
+                                                                                child: Text('确认', style: TextStyle(color: Colors.white)),
                                                                             ),
-                                                                            PlatformButton(
-                                                                                android: (BuildContext context) => MaterialRaisedButtonData(
-                                                                                    color: Theme.of(context).dialogBackgroundColor,
-                                                                                    elevation: 0,
-                                                                                    child: Text('取消'),
-                                                                                ),
-                                                                                ios: (BuildContext context) => CupertinoButtonData(
-                                                                                        child: Text('取消',style: TextStyle(color: ThemeUtils.currentColorTheme))
-                                                                                ),
-                                                                                onPressed: () {
-                                                                                    Navigator.of(context).pop();
-                                                                                },
+                                                                            ios: (BuildContext context) => CupertinoButtonData(
+                                                                                child: Text('确认', style: TextStyle(color: ThemeUtils.currentColorTheme)),
                                                                             ),
-                                                                        ],
-                                                                    ),
-                                                                );
-                                                            },
-                                                        ),
-                                                        Text("删除评论", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-                                                    ],
-                                                ),
-                                                Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: <Widget>[
-                                                        IconButton(
-                                                            icon: Icon(Icons.content_copy, size: 36.0, color: Colors.white),
-                                                            padding: EdgeInsets.all(6.0),
-                                                            onPressed: () {
-                                                                Clipboard.setData(ClipboardData(
-                                                                    text: replaceMentionTag(this.comments[index].content),
-                                                                ));
-                                                                showShortToast("已复制到剪贴板");
-                                                                Navigator.of(context).pop();
-                                                            },
-                                                        ),
-                                                        Text("复制评论", style: TextStyle(fontSize: 16.0, color: Colors.white)),
-                                                    ],
-                                                ),
-                                            ],
-                                        ),
-                                    )],
-                                ),
-                            );
-                        } else {
-                            return null;
-                        }
+                                                                            onPressed: () {
+                                                                                Navigator.of(context).pop();
+                                                                                Navigator.of(context).pop();
+                                                                                LoadingDialogController _loadingDialogController = LoadingDialogController();
+                                                                                showDialog(
+                                                                                    context: context,
+                                                                                    builder: (BuildContext dialogContext) => LoadingDialog("正在删除评论", _loadingDialogController),
+                                                                                );
+                                                                                CommentAPI.deleteComment(this.post.id, this.comments[index].id).then((response) {
+                                                                                    Constants.eventBus.fire(new PostCommentDeletedEvent(this.post.id, this.post.comments));
+                                                                                    _loadingDialogController.changeState("success", "评论删除成功");
+                                                                                }).catchError((e) {
+                                                                                    showCenterErrorShortToast("评论删除失败");
+                                                                                });
+                                                                            },
+                                                                        ),
+                                                                        PlatformButton(
+                                                                            android: (BuildContext context) => MaterialRaisedButtonData(
+                                                                                color: Theme.of(context).dialogBackgroundColor,
+                                                                                elevation: 0,
+                                                                                child: Text('取消'),
+                                                                            ),
+                                                                            ios: (BuildContext context) => CupertinoButtonData(
+                                                                                    child: Text('取消',style: TextStyle(color: ThemeUtils.currentColorTheme))
+                                                                            ),
+                                                                            onPressed: () {
+                                                                                Navigator.of(context).pop();
+                                                                            },
+                                                                        ),
+                                                                    ],
+                                                                ),
+                                                            );
+                                                        },
+                                                    ),
+                                                    Text("删除评论", style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                                                ],
+                                            ),
+                                            Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                    IconButton(
+                                                        icon: Icon(Icons.content_copy, size: 36.0, color: Colors.white),
+                                                        padding: EdgeInsets.all(6.0),
+                                                        onPressed: () {
+                                                            Clipboard.setData(ClipboardData(
+                                                                text: replaceMentionTag(this.comments[index].content),
+                                                            ));
+                                                            showShortToast("已复制到剪贴板");
+                                                            Navigator.of(context).pop();
+                                                        },
+                                                    ),
+                                                    Text("复制评论", style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
+                                )],
+                            ),
+                        );
                     },
                     child: Container(
                         child: Row(
