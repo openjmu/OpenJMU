@@ -20,6 +20,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
+import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/utils/EmojiUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
@@ -79,14 +80,6 @@ class PublishPostPageState extends State<PublishPostPage> {
                 insertText(event.emoticon);
             }
         });
-        Constants.eventBus.on<MentionPeopleEvent>().listen((event) {
-            if (mounted) {
-                FocusScope.of(context).requestFocus(_focusNode);
-                Future.delayed(Duration(milliseconds: 300), () {
-                    insertText("<M ${event.user.id}>@${event.user.nickname}</M>");
-                });
-            }
-        });
     }
 
     @override
@@ -113,10 +106,21 @@ class PublishPostPageState extends State<PublishPostPage> {
 
     void mentionPeople() {
         currentOffset = _textEditingController.selection.extentOffset;
-        showDialog<Null>(
+        showDialog<User>(
             context: context,
             builder: (BuildContext context) => MentionPeopleDialog(),
-        );
+        ).then((result) {
+            print("Popped.");
+            if (result != null) {
+                print("Mentioned User: ${result.toString()}");
+                Future.delayed(Duration(milliseconds: 250), () {
+                    FocusScope.of(context).requestFocus(_focusNode);
+                    insertText("<M ${result.id}>@${result.nickname}</M>");
+                });
+            } else {
+                print("No mentioned user returned.");
+            }
+        });
     }
 
     Future<void> loadAssets() async {

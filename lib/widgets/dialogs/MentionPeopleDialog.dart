@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
@@ -107,10 +105,10 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                                     ),
                                                     shrinkWrap: true,
                                                     itemCount: people.length,
-                                                    itemBuilder: (BuildContext context, int index) => GestureDetector(
+                                                    itemBuilder: (BuildContext _, int index) => GestureDetector(
+                                                        behavior: HitTestBehavior.translucent,
                                                         onTap: () {
-                                                            Constants.eventBus.fire(new MentionPeopleEvent(people[index]));
-                                                            Navigator.of(context).pop();
+                                                            Navigator.of(context).maybePop<User>(people[index]);
                                                         },
                                                         child: Row(
                                                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

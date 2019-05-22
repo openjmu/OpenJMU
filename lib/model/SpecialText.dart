@@ -83,8 +83,6 @@ class MentionText extends SpecialText {
         mentionOriginalText = "${mentionOriginalText.substring(0, mentionOriginalText.length - MentionText.endKey.length)}>";
 
         if (type == BuilderType.extendedTextField) {
-            print("mentionText: $mentionText");
-            print("mentionOriginalText: $mentionOriginalText");
             return SpecialTextSpan(
                 text: mentionText,
                 actualText: mentionOriginalText,
