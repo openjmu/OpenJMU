@@ -47,14 +47,6 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                 insertText(event.emoticon);
             }
         });
-        Constants.eventBus.on<MentionPeopleEvent>().listen((event) {
-            if (mounted) {
-                FocusScope.of(context).requestFocus(_focusNode);
-                Future.delayed(Duration(milliseconds: 300), () {
-                    insertText("<M ${event.user.id}>@${event.user.nickname}</M>");
-                });
-            }
-        });
     }
 
     @override
@@ -146,6 +138,18 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         );
     }
 
+    void mentionPeople() {
+        showDialog<User>(
+            context: context,
+            builder: (BuildContext context) => MentionPeopleDialog(),
+        ).then((user) {
+            FocusScope.of(context).requestFocus(_focusNode);
+            Future.delayed(Duration(milliseconds: 250), () {
+                insertText("<M ${user.id}>@${user.nickname}</M>");
+            });
+        });
+    }
+
     @override
     Widget build(BuildContext context) {
         double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
@@ -196,11 +200,8 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: <Widget>[
                                                     IconButton(
-                                                            onPressed: () => showDialog(
-                                                                context: context,
-                                                                builder: (BuildContext context) => MentionPeopleDialog(),
-                                                            ),
-                                                            icon: Icon(Icons.alternate_email)
+                                                        onPressed: mentionPeople,
+                                                        icon: Icon(Icons.alternate_email),
                                                     ),
                                                     ToggleButton(
                                                         activeWidget: Icon(

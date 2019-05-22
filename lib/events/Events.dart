@@ -103,12 +103,6 @@ class AddEmoticonEvent {
         this.route = route;
     }
 }
-class MentionPeopleEvent {
-    User user;
-    MentionPeopleEvent(User user) {
-        this.user = user;
-    }
-}
 class HasUpdateEvent {
     String currentVersion;
     int currentBuild;
