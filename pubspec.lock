@@ -126,7 +126,7 @@ packages:
       name: extended_text_field
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.8"
+    version: "0.3.0"
   extended_text_library:
     dependency: transitive
     description:
@@ -255,7 +255,7 @@ packages:
       name: image_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.0+7"
+    version: "0.6.0+8"
   intl:
     dependency: transitive
     description:

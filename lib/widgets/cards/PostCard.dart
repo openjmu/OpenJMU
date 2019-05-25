@@ -81,28 +81,27 @@ class _PostCardState extends State<PostCard> {
         });
     }
 
-    GestureDetector getPostAvatar(context, post) {
-        return GestureDetector(
-            child: Container(
-                width: 40.0,
-                height: 40.0,
-                child: CircleAvatar(
-                    backgroundImage: UserUtils.getAvatarProvider(post.uid),
+    GestureDetector getPostAvatar(context, post) => GestureDetector(
+        child: Container(
+            width: 40.0,
+            height: 40.0,
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(20.0),
+                child: FadeInImage(
+                    fadeInDuration: const Duration(milliseconds: 100),
+                    placeholder: AssetImage("assets/avatar_placeholder.png"),
+                    image: UserUtils.getAvatarProvider(post.uid),
                 ),
             ),
-            onTap: () {
-                return UserPage.jump(context, widget.post.uid);
-            },
-        );
-    }
+        ),
+        onTap: () => UserPage.jump(context, widget.post.uid),
+    );
 
-    Text getPostNickname(post) {
-        return Text(
-            post.nickname ?? post.uid,
-            style: TextStyle(color: Theme.of(context).textTheme.body1.color, fontSize: 16.0),
-            textAlign: TextAlign.left,
-        );
-    }
+    Text getPostNickname(post) => Text(
+        post.nickname ?? post.uid,
+        style: TextStyle(color: Theme.of(context).textTheme.body1.color, fontSize: 16.0),
+        textAlign: TextAlign.left,
+    );
 
     Row getPostInfo(post) {
         String _postTime = post.postTime;
@@ -129,25 +128,22 @@ class _PostCardState extends State<PostCard> {
         String content = post.content;
         List<Widget> widgets = [getExtendedText(content)];
         if (post.rootTopic != null) widgets.add(getRootPost(context, post.rootTopic));
-        return Row(children: <Widget>[
-            Expanded(
-                child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: widgets,
-                    ),
-                ),
+        return Container(
+            width: MediaQuery.of(context).size.width,
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: widgets,
             ),
-        ]);
+        );
     }
 
-    Widget getPostImages(post) {
-        final imagesData = post.pics;
-        return Container(padding: EdgeInsets.symmetric(horizontal: 16.0), child: getImages(imagesData));
-    }
+    Widget getPostImages(post) => Container(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        child: getImages(post.pics),
+    );
 
     Widget getRootPost(context, rootTopic) {
         var content = rootTopic['topic'];
@@ -182,10 +178,7 @@ class _PostCardState extends State<PostCard> {
         }
     }
 
-    Widget getRootPostImages(rootTopic) {
-        final imagesData = rootTopic['image'];
-        return getImages(imagesData);
-    }
+    Widget getRootPostImages(rootTopic) => getImages(rootTopic['image']);
 
     Widget getImages(data) {
         if (data != null) {
@@ -320,36 +313,34 @@ class _PostCardState extends State<PostCard> {
         );
     }
 
-    Widget getExtendedText(content, {isRoot}) {
-        return ExtendedText(
-            content != null ? "$content " : null,
-            style: TextStyle(fontSize: 16.0),
-            onSpecialTextTap: (dynamic data) {
-                String text = data['content'];
-                if (text.startsWith("#")) {
-                    return SearchPage.search(context, text.substring(1, text.length - 1));
-                } else if (text.startsWith("@")) {
-                    return UserPage.jump(context, data['uid']);
-                } else if (text.startsWith("https://wb.jmu.edu.cn")) {
-                    return CommonWebPage.jump(context, text, "网页链接");
-                }
-            },
-            maxLines: widget.isDetail ?? false ? null : 10,
-            overFlowTextSpan: widget.isDetail ?? false ? null : OverFlowTextSpan(
-                children: <TextSpan>[
-                    TextSpan(text: "... "),
-                    TextSpan(
-                        text: "查看全文",
+    Widget getExtendedText(content, {isRoot}) => ExtendedText(
+        content != null ? "$content " : null,
+        style: TextStyle(fontSize: 16.0),
+        onSpecialTextTap: (dynamic data) {
+            String text = data['content'];
+            if (text.startsWith("#")) {
+                return SearchPage.search(context, text.substring(1, text.length - 1));
+            } else if (text.startsWith("@")) {
+                return UserPage.jump(context, data['uid']);
+            } else if (text.startsWith("https://wb.jmu.edu.cn")) {
+                return CommonWebPage.jump(context, text, "网页链接");
+            }
+        },
+        maxLines: widget.isDetail ?? false ? null : 10,
+        overFlowTextSpan: widget.isDetail ?? false ? null : OverFlowTextSpan(
+            children: <TextSpan>[
+                TextSpan(text: " ... "),
+                TextSpan(
+                        text: "全文",
                         style: TextStyle(
                             color: ThemeUtils.currentColorTheme,
                         )
-                    )
-                ],
-                background: isRoot ?? false ? Theme.of(context).canvasColor : Theme.of(context).cardColor,
-            ),
-            specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-        );
-    }
+                )
+            ],
+            background: isRoot ?? false ? Theme.of(context).canvasColor : Theme.of(context).cardColor,
+        ),
+        specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+    );
 
     void _praise() {
         int id = widget.post.id;
@@ -365,18 +356,14 @@ class _PostCardState extends State<PostCard> {
         });
     }
 
-    Positioned deleteButton() {
-        return Positioned(
-            top: 6.0,
-            right: 6.0,
-            child: IconButton(
-                icon: Icon(Icons.delete, color: Colors.grey, size: 18.0),
-                onPressed: () {
-                    confirmDelete();
-                },
-            ),
-        );
-    }
+    Positioned deleteButton() => Positioned(
+        top: 6.0,
+        right: 6.0,
+        child: IconButton(
+            icon: Icon(Icons.delete, color: Colors.grey, size: 18.0),
+            onPressed: confirmDelete,
+        ),
+    );
 
     void confirmDelete() {
         showPlatformDialog(
@@ -457,9 +444,13 @@ class ForwardCardInPost extends StatelessWidget {
         );
     }
 
-    Text getPostNickname(context, post) {
-        return Text(post.nickname, style: TextStyle(color: Theme.of(context).textTheme.title.color, fontSize: 16.0));
-    }
+    Text getPostNickname(context, post) => Text(
+        post.nickname,
+        style: TextStyle(
+            color: Theme.of(context).textTheme.title.color,
+            fontSize: 16.0,
+        ),
+    );
 
     Text getPostTime(context, post) {
         String _postTime = post.postTime;
@@ -473,23 +464,21 @@ class ForwardCardInPost extends StatelessWidget {
         return Text(_postTime, style: Theme.of(context).textTheme.caption);
     }
 
-    Widget getExtendedText(context, content) {
-        return ExtendedText(
-            content != null ? "$content " : null,
-            style: TextStyle(fontSize: 16.0),
-            onSpecialTextTap: (dynamic data) {
-                String text = data['content'];
-                if (text.startsWith("#")) {
-                    return SearchPage.search(context, text.substring(1, text.length - 1));
-                } else if (text.startsWith("@")) {
-                    return UserPage.jump(context, data['uid']);
-                } else if (text.startsWith("https://wb.jmu.edu.cn")) {
-                    return CommonWebPage.jump(context, text, "网页链接");
-                }
-            },
-            specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-        );
-    }
+    Widget getExtendedText(context, content) => ExtendedText(
+        content != null ? "$content " : null,
+        style: TextStyle(fontSize: 16.0),
+        onSpecialTextTap: (dynamic data) {
+            String text = data['content'];
+            if (text.startsWith("#")) {
+                return SearchPage.search(context, text.substring(1, text.length - 1));
+            } else if (text.startsWith("@")) {
+                return UserPage.jump(context, data['uid']);
+            } else if (text.startsWith("https://wb.jmu.edu.cn")) {
+                return CommonWebPage.jump(context, text, "网页链接");
+            }
+        },
+        specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+    );
 
     @override
     Widget build(BuildContext context) {
