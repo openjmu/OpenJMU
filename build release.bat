@@ -1,3 +1,3 @@
 @echo off
-flutter build apk --release --verbose
+flutter build apk --release -v
 pause

@@ -1,3 +1,3 @@
 @echo off
-flutter clean
+flutter clean -v
 pause
