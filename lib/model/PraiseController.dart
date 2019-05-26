@@ -160,6 +160,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
             var result = await PraiseAPI.getPraiseList(true, _lastValue, additionAttrs: widget._praiseController.additionAttrs);
             List<Praise> praiseList = [];
             List _topics = jsonDecode(result)['topics'];
+            var _total = jsonDecode(result)['total'], _count = jsonDecode(result)['count'];
             for (var praiseData in _topics) praiseList.add(PraiseAPI.createPraise(praiseData));
             _praiseList.addAll(praiseList);
 //            error = !result['success'];
@@ -169,7 +170,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
                     _showLoading = false;
                     _firstLoadComplete = true;
                     _isLoading = false;
-                    _canLoadMore = _topics.isNotEmpty;
+                    _canLoadMore = _praiseList.length < _total && (_count != 0 && _count != "0");
                     _lastValue = _praiseList.isEmpty ? 0 : widget._praiseController.lastValue(_praiseList.last);
                 });
             }
@@ -186,6 +187,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
             var result = await PraiseAPI.getPraiseList(false, _lastValue, additionAttrs: widget._praiseController.additionAttrs);
             List<Praise> praiseList = [];
             List _topics = jsonDecode(result)['topics'];
+            var _total = jsonDecode(result)['total'], _count = jsonDecode(result)['count'];
             for (var praiseData in _topics) praiseList.add(PraiseAPI.createPraise(praiseData));
             _praiseList.addAll(praiseList);
 //            error = !result['success'] ?? false;
@@ -195,7 +197,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
                     _showLoading = false;
                     _firstLoadComplete = true;
                     _isLoading = false;
-                    _canLoadMore = _topics.isNotEmpty;
+                    _canLoadMore = _praiseList.length < _total && (_count != 0 && _count != "0");
                     _lastValue = _praiseList.isEmpty ? 0 : widget._praiseController.lastValue(_praiseList.last);
                 });
             }

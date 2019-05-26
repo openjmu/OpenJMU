@@ -238,7 +238,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             );
             List<Post> postList = [];
             List _topics = jsonDecode(result)['topics'];
-            var _total = jsonDecode(result)['total'];
+            var _total = jsonDecode(result)['total'], _count = jsonDecode(result)['count'];
             if (_total is String) _total = int.parse(_total);
             for (var postData in _topics) {
                 postList.add(PostAPI.createPost(postData['topic']));
@@ -255,7 +255,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                     _showLoading = false;
                     _firstLoadComplete = true;
                     _isLoading = false;
-                    _canLoadMore = _idList.length < _total;
+                    _canLoadMore = _idList.length < _total && (_count != 0 && _count != "0");
                     _lastValue = _idList.isEmpty
                             ? 0
                             : widget._postController.lastValue(_idList.last);
@@ -278,8 +278,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             List<Post> postList = [];
             List<int> idList = [];
             List _topics = jsonDecode(result)['topics'];
-            var _total = jsonDecode(result)['total'];
-            if (_total is String) _total = int.parse(_total);
+            var _total = jsonDecode(result)['total'], _count = jsonDecode(result)['count'];
             for (var postData in _topics) {
                 if (postData['topic'] != null && postData != "") {
                     postList.add(PostAPI.createPost(postData['topic']));
@@ -291,6 +290,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                 }
             }
             _postList = postList;
+
             if (needLoader != null && needLoader) {
                 if (idList.toString() != _idList.toString()) {
                     _idList = idList;
@@ -304,7 +304,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                     _showLoading = false;
                     _firstLoadComplete = true;
                     _isLoading = false;
-                    _canLoadMore = _idList.length < _total;
+                    _canLoadMore = _idList.length < _total && (_count != 0 && _count != "0");
                     _lastValue = _idList.isEmpty
                             ? 0
                             : widget._postController.lastValue(_idList.last);
