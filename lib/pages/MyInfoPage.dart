@@ -7,6 +7,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
+import 'package:OpenJMU/model/Bean.dart';
 //import 'package:OpenJMU/pages/Test.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
@@ -78,7 +79,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         });
     }
 
-    Widget renderRow(i) {
+    Widget renderRow(context, i) {
         String title = titles[i];
         Widget listItemContent = Padding(
             padding: title == "夜间模式"
@@ -94,19 +95,14 @@ class MyInfoPageState extends State<MyInfoPage> {
                     Expanded(
                         child: Container(
                             padding: EdgeInsets.only(left: 10.0),
-                            child: PlatformText(
-                                title,
-                                style: titleTextStyle,
-                            ),
+                            child: PlatformText(title, style: titleTextStyle),
                         ),
                     ),
                     title == "夜间模式"
                             ? PlatformSwitch(
                         activeColor: themeColor,
                         value: isDark,
-                        onChanged: (isDark) {
-                            setDarkMode(isDark);
-                        },
+                        onChanged: setDarkMode,
                     )
                             : Icon(Platform.isAndroid ? Icons.keyboard_arrow_right : FontAwesome.getIconData("angle-right"))
                     ,
@@ -153,43 +149,43 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     void showLogoutDialog(BuildContext context) {
         showPlatformDialog(
-                context: context,
-                builder: (_) => PlatformAlertDialog(
-                    title: Text("注销"),
-                    content: Text("是否确认注销？"),
-                    actions: <Widget>[
-                        PlatformButton(
-                            android: (BuildContext context) => MaterialRaisedButtonData(
-                                color: Theme.of(context).dialogBackgroundColor,
-                                elevation: 0,
-                                disabledElevation: 0.0,
-                                highlightElevation: 0.0,
-                                child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme)),
-                            ),
-                            ios: (BuildContext context) => CupertinoButtonData(
-                                child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme),),
-                            ),
-                            onPressed: () {
-                                DataUtils.doLogout();
-                            },
+            context: context,
+            builder: (_) => PlatformAlertDialog(
+                title: Text("注销"),
+                content: Text("是否确认注销？"),
+                actions: <Widget>[
+                    PlatformButton(
+                        android: (BuildContext context) => MaterialRaisedButtonData(
+                            color: Theme.of(context).dialogBackgroundColor,
+                            elevation: 0,
+                            disabledElevation: 0.0,
+                            highlightElevation: 0.0,
+                            child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme)),
                         ),
-                        PlatformButton(
-                            android: (BuildContext context) => MaterialRaisedButtonData(
-                                color: ThemeUtils.currentColorTheme,
-                                elevation: 0,
-                                disabledElevation: 0.0,
-                                highlightElevation: 0.0,
-                                child: Text('取消', style: TextStyle(color: Colors.white)),
-                            ),
-                            ios: (BuildContext context) => CupertinoButtonData(
-                                child: Text("取消", style: TextStyle(color: ThemeUtils.currentColorTheme)),
-                            ),
-                            onPressed: () {
-                                Navigator.of(context).pop();
-                            },
+                        ios: (BuildContext context) => CupertinoButtonData(
+                            child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme),),
                         ),
-                    ],
-                )
+                        onPressed: () {
+                            DataUtils.doLogout();
+                        },
+                    ),
+                    PlatformButton(
+                        android: (BuildContext context) => MaterialRaisedButtonData(
+                            color: ThemeUtils.currentColorTheme,
+                            elevation: 0,
+                            disabledElevation: 0.0,
+                            highlightElevation: 0.0,
+                            child: Text('取消', style: TextStyle(color: Colors.white)),
+                        ),
+                        ios: (BuildContext context) => CupertinoButtonData(
+                            child: Text("取消", style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                        ),
+                        onPressed: () {
+                            Navigator.of(context).pop();
+                        },
+                    ),
+                ],
+            ),
         );
     }
 
@@ -247,28 +243,30 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     @override
     Widget build(BuildContext context) {
-        return SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                    about(),
-                    Container(
-                        color: Theme.of(context).dividerColor,
-                        height: 1.0,
-                    ),
-                    ListView.separated(
-                        physics: NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        separatorBuilder: (context, index) => Container(
-                            color: Theme.of(context).dividerColor,
-                            height: 1.0,
-                        ),
-                        itemCount: titles.length,
-                        itemBuilder: (context, i) => renderRow(i),
-                    ),
-                ],
-            )
+        return ScrollConfiguration(
+            behavior: NoGlowScrollBehavior(),
+            child: SingleChildScrollView(
+                    child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                            about(),
+                            Container(
+                                color: Theme.of(context).dividerColor,
+                                height: 1.0,
+                            ),
+                            ListView.separated(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                separatorBuilder: (context, index) => Container(
+                                    color: Theme.of(context).dividerColor,
+                                    height: 1.0,
+                                ),
+                                itemCount: titles.length,
+                                itemBuilder: (context, i) => renderRow(context, i),
+                            ),
+                        ],
+                    )
+            ),
         );
     }
 

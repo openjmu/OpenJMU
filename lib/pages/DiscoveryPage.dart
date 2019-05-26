@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/model/Bean.dart';
 //import 'package:OpenJMU/pages/SignDailyPage.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
@@ -111,102 +112,104 @@ class DiscoveryPageState extends State<DiscoveryPage> {
     @override
     Widget build(BuildContext context) {
         DateTime now = DateTime.now();
-        return SingleChildScrollView(
-            physics: BouncingScrollPhysics(),
-            child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                        RichText(text: TextSpan(
-                            children: <TextSpan>[
-                                if (currentWeek != null) TextSpan(text: "第$currentWeek周 "),
-                                TextSpan(text: "${DateFormat("MMMdd日 ", "zh_CN").format(now)}"),
-                                TextSpan(text: "${DateFormat("EE", "zh_CN").format(now)}"),
-                            ],
-                            style: TextStyle(fontSize: 28, color: Theme.of(context).textTheme.caption.color),
-                        )),
-                        Text(
-                            "${UserUtils.currentUser.name}，${this.hello}",
-                            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
-                        ),
-                        Container(
-                            margin: EdgeInsets.only(top: 40, bottom: 20),
-                            child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+        return ScrollConfiguration(
+            behavior: NoGlowScrollBehavior(),
+            child: SingleChildScrollView(
+                child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                            RichText(text: TextSpan(
+                                children: <TextSpan>[
+                                    if (currentWeek != null) TextSpan(text: "第$currentWeek周 "),
+                                    TextSpan(text: "${DateFormat("MMMdd日 ", "zh_CN").format(now)}"),
+                                    TextSpan(text: "${DateFormat("EE", "zh_CN").format(now)}"),
+                                ],
+                                style: TextStyle(fontSize: 28, color: Theme.of(context).textTheme.caption.color),
+                            )),
+                            Text(
+                                "${UserUtils.currentUser.name}，${this.hello}",
+                                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                            ),
+                            Container(
+                                margin: EdgeInsets.only(top: 40, bottom: 20),
+                                child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                        Text("我的", style: TextStyle(fontSize: 20)),
+                                        Container(width: 34, height: 2, color: ThemeUtils.currentColorTheme),
+                                    ],
+                                ),
+                            ),
+                            GridView(
+                                physics: NeverScrollableScrollPhysics(),
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 26,
+                                    mainAxisSpacing: 26,
+                                ),
+                                shrinkWrap: true,
                                 children: <Widget>[
-                                    Text("我的", style: TextStyle(fontSize: 20)),
-                                    Container(width: 34, height: 2, color: ThemeUtils.currentColorTheme),
+                                    GridItem(
+                                        onTap: requestSign,
+                                        children: <Widget>[
+                                            Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                    Icon(Icons.person_pin, size: 32, color: ThemeUtils.currentColorTheme),
+                                                ],
+                                            ),
+                                            Expanded(child: Container()),
+                                            RichText(text: TextSpan(
+                                                children: <TextSpan>[
+                                                    TextSpan(text: "Lv.", style: TextStyle(fontSize: 30.0)),
+                                                    TextSpan(text: "$userLevel", style: TextStyle(fontSize: 64.0, fontWeight: FontWeight.bold))
+                                                ],
+                                            )),
+                                            Text("$userLevelExpCurrent/$userLevelExpUpBound", style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                            )),
+                                        ],
+                                    ),
+                                    GridItem(
+                                        onTap: requestSign,
+                                        children: <Widget>[
+                                            Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
+                                                    Icon(Icons.place, size: 32, color: ThemeUtils.currentColorTheme),
+                                                    !signed ? !signing
+                                                            ? Icon(Icons.arrow_forward, color: Colors.white)
+                                                            : SizedBox(
+                                                        width: 20,
+                                                        height: 20,
+                                                        child: CircularProgressIndicator(
+                                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                                            strokeWidth: 3,
+                                                        ),
+                                                    )
+                                                            : Icon(Icons.check_circle_outline, color: Colors.white),
+                                                ],
+                                            ),
+                                            Expanded(child: Container()),
+                                            Text(signed ? "已签到" : "未签到", style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 28,
+                                                fontWeight: FontWeight.bold,
+                                            )),
+                                            Text("本月已签$signedCount天", style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                            )),
+                                        ],
+                                    ),
                                 ],
                             ),
-                        ),
-                        GridView(
-                            physics: NeverScrollableScrollPhysics(),
-                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 26,
-                                mainAxisSpacing: 26,
-                            ),
-                            shrinkWrap: true,
-                            children: <Widget>[
-                                GridItem(
-                                    onTap: requestSign,
-                                    children: <Widget>[
-                                        Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                                Icon(Icons.person_pin, size: 32, color: ThemeUtils.currentColorTheme),
-                                            ],
-                                        ),
-                                        Expanded(child: Container()),
-                                        RichText(text: TextSpan(
-                                            children: <TextSpan>[
-                                                TextSpan(text: "Lv.", style: TextStyle(fontSize: 30.0)),
-                                                TextSpan(text: "$userLevel", style: TextStyle(fontSize: 64.0, fontWeight: FontWeight.bold))
-                                            ],
-                                        )),
-                                        Text("$userLevelExpCurrent/$userLevelExpUpBound", style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                        )),
-                                    ],
-                                ),
-                                GridItem(
-                                    onTap: requestSign,
-                                    children: <Widget>[
-                                        Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                                Icon(Icons.place, size: 32, color: ThemeUtils.currentColorTheme),
-                                                !signed ? !signing
-                                                        ? Icon(Icons.arrow_forward, color: Colors.white)
-                                                        : SizedBox(
-                                                    width: 20,
-                                                    height: 20,
-                                                    child: CircularProgressIndicator(
-                                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                                        strokeWidth: 3,
-                                                    ),
-                                                )
-                                                        : Icon(Icons.check_circle_outline, color: Colors.white),
-                                            ],
-                                        ),
-                                        Expanded(child: Container()),
-                                        Text(signed ? "已签到" : "未签到", style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 28,
-                                            fontWeight: FontWeight.bold,
-                                        )),
-                                        Text("本月已签$signedCount天", style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                        )),
-                                    ],
-                                ),
-                            ],
-                        ),
-                    ],
+                        ],
+                    ),
                 ),
             ),
         );
@@ -224,7 +227,6 @@ class GridItem extends StatefulWidget {
 }
 
 class _GridItemState extends State<GridItem> {
-
     @override
     Widget build(BuildContext context) {
         return ClipRRect(

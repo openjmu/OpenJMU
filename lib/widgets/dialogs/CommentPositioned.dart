@@ -34,7 +34,7 @@ class CommentPositionedState extends State<CommentPositioned> {
 
     Comment toComment;
 
-    bool _commenting = false;
+    bool _canSend = false, _commenting = false;
     bool forwardAtTheMeanTime = false;
 
     String commentContent = "";
@@ -49,6 +49,9 @@ class CommentPositionedState extends State<CommentPositioned> {
             toComment = widget.comment;
         });
         _commentController..addListener(() {
+            if (_commentController.text.isNotEmpty != _canSend) {
+                setState(() { _canSend = _commentController.text.isNotEmpty; });
+            }
             setState(() {
                 commentContent = _commentController.text;
             });
@@ -67,23 +70,26 @@ class CommentPositionedState extends State<CommentPositioned> {
     }
 
     Widget textField() {
-        String _prefixText;
-        toComment != null ? _prefixText = "回复:@${toComment.fromUserName} " : _prefixText = null;
-        return ExtendedTextField(
-            specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
-            focusNode: _focusNode,
-            controller: _commentController,
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(12.0),
-                border: OutlineInputBorder(),
-                prefixText: _prefixText,
+        String _hintText;
+        toComment != null ? _hintText = "回复:@${toComment.fromUserName} " : _hintText = null;
+        return ScrollConfiguration(
+            behavior: NoGlowScrollBehavior(),
+            child: ExtendedTextField(
+                specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
+                focusNode: _focusNode,
+                controller: _commentController,
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(12.0),
+                    border: OutlineInputBorder(),
+                    hintText: _hintText,
+                ),
+                enabled: !_commenting,
+                style: TextStyle(fontSize: 18.0),
+                cursorColor: ThemeUtils.currentColorTheme,
+                autofocus: true,
+                maxLines: 3,
+                maxLength: 140,
             ),
-            enabled: !_commenting,
-            style: TextStyle(fontSize: 18.0),
-            cursorColor: ThemeUtils.currentColorTheme,
-            autofocus: true,
-            maxLines: 3,
-            maxLength: 140,
         );
     }
 
@@ -176,6 +182,62 @@ class CommentPositionedState extends State<CommentPositioned> {
         });
     }
 
+    Widget toolbar() {
+        return Row(
+            children: <Widget>[
+                Checkbox(
+                    activeColor: ThemeUtils.currentColorTheme,
+                    value: forwardAtTheMeanTime,
+                    onChanged: (value) {
+                        setState(() {
+                            forwardAtTheMeanTime = value;
+                        });
+                    },
+                ),
+                Text("同时转发到微博", style: TextStyle(fontSize: 16.0)),
+                Expanded(child: Container()),
+                IconButton(
+                    onPressed: mentionPeople,
+                    icon: Icon(Icons.alternate_email),
+                ),
+                ToggleButton(
+                    activeWidget: Icon(
+                        Icons.sentiment_very_satisfied,
+                        color: ThemeUtils.currentColorTheme,
+                    ),
+                    unActiveWidget: Icon(
+                        Icons.sentiment_very_satisfied,
+                        color: Theme.of(context).iconTheme.color,
+                    ),
+                    activeChanged: (bool active) {
+                        Function change = () {
+                            setState(() {
+                                if (active) FocusScope.of(context).requestFocus(_focusNode);
+                                emoticonPadActive = active;
+                            });
+                        };
+                        updatePadStatus(change);
+                    },
+                    active: emoticonPadActive,
+                ),
+                !_commenting
+                        ? IconButton(
+                    icon: Icon(Icons.send),
+                    color: ThemeUtils.currentColorTheme,
+                    onPressed: _canSend ? () => _requestComment(context) : null,
+                )
+                        : Container(
+                    padding: EdgeInsets.symmetric(horizontal: 14.0),
+                    child: SizedBox(
+                        width: 18.0,
+                        height: 18.0,
+                        child: CircularProgressIndicator(strokeWidth: 2.0),
+                    ),
+                ),
+            ],
+        );
+    }
+
     @override
     Widget build(BuildContext context) {
         double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
@@ -200,73 +262,12 @@ class CommentPositionedState extends State<CommentPositioned> {
                             padding: EdgeInsets.all(10.0),
                             color: Theme.of(context).cardColor,
                             child: Column(
+                                mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                     textField(),
-                                    Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                            Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                    Checkbox(
-                                                        activeColor: ThemeUtils.currentColorTheme,
-                                                        value: forwardAtTheMeanTime,
-                                                        onChanged: (value) {
-                                                            setState(() {
-                                                                forwardAtTheMeanTime = value;
-                                                            });
-                                                        },
-                                                    ),
-                                                    Text("同时转发到微博", style: TextStyle(fontSize: 16.0)),
-                                                ],
-                                            ),
-                                            Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                    IconButton(
-                                                        onPressed: mentionPeople,
-                                                        icon: Icon(Icons.alternate_email),
-                                                    ),
-                                                    ToggleButton(
-                                                        activeWidget: Icon(
-                                                            Icons.sentiment_very_satisfied,
-                                                            color: ThemeUtils.currentColorTheme,
-                                                        ),
-                                                        unActiveWidget: Icon(
-                                                            Icons.sentiment_very_satisfied,
-                                                            color: Theme.of(context).iconTheme.color,
-                                                        ),
-                                                        activeChanged: (bool active) {
-                                                            Function change = () {
-                                                                setState(() {
-                                                                    if (active) FocusScope.of(context).requestFocus(_focusNode);
-                                                                    emoticonPadActive = active;
-                                                                });
-                                                            };
-                                                            updatePadStatus(change);
-                                                        },
-                                                        active: emoticonPadActive,
-                                                    ),
-                                                    !_commenting
-                                                            ? IconButton(
-                                                        icon: Icon(Icons.send),
-                                                        color: ThemeUtils.currentColorTheme,
-                                                        onPressed: () => _requestComment(context),
-                                                    )
-                                                            : Container(
-                                                        padding: EdgeInsets.symmetric(horizontal: 14.0),
-                                                        child: SizedBox(
-                                                            width: 18.0,
-                                                            height: 18.0,
-                                                            child: CircularProgressIndicator(strokeWidth: 2.0),
-                                                        ),
-                                                    ),
-                                                ],
-                                            ),
-                                        ],
-                                    ),
+                                    toolbar(),
                                 ],
                             ),
                         ),

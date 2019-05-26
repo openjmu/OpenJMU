@@ -37,7 +37,7 @@ class PublishPostPage extends StatefulWidget {
 }
 
 class PublishPostPageState extends State<PublishPostPage> {
-    List<ItemBin> imagesBin = List<ItemBin>();
+    List<ItemBin> imagesBin = <ItemBin>[];
     List _imageIdList = [];
 
     int imagesLength = 0, maxImagesLength = 9, uploadedImages = 1;
@@ -47,8 +47,8 @@ class PublishPostPageState extends State<PublishPostPage> {
     LoadingDialogController _loadingDialogController = LoadingDialogController();
     FocusNode _focusNode = FocusNode();
 
-    bool isLoading = false;
     bool isFocus = false;
+    bool isLoading = false;
     bool textFieldEnable = true;
 
     int gridCount = 5;
@@ -110,20 +110,20 @@ class PublishPostPageState extends State<PublishPostPage> {
             context: context,
             builder: (BuildContext context) => MentionPeopleDialog(),
         ).then((result) {
-            print("Popped.");
+            debugPrint("Popped.");
             if (result != null) {
-                print("Mentioned User: ${result.toString()}");
+                debugPrint("Mentioned User: ${result.toString()}");
                 Future.delayed(Duration(milliseconds: 250), () {
                     FocusScope.of(context).requestFocus(_focusNode);
                     insertText("<M ${result.id}>@${result.nickname}</M>");
                 });
             } else {
-                print("No mentioned user returned.");
+                debugPrint("No mentioned user returned.");
             }
         });
     }
 
-    Future<void> loadAssets() async {
+    Future<Null> loadAssets() async {
         _focusNode.unfocus();
         setState(() {
             textFieldEnable = false;
@@ -222,7 +222,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         );
     }
 
-    Positioned customGridView(context) {
+    Widget customGridView(context) {
         int size = (MediaQuery.of(context).size.width / gridCount).floor() - (18 - gridCount);
         return Positioned(
             bottom: (emoticonPadActive ? _keyboardHeight : 0.0) + MediaQuery.of(context).padding.bottom ?? 0.0,
@@ -367,10 +367,9 @@ class PublishPostPageState extends State<PublishPostPage> {
         );
     }
 
-    Future createForm(Asset asset) async {
+    Future<FormData> createForm(Asset asset) async {
         ByteData byteData = await asset.requestOriginal();
         List<int> imageData = byteData.buffer.asUint8List();
-
         return FormData.from({
             "image": UploadFileInfo.fromBytes(imageData, "${asset.name}.jpg"),
             "image_type": 0
