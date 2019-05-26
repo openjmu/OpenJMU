@@ -322,3 +322,10 @@ double _endOffset(ScaffoldPrelayoutGeometry scaffoldGeometry, { double offset = 
     }
     return null;
 }
+
+class NoGlowScrollBehavior extends ScrollBehavior {
+    @override
+    Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
+        return child;
+    }
+}

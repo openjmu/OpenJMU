@@ -4,9 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 
-import 'package:OpenJMU/api/Api.dart';
-import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/PostDetailPage.dart';
@@ -17,7 +14,6 @@ import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
-import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 
 class CommentCard extends StatelessWidget {
@@ -401,50 +397,7 @@ class CommentCardInPost extends StatelessWidget {
                                                         onPressed: () {
                                                             showPlatformDialog(
                                                                 context: context,
-                                                                builder: (_) => PlatformAlertDialog(
-                                                                    title: Text("删除评论", style: TextStyle(color: Colors.white)),
-                                                                    content: Text("是否确认删除这条评论？"),
-                                                                    actions: <Widget>[
-                                                                        PlatformButton(
-                                                                            android: (BuildContext context) => MaterialRaisedButtonData(
-                                                                                color: ThemeUtils.currentColorTheme,
-                                                                                elevation: 0,
-                                                                                child: Text('确认', style: TextStyle(color: Colors.white)),
-                                                                            ),
-                                                                            ios: (BuildContext context) => CupertinoButtonData(
-                                                                                child: Text('确认', style: TextStyle(color: ThemeUtils.currentColorTheme)),
-                                                                            ),
-                                                                            onPressed: () {
-                                                                                Navigator.of(context).pop();
-                                                                                Navigator.of(context).pop();
-                                                                                LoadingDialogController _loadingDialogController = LoadingDialogController();
-                                                                                showDialog(
-                                                                                    context: context,
-                                                                                    builder: (BuildContext dialogContext) => LoadingDialog("正在删除评论", _loadingDialogController),
-                                                                                );
-                                                                                CommentAPI.deleteComment(this.post.id, this.comments[index].id).then((response) {
-                                                                                    Constants.eventBus.fire(new PostCommentDeletedEvent(this.post.id, this.post.comments));
-                                                                                    _loadingDialogController.changeState("success", "评论删除成功");
-                                                                                }).catchError((e) {
-                                                                                    showCenterErrorShortToast("评论删除失败");
-                                                                                });
-                                                                            },
-                                                                        ),
-                                                                        PlatformButton(
-                                                                            android: (BuildContext context) => MaterialRaisedButtonData(
-                                                                                color: Theme.of(context).dialogBackgroundColor,
-                                                                                elevation: 0,
-                                                                                child: Text('取消'),
-                                                                            ),
-                                                                            ios: (BuildContext context) => CupertinoButtonData(
-                                                                                    child: Text('取消',style: TextStyle(color: ThemeUtils.currentColorTheme))
-                                                                            ),
-                                                                            onPressed: () {
-                                                                                Navigator.of(context).pop();
-                                                                            },
-                                                                        ),
-                                                                    ],
-                                                                ),
+                                                                builder: (_) => DeleteDialog("评论", comment: this.comments[index]),
                                                             );
                                                         },
                                                     ),

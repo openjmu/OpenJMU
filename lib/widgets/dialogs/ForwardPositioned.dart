@@ -56,20 +56,23 @@ class ForwardPositionedState extends State<ForwardPositioned> {
     }
 
     Widget textField() {
-        return ExtendedTextField(
-            specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
-            focusNode: _focusNode,
-            controller: _forwardController,
-            decoration: InputDecoration(
-                contentPadding: EdgeInsets.all(12.0),
-                border: OutlineInputBorder(),
+        return ScrollConfiguration(
+            behavior: NoGlowScrollBehavior(),
+            child: ExtendedTextField(
+                specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
+                focusNode: _focusNode,
+                controller: _forwardController,
+                decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(12.0),
+                    border: OutlineInputBorder(),
+                ),
+                enabled: !_forwarding,
+                style: TextStyle(fontSize: 18.0),
+                cursorColor: ThemeUtils.currentColorTheme,
+                autofocus: true,
+                maxLines: 3,
+                maxLength: 140,
             ),
-            enabled: !_forwarding,
-            style: TextStyle(fontSize: 18.0),
-            cursorColor: ThemeUtils.currentColorTheme,
-            autofocus: true,
-            maxLines: 3,
-            maxLength: 140,
         );
     }
 
@@ -150,6 +153,62 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         });
     }
 
+    Widget toolbar() {
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+                Checkbox(
+                    activeColor: ThemeUtils.currentColorTheme,
+                    value: commentAtTheMeanTime,
+                    onChanged: (value) {
+                        setState(() {
+                            commentAtTheMeanTime = value;
+                        });
+                    },
+                ),
+                Text("同时评论到微博", style: TextStyle(fontSize: 16.0)),
+                Expanded(child: Container()),
+                IconButton(
+                    onPressed: mentionPeople,
+                    icon: Icon(Icons.alternate_email),
+                ),
+                ToggleButton(
+                    activeWidget: Icon(
+                        Icons.sentiment_very_satisfied,
+                        color: ThemeUtils.currentColorTheme,
+                    ),
+                    unActiveWidget: Icon(
+                        Icons.sentiment_very_satisfied,
+                        color: Theme.of(context).iconTheme.color,
+                    ),
+                    activeChanged: (bool active) {
+                        updatePadStatus(() {
+                            setState(() {
+                                if (active) FocusScope.of(context).requestFocus(_focusNode);
+                                emoticonPadActive = active;
+                            });
+                        });
+                    },
+                    active: emoticonPadActive,
+                ),
+                !_forwarding
+                        ? IconButton(
+                    icon: Icon(Icons.send),
+                    color: ThemeUtils.currentColorTheme,
+                    onPressed: () => _requestForward(context),
+                )
+                        : Container(
+                    padding: EdgeInsets.symmetric(horizontal: 14.0),
+                    child: SizedBox(
+                        width: 18.0,
+                        height: 18.0,
+                        child: CircularProgressIndicator(strokeWidth: 2.0),
+                    ),
+                ),
+            ],
+        );
+    }
+
     @override
     Widget build(BuildContext context) {
         double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
@@ -178,68 +237,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                     textField(),
-                                    Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                            Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                    Checkbox(
-                                                        activeColor: ThemeUtils.currentColorTheme,
-                                                        value: commentAtTheMeanTime,
-                                                        onChanged: (value) {
-                                                            setState(() {
-                                                                commentAtTheMeanTime = value;
-                                                            });
-                                                        },
-                                                    ),
-                                                    Text("同时评论到微博", style: TextStyle(fontSize: 16.0)),
-                                                ],
-                                            ),
-                                            Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: <Widget>[
-                                                    IconButton(
-                                                        onPressed: mentionPeople,
-                                                        icon: Icon(Icons.alternate_email),
-                                                    ),
-                                                    ToggleButton(
-                                                        activeWidget: Icon(
-                                                            Icons.sentiment_very_satisfied,
-                                                            color: ThemeUtils.currentColorTheme,
-                                                        ),
-                                                        unActiveWidget: Icon(
-                                                            Icons.sentiment_very_satisfied,
-                                                            color: Theme.of(context).iconTheme.color,
-                                                        ),
-                                                        activeChanged: (bool active) {
-                                                            updatePadStatus(() {
-                                                                setState(() {
-                                                                    if (active) FocusScope.of(context).requestFocus(_focusNode);
-                                                                    emoticonPadActive = active;
-                                                                });
-                                                            });
-                                                        },
-                                                        active: emoticonPadActive,
-                                                    ),
-                                                    !_forwarding
-                                                            ? IconButton(
-                                                        icon: Icon(Icons.send),
-                                                        color: ThemeUtils.currentColorTheme,
-                                                        onPressed: () => _requestForward(context),
-                                                    )
-                                                            : Container(
-                                                        padding: EdgeInsets.symmetric(horizontal: 14.0),
-                                                        child: SizedBox(
-                                                            width: 18.0,
-                                                            height: 18.0,
-                                                            child: CircularProgressIndicator(strokeWidth: 2.0),
-                                                        ),
-                                                    ),
-                                                ],
-                                            ),
-                                        ],
-                                    ),
+                                    toolbar(),
                                 ],
                             ),
                         ),
