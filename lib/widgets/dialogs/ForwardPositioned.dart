@@ -43,9 +43,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
     void initState() {
         super.initState();
         Constants.eventBus.on<AddEmoticonEvent>().listen((event) {
-            if (mounted && event.route == "forward") {
-                insertText(event.emoticon);
-            }
+            if (mounted && event.route == "forward") insertText(event.emoticon);
         });
     }
 

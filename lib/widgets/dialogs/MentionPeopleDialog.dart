@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -37,7 +36,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
         });
         people.clear();
         UserUtils.searchUser(content).then((response) {
-            Map _r = jsonDecode(response);
+            Map _r = response.data;
             if (_r['data'] == null) {
                 setState(() { people.add(UserUtils.createUser(_r)); });
             } else {

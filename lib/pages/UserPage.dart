@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -62,15 +61,16 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
             );
             _post = PostList(postController, needRefreshIndicator: false);
         }
-        Constants.eventBus.on<SignatureUpdatedEvent>().listen((event) {
-            Future.delayed(Duration(milliseconds: 2400), () {
-                _fetchUserInformation(UserUtils.currentUser.uid);
+        Constants.eventBus
+            ..on<SignatureUpdatedEvent>().listen((event) {
+                Future.delayed(Duration(milliseconds: 2400), () {
+                    _fetchUserInformation(UserUtils.currentUser.uid);
+                });
+            })
+            ..on<AvatarUpdatedEvent>().listen((event) {
+                UserUtils.updateAvatarProvider();
+                _fetchUserInformation(widget.uid);
             });
-        });
-        Constants.eventBus.on<AvatarUpdatedEvent>().listen((event) {
-            UserUtils.updateAvatarProvider();
-            _fetchUserInformation(widget.uid);
-        });
     }
 
     @override
@@ -102,6 +102,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         if (mounted) {
             setState(() {
                 _appBar = SliverAppBar(
+                    centerTitle: true,
                     floating: false,
                     pinned: true,
                     backgroundColor: ThemeUtils.currentColorTheme,
@@ -127,6 +128,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                 if (mounted) {
                     return setState(() {
                         _appBar = SliverAppBar(
+                            centerTitle: true,
                             floating: false,
                             pinned: true,
                             backgroundColor: ThemeUtils.currentColorTheme,
@@ -151,7 +153,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                 });
             }
         } else {
-            var user = jsonDecode(await UserUtils.getUserInfo(uid: uid));
+            var user = (await UserUtils.getUserInfo(uid: uid)).data;
             if (mounted) {
                 setState(() {
                     _user = UserUtils.createUserInfo(user);
@@ -159,7 +161,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
             }
         }
 
-        var tags = jsonDecode(await UserUtils.getTags(uid));
+        var tags = (await UserUtils.getTags(uid)).data;
         List<UserTag> _userTags = [];
         tags['data'].forEach((tag) {
             _userTags.add(UserUtils.createUserTag(tag));
@@ -197,7 +199,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
     }
 
     Future<Null> _getFollowingAndFansCount(id) async {
-        var data = jsonDecode(await UserUtils.getFansAndFollowingsCount(id));
+        Map data = (await UserUtils.getFansAndFollowingsCount(id)).data;
         setState(() {
             _user.isFollowing = data['is_following'] == 1 ? true : false;
             _fansCount = data['fans'].toString();
@@ -206,6 +208,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
     }
 
     void _updateAppBar() {
+        debugPrint("Updating appbar. _updateAppBar[package:OpenJMU/pages/UserPage.dart:210:10]");
         List<Widget> chips = [];
         if (_tags?.length != 0) {
             for (var i=0; i < _tags.length; i++) {
@@ -491,8 +494,11 @@ class UserListPage extends StatefulWidget {
 }
 
 class _UserListState extends State<UserListPage> {
-    List<Widget> _users;
+    List _users = [];
     Color cardColor = Colors.white;
+
+    bool canLoadMore = false, isLoading = true;
+    int total, pages = 1;
 
     @override
     void initState() {
@@ -506,39 +512,81 @@ class _UserListState extends State<UserListPage> {
                 }
             });
         });
+        doUpdate(false);
+    }
+
+    void doUpdate(isMore) {
+        if (isMore) pages++;
         switch (widget.type) {
             case 1:
-                UserUtils.getIdolsList(widget.user.uid, 1).then((response) {
-                    var data = jsonDecode(response)['idols'];
-                    List<Widget> users = [];
-                    for (int i = 0; i < data.length; i++) {
-                        users.add(userCard(data[i]));
-                    }
-                    setState(() {
-                        _users = users;
-                    });
-                });
+                getIdolsList(pages, isMore);
                 break;
             case 2:
-                UserUtils.getFansList(widget.user.uid, 1).then((response) {
-                    var data = jsonDecode(response)['fans'];
-                    List<Widget> users = [];
-                    for (int i = 0; i < data.length; i++) {
-                        users.add(userCard(data[i]));
-                    }
-                    setState(() {
-                        _users = users;
-                    });
-                });
+                getFansList(pages, isMore);
                 break;
         }
     }
 
+    void getIdolsList(page, isMore) {
+        UserUtils.getIdolsList(widget.user.uid, page).then((response) {
+            setUserList(response, isMore);
+        });
+    }
+
+    void getFansList(page, isMore) {
+        UserUtils.getFansList(widget.user.uid, page).then((response) {
+            setUserList(response, isMore);
+        });
+    }
+
+    void setUserList(response, isMore) {
+        List data;
+        switch (widget.type) {
+            case 1:
+                data = response.data['idols'];
+                break;
+            case 2:
+                data = response.data['fans'];
+                break;
+        }
+        var total = response.data['total'];
+        if (total is String) total = int.parse(total);
+        if (_users.length + data.length < total) canLoadMore = true;
+        List users = [];
+        for (int i = 0; i < data.length; i++) users.add(data[i]);
+        if (mounted) setState(() {
+            if (isMore) {
+                List _u = _users;
+                _u.addAll(users);
+                _users = _u;
+            } else {
+                _users = users;
+            }
+            isLoading = false;
+        });
+    }
+
+    Widget renderRow(context, i) {
+        int start = i * 2;
+        if (_users != null && i + 1 == (_users.length / 2).ceil() && canLoadMore) doUpdate(true);
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+                for (int j = start; j < start + 2 && j < _users.length; j++) userCard(_users[j])
+            ],
+        );
+    }
+
     Widget userCard(userData) {
         var _user = userData['user'];
+        String name = _user['nickname'];
+        if (name.length > 3) name = "${name.substring(0, 3)}...";
         TextStyle _textStyle = TextStyle(fontSize: 16.0);
-        return Container(
-                margin: EdgeInsets.fromLTRB(16.0, 20.0, 16.0, 0.0),
+        return GestureDetector(
+            onTap: () => UserPage.jump(context, int.parse(_user['uid'])),
+            child: Container(
+                margin: EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 0.0),
+                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.0),
                     color: cardColor,
@@ -547,48 +595,69 @@ class _UserListState extends State<UserListPage> {
                         blurRadius: 0.0,
                     )],
                 ),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                        GestureDetector(
-                            onTap: () {
-                                return UserPage.jump(context, int.parse(_user['uid']));
-                            },
-                            child: Container(
-                                margin: EdgeInsets.all(12.0),
-                                width: 70.0,
-                                height: 70.0,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(
-                                        image: UserUtils.getAvatarProvider(_user['uid'] is String ? int.parse(_user['uid']) : _user['uid']),
-                                    ),
+                        Container(
+                            width: 60.0,
+                            height: 60.0,
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(30.0),
+                                child: FadeInImage(
+                                    fadeInDuration: const Duration(milliseconds: 100),
+                                    placeholder: AssetImage("assets/avatar_placeholder.png"),
+                                    image: UserUtils.getAvatarProvider(_user['uid'] is String ? int.parse(_user['uid']) : _user['uid']),
                                 ),
                             ),
                         ),
-                        Divider(height: 1.0),
-                        Container(height: 10.0),
+                        SizedBox(width: 12.0),
                         Row(
+                            mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                                 Column(
                                     children: <Widget>[
-                                        Text("关注", style: _textStyle),
-                                        Text(userData['idols'], style: _textStyle),
-                                    ],
-                                ),
-                                Column(
-                                    children: <Widget>[
-                                        Text("粉丝", style: _textStyle),
-                                        Text(userData['fans'], style: _textStyle),
+                                        Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                                Text(
+                                                    name,
+                                                    style: TextStyle(fontSize: 20.0),
+                                                    overflow: TextOverflow.ellipsis,
+                                                ),
+                                            ],
+                                        ),
+                                        Divider(height: 6.0),
+                                        Row(
+                                            children: <Widget>[
+                                                Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                        Text("关注", style: _textStyle),
+                                                        Divider(height: 3.0),
+                                                        Text(userData['idols'], style: _textStyle),
+                                                    ],
+                                                ),
+                                                SizedBox(width: 6.0),
+                                                Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: <Widget>[
+                                                        Text("粉丝", style: _textStyle),
+                                                        Divider(height: 3.0),
+                                                        Text(userData['fans'], style: _textStyle),
+                                                    ],
+                                                )
+                                            ],
+                                        )
                                     ],
                                 ),
                             ],
                         ),
                     ],
-                )
+                ),
+            ),
         );
     }
 
@@ -616,14 +685,12 @@ class _UserListState extends State<UserListPage> {
                     style: TextStyle(color: Colors.white),
                 ),
             ),
-            body: _users != null
+            body: !isLoading
                     ? _users.length != 0
-                    ? GridView.count(
+                    ? ListView.builder(
                 shrinkWrap: true,
-                mainAxisSpacing: 10.0,
-                crossAxisCount: 3,
-                children: _users,
-                childAspectRatio: 0.80,
+                itemCount: (_users.length / 2).ceil(),
+                itemBuilder: (context, i) => renderRow(context, i),
             )
                     : Center(child: Text("暂无内容", style: TextStyle(fontSize: 20.0)))
                     : Center(

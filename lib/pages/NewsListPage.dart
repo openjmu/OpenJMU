@@ -111,7 +111,7 @@ class NewsListPageState extends State<NewsListPage> {
                 : url = Api.newsList+"/size/20";
         NetUtils.getWithHeaderSet(url).then((response) {
             if (response != null) {
-                Map<String, dynamic> map = jsonDecode(response);
+                Map<String, dynamic> map = jsonDecode(response.data);
                 List _listData = map["data"];
                 listTotalSize = map['total'];
 //          List _slideData = data['slide'];

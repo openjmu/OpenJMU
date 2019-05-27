@@ -84,44 +84,45 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 });
             }
         });
-        Constants.eventBus.on<ActionsEvent>().listen((event) {
-            if (event.type == "action_home") {
-                _selectedTab(0);
-            } else if (event.type == "action_apps") {
-                _selectedTab(1);
-            } else if (event.type == "action_discover") {
-                _selectedTab(2);
-            } else if (event.type == "action_user") {
-                _selectedTab(3);
-            }
-        });
-        Constants.eventBus.on<LogoutEvent>().listen((event) {
-            notificationTimer?.cancel();
-            Navigator.of(context).pushReplacementNamed("/login");
-        });
-        Constants.eventBus.on<HasUpdateEvent>().listen((event) {
-            if (this.mounted) {
-                showDialog(
-                    context: context,
-                    builder: (_) => OTAUtils.updateDialog(context, event),
-                );
-            }
-        });
-        Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
-            if (this.mounted) {
-                setState(() {
-                    tabTextStyleSelected = TextStyle(color: event.color);
-                    currentThemeColor = event.color;
-                });
-            }
-        });
-        Constants.eventBus.on<NotificationsChangeEvent>().listen((event) {
-            if (this.mounted) {
-                setState(() {
-                    notifications = event.notifications;
-                });
-            }
-        });
+        Constants.eventBus
+            ..on<ActionsEvent>().listen((event) {
+                if (event.type == "action_home") {
+                    _selectedTab(0);
+                } else if (event.type == "action_apps") {
+                    _selectedTab(1);
+                } else if (event.type == "action_discover") {
+                    _selectedTab(2);
+                } else if (event.type == "action_user") {
+                    _selectedTab(3);
+                }
+            })
+            ..on<LogoutEvent>().listen((event) {
+                notificationTimer?.cancel();
+                Navigator.of(context).pushReplacementNamed("/login");
+            })
+            ..on<HasUpdateEvent>().listen((event) {
+                if (this.mounted) {
+                    showDialog(
+                        context: context,
+                        builder: (_) => OTAUtils.updateDialog(context, event),
+                    );
+                }
+            })
+            ..on<ChangeThemeEvent>().listen((event) {
+                if (this.mounted) {
+                    setState(() {
+                        tabTextStyleSelected = TextStyle(color: event.color);
+                        currentThemeColor = event.color;
+                    });
+                }
+            })
+            ..on<NotificationsChangeEvent>().listen((event) {
+                if (this.mounted) {
+                    setState(() {
+                        notifications = event.notifications;
+                    });
+                }
+            });
     }
 
     @override
@@ -139,9 +140,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         });
     }
 
-    Image getTabImage(path) {
-        return Image.asset(path, width: 20.0, height: 20.0);
-    }
+    Image getTabImage(path) => Image.asset(path, width: 20.0, height: 20.0);
 
     TextStyle getTabTextStyle(int curIndex) {
         if (curIndex == _tabIndex) {
@@ -159,19 +158,17 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
             child: Padding(
                 padding: EdgeInsets.fromLTRB(14, 10, 6, 10),
                 child: Container(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.transparent,
-                        image: DecorationImage(
+                    child: ClipRRect(
+                        borderRadius: BorderRadius.circular(20.0),
+                        child: FadeInImage(
+                            fadeInDuration: const Duration(milliseconds: 100),
+                            placeholder: AssetImage("assets/avatar_placeholder.png"),
                             image: UserUtils.getAvatarProvider(userUid),
-                            fit: BoxFit.contain,
                         ),
                     ),
                 ),
             ),
-            onTap: () {
-                return UserPage.jump(context, UserUtils.currentUser.uid);
-            },
+            onTap: () => UserPage.jump(context, UserUtils.currentUser.uid),
         );
     }
 

@@ -57,31 +57,32 @@ class JMUAppClientState extends State<JMUAppClient> {
         DataUtils.getHomeSplashIndex().then((index) {
             Constants.homeSplashIndex = index ?? 0;
         });
-        Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
-            if (this.mounted) {
+        Constants.eventBus
+            ..on<ChangeThemeEvent>().listen((event) {
+                if (this.mounted) {
+                    setState(() {
+                        currentThemeColor = event.color;
+                    });
+                }
+            })
+            ..on<LogoutEvent>().listen((event) {
                 setState(() {
-                    currentThemeColor = event.color;
+                    currentThemeColor = ThemeUtils.defaultColor;
+                    currentBrightness = Brightness.light;
+                    currentPrimaryColor = Colors.white;
                 });
-            }
-        });
-        Constants.eventBus.on<LogoutEvent>().listen((event) {
-            setState(() {
-                currentThemeColor = ThemeUtils.defaultColor;
-                currentBrightness = Brightness.light;
-                currentPrimaryColor = Colors.white;
+            })
+            ..on<ActionsEvent>().listen((event) {
+                if (event.type == "action_home") {
+                    initIndex = 0;
+                } else if (event.type == "action_apps") {
+                    initIndex = 1;
+                } else if (event.type == "action_discover") {
+                    initIndex = 2;
+                } else if (event.type == "action_user") {
+                    initIndex = 3;
+                }
             });
-        });
-        Constants.eventBus.on<ActionsEvent>().listen((event) {
-            if (event.type == "action_home") {
-                initIndex = 0;
-            } else if (event.type == "action_apps") {
-                initIndex = 1;
-            } else if (event.type == "action_discover") {
-                initIndex = 2;
-            } else if (event.type == "action_user") {
-                initIndex = 3;
-            }
-        });
         listenToBrightness();
         NetUtils.initConfig();
         initQuickActions();

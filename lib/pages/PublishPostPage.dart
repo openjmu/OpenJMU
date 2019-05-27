@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:core';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui';
@@ -472,7 +471,7 @@ class PublishPostPageState extends State<PublishPostPage> {
             data: formData,
         ).then((response) {
             _incrementImagesCounter();
-            int imageId = int.parse(jsonDecode(response)['image_id']);
+            int imageId = int.parse(response.data['image_id']);
             _imageIdList[index] = imageId;
             return response;
         }).catchError((e) {
@@ -501,7 +500,7 @@ class PublishPostPageState extends State<PublishPostPage> {
             data: content,
         ).then((response) {
             setState(() { isLoading = false; });
-            if (jsonDecode(response)["tid"] != null) {
+            if (response.data["tid"] != null) {
                 Future.delayed(Duration(milliseconds: 2100), () { Navigator.pop(context); });
                 _loadingDialogController.changeState("success", "动态发布成功");
             } else {

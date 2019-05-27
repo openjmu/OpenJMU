@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:async';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:dio/dio.dart';
@@ -157,13 +156,18 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
         if (!_isLoading && _canLoadMore) {
             _isLoading = true;
 
-            var result = await PraiseAPI.getPraiseList(true, _lastValue, additionAttrs: widget._praiseController.additionAttrs);
+            Map result = (await PraiseAPI.getPraiseList(
+                true,
+                _lastValue,
+                additionAttrs: widget._praiseController.additionAttrs,
+            )).data;
             List<Praise> praiseList = [];
-            List _topics = jsonDecode(result)['topics'];
-            var _total = jsonDecode(result)['total'], _count = jsonDecode(result)['count'];
+            List _topics = result['topics'];
+            var _total = result['total'], _count = result['count'];
+            if (_total is String) _total = int.parse(_total);
+            if (_count is String) _count = int.parse(_count);
             for (var praiseData in _topics) praiseList.add(PraiseAPI.createPraise(praiseData));
             _praiseList.addAll(praiseList);
-//            error = !result['success'];
 
             if (mounted) {
                 setState(() {
@@ -184,13 +188,18 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
 
             _lastValue = 0;
 
-            var result = await PraiseAPI.getPraiseList(false, _lastValue, additionAttrs: widget._praiseController.additionAttrs);
+            Map result = (await PraiseAPI.getPraiseList(
+                false,
+                _lastValue,
+                additionAttrs: widget._praiseController.additionAttrs,
+            )).data;
             List<Praise> praiseList = [];
-            List _topics = jsonDecode(result)['topics'];
-            var _total = jsonDecode(result)['total'], _count = jsonDecode(result)['count'];
+            List _topics = result['topics'];
+            var _total = result['total'], _count = result['count'];
+            if (_total is String) _total = int.parse(_total);
+            if (_count is String) _count = int.parse(_count);
             for (var praiseData in _topics) praiseList.add(PraiseAPI.createPraise(praiseData));
             _praiseList.addAll(praiseList);
-//            error = !result['success'] ?? false;
 
             if (mounted) {
                 setState(() {
@@ -248,7 +257,7 @@ class _PraiseInPostListState extends State<PraiseInPostList> {
         });
         try {
             var list = await PraiseAPI.getPraiseInPostList(widget.post.id);
-            List<dynamic> response = jsonDecode(list)['praisors'];
+            List<dynamic> response = list.data['praisors'];
             List<Praise> praises = [];
             response.forEach((praise) {
                 praises.add(PraiseAPI.createPraiseInPost(praise));

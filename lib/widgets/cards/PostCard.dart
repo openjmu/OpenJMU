@@ -57,28 +57,29 @@ class _PostCardState extends State<PostCard> {
                 isDetail = false;
             });
         }
-        Constants.eventBus.on<ForwardInPostUpdatedEvent>().listen((event) {
-            if (mounted && event.postId == widget.post.id) {
-                setState(() {
-                    widget.post.forwards = event.count;
-                });
-            }
-        });
-        Constants.eventBus.on<CommentInPostUpdatedEvent>().listen((event) {
-            if (mounted && event.postId == widget.post.id) {
-                setState(() {
-                    widget.post.comments = event.count;
-                });
-            }
-        });
-        Constants.eventBus.on<PraiseInPostUpdatedEvent>().listen((event) {
-            if (this.mounted && event.postId == widget.post.id) {
-                setState(() {
-                    if (event.isLike != null) widget.post.isLike = event.isLike;
-                    widget.post.praises = event.count;
-                });
-            }
-        });
+        Constants.eventBus
+            ..on<ForwardInPostUpdatedEvent>().listen((event) {
+                if (mounted && event.postId == widget.post.id) {
+                    setState(() {
+                        widget.post.forwards = event.count;
+                    });
+                }
+            })
+            ..on<CommentInPostUpdatedEvent>().listen((event) {
+                if (mounted && event.postId == widget.post.id) {
+                    setState(() {
+                        widget.post.comments = event.count;
+                    });
+                }
+            })
+            ..on<PraiseInPostUpdatedEvent>().listen((event) {
+                if (this.mounted && event.postId == widget.post.id) {
+                    setState(() {
+                        if (event.isLike != null) widget.post.isLike = event.isLike;
+                        widget.post.praises = event.count;
+                    });
+                }
+            });
     }
 
     GestureDetector getPostAvatar(context, post) => GestureDetector(

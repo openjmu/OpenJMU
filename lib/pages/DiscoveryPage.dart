@@ -34,7 +34,8 @@ class DiscoveryPageState extends State<DiscoveryPage> {
         updateHello();
         getSignStatus();
         getCurrentWeek();
-        if (this.mounted) updateHelloTimer = Timer.periodic(Duration(minutes: 1), (timer) {
+        if (this.mounted) updateHelloTimer = Timer.periodic(
+                Duration(minutes: 1), (timer) {
             updateHello();
         });
     }
@@ -46,9 +47,9 @@ class DiscoveryPageState extends State<DiscoveryPage> {
     }
 
     Future<Null> getSignStatus() async {
-        var _signed = jsonDecode(await SignAPI.getTodayStatus())['status'];
-        var _signedCount = jsonDecode(await SignAPI.getSignList())['signdata']?.length;
-        var _userTasks = jsonDecode(await NetUtils.getWithCookieSet(Api.task));
+        var _signed = (await SignAPI.getTodayStatus()).data['status'];
+        var _signedCount = (await SignAPI.getSignList()).data['signdata']?.length;
+        var _userTasks = (await NetUtils.getWithCookieSet(Api.task)).data;
         setState(() {
             this.signedCount = _signedCount;
             this.signed = _signed == 1 ? true : false;
@@ -59,7 +60,7 @@ class DiscoveryPageState extends State<DiscoveryPage> {
     }
 
     Future<Null> getCurrentWeek() async {
-        String _day = jsonDecode(await DateAPI.getCurrentWeek())['start'];
+        String _day = jsonDecode((await DateAPI.getCurrentWeek()).data)['start'];
         DateTime startDate = DateTime.parse(_day);
         int difference = startDate.difference(DateTime.now()).inDays;
         if (difference < 0) {
@@ -93,9 +94,7 @@ class DiscoveryPageState extends State<DiscoveryPage> {
 
     void requestSign() async {
         if (!signed) {
-            setState(() {
-                signing = true;
-            });
+            setState(() { signing = true; });
             SignAPI.requestSign().then((response) {
                 setState(() {
                     signed = true;

@@ -42,25 +42,26 @@ class SplashState extends State<SplashPage> {
         Future.delayed(Duration(seconds: 5), () {
             if (this.mounted) setState(() {showLoading = true;});
         });
-        Constants.eventBus.on<ConnectivityChangeEvent>().listen((event) {
-            if (this.mounted) checkOnline(event);
-        });
-        Constants.eventBus.on<TicketGotEvent>().listen((event) {
-            if (this.mounted) {
-                setState(() {
-                    this.isUserLogin = true;
-                    navigate();
-                });
-            }
-        });
-        Constants.eventBus.on<TicketFailedEvent>().listen((event) {
-            if (this.mounted) {
-                setState(() {
-                    this.isUserLogin = false;
-                    navigate();
-                });
-            }
-        });
+        Constants.eventBus
+            ..on<ConnectivityChangeEvent>().listen((event) {
+                if (this.mounted) checkOnline(event);
+            })
+            ..on<TicketGotEvent>().listen((event) {
+                if (this.mounted) {
+                    setState(() {
+                        this.isUserLogin = true;
+                        navigate();
+                    });
+                }
+            })
+            ..on<TicketFailedEvent>().listen((event) {
+                if (this.mounted) {
+                    setState(() {
+                        this.isUserLogin = false;
+                        navigate();
+                    });
+                }
+            });
     }
 
     void checkOnline(event) {

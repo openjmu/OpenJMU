@@ -34,7 +34,5 @@ class PostSquareListPageState extends State<PostSquareListPage> {
     }
 
     @override
-    Widget build(BuildContext context) {
-        return CupertinoScrollbar(child: _post);
-    }
+    Widget build(BuildContext context) => CupertinoScrollbar(child: _post);
 }

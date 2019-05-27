@@ -17,7 +17,7 @@ class ChangeThemePageState extends State<ChangeThemePage> {
     @override
     void initState() {
         super.initState();
-        Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
+        Constants.eventBus..on<ChangeThemeEvent>().listen((event) {
             if (this.mounted) setState(() {
                 ThemeUtils.currentColorTheme = event.color;
                 currentColor = event.color;

@@ -63,20 +63,21 @@ class MyInfoPageState extends State<MyInfoPage> {
                 }
             });
         });
-        Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
-            if (this.mounted) {
-                setState(() {
-                    themeColor = event.color;
-                });
-            }
-        });
-        Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
-            if (this.mounted) {
-                setState(() {
-                    isDark = event.isDarkState;
-                });
-            }
-        });
+        Constants.eventBus
+            ..on<ChangeThemeEvent>().listen((event) {
+                if (this.mounted) {
+                    setState(() {
+                        themeColor = event.color;
+                    });
+                }
+            })
+            ..on<ChangeBrightnessEvent>().listen((event) {
+                if (this.mounted) {
+                    setState(() {
+                        isDark = event.isDarkState;
+                    });
+                }
+            });
     }
 
     Widget renderRow(context, i) {

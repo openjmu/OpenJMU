@@ -20,107 +20,82 @@ class NetUtils {
         dio.interceptors.add(CookieManager(CookieJar()));
         dio.interceptors.add(InterceptorsWrapper(
             onError: (DioError e) {
-                print("Error: ${e.message}");
+                print("DioError: ${e.message}");
+                print("DioError response code: ${e.response.statusCode}");
                 return e;
             },
         ));
     }
 
-    static Future<String> get(String url, {data}) async {
-        Response response = await dio.get(
-            url,
-            queryParameters: data,
-        );
-        return response.toString();
-    }
+    static Future<Response> get(String url, {data}) async => await dio.get(
+        url,
+        queryParameters: data,
+    );
 
-    static Future<String> getWithHeaderSet(String url, {data}) async {
-        Response response = await dio.get(
-            url,
-            queryParameters: data,
-            options: Options(
-                headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-            ),
-        );
-        return response.toString();
-    }
+    static Future<Response> getWithHeaderSet(String url, {data}) async => await dio.get(
+        url,
+        queryParameters: data,
+        options: Options(
+            headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+        ),
+    );
 
-    static Future<String> getWithCookieSet(String url, {data, cookies}) async {
-        Response response = await dio.get(
-            url,
-            queryParameters: data,
-            options: Options(
-                cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
-            ),
-        );
-        return response.toString();
-    }
+    static Future<Response> getWithCookieSet(String url, {data, cookies}) async => await dio.get(
+        url,
+        queryParameters: data,
+        options: Options(
+            cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
+        ),
+    );
 
-    static Future getPlainWithCookieSet(String url, {data}) async {
-        Response response = await dio.get(
-            url,
-            queryParameters: data,
-            options: Options(
-                cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
-                responseType: ResponseType.plain,
-            ),
-        );
-        return response;
-    }
+    static Future<Response> getPlainWithCookieSet(String url, {data}) async => await dio.get(
+        url,
+        queryParameters: data,
+        options: Options(
+            cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
+            responseType: ResponseType.plain,
+        ),
+    );
 
-    static Future<String> getWithCookieAndHeaderSet(String url, {data}) async {
-        Response response = await dio.get(
-            url,
-            queryParameters: data,
-            options: Options(
-                cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
-                headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-            ),
-        );
-        return response.toString();
-    }
+    static Future<Response> getWithCookieAndHeaderSet(String url, {data}) async => await dio.get(
+        url,
+        queryParameters: data,
+        options: Options(
+            cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
+            headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+//            headers: DataUtils.buildPostHeaders("just a test"),
+        ),
+    );
 
-    static Future<String> post(String url, {data}) async {
-        Response response = await dio.post(
-            url,
-            data: data,
-        );
-        return response.toString();
-    }
+    static Future<Response> post(String url, {data}) async => await dio.post(
+        url,
+        data: data,
+    );
 
-    static Future<String> postWithCookieSet(String url, {data}) async {
-        Response response = await dio.post(
-            url,
-            data: data,
-            options: Options(
-                cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
-            ),
-        );
-        return response.toString();
-    }
+    static Future<Response> postWithCookieSet(String url, {data}) async => await dio.post(
+        url,
+        data: data,
+        options: Options(
+            cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
+        ),
+    );
 
-    static Future<String> postWithCookieAndHeaderSet(String url, {data}) async {
-        Response response = await dio.post(
-            url,
-            data: data,
-            options: Options(
-                cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
-                headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-            ),
-        );
-        return response.toString();
-    }
+    static Future<Response> postWithCookieAndHeaderSet(String url, {data}) async => await dio.post(
+        url,
+        data: data,
+        options: Options(
+            cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
+            headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+        ),
+    );
 
-    static Future<String> deleteWithCookieAndHeaderSet(String url, {data}) async {
-        Response response = await dio.delete(
-            url,
-            data: data,
-            options: Options(
-                cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
-                headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-            ),
-        );
-        return response.toString();
-    }
+    static Future<Response> deleteWithCookieAndHeaderSet(String url, {data}) async => await dio.delete(
+        url,
+        data: data,
+        options: Options(
+            cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
+            headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+        ),
+    );
 
 }
