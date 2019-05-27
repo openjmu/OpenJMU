@@ -156,9 +156,9 @@ class PostAPI {
             data: jsonEncode({"tids": postIds}),
         );
     }
-    static deletePost(int postId) {
-        return NetUtils.deleteWithCookieAndHeaderSet("${Api.postContent}/tid/$postId");
-    }
+    static deletePost(int postId) => NetUtils.deleteWithCookieAndHeaderSet(
+        "${Api.postContent}/tid/$postId",
+    );
 
     static postForward(String content, int postId, bool replyAtTheMeanTime) async {
         Map<String, dynamic> data = {
@@ -221,9 +221,9 @@ class CommentAPI {
         }
         return NetUtils.getWithCookieAndHeaderSet(_commentUrl);
     }
-    static getCommentInPostList(int id) async {
-        return NetUtils.getWithCookieAndHeaderSet("${Api.postCommentsList}$id");
-    }
+    static getCommentInPostList(int id) async => NetUtils.getWithCookieAndHeaderSet(
+        "${Api.postCommentsList}$id",
+    );
 
     static postComment(String content, int postId, bool forwardAtTheMeanTime, {int replyToId}) async {
         Map<String, dynamic> data = {
@@ -241,9 +241,9 @@ class CommentAPI {
         return NetUtils.postWithCookieAndHeaderSet(url, data: data);
     }
 
-    static deleteComment(int postId, int commentId) async {
-        return NetUtils.deleteWithCookieAndHeaderSet("${Api.postRequestComment}$postId/rid/$commentId");
-    }
+    static deleteComment(int postId, int commentId) async => NetUtils.deleteWithCookieAndHeaderSet(
+        "${Api.postRequestComment}$postId/rid/$commentId",
+    );
 
     static Comment createComment(itemData) {
         String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
@@ -277,6 +277,7 @@ class CommentAPI {
         return _comment;
     }
     static Comment createCommentInPost(itemData) {
+        print("(package:OpenJMU/widgets/dialogs/DeleteDialog.dart:49:65)");
         String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
         String _commentTime = DateTime.fromMillisecondsSinceEpoch(
             itemData['post_time'] * 1000,
@@ -299,7 +300,7 @@ class CommentAPI {
             0,
             null,
             null,
-            null,
+            itemData['post'],
         );
         return _comment;
     }
@@ -317,10 +318,9 @@ class PraiseAPI {
         return NetUtils.getWithCookieAndHeaderSet(_praiseUrl);
     }
 
-    static getPraiseInPostList(postId) {
-        return NetUtils.getWithCookieAndHeaderSet("${Api.postPraisesList}$postId");
-    }
-
+    static getPraiseInPostList(postId) => NetUtils.getWithCookieAndHeaderSet(
+        "${Api.postPraisesList}$postId",
+    );
 
     static requestPraise(id, isPraise) async {
         if (isPraise) {

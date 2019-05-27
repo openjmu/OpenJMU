@@ -48,6 +48,27 @@ class Post {
     @override
     int get hashCode => id.hashCode;
 
+    @override
+    String toString() {
+        return "Post("
+                "\n    id: $id,"
+                "\n    uid: $uid,"
+                "\n    nickname: $nickname,"
+                "\n    avatar: $avatar,"
+                "\n    postTime: $postTime,"
+                "\n    from: $from,"
+                "\n    glances: $glances,"
+                "\n    category: $category,"
+                "\n    content: $content,"
+                "\n    pics: $pics,"
+                "\n    forwards: $forwards,"
+                "\n    comments: $comments,"
+                "\n    praises: $praises,"
+                "\n    rootTopic: $rootTopic,"
+                "\n    isLike: $isLike"
+                "\n)";
+    }
+
     Post copy() {
         return Post(id,uid, nickname, avatar, postTime, from, glances, category, content, pics.sublist(0), forwards, comments, praises, rootTopic, isLike: isLike);
     }

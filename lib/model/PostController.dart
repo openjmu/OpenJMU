@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -231,15 +230,16 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
         if (!_isLoading && _canLoadMore) {
             _isLoading = true;
 
-            var result = await PostAPI.getPostList(
+            Map result = (await PostAPI.getPostList(
                 widget._postController.postType,
-                widget._postController.isFollowed, true, _lastValue,
+                widget._postController.isFollowed, false, _lastValue,
                 additionAttrs: widget._postController.additionAttrs,
-            );
+            )).data;
             List<Post> postList = [];
-            List _topics = jsonDecode(result)['topics'];
-            var _total = jsonDecode(result)['total'], _count = jsonDecode(result)['count'];
+            List _topics = result['topics'];
+            var _total = result['total'], _count = result['count'];
             if (_total is String) _total = int.parse(_total);
+            if (_count is String) _count = int.parse(_count);
             for (var postData in _topics) {
                 postList.add(PostAPI.createPost(postData['topic']));
                 _idList.add(
@@ -270,15 +270,17 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             _postList.clear();
             _lastValue = 0;
 
-            var result = await PostAPI.getPostList(
+            Map result = (await PostAPI.getPostList(
                 widget._postController.postType,
                 widget._postController.isFollowed, false, _lastValue,
                 additionAttrs: widget._postController.additionAttrs,
-            );
+            )).data;
             List<Post> postList = [];
             List<int> idList = [];
-            List _topics = jsonDecode(result)['topics'];
-            var _total = jsonDecode(result)['total'], _count = jsonDecode(result)['count'];
+            List _topics = result['topics'];
+            var _total = result['total'], _count = result['count'];
+            if (_total is String) _total = int.parse(_total);
+            if (_count is String) _count = int.parse(_count);
             for (var postData in _topics) {
                 if (postData['topic'] != null && postData != "") {
                     postList.add(PostAPI.createPost(postData['topic']));
@@ -354,7 +356,7 @@ class _ForwardInPostListState extends State<ForwardInPostList> {
 
     Future<Null> _getForwardList() async {
         var list = await PostAPI.getForwardInPostList(widget.post.id);
-        List<dynamic> response = jsonDecode(list)['topics'];
+        List<dynamic> response = list.data['topics'];
         List<Post> posts = [];
         response.forEach((post) {
             posts.add(PostAPI.createPost(post['topic']));

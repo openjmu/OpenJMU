@@ -91,7 +91,7 @@ class DataUtils {
             };
         }
         NetUtils.post(Api.login, data: params).then((response) {
-            Map<String, dynamic> data = jsonDecode(response);
+            Map<String, dynamic> data = response.data;
             Map<String, dynamic> _map = {
                 "uid": data["uid"]
             };
@@ -104,7 +104,7 @@ class DataUtils {
                 data: _map,
                 cookies: cookies,
             ).then((response) {
-                Map<String, dynamic> user = jsonDecode(response);
+                Map<String, dynamic> user = response.data;
                 Map<String, dynamic> userInfo = {
                     'sid': data['sid'],
                     'ticket': data['ticket'],
@@ -171,7 +171,7 @@ class DataUtils {
             "${Api.userBasicInfo}?uid=${uid ?? UserUtils.currentUser.uid}",
             cookies: buildPHPSESSIDCookies(UserUtils.currentUser.sid),
         ).then((response) {
-            setUserBasicInfo(jsonDecode(response));
+            setUserBasicInfo(response.data);
         }).catchError((e) {
             print(e);
             print(e.toString());
@@ -271,8 +271,8 @@ class DataUtils {
                 };
             }
             NetUtils.post(Api.loginTicket, data: params).then((response) {
-                debugPrint("sid: ${jsonDecode(response)['sid']}");
-                updateSid(jsonDecode(response)).then((whatever) {
+                debugPrint("sid: ${response.data['sid']}");
+                updateSid(response.data).then((whatever) {
                     getUserBasicInfo();
                 });
                 Constants.eventBus.fire(new TicketGotEvent());
@@ -342,7 +342,7 @@ class DataUtils {
             NetUtils.getWithCookieAndHeaderSet(
                 Api.postUnread,
             ).then((response) {
-                Map<String, dynamic> data = jsonDecode(response);
+                Map<String, dynamic> data = response.data;
                 int comment = int.parse(data['cmt']);
                 int postsAt = int.parse(data['t_at']);
                 int commsAt = int.parse(data['cmt_at']);

@@ -36,14 +36,15 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     void initState() {
         super.initState();
         DataUtils.resetTheme();
-        Constants.eventBus.on<LoginEvent>().listen((event) {
-            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)));
-        });
-        Constants.eventBus.on<LoginFailedEvent>().listen((event) {
-            setState(() {
-                _loginButtonDisabled = false;
+        Constants.eventBus
+            ..on<LoginEvent>().listen((event) {
+                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)));
+            })
+            ..on<LoginFailedEvent>().listen((event) {
+                setState(() {
+                    _loginButtonDisabled = false;
+                });
             });
-        });
     }
 
     int last = 0;

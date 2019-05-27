@@ -1218,11 +1218,14 @@ class _FlexibleSpaceBarWithUserInfoState extends State<FlexibleSpaceBarWithUserI
                 final double paddingYScaleValue =
                 Tween<double>(
                     begin: widget.paddingBottom + (widget.tags != null ? 80 : 58) + widget.bottomSize,
-                    end: 16 + widget.bottomSize,
+                    end: 14 + widget.bottomSize,
                 ).transform(t);
 
                 final EdgeInsetsGeometry transformedPadding =
-                EdgeInsetsDirectional.only(start: paddingXScaleValue, bottom: paddingYScaleValue);
+                EdgeInsetsDirectional.only(
+                    start: paddingXScaleValue,
+                    bottom: paddingYScaleValue,
+                );
 
                 children.add(Positioned(
                     left: 16.0,

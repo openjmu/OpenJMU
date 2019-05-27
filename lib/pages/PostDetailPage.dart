@@ -75,53 +75,54 @@ class PostDetailPageState extends State<PostDetailPage> {
         PostAPI.glancePost(widget.post.id);
         _post = new PostCard(widget.post, index: widget.index, fromPage: widget.fromPage, isDetail: true);
 
-        Constants.eventBus.on<PostDeletedEvent>().listen((event) {
-            if (this.mounted && event.postId == widget.post.id) {
-                Future.delayed(Duration(milliseconds: 2200), () { Navigator.of(context).pop(); });
-            }
-        });
-        Constants.eventBus.on<PostForwardedEvent>().listen((event) {
-            if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
-                setState(() { this.forwards++; });
-                forwardInPostController.reload();
-            }
-        });
-        Constants.eventBus.on<PostForwardDeletedEvent>().listen((event) {
-            if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
-                setState(() { this.forwards--; });
-                forwardInPostController.reload();
-            }
-        });
-        Constants.eventBus.on<PostCommentedEvent>().listen((event) {
-            if (this.mounted && event.postId == widget.post.id && this.comments != null) {
-                setState(() { this.comments++; });
-                commentInPostController.reload();
-            }
-        });
-        Constants.eventBus.on<PostCommentDeletedEvent>().listen((event) {
-            if (this.mounted && event.postId == widget.post.id && this.comments != null) {
-                setState(() { this.comments--; });
-                commentInPostController.reload();
-            }
-        });
-        Constants.eventBus.on<ForwardInPostUpdatedEvent>().listen((event) {
-            if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
-                if (event.count < this.forwards) {
-                    Constants.eventBus.fire(new PostForwardDeletedEvent(widget.post.id, event.count));
+        Constants.eventBus
+            ..on<PostDeletedEvent>().listen((event) {
+                if (this.mounted && event.postId == widget.post.id) {
+                    Future.delayed(Duration(milliseconds: 2200), () { Navigator.of(context).pop(); });
                 }
-                setState(() { this.forwards = event.count; });
-            }
-        });
-        Constants.eventBus.on<CommentInPostUpdatedEvent>().listen((event) {
-            if (this.mounted && event.postId == widget.post.id && this.comments != null) {
-                setState(() { this.comments = event.count; });
-            }
-        });
-        Constants.eventBus.on<PraiseInPostUpdatedEvent>().listen((event) {
-            if (this.mounted && event.postId == widget.post.id && this.praises != null) {
-                setState(() { this.praises = event.count; });
-            }
-        });
+            })
+            ..on<PostForwardedEvent>().listen((event) {
+                if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
+                    setState(() { this.forwards++; });
+                    forwardInPostController.reload();
+                }
+            })
+            ..on<PostForwardDeletedEvent>().listen((event) {
+                if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
+                    setState(() { this.forwards--; });
+                    forwardInPostController.reload();
+                }
+            })
+            ..on<PostCommentedEvent>().listen((event) {
+                if (this.mounted && event.postId == widget.post.id && this.comments != null) {
+                    setState(() { this.comments++; });
+                    commentInPostController.reload();
+                }
+            })
+            ..on<PostCommentDeletedEvent>().listen((event) {
+                if (this.mounted && event.postId == widget.post.id && this.comments != null) {
+                    setState(() { this.comments--; });
+                    commentInPostController.reload();
+                }
+            })
+            ..on<ForwardInPostUpdatedEvent>().listen((event) {
+                if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
+                    if (event.count < this.forwards) {
+                        Constants.eventBus.fire(new PostForwardDeletedEvent(widget.post.id, event.count));
+                    }
+                    setState(() { this.forwards = event.count; });
+                }
+            })
+            ..on<CommentInPostUpdatedEvent>().listen((event) {
+                if (this.mounted && event.postId == widget.post.id && this.comments != null) {
+                    setState(() { this.comments = event.count; });
+                }
+            })
+            ..on<PraiseInPostUpdatedEvent>().listen((event) {
+                if (this.mounted && event.postId == widget.post.id && this.praises != null) {
+                    setState(() { this.praises = event.count; });
+                }
+            });
     }
 
     @override

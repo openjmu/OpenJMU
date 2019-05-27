@@ -31,16 +31,17 @@ class AppCenterPageState extends State<AppCenterPage> {
     void initState() {
         super.initState();
         _futureBuilderFuture = getAppList();
-        Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
-            if (this.mounted && event.tabIndex == 1) {
-                _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
-            }
-        });
-        Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
-            setState(() {
-                themeColor = event.color;
+        Constants.eventBus
+            ..on<ScrollToTopEvent>().listen((event) {
+                if (this.mounted && event.tabIndex == 1) {
+                    _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
+                }
+            })
+            ..on<ChangeThemeEvent>().listen((event) {
+                setState(() {
+                    themeColor = event.color;
+                });
             });
-        });
     }
 
     WebApp createWebApp(webAppData) {

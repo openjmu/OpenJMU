@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -185,16 +184,17 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
         if (!_isLoading && _canLoadMore) {
             _isLoading = true;
 
-            var result = await CommentAPI.getCommentList(
+            Map result = (await CommentAPI.getCommentList(
                 widget._commentController.commentType,
                 true,
                 _lastValue,
                 additionAttrs: widget._commentController.additionAttrs,
-            );
+            )).data;
             List<Comment> commentList = [];
-            List _topics = jsonDecode(result)['replylist'];
-            var _total = jsonDecode(result)['total'], _count = jsonDecode(result)['count'];
+            List _topics = result['replylist'];
+            var _total = result['total'], _count = result['count'];
             if (_total is String) _total = int.parse(_total);
+            if (_count is String) _count = int.parse(_count);
             for (var commentData in _topics) {
                 commentList.add(CommentAPI.createComment(commentData['reply']));
                 _idList.add(commentData['id']);
@@ -220,17 +220,18 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
 
             _lastValue = 0;
 
-            var result = await CommentAPI.getCommentList(
+            Map result = (await CommentAPI.getCommentList(
                 widget._commentController.commentType,
                 false,
                 _lastValue,
                 additionAttrs: widget._commentController.additionAttrs,
-            );
+            )).data;
             List<Comment> commentList = [];
             List<int> idList = [];
-            List _topics = jsonDecode(result)['replylist'];
-            var _total = jsonDecode(result)['total'], _count = jsonDecode(result)['count'];
+            List _topics = result['replylist'];
+            var _total = result['total'], _count = result['count'];
             if (_total is String) _total = int.parse(_total);
+            if (_count is String) _count = int.parse(_count);
             for (var commentData in _topics) {
                 commentList.add(CommentAPI.createComment(commentData['reply']));
                 idList.add(commentData['id']);
@@ -293,9 +294,10 @@ class _CommentInPostListState extends State<CommentInPostList> {
 
     Future<Null> _getCommentList() async {
         var list = await CommentAPI.getCommentInPostList(widget.post.id);
-        List<dynamic> response = jsonDecode(list)['replylist'];
+        List<dynamic> response = list.data['replylist'];
         List<Comment> comments = [];
         response.forEach((comment) {
+            comment['reply']['post'] = widget.post;
             comments.add(CommentAPI.createCommentInPost(comment['reply']));
         });
         if (this.mounted) {

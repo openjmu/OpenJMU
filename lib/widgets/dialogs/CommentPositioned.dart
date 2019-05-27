@@ -57,9 +57,7 @@ class CommentPositionedState extends State<CommentPositioned> {
             });
         });
         Constants.eventBus.on<AddEmoticonEvent>().listen((event) {
-            if (mounted && event.route == "comment") {
-                insertText(event.emoticon);
-            }
+            if (mounted && event.route == "comment") insertText(event.emoticon);
         });
     }
 
@@ -116,7 +114,7 @@ class CommentPositionedState extends State<CommentPositioned> {
                 showShortToast("评论成功");
                 setState(() { _commenting = false; });
                 Navigator.of(context).pop();
-                Constants.eventBus.fire(new PostCommentedEvent(widget.post.id, widget.post.comments));
+                Constants.eventBus.fire(new PostCommentedEvent(widget.post.id));
             });
         }
     }

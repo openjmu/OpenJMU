@@ -38,13 +38,13 @@ class PostForwardDeletedEvent {
 }
 class PostCommentedEvent {
     int postId;
-    PostCommentedEvent(int id, int comments) {
+    PostCommentedEvent(int id) {
         this.postId = id;
     }
 }
 class PostCommentDeletedEvent {
     int postId;
-    PostCommentDeletedEvent(int id, int comments) {
+    PostCommentDeletedEvent(int id) {
         this.postId = id;
     }
 }

@@ -139,7 +139,6 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
             Api.userAvatarUpload,
             data: _f,
         ).then((response) {
-            print(response);
             _controller.changeState("success", "头像更新成功");
             Future.delayed(Duration(milliseconds: 2200), () {
                 Navigator.pop(context);
