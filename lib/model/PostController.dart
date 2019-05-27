@@ -47,7 +47,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     final ScrollController _scrollController = ScrollController();
     Color currentColorTheme = ThemeUtils.currentColorTheme;
 
-    num _lastValue = 0;
+    int _lastValue = 0;
     bool _isLoading = false;
     bool _canLoadMore = true;
     bool _firstLoadComplete = false;
@@ -108,22 +108,23 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                 }
             }
         });
-        Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
-            if (mounted) {
-                setState(() {
-                    currentColorTheme = event.color;
-                });
-            }
-        });
-        Constants.eventBus.on<PostDeletedEvent>().listen((event) {
-            print("PostDeleted: ${event.postId} / ${event.page} / ${event.index}");
-            if (mounted && (event.page == "user") && event.index != null) {
-                setState(() {
-                    _idList.removeAt(event.index);
-                    _postList.removeAt(event.index);
-                });
-            }
-        });
+        Constants.eventBus
+            ..on<ChangeThemeEvent>().listen((event) {
+                if (mounted) {
+                    setState(() {
+                        currentColorTheme = event.color;
+                    });
+                }
+            })
+            ..on<PostDeletedEvent>().listen((event) {
+                print("PostDeleted: ${event.postId} / ${event.page} / ${event.index}");
+                if (mounted && (event.page == "user") && event.index != null) {
+                    setState(() {
+                        _idList.removeAt(event.index);
+                        _postList.removeAt(event.index);
+                    });
+                }
+            });
 
         _emptyChild = GestureDetector(
             onTap: () {},
@@ -232,7 +233,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
 
             Map result = (await PostAPI.getPostList(
                 widget._postController.postType,
-                widget._postController.isFollowed, false, _lastValue,
+                widget._postController.isFollowed, true, _lastValue,
                 additionAttrs: widget._postController.additionAttrs,
             )).data;
             List<Post> postList = [];
