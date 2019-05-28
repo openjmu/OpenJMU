@@ -24,7 +24,7 @@ class LoadingDialogState extends State<LoadingDialog> {
     @override
     void initState() {
         super.initState();
-        widget.controller._loadingDialogState = this;
+        widget.controller?._loadingDialogState = this;
         setState(() {
             this.text = widget.text;
             this.icon = CircularProgressIndicator(
@@ -57,7 +57,7 @@ class LoadingDialogState extends State<LoadingDialog> {
 
     @override
     Widget build(BuildContext context) {
-        if (!widget.isGlobal) {
+        if (!(widget.isGlobal ?? false)) {
             if (this.type != null && this.type != "loading") {
                 Future.delayed(duration, () { customPop ?? Navigator.pop(context); });
             } else if (this.type == "dismiss") {
@@ -66,8 +66,8 @@ class LoadingDialogState extends State<LoadingDialog> {
         }
         return WillPopScope(
             onWillPop: () async => false,
-            child: Material(
-                type: MaterialType.transparency,
+            child: Container(
+                color: Colors.black54,
                 child: Center(
                     child: SizedBox(
                         width: 120.0,

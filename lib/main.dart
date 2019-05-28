@@ -142,55 +142,62 @@ class JMUAppClientState extends State<JMUAppClient> {
         });
     }
 
+    ThemeData theme() {
+        return ThemeData(
+            platform: defaultTargetPlatform,
+            brightness: currentBrightness,
+            accentColor: currentThemeColor,
+            buttonColor: currentThemeColor,
+            cursorColor: currentThemeColor,
+            primaryColor: currentThemeColor,
+            primaryColorLight: currentThemeColor,
+            primaryColorDark: currentThemeColor,
+            primaryColorBrightness: currentBrightness,
+            textSelectionColor: currentThemeColor,
+            textSelectionHandleColor: currentThemeColor,
+            primaryIconTheme: IconThemeData(color: Colors.white),
+            appBarTheme: AppBarTheme(
+                actionsIconTheme: IconThemeData(color: Colors.white),
+                brightness: Brightness.dark,
+                color: currentThemeColor,
+                elevation: 0,
+                iconTheme: IconThemeData(color: Colors.white),
+                textTheme: Typography.dense2014,
+            ),
+            buttonTheme: ButtonThemeData(
+                textTheme: ButtonTextTheme.primary,
+                splashColor: currentThemeColor,
+                highlightColor: currentThemeColor,
+            ),
+        );
+    }
+
     @override
     Widget build(BuildContext context) {
-        return OKToast(
-            child: MaterialApp(
-                debugShowCheckedModeBanner: false,
-                routes: RouteUtils.routes,
-                title: "OpenJMU",
-                theme: ThemeData(
-                    platform: defaultTargetPlatform,
-                    brightness: currentBrightness,
-                    accentColor: currentThemeColor,
-                    buttonColor: currentThemeColor,
-                    cursorColor: currentThemeColor,
-                    primaryColor: currentThemeColor,
-                    primaryColorLight: currentThemeColor,
-                    primaryColorDark: currentThemeColor,
-                    primaryColorBrightness: currentBrightness,
-                    textSelectionColor: currentThemeColor,
-                    textSelectionHandleColor: currentThemeColor,
-                    primaryIconTheme: IconThemeData(color: Colors.white),
-                    appBarTheme: AppBarTheme(
-                        actionsIconTheme: IconThemeData(color: Colors.white),
-                        brightness: Brightness.dark,
-                        color: currentThemeColor,
-                        elevation: 0,
-                        iconTheme: IconThemeData(color: Colors.white),
-                        textTheme: Typography.dense2014,
-                    ),
-                    buttonTheme: ButtonThemeData(
-                        textTheme: ButtonTextTheme.primary,
-                        splashColor: currentThemeColor,
-                        highlightColor: currentThemeColor,
-                    ),
+        return Theme(
+            data: theme(),
+            child: OKToast(
+                child: MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    routes: RouteUtils.routes,
+                    title: "OpenJMU",
+                    theme: theme(),
+                    home: SplashPage(initIndex: initIndex),
+                    localizationsDelegates: [
+                        GlobalMaterialLocalizations.delegate,
+                        GlobalWidgetsLocalizations.delegate,
+                        ChineseCupertinoLocalizations.delegate,
+                    ],
+                    supportedLocales: Platform.isIOS
+                            ? [
+                        const Locale('en'),
+                        const Locale('zh'),
+                    ]
+                            : [
+                        const Locale('zh'),
+                        const Locale('en'),
+                    ],
                 ),
-                home: SplashPage(initIndex: initIndex),
-                localizationsDelegates: [
-                    GlobalMaterialLocalizations.delegate,
-                    GlobalWidgetsLocalizations.delegate,
-                    ChineseCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: Platform.isIOS
-                        ? [
-                    const Locale('en'),
-                    const Locale('zh'),
-                ]
-                        : [
-                    const Locale('zh'),
-                    const Locale('en'),
-                ],
             ),
         );
     }
