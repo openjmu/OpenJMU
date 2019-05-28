@@ -416,9 +416,17 @@ class PublishPostPageState extends State<PublishPostPage> {
                 builder: (BuildContext context) {
                     return StatefulBuilder(builder: (BuildContext ctx, state) {
                         if (imagesBin.length > 0) {
-                            return LoadingDialog("正在上传图片 (1/${imagesBin.length})", _loadingDialogController);
+                            return LoadingDialog(
+                                text: "正在上传图片 (1/${imagesBin.length})",
+                                controller: _loadingDialogController,
+                                isGlobal: false,
+                            );
                         } else {
-                            return LoadingDialog("正在发布动态...", _loadingDialogController);
+                            return LoadingDialog(
+                                text: "正在发布动态...",
+                                controller: _loadingDialogController,
+                                isGlobal: false,
+                            );
                         }
                     });
                 },
@@ -501,8 +509,12 @@ class PublishPostPageState extends State<PublishPostPage> {
         ).then((response) {
             setState(() { isLoading = false; });
             if (response.data["tid"] != null) {
-                Future.delayed(Duration(milliseconds: 2100), () { Navigator.pop(context); });
-                _loadingDialogController.changeState("success", "动态发布成功");
+                Future.delayed(Duration(milliseconds: 2100), () { Navigator.popUntil(context, (route) => route.isFirst); });
+                _loadingDialogController.changeState(
+                    "success",
+                    "动态发布成功",
+                    customPop: () {Navigator.popUntil(context, (route) => route.isFirst);},
+                );
             } else {
                 _loadingDialogController.changeState("failed", "动态发布失败");
             }

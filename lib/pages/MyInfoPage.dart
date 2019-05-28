@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:oktoast/oktoast.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -13,6 +14,7 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
+import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/SelectSplashDialog.dart';
 
 
@@ -40,7 +42,7 @@ class MyInfoPageState extends State<MyInfoPage> {
     bool isDark = false;
 
     /// For test page.
-    bool isTest = false;
+    bool isTest = true;
 
     @override
     void initState() {
@@ -132,8 +134,17 @@ class MyInfoPageState extends State<MyInfoPage> {
             showSelectSplashDialog(context);
         } else if (title == "测试页") {
 //            showDialog(context: context, builder: (_) => TestPage());
-            Navigator.pushNamed(context, "/test");
+//            Navigator.pushNamed(context, "/test");
 //            Navigator.pushNamed(context, "/notificationTest");
+            LoadingDialogController _c = LoadingDialogController();
+            ToastFuture _toast = showToastWidget(
+                LoadingDialog(text: "测试弹窗", controller: _c, isGlobal: true),
+                duration: Duration(seconds: 30),
+            );
+            Future.delayed(Duration(seconds: 2), () {
+                _c.changeState("success", "成功");
+            });
+            Future.delayed(Duration(seconds: 3), _toast.dismiss);
         } else if (title == "退出登录") {
             showLogoutDialog(context);
         } else if (title == "检查更新") {

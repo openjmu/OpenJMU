@@ -42,7 +42,11 @@ class DeleteDialog extends Dialog {
                         LoadingDialogController _loadingDialogController = LoadingDialogController();
                         showDialog(
                             context: context,
-                            builder: (BuildContext dialogContext) => LoadingDialog("正在删除$whatToDelete", _loadingDialogController),
+                            builder: (BuildContext dialogContext) => LoadingDialog(
+                                text: "正在删除$whatToDelete",
+                                controller: _loadingDialogController,
+                                isGlobal: false,
+                            ),
                         );
                         if (this.comment != null) {
                             print("Post ID: ${this.comment.post.id}");

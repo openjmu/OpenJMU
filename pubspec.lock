@@ -98,7 +98,7 @@ packages:
       name: extended_image
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.5"
+    version: "0.3.6"
   extended_image_library:
     dependency: transitive
     description:
@@ -283,7 +283,14 @@ packages:
       name: multi_image_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.3.2"
+    version: "4.3.3"
+  oktoast:
+    dependency: "direct main"
+    description:
+      name: oktoast
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.1.7"
   package_info:
     dependency: "direct main"
     description:

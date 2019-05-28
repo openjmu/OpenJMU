@@ -62,9 +62,10 @@ class DiscoveryPageState extends State<DiscoveryPage> {
     Future<Null> getCurrentWeek() async {
         String _day = jsonDecode((await DateAPI.getCurrentWeek()).data)['start'];
         DateTime startDate = DateTime.parse(_day);
-        int difference = startDate.difference(DateTime.now()).inDays;
+        DateTime currentDate = DateTime.now();
+        int difference = startDate.difference(currentDate).inDays - 1;
         if (difference < 0) {
-            int week = (difference / 7).floor().abs() + 1;
+            int week = (difference / 7).abs().ceil();
             if (week <= 20) setState(() {
               this.currentWeek = week;
             });
