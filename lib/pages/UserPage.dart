@@ -377,7 +377,11 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                             title: Text("查看大头像"),
                             onTap: () => Navigator.of(context)..pop()..push(CupertinoPageRoute(
                                 builder: (_) => ImageViewer(
-                                    0, [ImageBean(Api.userAvatarInSecure+"?uid=${widget.uid}&size=f640", 0)],
+                                    0, [ImageBean(
+                                    widget.uid,
+                                    Api.userAvatarInSecure+"?uid=${widget.uid}&size=f640",
+                                    0,
+                                )],
                                     needsClear: true,
                                 ),
                             )),
@@ -398,7 +402,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                 : Navigator.of(context).push(
             CupertinoPageRoute(
                 builder: (_) => ImageViewer(
-                    0, [ImageBean(Api.userAvatarInSecure+"?uid=${widget.uid}&size=f640", 0)],
+                    0, [ImageBean(widget.uid, Api.userAvatarInSecure+"?uid=${widget.uid}&size=f640", 0)],
                     needsClear: true,
                 ),
             ),

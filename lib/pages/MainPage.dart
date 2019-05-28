@@ -35,7 +35,7 @@ class MainPage extends StatefulWidget {
     State<StatefulWidget> createState() => MainPageState();
 }
 
-class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
+class MainPageState extends State<MainPage> {
     final List<String> bottomAppBarTitles = ['首页', '应用', '发现', '我的'];
     final List<IconData> bottomAppBarIcons = [
         Platform.isAndroid ? Icons.home : Ionicons.getIconData("ios-home"),
@@ -63,9 +63,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
     int userUid;
     String userSid;
-
-    @override
-    bool get wantKeepAlive => true;
 
     @override
     void initState() {
@@ -98,30 +95,27 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
             })
             ..on<LogoutEvent>().listen((event) {
                 notificationTimer?.cancel();
-                Navigator.of(context).pushReplacementNamed("/login");
+                Navigator.of(context).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
+            })
+            ..on<TicketFailedEvent>().listen((event) {
+                Navigator.of(context).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
             })
             ..on<HasUpdateEvent>().listen((event) {
-                if (this.mounted) {
-                    showDialog(
-                        context: context,
-                        builder: (_) => OTAUtils.updateDialog(context, event),
-                    );
-                }
+                if (this.mounted) showDialog(
+                    context: context,
+                    builder: (_) => OTAUtils.updateDialog(context, event),
+                );
             })
             ..on<ChangeThemeEvent>().listen((event) {
-                if (this.mounted) {
-                    setState(() {
-                        tabTextStyleSelected = TextStyle(color: event.color);
-                        currentThemeColor = event.color;
-                    });
-                }
+                if (this.mounted) setState(() {
+                    tabTextStyleSelected = TextStyle(color: event.color);
+                    currentThemeColor = event.color;
+                });
             })
             ..on<NotificationsChangeEvent>().listen((event) {
-                if (this.mounted) {
-                    setState(() {
-                        notifications = event.notifications;
-                    });
-                }
+                if (this.mounted) setState(() {
+                    notifications = event.notifications;
+                });
             });
     }
 
@@ -178,11 +172,11 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         if (now - lastBack > 800) {
             showShortToast("再按一次退出应用");
             lastBack = DateTime.now().millisecondsSinceEpoch;
-            return Future.value(false);
         } else {
             cancelToast();
-            return Future.value(true);
+            SystemNavigator.pop();
         }
+        return Future.value(false);
     }
 
     int lastAppBarTap = 0;
@@ -197,9 +191,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         }
     }
 
-    @mustCallSuper
+    @override
     Widget build(BuildContext context) {
-        super.build(context);
         _body = IndexedStack(
             children: pages,
             index: _tabIndex,

@@ -40,7 +40,11 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
         LoadingDialogController _loadingDialogController = LoadingDialogController();
         showDialog<Null>(
             context: context,
-            builder: (BuildContext context) => LoadingDialog("正在更新签名", _loadingDialogController),
+            builder: (BuildContext context) => LoadingDialog(
+                text: "正在更新签名",
+                controller: _loadingDialogController,
+                isGlobal: false,
+            ),
         );
         UserUtils.setSignature(_textEditingController.text).then((response) {
             _loadingDialogController.changeState("success", "签名更新成功");

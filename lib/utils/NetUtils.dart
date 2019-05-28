@@ -3,10 +3,11 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:cookie_jar/cookie_jar.dart';
-
+import 'package:oktoast/oktoast.dart';
 
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
 Dio dio = Dio();
 
@@ -21,7 +22,26 @@ class NetUtils {
         dio.interceptors.add(InterceptorsWrapper(
             onError: (DioError e) {
                 print("DioError: ${e.message}");
-                print("DioError response code: ${e.response.statusCode}");
+                if (e.response.statusCode == 401) {
+                    Duration duration = Duration(milliseconds: 1500);
+                    LoadingDialogController _c = LoadingDialogController();
+                    ToastFuture toast = showToastWidget(
+                        LoadingDialog(
+                            text: "正在更新用户状态",
+                            controller: _c,
+                            isGlobal: true,
+                        ),
+                        dismissOtherToast: true,
+                        duration: Duration(seconds: 30),
+                    );
+                    DataUtils.getTicket().then((response) {
+                        _c.changeState("success", "更新成功");
+                        Future.delayed(duration, toast.dismiss);
+                    }).catchError((e) {
+                        _c.changeState("error", "更新失败");
+                        Future.delayed(duration, toast.dismiss);
+                    });
+                }
                 return e;
             },
         ));

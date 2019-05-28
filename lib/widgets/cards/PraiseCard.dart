@@ -147,7 +147,8 @@ class PraiseCard extends StatelessWidget {
         if (data != null) {
             List<Widget> imagesWidget = [];
             for (var index = 0; index < data.length; index++) {
-                String imageUrl = data[index]['image_original'];
+                int imageID = data[index]['id'] is String ? int.parse(data[index]['id']) : data[index]['id'];
+                String imageUrl = data[index]['image_thumb'];
                 String urlInsecure = imageUrl.replaceAllMapped(RegExp(r"https://"), (match) => "http://");
                 imagesWidget.add(
                     GestureDetector(
@@ -158,7 +159,7 @@ class PraiseCard extends StatelessWidget {
                                     data.map<ImageBean>((f) {
                                         String _httpsUrl = f['image_original'];
                                         String url = _httpsUrl.replaceAllMapped(RegExp(r"https://"), (match) => "http://");
-                                        return ImageBean(url, this.praise.postId);
+                                        return ImageBean(imageID, url, this.praise.postId);
                                     }).toList(),
                                 );
                             }));

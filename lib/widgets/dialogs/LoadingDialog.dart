@@ -6,8 +6,9 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 class LoadingDialog extends StatefulWidget {
     final String text;
     final LoadingDialogController controller;
+    final bool isGlobal;
 
-    LoadingDialog(this.text, this.controller, {Key key}) : super(key: key);
+    LoadingDialog({Key key, this.text, this.controller, this.isGlobal}) : super(key: key);
 
     @override
     State<StatefulWidget> createState() => LoadingDialogState();
@@ -17,6 +18,8 @@ class LoadingDialogState extends State<LoadingDialog> {
     String type;
     Widget icon;
     String text;
+    Duration duration = Duration(milliseconds: 1500);
+    Function customPop;
 
     @override
     void initState() {
@@ -30,8 +33,10 @@ class LoadingDialogState extends State<LoadingDialog> {
         });
     }
 
-    void updateContent(String type, Widget icon, String text) {
+    void updateContent(String type, Widget icon, String text, Duration duration, {Function customPop}) {
+        this.customPop = customPop;
         setState(() {
+            if (duration != null) this.duration = duration;
             this.type = type;
             this.icon = icon;
             this.text = text;
@@ -52,10 +57,12 @@ class LoadingDialogState extends State<LoadingDialog> {
 
     @override
     Widget build(BuildContext context) {
-        if (this.type != null && this.type != "loading") {
-            Future.delayed(const Duration(milliseconds: 2000), () { Navigator.pop(context); });
-        } else if (this.type == "dismiss") {
-            Navigator.pop(context);
+        if (!widget.isGlobal) {
+            if (this.type != null && this.type != "loading") {
+                Future.delayed(duration, () { customPop ?? Navigator.pop(context); });
+            } else if (this.type == "dismiss") {
+                customPop ?? Navigator.pop(context);
+            }
         }
         return WillPopScope(
             onWillPop: () async => false,
@@ -103,16 +110,18 @@ class LoadingDialogController {
         _loadingDialogState.updateIcon(icon);
     }
 
-    void updateContent(type, icon, text) {
-        _loadingDialogState.updateContent(type, icon, text);
+    void updateContent(type, icon, text, duration) {
+        _loadingDialogState.updateContent(type, icon, text, duration);
     }
 
-    void changeState(String type, String text, {int duration}) {
+    void changeState(String type, String text, {Duration duration, Function customPop}) {
         switch (type) {
             case 'success':
                 _loadingDialogState.updateContent("success",
                     Icon(Icons.check_circle, color: Colors.green, size: 50.0),
                     text,
+                    duration,
+                    customPop: customPop
                 );
                 break;
             case 'failed':
@@ -122,6 +131,7 @@ class LoadingDialogController {
                         child: Icon(Icons.add_circle, color: Colors.redAccent, size: 50.0),
                     ),
                     text,
+                    duration,
                 );
                 break;
             case 'loading':
@@ -130,6 +140,7 @@ class LoadingDialogController {
                         valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
                     ),
                     text,
+                    duration,
                 );
                 break;
             case 'dismiss':
@@ -140,6 +151,7 @@ class LoadingDialogController {
                         ),
                     ),
                     text,
+                    duration,
                 );
                 break;
         }

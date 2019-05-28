@@ -233,7 +233,7 @@ class DataUtils {
     static Future getTicket() async {
         debugPrint("isIOS: ${Platform.isIOS}");
         debugPrint("isAndroid: ${Platform.isAndroid}");
-        getSpTicket().then((info) {
+        await getSpTicket().then((info) {
             Map<String, Object> clientInfo, params;
             if (Platform.isIOS) {
                 clientInfo = {

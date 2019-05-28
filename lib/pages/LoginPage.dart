@@ -125,12 +125,17 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                     color: Color.fromRGBO(255,255,255,0.2),
                 ),
                 child: TextFormField(
+                    onFieldSubmitted: (value) {
+                        if (_loginButtonDisabled) {
+                            return null;
+                        } else {
+                            loginButtonPressed(context);
+                        }
+                    },
                     onSaved: (String value) => _password = value,
                     obscureText: _isObscure,
                     validator: (String value) {
-                        if (value.isEmpty) {
-                            return '请输入密码';
-                        }
+                        if (value.isEmpty) return '请输入密码';
                     },
                     decoration: InputDecoration(
                         border: InputBorder.none,

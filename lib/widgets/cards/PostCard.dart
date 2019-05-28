@@ -185,7 +185,8 @@ class _PostCardState extends State<PostCard> {
         if (data != null) {
             List<Widget> imagesWidget = [];
             for (var index = 0; index < data.length; index++) {
-                String imageUrl = data[index]['image_original'];
+                int imageID = data[index]['id'] is String ? int.parse(data[index]['id']) : data[index]['id'];
+                String imageUrl = data[index]['image_thumb'];
                 String urlInsecure = imageUrl.replaceAllMapped(RegExp(r"https://"), (match) => "http://");
                 imagesWidget.add(GestureDetector(
                     onTap: () {
@@ -195,13 +196,13 @@ class _PostCardState extends State<PostCard> {
                                 data.map<ImageBean>((f) {
                                     String _httpsUrl = f['image_original'];
                                     String url = _httpsUrl.replaceAllMapped(RegExp(r"https://"), (match) => "http://");
-                                    return ImageBean(url, widget.post.id);
+                                    return ImageBean(imageID, url, widget.post.id);
                                 }).toList(),
                             );
                         }));
                     },
 //                    child: Hero(
-//                        tag: "$urlInsecure${index.toString()}${widget.post.id.toString()}",
+//                        tag: "$imageID${index.toString()}${widget.post.id.toString()}",
                         child: ExtendedImage.network(
                             urlInsecure,
                             fit: BoxFit.cover,

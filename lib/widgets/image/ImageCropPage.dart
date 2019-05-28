@@ -132,7 +132,11 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
         LoadingDialogController _controller = LoadingDialogController();
         showDialog<Null>(
             context: context,
-            builder: (BuildContext context) => LoadingDialog("正在更新头像", _controller),
+            builder: (BuildContext context) => LoadingDialog(
+                text: "正在更新头像",
+                controller: _controller,
+                isGlobal: true,
+            ),
         );
         FormData _f = await createForm(file);
         NetUtils.postWithCookieSet(
