@@ -16,7 +16,9 @@ class LoadingDialog extends StatefulWidget {
 
 class LoadingDialogState extends State<LoadingDialog> {
     String type;
-    Widget icon;
+    Widget icon = CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
+    );
     String text;
     Duration duration = Duration(milliseconds: 1500);
     Function customPop;
@@ -27,9 +29,6 @@ class LoadingDialogState extends State<LoadingDialog> {
         widget.controller?._loadingDialogState = this;
         setState(() {
             this.text = widget.text;
-            this.icon = CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-            );
         });
     }
 
