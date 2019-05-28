@@ -42,7 +42,7 @@ class MyInfoPageState extends State<MyInfoPage> {
     bool isDark = false;
 
     /// For test page.
-    bool isTest = true;
+    bool isTest = false;
 
     @override
     void initState() {
