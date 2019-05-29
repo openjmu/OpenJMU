@@ -34,6 +34,8 @@ class DataUtils {
     static final String spColorThemeIndex = "theme_colorThemeIndex";
     static final String spHomeSplashIndex = "home_splash_index";
 
+    static bool updatingTicket = false;
+
     static Future getSid() async {
         SharedPreferences sp = await SharedPreferences.getInstance();
         return sp.getString(spUserSid);

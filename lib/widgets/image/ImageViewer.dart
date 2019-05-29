@@ -10,6 +10,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:image_downloader/image_downloader.dart';
 
 import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/widgets/image/ImageGestureDetector.dart';
 
 class ImageViewer extends StatefulWidget {
     final int index;
@@ -22,32 +23,34 @@ class ImageViewer extends StatefulWidget {
     _ImageViewerState createState() => _ImageViewerState();
 }
 
-class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStateMixin {
+class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin {
     StreamController<int> rebuild = StreamController<int>.broadcast();
     int currentIndex;
 
-    AnimationController _animationController;
-    Animation _curveAnimation;
-    Animation<double> _animation;
-    Function doubleTapListener;
+    AnimationController _doubleTapAnimationController;
+    Animation _doubleTapCurveAnimation;
+    Animation<double> _doubleTapAnimation;
+    Function _doubleTapListener;
 
     @override
     void initState() {
+        super.initState();
         if (widget.needsClear ?? false) {
             clearMemoryImageCache();
             clearDiskCachedImages();
         }
         currentIndex = widget.index;
-        _animationController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
-        _curveAnimation = CurvedAnimation(parent: _animationController, curve: Curves.linear);
-        super.initState();
+
+        _doubleTapAnimationController = AnimationController(duration: const Duration(milliseconds: 200), vsync: this);
+        _doubleTapCurveAnimation = CurvedAnimation(parent: _doubleTapAnimationController, curve: Curves.linear);
+
     }
 
     @override
     void dispose() {
         super.dispose();
         rebuild?.close();
-        _animationController?.dispose();
+        _doubleTapAnimationController?.dispose();
     }
 
     Future<void> _downloadImage(url, {AndroidDestinationType destination}) async {
@@ -70,13 +73,26 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
     }
 
     Future<bool> _pop(context, bool fromImageTap) {
-        SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
-        if (fromImageTap) {
-            Navigator.of(context).pop();
-            return Future.value(true);
-        } else {
-            return Future.value(true);
-        }
+        if (fromImageTap) Navigator.of(context).pop();
+        return Future.value(true);
+    }
+
+    void updateAnimation(ExtendedImageGestureState state) {
+        double begin = state.gestureDetails.totalScale;
+        double end;
+        Offset pointerDownPosition = state.pointerDownPosition;
+        end = state.gestureDetails.totalScale == 1.0 ? 3.0 : 1.0;
+        _doubleTapAnimationController..stop()..reset();
+        _doubleTapAnimation?.removeListener(_doubleTapListener);
+        _doubleTapListener = () {
+            state.handleDoubleTap(
+                scale: _doubleTapAnimation.value,
+                doubleTapPosition: pointerDownPosition,
+            );
+        };
+        _doubleTapAnimation = Tween(begin: begin, end: end).animate(_doubleTapCurveAnimation)
+            ..addListener(_doubleTapListener);
+        _doubleTapAnimationController.forward();
     }
 
     @override
@@ -101,27 +117,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                                                     fit: BoxFit.contain,
                                                     cache: true,
                                                     mode: ExtendedImageMode.Gesture,
-                                                    onDoubleTap: (ExtendedImageGestureState state) {
-                                                        double begin = state.gestureDetails.totalScale;
-                                                        double end;
-                                                        Offset pointerDownPosition = state.pointerDownPosition;
-                                                        end = state.gestureDetails.totalScale == 1.0 ? 3.0 : 1.0;
-
-                                                        _animationController..stop()..reset();
-
-                                                        _animation?.removeListener(doubleTapListener);
-
-                                                        doubleTapListener = () {
-                                                            state.handleDoubleTap(
-                                                                scale: _animation.value,
-                                                                doubleTapPosition: pointerDownPosition,
-                                                            );
-                                                        };
-                                                        _animation = Tween(begin: begin, end: end).animate(_curveAnimation)
-                                                            ..addListener(doubleTapListener);
-
-                                                        _animationController.forward();
-                                                    },
+                                                    onDoubleTap: updateAnimation,
                                                     gestureConfig: GestureConfig(
                                                         initialScale: 1.0,
                                                         minScale: 1.0,
@@ -134,16 +130,17 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                                                 ),
                                                 padding: EdgeInsets.all(5.0),
                                             );
-//                            if (index == currentIndex) {
-//                              image = Hero(
-//                                tag: "${widget.pics[index].imageID}${index.toString()}${widget.pics[index].postId.toString()}",
-//                                child: image,
-//                              );
-//                            }
-                                            return GestureDetector(
-                                                onTap: () {
-                                                    _pop(context, true);
-                                                },
+//                                            if (index == currentIndex) {
+//                                                image = Hero(
+//                                                    tag: "${widget.pics[index].id}${index.toString()}${widget.pics[index].postId.toString()}",
+//                                                    child: image,
+//                                                );
+//                                            }
+                                            return ImageGestureDetector(
+                                                child: image,
+                                                context: context,
+                                                enableTapPop: true,
+                                                enablePullDownPop: true,
                                                 onLongPress: () {
                                                     showModalBottomSheet(context: context, builder: (_) => Column(
                                                         mainAxisSize: MainAxisSize.min,
@@ -159,7 +156,6 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                                                         ],
                                                     ));
                                                 },
-                                                child: image,
                                             );
                                         },
                                         itemCount: widget.pics.length,
@@ -167,9 +163,7 @@ class _ImageViewerState extends State<ImageViewer> with SingleTickerProviderStat
                                             currentIndex = index;
                                             rebuild.add(index);
                                         },
-                                        controller: PageController(
-                                            initialPage: currentIndex,
-                                        ),
+                                        controller: PageController(initialPage: currentIndex),
                                         scrollDirection: Axis.horizontal,
                                     ),
                                     Positioned(

@@ -186,7 +186,7 @@ class _PostCardState extends State<PostCard> {
             List<Widget> imagesWidget = [];
             for (var index = 0; index < data.length; index++) {
                 int imageID = data[index]['id'] is String ? int.parse(data[index]['id']) : data[index]['id'];
-                String imageUrl = data[index]['image_thumb'];
+                String imageUrl = data[index]['image_middle'];
                 String urlInsecure = imageUrl.replaceAllMapped(RegExp(r"https://"), (match) => "http://");
                 imagesWidget.add(GestureDetector(
                     onTap: () {
