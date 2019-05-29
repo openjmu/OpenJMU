@@ -20,9 +20,13 @@ class NetUtils {
         };
         dio.interceptors.add(CookieManager(CookieJar()));
         dio.interceptors.add(InterceptorsWrapper(
+            onRequest: (RequestOptions request) {
+                if (DataUtils.updatingTicket) return null;
+            },
             onError: (DioError e) {
                 print("DioError: ${e.message}");
-                if (e.response.statusCode == 401) {
+                if (e.response.statusCode == 401 && !DataUtils.updatingTicket) {
+                    DataUtils.updatingTicket = true;
                     Duration duration = Duration(milliseconds: 1500);
                     LoadingDialogController _c = LoadingDialogController();
                     ToastFuture toast = showToastWidget(
@@ -36,9 +40,10 @@ class NetUtils {
                     );
                     DataUtils.getTicket().then((response) {
                         _c.changeState("success", "更新成功");
-                        Future.delayed(duration, toast.dismiss);
                     }).catchError((e) {
                         _c.changeState("error", "更新失败");
+                    }).whenComplete(() {
+                        DataUtils.updatingTicket = false;
                         Future.delayed(duration, toast.dismiss);
                     });
                 }

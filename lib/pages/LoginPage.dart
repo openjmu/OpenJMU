@@ -371,6 +371,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         ],
                     ),
                 ),
+                resizeToAvoidBottomInset: false,
             ),
         );
     }

@@ -25,7 +25,7 @@ class AppCenterPageState extends State<AppCenterPage> {
     List webAppListData;
     int listTotalSize = 0;
 
-    var _futureBuilderFuture;
+    Future _futureBuilderFuture;
 
     @override
     void initState() {
@@ -38,7 +38,7 @@ class AppCenterPageState extends State<AppCenterPage> {
                 }
             })
             ..on<ChangeThemeEvent>().listen((event) {
-                setState(() {
+                if (this.mounted) setState(() {
                     themeColor = event.color;
                 });
             });

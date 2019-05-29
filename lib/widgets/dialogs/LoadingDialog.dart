@@ -63,37 +63,46 @@ class LoadingDialogState extends State<LoadingDialog> {
                 customPop ?? Navigator.pop(context);
             }
         }
-        return WillPopScope(
-            onWillPop: () async => false,
-            child: Container(
-                color: Colors.black54,
-                child: Center(
-                    child: SizedBox(
-                        width: 120.0,
-                        height: 120.0,
-                        child: Container(
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).canvasColor,
-                                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+        Widget child = Center(
+            child: SizedBox(
+                width: 120.0,
+                height: 120.0,
+                child: Container(
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).canvasColor,
+                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    ),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                            this.icon,
+                            Padding(
+                                padding: EdgeInsets.only(top: 20.0),
+                                child: Text(
+                                    this.text,
+                                    style: TextStyle(color: Theme.of(context).textTheme.body1.color, fontSize: 14.0),
+                                ),
                             ),
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                    this.icon,
-                                    Padding(
-                                        padding: EdgeInsets.only(top: 20.0),
-                                        child: Text(
-                                            this.text,
-                                            style: TextStyle(color: Theme.of(context).textTheme.body1.color, fontSize: 14.0),
-                                        ),
-                                    ),
-                                ],
-                            ),
-                        ),
+                        ],
                     ),
                 ),
             ),
+        );
+        if (widget.isGlobal ?? false) {
+            child = Container(
+                color: Colors.black54,
+                child: child,
+            );
+        } else {
+            child = Material(
+                type: MaterialType.transparency,
+                child: child,
+            );
+        }
+        return WillPopScope(
+            onWillPop: () async => false,
+            child: child,
         );
     }
 }
