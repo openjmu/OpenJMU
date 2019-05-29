@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -55,12 +55,10 @@ class AppCenterPageState extends State<AppCenterPage> {
         );
     }
 
-    Future getAppList() async {
-        return NetUtils.getPlainWithCookieSet(Api.webAppLists);
-    }
+    Future getAppList() async => NetUtils.getWithCookieSet(Api.webAppLists);
 
     Widget categoryListView(BuildContext context, AsyncSnapshot snapshot) {
-        List<dynamic> data = jsonDecode(snapshot.data.toString());
+        List<dynamic> data = snapshot.data?.data;
         Map<String, List<Widget>> appList = {};
         for (var i = 0; i < data.length; i++) {
             String url = data[i]['url'];
