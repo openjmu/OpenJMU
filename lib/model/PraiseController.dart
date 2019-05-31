@@ -48,7 +48,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
     bool error = false;
 
     Widget _body = Center(
-        child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)),
+        child: CircularProgressIndicator(),
     );
 
     List<Praise> _praiseList = [];
@@ -115,7 +115,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
                                                 width: 15.0,
                                                 height: 15.0,
                                                 child: Platform.isAndroid
-                                                        ? CircularProgressIndicator(strokeWidth: 2.0, valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme))
+                                                        ? CircularProgressIndicator(strokeWidth: 2.0)
                                                         : CupertinoActivityIndicator(),
                                             ),
                                             Text("　正在加载", style: TextStyle(fontSize: 14.0))
@@ -147,7 +147,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
         } else {
             return Container(
                 child: Center(
-                    child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme)),
+                    child: CircularProgressIndicator(),
                 ),
             );
         }
@@ -269,7 +269,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                     _praises.addAll(praises);
                 });
                 isLoading = false;
-                lastValue = _praises.last.id;
+                lastValue = _praises.isEmpty ? 0 : _praises.last.id;
             }
         } on DioError catch (e) {
             if (e.response != null) {
@@ -298,7 +298,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                     isLoading = false;
                     firstLoadComplete = true;
                 });
-                lastValue = _praises.last.id;
+                lastValue = _praises.isEmpty ? 0 : _praises.last.id;
             }
         } on DioError catch (e) {
             if (e.response != null) {
@@ -349,9 +349,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
             width: MediaQuery.of(context).size.width,
             padding: isLoading ? EdgeInsets.symmetric(vertical: 42) : EdgeInsets.zero,
             child: isLoading
-                    ? Center(child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)),
-            )
+                    ? Center(child: CircularProgressIndicator())
                     : Container(
                 color: Theme.of(context).cardColor,
                 padding: EdgeInsets.zero,
@@ -378,9 +376,6 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                                                 child: Platform.isAndroid
                                                         ? CircularProgressIndicator(
                                                     strokeWidth: 2.0,
-                                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                                        ThemeUtils.currentColorTheme,
-                                                    ),
                                                 )
                                                         : CupertinoActivityIndicator(),
                                             ),

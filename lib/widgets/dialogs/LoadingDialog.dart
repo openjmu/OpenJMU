@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import 'package:OpenJMU/utils/ThemeUtils.dart';
-
 class LoadingDialog extends StatefulWidget {
     final String text;
     final LoadingDialogController controller;
@@ -16,9 +14,7 @@ class LoadingDialog extends StatefulWidget {
 
 class LoadingDialogState extends State<LoadingDialog> {
     String type;
-    Widget icon = CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-    );
+    Widget icon = CircularProgressIndicator();
     String text;
     Duration duration = Duration(milliseconds: 1500);
     Function customPop;
@@ -144,20 +140,14 @@ class LoadingDialogController {
                 break;
             case 'loading':
                 _loadingDialogState.updateContent("loading",
-                    CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-                    ),
+                    CircularProgressIndicator(),
                     text,
                     duration,
                 );
                 break;
             case 'dismiss':
                 _loadingDialogState.updateContent("dismiss",
-                    CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            ThemeUtils.currentColorTheme,
-                        ),
-                    ),
+                    CircularProgressIndicator(),
                     text,
                     duration,
                 );

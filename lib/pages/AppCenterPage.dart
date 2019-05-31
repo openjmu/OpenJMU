@@ -94,9 +94,7 @@ class AppCenterPageState extends State<AppCenterPage> {
                 return Center(child: Text('正在加载'));
             case ConnectionState.waiting:
                 return Center(
-                    child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(themeColor),
-                    ),
+                    child: CircularProgressIndicator(),
                 );
             case ConnectionState.done:
                 if (snapshot.hasError) return Text('错误: ${snapshot.error}');

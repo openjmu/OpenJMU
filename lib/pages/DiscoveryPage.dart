@@ -186,10 +186,7 @@ class DiscoveryPageState extends State<DiscoveryPage> {
                                                             : SizedBox(
                                                         width: 20,
                                                         height: 20,
-                                                        child: CircularProgressIndicator(
-                                                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                                            strokeWidth: 3,
-                                                        ),
+                                                        child: CircularProgressIndicator(strokeWidth: 3),
                                                     )
                                                             : Icon(Icons.check_circle_outline, color: Colors.white),
                                                 ],
