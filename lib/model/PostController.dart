@@ -3,11 +3,19 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'dart:async';
 
+import 'package:dio/dio.dart';
+import 'package:extended_text/extended_text.dart';
+
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/model/SpecialText.dart';
+import 'package:OpenJMU/pages/SearchPage.dart';
+import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
 
 class PostController {
@@ -317,34 +325,37 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     }
 }
 
-class ForwardInPostController {
-    _ForwardInPostListState _forwardInPostListState;
+class ForwardListInPostController {
+    _ForwardListInPostState _forwardInPostListState;
 
     void reload() {
         _forwardInPostListState?._refreshData();
     }
 }
 
-class ForwardInPostList extends StatefulWidget {
+class ForwardListInPost extends StatefulWidget {
     final Post post;
-    final ForwardInPostController forwardInPostController;
+    final ForwardListInPostController forwardInPostController;
 
-    ForwardInPostList(this.post, this.forwardInPostController, {Key key}) : super(key: key);
+    ForwardListInPost(this.post, this.forwardInPostController, {Key key}) : super(key: key);
 
     @override
-    State createState() => _ForwardInPostListState();
+    State createState() => _ForwardListInPostState();
 }
 
-class _ForwardInPostListState extends State<ForwardInPostList> {
+class _ForwardListInPostState extends State<ForwardListInPost> {
     List<Post> _posts = [];
 
     bool isLoading = true;
+    bool canLoadMore = false;
+    bool firstLoadComplete = false;
+
+    int lastValue;
 
     @override
     void initState() {
         super.initState();
-        widget.forwardInPostController._forwardInPostListState = this;
-        _getForwardList();
+        _refreshList();
     }
 
     void _refreshData() {
@@ -352,32 +363,128 @@ class _ForwardInPostListState extends State<ForwardInPostList> {
             isLoading = true;
             _posts = [];
         });
-        _getForwardList();
+        _refreshList();
     }
 
-    Future<Null> _getForwardList() async {
-        var list = await PostAPI.getForwardInPostList(widget.post.id);
-        List<dynamic> response = list.data['topics'];
-        List<Post> posts = [];
-        response.forEach((post) {
-            posts.add(PostAPI.createPost(post['topic']));
-        });
-        if (this.mounted) {
-            setState(() {
-                Constants.eventBus.fire(new ForwardInPostUpdatedEvent(widget.post.id, posts.length));
-                isLoading = false;
-                _posts = posts;
+    Future<Null> _loadList() async {
+        isLoading = true;
+        try {
+            Map<String, dynamic> response = (await PostAPI.getForwardListInPost(
+                widget.post.id,
+                isMore: true,
+                lastValue: lastValue
+            ))?.data;
+            List<dynamic> list = response['topics'];
+            int total = response['total'] as int;
+            if (_posts.length + response['count'] as int < total) {
+                canLoadMore = true;
+            } else {
+                canLoadMore = false;
+            }
+            List<Post> posts = [];
+            list.forEach((post) {
+                posts.add(PostAPI.createPost(post['topic']));
             });
+            if (this.mounted) {
+                setState(() { _posts.addAll(posts); });
+                isLoading = false;
+                lastValue = _posts.last.id;
+            }
+        } on DioError catch (e) {
+            if (e.response != null) {
+                print(e.response.data);
+            } else {
+                print(e.request);
+                print(e.message);
+            }
+            return;
         }
     }
 
-    Widget forwardList() {
-        return isLoading
-                ? Center(child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-        ))
-                : ForwardCardInPost(widget.post, _posts);
+    Future<Null> _refreshList() async {
+        setState(() { isLoading = true; });
+        try {
+            Map<String, dynamic> response = (await PostAPI.getForwardListInPost(widget.post.id))?.data;
+            List<dynamic> list = response['topics'];
+            int total = response['total'] as int;
+            if (response['count'] as int < total) canLoadMore = true;
+            List<Post> posts = [];
+            list.forEach((post) {
+                posts.add(PostAPI.createPost(post['topic']));
+            });
+            if (this.mounted) {
+                setState(() {
+                    Constants.eventBus.fire(new ForwardInPostUpdatedEvent(widget.post.id, total));
+                    _posts = posts;
+                    isLoading = false;
+                    firstLoadComplete = true;
+                });
+                lastValue = _posts.last.id;
+            }
+        } on DioError catch (e) {
+            if (e.response != null) {
+                print(e.response.data);
+            } else {
+                print(e.request);
+                print(e.message);
+            }
+            return;
+        }
     }
+
+    GestureDetector getPostAvatar(context, post) {
+        return GestureDetector(
+            child: Container(
+                width: 40.0,
+                height: 40.0,
+                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFFECECEC),
+                    image: DecorationImage(image: UserUtils.getAvatarProvider(post.uid), fit: BoxFit.cover),
+                ),
+            ),
+            onTap: () {
+                return UserPage.jump(context, post.uid);
+            },
+        );
+    }
+
+    Text getPostNickname(context, post) => Text(
+        post.nickname,
+        style: TextStyle(
+            color: Theme.of(context).textTheme.title.color,
+            fontSize: 16.0,
+        ),
+    );
+
+    Text getPostTime(context, post) {
+        String _postTime = post.postTime;
+        DateTime now = DateTime.now();
+        if (int.parse(_postTime.substring(0, 4)) == now.year) {
+            _postTime = _postTime.substring(5, 16);
+        }
+        if (int.parse(_postTime.substring(0, 2)) == now.month && int.parse(_postTime.substring(3, 5)) == now.day) {
+            _postTime = "${_postTime.substring(5, 11)}";
+        }
+        return Text(_postTime, style: Theme.of(context).textTheme.caption);
+    }
+
+    Widget getExtendedText(context, content) => ExtendedText(
+        content != null ? "$content " : null,
+        style: TextStyle(fontSize: 16.0),
+        onSpecialTextTap: (dynamic data) {
+            String text = data['content'];
+            if (text.startsWith("#")) {
+                return SearchPage.search(context, text.substring(1, text.length - 1));
+            } else if (text.startsWith("@")) {
+                return UserPage.jump(context, data['uid']);
+            } else if (text.startsWith("https://wb.jmu.edu.cn")) {
+                return CommonWebPage.jump(context, text, "网页链接");
+            }
+        },
+        specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+    );
 
     @override
     Widget build(BuildContext context) {
@@ -385,7 +492,84 @@ class _ForwardInPostListState extends State<ForwardInPostList> {
             color: Theme.of(context).cardColor,
             width: MediaQuery.of(context).size.width,
             padding: isLoading ? EdgeInsets.symmetric(vertical: 42) : EdgeInsets.zero,
-            child: forwardList(),
+            child: isLoading
+                    ? Center(child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
+            ))
+                    : Container(
+                color: Theme.of(context).cardColor,
+                padding: EdgeInsets.zero,
+                child: firstLoadComplete ? ListView.separated(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    separatorBuilder: (context, index) => Container(
+                        color: Theme.of(context).dividerColor,
+                        height: 1.0,
+                    ),
+                    itemCount: _posts.length + 1,
+                    itemBuilder: (context, index) {
+                        if (index == _posts.length) {
+                            if (canLoadMore && !isLoading) {
+                                _loadList();
+                                return Container(
+                                    height: 40.0,
+                                    child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                            SizedBox(
+                                                width: 15.0,
+                                                height: 15.0,
+                                                child: Platform.isAndroid
+                                                        ? CircularProgressIndicator(
+                                                    strokeWidth: 2.0,
+                                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                                        ThemeUtils.currentColorTheme,
+                                                    ),
+                                                )
+                                                        : CupertinoActivityIndicator(),
+                                            ),
+                                            Text("　正在加载", style: TextStyle(fontSize: 14.0)),
+                                        ],
+                                    ),
+                                );
+                            } else {
+                                return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
+                            }
+                        } else if (index < _posts.length) {
+                            return Row(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                    getPostAvatar(context, _posts[index]),
+                                    Expanded(
+                                        child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                                Container(height: 10.0),
+                                                getPostNickname(context, _posts[index]),
+                                                Container(height: 4.0),
+                                                getExtendedText(context, _posts[index].content),
+                                                Container(height: 6.0),
+                                                getPostTime(context, _posts[index]),
+                                                Container(height: 10.0),
+                                            ],
+                                        ),
+                                    ),
+                                ],
+                            );
+                        } else {
+                            return Container();
+                        }
+                    },
+                )
+                        : Container(
+                    height: 120.0,
+                    child: Center(
+                        child: Text("暂无内容", style: TextStyle(color: Colors.grey, fontSize: 18.0)),
+                    ),
+                ),
+            ),
         );
     }
 }

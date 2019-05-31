@@ -8,7 +8,9 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/cards/PraiseCard.dart';
 
 class PraiseController {
@@ -156,11 +158,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
         if (!_isLoading && _canLoadMore) {
             _isLoading = true;
 
-            Map result = (await PraiseAPI.getPraiseList(
-                true,
-                _lastValue,
-                additionAttrs: widget._praiseController.additionAttrs,
-            )).data;
+            Map result = (await PraiseAPI.getPraiseList(true, _lastValue)).data;
             List<Praise> praiseList = [];
             List _topics = result['topics'];
             var _total = result['total'], _count = result['count'];
@@ -188,11 +186,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
 
             _lastValue = 0;
 
-            Map result = (await PraiseAPI.getPraiseList(
-                false,
-                _lastValue,
-                additionAttrs: widget._praiseController.additionAttrs,
-            )).data;
+            Map result = (await PraiseAPI.getPraiseList(false, _lastValue)).data;
             List<Praise> praiseList = [];
             List _topics = result['topics'];
             var _total = result['total'], _count = result['count'];
@@ -214,33 +208,34 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
     }
 }
 
-class PraiseInPostController {
-    _PraiseInPostListState _praiseInPostListState;
 
-    void reload() {
-        _praiseInPostListState?._refreshData();
-    }
-}
-
-class PraiseInPostList extends StatefulWidget {
+class PraiseListInPost extends StatefulWidget {
     final Post post;
-    final PraiseInPostController praiseInPostController;
-
-    PraiseInPostList(this.post, this.praiseInPostController, {Key key}) : super(key: key);
+    PraiseListInPost(this.post, {Key key}) : super(key: key);
 
     @override
-    State createState() => _PraiseInPostListState();
+    State createState() => _PraiseListInPostState();
 }
 
-class _PraiseInPostListState extends State<PraiseInPostList> {
+class _PraiseListInPostState extends State<PraiseListInPost> {
     List<Praise> _praises = [];
 
     bool isLoading = true;
+    bool canLoadMore = false;
+    bool firstLoadComplete = false;
+
+    int lastValue;
 
     @override
     void initState() {
         super.initState();
-        _getPraiseList();
+        _refreshList();
+    }
+
+    @override
+    void dispose() {
+        super.dispose();
+        _praises.clear();
     }
 
     void _refreshData() {
@@ -248,38 +243,103 @@ class _PraiseInPostListState extends State<PraiseInPostList> {
             isLoading = true;
             _praises = [];
         });
-        _getPraiseList();
+        _refreshList();
     }
 
-    Future<Null> _getPraiseList() async {
-        setState(() {
-            isLoading = true;
-        });
+    Future<Null> _loadList() async {
+        isLoading = true;
         try {
-            var list = await PraiseAPI.getPraiseInPostList(widget.post.id);
-            List<dynamic> response = list.data['praisors'];
+            Map<String, dynamic> response = (await PraiseAPI.getPraiseInPostList(
+                widget.post.id,
+                isMore: true,
+                lastValue: lastValue,
+            ))?.data;
+            List<dynamic> list = response['praisors'];
+            int total = response['total'] as int;
+            if (_praises.length + list.length < total) {
+                canLoadMore = true;
+            } else {
+                canLoadMore = false;
+            }
             List<Praise> praises = [];
-            response.forEach((praise) {
-                praises.add(PraiseAPI.createPraiseInPost(praise));
-            });
+            list.forEach((praise) { praises.add(PraiseAPI.createPraiseInPost(praise)); });
             if (this.mounted) {
                 setState(() {
-                    isLoading = false;
-                    _praises = praises;
-                    Constants.eventBus.fire(new PraiseInPostUpdatedEvent(widget.post.id, praises.length));
+                    Constants.eventBus.fire(new PraiseInPostUpdatedEvent(widget.post.id, total));
+                    _praises.addAll(praises);
                 });
+                isLoading = false;
+                lastValue = _praises.last.id;
             }
         } on DioError catch (e) {
             if (e.response != null) {
                 print(e.response.data);
-//                print(e.response.headers);
-//                print(e.response.request);
             } else {
                 print(e.request);
                 print(e.message);
             }
             return;
         }
+    }
+
+    Future<Null> _refreshList() async {
+        setState(() { isLoading = true; });
+        try {
+            Map<String, dynamic> response = (await PraiseAPI.getPraiseInPostList(widget.post.id))?.data;
+            List<dynamic> list = response['praisors'];
+            int total = response['total'] as int;
+            if (response['count'] as int < total) canLoadMore = true;
+            List<Praise> praises = [];
+            list.forEach((praise) { praises.add(PraiseAPI.createPraiseInPost(praise)); });
+            if (this.mounted) {
+                setState(() {
+                    Constants.eventBus.fire(new PraiseInPostUpdatedEvent(widget.post.id, total));
+                    _praises = praises;
+                    isLoading = false;
+                    firstLoadComplete = true;
+                });
+                lastValue = _praises.last.id;
+            }
+        } on DioError catch (e) {
+            if (e.response != null) {
+                print(e.response.data);
+            } else {
+                print(e.request);
+                print(e.message);
+            }
+            return;
+        }
+    }
+
+    GestureDetector getPostAvatar(context, praise) {
+        return GestureDetector(
+            child: Container(
+                width: 40.0,
+                height: 40.0,
+                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFFECECEC),
+                    image: DecorationImage(
+                        image: UserUtils.getAvatarProvider(praise.uid),
+                        fit: BoxFit.cover,
+                    ),
+                ),
+            ),
+            onTap: () {
+                return UserPage.jump(context, praise.uid);
+            },
+        );
+    }
+
+    Text getPostNickname(context, praise) {
+        return Text(
+            praise.nickname,
+            style: TextStyle(
+                color: Theme.of(context).textTheme.body1.color,
+                fontSize: 16.0,
+            ),
+        );
     }
 
     @override
@@ -289,8 +349,83 @@ class _PraiseInPostListState extends State<PraiseInPostList> {
             width: MediaQuery.of(context).size.width,
             padding: isLoading ? EdgeInsets.symmetric(vertical: 42) : EdgeInsets.zero,
             child: isLoading
-                    ? Center(child: CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)))
-                    : PraiseCardInPost(_praises),
+                    ? Center(child: CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme)),
+            )
+                    : Container(
+                color: Theme.of(context).cardColor,
+                padding: EdgeInsets.zero,
+                child: firstLoadComplete ? ListView.separated(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    separatorBuilder: (context, index) => Container(
+                        color: Theme.of(context).dividerColor,
+                        height: 1.0,
+                    ),
+                    itemCount: _praises.length + 1,
+                    itemBuilder: (context, index) {
+                        if (index == _praises.length) {
+                            if (canLoadMore && !isLoading) {
+                                _loadList();
+                                return Container(
+                                    height: 40.0,
+                                    child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                            SizedBox(
+                                                width: 15.0,
+                                                height: 15.0,
+                                                child: Platform.isAndroid
+                                                        ? CircularProgressIndicator(
+                                                    strokeWidth: 2.0,
+                                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                                        ThemeUtils.currentColorTheme,
+                                                    ),
+                                                )
+                                                        : CupertinoActivityIndicator(),
+                                            ),
+                                            Text("　正在加载", style: TextStyle(fontSize: 14.0)),
+                                        ],
+                                    ),
+                                );
+                            } else {
+                                return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
+                            }
+                        } else if (index < _praises.length) {
+                            return Row(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                    getPostAvatar(context, _praises[index]),
+                                    Expanded(
+                                        child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                                getPostNickname(context, _praises[index]),
+                                            ],
+                                        ),
+                                    ),
+                                ],
+                            );
+                        } else {
+                            return Container();
+                        }
+                    },
+                )
+                        : Container(
+                    height: 120.0,
+                    child: Center(
+                        child: Text(
+                            "暂无内容",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 18.0,
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         );
     }
 }
