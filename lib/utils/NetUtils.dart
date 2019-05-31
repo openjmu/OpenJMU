@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:async';
-import 'package:dio/dio.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:cookie_jar/cookie_jar.dart';
+import 'package:dio/dio.dart';
 import 'package:oktoast/oktoast.dart';
 
 import 'package:OpenJMU/utils/DataUtils.dart';
@@ -70,15 +70,6 @@ class NetUtils {
         queryParameters: data,
         options: Options(
             cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
-        ),
-    );
-
-    static Future<Response> getPlainWithCookieSet(String url, {data}) async => await dio.get(
-        url,
-        queryParameters: data,
-        options: Options(
-            cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
-            responseType: ResponseType.plain,
         ),
     );
 
