@@ -6,7 +6,6 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:OpenJMU/api/Api.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class UpdatingDialog extends StatefulWidget {
     @override
@@ -88,10 +87,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: <Widget>[
-                                    CircularProgressIndicator(
-                                        value: progress == 0 ? null : progress / 100,
-                                        valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-                                    ),
+                                    CircularProgressIndicator(value: progress == 0 ? null : progress / 100),
                                     Padding(
                                         padding: EdgeInsets.only(top: 20.0),
                                         child: Text(

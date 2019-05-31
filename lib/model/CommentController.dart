@@ -76,9 +76,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
     bool error = false;
 
     Widget _body = Center(
-        child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-        ),
+        child: CircularProgressIndicator(),
     );
 
     List<Comment> _commentList = [];
@@ -151,7 +149,6 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
                                                 child: Platform.isAndroid
                                                         ? CircularProgressIndicator(
                                                     strokeWidth: 2.0,
-                                                    valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme),
                                                 )
                                                         : CupertinoActivityIndicator(),
                                             ),
@@ -184,9 +181,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
         } else {
             return Container(
                 child: Center(
-                    child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme),
-                    ),
+                    child: CircularProgressIndicator(),
                 ),
             );
         }
@@ -332,7 +327,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
             if (this.mounted) {
                 setState(() { _comments.addAll(comments); });
                 isLoading = false;
-                lastValue = _comments.last.id;
+                lastValue = _comments.isEmpty ? 0 : _comments.last.id;
             }
         } on DioError catch (e) {
             if (e.response != null) {
@@ -364,7 +359,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                     isLoading = false;
                     firstLoadComplete = true;
                 });
-                lastValue = _comments.last.id;
+                lastValue = _comments.isEmpty ? 0 : _comments.last.id;
             }
         } on DioError catch (e) {
             if (e.response != null) {
@@ -461,9 +456,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                     ? EdgeInsets.symmetric(vertical: 42)
                     : EdgeInsets.zero,
             child: isLoading
-                    ? Center(child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-            ))
+                    ? Center(child: CircularProgressIndicator())
                     : Container(
                 color: Theme.of(context).cardColor,
                 padding: EdgeInsets.zero,
@@ -487,14 +480,9 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                             SizedBox(
                                                 width: 15.0,
                                                 height: 15.0,
-                                                child: Platform.isAndroid
-                                                        ? CircularProgressIndicator(
+                                                child: Platform.isAndroid ? CircularProgressIndicator(
                                                     strokeWidth: 2.0,
-                                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                                        ThemeUtils.currentColorTheme,
-                                                    ),
-                                                )
-                                                        : CupertinoActivityIndicator(),
+                                                ) : CupertinoActivityIndicator(),
                                             ),
                                             Text("　正在加载", style: TextStyle(fontSize: 14.0)),
                                         ],

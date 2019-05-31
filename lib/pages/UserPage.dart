@@ -698,9 +698,7 @@ class _UserListState extends State<UserListPage> {
             )
                     : Center(child: Text("暂无内容", style: TextStyle(fontSize: 20.0)))
                     : Center(
-                child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-                ),
+                child: CircularProgressIndicator(),
             ),
         );
     }

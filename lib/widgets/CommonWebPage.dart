@@ -192,9 +192,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                                         Icons.keyboard_arrow_left,
                                         color: currentColorTheme,
                                     ),
-                                    onPressed: () {
-                                        flutterWebViewPlugin.goBack();
-                                    },
+                                    onPressed: flutterWebViewPlugin.goBack,
                                 ),
                                 IconButton(
                                     padding: EdgeInsets.zero,
@@ -202,9 +200,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                                         Icons.keyboard_arrow_right,
                                         color: currentColorTheme,
                                     ),
-                                    onPressed: () {
-                                        flutterWebViewPlugin.goForward();
-                                    },
+                                    onPressed: flutterWebViewPlugin.goForward,
                                 ),
                                 IconButton(
                                     padding: EdgeInsets.zero,
@@ -212,9 +208,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                                         Icons.refresh,
                                         color: currentColorTheme,
                                     ),
-                                    onPressed: () {
-                                        flutterWebViewPlugin.reload();
-                                    },
+                                    onPressed: flutterWebViewPlugin.reload,
                                 ),
                             ],
                         ),
