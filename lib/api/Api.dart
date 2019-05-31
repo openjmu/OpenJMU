@@ -146,9 +146,14 @@ class PostAPI {
         }
         return NetUtils.getWithCookieAndHeaderSet(_postUrl);
     }
-    static getForwardInPostList(int postId) async {
-        return NetUtils.getWithCookieAndHeaderSet("${Api.postForwardsList}$postId");
-    }
+
+    static getForwardListInPost(int postId, {bool isMore, int lastValue}) async => NetUtils.getWithCookieAndHeaderSet(
+        (isMore ?? false)
+                ? "${Api.postForwardsList}$postId/id_max/$lastValue"
+                : "${Api.postForwardsList}$postId"
+        ,
+    );
+
     static glancePost(int postId) {
         List<int> postIds = [postId];
         return NetUtils.postWithCookieAndHeaderSet(
@@ -221,8 +226,11 @@ class CommentAPI {
         }
         return NetUtils.getWithCookieAndHeaderSet(_commentUrl);
     }
-    static getCommentInPostList(int id) async => NetUtils.getWithCookieAndHeaderSet(
-        "${Api.postCommentsList}$id",
+    static getCommentInPostList(int id, {bool isMore, int lastValue}) async => NetUtils.getWithCookieAndHeaderSet(
+        (isMore ?? false)
+                ? "${Api.postCommentsList}$id/id_max/$lastValue"
+                : "${Api.postCommentsList}$id"
+        ,
     );
 
     static postComment(String content, int postId, bool forwardAtTheMeanTime, {int replyToId}) async {
@@ -277,7 +285,6 @@ class CommentAPI {
         return _comment;
     }
     static Comment createCommentInPost(itemData) {
-        print("(package:OpenJMU/widgets/dialogs/DeleteDialog.dart:49:65)");
         String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
         String _commentTime = DateTime.fromMillisecondsSinceEpoch(
             itemData['post_time'] * 1000,
@@ -308,18 +315,18 @@ class CommentAPI {
 }
 
 class PraiseAPI {
-    static getPraiseList(bool isMore, int lastValue, {additionAttrs}) async {
-        String _praiseUrl;
-        if (isMore) {
-            _praiseUrl = "${Api.praiseList}/id_max/$lastValue";
-        } else {
-            _praiseUrl = "${Api.praiseList}";
-        }
-        return NetUtils.getWithCookieAndHeaderSet(_praiseUrl);
-    }
+    static getPraiseList(bool isMore, int lastValue) async => NetUtils.getWithCookieAndHeaderSet(
+        (isMore ?? false)
+                ? "${Api.praiseList}/id_max/$lastValue"
+                : "${Api.praiseList}"
+                ,
+    );
 
-    static getPraiseInPostList(postId) => NetUtils.getWithCookieAndHeaderSet(
-        "${Api.postPraisesList}$postId",
+    static getPraiseInPostList(postId, {bool isMore, int lastValue}) => NetUtils.getWithCookieAndHeaderSet(
+        (isMore ?? false)
+                ? "${Api.postPraisesList}$postId/id_max/$lastValue"
+                : "${Api.postPraisesList}$postId"
+        ,
     );
 
     static requestPraise(id, isPraise) async {

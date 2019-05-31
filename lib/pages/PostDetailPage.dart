@@ -57,9 +57,8 @@ class PostDetailPageState extends State<PostDetailPage> {
     Color forwardsColor, commentsColor = ThemeUtils.currentColorTheme, praisesColor;
     Color activeColor = ThemeUtils.currentColorTheme;
 
-    ForwardInPostController forwardInPostController = new ForwardInPostController();
-    CommentInPostController commentInPostController = new CommentInPostController();
-    PraiseInPostController praiseInPostController = new PraiseInPostController();
+    ForwardListInPostController forwardListInPostController = new ForwardListInPostController();
+    CommentListInPostController commentListInPostController = new CommentListInPostController();
 
     @override
     void initState() {
@@ -84,25 +83,25 @@ class PostDetailPageState extends State<PostDetailPage> {
             ..on<PostForwardedEvent>().listen((event) {
                 if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
                     setState(() { this.forwards++; });
-                    forwardInPostController.reload();
+                    forwardListInPostController.reload();
                 }
             })
             ..on<PostForwardDeletedEvent>().listen((event) {
                 if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
                     setState(() { this.forwards--; });
-                    forwardInPostController.reload();
+                    forwardListInPostController.reload();
                 }
             })
             ..on<PostCommentedEvent>().listen((event) {
                 if (this.mounted && event.postId == widget.post.id && this.comments != null) {
                     setState(() { this.comments++; });
-                    commentInPostController.reload();
+                    commentListInPostController.reload();
                 }
             })
             ..on<PostCommentDeletedEvent>().listen((event) {
                 if (this.mounted && event.postId == widget.post.id && this.comments != null) {
                     setState(() { this.comments--; });
-                    commentInPostController.reload();
+                    commentListInPostController.reload();
                 }
             })
             ..on<ForwardInPostUpdatedEvent>().listen((event) {
@@ -133,9 +132,9 @@ class PostDetailPageState extends State<PostDetailPage> {
 
     void _requestData() {
         setState(() {
-            _forwardsList = new ForwardInPostList(widget.post, forwardInPostController);
-            _commentsList = new CommentInPostList(widget.post, commentInPostController);
-            _praisesList = new PraiseInPostList(widget.post, praiseInPostController);
+            _forwardsList = new ForwardListInPost(widget.post, forwardListInPostController);
+            _commentsList = new CommentListInPost(widget.post, commentListInPostController);
+            _praisesList = PraiseListInPost(widget.post);
         });
     }
 

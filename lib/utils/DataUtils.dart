@@ -272,7 +272,7 @@ class DataUtils {
                     "clientinfo": jsonEncode(clientInfo),
                 };
             }
-            NetUtils.post(Api.loginTicket, data: params).then((response) {
+            return NetUtils.post(Api.loginTicket, data: params).then((response) {
                 debugPrint("sid: ${response.data['sid']}");
                 updateSid(response.data).then((whatever) {
                     getUserBasicInfo();
@@ -389,8 +389,6 @@ class DataUtils {
         return headers;
     }
 
-    static List<Cookie> buildPHPSESSIDCookies(sid) {
-        return [Cookie("PHPSESSID", sid)];
-    }
+    static List<Cookie> buildPHPSESSIDCookies(sid) => [Cookie("PHPSESSID", sid)];
 
 }

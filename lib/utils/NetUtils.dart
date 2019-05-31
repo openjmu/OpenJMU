@@ -5,6 +5,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:oktoast/oktoast.dart';
 
+import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
@@ -16,12 +17,16 @@ class NetUtils {
 
     static void initConfig() {
         (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
-            client.badCertificateCallback=(X509Certificate cert, String host, int port) => true;
+            client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
         };
         dio.interceptors.add(CookieManager(CookieJar()));
         dio.interceptors.add(InterceptorsWrapper(
             onRequest: (RequestOptions request) {
-                if (DataUtils.updatingTicket) return null;
+                if (DataUtils.updatingTicket) {
+                    if (request.uri.toString() != Api.loginTicket) {
+                        dio.reject("Updating ticket...");
+                    }
+                }
             },
             onError: (DioError e) {
                 print("DioError: ${e.message}");
@@ -79,7 +84,6 @@ class NetUtils {
         options: Options(
             cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
             headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
-//            headers: DataUtils.buildPostHeaders("just a test"),
         ),
     );
 

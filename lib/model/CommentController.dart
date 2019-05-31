@@ -3,12 +3,25 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'dart:async';
 
+import 'package:flutter/services.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:extended_text/extended_text.dart';
+import 'package:dio/dio.dart';
+
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/model/SpecialText.dart';
+import 'package:OpenJMU/pages/SearchPage.dart';
+import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/cards/CommentCard.dart';
+import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
+import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
 
 class CommentController {
     final String commentType;
@@ -128,23 +141,23 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
                             if (this._canLoadMore) {
                                 _loadData();
                                 return Container(
-                                        height: 40.0,
-                                        child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                                SizedBox(
-                                                        width: 15.0,
-                                                        height: 15.0,
-                                                        child: Platform.isAndroid
-                                                                ? CircularProgressIndicator(
-                                                                strokeWidth: 2.0,
-                                                                valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme),
-                                                        )
-                                                                : CupertinoActivityIndicator(),
-                                                ),
-                                                Text("　正在加载", style: TextStyle(fontSize: 14.0))
-                                            ],
-                                        ),
+                                    height: 40.0,
+                                    child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                            SizedBox(
+                                                width: 15.0,
+                                                height: 15.0,
+                                                child: Platform.isAndroid
+                                                        ? CircularProgressIndicator(
+                                                    strokeWidth: 2.0,
+                                                    valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme),
+                                                )
+                                                        : CupertinoActivityIndicator(),
+                                            ),
+                                            Text("　正在加载", style: TextStyle(fontSize: 14.0))
+                                        ],
+                                    ),
                                 );
                             } else {
                                 return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
@@ -172,7 +185,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
             return Container(
                 child: Center(
                     child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme),
+                        valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme),
                     ),
                 ),
             );
@@ -254,34 +267,38 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
 }
 
 
-class CommentInPostController {
-    _CommentInPostListState _commentInPostListState;
+class CommentListInPostController {
+    _CommentListInPostState _commentListInPostState;
 
     void reload() {
-        _commentInPostListState?._refreshData();
+        _commentListInPostState?._refreshData();
     }
 }
 
-class CommentInPostList extends StatefulWidget {
+class CommentListInPost extends StatefulWidget {
     final Post post;
-    final CommentInPostController commentInPostController;
+    final CommentListInPostController commentInPostController;
 
-    CommentInPostList(this.post, this.commentInPostController, {Key key}) : super(key: key);
+    CommentListInPost(this.post, this.commentInPostController, {Key key}) : super(key: key);
 
     @override
-    State createState() => _CommentInPostListState();
+    State createState() => _CommentListInPostState();
 }
 
-class _CommentInPostListState extends State<CommentInPostList> {
+class _CommentListInPostState extends State<CommentListInPost> {
     List<Comment> _comments = [];
 
     bool isLoading = true;
+    bool canLoadMore = false;
+    bool firstLoadComplete = false;
+
+    int lastValue;
 
     @override
     void initState() {
         super.initState();
-        widget.commentInPostController._commentInPostListState = this;
-        _getCommentList();
+        widget.commentInPostController._commentListInPostState = this;
+        _refreshList();
     }
 
     void _refreshData() {
@@ -289,32 +306,150 @@ class _CommentInPostListState extends State<CommentInPostList> {
             isLoading = true;
             _comments = [];
         });
-        _getCommentList();
+        _refreshList();
     }
 
-    Future<Null> _getCommentList() async {
-        var list = await CommentAPI.getCommentInPostList(widget.post.id);
-        List<dynamic> response = list.data['replylist'];
-        List<Comment> comments = [];
-        response.forEach((comment) {
-            comment['reply']['post'] = widget.post;
-            comments.add(CommentAPI.createCommentInPost(comment['reply']));
-        });
-        if (this.mounted) {
-            setState(() {
-                Constants.eventBus.fire(new CommentInPostUpdatedEvent(widget.post.id, comments.length));
-                isLoading = false;
-                _comments = comments;
+    Future<Null> _loadList() async {
+        isLoading = true;
+        try {
+            Map<String, dynamic> response = (await CommentAPI.getCommentInPostList(
+                widget.post.id,
+                isMore: true,
+                lastValue: lastValue,
+            ))?.data;
+            List<dynamic> list = response['replylist'];
+            int total = response['total'] as int;
+            if (_comments.length + response['count'] as int < total) {
+                canLoadMore = true;
+            } else {
+                canLoadMore = false;
+            }
+            List<Comment> comments = [];
+            list.forEach((comment) {
+                comment['reply']['post'] = widget.post;
+                comments.add(CommentAPI.createCommentInPost(comment['reply']));
             });
+            if (this.mounted) {
+                setState(() { _comments.addAll(comments); });
+                isLoading = false;
+                lastValue = _comments.last.id;
+            }
+        } on DioError catch (e) {
+            if (e.response != null) {
+                print(e.response.data);
+            } else {
+                print(e.request);
+                print(e.message);
+            }
+            return;
         }
     }
 
-    Widget commentList() {
-        return isLoading
-                ? Center(child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
-        ))
-                : CommentCardInPost(widget.post, _comments);
+    Future<Null> _refreshList() async {
+        setState(() { isLoading = true; });
+        try {
+            Map<String, dynamic> response = (await CommentAPI.getCommentInPostList(widget.post.id))?.data;
+            List<dynamic> list = response['replylist'];
+            int total = response['total'] as int;
+            if (response['count'] as int < total) canLoadMore = true;
+            List<Comment> comments = [];
+            list.forEach((comment) {
+                comment['reply']['post'] = widget.post;
+                comments.add(CommentAPI.createCommentInPost(comment['reply']));
+            });
+            if (this.mounted) {
+                setState(() {
+                    Constants.eventBus.fire(new CommentInPostUpdatedEvent(widget.post.id, total));
+                    _comments = comments;
+                    isLoading = false;
+                    firstLoadComplete = true;
+                });
+                lastValue = _comments.last.id;
+            }
+        } on DioError catch (e) {
+            if (e.response != null) {
+                print(e.response.data);
+            } else {
+                print(e.request);
+                print(e.message);
+            }
+            return;
+        }
+    }
+
+    GestureDetector getCommentAvatar(context, comment) {
+        return GestureDetector(
+            child: Container(
+                width: 40.0,
+                height: 40.0,
+                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFFECECEC),
+                    image: DecorationImage(
+                        image: UserUtils.getAvatarProvider(comment.fromUserUid),
+                        fit: BoxFit.cover,
+                    ),
+                ),
+            ),
+            onTap: () => UserPage.jump(context, comment.fromUserUid),
+        );
+    }
+
+    Text getCommentNickname(context, comment) {
+        return Text(
+            comment.fromUserName,
+            style: TextStyle(
+                color: Theme.of(context).textTheme.title.color,
+                fontSize: 16.0,
+            ),
+        );
+    }
+
+    Text getCommentTime(context, comment) {
+        String _commentTime = comment.commentTime;
+        DateTime now = DateTime.now();
+        if (int.parse(_commentTime.substring(0, 4)) == now.year) {
+            _commentTime = _commentTime.substring(5, 16);
+        }
+        if (
+        int.parse(_commentTime.substring(0, 2)) == now.month
+                &&
+                int.parse(_commentTime.substring(3, 5)) == now.day
+        ) {
+            _commentTime = "${_commentTime.substring(5, 11)}";
+        }
+        return Text(
+            _commentTime,
+            style: Theme.of(context).textTheme.caption,
+        );
+    }
+
+    Widget getExtendedText(context, content) {
+        return ExtendedText(
+            content != null ? "$content " : null,
+            style: TextStyle(fontSize: 16.0),
+            onSpecialTextTap: (dynamic data) {
+                String text = data['content'];
+                if (text.startsWith("#")) {
+                    return SearchPage.search(context, text.substring(1, text.length-1));
+                } else if (text.startsWith("@")) {
+                    return UserPage.jump(context, data['uid']);
+                } else if (text.startsWith("https://wb.jmu.edu.cn")) {
+                    return CommonWebPage.jump(context, text, "网页链接");
+                }
+            },
+            specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+        );
+    }
+
+    String replaceMentionTag(text) {
+        String commentText = text;
+        final RegExp mTagStartReg = RegExp(r"<M?\w+.*?\/?>");
+        final RegExp mTagEndReg = RegExp(r"<\/M?\w+.*?\/?>");
+        commentText = commentText.replaceAllMapped(mTagStartReg, (match) => "");
+        commentText = commentText.replaceAllMapped(mTagEndReg, (match) => "");
+        return commentText;
     }
 
     @override
@@ -325,8 +460,158 @@ class _CommentInPostListState extends State<CommentInPostList> {
             padding: isLoading
                     ? EdgeInsets.symmetric(vertical: 42)
                     : EdgeInsets.zero,
-            child: commentList(),
+            child: isLoading
+                    ? Center(child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
+            ))
+                    : Container(
+                color: Theme.of(context).cardColor,
+                padding: EdgeInsets.zero,
+                child: firstLoadComplete ? ListView.separated(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    separatorBuilder: (context, index) => Container(
+                        color: Theme.of(context).dividerColor,
+                        height: 1.0,
+                    ),
+                    itemCount: _comments.length + 1,
+                    itemBuilder: (context, index) {
+                        if (index == _comments.length) {
+                            if (canLoadMore && !isLoading) {
+                                _loadList();
+                                return Container(
+                                    height: 40.0,
+                                    child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                            SizedBox(
+                                                width: 15.0,
+                                                height: 15.0,
+                                                child: Platform.isAndroid
+                                                        ? CircularProgressIndicator(
+                                                    strokeWidth: 2.0,
+                                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                                        ThemeUtils.currentColorTheme,
+                                                    ),
+                                                )
+                                                        : CupertinoActivityIndicator(),
+                                            ),
+                                            Text("　正在加载", style: TextStyle(fontSize: 14.0)),
+                                        ],
+                                    ),
+                                );
+                            } else {
+                                return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
+                            }
+                        } else if (index < _comments.length) {
+                            return InkWell(
+                                onTap: () {
+                                    showDialog<Null>(
+                                        context: context,
+                                        builder: (BuildContext context) => SimpleDialog(
+                                            backgroundColor: ThemeUtils.currentColorTheme,
+                                            children: <Widget>[Center(
+                                                child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    children: <Widget>[
+                                                        if (
+                                                        _comments[index].fromUserUid == UserUtils.currentUser.uid
+                                                                ||
+                                                                widget.post.uid == UserUtils.currentUser.uid
+                                                        ) Column(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: <Widget>[
+                                                                IconButton(
+                                                                    icon: Icon(Icons.delete, size: 36.0, color: Colors.white),
+                                                                    padding: EdgeInsets.all(6.0),
+                                                                    onPressed: () {
+                                                                        showPlatformDialog(
+                                                                            context: context,
+                                                                            builder: (_) => DeleteDialog("评论", comment: _comments[index]),
+                                                                        );
+                                                                    },
+                                                                ),
+                                                                Text("删除评论", style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                                                            ],
+                                                        ),
+                                                        Column(
+                                                            mainAxisSize: MainAxisSize.min,
+                                                            children: <Widget>[
+                                                                IconButton(
+                                                                    icon: Icon(Icons.content_copy, size: 36.0, color: Colors.white),
+                                                                    padding: EdgeInsets.all(6.0),
+                                                                    onPressed: () {
+                                                                        Clipboard.setData(ClipboardData(
+                                                                            text: replaceMentionTag(_comments[index].content),
+                                                                        ));
+                                                                        showShortToast("已复制到剪贴板");
+                                                                        Navigator.of(context).pop();
+                                                                    },
+                                                                ),
+                                                                Text("复制评论", style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                ),
+                                            )],
+                                        ),
+                                    );
+                                },
+                                child: Container(
+                                    child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                            getCommentAvatar(context, _comments[index]),
+                                            Expanded(
+                                                child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: <Widget>[
+                                                        Container(height: 10.0),
+                                                        getCommentNickname(context, _comments[index]),
+                                                        Container(height: 4.0),
+                                                        getExtendedText(context, _comments[index].content),
+                                                        Container(height: 6.0),
+                                                        getCommentTime(context, _comments[index]),
+                                                        Container(height: 10.0),
+                                                    ],
+                                                ),
+                                            ),
+                                            IconButton(
+                                                padding: EdgeInsets.all(26.0),
+                                                icon: Icon(Icons.comment, color: Colors.grey),
+                                                onPressed: () {
+                                                    showDialog<Null>(
+                                                        context: context,
+                                                        builder: (BuildContext context) => CommentPositioned(widget.post, comment: _comments[index]),
+                                                    );
+                                                },
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                            );
+                        } else {
+                            return Container();
+                        }
+                    },
+                )
+                        : Container(
+                    height: 120.0,
+                    child: Center(
+                        child: Text(
+                            "暂无内容",
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 18.0,
+                            ),
+                        ),
+                    ),
+                ),
+            ),
         );
     }
 
 }
+
