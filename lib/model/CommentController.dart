@@ -489,7 +489,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                     ),
                                 );
                             } else {
-                                return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
+                                return Container();
                             }
                         } else if (index < _comments.length) {
                             return InkWell(
