@@ -518,7 +518,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                     ),
                                 );
                             } else {
-                                return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
+                                return Container();
                             }
                         } else if (index < _posts.length) {
                             return Row(
