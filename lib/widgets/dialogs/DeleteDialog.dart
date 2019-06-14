@@ -29,10 +29,10 @@ class DeleteDialog extends Dialog {
                         elevation: 0,
                         disabledElevation: 0.0,
                         highlightElevation: 0.0,
-                        child: Text('确认', style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                        child: Text('确认', style: TextStyle(color: ThemeUtils.currentThemeColor)),
                     ),
                     ios: (BuildContext context) => CupertinoButtonData(
-                        child: Text('确认', style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                        child: Text('确认', style: TextStyle(color: ThemeUtils.currentThemeColor)),
                     ),
                     onPressed: () {
                         Navigator.of(context).pop();
@@ -72,14 +72,14 @@ class DeleteDialog extends Dialog {
                 ),
                 PlatformButton(
                     android: (BuildContext context) => MaterialRaisedButtonData(
-                        color: ThemeUtils.currentColorTheme,
+                        color: ThemeUtils.currentThemeColor,
                         elevation: 0,
                         disabledElevation: 0.0,
                         highlightElevation: 0.0,
                         child: Text('取消', style: TextStyle(color: Colors.white)),
                     ),
                     ios: (BuildContext context) => CupertinoButtonData(
-                        child: Text('取消', style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                        child: Text('取消', style: TextStyle(color: ThemeUtils.currentThemeColor)),
                     ),
                     onPressed: () {
                         Navigator.of(context).pop();

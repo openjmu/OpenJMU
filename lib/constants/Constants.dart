@@ -1,4 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:event_bus/event_bus.dart';
+
+import 'package:OpenJMU/model/Bean.dart';
 
 class Constants {
     static int homeSplashIndex = 0;
@@ -16,4 +20,22 @@ class Constants {
 
     static final EventBus eventBus = new EventBus();
 
+    static Notifications notifications = Notifications(0, 0, 0, 0);
+
+    static DecoratedBox separator(context) => DecoratedBox(
+        decoration: BoxDecoration(color: Theme.of(context).canvasColor),
+        child: SizedBox(height: suSetSp(8.0)),
+    );
+
+    static Widget nightModeCover() => Positioned(
+        top: 0.0,
+        left: 0.0,
+        right: 0.0,
+        bottom: 0.0,
+        child: DecoratedBox(decoration: BoxDecoration(
+            color: Color(0x44000000),
+        )),
+    );
+
+    static double suSetSp(double size) => ScreenUtil.getInstance().setSp(size) * 2;
 }

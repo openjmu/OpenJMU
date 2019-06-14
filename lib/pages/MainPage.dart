@@ -1,11 +1,10 @@
 import 'dart:io';
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:badges/badges.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -17,12 +16,9 @@ import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 
 import 'package:OpenJMU/pages/AppCenterPage.dart';
-import 'package:OpenJMU/pages/DiscoveryPage.dart';
+import 'package:OpenJMU/pages/MessagePage.dart';
 import 'package:OpenJMU/pages/MyInfoPage.dart';
-import 'package:OpenJMU/pages/NotificationPage.dart';
 import 'package:OpenJMU/pages/PostSquareListPage.dart';
-import 'package:OpenJMU/pages/PublishPostPage.dart';
-import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 
 
@@ -35,32 +31,35 @@ class MainPage extends StatefulWidget {
     State<StatefulWidget> createState() => MainPageState();
 }
 
-class MainPageState extends State<MainPage> {
-    final List<String> bottomAppBarTitles = ['首页', '应用', '发现', '我的'];
-    final List<IconData> bottomAppBarIcons = [
-        Platform.isAndroid ? Icons.home : Ionicons.getIconData("ios-home"),
-        Platform.isAndroid ? Icons.apps : Ionicons.getIconData("ios-apps"),
-        Platform.isAndroid ? Ionicons.getIconData("md-cube") : Ionicons.getIconData("ios-cube"),
-        Platform.isAndroid ? Icons.account_circle : Ionicons.getIconData("ios-contact")
-    ];
+class MainPageState extends State<MainPage> with TickerProviderStateMixin {
+    static Color currentThemeColor = ThemeUtils.currentThemeColor;
 
-    TextStyle tabTextStyleSelected = TextStyle(color: ThemeUtils.currentColorTheme);
-    final tabTextStyleNormal = TextStyle(color: Colors.grey);
-    Color currentThemeColor =ThemeUtils.currentColorTheme;
+    final List<String> bottomAppBarTitles = ['首页', '应用', '消息', '我的'];
+    final List<String> bottomAppBarIcons = ["home", "apps", "message", "mine"];
+    TextStyle tabSelectedTextStyle = TextStyle(
+        color: currentThemeColor,
+        fontSize: Constants.suSetSp(22.0),
+        fontWeight: FontWeight.bold,
+    );
+    TextStyle tabUnselectedTextStyle = TextStyle(
+        color: currentThemeColor,
+        fontSize: Constants.suSetSp(18.0),
+    );
+    final Color primaryColor = Colors.white;
 
-    Notifications notifications = Notifications(0, 0, 0, 0);
+    List<Widget> pages;
+    Notifications notifications = Constants.notifications;
     Timer notificationTimer;
 
-    int _tabIndex = Constants.homeSplashIndex;
-    Widget _body;
-    List<Widget> pages = [
-        PostSquareListPage(),
-//        NewsListPage(),
-        AppCenterPage(),
-        DiscoveryPage(),
-        MyInfoPage()
+    List<TabController> _tabControllers = [null, null, null,];
+    List<List> sections = [
+        ["首页", "关注"],
+        ["课程表", "应用"],
+//        ["消息", "联系人"],
+        ["消息"],
     ];
 
+    int _tabIndex = Constants.homeSplashIndex;
     int userUid;
     String userSid;
 
@@ -72,7 +71,7 @@ class MainPageState extends State<MainPage> {
         DataUtils.isLogin().then((isLogin) {
             DataUtils.getNotifications();
             if (isLogin) {
-                notificationTimer = Timer.periodic(const Duration(milliseconds: 10000), (timer) {
+                notificationTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
                     DataUtils.getNotifications();
                 });
                 setState(() {
@@ -108,15 +107,22 @@ class MainPageState extends State<MainPage> {
             })
             ..on<ChangeThemeEvent>().listen((event) {
                 if (this.mounted) setState(() {
-                    tabTextStyleSelected = TextStyle(color: event.color);
                     currentThemeColor = event.color;
                 });
-            })
-            ..on<NotificationsChangeEvent>().listen((event) {
-                if (this.mounted) setState(() {
-                    notifications = event.notifications;
-                });
             });
+        initTabController();
+        pages = [
+            PostSquareListPage(controller: _tabControllers[0]),
+            AppCenterPage(controller: _tabControllers[1]),
+            MessagePage(),
+            MyInfoPage()
+        ];
+    }
+
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        ThemeUtils.setDark(ThemeUtils.isDark);
     }
 
     @override
@@ -125,45 +131,17 @@ class MainPageState extends State<MainPage> {
         notificationTimer?.cancel();
     }
 
+    void initTabController() {
+        for (int i = 0; i < _tabControllers.length; i++) {
+            _tabControllers[i] = TabController(
+                length: sections[i].length,
+                vsync: this,
+            );
+        }
+    }
+
     void _selectedTab(int index) {
-        if (_tabIndex == index && index == 0) {
-            Constants.eventBus.fire(new ScrollToTopEvent(tabIndex: _tabIndex, type: "MainPage"));
-        }
-        setState(() {
-            _tabIndex = index;
-        });
-    }
-
-    Image getTabImage(path) => Image.asset(path, width: 20.0, height: 20.0);
-
-    TextStyle getTabTextStyle(int curIndex) {
-        if (curIndex == _tabIndex) {
-            return tabTextStyleSelected;
-        }
-        return tabTextStyleNormal;
-    }
-
-    String getTabTitle(int curIndex) {
-        return bottomAppBarTitles[curIndex];
-    }
-
-    GestureDetector getAvatar() {
-        return GestureDetector(
-            child: Padding(
-                padding: EdgeInsets.fromLTRB(14, 10, 6, 10),
-                child: Container(
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(20.0),
-                        child: FadeInImage(
-                            fadeInDuration: const Duration(milliseconds: 100),
-                            placeholder: AssetImage("assets/avatar_placeholder.png"),
-                            image: UserUtils.getAvatarProvider(userUid),
-                        ),
-                    ),
-                ),
-            ),
-            onTap: () => UserPage.jump(context, UserUtils.currentUser.uid),
-        );
+        setState(() { _tabIndex = index; });
     }
 
     int lastBack = 0;
@@ -179,184 +157,112 @@ class MainPageState extends State<MainPage> {
         return Future.value(false);
     }
 
-    int lastAppBarTap = 0;
-    Future<bool> doubleTapScrollToTop() {
-        int now = DateTime.now().millisecondsSinceEpoch;
-        if (now - lastAppBarTap > 400) {
-            lastAppBarTap = DateTime.now().millisecondsSinceEpoch;
-            return Future.value(false);
-        } else {
-            Constants.eventBus.fire(new ScrollToTopEvent(tabIndex: _tabIndex, type: "MainPage"));
-            return Future.value(true);
-        }
-    }
-
     @override
     Widget build(BuildContext context) {
-        _body = IndexedStack(
-            children: pages,
-            index: _tabIndex,
-        );
         return WillPopScope(
             onWillPop: doubleBackExit,
             child: Scaffold(
-                appBar: GestureAppBar(
-                    appBar: AppBar(
-                        leading: getAvatar(),
-                        title: FlatButton(
-                            onPressed: null,
-                            child: Text(
-                                getTabTitle(_tabIndex),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: Theme.of(context).textTheme.title.fontSize,
+                appBar: _tabIndex != 3 ? AppBar(
+                    title: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                            if (_tabIndex == 0) Padding(
+                                padding: EdgeInsets.only(right: Constants.suSetSp(4.0)),
+                                child: Text(
+                                    "Jmu",
+                                    style: TextStyle(
+                                        color: currentThemeColor,
+                                        fontSize: Constants.suSetSp(34),
+                                        fontFamily: "chocolate",
+                                    ),
                                 ),
                             ),
-                        ),
-                        centerTitle: true,
-                        actions: <Widget>[
-                            _tabIndex == 0
-                                    ? IconButton(
-                                icon: Icon(Platform.isAndroid ? Icons.search : FontAwesome.getIconData("search")),
+                            ListView(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                children: <Widget>[
+                                    SizedBox(
+                                        width: sections[_tabIndex].length * Constants.suSetSp(80.0),
+                                        child: TabBar(
+                                            indicatorColor: currentThemeColor,
+                                            indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(20.0)),
+                                            indicatorSize: TabBarIndicatorSize.label,
+                                            indicatorWeight: Constants.suSetSp(6.0),
+                                            labelColor: Theme.of(context).textTheme.body1.color,
+                                            labelStyle: tabSelectedTextStyle,
+                                            labelPadding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(8.0)),
+                                            unselectedLabelStyle: tabUnselectedTextStyle,
+                                            tabs: <Tab>[
+                                                for (int i = 0; i < sections[_tabIndex].length; i++) Tab(text: sections[_tabIndex][i])
+                                            ],
+                                            controller: _tabControllers[_tabIndex],
+                                        ),
+                                    ),
+                                ],
+                            ),
+                        ],
+                    ),
+                    centerTitle: (_tabIndex == 2) ? true : false,
+                    actions: <Widget>[
+                        if (_tabIndex == 0) Padding(
+                            padding: EdgeInsets.only(left: Constants.suSetSp(8.0)),
+                            child: IconButton(
+                                icon: Icon(Icons.search),
                                 onPressed: () {
                                     Navigator.of(context).pushNamed("/search");
                                 },
-                            )
-                                    : Container(),
-                            BadgeIconButton(
-                                itemCount: notifications.count,
-                                icon: Icon(Platform.isAndroid ? Icons.notifications : Ionicons.getIconData("ios-notifications")),
-                                badgeColor: Colors.redAccent,
-                                badgeTextColor: Colors.white,
-                                hideZeroCount: true,
-                                onPressed: () {
-                                    Navigator.of(context).push(platformPageRoute(builder: (context) {
-                                        return NotificationPage(arguments: {"notifications": notifications});
-                                    }));
-                                },
                             ),
-                        ],
-                        iconTheme: IconThemeData(color: Colors.white),
-                        brightness: Brightness.dark,
-                    ),
-                    onTap: doubleTapScrollToTop,
+                        ),
+                    ],
+                ) : null,
+                body: IndexedStack(
+                    children: pages,
+                    index: _tabIndex,
+                ),
+                bottomNavigationBar: FABBottomAppBar(
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                    color: Colors.grey[600],
+                    selectedColor: ThemeUtils.currentThemeColor,
+                    onTabSelected: _selectedTab,
+                    items: [
+                        for (int i = 0; i < bottomAppBarTitles.length; i++)
+                            FABBottomAppBarItem(
+                                iconPath: bottomAppBarIcons[i],
+                                text: bottomAppBarTitles[i],
+                            ),
+                    ],
                 ),
                 floatingActionButton: Container(
-                    width: 48.0,
-                    height: 40.0,
-                    padding: EdgeInsets.symmetric(vertical: 2.0),
+                    width: Constants.suSetSp(56.0),
+                    height: Constants.suSetSp(40.0),
                     child: FloatingActionButton(
-                        child: Icon(
-                            Platform.isAndroid ? Icons.add : Ionicons.getIconData("ios-add"),
-                            size: 28.0
+                        child: Stack(
+                            children: <Widget>[
+                                Positioned(
+                                    child: Icon(
+                                        Platform.isAndroid ? Icons.add : Ionicons.getIconData("ios-add"),
+                                        size: Constants.suSetSp(30.0),
+                                    ),
+                                ),
+                            ],
                         ),
                         tooltip: "发布新动态",
                         foregroundColor: Colors.white,
                         backgroundColor: currentThemeColor,
                         elevation: 0,
-                        highlightElevation: 14.0,
                         onPressed: () {
-                            Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                return PublishPostPage();
-                            }));
+                            Navigator.of(context).pushNamed("/publishPost");
                         },
                         mini: true,
                         isExtended: false,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Constants.suSetSp(14.0))),
                     ),
                 ),
                 floatingActionButtonLocation: const CustomCenterDockedFloatingActionButtonLocation(),
-                bottomNavigationBar: FABBottomAppBar(
-                    backgroundColor: Theme.of(context).canvasColor,
-                    color: Colors.grey[600],
-                    selectedColor: currentThemeColor,
-                    onTabSelected: _selectedTab,
-                    items: [
-                        for (int i = 0; i < bottomAppBarIcons.length; i++)
-                            FABBottomAppBarItem(iconData: bottomAppBarIcons[i], text: getTabTitle(i)),
-                    ],
-                ),
-//                bottomNavigationBar: MainBottomAppBar(
-//                    icons: this.bottomAppBarIcons,
-//                    titles: this.bottomAppBarTitles,
-//                    color: Theme.of(context).canvasColor,
-//                    pageState: this,
-//                ),
-                body: _body,
             ),
         );
     }
 }
-
-//class MainBottomAppBar extends StatefulWidget {
-//    final List<IconData> icons;
-//    final List<String> titles;
-//    final Color color;
-//    final NotchedShape shape;
-//    final MainPageState pageState;
-//
-//    MainBottomAppBar({
-//        this.icons,
-//        this.titles,
-//        this.color,
-//        this.shape,
-//        this.pageState,
-//        Key key
-//    }) : super(key: key);
-//
-//    @override
-//    _MainBottomAppBarState createState() => _MainBottomAppBarState();
-//}
-//
-//class _MainBottomAppBarState extends State<MainBottomAppBar> {
-//    int selectedIndex = 0;
-//
-//    void setSelected(int index) {
-//        widget.pageState._selectedTab(index);
-//        setState(() {
-//            selectedIndex = index;
-//        });
-//    }
-//
-//    @override
-//    Widget build(BuildContext context) {
-//        final List<Widget> rowContents = <Widget>[
-//            for (int index = 0; index < widget.icons.length; index++)
-//                FlatButton(
-//                    child: Padding(
-//                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-//                        child: Column(
-//                            mainAxisSize: MainAxisSize.min,
-//                            crossAxisAlignment: CrossAxisAlignment.center,
-//                            children: <Widget>[
-//                                Icon(
-//                                    widget.icons[index],
-//                                    color: selectedIndex == index ? ThemeUtils.currentColorTheme : Colors.grey[600],
-//                                ),
-//                                Text(
-//                                    widget.titles[index],
-//                                    style: TextStyle(
-//                                        color: selectedIndex == index ? ThemeUtils.currentColorTheme : Colors.grey[600],
-//                                    ),
-//                                ),
-//                            ],
-//                        ),
-//                    ),
-//                    onPressed: () {setSelected(index);},
-//                ),
-//            SizedBox(width: 56.0),
-//        ];
-//
-//        return BottomAppBar(
-//            color: widget.color,
-//            child: Row(
-//                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                children: rowContents,
-//            ),
-//            shape: widget.shape,
-//        );
-//    }
-//}
 
 class GestureAppBar extends StatelessWidget implements PreferredSizeWidget {
     final VoidCallback onTap;

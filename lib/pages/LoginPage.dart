@@ -25,11 +25,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
-
     final _formKey = GlobalKey<FormState>();
+    TextEditingController _usernameEditingController = TextEditingController();
     String _username, _password;
     bool _loginButtonDisabled = false;
     bool _isObscure = true;
+    bool _usernameCanClear = false;
     Color _defaultIconColor = ThemeUtils.defaultColor;
 
     @override
@@ -45,6 +46,17 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                     _loginButtonDisabled = false;
                 });
             });
+        _usernameEditingController..addListener(() {
+            if (this.mounted) {
+                setState(() {
+                    if (_usernameEditingController.text.length > 0 && !_usernameCanClear) {
+                        _usernameCanClear = true;
+                    } else if (_usernameEditingController.text.length == 0 && _usernameCanClear) {
+                        _usernameCanClear = false;
+                    }
+                });
+            }
+        });
     }
 
     int last = 0;
@@ -64,11 +76,11 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         return Hero(
             tag: "Logo",
             child: Container(
-                margin: EdgeInsets.only(bottom: 10.0),
+                margin: EdgeInsets.only(bottom: Constants.suSetSp(10.0)),
                 child: Image.asset(
                     'images/ic_jmu_logo_trans.png',
-                    width: 100.0,
-                    height: 100.0,
+                    width: Constants.suSetSp(100.0),
+                    height: Constants.suSetSp(100.0),
                 ),
             ),
         );
@@ -76,13 +88,13 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 
     Padding buildTitleLine() {
         return Padding(
-            padding: EdgeInsets.all(4.0),
+            padding: EdgeInsets.all(Constants.suSetSp(4.0)),
             child: Align(
                 alignment: Alignment.bottomCenter,
                 child: Container(
                     color: ThemeUtils.defaultColor,
-                    width: 100.0,
-                    height: 2.0,
+                    width: Constants.suSetSp(100.0),
+                    height: Constants.suSetSp(2.0),
                 ),
             ),
         );
@@ -90,24 +102,29 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 
     Padding buildUsernameTextField() {
         return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48.0),
+            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(48.0)),
             child: Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(Constants.suSetSp(10.0)),
                     color: Color.fromRGBO(255, 255, 255, 0.2),
                 ),
                 child: TextFormField(
+                    controller: _usernameEditingController,
                     decoration: InputDecoration(
                         prefixIcon: Icon(
                             Platform.isAndroid ? Icons.person : Ionicons.getIconData("ios-person"),
                             color: Colors.white,
                         ),
+                        suffixIcon: _usernameCanClear ? IconButton(
+                            icon: Icon(Icons.clear, color: Colors.white),
+                            onPressed: _usernameEditingController.clear,
+                        ) : null,
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.all(10.0),
+                        contentPadding: EdgeInsets.all(Constants.suSetSp(10.0)),
                         labelText: '工号/学号',
-                        labelStyle: TextStyle(color: Colors.white, fontSize: 18.0),
+                        labelStyle: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(18.0)),
                     ),
-                    style: TextStyle(color: Colors.white, fontSize: 18.0),
+                    style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(18.0)),
                     cursorColor: Colors.white,
                     onSaved: (String value) => _username = value,
                     keyboardType: TextInputType.number,
@@ -118,10 +135,10 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 
     Padding buildPasswordTextField() {
         return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 48.0),
+            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(48.0)),
             child:  Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(Constants.suSetSp(10.0)),
                     color: Color.fromRGBO(255,255,255,0.2),
                 ),
                 child: TextFormField(
@@ -139,13 +156,13 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                     },
                     decoration: InputDecoration(
                         border: InputBorder.none,
-                        contentPadding: EdgeInsets.all(10.0),
+                        contentPadding: EdgeInsets.all(Constants.suSetSp(10.0)),
                         prefixIcon: Icon(
                             Platform.isAndroid ? Icons.lock : Ionicons.getIconData("ios-lock"),
                             color: Colors.white,
                         ),
                         labelText: '密码',
-                        labelStyle: TextStyle(color: Colors.white, fontSize: 18.0),
+                        labelStyle: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(18.0)),
                         suffixIcon: IconButton(
                             icon: Icon(
                                 _isObscure
@@ -163,7 +180,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                             },
                         ),
                     ),
-                    style: TextStyle(color: Colors.white, fontSize: 20.0),
+                    style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(20.0)),
                     cursorColor: Colors.white,
                 ),
             ),
@@ -175,13 +192,13 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             children: <Widget>[
                 !_loginButtonDisabled
                         ? Container(
-                    padding: EdgeInsets.all(8.0),
+                    padding: EdgeInsets.all(Constants.suSetSp(8.0)),
                     child: IconButton(
                         highlightColor: Colors.white,
                         icon: Icon(
                             Platform.isAndroid ? Icons.arrow_forward : FontAwesome.getIconData("arrow-right"),
                             color: Colors.white,
-                            size: 30,
+                            size: Constants.suSetSp(30.0),
                         ),
                         onPressed: () {
                             if (_loginButtonDisabled) {
@@ -192,22 +209,22 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         },
                     ),
                     decoration: BoxDecoration(
-                        color: Color.fromRGBO(255,255,255,0.2),
+                        color: Color.fromRGBO(255, 255, 255, 0.2),
                         shape: BoxShape.circle,
                     ),
                 )
                         : Container(
-                    padding: EdgeInsets.all(20.0),
+                    padding: EdgeInsets.all(Constants.suSetSp(20.0)),
                     child: SizedBox(
-                        width: 24.0,
-                        height: 24.0,
+                        width: Constants.suSetSp(24.0),
+                        height: Constants.suSetSp(24.0),
                         child: CircularProgressIndicator(
-                            strokeWidth: 3.0,
+                            strokeWidth: Constants.suSetSp(3.0),
                             valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                     ),
                     decoration: BoxDecoration(
-                        color: Color.fromRGBO(255,255,255,0.2),
+                        color: Color.fromRGBO(255, 255, 255, 0.2),
                         shape: BoxShape.circle,
                     ),
                 ),

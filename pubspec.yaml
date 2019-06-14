@@ -1,10 +1,11 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.3.22+54
+version: 0.4.0+55
 
 environment:
     sdk: ">=2.2.2 <3.0.0"
+    flutter: 1.5.4-hotfix.2
 
 dependencies:
     flutter:
@@ -20,28 +21,30 @@ dependencies:
     dio: 2.1.6
     dragablegridview_flutter: 0.2.0
     event_bus: 1.1.0
-    extended_image: ^0.3.7
+    extended_image: ^0.4.1
     extended_tabs: ^0.1.6
-    extended_text: ^0.5.1
-    extended_text_field: ^0.3.1
+    extended_text: ^0.5.5
+    extended_text_field: ^0.3.5
     fluttertoast: any
     flutter_cache_manager: 0.3.2
     flutter_downloader: 1.1.7
     flutter_icons: any
-    flutter_local_notifications: ^0.7.1+1
+    flutter_inappbrowser: 1.2.0
+#    flutter_local_notifications: ^0.7.1+3
     flutter_native_image:
         git: https://github.com/btastic/flutter_native_image/
     flutter_platform_widgets: ^0.9.6
-    flutter_svg: ^0.12.4+1
+    flutter_screenutil: ^0.5.2
+    flutter_svg: ^0.12.4+2
     flutter_webview_plugin: ^0.3.5
     image_crop: ^0.2.1
     image_downloader: 0.15.4
-    image_picker: ^0.6.0+8
+    image_picker: ^0.6.0+9
     multi_image_picker: ^4.3.3
-    oktoast: ^2.1.7
-    package_info: ^0.4.0+3
+    oktoast: ^2.1.8
+    package_info: ^0.4.0+4
     permission_handler: ^3.1.0
-    quick_actions: ^0.3.0+1
+    quick_actions: ^0.3.0+2
     shared_preferences: 0.5.3
     uuid: ^2.0.1
 
@@ -55,8 +58,9 @@ flutter:
     assets:
         - assets/
         - assets/emotionIcons/
-        - assets/icons/
         - assets/homeSplash/
+        - assets/icons/
+        - assets/icons/bottomNavigation/
         - images/
     fonts:
         - family: chocolate

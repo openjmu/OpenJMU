@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:extended_image/extended_image.dart';
@@ -13,6 +14,7 @@ import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
@@ -33,9 +35,9 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-    final TextStyle subtitleStyle = TextStyle(color: Colors.grey, fontSize: 14.0);
-    final TextStyle rootTopicTextStyle = TextStyle(fontSize: 14.0);
-    final TextStyle rootTopicMentionStyle = TextStyle(color: Colors.blue, fontSize: 14.0);
+    final TextStyle subtitleStyle = TextStyle(color: Colors.grey, fontSize: Constants.suSetSp(14.0));
+    final TextStyle rootTopicTextStyle = TextStyle(fontSize: Constants.suSetSp(14.0));
+    final TextStyle rootTopicMentionStyle = TextStyle(color: Colors.blue, fontSize: Constants.suSetSp(14.0));
     final Color subIconColor = Colors.grey;
 
     Color _forwardColor = Colors.grey;
@@ -43,7 +45,7 @@ class _PostCardState extends State<PostCard> {
     Color _praisesColor = Colors.grey;
 
     Widget pics;
-    bool isDetail;
+    bool isDetail, isDark = ThemeUtils.isDark;
 
     @override
     void initState() {
@@ -58,6 +60,17 @@ class _PostCardState extends State<PostCard> {
             });
         }
         Constants.eventBus
+            ..on<ChangeBrightnessEvent>().listen((event) {
+                if (mounted) {
+                    setState(() {
+                        if (event.isDarkState) {
+                            isDark = true;
+                        } else {
+                            isDark = false;
+                        }
+                    });
+                }
+            })
             ..on<ForwardInPostUpdatedEvent>().listen((event) {
                 if (mounted && event.postId == widget.post.id) {
                     setState(() {
@@ -84,14 +97,14 @@ class _PostCardState extends State<PostCard> {
 
     GestureDetector getPostAvatar(context, post) => GestureDetector(
         child: Container(
-            width: 40.0,
-            height: 40.0,
+            width: Constants.suSetSp(44.0),
+            height: Constants.suSetSp(44.0),
             child: ClipRRect(
-                borderRadius: BorderRadius.circular(20.0),
+                borderRadius: BorderRadius.circular(Constants.suSetSp(22.0)),
                 child: FadeInImage(
                     fadeInDuration: const Duration(milliseconds: 100),
                     placeholder: AssetImage("assets/avatar_placeholder.png"),
-                    image: UserUtils.getAvatarProvider(post.uid),
+                    image: UserUtils.getAvatarProvider(uid: post.uid),
                 ),
             ),
         ),
@@ -100,7 +113,7 @@ class _PostCardState extends State<PostCard> {
 
     Text getPostNickname(post) => Text(
         post.nickname ?? post.uid,
-        style: TextStyle(color: Theme.of(context).textTheme.body1.color, fontSize: 16.0),
+        style: TextStyle(color: Theme.of(context).textTheme.title.color, fontSize: Constants.suSetSp(18.0)),
         textAlign: TextAlign.left,
     );
 
@@ -113,16 +126,19 @@ class _PostCardState extends State<PostCard> {
         if (int.parse(_postTime.substring(0, 2)) == now.month && int.parse(_postTime.substring(3, 5)) == now.day) {
             _postTime = "${_postTime.substring(5, 11)}";
         }
-        return Row(children: <Widget>[
-            Icon(Icons.access_time, color: Colors.grey, size: 12.0),
-            Text(" $_postTime", style: subtitleStyle),
-            Container(width: 10.0),
-            Icon(Icons.smartphone, color: Colors.grey, size: 12.0),
-            Text(" ${post.from}", style: subtitleStyle),
-            Container(width: 10.0),
-            Icon(Icons.remove_red_eye, color: Colors.grey, size: 12.0),
-            Text(" ${post.glances}", style: subtitleStyle)
-        ]);
+        return Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+                Icon(Icons.access_time, color: Colors.grey, size: Constants.suSetSp(10.0)),
+                Text(" $_postTime", style: subtitleStyle),
+                Container(width: Constants.suSetSp(10.0)),
+                Icon(Icons.smartphone, color: Colors.grey, size: Constants.suSetSp(10.0)),
+                Text(" ${post.from}", style: subtitleStyle),
+                Container(width: Constants.suSetSp(10.0)),
+                Icon(Icons.remove_red_eye, color: Colors.grey, size: Constants.suSetSp(10.0)),
+                Text(" ${post.glances}", style: subtitleStyle)
+            ],
+        );
     }
 
     Widget getPostContent(context, post) {
@@ -131,7 +147,6 @@ class _PostCardState extends State<PostCard> {
         if (post.rootTopic != null) widgets.add(getRootPost(context, post.rootTopic));
         return Container(
             width: MediaQuery.of(context).size.width,
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -142,7 +157,7 @@ class _PostCardState extends State<PostCard> {
     }
 
     Widget getPostImages(post) => Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0), vertical: Constants.suSetSp(8.0)),
         child: getImages(post.pics),
     );
 
@@ -163,13 +178,19 @@ class _PostCardState extends State<PostCard> {
                     },
                     child: Container(
                         width: MediaQuery.of(context).size.width,
-                        margin: EdgeInsets.only(top: 8.0),
-                        padding: EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(color: Theme.of(context).canvasColor, borderRadius: BorderRadius.circular(5.0)),
+                        margin: EdgeInsets.only(top: Constants.suSetSp(8.0)),
+                        padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(10.0), horizontal: Constants.suSetSp(16.0)),
+                        decoration: BoxDecoration(color: Theme.of(context).canvasColor),
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[getExtendedText(topic, isRoot: true), getRootPostImages(rootTopic['topic'])],
+                            children: <Widget>[
+                                getExtendedText(topic, isRoot: true),
+                                Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: getRootPostImages(rootTopic['topic']),
+                                ),
+                            ],
                         ),
                     ),
                 );
@@ -188,6 +209,23 @@ class _PostCardState extends State<PostCard> {
                 int imageID = data[index]['id'] is String ? int.parse(data[index]['id']) : data[index]['id'];
                 String imageUrl = data[index]['image_middle'];
                 String urlInsecure = imageUrl.replaceAllMapped(RegExp(r"https://"), (match) => "http://");
+                Widget _exImage = ExtendedImage.network(
+                    urlInsecure,
+                    fit: BoxFit.cover,
+                    cache: true,
+                );
+                if (data.length > 1) {
+                    _exImage = Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        child: _exImage,
+                    );
+                }
+                if (isDark) {
+                    _exImage = Stack(
+                        children: <Widget>[_exImage, Constants.nightModeCover(),],
+                    );
+                }
                 imagesWidget.add(GestureDetector(
                     onTap: () {
                         Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
@@ -203,31 +241,32 @@ class _PostCardState extends State<PostCard> {
                     },
 //                    child: Hero(
 //                        tag: "$imageID${index.toString()}${widget.post.id.toString()}",
-                        child: ExtendedImage.network(
-                            urlInsecure,
-                            fit: BoxFit.cover,
-                            cache: true,
-                        ),
+                        child: _exImage,
 //                    ),
                 ));
             }
             int itemCount = 3;
+            Widget _image;
             if (data.length == 1) {
-                return Container(width: MediaQuery.of(context).size.width, padding: EdgeInsets.only(top: 8.0), child: imagesWidget[0]);
+                _image =  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.only(top: Constants.suSetSp(8.0)),
+                    child: imagesWidget[0],
+                );
             } else if (data.length < 3) {
                 itemCount = data.length;
             }
-            return Container(
-                child: GridView.count(
-                    padding: EdgeInsets.only(top: 8.0),
+            if (data.length > 1) {
+                _image = GridView.count(
                     shrinkWrap: true,
                     primary: false,
-                    mainAxisSpacing: 8.0,
+                    mainAxisSpacing: Constants.suSetSp(10.0),
                     crossAxisCount: itemCount,
-                    crossAxisSpacing: 8.0,
+                    crossAxisSpacing: Constants.suSetSp(10.0),
                     children: imagesWidget,
-                ),
-            );
+                );
+            }
+            return _image;
         } else {
             return Container();
         }
@@ -238,20 +277,21 @@ class _PostCardState extends State<PostCard> {
         int comments = widget.post.comments;
         int praises = widget.post.praises;
 
-        return Flex(
-            direction: Axis.horizontal,
-            crossAxisAlignment: CrossAxisAlignment.center,
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
                 Expanded(
-                    flex: 1,
                     child: FlatButton.icon(
                         onPressed: () {
-                            showDialog<Null>(context: context, builder: (BuildContext context) => ForwardPositioned(widget.post));
+                            showDialog<Null>(
+                                context: context,
+                                builder: (BuildContext context) => ForwardPositioned(widget.post),
+                            );
                         },
                         icon: Icon(
                             Icons.launch,
                             color: _forwardColor,
-                            size: 24,
+                            size: Constants.suSetSp(18.0),
                         ),
                         label: Text(
                             forwards == 0 ? "转发" : "$forwards",
@@ -261,13 +301,12 @@ class _PostCardState extends State<PostCard> {
                     ),
                 ),
                 Expanded(
-                    flex: 1,
                     child: FlatButton.icon(
                         onPressed: null,
                         icon: Icon(
                             Icons.mode_comment,
                             color: _repliesColor,
-                            size: 18,
+                            size: Constants.suSetSp(18.0),
                         ),
                         label: Text(
                             comments == 0 ? "评论" : "$comments",
@@ -277,13 +316,12 @@ class _PostCardState extends State<PostCard> {
                     ),
                 ),
                 Expanded(
-                    flex: 1,
                     child: FlatButton.icon(
                         onPressed: _praise,
                         icon: Icon(
                             Icons.thumb_up,
                             color: _praisesColor,
-                            size: 18,
+                            size: Constants.suSetSp(18.0),
                         ),
                         label: Text(
                             praises == 0 ? "赞" : "$praises",
@@ -308,40 +346,49 @@ class _PostCardState extends State<PostCard> {
         }
         return Container(
             color: const Color(0xffaa4444),
-            padding: EdgeInsets.all(30.0),
+            padding: EdgeInsets.all(Constants.suSetSp(30.0)),
             child: Center(
-                child: Text(content, style: TextStyle(fontSize: 20.0, color: Colors.white)),
+                child: Text(content, style: TextStyle(fontSize: Constants.suSetSp(20.0), color: Colors.white)),
             ),
         );
     }
 
-    Widget getExtendedText(content, {isRoot}) => ExtendedText(
-        content != null ? "$content " : null,
-        style: TextStyle(fontSize: 16.0),
-        onSpecialTextTap: (dynamic data) {
-            String text = data['content'];
-            if (text.startsWith("#")) {
-                return SearchPage.search(context, text.substring(1, text.length - 1));
-            } else if (text.startsWith("@")) {
-                return UserPage.jump(context, data['uid']);
-            } else if (text.startsWith("https://wb.jmu.edu.cn")) {
-                return CommonWebPage.jump(context, text, "网页链接");
-            }
+    Widget getExtendedText(content, {isRoot}) => GestureDetector(
+        onLongPress: () {
+            Clipboard.setData(ClipboardData(text: content));
+            showShortToast("已复制到剪贴板");
         },
-        maxLines: widget.isDetail ?? false ? null : 10,
-        overFlowTextSpan: widget.isDetail ?? false ? null : OverFlowTextSpan(
-            children: <TextSpan>[
-                TextSpan(text: " ... "),
-                TextSpan(
-                        text: "全文",
-                        style: TextStyle(
-                            color: ThemeUtils.currentColorTheme,
+        child: Padding(
+            padding: (isRoot ?? false) ? EdgeInsets.zero : EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+            child: ExtendedText(
+                content != null ? "$content " : null,
+                style: TextStyle(fontSize: Constants.suSetSp(17.0)),
+                onSpecialTextTap: (dynamic data) {
+                    String text = data['content'];
+                    if (text.startsWith("#")) {
+                        return SearchPage.search(context, text.substring(1, text.length - 1));
+                    } else if (text.startsWith("@")) {
+                        return UserPage.jump(context, data['uid']);
+                    } else if (text.startsWith("https://wb.jmu.edu.cn")) {
+                        return CommonWebPage.jump(context, text, "网页链接");
+                    }
+                },
+                maxLines: widget.isDetail ?? false ? null : 10,
+                overFlowTextSpan: widget.isDetail ?? false ? null : OverFlowTextSpan(
+                    children: <TextSpan>[
+                        TextSpan(text: " ... "),
+                        TextSpan(
+                                text: "全文",
+                                style: TextStyle(
+                                    color: ThemeUtils.currentThemeColor,
+                                )
                         )
-                )
-            ],
-            background: isRoot ?? false ? Theme.of(context).canvasColor : Theme.of(context).cardColor,
+                    ],
+                    background: isRoot ?? false ? Theme.of(context).canvasColor : Theme.of(context).cardColor,
+                ),
+                specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+            ),
         ),
-        specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
     );
 
     void _praise() {
@@ -359,10 +406,10 @@ class _PostCardState extends State<PostCard> {
     }
 
     Positioned deleteButton() => Positioned(
-        top: 6.0,
-        right: 6.0,
+        top: Constants.suSetSp(6.0),
+        right: Constants.suSetSp(6.0),
         child: IconButton(
-            icon: Icon(Icons.delete, color: Colors.grey, size: 18.0),
+            icon: Icon(Icons.delete, color: Colors.grey, size: Constants.suSetSp(18.0)),
             onPressed: confirmDelete,
         ),
     );
@@ -376,7 +423,7 @@ class _PostCardState extends State<PostCard> {
 
     @override
     Widget build(BuildContext context) {
-        _praisesColor = widget.post.isLike ? ThemeUtils.currentColorTheme : Colors.grey;
+        _praisesColor = widget.post.isLike ? ThemeUtils.currentThemeColor : Colors.grey;
         List<Widget> _widgets = [];
         if (widget.post.content != "此微博已经被屏蔽") {
             _widgets = [
@@ -387,7 +434,10 @@ class _PostCardState extends State<PostCard> {
                 ),
                 getPostContent(context, widget.post),
                 getPostImages(widget.post),
-                isDetail ? Container(width: MediaQuery.of(context).size.width, padding: EdgeInsets.symmetric(vertical: 8.0)) : getPostActions()
+                isDetail ? Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(8.0)),
+                ) : getPostActions()
             ];
         } else {
             _widgets = [getPostBanned("shield")];
@@ -404,7 +454,7 @@ class _PostCardState extends State<PostCard> {
             },
             child: Container(
                 child: Card(
-                    margin: EdgeInsets.symmetric(vertical: 4.0),
+                    margin: EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
                     child: Stack(
                         children: <Widget>[
                             Column(

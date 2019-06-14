@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:extended_tabs/extended_tabs.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -11,15 +12,20 @@ import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
+import 'package:OpenJMU/widgets/InAppBrowser.dart';
 
 class AppCenterPage extends StatefulWidget {
+    final TabController controller;
+
+    AppCenterPage({Key key, @required this.controller}) : super(key: key);
+
     @override
     State<StatefulWidget> createState() => AppCenterPageState();
 }
 
 class AppCenterPageState extends State<AppCenterPage> {
     final ScrollController _scrollController = ScrollController();
-    Color themeColor = ThemeUtils.currentColorTheme;
+    Color themeColor = ThemeUtils.currentThemeColor;
     Map<String, List<Widget>> webAppWidgetList = {};
     List<Widget> webAppList = [];
     List webAppListData;
@@ -117,18 +123,18 @@ class AppCenterPageState extends State<AppCenterPage> {
         String url = replaceParamsInUrl(webApp.url);
         String imageUrl = Api.webAppIconsInsecure + "appid=${webApp.id}&code=${webApp.code}";
         Widget button = FlatButton(
-            padding: EdgeInsets.all(0.0),
+            padding: EdgeInsets.zero,
             child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                     Container(
-                        width: 64,
-                        height: 64,
+                        width: Constants.suSetSp(64.0),
+                        height: Constants.suSetSp(64.0),
                         child: CircleAvatar(
                             backgroundColor: Theme.of(context).dividerColor,
                             child: Image(
-                                width: 44.0,
-                                height: 44.0,
+                                width: Constants.suSetSp(44.0),
+                                height: Constants.suSetSp(44.0),
                                 image: CachedNetworkImageProvider(imageUrl, cacheManager: DefaultCacheManager()),
                                 fit: BoxFit.cover,
                             ),
@@ -137,7 +143,7 @@ class AppCenterPageState extends State<AppCenterPage> {
                     Text(
                         webApp.name,
                         style: TextStyle(
-                            fontSize: 16.0,
+                            fontSize: Constants.suSetSp(16.0),
                             color: Theme.of(context).textTheme.body1.color,
                             fontWeight: FontWeight.normal,
                         ),
@@ -155,21 +161,21 @@ class AppCenterPageState extends State<AppCenterPage> {
         int rows = (webAppWidgetList[name].length / 3).ceil();
         if (webAppWidgetList[name].length != 0 && rows == 0) rows += 1;
         num _width = MediaQuery.of(context).size.width / 3;
-        num _height = (_width / 1.3 * rows) + 59;
+        num _height = (_width / 1.3 * rows) + Constants.suSetSp(59);
         return Container(
             height: _height,
             child: Column(
                 children: <Widget>[
                     Container(
-                        margin: EdgeInsets.symmetric(horizontal: 36.0, vertical: 8.0),
-                        padding: EdgeInsets.symmetric(vertical: 8.0),
+                        margin: EdgeInsets.symmetric(horizontal: Constants.suSetSp(36.0), vertical: Constants.suSetSp(8.0)),
+                        padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(8.0)),
                         width: MediaQuery.of(context).size.width,
                         child: Center(
                             child: Text(
                                 WebApp.category()[name],
                                 style: TextStyle(
                                     color: Theme.of(context).textTheme.title.color,
-                                    fontSize: 18.0,
+                                    fontSize: Constants.suSetSp(18.0),
                                     fontWeight: FontWeight.bold,
                                 ),
                             ),
@@ -197,12 +203,26 @@ class AppCenterPageState extends State<AppCenterPage> {
 
     @override
     Widget build(BuildContext context) {
-        return RefreshIndicator(
-            child: FutureBuilder(
-                builder: _buildFuture,
-                future: _futureBuilderFuture,
-            ),
-            onRefresh: getAppList,
+        return ExtendedTabBarView(
+            physics: NeverScrollableScrollPhysics(),
+            cacheExtent: 1,
+            children: <Widget>[
+                InAppBrowserPage(
+                    url: "${Api.courseSchedule}?sid=${UserUtils.currentUser.sid}",
+                    title: "课程表",
+                    withAppBar: false,
+                    withAction: false,
+                    keepAlive: true,
+                ),
+                RefreshIndicator(
+                    child: FutureBuilder(
+                        builder: _buildFuture,
+                        future: _futureBuilderFuture,
+                    ),
+                    onRefresh: getAppList,
+                )
+            ],
+            controller: widget.controller,
         );
     }
 }

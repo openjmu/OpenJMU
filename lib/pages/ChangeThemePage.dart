@@ -12,37 +12,36 @@ class ChangeThemePage extends StatefulWidget {
 
 class ChangeThemePageState extends State<ChangeThemePage> {
     List<Color> colors = ThemeUtils.supportColors;
-    Color currentColor = ThemeUtils.currentColorTheme;
+    Color currentColor = ThemeUtils.currentThemeColor;
+    int selected;
 
     @override
     void initState() {
         super.initState();
+        DataUtils.getColorThemeIndex().then((index) {
+            if (this.mounted) setState(() { this.selected = index; });
+        });
         Constants.eventBus..on<ChangeThemeEvent>().listen((event) {
             if (this.mounted) setState(() {
-                ThemeUtils.currentColorTheme = event.color;
+                ThemeUtils.currentThemeColor = event.color;
                 currentColor = event.color;
             });
         });
     }
 
-    void changeColorTheme(Color c) {
-        Constants.eventBus.fire(new ChangeThemeEvent(c));
+    void changeColorTheme(Color color) {
+        Constants.eventBus.fire(new ChangeThemeEvent(color));
     }
 
     @override
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                backgroundColor: currentColor,
                 title: Text(
                     '切换主题',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: Theme.of(context).textTheme.title.fontSize,
-                    ),
+                    style: Theme.of(context).textTheme.title,
                 ),
                 centerTitle: true,
-                brightness: Brightness.dark,
             ),
             body: Container(
                 child: GridView.count(
@@ -50,12 +49,24 @@ class ChangeThemePageState extends State<ChangeThemePage> {
                     children: List.generate(colors.length, (index) {
                         return InkWell(
                             onTap: () {
+                                setState(() { this.selected = index; });
                                 DataUtils.setColorTheme(index);
                                 changeColorTheme(colors[index]);
                             },
-                            child: Container(
-                                color: colors[index],
-                                margin: EdgeInsets.all(10.0),
+                            child: Stack(
+                                children: <Widget>[
+                                    Container(
+                                        color: colors[index],
+                                        margin: EdgeInsets.all(Constants.suSetSp(10.0)),
+                                    ),
+                                    if (this.selected == index) Container(
+                                        color: const Color(0x66ffffff),
+                                        margin: EdgeInsets.all(Constants.suSetSp(10.0)),
+                                        child: Icon(Icons.check, color: Colors.white, size: Constants.suSetSp(40.0)),
+                                        width: MediaQuery.of(context).size.width,
+                                        height: MediaQuery.of(context).size.height,
+                                    ),
+                                ],
                             ),
                         );
                     }),
@@ -63,5 +74,4 @@ class ChangeThemePageState extends State<ChangeThemePage> {
             ),
         );
     }
-
 }

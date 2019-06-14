@@ -1,27 +1,36 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+
+import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+
 
 class CommonWebPage extends StatefulWidget {
     final String url;
     final String title;
     final bool withCookie;
+    final bool withAppBar;
+    final bool withAction;
 
-    const CommonWebPage(
-            this.url,
-            this.title,
-            {this.withCookie, Key key}
-            ) : super(key: key);
+    CommonWebPage({
+        Key key,
+        @required this.url,
+        @required this.title,
+        this.withCookie,
+        this.withAppBar,
+        this.withAction,
+    }) : super(key: key);
 
     @override
     State<StatefulWidget> createState() => CommonWebPageState();
 
     static void jump(BuildContext context, String url, String title, {bool withCookie}) {
         Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-            return CommonWebPage(url, title, withCookie: withCookie);
+            return CommonWebPage(url: url, title: title, withCookie: withCookie);
         }));
     }
 }
@@ -29,8 +38,7 @@ class CommonWebPage extends StatefulWidget {
 class CommonWebPageState extends State<CommonWebPage> {
     bool isLoading = true;
     String _url, _title;
-    Color primaryColor = Colors.white;
-    Color currentColorTheme = ThemeUtils.currentColorTheme;
+    Color currentThemeColor = ThemeUtils.currentThemeColor;
     double currentProgress = 0.0;
 
     final flutterWebViewPlugin = FlutterWebviewPlugin();
@@ -88,15 +96,17 @@ class CommonWebPageState extends State<CommonWebPage> {
         flutterWebViewPlugin?.dispose();
     }
 
-    Widget refreshIndicator = Container(
-        width: 54.0,
-        padding: EdgeInsets.all(17.0),
-        child: Platform.isAndroid
-                ? CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            strokeWidth: 3.0,
-        )
-                : CupertinoActivityIndicator(),
+    Widget refreshIndicator = Center(
+        child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+            child: SizedBox(
+                width: Constants.suSetSp(24.0),
+                height: Constants.suSetSp(24.0),
+                child: Platform.isAndroid ? CircularProgressIndicator(
+                    strokeWidth: Constants.suSetSp(3.0),
+                ) : CupertinoActivityIndicator(),
+            ),
+        ),
     );
 
     Future<bool> waitForClose() async {
@@ -104,20 +114,18 @@ class CommonWebPageState extends State<CommonWebPage> {
         return true;
     }
 
-    PreferredSize progressBar() {
-        return PreferredSize(
-            child: Container(
-                color: currentColorTheme,
-                height: 2.0,
-                child: LinearProgressIndicator(
-                    backgroundColor: currentColorTheme,
-                    value: currentProgress,
-                    valueColor: AlwaysStoppedAnimation<Color>(primaryColor),
-                ),
+    PreferredSize progressBar(context) => PreferredSize(
+        child: Container(
+            color: currentThemeColor,
+            height: Constants.suSetSp(2.0),
+            child: LinearProgressIndicator(
+                backgroundColor: Theme.of(context).primaryColor,
+                value: currentProgress,
+                valueColor: AlwaysStoppedAnimation<Color>(currentThemeColor),
             ),
-            preferredSize: null,
-        );
-    }
+        ),
+        preferredSize: null,
+    );
 
     @override
     Widget build(BuildContext context) {
@@ -129,7 +137,7 @@ class CommonWebPageState extends State<CommonWebPage> {
         }
         Widget trailing = isLoading
                 ? refreshIndicator
-                : Container(width: 56.0);
+                : Container(width: Constants.suSetSp(56.0));
         return WillPopScope(
             onWillPop: waitForClose,
             child: WebviewScaffold(
@@ -137,24 +145,29 @@ class CommonWebPageState extends State<CommonWebPage> {
                 clearCookies: _clear,
                 url: widget.url,
                 allowFileURLs: true,
-                appBar: AppBar(
-                    backgroundColor: currentColorTheme,
+                appBar: !(widget.withAppBar ?? false) ? AppBar(
                     leading: IconButton(
                         icon: Icon(Icons.close),
-                        onPressed: () {
-                            Navigator.of(context).pop();
-                        },
+                        onPressed: Navigator.of(context).pop,
                     ),
                     title: Container(
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
-                                Text(_title,
-                                        style: TextStyle(color: primaryColor)
+                                Text(
+                                    _title,
+                                    style: TextStyle(
+                                        color: Theme.of(context).textTheme.title.color,
+                                    ),
+                                    overflow: TextOverflow.fade,
                                 ),
-                                Text(_url,
-                                    style: TextStyle(color: primaryColor, fontSize: 14.0),
+                                Text(
+                                    _url,
+                                    style: TextStyle(
+                                        color: Theme.of(context).textTheme.title.color,
+                                        fontSize: Constants.suSetSp(14.0),
+                                    ),
                                     overflow: TextOverflow.fade,
                                 ),
                             ],
@@ -162,8 +175,8 @@ class CommonWebPageState extends State<CommonWebPage> {
                     ),
                     centerTitle: true,
                     actions: <Widget>[trailing],
-                    bottom: progressBar(),
-                ),
+                    bottom: progressBar(context),
+                ) : null,
                 initialChild: Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
@@ -171,17 +184,17 @@ class CommonWebPageState extends State<CommonWebPage> {
                     child: isLoading
                             ? Center(
                             child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(currentColorTheme),
+                                valueColor: AlwaysStoppedAnimation<Color>(currentThemeColor),
                             )
                     )
                             : Container(),
                 ),
-                persistentFooterButtons: <Widget>[
+                persistentFooterButtons: !(widget.withAction ?? false) ? <Widget>[
                     Container(
                         margin: EdgeInsets.zero,
                         padding: EdgeInsets.zero,
-                        width: MediaQuery.of(context).size.width - 16.0,
-                        height: 24.0,
+                        width: MediaQuery.of(context).size.width - 16,
+                        height: Constants.suSetSp(24.0),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -190,7 +203,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                                     padding: EdgeInsets.zero,
                                     icon: Icon(
                                         Icons.keyboard_arrow_left,
-                                        color: currentColorTheme,
+                                        color: currentThemeColor,
                                     ),
                                     onPressed: flutterWebViewPlugin.goBack,
                                 ),
@@ -198,7 +211,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                                     padding: EdgeInsets.zero,
                                     icon: Icon(
                                         Icons.keyboard_arrow_right,
-                                        color: currentColorTheme,
+                                        color: currentThemeColor,
                                     ),
                                     onPressed: flutterWebViewPlugin.goForward,
                                 ),
@@ -206,14 +219,14 @@ class CommonWebPageState extends State<CommonWebPage> {
                                     padding: EdgeInsets.zero,
                                     icon: Icon(
                                         Icons.refresh,
-                                        color: currentColorTheme,
+                                        color: currentThemeColor,
                                     ),
                                     onPressed: flutterWebViewPlugin.reload,
                                 ),
                             ],
                         ),
                     ),
-                ],
+                ] : null,
                 enableAppScheme: true,
                 withJavascript: true,
                 withLocalStorage: true,

@@ -28,7 +28,7 @@ class DataUtils {
     static final String spUserName        = "userName";
     static final String spUserUnitId      = "userUnitId";
     static final String spUserWorkId      = "userWorkId";
-    static final String spUserClassId     = "userClassId";
+//    static final String spUserClassId     = "userClassId";
 
     static final String spBrightness      = "theme_brightness";
     static final String spColorThemeIndex = "theme_colorThemeIndex";
@@ -55,7 +55,6 @@ class DataUtils {
                 "packetid": "",
                 "platform": 40,
                 "platformver": "2.3.2",
-//                "deviceid": "${Random().nextInt(999999999999999)}",
                 "deviceid": "",
                 "devicetype": "iPhone",
                 "systype": "iPhone OS",
@@ -74,7 +73,6 @@ class DataUtils {
                 "appid": 273,
                 "platform": 30,
                 "platformver": "2.3.1",
-//                "deviceid": "${Random().nextInt(999999999999999)}",
                 "deviceid": "",
                 "devicetype": "android",
                 "systype": "TestDevice",
@@ -94,15 +92,13 @@ class DataUtils {
         }
         NetUtils.post(Api.login, data: params).then((response) {
             Map<String, dynamic> data = response.data;
-            Map<String, dynamic> _map = {
-                "uid": data["uid"]
-            };
+            Map<String, dynamic> _map = {"uid": data["uid"]};
             List<Cookie> cookies = [
                 Cookie("OAPSID", data["sid"]),
                 Cookie("PHPSESSID", data["sid"])
             ];
             NetUtils.getWithCookieSet(
-                Api.userInfo,
+                Api.userBasicInfo,
                 data: _map,
                 cookies: cookies,
             ).then((response) {
@@ -115,11 +111,11 @@ class DataUtils {
                     'userName': user['username'],
                     'userUnitId': data['unitid'],
                     'userWorkId': user['workid'],
-                    'userClassId': user['class_id'],
+//                    'userClassId': user['class_id'],
                 };
                 UserUtils.currentUser.sid = data['sid'];
                 UserUtils.currentUser.uid = data['uid'];
-                UserUtils.currentUser.classId = user['class_id'];
+//                UserUtils.currentUser.classId = user['class_id'];
                 saveLoginInfo(userInfo).then((whatever) {
                     Constants.eventBus.fire(new LoginEvent());
                     showShortToast("登录成功！");
@@ -136,6 +132,7 @@ class DataUtils {
                 getUserBasicInfo();
             }).catchError((e) {
                 Constants.eventBus.fire(new LoginFailedEvent());
+                print(e.request.path);
                 print(e.response);
                 print(e.toString());
                 SnackBarUtils.show(
@@ -200,7 +197,7 @@ class DataUtils {
             await sp.setInt(spUserUid, data['userUid']);
             await sp.setInt(spUserUnitId, data['userUnitId']);
             await sp.setInt(spUserWorkId, int.parse(data['userWorkId']));
-            await sp.setInt(spUserClassId, data['userClassId']);
+//            await sp.setInt(spUserClassId, data['userClassId']);
             return;
         }
     }
@@ -217,7 +214,7 @@ class DataUtils {
         await sp.remove(spUserUid);
         await sp.remove(spUserUnitId);
         await sp.remove(spUserWorkId);
-        await sp.remove(spUserClassId);
+//        await sp.remove(spUserClassId);
         await sp.remove(spBrightness);
         await sp.remove(spColorThemeIndex);
         showShortToast("注销成功！");
@@ -235,61 +232,59 @@ class DataUtils {
     static Future getTicket() async {
         debugPrint("isIOS: ${Platform.isIOS}");
         debugPrint("isAndroid: ${Platform.isAndroid}");
-        await getSpTicket().then((info) {
-            Map<String, Object> clientInfo, params;
-            if (Platform.isIOS) {
-                clientInfo = {
-                    "appid": 274,
-                    "packetid": "",
-                    "platform": 40,
-                    "platformver": "2.3.2",
-//                    "deviceid": "${Random().nextInt(999999999999999)}",
-                    "deviceid": "",
-                    "devicetype": "iPhone",
-                    "systype": "iPhone OS",
-                    "sysver": "12.2",
-                };
-                params = {
-                    "appid": 274,
-                    "ticket": "${info['ticket']}",
-                    "blowfish": "${info['blowfish']}",
-                    "clientinfo": jsonEncode(clientInfo),
-                };
-            } else if (Platform.isAndroid) {
-                clientInfo = {
-                    "appid": 273,
-                    "platform": 30,
-                    "platformver": "2.3.1",
-//                    "deviceid": "${Random().nextInt(999999999999999)}",
-                    "devicetype": "TestDeviceName",
-                    "systype": "TestDevice",
-                    "sysver": "2.1",
-                };
-                params = {
-                    "appid": 273,
-                    "ticket": "${info['ticket']}",
-                    "blowfish": "${info['blowfish']}",
-                    "clientinfo": jsonEncode(clientInfo),
-                };
-            }
-            return NetUtils.post(Api.loginTicket, data: params).then((response) {
-                debugPrint("sid: ${response.data['sid']}");
-                updateSid(response.data).then((whatever) {
-                    getUserBasicInfo();
-                });
-                Constants.eventBus.fire(new TicketGotEvent());
-                return true;
-            }).catchError((e) {
-                if (e.response != null) {
-                    print("Error response.");
-                    print(e.response.data);
-                    print(e.response.headers);
-                    print(e.response.request);
-                }
-                Constants.eventBus.fire(new TicketFailedEvent());
-                return false;
+        Map<String, String> info = await getSpTicket();
+        Map<String, dynamic> clientInfo, params;
+        if (Platform.isIOS) {
+            clientInfo = {
+                "appid": 274,
+                "packetid": "",
+                "platform": 40,
+                "platformver": "2.3.2",
+                "deviceid": "",
+                "devicetype": "iPhone",
+                "systype": "iPhone OS",
+                "sysver": "12.2",
+            };
+            params = {
+                "appid": 274,
+                "ticket": "${info['ticket']}",
+                "blowfish": "${info['blowfish']}",
+                "clientinfo": jsonEncode(clientInfo),
+            };
+        } else if (Platform.isAndroid) {
+            clientInfo = {
+                "appid": 273,
+                "platform": 30,
+                "platformver": "2.3.1",
+                "devicetype": "TestDeviceName",
+                "systype": "TestDevice",
+                "sysver": "2.1",
+            };
+            params = {
+                "appid": 273,
+                "ticket": "${info['ticket']}",
+                "blowfish": "${info['blowfish']}",
+                "clientinfo": jsonEncode(clientInfo),
+            };
+        }
+        try {
+            Map<String, dynamic> response = (await NetUtils.post(Api.loginTicket, data: params)).data;
+            debugPrint("sid: ${response['sid']}");
+            updateSid(response).then((whatever) {
+                getUserBasicInfo();
             });
-        });
+            Constants.eventBus.fire(new TicketGotEvent());
+            return Future.value(true);
+        } catch (e) {
+            if (e.response != null) {
+                print("Error response.");
+                print(e.response.data);
+                print(e.response.headers);
+                print(e.response.request);
+            }
+            Constants.eventBus.fire(new TicketFailedEvent());
+            return Future.value(false);
+        }
     }
 
     static Future updateSid(response) async {
@@ -310,7 +305,7 @@ class DataUtils {
     static Future resetTheme() async {
         await setColorTheme(0);
         await setBrightnessDark(false);
-        ThemeUtils.currentColorTheme = ThemeUtils.defaultColor;
+        ThemeUtils.currentThemeColor = ThemeUtils.defaultColor;
         Constants.eventBus.fire(new ChangeBrightnessEvent(false));
         Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.defaultColor));
     }
@@ -352,6 +347,7 @@ class DataUtils {
                 int count = comment + postsAt + commsAt + praises;
 //                debugPrint("Count: $count, At: ${postsAt+commsAt}, Comment: $comment, Praise: $praises");
                 Notifications notifications = Notifications(count, postsAt+commsAt, comment, praises);
+                Constants.notifications = notifications;
                 Constants.eventBus.fire(new NotificationsChangeEvent(notifications));
             }).catchError((e) {
                 print(e.toString());

@@ -90,7 +90,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                 appBar: AppBar(),
                 body: Container(
                     child: Center(
-                        child: Text('用户不存在', style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                        child: Text('用户不存在', style: TextStyle(color: ThemeUtils.currentThemeColor)),
                     ),
                 ),
             );
@@ -105,8 +105,8 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                     centerTitle: true,
                     floating: false,
                     pinned: true,
-                    backgroundColor: ThemeUtils.currentColorTheme,
-                    expandedHeight: 187,
+                    backgroundColor: ThemeUtils.currentThemeColor,
+                    expandedHeight: Constants.suSetSp(187.0),
                     flexibleSpace: FlexibleSpaceBarWithUserInfo(
                         background: Container(
                             color: Colors.grey,
@@ -131,8 +131,8 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                             centerTitle: true,
                             floating: false,
                             pinned: true,
-                            backgroundColor: ThemeUtils.currentColorTheme,
-                            expandedHeight: 187,
+                            backgroundColor: ThemeUtils.currentThemeColor,
+                            expandedHeight: Constants.suSetSp(187.0),
                             flexibleSpace: FlexibleSpaceBarWithUserInfo(
                                 background: Container(color: Colors.grey),
                             ),
@@ -211,14 +211,19 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         debugPrint("Updating appbar. _updateAppBar[package:OpenJMU/pages/UserPage.dart:210:10]");
         List<Widget> chips = [];
         if (_tags?.length != 0) {
-            for (var i=0; i < _tags.length; i++) {
+            for (int i = 0; i < _tags.length; i++) {
                 chips.add(Container(
                     margin: EdgeInsets.symmetric(horizontal: 4.0),
                     child: Chip(
-                        label: Text(_tags[i].name, style: TextStyle(fontSize: 16.0)),
+                        label: Text(_tags[i].name, style: TextStyle(fontSize: Constants.suSetSp(16.0))),
                         avatar: Icon(Icons.label),
                         padding: EdgeInsets.only(left: 4.0),
-                        labelPadding: EdgeInsets.fromLTRB(2.0, 0.0, 10.0, 0.0),
+                        labelPadding: EdgeInsets.fromLTRB(
+                            Constants.suSetSp(2.0),
+                            Constants.suSetSp(0.0),
+                            Constants.suSetSp(10.0),
+                            Constants.suSetSp(0.0),
+                        ),
                     ),
                 ));
             }
@@ -229,23 +234,28 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                     centerTitle: true,
                     floating: false,
                     pinned: true,
-                    expandedHeight: _tags?.length != 0 ? 217 : 187,
+                    expandedHeight: Constants.suSetSp(_tags?.length != 0 ? 217 : 187),
                     flexibleSpace: FlexibleSpaceBarWithUserInfo(
-                        titleFontSize: 14,
-                        paddingStart: 100,
-                        paddingBottom: 48,
-                        avatarRadius: 64,
+                        paddingStart: Constants.suSetSp(100),
+                        paddingBottom: Constants.suSetSp(48),
                         infoUnderNickname: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                                 GestureDetector(
                                     child: Padding(
-                                        padding:
-                                        EdgeInsets.only(left: 0, right: 8, bottom: 4, top: 4),
+                                        padding: EdgeInsets.fromLTRB(
+                                            Constants.suSetSp(0.0),
+                                            Constants.suSetSp(4.0),
+                                            Constants.suSetSp(8.0),
+                                            Constants.suSetSp(4.0),
+                                        ),
                                         child: Text(
                                             '关注 $_followingCount',
-                                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                                            style: TextStyle(
+                                                color: Theme.of(context).textTheme.title.color,
+                                                fontWeight: FontWeight.normal,
+                                            ),
                                         ),
                                     ),
                                     onTap: () {
@@ -257,10 +267,18 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                                 GestureDetector(
                                     child: Padding(
                                         padding:
-                                        EdgeInsets.only(left: 8, right: 0, bottom: 4, top: 4),
+                                        EdgeInsets.fromLTRB(
+                                            Constants.suSetSp(8.0),
+                                            Constants.suSetSp(4.0),
+                                            Constants.suSetSp(0.0),
+                                            Constants.suSetSp(4.0),
+                                        ),
                                         child: Text(
                                             '粉丝 $_fansCount',
-                                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+                                            style: TextStyle(
+                                                color: Theme.of(context).textTheme.title.color,
+                                                fontWeight: FontWeight.normal,
+                                            ),
                                         ),
                                     ),
                                     onTap: () {
@@ -272,22 +290,27 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                             ],
                         ),
                         infoNextNickname: _infoNextNameButton,
-                        avatar: UserUtils.getAvatarProvider(_user.uid),
+                        avatar: UserUtils.getAvatarProvider(uid: _user.uid),
                         avatarTap: avatarTap,
-                        titlePadding: EdgeInsets.only(left: 100, bottom: 48),
+                        avatarRadius: Constants.suSetSp(68.0),
+                        titleFontSize: Constants.suSetSp(14.0),
+                        titlePadding: EdgeInsets.only(left: Constants.suSetSp(100.0), bottom: Constants.suSetSp(48.0)),
                         title: Text(
                             _user.name,
-                            style: TextStyle(color: Colors.white, fontSize: 14),
+                            style: TextStyle(
+                                color: Theme.of(context).textTheme.title.color,
+                                fontSize: Constants.suSetSp(14.0),
+                            ),
                             maxLines: 1,
                         ),
                         background: Image(
-                            image: UserUtils.getAvatarProvider(_user.uid),
+                            image: UserUtils.getAvatarProvider(uid: _user.uid),
                             fit: BoxFit.fitWidth,
                             width: MediaQuery.of(context).size.width,
                         ),
                         tags: _tags?.length != 0
                                 ? Container(
-                            padding: EdgeInsets.symmetric(horizontal: 10.0),
+                            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(10.0)),
                             child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
                                 child: Row(
@@ -299,7 +322,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                                 : null,
                         bottomInfo: Container(
                             color: Theme.of(context).cardColor,
-                            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0), vertical: Constants.suSetSp(12.0)),
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -328,7 +351,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                                 ],
                             ),
                         ),
-                        bottomSize: 0,
                     ),
                     actions: <Widget>[
                         !isReloading
@@ -349,8 +371,8 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                             },
                         )
                                 : Container(
-                            width: 56.0,
-                            padding: EdgeInsets.all(17.0),
+                            width: Constants.suSetSp(56.0),
+                            padding: EdgeInsets.all(Constants.suSetSp(17.0)),
                             child: Platform.isAndroid
                                     ? CircularProgressIndicator(
                                 valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
@@ -453,14 +475,19 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         },
         child: Container(
             constraints: BoxConstraints(minWidth: 64, maxWidth: double.infinity),
-            padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+            padding: EdgeInsets.fromLTRB(
+                Constants.suSetSp(8.0),
+                Constants.suSetSp(4.0),
+                Constants.suSetSp(8.0),
+                Constants.suSetSp(4.0),
+            ),
             decoration: BoxDecoration(
                 color: Colors.transparent,
                 border: Border.all(color: Colors.white,),
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(Constants.suSetSp(4.0)),
             ),
             child: Center(
-                child: Text('关注', style: TextStyle(color: Colors.white, fontSize: 12),),
+                child: Text('关注', style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(12.0)),),
             ),
         ),
     );
@@ -472,15 +499,20 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
             _unFollow();
         },
         child: Container(
-            constraints: BoxConstraints(minWidth: 64, maxWidth: double.infinity),
-            padding: EdgeInsets.only(top: 4, bottom: 4, left: 8, right: 8),
+            constraints: BoxConstraints(minWidth: Constants.suSetSp(64.0), maxWidth: double.infinity),
+            padding: EdgeInsets.fromLTRB(
+                Constants.suSetSp(8.0),
+                Constants.suSetSp(4.0),
+                Constants.suSetSp(8.0),
+                Constants.suSetSp(4.0),
+            ),
             decoration: BoxDecoration(
-                color: ThemeUtils.currentColorTheme,
-                border: Border.all(color: ThemeUtils.currentColorTheme,),
-                borderRadius: BorderRadius.circular(4),
+                color: ThemeUtils.currentThemeColor,
+                border: Border.all(color: ThemeUtils.currentThemeColor,),
+                borderRadius: BorderRadius.circular(Constants.suSetSp(4.0)),
             ),
             child: Center(
-                child: Text('取消关注', style: TextStyle(color: Colors.white, fontSize: 12),),
+                child: Text('取消关注', style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(12.0)),),
             ),
         ),
     );
@@ -499,7 +531,6 @@ class UserListPage extends StatefulWidget {
 
 class _UserListState extends State<UserListPage> {
     List _users = [];
-    Color cardColor = Colors.white;
 
     bool canLoadMore = false, isLoading = true;
     int total, pages = 1;
@@ -507,15 +538,6 @@ class _UserListState extends State<UserListPage> {
     @override
     void initState() {
         super.initState();
-        DataUtils.getBrightnessDark().then((isDark) {
-            setState(() {
-                if (isDark != null && isDark) {
-                    cardColor = Color(0xff424242);
-                } else {
-                    cardColor = Colors.white;
-                }
-            });
-        });
         doUpdate(false);
     }
 
@@ -576,24 +598,29 @@ class _UserListState extends State<UserListPage> {
         return Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-                for (int j = start; j < start + 2 && j < _users.length; j++) userCard(_users[j])
+                for (int j = start; j < start + 2 && j < _users.length; j++) userCard(context, _users[j])
             ],
         );
     }
 
-    Widget userCard(userData) {
+    Widget userCard(context, userData) {
         var _user = userData['user'];
         String name = _user['nickname'];
         if (name.length > 3) name = "${name.substring(0, 3)}...";
-        TextStyle _textStyle = TextStyle(fontSize: 16.0);
+        TextStyle _textStyle = TextStyle(fontSize: Constants.suSetSp(16.0));
         return GestureDetector(
             onTap: () => UserPage.jump(context, int.parse(_user['uid'])),
             child: Container(
-                margin: EdgeInsets.fromLTRB(12.0, 20.0, 12.0, 0.0),
-                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+                margin: EdgeInsets.fromLTRB(
+                    Constants.suSetSp(12.0),
+                    Constants.suSetSp(20.0),
+                    Constants.suSetSp(12.0),
+                    Constants.suSetSp(0.0),
+                ),
+                padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(20.0), vertical: Constants.suSetSp(12.0)),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15.0),
-                    color: cardColor,
+                    borderRadius: BorderRadius.circular(Constants.suSetSp(15.0)),
+                    color: Theme.of(context).canvasColor,
                     boxShadow: [BoxShadow(
                         color: Colors.grey[850],
                         blurRadius: 0.0,
@@ -604,18 +631,18 @@ class _UserListState extends State<UserListPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                         Container(
-                            width: 60.0,
-                            height: 60.0,
+                            width: Constants.suSetSp(60.0),
+                            height: Constants.suSetSp(60.0),
                             child: ClipRRect(
-                                borderRadius: BorderRadius.circular(30.0),
+                                borderRadius: BorderRadius.circular(Constants.suSetSp(30.0)),
                                 child: FadeInImage(
                                     fadeInDuration: const Duration(milliseconds: 100),
                                     placeholder: AssetImage("assets/avatar_placeholder.png"),
-                                    image: UserUtils.getAvatarProvider(_user['uid'] is String ? int.parse(_user['uid']) : _user['uid']),
+                                    image: UserUtils.getAvatarProvider(uid: _user['uid'] is String ? int.parse(_user['uid']) : _user['uid']),
                                 ),
                             ),
                         ),
-                        SizedBox(width: 12.0),
+                        SizedBox(width: Constants.suSetSp(12.0)),
                         Row(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -628,7 +655,7 @@ class _UserListState extends State<UserListPage> {
                                             children: <Widget>[
                                                 Text(
                                                     name,
-                                                    style: TextStyle(fontSize: 20.0),
+                                                    style: TextStyle(fontSize: Constants.suSetSp(20.0)),
                                                     overflow: TextOverflow.ellipsis,
                                                 ),
                                             ],
@@ -640,16 +667,16 @@ class _UserListState extends State<UserListPage> {
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: <Widget>[
                                                         Text("关注", style: _textStyle),
-                                                        Divider(height: 3.0),
+                                                        Divider(height: Constants.suSetSp(3.0)),
                                                         Text(userData['idols'], style: _textStyle),
                                                     ],
                                                 ),
-                                                SizedBox(width: 6.0),
+                                                SizedBox(width: Constants.suSetSp(6.0)),
                                                 Column(
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: <Widget>[
                                                         Text("粉丝", style: _textStyle),
-                                                        Divider(height: 3.0),
+                                                        Divider(height: Constants.suSetSp(3.0)),
                                                         Text(userData['fans'], style: _textStyle),
                                                     ],
                                                 )
@@ -681,12 +708,10 @@ class _UserListState extends State<UserListPage> {
         }
         return Scaffold(
             appBar: AppBar(
-                backgroundColor: ThemeUtils.currentColorTheme,
                 centerTitle: true,
-                elevation: 0,
                 title: Text(
                     "$_type列表",
-                    style: TextStyle(color: Colors.white),
+                    style: Theme.of(context).textTheme.title,
                 ),
             ),
             body: !isLoading
@@ -696,7 +721,7 @@ class _UserListState extends State<UserListPage> {
                 itemCount: (_users.length / 2).ceil(),
                 itemBuilder: (context, i) => renderRow(context, i),
             )
-                    : Center(child: Text("暂无内容", style: TextStyle(fontSize: 20.0)))
+                    : Center(child: Text("暂无内容", style: TextStyle(fontSize: Constants.suSetSp(20.0))))
                     : Center(
                 child: CircularProgressIndicator(),
             ),

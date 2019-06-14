@@ -53,7 +53,7 @@ class PostList extends StatefulWidget {
 class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
     GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
     final ScrollController _scrollController = ScrollController();
-    Color currentColorTheme = ThemeUtils.currentColorTheme;
+    Color currentColorTheme = ThemeUtils.currentThemeColor;
 
     int _lastValue = 0;
     bool _isLoading = false;
@@ -61,7 +61,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     bool _firstLoadComplete = false;
     bool _showLoading = true;
 
-    ListView _itemList;
+    Widget _itemList;
 
     Widget _emptyChild;
     Widget _errorChild;
@@ -81,40 +81,41 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     void initState() {
         super.initState();
         widget._postController._postListState = this;
-        Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
-            if (
-                this.mounted
-                    &&
-                ((event.tabIndex == 0 && widget._postController.postType == "square")
-                    ||
-                (event.type == "Post"))
-            ) {
-                _scrollController.jumpTo(0.0);
-                Future.delayed(Duration(milliseconds: 50), () {
-                    refreshIndicatorKey.currentState.show();
-                });
-                Future.delayed(Duration(milliseconds: 500), () {
-                    _refreshData(needLoader: true);
-                });
-            }
-        });
-        Constants.eventBus.on<PostChangeEvent>().listen((event) {
-            if (event.remove) {
-                if (mounted) {
-                    setState(() {
-                        _postList.removeWhere((post) => event.post.id == post.id);
-                    });
-                }
-            } else {
-                if (mounted) {
-                    setState(() {
-                        var index = _postList.indexOf(event.post);
-                        _postList.replaceRange(index, index + 1, [event.post.copy()]);
-                    });
-                }
-            }
-        });
         Constants.eventBus
+            ..on<ScrollToTopEvent>().listen((event) {
+                print(event.type);
+                if (
+                    this.mounted
+                        &&
+                    ((event.tabIndex == 0 && widget._postController.postType == "square")
+                        ||
+                    (event.type == "首页"))
+                ) {
+                    _scrollController.jumpTo(0.0);
+                    Future.delayed(Duration(milliseconds: 50), () {
+                        refreshIndicatorKey.currentState.show();
+                    });
+                    Future.delayed(Duration(milliseconds: 500), () {
+                        _refreshData(needLoader: true);
+                    });
+                }
+            })
+            ..on<PostChangeEvent>().listen((event) {
+                if (event.remove) {
+                    if (mounted) {
+                        setState(() {
+                            _postList.removeWhere((post) => event.post.id == post.id);
+                        });
+                    }
+                } else {
+                    if (mounted) {
+                        setState(() {
+                            var index = _postList.indexOf(event.post);
+                            _postList.replaceRange(index, index + 1, [event.post.copy()]);
+                        });
+                    }
+                }
+            })
             ..on<ChangeThemeEvent>().listen((event) {
                 if (mounted) {
                     setState(() {
@@ -164,41 +165,48 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
         super.build(context);
         if (!_showLoading) {
             if (_firstLoadComplete) {
-                _itemList = ListView.builder(
-                    padding: EdgeInsets.symmetric(vertical: 4.0),
-                    itemBuilder: (context, index) {
-                        if (index == _postList.length) {
-                            if (this._canLoadMore) {
-                                _loadData();
-                                return Container(
-                                    height: 40.0,
-                                    child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                            SizedBox(
-                                                width: 15.0,
-                                                height: 15.0,
-                                                child: Platform.isAndroid
-                                                        ? CircularProgressIndicator(strokeWidth: 2.0)
-                                                        : CupertinoActivityIndicator(),
-                                            ),
-                                            Text("　正在加载", style: TextStyle(fontSize: 14.0)),
-                                        ],
-                                    ),
-                                );
+                _itemList = ScrollConfiguration(
+                    behavior: NoGlowScrollBehavior(),
+                    child: ListView.separated(
+                        padding: EdgeInsets.zero,
+                        separatorBuilder: (context, index) => Container(
+                            color: Theme.of(context).canvasColor,
+                            height: Constants.suSetSp(8.0),
+                        ),
+                        itemBuilder: (context, index) {
+                            if (index == _postList.length) {
+                                if (this._canLoadMore) {
+                                    _loadData();
+                                    return Container(
+                                        height: Constants.suSetSp(40.0),
+                                        child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                                SizedBox(
+                                                    width: Constants.suSetSp(15.0),
+                                                    height: Constants.suSetSp(15.0),
+                                                    child: Platform.isAndroid
+                                                            ? CircularProgressIndicator(strokeWidth: 2.0)
+                                                            : CupertinoActivityIndicator(),
+                                                ),
+                                                Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0))),
+                                            ],
+                                        ),
+                                    );
+                                } else {
+                                    return Container(height: Constants.suSetSp(40.0), child: Center(child: Text("没有更多了~")));
+                                }
+                            } else if (index < _postList.length) {
+                                return PostCard(_postList[index], fromPage: widget._postController.postType, index: index);
                             } else {
-                                return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
+                                return Container();
                             }
-                        } else if (index < _postList.length) {
-                            return PostCard(_postList[index], fromPage: widget._postController.postType, index: index);
-                        } else {
-                            return Container();
-                        }
-                    },
-                    itemCount: _postList.length + 1,
-                    controller: widget._postController.postType == "user"
-                            ? null
-                            : _scrollController,
+                        },
+                        itemCount: _postList.length + 1,
+                        controller: widget._postController.postType == "user"
+                                ? null
+                                : _scrollController,
+                    ),
                 );
 
                 if (widget.needRefreshIndicator) {
@@ -268,7 +276,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     Future<Null> _refreshData({bool needLoader}) async {
         if (!_isLoading) {
             _isLoading = true;
-            _postList.clear();
             _lastValue = 0;
 
             Map result = (await PostAPI.getPostList(
@@ -427,13 +434,13 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
     GestureDetector getPostAvatar(context, post) {
         return GestureDetector(
             child: Container(
-                width: 40.0,
-                height: 40.0,
-                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                width: Constants.suSetSp(40.0),
+                height: Constants.suSetSp(40.0),
+                margin: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0), vertical: Constants.suSetSp(10.0)),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: const Color(0xFFECECEC),
-                    image: DecorationImage(image: UserUtils.getAvatarProvider(post.uid), fit: BoxFit.cover),
+                    image: DecorationImage(image: UserUtils.getAvatarProvider(uid: post.uid), fit: BoxFit.cover),
                 ),
             ),
             onTap: () {
@@ -446,7 +453,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
         post.nickname,
         style: TextStyle(
             color: Theme.of(context).textTheme.title.color,
-            fontSize: 16.0,
+            fontSize: Constants.suSetSp(16.0),
         ),
     );
 
@@ -464,7 +471,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
 
     Widget getExtendedText(context, content) => ExtendedText(
         content != null ? "$content " : null,
-        style: TextStyle(fontSize: 16.0),
+        style: TextStyle(fontSize: Constants.suSetSp(16.0)),
         onSpecialTextTap: (dynamic data) {
             String text = data['content'];
             if (text.startsWith("#")) {
@@ -483,10 +490,10 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
         return Container(
             color: Theme.of(context).cardColor,
             width: MediaQuery.of(context).size.width,
-            padding: isLoading ? EdgeInsets.symmetric(vertical: 42) : EdgeInsets.zero,
-            child: isLoading
-                    ? Center(child: CircularProgressIndicator())
-                    : Container(
+            padding: isLoading ? EdgeInsets.symmetric(vertical: Constants.suSetSp(42)) : EdgeInsets.zero,
+            child: isLoading ? Center(child: SizedBox(
+                child: CircularProgressIndicator(),
+            )) : Container(
                 color: Theme.of(context).cardColor,
                 padding: EdgeInsets.zero,
                 child: firstLoadComplete ? ListView.separated(
@@ -494,7 +501,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                     shrinkWrap: true,
                     separatorBuilder: (context, index) => Container(
                         color: Theme.of(context).dividerColor,
-                        height: 1.0,
+                        height: Constants.suSetSp(1.0),
                     ),
                     itemCount: _posts.length + 1,
                     itemBuilder: (context, index) {
@@ -502,18 +509,18 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                             if (canLoadMore && !isLoading) {
                                 _loadList();
                                 return Container(
-                                    height: 40.0,
+                                    height: Constants.suSetSp(40.0),
                                     child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                             SizedBox(
-                                                width: 15.0,
-                                                height: 15.0,
+                                                width: Constants.suSetSp(15.0),
+                                                height: Constants.suSetSp(15.0),
                                                 child: Platform.isAndroid
                                                         ? CircularProgressIndicator(strokeWidth: 2.0)
                                                         : CupertinoActivityIndicator(),
                                             ),
-                                            Text("　正在加载", style: TextStyle(fontSize: 14.0)),
+                                            Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0))),
                                         ],
                                     ),
                                 );
@@ -531,13 +538,13 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                             mainAxisSize: MainAxisSize.min,
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: <Widget>[
-                                                Container(height: 10.0),
+                                                Container(height: Constants.suSetSp(10.0)),
                                                 getPostNickname(context, _posts[index]),
-                                                Container(height: 4.0),
+                                                Container(height: Constants.suSetSp(4.0)),
                                                 getExtendedText(context, _posts[index].content),
-                                                Container(height: 6.0),
+                                                Container(height: Constants.suSetSp(6.0)),
                                                 getPostTime(context, _posts[index]),
-                                                Container(height: 10.0),
+                                                Container(height: Constants.suSetSp(10.0)),
                                             ],
                                         ),
                                     ),
@@ -549,9 +556,9 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                     },
                 )
                         : Container(
-                    height: 120.0,
+                    height: Constants.suSetSp(120.0),
                     child: Center(
-                        child: Text("暂无内容", style: TextStyle(color: Colors.grey, fontSize: 18.0)),
+                        child: Text("暂无内容", style: TextStyle(color: Colors.grey, fontSize: Constants.suSetSp(18.0))),
                     ),
                 ),
             ),

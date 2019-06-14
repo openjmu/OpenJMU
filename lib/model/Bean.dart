@@ -255,7 +255,7 @@ class WebApp {
 
     static Map category() {
         return {
-            "10": "个人事务",
+//            "10": "个人事务",
             "A4": "我的服务",
             "A3": "我的系统",
             "A8": "流程服务",
@@ -265,6 +265,10 @@ class WebApp {
     }
 }
 
+///
+/// 通知类
+/// [count] 通知计数, [at] @人计数, [comment] 评论, [praise] 点赞
+///
 class Notifications {
     int count, at, comment, praise;
 

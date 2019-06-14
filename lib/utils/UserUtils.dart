@@ -46,10 +46,11 @@ class UserUtils {
 
     /// Update cache network image provider after avatar is updated.
     static int avatarLastModified = DateTime.now().millisecondsSinceEpoch;
-    static CachedNetworkImageProvider getAvatarProvider(int uid, {int size, int t}) {
-        String _url = "${Api.userAvatarInSecure}?uid=$uid";
-        size != null ? _url += "&size=f$size" : _url += "&size=f152";
-        t != null ? _url += "&_t=$t" : _url = _url += "&_t=$avatarLastModified";
+    static CachedNetworkImageProvider getAvatarProvider({int uid, int size, int t}) {
+        uid ??= currentUser.uid;
+        size ??= 152;
+        t ??= avatarLastModified;
+        String _url = "${Api.userAvatarInSecure}?uid=$uid&size=f$size&_t=$t";
         return CachedNetworkImageProvider(_url, cacheManager: DefaultCacheManager());
     }
 

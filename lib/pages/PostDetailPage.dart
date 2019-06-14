@@ -46,16 +46,16 @@ class PostDetailPageState extends State<PostDetailPage> {
 
     TextStyle textActiveStyle = TextStyle(
         color: Colors.white,
-        fontSize: 16.0,
+        fontSize: Constants.suSetSp(16.0),
         fontWeight: FontWeight.bold,
     );
     TextStyle textInActiveStyle = TextStyle(
         color: Colors.grey,
-        fontSize: 16.0,
+        fontSize: Constants.suSetSp(16.0),
     );
 
-    Color forwardsColor, commentsColor = ThemeUtils.currentColorTheme, praisesColor;
-    Color activeColor = ThemeUtils.currentColorTheme;
+    Color forwardsColor, commentsColor = ThemeUtils.currentThemeColor, praisesColor;
+    Color activeColor = ThemeUtils.currentThemeColor;
 
     ForwardListInPostController forwardListInPostController = new ForwardListInPostController();
     CommentListInPostController commentListInPostController = new CommentListInPostController();
@@ -132,8 +132,8 @@ class PostDetailPageState extends State<PostDetailPage> {
 
     void _requestData() {
         setState(() {
-            _forwardsList = new ForwardListInPost(widget.post, forwardListInPostController);
-            _commentsList = new CommentListInPost(widget.post, commentListInPostController);
+            _forwardsList = ForwardListInPost(widget.post, forwardListInPostController);
+            _commentsList = CommentListInPost(widget.post, commentListInPostController);
             _praisesList = PraiseListInPost(widget.post);
         });
     }
@@ -161,8 +161,8 @@ class PostDetailPageState extends State<PostDetailPage> {
     Widget actionLists(context) {
         return new Container(
             color: Theme.of(context).cardColor,
-            margin: EdgeInsets.only(top: 4.0),
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            margin: EdgeInsets.only(top: Constants.suSetSp(4.0)),
+            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
             child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -170,14 +170,14 @@ class PostDetailPageState extends State<PostDetailPage> {
                         children: <Widget>[
                             MaterialButton(
                                 color: forwardsColor,
-                                minWidth: 10.0,
+                                minWidth: Constants.suSetSp(10.0),
                                 elevation: 0,
                                 child: Text("转发 $forwards", style: forwardsStyle),
                                 onPressed: () { setCurrentTabActive(context, 0, "forwards"); },
                             ),
                             MaterialButton(
                                 color: commentsColor,
-                                minWidth: 10.0,
+                                minWidth: Constants.suSetSp(10.0),
                                 elevation: 0,
                                 child: Text("评论 $comments", style: commentsStyle),
                                 onPressed: () { setCurrentTabActive(context, 1, "comments"); },
@@ -185,7 +185,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                             Expanded(child: Container()),
                             MaterialButton(
                                 color: praisesColor,
-                                minWidth: 10.0,
+                                minWidth: Constants.suSetSp(10.0),
                                 elevation: 0,
                                 child: Text("赞 $praises", style: praisesStyle),
                                 onPressed: () { setCurrentTabActive(context, 2, "praises"); },
@@ -238,7 +238,6 @@ class PostDetailPageState extends State<PostDetailPage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                             Expanded(
-                                flex: 1,
                                 child: Container(
                                     color: Theme.of(context).cardColor,
                                     child: FlatButton.icon(
@@ -248,20 +247,13 @@ class PostDetailPageState extends State<PostDetailPage> {
                                                 builder: (BuildContext context) => ForwardPositioned(widget.post),
                                             );
                                         },
-                                        icon: Icon(
-                                            Icons.launch,
-                                            color: Theme.of(context).textTheme.title.color,
-                                            size: 24,
-                                        ),
-                                        label: Text("转发", style: TextStyle(
-                                            color: Theme.of(context).textTheme.title.color,
-                                        )),
+                                        icon: Icon(Icons.launch),
+                                        label: Text("转发"),
                                         splashColor: Colors.grey,
                                     ),
                                 ),
                             ),
                             Expanded(
-                                flex: 1,
                                 child: Container(
                                     color: Theme.of(context).cardColor,
                                     child: FlatButton.icon(
@@ -273,18 +265,13 @@ class PostDetailPageState extends State<PostDetailPage> {
                                         },
                                         icon: Icon(
                                             Platform.isAndroid ? Icons.comment : Foundation.getIconData("comment"),
-                                            color: Theme.of(context).textTheme.title.color,
-                                            size: 24,
                                         ),
-                                        label: Text("评论", style: TextStyle(
-                                            color: Theme.of(context).textTheme.title.color,
-                                        )),
+                                        label: Text("评论"),
                                         splashColor: Colors.grey,
                                     ),
                                 ),
                             ),
                             Expanded(
-                                flex: 1,
                                 child: Container(
                                     color: Theme.of(context).cardColor,
                                     child: FlatButton.icon(
@@ -292,13 +279,12 @@ class PostDetailPageState extends State<PostDetailPage> {
                                         icon: Icon(
                                             Platform.isAndroid ? Icons.thumb_up : Ionicons.getIconData("ios-thumbs-up"),
                                             color: isLike
-                                                    ? ThemeUtils.currentColorTheme
+                                                    ? ThemeUtils.currentThemeColor
                                                     : Theme.of(context).textTheme.title.color,
-                                            size: 24,
                                         ),
                                         label: Text("赞", style: TextStyle(
                                             color: isLike
-                                                    ? ThemeUtils.currentColorTheme
+                                                    ? ThemeUtils.currentThemeColor
                                                     : Theme.of(context).textTheme.title.color,
                                         )),
                                         splashColor: Colors.grey,
@@ -321,21 +307,17 @@ class PostDetailPageState extends State<PostDetailPage> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                backgroundColor: ThemeUtils.currentColorTheme,
                 title: Text(
                     "动态正文",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: Theme.of(context).textTheme.title.fontSize,
-                    ),
+                    style: Theme.of(context).textTheme.title,
                 ),
                 centerTitle: true,
             ),
             body: Column(
                 children: <Widget>[
                     Expanded(
-                        child: RefreshIndicator(
-                            onRefresh: () {},
+//                        child: RefreshIndicator(
+//                            onRefresh: () {},
                             child: ListView(
                                 children: <Widget>[
                                     Row(
@@ -362,7 +344,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                                     ),
                                 ],
                             ),
-                        ),
+//                        ),
                     ),
                     toolbar(context),
                 ],

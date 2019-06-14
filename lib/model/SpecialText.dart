@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:extended_text_library/extended_text_library.dart';
 
+import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/EmojiUtils.dart';
 
-final double _fontSize = 16.0;
-final double _fontSizeField = 18.0;
+final double _fontSize = Constants.suSetSp(16.0);
+final double _fontSizeField = Constants.suSetSp(18.0);
 
 class LinkText extends SpecialText {
     static const String startKey = "https://wb.jmu.edu.cn/";
@@ -157,14 +158,14 @@ class EmoticonText extends SpecialText {
                     imageHeight: size,
                     start: start,
                     fit: BoxFit.fill,
-                    margin: EdgeInsets.only(left: 1.0, bottom: 2.0, right: 1.0),
+                    margin: EdgeInsets.only(left: Constants.suSetSp(1.0), bottom: Constants.suSetSp(2.0), right: Constants.suSetSp(1.0)),
                 );
             } else {
                 return ImageSpan(
                     AssetImage(EmoticonUtils.instance.emoticonMap[key]),
                     imageWidth: size,
                     imageHeight: size,
-                    margin: EdgeInsets.only(left: 1.0, bottom: 2.0, right: 1.0),
+                    margin: EdgeInsets.only(left: Constants.suSetSp(1.0), bottom: Constants.suSetSp(2.0), right: Constants.suSetSp(1.0)),
                 );
             }
         }
