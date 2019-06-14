@@ -26,25 +26,25 @@ class SearchPage extends StatefulWidget {
 
 class SearchPageState extends State<SearchPage> {
     TextEditingController _controller = TextEditingController();
-    Color primaryColor = Colors.white;
     Widget _result = Container();
     bool _autoFocus = true;
     Widget title;
+    FocusNode _focusNode = FocusNode();
 
     @override
-    void initState() {
-        super.initState();
-        title = searchTextField();
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        title = searchTextField(context);
         if (widget.content != null) {
             _autoFocus = false;
             _controller = TextEditingController(text: widget.content);
-            search(widget.content);
+            search(context, widget.content);
         }
     }
 
-    void search(content) {
+    void search(context, content) {
         setState(() {
-            title = searchTitle(content);
+            title = searchTitle(context, content);
             _result = Container();
         });
         Future.delayed(const Duration(milliseconds: 50), () {
@@ -63,25 +63,26 @@ class SearchPageState extends State<SearchPage> {
         });
     }
 
-    TextField searchTextField({content}) {
+    TextField searchTextField(context, {String content}) {
         if (content != null) {
             _controller = TextEditingController(text: content);
         }
         return TextField(
             autofocus: _autoFocus,
             controller: _controller,
-            cursorColor: primaryColor,
+            cursorColor: ThemeUtils.currentThemeColor,
             decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: "输入要搜索的内容...",
-                hintStyle: TextStyle(color: Colors.white70, fontStyle: FontStyle.italic),
+                hintStyle: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
             ),
+            focusNode: _focusNode,
             keyboardType: TextInputType.text,
-            style: TextStyle(fontSize: 20.0, color: primaryColor),
+            style: Theme.of(context).textTheme.title,
             textInputAction: TextInputAction.search,
             onSubmitted: (String text) {
                 if (text != null && text != "") {
-                    search(text);
+                    search(context, text);
                 } else {
                     return null;
                 }
@@ -89,20 +90,41 @@ class SearchPageState extends State<SearchPage> {
         );
     }
 
-    GestureDetector searchTitle(content) {
+    GestureDetector searchTitle(context, content) {
         return GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () {
                 setState(() {
-                    title = searchTextField(content: content);
+                    title = searchTextField(context, content: content);
+                });
+                Future.delayed(Duration(milliseconds: 100), () {
+                    FocusScope.of(context).requestFocus(_focusNode);
                 });
             },
             onDoubleTap: () {
                 Constants.eventBus.fire(new ScrollToTopEvent(type: "Post"));
             },
             child: Center(
-                child: Text("\"$content\"的结果", style: TextStyle(color: primaryColor)),
-            ),
+                child: RichText(
+                    text: TextSpan(
+                        children: <TextSpan>[
+                            TextSpan(
+                                text: "\"$content\"",
+                                style: TextStyle(
+                                    color: Theme.of(context).textTheme.title.color,
+                                    fontSize: Theme.of(context).textTheme.title.fontSize,
+                                    fontWeight: FontWeight.bold,
+                                ),
+                            ),
+                            TextSpan(
+                                text: "相关内容",
+                                style: Theme.of(context).textTheme.title,
+                            )
+                        ],
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                ),
+            )
         );
     }
 
@@ -110,21 +132,17 @@ class SearchPageState extends State<SearchPage> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                backgroundColor: ThemeUtils.currentColorTheme,
-                elevation: 1,
                 title: title,
                 actions: <Widget>[
                     IconButton(
                         icon: Icon(Platform.isAndroid ? Icons.search : Ionicons.getIconData("ios-search")),
                         onPressed: () {
                             if (_controller.text != null && _controller.text != "") {
-                                search(_controller.text);
+                                search(context, _controller.text);
                             }
                         },
                     )
                 ],
-                iconTheme: IconThemeData(color: primaryColor),
-                brightness: Brightness.dark,
             ),
             body: _result,
         );

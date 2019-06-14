@@ -4,6 +4,7 @@ import 'package:extended_text/extended_text.dart';
 import 'package:extended_image/extended_image.dart';
 
 import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
@@ -18,39 +19,34 @@ class PraiseCard extends StatelessWidget {
 
     PraiseCard(this.praise, {Key key}) : super(key: key);
 
-    final TextStyle titleTextStyle = TextStyle(fontSize: 18.0);
-    final TextStyle subtitleStyle = TextStyle(color: Colors.grey, fontSize: 14.0);
-    final TextStyle rootTopicTextStyle = TextStyle(fontSize: 14.0);
-    final TextStyle rootTopicMentionStyle = TextStyle(color: Colors.blue, fontSize: 14.0);
+    final TextStyle subtitleStyle = TextStyle(color: Colors.grey, fontSize: Constants.suSetSp(14.0));
+    final TextStyle rootTopicTextStyle = TextStyle(fontSize: Constants.suSetSp(14.0));
+    final TextStyle rootTopicMentionStyle = TextStyle(color: Colors.blue, fontSize: Constants.suSetSp(14.0));
     final Color subIconColor = Colors.grey;
 
     GestureDetector getCommentAvatar(context, praise) {
         return GestureDetector(
             child: Container(
-                width: 40.0,
-                height: 40.0,
+                width: Constants.suSetSp(40.0),
+                height: Constants.suSetSp(40.0),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: const Color(0xFFECECEC),
                     image: DecorationImage(
-                        image: UserUtils.getAvatarProvider(praise.uid),
+                        image: UserUtils.getAvatarProvider(uid: praise.uid),
                         fit: BoxFit.cover,
                     ),
                 ),
             ),
-            onTap: () {
-                return UserPage.jump(context, praise.uid);
-            },
+            onTap: () => UserPage.jump(context, praise.uid),
         );
     }
 
-    Text getCommentNickname(praise) {
-        return Text(
-            praise.nickname ?? praise.uid,
-            style: titleTextStyle,
-            textAlign: TextAlign.left,
-        );
-    }
+    Text getCommentNickname(context, praise) => Text(
+        praise.nickname ?? praise.uid,
+        style: TextStyle(color: Theme.of(context).textTheme.title.color, fontSize: Constants.suSetSp(18.0)),
+        textAlign: TextAlign.left,
+    );
 
     Row getCommentInfo(praise) {
         String _praiseTime = praise.praiseTime;
@@ -70,12 +66,9 @@ class PraiseCard extends StatelessWidget {
                 Icon(
                     Icons.access_time,
                     color: Colors.grey,
-                    size: 12.0,
+                    size: Constants.suSetSp(12.0),
                 ),
-                Text(
-                    " $_praiseTime",
-                    style: subtitleStyle,
-                ),
+                Text(" $_praiseTime", style: subtitleStyle),
             ],
         );
     }
@@ -85,8 +78,8 @@ class PraiseCard extends StatelessWidget {
             children: <Widget>[
                 Expanded(
                     child: Container(
-                        margin: EdgeInsets.only(bottom: 8.0),
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        margin: EdgeInsets.only(bottom: Constants.suSetSp(8.0)),
+                        padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,11 +100,11 @@ class PraiseCard extends StatelessWidget {
         topic += _post.content;
         return Container(
             width: MediaQuery.of(context).size.width,
-            margin: EdgeInsets.only(top: 8.0),
-            padding: EdgeInsets.all(8.0),
+            margin: EdgeInsets.only(top: Constants.suSetSp(8.0)),
+            padding: EdgeInsets.all(Constants.suSetSp(8.0)),
             decoration: BoxDecoration(
                     color: Theme.of(context).canvasColor,
-                    borderRadius: BorderRadius.circular(5.0)
+                    borderRadius: BorderRadius.circular(Constants.suSetSp(5.0))
             ),
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -126,11 +119,11 @@ class PraiseCard extends StatelessWidget {
     Widget getExtendedText(context, content) {
         return ExtendedText(
             content != null ? "$content " : null,
-            style: TextStyle(fontSize: 16.0),
+            style: TextStyle(fontSize: Constants.suSetSp(16.0)),
             onSpecialTextTap: (dynamic data) {
                 String text = data['content'];
                 if (text.startsWith("#")) {
-                    return SearchPage.search(context, text.substring(1, text.length-1));
+                    return SearchPage.search(context, text.substring(1, text.length - 1));
                 } else if (text.startsWith("@")) {
                     return UserPage.jump(context, data['uid']);
                 } else if (text.startsWith("https://wb.jmu.edu.cn")) {
@@ -178,20 +171,20 @@ class PraiseCard extends StatelessWidget {
             int itemCount = 3;
             if (data.length == 1) {
                 return Container(
-                        padding: EdgeInsets.only(top: 8.0),
-                        child: imagesWidget[0]
+                    padding: EdgeInsets.only(top: Constants.suSetSp(8.0)),
+                    child: imagesWidget[0],
                 );
             } else if (data.length < 3) {
                 itemCount = data.length;
             }
             return Container(
                 child: GridView.count(
-                    padding: EdgeInsets.only(top: 8.0),
+                    padding: EdgeInsets.only(top: Constants.suSetSp(8.0)),
                     shrinkWrap: true,
                     primary: false,
-                    mainAxisSpacing: 8.0,
+                    mainAxisSpacing: Constants.suSetSp(8.0),
                     crossAxisCount: itemCount,
-                    crossAxisSpacing: 8.0,
+                    crossAxisSpacing: Constants.suSetSp(8.0),
                     children: imagesWidget,
                 ),
             );
@@ -207,7 +200,7 @@ class PraiseCard extends StatelessWidget {
         _widgets = [
             ListTile(
                 leading: getCommentAvatar(context, this.praise),
-                title: getCommentNickname(this.praise),
+                title: getCommentNickname(context, this.praise),
                 subtitle: getCommentInfo(this.praise),
             ),
             getCommentContent(context, this.praise),
@@ -221,7 +214,7 @@ class PraiseCard extends StatelessWidget {
             },
             child: Container(
                 child: Card(
-                    margin: EdgeInsets.symmetric(vertical: 4.0),
+                    margin: EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
                     child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: _widgets,

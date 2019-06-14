@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:connectivity/connectivity.dart';
@@ -17,6 +17,7 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/RouteUtils.dart';
+import 'package:OpenJMU/widgets/NoScaleTextWidget.dart';
 
 void main() {
     runApp(JMUAppClient());
@@ -32,9 +33,7 @@ class JMUAppClientState extends State<JMUAppClient> {
     bool isUserLogin = false;
     int initIndex;
 
-    Brightness currentBrightness;
-    Color currentPrimaryColor;
-    Color currentThemeColor;
+    Color currentThemeColor = ThemeUtils.currentThemeColor;
 
     @override
     void initState() {
@@ -49,7 +48,7 @@ class JMUAppClientState extends State<JMUAppClient> {
                 setState(() {
                     currentThemeColor = ThemeUtils.supportColors[index];
                 });
-                ThemeUtils.currentColorTheme = ThemeUtils.supportColors[index];
+                ThemeUtils.currentThemeColor = ThemeUtils.supportColors[index];
                 Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.supportColors[index]));
             } else {
 
@@ -69,8 +68,6 @@ class JMUAppClientState extends State<JMUAppClient> {
             ..on<LogoutEvent>().listen((event) {
                 setState(() {
                     currentThemeColor = ThemeUtils.defaultColor;
-                    currentBrightness = Brightness.light;
-                    currentPrimaryColor = Colors.white;
                 });
             })
             ..on<ActionsEvent>().listen((event) {
@@ -116,72 +113,39 @@ class JMUAppClientState extends State<JMUAppClient> {
             if (isDark == null) {
                 DataUtils.setBrightnessDark(false).then((whatever) {
                     setState(() {
-                        currentBrightness = Brightness.light;
-                        currentPrimaryColor = Colors.white;
+                        ThemeUtils.isDark = false;
                     });
                 });
             } else {
                 if (isDark) {
                     setState(() {
-                        currentBrightness = Brightness.dark;
-                        currentPrimaryColor = Colors.grey[850];
+                        ThemeUtils.isDark = true;
                     });
                 } else {
                     setState(() {
-                        currentBrightness = Brightness.light;
-                        currentPrimaryColor = Colors.white;
+                        ThemeUtils.isDark = false;
                     });
                 }
             }
         });
         Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
             setState(() {
-                currentBrightness = event.brightness;
-                currentPrimaryColor = event.primaryColor;
+                ThemeUtils.isDark = event.isDarkState;
             });
         });
-    }
-
-    ThemeData theme() {
-        return ThemeData(
-            platform: defaultTargetPlatform,
-            brightness: currentBrightness,
-            accentColor: currentThemeColor,
-            buttonColor: currentThemeColor,
-            cursorColor: currentThemeColor,
-            primaryColor: currentThemeColor,
-            primaryColorLight: currentThemeColor,
-            primaryColorDark: currentThemeColor,
-            primaryColorBrightness: currentBrightness,
-            textSelectionColor: currentThemeColor,
-            textSelectionHandleColor: currentThemeColor,
-            primaryIconTheme: IconThemeData(color: Colors.white),
-            appBarTheme: AppBarTheme(
-                actionsIconTheme: IconThemeData(color: Colors.white),
-                brightness: Brightness.dark,
-                color: currentThemeColor,
-                elevation: 0,
-                iconTheme: IconThemeData(color: Colors.white),
-                textTheme: Typography.dense2014,
-            ),
-            buttonTheme: ButtonThemeData(
-                textTheme: ButtonTextTheme.primary,
-                splashColor: currentThemeColor,
-                highlightColor: currentThemeColor,
-            ),
-        );
     }
 
     @override
     Widget build(BuildContext context) {
         return Theme(
-            data: theme(),
+            data: ThemeUtils.isDark ? ThemeUtils.darkTheme() : ThemeUtils.lightTheme(),
             child: OKToast(
                 child: MaterialApp(
+                    builder: (BuildContext c, Widget w) => NoScaleTextWidget(child: w),
                     debugShowCheckedModeBanner: false,
                     routes: RouteUtils.routes,
                     title: "OpenJMU",
-                    theme: theme(),
+                    theme: ThemeUtils.isDark ? ThemeUtils.darkTheme() : ThemeUtils.lightTheme(),
                     home: SplashPage(initIndex: initIndex),
                     localizationsDelegates: [
                         GlobalMaterialLocalizations.delegate,

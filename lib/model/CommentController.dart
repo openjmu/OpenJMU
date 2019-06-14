@@ -61,7 +61,7 @@ class CommentList extends StatefulWidget {
 
 class _CommentListState extends State<CommentList> with AutomaticKeepAliveClientMixin {
     final ScrollController _scrollController = ScrollController();
-    Color currentColorTheme = ThemeUtils.currentColorTheme;
+    Color currentColorTheme = ThemeUtils.currentThemeColor;
 
     num _lastValue = 0;
     bool _isLoading = false;
@@ -104,7 +104,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
             },
             child: Container(
                 child: Center(
-                    child: Text('这里空空如也~', style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                    child: Text('这里空空如也~', style: TextStyle(color: ThemeUtils.currentThemeColor)),
                 ),
             ),
         );
@@ -119,7 +119,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
             },
             child: Container(
                 child: Center(
-                    child: Text('加载失败，轻触重试', style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                    child: Text('加载失败，轻触重试', style: TextStyle(color: ThemeUtils.currentThemeColor)),
                 ),
             ),
         );
@@ -144,20 +144,20 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                             SizedBox(
-                                                width: 15.0,
-                                                height: 15.0,
+                                                width: Constants.suSetSp(15.0),
+                                                height: Constants.suSetSp(15.0),
                                                 child: Platform.isAndroid
                                                         ? CircularProgressIndicator(
                                                     strokeWidth: 2.0,
                                                 )
                                                         : CupertinoActivityIndicator(),
                                             ),
-                                            Text("　正在加载", style: TextStyle(fontSize: 14.0))
+                                            Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0)))
                                         ],
                                     ),
                                 );
                             } else {
-                                return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
+                                return Container(height: Constants.suSetSp(40.0), child: Center(child: Text("没有更多了~")));
                             }
                         } else {
                             return CommentCard(_commentList[index]);
@@ -375,14 +375,14 @@ class _CommentListInPostState extends State<CommentListInPost> {
     GestureDetector getCommentAvatar(context, comment) {
         return GestureDetector(
             child: Container(
-                width: 40.0,
-                height: 40.0,
-                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                width: Constants.suSetSp(40.0),
+                height: Constants.suSetSp(40.0),
+                margin: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0), vertical: Constants.suSetSp(10.0)),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: const Color(0xFFECECEC),
                     image: DecorationImage(
-                        image: UserUtils.getAvatarProvider(comment.fromUserUid),
+                        image: UserUtils.getAvatarProvider(uid: comment.fromUserUid),
                         fit: BoxFit.cover,
                     ),
                 ),
@@ -396,7 +396,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
             comment.fromUserName,
             style: TextStyle(
                 color: Theme.of(context).textTheme.title.color,
-                fontSize: 16.0,
+                fontSize: Constants.suSetSp(16.0),
             ),
         );
     }
@@ -423,7 +423,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
     Widget getExtendedText(context, content) {
         return ExtendedText(
             content != null ? "$content " : null,
-            style: TextStyle(fontSize: 16.0),
+            style: TextStyle(fontSize: Constants.suSetSp(16.0)),
             onSpecialTextTap: (dynamic data) {
                 String text = data['content'];
                 if (text.startsWith("#")) {
@@ -453,7 +453,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
             color: Theme.of(context).cardColor,
             width: MediaQuery.of(context).size.width,
             padding: isLoading
-                    ? EdgeInsets.symmetric(vertical: 42)
+                    ? EdgeInsets.symmetric(vertical: Constants.suSetSp(42))
                     : EdgeInsets.zero,
             child: isLoading
                     ? Center(child: CircularProgressIndicator())
@@ -473,18 +473,18 @@ class _CommentListInPostState extends State<CommentListInPost> {
                             if (canLoadMore && !isLoading) {
                                 _loadList();
                                 return Container(
-                                    height: 40.0,
+                                    height: Constants.suSetSp(40.0),
                                     child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                             SizedBox(
-                                                width: 15.0,
-                                                height: 15.0,
+                                                width: Constants.suSetSp(15.0),
+                                                height: Constants.suSetSp(15.0),
                                                 child: Platform.isAndroid ? CircularProgressIndicator(
                                                     strokeWidth: 2.0,
                                                 ) : CupertinoActivityIndicator(),
                                             ),
-                                            Text("　正在加载", style: TextStyle(fontSize: 14.0)),
+                                            Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0))),
                                         ],
                                     ),
                                 );
@@ -497,7 +497,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                     showDialog<Null>(
                                         context: context,
                                         builder: (BuildContext context) => SimpleDialog(
-                                            backgroundColor: ThemeUtils.currentColorTheme,
+                                            backgroundColor: ThemeUtils.currentThemeColor,
                                             children: <Widget>[Center(
                                                 child: Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -510,8 +510,8 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                                             mainAxisSize: MainAxisSize.min,
                                                             children: <Widget>[
                                                                 IconButton(
-                                                                    icon: Icon(Icons.delete, size: 36.0, color: Colors.white),
-                                                                    padding: EdgeInsets.all(6.0),
+                                                                    icon: Icon(Icons.delete, size: Constants.suSetSp(36.0), color: Colors.white),
+                                                                    padding: EdgeInsets.all(Constants.suSetSp(6.0)),
                                                                     onPressed: () {
                                                                         showPlatformDialog(
                                                                             context: context,
@@ -519,15 +519,15 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                                                         );
                                                                     },
                                                                 ),
-                                                                Text("删除评论", style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                                                                Text("删除评论", style: TextStyle(fontSize: Constants.suSetSp(16.0), color: Colors.white)),
                                                             ],
                                                         ),
                                                         Column(
                                                             mainAxisSize: MainAxisSize.min,
                                                             children: <Widget>[
                                                                 IconButton(
-                                                                    icon: Icon(Icons.content_copy, size: 36.0, color: Colors.white),
-                                                                    padding: EdgeInsets.all(6.0),
+                                                                    icon: Icon(Icons.content_copy, size: Constants.suSetSp(36.0), color: Colors.white),
+                                                                    padding: EdgeInsets.all(Constants.suSetSp(6.0)),
                                                                     onPressed: () {
                                                                         Clipboard.setData(ClipboardData(
                                                                             text: replaceMentionTag(_comments[index].content),
@@ -536,7 +536,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                                                         Navigator.of(context).pop();
                                                                     },
                                                                 ),
-                                                                Text("复制评论", style: TextStyle(fontSize: 16.0, color: Colors.white)),
+                                                                Text("复制评论", style: TextStyle(fontSize: Constants.suSetSp(16.0), color: Colors.white)),
                                                             ],
                                                         ),
                                                     ],
@@ -556,18 +556,18 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                                     mainAxisSize: MainAxisSize.min,
                                                     crossAxisAlignment: CrossAxisAlignment.start,
                                                     children: <Widget>[
-                                                        Container(height: 10.0),
+                                                        Container(height: Constants.suSetSp(10.0)),
                                                         getCommentNickname(context, _comments[index]),
-                                                        Container(height: 4.0),
+                                                        Container(height: Constants.suSetSp(4.0)),
                                                         getExtendedText(context, _comments[index].content),
-                                                        Container(height: 6.0),
+                                                        Container(height: Constants.suSetSp(6.0)),
                                                         getCommentTime(context, _comments[index]),
-                                                        Container(height: 10.0),
+                                                        Container(height: Constants.suSetSp(10.0)),
                                                     ],
                                                 ),
                                             ),
                                             IconButton(
-                                                padding: EdgeInsets.all(26.0),
+                                                padding: EdgeInsets.all(Constants.suSetSp(26.0)),
                                                 icon: Icon(Icons.comment, color: Colors.grey),
                                                 onPressed: () {
                                                     showDialog<Null>(
@@ -586,14 +586,11 @@ class _CommentListInPostState extends State<CommentListInPost> {
                     },
                 )
                         : Container(
-                    height: 120.0,
+                    height: Constants.suSetSp(120.0),
                     child: Center(
                         child: Text(
                             "暂无内容",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 18.0,
-                            ),
+                            style: TextStyle(fontSize: Constants.suSetSp(18.0)),
                         ),
                     ),
                 ),

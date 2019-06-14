@@ -87,6 +87,10 @@ class Api {
     static final String signSummary = oa99Host + "/ajax/sign/usersign";
 
     static final String task = oa99Host + "/ajax/tasks";
+
+    /// 课程表相关
+    static final String courseSchedule = "http://labs.jmu.edu.cn/courseSchedule/course.html";
+    static final String courseScheduleTeacher = "http://labs.jmu.edu.cn/courseSchedule/Tcourse.html";
 }
 
 class SignAPI {

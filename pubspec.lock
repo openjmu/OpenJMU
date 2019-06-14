@@ -98,14 +98,14 @@ packages:
       name: extended_image
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.7"
+    version: "0.4.1"
   extended_image_library:
     dependency: transitive
     description:
       name: extended_image_library
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.1.1"
+    version: "0.1.2"
   extended_tabs:
     dependency: "direct main"
     description:
@@ -119,21 +119,21 @@ packages:
       name: extended_text
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.5.1"
+    version: "0.5.5"
   extended_text_field:
     dependency: "direct main"
     description:
       name: extended_text_field
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.1"
+    version: "0.3.5"
   extended_text_library:
     dependency: transitive
     description:
       name: extended_text_library
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.1"
+    version: "0.3.8"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -160,13 +160,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.1.4"
-  flutter_local_notifications:
+  flutter_inappbrowser:
     dependency: "direct main"
     description:
-      name: flutter_local_notifications
+      name: flutter_inappbrowser
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.7.1+1"
+    version: "1.2.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -177,7 +177,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "249357866afda4d9d41623a8152947fa19877836"
+      resolved-ref: "426996b810c8ff3899a6109b65bdab143652e875"
       url: "https://github.com/btastic/flutter_native_image/"
     source: git
     version: "0.0.4"
@@ -188,13 +188,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.9.6"
+  flutter_screenutil:
+    dependency: "direct main"
+    description:
+      name: flutter_screenutil
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.5.2"
   flutter_svg:
     dependency: "direct main"
     description:
       name: flutter_svg
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.12.4+1"
+    version: "0.12.4+2"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -255,7 +262,7 @@ packages:
       name: image_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.0+8"
+    version: "0.6.0+9"
   intl:
     dependency: transitive
     description:
@@ -277,6 +284,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.6"
+  mime:
+    dependency: transitive
+    description:
+      name: mime
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.9.6+3"
   multi_image_picker:
     dependency: "direct main"
     description:
@@ -290,14 +304,14 @@ packages:
       name: oktoast
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.7"
+    version: "2.1.8"
   package_info:
     dependency: "direct main"
     description:
       name: package_info
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.0+3"
+    version: "0.4.0+4"
   path:
     dependency: transitive
     description:
@@ -325,7 +339,7 @@ packages:
       name: path_provider
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.5.0+1"
+    version: "1.1.0"
   pedantic:
     dependency: transitive
     description:
@@ -347,20 +361,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.2.1"
-  platform:
-    dependency: transitive
-    description:
-      name: platform
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.2.0"
   quick_actions:
     dependency: "direct main"
     description:
       name: quick_actions
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.0+1"
+    version: "0.3.0+2"
   quiver:
     dependency: transitive
     description:
@@ -473,4 +480,4 @@ packages:
     version: "3.4.1"
 sdks:
   dart: ">=2.2.2 <3.0.0"
-  flutter: ">=1.2.1 <2.0.0"
+  flutter: "1.5.4-hotfix.2"

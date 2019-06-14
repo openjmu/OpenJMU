@@ -137,7 +137,7 @@ class EmotionPad extends StatefulWidget {
 
 class EmotionPadState extends State<EmotionPad> {
 
-    static double emoticonPadDefaultHeight = 260;
+    static double emoticonPadDefaultHeight = Constants.suSetSp(260);
     static double emoticonPadHeight;
     static List<String> emoticonNames = [];
     static List<String> emoticonPaths = [];
@@ -162,7 +162,7 @@ class EmotionPadState extends State<EmotionPad> {
                     crossAxisCount: 8,
                 ),
                 itemBuilder: (context, index) => Container(
-                    margin: EdgeInsets.all(4.0),
+                    margin: EdgeInsets.all(Constants.suSetSp(4.0)),
                     child: IconButton(
                         icon: Image.asset(
                             emoticonPaths[index],

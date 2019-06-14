@@ -53,7 +53,7 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
                         ),
                     ),
                     Container(
-                        padding: EdgeInsets.only(top: 20.0),
+                        padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
                         alignment: AlignmentDirectional.center,
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -106,7 +106,6 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
             file: _file,
             preferredSize: (640 / scale).round(),
         );
-        print((640 / scale).round());
 
         final file = await ImageCrop.cropImage(
             file: sample,

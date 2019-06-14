@@ -16,8 +16,8 @@ class _SelectSplashDialogState extends State<SelectSplashDialog> {
     final BoxDecoration activePageShadow = BoxDecoration(
             boxShadow: <BoxShadow>[
                 BoxShadow(
-                    blurRadius: 10.0,
-                    color: ThemeUtils.currentColorTheme,
+                    blurRadius: Constants.suSetSp(10.0),
+                    color: ThemeUtils.currentThemeColor,
                 )
             ]
     );
@@ -41,9 +41,11 @@ class _SelectSplashDialogState extends State<SelectSplashDialog> {
                         ),
                     ),
                     Container(
-                        margin: EdgeInsets.only(top: 16.0),
+                        margin: EdgeInsets.only(top: Constants.suSetSp(16.0)),
                         width: width,
-                        child: Center(child: Text(pagesTitle[index], style: TextStyle(fontSize: 16.0))),
+                        child: Center(
+                            child: Text(pagesTitle[index], style: TextStyle(fontSize: 16.0)),
+                        ),
                     ),
                 ],
             ),
@@ -52,23 +54,26 @@ class _SelectSplashDialogState extends State<SelectSplashDialog> {
 
     @override
     Widget build(BuildContext context) {
-        double _width = (MediaQuery.of(context).size.width - 130) / 3;
+        double _width = Constants.suSetSp((MediaQuery.of(context).size.width - 130) / 3);
         return Material(
             type: MaterialType.transparency,
             child: Center(
                 child: Container(
-                    width: MediaQuery.of(context).size.width - 60,
+                    width: MediaQuery.of(context).size.width - Constants.suSetSp(80),
                     color: Theme.of(context).canvasColor,
                     child: Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                             Padding(
-                                padding: EdgeInsets.all(20.0),
+                                padding: EdgeInsets.all(Constants.suSetSp(24.0)),
                                 child: Text("更改默认启动页", style: Theme.of(context).textTheme.title),
                             ),
                             Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Constants.suSetSp(20.0),
+                                    vertical: Constants.suSetSp(5.0),
+                                ),
                                 child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
@@ -79,7 +84,7 @@ class _SelectSplashDialogState extends State<SelectSplashDialog> {
                                 ),
                             ),
                             Padding(
-                                padding: EdgeInsets.only(top: 16.0),
+                                padding: EdgeInsets.only(top: Constants.suSetSp(16.0)),
                                 child: Divider(height: 1),
                             ),
                             Row(
@@ -87,8 +92,8 @@ class _SelectSplashDialogState extends State<SelectSplashDialog> {
                                     Expanded(
                                         child: FlatButton(
                                             child: Text("取消", style: TextStyle(
-                                                color: ThemeUtils.currentColorTheme,
-                                                fontSize: 18.0,
+                                                color: ThemeUtils.currentThemeColor,
+                                                fontSize: Constants.suSetSp(18.0),
                                             )),
                                             onPressed: () {
                                                 Navigator.of(context).pop();
@@ -99,7 +104,7 @@ class _SelectSplashDialogState extends State<SelectSplashDialog> {
                                         child: FlatButton(
                                             child: Text("保存", style: TextStyle(
                                                 color: Theme.of(context).textTheme.body1.color,
-                                                fontSize: 18.0,
+                                                fontSize: Constants.suSetSp(18.0),
                                             )),
                                             onPressed: () {
                                                 Navigator.of(context).pop();

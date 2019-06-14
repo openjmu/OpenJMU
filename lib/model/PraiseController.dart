@@ -33,7 +33,7 @@ class PraiseList extends StatefulWidget {
 
 class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMixin {
     final ScrollController _scrollController = ScrollController();
-    Color currentColorTheme = ThemeUtils.currentColorTheme;
+    Color currentColorTheme = ThemeUtils.currentThemeColor;
 
     num _lastValue = 0;
     bool _isLoading = false;
@@ -71,7 +71,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
                 child: Center(
                     child: Text(
                         '这里空空如也~',
-                        style: TextStyle(color: ThemeUtils.currentColorTheme),
+                        style: TextStyle(color: ThemeUtils.currentThemeColor),
                     ),
                 ),
             ),
@@ -87,7 +87,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
             },
             child: Container(
                 child: Center(
-                    child: Text('加载失败，轻触重试', style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                    child: Text('加载失败，轻触重试', style: TextStyle(color: ThemeUtils.currentThemeColor)),
                 ),
             ),
         );
@@ -101,29 +101,29 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
         if (!_showLoading) {
             if (_firstLoadComplete) {
                 _itemList = ListView.builder(
-                    padding: EdgeInsets.symmetric(vertical: 4.0),
+                    padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
                     itemBuilder: (context, index) {
                         if (index == _praiseList.length) {
                             if (this._canLoadMore) {
                                 _loadData();
                                 return Container(
-                                    height: 40.0,
+                                    height: Constants.suSetSp(40.0),
                                     child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                             SizedBox(
-                                                width: 15.0,
-                                                height: 15.0,
+                                                width: Constants.suSetSp(15.0),
+                                                height: Constants.suSetSp(15.0),
                                                 child: Platform.isAndroid
                                                         ? CircularProgressIndicator(strokeWidth: 2.0)
                                                         : CupertinoActivityIndicator(),
                                             ),
-                                            Text("　正在加载", style: TextStyle(fontSize: 14.0))
+                                            Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0)))
                                         ],
                                     ),
                                 );
                             } else {
-                                return Container(height: 40.0, child: Center(child: Text("没有更多了~")));
+                                return Container(height: Constants.suSetSp(40.0), child: Center(child: Text("没有更多了~")));
                             }
                         } else {
                             return PraiseCard(_praiseList[index]);
@@ -314,14 +314,14 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
     GestureDetector getPostAvatar(context, praise) {
         return GestureDetector(
             child: Container(
-                width: 40.0,
-                height: 40.0,
-                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                width: Constants.suSetSp(40.0),
+                height: Constants.suSetSp(40.0),
+                margin: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0), vertical: Constants.suSetSp(10.0)),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: const Color(0xFFECECEC),
                     image: DecorationImage(
-                        image: UserUtils.getAvatarProvider(praise.uid),
+                        image: UserUtils.getAvatarProvider(uid: praise.uid),
                         fit: BoxFit.cover,
                     ),
                 ),
@@ -337,7 +337,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
             praise.nickname,
             style: TextStyle(
                 color: Theme.of(context).textTheme.body1.color,
-                fontSize: 16.0,
+                fontSize: Constants.suSetSp(16.0),
             ),
         );
     }
@@ -347,7 +347,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
         return Container(
             color: Theme.of(context).cardColor,
             width: MediaQuery.of(context).size.width,
-            padding: isLoading ? EdgeInsets.symmetric(vertical: 42) : EdgeInsets.zero,
+            padding: isLoading ? EdgeInsets.symmetric(vertical: Constants.suSetSp(42)) : EdgeInsets.zero,
             child: isLoading
                     ? Center(child: CircularProgressIndicator())
                     : Container(
@@ -358,7 +358,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                     shrinkWrap: true,
                     separatorBuilder: (context, index) => Container(
                         color: Theme.of(context).dividerColor,
-                        height: 1.0,
+                        height: Constants.suSetSp(1.0),
                     ),
                     itemCount: _praises.length + 1,
                     itemBuilder: (context, index) {
@@ -366,20 +366,20 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                             if (canLoadMore && !isLoading) {
                                 _loadList();
                                 return Container(
-                                    height: 40.0,
+                                    height: Constants.suSetSp(40.0),
                                     child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                             SizedBox(
-                                                width: 15.0,
-                                                height: 15.0,
+                                                width: Constants.suSetSp(15.0),
+                                                height: Constants.suSetSp(15.0),
                                                 child: Platform.isAndroid
                                                         ? CircularProgressIndicator(
                                                     strokeWidth: 2.0,
                                                 )
                                                         : CupertinoActivityIndicator(),
                                             ),
-                                            Text("　正在加载", style: TextStyle(fontSize: 14.0)),
+                                            Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0))),
                                         ],
                                     ),
                                 );
@@ -409,13 +409,13 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                     },
                 )
                         : Container(
-                    height: 120.0,
+                    height: Constants.suSetSp(120.0),
                     child: Center(
                         child: Text(
                             "暂无内容",
                             style: TextStyle(
                                 color: Colors.grey,
-                                fontSize: 18.0,
+                                fontSize: Constants.suSetSp(18.0),
                             ),
                         ),
                     ),

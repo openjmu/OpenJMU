@@ -14,10 +14,6 @@ import 'package:OpenJMU/model/PraiseController.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class NotificationPage extends StatefulWidget {
-    final Map arguments;
-
-    NotificationPage({this.arguments});
-
     @override
     State<StatefulWidget> createState() => NotificationPageState();
 }
@@ -30,7 +26,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
         Platform.isAndroid ? Icons.thumb_up : Ionicons.getIconData("ios-thumbs-up")
     ];
 
-    Color badgeColor = Colors.redAccent;
+    Color badgeColor = ThemeUtils.currentThemeColor;
     Color primaryColor = Colors.white;
     Notifications currentNotifications;
 
@@ -44,11 +40,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
     @override
     void initState() {
         super.initState();
-        if (widget.arguments != null) {
-            currentNotifications = widget.arguments['notifications'];
-        } else {
-            currentNotifications = Notifications(0,0,0,0);
-        }
+        currentNotifications = Constants.notifications;
         _tabController = TabController(length: 3, vsync: this);
         _tabController.animation.addListener(() {
             if (_tabController.indexIsChanging) {
@@ -80,7 +72,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
         List<Tab> _tabs = [
             Tab(child: BadgeIconButton(
                 itemCount: currentNotifications.at,
-                icon: Icon(actionsIcons[0], color: primaryColor),
+                icon: Icon(actionsIcons[0]),
                 badgeColor: badgeColor,
                 badgeTextColor: primaryColor,
                 hideZeroCount: true,
@@ -94,7 +86,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
             )),
             Tab(child: BadgeIconButton(
                 itemCount: currentNotifications.comment,
-                icon: Icon(actionsIcons[1], color: primaryColor),
+                icon: Icon(actionsIcons[1]),
                 badgeColor: badgeColor,
                 badgeTextColor: primaryColor,
                 hideZeroCount: true,
@@ -108,7 +100,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
             )),
             Tab(child: BadgeIconButton(
                 itemCount: currentNotifications.praise,
-                icon: Icon(actionsIcons[2], color: primaryColor),
+                icon: Icon(actionsIcons[2]),
                 badgeColor: badgeColor,
                 badgeTextColor: primaryColor,
                 hideZeroCount: true,
@@ -123,9 +115,12 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
         ];
         return [
             Container(
-                width: 220.0,
+                width: Constants.suSetSp(220.0),
                 child: TabBar(
-                    indicatorColor: primaryColor,
+                    indicatorColor: ThemeUtils.currentThemeColor,
+                    indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(18.0)),
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicatorWeight: Constants.suSetSp(6.0),
                     tabs: _tabs,
                     controller: _tabController,
                 ),
@@ -133,9 +128,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
         ];
     }
 
-    Icon getActionIcon(int curIndex) {
-        return Icon(actionsIcons[curIndex], color: primaryColor);
-    }
+    Icon getActionIcon(int curIndex) => Icon(actionsIcons[curIndex]);
 
     void postByMention() {
         _mentionPost = new PostList(
@@ -185,10 +178,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                backgroundColor: ThemeUtils.currentColorTheme,
-                elevation: 0,
                 actions: actions(),
-                brightness: Brightness.dark,
             ),
             body: ExtendedTabBarView(
                 controller: _tabController,
@@ -197,14 +187,16 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                         children: <Widget>[
                             Container(
                                 width: MediaQuery.of(context).size.width,
-                                height: 42.0,
-                                color: ThemeUtils.currentColorTheme,
+                                height: Constants.suSetSp(42.0),
                                 child: TabBar(
-                                    indicatorColor: primaryColor,
-                                    labelColor: primaryColor,
+                                    indicatorColor: ThemeUtils.currentThemeColor,
+                                    indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(6.0)),
+                                    indicatorSize: TabBarIndicatorSize.label,
+                                    indicatorWeight: Constants.suSetSp(4.0),
+                                    labelStyle: TextStyle(fontSize: Constants.suSetSp(16.0)),
                                     tabs: <Tab>[
-                                        Tab(text: "@我的动态"),
                                         Tab(text: "@我的评论"),
+                                        Tab(text: "@我的动态"),
                                     ],
                                     controller: _mentionTabController,
                                 ),
@@ -213,8 +205,8 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                                 child: ExtendedTabBarView(
                                     controller: _mentionTabController,
                                     children: <Widget>[
-                                        _mentionPost,
                                         _mentionComment,
+                                        _mentionPost,
                                     ],
                                 ),
                             ),

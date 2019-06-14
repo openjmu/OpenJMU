@@ -86,37 +86,37 @@ class OTAUtils {
             text = "${event.currentVersion} -> ${event.response['version']}";
         }
         return AlertDialog(
-            backgroundColor: ThemeUtils.currentColorTheme,
+            backgroundColor: ThemeUtils.currentThemeColor,
             content: SingleChildScrollView(
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                         Center(child: Container(
-                            margin: EdgeInsets.only(bottom: 12.0),
+                            margin: EdgeInsets.only(bottom: Constants.suSetSp(12.0)),
                             child: Image.asset(
                                 "images/ic_jmu_logo_trans.png",
                                 color: Colors.white,
-                                width: 80.0,
-                                height: 80.0,
+                                width: Constants.suSetSp(80.0),
+                                height: Constants.suSetSp(80.0),
                             ),
                             decoration: BoxDecoration(shape: BoxShape.circle),
                         )),
                         Center(child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 12.0),
+                            margin: EdgeInsets.symmetric(vertical: Constants.suSetSp(12.0)),
                             child: RichText(text: TextSpan(children: <TextSpan>[
                                 TextSpan(
                                     text: "OpenJmu has new version",
-                                    style: TextStyle(fontFamily: 'chocolate',color: Colors.white, fontSize: 24.0),
+                                    style: TextStyle(fontFamily: 'chocolate',color: Colors.white, fontSize: Constants.suSetSp(24.0)),
                                 ),
                             ])),
                         )),
                         Center(child: Container(
-                            margin: EdgeInsets.symmetric(vertical: 6.0),
+                            margin: EdgeInsets.symmetric(vertical: Constants.suSetSp(6.0)),
                             child: RichText(text: TextSpan(children: <TextSpan>[
                                 TextSpan(
                                     text: text,
-                                    style: TextStyle(fontFamily: 'chocolate',color: Colors.white, fontSize: 20.0),
+                                    style: TextStyle(fontFamily: 'chocolate',color: Colors.white, fontSize: Constants.suSetSp(20.0)),
                                 ),
                             ])),
                         )),
@@ -129,7 +129,7 @@ class OTAUtils {
                     ],
                 ),
             ),
-            contentPadding: EdgeInsets.all(24),
+            contentPadding: EdgeInsets.all(Constants.suSetSp(24.0)),
             actions: <Widget>[
                 FlatButton(
                     onPressed: () {Navigator.pop(_);},

@@ -61,12 +61,13 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                 focusNode: _focusNode,
                 controller: _forwardController,
                 decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(12.0),
-                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(Constants.suSetSp(12.0)),
+                    border: OutlineInputBorder(borderSide: BorderSide(color: ThemeUtils.currentThemeColor)),
+                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: ThemeUtils.currentThemeColor)),
                 ),
                 enabled: !_forwarding,
-                style: TextStyle(fontSize: 18.0),
-                cursorColor: ThemeUtils.currentColorTheme,
+                style: TextStyle(fontSize: Constants.suSetSp(18.0)),
+                cursorColor: ThemeUtils.currentThemeColor,
                 autofocus: true,
                 maxLines: 3,
                 maxLength: 140,
@@ -145,7 +146,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
             builder: (BuildContext context) => MentionPeopleDialog(),
         ).then((user) {
             FocusScope.of(context).requestFocus(_focusNode);
-            Future.delayed(Duration(milliseconds: 250), () {
+            if (user != null) Future.delayed(Duration(milliseconds: 250), () {
                 insertText("<M ${user.id}>@${user.nickname}</M>");
             });
         });
@@ -156,7 +157,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
                 Checkbox(
-                    activeColor: ThemeUtils.currentColorTheme,
+                    activeColor: ThemeUtils.currentThemeColor,
                     value: commentAtTheMeanTime,
                     onChanged: (value) {
                         setState(() {
@@ -164,7 +165,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                         });
                     },
                 ),
-                Text("同时评论到微博", style: TextStyle(fontSize: 16.0)),
+                Text("同时评论到微博", style: TextStyle(fontSize: Constants.suSetSp(16.0))),
                 Expanded(child: Container()),
                 IconButton(
                     onPressed: mentionPeople,
@@ -173,7 +174,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                 ToggleButton(
                     activeWidget: Icon(
                         Icons.sentiment_very_satisfied,
-                        color: ThemeUtils.currentColorTheme,
+                        color: ThemeUtils.currentThemeColor,
                     ),
                     unActiveWidget: Icon(
                         Icons.sentiment_very_satisfied,
@@ -192,14 +193,14 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                 !_forwarding
                         ? IconButton(
                     icon: Icon(Icons.send),
-                    color: ThemeUtils.currentColorTheme,
+                    color: ThemeUtils.currentThemeColor,
                     onPressed: () => _requestForward(context),
                 )
                         : Container(
-                    padding: EdgeInsets.symmetric(horizontal: 14.0),
+                    padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(14.0)),
                     child: SizedBox(
-                        width: 18.0,
-                        height: 18.0,
+                        width: Constants.suSetSp(18.0),
+                        height: Constants.suSetSp(18.0),
                         child: CircularProgressIndicator(strokeWidth: 2.0),
                     ),
                 ),
@@ -228,7 +229,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                         left: 0.0,
                         right: 0.0,
                         child: Container(
-                            padding: EdgeInsets.all(10.0),
+                            padding: EdgeInsets.all(Constants.suSetSp(10.0)),
                             color: Theme.of(context).cardColor,
                             child: Column(
                                 mainAxisAlignment: MainAxisAlignment.start,

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:connectivity/connectivity.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -15,7 +16,7 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 class SplashPage extends StatefulWidget {
     final int initIndex;
 
-    SplashPage({this.initIndex, Key key}) : super(key: key);
+    SplashPage({Key key, this.initIndex}) : super(key: key);
 
     @override
     SplashState createState() => SplashState();
@@ -28,7 +29,7 @@ class SplashState extends State<SplashPage> {
     void initState() {
         super.initState();
         if (NetUtils.currentConnectivity != null && NetUtils.currentConnectivity != ConnectivityResult.none) {
-            print(NetUtils.currentConnectivity);
+            debugPrint("${NetUtils.currentConnectivity}");
             this.isOnline = true;
         } else {
             DataUtils.isLogin().then((isLogin) {
@@ -47,6 +48,7 @@ class SplashState extends State<SplashPage> {
                 if (this.mounted) checkOnline(event);
             })
             ..on<TicketGotEvent>().listen((event) {
+                print("Ticket Got.");
                 if (this.mounted) {
                     setState(() {
                         this.isUserLogin = true;
@@ -64,6 +66,13 @@ class SplashState extends State<SplashPage> {
             });
     }
 
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        ThemeUtils.setDark(true);
+        ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
+    }
+
     void checkOnline(event) {
         setState(() {
             if (event.type != ConnectivityResult.none) {
@@ -78,20 +87,28 @@ class SplashState extends State<SplashPage> {
         Future.delayed(const Duration(seconds: 2), () {
             if (!isUserLogin) {
                 try {
-                    Navigator.of(context).pushReplacement(PageRouteBuilder(
+                    Navigator.of(context).pushAndRemoveUntil(PageRouteBuilder(
                         transitionDuration: Duration(milliseconds: 500),
-                        pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
+                        pageBuilder: (
+                                BuildContext context,
+                                Animation animation,
+                                Animation secondaryAnimation,
+                                ) {
                             return FadeTransition(
                                 opacity: animation,
                                 child: LoginPage(),
                             );
                         },
-                    ));
+                    ), (Route<dynamic> route) => false);
                 } catch (e) {}
             } else {
                 try {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)));
-                } catch (e) {}
+                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                        builder: (_) => MainPage(initIndex: widget.initIndex),
+                    ), (Route<dynamic> route) => false);
+                } catch (e) {
+                    print(e);
+                }
             }
         });
     }
@@ -100,11 +117,11 @@ class SplashState extends State<SplashPage> {
         return Hero(
             tag: "Logo",
             child: Container(
-                margin: EdgeInsets.all(30.0),
+                margin: EdgeInsets.all(Constants.suSetSp(30.0)),
                 child: Image.asset(
                     'images/ic_jmu_logo_trans.png',
-                    width: 120.0,
-                    height: 120.0,
+                    width: Constants.suSetSp(120.0),
+                    height: Constants.suSetSp(120.0),
                 ),
             ),
         );
@@ -126,48 +143,48 @@ class SplashState extends State<SplashPage> {
 //                                        Colors.red
 //                                    ],
 //                                ),
-                                color: ThemeUtils.currentColorTheme,
+                                color: ThemeUtils.currentThemeColor,
                             ),
                             child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                     Container(
-                                        padding: EdgeInsets.only(bottom: 100.0),
+                                        padding: EdgeInsets.only(bottom: Constants.suSetSp(100.0)),
                                         child: Center(
                                             child: Column(
                                                 children: <Widget>[
                                                     buildLogo(),
-                                                    SizedBox(height: 20.0),
+                                                    SizedBox(height: Constants.suSetSp(20.0)),
                                                     if (showLoading)
                                                         if (isOnline != null && isOnline) Column(
                                                             children: <Widget>[
                                                                 Container(
-                                                                    margin: EdgeInsets.only(bottom: 20.0),
-                                                                    width: 24.0,
-                                                                    height: 24.0,
+                                                                    margin: EdgeInsets.only(bottom: Constants.suSetSp(20.0)),
+                                                                    width: Constants.suSetSp(24.0),
+                                                                    height: Constants.suSetSp(24.0),
                                                                     child: Platform.isAndroid ? CircularProgressIndicator(
                                                                         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                                                     ) : CupertinoActivityIndicator(),
                                                                 ),
                                                                 Text(
                                                                     "正在登录",
-                                                                    style: TextStyle(color: Colors.white, fontSize: 20.0),
+                                                                    style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(20.0)),
                                                                 )
                                                             ],
                                                         ) else if (isOnline != null && !isOnline) Column(
                                                             children: <Widget>[
                                                                 Container(
-                                                                    margin: EdgeInsets.only(bottom: 20.0),
-                                                                    width: 30.0,
-                                                                    height: 30.0,
-                                                                    child: Icon(Icons.warning, size: 46, color: Colors.white),
+                                                                    margin: EdgeInsets.only(bottom: Constants.suSetSp(20.0)),
+                                                                    width: Constants.suSetSp(30.0),
+                                                                    height: Constants.suSetSp(30.0),
+                                                                    child: Icon(Icons.warning, color: Colors.white),
                                                                 ),
                                                                 Text(
                                                                     "请检查联网状态",
-                                                                    style: TextStyle(color: Colors.white, fontSize: 20.0),
+                                                                    style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(20.0)),
                                                                 )
                                                             ],
-                                                        ) else SizedBox(height: 68)
+                                                        ) else SizedBox(height: Constants.suSetSp(68))
                                                 ],
                                             ),
                                         ),

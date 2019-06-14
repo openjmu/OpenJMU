@@ -61,11 +61,11 @@ class PublishPostPageState extends State<PublishPostPage> {
     String msg = "";
     String sid = UserUtils.currentUser.sid;
 
-    static double _iconWidth = 24.0;
-    static double _iconHeight = 24.0;
+    static double _iconWidth = Constants.suSetSp(24.0);
+    static double _iconHeight = Constants.suSetSp(24.0);
 
     Widget poundIcon(context) => SvgPicture.asset(
-        "assets/icons/Topic.svg",
+        "assets/icons/add-topic.svg",
         color: Theme.of(context).iconTheme.color,
         width: _iconWidth,
         height: _iconHeight,
@@ -127,7 +127,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         setState(() {
             textFieldEnable = false;
         });
-        String currentColorValue = "#${ThemeUtils.currentColorTheme.value.toRadixString(16).substring(2, 8)}";
+        String currentColorValue = "#${ThemeUtils.currentThemeColor.value.toRadixString(16).substring(2, 8)}";
         List<Asset> resultList = List<Asset>();
         /// Prompt permissions.
         Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([
@@ -179,7 +179,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     Widget textField() {
         return Expanded(
             child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
+                padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(12.0), vertical: Constants.suSetSp(2.0)),
                 child: ExtendedTextField(
                     specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
                     controller: _textEditingController,
@@ -191,13 +191,13 @@ class PublishPostPageState extends State<PublishPostPage> {
                         hintText: "分享你的动态...",
                         hintStyle: TextStyle(
                             color: Colors.grey,
-                            fontSize: 18.0,
+                            fontSize: Constants.suSetSp(18.0),
                         ),
                         border: InputBorder.none,
-                        labelStyle: TextStyle(color: Colors.white, fontSize: 18.0),
+                        labelStyle: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(18.0)),
                         counterStyle: TextStyle(color: Colors.transparent),
                     ),
-                    style: TextStyle(fontSize: 18.0),
+                    style: TextStyle(fontSize: Constants.suSetSp(18.0)),
                     maxLength: maxLength,
                     maxLines: null,
                     onChanged: (content) {
@@ -228,7 +228,7 @@ class PublishPostPageState extends State<PublishPostPage> {
             left: 0.0,
             right: 0.0,
             child: Container(
-                margin: EdgeInsets.only(bottom: 80),
+                margin: EdgeInsets.only(bottom: Constants.suSetSp(80)),
                 height: MediaQuery.of(context).size.width / gridCount * (imagesBin.length / gridCount).ceil(),
                 child: DragAbleGridView(
                     childAspectRatio: 1,
@@ -239,7 +239,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                     animationDuration: 300,
                     longPressDuration: 500,
                     deleteIcon: Container(
-                        padding: EdgeInsets.all(3.0),
+                        padding: EdgeInsets.all(Constants.suSetSp(3.0)),
                         decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.redAccent,
@@ -247,12 +247,12 @@ class PublishPostPageState extends State<PublishPostPage> {
                         child: Icon(
                             Platform.isAndroid ? Icons.delete : Ionicons.getIconData("ios-trash"),
                             color: Colors.white,
-                            size: (10.0+16*(1/gridCount)),
+                            size: Constants.suSetSp(10.0 + 16 * (1 / gridCount)),
                         ),
                     ),
                     child: (int position) {
                         return Container(
-                            margin: EdgeInsets.all(4.0),
+                            margin: EdgeInsets.all(Constants.suSetSp(4.0)),
                             padding: EdgeInsets.zero,
                             child: AssetThumb(
                                 asset: imagesBin[position].data,
@@ -268,10 +268,10 @@ class PublishPostPageState extends State<PublishPostPage> {
 
     Widget _counter(context) {
         return Positioned(
-            bottom: (emoticonPadActive ? _keyboardHeight : 0.0) + (MediaQuery.of(context).padding.bottom ?? 0) + 60.0,
+            bottom: (emoticonPadActive ? _keyboardHeight : 0.0) + (MediaQuery.of(context).padding.bottom ?? 0) + Constants.suSetSp(60.0),
             right: 0.0,
             child: Padding(
-                padding: EdgeInsets.only(right: 11.0),
+                padding: EdgeInsets.only(right: Constants.suSetSp(11.0)),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
@@ -289,7 +289,7 @@ class PublishPostPageState extends State<PublishPostPage> {
 
     Widget _toolbar(context) {
         return Positioned(
-            bottom: (emoticonPadActive ? _keyboardHeight : 0.0) + MediaQuery.of(context).padding.bottom ?? 60.0,
+            bottom: (emoticonPadActive ? _keyboardHeight : 0.0) + MediaQuery.of(context).padding.bottom ?? Constants.suSetSp(60.0),
             left: 0.0,
             right: 0.0,
             child: Container(
@@ -318,7 +318,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                         ToggleButton(
                             activeWidget: Icon(
                                 Icons.sentiment_very_satisfied,
-                                color: ThemeUtils.currentColorTheme,
+                                color: ThemeUtils.currentThemeColor,
                             ),
                             unActiveWidget: Icon(
                                 Icons.sentiment_very_satisfied,
@@ -414,21 +414,19 @@ class PublishPostPageState extends State<PublishPostPage> {
                 context: context,
                 barrierDismissible: false,
                 builder: (BuildContext context) {
-                    return StatefulBuilder(builder: (BuildContext ctx, state) {
-                        if (imagesBin.length > 0) {
-                            return LoadingDialog(
-                                text: "正在上传图片 (1/${imagesBin.length})",
-                                controller: _loadingDialogController,
-                                isGlobal: false,
-                            );
-                        } else {
-                            return LoadingDialog(
-                                text: "正在发布动态...",
-                                controller: _loadingDialogController,
-                                isGlobal: false,
-                            );
-                        }
-                    });
+                    if (imagesBin.length > 0) {
+                        return LoadingDialog(
+                            text: "正在上传图片 (1/${imagesBin.length})",
+                            controller: _loadingDialogController,
+                            isGlobal: false,
+                        );
+                    } else {
+                        return LoadingDialog(
+                            text: "正在发布动态...",
+                            controller: _loadingDialogController,
+                            isGlobal: false,
+                        );
+                    }
                 },
             );
             Map<String, dynamic> data = {};
@@ -438,7 +436,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                 try {
                     List<Future> query = List(imagesBin.length);
                     _imageIdList = List(imagesBin.length);
-                    for (int i=0; i < imagesBin.length; i++) {
+                    for (int i = 0; i < imagesBin.length; i++) {
                         Asset imageData = imagesBin[i].data;
                         FormData _form = await createForm(imageData);
                         query[i] = getImageRequest(_form, i);
@@ -539,10 +537,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                 title: Center(
                     child: Text(
                         "发布动态",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: Theme.of(context).textTheme.title.fontSize,
-                        ),
+                        style: Theme.of(context).textTheme.title,
                     ),
                 ),
                 actions: <Widget>[

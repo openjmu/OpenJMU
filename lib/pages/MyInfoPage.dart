@@ -1,20 +1,25 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+//import 'package:oktoast/oktoast.dart';
 
+import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 //import 'package:OpenJMU/pages/Test.dart';
+import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/widgets/CommonWebPage.dart';
-import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
+//import 'package:OpenJMU/widgets/CommonWebPage.dart';
+//import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/SelectSplashDialog.dart';
 
 
@@ -24,37 +29,49 @@ class MyInfoPage extends StatefulWidget {
 }
 
 class MyInfoPageState extends State<MyInfoPage> {
-    Color themeColor = ThemeUtils.currentColorTheme;
-
-    List<String> titles = ["夜间模式", "切换主题", "启动页", "退出登录", if (Platform.isAndroid) "检查更新"];
-    List<IconData> icons = [
-        Platform.isAndroid ? Icons.brightness_medium : Ionicons.getIconData("ios-moon"),
-        Platform.isAndroid ? Icons.color_lens : Ionicons.getIconData("ios-color-palette"),
-        Platform.isAndroid ? Ionicons.getIconData("md-today") : Ionicons.getIconData("ios-today"),
-        Platform.isAndroid ? Icons.exit_to_app : Ionicons.getIconData("ios-exit"),
-        if (Platform.isAndroid) Icons.system_update
+    List<String> settingsItems = [
+        "切换主题",
+        "启动页",
+        "夜间模式",
+        if (Platform.isAndroid) "检查更新",
+        "注销账户",
+        if (isTest) "测试页",
+        "关于",
+    ];
+    List<String> settingsIcons = [
+        "theme",
+        "homeSplash",
+        "nightmode",
+        if (Platform.isAndroid) "checkUpdate",
+        "exit",
+        if (isTest) "idols",
+        "idols",
     ];
 
-    TextStyle titleTextStyle = TextStyle(fontSize: 16.0);
-    String currentVersion;
+    Color themeColor = ThemeUtils.currentThemeColor;
 
-    bool isLogin = false;
-    bool isDark = false;
+    TextStyle titleTextStyle = TextStyle(fontSize: Constants.suSetSp(16.0));
+
+    bool isLogin = false, isDark = false;
+    bool signing = false, signed = false;
+
+    int signedCount = 0, userLevel = 0, currentWeek;
+
+    String hello = "你好";
+
+    Timer updateHelloTimer;
 
     /// For test page.
-    bool isTest = false;
+    static bool isTest = false;
 
     @override
     void initState() {
         super.initState();
-        if (this.isTest) {
-            titles.add("测试页");
-            icons.add(Icons.dialpad);
-        }
-        OTAUtils.getCurrentVersion().then((version) {
-            setState(() {
-                currentVersion = version;
-            });
+        updateHello();
+        getSignStatus();
+        getCurrentWeek();
+        if (this.mounted) updateHelloTimer = Timer.periodic(Duration(minutes: 1), (timer) {
+            updateHello();
         });
         DataUtils.getBrightnessDark().then((isDark) {
             setState(() {
@@ -74,82 +91,81 @@ class MyInfoPageState extends State<MyInfoPage> {
                 }
             })
             ..on<ChangeBrightnessEvent>().listen((event) {
-                if (this.mounted) {
-                    setState(() {
-                        isDark = event.isDarkState;
-                    });
-                }
+                if (this.mounted) isDark = event.isDarkState;
             });
     }
 
-    Widget renderRow(context, i) {
-        String title = titles[i];
-        Widget listItemContent = Padding(
-            padding: title == "夜间模式"
-                    ? EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0)
-                    : EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0)
-            ,
-            child: Row(
-                children: <Widget>[
-                    Container(
-                        padding: EdgeInsets.only(left: 4.0),
-                        child: Icon(icons[i]),
-                    ),
-                    Expanded(
-                        child: Container(
-                            padding: EdgeInsets.only(left: 10.0),
-                            child: PlatformText(title, style: titleTextStyle),
-                        ),
-                    ),
-                    title == "夜间模式"
-                            ? PlatformSwitch(
-                        activeColor: themeColor,
-                        value: isDark,
-                        onChanged: setDarkMode,
-                    )
-                            : Icon(Platform.isAndroid ? Icons.keyboard_arrow_right : FontAwesome.getIconData("angle-right"))
-                    ,
-                ],
-            ),
-        );
-        return InkWell(
-            child: listItemContent,
-            onTap: () {
-                _handleListItemClick(context, title);
-            },
-        );
+    @override
+    void dispose() {
+        super.dispose();
+        updateHelloTimer?.cancel();
+    }
+
+    Future<Null> getSignStatus() async {
+        var _signed = (await SignAPI.getTodayStatus()).data['status'];
+        var _signedCount = (await SignAPI.getSignList()).data['signdata']?.length;
+        var _userTasks = (await NetUtils.getWithCookieSet(Api.task)).data;
+        setState(() {
+            this.signedCount = _signedCount;
+            this.signed = _signed == 1 ? true : false;
+            this.userLevel = _userTasks['level'];
+        });
+    }
+
+    Future<Null> getCurrentWeek() async {
+        String _day = jsonDecode((await DateAPI.getCurrentWeek()).data)['start'];
+        DateTime startDate = DateTime.parse(_day);
+        DateTime currentDate = DateTime.now();
+        int difference = startDate.difference(currentDate).inDays - 1;
+        if (difference < 0) {
+            int week = (difference / 7).abs().ceil();
+            if (week <= 20) setState(() {
+              this.currentWeek = week;
+            });
+        }
+    }
+
+    void updateHello() {
+        int hour = DateTime.now().hour;
+        setState(() {
+            if (hour >= 0 && hour < 6) {
+                this.hello = "深夜了，注意休息";
+            } else if (hour >= 6 && hour < 8) {
+                this.hello = "早上好";
+            } else if (hour >= 8 && hour < 11) {
+                this.hello = "上午好";
+            } else if (hour >= 11 && hour < 14) {
+                this.hello = "中午好";
+            } else if (hour >= 14 && hour < 18) {
+                this.hello = "下午好";
+            } else if (hour >= 18 && hour < 20) {
+                this.hello = "傍晚好";
+            } else if (hour >= 20 && hour <= 24) {
+                this.hello = "晚上好";
+            }
+        });
+    }
+
+    void requestSign() async {
+        if (!signed) {
+            setState(() { signing = true; });
+            SignAPI.requestSign().then((response) {
+                setState(() {
+                    signed = true;
+                    signing = false;
+                    signedCount++;
+                });
+                getSignStatus();
+            }).catchError((e) {
+                print(e.toString());
+            });
+        }
     }
 
     void setDarkMode(isDark) {
+        ThemeUtils.isDark = isDark;
         DataUtils.setBrightnessDark(isDark);
         Constants.eventBus.fire(new ChangeBrightnessEvent(isDark));
-    }
-
-    void _handleListItemClick(context, String title) {
-        if (title == "夜间模式") {
-            setDarkMode(!isDark);
-        } else if (title == "切换主题") {
-            Navigator.pushNamed(context, "/changeTheme");
-        } else if (title == "启动页") {
-            showSelectSplashDialog(context);
-        } else if (title == "测试页") {
-//            showDialog(context: context, builder: (_) => TestPage());
-//            Navigator.pushNamed(context, "/test");
-//            Navigator.pushNamed(context, "/notificationTest");
-            LoadingDialogController _c = LoadingDialogController();
-            ToastFuture _toast = showToastWidget(
-                LoadingDialog(text: "测试弹窗", controller: _c, isGlobal: true),
-                duration: Duration(seconds: 30),
-            );
-            Future.delayed(Duration(seconds: 2), () {
-                _c.changeState("success", "成功");
-            });
-            Future.delayed(Duration(seconds: 3), _toast.dismiss);
-        } else if (title == "退出登录") {
-            showLogoutDialog(context);
-        } else if (title == "检查更新") {
-            OTAUtils.checkUpdate();
-        }
     }
 
     void showSelectSplashDialog(BuildContext context) {
@@ -172,10 +188,10 @@ class MyInfoPageState extends State<MyInfoPage> {
                             elevation: 0,
                             disabledElevation: 0.0,
                             highlightElevation: 0.0,
-                            child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                            child: Text("确认", style: TextStyle(color: ThemeUtils.currentThemeColor)),
                         ),
                         ios: (BuildContext context) => CupertinoButtonData(
-                            child: Text("确认", style: TextStyle(color: ThemeUtils.currentColorTheme),),
+                            child: Text("确认", style: TextStyle(color: ThemeUtils.currentThemeColor),),
                         ),
                         onPressed: () {
                             DataUtils.doLogout();
@@ -183,14 +199,14 @@ class MyInfoPageState extends State<MyInfoPage> {
                     ),
                     PlatformButton(
                         android: (BuildContext context) => MaterialRaisedButtonData(
-                            color: ThemeUtils.currentColorTheme,
+                            color: ThemeUtils.currentThemeColor,
                             elevation: 0,
                             disabledElevation: 0.0,
                             highlightElevation: 0.0,
                             child: Text('取消', style: TextStyle(color: Colors.white)),
                         ),
                         ios: (BuildContext context) => CupertinoButtonData(
-                            child: Text("取消", style: TextStyle(color: ThemeUtils.currentColorTheme)),
+                            child: Text("取消", style: TextStyle(color: ThemeUtils.currentThemeColor)),
                         ),
                         onPressed: () {
                             Navigator.of(context).pop();
@@ -201,84 +217,197 @@ class MyInfoPageState extends State<MyInfoPage> {
         );
     }
 
-    Widget about() {
-        return Container(
-            padding: EdgeInsets.all(20.0),
-            child: Center(
-                child: Column(
-                    children: <Widget>[
-                        Container(
-                            margin: EdgeInsets.only(bottom: 12.0),
-                            child: Image.asset(
-                                "images/ic_jmu_logo_trans.png",
-                                color: ThemeUtils.currentColorTheme,
-                                width: 80.0,
-                                height: 80.0,
-                            ),
-                            decoration: BoxDecoration(shape: BoxShape.circle),
-                        ),
-                        Container(
-                            margin: EdgeInsets.only(bottom: 12.0),
-                            child: RichText(text: TextSpan(children: <TextSpan>[
-                                TextSpan(text: "OpenJmu", style: new TextStyle(fontFamily: 'chocolate',color:ThemeUtils.currentColorTheme,fontSize: 35.0)),
-                                TextSpan(text: "　v$currentVersion", style: Theme.of(context).textTheme.subtitle),
-                            ])),
-                        ),
-                        RichText(text: TextSpan(
-                            children: <TextSpan>[
-                                TextSpan(text: "Developed By ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
-                                TextSpan(
-                                    recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                            return CommonWebPage.jump(context, "https://blog.alexv525.com/", "Alex Vincent");
-                                        },
-                                    text: "Alex Vincent",
-                                    style: TextStyle(color: Colors.lightBlue,fontFamily: 'chocolate'),
+    Widget userInfo() {
+        return Padding(
+            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(24.0), vertical: Constants.suSetSp(16.0)),
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                    Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                                GestureDetector(
+                                    onTap: () => UserPage.jump(context, UserUtils.currentUser.uid),
+                                    child: Container(
+                                        width: Constants.suSetSp(90.0),
+                                        height: Constants.suSetSp(90.0),
+                                        child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(Constants.suSetSp(45.0)),
+                                            child: FadeInImage(
+                                                fadeInDuration: const Duration(milliseconds: 100),
+                                                placeholder: AssetImage("assets/avatar_placeholder.png"),
+                                                image: UserUtils.getAvatarProvider(uid: UserUtils.currentUser.uid),
+                                            ),
+                                        ),
+                                    ),
                                 ),
-                                TextSpan(text: " And ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
-                                TextSpan(
-                                    recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                            return CommonWebPage.jump(context, "https://135792468.xyz/", "Evsio0n");
-                                        },
-                                    text: "Evsio0n",
-                                    style: TextStyle(color: Colors.lightBlue,fontFamily: 'chocolate'),
+                                Expanded(
+                                    child: Padding(
+                                        padding: EdgeInsets.only(left: Constants.suSetSp(20.0)),
+                                        child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                                Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    children: <Widget>[
+                                                        Expanded(
+                                                            child: Wrap(
+                                                                crossAxisAlignment: WrapCrossAlignment.end,
+                                                                children: <Widget>[
+                                                                    Text(
+                                                                        "${UserUtils.currentUser.name}",
+                                                                        style: TextStyle(
+                                                                            color: Theme.of(context).textTheme.title.color,
+                                                                            fontSize: Constants.suSetSp(24.0),
+                                                                            fontWeight: FontWeight.bold,
+                                                                        ),
+                                                                        overflow: TextOverflow.ellipsis,
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                        ),
+                                                        Text(
+                                                            "　Lv.$userLevel　",
+                                                            style: TextStyle(
+                                                                color: Colors.red,
+                                                                fontSize: Constants.suSetSp(16.0),
+                                                            ),
+                                                        ),
+                                                        InputChip(
+                                                            avatar: signing ? SizedBox(
+                                                                width: Constants.suSetSp(14.0),
+                                                                height: Constants.suSetSp(14.0),
+                                                                child: CircularProgressIndicator(
+                                                                    strokeWidth: 2.0,
+                                                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                                                ),
+                                                            ) : Icon(
+                                                                Icons.assignment_turned_in,
+                                                                color: Colors.white,
+                                                                size: Constants.suSetSp(20.0),
+                                                            ),
+                                                            backgroundColor: ThemeUtils.currentThemeColor,
+                                                            label: Text(
+                                                                signed ? "已签$signedCount天" : "签到",
+                                                                style: TextStyle(
+                                                                    color: Colors.white,
+                                                                    fontSize: Constants.suSetSp(18.0),
+                                                                ),
+                                                            ),
+                                                            labelPadding: EdgeInsets.zero,
+                                                            padding: EdgeInsets.only(right: Constants.suSetSp(6.0)),
+                                                            onPressed: () {
+                                                                if (signing || signed) {
+                                                                    return false;
+                                                                } else {
+                                                                    requestSign();
+                                                                }
+                                                            },
+                                                        )
+                                                    ],
+                                                ),
+                                                SizedBox(height: Constants.suSetSp(4.0)),
+                                                Text(
+                                                    UserUtils.currentUser.signature ?? "这里空空如也~",
+                                                    style: TextStyle(
+                                                        color: Theme.of(context).textTheme.caption.color,
+                                                        fontSize: Constants.suSetSp(18.0),
+                                                    ),
+                                                    overflow: TextOverflow.ellipsis,
+                                                ),
+                                            ],
+                                        ),
+                                    ),
                                 ),
-                                TextSpan(text: ".", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
                             ],
-                        )),
-                    ],
-                ),
+                        ),
+                    )
+                ],
             ),
         );
     }
 
+    void _handleItemClick(context, String item) {
+        switch (item) {
+            case "切换主题":
+                Navigator.pushNamed(context, "/changeTheme");
+                break;
+            case "启动页":
+                showSelectSplashDialog(context);
+                break;
+            case "夜间模式":
+                setDarkMode(!isDark);
+                break;
+            case "检查更新":
+                OTAUtils.checkUpdate();
+                break;
+            case "测试页":
+//                showDialog(context: context, builder: (_) => TestPage());
+                Navigator.pushNamed(context, "/test");
+//                Navigator.pushNamed(context, "/notificationTest");
+//                NetUtils.updateTicket();
+                break;
+            case "注销账户":
+                showLogoutDialog(context);
+                break;
+            case "关于":
+                Navigator.pushNamed(context, "/about");
+                break;
+            default:
+                break;
+        }
+    }
+
     @override
     Widget build(BuildContext context) {
-        return ScrollConfiguration(
-            behavior: NoGlowScrollBehavior(),
-            child: SingleChildScrollView(
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                            about(),
-                            Container(
-                                color: Theme.of(context).dividerColor,
-                                height: 1.0,
-                            ),
-                            ListView.separated(
-                                physics: NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                separatorBuilder: (context, index) => Container(
-                                    color: Theme.of(context).dividerColor,
-                                    height: 1.0,
+        return SafeArea(
+            top: true,
+            child: ScrollConfiguration(
+                behavior: NoGlowScrollBehavior(),
+                child: ListView(
+                    children: <Widget>[
+                        userInfo(),
+                        Constants.separator(context),
+                        ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: settingsItems.length,
+                            itemBuilder: (context, index) => Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Constants.suSetSp(10.0),
+                                    vertical: Constants.suSetSp(4.0),
                                 ),
-                                itemCount: titles.length,
-                                itemBuilder: (context, i) => renderRow(context, i),
+                                child: ListTile(
+                                    leading: SvgPicture.asset(
+                                        (settingsItems[index] == "夜间模式")
+                                        ? isDark
+                                                ? "assets/icons/daymode-line.svg"
+                                                : "assets/icons/${settingsIcons[index]}-line.svg"
+                                        : "assets/icons/${settingsIcons[index]}-line.svg"
+                                        ,
+                                        color: Theme.of(context).iconTheme.color,
+                                        width: Constants.suSetSp(30.0),
+                                        height: Constants.suSetSp(30.0),
+                                    ),
+                                    title: Text(
+                                        (settingsItems[index] == "夜间模式")
+                                                ? isDark
+                                                ? "日间模式"
+                                                : settingsItems[index]
+                                                : settingsItems[index]
+                                        ,
+                                        style: TextStyle(fontSize: Constants.suSetSp(18.0)),
+                                    ),
+                                    trailing: Icon(Icons.keyboard_arrow_right),
+                                    onTap: () { _handleItemClick(context, settingsItems[index]); },
+                                ),
                             ),
-                        ],
-                    )
-            ),
+                        ),
+                    ],
+                ),
+            )
         );
     }
 

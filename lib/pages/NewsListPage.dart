@@ -76,7 +76,7 @@ class NewsListPageState extends State<NewsListPage> {
         if (listData == null) {
             return Center(
                 child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentColorTheme),
+                    valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentThemeColor),
                 ),
             );
         } else {
@@ -86,7 +86,7 @@ class NewsListPageState extends State<NewsListPage> {
                 controller: _scrollController,
             );
             return RefreshIndicator(
-                    color: ThemeUtils.currentColorTheme,
+                    color: ThemeUtils.currentThemeColor,
                     child: listView,
                     onRefresh: _pullToRefresh
             );

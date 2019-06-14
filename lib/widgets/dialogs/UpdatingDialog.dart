@@ -6,6 +6,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/constants/Constants.dart';
 
 class UpdatingDialog extends StatefulWidget {
     @override
@@ -76,12 +77,12 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
                 type: MaterialType.transparency,
                 child: Center(
                     child: SizedBox(
-                        width: 120.0,
-                        height: 120.0,
+                        width: Constants.suSetSp(120.0),
+                        height: Constants.suSetSp(120.0),
                         child: Container(
                             decoration: BoxDecoration(
                                 color: Theme.of(context).canvasColor,
-                                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                                borderRadius: BorderRadius.all(Radius.circular(Constants.suSetSp(8.0))),
                             ),
                             child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -89,10 +90,13 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
                                 children: <Widget>[
                                     CircularProgressIndicator(value: progress == 0 ? null : progress / 100),
                                     Padding(
-                                        padding: EdgeInsets.only(top: 20.0),
+                                        padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
                                         child: Text(
                                             "正在下载 $progress%",
-                                            style: TextStyle(color: Theme.of(context).textTheme.body1.color, fontSize: 14.0),
+                                            style: TextStyle(
+                                                color: Theme.of(context).textTheme.body1.color,
+                                                fontSize: Constants.suSetSp(14.0),
+                                            ),
                                         ),
                                     ),
                                 ],

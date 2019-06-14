@@ -21,7 +21,6 @@ void showCenterShortToast(String text) {
         msg: text,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
-        timeInSecForIos: 1,
     );
 }
 
@@ -31,7 +30,6 @@ void showCenterErrorShortToast(String text) {
         backgroundColor: ThemeUtils.defaultColor,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
-        timeInSecForIos: 1,
     );
 }
 
@@ -40,7 +38,6 @@ void showTopShortToast(String text) {
         msg: text,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.TOP,
-        timeInSecForIos: 1,
     );
 }
 

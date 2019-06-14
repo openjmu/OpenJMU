@@ -72,22 +72,26 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                         child: Container(
                             decoration: BoxDecoration(
                                 color: Theme.of(context).canvasColor,
-                                borderRadius: BorderRadius.all(Radius.circular(12.0)),
+                                borderRadius: BorderRadius.all(Radius.circular(Constants.suSetSp(12.0))),
                             ),
-                            width: MediaQuery.of(context).size.width - 100,
-                            padding: EdgeInsets.only(top: 20.0),
+                            width: MediaQuery.of(context).size.width - Constants.suSetSp(100),
+                            padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
                             child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
                                     Center(child: Text("修改签名", style: Theme.of(context).textTheme.title)),
                                     Container(
-                                        padding: EdgeInsets.all(20.0),
+                                        padding: EdgeInsets.all(Constants.suSetSp(20.0)),
                                         child: TextField(
                                             autofocus: true,
-                                            style: TextStyle(fontSize: 16.0),
+                                            style: TextStyle(fontSize: Constants.suSetSp(16.0)),
                                             controller: _textEditingController,
                                             maxLength: 127,
                                             maxLines: null,
+                                            decoration: InputDecoration(
+                                                border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey[700])),
+                                                focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey[850])),
+                                            ),
                                         ),
                                     ),
                                     Row(
@@ -96,7 +100,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                                             CupertinoButton(
                                                 child: Text("取消", style: TextStyle(
                                                     color: Theme.of(context).textTheme.body1.color,
-                                                    fontSize: 18.0,
+                                                    fontSize: Constants.suSetSp(18.0),
                                                 )),
                                                 onPressed: () => Navigator.of(context).pop(),
                                             ),
@@ -105,7 +109,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                                                     color: canSave
                                                             ? Theme.of(context).primaryColor
                                                             : Theme.of(context).disabledColor,
-                                                    fontSize: 18.0,
+                                                    fontSize: Constants.suSetSp(18.0),
                                                 )),
                                                 onPressed: () {
                                                     if (canSave) {

@@ -15,7 +15,29 @@ Dio dio = Dio();
 class NetUtils {
     static ConnectivityResult currentConnectivity;
 
-    static void initConfig() {
+    static void updateTicket() async {
+        DataUtils.updatingTicket = true;
+        Duration duration = Duration(milliseconds: 1500);
+        LoadingDialogController _c = LoadingDialogController();
+        ToastFuture toast = showToastWidget(
+            LoadingDialog(
+                text: "正在更新用户状态",
+                controller: _c,
+                isGlobal: true,
+            ),
+            dismissOtherToast: true,
+            duration: Duration(seconds: 30),
+        );
+        if (await DataUtils.getTicket()) {
+            _c.changeState("success", "更新成功");
+        } else {
+            _c.changeState("error", "更新失败");
+        }
+        DataUtils.updatingTicket = false;
+        Future.delayed(duration, () { toast.dismiss(showAnim: true); });
+    }
+
+    static void initConfig() async {
         (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate  = (client) {
             client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
         };
@@ -31,26 +53,7 @@ class NetUtils {
             onError: (DioError e) {
                 print("DioError: ${e.message}");
                 if (e.response.statusCode == 401 && !DataUtils.updatingTicket) {
-                    DataUtils.updatingTicket = true;
-                    Duration duration = Duration(milliseconds: 1500);
-                    LoadingDialogController _c = LoadingDialogController();
-                    ToastFuture toast = showToastWidget(
-                        LoadingDialog(
-                            text: "正在更新用户状态",
-                            controller: _c,
-                            isGlobal: true,
-                        ),
-                        dismissOtherToast: true,
-                        duration: Duration(seconds: 30),
-                    );
-                    DataUtils.getTicket().then((response) {
-                        _c.changeState("success", "更新成功");
-                    }).catchError((e) {
-                        _c.changeState("error", "更新失败");
-                    }).whenComplete(() {
-                        DataUtils.updatingTicket = false;
-                        Future.delayed(duration, toast.dismiss);
-                    });
+                    updateTicket();
                 }
                 return e;
             },

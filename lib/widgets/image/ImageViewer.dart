@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:image_downloader/image_downloader.dart';
 
+import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/image/ImageGestureDetector.dart';
 
@@ -140,7 +141,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                                 child: image,
                                                 context: context,
                                                 enableTapPop: true,
-                                                enablePullDownPop: true,
+                                                enablePullDownPop: false,
                                                 onLongPress: () {
                                                     showModalBottomSheet(context: context, builder: (_) => Column(
                                                         mainAxisSize: MainAxisSize.min,
@@ -183,7 +184,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                                     Expanded(
                                                         child: ViewAppBar(widget.pics, currentIndex, rebuild),
                                                     ),
-                                                    Container(width: 52.0),
+                                                    Container(width: Constants.suSetSp(52.0)),
                                                 ],
                                             ),
                                         ),
@@ -202,7 +203,7 @@ class ViewAppBar extends StatelessWidget {
     final List<ImageBean> pics;
     final int index;
     final StreamController<int> reBuild;
-    final TextStyle indicatorStyle = TextStyle(color: Colors.white, fontSize: 20.0);
+    final TextStyle indicatorStyle = TextStyle(color: Colors.white, fontSize: Constants.suSetSp(20.0));
     ViewAppBar(this.pics, this.index, this.reBuild);
     @override
     Widget build(BuildContext context) {
@@ -211,7 +212,7 @@ class ViewAppBar extends StatelessWidget {
                 return DefaultTextStyle(
                     style: TextStyle(color: Colors.white),
                     child: Container(
-                        height: 50.0,
+                        height: Constants.suSetSp(50.0),
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
