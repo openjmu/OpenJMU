@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
 
@@ -107,7 +108,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                                             CupertinoButton(
                                                 child: Text("保存", style: TextStyle(
                                                     color: canSave
-                                                            ? Theme.of(context).primaryColor
+                                                            ? ThemeUtils.currentThemeColor
                                                             : Theme.of(context).disabledColor,
                                                     fontSize: Constants.suSetSp(18.0),
                                                 )),

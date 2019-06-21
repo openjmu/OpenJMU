@@ -39,7 +39,9 @@ class ChangeThemePageState extends State<ChangeThemePage> {
             appBar: AppBar(
                 title: Text(
                     '切换主题',
-                    style: Theme.of(context).textTheme.title,
+                    style: Theme.of(context).textTheme.title.copyWith(
+                        fontSize: Constants.suSetSp(21.0),
+                    ),
                 ),
                 centerTitle: true,
             ),

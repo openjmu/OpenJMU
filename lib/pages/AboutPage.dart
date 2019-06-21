@@ -55,22 +55,9 @@ class _AboutPageState extends State<AboutPage> {
                                 TextSpan(
                                     recognizer: TapGestureRecognizer()
                                         ..onTap = () {
-                                            return CommonWebPage.jump(context, "https://blog.alexv525.com/", "Alex Vincent");
+                                            return CommonWebPage.jump(context, "https://openjmu.xyz/", "OpenJMU");
                                         },
-                                    text: "Alex Vincent",
-                                    style: TextStyle(
-                                        color: Colors.lightBlue,
-                                        fontFamily: 'chocolate',
-                                        fontSize: Constants.suSetSp(24.0),
-                                    ),
-                                ),
-                                TextSpan(text: " And ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
-                                TextSpan(
-                                    recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                            return CommonWebPage.jump(context, "https://135792468.xyz/", "Evsio0n");
-                                        },
-                                    text: "Evsio0n",
+                                    text: "OpenJMU Team",
                                     style: TextStyle(
                                         color: Colors.lightBlue,
                                         fontFamily: 'chocolate',
@@ -92,13 +79,19 @@ class _AboutPageState extends State<AboutPage> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                title: Text("关于", style: Theme.of(context).textTheme.title),
+                title: Text(
+                    "关于OpenJMU",
+                    style: Theme.of(context).textTheme.title.copyWith(
+                        fontSize: Constants.suSetSp(21.0),
+                    ),
+                ),
                 centerTitle: true,
             ),
             body: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                     about(),
+                    SizedBox(height: Constants.suSetSp(100.0))
                 ],
             )
         );

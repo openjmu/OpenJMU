@@ -10,13 +10,13 @@ class SelectSplashDialog extends StatefulWidget {
 }
 
 class _SelectSplashDialogState extends State<SelectSplashDialog> {
-    final List<String> pagesTitle = ["首页", "应用", "发现"];
+    final List<String> pagesTitle = ["首页", "应用", "消息"];
     int tabIndex = Constants.homeSplashIndex;
 
     final BoxDecoration activePageShadow = BoxDecoration(
             boxShadow: <BoxShadow>[
                 BoxShadow(
-                    blurRadius: Constants.suSetSp(10.0),
+                    blurRadius: Constants.suSetSp(20.0),
                     color: ThemeUtils.currentThemeColor,
                 )
             ]
@@ -54,12 +54,12 @@ class _SelectSplashDialogState extends State<SelectSplashDialog> {
 
     @override
     Widget build(BuildContext context) {
-        double _width = Constants.suSetSp((MediaQuery.of(context).size.width - 130) / 3);
+        double _width = (MediaQuery.of(context).size.width - Constants.suSetSp(80.0 + 80.0)) / 3;
         return Material(
             type: MaterialType.transparency,
             child: Center(
                 child: Container(
-                    width: MediaQuery.of(context).size.width - Constants.suSetSp(80),
+                    width: MediaQuery.of(context).size.width - Constants.suSetSp(80.0),
                     color: Theme.of(context).canvasColor,
                     child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -67,7 +67,12 @@ class _SelectSplashDialogState extends State<SelectSplashDialog> {
                         children: <Widget>[
                             Padding(
                                 padding: EdgeInsets.all(Constants.suSetSp(24.0)),
-                                child: Text("更改默认启动页", style: Theme.of(context).textTheme.title),
+                                child: Text(
+                                    "更改默认启动页",
+                                    style: Theme.of(context).textTheme.title.copyWith(
+                                        fontSize: Constants.suSetSp(21.0),
+                                    ),
+                                ),
                             ),
                             Padding(
                                 padding: EdgeInsets.symmetric(
@@ -102,8 +107,7 @@ class _SelectSplashDialogState extends State<SelectSplashDialog> {
                                     ),
                                     Expanded(
                                         child: FlatButton(
-                                            child: Text("保存", style: TextStyle(
-                                                color: Theme.of(context).textTheme.body1.color,
+                                            child: Text("保存", style: Theme.of(context).textTheme.body1.copyWith(
                                                 fontSize: Constants.suSetSp(18.0),
                                             )),
                                             onPressed: () {

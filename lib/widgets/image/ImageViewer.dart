@@ -79,18 +79,20 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     }
 
     void updateAnimation(ExtendedImageGestureState state) {
-        double begin = state.gestureDetails.totalScale;
-        double end;
+        double begin = state.gestureDetails.totalScale, end;
         Offset pointerDownPosition = state.pointerDownPosition;
         end = state.gestureDetails.totalScale == 1.0 ? 3.0 : 1.0;
-        _doubleTapAnimationController..stop()..reset();
+
         _doubleTapAnimation?.removeListener(_doubleTapListener);
+        _doubleTapAnimationController..stop()..reset();
+
         _doubleTapListener = () {
             state.handleDoubleTap(
                 scale: _doubleTapAnimation.value,
                 doubleTapPosition: pointerDownPosition,
             );
         };
+
         _doubleTapAnimation = Tween(begin: begin, end: end).animate(_doubleTapCurveAnimation)
             ..addListener(_doubleTapListener);
         _doubleTapAnimationController.forward();
@@ -119,7 +121,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                                     cache: true,
                                                     mode: ExtendedImageMode.Gesture,
                                                     onDoubleTap: updateAnimation,
-                                                    gestureConfig: GestureConfig(
+                                                    initGestureConfigHandler: (ExtendedImageState state) => GestureConfig(
                                                         initialScale: 1.0,
                                                         minScale: 1.0,
                                                         maxScale: 3.0,

@@ -9,6 +9,8 @@ import 'package:flutter/widgets.dart';
 import 'package:OpenJMU/constants/AppBarConstants.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
+
+import 'package:flutter/src/material/colors.dart';
 import 'package:flutter/src/material/text_theme.dart';
 import 'package:flutter/src/material/back_button.dart';
 import 'package:flutter/src/material/debug.dart';
@@ -1055,6 +1057,7 @@ class FlexibleSpaceBarWithUserInfo extends StatefulWidget {
         this.infoUnderNickname,
         this.infoNextNickname,
         this.tags,
+        this.tagHeight = 24.0,
         this.bottomInfo,
         this.bottomSize = 0.0,
         this.avatarRadius = 48.0,
@@ -1074,6 +1077,7 @@ class FlexibleSpaceBarWithUserInfo extends StatefulWidget {
     final Widget infoNextNickname;
     final double avatarRadius;
     final Widget tags;
+    final double tagHeight;
     final Widget bottomInfo;
     final double bottomSize;
 
@@ -1141,8 +1145,7 @@ class _FlexibleSpaceBarWithUserInfoState extends State<FlexibleSpaceBarWithUserI
 
     @override
     Widget build(BuildContext context) {
-        final FlexibleSpaceBarSettings settings =
-        context.inheritFromWidgetOfExactType(FlexibleSpaceBarSettings);
+        final FlexibleSpaceBarSettings settings = context.inheritFromWidgetOfExactType(FlexibleSpaceBarSettings);
         assert(settings != null,
         'A FlexibleSpaceBar must be wrapped in the widget returned by FlexibleSpaceBar.createSettings().');
 
@@ -1175,7 +1178,7 @@ class _FlexibleSpaceBarWithUserInfoState extends State<FlexibleSpaceBarWithUserI
                                 child: widget.background,
                             ),
                             BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                                filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
                                 child: Container(
                                     color: Color.fromARGB(120, 50, 50, 50),
                                 ),
@@ -1204,17 +1207,19 @@ class _FlexibleSpaceBarWithUserInfoState extends State<FlexibleSpaceBarWithUserI
             final ThemeData theme = Theme.of(context);
             final double opacity = settings.toolbarOpacity;
             if (opacity > 0.0) {
-                TextStyle titleStyle = theme.primaryTextTheme.title;
+                TextStyle titleStyle = theme.primaryTextTheme.title.copyWith(color: Colors.white);
                 titleStyle = titleStyle.copyWith(color: titleStyle.color.withOpacity(opacity));
                 final bool effectiveCenterTitle = _getEffectiveCenterTitle(theme);
                 final double scaleValue = Tween<double>(begin: 1.5, end: 20.0 / widget.titleFontSize).transform(t);
                 final Matrix4 scaleTransform = Matrix4.identity()..scale(scaleValue, scaleValue, 1.0);
                 final Alignment titleAlignment = _getTitleAlignment(effectiveCenterTitle);
 
-                final double paddingXScaleValue = Tween<double>(begin: widget.paddingStart, end: Constants.suSetSp(72)).transform(t);
+                final double paddingXScaleValue = Tween<double>(begin: widget.paddingStart, end: 72.0).transform(t);
                 final double paddingYScaleValue = Tween<double>(
-                    begin: Constants.suSetSp(widget.paddingBottom + (widget.tags != null ? 90 : 50 + widget.bottomSize)),
-                    end: Constants.suSetSp(16 + widget.bottomSize),
+                    begin: widget.paddingBottom + (widget.tags != null
+                            ? (44.0 + Constants.suSetSp(widget.tagHeight))
+                            : 44.0 + widget.bottomSize),
+                    end: widget.titleFontSize + widget.bottomSize,
                 ).transform(t);
 
                 final EdgeInsetsGeometry transformedPadding = EdgeInsetsDirectional.only(
@@ -1223,8 +1228,12 @@ class _FlexibleSpaceBarWithUserInfoState extends State<FlexibleSpaceBarWithUserI
                 );
 
                 children.add(Positioned(
-                    left: Constants.suSetSp(20.0),
-                    bottom: Constants.suSetSp((widget.tags != null ? 100 : 62) + widget.bottomSize),
+                    left: Constants.suSetSp(18.0),
+                    bottom: (
+                            widget.tags != null
+                                    ? (58.0 + Constants.suSetSp(widget.tagHeight))
+                                    : 58.0
+                    ) + widget.bottomSize,
                     width: widget.avatarRadius,
                     height: widget.avatarRadius,
                     child: Opacity(
@@ -1254,19 +1263,27 @@ class _FlexibleSpaceBarWithUserInfoState extends State<FlexibleSpaceBarWithUserI
                 ));
                 children.add(Positioned(
                     left: widget.paddingStart,
-                    bottom: Constants.suSetSp((widget.tags != null ? 100 : 62) + widget.bottomSize),
+                    bottom: (
+                            widget.tags != null
+                                    ? (63.0 + Constants.suSetSp(widget.tagHeight))
+                                    : 63.0
+                    ) + widget.bottomSize,
                     child: Opacity(opacity: outOpacity, child: widget.infoUnderNickname),
                 ));
                 children.add(Positioned(
-                    right: Constants.suSetSp(16),
-                    bottom: Constants.suSetSp((widget.tags != null ? 100 : 62) + widget.bottomSize + 16),
+                    right: Constants.suSetSp(20.0),
+                    bottom: (
+                            widget.tags != null
+                                    ? (63.0 + Constants.suSetSp(widget.tagHeight))
+                                    : 63.0
+                    ) + widget.bottomSize + 16.0,
                     child: Opacity(opacity: outOpacity, child: widget.infoNextNickname),
                 ));
                 if (widget.tags != null) {
                     children.add(Positioned(
                         right: 0,
                         left: 0,
-                        bottom: Constants.suSetSp(widget.bottomSize + 44),
+                        bottom: widget.bottomSize + Constants.suSetSp(widget.tagHeight * 1.5),
                         child: Opacity(opacity: outOpacity, child: widget.tags),
                     ));
                 }
@@ -1279,7 +1296,6 @@ class _FlexibleSpaceBarWithUserInfoState extends State<FlexibleSpaceBarWithUserI
 
             }
         }
-
         return ClipRect(child: Stack(children: children));
     }
 }
@@ -1292,8 +1308,7 @@ class FlexibleSpaceBarWithUserInfoSettings extends InheritedWidget {
         this.maxExtent,
         @required this.currentExtent,
         @required Widget child,
-    })  : assert(currentExtent != null),
-                super(key: key, child: child);
+    })  : assert(currentExtent != null), super(key: key, child: child);
 
     final double toolbarOpacity;
 

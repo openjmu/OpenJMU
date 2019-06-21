@@ -79,8 +79,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 
+import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 
 class InAppBrowserPage extends StatefulWidget {
     final String url;
@@ -136,17 +139,19 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
                 _webViewController = controller;
             },
             onLoadStart: (InAppWebViewController controller, String url) {
-                setState(() {
+                if (this.mounted) setState(() {
                     this.url = url;
                 });
             },
             onLoadStop: (InAppWebViewController controller, String url) {
-                controller.getTitle().then((title) {
+                if (this.mounted) controller.getTitle().then((title) {
                     setState(() { this.title = title; });
                 });
             },
             onProgressChanged: (InAppWebViewController controller, int progress) {
-                setState(() { this.progress = progress / 100; });
+                if (this.mounted) setState(() {
+                    this.progress = progress / 100;
+                });
             },
         );
         if (widget.withScaffold ?? false) {
@@ -205,8 +210,23 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
                 ),
             );
         }
+        Constants.eventBus
+            ..on<ChangeBrightnessEvent>().listen((event) {
+                Iterable<Match> matches = Api.courseSchedule.allMatches(url);
+                String result;
+                for (Match m in matches) result = m.group(0);
+                if (this.mounted && result != null) loadCourseSchedule();
+            })
+            ..on<CourseScheduleRefreshEvent>().listen((event) {
+                if (this.mounted) loadCourseSchedule();
+            });
     }
 
+    void loadCourseSchedule() {
+        _webViewController.loadUrl(
+            "${Api.courseSchedule}?sid=${UserUtils.currentUser.sid}${ThemeUtils.isDark ? "&night=1" : ""}",
+        );
+    }
     PreferredSize progressBar(context) {
         return PreferredSize(
             child: SizedBox(

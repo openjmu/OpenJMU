@@ -100,8 +100,12 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
         super.build(context);
         if (!_showLoading) {
             if (_firstLoadComplete) {
-                _itemList = ListView.builder(
+                _itemList = ListView.separated(
                     padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
+                    separatorBuilder: (context, index) => Container(
+                        color: Theme.of(context).canvasColor,
+                        height: Constants.suSetSp(8.0),
+                    ),
                     itemBuilder: (context, index) {
                         if (index == _praiseList.length) {
                             if (this._canLoadMore) {
@@ -123,7 +127,15 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
                                     ),
                                 );
                             } else {
-                                return Container(height: Constants.suSetSp(40.0), child: Center(child: Text("没有更多了~")));
+                                return Container(
+                                    height: Constants.suSetSp(50.0),
+                                    color: Theme.of(context).canvasColor,
+                                    child: Center(
+                                        child: Text("没有更多了~", style: TextStyle(
+                                            fontSize: Constants.suSetSp(14.0),
+                                        )),
+                                    ),
+                                );
                             }
                         } else {
                             return PraiseCard(_praiseList[index]);
@@ -314,8 +326,8 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
     GestureDetector getPostAvatar(context, praise) {
         return GestureDetector(
             child: Container(
-                width: Constants.suSetSp(40.0),
-                height: Constants.suSetSp(40.0),
+                width: Constants.suSetSp(44.0),
+                height: Constants.suSetSp(44.0),
                 margin: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0), vertical: Constants.suSetSp(10.0)),
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
@@ -326,9 +338,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                     ),
                 ),
             ),
-            onTap: () {
-                return UserPage.jump(context, praise.uid);
-            },
+            onTap: () { UserPage.jump(context, praise.uid); },
         );
     }
 
@@ -337,7 +347,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
             praise.nickname,
             style: TextStyle(
                 color: Theme.of(context).textTheme.body1.color,
-                fontSize: Constants.suSetSp(16.0),
+                fontSize: Constants.suSetSp(18.0),
             ),
         );
     }

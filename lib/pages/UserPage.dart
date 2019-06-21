@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -17,6 +19,7 @@ import 'package:OpenJMU/widgets/dialogs/EditSignatureDialog.dart';
 import 'package:OpenJMU/widgets/image/ImageCropPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
+
 class UserPage extends StatefulWidget {
     final int uid;
 
@@ -25,10 +28,13 @@ class UserPage extends StatefulWidget {
     @override
     State createState() => _UserPageState();
 
-    static void jump(BuildContext context, int uid) {
-        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+    static Future jump(BuildContext context, int uid) {
+        return Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
             return UserPage(uid: uid);
-        }));
+        }))
+        .then((dynamic) {
+            ThemeUtils.setDark(ThemeUtils.isDark);
+        });
     }
 }
 
@@ -52,7 +58,7 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         super.initState();
         _checkLogin();
         if (widget.uid != null && widget.uid != 0) {
-            postController = new PostController(
+            postController = PostController(
                 postType: "user",
                 isFollowed: false,
                 isMore: false,
@@ -78,12 +84,12 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         if (!isError) {
             return Scaffold(
                 body: NestedScrollView(
-                    headerSliverBuilder: (context, innerBoxIsScrolled) =>
-                    <Widget>[
-                        _appBar
-                    ],
-                    body: _post,
-                ),
+                        headerSliverBuilder: (context, innerBoxIsScrolled) =>
+                        <Widget>[
+                            _appBar
+                        ],
+                        body: _post,
+                    ),
             );
         } else {
             return Scaffold(
@@ -95,7 +101,6 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                 ),
             );
         }
-
     }
 
     void _checkLogin() async {
@@ -212,32 +217,62 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         List<Widget> chips = [];
         if (_tags?.length != 0) {
             for (int i = 0; i < _tags.length; i++) {
-                chips.add(Container(
-                    margin: EdgeInsets.symmetric(horizontal: 4.0),
-                    child: Chip(
-                        label: Text(_tags[i].name, style: TextStyle(fontSize: Constants.suSetSp(16.0))),
-                        avatar: Icon(Icons.label),
-                        padding: EdgeInsets.only(left: 4.0),
-                        labelPadding: EdgeInsets.fromLTRB(
-                            Constants.suSetSp(2.0),
-                            Constants.suSetSp(0.0),
-                            Constants.suSetSp(10.0),
-                            Constants.suSetSp(0.0),
+//                chips.add(Container(
+//                    margin: EdgeInsets.symmetric(horizontal: 4.0),
+//                    child: Chip(
+//                        label: Text(_tags[i].name, style: TextStyle(fontSize: 16.0)),
+//                        avatar: Icon(Icons.label),
+//                        padding: EdgeInsets.only(left: 4.0),
+//                        labelPadding: EdgeInsets.fromLTRB(
+//                            2.0,
+//                            0.0,
+//                            10.0,
+//                            0.0,
+//                        ),
+//                    ),
+//                ));
+                chips.add(
+                    Container(
+                        margin: EdgeInsets.symmetric(horizontal: Constants.suSetSp(6.0)),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
+                            child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Constants.suSetSp(8.0),
+                                    vertical:  Constants.suSetSp(3.0),
+                                ),
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).canvasColor,
+                                ),
+                                child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                        Padding(
+                                            padding: EdgeInsets.only(
+                                                right: Constants.suSetSp(4.0),
+                                            ),
+                                            child: Icon(Icons.label, size: Constants.suSetSp(24.0)),
+                                        ),
+                                        Text(_tags[i].name, style: TextStyle(fontSize: Constants.suSetSp(16.0)))
+                                    ],
+                                ),
+                            ),
                         ),
                     ),
-                ));
+                );
             }
         }
         if (mounted) {
             setState(() {
                 _appBar = SliverAppBar(
-                    centerTitle: true,
+                    backgroundColor: ThemeUtils.currentThemeColor,
+                    iconTheme: Theme.of(context).iconTheme.copyWith(color: Colors.white),
                     floating: false,
                     pinned: true,
-                    expandedHeight: Constants.suSetSp(_tags?.length != 0 ? 217 : 187),
+                    expandedHeight: _tags?.length != 0 ? (187 + Constants.suSetSp(40.0)) : 187,
                     flexibleSpace: FlexibleSpaceBarWithUserInfo(
-                        paddingStart: Constants.suSetSp(100),
-                        paddingBottom: Constants.suSetSp(48),
+                        paddingStart: 100,
+                        paddingBottom: 49,
                         infoUnderNickname: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -245,15 +280,16 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                                 GestureDetector(
                                     child: Padding(
                                         padding: EdgeInsets.fromLTRB(
-                                            Constants.suSetSp(0.0),
-                                            Constants.suSetSp(4.0),
-                                            Constants.suSetSp(8.0),
-                                            Constants.suSetSp(4.0),
+                                            0.0,
+                                            4.0,
+                                            8.0,
+                                            4.0,
                                         ),
                                         child: Text(
                                             '关注 $_followingCount',
                                             style: TextStyle(
-                                                color: Theme.of(context).textTheme.title.color,
+                                                color: Colors.white,
+                                                fontSize: Constants.suSetSp(16.0),
                                                 fontWeight: FontWeight.normal,
                                             ),
                                         ),
@@ -268,15 +304,16 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                                     child: Padding(
                                         padding:
                                         EdgeInsets.fromLTRB(
-                                            Constants.suSetSp(8.0),
-                                            Constants.suSetSp(4.0),
-                                            Constants.suSetSp(0.0),
-                                            Constants.suSetSp(4.0),
+                                            8.0,
+                                            4.0,
+                                            0.0,
+                                            4.0,
                                         ),
                                         child: Text(
                                             '粉丝 $_fansCount',
                                             style: TextStyle(
-                                                color: Theme.of(context).textTheme.title.color,
+                                                color: Colors.white,
+                                                fontSize: Constants.suSetSp(16.0),
                                                 fontWeight: FontWeight.normal,
                                             ),
                                         ),
@@ -292,14 +329,13 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                         infoNextNickname: _infoNextNameButton,
                         avatar: UserUtils.getAvatarProvider(uid: _user.uid),
                         avatarTap: avatarTap,
-                        avatarRadius: Constants.suSetSp(68.0),
-                        titleFontSize: Constants.suSetSp(14.0),
-                        titlePadding: EdgeInsets.only(left: Constants.suSetSp(100.0), bottom: Constants.suSetSp(48.0)),
+                        avatarRadius: 68.0,
+                        titleFontSize: Constants.suSetSp(16.0),
+                        titlePadding: EdgeInsets.only(left: 100.0, bottom: 48.0),
                         title: Text(
                             _user.name,
                             style: TextStyle(
-                                color: Theme.of(context).textTheme.title.color,
-                                fontSize: Constants.suSetSp(14.0),
+                                fontSize: Constants.suSetSp(16.0),
                             ),
                             maxLines: 1,
                         ),
@@ -309,7 +345,8 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                             width: MediaQuery.of(context).size.width,
                         ),
                         tags: _tags?.length != 0
-                                ? Container(
+                                ?
+                        Container(
                             padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(10.0)),
                             child: SingleChildScrollView(
                                 scrollDirection: Axis.horizontal,
@@ -319,10 +356,12 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                                 ),
                             ),
                         )
-                                : null,
+                                :
+                        null,
+                        tagHeight: 40.0,
                         bottomInfo: Container(
                             color: Theme.of(context).cardColor,
-                            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0), vertical: Constants.suSetSp(12.0)),
+                            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(18.0), vertical: Constants.suSetSp(12.0)),
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -331,7 +370,10 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                                         flex: 10,
                                         child: Text(
                                             _user?.signature ?? '这个人还没写下TA的第一句...',
-                                            style: TextStyle(color: Theme.of(context).textTheme.body1.color),
+                                            style: TextStyle(
+                                                color: Theme.of(context).textTheme.body1.color,
+                                                fontSize: Constants.suSetSp(15.0),
+                                            ),
                                             maxLines: 1,
                                             overflow: TextOverflow.ellipsis,
                                         ),
@@ -345,7 +387,11 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                                                         builder: (BuildContext context) => EditSignatureDialog(_user?.signature),
                                                     );
                                                 },
-                                                child: Text("修改", textAlign: TextAlign.right, style: TextStyle(color: Colors.grey))
+                                                child: Text(
+                                                    "修改",
+                                                    textAlign: TextAlign.right,
+                                                    style: TextStyle(color: Colors.grey, fontSize: Constants.suSetSp(14.0)),
+                                                )
                                         ),
                                     ) : Container()
                                 ],
@@ -354,7 +400,8 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                     ),
                     actions: <Widget>[
                         !isReloading
-                                ? IconButton(
+                                ?
+                        IconButton(
                             icon: Icon(Icons.refresh),
                             onPressed: () {
                                 isReloading = true;
@@ -370,15 +417,19 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
                                 });
                             },
                         )
-                                : Container(
-                            width: Constants.suSetSp(56.0),
-                            padding: EdgeInsets.all(Constants.suSetSp(17.0)),
-                            child: Platform.isAndroid
-                                    ? CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                strokeWidth: 3.0,
-                            )
-                                    : CupertinoActivityIndicator(),
+                                :
+                        Center(
+                            child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+                                child: SizedBox(
+                                    width: Constants.suSetSp(24.0),
+                                    height: Constants.suSetSp(24.0),
+                                    child: Platform.isAndroid ? CircularProgressIndicator(
+                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                        strokeWidth: Constants.suSetSp(3.0),
+                                    ) : CupertinoActivityIndicator(),
+                                ),
+                            ),
                         ),
                     ],
                 );
@@ -476,18 +527,18 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
         child: Container(
             constraints: BoxConstraints(minWidth: 64, maxWidth: double.infinity),
             padding: EdgeInsets.fromLTRB(
-                Constants.suSetSp(8.0),
-                Constants.suSetSp(4.0),
-                Constants.suSetSp(8.0),
-                Constants.suSetSp(4.0),
+                8.0,
+                4.0,
+                8.0,
+                4.0,
             ),
             decoration: BoxDecoration(
                 color: Colors.transparent,
                 border: Border.all(color: Colors.white,),
-                borderRadius: BorderRadius.circular(Constants.suSetSp(4.0)),
+                borderRadius: BorderRadius.circular(4.0),
             ),
             child: Center(
-                child: Text('关注', style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(12.0)),),
+                child: Text('关注', style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(14.0)),),
             ),
         ),
     );
@@ -499,20 +550,20 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
             _unFollow();
         },
         child: Container(
-            constraints: BoxConstraints(minWidth: Constants.suSetSp(64.0), maxWidth: double.infinity),
+            constraints: BoxConstraints(minWidth: 64.0, maxWidth: double.infinity),
             padding: EdgeInsets.fromLTRB(
-                Constants.suSetSp(8.0),
-                Constants.suSetSp(4.0),
-                Constants.suSetSp(8.0),
-                Constants.suSetSp(4.0),
+                8.0,
+                4.0,
+                8.0,
+                4.0,
             ),
             decoration: BoxDecoration(
                 color: ThemeUtils.currentThemeColor,
                 border: Border.all(color: ThemeUtils.currentThemeColor,),
-                borderRadius: BorderRadius.circular(Constants.suSetSp(4.0)),
+                borderRadius: BorderRadius.circular(4.0),
             ),
             child: Center(
-                child: Text('取消关注', style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(12.0)),),
+                child: Text('取消关注', style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(14.0)),),
             ),
         ),
     );
@@ -617,24 +668,23 @@ class _UserListState extends State<UserListPage> {
                     Constants.suSetSp(12.0),
                     Constants.suSetSp(0.0),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(20.0), vertical: Constants.suSetSp(12.0)),
+                padding: EdgeInsets.symmetric(
+                    horizontal: Constants.suSetSp(20.0),
+                    vertical: Constants.suSetSp(12.0),
+                ),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Constants.suSetSp(15.0)),
+                    borderRadius: BorderRadius.circular(Constants.suSetSp(16.0)),
                     color: Theme.of(context).canvasColor,
-                    boxShadow: [BoxShadow(
-                        color: Colors.grey[850],
-                        blurRadius: 0.0,
-                    )],
                 ),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                         Container(
-                            width: Constants.suSetSp(60.0),
-                            height: Constants.suSetSp(60.0),
+                            width: Constants.suSetSp(64.0),
+                            height: Constants.suSetSp(64.0),
                             child: ClipRRect(
-                                borderRadius: BorderRadius.circular(Constants.suSetSp(30.0)),
+                                borderRadius: BorderRadius.circular(Constants.suSetSp(32.0)),
                                 child: FadeInImage(
                                     fadeInDuration: const Duration(milliseconds: 100),
                                     placeholder: AssetImage("assets/avatar_placeholder.png"),
@@ -660,14 +710,14 @@ class _UserListState extends State<UserListPage> {
                                                 ),
                                             ],
                                         ),
-                                        Divider(height: 6.0),
+                                        Divider(height: Constants.suSetSp(6.0)),
                                         Row(
                                             children: <Widget>[
                                                 Column(
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: <Widget>[
                                                         Text("关注", style: _textStyle),
-                                                        Divider(height: Constants.suSetSp(3.0)),
+                                                        Divider(height: Constants.suSetSp(4.0)),
                                                         Text(userData['idols'], style: _textStyle),
                                                     ],
                                                 ),
@@ -676,7 +726,7 @@ class _UserListState extends State<UserListPage> {
                                                     mainAxisSize: MainAxisSize.min,
                                                     children: <Widget>[
                                                         Text("粉丝", style: _textStyle),
-                                                        Divider(height: Constants.suSetSp(3.0)),
+                                                        Divider(height: Constants.suSetSp(4.0)),
                                                         Text(userData['fans'], style: _textStyle),
                                                     ],
                                                 )
@@ -711,7 +761,9 @@ class _UserListState extends State<UserListPage> {
                 centerTitle: true,
                 title: Text(
                     "$_type列表",
-                    style: Theme.of(context).textTheme.title,
+                    style: Theme.of(context).textTheme.title.copyWith(
+                        fontSize: Constants.suSetSp(21.0),
+                    ),
                 ),
             ),
             body: !isLoading

@@ -19,6 +19,7 @@ class FABBottomAppBar extends StatefulWidget {
         this.centerItemText,
         this.height: 60.0,
         this.iconSize: 24.0,
+        this.itemFontSize: 16.0,
         this.backgroundColor,
         this.color,
         this.selectedColor,
@@ -31,6 +32,7 @@ class FABBottomAppBar extends StatefulWidget {
     final String centerItemText;
     final double height;
     final double iconSize;
+    final double itemFontSize;
     final Color backgroundColor;
     final Color color;
     final Color selectedColor;
@@ -101,6 +103,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
         Widget appBar = Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: items,
         );
 
@@ -130,12 +133,12 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
     Widget _buildMiddleTabItem() {
         return Expanded(
             child: SizedBox(
-                height: widget.height,
+                height: Constants.suSetSp(widget.height),
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                        SizedBox(height: widget.iconSize),
+                        SizedBox(height: Constants.suSetSp(widget.iconSize)),
                         Text(
                             widget.centerItemText ?? '',
                             style: TextStyle(color: widget.color),
@@ -178,7 +181,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
                                             item.text,
                                             style: TextStyle(
                                                 color: color,
-                                                fontSize: Constants.suSetSp(16.0),
+                                                fontSize: Constants.suSetSp(widget.itemFontSize),
                                             ),
                                         ),
                                     ],

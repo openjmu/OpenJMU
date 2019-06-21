@@ -1,7 +1,7 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.4.0+55
+version: 0.4.0+56
 
 environment:
     sdk: ">=2.2.2 <3.0.0"
@@ -21,10 +21,10 @@ dependencies:
     dio: 2.1.6
     dragablegridview_flutter: 0.2.0
     event_bus: 1.1.0
-    extended_image: ^0.4.1
-    extended_tabs: ^0.1.6
-    extended_text: ^0.5.5
-    extended_text_field: ^0.3.5
+    extended_image: ^0.5.0
+    extended_tabs: ^0.2.0
+    extended_text: ^0.5.7
+    extended_text_field: ^0.3.7
     fluttertoast: any
     flutter_cache_manager: 0.3.2
     flutter_downloader: 1.1.7
@@ -34,19 +34,23 @@ dependencies:
     flutter_native_image:
         git: https://github.com/btastic/flutter_native_image/
     flutter_platform_widgets: ^0.9.6
+    flutter_qr_reader: ^1.0.2
     flutter_screenutil: ^0.5.2
     flutter_svg: ^0.12.4+2
     flutter_webview_plugin: ^0.3.5
     image_crop: ^0.2.1
     image_downloader: 0.15.4
+    image_gallery_saver: ^1.1.0
     image_picker: ^0.6.0+9
-    multi_image_picker: ^4.3.3
+    like_button: ^0.1.6
+    multi_image_picker: ^4.3.4
     oktoast: ^2.1.8
     package_info: ^0.4.0+4
     permission_handler: ^3.1.0
+    qr_flutter: ^2.1.0+55
     quick_actions: ^0.3.0+2
     shared_preferences: 0.5.3
-    uuid: ^2.0.1
+    uuid: ^2.0.2
 
 dev_dependencies:
     flutter_test:
@@ -61,6 +65,7 @@ flutter:
         - assets/homeSplash/
         - assets/icons/
         - assets/icons/bottomNavigation/
+        - assets/icons/postActions/
         - images/
     fonts:
         - family: chocolate

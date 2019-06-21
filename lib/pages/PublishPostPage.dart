@@ -114,7 +114,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                 debugPrint("Mentioned User: ${result.toString()}");
                 Future.delayed(Duration(milliseconds: 250), () {
                     FocusScope.of(context).requestFocus(_focusNode);
-                    insertText("<M ${result.id}>@${result.nickname}</M>");
+                    insertText("<\M ${result.id}>@${result.nickname}</M>");
                 });
             } else {
                 debugPrint("No mentioned user returned.");
@@ -306,6 +306,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                             icon: Icon(
                                 Platform.isAndroid ? Ionicons.getIconData("ios-at") : Ionicons.getIconData("md-at"),
                                 color: Theme.of(context).iconTheme.color,
+                                size: _iconWidth,
                             ),
                         ),
                         IconButton(
@@ -313,16 +314,19 @@ class PublishPostPageState extends State<PublishPostPage> {
                             icon: Icon(
                                 Icons.add_photo_alternate,
                                 color: Theme.of(context).iconTheme.color,
+                                size: _iconWidth,
                             ),
                         ),
                         ToggleButton(
                             activeWidget: Icon(
                                 Icons.sentiment_very_satisfied,
                                 color: ThemeUtils.currentThemeColor,
+                                size: _iconWidth,
                             ),
                             unActiveWidget: Icon(
                                 Icons.sentiment_very_satisfied,
                                 color: Theme.of(context).iconTheme.color,
+                                size: _iconWidth,
                             ),
                             activeChanged: (bool active) {
                                 Function change = () {
@@ -537,7 +541,9 @@ class PublishPostPageState extends State<PublishPostPage> {
                 title: Center(
                     child: Text(
                         "发布动态",
-                        style: Theme.of(context).textTheme.title,
+                        style: Theme.of(context).textTheme.title.copyWith(
+                            fontSize: Constants.suSetSp(21.0),
+                        ),
                     ),
                 ),
                 actions: <Widget>[

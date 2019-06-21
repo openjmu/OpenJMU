@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:extended_text_library/extended_text_library.dart';
 
+import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/EmojiUtils.dart';
 
-final double _fontSize = Constants.suSetSp(16.0);
-final double _fontSizeField = Constants.suSetSp(18.0);
 
 class LinkText extends SpecialText {
     static const String startKey = "https://wb.jmu.edu.cn/";
@@ -18,7 +17,7 @@ class LinkText extends SpecialText {
     TextSpan finishText() {
         return TextSpan(
             text: " 网页链接 ",
-            style: textStyle?.copyWith(color: Colors.blue, fontSize: _fontSize),
+            style: textStyle?.copyWith(color: Colors.blue),
             recognizer: TapGestureRecognizer()
                 ..onTap = () {
                     Map<String, dynamic> data = {'content': toString()};
@@ -38,7 +37,7 @@ class LinkOlderText extends SpecialText {
     TextSpan finishText() {
         return TextSpan(
             text: " 网页链接 ",
-            style: textStyle?.copyWith(color: Colors.blue, fontSize: _fontSize),
+            style: textStyle?.copyWith(color: Colors.blue),
             recognizer: TapGestureRecognizer()
                 ..onTap = () {
                     Map<String, dynamic> data = {'content': toString()};
@@ -89,13 +88,13 @@ class MentionText extends SpecialText {
                 actualText: mentionOriginalText,
                 start: start,
                 deleteAll: true,
-                style: TextStyle(color: Colors.blue, fontSize: _fontSizeField),
+                style: textStyle?.copyWith(color: Colors.blue),
             );
         } else {
             int uid = getUidFromContent(mentionOriginalText);
             return TextSpan(
                 text: mentionText,
-                style: TextStyle(color: Colors.blue, fontSize: _fontSize),
+                style: textStyle?.copyWith(color: Colors.blue),
                 recognizer: TapGestureRecognizer()
                     ..onTap = () {
                         Map<String, dynamic> data = {'content': mentionText, 'uid': uid};
@@ -120,13 +119,13 @@ class PoundText extends SpecialText {
                 text: "#$poundText#",
                 actualText: "#$poundText#",
                 start: start,
-                deleteAll: true,
-                style: TextStyle(color: Colors.orangeAccent, fontSize: _fontSizeField),
+                deleteAll: false,
+                style: textStyle?.copyWith(color: Colors.orangeAccent),
             );
         } else {
             return TextSpan(
                 text: "#$poundText#",
-                style: TextStyle(color: Colors.orangeAccent, fontSize: _fontSize),
+                style: textStyle?.copyWith(color: Colors.orangeAccent),
                 recognizer: TapGestureRecognizer()
                     ..onTap = () {
                         Map<String, dynamic> data = {'content': toString()};
@@ -148,7 +147,7 @@ class EmoticonText extends SpecialText {
     TextSpan finishText() {
         var key = toString();
         if (EmoticonUtils.instance.emoticonMap.containsKey(key)) {
-            final double size = 30.0 / 27.0 * (type == BuilderType.extendedText ? _fontSize : _fontSizeField);
+            final double size = 30.0 / 27.0 * ((textStyle != null) ? textStyle.fontSize : 17);
 
             if (type == BuilderType.extendedTextField) {
                 return ImageSpan(
@@ -158,19 +157,64 @@ class EmoticonText extends SpecialText {
                     imageHeight: size,
                     start: start,
                     fit: BoxFit.fill,
-                    margin: EdgeInsets.only(left: Constants.suSetSp(1.0), bottom: Constants.suSetSp(2.0), right: Constants.suSetSp(1.0)),
+                    margin: EdgeInsets.only(
+                        left: Constants.suSetSp(1.0),
+                        bottom: Constants.suSetSp(2.0),
+                        right: Constants.suSetSp(1.0),),
                 );
             } else {
                 return ImageSpan(
                     AssetImage(EmoticonUtils.instance.emoticonMap[key]),
                     imageWidth: size,
                     imageHeight: size,
-                    margin: EdgeInsets.only(left: Constants.suSetSp(1.0), bottom: Constants.suSetSp(2.0), right: Constants.suSetSp(1.0)),
+                    margin: EdgeInsets.only(
+                        left: Constants.suSetSp(1.0),
+                        bottom: Constants.suSetSp(2.0),
+                        right: Constants.suSetSp(1.0),
+                    ),
                 );
             }
         }
 
         return TextSpan(text: toString(), style: textStyle);
+    }
+}
+
+class CommentImageText extends SpecialText {
+    static const String startKey = "|";
+    final int start;
+    final BuilderType type;
+
+    CommentImageText(TextStyle textStyle, SpecialTextGestureTapCallback onTap, {this.start, this.type})
+            : super(startKey, startKey, textStyle, onTap: onTap);
+
+    int getImageIdFromContent(String content) {
+        return int.parse(content.substring(1, content.length - 1));
+    }
+
+    @override
+    TextSpan finishText() {
+        final String imageText = toString();
+        final int imageId = getImageIdFromContent(imageText);
+        final double size = Constants.suSetSp(80);
+        final String urlInsecure = Api.commentImageUrl(imageId, "m").replaceAllMapped(RegExp(r"https://"), (match) => "http://");
+
+        return ImageSpan(
+            NetworkImage(urlInsecure),
+            imageWidth: size,
+            imageHeight: size,
+            fit: BoxFit.cover,
+            margin: EdgeInsets.only(
+                top: Constants.suSetSp(8.0),
+                bottom: Constants.suSetSp(20.0),
+                right: Constants.suSetSp(4.0),
+            ),
+            recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                    Map<String, dynamic> data = {'content': toString(), 'image': imageId};
+                    if (onTap != null) onTap(data);
+                },
+        );
     }
 }
 
@@ -192,6 +236,8 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
             return LinkText(textStyle, onTap);
         } else if (isStart(flag, LinkOlderText.startKey)) {
             return LinkOlderText(textStyle, onTap);
+        } else if (isStart(flag, CommentImageText.startKey)) {
+            return CommentImageText(textStyle, onTap);
         }
         return null;
     }

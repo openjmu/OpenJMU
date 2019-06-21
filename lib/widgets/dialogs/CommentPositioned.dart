@@ -1,9 +1,13 @@
 import 'dart:math';
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:dio/dio.dart';
 import 'package:extended_text_field/extended_text_field.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -11,6 +15,7 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/utils/EmojiUtils.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/ToggleButton.dart';
@@ -31,10 +36,12 @@ class CommentPositioned extends StatefulWidget {
 class CommentPositionedState extends State<CommentPositioned> {
     final TextEditingController _commentController = TextEditingController();
     FocusNode _focusNode = FocusNode();
+    File _image;
+    int _imageID;
 
     Comment toComment;
 
-    bool _canSend = false, _commenting = false;
+    bool _commenting = false;
     bool forwardAtTheMeanTime = false;
 
     String commentContent = "";
@@ -49,9 +56,6 @@ class CommentPositionedState extends State<CommentPositioned> {
             toComment = widget.comment;
         });
         _commentController..addListener(() {
-            if (_commentController.text.isNotEmpty != _canSend) {
-                setState(() { _canSend = _commentController.text.isNotEmpty; });
-            }
             setState(() {
                 commentContent = _commentController.text;
             });
@@ -67,6 +71,24 @@ class CommentPositionedState extends State<CommentPositioned> {
         _commentController?.dispose();
     }
 
+    Future<void> _addImage() async {
+        final file = await ImagePicker.pickImage(source: ImageSource.gallery);
+        if (file == null) return;
+        setState(() {
+            _image = file;
+        });
+    }
+
+    FormData createForm(File file) => FormData.from({
+        "image": UploadFileInfo(file, basename(file.path)),
+        "image_type": 0
+    });
+
+    Future getImageRequest(FormData formData) async => NetUtils.postWithCookieAndHeaderSet(
+        Api.postUploadImage,
+        data: formData,
+    );
+
     Widget textField() {
         String _hintText;
         toComment != null ? _hintText = "回复:@${toComment.fromUserName} " : _hintText = null;
@@ -81,6 +103,15 @@ class CommentPositionedState extends State<CommentPositioned> {
                     border: OutlineInputBorder(borderSide: BorderSide(color: ThemeUtils.currentThemeColor)),
                     focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: ThemeUtils.currentThemeColor)),
                     hintText: _hintText,
+                    suffixIcon: _image != null ? SizedBox(
+                        width: Constants.suSetSp(60.0),
+                        child: Container(
+                            margin: EdgeInsets.only(right: Constants.suSetSp(12.0)),
+                            decoration: BoxDecoration(
+                                image: DecorationImage(image: FileImage(_image), fit: BoxFit.cover),
+                            ),
+                        ),
+                    ) : null,
                 ),
                 enabled: !_commenting,
                 style: TextStyle(fontSize: Constants.suSetSp(18.0)),
@@ -92,20 +123,30 @@ class CommentPositionedState extends State<CommentPositioned> {
         );
     }
 
-    void _requestComment(context) {
-        if (commentContent.length <= 0) {
+    Future _request(context) async {
+        if (commentContent.length <= 0 && _image == null) {
             showCenterErrorShortToast("内容不能为空！");
         } else {
             setState(() { _commenting = true; });
+            String content = "";
+
             Comment _c = widget.comment;
-            String content;
             int _cid;
             if (toComment != null) {
-                content = "回复:<M ${_c.fromUserUid}>@${_c.fromUserName}</M> ${_commentController.text}";
+                content = "回复:<M ${_c.fromUserUid}>@${_c.fromUserName}</M> $content${_commentController.text}";
                 _cid = _c.id;
             } else {
-                content = _commentController.text;
+                content = "$content${_commentController.text}";
             }
+
+            /// Sending image if it exist.
+            if (_image != null) {
+                Map<String, dynamic> data = (await getImageRequest(createForm(_image))).data;
+                _imageID = int.parse(data['image_id']);
+                content += "\n|$_imageID|";
+            }
+            ///
+
             CommentAPI.postComment(
                 content,
                 widget.post.id,
@@ -159,7 +200,7 @@ class CommentPositionedState extends State<CommentPositioned> {
 
     Widget emoticonPad(context) {
         return Positioned(
-            bottom: MediaQuery.of(context).viewInsets.bottom ?? MediaQuery.of(context).padding.bottom ?? 0,
+            bottom: MediaQuery.of(context).viewInsets.bottom + (MediaQuery.of(context).padding.bottom ?? 0),
             left: 0.0,
             right: 0.0,
             child: Visibility(
@@ -169,19 +210,19 @@ class CommentPositionedState extends State<CommentPositioned> {
         );
     }
 
-    void mentionPeople() {
+    void mentionPeople(context) {
         showDialog<User>(
             context: context,
             builder: (BuildContext context) => MentionPeopleDialog(),
         ).then((user) {
             FocusScope.of(context).requestFocus(_focusNode);
             if (user != null) Future.delayed(Duration(milliseconds: 250), () {
-                insertText("<M ${user.id}>@${user.nickname}</M>");
+                insertText("\<M ${user.id}>@${user.nickname}</M>");
             });
         });
     }
 
-    Widget toolbar() {
+    Widget toolbar(context) {
         return Row(
             children: <Widget>[
                 Checkbox(
@@ -196,7 +237,11 @@ class CommentPositionedState extends State<CommentPositioned> {
                 Text("同时转发到微博", style: TextStyle(fontSize: Constants.suSetSp(16.0))),
                 Expanded(child: Container()),
                 IconButton(
-                    onPressed: mentionPeople,
+                    onPressed: _addImage,
+                    icon: Icon(Icons.add_photo_alternate),
+                ),
+                IconButton(
+                    onPressed: () { mentionPeople(context); },
                     icon: Icon(Icons.alternate_email),
                 ),
                 ToggleButton(
@@ -223,7 +268,10 @@ class CommentPositionedState extends State<CommentPositioned> {
                         ? IconButton(
                     icon: Icon(Icons.send),
                     color: ThemeUtils.currentThemeColor,
-                    onPressed: _canSend ? () => _requestComment(context) : null,
+                    onPressed: (_commentController.text.length > 0 || _image != null)
+                            ? () => _request(context)
+                            : null
+                    ,
                 )
                         : Container(
                     padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(14.0)),
@@ -264,10 +312,7 @@ class CommentPositionedState extends State<CommentPositioned> {
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                    textField(),
-                                    toolbar(),
-                                ],
+                                children: <Widget>[textField(), toolbar(context)],
                             ),
                         ),
                     ),

@@ -130,7 +130,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
 
     Widget emoticonPad(context) {
         return Positioned(
-            bottom: MediaQuery.of(context).viewInsets.bottom ?? MediaQuery.of(context).padding.bottom ?? 0,
+            bottom: MediaQuery.of(context).viewInsets.bottom + (MediaQuery.of(context).padding.bottom ?? 0),
             left: 0.0,
             right: 0.0,
             child: Visibility(
@@ -147,7 +147,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         ).then((user) {
             FocusScope.of(context).requestFocus(_focusNode);
             if (user != null) Future.delayed(Duration(milliseconds: 250), () {
-                insertText("<M ${user.id}>@${user.nickname}</M>");
+                insertText("<M ${user.id}>@${user.nickname}<\/M>");
             });
         });
     }

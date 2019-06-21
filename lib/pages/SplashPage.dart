@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -12,6 +13,7 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+
 
 class SplashPage extends StatefulWidget {
     final int initIndex;
@@ -168,7 +170,10 @@ class SplashState extends State<SplashPage> {
                                                                 ),
                                                                 Text(
                                                                     "正在登录",
-                                                                    style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(20.0)),
+                                                                    style: TextStyle(
+                                                                        color: Colors.white,
+                                                                        fontSize: Constants.suSetSp(20.0),
+                                                                    ),
                                                                 )
                                                             ],
                                                         ) else if (isOnline != null && !isOnline) Column(
@@ -177,14 +182,18 @@ class SplashState extends State<SplashPage> {
                                                                     margin: EdgeInsets.only(bottom: Constants.suSetSp(20.0)),
                                                                     width: Constants.suSetSp(30.0),
                                                                     height: Constants.suSetSp(30.0),
-                                                                    child: Icon(Icons.warning, color: Colors.white),
+                                                                    child: Icon(
+                                                                        Icons.warning,
+                                                                        color: Colors.white,
+                                                                        size: Constants.suSetSp(24.0),
+                                                                    ),
                                                                 ),
                                                                 Text(
                                                                     "请检查联网状态",
                                                                     style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(20.0)),
                                                                 )
                                                             ],
-                                                        ) else SizedBox(height: Constants.suSetSp(68))
+                                                        ) else SizedBox(height: Constants.suSetSp(68.0))
                                                 ],
                                             ),
                                         ),

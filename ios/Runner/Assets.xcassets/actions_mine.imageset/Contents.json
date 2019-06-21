@@ -2,17 +2,17 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "discover.png",
+      "filename" : "actions_mine_1.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
-      "filename" : "discover-1.png",
+      "filename" : "actions_mine_2.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "discover-2.png",
+      "filename" : "actions_mine_3.png",
       "scale" : "3x"
     }
   ],

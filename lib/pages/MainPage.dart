@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -36,16 +38,18 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
     final List<String> bottomAppBarTitles = ['首页', '应用', '消息', '我的'];
     final List<String> bottomAppBarIcons = ["home", "apps", "message", "mine"];
+    final Color primaryColor = Colors.white;
+    static const double bottomBarHeight = 68.0;
+
     TextStyle tabSelectedTextStyle = TextStyle(
         color: currentThemeColor,
-        fontSize: Constants.suSetSp(22.0),
+        fontSize: Constants.suSetSp(23.0),
         fontWeight: FontWeight.bold,
     );
     TextStyle tabUnselectedTextStyle = TextStyle(
         color: currentThemeColor,
         fontSize: Constants.suSetSp(18.0),
     );
-    final Color primaryColor = Colors.white;
 
     List<Widget> pages;
     Notifications notifications = Constants.notifications;
@@ -55,8 +59,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
     List<List> sections = [
         ["首页", "关注"],
         ["课程表", "应用"],
-//        ["消息", "联系人"],
-        ["消息"],
+        ["消息"], /// ["消息", "联系人"],
     ];
 
     int _tabIndex = Constants.homeSplashIndex;
@@ -80,13 +83,26 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 });
             }
         });
+        initTabController();
+        pages = [
+            PostSquareListPage(controller: _tabControllers[0]),
+            AppCenterPage(controller: _tabControllers[1]),
+            MessagePage(),
+            MyInfoPage()
+        ];
+    }
+
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        ThemeUtils.setDark(ThemeUtils.isDark);
         Constants.eventBus
             ..on<ActionsEvent>().listen((event) {
                 if (event.type == "action_home") {
                     _selectedTab(0);
                 } else if (event.type == "action_apps") {
                     _selectedTab(1);
-                } else if (event.type == "action_discover") {
+                } else if (event.type == "action_message") {
                     _selectedTab(2);
                 } else if (event.type == "action_user") {
                     _selectedTab(3);
@@ -110,19 +126,6 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     currentThemeColor = event.color;
                 });
             });
-        initTabController();
-        pages = [
-            PostSquareListPage(controller: _tabControllers[0]),
-            AppCenterPage(controller: _tabControllers[1]),
-            MessagePage(),
-            MyInfoPage()
-        ];
-    }
-
-    @override
-    void didChangeDependencies() {
-        super.didChangeDependencies();
-        ThemeUtils.setDark(ThemeUtils.isDark);
     }
 
     @override
@@ -182,7 +185,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                 scrollDirection: Axis.horizontal,
                                 children: <Widget>[
                                     SizedBox(
-                                        width: sections[_tabIndex].length * Constants.suSetSp(80.0),
+                                        width: sections[_tabIndex].length * Constants.suSetSp(86.0),
                                         child: TabBar(
                                             indicatorColor: currentThemeColor,
                                             indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(20.0)),
@@ -205,14 +208,47 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     centerTitle: (_tabIndex == 2) ? true : false,
                     actions: <Widget>[
                         if (_tabIndex == 0) Padding(
-                            padding: EdgeInsets.only(left: Constants.suSetSp(8.0)),
+                            padding: EdgeInsets.zero,
                             child: IconButton(
-                                icon: Icon(Icons.search),
+                                icon: SvgPicture.asset(
+                                    "assets/icons/scan-line.svg",
+                                    color: Theme.of(context).iconTheme.color,
+                                    width: Constants.suSetSp(26.0),
+                                    height: Constants.suSetSp(26.0),
+                                ),
+                                onPressed: () async {
+                                    Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([
+                                        PermissionGroup.camera,
+                                    ]);
+                                    if (permissions[PermissionGroup.camera] == PermissionStatus.granted) {
+                                        Navigator.of(context).pushNamed("/scanqrcode");
+                                    }
+                                },
+                            ),
+                        ),
+                        if (_tabIndex == 0) Padding(
+                            padding: EdgeInsets.zero,
+                            child: IconButton(
+                                icon: SvgPicture.asset(
+                                    "assets/icons/search-line.svg",
+                                    color: Theme.of(context).iconTheme.color,
+                                    width: Constants.suSetSp(26.0),
+                                    height: Constants.suSetSp(26.0),
+                                ),
                                 onPressed: () {
                                     Navigator.of(context).pushNamed("/search");
                                 },
                             ),
                         ),
+                        if (_tabIndex == 1) Padding(
+                            padding: EdgeInsets.only(left: Constants.suSetSp(8.0)),
+                            child: IconButton(
+                                icon: Icon(Icons.refresh, size: Constants.suSetSp(24.0)),
+                                onPressed: () {
+                                    Constants.eventBus.fire(new AppCenterRefreshEvent(_tabControllers[1].index));
+                                },
+                            ),
+                        )
                     ],
                 ) : null,
                 body: IndexedStack(
@@ -222,6 +258,8 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 bottomNavigationBar: FABBottomAppBar(
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     color: Colors.grey[600],
+                    height: bottomBarHeight,
+                    iconSize: 30.0,
                     selectedColor: ThemeUtils.currentThemeColor,
                     onTabSelected: _selectedTab,
                     items: [
@@ -258,7 +296,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Constants.suSetSp(14.0))),
                     ),
                 ),
-                floatingActionButtonLocation: const CustomCenterDockedFloatingActionButtonLocation(),
+                floatingActionButtonLocation: const CustomCenterDockedFloatingActionButtonLocation(bottomBarHeight / 2),
             ),
         );
     }
