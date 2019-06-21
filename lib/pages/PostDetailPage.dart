@@ -1,8 +1,8 @@
-import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:like_button/like_button.dart';
 
 import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -54,6 +54,9 @@ class PostDetailPageState extends State<PostDetailPage> {
         fontSize: Constants.suSetSp(16.0),
     );
 
+    double iconSize = 20.0;
+    double actionFontSize = 17.0;
+
     Color forwardsColor, commentsColor = ThemeUtils.currentThemeColor, praisesColor;
     Color activeColor = ThemeUtils.currentThemeColor;
 
@@ -72,7 +75,7 @@ class PostDetailPageState extends State<PostDetailPage> {
         _requestData();
         setCurrentTabActive(widget.beforeContext, 1, "comments");
         PostAPI.glancePost(widget.post.id);
-        _post = new PostCard(widget.post, index: widget.index, fromPage: widget.fromPage, isDetail: true);
+        _post = PostCard(widget.post, index: widget.index, fromPage: widget.fromPage, isDetail: true);
 
         Constants.eventBus
             ..on<PostDeletedEvent>().listen((event) {
@@ -197,37 +200,6 @@ class PostDetailPageState extends State<PostDetailPage> {
         );
     }
 
-    void _requestPraise() {
-        print("Request praise: ${widget.post.id}");
-        bool _l = isLike;
-        setState(() {
-            if (isLike) {
-                praises--;
-            } else {
-                praises++;
-            }
-            this.isLike = !isLike;
-        });
-        PraiseAPI.requestPraise(widget.post.id, !_l).then((response) {
-            Constants.eventBus.fire(
-                new PraiseInPostUpdatedEvent(
-                    widget.post.id,
-                    praises,
-                    isLike: !_l,
-                ),
-            );
-        }).catchError((e) {
-            setState(() {
-                if (isLike) {
-                    praises++;
-                } else {
-                    praises--;
-                }
-                this.isLike = _l;
-            });
-        });
-    }
-
     Widget toolbar(context) {
         return Container(
             child: Column(
@@ -247,8 +219,18 @@ class PostDetailPageState extends State<PostDetailPage> {
                                                 builder: (BuildContext context) => ForwardPositioned(widget.post),
                                             );
                                         },
-                                        icon: Icon(Icons.launch),
-                                        label: Text("转发"),
+                                        icon: SvgPicture.asset(
+                                            "assets/icons/postActions/forward-line.svg",
+                                            color: Theme.of(context).textTheme.body1.color,
+                                            width: Constants.suSetSp(iconSize),
+                                            height: Constants.suSetSp(iconSize),
+                                        ),
+                                        label: Text(
+                                            "转发",
+                                            style: Theme.of(context).textTheme.body1.copyWith(
+                                                fontSize: Constants.suSetSp(actionFontSize),
+                                            ),
+                                        ),
                                         splashColor: Colors.grey,
                                     ),
                                 ),
@@ -263,10 +245,18 @@ class PostDetailPageState extends State<PostDetailPage> {
                                                 builder: (BuildContext context) => CommentPositioned(widget.post),
                                             );
                                         },
-                                        icon: Icon(
-                                            Platform.isAndroid ? Icons.comment : Foundation.getIconData("comment"),
+                                        icon: SvgPicture.asset(
+                                            "assets/icons/postActions/comment-line.svg",
+                                            color: Theme.of(context).textTheme.body1.color,
+                                            width: Constants.suSetSp(iconSize),
+                                            height: Constants.suSetSp(iconSize),
                                         ),
-                                        label: Text("评论"),
+                                        label: Text(
+                                            "评论",
+                                            style: Theme.of(context).textTheme.body1.copyWith(
+                                                fontSize: Constants.suSetSp(actionFontSize),
+                                            ),
+                                        ),
                                         splashColor: Colors.grey,
                                     ),
                                 ),
@@ -274,20 +264,41 @@ class PostDetailPageState extends State<PostDetailPage> {
                             Expanded(
                                 child: Container(
                                     color: Theme.of(context).cardColor,
-                                    child: FlatButton.icon(
-                                        onPressed: _requestPraise,
-                                        icon: Icon(
-                                            Platform.isAndroid ? Icons.thumb_up : Ionicons.getIconData("ios-thumbs-up"),
-                                            color: isLike
-                                                    ? ThemeUtils.currentThemeColor
-                                                    : Theme.of(context).textTheme.title.color,
+                                    child: LikeButton(
+                                        size: Constants.suSetSp(iconSize),
+                                        circleColor: CircleColor(
+                                            start: ThemeUtils.currentThemeColor,
+                                            end: ThemeUtils.currentThemeColor,
                                         ),
-                                        label: Text("赞", style: TextStyle(
-                                            color: isLike
+                                        countBuilder: (int count, bool isLiked, String text) => Text(
+                                            count == 0 ? "赞" : text,
+                                            style: Theme.of(context).textTheme.body1.copyWith(
+                                                color: isLiked
+                                                        ? ThemeUtils.currentThemeColor
+                                                        : Theme.of(context).textTheme.body1.color,
+                                                fontSize: Constants.suSetSp(actionFontSize),
+                                            ),
+                                        ),
+                                        bubblesColor: BubblesColor(
+                                            dotPrimaryColor: ThemeUtils.currentThemeColor,
+                                            dotSecondaryColor: ThemeUtils.currentThemeColor,
+                                        ),
+                                        likeBuilder: (bool isLiked) => SvgPicture.asset(
+                                            "assets/icons/postActions/thumbUp-${isLiked ? "fill" : "line"}.svg",
+                                            color: isLiked
                                                     ? ThemeUtils.currentThemeColor
-                                                    : Theme.of(context).textTheme.title.color,
-                                        )),
-                                        splashColor: Colors.grey,
+                                                    : Theme.of(context).textTheme.body1.color,
+                                            width: Constants.suSetSp(iconSize),
+                                            height: Constants.suSetSp(iconSize),
+                                        ),
+                                        likeCount: praises,
+                                        likeCountAnimationType: LikeCountAnimationType.none,
+                                        likeCountPadding: EdgeInsets.symmetric(
+                                            horizontal: Constants.suSetSp(4.0),
+                                            vertical: Constants.suSetSp(12.0),
+                                        ),
+                                        isLiked: widget.post.isLike,
+                                        onTap: onLikeButtonTap,
                                     ),
                                 ),
                             ),
@@ -303,48 +314,70 @@ class PostDetailPageState extends State<PostDetailPage> {
         );
     }
 
+    Future<bool> onLikeButtonTap(bool isLiked) {
+        final Completer<bool> completer = new Completer<bool>();
+        int id = widget.post.id;
+
+        widget.post.isLike = !widget.post.isLike;
+        !isLiked ? widget.post.praises++ : widget.post.praises--;
+        completer.complete(!isLiked);
+
+        PraiseAPI.requestPraise(id, !isLiked).then((response) {
+            Constants.eventBus.fire(PraiseInPostUpdatedEvent(
+                widget.post.id,
+                praises,
+                isLike: !isLiked,
+            ));
+        }).catchError((e) {
+            isLiked ? widget.post.praises++ : widget.post.praises--;
+            completer.complete(isLiked);
+            return completer.future;
+        });
+
+        return completer.future;
+    }
+
     @override
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
                 title: Text(
                     "动态正文",
-                    style: Theme.of(context).textTheme.title,
+                    style: Theme.of(context).textTheme.title.copyWith(
+                        fontSize: Constants.suSetSp(21.0),
+                    ),
                 ),
                 centerTitle: true,
             ),
             body: Column(
                 children: <Widget>[
                     Expanded(
-//                        child: RefreshIndicator(
-//                            onRefresh: () {},
-                            child: ListView(
-                                children: <Widget>[
-                                    Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: <Widget>[
-                                            Expanded(
-                                                child: Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    children: <Widget>[
-                                                        _post,
-                                                        actionLists(context),
-                                                        IndexedStack(
-                                                            children: <Widget>[
-                                                                _forwardsList,
-                                                                _commentsList,
-                                                                _praisesList,
-                                                            ],
-                                                            index: _tabIndex,
-                                                        )
-                                                    ],
-                                                ),
+                        child: ListView(
+                            children: <Widget>[
+                                Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                        Expanded(
+                                            child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: <Widget>[
+                                                    _post,
+                                                    actionLists(context),
+                                                    IndexedStack(
+                                                        children: <Widget>[
+                                                            _forwardsList,
+                                                            _commentsList,
+                                                            _praisesList,
+                                                        ],
+                                                        index: _tabIndex,
+                                                    )
+                                                ],
                                             ),
-                                        ],
-                                    ),
-                                ],
-                            ),
-//                        ),
+                                        ),
+                                    ],
+                                ),
+                            ],
+                        ),
                     ),
                     toolbar(context),
                 ],

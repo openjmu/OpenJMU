@@ -217,7 +217,7 @@ class DataUtils {
 //        await sp.remove(spUserClassId);
         await sp.remove(spBrightness);
         await sp.remove(spColorThemeIndex);
-        showShortToast("注销成功！");
+        showShortToast("退出登录成功");
     }
 
     static Future<Map> getSpTicket() async {

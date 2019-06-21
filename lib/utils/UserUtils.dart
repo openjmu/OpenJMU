@@ -9,6 +9,7 @@ import 'package:OpenJMU/utils/NetUtils.dart';
 class UserUtils {
     static final UserInfo emptyUser = UserInfo(null, null, null, null, null, null, null, null, null, null);
     static UserInfo currentUser = emptyUser;
+    static bool isTeacher = false;
 
     static UserInfo createUserInfo(userData) {
         int _workId = 0;

@@ -3,10 +3,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
 
 
 class CommonWebPage extends StatefulWidget {
@@ -60,10 +62,12 @@ class CommonWebPageState extends State<CommonWebPage> {
                     }
                 });
                 Future.delayed(const Duration(milliseconds: 500), () {
-                    setState(() {
-                        isLoading = false;
-                        currentProgress = 0.0;
-                    });
+                    if (this.mounted) {
+                        setState(() {
+                            isLoading = false;
+                            currentProgress = 0.0;
+                        });
+                    }
                 });
             } else if (state.type == WebViewState.startLoad) {
                 setState(() {
@@ -159,16 +163,23 @@ class CommonWebPageState extends State<CommonWebPage> {
                                     _title,
                                     style: TextStyle(
                                         color: Theme.of(context).textTheme.title.color,
+                                        fontSize: Constants.suSetSp(20.0),
                                     ),
                                     overflow: TextOverflow.fade,
                                 ),
-                                Text(
-                                    _url,
-                                    style: TextStyle(
-                                        color: Theme.of(context).textTheme.title.color,
-                                        fontSize: Constants.suSetSp(14.0),
+                                GestureDetector(
+                                    onLongPress: () {
+                                        Clipboard.setData(ClipboardData(text: _url));
+                                        showShortToast("已复制网址到剪贴板");
+                                    },
+                                    child: Text(
+                                        _url,
+                                        style: TextStyle(
+                                            color: Theme.of(context).textTheme.title.color,
+                                            fontSize: Constants.suSetSp(14.0),
+                                        ),
+                                        overflow: TextOverflow.fade,
                                     ),
-                                    overflow: TextOverflow.fade,
                                 ),
                             ],
                         ),
@@ -204,6 +215,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                                     icon: Icon(
                                         Icons.keyboard_arrow_left,
                                         color: currentThemeColor,
+                                        size: Constants.suSetSp(24.0),
                                     ),
                                     onPressed: flutterWebViewPlugin.goBack,
                                 ),
@@ -212,6 +224,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                                     icon: Icon(
                                         Icons.keyboard_arrow_right,
                                         color: currentThemeColor,
+                                        size: Constants.suSetSp(24.0),
                                     ),
                                     onPressed: flutterWebViewPlugin.goForward,
                                 ),
@@ -220,6 +233,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                                     icon: Icon(
                                         Icons.refresh,
                                         color: currentThemeColor,
+                                        size: Constants.suSetSp(24.0),
                                     ),
                                     onPressed: flutterWebViewPlugin.reload,
                                 ),

@@ -55,13 +55,14 @@
 		<true/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>方便您拍照分享至动态</string>
+	<string>方便您拍照分享至动态及扫描二维码</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>方便您录像分享至动态</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>方便您分享图片至动态</string>
 	<key>UIBackgroundModes</key>
 	<array>
+	    <string>fetch</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
@@ -84,5 +85,7 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<string>YES</string>
+	<key>io.flutter.embedded_views_preview</key>
+    <true/>
 </dict>
 </plist>

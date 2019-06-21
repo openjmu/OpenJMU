@@ -25,6 +25,7 @@ class AppCenterPage extends StatefulWidget {
 
 class AppCenterPageState extends State<AppCenterPage> {
     final ScrollController _scrollController = ScrollController();
+    final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
     Color themeColor = ThemeUtils.currentThemeColor;
     Map<String, List<Widget>> webAppWidgetList = {};
     List<Widget> webAppList = [];
@@ -47,6 +48,17 @@ class AppCenterPageState extends State<AppCenterPage> {
                 if (this.mounted) setState(() {
                     themeColor = event.color;
                 });
+            })
+            ..on<AppCenterRefreshEvent>().listen((event) {
+                if (this.mounted) {
+                    if (event.currentIndex == 0) {
+                        Constants.eventBus.fire(new CourseScheduleRefreshEvent());
+                    } else if (event.currentIndex == 1) {
+                        _scrollController.jumpTo(0.0);
+                        refreshIndicatorKey.currentState.show();
+                        getAppList();
+                    }
+                }
             });
     }
 
@@ -87,6 +99,7 @@ class AppCenterPageState extends State<AppCenterPage> {
             _list.add(getSectionColumn(name));
         });
         return ListView.builder(
+            controller: _scrollController,
             itemCount: _list.length,
             itemBuilder: (BuildContext context, index) => _list[index],
         );
@@ -128,8 +141,8 @@ class AppCenterPageState extends State<AppCenterPage> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                     Container(
-                        width: Constants.suSetSp(64.0),
-                        height: Constants.suSetSp(64.0),
+                        width: Constants.suSetSp(68.0),
+                        height: Constants.suSetSp(68.0),
                         child: CircleAvatar(
                             backgroundColor: Theme.of(context).dividerColor,
                             child: Image(
@@ -143,7 +156,7 @@ class AppCenterPageState extends State<AppCenterPage> {
                     Text(
                         webApp.name,
                         style: TextStyle(
-                            fontSize: Constants.suSetSp(16.0),
+                            fontSize: Constants.suSetSp(17.0),
                             color: Theme.of(context).textTheme.body1.color,
                             fontWeight: FontWeight.normal,
                         ),
@@ -208,13 +221,14 @@ class AppCenterPageState extends State<AppCenterPage> {
             cacheExtent: 1,
             children: <Widget>[
                 InAppBrowserPage(
-                    url: "${Api.courseSchedule}?sid=${UserUtils.currentUser.sid}",
+                    url: "${Api.courseSchedule}?sid=${UserUtils.currentUser.sid}${ThemeUtils.isDark ? "&night=1" : ""}",
                     title: "课程表",
                     withAppBar: false,
                     withAction: false,
                     keepAlive: true,
                 ),
                 RefreshIndicator(
+                    key: refreshIndicatorKey,
                     child: FutureBuilder(
                         builder: _buildFuture,
                         future: _futureBuilderFuture,

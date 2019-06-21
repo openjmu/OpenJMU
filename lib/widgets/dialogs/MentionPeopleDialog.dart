@@ -76,13 +76,18 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
                                             Center(
-                                                child: Text("请输入要@的姓名", style: Theme.of(context).textTheme.title),
+                                                child: Text(
+                                                    "请输入要@的姓名",
+                                                    style: Theme.of(context).textTheme.title.copyWith(
+                                                        fontSize: Constants.suSetSp(21.0),
+                                                    ),
+                                                ),
                                             ),
-                                            Container(
+                                            Padding(
                                                 padding: EdgeInsets.all(Constants.suSetSp(20.0)),
                                                 child: TextField(
                                                     autofocus: true,
-                                                    style: TextStyle(fontSize: Constants.suSetSp(20.0)),
+                                                    style: TextStyle(fontSize: Constants.suSetSp(18.0)),
                                                     controller: _textEditingController,
                                                     cursorColor: ThemeUtils.currentThemeColor,
                                                     decoration: InputDecoration(

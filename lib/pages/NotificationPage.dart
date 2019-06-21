@@ -69,10 +69,10 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
     }
 
     List<Widget> actions() {
-        List<Tab> _tabs = [
+        List<Widget> _tabs = [
             Tab(child: BadgeIconButton(
                 itemCount: currentNotifications.at,
-                icon: Icon(actionsIcons[0]),
+                icon: Icon(actionsIcons[0], size: Constants.suSetSp(26.0)),
                 badgeColor: badgeColor,
                 badgeTextColor: primaryColor,
                 hideZeroCount: true,
@@ -86,7 +86,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
             )),
             Tab(child: BadgeIconButton(
                 itemCount: currentNotifications.comment,
-                icon: Icon(actionsIcons[1]),
+                icon: Icon(actionsIcons[1], size: Constants.suSetSp(26.0)),
                 badgeColor: badgeColor,
                 badgeTextColor: primaryColor,
                 hideZeroCount: true,
@@ -100,7 +100,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
             )),
             Tab(child: BadgeIconButton(
                 itemCount: currentNotifications.praise,
-                icon: Icon(actionsIcons[2]),
+                icon: Icon(actionsIcons[2], size: Constants.suSetSp(26.0)),
                 badgeColor: badgeColor,
                 badgeTextColor: primaryColor,
                 hideZeroCount: true,
@@ -113,25 +113,24 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                 },
             )),
         ];
-        return [
-            Container(
-                width: Constants.suSetSp(220.0),
-                child: TabBar(
-                    indicatorColor: ThemeUtils.currentThemeColor,
-                    indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(18.0)),
-                    indicatorSize: TabBarIndicatorSize.label,
-                    indicatorWeight: Constants.suSetSp(6.0),
-                    tabs: _tabs,
-                    controller: _tabController,
-                ),
+        return [SizedBox(
+            width: Constants.suSetSp(210.0),
+            child: TabBar(
+                indicatorColor: ThemeUtils.currentThemeColor,
+                indicatorPadding: const EdgeInsets.only(bottom: 18.0),
+                indicatorSize: TabBarIndicatorSize.label,
+                indicatorWeight: 6.0,
+                labelPadding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(8.0)),
+                tabs: _tabs,
+                controller: _tabController,
             ),
-        ];
+        )];
     }
 
     Icon getActionIcon(int curIndex) => Icon(actionsIcons[curIndex]);
 
     void postByMention() {
-        _mentionPost = new PostList(
+        _mentionPost = PostList(
             PostController(
                 postType: "mention",
                 isFollowed: false,
@@ -143,7 +142,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
     }
 
     void commentByMention() {
-        _mentionComment = new CommentList(
+        _mentionComment = CommentList(
             CommentController(
                 commentType: "mention",
                 isMore: false,
@@ -154,7 +153,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
     }
 
     void commentByReply() {
-        _replyComment = new CommentList(
+        _replyComment = CommentList(
             CommentController(
                 commentType: "reply",
                 isMore: false,
@@ -165,7 +164,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
     }
 
     void praiseList() {
-        _praiseList = new PraiseList(
+        _praiseList = PraiseList(
             PraiseController(
                 isMore: false,
                 lastValue: (Praise praise) => praise.id,
@@ -181,6 +180,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                 actions: actions(),
             ),
             body: ExtendedTabBarView(
+                cacheExtent: 2,
                 controller: _tabController,
                 children: <Widget>[
                     Column(
@@ -193,7 +193,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                                     indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(6.0)),
                                     indicatorSize: TabBarIndicatorSize.label,
                                     indicatorWeight: Constants.suSetSp(4.0),
-                                    labelStyle: TextStyle(fontSize: Constants.suSetSp(16.0)),
+                                    labelStyle: TextStyle(fontSize: Constants.suSetSp(17.0)),
                                     tabs: <Tab>[
                                         Tab(text: "@我的评论"),
                                         Tab(text: "@我的动态"),
@@ -203,6 +203,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                             ),
                             Expanded(
                                 child: ExtendedTabBarView(
+                                    cacheExtent: 1,
                                     controller: _mentionTabController,
                                     children: <Widget>[
                                         _mentionComment,

@@ -194,10 +194,18 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                                         ),
                                     );
                                 } else {
-                                    return Container(height: Constants.suSetSp(40.0), child: Center(child: Text("没有更多了~")));
+                                    return Container(
+                                        height: Constants.suSetSp(50.0),
+                                        color: Theme.of(context).canvasColor,
+                                        child: Center(
+                                            child: Text("没有更多了~", style: TextStyle(
+                                                fontSize: Constants.suSetSp(14.0),
+                                            )),
+                                        ),
+                                    );
                                 }
                             } else if (index < _postList.length) {
-                                return PostCard(_postList[index], fromPage: widget._postController.postType, index: index);
+                                return PostCard(_postList[index], fromPage: widget._postController.postType, index: index, isDetail: false);
                             } else {
                                 return Container();
                             }
@@ -453,7 +461,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
         post.nickname,
         style: TextStyle(
             color: Theme.of(context).textTheme.title.color,
-            fontSize: Constants.suSetSp(16.0),
+            fontSize: Constants.suSetSp(18.0),
         ),
     );
 
@@ -466,20 +474,25 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
         if (int.parse(_postTime.substring(0, 2)) == now.month && int.parse(_postTime.substring(3, 5)) == now.day) {
             _postTime = "${_postTime.substring(5, 11)}";
         }
-        return Text(_postTime, style: Theme.of(context).textTheme.caption);
+        return Text(
+            _postTime,
+            style: Theme.of(context).textTheme.caption.copyWith(
+                fontSize: Constants.suSetSp(14.0)
+            ),
+        );
     }
 
     Widget getExtendedText(context, content) => ExtendedText(
         content != null ? "$content " : null,
-        style: TextStyle(fontSize: Constants.suSetSp(16.0)),
+        style: TextStyle(fontSize: Constants.suSetSp(17.0)),
         onSpecialTextTap: (dynamic data) {
             String text = data['content'];
             if (text.startsWith("#")) {
-                return SearchPage.search(context, text.substring(1, text.length - 1));
+                SearchPage.search(context, text.substring(1, text.length - 1));
             } else if (text.startsWith("@")) {
-                return UserPage.jump(context, data['uid']);
+                UserPage.jump(context, data['uid']);
             } else if (text.startsWith("https://wb.jmu.edu.cn")) {
-                return CommonWebPage.jump(context, text, "网页链接");
+                CommonWebPage.jump(context, text, "网页链接");
             }
         },
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),

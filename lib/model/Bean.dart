@@ -3,6 +3,9 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart' show ScaffoldPrelayoutGeometry, FloatingActionButtonLocation;
 import 'package:flutter/widgets.dart';
 
+import 'package:OpenJMU/constants/Constants.dart';
+
+
 /// 动态实体
 /// [id] 动态id, [uid] 用户uid, [nickname] 用户名称, [avatar] 用户头像, [postTime] 动态时间, [from] 动态来源
 /// [glances] 被查看次数, [category] 动态类型, [content] 动态内容, [pics] 动态图片
@@ -300,12 +303,13 @@ abstract class CustomDockedPosition extends FloatingActionButtonLocation {
 }
 
 class CustomEndDockedFloatingActionButtonLocation extends CustomDockedPosition {
-    const CustomEndDockedFloatingActionButtonLocation();
+    final double offsetY;
+    const CustomEndDockedFloatingActionButtonLocation(this.offsetY);
 
     @override
     Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
         final double fabX = _endOffset(scaffoldGeometry);
-        return Offset(fabX, getDockedY(scaffoldGeometry) + 10.0);
+        return Offset(fabX, getDockedY(scaffoldGeometry) + Constants.suSetSp(this.offsetY));
     }
 
     @override
@@ -313,12 +317,13 @@ class CustomEndDockedFloatingActionButtonLocation extends CustomDockedPosition {
 }
 
 class CustomCenterDockedFloatingActionButtonLocation extends CustomDockedPosition {
-    const CustomCenterDockedFloatingActionButtonLocation();
+    final double offsetY;
+    const CustomCenterDockedFloatingActionButtonLocation(this.offsetY);
 
     @override
     Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
         final double fabX = (scaffoldGeometry.scaffoldSize.width - scaffoldGeometry.floatingActionButtonSize.width) / 2.0;
-        return Offset(fabX, getDockedY(scaffoldGeometry) + 30.0);
+        return Offset(fabX, getDockedY(scaffoldGeometry) + Constants.suSetSp(this.offsetY));
     }
 
     @override

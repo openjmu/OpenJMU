@@ -62,31 +62,69 @@ class MessagePageState extends State<MessagePage> {
         return ListView(
             shrinkWrap: true,
             children: <Widget>[
-                Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                        for (int index = 0; index < topItems.length; index++) Padding(
-                            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(10.0), vertical: Constants.suSetSp(4.0)),
-                            child: ListTile(
-                                leading: index == 0 ? BadgeIconButton(
-                                    itemCount: notifications.count,
-                                    icon: _icon(index),
-                                    badgeColor: ThemeUtils.currentThemeColor,
-                                ) : IconButton(
-                                    icon: _icon(index),
-                                    onPressed: null,
-                                ),
-                                title: Text(topItems[index], style: TextStyle(fontSize: Constants.suSetSp(18.0))),
-                                trailing: Icon(Icons.keyboard_arrow_right),
-                                onTap: () { _handleItemClick(context, topItems[index]); },
+                ListView.separated(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    separatorBuilder: (context, index) => Constants.separator(
+                        context,
+                        color: Theme.of(context).canvasColor,
+                        height: 1.0,
+                    ),
+                    itemCount: topItems.length,
+                    itemBuilder: (context, index) => GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: Constants.suSetSp(18.0),
+                                vertical: Constants.suSetSp(8.0),
                             ),
-                        )
-                    ],
+                            child: Row(
+                                children: <Widget>[
+                                    Padding(
+                                        padding: EdgeInsets.only(right: Constants.suSetSp(8.0)),
+                                        child: index == 0 ? BadgeIconButton(
+                                            itemCount: notifications.count,
+                                            icon: _icon(index),
+                                            badgeColor: ThemeUtils.currentThemeColor,
+                                        ) : IconButton(
+                                            icon: _icon(index),
+                                            onPressed: null,
+                                        ),
+                                    ),
+                                    Expanded(
+                                        child: Text(topItems[index],
+                                            style: TextStyle(fontSize: Constants.suSetSp(19.0)),
+                                        ),
+                                    ),
+                                    Padding(
+                                        padding: EdgeInsets.only(right: Constants.suSetSp(12.0)),
+                                        child: SvgPicture.asset(
+                                            "assets/icons/arrow-right.svg",
+                                            color: Colors.grey,
+                                            width: Constants.suSetSp(24.0),
+                                            height: Constants.suSetSp(24.0),
+                                        ),
+                                    ),
+                                ],
+                            ),
+                        ),
+                        onTap: () { _handleItemClick(context, topItems[index]); },
+                    ),
                 ),
                 Constants.separator(context),
                 Padding(
                     padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(12.0), vertical: Constants.suSetSp(30.0)),
-                    child: SizedBox(height: Constants.suSetSp(40.0), child: Center(child: Text("无新消息"),),),
+                    child: SizedBox(
+                        height: Constants.suSetSp(40.0),
+                        child: Center(
+                            child: Text(
+                                "无新消息",
+                                style: TextStyle(
+                                    fontSize: Constants.suSetSp(14.0),
+                                ),
+                            ),
+                        ),
+                    ),
                 ),
             ],
         );

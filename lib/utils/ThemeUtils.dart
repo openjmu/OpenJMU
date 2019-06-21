@@ -66,14 +66,8 @@ class ThemeUtils {
         Colors.deepOrange[700],
         Colors.deepOrange[500],
         Colors.deepOrange[400],
-        Colors.grey[900],
         Colors.grey[800],
         Colors.grey[700],
-        Colors.grey[600],
-        Colors.grey[400],
-        Colors.grey[300],
-        Colors.grey[200],
-        Colors.grey[50],
     ];
 
     static bool isDark = false;
@@ -111,11 +105,9 @@ class ThemeUtils {
         ),
         iconTheme: IconThemeData(
             color: Colors.black,
-//            size: Constants.suSetSp(24.0),
         ),
         primaryIconTheme: IconThemeData(
             color: Colors.black,
-//            size: Constants.suSetSp(24.0),
         ),
         tabBarTheme: TabBarTheme(
             indicatorSize: TabBarIndicatorSize.tab,

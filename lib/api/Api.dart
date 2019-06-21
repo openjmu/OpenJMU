@@ -73,6 +73,7 @@ class Api {
     static final String postForwardsList = wbHost + "/topic_api/repolist/tid/";
     static final String postCommentsList = wbHost + "/reply_api/replylist/tid/";
     static final String postPraisesList = wbHost + "/praise_api/praisors/tid/";
+    static String commentImageUrl(int id, String type) => "$wbHost/upload_api/image/unit_id/55/id/$id/type/$type?env=jmu";
 
     /// 通知相关
     static final String postListByMention = wbHost + "/topic_api/mentionme";
@@ -91,6 +92,10 @@ class Api {
     /// 课程表相关
     static final String courseSchedule = "http://labs.jmu.edu.cn/courseSchedule/course.html";
     static final String courseScheduleTeacher = "http://labs.jmu.edu.cn/courseSchedule/Tcourse.html";
+
+    /// 静态scheme正则
+    static final RegExp urlReg = RegExp(r"(https?)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]");
+    static final RegExp schemeUserPage = RegExp(r"^openjmu://user/*");
 }
 
 class SignAPI {
@@ -333,7 +338,7 @@ class PraiseAPI {
         ,
     );
 
-    static requestPraise(id, isPraise) async {
+    static Future requestPraise(id, isPraise) async {
         if (isPraise) {
             return NetUtils.postWithCookieAndHeaderSet(
                 "${Api.postRequestPraise}$id",

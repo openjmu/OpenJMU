@@ -22,6 +22,8 @@ import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/cards/CommentCard.dart';
 import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
+import 'package:OpenJMU/widgets/image/ImageViewer.dart';
+
 
 class CommentController {
     final String commentType;
@@ -132,14 +134,18 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
         super.build(context);
         if (!_showLoading) {
             if (_firstLoadComplete) {
-                _itemList = ListView.builder(
-                    padding: EdgeInsets.symmetric(vertical: 4.0),
+                _itemList = ListView.separated(
+                    padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
+                    separatorBuilder: (context, index) => Container(
+                        color: Theme.of(context).canvasColor,
+                        height: Constants.suSetSp(8.0),
+                    ),
                     itemBuilder: (context, index) {
                         if (index == _commentList.length) {
                             if (this._canLoadMore) {
                                 _loadData();
                                 return Container(
-                                    height: 40.0,
+                                    height: Constants.suSetSp(40.0),
                                     child: Row(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
@@ -157,7 +163,15 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
                                     ),
                                 );
                             } else {
-                                return Container(height: Constants.suSetSp(40.0), child: Center(child: Text("没有更多了~")));
+                                return Container(
+                                    height: Constants.suSetSp(50.0),
+                                    color: Theme.of(context).canvasColor,
+                                    child: Center(
+                                        child: Text("没有更多了~", style: TextStyle(
+                                            fontSize: Constants.suSetSp(14.0),
+                                        )),
+                                    ),
+                                );
                             }
                         } else {
                             return CommentCard(_commentList[index]);
@@ -396,7 +410,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
             comment.fromUserName,
             style: TextStyle(
                 color: Theme.of(context).textTheme.title.color,
-                fontSize: Constants.suSetSp(16.0),
+                fontSize: Constants.suSetSp(18.0),
             ),
         );
     }
@@ -416,22 +430,33 @@ class _CommentListInPostState extends State<CommentListInPost> {
         }
         return Text(
             _commentTime,
-            style: Theme.of(context).textTheme.caption,
+            style: Theme.of(context).textTheme.caption.copyWith(
+                fontSize: Constants.suSetSp(14.0),
+            ),
         );
     }
 
     Widget getExtendedText(context, content) {
         return ExtendedText(
             content != null ? "$content " : null,
-            style: TextStyle(fontSize: Constants.suSetSp(16.0)),
+            style: TextStyle(fontSize: Constants.suSetSp(17.0)),
             onSpecialTextTap: (dynamic data) {
                 String text = data['content'];
                 if (text.startsWith("#")) {
-                    return SearchPage.search(context, text.substring(1, text.length-1));
+                    SearchPage.search(context, text.substring(1, text.length-1));
                 } else if (text.startsWith("@")) {
-                    return UserPage.jump(context, data['uid']);
+                    UserPage.jump(context, data['uid']);
                 } else if (text.startsWith("https://wb.jmu.edu.cn")) {
-                    return CommonWebPage.jump(context, text, "网页链接");
+                    CommonWebPage.jump(context, text, "网页链接");
+                } else if (text.startsWith("|")) {
+                    int imageID = data['image'];
+                    String imageUrl = Api.commentImageUrl(imageID, "o");
+                    String urlInsecure = imageUrl.replaceAllMapped(RegExp(r"https://"), (match) => "http://");
+                    Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
+                        return ImageViewer(
+                            0, [ImageBean(imageID, urlInsecure, null)],
+                        );
+                    }));
                 }
             },
             specialTextSpanBuilder: StackSpecialTextSpanBuilder(),

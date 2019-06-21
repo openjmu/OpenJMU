@@ -3,6 +3,7 @@ import 'package:connectivity/connectivity.dart';
 
 import 'package:OpenJMU/model/Bean.dart';
 
+
 class ConnectivityChangeEvent {
     ConnectivityResult type;
     ConnectivityChangeEvent(ConnectivityResult type) {
@@ -169,3 +170,11 @@ class PostChangeEvent {
 
     PostChangeEvent(this.post, [this.remove = false]);
 }
+class AppCenterRefreshEvent {
+    int currentIndex;
+
+    AppCenterRefreshEvent(int currentIndex) {
+        this.currentIndex = currentIndex;
+    }
+}
+class CourseScheduleRefreshEvent {}
