@@ -23,6 +23,191 @@
 		DB91F8C02287D678009255DD /* AuthenticationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB91F8BF2287D677009255DD /* AuthenticationServices.framework */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		ABC8B9CC22BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5AB70C624E37F9997F7A7245073C9A3C;
+			remoteInfo = BSGridCollectionViewLayout;
+		};
+		ABC8B9CE22BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1F08AE4B81A4E4ECE65672A185E38F78;
+			remoteInfo = BSImagePicker;
+		};
+		ABC8B9D022BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5A0EEC8ACA4B2E5B39E21D0E018587C3;
+			remoteInfo = "BSImagePicker-BSImagePicker";
+		};
+		ABC8B9D222BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 25093D3B03BDA71257913C3FC8C8A30D;
+			remoteInfo = BSImageView;
+		};
+		ABC8B9D422BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AB29BA624A975573A9C284F8A3D19ECE;
+			remoteInfo = connectivity;
+		};
+		ABC8B9D622BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 99166860B523A4215C8A7FAA0E7E5B62;
+			remoteInfo = flutter_downloader;
+		};
+		ABC8B9D822BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1B7AF4DD9A095B724FCA7990AB75C268;
+			remoteInfo = "flutter_downloader-FlutterDownloaderDatabase";
+		};
+		ABC8B9DA22BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 091B0D4A5499F40359CE6D295F0B6568;
+			remoteInfo = flutter_inappbrowser;
+		};
+		ABC8B9DC22BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 39FE9E5AD97090D1618E8128D6A6901B;
+			remoteInfo = flutter_native_image;
+		};
+		ABC8B9DE22BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 3D5129284401E8B9F61E25ADA5853611;
+			remoteInfo = flutter_qr_reader;
+		};
+		ABC8B9E022BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 875F33D1CA003649B2DE12992F74652C;
+			remoteInfo = flutter_webview_plugin;
+		};
+		ABC8B9E222BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D0C5A85ABEF5ED03A54A449B87B69225;
+			remoteInfo = fluttertoast;
+		};
+		ABC8B9E422BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A3A80BA70CFB7F75C5391BEBBBA8C9DA;
+			remoteInfo = FMDB;
+		};
+		ABC8B9E622BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = AB32A200CB5D60EE6F05AFDCD7F2D9D8;
+			remoteInfo = image_crop;
+		};
+		ABC8B9E822BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 33DABAA8DDA10D304692FA64D62AF436;
+			remoteInfo = image_downloader;
+		};
+		ABC8B9EA22BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4727FF638E3EEEF5BD8C01E2CBD23503;
+			remoteInfo = image_gallery_saver;
+		};
+		ABC8B9EC22BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 82E59F73EFCFED5A91D21FE6046A6F0A;
+			remoteInfo = image_picker;
+		};
+		ABC8B9EE22BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 26161B161BD417DBA6EBCB868878A0D8;
+			remoteInfo = multi_image_picker;
+		};
+		ABC8B9F022BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6E45859F778E298A6DDE318300ACC4C5;
+			remoteInfo = package_info;
+		};
+		ABC8B9F222BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DAE35F9EEF7110C6DC7645F4C250E0F5;
+			remoteInfo = path_provider;
+		};
+		ABC8B9F422BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 1029E663B10DC3A9B07C5BA152BADA7C;
+			remoteInfo = permission_handler;
+		};
+		ABC8B9F622BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 669E8F25E1897672BDB80B7EB784DA24;
+			remoteInfo = "Pods-Runner";
+		};
+		ABC8B9F822BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = C13EECF6A7964CA178FD5CBAEB465716;
+			remoteInfo = quick_actions;
+		};
+		ABC8B9FA22BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 400FF55D0451E7A8F33A3D0D3E11C1B9;
+			remoteInfo = Reachability;
+		};
+		ABC8B9FC22BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2E9151FF178A177C7E4A82248E431AB;
+			remoteInfo = shared_preferences;
+		};
+		ABC8B9FE22BE365C00F92406 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = B799BFFEC5B11F90F501202080A57F37;
+			remoteInfo = sqflite;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -56,6 +241,7 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = Pods/Pods.xcodeproj; sourceTree = "<group>"; };
 		D29A015D236D727B4AD122E6 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		DB51988F228BE7E600448D85 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		DB519890228BE7E600448D85 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
@@ -147,9 +333,43 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		ABC8B9AF22BE365C00F92406 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				ABC8B9CD22BE365C00F92406 /* BSGridCollectionViewLayout.framework */,
+				ABC8B9CF22BE365C00F92406 /* BSImagePicker.framework */,
+				ABC8B9D122BE365C00F92406 /* BSImagePicker.bundle */,
+				ABC8B9D322BE365C00F92406 /* BSImageView.framework */,
+				ABC8B9D522BE365C00F92406 /* connectivity.framework */,
+				ABC8B9D722BE365C00F92406 /* flutter_downloader.framework */,
+				ABC8B9D922BE365C00F92406 /* FlutterDownloaderDatabase.bundle */,
+				ABC8B9DB22BE365C00F92406 /* flutter_inappbrowser.framework */,
+				ABC8B9DD22BE365C00F92406 /* flutter_native_image.framework */,
+				ABC8B9DF22BE365C00F92406 /* flutter_qr_reader.framework */,
+				ABC8B9E122BE365C00F92406 /* flutter_webview_plugin.framework */,
+				ABC8B9E322BE365C00F92406 /* fluttertoast.framework */,
+				ABC8B9E522BE365C00F92406 /* FMDB.framework */,
+				ABC8B9E722BE365C00F92406 /* image_crop.framework */,
+				ABC8B9E922BE365C00F92406 /* image_downloader.framework */,
+				ABC8B9EB22BE365C00F92406 /* image_gallery_saver.framework */,
+				ABC8B9ED22BE365C00F92406 /* image_picker.framework */,
+				ABC8B9EF22BE365C00F92406 /* multi_image_picker.framework */,
+				ABC8B9F122BE365C00F92406 /* package_info.framework */,
+				ABC8B9F322BE365C00F92406 /* path_provider.framework */,
+				ABC8B9F522BE365C00F92406 /* permission_handler.framework */,
+				ABC8B9F722BE365C00F92406 /* Pods_Runner.framework */,
+				ABC8B9F922BE365C00F92406 /* quick_actions.framework */,
+				ABC8B9FB22BE365C00F92406 /* Reachability.framework */,
+				ABC8B9FD22BE365C00F92406 /* shared_preferences.framework */,
+				ABC8B9FF22BE365C00F92406 /* sqflite.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		AF1367F5F6AF0881D93C1A67 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
+				ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */,
 				E3CEEA7D71626005C70A9A3A /* Pods-Runner.debug.xcconfig */,
 				D29A015D236D727B4AD122E6 /* Pods-Runner.release.xcconfig */,
 			);
@@ -214,10 +434,9 @@
 			};
 			buildConfigurationList = 97C146E91CF9000F007C117D /* Build configuration list for PBXProject "Runner" */;
 			compatibilityVersion = "Xcode 3.2";
-			developmentRegion = English;
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				English,
 				en,
 				Base,
 				"zh-Hans",
@@ -225,12 +444,203 @@
 			mainGroup = 97C146E51CF9000F007C117D;
 			productRefGroup = 97C146EF1CF9000F007C117D /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = ABC8B9AF22BE365C00F92406 /* Products */;
+					ProjectRef = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		ABC8B9CD22BE365C00F92406 /* BSGridCollectionViewLayout.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = BSGridCollectionViewLayout.framework;
+			remoteRef = ABC8B9CC22BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9CF22BE365C00F92406 /* BSImagePicker.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = BSImagePicker.framework;
+			remoteRef = ABC8B9CE22BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9D122BE365C00F92406 /* BSImagePicker.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = BSImagePicker.bundle;
+			remoteRef = ABC8B9D022BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9D322BE365C00F92406 /* BSImageView.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = BSImageView.framework;
+			remoteRef = ABC8B9D222BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9D522BE365C00F92406 /* connectivity.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = connectivity.framework;
+			remoteRef = ABC8B9D422BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9D722BE365C00F92406 /* flutter_downloader.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = flutter_downloader.framework;
+			remoteRef = ABC8B9D622BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9D922BE365C00F92406 /* FlutterDownloaderDatabase.bundle */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = FlutterDownloaderDatabase.bundle;
+			remoteRef = ABC8B9D822BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9DB22BE365C00F92406 /* flutter_inappbrowser.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = flutter_inappbrowser.framework;
+			remoteRef = ABC8B9DA22BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9DD22BE365C00F92406 /* flutter_native_image.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = flutter_native_image.framework;
+			remoteRef = ABC8B9DC22BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9DF22BE365C00F92406 /* flutter_qr_reader.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = flutter_qr_reader.framework;
+			remoteRef = ABC8B9DE22BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9E122BE365C00F92406 /* flutter_webview_plugin.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = flutter_webview_plugin.framework;
+			remoteRef = ABC8B9E022BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9E322BE365C00F92406 /* fluttertoast.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = fluttertoast.framework;
+			remoteRef = ABC8B9E222BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9E522BE365C00F92406 /* FMDB.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = FMDB.framework;
+			remoteRef = ABC8B9E422BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9E722BE365C00F92406 /* image_crop.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = image_crop.framework;
+			remoteRef = ABC8B9E622BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9E922BE365C00F92406 /* image_downloader.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = image_downloader.framework;
+			remoteRef = ABC8B9E822BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9EB22BE365C00F92406 /* image_gallery_saver.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = image_gallery_saver.framework;
+			remoteRef = ABC8B9EA22BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9ED22BE365C00F92406 /* image_picker.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = image_picker.framework;
+			remoteRef = ABC8B9EC22BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9EF22BE365C00F92406 /* multi_image_picker.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = multi_image_picker.framework;
+			remoteRef = ABC8B9EE22BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9F122BE365C00F92406 /* package_info.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = package_info.framework;
+			remoteRef = ABC8B9F022BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9F322BE365C00F92406 /* path_provider.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = path_provider.framework;
+			remoteRef = ABC8B9F222BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9F522BE365C00F92406 /* permission_handler.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = permission_handler.framework;
+			remoteRef = ABC8B9F422BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9F722BE365C00F92406 /* Pods_Runner.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Pods_Runner.framework;
+			remoteRef = ABC8B9F622BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9F922BE365C00F92406 /* quick_actions.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = quick_actions.framework;
+			remoteRef = ABC8B9F822BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9FB22BE365C00F92406 /* Reachability.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = Reachability.framework;
+			remoteRef = ABC8B9FA22BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9FD22BE365C00F92406 /* shared_preferences.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = shared_preferences.framework;
+			remoteRef = ABC8B9FC22BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		ABC8B9FF22BE365C00F92406 /* sqflite.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = sqflite.framework;
+			remoteRef = ABC8B9FE22BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		97C146EC1CF9000F007C117D /* Resources */ = {
@@ -289,24 +699,24 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/BSGridCollectionViewLayout/BSGridCollectionViewLayout.framework",
 				"${BUILT_PRODUCTS_DIR}/BSImagePicker/BSImagePicker.framework",
 				"${BUILT_PRODUCTS_DIR}/BSImageView/BSImageView.framework",
 				"${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework",
-				"${PODS_ROOT}/../.symlinks/flutter/ios/Flutter.framework",
+				"${PODS_ROOT}/../.symlinks/flutter/ios-release/Flutter.framework",
 				"${BUILT_PRODUCTS_DIR}/Reachability/Reachability.framework",
 				"${BUILT_PRODUCTS_DIR}/connectivity/connectivity.framework",
 				"${BUILT_PRODUCTS_DIR}/flutter_downloader/flutter_downloader.framework",
-				"${BUILT_PRODUCTS_DIR}/flutter_local_notifications/flutter_local_notifications.framework",
+				"${BUILT_PRODUCTS_DIR}/flutter_inappbrowser/flutter_inappbrowser.framework",
 				"${BUILT_PRODUCTS_DIR}/flutter_native_image/flutter_native_image.framework",
+				"${BUILT_PRODUCTS_DIR}/flutter_qr_reader/flutter_qr_reader.framework",
 				"${BUILT_PRODUCTS_DIR}/flutter_webview_plugin/flutter_webview_plugin.framework",
 				"${BUILT_PRODUCTS_DIR}/fluttertoast/fluttertoast.framework",
 				"${BUILT_PRODUCTS_DIR}/image_crop/image_crop.framework",
 				"${BUILT_PRODUCTS_DIR}/image_downloader/image_downloader.framework",
+				"${BUILT_PRODUCTS_DIR}/image_gallery_saver/image_gallery_saver.framework",
 				"${BUILT_PRODUCTS_DIR}/image_picker/image_picker.framework",
 				"${BUILT_PRODUCTS_DIR}/multi_image_picker/multi_image_picker.framework",
 				"${BUILT_PRODUCTS_DIR}/package_info/package_info.framework",
@@ -316,8 +726,6 @@
 				"${BUILT_PRODUCTS_DIR}/sqflite/sqflite.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BSGridCollectionViewLayout.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BSImagePicker.framework",
@@ -327,12 +735,14 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/connectivity.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_downloader.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_local_notifications.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_inappbrowser.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_native_image.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_qr_reader.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_webview_plugin.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/fluttertoast.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/image_crop.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/image_downloader.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/image_gallery_saver.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/image_picker.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/multi_image_picker.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/package_info.framework",

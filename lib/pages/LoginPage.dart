@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -112,7 +111,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                     controller: _usernameEditingController,
                     decoration: InputDecoration(
                         prefixIcon: Icon(
-                            Platform.isAndroid ? Icons.person : Ionicons.getIconData("ios-person"),
+                            Icons.person,
                             color: Colors.white,
                             size: Constants.suSetSp(24.0),
                         ),
@@ -163,7 +162,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         border: InputBorder.none,
                         contentPadding: EdgeInsets.all(Constants.suSetSp(10.0)),
                         prefixIcon: Icon(
-                            Platform.isAndroid ? Icons.lock : Ionicons.getIconData("ios-lock"),
+                            Icons.lock,
                             color: Colors.white,
                             size: Constants.suSetSp(24.0),
                         ),
@@ -172,8 +171,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         suffixIcon: IconButton(
                             icon: Icon(
                                 _isObscure
-                                        ? Platform.isAndroid ? Icons.visibility : Ionicons.getIconData("ios-eye")
-                                        : Platform.isAndroid ? Icons.visibility_off : Ionicons.getIconData("ios-eye-off"),
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
                                 color: _defaultIconColor,
                                 size: Constants.suSetSp(24.0),
                             ),
@@ -206,7 +205,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                     ? IconButton(
                 highlightColor: Colors.white,
                 icon: Icon(
-                    Platform.isAndroid ? Icons.arrow_forward : FontAwesome.getIconData("arrow-right"),
+                    Icons.arrow_forward,
                     color: Colors.white,
                     size: Constants.suSetSp(36.0),
                 ),
