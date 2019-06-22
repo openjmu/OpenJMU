@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class FABBottomAppBarItem {
     FABBottomAppBarItem({this.iconPath, this.text});
@@ -114,7 +115,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
                     child: Container(
                         decoration: BoxDecoration(
                             border: Border(top: BorderSide(
-                                color: Color.fromARGB(255, 169, 169, 169),
+                                color: ThemeUtils.isDark ? Colors.grey[900] : Colors.grey[500],
                             )),
                         ),
                         child: appBar,

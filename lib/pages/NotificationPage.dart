@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:badges/badges.dart';
 import 'package:extended_tabs/extended_tabs.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -70,48 +69,72 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
 
     List<Widget> actions() {
         List<Widget> _tabs = [
-            Tab(child: BadgeIconButton(
-                itemCount: currentNotifications.at,
-                icon: Icon(actionsIcons[0], size: Constants.suSetSp(26.0)),
-                badgeColor: badgeColor,
-                badgeTextColor: primaryColor,
-                hideZeroCount: true,
-                onPressed: () {
-                    _tabController.animateTo(0);
-                    Notifications _notify = currentNotifications;
-                    setState(() {
-                        currentNotifications = Notifications(_notify.count - _notify.at, 0, _notify.comment, _notify.praise);
-                    });
-                },
-            )),
-            Tab(child: BadgeIconButton(
-                itemCount: currentNotifications.comment,
-                icon: Icon(actionsIcons[1], size: Constants.suSetSp(26.0)),
-                badgeColor: badgeColor,
-                badgeTextColor: primaryColor,
-                hideZeroCount: true,
-                onPressed: () {
-                    _tabController.animateTo(1);
-                    Notifications _notify = currentNotifications;
-                    setState(() {
-                        currentNotifications = Notifications(_notify.count - _notify.comment, _notify.at, 0, _notify.praise);
-                    });
-                },
-            )),
-            Tab(child: BadgeIconButton(
-                itemCount: currentNotifications.praise,
-                icon: Icon(actionsIcons[2], size: Constants.suSetSp(26.0)),
-                badgeColor: badgeColor,
-                badgeTextColor: primaryColor,
-                hideZeroCount: true,
-                onPressed: () {
-                    _tabController.animateTo(2);
-                    Notifications _notify = currentNotifications;
-                    setState(() {
-                        currentNotifications = Notifications(_notify.count - _notify.praise, _notify.at, _notify.comment, 0);
-                    });
-                },
-            )),
+            Tab(
+                child: currentNotifications.at != 0
+                        ?
+                IconButton(
+                    icon: Constants.badgeIcon(
+                        content: currentNotifications.at == 0 ? "" : currentNotifications.at,
+                        icon: Icon(actionsIcons[0], size: Constants.suSetSp(26.0)),
+                    ),
+                    onPressed: () {
+                        _tabController.animateTo(0);
+                        Notifications _notify = currentNotifications;
+                        setState(() {
+                            currentNotifications = Notifications(_notify.count - _notify.at, 0, _notify.comment, _notify.praise);
+                        });
+                    },
+                )
+                        :
+                Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(actionsIcons[0], size: Constants.suSetSp(26.0)),
+                ),
+            ),
+            Tab(
+                child: currentNotifications.comment != 0
+                        ?
+                IconButton(
+                    icon: Constants.badgeIcon(
+                        content: currentNotifications.comment == 0 ? "" : currentNotifications.comment,
+                        icon: Icon(actionsIcons[1], size: Constants.suSetSp(26.0)),
+                    ),
+                    onPressed: () {
+                        _tabController.animateTo(1);
+                        Notifications _notify = currentNotifications;
+                        setState(() {
+                            currentNotifications = Notifications(_notify.count - _notify.comment, _notify.at, 0, _notify.praise);
+                        });
+                    },
+                )
+                        :
+                Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(actionsIcons[1], size: Constants.suSetSp(26.0)),
+                ),
+            ),
+            Tab(
+                child: currentNotifications.praise != 0
+                        ?
+                IconButton(
+                    icon: Constants.badgeIcon(
+                        content: currentNotifications.praise == 0 ? "" : currentNotifications.praise,
+                        icon: Icon(actionsIcons[2], size: Constants.suSetSp(26.0)),
+                    ),
+                    onPressed: () {
+                        _tabController.animateTo(2);
+                        Notifications _notify = currentNotifications;
+                        setState(() {
+                            currentNotifications = Notifications(_notify.count - _notify.praise, _notify.at, _notify.comment, 0);
+                        });
+                    },
+                )
+                        :
+                Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Icon(actionsIcons[2], size: Constants.suSetSp(26.0)),
+                ),
+            ),
         ];
         return [SizedBox(
             width: Constants.suSetSp(210.0),

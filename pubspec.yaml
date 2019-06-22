@@ -1,7 +1,7 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.4.0+56
+version: 0.4.0+57
 
 environment:
     sdk: ">=2.2.2 <3.0.0"
@@ -13,13 +13,14 @@ dependencies:
     flutter_localizations:
         sdk: flutter
 
-    badges: 0.0.6
-    cached_network_image: 0.8.0
+    badges: ^1.0.3
+    cached_network_image:
+        git: https://github.com/openjmu/flutter_cached_network_image.git  # 0.8.0
     connectivity: 0.4.3+2
     cookie_jar: ^1.0.0
     crypto: ^2.0.6
-    dio: 2.1.6
-    dragablegridview_flutter: 0.2.0
+    dio: 2.1.7
+    dragablegridview_flutter: 0.2.5
     event_bus: 1.1.0
     extended_image: 0.5.1
     extended_image_library: 0.1.3
@@ -27,31 +28,32 @@ dependencies:
     extended_text: 0.5.8
     extended_text_field: 0.3.7
     extended_text_library: 0.4.1
-    fluttertoast: any
-    flutter_cache_manager: 0.3.2
+    fluttertoast: 3.1.0
+    flutter_cache_manager:
+        git: https://github.com/openjmu/flutter_cache_manager.git  # 0.3.2
     flutter_downloader: 1.1.7
-    flutter_icons: any
+    flutter_icons: ^0.1.4
     flutter_inappbrowser: 1.2.0
 #    flutter_local_notifications: ^0.7.1+3
     flutter_native_image:
-        git: https://github.com/btastic/flutter_native_image/
-    flutter_platform_widgets: ^0.9.6
-    flutter_qr_reader: ^1.0.2
-    flutter_screenutil: ^0.5.2
-    flutter_svg: ^0.12.4+2
+        git: https://github.com/btastic/flutter_native_image.git
+    flutter_platform_widgets: ^0.10.0
+    flutter_qr_reader: 1.0.2
+    flutter_screenutil: 0.5.2
+    flutter_svg: 0.12.4+2
     flutter_webview_plugin: ^0.3.5
-    image_crop: ^0.2.1
+    image_crop: 0.2.1
     image_downloader: 0.15.4
     image_gallery_saver: ^1.1.0
-    image_picker: ^0.6.0+9
-    like_button: ^0.1.6
-    multi_image_picker: ^4.3.4
+    image_picker: ^0.6.0+10
+    like_button: ^0.1.7
+    multi_image_picker: 4.3.4
     oktoast: ^2.1.8
     package_info: ^0.4.0+4
     permission_handler: ^3.1.0
     qr_flutter: ^2.1.0+55
     quick_actions: ^0.3.0+2
-    shared_preferences: 0.5.3
+    shared_preferences: 0.5.3+1
     uuid: ^2.0.2
 
 dev_dependencies:

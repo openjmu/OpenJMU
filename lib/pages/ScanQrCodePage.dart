@@ -37,44 +37,6 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
         child: child ?? null,
     );
 
-    Widget appBar() => Positioned(
-        top: 0.0,
-        left: 0.0,
-        right: 0.0,
-        child: SafeArea(
-            top: true,
-            child: PreferredSize(
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                        IconButton(
-                            icon: Icon(Icons.arrow_back, color: Colors.white),
-                            onPressed: () {
-                                Navigator.of(context).pop();
-                            },
-                        ),
-                        Expanded(
-                            child: Center(
-                                    child: Text(
-                                        "扫描二维码",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: Constants.suSetSp(21.0),
-                                        ),
-                                    )
-                            ),
-                        ),
-                        IconButton(
-                            icon: Icon(Icons.more_horiz, color: Colors.white),
-                            onPressed: null,
-                        ),
-                    ],
-                ),
-                preferredSize: Size.fromHeight(kToolbarHeight),
-            ),
-        ),
-    );
-
     Future onScan(String data) async {
         if (Api.urlReg.stringMatch(data) != null) {
             Navigator.of(context).pushReplacement(platformPageRoute(
@@ -105,6 +67,13 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
     @override
     Widget build(BuildContext context) {
         return Scaffold(
+            appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                title: Text("扫描二维码", style: Theme.of(context).textTheme.title.copyWith(
+                    fontSize: Constants.suSetSp(21.0),
+                )),
+                centerTitle: true,
+            ),
             body: QrcodeReaderView(key: _key, onScan: onScan),
         );
     }
