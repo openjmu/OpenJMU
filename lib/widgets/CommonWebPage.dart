@@ -100,14 +100,14 @@ class CommonWebPageState extends State<CommonWebPage> {
         flutterWebViewPlugin?.dispose();
     }
 
-    Widget refreshIndicator = Center(
+    Widget refreshIndicator() => Center(
         child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: SizedBox(
-                width: Constants.suSetSp(24.0),
-                height: Constants.suSetSp(24.0),
+                width: 24.0,
+                height: 24.0,
                 child: Platform.isAndroid ? CircularProgressIndicator(
-                    strokeWidth: Constants.suSetSp(3.0),
+                    strokeWidth: 3.0,
                 ) : CupertinoActivityIndicator(),
             ),
         ),
@@ -139,9 +139,6 @@ class CommonWebPageState extends State<CommonWebPage> {
         } else {
             _clear = false;
         }
-        Widget trailing = isLoading
-                ? refreshIndicator
-                : Container(width: Constants.suSetSp(56.0));
         return WillPopScope(
             onWillPop: waitForClose,
             child: WebviewScaffold(
@@ -185,7 +182,18 @@ class CommonWebPageState extends State<CommonWebPage> {
                         ),
                     ),
                     centerTitle: true,
-                    actions: <Widget>[trailing],
+                    actions: <Widget>[
+                        isLoading ? refreshIndicator() : SizedBox(width: 56.0),
+//                        IconButton(
+//                            icon: Icon(Icons.more_vert),
+//                            onPressed: () {
+//                                showDialog(
+//                                    context: context,
+//                                    builder: (context) => SimpleDialog(title: Text("test"))
+//                                );
+//                            },
+//                        ),
+                    ],
                     bottom: progressBar(context),
                 ) : null,
                 initialChild: Container(
