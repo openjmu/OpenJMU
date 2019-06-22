@@ -449,7 +449,6 @@ class _PostCardState extends State<PostCard> {
                             ),
                         )
                     ],
-                    background: isRoot ?? false ? Theme.of(context).canvasColor : Theme.of(context).cardColor,
                 ),
                 specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
             ),
