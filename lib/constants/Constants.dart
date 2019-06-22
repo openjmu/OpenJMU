@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:badges/badges.dart';
 import 'package:event_bus/event_bus.dart';
 
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class Constants {
     static int homeSplashIndex = 0;
@@ -35,6 +39,18 @@ class Constants {
         child: DecoratedBox(decoration: BoxDecoration(
             color: const Color(0x44000000),
         )),
+    );
+
+    static Widget badgeIcon({
+        @required content,
+        @required Widget icon,
+        EdgeInsets padding,
+    }) => Badge(
+        padding: padding ?? const EdgeInsets.all(5.0),
+        badgeContent: Text("$content", style: TextStyle(color: Colors.white)),
+        badgeColor: ThemeUtils.currentThemeColor,
+        child: icon,
+        elevation: Platform.isAndroid ? 2 : 0,
     );
 
     static double suSetSp(double size) => ScreenUtil.getInstance().setSp(size) * 2;

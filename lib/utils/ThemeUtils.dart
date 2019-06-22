@@ -6,8 +6,8 @@ class ThemeUtils {
     static Color defaultColor = Color(0xFFE5322D);
 
     static List<Color> supportColors = [
-        Colors.red[900],
         defaultColor,
+        Colors.red[900],
         Colors.red[500],
         Colors.red[300],
         Colors.pink[900],

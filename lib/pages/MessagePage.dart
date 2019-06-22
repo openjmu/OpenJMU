@@ -2,14 +2,12 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:badges/badges.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class MessagePage extends StatefulWidget {
     @override
@@ -81,11 +79,13 @@ class MessagePageState extends State<MessagePage> {
                             child: Row(
                                 children: <Widget>[
                                     Padding(
-                                        padding: EdgeInsets.only(right: Constants.suSetSp(8.0)),
-                                        child: index == 0 ? BadgeIconButton(
-                                            itemCount: notifications.count,
-                                            icon: _icon(index),
-                                            badgeColor: ThemeUtils.currentThemeColor,
+                                        padding: EdgeInsets.only(right: Constants.suSetSp(16.0)),
+                                        child: index == 0 && notifications.count != 0 ? Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Constants.badgeIcon(
+                                                content: notifications.count,
+                                                icon: _icon(index),
+                                            ),
                                         ) : IconButton(
                                             icon: _icon(index),
                                             onPressed: null,
