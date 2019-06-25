@@ -99,7 +99,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         }
         _textEditingController.text = result;
         _textEditingController.selection = TextSelection.fromPosition(
-                TextPosition(offset: currentPosition + 1)
+            TextPosition(offset: currentPosition + 1),
         );
     }
 
@@ -114,7 +114,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                 debugPrint("Mentioned User: ${result.toString()}");
                 Future.delayed(Duration(milliseconds: 250), () {
                     FocusScope.of(context).requestFocus(_focusNode);
-                    insertText("<\M ${result.id}>@${result.nickname}</M>");
+                    insertText("<M ${result.id}>@${result.nickname}<\/M>");
                 });
             } else {
                 debugPrint("No mentioned user returned.");

@@ -217,7 +217,7 @@ class CommentPositionedState extends State<CommentPositioned> {
         ).then((user) {
             FocusScope.of(context).requestFocus(_focusNode);
             if (user != null) Future.delayed(Duration(milliseconds: 250), () {
-                insertText("\<M ${user.id}>@${user.nickname}</M>");
+                insertText("<M ${user.id}>@${user.nickname}<\/M>");
             });
         });
     }
