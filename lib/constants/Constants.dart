@@ -9,12 +9,14 @@ import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class Constants {
+    static final String endLineTag = "没有更多了~";
+
     static int homeSplashIndex = 0;
 
-    static final String endLineTag = "没有更多了";
-
     // Fow news list.
-    static final String newsApiKey = "c2bd7a89a377595c1da3d49a0ca825d5";
+    static final String apiKey = "c2bd7a89a377595c1da3d49a0ca825d5";
+    static final int appIdAndroid = 273;
+    static final int appIdIOS = 274;
 
     // For posts. Different type of devices (iOS/Android) use different pair of key and secret.
     static final String postApiKeyAndroid = "1FD8506EF9FF0FAB7CAFEBB610F536A1";
@@ -53,5 +55,15 @@ class Constants {
         elevation: Platform.isAndroid ? 2 : 0,
     );
 
-    static double suSetSp(double size) => ScreenUtil.getInstance().setSp(size) * 2;
+    static double suSetSp(double size) {
+        double value = ScreenUtil.getInstance().setSp(size) * ScreenUtil.pixelRatio / 1.5;
+        if (Platform.isIOS) {
+            if (ScreenUtil.screenWidthDp <= 414.0) {
+                value = size / 1.25;
+            } else if (ScreenUtil.screenWidthDp > 414.0 && ScreenUtil.screenWidthDp > 750.0) {
+                value = size;
+            }
+        }
+        return value;
+    }
 }
