@@ -7,7 +7,7 @@ import 'package:event_bus/event_bus.dart';
 
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-
+import 'dart:ui' as ui;
 class Constants {
     static int homeSplashIndex = 0;
 
@@ -53,5 +53,5 @@ class Constants {
         elevation: Platform.isAndroid ? 2 : 0,
     );
 
-    static double suSetSp(double size) => ScreenUtil.getInstance().setSp(size) * 2;
+    static double suSetSp(double size) => ScreenUtil.getInstance().setSp(size) * ui.window.devicePixelRatio/1.5;
 }
