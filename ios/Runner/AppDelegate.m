@@ -93,7 +93,7 @@ static NSString *SendTime;
     NSLog(@"regisger success:%@",pToken);//log当前的token
     NSDate *now = [NSDate date];//获取现在的时间
     NSDateFormatter *forMatter = [[NSDateFormatter alloc] init];
-    [forMatter setDateFormat:@"yyyyMMddHH"];
+    [forMatter setDateFormat:@"yyyy/MM/dd/HH:mm:ss"];
     NSString *SendTime = [forMatter stringFromDate:now];//转换系统现在的时间
     NSString *pushToken = [[[[pToken description]
                              stringByReplacingOccurrencesOfString:@"<" withString:@""]
@@ -104,8 +104,8 @@ static NSString *SendTime;
     request.HTTPMethod = @"POST";//采用POST
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     NSDictionary *json = @{
-                           @"token" : pushToken,
-                           @"Date" : SendTime,
+                           @"token":pushToken,
+                           @"date":SendTime,
                            };
     NSData *data = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingPrettyPrinted error:nil];
     request.HTTPBody = data;

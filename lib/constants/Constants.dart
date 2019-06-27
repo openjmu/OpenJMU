@@ -7,7 +7,7 @@ import 'package:event_bus/event_bus.dart';
 
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-
+import 'dart:ui' as ui;
 class Constants {
     static final String endLineTag = "没有更多了~";
 
