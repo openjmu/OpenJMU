@@ -1,76 +1,74 @@
-import 'dart:io';
 import 'dart:async';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
-import 'package:OpenJMU/widgets/AppBar.dart' show FlexibleSpaceBarWithUserInfo;
 import 'package:OpenJMU/widgets/dialogs/EditSignatureDialog.dart';
-import 'package:OpenJMU/widgets/image/ImageCropPage.dart';
-import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
 
 class UserPage extends StatefulWidget {
     final int uid;
 
-    UserPage({Key key, this.uid = 0}) : super(key: key);
+    UserPage({Key key, @required this.uid}) : super(key: key);
 
     @override
-    State createState() => _UserPageState();
+    State<StatefulWidget> createState() => _UserPageState();
 
     static Future jump(BuildContext context, int uid) {
         return Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
             return UserPage(uid: uid);
-        }))
-        .then((dynamic) {
+        })).then((dynamic) {
             ThemeUtils.setDark(ThemeUtils.isDark);
         });
     }
 }
 
-class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin {
+class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
     UserInfo _user;
-
-    SliverAppBar _appBar;
-    Widget _infoNextNameButton;
     List<UserTag> _tags = [];
-    var _fansCount = '-';
-    var _followingCount = '-';
-
     Widget _post;
+    String _fansCount, _idolsCount;
+    int userLevel;
 
-    bool isError = false, isLoading = false, isReloading = false;
+    bool isLoading = true;
+    bool showTitle = false;
+    bool refreshing = false;
 
     PostController postController;
+    ScrollController _scrollController = ScrollController();
+    double expandedHeight = kToolbarHeight + Constants.suSetSp(212.0);
 
     @override
     void initState() {
         super.initState();
-        _checkLogin();
-        if (widget.uid != null && widget.uid != 0) {
-            postController = PostController(
-                postType: "user",
-                isFollowed: false,
-                isMore: false,
-                lastValue: (int id) => id,
-                additionAttrs: {'uid': widget.uid},
-            );
-            _post = PostList(postController, needRefreshIndicator: false);
-        }
+
+        postController = PostController(
+            postType: "user",
+            isFollowed: false,
+            isMore: false,
+            lastValue: (int id) => id,
+            additionAttrs: {'uid': widget.uid},
+        );
+        _post = PostList(postController, needRefreshIndicator: false);
+
+        _fetchUserInformation(widget.uid);
+
         Constants.eventBus
             ..on<SignatureUpdatedEvent>().listen((event) {
                 Future.delayed(Duration(milliseconds: 2400), () {
-                    _fetchUserInformation(UserUtils.currentUser.uid);
+                    if (this.mounted) setState(() {
+                        _user.signature = event.signature;
+                    });
                 });
             })
             ..on<AvatarUpdatedEvent>().listen((event) {
@@ -80,493 +78,455 @@ class _UserPageState extends State<UserPage> with SingleTickerProviderStateMixin
     }
 
     @override
-    Widget build(BuildContext context) {
-        if (!isError) {
-            return Scaffold(
-                body: NestedScrollView(
-                        headerSliverBuilder: (context, innerBoxIsScrolled) =>
-                        <Widget>[
-                            _appBar
-                        ],
-                        body: _post,
-                    ),
-            );
-        } else {
-            return Scaffold(
-                appBar: AppBar(),
-                body: Container(
-                    child: Center(
-                        child: Text('用户不存在', style: TextStyle(color: ThemeUtils.currentThemeColor)),
-                    ),
-                ),
-            );
-        }
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        _scrollController
+            ..removeListener(listener)
+            ..addListener(listener)
+        ;
     }
 
-    void _checkLogin() async {
-        if (mounted) {
-            setState(() {
-                _appBar = SliverAppBar(
-                    centerTitle: true,
-                    floating: false,
-                    pinned: true,
-                    backgroundColor: ThemeUtils.currentThemeColor,
-                    expandedHeight: Constants.suSetSp(187.0),
-                    flexibleSpace: FlexibleSpaceBarWithUserInfo(
-                        background: Container(
-                            color: Colors.grey,
-                        ),
-                    ),
-                );
-            });
-        }
-
-        if (await DataUtils.isLogin()) {
-            if (widget.uid == 0) {
-                _fetchUserInformation(UserUtils.currentUser.uid);
-            } else {
-                _fetchUserInformation(widget.uid);
-            }
-
-        } else {
-            if (widget.uid == 0) {
-                if (mounted) {
-                    return setState(() {
-                        _appBar = SliverAppBar(
-                            centerTitle: true,
-                            floating: false,
-                            pinned: true,
-                            backgroundColor: ThemeUtils.currentThemeColor,
-                            expandedHeight: Constants.suSetSp(187.0),
-                            flexibleSpace: FlexibleSpaceBarWithUserInfo(
-                                background: Container(color: Colors.grey),
-                            ),
-                        );
-                    });
-                }
-            } else {
-                _fetchUserInformation(widget.uid);
-            }
-        }
+    @override
+    void dispose() {
+        super.dispose();
+        _scrollController?.dispose();
     }
 
-    void _fetchUserInformation(uid) async {
-        if (uid == UserUtils.currentUser.uid) {
-            if (mounted) {
-                setState(() {
-                    _user = UserUtils.currentUser;
-                });
+    void listener() {
+        setState(() {
+            if (_scrollController.offset >= expandedHeight && !showTitle) {
+                showTitle = true;
+            } else if (_scrollController.offset < expandedHeight && showTitle) {
+                showTitle = false;
             }
-        } else {
-            var user = (await UserUtils.getUserInfo(uid: uid)).data;
-            if (mounted) {
-                setState(() {
-                    _user = UserUtils.createUserInfo(user);
-                });
-            }
-        }
-
-        var tags = (await UserUtils.getTags(uid)).data;
-        List<UserTag> _userTags = [];
-        tags['data'].forEach((tag) {
-            _userTags.add(UserUtils.createUserTag(tag));
         });
-        if (mounted) {
-            setState(() {
-                _tags = _userTags;
-            });
+    }
+
+    Future<Null> _fetchUserInformation(uid) async {
+        if (uid == UserUtils.currentUser.uid) {
+            _user = UserUtils.currentUser;
+        } else {
+            Map<String, dynamic> user = (await UserUtils.getUserInfo(uid: uid)).data;
+            _user = UserUtils.createUserInfo(user);
         }
 
-        if (_user == null) {
+        Future.wait(<Future>[
+            UserUtils.getLevel(uid).then((response) {
+                userLevel = int.parse(response.data['score']['levelinfo']['level'].toString());
+            }),
+            UserUtils.getTags(uid).then((response) {
+                List tags = response.data['data'];
+                List<UserTag> _userTags = [];
+                tags.forEach((tag) {
+                    _userTags.add(UserUtils.createUserTag(tag));
+                });
+                _tags = _userTags;
+            }),
+            _getCount(uid),
+        ]).then((whatever) {
             if (mounted) {
                 setState(() {
-                    isError = true;
+                    isLoading = false;
+                    refreshing = false;
                 });
             }
-        } else {
-            await _getFollowingAndFansCount(uid);
-            if (await DataUtils.isLogin()) {
-                if (uid == UserUtils.currentUser.uid) {
-                    _infoNextNameButton = Container();
+        });
+    }
+
+    Future<Null> _getCount(id) async {
+        Map data = (await UserUtils.getFansAndFollowingsCount(id)).data;
+        if (this.mounted) setState(() {
+            _user.isFollowing = data['is_following'] == 1;
+            _fansCount = data['fans'].toString();
+            _idolsCount = data['idols'].toString();
+        });
+    }
+
+    Widget followButton() => Padding(
+        padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(4.0)),
+        child: FlatButton(
+            padding: EdgeInsets.symmetric(
+                horizontal: Constants.suSetSp(28.0),
+                vertical: Constants.suSetSp(12.0),
+            ),
+            onPressed: () {
+                if (widget.uid == UserUtils.currentUser.uid) {
+                    showDialog<Null>(
+                        context: context,
+                        builder: (BuildContext context) => EditSignatureDialog(_user.signature),
+                    );
                 } else {
                     if (_user.isFollowing) {
-                        _infoNextNameButton = _unFollowButton();
+                        UserUtils.unFollow(widget.uid).then((response) {
+                            setState(() {
+                                _user.isFollowing = false;
+                            });
+                        });
                     } else {
-                        _infoNextNameButton = _followButton();
+                        UserUtils.follow(widget.uid).then((response) {
+                            setState(() {
+                                _user.isFollowing = true;
+                            });
+                        });
                     }
                 }
-            } else {
-                _infoNextNameButton = null;
-            }
-            _updateAppBar();
-        }
+            },
+            color: widget.uid == UserUtils.currentUser.uid ? Color(0x44ffffff) :
+            _user.isFollowing ? Color(0x44ffffff) : Color(ThemeUtils.currentThemeColor.value - 0x33000000),
+            child: Text(
+                widget.uid == UserUtils.currentUser.uid ? "编辑签名" :
+                _user.isFollowing ? "已关注" : "关注${_user.gender == 2 ? "她" : "他"}",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: Constants.suSetSp(18.0),
+                ),
+            ),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(Constants.suSetSp(32.0)),
+            ),
+        ),
+    );
 
-    }
-
-    Future<Null> _getFollowingAndFansCount(id) async {
-        Map data = (await UserUtils.getFansAndFollowingsCount(id)).data;
-        setState(() {
-            _user.isFollowing = data['is_following'] == 1 ? true : false;
-            _fansCount = data['fans'].toString();
-            _followingCount = data['idols'].toString();
-        });
-    }
-
-    void _updateAppBar() {
-        debugPrint("Updating appbar. _updateAppBar[package:OpenJMU/pages/UserPage.dart:210:10]");
-        List<Widget> chips = [];
-        if (_tags?.length != 0) {
-            for (int i = 0; i < _tags.length; i++) {
-//                chips.add(Container(
-//                    margin: EdgeInsets.symmetric(horizontal: 4.0),
-//                    child: Chip(
-//                        label: Text(_tags[i].name, style: TextStyle(fontSize: 16.0)),
-//                        avatar: Icon(Icons.label),
-//                        padding: EdgeInsets.only(left: 4.0),
-//                        labelPadding: EdgeInsets.fromLTRB(
-//                            2.0,
-//                            0.0,
-//                            10.0,
-//                            0.0,
-//                        ),
-//                    ),
-//                ));
-                chips.add(
-                    Container(
-                        margin: EdgeInsets.symmetric(horizontal: Constants.suSetSp(6.0)),
+    List<Widget> flexSpaceWidgets(context) => [
+        Padding(
+            padding: EdgeInsets.only(bottom: Constants.suSetSp(12.0)),
+            child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                    SizedBox(
+                        width: Constants.suSetSp(100.0),
+                        height: Constants.suSetSp(100.0),
                         child: ClipRRect(
-                            borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
-                            child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: Constants.suSetSp(8.0),
-                                    vertical:  Constants.suSetSp(3.0),
-                                ),
-                                decoration: BoxDecoration(
-                                    color: Theme.of(context).canvasColor,
-                                ),
-                                child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                        Padding(
-                                            padding: EdgeInsets.only(
-                                                right: Constants.suSetSp(4.0),
-                                            ),
-                                            child: Icon(Icons.label, size: Constants.suSetSp(24.0)),
-                                        ),
-                                        Text(_tags[i].name, style: TextStyle(fontSize: Constants.suSetSp(16.0)))
-                                    ],
-                                ),
+                            borderRadius: BorderRadius.circular(Constants.suSetSp(50.0)),
+                            child: FadeInImage(
+                                fadeInDuration: const Duration(milliseconds: 100),
+                                placeholder: AssetImage("assets/avatar_placeholder.png"),
+                                image: UserUtils.getAvatarProvider(uid: _user.uid),
                             ),
                         ),
                     ),
-                );
-            }
-        }
-        if (mounted) {
-            setState(() {
-                _appBar = SliverAppBar(
-                    backgroundColor: ThemeUtils.currentThemeColor,
-                    iconTheme: Theme.of(context).iconTheme.copyWith(color: Colors.white),
-                    floating: false,
-                    pinned: true,
-                    expandedHeight: _tags?.length != 0 ? (187 + Constants.suSetSp(40.0)) : 187,
-                    flexibleSpace: FlexibleSpaceBarWithUserInfo(
-                        paddingStart: 100,
-                        paddingBottom: 49,
-                        infoUnderNickname: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                                GestureDetector(
-                                    child: Padding(
-                                        padding: EdgeInsets.fromLTRB(
-                                            0.0,
-                                            4.0,
-                                            8.0,
-                                            4.0,
-                                        ),
-                                        child: Text(
-                                            '关注 $_followingCount',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: Constants.suSetSp(16.0),
-                                                fontWeight: FontWeight.normal,
-                                            ),
-                                        ),
-                                    ),
-                                    onTap: () {
-                                        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                            return UserListPage(_user, 1);
-                                        }));
-                                    },
-                                ),
-                                GestureDetector(
-                                    child: Padding(
-                                        padding:
-                                        EdgeInsets.fromLTRB(
-                                            8.0,
-                                            4.0,
-                                            0.0,
-                                            4.0,
-                                        ),
-                                        child: Text(
-                                            '粉丝 $_fansCount',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: Constants.suSetSp(16.0),
-                                                fontWeight: FontWeight.normal,
-                                            ),
-                                        ),
-                                    ),
-                                    onTap: () {
-                                        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                            return UserListPage(_user, 2);
-                                        }));
-                                    },
-                                ),
-                            ],
+                    Expanded(child: SizedBox()),
+                    followButton(),
+                    if (widget.uid == UserUtils.currentUser.uid) Padding(
+                        padding: EdgeInsets.only(
+                            left: Constants.suSetSp(4.0),
                         ),
-                        infoNextNickname: _infoNextNameButton,
-                        avatar: UserUtils.getAvatarProvider(uid: _user.uid),
-                        avatarTap: avatarTap,
-                        avatarRadius: 68.0,
-                        titleFontSize: Constants.suSetSp(16.0),
-                        titlePadding: EdgeInsets.only(left: 100.0, bottom: 48.0),
-                        title: Text(
-                            _user.name,
-                            style: TextStyle(
-                                fontSize: Constants.suSetSp(16.0),
+                        child: Container(
+                            padding: EdgeInsets.all(Constants.suSetSp(10.0)),
+                            decoration: BoxDecoration(
+                                color: Color(0x44ffffff),
+                                shape: BoxShape.circle,
                             ),
-                            maxLines: 1,
+                            child: GestureDetector(
+                                behavior: HitTestBehavior.translucent,
+                                child: Icon(
+                                    AntDesign.getIconData("qrcode"),
+                                    size: Constants.suSetSp(26.0),
+                                    color: Colors.white,
+                                ),
+                                onTap: () {
+                                    Navigator.of(context).pushNamed("/userqrcode");
+                                },
+                            ),
                         ),
-                        background: Image(
-                            image: UserUtils.getAvatarProvider(uid: _user.uid),
-                            fit: BoxFit.fitWidth,
-                            width: MediaQuery.of(context).size.width,
+                    ),
+                ],
+            ),
+        ),
+        Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+                Text(
+                    _user.name,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: Constants.suSetSp(24.0),
+                        fontWeight: FontWeight.bold,
+                    ),
+                ),
+                Constants.emptyDivider(width: 8.0),
+                DecoratedBox(
+                    decoration: BoxDecoration(
+                        color: _user.gender == 2 ? Colors.pinkAccent : Colors.blueAccent,
+                        shape: BoxShape.circle,
+                    ),
+                    child: Padding(
+                        padding: EdgeInsets.all(Constants.suSetSp(3.0)),
+                        child: SvgPicture.asset(
+                            "assets/icons/gender/${_user.gender == 2 ? "fe" : ""}male.svg",
+                            width: Constants.suSetSp(16.0),
+                            height: Constants.suSetSp(16.0),
+                            color: Colors.white,
                         ),
-                        tags: _tags?.length != 0
-                                ?
+                    ),
+                ),
+                Constants.emptyDivider(width: 8.0),
+                Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: Constants.suSetSp(8.0),
+                        vertical: Constants.suSetSp(4.0),
+                    ),
+                    decoration: BoxDecoration(
+                        color: ThemeUtils.defaultColor,
+                        borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
+                    ),
+                    child: Text(
+                        " Lv.$userLevel",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Constants.suSetSp(14.0),
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                        ),
+                    ),
+                ),
+            ],
+        ),
+        Text(
+            _user.signature ?? "这个人很懒，什么都没写",
+            style: TextStyle(
+                color: Colors.grey[350],
+                fontSize: Constants.suSetSp(16.0),
+            ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+        ),
+        Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+                GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                            return UserListPage(_user, 1);
+                        }));
+                    },
+                    child: RichText(text: TextSpan(
+                            children: <TextSpan>[
+                                TextSpan(
+                                    text: _idolsCount,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: Constants.suSetSp(24.0),
+                                    ),
+                                ),
+                                TextSpan(
+                                    text: " 关注",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: Constants.suSetSp(18.0),
+                                    ),
+                                ),
+                            ]
+                    )),
+                ),
+                Constants.emptyDivider(width: 12.0),
+                GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                            return UserListPage(_user, 2);
+                        }));
+                    },
+                    child: RichText(text: TextSpan(
+                            children: <TextSpan>[
+                                TextSpan(
+                                    text: _fansCount,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: Constants.suSetSp(24.0),
+                                    ),
+                                ),
+                                TextSpan(
+                                    text: " 粉丝",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: Constants.suSetSp(18.0),
+                                    ),
+                                ),
+                            ]
+                    )),
+                ),
+            ],
+        ),
+        _tags?.length != 0
+                ?
+        SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+                children: <Widget>[
+                    for (int i = 0; i < _tags.length; i++)
                         Container(
-                            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(10.0)),
-                            child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: chips,
-                                ),
-                            ),
-                        )
-                                :
-                        null,
-                        tagHeight: 40.0,
-                        bottomInfo: Container(
-                            color: Theme.of(context).cardColor,
-                            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(18.0), vertical: Constants.suSetSp(12.0)),
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                    Expanded(
-                                        flex: 10,
-                                        child: Text(
-                                            _user?.signature ?? '这个人还没写下TA的第一句...',
-                                            style: TextStyle(
-                                                color: Theme.of(context).textTheme.body1.color,
-                                                fontSize: Constants.suSetSp(15.0),
-                                            ),
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
+                            margin: EdgeInsets.only(right: Constants.suSetSp(12.0)),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
+                                child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: Constants.suSetSp(8.0),
+                                    ),
+                                    decoration: BoxDecoration(
+                                        color: Color(0x44ffffff),
+                                    ),
+                                    child: Text(
+                                        _tags[i].name,
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: Constants.suSetSp(16.0),
                                         ),
                                     ),
-                                    widget.uid == UserUtils.currentUser.uid ? Expanded(
-                                        flex: 1,
-                                        child: GestureDetector(
-                                                onTap: () {
-                                                    showDialog<Null>(
-                                                        context: context,
-                                                        builder: (BuildContext context) => EditSignatureDialog(_user?.signature),
-                                                    );
-                                                },
-                                                child: Text(
-                                                    "修改",
-                                                    textAlign: TextAlign.right,
-                                                    style: TextStyle(color: Colors.grey, fontSize: Constants.suSetSp(14.0)),
-                                                )
+                                ),
+                            ),
+                        ),
+                ],
+            ),
+        )
+                :
+        Text(
+            "${_user.gender == 2 ? "她" : "他"}还没有设置个性标签",
+            style: TextStyle(
+                color: Colors.grey[350],
+                fontSize: Constants.suSetSp(16.0),
+            ),
+        )
+        ,
+    ];
+
+    @override
+    Widget build(BuildContext context) {
+        return Scaffold(
+            body: isLoading
+                    ?
+            Center(child: CircularProgressIndicator())
+                    :
+            NestedScrollView(
+                controller: _scrollController,
+                headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => <Widget>[
+                    SliverAppBar(
+                        title: showTitle ? GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onDoubleTap: () {
+                                _scrollController.animateTo(
+                                    0.0,
+                                    duration: Duration(milliseconds: 300),
+                                    curve: Curves.ease,
+                                );
+                            },
+                            child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                    SizedBox(
+                                        width: Constants.suSetSp(40.0),
+                                        height: Constants.suSetSp(40.0),
+                                        child: ClipRRect(
+                                            borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
+                                            child: FadeInImage(
+                                                fadeInDuration: const Duration(milliseconds: 100),
+                                                placeholder: AssetImage("assets/avatar_placeholder.png"),
+                                                image: UserUtils.getAvatarProvider(uid: widget.uid),
+                                            ),
                                         ),
-                                    ) : Container()
+                                    ),
+                                    Constants.emptyDivider(width: 8.0),
+                                    Text(
+                                        _user.name,
+                                        style: Theme.of(context).textTheme.title.copyWith(
+                                            fontSize: Constants.suSetSp(21.0),
+                                        ),
+                                    ),
+                                ],
+                            ),
+                        ) : null,
+                        actions: <Widget>[
+                            refreshing ? Container(
+                                width: 56.0,
+                                padding: EdgeInsets.all(20.0),
+                                child: CircularProgressIndicator(
+                                    strokeWidth: 3.0,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        !showTitle ? Colors.white : Theme.of(context).iconTheme.color,
+                                    ),
+                                ),
+                            ) : IconButton(
+                                icon: Icon(Icons.refresh),
+                                onPressed: () {
+                                    _scrollController.animateTo(
+                                        0.0,
+                                        duration: Duration(milliseconds: 300),
+                                        curve: Curves.ease,
+                                    );
+                                    Future.delayed(Duration(milliseconds: 300), () {
+                                        setState(() {
+                                            refreshing = true;
+                                        });
+                                        postController.reload();
+                                        _fetchUserInformation(widget.uid);
+                                    });
+                                },
+                            ),
+                        ],
+                        flexibleSpace: FlexibleSpaceBar(
+                            background: Stack(
+                                children: <Widget>[
+                                    SizedBox(
+                                        width: double.infinity,
+                                        child: Image(
+                                            image: UserUtils.getAvatarProvider(uid: widget.uid),
+                                            fit: BoxFit.fitWidth,
+                                            width: MediaQuery.of(context).size.width,
+                                        ),
+                                    ),
+                                    BackdropFilter(
+                                        filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                                        child: Container(
+                                            color: Color.fromARGB(120, 50, 50, 50),
+                                        ),
+                                    ),
+                                    SafeArea(
+                                        top: true,
+                                        child: Padding(
+                                            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(20.0)),
+                                            child: Column(
+                                                children: <Widget>[
+                                                    Constants.emptyDivider(
+                                                        height: kToolbarHeight + 4.0,
+                                                    ),
+                                                    ListView.builder(
+                                                        physics: NeverScrollableScrollPhysics(),
+                                                        shrinkWrap: true,
+                                                        itemCount: flexSpaceWidgets(context).length,
+                                                        itemBuilder: (BuildContext context, int index) => Padding(
+                                                            padding: EdgeInsets.only(bottom: Constants.suSetSp(12.0)),
+                                                            child: flexSpaceWidgets(context)[index],
+                                                        ),
+                                                    ),
+                                                ],
+                                            ),
+                                        ),
+                                    ),
                                 ],
                             ),
                         ),
-                    ),
-                    actions: <Widget>[
-                        !isReloading
+                        expandedHeight: kToolbarHeight + expandedHeight,
+                        iconTheme: !showTitle
                                 ?
-                        IconButton(
-                            icon: Icon(Icons.refresh),
-                            onPressed: () {
-                                isReloading = true;
-                                _updateAppBar();
-                                _fetchUserInformation(widget.uid);
-                                postController.reload(needLoader: true).then((response) {
-                                    isReloading = false;
-                                    _updateAppBar();
-                                }).catchError((e) {
-                                    isReloading = false;
-                                    _updateAppBar();
-                                    showCenterErrorShortToast("动态更新失败");
-                                });
-                            },
+                        Theme.of(context).iconTheme.copyWith(
+                            color: Colors.white,
                         )
                                 :
-                        Center(
-                            child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
-                                child: SizedBox(
-                                    width: Constants.suSetSp(24.0),
-                                    height: Constants.suSetSp(24.0),
-                                    child: Platform.isAndroid ? CircularProgressIndicator(
-                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                        strokeWidth: Constants.suSetSp(3.0),
-                                    ) : CupertinoActivityIndicator(),
-                                ),
-                            ),
-                        ),
-                    ],
-                );
-            });
-        }
-    }
-
-    void avatarTap() {
-        widget.uid == UserUtils.currentUser.uid ?
-        showModalBottomSheet(
-            context: context,
-            builder: (BuildContext context) {
-                return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                        ListTile(
-                            leading: Icon(Icons.account_circle),
-                            title: Text("查看大头像"),
-                            onTap: () => Navigator.of(context)..pop()..push(CupertinoPageRoute(
-                                builder: (_) => ImageViewer(
-                                    0, [ImageBean(
-                                    widget.uid,
-                                    Api.userAvatarInSecure+"?uid=${widget.uid}&size=f640",
-                                    0,
-                                )],
-                                    needsClear: true,
-                                ),
-                            )),
-                        ),
-                        ListTile(
-                            leading: Icon(Icons.photo_library),
-                            title: Text("更换头像"),
-                            onTap: () {
-                                Navigator.of(context)..pop()..push(CupertinoPageRoute(
-                                        builder: (_) => ImageCropperPage()
-                                ));
-                            },
-                        ),
-                    ],
-                );
-            },
-        )
-                : Navigator.of(context).push(
-            CupertinoPageRoute(
-                builder: (_) => ImageViewer(
-                    0, [ImageBean(widget.uid, Api.userAvatarInSecure+"?uid=${widget.uid}&size=f640", 0)],
-                    needsClear: true,
-                ),
+                        Theme.of(context).iconTheme
+                        ,
+                        primary: true,
+                        centerTitle: true,
+                        floating: true,
+                        pinned: true,
+                    ),
+                ],
+                body: _post,
             ),
         );
     }
-
-    void _follow() async {
-        UserUtils.follow(widget.uid).catchError((e) {
-            setState(() {
-                _fansCount = _fansCount != '-' ? (int.parse(_fansCount) - 1).toString() : '-';
-                _infoNextNameButton = _followButton();
-                _updateAppBar();
-            });
-        });
-
-        if (mounted) {
-            setState(() {
-                _fansCount = _fansCount != '-' ? (int.parse(_fansCount) + 1).toString() : '-';
-                _infoNextNameButton = _unFollowButton();
-                _updateAppBar();
-            });
-        }
-    }
-
-    void _unFollow() async {
-        UserUtils.unFollow(widget.uid).catchError((e) {
-            setState(() {
-                _fansCount = _fansCount != '-' ? (int.parse(_fansCount) + 1).toString() : '-';
-                _infoNextNameButton = _unFollowButton();
-                _updateAppBar();
-            });
-        });
-
-        if (mounted) {
-            setState(() {
-                _fansCount = _fansCount != '-' ? (int.parse(_fansCount) - 1).toString() : '-';
-                _infoNextNameButton = _followButton();
-                _updateAppBar();
-            });
-        }
-    }
-
-    Widget _followButton() => RawMaterialButton(
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        constraints: BoxConstraints(minWidth: 0, minHeight: 0),
-        onPressed: () {
-            _follow();
-        },
-        child: Container(
-            constraints: BoxConstraints(minWidth: 64, maxWidth: double.infinity),
-            padding: EdgeInsets.fromLTRB(
-                8.0,
-                4.0,
-                8.0,
-                4.0,
-            ),
-            decoration: BoxDecoration(
-                color: Colors.transparent,
-                border: Border.all(color: Colors.white,),
-                borderRadius: BorderRadius.circular(4.0),
-            ),
-            child: Center(
-                child: Text('关注', style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(14.0)),),
-            ),
-        ),
-    );
-
-    Widget _unFollowButton() => RawMaterialButton(
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        constraints: BoxConstraints(minWidth: 0, minHeight: 0),
-        onPressed: () {
-            _unFollow();
-        },
-        child: Container(
-            constraints: BoxConstraints(minWidth: 64.0, maxWidth: double.infinity),
-            padding: EdgeInsets.fromLTRB(
-                8.0,
-                4.0,
-                8.0,
-                4.0,
-            ),
-            decoration: BoxDecoration(
-                color: ThemeUtils.currentThemeColor,
-                border: Border.all(color: ThemeUtils.currentThemeColor,),
-                borderRadius: BorderRadius.circular(4.0),
-            ),
-            child: Center(
-                child: Text('取消关注', style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(14.0)),),
-            ),
-        ),
-    );
 }
 
 
@@ -626,8 +586,7 @@ class _UserListState extends State<UserListPage> {
                 data = response.data['fans'];
                 break;
         }
-        var total = response.data['total'];
-        if (total is String) total = int.parse(total);
+        int total = int.parse(response.data['total'].toString());
         if (_users.length + data.length < total) canLoadMore = true;
         List users = [];
         for (int i = 0; i < data.length; i++) users.add(data[i]);
@@ -660,7 +619,7 @@ class _UserListState extends State<UserListPage> {
         if (name.length > 3) name = "${name.substring(0, 3)}...";
         TextStyle _textStyle = TextStyle(fontSize: Constants.suSetSp(16.0));
         return GestureDetector(
-            onTap: () => UserPage.jump(context, int.parse(_user['uid'])),
+            onTap: () => UserPage.jump(context, int.parse(_user['uid'].toString())),
             child: Container(
                 margin: EdgeInsets.fromLTRB(
                     Constants.suSetSp(12.0),
@@ -688,7 +647,7 @@ class _UserListState extends State<UserListPage> {
                                 child: FadeInImage(
                                     fadeInDuration: const Duration(milliseconds: 100),
                                     placeholder: AssetImage("assets/avatar_placeholder.png"),
-                                    image: UserUtils.getAvatarProvider(uid: _user['uid'] is String ? int.parse(_user['uid']) : _user['uid']),
+                                    image: UserUtils.getAvatarProvider(uid: int.parse(_user['uid'].toString())),
                                 ),
                             ),
                         ),

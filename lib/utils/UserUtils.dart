@@ -1,3 +1,6 @@
+import 'dart:io';
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -5,54 +8,64 @@ import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/CacheUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
+import 'package:OpenJMU/utils/ToastUtils.dart';
+
 
 class UserUtils {
-    static final UserInfo emptyUser = UserInfo(null, null, null, null, null, null, null, null, null, null);
+    static final UserInfo emptyUser = UserInfo();
     static UserInfo currentUser = emptyUser;
-    static bool isTeacher = false;
+
+    static List<Cookie> cookiesForJWGL;
 
     static UserInfo createUserInfo(userData) {
         int _workId = 0;
         userData['workid'] == ""
-                ? _workId = userData['uid'] is String ? int.parse(userData['uid']) : userData['uid']
-                : _workId = userData['workid'] is String ? int.parse(userData['workid']) : userData['workid'];
+                ? int.parse(userData['uid'].toString())
+                : int.parse(userData['workid'].toString())
+        ;
         return UserInfo(
-            null,
-            userData['uid'],
-            userData['username'] ?? userData['uid'],
-            userData['signature'],
-            null,
-            null,
-            userData['unitid'],
-            _workId,
-            null,
-            false,
+            sid: null,
+            uid: int.parse(userData['uid'].toString()),
+            name: userData['username'] ?? userData['uid'].toString(),
+            signature: userData['signature'],
+            ticket: null,
+            blowfish: null,
+            isTeacher: int.parse(userData['type'].toString()) == 1,
+            unitId: userData['unitid'],
+            workId: _workId,
+            classId: null,
+            gender: int.parse(userData['gender'].toString()),
+            isFollowing: false,
         );
     }
 
-    static User createUser(userData) {
-        return User(
-            userData["uid"] is String ? int.parse(userData['uid']) : userData['uid'],
-            userData["nickname"] ?? userData["username"] ?? userData["name"] ?? userData["uid"].toString(),
-            userData["gender"] ?? 0,
-            userData["topics"] ?? 0,
-            userData["latest_tid"] ?? null,
-            userData["fans"] ?? 0,
-            userData["idols"] ?? 0,
-            userData["is_following"] == 1 ? true : false,
-        );
-    }
+    static User createUser(userData) => User(
+        id: int.parse(userData['uid'].toString()),
+        nickname: userData["nickname"] ?? userData["username"] ?? userData["name"] ?? userData["uid"].toString(),
+        gender: userData["gender"] ?? 0,
+        topics: userData["topics"] ?? 0,
+        latestTid: userData["latest_tid"] ?? null,
+        fans: userData["fans"] ?? 0,
+        idols: userData["idols"] ?? 0,
+        isFollowing: userData["is_following"] == 1,
+    );
 
-    static UserTag createUserTag(tagData) => UserTag(tagData['id'], tagData['tagname']);
+    static UserTag createUserTag(tagData) => UserTag(
+        id: tagData['id'],
+        name: tagData['tagname'],
+    );
 
     /// Update cache network image provider after avatar is updated.
     static int avatarLastModified = DateTime.now().millisecondsSinceEpoch;
     static CachedNetworkImageProvider getAvatarProvider({int uid, int size, int t}) {
-        uid ??= currentUser.uid;
-        size ??= 152;
-        t ??= avatarLastModified;
-        String _url = "${Api.userAvatarInSecure}?uid=$uid&size=f$size&_t=$t";
-        return CachedNetworkImageProvider(_url, cacheManager: DefaultCacheManager());
+        return CachedNetworkImageProvider(
+            "${Api.userAvatarInSecure}"
+                    "?uid=${uid ?? currentUser.uid}"
+                    "&_t=${t ?? avatarLastModified}"
+                    "&size=f${size ?? 152}"
+            ,
+            cacheManager: DefaultCacheManager(),
+        );
     }
 
     static void updateAvatarProvider() {
@@ -65,8 +78,12 @@ class UserUtils {
         if (uid == null) {
             return currentUser;
         } else {
-            return NetUtils.getWithCookieAndHeaderSet(Api.userBasicInfo, data: {'uid': uid});
+            return NetUtils.getWithCookieAndHeaderSet(Api.userInfo, data: {'uid': uid});
         }
+    }
+
+    static Future getLevel(int uid) {
+        return NetUtils.getWithCookieSet(Api.userLevel(uid: uid));
     }
 
     static Future getTags(int uid) {
@@ -98,7 +115,7 @@ class UserUtils {
             return NetUtils.postWithCookieAndHeaderSet(Api.userFollowAdd, data: {"fid": uid, "tagid": 0});
         }).catchError((e) {
             print(e.toString());
-            return Future.value(false);
+            showCenterErrorShortToast("关注失败，${jsonDecode(e.response.data)['msg']}");
         });
     }
 
@@ -107,6 +124,7 @@ class UserUtils {
             return NetUtils.postWithCookieAndHeaderSet(Api.userFollowDel, data: {"fid": uid});
         }).catchError((e) {
             print(e.toString());
+            showCenterErrorShortToast("取消关注失败，${jsonDecode(e.response.data)['msg']}");
         });
     }
 
