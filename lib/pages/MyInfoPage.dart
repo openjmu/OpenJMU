@@ -10,13 +10,13 @@ import 'package:intl/intl.dart';
 //import 'package:oktoast/oktoast.dart';
 
 import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/SignAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 //import 'package:OpenJMU/pages/Test.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
@@ -71,7 +71,7 @@ class MyInfoPageState extends State<MyInfoPage> {
     bool isLogin = false, isDark = false;
     bool signing = false, signed = false;
 
-    int signedCount = 0, userLevel = 0, currentWeek;
+    int signedCount = 0, currentWeek;
 
     DateTime now;
     String hello = "你好";
@@ -79,6 +79,7 @@ class MyInfoPageState extends State<MyInfoPage> {
     Timer updateHelloTimer;
 
     /// For test page.
+    /// TODO: Set this to false before release.
     static bool isTest = false;
 
     @override
@@ -121,11 +122,9 @@ class MyInfoPageState extends State<MyInfoPage> {
     Future<Null> getSignStatus() async {
         var _signed = (await SignAPI.getTodayStatus()).data['status'];
         var _signedCount = (await SignAPI.getSignList()).data['signdata']?.length;
-        var _userTasks = (await NetUtils.getWithCookieSet(Api.task)).data;
         setState(() {
             this.signedCount = _signedCount;
             this.signed = _signed == 1 ? true : false;
-            this.userLevel = _userTasks['level'];
         });
     }
 
@@ -286,13 +285,6 @@ class MyInfoPageState extends State<MyInfoPage> {
                                                                         overflow: TextOverflow.ellipsis,
                                                                     ),
                                                                 ],
-                                                            ),
-                                                        ),
-                                                        Text(
-                                                            "　Lv.$userLevel　",
-                                                            style: TextStyle(
-                                                                color: Colors.red,
-                                                                fontSize: Constants.suSetSp(16.0),
                                                             ),
                                                         ),
                                                         InkWell(

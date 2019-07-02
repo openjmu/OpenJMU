@@ -7,7 +7,7 @@ class TestPage extends StatefulWidget {
     State<StatefulWidget> createState() => _TestPageState();
 }
 
-class _TestPageState extends State<TestPage> with TickerProviderStateMixin {
+class _TestPageState extends State<TestPage> {
     @override
     void initState() {
         super.initState();
@@ -20,6 +20,8 @@ class _TestPageState extends State<TestPage> with TickerProviderStateMixin {
 
     @override
     Widget build(BuildContext context) {
-        return Container();
+        return Scaffold(
+            body: Container(),
+        );
     }
 }

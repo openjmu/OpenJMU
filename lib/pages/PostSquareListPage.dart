@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:extended_tabs/extended_tabs.dart';
 
 import 'package:OpenJMU/model/PostController.dart';
+import 'package:OpenJMU/model/TeamPostController.dart';
+import 'package:OpenJMU/pages/NewsListPage.dart';
 
 class PostSquareListPage extends StatefulWidget {
     final TabController controller;
@@ -41,6 +43,18 @@ class _PostSquareListPageState extends State<PostSquareListPage> {
                 needRefreshIndicator: true,
             );
         },
+                () {
+            _post[2] = TeamPostList(
+                TeamPostController(
+                    isMore: false,
+                    lastTimeStamp: (int timestamp) => timestamp,
+                ),
+                needRefreshIndicator: true,
+            );
+        },
+                () {
+            _post[3] = NewsListPage();
+        },
     ];
 
     @override
@@ -61,13 +75,13 @@ class _PostSquareListPageState extends State<PostSquareListPage> {
     @override
     Widget build(BuildContext context) {
         return ExtendedTabBarView(
+            cacheExtent: pageLoad.length - 1,
             controller: widget.controller,
             children: <Widget>[
                 for (int i = 0; i < widget.controller.length; i++)
                     hasLoaded[i]
                             ? CupertinoScrollbar(child: _post[i])
-                            : Container(child: Center(child: CircularProgressIndicator()),
-                    )
+                            : Container()
                 ,
             ],
         );
