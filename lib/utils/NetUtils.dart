@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:cookie_jar/cookie_jar.dart';

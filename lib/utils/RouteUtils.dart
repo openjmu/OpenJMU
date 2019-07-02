@@ -16,9 +16,9 @@ import 'package:OpenJMU/pages/Test.dart';
 
 class RouteUtils {
     static Map<String, WidgetBuilder> routes = {
+        "/home": (BuildContext context) => MainPage(),
         "/splash": (BuildContext context) => SplashPage(),
         "/login": (BuildContext context) => LoginPage(),
-        "/home": (BuildContext context) => MainPage(),
         "/search": (BuildContext context) => SearchPage(),
         "/changeTheme": (BuildContext context) => ChangeThemePage(),
         "/publishPost": (BuildContext context) => PublishPostPage(),
