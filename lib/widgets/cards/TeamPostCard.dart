@@ -6,11 +6,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:extended_text/extended_text.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:like_button/like_button.dart';
 
 import 'package:OpenJMU/api/Api.dart';
-import 'package:OpenJMU/api/PostAPI.dart';
+import 'package:OpenJMU/api/TeamAPI.dart';
 import 'package:OpenJMU/api/PraiseAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -18,37 +17,35 @@ import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
-import 'package:OpenJMU/pages/PostDetailPage.dart';
+import 'package:OpenJMU/pages/TeamPostDetailPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
-import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
-import 'package:OpenJMU/widgets/dialogs/ForwardPositioned.dart';
+import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
 
-class PostCard extends StatefulWidget {
+class TeamPostCard extends StatefulWidget {
     final Post post;
     final bool isDetail;
     final bool isRootContent;
     final String fromPage;
     final int index;
 
-    PostCard(this.post, {this.isDetail, this.isRootContent, this.fromPage, this.index, Key key}) : super(key: key);
+    TeamPostCard(this.post, {this.isDetail, this.isRootContent, this.fromPage, this.index, Key key}) : super(key: key);
 
     @override
-    State createState() => _PostCardState();
+    State createState() => _TeamPostCardState();
 }
 
-class _PostCardState extends State<PostCard> {
+class _TeamPostCardState extends State<TeamPostCard> {
     final TextStyle subtitleStyle = TextStyle(color: Colors.grey, fontSize: Constants.suSetSp(15.0));
     final TextStyle rootTopicTextStyle = TextStyle(fontSize: Constants.suSetSp(15.0));
     final TextStyle rootTopicMentionStyle = TextStyle(color: Colors.blue, fontSize: Constants.suSetSp(15.0));
     final Color subIconColor = Colors.grey;
     final double contentPadding = 18.0;
 
-    Color _forwardColor = Colors.grey;
     Color _repliesColor = Colors.grey;
 
     Widget pics;
@@ -73,11 +70,6 @@ class _PostCardState extends State<PostCard> {
                             isDark = false;
                         }
                     });
-                }
-            })
-            ..on<ForwardInPostUpdatedEvent>().listen((event) {
-                if (mounted && event.postId == widget.post.id) {
-                    setState(() { widget.post.forwards = event.count; });
                 }
             })
             ..on<CommentInPostUpdatedEvent>().listen((event) {
@@ -129,9 +121,9 @@ class _PostCardState extends State<PostCard> {
             _postTime = _postTime.substring(5, 16);
         }
         if (
-            int.parse(_postTime.substring(0, 2)) == now.month
+        int.parse(_postTime.substring(0, 2)) == now.month
                 &&
-            int.parse(_postTime.substring(3, 5)) == now.day
+                int.parse(_postTime.substring(3, 5)) == now.day
         ) {
             _postTime = "${_postTime.substring(5, 11)}";
         }
@@ -141,9 +133,6 @@ class _PostCardState extends State<PostCard> {
             children: <Widget>[
                 Icon(Icons.access_time, color: Colors.grey, size: Constants.suSetSp(13.0)),
                 Text(" $_postTime", style: subtitleStyle),
-                SizedBox(width: Constants.suSetSp(10.0)),
-                Icon(Icons.smartphone, color: Colors.grey, size: Constants.suSetSp(13.0)),
-                Text(" ${post.from}", style: subtitleStyle),
                 SizedBox(width: Constants.suSetSp(10.0)),
                 Icon(Icons.remove_red_eye, color: Colors.grey, size: Constants.suSetSp(13.0)),
                 Text(" ${post.glances}", style: subtitleStyle)
@@ -182,7 +171,7 @@ class _PostCardState extends State<PostCard> {
                     child: getPostBanned("shield"),
                 );
             } else {
-                Post _post = PostAPI.createPost(content);
+                Post _post = TeamPostAPI.createPost(content);
                 String topic = "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ";
                 topic += content['article'] ?? content['content'];
                 return Container(
@@ -190,7 +179,7 @@ class _PostCardState extends State<PostCard> {
                     child: GestureDetector(
                         onTap: () {
                             Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                return PostDetailPage(_post, index: widget.index, fromPage: widget.fromPage, beforeContext: context);
+                                return TeamPostDetailPage(_post, index: widget.index, fromPage: widget.fromPage, beforeContext: context);
                             }));
                         },
                         child: Container(
@@ -226,15 +215,21 @@ class _PostCardState extends State<PostCard> {
     Widget getRootPostImages(rootTopic) => getImages(rootTopic['image']);
 
     Widget getImages(data) {
-        if (data != null) {
+        if (data != null && data.length != 0) {
             List<Widget> imagesWidget = [];
             for (var index = 0; index < data.length; index++) {
-                int imageID = int.parse(data[index]['id'].toString());
-                String imageUrl = data[index]['image_middle'];
-                Widget _exImage = ExtendedImage.network(
+                data[index]['fid'] = int.parse(data[index]['fid'].toString());
+                int imageID = data[index]['fid'];
+                String imageUrl = Api.teamFile(fid: data[index]['fid']);
+//                Widget _exImage = ExtendedImage.network(
+//                    imageUrl,
+//                    fit: BoxFit.cover,
+//                    cache: true,
+//                );
+                Widget _exImage = Image.network(
                     imageUrl,
                     fit: BoxFit.cover,
-                    cache: true,
+//                    cache: true,
                 );
                 if (data.length > 1) {
                     _exImage = Container(
@@ -253,9 +248,7 @@ class _PostCardState extends State<PostCard> {
                         Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
                             return ImageViewer(
                                 index,
-                                data.map<ImageBean>((f) {
-                                    return ImageBean(imageID, f['image_original'], widget.post.id);
-                                }).toList(),
+                                data.map<ImageBean>((f) => ImageBean(imageID, imageUrl, widget.post.id)).toList(),
                             );
                         }));
                     },
@@ -288,13 +281,18 @@ class _PostCardState extends State<PostCard> {
                 );
             }
             return _image;
+//            return Container(
+//                width: MediaQuery.of(context).size.width,
+//                color: Color(ThemeUtils.currentThemeColor.value - 0x88000000),
+//                padding: EdgeInsets.all(Constants.suSetSp(16.0)),
+//                child: Center(child: Text("——————————")),
+//            );
         } else {
             return Container();
         }
     }
 
     Widget getPostActions(context) {
-        int forwards = widget.post.forwards;
         int comments = widget.post.comments;
         int praises = widget.post.praises;
 
@@ -303,32 +301,6 @@ class _PostCardState extends State<PostCard> {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                    Expanded(
-                        child: FlatButton.icon(
-                            onPressed: () {
-                                showDialog<Null>(
-                                    context: context,
-                                    builder: (BuildContext context) => ForwardPositioned(widget.post),
-                                );
-                            },
-                            icon: SvgPicture.asset(
-                                "assets/icons/postActions/forward-line.svg",
-                                color: _forwardColor,
-                                width: Constants.suSetSp(18.0),
-                                height: Constants.suSetSp(18.0),
-                            ),
-                            label: Text(
-                                forwards == 0 ? "转发" : "$forwards",
-                                style: TextStyle(
-                                    color: _forwardColor,
-                                    fontSize: Constants.suSetSp(16.0),
-                                    fontWeight: FontWeight.normal,
-                                ),
-                            ),
-                            splashColor: Theme.of(context).cardColor,
-                            highlightColor: Theme.of(context).cardColor,
-                        ),
-                    ),
                     Expanded(
                         child: FlatButton.icon(
                             onPressed: null,
@@ -488,7 +460,7 @@ class _PostCardState extends State<PostCard> {
         return GestureDetector(
             onTap: isDetail ? null : () {
                 Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                    return PostDetailPage(
+                    return TeamPostDetailPage(
                         widget.post,
                         index: widget.index,
                         fromPage: widget.fromPage,

@@ -4,7 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:like_button/like_button.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/PostAPI.dart';
+import 'package:OpenJMU/api/PraiseAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -324,8 +325,9 @@ class PostDetailPageState extends State<PostDetailPage> {
 
         PraiseAPI.requestPraise(id, !isLiked).then((response) {
             Constants.eventBus.fire(PraiseInPostUpdatedEvent(
-                widget.post.id,
-                praises,
+                id: widget.post.id,
+                count: praises,
+                type: "square",
                 isLike: !isLiked,
             ));
         }).catchError((e) {

@@ -87,15 +87,22 @@ class CommentInPostUpdatedEvent {
 }
 class PraiseInPostUpdatedEvent {
     int postId, count;
+    String type;
     bool isLike;
-    PraiseInPostUpdatedEvent(int id, int length, {bool isLike}) {
+    PraiseInPostUpdatedEvent({int id, String type, int count, bool isLike}) {
         this.postId = id;
-        this.count = length;
+        this.type = type;
+        this.count = count;
         this.isLike = isLike;
     }
 }
 class AvatarUpdatedEvent {}
-class SignatureUpdatedEvent {}
+class SignatureUpdatedEvent {
+    String signature;
+    SignatureUpdatedEvent(String signature) {
+        this.signature = signature;
+    }
+}
 class AddEmoticonEvent {
     String emoticon;
     String route;

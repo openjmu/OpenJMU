@@ -30,7 +30,7 @@ class OTAUtils {
     static Future<int> getCurrentBuildNumber() async {
         try {
             final PackageInfo packageInfo = await PackageInfo.fromPlatform();
-            final int buildNumber = int.parse(packageInfo.buildNumber);
+            final int buildNumber = int.parse(packageInfo.buildNumber.toString());
             return buildNumber;
         } on PlatformException {
             return 0;
@@ -44,11 +44,10 @@ class OTAUtils {
                 Map<String, dynamic> _response = jsonDecode(response.data);
                 debugPrint("Current build: $buildNumber");
                 debugPrint("Remote build: ${_response['buildNumber']}");
-                var remoteBuildNumber = _response['buildNumber'];
-                if (remoteBuildNumber is String) remoteBuildNumber = int.parse(remoteBuildNumber);
+                int remoteBuildNumber = int.parse(_response['buildNumber'].toString());
                 if (buildNumber < remoteBuildNumber) {
                     getCurrentVersion().then((version) {
-                        Constants.eventBus.fire(new HasUpdateEvent(version, buildNumber, _response));
+                        Constants.eventBus.fire(HasUpdateEvent(version, buildNumber, _response));
                     });
                 } else {
                     if (!(fromStart ?? false)) showShortToast("已更新为最新版本");

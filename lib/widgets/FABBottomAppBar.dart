@@ -8,6 +8,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
+
 class FABBottomAppBarItem {
     FABBottomAppBarItem({this.iconPath, this.text});
     String iconPath;
@@ -44,7 +45,7 @@ class FABBottomAppBar extends StatefulWidget {
     State<StatefulWidget> createState() => FABBottomAppBarState();
 }
 
-class FABBottomAppBarState extends State<FABBottomAppBar> {
+class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliveClientMixin {
     int _selectedIndex = Constants.homeSplashIndex;
     bool showNotification = false;
 
@@ -57,6 +58,9 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
             _selectedIndex = index;
         });
     }
+
+    @override
+    bool get wantKeepAlive => true;
 
     @override
     void initState() {
@@ -79,19 +83,103 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
             })
             ..on<NotificationsChangeEvent>().listen((event) {
                 if (mounted) {
-                    setState(() {
-                        if (event.notifications.count != 0) {
+                    if (event.notifications.count != 0 && !showNotification) {
+                        setState(() {
                             showNotification = true;
-                        } else {
+                        });
+                    } else if (event.notifications.count == 0 && showNotification) {
+                        setState(() {
                             showNotification = false;
-                        }
-                    });
+                        });
+                    }
                 }
             });
     }
 
-    @override
+    Widget _buildMiddleTabItem() {
+        return Expanded(
+            child: SizedBox(
+                height: Constants.suSetSp(widget.height),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                        SizedBox(height: Constants.suSetSp(widget.iconSize)),
+                        Text(
+                            widget.centerItemText ?? '',
+                            style: TextStyle(color: widget.color),
+                        ),
+                    ],
+                ),
+            ),
+        );
+    }
+
+    Widget _buildTabItem({
+        FABBottomAppBarItem item,
+        int index,
+        ValueChanged<int> onPressed,
+    }) {
+        Color color = _selectedIndex == index ? widget.selectedColor : widget.color;
+        String iconPath = "assets/icons/bottomNavigation/"
+                "${item.iconPath}"
+                "-"
+                "${_selectedIndex == index ? "fill" : "line"}"
+                ".svg"
+        ;
+        return Expanded(
+            child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () => onPressed(index),
+                child: Stack(
+                    alignment: AlignmentDirectional.center,
+                    children: <Widget>[
+                        SizedBox(
+                            height: Constants.suSetSp(widget.height),
+                            child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                    SvgPicture.asset(
+                                        iconPath,
+                                        color: color,
+                                        width: Constants.suSetSp(widget.iconSize),
+                                        height: Constants.suSetSp(widget.iconSize),
+                                    ),
+                                    Text(
+                                        item.text,
+                                        style: TextStyle(
+                                            color: color,
+                                            fontSize: Constants.suSetSp(widget.itemFontSize),
+                                        ),
+                                    ),
+                                ],
+                            ),
+                        ),
+                        Visibility(
+                            visible: showNotification && index == 2,
+                            child: Positioned(
+                                top: Constants.suSetSp(5),
+                                right: Constants.suSetSp(28),
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(Constants.suSetSp(5)),
+                                    child: Container(
+                                        width: Constants.suSetSp(10),
+                                        height: Constants.suSetSp(10),
+                                        color: widget.selectedColor,
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ],
+                ),
+            ),
+        );
+    }
+
+    @mustCallSuper
     Widget build(BuildContext context) {
+        super.build(context);
         List<Widget> items = List.generate(widget.items.length, (int index) {
             return _buildTabItem(
                 item: widget.items[index],
@@ -131,82 +219,4 @@ class FABBottomAppBarState extends State<FABBottomAppBar> {
         );
     }
 
-    Widget _buildMiddleTabItem() {
-        return Expanded(
-            child: SizedBox(
-                height: Constants.suSetSp(widget.height),
-                child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                        SizedBox(height: Constants.suSetSp(widget.iconSize)),
-                        Text(
-                            widget.centerItemText ?? '',
-                            style: TextStyle(color: widget.color),
-                        ),
-                    ],
-                ),
-            ),
-        );
-    }
-
-    Widget _buildTabItem({
-        FABBottomAppBarItem item,
-        int index,
-        ValueChanged<int> onPressed,
-    }) {
-        Color color = _selectedIndex == index ? widget.selectedColor : widget.color;
-        String iconPath = "assets/icons/bottomNavigation/${item.iconPath}-${_selectedIndex == index ? "fill" : "line"}.svg";
-        return Expanded(
-            child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () => onPressed(index),
-                child: Stack(
-                    alignment: AlignmentDirectional.center,
-                    children: <Widget>[
-                        SizedBox(
-                            height: Constants.suSetSp(widget.height),
-                            child: Material(
-                                type: MaterialType.transparency,
-                                child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                        SvgPicture.asset(
-                                            iconPath,
-                                            color: color,
-                                            width: Constants.suSetSp(widget.iconSize),
-                                            height: Constants.suSetSp(widget.iconSize),
-                                        ),
-                                        Text(
-                                            item.text,
-                                            style: TextStyle(
-                                                color: color,
-                                                fontSize: Constants.suSetSp(widget.itemFontSize),
-                                            ),
-                                        ),
-                                    ],
-                                ),
-                            ),
-                        ),
-                        Visibility(
-                            visible: showNotification && index == 2,
-                            child: Positioned(
-                                top: Constants.suSetSp(5),
-                                right: Constants.suSetSp(28),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(Constants.suSetSp(5)),
-                                    child: Container(
-                                        width: Constants.suSetSp(10),
-                                        height: Constants.suSetSp(10),
-                                        color: widget.selectedColor,
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ],
-                ),
-            ),
-        );
-    }
 }

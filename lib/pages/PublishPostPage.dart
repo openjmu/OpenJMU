@@ -481,7 +481,7 @@ class PublishPostPageState extends State<PublishPostPage> {
             data: formData,
         ).then((response) {
             _incrementImagesCounter();
-            int imageId = int.parse(response.data['image_id']);
+            int imageId = int.parse(response.data['image_id'].toString());
             _imageIdList[index] = imageId;
             return response;
         }).catchError((e) {

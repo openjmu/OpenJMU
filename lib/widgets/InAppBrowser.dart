@@ -224,7 +224,10 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
 
     void loadCourseSchedule() {
         _webViewController.loadUrl(
-            "${Api.courseSchedule}?sid=${UserUtils.currentUser.sid}${ThemeUtils.isDark ? "&night=1" : ""}",
+            "${UserUtils.currentUser.isTeacher ? Api.courseScheduleTeacher : Api.courseSchedule}"
+                    "?sid=${UserUtils.currentUser.sid}"
+                    "&night=${ThemeUtils.isDark ? 1 : 0}"
+            ,
         );
     }
     PreferredSize progressBar(context) {

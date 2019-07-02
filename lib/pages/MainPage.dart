@@ -33,7 +33,7 @@ class MainPage extends StatefulWidget {
     State<StatefulWidget> createState() => MainPageState();
 }
 
-class MainPageState extends State<MainPage> with TickerProviderStateMixin {
+class MainPageState extends State<MainPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
     static Color currentThemeColor = ThemeUtils.currentThemeColor;
 
     final List<String> bottomAppBarTitles = ['首页', '应用', '消息', '我的'];
@@ -57,7 +57,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
     List<TabController> _tabControllers = [null, null, null,];
     List<List> sections = [
-        ["首页", "关注"],
+        ["首页", "关注", "二手市场", "新闻"],
         ["课程表", "应用"],
         ["消息"], /// ["消息", "联系人"],
     ];
@@ -65,6 +65,9 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
     int _tabIndex = Constants.homeSplashIndex;
     int userUid;
     String userSid;
+
+    @override
+    bool get wantKeepAlive => true;
 
     @override
     void initState() {
@@ -90,12 +93,6 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
             MessagePage(),
             MyInfoPage()
         ];
-    }
-
-    @override
-    void didChangeDependencies() {
-        super.didChangeDependencies();
-        ThemeUtils.setDark(ThemeUtils.isDark);
         Constants.eventBus
             ..on<ActionsEvent>().listen((event) {
                 if (event.type == "action_home") {
@@ -126,6 +123,12 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     currentThemeColor = event.color;
                 });
             });
+    }
+
+    @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        ThemeUtils.setDark(ThemeUtils.isDark);
     }
 
     @override
@@ -160,8 +163,9 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
         return Future.value(false);
     }
 
-    @override
+    @mustCallSuper
     Widget build(BuildContext context) {
+        super.build(context);
         return WillPopScope(
             onWillPop: doubleBackExit,
             child: Scaffold(
@@ -180,28 +184,22 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                     ),
                                 ),
                             ),
-                            ListView(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                children: <Widget>[
-                                    SizedBox(
-                                        width: sections[_tabIndex].length * Constants.suSetSp(86.0),
-                                        child: TabBar(
-                                            indicatorColor: currentThemeColor,
-                                            indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(20.0)),
-                                            indicatorSize: TabBarIndicatorSize.label,
-                                            indicatorWeight: Constants.suSetSp(6.0),
-                                            labelColor: Theme.of(context).textTheme.body1.color,
-                                            labelStyle: tabSelectedTextStyle,
-                                            labelPadding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(8.0)),
-                                            unselectedLabelStyle: tabUnselectedTextStyle,
-                                            tabs: <Tab>[
-                                                for (int i = 0; i < sections[_tabIndex].length; i++) Tab(text: sections[_tabIndex][i])
-                                            ],
-                                            controller: _tabControllers[_tabIndex],
-                                        ),
-                                    ),
-                                ],
+                            Flexible(
+                                child: TabBar(
+                                    isScrollable: true,
+                                    indicatorColor: currentThemeColor,
+                                    indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(16.0)),
+                                    indicatorSize: TabBarIndicatorSize.label,
+                                    indicatorWeight: Constants.suSetSp(6.0),
+                                    labelColor: Theme.of(context).textTheme.body1.color,
+                                    labelStyle: tabSelectedTextStyle,
+                                    labelPadding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+                                    unselectedLabelStyle: tabUnselectedTextStyle,
+                                    tabs: <Tab>[
+                                        for (int i = 0; i < sections[_tabIndex].length; i++) Tab(text: sections[_tabIndex][i])
+                                    ],
+                                    controller: _tabControllers[_tabIndex],
+                                ),
                             ),
                         ],
                     ),

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 
+import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
@@ -169,7 +170,7 @@ class CommentCard extends StatelessWidget {
                         SearchPage.search(context, text.substring(1, text.length - 1));
                     } else if (text.startsWith("@")) {
                         UserPage.jump(context, data['uid']);
-                    } else if (text.startsWith("https://wb.jmu.edu.cn")) {
+                    } else if (text.startsWith(Api.wbHost)) {
                         CommonWebPage.jump(context, text, "网页链接");
                     }
                 },

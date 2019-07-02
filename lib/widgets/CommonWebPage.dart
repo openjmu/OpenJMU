@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -38,12 +39,12 @@ class CommonWebPage extends StatefulWidget {
 }
 
 class CommonWebPageState extends State<CommonWebPage> {
+    final flutterWebViewPlugin = FlutterWebviewPlugin();
+
     bool isLoading = true;
     String _url, _title;
     Color currentThemeColor = ThemeUtils.currentThemeColor;
     double currentProgress = 0.0;
-
-    final flutterWebViewPlugin = FlutterWebviewPlugin();
 
     @override
     void initState() {
@@ -54,7 +55,7 @@ class CommonWebPageState extends State<CommonWebPage> {
             if (state.type == WebViewState.finishLoad) {
                 String script = 'window.document.title';
                 String title = await flutterWebViewPlugin.evalJavascript(script);
-                setState(() {
+                if (this.mounted) setState(() {
                     if (Platform.isAndroid) {
                         this._title = title.substring(1, title.length-1);
                     } else {
@@ -70,21 +71,21 @@ class CommonWebPageState extends State<CommonWebPage> {
                     }
                 });
             } else if (state.type == WebViewState.startLoad) {
-                setState(() {
+                if (this.mounted) setState(() {
                     isLoading = true;
                 });
             }
         });
         flutterWebViewPlugin.onProgressChanged.listen((progress) {
-            setState(() {
+            if (this.mounted) setState(() {
                 currentProgress = progress;
             });
         });
         flutterWebViewPlugin.onUrlChanged.listen((url) {
-            setState(() {
+            if (this.mounted) setState(() {
                 _url = url;
                 Future.delayed(const Duration(milliseconds: 500), () {
-                    setState(() {
+                    if (this.mounted) setState(() {
                         isLoading = false;
                     });
                 });
@@ -98,6 +99,14 @@ class CommonWebPageState extends State<CommonWebPage> {
         flutterWebViewPlugin?.hide();
         flutterWebViewPlugin?.close();
         flutterWebViewPlugin?.dispose();
+    }
+
+    Future<Null> _launchURL() async {
+        if (await canLaunch(_url)) {
+            await launch(_url);
+        } else {
+            showCenterErrorShortToast('无法打开$_url');
+        }
     }
 
     Widget refreshIndicator() => Center(
@@ -166,6 +175,9 @@ class CommonWebPageState extends State<CommonWebPage> {
                                 ),
                                 GestureDetector(
                                     onLongPress: () {
+                                        _launchURL();
+                                    },
+                                    onDoubleTap: () {
                                         Clipboard.setData(ClipboardData(text: _url));
                                         showShortToast("已复制网址到剪贴板");
                                     },
@@ -184,15 +196,6 @@ class CommonWebPageState extends State<CommonWebPage> {
                     centerTitle: true,
                     actions: <Widget>[
                         isLoading ? refreshIndicator() : SizedBox(width: 56.0),
-//                        IconButton(
-//                            icon: Icon(Icons.more_vert),
-//                            onPressed: () {
-//                                showDialog(
-//                                    context: context,
-//                                    builder: (context) => SimpleDialog(title: Text("test"))
-//                                );
-//                            },
-//                        ),
                     ],
                     bottom: progressBar(context),
                 ) : null,

@@ -1,257 +1,297 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
 import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/NewsAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/widgets/CommonWebPage.dart';
+import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
+
 
 class NewsListPage extends StatefulWidget {
     @override
     State<StatefulWidget> createState() => NewsListPageState();
 }
 
-class NewsListPageState extends State<NewsListPage> {
+class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClientMixin {
     final ScrollController _scrollController = ScrollController();
-    final TextStyle titleTextStyle = TextStyle(fontSize: 15.0);
-    final TextStyle summaryTextStyle = TextStyle(color: Colors.grey, fontSize: 14.0);
-    final TextStyle subtitleStyle = TextStyle(color: Colors.grey, fontSize: 12.0);
 
-    String sid;
-    List listData;
-    List slideData;
-    int curPage = 1;
-    int listTotalSize = 0;
-    bool isUserLogin = false;
+    List<News> newsList;
+    int lastTimeStamp = 0;
+
+    bool _isLoading = false;
+    bool _canLoadMore = true;
+    bool _firstLoadComplete = false;
+    bool _showLoading = true;
+
+    @override
+    bool get wantKeepAlive => true;
 
     @override
     void initState() {
         super.initState();
-        _scrollController.addListener(() {
-            var maxScroll = _scrollController.position.maxScrollExtent;
-            var pixels = _scrollController.position.pixels;
-            if (maxScroll == pixels && listData.length < listTotalSize) {
-                curPage++;
-                getNewsList(true);
-            }
-        });
-        DataUtils.isLogin().then((isLogin) {
-            getNewsList(false);
-            setState(() {
-                this.isUserLogin = isLogin;
-            });
-        });
-        Constants.eventBus.on<LoginEvent>().listen((event) {
-            setState(() {
-                this.isUserLogin = true;
-            });
-        });
-        Constants.eventBus.on<LogoutEvent>().listen((event) {
-            setState(() {
-                this.isUserLogin = false;
-            });
-        });
-        Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
-            if (this.mounted) {
-                _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
-            }
-        });
-    }
-
-    Future<Null> _pullToRefresh() async {
-        curPage = 1;
-        getNewsList(false);
-        return null;
+        getNewsList(isLoadMore: false);
     }
 
     @override
-    Widget build(BuildContext context) {
-        if (listData == null) {
-            return Center(
-                child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(ThemeUtils.currentThemeColor),
-                ),
-            );
-        } else {
-            Widget listView = ListView.builder(
-                itemCount: listData.length,
-                itemBuilder: (context, i) => renderRow(i),
-                controller: _scrollController,
-            );
-            return RefreshIndicator(
-                    color: ThemeUtils.currentThemeColor,
-                    child: listView,
-                    onRefresh: _pullToRefresh
-            );
-        }
+    void dispose() {
+        super.dispose();
+        _scrollController?.dispose();
     }
 
-    void getNewsList(bool isLoadMore) async {
-        sid = UserUtils.currentUser.sid;
-        int uid = UserUtils.currentUser.uid;
-        Map<String, dynamic> headers = {
-            "APIKEY": Constants.newsApiKey,
-            "APPID": "273",
-            "CLIENTTYPE": "android",
-            "CLOUDID": "jmu",
-            "CUID": "$uid",
-            "SID": sid,
-            "TAGID": "1"
-        };
-        String url;
-        isLoadMore
-                ? url = Api.newsList+"/max_ts/"+listData[listData.length-1]['create_time']+"/size/20"
-                : url = Api.newsList+"/size/20";
-        NetUtils.getWithHeaderSet(url).then((response) {
-            if (response != null) {
-                Map<String, dynamic> map = jsonDecode(response.data);
-                List _listData = map["data"];
-                listTotalSize = map['total'];
-//          List _slideData = data['slide'];
+    Future getNewsList({bool isLoadMore}) async {
+        if (!_isLoading) {
+            _isLoading = true;
+            if (!isLoadMore) lastTimeStamp = 0;
+            String _url = Api.newsList(maxTimeStamp: isLoadMore ? lastTimeStamp : null);
+            Map<String, dynamic> data = (await NetUtils.getWithHeaderSet(
+                _url, headers: Constants.header,
+            )).data;
+
+            List<News> _newsList = [];
+            List _news = data["data"];
+            int _total = int.parse(data['total'].toString());
+            int _count = int.parse(data['count'].toString());
+            int _lastTimeStamp = int.parse(data['min_ts'].toString());
+
+            for (var newsData in _news) {
+                if (newsData != null && newsData != "") {
+                    _newsList.add(NewsAPI.createNews(newsData));
+                }
+            }
+            if (isLoadMore) {
+                newsList.addAll(_newsList);
+            } else {
+                newsList = _newsList;
+            }
+
+            if (mounted) {
                 setState(() {
-                    if (!isLoadMore) {
-                        listData = _listData;
-//              slideData = _slideData;
-                    } else {
-                        List list1 = [];
-                        list1..addAll(listData)..addAll(_listData);
-                        if (list1.length >= listTotalSize) {
-                            list1.add(Constants.endLineTag);
-                        }
-                        listData = list1;
-                        // 轮播图数据
-//              slideData = _slideData;
-                    }
-//            initSlider();
+                    _showLoading = false;
+                    _firstLoadComplete = true;
+                    _isLoading = false;
+                    _canLoadMore = newsList.length < _total && _count != 0;
+                    lastTimeStamp = _lastTimeStamp;
                 });
             }
-        }).catchError((e) {
-            print(e.toString());
-            showShortToast(e.toString());
-            return e;
-        });
-//    });
+        }
     }
 
-//  void initSlider() {
-//    indicator = SlideViewIndicator(slideData.length);
-////    slideView = SlideView(slideData, indicator);
-//  }
-
-    Widget renderRow(i) {
-//    if (i == 0) {
-//      return Container(
-//        height: 180.0,
-//        child: Stack(
-//          children: <Widget>[
-////            slideView,
-//            Container(
-//              alignment: Alignment.bottomCenter,
-//              child: indicator,
-//            )
-//          ],
-//        ),
-//      );
-//    }
-        var itemData = listData[i];
-        var titleRow = Row(
+    Widget getTitle(News news) {
+        return Row(
             children: <Widget>[
                 Expanded(
-                    child: Text(itemData['title'], style: titleTextStyle),
-                )
-            ],
-        );
-        var summaryRow = Row(
-            children: <Widget>[
-                Expanded(
-                    child: Text(itemData['summary'], style: summaryTextStyle),
-                )
-            ],
-        );
-        var timeRow = Row(
-            children: <Widget>[
-                Padding(
-                    padding: const EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 0.0),
                     child: Text(
-                        DateTime.fromMillisecondsSinceEpoch(int.parse(itemData['post_time'])).toString().substring(0,16),
-                        style: subtitleStyle,
+                        news.title,
+                        style: TextStyle(fontSize: Constants.suSetSp(18.0)),
+                        overflow: TextOverflow.ellipsis,
                     ),
                 ),
-                Expanded(
-                    flex: 1,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                            Text("${itemData['glances']} ", style: subtitleStyle),
-                            Icon(Icons.remove_red_eye, color: Colors.grey, size: 12.0)
-                        ],
+                if (news.relateTopicId != null) Container(
+                    margin: EdgeInsets.only(left: Constants.suSetSp(6.0)),
+                    padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(6.0)),
+                    decoration: BoxDecoration(
+                        color: ThemeUtils.currentThemeColor,
+                        borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
                     ),
-                )
+                    child: Text(
+                        "专题",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Constants.suSetSp(18.0),
+                        ),
+                    ),
+                ),
             ],
         );
-        Widget thumbImg;
-        if (itemData['cover_img'] != null) {
-            String thumbImgUrl = Api.newsImageList + itemData['cover_img']['fid'] + "/sid/$sid";
-            thumbImg = Container(
-                width: 80.0,
-                height: 80.0,
-                decoration: BoxDecoration(
-//          shape: BoxShape.circle,
-                    color: Colors.white,
-                    image: DecorationImage(
-                            image: CachedNetworkImageProvider(thumbImgUrl, cacheManager: DefaultCacheManager()),
-                            fit: BoxFit.cover
-                    ),
-                    border: Border.all(
-                        color: Colors.white,
-                        width: 1.0,
-                    ),
-                ),
-            );
-        }
-        var row = Row(
+    }
+
+    Widget getSummary(News news) {
+        return Row(
             children: <Widget>[
                 Expanded(
-                    flex: 1,
-                    child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(
+                    child: Text(
+                        news.summary,
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: Constants.suSetSp(16.0),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                    ),
+                ),
+            ],
+        );
+    }
+
+    Widget getInfo(News news) {
+        return Padding(
+            padding: EdgeInsets.only(top: Constants.suSetSp(10.0)),
+            child: Row(
+                children: <Widget>[
+                    Padding(
+                        padding: EdgeInsets.zero,
+                        child: Text(
+                            news.postTime,
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: Constants.suSetSp(14.0),
+                            ),
+                        ),
+                    ),
+                    Expanded(
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
-                                titleRow,
-                                summaryRow,
-                                Padding(
-                                    padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 0.0),
-                                    child: timeRow,
+                                Text(
+                                    "${news.glances} ",
+                                    style: TextStyle(
+                                        color: Colors.grey,
+                                        fontSize: Constants.suSetSp(14.0),
+                                    ),
+                                ),
+                                Icon(
+                                    Icons.remove_red_eye,
+                                    color: Colors.grey,
+                                    size: Constants.suSetSp(14.0),
                                 )
                             ],
                         ),
                     ),
-                ),
-                Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: Container(
-                        width: 80.0,
-                        height: 80.0,
-                        color: const Color(0xFFECECEC),
-                        child: Center(
-                            child: thumbImg,
-                        ),
-                    ),
-                )
-            ],
-        );
-        return InkWell(
-            child: row,
-            onTap: () {
-                return CommonWebPage.jump(context, Api.newsDetail + itemData['post_id'], itemData['title']);
-            },
+                ],
+            ),
         );
     }
+
+    Widget coverImg(News news) {
+        String imageUrl = "${Api.newsImageList}"
+                "${news.cover}"
+                "/sid/${UserUtils.currentUser.sid}"
+        ;
+        ImageProvider coverImg = CachedNetworkImageProvider(imageUrl, cacheManager: DefaultCacheManager());
+        return Padding(
+            padding: EdgeInsets.all(Constants.suSetSp(4.0)),
+            child: Container(
+                width: Constants.suSetSp(80.0),
+                height: Constants.suSetSp(80.0),
+                child: FadeInImage(
+                    fadeInDuration: const Duration(milliseconds: 100),
+                    placeholder: AssetImage("assets/avatar_placeholder.png"),
+                    image: coverImg,
+                    fit: BoxFit.cover,
+                ),
+            ),
+        );
+    }
+
+    Widget newsItem(News news) {
+        return InkWell(
+            onTap: () {
+//                return CommonWebPage.jump(context, "${Api.newsDetail}${itemData['post_id']}", itemData['title']);
+                return null;
+            },
+            child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                    Expanded(
+                        child: Padding(
+                            padding: EdgeInsets.all(Constants.suSetSp(10.0)),
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                    getTitle(news),
+                                    getSummary(news),
+                                    getInfo(news),
+                                ],
+                            ),
+                        ),
+                    ),
+                    if (news.cover != null) coverImg(news) else Padding(
+                        padding: EdgeInsets.all(Constants.suSetSp(4.0)),
+                        child: Container(
+                            width: Constants.suSetSp(80.0),
+                            height: Constants.suSetSp(80.0),
+                        ),
+                    ),
+                ],
+            ),
+        );
+    }
+
+    @mustCallSuper
+    Widget build(BuildContext context) {
+        super.build(context);
+        if (!_showLoading) {
+            if (_firstLoadComplete) {
+                return RefreshIndicator(
+                    onRefresh: () {
+                        return getNewsList(isLoadMore: false);
+                    },
+                    child: newsList.isEmpty
+                            ?
+                    SizedBox()
+                            :
+                    ListView.builder(
+                        shrinkWrap: true,
+                        controller: _scrollController,
+                        itemCount: newsList.length + 1,
+                        itemBuilder: (context, index) {
+                            if (index == newsList.length) {
+                                if (this._canLoadMore) {
+                                    getNewsList(isLoadMore: true);
+                                    return Container(
+                                        height: Constants.suSetSp(40.0),
+                                        child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                                SizedBox(
+                                                    width: Constants.suSetSp(15.0),
+                                                    height: Constants.suSetSp(15.0),
+                                                    child: Platform.isAndroid
+                                                            ? CircularProgressIndicator(strokeWidth: 2.0)
+                                                            : CupertinoActivityIndicator(),
+                                                ),
+                                                Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0))),
+                                            ],
+                                        ),
+                                    );
+                                } else {
+                                    return Container(
+                                        height: Constants.suSetSp(50.0),
+                                        color: Theme.of(context).canvasColor,
+                                        child: Center(
+                                            child: Text(Constants.endLineTag, style: TextStyle(
+                                                fontSize: Constants.suSetSp(14.0),
+                                            )),
+                                        ),
+                                    );
+                                }
+                            } else if (index < newsList.length) {
+                                return newsItem(newsList[index]);
+                            } else {
+                                return Container();
+                            }
+                        },
+                    ),
+                );
+            } else {
+                return Center(
+                    child: CircularProgressIndicator(),
+                );
+            }
+        } else {
+            return Container(
+                child: Center(
+                    child: CircularProgressIndicator(),
+                ),
+            );
+        }
+    }
+
 }

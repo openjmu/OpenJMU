@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
+
 class ImageGestureDetector extends StatefulWidget {
     final Widget child;
     final BuildContext context;

@@ -8,7 +8,7 @@ import 'package:OpenJMU/utils/EmojiUtils.dart';
 
 
 class LinkText extends SpecialText {
-    static const String startKey = "https://wb.jmu.edu.cn/";
+    static String startKey = Api.wbHost;
     static const String endKey = " ";
 
     LinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap) : super(startKey, endKey, textStyle, onTap: onTap);
@@ -197,10 +197,10 @@ class CommentImageText extends SpecialText {
         final String imageText = toString();
         final int imageId = getImageIdFromContent(imageText);
         final double size = Constants.suSetSp(80);
-        final String urlInsecure = Api.commentImageUrl(imageId, "m").replaceAllMapped(RegExp(r"https://"), (match) => "http://");
+        final String url = Api.commentImageUrl(imageId, "m");
 
         return ImageSpan(
-            NetworkImage(urlInsecure),
+            NetworkImage(url),
             imageWidth: size,
             imageHeight: size,
             fit: BoxFit.cover,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
+import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
@@ -44,18 +45,30 @@ class _AboutPageState extends State<AboutPage> {
                         Container(
                             margin: EdgeInsets.only(bottom: Constants.suSetSp(12.0)),
                             child: RichText(text: TextSpan(children: <TextSpan>[
-                                TextSpan(text: "OpenJmu", style: TextStyle(fontFamily: 'chocolate', color: ThemeUtils.currentThemeColor, fontSize: 50.0)),
+                                TextSpan(
+                                    text: "OpenJmu",
+                                    style: TextStyle(
+                                        fontFamily: 'chocolate',
+                                        color: ThemeUtils.currentThemeColor,
+                                        fontSize: Constants.suSetSp(50.0),
+                                    ),
+                                ),
                                 TextSpan(text: "　v$currentVersion", style: Theme.of(context).textTheme.subtitle),
                             ])),
                         ),
                         SizedBox(height: Constants.suSetSp(20.0)),
                         RichText(text: TextSpan(
                             children: <TextSpan>[
-                                TextSpan(text: "Developed By ", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
+                                TextSpan(
+                                    text: "Developed By ",
+                                    style: TextStyle(
+                                        color: Theme.of(context).textTheme.body1.color,
+                                    ),
+                                ),
                                 TextSpan(
                                     recognizer: TapGestureRecognizer()
                                         ..onTap = () {
-                                            return CommonWebPage.jump(context, "https://openjmu.xyz/", "OpenJMU");
+                                            return CommonWebPage.jump(context, Api.homePage, "OpenJMU");
                                         },
                                     text: "OpenJMU Team",
                                     style: TextStyle(

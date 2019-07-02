@@ -1,11 +1,12 @@
 import 'dart:math';
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:extended_text_field/extended_text_field.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/PostAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
