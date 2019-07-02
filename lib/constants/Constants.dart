@@ -7,6 +7,7 @@ import 'package:event_bus/event_bus.dart';
 
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/utils/UserUtils.dart';
 
 class Constants {
     static final String endLineTag = "没有更多了~";
@@ -24,6 +25,20 @@ class Constants {
     static final String postApiKeyIOS = "3E63F9003DF7BE296A865910D8DEE630";
     static final String postApiSecretIOS = "773958E5CFE0FF8252808C417A8ECCAB";
 
+    /// Request header for team.
+    static Map<String, dynamic> header = {
+        "APIKEY": apiKey,
+        "APPID": Platform.isIOS ? appIdIOS : appIdAndroid,
+        "CLIENTTYPE": Platform.isIOS ? "ios" : "android",
+        "CLOUDID": "jmu",
+        "CUID": UserUtils.currentUser.uid,
+        "SID": UserUtils.currentUser.sid,
+        "TAGID": 1,
+    };
+
+    /// Flea Market.
+    static final int fleaMarketTeamId = 430;
+
     static final EventBus eventBus = new EventBus();
 
     static Notifications notifications = Notifications(0, 0, 0, 0);
@@ -31,6 +46,11 @@ class Constants {
     static DecoratedBox separator(context, {Color color, double height}) => DecoratedBox(
         decoration: BoxDecoration(color: color ?? Theme.of(context).canvasColor),
         child: SizedBox(height: suSetSp(height ?? 8.0)),
+    );
+
+    static Widget emptyDivider({double width, double height}) => SizedBox(
+        width: width != null ? suSetSp(width) : null,
+        height: height != null ? suSetSp(height) : null,
     );
 
     static Widget nightModeCover() => Positioned(
@@ -56,7 +76,7 @@ class Constants {
     );
 
     static double suSetSp(double size) {
-        double value = ScreenUtil.getInstance().setSp(size) * ScreenUtil.pixelRatio / 1.5;
+        double value = ScreenUtil.getInstance().setSp(size) * 1.95;
         if (Platform.isIOS) {
             if (ScreenUtil.screenWidthDp <= 414.0) {
                 value = size / 1.25;
