@@ -5,7 +5,7 @@ import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 
 class Api {
-
+    static final String homePage = "https://openjmu.xyz";
     /// github channel.
 //    static final String firstDayOfTerm = "https://raw.githubusercontent.com/openjmu/OpenJMU/master/release/first-day-of-term";
 //    static final String checkUpdate = "https://raw.githubusercontent.com/openjmu/OpenJMU/master/release/latest-version";

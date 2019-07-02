@@ -7,6 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:extended_text/extended_text.dart';
 
 import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/PostAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -51,7 +52,7 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
-    GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
+    final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
     final ScrollController _scrollController = ScrollController();
     Color currentColorTheme = ThemeUtils.currentThemeColor;
 
@@ -83,7 +84,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
         widget._postController._postListState = this;
         Constants.eventBus
             ..on<ScrollToTopEvent>().listen((event) {
-                print(event.type);
                 if (
                     this.mounted
                         &&
@@ -198,7 +198,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                                         height: Constants.suSetSp(50.0),
                                         color: Theme.of(context).canvasColor,
                                         child: Center(
-                                            child: Text("没有更多了~", style: TextStyle(
+                                            child: Text(Constants.endLineTag, style: TextStyle(
                                                 fontSize: Constants.suSetSp(14.0),
                                             )),
                                         ),
@@ -252,11 +252,12 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                 widget._postController.isFollowed, true, _lastValue,
                 additionAttrs: widget._postController.additionAttrs,
             )).data;
+
             List<Post> postList = [];
             List _topics = result['topics'];
-            var _total = result['total'], _count = result['count'];
-            if (_total is String) _total = int.parse(_total);
-            if (_count is String) _count = int.parse(_count);
+            int _total = int.parse(result['total'].toString());
+            int _count = int.parse(result['count'].toString());
+
             for (var postData in _topics) {
                 postList.add(PostAPI.createPost(postData['topic']));
                 _idList.add(
@@ -272,7 +273,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                     _showLoading = false;
                     _firstLoadComplete = true;
                     _isLoading = false;
-                    _canLoadMore = _idList.length < _total && (_count != 0 && _count != "0");
+                    _canLoadMore = _idList.length < _total && _count != 0;
                     _lastValue = _idList.isEmpty
                             ? 0
                             : widget._postController.lastValue(_idList.last);
@@ -291,12 +292,13 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                 widget._postController.isFollowed, false, _lastValue,
                 additionAttrs: widget._postController.additionAttrs,
             )).data;
+
             List<Post> postList = [];
             List<int> idList = [];
-            List _topics = result['topics'];
-            var _total = result['total'], _count = result['count'];
-            if (_total is String) _total = int.parse(_total);
-            if (_count is String) _count = int.parse(_count);
+            List _topics = result['topics'] ?? result['data'];
+            int _total = int.parse(result['total'].toString());
+            int _count = int.parse(result['count'].toString());
+
             for (var postData in _topics) {
                 if (postData['topic'] != null && postData != "") {
                     postList.add(PostAPI.createPost(postData['topic']));
@@ -322,7 +324,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                     _showLoading = false;
                     _firstLoadComplete = true;
                     _isLoading = false;
-                    _canLoadMore = _idList.length < _total && (_count != 0 && _count != "0");
+                    _canLoadMore = _idList.length < _total && _count != 0;
                     _lastValue = _idList.isEmpty
                             ? 0
                             : widget._postController.lastValue(_idList.last);
@@ -491,7 +493,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                 SearchPage.search(context, text.substring(1, text.length - 1));
             } else if (text.startsWith("@")) {
                 UserPage.jump(context, data['uid']);
-            } else if (text.startsWith("https://wb.jmu.edu.cn")) {
+            } else if (text.startsWith(Api.wbHost)) {
                 CommonWebPage.jump(context, text, "网页链接");
             }
         },
