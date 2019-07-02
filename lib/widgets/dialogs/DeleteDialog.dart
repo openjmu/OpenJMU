@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/PostAPI.dart';
+import 'package:OpenJMU/api/CommentAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
+
 
 class DeleteDialog extends Dialog {
     final Post post;

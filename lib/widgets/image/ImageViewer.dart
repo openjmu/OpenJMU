@@ -1,17 +1,18 @@
 import 'dart:async';
 import 'dart:ui';
 import 'dart:io';
+
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:image_downloader/image_downloader.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/image/ImageGestureDetector.dart';
+
 
 class ImageViewer extends StatefulWidget {
     final int index;

@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -49,10 +50,8 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
         );
         UserUtils.setSignature(_textEditingController.text).then((response) {
             _loadingDialogController.changeState("success", "签名更新成功");
-            setState(() {
-                UserUtils.currentUser.signature = _textEditingController.text;
-            });
-            Constants.eventBus.fire(new SignatureUpdatedEvent());
+            UserUtils.currentUser.signature = _textEditingController.text;
+            Constants.eventBus.fire(SignatureUpdatedEvent(_textEditingController.text));
             Future.delayed(Duration(milliseconds: 2300), () {
                 Navigator.of(context).pop();
             });
@@ -126,7 +125,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                             ),
                         ),
                     ),
-                    Container(height: MediaQuery.of(context).viewInsets.bottom ?? 0)
+                    SizedBox(height: MediaQuery.of(context).viewInsets.bottom ?? 0)
                 ],
             ),
         );

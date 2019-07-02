@@ -15,6 +15,7 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
+
 class ImageCropperPage extends StatefulWidget {
     @override
     _ImageCropperPageState createState() => _ImageCropperPageState();
