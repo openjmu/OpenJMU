@@ -39,7 +39,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
     final List<String> bottomAppBarTitles = ['首页', '应用', '消息', '我的'];
     final List<String> bottomAppBarIcons = ["home", "apps", "message", "mine"];
     final Color primaryColor = Colors.white;
-    static const double bottomBarHeight = 68.0;
+    static const double bottomBarHeight = 64.4;
 
     TextStyle tabSelectedTextStyle = TextStyle(
         color: currentThemeColor,
