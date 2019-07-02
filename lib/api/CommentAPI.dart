@@ -62,25 +62,25 @@ class CommentAPI {
         Map<String, dynamic> replyData = itemData['to_reply']['reply'];
         Map<String, dynamic> topicData = itemData['to_topic']['topic'];
         Comment _comment = Comment(
-            int.parse(itemData['rid'].toString()),
-            null,
-            int.parse(itemData['user']['uid'].toString()),
-            itemData['user']['nickname'],
-            _avatar,
-            itemData['content'],
-            _commentTime,
-            itemData['from_string'],
-            replyExist,
-            replyExist ? int.parse(replyData['user']['uid'].toString()) : 0,
-            replyExist ? replyData['user']['nickname'] : null,
-            replyExist ? replyData['content'] : null,
-            topicExist,
-            topicExist ? int.parse(topicData['user']['uid'].toString()) : 0,
-            topicExist ? topicData['user']['nickname'] : null,
-            topicExist
+            id: int.parse(itemData['rid'].toString()),
+            floor: null,
+            fromUserUid: int.parse(itemData['user']['uid'].toString()),
+            fromUserName: itemData['user']['nickname'],
+            fromUserAvatar: _avatar,
+            content: itemData['content'],
+            commentTime: _commentTime,
+            from: itemData['from_string'],
+            toReplyExist: replyExist,
+            toReplyUid: replyExist ? int.parse(replyData['user']['uid'].toString()) : 0,
+            toReplyUserName: replyExist ? replyData['user']['nickname'] : null,
+            toReplyContent: replyExist ? replyData['content'] : null,
+            toTopicExist: topicExist,
+            toTopicUid: topicExist ? int.parse(topicData['user']['uid'].toString()) : 0,
+            toTopicUserName: topicExist ? topicData['user']['nickname'] : null,
+            toTopicContent: topicExist
                     ? itemData['to_topic']['topic']['article'] ?? itemData['to_topic']['topic']['content']
                     : null,
-            itemData['to_topic']['topic'] != null ? PostAPI.createPost(itemData['to_topic']['topic']) : null,
+            post: itemData['to_topic']['topic'] != null ? PostAPI.createPost(itemData['to_topic']['topic']) : null,
         );
         return _comment;
     }
@@ -92,23 +92,23 @@ class CommentAPI {
         bool replyExist = itemData['to_reply']['exists'] == 1 ? true : false;
         Map<String, dynamic> replyData = itemData['to_reply']['reply'];
         Comment _comment = Comment(
-            int.parse(itemData['rid'].toString()),
-            null,
-            int.parse(itemData['user']['uid'].toString()),
-            itemData['user']['nickname'],
-            _avatar,
-            itemData['content'],
-            _commentTime,
-            itemData['from_string'],
-            replyExist,
-            replyExist ? int.parse(replyData['user']['uid'].toString()) : 0,
-            replyExist ? replyData['user']['nickname'] : null,
-            replyExist ? replyData['content'] : null,
-            false,
-            0,
-            null,
-            null,
-            itemData['post'],
+            id: int.parse(itemData['rid'].toString()),
+            floor: null,
+            fromUserUid: int.parse(itemData['user']['uid'].toString()),
+            fromUserName: itemData['user']['nickname'],
+            fromUserAvatar: _avatar,
+            content: itemData['content'],
+            commentTime: _commentTime,
+            from: itemData['from_string'],
+            toReplyExist: replyExist,
+            toReplyUid: replyExist ? int.parse(replyData['user']['uid'].toString()) : 0,
+            toReplyUserName: replyExist ? replyData['user']['nickname'] : null,
+            toReplyContent: replyExist ? replyData['content'] : null,
+            toTopicExist: false,
+            toTopicUid: 0,
+            toTopicUserName: null,
+            toTopicContent: null,
+            post: itemData['post'],
         );
         return _comment;
     }

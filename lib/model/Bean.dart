@@ -28,22 +28,23 @@ class Post {
     bool isLike;
     Object rootTopic;
 
-    Post(
-            this.id,
-            this.uid,
-            this.nickname,
-            this.avatar,
-            this.postTime,
-            this.from,
-            this.glances,
-            this.category,
-            this.content,
-            this.pics,
-            this.forwards,
-            this.comments,
-            this.praises,
-            this.rootTopic,
-            {this.isLike = false});
+    Post({
+        this.id,
+        this.uid,
+        this.nickname,
+        this.avatar,
+        this.postTime,
+        this.from,
+        this.glances,
+        this.category,
+        this.content,
+        this.pics,
+        this.forwards,
+        this.comments,
+        this.praises,
+        this.rootTopic,
+        this.isLike = false,
+    });
 
     @override
     bool operator == (Object other) => identical(this, other) || other is Post && runtimeType == other.runtimeType && id == other.id;
@@ -73,7 +74,23 @@ class Post {
     }
 
     Post copy() {
-        return Post(id,uid, nickname, avatar, postTime, from, glances, category, content, pics.sublist(0), forwards, comments, praises, rootTopic, isLike: isLike);
+        return Post(
+            id: id,
+            uid: uid,
+            nickname: nickname,
+            avatar: avatar,
+            postTime: postTime,
+            from: from,
+            glances: glances,
+            category: category,
+            content: content,
+            pics: pics.sublist(0),
+            forwards: forwards,
+            comments: comments,
+            praises: praises,
+            rootTopic: rootTopic,
+            isLike: isLike,
+        );
     }
 }
 
@@ -83,7 +100,7 @@ class Post {
 /// [content] 评论内容, [commentTime] 评论时间, [from] 来源
 ///
 class Comment {
-    int id, fromUserUid;
+    int id, fromUserUid, floor;
     String fromUserName;
     String fromUserAvatar;
     String content;
@@ -97,23 +114,25 @@ class Comment {
 
     Post post;
 
-    Comment(
-            this.id,
-            this.fromUserUid,
-            this.fromUserName,
-            this.fromUserAvatar,
-            this.content,
-            this.commentTime,
-            this.from,
-            this.toReplyExist,
-            this.toReplyUid,
-            this.toReplyUserName,
-            this.toReplyContent,
-            this.toTopicExist,
-            this.toTopicUid,
-            this.toTopicUserName,
-            this.toTopicContent,
-            this.post);
+    Comment({
+        this.id,
+        this.floor,
+        this.fromUserUid,
+        this.fromUserName,
+        this.fromUserAvatar,
+        this.content,
+        this.commentTime,
+        this.from,
+        this.toReplyExist,
+        this.toReplyUid,
+        this.toReplyUserName,
+        this.toReplyContent,
+        this.toTopicExist,
+        this.toTopicUid,
+        this.toTopicUserName,
+        this.toTopicContent,
+        this.post,
+    });
 
     @override
     bool operator == (Object other) => identical(this, other) || other is Comment && runtimeType == other.runtimeType && id == other.id;
@@ -137,17 +156,18 @@ class Praise {
     String topicNickname;
     List pics;
 
-    Praise(
-            this.id,
-            this.uid,
-            this.avatar,
-            this.postId,
-            this.praiseTime,
-            this.nickname,
-            this.post,
-            this.topicUid,
-            this.topicNickname,
-            this.pics);
+    Praise({
+        this.id,
+        this.uid,
+        this.avatar,
+        this.postId,
+        this.praiseTime,
+        this.nickname,
+        this.post,
+        this.topicUid,
+        this.topicNickname,
+        this.pics,
+    });
 
     @override
     bool operator == (Object other) => identical(this, other) || other is Comment && runtimeType == other.runtimeType && id == other.id;
@@ -170,7 +190,16 @@ class User {
     int fans, idols;
     bool isFollowing;
 
-    User(this.id, this.nickname, this.gender, this.topics, this.latestTid, this.fans, this.idols, this.isFollowing);
+    User({
+        this.id,
+        this.nickname,
+        this.gender,
+        this.topics,
+        this.latestTid,
+        this.fans,
+        this.idols,
+        this.isFollowing,
+    });
 
     @override
     bool operator == (Object other) => identical(this, other) || other is User && runtimeType == other.runtimeType && id == other.id;
@@ -182,35 +211,40 @@ class User {
 ///
 /// 用户信息实体
 /// [sid] 用户token, [ticket] 用户当前token, [blowfish] 用户设备uuid
-/// [uid] 用户uid, [unitId] 组织/学校id, [workId] 工号/学号, [classId] 班级id, [name] 名称, [signature] 签名, [isFollowing] 是否已关注
+/// [uid] 用户uid, [unitId] 组织/学校id, [workId] 工号/学号, [classId] 班级id,
+/// [name] 名字, [signature] 签名, [gender] 性别, [isFollowing] 是否已关注
 ///
 class UserInfo {
     /// For Login Process
     String sid;
     String ticket;
     String blowfish;
+    bool isTeacher;
 
     /// Common Object
     int uid;
     int unitId;
     int workId;
     int classId;
+    int gender;
     String name;
     String signature;
     bool isFollowing;
 
-    UserInfo(
-            this.sid,
-            this.uid,
-            this.name,
-            this.signature,
-            this.ticket,
-            this.blowfish,
-            this.unitId,
-            this.workId,
-            this.classId,
-            this.isFollowing,
-            );
+    UserInfo({
+        this.sid,
+        this.uid,
+        this.name,
+        this.signature,
+        this.ticket,
+        this.blowfish,
+        this.isTeacher,
+        this.unitId,
+        this.workId,
+        this.classId,
+        this.gender,
+        this.isFollowing,
+    });
 
     @override
     bool operator == (Object other) => identical(this, other) || other is UserInfo && runtimeType == other.runtimeType && uid == other.uid;
@@ -227,7 +261,7 @@ class UserTag {
     int id;
     String name;
 
-    UserTag(this.id, this.name);
+    UserTag({this.id, this.name});
 
     @override
     bool operator ==(Object other) => identical(this, other) || other is UserTag && runtimeType == other.runtimeType && id == other.id;
@@ -248,7 +282,7 @@ class WebApp {
     String url;
     String menuType;
 
-    WebApp(this.id, this.sequence, this.code, this.name, this.url, this.menuType);
+    WebApp({this.id, this.sequence, this.code, this.name, this.url, this.menuType});
 
     @override
     bool operator ==(Object other) => identical(this, other) || other is WebApp && runtimeType == other.runtimeType && id == other.id;
@@ -256,16 +290,56 @@ class WebApp {
     @override
     int get hashCode => id.hashCode;
 
-    static Map category() {
-        return {
-//            "10": "个人事务",
-            "A4": "我的服务",
-            "A3": "我的系统",
-            "A8": "流程服务",
-            "A2": "我的媒体",
-            "A5": "其他",
-        };
-    }
+    static Map category() => {
+        "10": "个人事务",
+        "A4": "我的服务",
+        "A3": "我的系统",
+        "A8": "流程服务",
+        "A2": "我的媒体",
+        "A5": "其他",
+    };
+}
+
+class News {
+    int id;
+    String title;
+    String summary;
+    String postTime;
+    int cover;
+    int relateTopicId;
+    int heat;
+    int praises;
+    int replies;
+    int glances;
+    bool isLiked;
+
+    News({
+        this.id,
+        this.title,
+        this.summary,
+        this.postTime,
+        this.cover,
+        this.relateTopicId,
+        this.heat,
+        this.praises,
+        this.replies,
+        this.glances,
+        this.isLiked,
+    });
+
+    @override
+    bool operator ==(Object other) =>
+            identical(this, other)
+            ||
+                    other is WebApp
+                    &&
+                            runtimeType == other.runtimeType
+                            &&
+                            id == other.id
+    ;
+
+    @override
+    int get hashCode => id.hashCode;
 }
 
 ///
