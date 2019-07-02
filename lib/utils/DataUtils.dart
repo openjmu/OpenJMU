@@ -18,23 +18,22 @@ import 'package:OpenJMU/utils/SnackbarUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 
 class DataUtils {
-    static final String spIsLogin         = "isLogin";
+    static final String spIsLogin           = "isLogin";
+    static final String spIsTeacher         = "isTeacher";
 
-    static final String spUserSid         = "sid";
-    static final String spTicket          = "ticket";
-    static final String spBlowfish        = "blowfish";
+    static final String spUserSid           = "sid";
+    static final String spTicket            = "ticket";
+    static final String spBlowfish          = "blowfish";
 
-    static final String spUserUid         = "userUid";
-    static final String spUserName        = "userName";
-    static final String spUserUnitId      = "userUnitId";
-    static final String spUserWorkId      = "userWorkId";
-//    static final String spUserClassId     = "userClassId";
+    static final String spUserUid           = "userUid";
+    static final String spUserName          = "userName";
+    static final String spUserUnitId        = "userUnitId";
+    static final String spUserWorkId        = "userWorkId";
+//    static final String spUserClassId       = "userClassId";
 
-    static final String spBrightness      = "theme_brightness";
-    static final String spColorThemeIndex = "theme_colorThemeIndex";
-    static final String spHomeSplashIndex = "home_splash_index";
-
-    static bool updatingTicket = false;
+    static final String spBrightness        = "theme_brightness";
+    static final String spColorThemeIndex   = "theme_colorThemeIndex";
+    static final String spHomeSplashIndex   = "home_splash_index";
 
     static Future getSid() async {
         SharedPreferences sp = await SharedPreferences.getInstance();
@@ -98,7 +97,7 @@ class DataUtils {
                 Cookie("PHPSESSID", data["sid"])
             ];
             NetUtils.getWithCookieSet(
-                Api.userBasicInfo,
+                Api.userInfo,
                 data: _map,
                 cookies: cookies,
             ).then((response) {
@@ -111,12 +110,14 @@ class DataUtils {
                     'userName': user['username'],
                     'userUnitId': data['unitid'],
                     'userWorkId': user['workid'],
+                    'isTeacher': int.parse(user['type'].toString()) == 1,
 //                    'userClassId': user['class_id'],
                 };
                 UserUtils.currentUser.sid = data['sid'];
                 UserUtils.currentUser.uid = data['uid'];
 //                UserUtils.currentUser.classId = user['class_id'];
-                saveLoginInfo(userInfo).then((whatever) {
+                UserUtils.currentUser.isTeacher = int.parse(user['type'].toString()) == 1;
+                saveLoginInfo(userInfo).then((R) {
                     Constants.eventBus.fire(new LoginEvent());
                     showShortToast("登录成功！");
                 }).catchError((e) {
@@ -129,10 +130,9 @@ class DataUtils {
                     );
                     return e;
                 });
-                getUserBasicInfo();
+                getUserInfo();
             }).catchError((e) {
                 Constants.eventBus.fire(new LoginFailedEvent());
-                print(e.request.path);
                 print(e.response);
                 print(e.toString());
                 SnackBarUtils.show(
@@ -145,7 +145,6 @@ class DataUtils {
             Constants.eventBus.fire(new LoginFailedEvent());
             print(e.response);
             print(e.toString());
-            showShortToast(e.toString());
             SnackBarUtils.show(
                 context,
                 "登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}",
@@ -165,12 +164,12 @@ class DataUtils {
         });
     }
 
-    static Future getUserBasicInfo([uid]) async {
+    static Future getUserInfo([uid]) async {
         NetUtils.getWithCookieSet(
-            "${Api.userBasicInfo}?uid=${uid ?? UserUtils.currentUser.uid}",
+            "${Api.userInfo}?uid=${uid ?? UserUtils.currentUser.uid}",
             cookies: buildPHPSESSIDCookies(UserUtils.currentUser.sid),
         ).then((response) {
-            setUserBasicInfo(response.data);
+            setUserInfo(response.data);
         }).catchError((e) {
             print(e);
             print(e.toString());
@@ -179,17 +178,19 @@ class DataUtils {
         });
     }
 
-    static void setUserBasicInfo(data) {
-        UserUtils.currentUser.unitId = data['unitid'] is String ? int.parse(data['unitid']) : data['unitid'];
-        UserUtils.currentUser.workId = data['workid'] is String ? int.parse(data['workid']) : data['workid'];
+    static void setUserInfo(data) {
         UserUtils.currentUser.name = data['username'] ?? data['uid'].toString();
         UserUtils.currentUser.signature = data['signature'];
+        UserUtils.currentUser.isTeacher = int.parse(data['type'].toString()) == 1;
+        UserUtils.currentUser.unitId = int.parse(data['unitid'].toString());
+        UserUtils.currentUser.workId = int.parse(data['workid'].toString());
     }
 
-    static Future<Null> saveLoginInfo(Map data) async {
+    static Future saveLoginInfo(Map data) async {
         if (data != null) {
             SharedPreferences sp = await SharedPreferences.getInstance();
             await sp.setBool(spIsLogin, true);
+            await sp.setBool(spIsTeacher, data['isTeacher']);
             await sp.setString(spUserSid, data['sid']);
             await sp.setString(spTicket, data['ticket']);
             await sp.setString(spBlowfish, data['blowfish']);
@@ -198,7 +199,6 @@ class DataUtils {
             await sp.setInt(spUserUnitId, data['userUnitId']);
             await sp.setInt(spUserWorkId, int.parse(data['userWorkId']));
 //            await sp.setInt(spUserClassId, data['userClassId']);
-            return;
         }
     }
 
@@ -206,7 +206,8 @@ class DataUtils {
     static Future clearLoginInfo() async {
         UserUtils.currentUser = UserUtils.emptyUser;
         SharedPreferences sp = await SharedPreferences.getInstance();
-        await sp.setBool(spIsLogin, false);
+        await sp.remove(spIsLogin);
+        await sp.remove(spIsTeacher);
         await sp.remove(spUserSid);
         await sp.remove(spTicket);
         await sp.remove(spBlowfish);
@@ -215,6 +216,7 @@ class DataUtils {
         await sp.remove(spUserUnitId);
         await sp.remove(spUserWorkId);
 //        await sp.remove(spUserClassId);
+
         await sp.remove(spBrightness);
         await sp.remove(spColorThemeIndex);
         showShortToast("退出登录成功");
@@ -271,7 +273,7 @@ class DataUtils {
             Map<String, dynamic> response = (await NetUtils.post(Api.loginTicket, data: params)).data;
             debugPrint("sid: ${response['sid']}");
             updateSid(response).then((whatever) {
-                getUserBasicInfo();
+                getUserInfo();
             });
             Constants.eventBus.fire(new TicketGotEvent());
             return Future.value(true);

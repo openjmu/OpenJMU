@@ -64,12 +64,12 @@ class AppCenterPageState extends State<AppCenterPage> {
 
     WebApp createWebApp(webAppData) {
         return WebApp(
-            webAppData['appid'],
-            webAppData['sequence'],
-            webAppData['code'],
-            webAppData['name'],
-            webAppData['url'],
-            webAppData['menutype'],
+            id: webAppData['appid'],
+            sequence: webAppData['sequence'],
+            code: webAppData['code'],
+            name: webAppData['name'],
+            url: webAppData['url'],
+            menuType: webAppData['menutype'],
         );
     }
 
@@ -134,7 +134,10 @@ class AppCenterPageState extends State<AppCenterPage> {
 
     Widget getWebAppButton(webApp) {
         String url = replaceParamsInUrl(webApp.url);
-        String imageUrl = Api.webAppIconsInsecure + "appid=${webApp.id}&code=${webApp.code}";
+        String imageUrl = "${Api.webAppIcons}"
+                "appid=${webApp.id}"
+                "&code=${webApp.code}"
+        ;
         Widget button = FlatButton(
             padding: EdgeInsets.zero,
             child: Column(
@@ -163,55 +166,64 @@ class AppCenterPageState extends State<AppCenterPage> {
                     ),
                 ],
             ),
-            onPressed: () {
-                return CommonWebPage.jump(context, url, webApp.name);
-            },
+            onPressed: () => CommonWebPage.jump(context, url, webApp.name),
         );
         return button;
     }
 
     Widget getSectionColumn(name) {
-        int rows = (webAppWidgetList[name].length / 3).ceil();
-        if (webAppWidgetList[name].length != 0 && rows == 0) rows += 1;
-        num _width = MediaQuery.of(context).size.width / 3;
-        num _height = (_width / 1.3 * rows) + Constants.suSetSp(59);
-        return Container(
-            height: _height,
-            child: Column(
-                children: <Widget>[
-                    Container(
-                        margin: EdgeInsets.symmetric(horizontal: Constants.suSetSp(36.0), vertical: Constants.suSetSp(8.0)),
-                        padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(8.0)),
-                        width: MediaQuery.of(context).size.width,
-                        child: Center(
-                            child: Text(
-                                WebApp.category()[name],
-                                style: TextStyle(
-                                    color: Theme.of(context).textTheme.title.color,
-                                    fontSize: Constants.suSetSp(18.0),
-                                    fontWeight: FontWeight.bold,
+        if (webAppWidgetList[name] != null) {
+            int rows = (webAppWidgetList[name].length / 3).ceil();
+            if (webAppWidgetList[name].length != 0 && rows == 0) rows += 1;
+            num _width = MediaQuery.of(context).size.width / 3;
+            num _height = (_width / 1.3 * rows) + Constants.suSetSp(59);
+            return Container(
+                height: _height,
+                child: Column(
+                    children: <Widget>[
+                        Container(
+                            margin: EdgeInsets.symmetric(
+                                horizontal: Constants.suSetSp(36.0),
+                                vertical: Constants.suSetSp(8.0),
+                            ),
+                            padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(8.0)),
+                            width: MediaQuery.of(context).size.width,
+                            child: Center(
+                                child: Text(
+                                    WebApp.category()[name],
+                                    style: TextStyle(
+                                        color: Theme.of(context).textTheme.title.color,
+                                        fontSize: Constants.suSetSp(18.0),
+                                        fontWeight: FontWeight.bold,
+                                    ),
+                                ),
+                            ),
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: Divider.createBorderSide(
+                                        context,
+                                        color: Theme.of(context).dividerColor,
+                                        width: 2.0,
+                                    ),
                                 ),
                             ),
                         ),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: Divider.createBorderSide(context, color: Theme.of(context).dividerColor, width: 2.0),
+                        Container(
+                            child: GridView.count(
+                                physics: NeverScrollableScrollPhysics(),
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                crossAxisCount: 3,
+                                childAspectRatio: 1.3 / 1,
+                                children: webAppWidgetList[name],
                             ),
                         ),
-                    ),
-                    Container(
-                        child: GridView.count(
-                            physics: NeverScrollableScrollPhysics(),
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            crossAxisCount: 3,
-                            childAspectRatio: 1.3 / 1,
-                            children: webAppWidgetList[name],
-                        ),
-                    ),
-                ],
-            ),
-        );
+                    ],
+                ),
+            );
+        } else {
+            return Container();
+        }
     }
 
     @override
@@ -221,7 +233,10 @@ class AppCenterPageState extends State<AppCenterPage> {
             cacheExtent: 1,
             children: <Widget>[
                 InAppBrowserPage(
-                    url: "${Api.courseSchedule}?sid=${UserUtils.currentUser.sid}${ThemeUtils.isDark ? "&night=1" : ""}",
+                    url: ""
+                            "${UserUtils.currentUser.isTeacher ? Api.courseScheduleTeacher : Api.courseSchedule}"
+                            "?sid=${UserUtils.currentUser.sid}"
+                            "&night=${ThemeUtils.isDark ? 1 : 0}",
                     title: "课程表",
                     withAppBar: false,
                     withAction: false,

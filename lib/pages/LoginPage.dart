@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
+import 'package:OpenJMU/api/Api.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
@@ -38,13 +38,16 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         DataUtils.resetTheme();
         Constants.eventBus
             ..on<LoginEvent>().listen((event) {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)));
+                Navigator.of(context).pushReplacement(
+                    MaterialPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)),
+                );
             })
             ..on<LoginFailedEvent>().listen((event) {
                 setState(() {
                     _loginButtonDisabled = false;
                 });
-            });
+            })
+        ;
         _usernameEditingController..addListener(() {
             if (this.mounted) {
                 setState(() {
@@ -56,6 +59,12 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 });
             }
         });
+    }
+
+    @override
+    void dispose() {
+        super.dispose();
+        _usernameEditingController?.dispose();
     }
 
     int last = 0;
@@ -256,7 +265,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         style: TextStyle(color: Colors.lightBlueAccent),
                         recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                                return CommonWebPage.jump(context, "https://openjmu.xyz/license.html", "OpenJMU用户协议");
+                                return CommonWebPage.jump(context, "${Api.homePage}/license.html", "OpenJMU用户协议");
                             },
                     ),
                 ],
