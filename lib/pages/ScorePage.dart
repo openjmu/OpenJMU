@@ -20,6 +20,7 @@ class ScorePage extends StatefulWidget {
 }
 
 class _ScorePageState extends State<ScorePage> {
+    final TextEditingController passwordController = TextEditingController();
     final TextEditingController checkCodeController = TextEditingController();
     final FocusNode focusNode = FocusNode();
 
@@ -65,8 +66,8 @@ class _ScorePageState extends State<ScorePage> {
                 Api.jwglLogin,
                 data: {
                     '__VIEWSTATE': viewState,
-                    'TxtUserName': "201521033021",
-                    'TxtPassword': "DoMyOwn525#lcj",
+                    'TxtUserName': UserUtils.currentUser.workId,
+                    'TxtPassword': passwordController.text,
                     'TxtVerifCode': captcha,
                     'BtnLoginImage.x': '0',
                     'BtnLoginImage.y': '0'
@@ -109,6 +110,12 @@ class _ScorePageState extends State<ScorePage> {
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                             content != null ? content : Container(),
+                            TextField(
+                                controller: passwordController,
+                                decoration: InputDecoration(
+                                    helperText: "密码",
+                                ),
+                            ),
                             TextField(
                                 controller: checkCodeController,
                                 focusNode: focusNode,
