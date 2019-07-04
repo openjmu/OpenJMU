@@ -9,7 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 //import 'package:oktoast/oktoast.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/SignAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -80,7 +80,7 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     /// For test page.
     /// TODO: Set this to false before release.
-    static bool isTest = false;
+    static bool isTest = true;
 
     @override
     void initState() {

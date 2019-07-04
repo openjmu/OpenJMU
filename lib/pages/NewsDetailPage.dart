@@ -1,46 +1,90 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+
+import 'package:OpenJMU/api/NewsAPI.dart';
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/model/Bean.dart';
+
 
 class NewsDetailPage extends StatefulWidget {
-    final String id;
+    final News news;
 
-    NewsDetailPage({Key key, this.id}):super(key: key);
+    const NewsDetailPage({Key key, this.news}) : super(key: key);
 
     @override
-    State<StatefulWidget> createState() => NewsDetailPageState(id: this.id);
+    State<StatefulWidget> createState() => _NewsDetailPageState();
 }
 
-class NewsDetailPageState extends State<NewsDetailPage> {
-    final flutterWebViewPlugin = FlutterWebviewPlugin();
+class _NewsDetailPageState extends State<NewsDetailPage> {
+    final Completer<WebViewController> _controller = Completer<WebViewController>();
 
-    String id;
-    bool loaded = false;
-    String detailDataStr;
+    String pageContent;
+    bool _webViewLoaded = false;
 
-    NewsDetailPageState({Key key, this.id});
+    @override
+    void initState() {
+        super.initState();
+        getNewsContent();
+    }
 
+    @override
+    void dispose() {
+        super.dispose();
+    }
+
+    Future getNewsContent() async {
+        Map<String, dynamic> data = (await NewsAPI.getNewsContent(newsId: widget.news.id)).data;
+        setState(() {
+            pageContent = """<!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no" />'
+                        <title>${widget.news.title}</title>
+                    </head>
+                    <body>
+                        ${data['content']}
+                    </body>
+                </html>
+            """;
+        });
+    }
 
     @override
     Widget build(BuildContext context) {
-        List<Widget> titleContent = [];
-        titleContent.add(Text("资讯详情", style: TextStyle(color: Colors.white),));
-        if (!loaded) {
-            titleContent.add(CupertinoActivityIndicator());
-        }
-        titleContent.add(Container(width: 50.0));
-        return WebviewScaffold(
-            url: this.id,
+        return Scaffold(
             appBar: AppBar(
-                title: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: titleContent,
+                title: Text(
+                    widget.news.title,
+                    style: Theme.of(context).textTheme.title.copyWith(
+                        fontSize: Constants.suSetSp(21.0),
+                    ),
+                    overflow: TextOverflow.ellipsis,
                 ),
-                iconTheme: IconThemeData(color: Colors.white),
+                centerTitle: true,
             ),
-            withZoom: false,
-            withLocalStorage: true,
-            withJavascript: true,
+            body: Stack(
+                children: <Widget>[
+                    if (pageContent != null) WebView(
+                        initialUrl: 'data:text/html;base64,${base64Encode(const Utf8Encoder().convert(pageContent))}',
+                        javascriptMode: JavascriptMode.unrestricted,
+                        onWebViewCreated: (WebViewController webViewController) {
+                            _controller.complete(webViewController);
+                        },
+                        onPageFinished: (String url) {
+                            setState(() {
+                                _webViewLoaded = true;
+                            });
+                        },
+                    ),
+                    Center(
+                        child: _webViewLoaded ? SizedBox() : CircularProgressIndicator(),
+                    ),
+                ],
+            ),
         );
     }
 }

@@ -9,7 +9,7 @@ import 'package:extended_text_field/extended_text_field.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/CommentAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';

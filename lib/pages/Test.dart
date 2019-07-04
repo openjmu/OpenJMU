@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'package:OpenJMU/constants/Constants.dart';
+
 
 class TestPage extends StatefulWidget {
     @override
@@ -21,6 +23,16 @@ class _TestPageState extends State<TestPage> {
     @override
     Widget build(BuildContext context) {
         return Scaffold(
+            appBar: AppBar(
+                title: Text(
+//                    widget.title,
+                    "测试标题",
+                    style: Theme.of(context).textTheme.title.copyWith(
+                        fontSize: Constants.suSetSp(21.0),
+                    ),
+                ),
+                centerTitle: true,
+            ),
             body: Container(),
         );
     }

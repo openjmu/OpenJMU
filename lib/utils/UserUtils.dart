@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/CacheUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
