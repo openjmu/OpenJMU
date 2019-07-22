@@ -291,10 +291,10 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
             }
         } on DioError catch (e) {
             if (e.response != null) {
-                print(e.response.data);
+                debugPrint("${e.response.data}");
             } else {
-                print(e.request);
-                print(e.message);
+                debugPrint("${e.request}");
+                debugPrint("${e.message}");
             }
             return;
         }
@@ -324,10 +324,10 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
             }
         } on DioError catch (e) {
             if (e.response != null) {
-                print(e.response.data);
+                debugPrint("${e.response.data}");
             } else {
-                print(e.request);
-                print(e.message);
+                debugPrint("${e.request}");
+                debugPrint("${e.message}");
             }
             return;
         }

@@ -1,7 +1,9 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+
 
 class _CupertinoLocalizationsDelegate extends LocalizationsDelegate<CupertinoLocalizations> {
     const _CupertinoLocalizationsDelegate();
@@ -130,6 +132,9 @@ class ChineseCupertinoLocalizations implements CupertinoLocalizations {
 
     @override
     String timerPickerSecondLabel(int second) => '秒';
+
+    @override
+    String get todayLabel => '今天';
 
     @override
     String get cutButtonLabel => '剪切';

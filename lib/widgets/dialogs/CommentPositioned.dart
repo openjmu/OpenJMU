@@ -9,7 +9,7 @@ import 'package:extended_text_field/extended_text_field.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/CommentAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -25,9 +25,15 @@ import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
 
 class CommentPositioned extends StatefulWidget {
     final Post post;
+    final PostType postType;
     final Comment comment;
 
-    CommentPositioned(this.post, {this.comment, Key key}) : super(key: key);
+    CommentPositioned({
+        Key key,
+        @required this.post,
+        @required this.postType,
+        this.comment,
+    }) : super(key: key);
 
     @override
     State<StatefulWidget> createState() => CommentPositionedState();

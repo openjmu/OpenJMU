@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 
 import 'package:OpenJMU/api/TeamAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -10,6 +11,7 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/cards/TeamPostCard.dart';
+
 
 class TeamPostController {
     final bool isMore;
@@ -94,7 +96,7 @@ class _TeamPostListState extends State<TeamPostList> with AutomaticKeepAliveClie
                 }
             })
             ..on<PostDeletedEvent>().listen((event) {
-                print("PostDeleted: ${event.postId} / ${event.page} / ${event.index}");
+                debugPrint("PostDeleted: ${event.postId} / ${event.page} / ${event.index}");
                 if (mounted && (event.page == "user") && event.index != null) {
                     setState(() {
                         _postList.removeAt(event.index);

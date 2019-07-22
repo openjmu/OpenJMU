@@ -51,13 +51,13 @@ class DeleteDialog extends Dialog {
                             ),
                         );
                         if (this.comment != null) {
-                            print("Post ID: ${this.comment.post.id}");
-                            print("Comment ID: ${this.comment.id}");
+                            debugPrint("Post ID: ${this.comment.post.id}");
+                            debugPrint("Comment ID: ${this.comment.id}");
                             CommentAPI.deleteComment(this.comment.post.id, this.comment.id).then((response) {
                                 _loadingDialogController.changeState("success", "$whatToDelete删除成功");
                                 Constants.eventBus.fire(new PostCommentDeletedEvent(this.comment.post.id));
                             }).catchError((e) {
-                                print(e.toString());
+                                debugPrint(e.toString());
                                 _loadingDialogController.changeState("failed", "$whatToDelete删除失败");
                             });
                         } else if (this.post != null) {
@@ -65,8 +65,8 @@ class DeleteDialog extends Dialog {
                                 _loadingDialogController.changeState("success", "$whatToDelete删除成功");
                                 Constants.eventBus.fire(new PostDeletedEvent(this.post.id, this.fromPage, this.index));
                             }).catchError((e) {
-                                print(e.toString());
-                                print(e.response?.toString());
+                                debugPrint(e.toString());
+                                debugPrint(e.response?.toString());
                                 _loadingDialogController.changeState("failed", "$whatToDelete删除失败");
                             });
                         }

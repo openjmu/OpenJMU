@@ -1,12 +1,11 @@
-import 'dart:io';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:quick_actions/quick_actions.dart';
 
@@ -19,6 +18,7 @@ import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/RouteUtils.dart';
 import 'package:OpenJMU/widgets/NoScaleTextWidget.dart';
+
 
 void main() {
     runApp(JMUAppClient());
@@ -45,7 +45,7 @@ class JMUAppClientState extends State<JMUAppClient> {
         ]);
         connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
             NetUtils.currentConnectivity = result;
-            Constants.eventBus.fire(new ConnectivityChangeEvent(result));
+            Constants.eventBus.fire(ConnectivityChangeEvent(result));
             debugPrint("Connectity: $result");
         });
         DataUtils.getColorThemeIndex().then((index) {
@@ -54,7 +54,7 @@ class JMUAppClientState extends State<JMUAppClient> {
                     currentThemeColor = ThemeUtils.supportColors[index];
                 });
                 ThemeUtils.currentThemeColor = ThemeUtils.supportColors[index];
-                Constants.eventBus.fire(new ChangeThemeEvent(ThemeUtils.supportColors[index]));
+                Constants.eventBus.fire(ChangeThemeEvent(ThemeUtils.supportColors[index]));
             }
         });
         DataUtils.getHomeSplashIndex().then((index) {
@@ -97,11 +97,11 @@ class JMUAppClientState extends State<JMUAppClient> {
     }
 
     void initQuickActions() {
-        final QuickActions quickActions = const QuickActions();
+        final QuickActions quickActions = QuickActions();
         quickActions.initialize((String shortcutType) {
             main();
             debugPrint("QuickActions triggered: $shortcutType");
-            Constants.eventBus.fire(new ActionsEvent(shortcutType));
+            Constants.eventBus.fire(ActionsEvent(shortcutType));
         });
         quickActions.setShortcutItems(<ShortcutItem>[
             const ShortcutItem(type: 'action_home', localizedTitle: '首页', icon: 'actions_home'),
@@ -155,12 +155,7 @@ class JMUAppClientState extends State<JMUAppClient> {
                         GlobalWidgetsLocalizations.delegate,
                         ChineseCupertinoLocalizations.delegate,
                     ],
-                    supportedLocales: Platform.isIOS
-                            ? [
-                        const Locale('en'),
-                        const Locale('zh'),
-                    ]
-                            : [
+                    supportedLocales: [
                         const Locale('zh'),
                         const Locale('en'),
                     ],

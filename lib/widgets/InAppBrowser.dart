@@ -5,22 +5,22 @@
 //class JMUInAppBrowser extends InAppBrowser {
 //    @override
 //    Future onLoadStart(String url) async {
-//        print("\n\nStarted $url\n\n");
+//        debugPrint("\n\nStarted $url\n\n");
 //    }
 //
 //    @override
 //    Future onLoadStop(String url) async {
-//        print("\n\nStopped $url\n\n");
+//        debugPrint("\n\nStopped $url\n\n");
 //    }
 //
 //    @override
 //    void onLoadError(String url, int code, String message) {
-//        print("\n\nCan't load $url.. Error: $message\n\n");
+//        debugPrint("\n\nCan't load $url.. Error: $message\n\n");
 //    }
 //
 //    @override
 //    void onExit() {
-//        print("\n\nBrowser closed!\n\n");
+//        debugPrint("\n\nBrowser closed!\n\n");
 //    }
 //}
 //
@@ -32,17 +32,17 @@
 //
 //    @override
 //    void onOpened() {
-//        print("ChromeSafari browser opened");
+//        debugPrint("ChromeSafari browser opened");
 //    }
 //
 //    @override
 //    void onLoaded() {
-//        print("ChromeSafari browser loaded");
+//        debugPrint("ChromeSafari browser loaded");
 //    }
 //
 //    @override
 //    void onClosed() {
-//        print("ChromeSafari browser closed");
+//        debugPrint("ChromeSafari browser closed");
 //    }
 //}
 //
@@ -79,7 +79,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';

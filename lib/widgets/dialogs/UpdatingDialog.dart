@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 
 
@@ -45,7 +45,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
             String path = await _getPath();
             if (Platform.isAndroid) _update(path);
         } catch (e) {
-            return print('Failed to make OTA update. Details: $e');
+            return debugPrint('Failed to make OTA update. Details: $e');
         }
     }
 

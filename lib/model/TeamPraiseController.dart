@@ -238,7 +238,7 @@ class _TeamPraiseListInPostState extends State<TeamPraiseListInPost> {
         super.initState();
         if (widget.praisors != null) {
             widget.praisors.forEach((praisor) {
-                print("Praisor: $praisor");
+                debugPrint("Praisor: $praisor");
             });
         }
     }

@@ -9,7 +9,7 @@ import 'package:image_crop/image_crop.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
@@ -149,7 +149,7 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
                 Constants.eventBus.fire(new AvatarUpdatedEvent());
             });
         }).catchError((e) {
-            print(e.toString());
+            debugPrint(e.toString());
             _controller.changeState("failed", "头像更新失败");
         });
     }

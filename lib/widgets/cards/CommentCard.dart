@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
@@ -15,6 +15,7 @@ import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
+
 
 class CommentCard extends StatelessWidget {
     final Comment comment;
@@ -124,7 +125,10 @@ class CommentCard extends StatelessWidget {
             return Container(
                 width: MediaQuery.of(context).size.width,
                 margin: EdgeInsets.only(top: Constants.suSetSp(10.0)),
-                padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0), vertical: Constants.suSetSp(10.0)),
+                padding: EdgeInsets.symmetric(
+                    horizontal: Constants.suSetSp(16.0),
+                    vertical: Constants.suSetSp(10.0),
+                ),
                 decoration: BoxDecoration(
                     color: Theme.of(context).canvasColor,
                 ),
@@ -160,7 +164,10 @@ class CommentCard extends StatelessWidget {
 
     Widget getExtendedText(context, content, {isRoot}) {
         return Padding(
-            padding: (isRoot ?? false) ? EdgeInsets.zero : EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+            padding: (isRoot ?? false)
+                    ? EdgeInsets.zero
+                    : EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0))
+            ,
             child: ExtendedText(
                 content != null ? "$content " : null,
                 style: TextStyle(fontSize: Constants.suSetSp(18.0)),
@@ -202,11 +209,20 @@ class CommentCard extends StatelessWidget {
                                                 ||
                                             this.comment.post.uid == UserUtils.currentUser.uid
                                         ) {
-                                            showPlatformDialog(context: context, builder: (_) => DeleteDialog("评论", comment: this.comment));
+                                            showPlatformDialog(
+                                                context: context,
+                                                builder: (_) => DeleteDialog("评论", comment: this.comment),
+                                            );
                                         }
                                     },
                                 ),
-                                Text("删除评论", style: TextStyle(fontSize: Constants.suSetSp(16.0), color: Colors.white))
+                                Text(
+                                    "删除评论",
+                                    style: TextStyle(
+                                        fontSize: Constants.suSetSp(16.0),
+                                        color: Colors.white,
+                                    ),
+                                ),
                             ],
                         ),
                         Column(
@@ -218,8 +234,12 @@ class CommentCard extends StatelessWidget {
                                     onPressed: () {
                                         Navigator.pop(context);
                                         showDialog<Null>(
-                                                context: context,
-                                                builder: (BuildContext context) => CommentPositioned(this.comment.post, comment: this.comment)
+                                            context: context,
+                                            builder: (BuildContext context) => CommentPositioned(
+                                                post: this.comment.post,
+                                                postType: PostType.square,
+                                                comment: this.comment,
+                                            ),
                                         );
                                     },
                                 ),
@@ -233,11 +253,24 @@ class CommentCard extends StatelessWidget {
                                     icon: Icon(Icons.pageview, size: Constants.suSetSp(36.0), color: Colors.white),
                                     padding: EdgeInsets.all(Constants.suSetSp(6.0)),
                                     onPressed: () {
-                                        Navigator.pop(context);
-                                        Navigator.of(context).push(CupertinoPageRoute(builder: (context) => PostDetailPage(this.comment.post, beforeContext: context)));
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).push(
+                                            CupertinoPageRoute(
+                                                builder: (context) => PostDetailPage(
+                                                    this.comment.post,
+                                                    beforeContext: context,
+                                                ),
+                                            ),
+                                        );
                                     },
                                 ),
-                                Text("查看动态", style: TextStyle(fontSize: Constants.suSetSp(16.0), color: Colors.white))
+                                Text(
+                                    "查看动态",
+                                    style: TextStyle(
+                                        fontSize: Constants.suSetSp(16.0),
+                                        color: Colors.white,
+                                    ),
+                                ),
                             ],
                         ),
                     ],

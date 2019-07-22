@@ -187,6 +187,30 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
         ),
     );
 
+    Widget qrCode(context) => Padding(
+        padding: EdgeInsets.only(
+            left: Constants.suSetSp(4.0),
+        ),
+        child: Container(
+            padding: EdgeInsets.all(Constants.suSetSp(10.0)),
+            decoration: BoxDecoration(
+                color: const Color(0x44ffffff),
+                shape: BoxShape.circle,
+            ),
+            child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                child: Icon(
+                    AntDesign.getIconData("qrcode"),
+                    size: Constants.suSetSp(26.0),
+                    color: Colors.white,
+                ),
+                onTap: () {
+                    Navigator.of(context).pushNamed("/userqrcode");
+                },
+            ),
+        ),
+    );
+
     List<Widget> flexSpaceWidgets(context) => [
         Padding(
             padding: EdgeInsets.only(bottom: Constants.suSetSp(12.0)),
@@ -207,29 +231,7 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                     ),
                     Expanded(child: SizedBox()),
                     followButton(),
-                    if (widget.uid == UserUtils.currentUser.uid) Padding(
-                        padding: EdgeInsets.only(
-                            left: Constants.suSetSp(4.0),
-                        ),
-                        child: Container(
-                            padding: EdgeInsets.all(Constants.suSetSp(10.0)),
-                            decoration: BoxDecoration(
-                                color: Color(0x44ffffff),
-                                shape: BoxShape.circle,
-                            ),
-                            child: GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                child: Icon(
-                                    AntDesign.getIconData("qrcode"),
-                                    size: Constants.suSetSp(26.0),
-                                    color: Colors.white,
-                                ),
-                                onTap: () {
-                                    Navigator.of(context).pushNamed("/userqrcode");
-                                },
-                            ),
-                        ),
-                    ),
+                    if (widget.uid == UserUtils.currentUser.uid) qrCode(context),
                 ],
             ),
         ),
@@ -357,28 +359,27 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
             scrollDirection: Axis.horizontal,
             child: Row(
                 children: <Widget>[
-                    for (int i = 0; i < _tags.length; i++)
-                        Container(
-                            margin: EdgeInsets.only(right: Constants.suSetSp(12.0)),
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
-                                child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: Constants.suSetSp(8.0),
-                                    ),
-                                    decoration: BoxDecoration(
-                                        color: Color(0x44ffffff),
-                                    ),
-                                    child: Text(
-                                        _tags[i].name,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: Constants.suSetSp(16.0),
-                                        ),
+                    for (int i = 0; i < _tags.length; i++) Container(
+                        margin: EdgeInsets.only(right: Constants.suSetSp(12.0)),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
+                            child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Constants.suSetSp(8.0),
+                                ),
+                                decoration: BoxDecoration(
+                                    color: Color(0x44ffffff),
+                                ),
+                                child: Text(
+                                    _tags[i].name,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: Constants.suSetSp(16.0),
                                     ),
                                 ),
                             ),
                         ),
+                    ),
                 ],
             ),
         )

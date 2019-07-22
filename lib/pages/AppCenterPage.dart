@@ -4,7 +4,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -13,6 +13,7 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/InAppBrowser.dart';
+
 
 class AppCenterPage extends StatefulWidget {
     final TabController controller;
@@ -26,6 +27,8 @@ class AppCenterPage extends StatefulWidget {
 class AppCenterPageState extends State<AppCenterPage> {
     final ScrollController _scrollController = ScrollController();
     final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
+    static final List<String> tabs = ["课程表", "应用"];
+
     Color themeColor = ThemeUtils.currentThemeColor;
     Map<String, List<Widget>> webAppWidgetList = {};
     List<Widget> webAppList = [];
@@ -232,7 +235,7 @@ class AppCenterPageState extends State<AppCenterPage> {
             physics: NeverScrollableScrollPhysics(),
             cacheExtent: 1,
             children: <Widget>[
-                InAppBrowserPage(
+                if (UserUtils.currentUser.isTeacher != null) InAppBrowserPage(
                     url: ""
                             "${UserUtils.currentUser.isTeacher ? Api.courseScheduleTeacher : Api.courseSchedule}"
                             "?sid=${UserUtils.currentUser.sid}"

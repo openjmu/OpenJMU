@@ -1,8 +1,11 @@
 import 'dart:async';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:oktoast/oktoast.dart';
+
+import 'package:flutter/foundation.dart';
 
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
@@ -42,16 +45,16 @@ class NetUtils {
 
     static void initConfig() async {
 //        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-////            client.findProxy = (uri) {
-////                return "PROXY 192.168.1.15:8088";
-////            };
+//            client.findProxy = (uri) {
+//                return "PROXY 192.168.1.5:8088";
+//            };
 //            client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
 //        };
         dio.interceptors.add(cookieManager);
         dio.interceptors.add(InterceptorsWrapper(
             onError: (DioError e) async {
-                print("DioError: ${e.message}");
-                if (e.response.statusCode == 401) {
+                debugPrint("DioError: ${e.message}");
+                if (e?.response?.statusCode == 401) {
                     updateTicket();
                 }
                 return e;

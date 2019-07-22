@@ -1,7 +1,7 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.4.1+59
+version: 0.4.1+60
 
 environment:
     sdk: ">=2.2.2 <3.0.0"
@@ -13,13 +13,13 @@ dependencies:
     flutter_localizations:
         sdk: flutter
 
-    badges: 1.0.3
+    badges: 1.1.0
     cached_network_image:
         git: https://github.com/openjmu/flutter_cached_network_image.git  # 0.8.0
-    connectivity: 0.4.3+2
-    cookie_jar: 1.0.0
+    connectivity: 0.4.3+6
+    cookie_jar: 1.0.1
     crypto: 2.0.6
-    dio: 2.1.7
+    dio: 2.1.13
     dragablegridview_flutter: 0.2.5
     event_bus: 1.1.0
     extended_image: 0.5.1
@@ -31,32 +31,34 @@ dependencies:
     fluttertoast: 3.1.0
     flutter_cache_manager:
         git: https://github.com/openjmu/flutter_cache_manager.git  # 0.3.2
-    flutter_downloader: 1.1.7
+    flutter_downloader: 1.1.9
     flutter_icons: 0.1.4
-    flutter_inappbrowser: 1.2.0
+    flutter_inappbrowser: 1.2.1
 #    flutter_local_notifications: ^0.7.1+3
     flutter_native_image:
         git: https://github.com/btastic/flutter_native_image.git
-    flutter_platform_widgets: ^0.10.0
+    flutter_platform_widgets: 0.12.0
     flutter_qr_reader: 1.0.2
-    flutter_screenutil: 0.5.2
+    flutter_screenutil: 0.5.3
     flutter_svg: 0.12.4+2
     flutter_webview_plugin: 0.3.5
     html: 0.14.0+2
-    image_crop: 0.2.1
-    image_downloader: 0.15.4
+    image_crop: 0.3.0
+    image_downloader: 0.16.0
     image_gallery_saver: 1.1.0
-    image_picker: 0.6.0+10
+    image_picker: 0.6.0+17
     like_button: 0.1.7
-    multi_image_picker: 4.3.4
-    oktoast: 2.1.9
-    package_info: 0.4.0+4
-    permission_handler: 3.1.0
+    multi_image_picker: 4.3.6
+    oktoast: 2.2.0
+    package_info: 0.4.0+5
+    permission_handler: 3.2.0
     qr_flutter: 2.1.0+55
-    quick_actions: 0.3.0+2
-    shared_preferences: 0.5.3+1
-    url_launcher: 5.0.3
+    quick_actions: 0.3.2+2
+    shared_preferences: 0.5.3+4
+    sqflite: 1.1.6+2
+    url_launcher: 5.1.0
     uuid: 2.0.2
+    webview_flutter: 0.3.10+3
 
 dev_dependencies:
     flutter_test:

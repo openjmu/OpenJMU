@@ -16,7 +16,7 @@ import 'package:dragablegridview_flutter/dragablegridview_flutter.dart';
 import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -461,7 +461,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                         setState(() {
                             isLoading = false;
                         });
-                        print(e.toString());
+                        debugPrint(e.toString());
                     });
                 } catch (exception) {
                     showCenterErrorShortToast(exception);
@@ -485,9 +485,9 @@ class PublishPostPageState extends State<PublishPostPage> {
             _imageIdList[index] = imageId;
             return response;
         }).catchError((e) {
-            print(e.toString());
-            print(e.response.toString());
-            print(formData);
+            debugPrint(e.toString());
+            debugPrint(e.response.toString());
+            debugPrint("$formData");
             showCenterErrorShortToast(e.response.toString());
         });
     }
@@ -524,7 +524,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         }).catchError((e) {
             setState(() { isLoading = false; });
             _loadingDialogController.changeState("failed", "动态发布失败");
-            print(e.toString());
+            debugPrint(e.toString());
         });
     }
 

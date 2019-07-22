@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:badges/badges.dart';
+import 'package:crypto/crypto.dart';
 import 'package:event_bus/event_bus.dart';
 
 import 'package:OpenJMU/model/Bean.dart';
@@ -10,14 +12,18 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 
 class Constants {
+    /// For test page.
+    /// TODO: Set this to false before release.
+    static bool isTest = false;
+
     static final String endLineTag = "没有更多了~";
 
     static int homeSplashIndex = 0;
 
     // Fow news list.
+    static final int appId = Platform.isIOS ? 274 : 273;
     static final String apiKey = "c2bd7a89a377595c1da3d49a0ca825d5";
-    static final int appIdAndroid = 273;
-    static final int appIdIOS = 274;
+    static final String deviceType = Platform.isIOS ? "iPhone" : "android";
 
     // For posts. Different type of devices (iOS/Android) use different pair of key and secret.
     static final String postApiKeyAndroid = "1FD8506EF9FF0FAB7CAFEBB610F536A1";
@@ -28,12 +34,40 @@ class Constants {
     /// Request header for team.
     static Map<String, dynamic> header = {
         "APIKEY": apiKey,
-        "APPID": Platform.isIOS ? appIdIOS : appIdAndroid,
+        "APPID": appId,
         "CLIENTTYPE": Platform.isIOS ? "ios" : "android",
         "CLOUDID": "jmu",
         "CUID": UserUtils.currentUser.uid,
         "SID": UserUtils.currentUser.sid,
         "TAGID": 1,
+    };
+
+    static Map<String, dynamic> loginClientInfo = {
+        "appid": Platform.isIOS ? 274 : 273,
+        if (Platform.isIOS) "packetid": "",
+        "platform": Platform.isIOS ? 40 : 30,
+        "platformver": Platform.isIOS ? "2.3.2" : "2.3.1",
+        "deviceid": "",
+        "devicetype": deviceType,
+        "systype": Platform.isIOS ? "iPhone OS" : "Android OS",
+        "sysver": Platform.isIOS ? "12.2" : "9.0",
+    };
+
+    static Map<String, dynamic> loginParams({
+        String blowfish,
+        String username,
+        String password,
+        String ticket,
+    }) => {
+        "appid": Platform.isIOS ? 274 : 273,
+        "blowfish": "$blowfish",
+        if (ticket != null) "ticket": "$ticket",
+        if (username != null) "account": "$username",
+        if (password != null) "password": "${sha1.convert(utf8.encode(password))}",
+        if (password != null) "encrypt": 1,
+        if (username != null) "unitid": 55,
+        if (username != null) "unitcode": "jmu",
+        "clientinfo": jsonEncode(loginClientInfo),
     };
 
     /// Flea Market.

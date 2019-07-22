@@ -3,13 +3,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 //import 'package:oktoast/oktoast.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/SignAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -43,9 +42,11 @@ class MyInfoPageState extends State<MyInfoPage> {
         ],
         [
             "退出登录",
-//            if (Platform.isAndroid) "退出",
         ],
-        if (isTest) ["测试页"],
+        if (Constants.isTest) [
+            "获取成绩",
+            "测试页",
+        ],
     ];
     final List<List<String>> settingsIcon = [
         [
@@ -59,9 +60,11 @@ class MyInfoPageState extends State<MyInfoPage> {
         ],
         [
             "exit",
-//            if (Platform.isAndroid) "exit",
         ],
-        if (isTest) ["idols"],
+        if (Constants.isTest) [
+            "idols",
+            "idols",
+        ],
     ];
 
     Color themeColor = ThemeUtils.currentThemeColor;
@@ -77,10 +80,6 @@ class MyInfoPageState extends State<MyInfoPage> {
     String hello = "你好";
 
     Timer updateHelloTimer;
-
-    /// For test page.
-    /// TODO: Set this to false before release.
-    static bool isTest = false;
 
     @override
     void initState() {
@@ -175,7 +174,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 });
                 getSignStatus();
             }).catchError((e) {
-                print(e.toString());
+                debugPrint(e.toString());
             });
         }
     }
@@ -352,29 +351,6 @@ class MyInfoPageState extends State<MyInfoPage> {
                                                                 textAlign: TextAlign.start,
                                                             ),
                                                         ),
-                                                        GestureDetector(
-                                                            behavior: HitTestBehavior.translucent,
-                                                            child: Row(
-                                                                mainAxisSize: MainAxisSize.min,
-                                                                children: <Widget>[
-                                                                    Icon(
-                                                                        AntDesign.getIconData("qrcode"),
-                                                                        color: Theme.of(context).textTheme.caption.color,
-                                                                        size: Constants.suSetSp(20.0),
-                                                                    ),
-                                                                    SizedBox(width: Constants.suSetSp(4.0)),
-                                                                    SvgPicture.asset(
-                                                                        "assets/icons/arrow-right.svg",
-                                                                        color: Theme.of(context).textTheme.caption.color,
-                                                                        width: Constants.suSetSp(20.0),
-                                                                        height: Constants.suSetSp(20.0),
-                                                                    ),
-                                                                ],
-                                                            ),
-                                                            onTap: () {
-                                                                Navigator.of(context).pushNamed("/userqrcode");
-                                                            },
-                                                        ),
                                                     ],
                                                 ),
                                                 SizedBox(height: Constants.suSetSp(3.0)),
@@ -495,10 +471,10 @@ class MyInfoPageState extends State<MyInfoPage> {
                 OTAUtils.checkUpdate();
                 break;
             case "测试页":
-//                showDialog(context: context, builder: (_) => TestPage());
                 Navigator.pushNamed(context, "/test");
-//                Navigator.pushNamed(context, "/notificationTest");
-//                NetUtils.updateTicket();
+                break;
+            case "获取成绩":
+                Navigator.pushNamed(context, "/score");
                 break;
             case "关于OpenJMU":
                 Navigator.pushNamed(context, "/about");

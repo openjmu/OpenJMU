@@ -9,12 +9,14 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
 
+
 class MessagePage extends StatefulWidget {
     @override
     State<StatefulWidget> createState() => MessagePageState();
 }
 
 class MessagePageState extends State<MessagePage> {
+    static final List<String> tabs = ["消息"]; /// ["消息", "联系人"]
     List<String> topItems = ["评论/留言", "粉丝"];
     List<String> topIcons = ["liuyan", "idols"];
 

@@ -4,7 +4,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -57,9 +56,9 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
 
     List<TabController> _tabControllers = [null, null, null,];
     List<List> sections = [
-        ["首页", "关注", "二手市场", "新闻"],
-        ["课程表", "应用"],
-        ["消息"], /// ["消息", "联系人"],
+        PostSquareListPageState.tabs,
+        AppCenterPageState.tabs,
+        MessagePageState.tabs,
     ];
 
     int _tabIndex = Constants.homeSplashIndex;
@@ -91,7 +90,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
             PostSquareListPage(controller: _tabControllers[0]),
             AppCenterPage(controller: _tabControllers[1]),
             MessagePage(),
-            MyInfoPage()
+            MyInfoPage(),
         ];
         Constants.eventBus
             ..on<ActionsEvent>().listen((event) {
@@ -215,7 +214,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                                     height: Constants.suSetSp(26.0),
                                 ),
                                 onPressed: () async {
-                                    Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([
+                                    Map<PermissionGroup, PermissionStatus> permissions =await PermissionHandler().requestPermissions([
                                         PermissionGroup.camera,
                                     ]);
                                     if (permissions[PermissionGroup.camera] == PermissionStatus.granted) {
@@ -243,7 +242,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                             child: IconButton(
                                 icon: Icon(Icons.refresh, size: Constants.suSetSp(24.0)),
                                 onPressed: () {
-                                    Constants.eventBus.fire(new AppCenterRefreshEvent(_tabControllers[1].index));
+                                    Constants.eventBus.fire(AppCenterRefreshEvent(_tabControllers[1].index));
                                 },
                             ),
                         )
@@ -260,13 +259,10 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                     iconSize: 30.0,
                     selectedColor: ThemeUtils.currentThemeColor,
                     onTabSelected: _selectedTab,
-                    items: [
-                        for (int i = 0; i < bottomAppBarTitles.length; i++)
-                            FABBottomAppBarItem(
-                                iconPath: bottomAppBarIcons[i],
-                                text: bottomAppBarTitles[i],
-                            ),
-                    ],
+                    items: [for (int i = 0; i < bottomAppBarTitles.length; i++) FABBottomAppBarItem(
+                        iconPath: bottomAppBarIcons[i],
+                        text: bottomAppBarTitles[i],
+                    )],
                 ),
                 floatingActionButton: Container(
                     width: Constants.suSetSp(56.0),
@@ -276,7 +272,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                             children: <Widget>[
                                 Positioned(
                                     child: Icon(
-                                        Platform.isAndroid ? Icons.add : Ionicons.getIconData("ios-add"),
+                                        Icons.add,
                                         size: Constants.suSetSp(30.0),
                                     ),
                                 ),

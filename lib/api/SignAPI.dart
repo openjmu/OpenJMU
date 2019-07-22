@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-import 'package:OpenJMU/Api/Api.dart';
+import 'package:OpenJMU/Api/API.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 
 

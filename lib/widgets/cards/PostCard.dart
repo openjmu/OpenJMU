@@ -9,7 +9,7 @@ import 'package:extended_text/extended_text.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:like_button/like_button.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/PostAPI.dart';
 import 'package:OpenJMU/api/PraiseAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';

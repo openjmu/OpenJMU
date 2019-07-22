@@ -56,7 +56,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                 Navigator.of(context).pop();
             });
         }).catchError((e) {
-            print(e.toString());
+            debugPrint(e.toString());
             _loadingDialogController.changeState("failed", "签名更新失败");
         });
     }

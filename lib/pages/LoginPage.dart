@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
@@ -13,6 +13,8 @@ import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
+import 'package:OpenJMU/widgets/RoundedCheckBox.dart';
+
 
 class LoginPage extends StatefulWidget {
     final int initIndex;
@@ -24,12 +26,18 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
-    final _formKey = GlobalKey<FormState>();
-    TextEditingController _usernameEditingController = TextEditingController();
+    final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+    final TextEditingController _usernameController = TextEditingController();
+    final TextEditingController _passwordController = TextEditingController();
+
     String _username, _password;
-    bool _loginButtonDisabled = false;
+
+    bool _agreement = false;
+    bool _login = false;
+    bool _loginDisabled = true;
     bool _isObscure = true;
     bool _usernameCanClear = false;
+
     Color _defaultIconColor = ThemeUtils.defaultColor;
 
     @override
@@ -44,27 +52,42 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             })
             ..on<LoginFailedEvent>().listen((event) {
                 setState(() {
-                    _loginButtonDisabled = false;
+                    _login = false;
                 });
             })
         ;
-        _usernameEditingController..addListener(() {
+        _usernameController..addListener(() {
             if (this.mounted) {
-                setState(() {
-                    if (_usernameEditingController.text.length > 0 && !_usernameCanClear) {
+                _username = _usernameController.text;
+                if (_usernameController.text.length > 0 && !_usernameCanClear) {
+                    setState(() {
                         _usernameCanClear = true;
-                    } else if (_usernameEditingController.text.length == 0 && _usernameCanClear) {
+                    });
+                } else if (_usernameController.text.length == 0 && _usernameCanClear) {
+                    setState(() {
                         _usernameCanClear = false;
-                    }
-                });
+                    });
+                }
+            }
+        });
+        _passwordController..addListener(() {
+            if (this.mounted) {
+                _password = _passwordController.text;
             }
         });
     }
 
     @override
+    void didChangeDependencies() {
+        super.didChangeDependencies();
+        ThemeUtils.setDark(true);
+    }
+
+    @override
     void dispose() {
         super.dispose();
-        _usernameEditingController?.dispose();
+        _usernameController?.dispose();
+        _passwordController?.dispose();
     }
 
     int last = 0;
@@ -108,136 +131,133 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         );
     }
 
-    Padding buildUsernameTextField() {
-        return Padding(
-            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(48.0)),
-            child: DecoratedBox(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Constants.suSetSp(10.0)),
-                    color: Color.fromRGBO(255, 255, 255, 0.2),
-                ),
-                child: TextFormField(
-                    controller: _usernameEditingController,
-                    decoration: InputDecoration(
-                        prefixIcon: Icon(
-                            Icons.person,
+    Widget buildUsernameTextField() {
+        return DecoratedBox(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Constants.suSetSp(10.0)),
+                color: Color.fromRGBO(255, 255, 255, 0.2),
+            ),
+            child: TextFormField(
+                controller: _usernameController,
+                decoration: InputDecoration(
+                    prefixIcon: Icon(
+                        Icons.person,
+                        color: Colors.white,
+                        size: Constants.suSetSp(24.0),
+                    ),
+                    suffixIcon: _usernameCanClear ? IconButton(
+                        icon: Icon(
+                            Icons.clear,
                             color: Colors.white,
                             size: Constants.suSetSp(24.0),
                         ),
-                        suffixIcon: _usernameCanClear ? IconButton(
-                            icon: Icon(
-                                Icons.clear,
-                                color: Colors.white,
-                                size: Constants.suSetSp(24.0),
-                            ),
-                            onPressed: _usernameEditingController.clear,
-                        ) : null,
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.all(Constants.suSetSp(12.0)),
-                        labelText: '工号/学号',
-                        labelStyle: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(18.0)),
-                    ),
-                    style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(18.0)),
-                    cursorColor: Colors.white,
-                    onSaved: (String value) => _username = value,
-                    keyboardType: TextInputType.number,
+                        onPressed: _usernameController.clear,
+                    ) : null,
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.all(Constants.suSetSp(12.0)),
+                    labelText: '工号/学号',
+                    labelStyle: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(18.0)),
                 ),
+                style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(18.0)),
+                cursorColor: Colors.white,
+                onSaved: (String value) => _username = value,
+                keyboardType: TextInputType.number,
             ),
         );
     }
 
-    Padding buildPasswordTextField() {
-        return Padding(
-            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(48.0)),
-            child: DecoratedBox(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Constants.suSetSp(10.0)),
-                    color: Color.fromRGBO(255, 255, 255, 0.2),
-                ),
-                child: TextFormField(
-                    onFieldSubmitted: (value) {
-                        if (_loginButtonDisabled) {
-                            return null;
-                        } else {
-                            loginButtonPressed(context);
-                        }
-                    },
-                    onSaved: (String value) => _password = value,
-                    obscureText: _isObscure,
-                    validator: (String value) {
-                        if (value.isEmpty) return '请输入密码';
-                    },
-                    decoration: InputDecoration(
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.all(Constants.suSetSp(10.0)),
-                        prefixIcon: Icon(
-                            Icons.lock,
-                            color: Colors.white,
+    Widget buildPasswordTextField() {
+        return DecoratedBox(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Constants.suSetSp(10.0)),
+                color: Color.fromRGBO(255, 255, 255, 0.2),
+            ),
+            child: TextFormField(
+                controller: _passwordController,
+                onSaved: (String value) => _password = value,
+                obscureText: _isObscure,
+                validator: (String value) {
+                    if (value.isEmpty) return '请输入密码';
+                },
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.all(Constants.suSetSp(10.0)),
+                    prefixIcon: Icon(
+                        Icons.lock,
+                        color: Colors.white,
+                        size: Constants.suSetSp(24.0),
+                    ),
+                    labelText: '密码',
+                    labelStyle: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(18.0)),
+                    suffixIcon: IconButton(
+                        icon: Icon(
+                            _isObscure
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                            color: _defaultIconColor,
                             size: Constants.suSetSp(24.0),
                         ),
-                        labelText: '密码',
-                        labelStyle: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(18.0)),
-                        suffixIcon: IconButton(
-                            icon: Icon(
-                                _isObscure
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                color: _defaultIconColor,
-                                size: Constants.suSetSp(24.0),
-                            ),
-                            onPressed: () {
-                                setState(() {
-                                    _isObscure = !_isObscure;
-                                    _defaultIconColor = _isObscure
-                                            ? ThemeUtils.defaultColor
-                                            : Colors.white;
-                                });
-                            },
-                        ),
+                        onPressed: () {
+                            setState(() {
+                                _isObscure = !_isObscure;
+                                _defaultIconColor = _isObscure
+                                        ? ThemeUtils.defaultColor
+                                        : Colors.white;
+                            });
+                        },
                     ),
-                    style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(20.0)),
-                    cursorColor: Colors.white,
                 ),
+                style: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(20.0)),
+                cursorColor: Colors.white,
             ),
         );
     }
 
     Widget buildLoginButton(context) {
-        return Container(
-            width: Constants.suSetSp(70.0),
-            height: Constants.suSetSp(70.0),
-            decoration: BoxDecoration(
-                color: Color.fromRGBO(255, 255, 255, 0.2),
-                shape: BoxShape.circle,
-            ),
-            child: !_loginButtonDisabled
-                    ? IconButton(
-                highlightColor: Colors.white,
-                icon: Icon(
-                    Icons.arrow_forward,
-                    color: Colors.white,
-                    size: Constants.suSetSp(36.0),
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+                Container(
+                    width: Constants.suSetSp(70.0),
+                    height: Constants.suSetSp(70.0),
+                    constraints: BoxConstraints(
+                        maxWidth: Constants.suSetSp(70.0),
+                        maxHeight: Constants.suSetSp(70.0),
+                    ),
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(255, 255, 255, 0.2),
+                        shape: BoxShape.circle,
+                    ),
+                    child: !_login
+                            ? IconButton(
+                        highlightColor: Colors.white,
+                        icon: Icon(
+                            Icons.arrow_forward,
+                            color: Colors.white,
+                            size: Constants.suSetSp(36.0),
+                        ),
+                        onPressed: () {
+                            if (_login || _loginDisabled) {
+                                return null;
+                            } else {
+                                loginButtonPressed(context);
+                            }
+                        },
+                    ) : Padding(
+                        padding: EdgeInsets.all(Constants.suSetSp(20.0)),
+                        child: CircularProgressIndicator(
+                            strokeWidth: Constants.suSetSp(4.0),
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                    ),
                 ),
-                onPressed: () {
-                    if (_loginButtonDisabled) {
-                        return null;
-                    } else {
-                        loginButtonPressed(context);
-                    }
-                },
-            ) : Padding(
-                padding: EdgeInsets.all(Constants.suSetSp(22.0)),
-                child: CircularProgressIndicator(
-                    strokeWidth: Constants.suSetSp(4.0),
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-            ),
+            ],
         );
     }
 
     Padding buildForgetPasswordText(BuildContext context) {
         return Padding(
-            padding: EdgeInsets.all(0.0),
+            padding: EdgeInsets.zero,
             child: Align(
                 alignment: Alignment.center,
                 child: FlatButton(
@@ -255,24 +275,43 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         );
     }
 
-    RichText buildUserAgreement(context) {
-        return RichText(
-            text: TextSpan(
-                children: <TextSpan>[
-                    TextSpan(text: "登录即表明同意", style: TextStyle(color: Colors.white70)),
-                    TextSpan(
-                        text: "用户协议",
-                        style: TextStyle(color: Colors.lightBlueAccent),
-                        recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                                return CommonWebPage.jump(context, "${Api.homePage}/license.html", "OpenJMU用户协议");
-                            },
+    Widget buildUserAgreement(context) {
+        return Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+                RoundedCheckbox(
+                    value: _agreement,
+                    inactiveColor: Colors.white70,
+                    onChanged: (value) {
+                        setState(() {
+                            _agreement = value;
+                        });
+                        validateForm();
+                    },
+                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                RichText(
+                    text: TextSpan(
+                        children: <TextSpan>[
+                            TextSpan(text: "登录即表明同意", style: TextStyle(color: Colors.white70)),
+                            TextSpan(
+                                text: "用户协议",
+                                style: TextStyle(color: Colors.lightBlueAccent),
+                                recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                        return CommonWebPage.jump(
+                                            context,
+                                            "${Api.homePage}/license.html",
+                                            "OpenJMU用户协议",
+                                        );
+                                    },
+                            ),
+                        ],
+                        style: TextStyle(fontSize: Constants.suSetSp(16.0)),
                     ),
-                ],
-                style: TextStyle(
-                    fontSize: Constants.suSetSp(16.0),
-                )
-            ),
+                ),
+            ],
         );
     }
 
@@ -308,11 +347,11 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         if (_formKey.currentState.validate()) {
             _formKey.currentState.save();
             setState(() {
-                _loginButtonDisabled = true;
+                _login = true;
             });
             DataUtils.doLogin(context, _username, _password).catchError((e) {
                 setState(() {
-                    _loginButtonDisabled = false;
+                    _login = false;
                 });
             });
         }
@@ -357,43 +396,63 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         );
     }
 
+    void validateForm() {
+        if (
+            (_username != null && _username != "")
+                &&
+            (_password != null && _password != "")
+                &&
+            (_agreement)
+                &&
+            (_loginDisabled)
+        ) {
+            setState(() {
+                _loginDisabled = false;
+            });
+        } else if (
+            (_username == null || _username == "")
+                ||
+            (_password == null || _password == "")
+                ||
+            (!_agreement)
+                ||
+            (!_loginDisabled)
+        ) {
+            setState(() {
+                _loginDisabled = true;
+            });
+        }
+    }
+
     @override
     Widget build(BuildContext context) {
         return WillPopScope(
             onWillPop: doubleBackExit,
             child: Scaffold(
-                body: Builder(
-                    builder: (context) => Stack(
+                backgroundColor: ThemeUtils.defaultColor,
+                body: Form(
+                    key: _formKey,
+                    child: ListView(
+                        padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(50.0)),
+                        shrinkWrap: true,
                         children: <Widget>[
-                            Container(
-                                decoration: BoxDecoration(
-                                    color: ThemeUtils.defaultColor,
-                                ),
-                            ),
-                            Form(
-                                key: _formKey,
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                        SizedBox(height: Constants.suSetSp(100.0)),
-                                        buildLogo(),
-//                                        buildTitleLine(),
-                                        SizedBox(height: Constants.suSetSp(30.0)),
-                                        buildUsernameTextField(),
-                                        SizedBox(height: Constants.suSetSp(30.0)),
-                                        buildPasswordTextField(),
-                                        buildForgetPasswordText(context),
-                                        SizedBox(height: Constants.suSetSp(10.0)),
-                                        buildUserAgreement(context),
-                                        SizedBox(height: Constants.suSetSp(20.0)),
-                                        buildLoginButton(context),
-                                        SizedBox(height: Constants.suSetSp(50.0)),
-//                                        buildRegisterText(context),
-                                    ],
-                                ),
-                            ),
+                            Constants.emptyDivider(height: Constants.suSetSp(100.0)),
+                            buildLogo(),
+//                            buildTitleLine(),
+                            Constants.emptyDivider(height: Constants.suSetSp(30.0)),
+                            buildUsernameTextField(),
+                            Constants.emptyDivider(height: Constants.suSetSp(30.0)),
+                            buildPasswordTextField(),
+                            buildForgetPasswordText(context),
+                            Constants.emptyDivider(height: Constants.suSetSp(10.0)),
+                            buildUserAgreement(context),
+                            Constants.emptyDivider(height: Constants.suSetSp(20.0)),
+                            buildLoginButton(context),
+                            Constants.emptyDivider(height: Constants.suSetSp(50.0)),
+//                            buildRegisterText(context),
                         ],
                     ),
+                    onChanged: validateForm,
                 ),
                 resizeToAvoidBottomInset: false,
                 resizeToAvoidBottomPadding: false,

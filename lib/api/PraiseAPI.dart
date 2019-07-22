@@ -1,4 +1,6 @@
-import 'package:OpenJMU/api/Api.dart';
+import 'package:flutter/foundation.dart';
+
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 
@@ -23,13 +25,13 @@ class PraiseAPI {
             return NetUtils.postWithCookieAndHeaderSet(
                 "${Api.postRequestPraise}$id",
             ).catchError((e) {
-                print(e.response);
+                debugPrint("${e.response}");
             });
         } else {
             return NetUtils.deleteWithCookieAndHeaderSet(
                 "${Api.postRequestPraise}$id",
             ).catchError((e) {
-                print(e.response);
+                debugPrint("${e.response}");
             });
         }
     }

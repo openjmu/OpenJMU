@@ -1,4 +1,7 @@
+import 'package:OpenJMU/api/API.dart';
+import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
 
 
 class NewsAPI {
@@ -23,6 +26,13 @@ class NewsAPI {
             replies: int.parse(newsData['replys'].toString()),
             glances: int.parse(newsData['glances'].toString()),
             isLiked: int.parse(newsData['praised'].toString()) == 1,
+        );
+    }
+
+    static Future getNewsContent({int newsId}) {
+        return NetUtils.getWithHeaderSet(
+            "${Api.newsDetail}$newsId",
+            headers: Constants.header,
         );
     }
 }

@@ -6,10 +6,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-import 'package:OpenJMU/api/Api.dart';
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/NewsAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/pages/NewsDetailPage.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/UserUtils.dart';
@@ -131,41 +132,38 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
     }
 
     Widget getInfo(News news) {
-        return Padding(
-            padding: EdgeInsets.only(top: Constants.suSetSp(10.0)),
-            child: Row(
-                children: <Widget>[
-                    Padding(
-                        padding: EdgeInsets.zero,
-                        child: Text(
-                            news.postTime,
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: Constants.suSetSp(14.0),
-                            ),
+        return Row(
+            children: <Widget>[
+                Padding(
+                    padding: EdgeInsets.zero,
+                    child: Text(
+                        news.postTime,
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: Constants.suSetSp(14.0),
                         ),
                     ),
-                    Expanded(
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                                Text(
-                                    "${news.glances} ",
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: Constants.suSetSp(14.0),
-                                    ),
-                                ),
-                                Icon(
-                                    Icons.remove_red_eye,
+                ),
+                Expanded(
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                            Text(
+                                "${news.glances} ",
+                                style: TextStyle(
                                     color: Colors.grey,
-                                    size: Constants.suSetSp(14.0),
-                                )
-                            ],
-                        ),
+                                    fontSize: Constants.suSetSp(14.0),
+                                ),
+                            ),
+                            Icon(
+                                Icons.remove_red_eye,
+                                color: Colors.grey,
+                                size: Constants.suSetSp(14.0),
+                            )
+                        ],
                     ),
-                ],
-            ),
+                ),
+            ],
         );
     }
 
@@ -175,51 +173,59 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
                 "/sid/${UserUtils.currentUser.sid}"
         ;
         ImageProvider coverImg = CachedNetworkImageProvider(imageUrl, cacheManager: DefaultCacheManager());
-        return Padding(
-            padding: EdgeInsets.all(Constants.suSetSp(4.0)),
-            child: Container(
-                width: Constants.suSetSp(80.0),
-                height: Constants.suSetSp(80.0),
-                child: FadeInImage(
-                    fadeInDuration: const Duration(milliseconds: 100),
-                    placeholder: AssetImage("assets/avatar_placeholder.png"),
-                    image: coverImg,
-                    fit: BoxFit.cover,
-                ),
+        return SizedBox(
+            width: Constants.suSetSp(80.0),
+            height: Constants.suSetSp(80.0),
+            child: FadeInImage(
+                fadeInDuration: const Duration(milliseconds: 100),
+                placeholder: AssetImage("assets/avatar_placeholder.png"),
+                image: coverImg,
+                fit: BoxFit.cover,
             ),
         );
     }
 
     Widget newsItem(News news) {
-        return InkWell(
-            onTap: () {
-//                return CommonWebPage.jump(context, "${Api.newsDetail}${itemData['post_id']}", itemData['title']);
-                return null;
-            },
-            child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                    Expanded(
-                        child: Padding(
-                            padding: EdgeInsets.all(Constants.suSetSp(10.0)),
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                    getTitle(news),
-                                    getSummary(news),
-                                    getInfo(news),
-                                ],
+        return Container(
+            height: Constants.suSetSp(96.0),
+            padding: EdgeInsets.all(Constants.suSetSp(8.0)),
+            child: InkWell(
+                onTap: () {
+                    Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                        return NewsDetailPage(news: news);
+                    }));
+                },
+                child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                        Expanded(
+                            child: Padding(
+                                padding: EdgeInsets.fromLTRB(
+                                    Constants.suSetSp(4.0),
+                                    Constants.suSetSp(4.0),
+                                    Constants.suSetSp(10.0),
+                                    Constants.suSetSp(4.0),
+                                ),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                        getTitle(news),
+                                        getSummary(news),
+                                        Expanded(child: SizedBox()),
+                                        getInfo(news),
+                                    ],
+                                ),
                             ),
                         ),
-                    ),
-                    if (news.cover != null) coverImg(news) else Padding(
-                        padding: EdgeInsets.all(Constants.suSetSp(4.0)),
-                        child: Container(
-                            width: Constants.suSetSp(80.0),
-                            height: Constants.suSetSp(80.0),
+                        if (news.cover != null) coverImg(news) else Padding(
+                            padding: EdgeInsets.all(Constants.suSetSp(4.0)),
+                            child: Container(
+                                width: Constants.suSetSp(80.0),
+                                height: Constants.suSetSp(80.0),
+                            ),
                         ),
-                    ),
-                ],
+                    ],
+                ),
             ),
         );
     }
@@ -237,15 +243,16 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
                             ?
                     SizedBox()
                             :
-                    ListView.builder(
+                    ListView.separated(
                         shrinkWrap: true,
                         controller: _scrollController,
+                        separatorBuilder: (context, index) => Constants.separator(context, height: 1.0),
                         itemCount: newsList.length + 1,
                         itemBuilder: (context, index) {
                             if (index == newsList.length) {
                                 if (this._canLoadMore) {
                                     getNewsList(isLoadMore: true);
-                                    return Container(
+                                    return SizedBox(
                                         height: Constants.suSetSp(40.0),
                                         child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -275,7 +282,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
                             } else if (index < newsList.length) {
                                 return newsItem(newsList[index]);
                             } else {
-                                return Container();
+                                return SizedBox();
                             }
                         },
                     ),
