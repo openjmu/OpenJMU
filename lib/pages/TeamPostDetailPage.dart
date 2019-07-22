@@ -187,7 +187,10 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                                         onPressed: () {
                                             showDialog<Null>(
                                                 context: context,
-                                                builder: (BuildContext context) => CommentPositioned(widget.post),
+                                                builder: (BuildContext context) => CommentPositioned(
+                                                    post: widget.post,
+                                                    postType: PostType.team,
+                                                ),
                                             );
                                         },
                                         icon: SvgPicture.asset(

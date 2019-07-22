@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -100,13 +102,13 @@ class TeamPraiseAPI {
             return NetUtils.postWithCookieAndHeaderSet(
                 "${Api.postRequestPraise}$id",
             ).catchError((e) {
-                print(e.response["msg"]);
+                debugPrint("${e.response["msg"]}");
             });
         } else {
             return NetUtils.deleteWithCookieAndHeaderSet(
                 "${Api.postRequestPraise}$id",
             ).catchError((e) {
-                print(e.response["msg"]);
+                debugPrint("${e.response["msg"]}");
             });
         }
     }

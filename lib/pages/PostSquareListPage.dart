@@ -3,8 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:extended_tabs/extended_tabs.dart';
 
 import 'package:OpenJMU/model/PostController.dart';
-import 'package:OpenJMU/model/TeamPostController.dart';
+//import 'package:OpenJMU/model/TeamPostController.dart';
 import 'package:OpenJMU/pages/NewsListPage.dart';
+
 
 class PostSquareListPage extends StatefulWidget {
     final TabController controller;
@@ -12,10 +13,16 @@ class PostSquareListPage extends StatefulWidget {
     PostSquareListPage({Key key, this.controller}) : super(key: key);
 
     @override
-    _PostSquareListPageState createState() => _PostSquareListPageState();
+    PostSquareListPageState createState() => PostSquareListPageState();
 }
 
-class _PostSquareListPageState extends State<PostSquareListPage> {
+class PostSquareListPageState extends State<PostSquareListPage> {
+    static final List<String> tabs = [
+        "首页",
+        "关注",
+//        "二手市场",
+        "新闻",
+    ];
     static List<Widget> _post;
 
     List<bool> hasLoaded;
@@ -43,17 +50,18 @@ class _PostSquareListPageState extends State<PostSquareListPage> {
                 needRefreshIndicator: true,
             );
         },
+//                () {
+//            _post[2] = TeamPostList(
+//                TeamPostController(
+//                    isMore: false,
+//                    lastTimeStamp: (int timestamp) => timestamp,
+//                ),
+//                needRefreshIndicator: true,
+//            );
+//        },
                 () {
-            _post[2] = TeamPostList(
-                TeamPostController(
-                    isMore: false,
-                    lastTimeStamp: (int timestamp) => timestamp,
-                ),
-                needRefreshIndicator: true,
-            );
-        },
-                () {
-            _post[3] = NewsListPage();
+//            _post[3] = NewsListPage();
+            _post[2] = NewsListPage();
         },
     ];
 

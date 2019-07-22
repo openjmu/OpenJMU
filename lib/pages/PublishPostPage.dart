@@ -461,7 +461,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                         setState(() {
                             isLoading = false;
                         });
-                        print(e.toString());
+                        debugPrint(e.toString());
                     });
                 } catch (exception) {
                     showCenterErrorShortToast(exception);
@@ -485,9 +485,9 @@ class PublishPostPageState extends State<PublishPostPage> {
             _imageIdList[index] = imageId;
             return response;
         }).catchError((e) {
-            print(e.toString());
-            print(e.response.toString());
-            print(formData);
+            debugPrint(e.toString());
+            debugPrint(e.response.toString());
+            debugPrint("$formData");
             showCenterErrorShortToast(e.response.toString());
         });
     }
@@ -524,7 +524,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         }).catchError((e) {
             setState(() { isLoading = false; });
             _loadingDialogController.changeState("failed", "动态发布失败");
-            print(e.toString());
+            debugPrint(e.toString());
         });
     }
 

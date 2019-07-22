@@ -45,7 +45,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
             String path = await _getPath();
             if (Platform.isAndroid) _update(path);
         } catch (e) {
-            return print('Failed to make OTA update. Details: $e');
+            return debugPrint('Failed to make OTA update. Details: $e');
         }
     }
 

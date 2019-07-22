@@ -1,5 +1,7 @@
 import 'dart:core';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
@@ -61,8 +63,8 @@ class PostAPI {
             Api.postGlance,
             data: {"tids": [postId]},
         ).catchError((e) {
-            print(e.toString());
-            print(e.response);
+            debugPrint("${e.toString()}");
+            debugPrint("${e.response}");
         });
     }
     static deletePost(int postId) => NetUtils.deleteWithCookieAndHeaderSet(

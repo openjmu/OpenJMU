@@ -124,7 +124,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                 }
             })
             ..on<PostDeletedEvent>().listen((event) {
-                print("PostDeleted: ${event.postId} / ${event.page} / ${event.index}");
+                debugPrint("PostDeleted: ${event.postId} / ${event.page} / ${event.index}");
                 if (mounted && (event.page == "user") && event.index != null) {
                     setState(() {
                         _idList.removeAt(event.index);
@@ -401,10 +401,10 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
             }
         } on DioError catch (e) {
             if (e.response != null) {
-                print(e.response.data);
+                debugPrint("${e.response.data}");
             } else {
-                print(e.request);
-                print(e.message);
+                debugPrint("${e.request}");
+                debugPrint("${e.message}");
             }
             return;
         }
@@ -432,10 +432,10 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
             }
         } on DioError catch (e) {
             if (e.response != null) {
-                print(e.response.data);
+                debugPrint("${e.response.data}");
             } else {
-                print(e.request);
-                print(e.message);
+                debugPrint("${e.request}");
+                debugPrint("${e.message}");
             }
             return;
         }

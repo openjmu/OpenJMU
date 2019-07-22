@@ -14,7 +14,7 @@ packages:
       name: badges
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.3"
+    version: "1.1.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -51,7 +51,7 @@ packages:
       name: connectivity
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.3+2"
+    version: "0.4.3+6"
   convert:
     dependency: transitive
     description:
@@ -65,7 +65,7 @@ packages:
       name: cookie_jar
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.0.0"
+    version: "1.0.1"
   crypto:
     dependency: "direct main"
     description:
@@ -86,7 +86,7 @@ packages:
       name: dio
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.7"
+    version: "2.1.13"
   dragablegridview_flutter:
     dependency: "direct main"
     description:
@@ -163,7 +163,7 @@ packages:
       name: flutter_downloader
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.7"
+    version: "1.1.9"
   flutter_icons:
     dependency: "direct main"
     description:
@@ -177,7 +177,7 @@ packages:
       name: flutter_inappbrowser
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.2.0"
+    version: "1.2.1"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -198,7 +198,7 @@ packages:
       name: flutter_platform_widgets
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.10.0"
+    version: "0.12.0"
   flutter_qr_reader:
     dependency: "direct main"
     description:
@@ -212,7 +212,7 @@ packages:
       name: flutter_screenutil
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.5.2"
+    version: "0.5.3"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -273,14 +273,14 @@ packages:
       name: image_crop
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.2.1"
+    version: "0.3.0"
   image_downloader:
     dependency: "direct main"
     description:
       name: image_downloader
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.15.4"
+    version: "0.16.0"
   image_gallery_saver:
     dependency: "direct main"
     description:
@@ -294,7 +294,7 @@ packages:
       name: image_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.0+10"
+    version: "0.6.0+17"
   intl:
     dependency: transitive
     description:
@@ -336,21 +336,21 @@ packages:
       name: multi_image_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "4.3.4"
+    version: "4.3.6"
   oktoast:
     dependency: "direct main"
     description:
       name: oktoast
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "2.1.9"
+    version: "2.2.0"
   package_info:
     dependency: "direct main"
     description:
       name: package_info
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.0+4"
+    version: "0.4.0+5"
   path:
     dependency: transitive
     description:
@@ -392,7 +392,7 @@ packages:
       name: permission_handler
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.1.0"
+    version: "3.2.0"
   petitparser:
     dependency: transitive
     description:
@@ -420,7 +420,7 @@ packages:
       name: quick_actions
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.0+2"
+    version: "0.3.2+2"
   quiver:
     dependency: transitive
     description:
@@ -434,7 +434,7 @@ packages:
       name: shared_preferences
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.5.3+1"
+    version: "0.5.3+4"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -448,12 +448,12 @@ packages:
     source: hosted
     version: "1.5.5"
   sqflite:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: sqflite
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.6+1"
+    version: "1.1.6+2"
   stack_trace:
     dependency: transitive
     description:
@@ -516,7 +516,7 @@ packages:
       name: url_launcher
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.0.3"
+    version: "5.1.0"
   uuid:
     dependency: "direct main"
     description:
@@ -537,7 +537,7 @@ packages:
       name: webview_flutter
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.9+1"
+    version: "0.3.10+3"
   xml:
     dependency: transitive
     description:

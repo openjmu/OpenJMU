@@ -348,10 +348,10 @@ class _CommentListInPostState extends State<CommentListInPost> {
             }
         } on DioError catch (e) {
             if (e.response != null) {
-                print(e.response.data);
+                debugPrint("${e.response.data}");
             } else {
-                print(e.request);
-                print(e.message);
+                debugPrint("${e.request}");
+                debugPrint("${e.message}");
             }
             return;
         }
@@ -380,10 +380,10 @@ class _CommentListInPostState extends State<CommentListInPost> {
             }
         } on DioError catch (e) {
             if (e.response != null) {
-                print(e.response.data);
+                debugPrint("${e.response.data}");
             } else {
-                print(e.request);
-                print(e.message);
+                debugPrint("${e.request}");
+                debugPrint("${e.message}");
             }
             return;
         }
@@ -599,7 +599,11 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                                 onPressed: () {
                                                     showDialog<Null>(
                                                         context: context,
-                                                        builder: (BuildContext context) => CommentPositioned(widget.post, comment: _comments[index]),
+                                                        builder: (BuildContext context) => CommentPositioned(
+                                                            post: widget.post,
+                                                            postType: PostType.square,
+                                                            comment: _comments[index],
+                                                        ),
                                                     );
                                                 },
                                             ),

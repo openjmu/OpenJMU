@@ -6,6 +6,7 @@ import 'package:OpenJMU/pages/SplashPage.dart';
 import 'package:OpenJMU/pages/LoginPage.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/pages/ScanQrCodePage.dart';
+import 'package:OpenJMU/pages/ScorePage.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/ChangeThemePage.dart';
 import 'package:OpenJMU/pages/PublishPostPage.dart';
@@ -25,6 +26,7 @@ class RouteUtils {
         "/notification": (BuildContext context, {arguments}) => NotificationPage(),
         "/scanqrcode": (BuildContext context, {arguments}) => ScanQrCodePage(),
         "/userqrcode": (BuildContext context, {arguments}) => UserQrCodePage(),
+        "/score": (BuildContext context, {arguments}) => ScorePage(),
 //        "/notificationTest": (BuildContext context) => NotificationTestPage(),
         "/test": (BuildContext context) => TestPage(),
         "/about": (BuildContext context) => AboutPage(),

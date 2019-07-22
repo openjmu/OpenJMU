@@ -54,7 +54,7 @@ class OTAUtils {
                 }
             });
         }).catchError((e) {
-            print(e);
+            debugPrint(e.toString());
             showCenterErrorShortToast("检查更新失败\n${e.toString()}");
         });
     }

@@ -243,7 +243,10 @@ class PostDetailPageState extends State<PostDetailPage> {
                                         onPressed: () {
                                             showDialog<Null>(
                                                 context: context,
-                                                builder: (BuildContext context) => CommentPositioned(widget.post),
+                                                builder: (BuildContext context) => CommentPositioned(
+                                                    post: widget.post,
+                                                    postType: PostType.square,
+                                                ),
                                             );
                                         },
                                         icon: SvgPicture.asset(

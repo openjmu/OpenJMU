@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -12,27 +13,24 @@ import 'package:OpenJMU/utils/ToastUtils.dart';
 
 
 class UserUtils {
-    static final UserInfo emptyUser = UserInfo();
-    static UserInfo currentUser = emptyUser;
+    static UserInfo currentUser = UserInfo();
 
     static List<Cookie> cookiesForJWGL;
 
-    static UserInfo createUserInfo(userData) {
-        int _workId = 0;
-        userData['workid'] == ""
-                ? int.parse(userData['uid'].toString())
-                : int.parse(userData['workid'].toString())
-        ;
+    static UserInfo createUserInfo(Map<String, dynamic> userData) {
+        userData.forEach((k, v) {
+            if (userData[k] == "") userData[k] = null;
+        });
         return UserInfo(
-            sid: null,
-            uid: int.parse(userData['uid'].toString()),
+            sid: userData['sid'] ?? null,
+            uid: userData['uid'],
             name: userData['username'] ?? userData['uid'].toString(),
             signature: userData['signature'],
-            ticket: null,
-            blowfish: null,
-            isTeacher: int.parse(userData['type'].toString()) == 1,
-            unitId: userData['unitid'],
-            workId: _workId,
+            ticket: userData['sid'] ?? null,
+            blowfish: userData['blowfish'] ?? null,
+            isTeacher: userData['isTeacher'] ?? int.parse(userData['type'].toString()) == 1,
+            unitId: userData['unitId'] ?? userData['unitid'],
+            workId: int.parse((userData['workId'] ?? userData['workid'] ?? userData['uid']).toString()),
             classId: null,
             gender: int.parse(userData['gender'].toString()),
             isFollowing: false,
@@ -114,7 +112,7 @@ class UserUtils {
         NetUtils.postWithCookieAndHeaderSet("${Api.userRequestFollow}$uid").then((response) {
             return NetUtils.postWithCookieAndHeaderSet(Api.userFollowAdd, data: {"fid": uid, "tagid": 0});
         }).catchError((e) {
-            print(e.toString());
+            debugPrint(e.toString());
             showCenterErrorShortToast("关注失败，${jsonDecode(e.response.data)['msg']}");
         });
     }
@@ -123,7 +121,7 @@ class UserUtils {
         NetUtils.deleteWithCookieAndHeaderSet("${Api.userRequestFollow}$uid").then((response) {
             return NetUtils.postWithCookieAndHeaderSet(Api.userFollowDel, data: {"fid": uid});
         }).catchError((e) {
-            print(e.toString());
+            debugPrint(e.toString());
             showCenterErrorShortToast("取消关注失败，${jsonDecode(e.response.data)['msg']}");
         });
     }

@@ -25,9 +25,15 @@ import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
 
 class CommentPositioned extends StatefulWidget {
     final Post post;
+    final PostType postType;
     final Comment comment;
 
-    CommentPositioned(this.post, {this.comment, Key key}) : super(key: key);
+    CommentPositioned({
+        Key key,
+        @required this.post,
+        @required this.postType,
+        this.comment,
+    }) : super(key: key);
 
     @override
     State<StatefulWidget> createState() => CommentPositionedState();

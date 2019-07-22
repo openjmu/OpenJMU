@@ -50,7 +50,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
             setState(() { loading = false; });
             loading = false;
         }).catchError((e) {
-            print(e.toString());
+            debugPrint(e.toString());
             loading = false;
         });
     }

@@ -149,7 +149,7 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
                 Constants.eventBus.fire(new AvatarUpdatedEvent());
             });
         }).catchError((e) {
-            print(e.toString());
+            debugPrint(e.toString());
             _controller.changeState("failed", "头像更新失败");
         });
     }

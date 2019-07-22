@@ -342,10 +342,10 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
             }
         } on DioError catch (e) {
             if (e.response != null) {
-                print(e.response.data);
+                debugPrint("${e.response.data}");
             } else {
-                print(e.request);
-                print(e.message);
+                debugPrint("${e.request}");
+                debugPrint("${e.message}");
             }
             return;
         }
@@ -378,10 +378,10 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
             }
         } on DioError catch (e) {
             if (e.response != null) {
-                print(e.response.data);
+                debugPrint("${e.response.data}");
             } else {
-                print(e.request);
-                print(e.message);
+                debugPrint("${e.request}");
+                debugPrint("${e.message}");
             }
             return;
         }
@@ -449,7 +449,6 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
             int.parse(_commentTime.substring(3, 5)) == now.day
         ) {
             _commentTime = "${_commentTime.substring(5, 11)}";
-            print(_commentTime);
         } else if (
             int.parse(_commentTime.substring(0, 2)) != now.month
                 &&
@@ -502,6 +501,19 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                 }
             },
             specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+        );
+    }
+
+    Widget getReplies(context, Comment comment) {
+        return Container(
+            color: Theme.of(context).canvasColor,
+            padding: EdgeInsets.all(4.0),
+            child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+
+                ],
+            )
         );
     }
 
@@ -559,6 +571,7 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                                 return Container();
                             }
                         } else if (index < _comments.length) {
+                            Comment _c = _comments[index];
                             return InkWell(
                                 onTap: () {
                                     showDialog<Null>(
@@ -570,7 +583,7 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                     children: <Widget>[
                                                         if (
-                                                        _comments[index].fromUserUid == UserUtils.currentUser.uid
+                                                        _c.fromUserUid == UserUtils.currentUser.uid
                                                                 ||
                                                                 widget.post.uid == UserUtils.currentUser.uid
                                                         ) Column(
@@ -582,7 +595,7 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                                                                     onPressed: () {
                                                                         showPlatformDialog(
                                                                             context: context,
-                                                                            builder: (_) => DeleteDialog("评论", comment: _comments[index]),
+                                                                            builder: (_) => DeleteDialog("评论", comment: _c),
                                                                         );
                                                                     },
                                                                 ),
@@ -597,7 +610,7 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                                                                     padding: EdgeInsets.all(Constants.suSetSp(6.0)),
                                                                     onPressed: () {
                                                                         Clipboard.setData(ClipboardData(
-                                                                            text: replaceMentionTag(_comments[index].content),
+                                                                            text: replaceMentionTag(_c.content),
                                                                         ));
                                                                         showShortToast("已复制到剪贴板");
                                                                         Navigator.of(context).pop();
@@ -612,47 +625,55 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                                         ),
                                     );
                                 },
-                                child: Container(
-                                    child: Row(
-                                        mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                            getCommentAvatar(context, _comments[index]),
-                                            Expanded(
-                                                child: Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: <Widget>[
-                                                        Container(height: Constants.suSetSp(10.0)),
-                                                        getCommentNickname(context, _comments[index]),
-                                                        Container(height: Constants.suSetSp(4.0)),
-                                                        getCommentTime(context, _comments[index]),
-                                                        Container(height: Constants.suSetSp(6.0)),
-                                                        getExtendedText(context, _comments[index].content),
-                                                        Container(height: Constants.suSetSp(10.0)),
-                                                    ],
-                                                ),
+                                child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                        getCommentAvatar(context, _c),
+                                        Expanded(
+                                            child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                    SizedBox(height: Constants.suSetSp(10.0)),
+                                                    getCommentNickname(context, _c),
+                                                    SizedBox(height: Constants.suSetSp(4.0)),
+                                                    getCommentTime(context, _c),
+                                                    SizedBox(height: Constants.suSetSp(6.0)),
+                                                    getExtendedText(context, _c.content),
+                                                    SizedBox(height: Constants.suSetSp(6.0)),
+                                                    getReplies(context, _c),
+                                                    SizedBox(height: Constants.suSetSp(10.0)),
+                                                ],
                                             ),
-                                            IconButton(
-                                                padding: EdgeInsets.all(Constants.suSetSp(26.0)),
-                                                icon: Icon(Icons.comment, color: Colors.grey),
-                                                onPressed: () {
-                                                    showDialog<Null>(
-                                                        context: context,
-                                                        builder: (BuildContext context) => CommentPositioned(widget.post, comment: _comments[index]),
-                                                    );
-                                                },
+                                        ),
+                                        IconButton(
+                                            padding: EdgeInsets.zero,
+                                            icon: Icon(
+                                                Icons.comment,
+                                                color: Theme.of(context).dividerColor,
+                                                size: Constants.suSetSp(20.0),
                                             ),
-                                        ],
-                                    ),
+                                            onPressed: () {
+                                                showDialog<Null>(
+                                                    context: context,
+                                                    builder: (BuildContext context) => CommentPositioned(
+                                                        post: widget.post,
+                                                        postType: PostType.team,
+                                                        comment: _comments[index],
+                                                    ),
+                                                );
+                                            },
+                                        ),
+                                    ],
                                 ),
                             );
                         } else {
-                            return Container();
+                            return SizedBox();
                         }
                     },
                 )
-                        : Container(
+                        : SizedBox(
                     height: Constants.suSetSp(120.0),
                     child: Center(
                         child: Text(

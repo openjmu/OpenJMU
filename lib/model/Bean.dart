@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart' show ScaffoldPrelayoutGeometry, FloatingActionButtonLocation;
@@ -54,23 +55,23 @@ class Post {
 
     @override
     String toString() {
-        return "Post("
-                "\n    id: $id,"
-                "\n    uid: $uid,"
-                "\n    nickname: $nickname,"
-                "\n    avatar: $avatar,"
-                "\n    postTime: $postTime,"
-                "\n    from: $from,"
-                "\n    glances: $glances,"
-                "\n    category: $category,"
-                "\n    content: $content,"
-                "\n    pics: $pics,"
-                "\n    forwards: $forwards,"
-                "\n    comments: $comments,"
-                "\n    praises: $praises,"
-                "\n    rootTopic: $rootTopic,"
-                "\n    isLike: $isLike"
-                "\n)";
+        return "Post ${JsonEncoder.withIndent("  ").convert({
+            "id": id,
+            "uid": uid,
+            "nickname": nickname,
+            "avatar": avatar,
+            "postTime": postTime,
+            "from": from,
+            "glances": glances,
+            "category": category,
+            "content": content,
+            "pics": pics,
+            "forwards": forwards,
+            "comments": comments,
+            "praises": praises,
+            "rootTopic": rootTopic,
+            "isLike": isLike,
+        })}";
     }
 
     Post copy() {
@@ -92,6 +93,15 @@ class Post {
             isLike: isLike,
         );
     }
+}
+
+///
+/// 动态枚举类型
+/// [square] 来自广场的动态, [team] 来自小组的动态
+///
+enum PostType {
+    square,
+    team,
 }
 
 ///
@@ -251,6 +261,25 @@ class UserInfo {
 
     @override
     int get hashCode => uid.hashCode;
+
+    @override
+    String toString() {
+        return "UserInfo ${JsonEncoder.withIndent("  ").convert({
+            'sid': sid,
+            'uid': uid,
+            'name': name,
+            'signature': signature,
+            'ticket': ticket,
+            'blowfish': blowfish,
+            'isTeacher': isTeacher,
+            'unitId': unitId,
+            'workId': workId,
+//            'classId': classId,
+            'gender': gender,
+            'isFollowing': isFollowing,
+        })}";
+    }
+
 }
 
 ///
@@ -291,7 +320,7 @@ class WebApp {
     int get hashCode => id.hashCode;
 
     static Map category() => {
-        "10": "个人事务",
+//        "10": "个人事务",
         "A4": "我的服务",
         "A3": "我的系统",
         "A8": "流程服务",
