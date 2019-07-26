@@ -29,19 +29,19 @@ Flutter is a framework which can cross platform, it can create features when the
 
 ## 截图 ScreenShots
 <div align="center">
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_1.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_2.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_3.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_4.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_5.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_6.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_7.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_8.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_9.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_10.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_11.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_12.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_13.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_14.jpg"/>
-    <img width="280" height="498" src="https://github.com/openjmu/OpenJMU/raw/master/screenshots/Screenshot_15.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_1.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_2.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_3.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_4.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_5.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_6.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_7.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_8.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_9.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_10.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_11.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_12.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_13.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_14.jpg"/>
+    <img width="280" height="498" src="screenshots/Screenshot_15.jpg"/>
 </div>
