@@ -8,7 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 
 
 class TestPage extends StatefulWidget {
@@ -35,6 +35,7 @@ class _TestPageState extends State<TestPage> {
     void initState() {
         super.initState();
         _request();
+
     }
 
     @override
@@ -47,25 +48,38 @@ class _TestPageState extends State<TestPage> {
 
     void _request() async{
         print("on connect...");
-        Socket.connect("210.34.130.61", 7777).then((Socket socket) {
+        Socket.connect("frametest.jmu.edu.cn", 80).then((Socket socket) {
             _socket = socket;
             socket.setOption(SocketOption.tcpNoDelay, true);
             socket.timeout(const Duration(milliseconds: 5000));
             print("Connected.");
             socket.listen(onReceive, onDone: () {print("Receive done.");});
-
-            startQueue();
+            _socket.add(createData([utf8.encode(jsonEncode({
+                "uid": "${UserAPI.currentUser.uid}",
+                "sid": "${UserAPI.currentUser.sid}",
+                "workid": "${UserAPI.currentUser.workId}",
+            }))]));
         }).catchError((e) {print(e);});
+//        Socket.connect("210.34.130.61", 7777).then((Socket socket) {
+//            _socket = socket;
+//            socket.setOption(SocketOption.tcpNoDelay, true);
+//            socket.timeout(const Duration(milliseconds: 5000));
+//            print("Connected.");
+//            socket.listen(onReceive, onDone: () {print("Receive done.");});
+//
+//            startQueue();
+//        }).catchError((e) {print(e);});
     }
 
     void onReceive(event) async {
         print("接收到的数据: $event");
-        if (queueing) {
-            _socket.add(createData(queue[queueingIndex]));
-            queueingIndex++;
-            print("发送$queueingIndex。");
-            if (queueingIndex == queue.length) stopQueue();
-        }
+        print(utf8.decode(event));
+//        if (queueing) {
+//            _socket.add(createData(queue[queueingIndex]));
+//            queueingIndex++;
+//            print("发送$queueingIndex。");
+//            if (queueingIndex == queue.length) stopQueue();
+//        }
     }
 
     List<List<List<int>>> queue = [
@@ -92,7 +106,7 @@ class _TestPageState extends State<TestPage> {
         List<int> _data = [];
         List<List<int>> _list = [];
         _list
-            ..addAll(SocketUtils.commonHeader)
+//            ..addAll(SocketUtils.commonHeader)
             ..addAll(data)
         ;
         for (int i = 0; i < _list.length; i++) {
@@ -107,6 +121,7 @@ class _TestPageState extends State<TestPage> {
         return Scaffold(
             body: Center(
                 child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                         RaisedButton(
                             child: Text("Test MethodChannel"),
@@ -147,7 +162,7 @@ class SocketUtils {
         [0, 0],
         [0xd4, 0x38],
         [0, 0, 0, 0, 0, 0, 0],
-        splitUid(UserUtils.currentUser.uid),
+        splitUid(UserAPI.currentUser.uid),
         [0, 0, 0, 0],
     ];
 
@@ -159,7 +174,7 @@ class SocketUtils {
             [0, 0, 0],
             [0x22],
             [0, 0x20],
-            ascii.encode(UserUtils.currentUser.sid),
+            ascii.encode(UserAPI.currentUser.sid),
         ],
         "sendDeviceInfo": [
             [0x90, 0, 0, 0],

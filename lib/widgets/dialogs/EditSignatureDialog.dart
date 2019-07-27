@@ -5,7 +5,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
@@ -48,9 +48,9 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                 isGlobal: false,
             ),
         );
-        UserUtils.setSignature(_textEditingController.text).then((response) {
+        UserAPI.setSignature(_textEditingController.text).then((response) {
             _loadingDialogController.changeState("success", "签名更新成功");
-            UserUtils.currentUser.signature = _textEditingController.text;
+            UserAPI.currentUser.signature = _textEditingController.text;
             Constants.eventBus.fire(SignatureUpdatedEvent(_textEditingController.text));
             Future.delayed(Duration(milliseconds: 2300), () {
                 Navigator.of(context).pop();

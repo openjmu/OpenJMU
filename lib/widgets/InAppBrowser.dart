@@ -83,7 +83,7 @@ import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 
 class InAppBrowserPage extends StatefulWidget {
     final String url;
@@ -224,8 +224,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
 
     void loadCourseSchedule() {
         _webViewController.loadUrl(
-            "${UserUtils.currentUser.isTeacher ? Api.courseScheduleTeacher : Api.courseSchedule}"
-                    "?sid=${UserUtils.currentUser.sid}"
+            "${UserAPI.currentUser.isTeacher ? Api.courseScheduleTeacher : Api.courseSchedule}"
+                    "?sid=${UserAPI.currentUser.sid}"
                     "&night=${ThemeUtils.isDark ? 1 : 0}"
             ,
         );

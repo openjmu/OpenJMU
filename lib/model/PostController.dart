@@ -15,7 +15,7 @@ import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
 
@@ -259,12 +259,14 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             int _count = int.parse(result['count'].toString());
 
             for (var postData in _topics) {
-                postList.add(PostAPI.createPost(postData['topic']));
-                _idList.add(
-                    postData['id'] is String
-                            ? int.parse(postData['id'])
-                            : postData['id'],
-                );
+                if (!UserAPI.blacklist.contains(int.parse(postData['topic']['user']['uid'].toString()))) {
+                    postList.add(PostAPI.createPost(postData['topic']));
+                    _idList.add(
+                        postData['id'] is String
+                                ? int.parse(postData['id'])
+                                : postData['id'],
+                    );
+                }
             }
             _postList.addAll(postList);
 
@@ -301,12 +303,14 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
 
             for (var postData in _topics) {
                 if (postData['topic'] != null && postData != "") {
-                    postList.add(PostAPI.createPost(postData['topic']));
-                    idList.add(
-                        postData['id'] is String
-                                ? int.parse(postData['id'])
-                                : postData['id'],
-                    );
+                    if (!UserAPI.blacklist.contains(int.parse(postData['topic']['user']['uid'].toString()))) {
+                        postList.add(PostAPI.createPost(postData['topic']));
+                        idList.add(
+                            postData['id'] is String
+                                    ? int.parse(postData['id'])
+                                    : postData['id'],
+                        );
+                    }
                 }
             }
             _postList = postList;
@@ -392,7 +396,9 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
             }
             List<Post> posts = [];
             list.forEach((post) {
-                posts.add(PostAPI.createPost(post['topic']));
+                if (!UserAPI.blacklist.contains(int.parse(post['topic']['user']['uid'].toString()))) {
+                    posts.add(PostAPI.createPost(post['topic']));
+                }
             });
             if (this.mounted) {
                 setState(() { _posts.addAll(posts); });
@@ -419,7 +425,9 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
             if (response['count'] as int < total) canLoadMore = true;
             List<Post> posts = [];
             list.forEach((post) {
-                posts.add(PostAPI.createPost(post['topic']));
+                if (!UserAPI.blacklist.contains(int.parse(post['topic']['user']['uid'].toString()))) {
+                    posts.add(PostAPI.createPost(post['topic']));
+                }
             });
             if (this.mounted) {
                 setState(() {
@@ -450,7 +458,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                 decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: const Color(0xFFECECEC),
-                    image: DecorationImage(image: UserUtils.getAvatarProvider(uid: post.uid), fit: BoxFit.cover),
+                    image: DecorationImage(image: UserAPI.getAvatarProvider(uid: post.uid), fit: BoxFit.cover),
                 ),
             ),
             onTap: () {

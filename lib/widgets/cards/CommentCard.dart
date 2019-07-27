@@ -11,7 +11,7 @@ import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
@@ -36,7 +36,7 @@ class CommentCard extends StatelessWidget {
                 child: FadeInImage(
                     fadeInDuration: const Duration(milliseconds: 100),
                     placeholder: AssetImage("assets/avatar_placeholder.png"),
-                    image: UserUtils.getAvatarProvider(uid: comment.fromUserUid),
+                    image: UserAPI.getAvatarProvider(uid: comment.fromUserUid),
                 ),
             ),
             onTap: () => UserPage.jump(context, comment.fromUserUid),
@@ -194,9 +194,9 @@ class CommentCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                         if (
-                            this.comment.fromUserUid == UserUtils.currentUser.uid
+                            this.comment.fromUserUid == UserAPI.currentUser.uid
                                 ||
-                            this.comment.post.uid == UserUtils.currentUser.uid
+                            this.comment.post.uid == UserAPI.currentUser.uid
                         ) Column(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
@@ -205,9 +205,9 @@ class CommentCard extends StatelessWidget {
                                     padding: EdgeInsets.all(Constants.suSetSp(6.0)),
                                     onPressed: () {
                                         if (
-                                            this.comment.fromUserUid == UserUtils.currentUser.uid
+                                            this.comment.fromUserUid == UserAPI.currentUser.uid
                                                 ||
-                                            this.comment.post.uid == UserUtils.currentUser.uid
+                                            this.comment.post.uid == UserAPI.currentUser.uid
                                         ) {
                                             showPlatformDialog(
                                                 context: context,

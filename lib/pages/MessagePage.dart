@@ -7,7 +7,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 
 
 class MessagePage extends StatefulWidget {
@@ -40,7 +40,7 @@ class MessagePageState extends State<MessagePage> {
                 break;
             case "粉丝":
                 Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                    return UserListPage(UserUtils.currentUser, 2);
+                    return UserListPage(UserAPI.currentUser, 2);
                 }));
                 break;
             default:

@@ -30,7 +30,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     final TextEditingController _usernameController = TextEditingController();
     final TextEditingController _passwordController = TextEditingController();
 
-    String _username, _password;
+    String _username = "", _password = "";
 
     bool _agreement = false;
     bool _login = false;
@@ -213,48 +213,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         );
     }
 
-    Widget buildLoginButton(context) {
-        return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-                Container(
-                    width: Constants.suSetSp(70.0),
-                    height: Constants.suSetSp(70.0),
-                    constraints: BoxConstraints(
-                        maxWidth: Constants.suSetSp(70.0),
-                        maxHeight: Constants.suSetSp(70.0),
-                    ),
-                    decoration: BoxDecoration(
-                        color: Color.fromRGBO(255, 255, 255, 0.2),
-                        shape: BoxShape.circle,
-                    ),
-                    child: !_login
-                            ? IconButton(
-                        highlightColor: Colors.white,
-                        icon: Icon(
-                            Icons.arrow_forward,
-                            color: Colors.white,
-                            size: Constants.suSetSp(36.0),
-                        ),
-                        onPressed: () {
-                            if (_login || _loginDisabled) {
-                                return null;
-                            } else {
-                                loginButtonPressed(context);
-                            }
-                        },
-                    ) : Padding(
-                        padding: EdgeInsets.all(Constants.suSetSp(20.0)),
-                        child: CircularProgressIndicator(
-                            strokeWidth: Constants.suSetSp(4.0),
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                    ),
-                ),
-            ],
-        );
-    }
-
     Padding buildForgetPasswordText(BuildContext context) {
         return Padding(
             padding: EdgeInsets.zero,
@@ -343,6 +301,73 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 //        );
 //    }
 
+    Widget buildLoginButton(context) {
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+                Container(
+                    width: Constants.suSetSp(70.0),
+                    height: Constants.suSetSp(70.0),
+                    constraints: BoxConstraints(
+                        maxWidth: Constants.suSetSp(70.0),
+                        maxHeight: Constants.suSetSp(70.0),
+                    ),
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(255, 255, 255, 0.2),
+                        shape: BoxShape.circle,
+                    ),
+                    child: !_login
+                            ? IconButton(
+                        highlightColor: Colors.white,
+                        icon: Icon(
+                            Icons.arrow_forward,
+                            color: Colors.white,
+                            size: Constants.suSetSp(36.0),
+                        ),
+                        onPressed: () {
+                            if (_login || _loginDisabled) {
+                                return null;
+                            } else {
+                                loginButtonPressed(context);
+                            }
+                        },
+                    ) : Padding(
+                        padding: EdgeInsets.all(Constants.suSetSp(20.0)),
+                        child: CircularProgressIndicator(
+                            strokeWidth: Constants.suSetSp(4.0),
+                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                    ),
+                ),
+            ],
+        );
+    }
+
+    Widget loginForm(context) => Form(
+        key: _formKey,
+        child: ListView(
+            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(50.0)),
+            shrinkWrap: true,
+            children: <Widget>[
+                Constants.emptyDivider(height: Constants.suSetSp(100.0)),
+                buildLogo(),
+//                            buildTitleLine(),
+                Constants.emptyDivider(height: Constants.suSetSp(30.0)),
+                buildUsernameTextField(),
+                Constants.emptyDivider(height: Constants.suSetSp(30.0)),
+                buildPasswordTextField(),
+                buildForgetPasswordText(context),
+                Constants.emptyDivider(height: Constants.suSetSp(10.0)),
+                buildUserAgreement(context),
+                Constants.emptyDivider(height: Constants.suSetSp(20.0)),
+                buildLoginButton(context),
+                Constants.emptyDivider(height: Constants.suSetSp(50.0)),
+//                            buildRegisterText(context),
+            ],
+        ),
+        onChanged: validateForm,
+    );
+
     void loginButtonPressed(context) {
         if (_formKey.currentState.validate()) {
             _formKey.currentState.save();
@@ -397,27 +422,11 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
 
     void validateForm() {
-        if (
-            (_username != null && _username != "")
-                &&
-            (_password != null && _password != "")
-                &&
-            (_agreement)
-                &&
-            (_loginDisabled)
-        ) {
+        if (_username != "" && _password != "" && _agreement && _loginDisabled) {
             setState(() {
                 _loginDisabled = false;
             });
-        } else if (
-            (_username == null || _username == "")
-                ||
-            (_password == null || _password == "")
-                ||
-            (!_agreement)
-                ||
-            (!_loginDisabled)
-        ) {
+        } else if (_username == "" || _password == "" || !_agreement) {
             setState(() {
                 _loginDisabled = true;
             });
@@ -430,30 +439,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             onWillPop: doubleBackExit,
             child: Scaffold(
                 backgroundColor: ThemeUtils.defaultColor,
-                body: Form(
-                    key: _formKey,
-                    child: ListView(
-                        padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(50.0)),
-                        shrinkWrap: true,
-                        children: <Widget>[
-                            Constants.emptyDivider(height: Constants.suSetSp(100.0)),
-                            buildLogo(),
-//                            buildTitleLine(),
-                            Constants.emptyDivider(height: Constants.suSetSp(30.0)),
-                            buildUsernameTextField(),
-                            Constants.emptyDivider(height: Constants.suSetSp(30.0)),
-                            buildPasswordTextField(),
-                            buildForgetPasswordText(context),
-                            Constants.emptyDivider(height: Constants.suSetSp(10.0)),
-                            buildUserAgreement(context),
-                            Constants.emptyDivider(height: Constants.suSetSp(20.0)),
-                            buildLoginButton(context),
-                            Constants.emptyDivider(height: Constants.suSetSp(50.0)),
-//                            buildRegisterText(context),
-                        ],
-                    ),
-                    onChanged: validateForm,
-                ),
+                body: loginForm(context),
                 resizeToAvoidBottomInset: false,
                 resizeToAvoidBottomPadding: false,
             ),

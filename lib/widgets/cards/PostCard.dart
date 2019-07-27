@@ -21,7 +21,7 @@ import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/pages/PostDetailPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
@@ -106,7 +106,7 @@ class _PostCardState extends State<PostCard> {
                 child: FadeInImage(
                     fadeInDuration: const Duration(milliseconds: 100),
                     placeholder: AssetImage("assets/avatar_placeholder.png"),
-                    image: UserUtils.getAvatarProvider(uid: post.uid),
+                    image: UserAPI.getAvatarProvider(uid: post.uid),
                 ),
             ),
             onTap: () => UserPage.jump(context, widget.post.uid),
@@ -476,6 +476,68 @@ class _PostCardState extends State<PostCard> {
         onPressed: confirmDelete,
     );
 
+    Widget postActionButton(context) => IconButton(
+        icon: Icon(Icons.expand_more, color: Colors.grey, size: Constants.suSetSp(24.0)),
+        onPressed: () {
+            Widget _listTile({IconData icon, String text, GestureTapCallback onTap}) {
+                return Padding(
+                    padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(12.0)),
+                    child: GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        child: Row(
+                            children: <Widget>[
+                                Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(10.0)),
+                                    child: Icon(
+                                        icon,
+                                        color: Theme.of(context).iconTheme.color,
+                                        size: Constants.suSetSp(26.0),
+                                    ),
+                                ),
+                                Expanded(
+                                    child: Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(10.0)),
+                                        child: Text(
+                                            text,
+                                            style: TextStyle(
+                                                fontSize: Constants.suSetSp(18.0),
+                                            ),
+                                        ),
+                                    ),
+                                ),
+                            ],
+                        ),
+                        onTap: onTap,
+                    ),
+                );
+            }
+            showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                    return Padding(
+                        padding: EdgeInsets.symmetric(
+                            vertical: Constants.suSetSp(6.0),
+                            horizontal: Constants.suSetSp(16.0),
+                        ),
+                        child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                                _listTile(
+                                    icon: Icons.visibility_off,
+                                    text: "屏蔽此人",
+                                ),
+                                _listTile(
+                                    icon: Icons.report_problem,
+                                    text: "举报动态",
+                                ),
+                            ],
+                        ),
+                    );
+                },
+            );
+        },
+    );
+
     void confirmDelete() {
         showPlatformDialog(
             context: context,
@@ -525,7 +587,10 @@ class _PostCardState extends State<PostCard> {
                                             ),
                                         ),
                                     ),
-                                    if ((widget.post.uid == UserUtils.currentUser.uid) && isDetail) deleteButton(),
+                                    ((widget.post.uid == UserAPI.currentUser.uid) && isDetail)
+                                            ? deleteButton()
+                                            : postActionButton(context)
+                                    ,
                                 ],
                             ),
                         ),

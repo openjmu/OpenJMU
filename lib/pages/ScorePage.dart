@@ -13,7 +13,7 @@ import 'package:path/path.dart';
 import 'package:OpenJMU/api/API.dart';
 //import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 
 
@@ -111,7 +111,7 @@ class _ScorePageState extends State<ScorePage> {
         setState(() {
             content = Image.memory(Uint8List.fromList(checkCode));
         });
-        UserUtils.cookiesForJWGL = NetUtils.cookieJar.loadForRequest(
+        UserAPI.cookiesForJWGL = NetUtils.cookieJar.loadForRequest(
             Uri.parse(Api.jwglCheckCode),
         );
 
@@ -127,14 +127,14 @@ class _ScorePageState extends State<ScorePage> {
                 Api.jwglLogin,
                 data: {
                     '__VIEWSTATE': viewState,
-                    'TxtUserName': '${UserUtils.currentUser.workId}',
+                    'TxtUserName': '${UserAPI.currentUser.workId}',
                     'TxtPassword': passwordController.text,
                     'TxtVerifCode': captcha,
                     'BtnLoginImage.x': '0',
                     'BtnLoginImage.y': '0'
                 },
                 options: Options(
-                    cookies: UserUtils.cookiesForJWGL,
+                    cookies: UserAPI.cookiesForJWGL,
                     headers: {
                         'Referer': '${Api.jwglHost}/',
                         'Origin': Api.jwglHost,
@@ -167,7 +167,7 @@ class _ScorePageState extends State<ScorePage> {
                 'ctl00\$ContentPlaceHolder1\$pageNumber': '200',
             },
             options: Options(
-                cookies: UserUtils.cookiesForJWGL,
+                cookies: UserAPI.cookiesForJWGL,
                 headers: {
                     'Referer': '${Api.jwglStudentScoreAll}',
                     'Origin': Api.jwglHost,

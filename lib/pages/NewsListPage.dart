@@ -13,7 +13,7 @@ import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/NewsDetailPage.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 
 
 class NewsListPage extends StatefulWidget {
@@ -170,7 +170,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
     Widget coverImg(News news) {
         String imageUrl = "${Api.newsImageList}"
                 "${news.cover}"
-                "/sid/${UserUtils.currentUser.sid}"
+                "/sid/${UserAPI.currentUser.sid}"
         ;
         ImageProvider coverImg = CachedNetworkImageProvider(imageUrl, cacheManager: DefaultCacheManager());
         return SizedBox(

@@ -13,7 +13,7 @@ import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 
 import 'package:OpenJMU/pages/AppCenterPage.dart';
@@ -80,8 +80,8 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                     DataUtils.getNotifications();
                 });
                 setState(() {
-                    this.userSid = UserUtils.currentUser.sid;
-                    this.userUid = UserUtils.currentUser.uid;
+                    this.userSid = UserAPI.currentUser.sid;
+                    this.userUid = UserAPI.currentUser.uid;
                 });
             }
         });

@@ -12,7 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 
 
 class UserQrCodePage extends StatefulWidget {
@@ -93,7 +93,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                                             decoration: BoxDecoration(
                                                 borderRadius: BorderRadius.circular(15.0),
                                                 image: DecorationImage(
-                                                    image: UserUtils.getAvatarProvider(),
+                                                    image: UserAPI.getAvatarProvider(),
                                                 ),
                                             ),
                                         ),
@@ -110,7 +110,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                                                             children: <Widget>[
                                                                 Flexible(
                                                                     child: Text(
-                                                                        UserUtils.currentUser.name,
+                                                                        UserAPI.currentUser.name,
                                                                         style: TextStyle(
                                                                             color: Theme.of(context).textTheme.title.color,
                                                                             fontSize: Constants.suSetSp(21.0),
@@ -131,7 +131,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                                     children: <Widget>[
                                         QrImage(
                                             version: 3,
-                                            data: "openjmu://user/${UserUtils.currentUser.uid}",
+                                            data: "openjmu://user/${UserAPI.currentUser.uid}",
                                             padding: EdgeInsets.zero,
                                             foregroundColor: Theme.of(context).iconTheme.color,
                                         ),

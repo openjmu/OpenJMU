@@ -6,13 +6,15 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:OpenJMU/api/API.dart';
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/CacheUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 
 
-class UserUtils {
+class UserAPI {
     static UserInfo currentUser = UserInfo();
 
     static List<Cookie> cookiesForJWGL;
@@ -47,6 +49,16 @@ class UserUtils {
         idols: userData["idols"] ?? 0,
         isFollowing: userData["is_following"] == 1,
     );
+
+    static Future login(Map<String, dynamic> params) async {
+        return NetUtils.post(Api.login, data: params);
+    }
+
+    static Future logout() async {
+        NetUtils.postWithCookieSet(Api.logout).then((response) {
+            Constants.eventBus.fire(LogoutEvent());
+        });
+    }
 
     static UserTag createUserTag(tagData) => UserTag(
         id: tagData['id'],
@@ -132,5 +144,17 @@ class UserUtils {
 
     static Future searchUser(name) async {
         return NetUtils.getWithCookieSet(Api.searchUser, data: {"keyword": name});
+    }
+
+    static List<int> blacklist = [];
+    static Future getBlacklist({int pos, int size})  {
+        return NetUtils.getWithCookieSet(
+            Api.blacklist(pos: pos, size: size),
+        );
+    }
+    static void setBlacklist(List list) {
+        if (list.length > 0) list.forEach((person) {
+            blacklist.add(int.parse(person['uid'].toString()));
+        });
     }
 }

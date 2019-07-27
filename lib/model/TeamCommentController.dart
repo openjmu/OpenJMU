@@ -18,7 +18,7 @@ import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
@@ -397,7 +397,7 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                     shape: BoxShape.circle,
                     color: const Color(0xFFECECEC),
                     image: DecorationImage(
-                        image: UserUtils.getAvatarProvider(uid: comment.fromUserUid),
+                        image: UserAPI.getAvatarProvider(uid: comment.fromUserUid),
                         fit: BoxFit.cover,
                     ),
                 ),
@@ -583,9 +583,9 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                     children: <Widget>[
                                                         if (
-                                                        _c.fromUserUid == UserUtils.currentUser.uid
+                                                        _c.fromUserUid == UserAPI.currentUser.uid
                                                                 ||
-                                                                widget.post.uid == UserUtils.currentUser.uid
+                                                                widget.post.uid == UserAPI.currentUser.uid
                                                         ) Column(
                                                             mainAxisSize: MainAxisSize.min,
                                                             children: <Widget>[

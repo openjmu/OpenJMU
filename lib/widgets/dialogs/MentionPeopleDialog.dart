@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 
@@ -36,14 +36,14 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
             loading = true;
         });
         people.clear();
-        UserUtils.searchUser(content).then((response) {
+        UserAPI.searchUser(content).then((response) {
             Map _r = response.data;
             if (_r['data'] == null) {
-                setState(() { people.add(UserUtils.createUser(_r)); });
+                setState(() { people.add(UserAPI.createUser(_r)); });
             } else {
                 List<User> _people = [];
                 _r['data'].forEach((userData) {
-                    _people.add(UserUtils.createUser(userData));
+                    _people.add(UserAPI.createUser(userData));
                 });
                 setState(() { people = _people; });
             }
@@ -131,7 +131,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                                                             child: Container(
                                                                                 decoration: BoxDecoration(
                                                                                     image: DecorationImage(
-                                                                                        image: UserUtils.getAvatarProvider(uid: people[index].id),
+                                                                                        image: UserAPI.getAvatarProvider(uid: people[index].id),
                                                                                         fit: BoxFit.contain,
                                                                                     ),
                                                                                     shape: BoxShape.circle,

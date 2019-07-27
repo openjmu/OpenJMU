@@ -8,7 +8,7 @@ import 'package:oktoast/oktoast.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
 
@@ -79,7 +79,7 @@ class NetUtils {
         url,
         queryParameters: data,
         options: Options(
-            headers: headers ?? DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+            headers: headers ?? DataUtils.buildPostHeaders(UserAPI.currentUser.sid),
         ),
     );
 
@@ -87,7 +87,7 @@ class NetUtils {
         url,
         queryParameters: data,
         options: Options(
-            cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
+            cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(UserAPI.currentUser.sid),
         ),
     );
 
@@ -95,8 +95,8 @@ class NetUtils {
         url,
         queryParameters: data,
         options: Options(
-            cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
-            headers: headers ?? DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+            cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(UserAPI.currentUser.sid),
+            headers: headers ?? DataUtils.buildPostHeaders(UserAPI.currentUser.sid),
         ),
     );
 
@@ -109,7 +109,7 @@ class NetUtils {
         url,
         data: data,
         options: Options(
-            cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
+            cookies: DataUtils.buildPHPSESSIDCookies(UserAPI.currentUser.sid),
         ),
     );
 
@@ -117,8 +117,8 @@ class NetUtils {
         url,
         data: data,
         options: Options(
-            cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
-            headers: headers ?? DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+            cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(UserAPI.currentUser.sid),
+            headers: headers ?? DataUtils.buildPostHeaders(UserAPI.currentUser.sid),
         ),
     );
 
@@ -126,8 +126,8 @@ class NetUtils {
         url,
         data: data,
         options: Options(
-            cookies: DataUtils.buildPHPSESSIDCookies(UserUtils.currentUser.sid),
-            headers: DataUtils.buildPostHeaders(UserUtils.currentUser.sid),
+            cookies: DataUtils.buildPHPSESSIDCookies(UserAPI.currentUser.sid),
+            headers: DataUtils.buildPostHeaders(UserAPI.currentUser.sid),
         ),
     );
 

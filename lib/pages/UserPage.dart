@@ -12,7 +12,7 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/dialogs/EditSignatureDialog.dart';
 
 
@@ -72,7 +72,7 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                 });
             })
             ..on<AvatarUpdatedEvent>().listen((event) {
-                UserUtils.updateAvatarProvider();
+                UserAPI.updateAvatarProvider();
                 _fetchUserInformation(widget.uid);
             });
     }
@@ -103,22 +103,22 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
     }
 
     Future<Null> _fetchUserInformation(uid) async {
-        if (uid == UserUtils.currentUser.uid) {
-            _user = UserUtils.currentUser;
+        if (uid == UserAPI.currentUser.uid) {
+            _user = UserAPI.currentUser;
         } else {
-            Map<String, dynamic> user = (await UserUtils.getUserInfo(uid: uid)).data;
-            _user = UserUtils.createUserInfo(user);
+            Map<String, dynamic> user = (await UserAPI.getUserInfo(uid: uid)).data;
+            _user = UserAPI.createUserInfo(user);
         }
 
         Future.wait(<Future>[
-            UserUtils.getLevel(uid).then((response) {
+            UserAPI.getLevel(uid).then((response) {
                 userLevel = int.parse(response.data['score']['levelinfo']['level'].toString());
             }),
-            UserUtils.getTags(uid).then((response) {
+            UserAPI.getTags(uid).then((response) {
                 List tags = response.data['data'];
                 List<UserTag> _userTags = [];
                 tags.forEach((tag) {
-                    _userTags.add(UserUtils.createUserTag(tag));
+                    _userTags.add(UserAPI.createUserTag(tag));
                 });
                 _tags = _userTags;
             }),
@@ -134,7 +134,7 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
     }
 
     Future<Null> _getCount(id) async {
-        Map data = (await UserUtils.getFansAndFollowingsCount(id)).data;
+        Map data = (await UserAPI.getFansAndFollowingsCount(id)).data;
         if (this.mounted) setState(() {
             _user.isFollowing = data['is_following'] == 1;
             _fansCount = data['fans'].toString();
@@ -150,20 +150,20 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                 vertical: Constants.suSetSp(12.0),
             ),
             onPressed: () {
-                if (widget.uid == UserUtils.currentUser.uid) {
+                if (widget.uid == UserAPI.currentUser.uid) {
                     showDialog<Null>(
                         context: context,
                         builder: (BuildContext context) => EditSignatureDialog(_user.signature),
                     );
                 } else {
                     if (_user.isFollowing) {
-                        UserUtils.unFollow(widget.uid).then((response) {
+                        UserAPI.unFollow(widget.uid).then((response) {
                             setState(() {
                                 _user.isFollowing = false;
                             });
                         });
                     } else {
-                        UserUtils.follow(widget.uid).then((response) {
+                        UserAPI.follow(widget.uid).then((response) {
                             setState(() {
                                 _user.isFollowing = true;
                             });
@@ -171,10 +171,10 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                     }
                 }
             },
-            color: widget.uid == UserUtils.currentUser.uid ? Color(0x44ffffff) :
+            color: widget.uid == UserAPI.currentUser.uid ? Color(0x44ffffff) :
             _user.isFollowing ? Color(0x44ffffff) : Color(ThemeUtils.currentThemeColor.value - 0x33000000),
             child: Text(
-                widget.uid == UserUtils.currentUser.uid ? "编辑签名" :
+                widget.uid == UserAPI.currentUser.uid ? "编辑签名" :
                 _user.isFollowing ? "已关注" : "关注${_user.gender == 2 ? "她" : "他"}",
                 style: TextStyle(
                     color: Colors.white,
@@ -225,13 +225,13 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                             child: FadeInImage(
                                 fadeInDuration: const Duration(milliseconds: 100),
                                 placeholder: AssetImage("assets/avatar_placeholder.png"),
-                                image: UserUtils.getAvatarProvider(uid: _user.uid),
+                                image: UserAPI.getAvatarProvider(uid: _user.uid),
                             ),
                         ),
                     ),
                     Expanded(child: SizedBox()),
                     followButton(),
-                    if (widget.uid == UserUtils.currentUser.uid) qrCode(context),
+                    if (widget.uid == UserAPI.currentUser.uid) qrCode(context),
                 ],
             ),
         ),
@@ -425,7 +425,7 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                                             child: FadeInImage(
                                                 fadeInDuration: const Duration(milliseconds: 100),
                                                 placeholder: AssetImage("assets/avatar_placeholder.png"),
-                                                image: UserUtils.getAvatarProvider(uid: widget.uid),
+                                                image: UserAPI.getAvatarProvider(uid: widget.uid),
                                             ),
                                         ),
                                     ),
@@ -473,7 +473,7 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                                     SizedBox(
                                         width: double.infinity,
                                         child: Image(
-                                            image: UserUtils.getAvatarProvider(uid: widget.uid),
+                                            image: UserAPI.getAvatarProvider(uid: widget.uid),
                                             fit: BoxFit.fitWidth,
                                             width: MediaQuery.of(context).size.width,
                                         ),
@@ -566,13 +566,13 @@ class _UserListState extends State<UserListPage> {
     }
 
     void getIdolsList(page, isMore) {
-        UserUtils.getIdolsList(widget.user.uid, page).then((response) {
+        UserAPI.getIdolsList(widget.user.uid, page).then((response) {
             setUserList(response, isMore);
         });
     }
 
     void getFansList(page, isMore) {
-        UserUtils.getFansList(widget.user.uid, page).then((response) {
+        UserAPI.getFansList(widget.user.uid, page).then((response) {
             setUserList(response, isMore);
         });
     }
@@ -648,7 +648,7 @@ class _UserListState extends State<UserListPage> {
                                 child: FadeInImage(
                                     fadeInDuration: const Duration(milliseconds: 100),
                                     placeholder: AssetImage("assets/avatar_placeholder.png"),
-                                    image: UserUtils.getAvatarProvider(uid: int.parse(_user['uid'].toString())),
+                                    image: UserAPI.getAvatarProvider(uid: int.parse(_user['uid'].toString())),
                                 ),
                             ),
                         ),
