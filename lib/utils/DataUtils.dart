@@ -13,8 +13,7 @@ import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
-import 'package:OpenJMU/utils/SnackbarUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 
 class DataUtils {
     static final String spIsLogin           = "isLogin";
@@ -34,16 +33,6 @@ class DataUtils {
     static final String spColorThemeIndex   = "theme_colorThemeIndex";
     static final String spHomeSplashIndex   = "home_splash_index";
 
-    static Future getSid() async {
-        SharedPreferences sp = await SharedPreferences.getInstance();
-        return sp.getString(spUserSid);
-    }
-
-    static Future setSid(String sid) async {
-        SharedPreferences sp = await SharedPreferences.getInstance();
-        return sp.setString(spUserSid, sid);
-    }
-
     static Future doLogin(context, String username, String password) async {
         final String blowfish = Uuid().v4();
         Map<String, dynamic> params = Constants.loginParams(
@@ -51,101 +40,72 @@ class DataUtils {
             username: "$username",
             password: password,
         );
-        NetUtils.post(Api.login, data: params).then((response) {
+        UserAPI.login(params).then((response) async {
             Map<String, dynamic> data = response.data;
-            Map<String, dynamic> _map = {"uid": data["uid"]};
-            List<Cookie> cookies = [
-                Cookie("OAPSID", data["sid"]),
-                Cookie("PHPSESSID", data["sid"])
-            ];
-            NetUtils.getWithCookieSet(
-                Api.userInfo,
-                data: _map,
-                cookies: cookies,
-            ).then((response) {
-                Map<String, dynamic> user = response.data;
-                Map<String, dynamic> userInfo = {
-                    'sid': data['sid'],
-                    'uid': data['uid'],
-                    'username': user['username'],
-                    'signature': user['signature'],
-                    'ticket': data['ticket'],
-                    'blowfish': blowfish,
-                    'isTeacher': int.parse(user['type'].toString()) == 1,
-                    'unitId': data['unitid'],
-                    'workId': user['workid'],
+            UserAPI.currentUser.sid = data['sid'];
+            UserAPI.currentUser.ticket = data['ticket'];
+
+            Map<String, dynamic> user = (await UserAPI.getUserInfo(uid: data['uid'])).data;
+            Map<String, dynamic> userInfo = {
+                'sid': data['sid'],
+                'uid': data['uid'],
+                'username': user['username'],
+                'signature': user['signature'],
+                'ticket': data['ticket'],
+                'blowfish': blowfish,
+                'isTeacher': int.parse(user['type'].toString()) == 1,
+                'unitId': data['unitid'],
+                'workId': user['workid'],
 //                    'userClassId': user['class_id'],
-                    'gender': int.parse(user['gender'].toString()),
-                };
-                setUserInfo(userInfo);
-                saveLoginInfo(userInfo).then((R) {
-                    Constants.eventBus.fire(new LoginEvent());
-                    showShortToast("登录成功！");
-                }).catchError((e) {
-                    Constants.eventBus.fire(new LoginFailedEvent());
-                    debugPrint(e.response);
-                    debugPrint(e.toString());
-                    SnackBarUtils.show(
-                        context,
-                        "设置用户信息失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}",
-                    );
-                    return e;
-                });
-                getUserInfo();
+                'gender': int.parse(user['gender'].toString()),
+            };
+            setUserInfo(userInfo);
+            saveLoginInfo(userInfo).then((R) async {
+                UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
+                Constants.eventBus.fire(LoginEvent());
+                showShortToast("登录成功！");
             }).catchError((e) {
-                Constants.eventBus.fire(new LoginFailedEvent());
-                debugPrint(e);
-                debugPrint(e.response);
+                Constants.eventBus.fire(LoginFailedEvent());
                 debugPrint(e.toString());
-                SnackBarUtils.show(
-                    context,
-                    "登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}",
+                if (e.response != null) showLongToast(
+                    "设置用户信息失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}",
                 );
-                return e;
             });
         }).catchError((e) {
-            Constants.eventBus.fire(new LoginFailedEvent());
-            debugPrint(e.response);
+            Constants.eventBus.fire(LoginFailedEvent());
             debugPrint(e.toString());
-            SnackBarUtils.show(
-                context,
+            if (e.response != null) showLongToast(
                 "登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}",
             );
-            return e;
         });
     }
 
-    static Future<Null> doLogout() async {
-        getSid().then((sid) {
-            NetUtils.postWithCookieSet(Api.logout).then((response) {
-                Constants.eventBus.fire(new LogoutEvent());
-                setHomeSplashIndex(0);
-                clearLoginInfo();
-                resetTheme();
-            });
-        });
+    static void logout() {
+        setHomeSplashIndex(0);
+        clearLoginInfo();
+        resetTheme();
     }
 
     static Future recoverLoginInfo() async {
         Map<String, String> info = await getSpTicket();
-        UserUtils.currentUser.sid = info['ticket'];
-        UserUtils.currentUser.blowfish = info['blowfish'];
+        UserAPI.currentUser.sid = info['ticket'];
+        UserAPI.currentUser.blowfish = info['blowfish'];
         await getTicket();
     }
 
     static Future getUserInfo([uid]) async {
-        return NetUtils.getWithCookieSet(
-            "${Api.userInfo}?uid=${uid ?? UserUtils.currentUser.uid}",
-            cookies: buildPHPSESSIDCookies(UserUtils.currentUser.sid),
+        NetUtils.getWithCookieSet(
+            "${Api.userInfo}?uid=${uid ?? UserAPI.currentUser.uid}",
+            cookies: buildPHPSESSIDCookies(UserAPI.currentUser.sid),
         ).then((response) {
             Map<String, dynamic> data = response.data;
             Map<String, dynamic> userInfo = {
-                'sid': UserUtils.currentUser.sid,
-                'uid': UserUtils.currentUser.uid,
+                'sid': UserAPI.currentUser.sid,
+                'uid': UserAPI.currentUser.uid,
                 'username': data['username'],
                 'signature': data['signature'],
-                'ticket': UserUtils.currentUser.sid,
-                'blowfish': UserUtils.currentUser.blowfish,
+                'ticket': UserAPI.currentUser.sid,
+                'blowfish': UserAPI.currentUser.blowfish,
                 'isTeacher': int.parse(data['type'].toString()) == 1,
                 'unitId': data['unitid'],
                 'workId': data['workid'],
@@ -162,7 +122,7 @@ class DataUtils {
     }
 
     static void setUserInfo(data) {
-        UserUtils.currentUser = UserUtils.createUserInfo(data);
+        UserAPI.currentUser = UserAPI.createUserInfo(data);
     }
 
     static Future saveLoginInfo(Map data) async {
@@ -183,7 +143,7 @@ class DataUtils {
 
     // 清除登录信息
     static Future clearLoginInfo() async {
-        UserUtils.currentUser = UserInfo();
+        UserAPI.currentUser = UserInfo();
         SharedPreferences sp = await SharedPreferences.getInstance();
         await sp.remove(spIsLogin);
         await sp.remove(spIsTeacher);
@@ -214,14 +174,15 @@ class DataUtils {
         debugPrint("isIOS: ${Platform.isIOS}");
         debugPrint("isAndroid: ${Platform.isAndroid}");
         Map<String, dynamic> params = Constants.loginParams(
-            ticket: UserUtils.currentUser.sid,
-            blowfish: UserUtils.currentUser.blowfish,
+            ticket: UserAPI.currentUser.sid,
+            blowfish: UserAPI.currentUser.blowfish,
         );
         try {
             Map<String, dynamic> response = (await NetUtils.post(Api.loginTicket, data: params)).data;
             await updateSid(response);
             await getUserInfo();
-            Constants.eventBus.fire(new TicketGotEvent());
+            UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
+            Constants.eventBus.fire(TicketGotEvent());
         } catch (e) {
             if (e.response != null) {
                 debugPrint("Error response.");
@@ -230,15 +191,15 @@ class DataUtils {
                 debugPrint(e.response.headers);
                 debugPrint(e.response.request);
             }
-            Constants.eventBus.fire(new TicketFailedEvent());
+            Constants.eventBus.fire(TicketFailedEvent());
         }
     }
 
     static Future updateSid(response) async {
         SharedPreferences sp = await SharedPreferences.getInstance();
         await sp.setString(spUserSid, response['sid']);
-        UserUtils.currentUser.sid = response['sid'];
-        UserUtils.currentUser.uid = sp.getInt(spUserUid);
+        UserAPI.currentUser.sid = response['sid'];
+        UserAPI.currentUser.uid = sp.getInt(spUserUid);
     }
 
     // 是否登录
@@ -280,25 +241,23 @@ class DataUtils {
     }
 
     // 获取未读信息数
-    static Future getNotifications() async {
-        getSid().then((sid) {
-            NetUtils.getWithCookieAndHeaderSet(
-                Api.postUnread,
-            ).then((response) {
-                Map<String, dynamic> data = response.data;
-                int comment = int.parse(data['cmt']);
-                int postsAt = int.parse(data['t_at']);
-                int commsAt = int.parse(data['cmt_at']);
-                int praises = int.parse(data['t_praised']);
-                int count = comment + postsAt + commsAt + praises;
-//                debugPrint("Count: $count, At: ${postsAt+commsAt}, Comment: $comment, Praise: $praises");
-                Notifications notifications = Notifications(count, postsAt+commsAt, comment, praises);
-                Constants.notifications = notifications;
-                Constants.eventBus.fire(new NotificationsChangeEvent(notifications));
-            }).catchError((e) {
-                debugPrint(e.toString());
-                return e;
-            });
+    static void getNotifications() {
+        NetUtils.getWithCookieAndHeaderSet(
+            Api.postUnread,
+        ).then((response) {
+            Map<String, dynamic> data = response.data;
+            int comment = int.parse(data['cmt']);
+            int postsAt = int.parse(data['t_at']);
+            int commsAt = int.parse(data['cmt_at']);
+            int praises = int.parse(data['t_praised']);
+            int count = comment + postsAt + commsAt + praises;
+//            debugPrint("Count: $count, At: ${postsAt+commsAt}, Comment: $comment, Praise: $praises");
+            Notifications notifications = Notifications(count, postsAt+commsAt, comment, praises);
+            Constants.notifications = notifications;
+            Constants.eventBus.fire(NotificationsChangeEvent(notifications));
+        }).catchError((e) {
+            debugPrint(e.toString());
+            return e;
         });
     }
 

@@ -10,7 +10,7 @@ import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/pages/PostDetailPage.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class PraiseCard extends StatelessWidget {
@@ -32,7 +32,7 @@ class PraiseCard extends StatelessWidget {
                 child: FadeInImage(
                     fadeInDuration: const Duration(milliseconds: 100),
                     placeholder: AssetImage("assets/avatar_placeholder.png"),
-                    image: UserUtils.getAvatarProvider(uid: praise.uid),
+                    image: UserAPI.getAvatarProvider(uid: praise.uid),
                 ),
             ),
             onTap: () => UserPage.jump(context, praise.uid),

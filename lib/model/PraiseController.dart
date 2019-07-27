@@ -10,7 +10,7 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/cards/PraiseCard.dart';
 
 class PraiseController {
@@ -95,6 +95,70 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
         _refreshData();
     }
 
+    Future<Null> _loadData() async {
+        _firstLoadComplete = true;
+        if (!_isLoading && _canLoadMore) {
+            _isLoading = true;
+
+            Map result = (await PraiseAPI.getPraiseList(true, _lastValue)).data;
+
+            List<Praise> praiseList = [];
+            List _topics = result['topics'];
+            int _total = int.parse(result['total'].toString());
+            int _count = int.parse(result['count'].toString());
+
+            for (var praiseData in _topics) {
+                if (!UserAPI.blacklist.contains(int.parse(praiseData['topic']['user']['uid'].toString()))) {
+                    praiseList.add(PraiseAPI.createPraise(praiseData));
+                }
+            }
+            _praiseList.addAll(praiseList);
+
+            if (mounted) {
+                setState(() {
+                    _showLoading = false;
+                    _firstLoadComplete = true;
+                    _isLoading = false;
+                    _canLoadMore = _praiseList.length < _total && _count != 0;
+                    _lastValue = _praiseList.isEmpty ? 0 : widget._praiseController.lastValue(_praiseList.last);
+                });
+            }
+        }
+    }
+
+    Future<Null> _refreshData() async {
+        if (!_isLoading) {
+            _isLoading = true;
+            _praiseList.clear();
+
+            _lastValue = 0;
+
+            Map result = (await PraiseAPI.getPraiseList(false, _lastValue)).data;
+
+            List<Praise> praiseList = [];
+            List _topics = result['topics'];
+            int _total = int.parse(result['total'].toString());
+            int _count = int.parse(result['count'].toString());
+
+            for (var praiseData in _topics) {
+                if (!UserAPI.blacklist.contains(int.parse(praiseData['topic']['user']['uid'].toString()))) {
+                    praiseList.add(PraiseAPI.createPraise(praiseData));
+                }
+            }
+            _praiseList.addAll(praiseList);
+
+            if (mounted) {
+                setState(() {
+                    _showLoading = false;
+                    _firstLoadComplete = true;
+                    _isLoading = false;
+                    _canLoadMore = _praiseList.length < _total && _count != 0;
+                    _lastValue = _praiseList.isEmpty ? 0 : widget._praiseController.lastValue(_praiseList.last);
+                });
+            }
+        }
+    }
+
     @mustCallSuper
     Widget build(BuildContext context) {
         super.build(context);
@@ -162,62 +226,6 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
                     child: CircularProgressIndicator(),
                 ),
             );
-        }
-    }
-
-    Future<Null> _loadData() async {
-        _firstLoadComplete = true;
-        if (!_isLoading && _canLoadMore) {
-            _isLoading = true;
-
-            Map result = (await PraiseAPI.getPraiseList(true, _lastValue)).data;
-
-            List<Praise> praiseList = [];
-            List _topics = result['topics'];
-            int _total = int.parse(result['total'].toString());
-            int _count = int.parse(result['count'].toString());
-
-            for (var praiseData in _topics) praiseList.add(PraiseAPI.createPraise(praiseData));
-            _praiseList.addAll(praiseList);
-
-            if (mounted) {
-                setState(() {
-                    _showLoading = false;
-                    _firstLoadComplete = true;
-                    _isLoading = false;
-                    _canLoadMore = _praiseList.length < _total && _count != 0;
-                    _lastValue = _praiseList.isEmpty ? 0 : widget._praiseController.lastValue(_praiseList.last);
-                });
-            }
-        }
-    }
-
-    Future<Null> _refreshData() async {
-        if (!_isLoading) {
-            _isLoading = true;
-            _praiseList.clear();
-
-            _lastValue = 0;
-
-            Map result = (await PraiseAPI.getPraiseList(false, _lastValue)).data;
-
-            List<Praise> praiseList = [];
-            List _topics = result['topics'];
-            int _total = int.parse(result['total'].toString());
-            int _count = int.parse(result['count'].toString());
-
-            for (var praiseData in _topics) praiseList.add(PraiseAPI.createPraise(praiseData));
-            _praiseList.addAll(praiseList);
-
-            if (mounted) {
-                setState(() {
-                    _showLoading = false;
-                    _firstLoadComplete = true;
-                    _isLoading = false;
-                    _canLoadMore = _praiseList.length < _total && _count != 0;
-                    _lastValue = _praiseList.isEmpty ? 0 : widget._praiseController.lastValue(_praiseList.last);
-                });
-            }
         }
     }
 }
@@ -343,7 +351,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                     shape: BoxShape.circle,
                     color: const Color(0xFFECECEC),
                     image: DecorationImage(
-                        image: UserUtils.getAvatarProvider(uid: praise.uid),
+                        image: UserAPI.getAvatarProvider(uid: praise.uid),
                         fit: BoxFit.cover,
                     ),
                 ),

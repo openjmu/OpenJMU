@@ -3,6 +3,13 @@ import 'package:connectivity/connectivity.dart';
 
 import 'package:OpenJMU/model/Bean.dart';
 
+/// Event for testing.
+class TestEvent {
+    var content;
+    TestEvent({content}) {
+        this.content = content;
+    }
+}
 
 class ConnectivityChangeEvent {
     ConnectivityResult type;

@@ -25,7 +25,7 @@ import 'package:OpenJMU/utils/EmojiUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/ToggleButton.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
@@ -59,7 +59,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     bool emoticonPadActive = false;
 
     String msg = "";
-    String sid = UserUtils.currentUser.sid;
+    String sid = UserAPI.currentUser.sid;
 
     static double _iconWidth = Constants.suSetSp(24.0);
     static double _iconHeight = Constants.suSetSp(24.0);

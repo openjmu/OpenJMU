@@ -9,12 +9,12 @@ import 'package:event_bus/event_bus.dart';
 
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 
 class Constants {
     /// For test page.
     /// TODO: Set this to false before release.
-    static bool isTest = false;
+    static bool isTest = true;
 
     static final String endLineTag = "没有更多了~";
 
@@ -37,8 +37,8 @@ class Constants {
         "APPID": appId,
         "CLIENTTYPE": Platform.isIOS ? "ios" : "android",
         "CLOUDID": "jmu",
-        "CUID": UserUtils.currentUser.uid,
-        "SID": UserUtils.currentUser.sid,
+        "CUID": UserAPI.currentUser.uid,
+        "SID": UserAPI.currentUser.sid,
         "TAGID": 1,
     };
 

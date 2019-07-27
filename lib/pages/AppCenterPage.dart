@@ -10,7 +10,7 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/InAppBrowser.dart';
 
@@ -130,8 +130,8 @@ class AppCenterPageState extends State<AppCenterPage> {
         RegExp sidReg = RegExp(r"{SID}");
         RegExp uidReg = RegExp(r"{UID}");
         String result = url;
-        result = result.replaceAllMapped(sidReg, (match) => UserUtils.currentUser.sid.toString());
-        result = result.replaceAllMapped(uidReg, (match) => UserUtils.currentUser.uid.toString());
+        result = result.replaceAllMapped(sidReg, (match) => UserAPI.currentUser.sid.toString());
+        result = result.replaceAllMapped(uidReg, (match) => UserAPI.currentUser.uid.toString());
         return result;
     }
 
@@ -235,10 +235,10 @@ class AppCenterPageState extends State<AppCenterPage> {
             physics: NeverScrollableScrollPhysics(),
             cacheExtent: 1,
             children: <Widget>[
-                if (UserUtils.currentUser.isTeacher != null) InAppBrowserPage(
+                if (UserAPI.currentUser.isTeacher != null) InAppBrowserPage(
                     url: ""
-                            "${UserUtils.currentUser.isTeacher ? Api.courseScheduleTeacher : Api.courseSchedule}"
-                            "?sid=${UserUtils.currentUser.sid}"
+                            "${UserAPI.currentUser.isTeacher ? Api.courseScheduleTeacher : Api.courseSchedule}"
+                            "?sid=${UserAPI.currentUser.sid}"
                             "&night=${ThemeUtils.isDark ? 1 : 0}",
                     title: "课程表",
                     withAppBar: false,

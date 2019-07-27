@@ -12,7 +12,7 @@ import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 
 
 class SplashPage extends StatefulWidget {
@@ -100,7 +100,7 @@ class SplashState extends State<SplashPage> {
                     ), (Route<dynamic> route) => false);
                 } catch (e) {}
             } else {
-                debugPrint("CurrentUser's ${UserUtils.currentUser}");
+                debugPrint("CurrentUser's ${UserAPI.currentUser}");
                 try {
                     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                         builder: (_) => MainPage(initIndex: widget.initIndex),

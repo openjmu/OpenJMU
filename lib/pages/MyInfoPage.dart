@@ -18,7 +18,7 @@ import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 //import 'package:OpenJMU/widgets/CommonWebPage.dart';
 //import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/SelectSplashDialog.dart';
@@ -210,9 +210,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                         ios: (BuildContext context) => CupertinoButtonData(
                             child: Text("确认", style: TextStyle(color: ThemeUtils.currentThemeColor),),
                         ),
-                        onPressed: () {
-                            DataUtils.doLogout();
-                        },
+                        onPressed: UserAPI.logout,
                     ),
                     PlatformButton(
                         android: (BuildContext context) => MaterialRaisedButtonData(
@@ -225,9 +223,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                         ios: (BuildContext context) => CupertinoButtonData(
                             child: Text("取消", style: TextStyle(color: ThemeUtils.currentThemeColor)),
                         ),
-                        onPressed: () {
-                            Navigator.of(context).pop();
-                        },
+                        onPressed: Navigator.of(context).pop,
                     ),
                 ],
             ),
@@ -247,7 +243,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
                                 GestureDetector(
-                                    onTap: () => UserPage.jump(context, UserUtils.currentUser.uid),
+                                    onTap: () => UserPage.jump(context, UserAPI.currentUser.uid),
                                     child: Container(
                                         width: Constants.suSetSp(100.0),
                                         height: Constants.suSetSp(100.0),
@@ -256,7 +252,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                                             child: FadeInImage(
                                                 fadeInDuration: const Duration(milliseconds: 100),
                                                 placeholder: AssetImage("assets/avatar_placeholder.png"),
-                                                image: UserUtils.getAvatarProvider(uid: UserUtils.currentUser.uid),
+                                                image: UserAPI.getAvatarProvider(uid: UserAPI.currentUser.uid),
                                             ),
                                         ),
                                     ),
@@ -275,7 +271,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                                                                 crossAxisAlignment: WrapCrossAlignment.end,
                                                                 children: <Widget>[
                                                                     Text(
-                                                                        "${UserUtils.currentUser.name}",
+                                                                        "${UserAPI.currentUser.name}",
                                                                         style: TextStyle(
                                                                             color: Theme.of(context).textTheme.title.color,
                                                                             fontSize: Constants.suSetSp(24.0),
@@ -342,7 +338,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                                                     children: <Widget>[
                                                         Expanded(
                                                             child: Text(
-                                                                UserUtils.currentUser.signature ?? "这里空空如也~",
+                                                                UserAPI.currentUser.signature ?? "这里空空如也~",
                                                                 style: TextStyle(
                                                                     color: Theme.of(context).textTheme.caption.color,
                                                                     fontSize: Constants.suSetSp(18.0),
@@ -373,7 +369,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 textAlign: TextAlign.center,
                 text: TextSpan(
                     children: <TextSpan>[
-                        TextSpan(text: "${UserUtils.currentUser.name}，$hello~\n"),
+                        TextSpan(text: "${UserAPI.currentUser.name}，$hello~\n"),
                         TextSpan(text: "今天是"),
                         if (currentWeek != null) TextSpan(text: "第$currentWeek周，"),
                         TextSpan(text: "${DateFormat("MMMdd日，", "zh_CN").format(now)}"),

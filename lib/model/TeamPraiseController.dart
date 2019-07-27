@@ -9,7 +9,7 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/cards/PraiseCard.dart';
 
 class TeamPraiseController {
@@ -254,7 +254,7 @@ class _TeamPraiseListInPostState extends State<TeamPraiseListInPost> {
                     shape: BoxShape.circle,
                     color: const Color(0xFFECECEC),
                     image: DecorationImage(
-                        image: UserUtils.getAvatarProvider(uid: int.parse(praise['uid'].toString())),
+                        image: UserAPI.getAvatarProvider(uid: int.parse(praise['uid'].toString())),
                         fit: BoxFit.cover,
                     ),
                 ),

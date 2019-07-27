@@ -18,7 +18,7 @@ import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/cards/CommentCard.dart';
 import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
@@ -130,6 +130,85 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
         _refreshData();
     }
 
+    Future<Null> _loadData() async {
+        _firstLoadComplete = true;
+        if (!_isLoading && _canLoadMore) {
+            _isLoading = true;
+
+            Map result = (await CommentAPI.getCommentList(
+                widget._commentController.commentType,
+                true,
+                _lastValue,
+                additionAttrs: widget._commentController.additionAttrs,
+            )).data;
+
+            List<Comment> commentList = [];
+            List _topics = result['replylist'];
+            int _total = int.parse(result['total'].toString());
+            int _count = int.parse(result['count'].toString());
+
+            for (var commentData in _topics) {
+                if (!UserAPI.blacklist.contains(int.parse(commentData['reply']['user']['uid'].toString()))) {
+                    commentList.add(CommentAPI.createComment(commentData['reply']));
+                    _idList.add(commentData['id']);
+                }
+            }
+            _commentList.addAll(commentList);
+
+            if (mounted) {
+                setState(() {
+                    _showLoading = false;
+                    _firstLoadComplete = true;
+                    _isLoading = false;
+                    _canLoadMore = _idList.length < _total && _count != 0;
+                    _lastValue = _idList.isEmpty ? 0 : widget._commentController.lastValue(_idList.last);
+                });
+            }
+        }
+    }
+
+    Future<Null> _refreshData() async {
+        if (!_isLoading) {
+            _isLoading = true;
+            _commentList.clear();
+
+            _lastValue = 0;
+
+            Map result = (await CommentAPI.getCommentList(
+                widget._commentController.commentType,
+                false,
+                _lastValue,
+                additionAttrs: widget._commentController.additionAttrs,
+            )).data;
+
+            List<Comment> commentList = [];
+            List<int> idList = [];
+            List _topics = result['replylist'];
+            int _total = int.parse(result['total'].toString());
+            int _count = int.parse(result['count'].toString());
+
+            for (var commentData in _topics) {
+                if (!UserAPI.blacklist.contains(int.parse(commentData['reply']['user']['uid'].toString()))) {
+                    commentList.add(CommentAPI.createComment(commentData['reply']));
+                    idList.add(commentData['id']);
+                }
+            }
+            _commentList.addAll(commentList);
+            _idList.addAll(idList);
+
+            if (mounted) {
+                setState(() {
+                    _showLoading = false;
+                    _firstLoadComplete = true;
+                    _isLoading = false;
+                    _canLoadMore = _idList.length < _total && _count != 0;
+                    _lastValue = _idList.isEmpty ? 0 : widget._commentController.lastValue(_idList.last);
+
+                });
+            }
+        }
+    }
+
     @mustCallSuper
     Widget build(BuildContext context) {
         super.build(context);
@@ -201,81 +280,6 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
             );
         }
     }
-
-    Future<Null> _loadData() async {
-        _firstLoadComplete = true;
-        if (!_isLoading && _canLoadMore) {
-            _isLoading = true;
-
-            Map result = (await CommentAPI.getCommentList(
-                widget._commentController.commentType,
-                true,
-                _lastValue,
-                additionAttrs: widget._commentController.additionAttrs,
-            )).data;
-
-            List<Comment> commentList = [];
-            List _topics = result['replylist'];
-            int _total = int.parse(result['total'].toString());
-            int _count = int.parse(result['count'].toString());
-
-            for (var commentData in _topics) {
-                commentList.add(CommentAPI.createComment(commentData['reply']));
-                _idList.add(commentData['id']);
-            }
-            _commentList.addAll(commentList);
-
-            if (mounted) {
-                setState(() {
-                    _showLoading = false;
-                    _firstLoadComplete = true;
-                    _isLoading = false;
-                    _canLoadMore = _idList.length < _total && _count != 0;
-                    _lastValue = _idList.isEmpty ? 0 : widget._commentController.lastValue(_idList.last);
-                });
-            }
-        }
-    }
-
-    Future<Null> _refreshData() async {
-        if (!_isLoading) {
-            _isLoading = true;
-            _commentList.clear();
-
-            _lastValue = 0;
-
-            Map result = (await CommentAPI.getCommentList(
-                widget._commentController.commentType,
-                false,
-                _lastValue,
-                additionAttrs: widget._commentController.additionAttrs,
-            )).data;
-
-            List<Comment> commentList = [];
-            List<int> idList = [];
-            List _topics = result['replylist'];
-            int _total = int.parse(result['total'].toString());
-            int _count = int.parse(result['count'].toString());
-
-            for (var commentData in _topics) {
-                commentList.add(CommentAPI.createComment(commentData['reply']));
-                idList.add(commentData['id']);
-            }
-            _commentList.addAll(commentList);
-            _idList.addAll(idList);
-
-            if (mounted) {
-                setState(() {
-                    _showLoading = false;
-                    _firstLoadComplete = true;
-                    _isLoading = false;
-                    _canLoadMore = _idList.length < _total && _count != 0;
-                    _lastValue = _idList.isEmpty ? 0 : widget._commentController.lastValue(_idList.last);
-
-                });
-            }
-        }
-    }
 }
 
 
@@ -336,11 +340,15 @@ class _CommentListInPostState extends State<CommentListInPost> {
             } else {
                 canLoadMore = false;
             }
+
             List<Comment> comments = [];
             list.forEach((comment) {
-                comment['reply']['post'] = widget.post;
-                comments.add(CommentAPI.createCommentInPost(comment['reply']));
+                if (!UserAPI.blacklist.contains(int.parse(comment['reply']['user']['uid'].toString()))) {
+                    comment['reply']['post'] = widget.post;
+                    comments.add(CommentAPI.createCommentInPost(comment['reply']));
+                }
             });
+
             if (this.mounted) {
                 setState(() { _comments.addAll(comments); });
                 isLoading = false;
@@ -364,11 +372,15 @@ class _CommentListInPostState extends State<CommentListInPost> {
             List<dynamic> list = response['replylist'];
             int total = response['total'] as int;
             if (response['count'] as int < total) canLoadMore = true;
+
             List<Comment> comments = [];
             list.forEach((comment) {
-                comment['reply']['post'] = widget.post;
-                comments.add(CommentAPI.createCommentInPost(comment['reply']));
+                if (!UserAPI.blacklist.contains(int.parse(comment['reply']['user']['uid'].toString()))) {
+                    comment['reply']['post'] = widget.post;
+                    comments.add(CommentAPI.createCommentInPost(comment['reply']));
+                }
             });
+
             if (this.mounted) {
                 setState(() {
                     Constants.eventBus.fire(new CommentInPostUpdatedEvent(widget.post.id, total));
@@ -399,7 +411,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                     shape: BoxShape.circle,
                     color: const Color(0xFFECECEC),
                     image: DecorationImage(
-                        image: UserUtils.getAvatarProvider(uid: comment.fromUserUid),
+                        image: UserAPI.getAvatarProvider(uid: comment.fromUserUid),
                         fit: BoxFit.cover,
                     ),
                 ),
@@ -530,9 +542,9 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                     children: <Widget>[
                                                         if (
-                                                        _comments[index].fromUserUid == UserUtils.currentUser.uid
+                                                        _comments[index].fromUserUid == UserAPI.currentUser.uid
                                                                 ||
-                                                                widget.post.uid == UserUtils.currentUser.uid
+                                                                widget.post.uid == UserAPI.currentUser.uid
                                                         ) Column(
                                                             mainAxisSize: MainAxisSize.min,
                                                             children: <Widget>[

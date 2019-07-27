@@ -72,6 +72,7 @@ class JMUAppClientState extends State<JMUAppClient> {
                 setState(() {
                     currentThemeColor = ThemeUtils.defaultColor;
                 });
+                DataUtils.logout();
             })
             ..on<ActionsEvent>().listen((event) {
                 if (event.type == "action_home") {

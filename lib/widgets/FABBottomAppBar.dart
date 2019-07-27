@@ -1,12 +1,11 @@
 import 'dart:io';
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 
 class FABBottomAppBarItem {
@@ -199,15 +198,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
         if (Platform.isIOS) {
             appBar = ClipRect(
                 child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: Constants.suSetSp(20.0), sigmaY: Constants.suSetSp(20.0)),
-                    child: Container(
-                        decoration: BoxDecoration(
-                            border: Border(top: BorderSide(
-                                color: ThemeUtils.isDark ? Colors.grey[900] : Colors.grey[500],
-                            )),
-                        ),
-                        child: appBar,
-                    ),
+                    filter: ui.ImageFilter.blur(sigmaX: Constants.suSetSp(20.0), sigmaY: Constants.suSetSp(20.0)),
+                    child: appBar,
                 ),
             );
         }

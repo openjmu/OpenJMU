@@ -20,7 +20,7 @@ import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/pages/TeamPostDetailPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
-import 'package:OpenJMU/utils/UserUtils.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
@@ -98,7 +98,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                 child: FadeInImage(
                     fadeInDuration: const Duration(milliseconds: 100),
                     placeholder: AssetImage("assets/avatar_placeholder.png"),
-                    image: UserUtils.getAvatarProvider(uid: post.uid),
+                    image: UserAPI.getAvatarProvider(uid: post.uid),
                 ),
             ),
             onTap: () => UserPage.jump(context, widget.post.uid),
@@ -497,7 +497,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                                             ),
                                         ),
                                     ),
-                                    if ((widget.post.uid == UserUtils.currentUser.uid) && isDetail) deleteButton(),
+                                    if ((widget.post.uid == UserAPI.currentUser.uid) && isDetail) deleteButton(),
                                 ],
                             ),
                         ),
