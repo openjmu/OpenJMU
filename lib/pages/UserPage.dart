@@ -237,6 +237,7 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
         ),
         Row(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
                 Text(
                     _user.name,
@@ -274,6 +275,26 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                     ),
                     child: Text(
                         " Lv.$userLevel",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Constants.suSetSp(14.0),
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                        ),
+                    ),
+                ),
+                if (Constants.developerList.contains(_user.uid)) Constants.emptyDivider(width: 8.0),
+                if (Constants.developerList.contains(_user.uid)) Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: Constants.suSetSp(8.0),
+                        vertical: Constants.suSetSp(4.0),
+                    ),
+                    decoration: BoxDecoration(
+                        color: Colors.deepOrange,
+                        borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
+                    ),
+                    child: Text(
+                        "# OpenJMU Team #",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: Constants.suSetSp(14.0),
