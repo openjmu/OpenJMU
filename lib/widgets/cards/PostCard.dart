@@ -190,7 +190,12 @@ class _PostCardState extends State<PostCard> {
                     child: GestureDetector(
                         onTap: () {
                             Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                return PostDetailPage(_post, index: widget.index, fromPage: widget.fromPage, beforeContext: context);
+                                return PostDetailPage(
+                                    _post,
+                                    index: widget.index,
+                                    fromPage: widget.fromPage,
+                                    beforeContext: context,
+                                );
                             }));
                         },
                         child: Container(
@@ -527,7 +532,7 @@ class _PostCardState extends State<PostCard> {
                                     text: "屏蔽此人",
                                 ),
                                 _listTile(
-                                    icon: Icons.report_problem,
+                                    icon: Icons.report,
                                     text: "举报动态",
                                 ),
                             ],
@@ -541,7 +546,12 @@ class _PostCardState extends State<PostCard> {
     void confirmDelete() {
         showPlatformDialog(
             context: context,
-            builder: (_) => DeleteDialog("动态", post: widget.post, fromPage: widget.fromPage, index: widget.index),
+            builder: (_) => DeleteDialog(
+                "动态",
+                post: widget.post,
+                fromPage: widget.fromPage,
+                index: widget.index,
+            ),
         );
     }
 
@@ -559,7 +569,10 @@ class _PostCardState extends State<PostCard> {
                 }));
             },
             child: Card(
-                margin: isShield ? EdgeInsets.zero : EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
+                margin: isShield
+                        ? EdgeInsets.zero
+                        : EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0))
+                ,
                 child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: !isShield ? <Widget>[

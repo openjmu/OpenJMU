@@ -15,6 +15,7 @@ class Api {
     static final String firstDayOfTerm = "https://project.alexv525.com/openjmu/first-day-of-term";
     static final String checkUpdate = "https://project.alexv525.com/openjmu/latest-version";
     static final String latestAndroid = "https://project.alexv525.com/openjmu/openjmu-latest.apk";
+    static final String announcement = "https://project.alexv525.com/openjmu/announcement";
 
     /// Hosts.
     static final String wbHost = "https://wb.jmu.edu.cn";
