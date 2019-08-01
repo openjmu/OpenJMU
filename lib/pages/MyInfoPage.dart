@@ -120,8 +120,8 @@ class MyInfoPageState extends State<MyInfoPage> {
     }
 
     void getAnnouncement() async {
-        Map<String, dynamic> data = jsonDecode((await NetUtils.get(Api.announcement)).data);
-        setState(() {
+        Map<String, dynamic> data = jsonDecode((await NetUtils.get(API.announcement)).data);
+        if (data['enabled']) setState(() {
             showAnnouncement = data['enabled'];
             announcements = data['announcements'];
         });
@@ -240,7 +240,6 @@ class MyInfoPageState extends State<MyInfoPage> {
     }
 
     Widget announcement() {
-        Color color = Color(0xffb76300);
         return GestureDetector(
             behavior: HitTestBehavior.translucent,
             child: Container(
@@ -248,7 +247,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                     horizontal: Constants.suSetSp(24.0),
                     vertical: Constants.suSetSp(10.0),
                 ),
-                color: Color(0xffffd4a1),
+                color: ThemeUtils.currentThemeColor.withAlpha(0x44),
                 child: Row(
                     children: <Widget>[
                         Padding(
@@ -256,13 +255,13 @@ class MyInfoPageState extends State<MyInfoPage> {
                             child: Icon(
                                 Icons.error_outline,
                                 size: Constants.suSetSp(18.0),
-                                color: color,
+                                color: ThemeUtils.currentThemeColor,
                             ),
                         ),
                         Expanded(child: Text(
                             "${announcements[0]['title']}",
                             style: TextStyle(
-                                color: color,
+                                color: ThemeUtils.currentThemeColor,
                                 fontSize: Constants.suSetSp(18.0),
                             ),
                             overflow: TextOverflow.ellipsis,
@@ -272,7 +271,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                             child: Icon(
                                 Icons.keyboard_arrow_right,
                                 size: Constants.suSetSp(18.0),
-                                color: color,
+                                color: ThemeUtils.currentThemeColor,
                             ),
                         ),
                     ],

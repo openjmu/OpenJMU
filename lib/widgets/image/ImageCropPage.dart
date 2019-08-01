@@ -140,7 +140,7 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
         );
         FormData _f = await createForm(file);
         NetUtils.postWithCookieSet(
-            Api.userAvatarUpload,
+            API.userAvatarUpload,
             data: _f,
         ).then((response) {
             _controller.changeState("success", "头像更新成功");

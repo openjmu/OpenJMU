@@ -92,7 +92,7 @@ class CommentPositionedState extends State<CommentPositioned> {
     });
 
     Future getImageRequest(FormData formData) async => NetUtils.postWithCookieAndHeaderSet(
-        Api.postUploadImage,
+        API.postUploadImage,
         data: formData,
     );
 

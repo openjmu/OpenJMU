@@ -438,7 +438,7 @@ class _PostCardState extends State<PostCard> {
                         SearchPage.search(context, text.substring(1, text.length - 1));
                     } else if (text.startsWith("@")) {
                         UserPage.jump(context, data['uid']);
-                    } else if (text.startsWith(Api.wbHost)) {
+                    } else if (text.startsWith(API.wbHost)) {
                         CommonWebPage.jump(context, text, "网页链接");
                     }
                 },
@@ -530,10 +530,110 @@ class _PostCardState extends State<PostCard> {
                                 _listTile(
                                     icon: Icons.visibility_off,
                                     text: "屏蔽此人",
+                                    onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) => PlatformAlertDialog(
+                                                title: Text(
+                                                    "屏蔽此人",
+                                                    style: TextStyle(
+                                                        fontSize: Constants.suSetSp(22.0),
+                                                    ),
+                                                ),
+                                                content: Text(
+                                                    "确定屏蔽此人吗？",
+                                                    style: TextStyle(
+                                                        fontSize: Constants.suSetSp(18.0),
+                                                    ),
+                                                ),
+                                                actions: <Widget>[
+                                                    PlatformButton(
+                                                        android: (BuildContext context) => MaterialRaisedButtonData(
+                                                            color: Theme.of(context).dialogBackgroundColor,
+                                                            elevation: 0,
+                                                            disabledElevation: 0.0,
+                                                            highlightElevation: 0.0,
+                                                            child: Text("确认", style: TextStyle(color: ThemeUtils.currentThemeColor)),
+                                                        ),
+                                                        ios: (BuildContext context) => CupertinoButtonData(
+                                                            child: Text("确认", style: TextStyle(color: ThemeUtils.currentThemeColor),),
+                                                        ),
+                                                        onPressed: () {
+                                                            UserAPI.fAddToBlacklist({"uid": widget.post.uid, "name": widget.post.nickname});
+                                                            Navigator.pop(context);
+                                                        },
+                                                    ),
+                                                    PlatformButton(
+                                                        android: (BuildContext context) => MaterialRaisedButtonData(
+                                                            color: ThemeUtils.currentThemeColor,
+                                                            elevation: 0,
+                                                            disabledElevation: 0.0,
+                                                            highlightElevation: 0.0,
+                                                            child: Text('取消', style: TextStyle(color: Colors.white)),
+                                                        ),
+                                                        ios: (BuildContext context) => CupertinoButtonData(
+                                                            child: Text("取消", style: TextStyle(color: ThemeUtils.currentThemeColor)),
+                                                        ),
+                                                        onPressed: Navigator.of(context).pop,
+                                                    ),
+                                                ],
+                                            )
+                                        );
+                                    }
                                 ),
                                 _listTile(
                                     icon: Icons.report,
                                     text: "举报动态",
+                                        onTap: () {
+                                            showDialog(
+                                                    context: context,
+                                                    builder: (context) => PlatformAlertDialog(
+                                                        title: Text(
+                                                            "举报动态",
+                                                            style: TextStyle(
+                                                                fontSize: Constants.suSetSp(22.0),
+                                                            ),
+                                                        ),
+                                                        content: Text(
+                                                            "确定举报该条动态吗？",
+                                                            style: TextStyle(
+                                                                fontSize: Constants.suSetSp(18.0),
+                                                            ),
+                                                        ),
+                                                        actions: <Widget>[
+                                                            PlatformButton(
+                                                                android: (BuildContext context) => MaterialRaisedButtonData(
+                                                                    color: Theme.of(context).dialogBackgroundColor,
+                                                                    elevation: 0,
+                                                                    disabledElevation: 0.0,
+                                                                    highlightElevation: 0.0,
+                                                                    child: Text("确认", style: TextStyle(color: ThemeUtils.currentThemeColor)),
+                                                                ),
+                                                                ios: (BuildContext context) => CupertinoButtonData(
+                                                                    child: Text("确认", style: TextStyle(color: ThemeUtils.currentThemeColor),),
+                                                                ),
+                                                                onPressed: () {
+                                                                    showShortToast("举报成功");
+                                                                    Navigator.pop(context);
+                                                                },
+                                                            ),
+                                                            PlatformButton(
+                                                                android: (BuildContext context) => MaterialRaisedButtonData(
+                                                                    color: ThemeUtils.currentThemeColor,
+                                                                    elevation: 0,
+                                                                    disabledElevation: 0.0,
+                                                                    highlightElevation: 0.0,
+                                                                    child: Text('取消', style: TextStyle(color: Colors.white)),
+                                                                ),
+                                                                ios: (BuildContext context) => CupertinoButtonData(
+                                                                    child: Text("取消", style: TextStyle(color: ThemeUtils.currentThemeColor)),
+                                                                ),
+                                                                onPressed: Navigator.of(context).pop,
+                                                            ),
+                                                        ],
+                                                    ),
+                                            );
+                                        }
                                 ),
                             ],
                         ),

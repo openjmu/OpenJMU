@@ -77,7 +77,7 @@ class AppCenterPageState extends State<AppCenterPage> {
         );
     }
 
-    Future getAppList() async => NetUtils.getWithCookieSet(Api.webAppLists);
+    Future getAppList() async => NetUtils.getWithCookieSet(API.webAppLists);
 
     Widget categoryListView(BuildContext context, AsyncSnapshot snapshot) {
         List<dynamic> data = snapshot.data?.data;
@@ -138,7 +138,7 @@ class AppCenterPageState extends State<AppCenterPage> {
 
     Widget getWebAppButton(webApp) {
         String url = replaceParamsInUrl(webApp.url);
-        String imageUrl = "${Api.webAppIcons}"
+        String imageUrl = "${API.webAppIcons}"
                 "appid=${webApp.id}"
                 "&code=${webApp.code}"
         ;
@@ -236,7 +236,7 @@ class AppCenterPageState extends State<AppCenterPage> {
             children: <Widget>[
                 if (UserAPI.currentUser.isTeacher != null) InAppBrowserPage(
                     url: ""
-                            "${UserAPI.currentUser.isTeacher ? Api.courseScheduleTeacher : Api.courseSchedule}"
+                            "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
                             "?sid=${UserAPI.currentUser.sid}"
                             "&night=${ThemeUtils.isDark ? 1 : 0}",
                     title: "课程表",

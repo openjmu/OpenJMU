@@ -51,7 +51,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
         if (!_isLoading) {
             _isLoading = true;
             if (!isLoadMore) lastTimeStamp = 0;
-            String _url = Api.newsList(maxTimeStamp: isLoadMore ? lastTimeStamp : null);
+            String _url = API.newsList(maxTimeStamp: isLoadMore ? lastTimeStamp : null);
             Map<String, dynamic> data = (await NetUtils.getWithHeaderSet(
                 _url, headers: Constants.header,
             )).data;
@@ -168,7 +168,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
     }
 
     Widget coverImg(News news) {
-        String imageUrl = "${Api.newsImageList}"
+        String imageUrl = "${API.newsImageList}"
                 "${news.cover}"
                 "/sid/${UserAPI.currentUser.sid}"
         ;

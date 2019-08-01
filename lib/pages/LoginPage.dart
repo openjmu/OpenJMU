@@ -260,7 +260,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                                     ..onTap = () {
                                         return CommonWebPage.jump(
                                             context,
-                                            "${Api.homePage}/license.html",
+                                            "${API.homePage}/license.html",
                                             "OpenJMU用户协议",
                                         );
                                     },

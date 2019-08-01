@@ -477,7 +477,7 @@ class PublishPostPageState extends State<PublishPostPage> {
 
     Future getImageRequest(FormData formData, int index) async {
         return NetUtils.postWithCookieAndHeaderSet(
-            Api.postUploadImage,
+            API.postUploadImage,
             data: formData,
         ).then((response) {
             _incrementImagesCounter();
@@ -506,7 +506,7 @@ class PublishPostPageState extends State<PublishPostPage> {
             _loadingDialogController.updateText("正在发布动态...");
         }
         NetUtils.postWithCookieAndHeaderSet(
-            Api.postContent,
+            API.postContent,
             data: content,
         ).then((response) {
             setState(() { isLoading = false; });

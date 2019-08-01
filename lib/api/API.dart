@@ -3,9 +3,10 @@ import 'dart:core';
 
 import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
+import 'package:OpenJMU/utils/SocketUtils.dart';
 
 
-class Api {
+class API {
     static final String homePage = "https://openjmu.xyz";
     /// github channel.
 //    static final String firstDayOfTerm = "https://raw.githubusercontent.com/openjmu/OpenJMU/master/release/first-day-of-term";
@@ -18,6 +19,7 @@ class Api {
     static final String announcement = "https://project.alexv525.com/openjmu/announcement";
 
     /// Hosts.
+    static final String openjmuHost = "frametest.jmu.edu.cn";
     static final String wbHost = "https://wb.jmu.edu.cn";
     static final String file99Host = "https://file99.jmu.edu.cn";
     static final String oa99Host = "https://oa99.jmu.edu.cn";
@@ -130,6 +132,8 @@ class Api {
 
     static final String task = "$oa99Host/ajax/tasks";
 
+    /// 成绩相关
+    static final SocketConfig scoreSocket = SocketConfig("$openjmuHost", 80);
     /// 课程表相关
     static final String courseSchedule = "http://labs.jmu.edu.cn/courseSchedule/course.html";
     static final String courseScheduleTeacher = "http://labs.jmu.edu.cn/courseSchedule/Tcourse.html";
@@ -146,5 +150,5 @@ class Api {
 }
 
 class DateAPI {
-    static Future getCurrentWeek () async => NetUtils.get(Api.firstDayOfTerm);
+    static Future getCurrentWeek () async => NetUtils.get(API.firstDayOfTerm);
 }

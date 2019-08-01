@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:dio/dio.dart';
@@ -12,6 +14,7 @@ import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/cards/PraiseCard.dart';
+
 
 class PraiseController {
     final bool isMore;
@@ -108,7 +111,10 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
             int _count = int.parse(result['count'].toString());
 
             for (var praiseData in _topics) {
-                if (!UserAPI.blacklist.contains(int.parse(praiseData['topic']['user']['uid'].toString()))) {
+                if (!UserAPI.blacklist.contains(jsonEncode({
+                    "uid": praiseData['topic']['user']['uid'].toString(),
+                    "username": praiseData['topic']['user']['nickname'],
+                }))) {
                     praiseList.add(PraiseAPI.createPraise(praiseData));
                 }
             }
@@ -141,7 +147,10 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
             int _count = int.parse(result['count'].toString());
 
             for (var praiseData in _topics) {
-                if (!UserAPI.blacklist.contains(int.parse(praiseData['topic']['user']['uid'].toString()))) {
+                if (!UserAPI.blacklist.contains(jsonEncode({
+                    "uid": praiseData['topic']['user']['uid'].toString(),
+                    "username": praiseData['topic']['user']['nickname'],
+                }))) {
                     praiseList.add(PraiseAPI.createPraise(praiseData));
                 }
             }

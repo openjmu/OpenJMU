@@ -95,7 +95,7 @@ class DataUtils {
 
     static Future getUserInfo([uid]) async {
         NetUtils.getWithCookieSet(
-            "${Api.userInfo}?uid=${uid ?? UserAPI.currentUser.uid}",
+            "${API.userInfo}?uid=${uid ?? UserAPI.currentUser.uid}",
             cookies: buildPHPSESSIDCookies(UserAPI.currentUser.sid),
         ).then((response) {
             Map<String, dynamic> data = response.data;
@@ -178,7 +178,7 @@ class DataUtils {
             blowfish: UserAPI.currentUser.blowfish,
         );
         try {
-            Map<String, dynamic> response = (await NetUtils.post(Api.loginTicket, data: params)).data;
+            Map<String, dynamic> response = (await NetUtils.post(API.loginTicket, data: params)).data;
             await updateSid(response);
             await getUserInfo();
             UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
@@ -243,7 +243,7 @@ class DataUtils {
     // 获取未读信息数
     static void getNotifications() {
         NetUtils.getWithCookieAndHeaderSet(
-            Api.postUnread,
+            API.postUnread,
         ).then((response) {
             Map<String, dynamic> data = response.data;
             int comment = int.parse(data['cmt']);

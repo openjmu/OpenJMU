@@ -38,13 +38,13 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
     );
 
     Future onScan(String data) async {
-        if (Api.urlReg.stringMatch(data) != null) {
+        if (API.urlReg.stringMatch(data) != null) {
             Navigator.of(context).pushReplacement(platformPageRoute(
                 builder: (_) => CommonWebPage(url: data, title: ""),
             ));
-        } else if (Api.schemeUserPage.stringMatch(data) != null) {
+        } else if (API.schemeUserPage.stringMatch(data) != null) {
             Navigator.of(context).pushReplacement(platformPageRoute(
-                builder: (_) => UserPage(uid: int.parse(data.substring(Api.schemeUserPage.pattern.length - 2))),
+                builder: (_) => UserPage(uid: int.parse(data.substring(API.schemeUserPage.pattern.length - 2))),
             ));
         } else {
             await showCupertinoDialog(

@@ -220,7 +220,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
             for (var index = 0; index < data.length; index++) {
                 data[index]['fid'] = int.parse(data[index]['fid'].toString());
                 int imageID = data[index]['fid'];
-                String imageUrl = Api.teamFile(fid: data[index]['fid']);
+                String imageUrl = API.teamFile(fid: data[index]['fid']);
 //                Widget _exImage = ExtendedImage.network(
 //                    imageUrl,
 //                    fit: BoxFit.cover,
@@ -405,7 +405,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                         SearchPage.search(context, text.substring(1, text.length - 1));
                     } else if (text.startsWith("@")) {
                         UserPage.jump(context, data['uid']);
-                    } else if (text.startsWith(Api.wbHost)) {
+                    } else if (text.startsWith(API.wbHost)) {
                         CommonWebPage.jump(context, text, "网页链接");
                     }
                 },

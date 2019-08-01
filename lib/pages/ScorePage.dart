@@ -1,6 +1,12 @@
+import 'dart:convert';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import 'package:OpenJMU/api/API.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/utils/SocketUtils.dart';
 
 
 class ScorePage extends StatefulWidget {
@@ -9,51 +15,44 @@ class ScorePage extends StatefulWidget {
 }
 
 class _ScorePageState extends State<ScorePage> {
-    List<Map<String, dynamic>> scores = [
-        {
-            'courseCode' : "22026450",
-            'courseName' : "环境科学导论",
-            'courseTime' : 24,
-            'coursePoint': 1.50,
-            'courseType' : "基础必修",
-            'examType'   : "正常",
-            'examStatus' : "正常",
-            'examScore'  : "良好",
-            'examPoint'  : 3.00,
-        },
-        {
-            'courseCode' : "E008630",
-            'courseName' : "毛泽东思想和中国特色社会主义理论体系概论",
-            'courseTime' : 56,
-            'coursePoint': 3.50,
-            'courseType' : "通识必修",
-            'examType'   : "正常",
-            'examStatus' : "正常",
-            'examScore'  : "94",
-            'examPoint'  : 4.40,
-        },
-        {
-            'courseCode' : "E000520",
-            'courseName' : "思政课实践(一)",
-            'courseTime' : 0,
-            'coursePoint': 1.50,
-            'courseType' : "实践教学",
-            'examType'   : "补考",
-            'examStatus' : "正常",
-            'examScore'  : "不合格",
-            'examPoint'  : 0.00,
-        },
-    ];
-
-//    Future _futureBuilderFuture;
+    bool loading = true;
+    List<Map<String, dynamic>> scores;
+    StreamSubscription scoresSubscription;
 
     @override
     void initState() {
         super.initState();
-//        _futureBuilderFuture = getScoreList();
+//        loadScores();
     }
 
-//    Future getAppList() async => NetUtils.getWithCookieSet(Api.webAppLists);
+    @override
+    void dispose() {
+        super.dispose();
+        scoresSubscription?.cancel();
+//        SocketUtils.unInitSocket();
+    }
+
+    void loadScores() async {
+        await SocketUtils.initSocket(API.scoreSocket);
+        scoresSubscription = SocketUtils.mStream.listen(onReceive);
+        SocketUtils.mSocket.add(utf8.encode(jsonEncode({
+            "uid": "${UserAPI.currentUser.uid}",
+            "sid": "${UserAPI.currentUser.sid}",
+            "workid": "${UserAPI.currentUser.workId}",
+        })));
+    }
+
+    void onReceive(List<int> data) async {
+        try {
+            print("接收到的数据: ${utf8.decode(data)}");
+            scores = jsonDecode(utf8.decode(data));
+            setState(() {
+                loading = false;
+            });
+        } catch (e) {
+            debugPrint("$e");
+        }
+    }
 
     Widget _name(score) {
         return Text(
@@ -116,12 +115,14 @@ class _ScorePageState extends State<ScorePage> {
 
     @override
     Widget build(BuildContext context) {
-        return GridView.count(
+        return loading
+                ? CircularProgressIndicator()
+                : GridView.count(
             shrinkWrap: true,
             crossAxisCount: 2,
             childAspectRatio: 1.5,
             children: <Widget>[
-                for (int i = 0; i < scores.length; i++) Card(
+                if (scores != null) for (int i = 0; i < scores.length; i++) Card(
                     child: Padding(
                         padding: EdgeInsets.all(Constants.suSetSp(10.0)),
                         child: Column(

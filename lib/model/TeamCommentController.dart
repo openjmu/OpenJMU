@@ -488,11 +488,11 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                     SearchPage.search(context, text.substring(1, text.length-1));
                 } else if (text.startsWith("@")) {
                     UserPage.jump(context, data['uid']);
-                } else if (text.startsWith(Api.wbHost)) {
+                } else if (text.startsWith(API.wbHost)) {
                     CommonWebPage.jump(context, text, "网页链接");
                 } else if (text.startsWith("|")) {
                     int imageID = data['image'];
-                    String imageUrl = Api.commentImageUrl(imageID, "o");
+                    String imageUrl = API.commentImageUrl(imageID, "o");
                     Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
                         return ImageViewer(
                             0, [ImageBean(imageID, imageUrl, null)],

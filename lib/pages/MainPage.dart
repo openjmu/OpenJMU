@@ -195,7 +195,8 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                                     labelPadding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
                                     unselectedLabelStyle: tabUnselectedTextStyle,
                                     tabs: <Tab>[
-                                        for (int i = 0; i < sections[_tabIndex].length; i++) Tab(text: sections[_tabIndex][i])
+                                        for (int i = 0; i < sections[_tabIndex].length; i++)
+                                            Tab(text: sections[_tabIndex][i])
                                     ],
                                     controller: _tabControllers[_tabIndex],
                                 ),

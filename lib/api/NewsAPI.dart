@@ -31,7 +31,7 @@ class NewsAPI {
 
     static Future getNewsContent({int newsId}) {
         return NetUtils.getWithHeaderSet(
-            "${Api.newsDetail}$newsId",
+            "${API.newsDetail}$newsId",
             headers: Constants.header,
         );
     }

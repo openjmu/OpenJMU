@@ -10,9 +10,9 @@ class TeamPostAPI {
     static Future getPostList({bool isMore, int lastTimeStamp, additionAttrs}) async {
         String _postUrl;
         if (isMore) {
-            _postUrl = Api.teamPosts(teamId: Constants.fleaMarketTeamId, maxTimeStamp: lastTimeStamp);
+            _postUrl = API.teamPosts(teamId: Constants.fleaMarketTeamId, maxTimeStamp: lastTimeStamp);
         } else {
-            _postUrl = Api.teamPosts(teamId: Constants.fleaMarketTeamId);
+            _postUrl = API.teamPosts(teamId: Constants.fleaMarketTeamId);
         }
         return NetUtils.getWithCookieAndHeaderSet(
             _postUrl,
@@ -22,7 +22,7 @@ class TeamPostAPI {
 
     static Post createPost(postData) {
         var _user = postData['user_info'];
-        String _avatar = "${Api.userAvatarInSecure}?uid=${_user['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
+        String _avatar = "${API.userAvatarInSecure}?uid=${_user['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
         String _postTime = DateTime.fromMillisecondsSinceEpoch(
             int.parse(postData['post_time']),
         ).toString().substring(0,16);
@@ -47,14 +47,14 @@ class TeamPostAPI {
     }
 
     static Future getPostDetail({int id, int postType}) => NetUtils.getWithCookieAndHeaderSet(
-        Api.teamPostDetail(postId: id, postType: postType),
+        API.teamPostDetail(postId: id, postType: postType),
         headers: Constants.header,
     );
 }
 
 class TeamCommentAPI {
     static getCommentInPostList({int id, int page}) async => NetUtils.getWithCookieAndHeaderSet(
-        "${Api.teamPostCommentsList(postId: id, page: (page ?? 1))}",
+        "${API.teamPostCommentsList(postId: id, page: (page ?? 1))}",
         headers: Constants.header,
     );
 
@@ -92,21 +92,21 @@ class TeamCommentAPI {
 class TeamPraiseAPI {
     static getPraiseList(bool isMore, int lastValue) async => NetUtils.getWithCookieAndHeaderSet(
         (isMore ?? false)
-                ? "${Api.praiseList}/id_max/$lastValue"
-                : "${Api.praiseList}"
+                ? "${API.praiseList}/id_max/$lastValue"
+                : "${API.praiseList}"
         ,
     );
 
     static Future requestPraise(id, isPraise) async {
         if (isPraise) {
             return NetUtils.postWithCookieAndHeaderSet(
-                "${Api.postRequestPraise}$id",
+                "${API.postRequestPraise}$id",
             ).catchError((e) {
                 debugPrint("${e.response["msg"]}");
             });
         } else {
             return NetUtils.deleteWithCookieAndHeaderSet(
-                "${Api.postRequestPraise}$id",
+                "${API.postRequestPraise}$id",
             ).catchError((e) {
                 debugPrint("${e.response["msg"]}");
             });
@@ -114,7 +114,7 @@ class TeamPraiseAPI {
     }
 
     static Praise createPraiseInPost(itemData) {
-        String _avatar = "${Api.userAvatarInSecure}"
+        String _avatar = "${API.userAvatarInSecure}"
                 "?uid=${itemData['user']['uid']}"
                 "&size=f152"
                 "&_t=${DateTime.now().millisecondsSinceEpoch}"
@@ -138,7 +138,7 @@ class TeamPraiseAPI {
     }
 
     static Praise createPraise(itemData) {
-        String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
+        String _avatar = "${API.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
         String _praiseTime = DateTime.fromMillisecondsSinceEpoch(
             itemData['praise_time'] * 1000,
         ).toString().substring(0,16);
