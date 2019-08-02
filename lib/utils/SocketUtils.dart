@@ -15,12 +15,17 @@ class SocketUtils {
     static Stream<List<int>> mStream;
 
     static Future initSocket(SocketConfig config) async {
-        return Socket.connect(config.host, config.port).then((Socket socket) {
-            mSocket = socket;
-            mStream = mSocket.asBroadcastStream();
-        }).catchError((e) {
-            debugPrint("mSocket Error: $e");
-        });
+        try {
+            if (mSocket != null) throw("Socket already inited.");
+            return Socket.connect(config.host, config.port).then((Socket socket) {
+                mSocket = socket;
+                mStream = mSocket.asBroadcastStream();
+            }).catchError((e) {
+                debugPrint("mSocket Error: $e");
+            });
+        } catch (e) {
+            debugPrint("$e");
+        }
     }
 
     static void unInitSocket() {

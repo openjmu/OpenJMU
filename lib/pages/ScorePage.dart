@@ -15,7 +15,7 @@ class ScorePage extends StatefulWidget {
 }
 
 class _ScorePageState extends State<ScorePage> {
-    bool loading = true;
+    bool loading = true, socketInitialized = false;
     List<Map<String, dynamic>> scores;
     StreamSubscription scoresSubscription;
 
@@ -33,13 +33,16 @@ class _ScorePageState extends State<ScorePage> {
     }
 
     void loadScores() async {
-        await SocketUtils.initSocket(API.scoreSocket);
-        scoresSubscription = SocketUtils.mStream.listen(onReceive);
-        SocketUtils.mSocket.add(utf8.encode(jsonEncode({
-            "uid": "${UserAPI.currentUser.uid}",
-            "sid": "${UserAPI.currentUser.sid}",
-            "workid": "${UserAPI.currentUser.workId}",
-        })));
+        if (!socketInitialized) {
+            await SocketUtils.initSocket(API.scoreSocket);
+            socketInitialized = true;
+            scoresSubscription = SocketUtils.mStream.listen(onReceive);
+            SocketUtils.mSocket.add(utf8.encode(jsonEncode({
+                "uid": "${UserAPI.currentUser.uid}",
+                "sid": "${UserAPI.currentUser.sid}",
+                "workid": "${UserAPI.currentUser.workId}",
+            })));
+        }
     }
 
     void onReceive(List<int> data) async {

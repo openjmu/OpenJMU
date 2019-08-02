@@ -19,7 +19,7 @@ class API {
     static final String announcement = "https://project.alexv525.com/openjmu/announcement";
 
     /// Hosts.
-    static final String openjmuHost = "frametest.jmu.edu.cn";
+    static final String openjmuHost = "openjmu.jmu.edu.cn";
     static final String wbHost = "https://wb.jmu.edu.cn";
     static final String file99Host = "https://file99.jmu.edu.cn";
     static final String oa99Host = "https://oa99.jmu.edu.cn";
@@ -133,7 +133,7 @@ class API {
     static final String task = "$oa99Host/ajax/tasks";
 
     /// 成绩相关
-    static final SocketConfig scoreSocket = SocketConfig("$openjmuHost", 80);
+    static final SocketConfig scoreSocket = SocketConfig("$openjmuHost", 4000);
     /// 课程表相关
     static final String courseSchedule = "http://labs.jmu.edu.cn/courseSchedule/course.html";
     static final String courseScheduleTeacher = "http://labs.jmu.edu.cn/courseSchedule/Tcourse.html";
