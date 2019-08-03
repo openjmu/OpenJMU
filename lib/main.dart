@@ -44,9 +44,8 @@ class JMUAppClientState extends State<JMUAppClient> {
             DeviceOrientation.portraitDown,
         ]);
         connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-            NetUtils.currentConnectivity = result;
             Constants.eventBus.fire(ConnectivityChangeEvent(result));
-            debugPrint("Connectity: $result");
+            debugPrint("Connectivity: $result");
         });
         DataUtils.getColorThemeIndex().then((index) {
             if (this.mounted && index != null) {

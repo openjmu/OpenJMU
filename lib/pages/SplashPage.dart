@@ -25,8 +25,9 @@ class SplashPage extends StatefulWidget {
 }
 
 class SplashState extends State<SplashPage> {
-    bool isOnline, isUserLogin = false, showLoading = false;
-    ConnectivityResult connectivityResult;
+    bool isOnline;
+    bool isUserLogin = false;
+    bool showLoading = false;
 
     @override
     void initState() {
@@ -34,9 +35,14 @@ class SplashState extends State<SplashPage> {
         Future.delayed(const Duration(seconds: 5), () {
             if (this.mounted) setState(() { showLoading = true; });
         });
+        checkConnectivity().then((ConnectivityResult result) {
+            if (result != ConnectivityResult.none) {
+                checkOnline(ConnectivityChangeEvent(result));
+            }
+        });
         Constants.eventBus
             ..on<ConnectivityChangeEvent>().listen((event) {
-                if (this.mounted) checkOnline(event);
+                if (this.mounted && isOnline != null) checkOnline(event);
             })
             ..on<TicketGotEvent>().listen((event) {
                 debugPrint("Ticket Got.");
@@ -64,6 +70,21 @@ class SplashState extends State<SplashPage> {
         ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
     }
 
+    Future<ConnectivityResult> checkConnectivity() async {
+        try {
+            ConnectivityResult connectivityResult = await Connectivity().checkConnectivity();
+            if (connectivityResult != null && connectivityResult != ConnectivityResult.none) {
+                isOnline = true;
+            } else {
+                isOnline = false;
+            }
+            return connectivityResult;
+        } catch (e) {
+            debugPrint("Checking connectivity error: $e");
+            return ConnectivityResult.none;
+        }
+    }
+
     void checkOnline(event) {
         setState(() {
             if (event.type != ConnectivityResult.none) {
@@ -88,15 +109,13 @@ class SplashState extends State<SplashPage> {
                     Navigator.of(context).pushAndRemoveUntil(PageRouteBuilder(
                         transitionDuration: const Duration(milliseconds: 500),
                         pageBuilder: (
-                                BuildContext context,
-                                Animation animation,
-                                Animation secondaryAnimation,
-                                ) {
-                            return FadeTransition(
-                                opacity: animation,
-                                child: LoginPage(),
-                            );
-                        },
+                            BuildContext context,
+                            Animation animation,
+                            Animation secondaryAnimation
+                        ) => FadeTransition(
+                            opacity: animation,
+                            child: LoginPage(),
+                        ),
                     ), (Route<dynamic> route) => false);
                 } catch (e) {}
             } else {

@@ -1,7 +1,6 @@
 import 'dart:async';
 //import 'dart:io';
 
-import 'package:connectivity/connectivity.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:oktoast/oktoast.dart';
@@ -17,8 +16,6 @@ class NetUtils {
     static Dio dio = Dio();
     static CookieJar cookieJar = CookieJar();
     static CookieManager cookieManager = CookieManager(cookieJar);
-
-    static ConnectivityResult currentConnectivity;
 
     static void updateTicket() async {
         dio.lock();  /// Lock dio while requesting new ticket.
