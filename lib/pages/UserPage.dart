@@ -242,15 +242,18 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                    SizedBox(
-                        width: Constants.suSetSp(100.0),
-                        height: Constants.suSetSp(100.0),
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(Constants.suSetSp(50.0)),
-                            child: FadeInImage(
-                                fadeInDuration: const Duration(milliseconds: 100),
-                                placeholder: AssetImage("assets/avatar_placeholder.png"),
-                                image: UserAPI.getAvatarProvider(uid: _user.uid),
+                    Hero(
+                        tag: "user_${widget.uid}",
+                        child: SizedBox(
+                            width: Constants.suSetSp(100.0),
+                            height: Constants.suSetSp(100.0),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(Constants.suSetSp(50.0)),
+                                child: FadeInImage(
+                                    fadeInDuration: const Duration(milliseconds: 100),
+                                    placeholder: AssetImage("assets/avatar_placeholder.png"),
+                                    image: UserAPI.getAvatarProvider(uid: _user.uid),
+                                ),
                             ),
                         ),
                     ),

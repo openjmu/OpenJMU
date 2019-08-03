@@ -26,6 +26,7 @@ class FABBottomAppBar extends StatefulWidget {
         this.selectedColor,
         this.notchedShape,
         this.onTabSelected,
+        this.initIndex,
     }) {
         assert(this.items.length == 2 || this.items.length == 4);
     }
@@ -39,6 +40,7 @@ class FABBottomAppBar extends StatefulWidget {
     final Color selectedColor;
     final NotchedShape notchedShape;
     final ValueChanged<int> onTabSelected;
+    final int initIndex;
 
     @override
     State<StatefulWidget> createState() => FABBottomAppBarState();
@@ -48,37 +50,25 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
     int _selectedIndex = Constants.homeSplashIndex;
     bool showNotification = false;
 
-    void _updateIndex(int index) {
-        if (_selectedIndex == 0 && index == 0) {
-            Constants.eventBus.fire(new ScrollToTopEvent(tabIndex: index, type: widget.items[index].text));
-        }
-        widget.onTabSelected(index);
-        setState(() {
-            _selectedIndex = index;
-        });
-    }
-
     @override
     bool get wantKeepAlive => true;
 
     @override
     void initState() {
         super.initState();
+        if (widget.initIndex != null) _selectedIndex = widget.initIndex;
         Constants.eventBus
             ..on<ActionsEvent>().listen((event) {
-                if (mounted) {
-                    setState(() {
-                        if (event.type == "action_home") {
-                            _selectedIndex = 0;
-                        } else if (event.type == "action_apps") {
-                            _selectedIndex = 1;
-                        } else if (event.type == "action_discover") {
-                            _selectedIndex = 2;
-                        } else if (event.type == "action_user") {
-                            _selectedIndex = 3;
-                        }
-                    });
+                if (event.type == "action_home") {
+                    _selectedIndex = 0;
+                } else if (event.type == "action_apps") {
+                    _selectedIndex = 1;
+                } else if (event.type == "action_discover") {
+                    _selectedIndex = 2;
+                } else if (event.type == "action_user") {
+                    _selectedIndex = 3;
                 }
+                if (mounted) setState(() {});
             })
             ..on<NotificationsChangeEvent>().listen((event) {
                 if (mounted) {
@@ -93,6 +83,16 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
                     }
                 }
             });
+    }
+
+    void _updateIndex(int index) {
+        if (_selectedIndex == 0 && index == 0) {
+            Constants.eventBus.fire(new ScrollToTopEvent(tabIndex: index, type: widget.items[index].text));
+        }
+        widget.onTabSelected(index);
+        setState(() {
+            _selectedIndex = index;
+        });
     }
 
     Widget _buildMiddleTabItem() {

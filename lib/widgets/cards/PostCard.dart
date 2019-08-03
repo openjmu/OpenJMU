@@ -97,19 +97,22 @@ class _PostCardState extends State<PostCard> {
             });
     }
 
-    Widget getPostAvatar(context, post) => SizedBox(
-        width: Constants.suSetSp(48.0),
-        height: Constants.suSetSp(48.0),
-        child: GestureDetector(
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(Constants.suSetSp(24.0)),
-                child: FadeInImage(
-                    fadeInDuration: const Duration(milliseconds: 100),
-                    placeholder: AssetImage("assets/avatar_placeholder.png"),
-                    image: UserAPI.getAvatarProvider(uid: post.uid),
+    Widget getPostAvatar(context, post) => Hero(
+        tag: "user_${post.uid}",
+        child: SizedBox(
+            width: Constants.suSetSp(48.0),
+            height: Constants.suSetSp(48.0),
+            child: GestureDetector(
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(Constants.suSetSp(24.0)),
+                    child: FadeInImage(
+                        fadeInDuration: const Duration(milliseconds: 100),
+                        placeholder: AssetImage("assets/avatar_placeholder.png"),
+                        image: UserAPI.getAvatarProvider(uid: post.uid),
+                    ),
                 ),
+                onTap: () => UserPage.jump(context, widget.post.uid),
             ),
-            onTap: () => UserPage.jump(context, widget.post.uid),
         ),
     );
 
