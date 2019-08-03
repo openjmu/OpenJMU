@@ -84,6 +84,11 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
             ..on<AvatarUpdatedEvent>().listen((event) {
                 UserAPI.updateAvatarProvider();
                 _fetchUserInformation(widget.uid);
+            })
+            ..on<BlacklistUpdateEvent>().listen((event) {
+                Future.delayed(const Duration(milliseconds: 250), () {
+                    if (this.mounted) setState(() {});
+                });
             });
     }
 
@@ -266,6 +271,7 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                         fontSize: Constants.suSetSp(24.0),
                         fontWeight: FontWeight.bold,
                     ),
+                    overflow: TextOverflow.ellipsis,
                 ),
                 Constants.emptyDivider(width: 8.0),
                 DecoratedBox(
@@ -495,7 +501,10 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                                                 child: Text("确认", style: TextStyle(color: ThemeUtils.currentThemeColor),),
                                             ),
                                             onPressed: () {
-                                                UserAPI.fRemoveFromBlacklist({"uid": _user['uid'], "name": _user['username']});
+                                                UserAPI.fRemoveFromBlacklist(
+                                                    uid: int.parse(_user['uid']),
+                                                    name: _user['username'],
+                                                );
                                                 Navigator.pop(context);
                                             },
                                         ),
@@ -542,10 +551,8 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
     Widget build(BuildContext context) {
         return Scaffold(
             body: isLoading
-                    ?
-            Center(child: CircularProgressIndicator())
-                    :
-            NestedScrollView(
+                    ? Center(child: Constants.progressIndicator())
+                    : NestedScrollView(
                 controller: _scrollController,
                 headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => <Widget>[
                     SliverAppBar(
@@ -587,11 +594,9 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                             refreshing ? Container(
                                 width: 56.0,
                                 padding: EdgeInsets.all(20.0),
-                                child: CircularProgressIndicator(
+                                child: Constants.progressIndicator(
                                     strokeWidth: 3.0,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        Theme.of(context).iconTheme.color,
-                                    ),
+                                    color: Colors.white,
                                 ),
                             ) : IconButton(
                                 icon: Icon(Icons.refresh),
@@ -634,9 +639,7 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                                             padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(20.0)),
                                             child: Column(
                                                 children: <Widget>[
-                                                    Constants.emptyDivider(
-                                                        height: kToolbarHeight + 4.0,
-                                                    ),
+                                                    Constants.emptyDivider(height: kToolbarHeight + 4.0),
                                                     ListView.builder(
                                                         physics: NeverScrollableScrollPhysics(),
                                                         shrinkWrap: true,
@@ -672,9 +675,11 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                                             indicatorSize: TabBarIndicatorSize.label,
                                             indicatorWeight: Constants.suSetSp(3.0),
                                             labelStyle: TextStyle(
+                                                fontSize: Constants.suSetSp(16.0),
                                                 fontWeight: FontWeight.bold,
                                             ),
                                             unselectedLabelStyle: TextStyle(
+                                                fontSize: Constants.suSetSp(16.0),
                                                 fontWeight: FontWeight.normal,
                                             ),
                                             tabs: <Widget>[
@@ -706,16 +711,24 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                     children: <Widget>[
                         _post,
                         UserAPI.blacklist.length > 0
-                                ? GridView.count(
+                                ?
+                        GridView.count(
                             crossAxisCount: 3,
                             children: <Widget>[
-                                for (String user in UserAPI.blacklist)
-                                    blacklistUser(user)
+                                for (int i = 0; i < UserAPI.blacklist.length; i++)
+                                    blacklistUser(UserAPI.blacklist[i])
                                 ,
                             ],
                         )
-                                : Container()
-                        ,
+                                :
+                        Center(
+                            child: Text(
+                                "黑名单为空",
+                                style: TextStyle(
+                                    fontSize: Constants.suSetSp(16.0),
+                                ),
+                            ),
+                        ),
                     ],
                 ) : _post,
             ),
@@ -928,7 +941,7 @@ class _UserListState extends State<UserListPage> {
             )
                     : Center(child: Text("暂无内容", style: TextStyle(fontSize: Constants.suSetSp(20.0))))
                     : Center(
-                child: CircularProgressIndicator(),
+                child: Constants.progressIndicator(),
             ),
         );
     }

@@ -34,14 +34,18 @@ class _ScorePageState extends State<ScorePage> {
 
     void loadScores() async {
         if (!socketInitialized) {
-            await SocketUtils.initSocket(API.scoreSocket);
-            socketInitialized = true;
-            scoresSubscription = SocketUtils.mStream.listen(onReceive);
-            SocketUtils.mSocket.add(utf8.encode(jsonEncode({
-                "uid": "${UserAPI.currentUser.uid}",
-                "sid": "${UserAPI.currentUser.sid}",
-                "workid": "${UserAPI.currentUser.workId}",
-            })));
+            try {
+                await SocketUtils.initSocket(API.scoreSocket);
+                socketInitialized = true;
+                scoresSubscription = SocketUtils.mStream.listen(onReceive);
+                SocketUtils.mSocket.add(utf8.encode(jsonEncode({
+                    "uid": "${UserAPI.currentUser.uid}",
+                    "sid": "${UserAPI.currentUser.sid}",
+                    "workid": "${UserAPI.currentUser.workId}",
+                })));
+            } catch (e) {
+                debugPrint("$e");
+            }
         }
     }
 
@@ -119,7 +123,7 @@ class _ScorePageState extends State<ScorePage> {
     @override
     Widget build(BuildContext context) {
         return loading
-                ? CircularProgressIndicator()
+                ? Constants.progressIndicator()
                 : GridView.count(
             shrinkWrap: true,
             crossAxisCount: 2,

@@ -559,7 +559,10 @@ class _PostCardState extends State<PostCard> {
                                                             child: Text("确认", style: TextStyle(color: ThemeUtils.currentThemeColor),),
                                                         ),
                                                         onPressed: () {
-                                                            UserAPI.fAddToBlacklist({"uid": widget.post.uid, "name": widget.post.nickname});
+                                                            UserAPI.fAddToBlacklist(
+                                                                uid: widget.post.uid,
+                                                                name: widget.post.nickname,
+                                                            );
                                                             Navigator.pop(context);
                                                         },
                                                     ),

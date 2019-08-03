@@ -59,7 +59,7 @@ class _TeamPostListState extends State<TeamPostList> with AutomaticKeepAliveClie
     bool error = false;
 
     Widget _body = Center(
-        child: CircularProgressIndicator(),
+        child: Constants.progressIndicator(),
     );
 
     List<Post> _postList = [];

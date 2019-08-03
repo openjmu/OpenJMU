@@ -51,7 +51,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
     bool error = false;
 
     Widget _body = Center(
-        child: CircularProgressIndicator(),
+        child: Constants.progressIndicator(),
     );
 
     List<Praise> _praiseList = [];
@@ -386,7 +386,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
             width: MediaQuery.of(context).size.width,
             padding: isLoading ? EdgeInsets.symmetric(vertical: Constants.suSetSp(42)) : EdgeInsets.zero,
             child: isLoading
-                    ? Center(child: CircularProgressIndicator())
+                    ? Center(child: Constants.progressIndicator())
                     : Container(
                 color: Theme.of(context).cardColor,
                 padding: EdgeInsets.zero,
@@ -410,11 +410,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                                             SizedBox(
                                                 width: Constants.suSetSp(15.0),
                                                 height: Constants.suSetSp(15.0),
-                                                child: Platform.isAndroid
-                                                        ? CircularProgressIndicator(
-                                                    strokeWidth: 2.0,
-                                                )
-                                                        : CupertinoActivityIndicator(),
+                                                child: Constants.progressIndicator(strokeWidth: 2.0),
                                             ),
                                             Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0))),
                                         ],

@@ -1,4 +1,3 @@
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
@@ -333,10 +332,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         },
                     ) : Padding(
                         padding: EdgeInsets.all(Constants.suSetSp(20.0)),
-                        child: CircularProgressIndicator(
-                            strokeWidth: Constants.suSetSp(4.0),
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
+                        child: Constants.progressIndicator(color: Colors.white),
                     ),
                 ),
             ],

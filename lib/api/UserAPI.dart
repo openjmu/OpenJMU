@@ -157,48 +157,50 @@ class UserAPI {
         );
     }
 
-    static void fAddToBlacklist(Map<String, dynamic> user) {
+    static void fAddToBlacklist({int uid, String name}) {
         NetUtils.postWithCookieSet(
             API.addToBlacklist,
-            data: {"fid": user['uid']},
+            data: {"fid": uid},
         ).then((response) {
-            UserAPI.unFollow(
-                user['uid'],
-            ).then((response) {
-                addToBlacklist(user);
-                showShortToast("屏蔽成功");
-            }).catchError((e) {
+            addToBlacklist(uid: uid, name: name);
+            showShortToast("屏蔽成功");
+            Constants.eventBus.fire(BlacklistUpdateEvent());
+            UserAPI.unFollow(uid).catchError((e) {
                 debugPrint("${e.toString()}");
             });
         }).catchError((e) {
             showShortToast("屏蔽失败");
-            debugPrint("Add ${user['uid']} to blacklist failed : $e");
+            debugPrint("Add $name $uid to blacklist failed : $e");
         });
     }
 
-    static void fRemoveFromBlacklist(Map<String, dynamic> user) {
+    static void fRemoveFromBlacklist({int uid, String name}) {
         NetUtils.postWithCookieSet(
             API.removeFromBlacklist,
-            data: {"fid": user['uid']},
+            data: {"fid": uid},
         ).then((response) {
-            removeFromBlackList(user);
+            removeFromBlackList(uid: uid, name: name);
             showShortToast("取消屏蔽成功");
+            Constants.eventBus.fire(BlacklistUpdateEvent());
         }).catchError((e) {
             showShortToast("取消屏蔽失败");
-            debugPrint("Remove ${user['uid']} from blacklist failed: $e");
+            debugPrint("Remove $name $uid from blacklist failed: $e");
             debugPrint("${e.response}");
         });
     }
 
     static void setBlacklist(List list) {
         if (list.length > 0) list.forEach((person) {
-            addToBlacklist(person);
+            addToBlacklist(
+                uid: int.parse(person['uid'].toString()),
+                name: person['username'],
+            );
         });
     }
-    static void addToBlacklist(Map<String, dynamic> user) {
-        blacklist.add(jsonEncode(user));
+    static void addToBlacklist({int uid, String name}) {
+        blacklist.add(jsonEncode({"uid": uid.toString(), "username": name}));
     }
-    static void removeFromBlackList(Map<String, dynamic> user) {
-        blacklist.remove(jsonEncode(user));
+    static void removeFromBlackList({int uid, String name}) {
+        blacklist.remove(jsonEncode({"uid": uid.toString(), "username": name}));
     }
 }

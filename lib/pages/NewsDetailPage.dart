@@ -82,7 +82,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                         },
                     ),
                     Center(
-                        child: _webViewLoaded ? SizedBox() : CircularProgressIndicator(),
+                        child: _webViewLoaded ? SizedBox() : Constants.progressIndicator(),
                     ),
                 ],
             ),

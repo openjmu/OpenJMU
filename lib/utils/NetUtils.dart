@@ -1,4 +1,5 @@
 import 'dart:async';
+//import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:cookie_jar/cookie_jar.dart';
@@ -46,7 +47,7 @@ class NetUtils {
     static void initConfig() async {
 //        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
 //            client.findProxy = (uri) {
-//                return "PROXY 192.168.1.5:8088";
+//                return "PROXY 192.168.1.13:8088";
 //            };
 //            client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
 //        };

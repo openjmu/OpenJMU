@@ -115,9 +115,7 @@ class CommonWebPageState extends State<CommonWebPage> {
             child: SizedBox(
                 width: 24.0,
                 height: 24.0,
-                child: Platform.isAndroid ? CircularProgressIndicator(
-                    strokeWidth: 3.0,
-                ) : CupertinoActivityIndicator(),
+                child: Constants.progressIndicator(strokeWidth: 3.0),
             ),
         ),
     );
@@ -204,11 +202,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                     height: MediaQuery.of(context).size.height,
                     color: Theme.of(context).canvasColor,
                     child: isLoading
-                            ? Center(
-                            child: CircularProgressIndicator(
-                                valueColor: AlwaysStoppedAnimation<Color>(currentThemeColor),
-                            )
-                    )
+                            ? Center(child: Constants.progressIndicator())
                             : Container(),
                 ),
                 persistentFooterButtons: !(widget.withAction ?? false) ? <Widget>[

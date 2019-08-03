@@ -2,14 +2,16 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:badges/badges.dart';
 import 'package:crypto/crypto.dart';
 import 'package:event_bus/event_bus.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
+
 
 class Constants {
     /// For test page.
@@ -78,16 +80,37 @@ class Constants {
 
     static Notifications notifications = Notifications(0, 0, 0, 0);
 
+    static double suSetSp(double size) {
+        double value = ScreenUtil.getInstance().setSp(size) * 1.95;
+        if (Platform.isIOS) {
+            if (ScreenUtil.screenWidthDp <= 414.0) {
+                value = size / 1.25;
+            } else if (ScreenUtil.screenWidthDp > 414.0 && ScreenUtil.screenWidthDp > 750.0) {
+                value = size;
+            }
+        }
+        return value;
+    }
+
+    ///
+    /// Constant widgets.
+    /// This section was declared for widgets that will be reuse in code.
+    /// Including [separator], [emptyDivider], [nightModeCover], [badgeIcon], [progressIndicator]
+    ///
+
+    /// Common separator. Used in setting separate.
     static DecoratedBox separator(context, {Color color, double height}) => DecoratedBox(
         decoration: BoxDecoration(color: color ?? Theme.of(context).canvasColor),
         child: SizedBox(height: suSetSp(height ?? 8.0)),
     );
 
+    /// Empty divider. Used in widgets need empty placeholder.
     static Widget emptyDivider({double width, double height}) => SizedBox(
         width: width != null ? suSetSp(width) : null,
         height: height != null ? suSetSp(height) : null,
     );
 
+    /// Cover when night mode. Used in covering post thumb images.
     static Widget nightModeCover() => Positioned(
         top: 0.0,
         left: 0.0,
@@ -98,6 +121,7 @@ class Constants {
         )),
     );
 
+    /// Badge Icon. Used in notification.
     static Widget badgeIcon({
         @required content,
         @required Widget icon,
@@ -110,15 +134,17 @@ class Constants {
         elevation: Platform.isAndroid ? 2 : 0,
     );
 
-    static double suSetSp(double size) {
-        double value = ScreenUtil.getInstance().setSp(size) * 1.95;
-        if (Platform.isIOS) {
-            if (ScreenUtil.screenWidthDp <= 414.0) {
-                value = size / 1.25;
-            } else if (ScreenUtil.screenWidthDp > 414.0 && ScreenUtil.screenWidthDp > 750.0) {
-                value = size;
-            }
-        }
-        return value;
-    }
+    /// Progress Indicator. Used in loading data.
+    static Widget progressIndicator({
+        double strokeWidth = 4.0,
+        Color color,
+        double value,
+    }) => Platform.isIOS
+            ? CupertinoActivityIndicator()
+            : CircularProgressIndicator(
+        strokeWidth: suSetSp(strokeWidth),
+        valueColor: color != null ? AlwaysStoppedAnimation<Color>(color) : null,
+        value: value,
+    )
+    ;
 }
