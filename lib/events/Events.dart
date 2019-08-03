@@ -140,6 +140,7 @@ class UserInfoGotEvent {
         this.currentUser = userInfo;
     }
 }
+class BlacklistUpdateEvent {}
 class NotificationsChangeEvent {
     Notifications notifications;
 

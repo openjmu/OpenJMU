@@ -10,16 +10,16 @@ class CommentAPI {
         switch (commentType) {
             case "reply":
                 if (isMore) {
-                    _commentUrl = "${Api.commentListByReply}/id_max/$lastValue";
+                    _commentUrl = "${API.commentListByReply}/id_max/$lastValue";
                 } else {
-                    _commentUrl = "${Api.commentListByReply}";
+                    _commentUrl = "${API.commentListByReply}";
                 }
                 break;
             case "mention":
                 if (isMore) {
-                    _commentUrl = "${Api.commentListByMention}/id_max/$lastValue";
+                    _commentUrl = "${API.commentListByMention}/id_max/$lastValue";
                 } else {
-                    _commentUrl = "${Api.commentListByMention}";
+                    _commentUrl = "${API.commentListByMention}";
                 }
                 break;
         }
@@ -27,8 +27,8 @@ class CommentAPI {
     }
     static getCommentInPostList(int id, {bool isMore, int lastValue}) async => NetUtils.getWithCookieAndHeaderSet(
         (isMore ?? false)
-                ? "${Api.postCommentsList}$id/id_max/$lastValue"
-                : "${Api.postCommentsList}$id"
+                ? "${API.postCommentsList}$id/id_max/$lastValue"
+                : "${API.postCommentsList}$id"
         ,
     );
 
@@ -40,20 +40,20 @@ class CommentAPI {
         };
         String url;
         if (replyToId != null) {
-            url = "${Api.postRequestCommentTo}$postId/rid/$replyToId";
+            url = "${API.postRequestCommentTo}$postId/rid/$replyToId";
             data["without_mention"] = 1;
         } else {
-            url = "${Api.postRequestComment}$postId";
+            url = "${API.postRequestComment}$postId";
         }
         return NetUtils.postWithCookieAndHeaderSet(url, data: data);
     }
 
     static deleteComment(int postId, int commentId) async => NetUtils.deleteWithCookieAndHeaderSet(
-        "${Api.postRequestComment}$postId/rid/$commentId",
+        "${API.postRequestComment}$postId/rid/$commentId",
     );
 
     static Comment createComment(itemData) {
-        String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
+        String _avatar = "${API.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
         String _commentTime = DateTime.fromMillisecondsSinceEpoch(
             itemData['post_time'] * 1000,
         ).toString().substring(0,16);
@@ -85,7 +85,7 @@ class CommentAPI {
         return _comment;
     }
     static Comment createCommentInPost(itemData) {
-        String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
+        String _avatar = "${API.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
         String _commentTime = DateTime.fromMillisecondsSinceEpoch(
             itemData['post_time'] * 1000,
         ).toString().substring(0,16);

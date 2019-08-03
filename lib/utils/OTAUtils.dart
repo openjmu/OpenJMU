@@ -39,7 +39,7 @@ class OTAUtils {
 
     static void checkUpdate({bool fromStart}) {
         debugPrint("Checking update...");
-        NetUtils.get(Api.checkUpdate).then((response) {
+        NetUtils.get(API.checkUpdate).then((response) {
             getCurrentBuildNumber().then((buildNumber) {
                 Map<String, dynamic> _response = jsonDecode(response.data);
                 debugPrint("Current build: $buildNumber");

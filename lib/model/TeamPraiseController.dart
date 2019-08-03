@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -47,7 +46,7 @@ class _TeamPraiseListState extends State<TeamPraiseList> with AutomaticKeepAlive
     bool error = false;
 
     Widget _body = Center(
-        child: CircularProgressIndicator(),
+        child: Constants.progressIndicator(),
     );
 
     List<Praise> _praiseList = [];
@@ -117,9 +116,7 @@ class _TeamPraiseListState extends State<TeamPraiseList> with AutomaticKeepAlive
                                             SizedBox(
                                                 width: Constants.suSetSp(15.0),
                                                 height: Constants.suSetSp(15.0),
-                                                child: Platform.isAndroid
-                                                        ? CircularProgressIndicator(strokeWidth: 2.0)
-                                                        : CupertinoActivityIndicator(),
+                                                child: Constants.progressIndicator(strokeWidth: 2.0),
                                             ),
                                             Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0)))
                                         ],
@@ -158,7 +155,7 @@ class _TeamPraiseListState extends State<TeamPraiseList> with AutomaticKeepAlive
         } else {
             return Container(
                 child: Center(
-                    child: CircularProgressIndicator(),
+                    child: Constants.progressIndicator(),
                 ),
             );
         }

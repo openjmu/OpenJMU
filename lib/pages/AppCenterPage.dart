@@ -5,12 +5,13 @@ import 'package:extended_tabs/extended_tabs.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:OpenJMU/api/API.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/pages/ScorePage.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/InAppBrowser.dart';
 
@@ -27,7 +28,7 @@ class AppCenterPage extends StatefulWidget {
 class AppCenterPageState extends State<AppCenterPage> {
     final ScrollController _scrollController = ScrollController();
     final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
-    static final List<String> tabs = ["课程表", "应用"];
+    static final List<String> tabs = ["课程表", if (Constants.isTest) "成绩", "应用"];
 
     Color themeColor = ThemeUtils.currentThemeColor;
     Map<String, List<Widget>> webAppWidgetList = {};
@@ -55,7 +56,7 @@ class AppCenterPageState extends State<AppCenterPage> {
             ..on<AppCenterRefreshEvent>().listen((event) {
                 if (this.mounted) {
                     if (event.currentIndex == 0) {
-                        Constants.eventBus.fire(new CourseScheduleRefreshEvent());
+                        Constants.eventBus.fire(CourseScheduleRefreshEvent());
                     } else if (event.currentIndex == 1) {
                         _scrollController.jumpTo(0.0);
                         refreshIndicatorKey.currentState.show();
@@ -76,7 +77,7 @@ class AppCenterPageState extends State<AppCenterPage> {
         );
     }
 
-    Future getAppList() async => NetUtils.getWithCookieSet(Api.webAppLists);
+    Future getAppList() async => NetUtils.getWithCookieSet(API.webAppLists);
 
     Widget categoryListView(BuildContext context, AsyncSnapshot snapshot) {
         List<dynamic> data = snapshot.data?.data;
@@ -116,7 +117,7 @@ class AppCenterPageState extends State<AppCenterPage> {
                 return Center(child: Text('正在加载'));
             case ConnectionState.waiting:
                 return Center(
-                    child: CircularProgressIndicator(),
+                    child: Constants.progressIndicator(),
                 );
             case ConnectionState.done:
                 if (snapshot.hasError) return Text('错误: ${snapshot.error}');
@@ -137,7 +138,7 @@ class AppCenterPageState extends State<AppCenterPage> {
 
     Widget getWebAppButton(webApp) {
         String url = replaceParamsInUrl(webApp.url);
-        String imageUrl = "${Api.webAppIcons}"
+        String imageUrl = "${API.webAppIcons}"
                 "appid=${webApp.id}"
                 "&code=${webApp.code}"
         ;
@@ -146,7 +147,7 @@ class AppCenterPageState extends State<AppCenterPage> {
             child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                    Container(
+                    SizedBox(
                         width: Constants.suSetSp(68.0),
                         height: Constants.suSetSp(68.0),
                         child: CircleAvatar(
@@ -211,15 +212,13 @@ class AppCenterPageState extends State<AppCenterPage> {
                                 ),
                             ),
                         ),
-                        Container(
-                            child: GridView.count(
-                                physics: NeverScrollableScrollPhysics(),
-                                padding: EdgeInsets.zero,
-                                shrinkWrap: true,
-                                crossAxisCount: 3,
-                                childAspectRatio: 1.3 / 1,
-                                children: webAppWidgetList[name],
-                            ),
+                        GridView.count(
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            crossAxisCount: 3,
+                            childAspectRatio: 1.3 / 1,
+                            children: webAppWidgetList[name],
                         ),
                     ],
                 ),
@@ -233,11 +232,11 @@ class AppCenterPageState extends State<AppCenterPage> {
     Widget build(BuildContext context) {
         return ExtendedTabBarView(
             physics: NeverScrollableScrollPhysics(),
-            cacheExtent: 1,
+            cacheExtent: 2,
             children: <Widget>[
                 if (UserAPI.currentUser.isTeacher != null) InAppBrowserPage(
                     url: ""
-                            "${UserAPI.currentUser.isTeacher ? Api.courseScheduleTeacher : Api.courseSchedule}"
+                            "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
                             "?sid=${UserAPI.currentUser.sid}"
                             "&night=${ThemeUtils.isDark ? 1 : 0}",
                     title: "课程表",
@@ -245,6 +244,7 @@ class AppCenterPageState extends State<AppCenterPage> {
                     withAction: false,
                     keepAlive: true,
                 ),
+                if (tabs[1] == "成绩") ScorePage(),
                 RefreshIndicator(
                     key: refreshIndicatorKey,
                     child: FutureBuilder(
@@ -252,7 +252,7 @@ class AppCenterPageState extends State<AppCenterPage> {
                         future: _futureBuilderFuture,
                     ),
                     onRefresh: getAppList,
-                )
+                ),
             ],
             controller: widget.controller,
         );

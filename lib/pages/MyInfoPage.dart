@@ -6,21 +6,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-//import 'package:oktoast/oktoast.dart';
 
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/SignAPI.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
-//import 'package:OpenJMU/pages/Test.dart';
 import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/NetUTils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
-//import 'package:OpenJMU/widgets/CommonWebPage.dart';
-//import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
+import 'package:OpenJMU/widgets/dialogs/AnnouncementDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/SelectSplashDialog.dart';
 
 
@@ -44,7 +42,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             "退出登录",
         ],
         if (Constants.isTest) [
-            "获取成绩",
+//            "获取成绩",
             "测试页",
         ],
     ];
@@ -62,7 +60,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             "exit",
         ],
         if (Constants.isTest) [
-            "idols",
+//            "idols",
             "idols",
         ],
     ];
@@ -73,6 +71,8 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     bool isLogin = false, isDark = false;
     bool signing = false, signed = false;
+    bool showAnnouncement = false;
+    List announcements = [];
 
     int signedCount = 0, currentWeek;
 
@@ -85,6 +85,7 @@ class MyInfoPageState extends State<MyInfoPage> {
     void initState() {
         super.initState();
         updateHello();
+        getAnnouncement();
         getSignStatus();
         getCurrentWeek();
         if (this.mounted) updateHelloTimer = Timer.periodic(Duration(minutes: 1), (timer) {
@@ -118,7 +119,15 @@ class MyInfoPageState extends State<MyInfoPage> {
         updateHelloTimer?.cancel();
     }
 
-    Future<Null> getSignStatus() async {
+    void getAnnouncement() async {
+        Map<String, dynamic> data = jsonDecode((await NetUtils.get(API.announcement)).data);
+        if (data['enabled']) setState(() {
+            showAnnouncement = data['enabled'];
+            announcements = data['announcements'];
+        });
+    }
+
+    void getSignStatus() async {
         var _signed = (await SignAPI.getTodayStatus()).data['status'];
         var _signedCount = (await SignAPI.getSignList()).data['signdata']?.length;
         setState(() {
@@ -127,7 +136,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         });
     }
 
-    Future<Null> getCurrentWeek() async {
+    void getCurrentWeek() async {
         String _day = jsonDecode((await DateAPI.getCurrentWeek()).data)['start'];
         DateTime startDate = DateTime.parse(_day);
         DateTime currentDate = DateTime.now();
@@ -182,7 +191,7 @@ class MyInfoPageState extends State<MyInfoPage> {
     void setDarkMode(isDark) {
         ThemeUtils.isDark = isDark;
         DataUtils.setBrightnessDark(isDark);
-        Constants.eventBus.fire(new ChangeBrightnessEvent(isDark));
+        Constants.eventBus.fire(ChangeBrightnessEvent(isDark));
     }
 
     void showSelectSplashDialog(BuildContext context) {
@@ -230,140 +239,202 @@ class MyInfoPageState extends State<MyInfoPage> {
         );
     }
 
+    Widget announcement() {
+        return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: Constants.suSetSp(24.0),
+                    vertical: Constants.suSetSp(10.0),
+                ),
+                color: ThemeUtils.currentThemeColor.withAlpha(0x44),
+                child: Row(
+                    children: <Widget>[
+                        Padding(
+                            padding: EdgeInsets.only(right: Constants.suSetSp(6.0)),
+                            child: Icon(
+                                Icons.error_outline,
+                                size: Constants.suSetSp(18.0),
+                                color: ThemeUtils.currentThemeColor,
+                            ),
+                        ),
+                        Expanded(child: Text(
+                            "${announcements[0]['title']}",
+                            style: TextStyle(
+                                color: ThemeUtils.currentThemeColor,
+                                fontSize: Constants.suSetSp(18.0),
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                        )),
+                        Padding(
+                            padding: EdgeInsets.only(left: Constants.suSetSp(6.0)),
+                            child: Icon(
+                                Icons.keyboard_arrow_right,
+                                size: Constants.suSetSp(18.0),
+                                color: ThemeUtils.currentThemeColor,
+                            ),
+                        ),
+                    ],
+                ),
+            ),
+            onTap: () {
+                showDialog<Null>(
+                    context: context,
+                    builder: (BuildContext context) => AnnouncementDialog(announcements[0]),
+                );
+            },
+        );
+    }
+
     Widget userInfo() {
-        return Padding(
-            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(24.0), vertical: Constants.suSetSp(16.0)),
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                    Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                                GestureDetector(
-                                    onTap: () => UserPage.jump(context, UserAPI.currentUser.uid),
-                                    child: Container(
-                                        width: Constants.suSetSp(100.0),
-                                        height: Constants.suSetSp(100.0),
-                                        child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(Constants.suSetSp(50.0)),
-                                            child: FadeInImage(
-                                                fadeInDuration: const Duration(milliseconds: 100),
-                                                placeholder: AssetImage("assets/avatar_placeholder.png"),
-                                                image: UserAPI.getAvatarProvider(uid: UserAPI.currentUser.uid),
+        Widget avatar = SizedBox(
+            width: Constants.suSetSp(100.0),
+            height: Constants.suSetSp(100.0),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(Constants.suSetSp(50.0)),
+                child: FadeInImage(
+                    fadeInDuration: const Duration(milliseconds: 100),
+                    placeholder: AssetImage("assets/avatar_placeholder.png"),
+                    image: UserAPI.getAvatarProvider(uid: UserAPI.currentUser.uid),
+                ),
+            ),
+        );
+        Widget name = Row(
+            children: <Widget>[
+                Expanded(
+                    child: Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.end,
+                        children: <Widget>[
+                            Text(
+                                "${UserAPI.currentUser.name}",
+                                style: TextStyle(
+                                    color: Theme.of(context).textTheme.title.color,
+                                    fontSize: Constants.suSetSp(24.0),
+                                    fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                            ),
+                        ],
+                    ),
+                ),
+            ],
+        );
+        Widget signature = Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+                Expanded(
+                    child: Text(
+                        UserAPI.currentUser.signature ?? "这里空空如也~",
+                        style: TextStyle(
+                            color: Theme.of(context).textTheme.caption.color,
+                            fontSize: Constants.suSetSp(18.0),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        textAlign: TextAlign.start,
+                    ),
+                ),
+            ],
+        );
+        Widget sign = InkWell(
+            onTap: signed ? () {} : requestSign,
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
+                child: Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: Constants.suSetSp(8.0),
+                        vertical:  Constants.suSetSp(6.0),
+                    ),
+                    decoration: BoxDecoration(
+                        color: ThemeUtils.currentThemeColor,
+                    ),
+                    child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                            Padding(
+                                padding: EdgeInsets.only(
+                                    top: Constants.suSetSp(signing ? 3.0 : 0.0),
+                                    bottom: Constants.suSetSp(signing ? 3.0 : 0.0),
+                                    left: Constants.suSetSp(signing ? 2.0 : 0.0),
+                                    right: Constants.suSetSp(signing ? 8.0 : 4.0),
+                                ),
+                                child: signing ? SizedBox(
+                                    width: Constants.suSetSp(18.0),
+                                    height: Constants.suSetSp(18.0),
+                                    child: Constants.progressIndicator(
+                                        strokeWidth: 3.0,
+                                        color: Colors.white,
+                                    ),
+                                ) : Icon(
+                                    Icons.assignment_turned_in,
+                                    color: Colors.white,
+                                    size: Constants.suSetSp(24.0),
+                                ),
+                            ),
+                            Text(
+                                signed ? "已签$signedCount天" : "签到",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: Constants.suSetSp(18.0),
+                                    textBaseline: TextBaseline.alphabetic,
+                                ),
+                            ),
+                        ],
+                    ),
+                ),
+            ),
+        );
+        return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () => UserPage.jump(context, UserAPI.currentUser.uid),
+            child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: Constants.suSetSp(24.0),
+                    vertical: Constants.suSetSp(16.0),
+                ),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                        Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10.0),
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                    avatar,
+                                    Expanded(
+                                        child: Padding(
+                                            padding: EdgeInsets.only(left: Constants.suSetSp(20.0)),
+                                            child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                    name,
+                                                    Constants.emptyDivider(
+                                                        height: Constants.suSetSp(10.0),
+                                                    ),
+                                                    signature,
+                                                    Constants.emptyDivider(
+                                                        height: Constants.suSetSp(3.0),
+                                                    ),
+                                                ],
                                             ),
                                         ),
                                     ),
-                                ),
-                                Expanded(
-                                    child: Padding(
-                                        padding: EdgeInsets.only(left: Constants.suSetSp(20.0)),
-                                        child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: <Widget>[
-                                                Row(
-                                                    children: <Widget>[
-                                                        Expanded(
-                                                            child: Wrap(
-                                                                crossAxisAlignment: WrapCrossAlignment.end,
-                                                                children: <Widget>[
-                                                                    Text(
-                                                                        "${UserAPI.currentUser.name}",
-                                                                        style: TextStyle(
-                                                                            color: Theme.of(context).textTheme.title.color,
-                                                                            fontSize: Constants.suSetSp(24.0),
-                                                                            fontWeight: FontWeight.bold,
-                                                                        ),
-                                                                        overflow: TextOverflow.ellipsis,
-                                                                    ),
-                                                                ],
-                                                            ),
-                                                        ),
-                                                        InkWell(
-                                                            onTap: signed ? null : requestSign,
-                                                            child: ClipRRect(
-                                                                borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
-                                                                child: Container(
-                                                                    padding: EdgeInsets.symmetric(
-                                                                        horizontal: Constants.suSetSp(8.0),
-                                                                        vertical:  Constants.suSetSp(6.0),
-                                                                    ),
-                                                                    decoration: BoxDecoration(
-                                                                        color: ThemeUtils.currentThemeColor,
-                                                                    ),
-                                                                    child: Row(
-                                                                        mainAxisSize: MainAxisSize.min,
-                                                                        children: <Widget>[
-                                                                            Padding(
-                                                                                padding: EdgeInsets.only(
-                                                                                    top: Constants.suSetSp(signing ? 3.0 : 0.0),
-                                                                                    bottom: Constants.suSetSp(signing ? 3.0 : 0.0),
-                                                                                    left: Constants.suSetSp(signing ? 2.0 : 0.0),
-                                                                                    right: Constants.suSetSp(signing ? 8.0 : 4.0),
-                                                                                ),
-                                                                                child: signing ? SizedBox(
-                                                                                    width: Constants.suSetSp(18.0),
-                                                                                    height: Constants.suSetSp(18.0),
-                                                                                    child: CircularProgressIndicator(
-                                                                                        strokeWidth: Constants.suSetSp(3.0),
-                                                                                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                                                                    ),
-                                                                                ) : Icon(
-                                                                                    Icons.assignment_turned_in,
-                                                                                    color: Colors.white,
-                                                                                    size: Constants.suSetSp(24.0),
-                                                                                ),
-                                                                            ),
-                                                                            Text(
-                                                                                signed ? "已签$signedCount天" : "签到",
-                                                                                style: TextStyle(
-                                                                                    color: Colors.white,
-                                                                                    fontSize: Constants.suSetSp(18.0),
-                                                                                    textBaseline: TextBaseline.alphabetic,
-                                                                                ),
-                                                                            ),
-                                                                        ],
-                                                                    ),
-                                                                ),
-                                                            ),
-                                                        ),
-                                                    ],
-                                                ),
-                                                SizedBox(height: Constants.suSetSp(10.0)),
-                                                Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: <Widget>[
-                                                        Expanded(
-                                                            child: Text(
-                                                                UserAPI.currentUser.signature ?? "这里空空如也~",
-                                                                style: TextStyle(
-                                                                    color: Theme.of(context).textTheme.caption.color,
-                                                                    fontSize: Constants.suSetSp(18.0),
-                                                                ),
-                                                                overflow: TextOverflow.ellipsis,
-                                                                textAlign: TextAlign.start,
-                                                            ),
-                                                        ),
-                                                    ],
-                                                ),
-                                                SizedBox(height: Constants.suSetSp(3.0)),
-                                            ],
-                                        ),
-                                    ),
-                                ),
-                            ],
+                                    sign,
+                                ],
+                            ),
                         ),
-                    )
-                ],
+                    ],
+                ),
             ),
         );
     }
 
     Widget currentDay(DateTime now) => Padding(
-        padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(30.0), vertical: Constants.suSetSp(20.0)),
+        padding: EdgeInsets.symmetric(
+            horizontal: Constants.suSetSp(30.0),
+            vertical: Constants.suSetSp(20.0),
+        ),
         child: Center(
             child: RichText(
                 textAlign: TextAlign.center,
@@ -381,7 +452,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                     ),
                 ),
             ),
-        )
+        ),
     );
 
     Widget settingSectionListView(int index) {
@@ -503,6 +574,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                             child: ListView(
                                 shrinkWrap: true,
                                 children: <Widget>[
+                                    if (showAnnouncement) announcement(),
                                     userInfo(),
                                     Constants.separator(context),
                                     currentDay(now),

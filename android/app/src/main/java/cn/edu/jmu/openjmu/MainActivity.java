@@ -6,7 +6,6 @@ import android.view.WindowManager.LayoutParams;
 
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugins.GeneratedPluginRegistrant;
-
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
@@ -14,7 +13,7 @@ import io.flutter.plugin.common.MethodChannel.Result;
 
 
 public class MainActivity extends FlutterActivity {
-  private static final String CHANNEL = "cn.edu.jmu.openjmu/setFlagSecure";
+    private static final String CHANNEL = "cn.edu.jmu.openjmu/setFlagSecure";
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {

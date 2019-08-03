@@ -20,6 +20,7 @@ class _TestPageState extends State<TestPage> {
     Socket _socket;
     bool queueing = false;
     int queueingIndex = 1;
+    String content = "";
 
     static const platformMethodChannel = const MethodChannel("cn.edu.jmu.openjmu/setFlagSecure");
 
@@ -74,6 +75,9 @@ class _TestPageState extends State<TestPage> {
     void onReceive(event) async {
         print("接收到的数据: $event");
         print(utf8.decode(event));
+        setState(() {
+            content = utf8.decode(event);
+        });
 //        if (queueing) {
 //            _socket.add(createData(queue[queueingIndex]));
 //            queueingIndex++;
@@ -120,8 +124,7 @@ class _TestPageState extends State<TestPage> {
     Widget build(BuildContext context) {
         return Scaffold(
             body: Center(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                child: ListView(
                     children: <Widget>[
                         RaisedButton(
                             child: Text("Test MethodChannel"),
@@ -134,6 +137,9 @@ class _TestPageState extends State<TestPage> {
                             onPressed: () async {
                                 _socket.add(createData(SocketUtils.socketDataMap["clickMenu"]));
                             },
+                        ),
+                        Text(
+                            content
                         ),
                     ],
                 ),

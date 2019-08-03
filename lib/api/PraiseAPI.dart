@@ -8,28 +8,28 @@ import 'package:OpenJMU/utils/NetUtils.dart';
 class PraiseAPI {
     static getPraiseList(bool isMore, int lastValue) async => NetUtils.getWithCookieAndHeaderSet(
         (isMore ?? false)
-                ? "${Api.praiseList}/id_max/$lastValue"
-                : "${Api.praiseList}"
+                ? "${API.praiseList}/id_max/$lastValue"
+                : "${API.praiseList}"
         ,
     );
 
     static getPraiseInPostList(postId, {bool isMore, int lastValue}) => NetUtils.getWithCookieAndHeaderSet(
         (isMore ?? false)
-                ? "${Api.postPraisesList}$postId/id_max/$lastValue"
-                : "${Api.postPraisesList}$postId"
+                ? "${API.postPraisesList}$postId/id_max/$lastValue"
+                : "${API.postPraisesList}$postId"
         ,
     );
 
     static Future requestPraise(id, isPraise) async {
         if (isPraise) {
             return NetUtils.postWithCookieAndHeaderSet(
-                "${Api.postRequestPraise}$id",
+                "${API.postRequestPraise}$id",
             ).catchError((e) {
                 debugPrint("${e.response}");
             });
         } else {
             return NetUtils.deleteWithCookieAndHeaderSet(
-                "${Api.postRequestPraise}$id",
+                "${API.postRequestPraise}$id",
             ).catchError((e) {
                 debugPrint("${e.response}");
             });
@@ -37,7 +37,7 @@ class PraiseAPI {
     }
 
     static Praise createPraiseInPost(itemData) {
-        String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
+        String _avatar = "${API.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
         String _praiseTime = DateTime.fromMillisecondsSinceEpoch(
             itemData['praise_time'] * 1000,
         ).toString().substring(0,16);
@@ -57,7 +57,7 @@ class PraiseAPI {
     }
 
     static Praise createPraise(itemData) {
-        String _avatar = "${Api.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
+        String _avatar = "${API.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
         String _praiseTime = DateTime.fromMillisecondsSinceEpoch(
             itemData['praise_time'] * 1000,
         ).toString().substring(0,16);

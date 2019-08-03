@@ -177,7 +177,7 @@ class CommentCard extends StatelessWidget {
                         SearchPage.search(context, text.substring(1, text.length - 1));
                     } else if (text.startsWith("@")) {
                         UserPage.jump(context, data['uid']);
-                    } else if (text.startsWith(Api.wbHost)) {
+                    } else if (text.startsWith(API.wbHost)) {
                         CommonWebPage.jump(context, text, "网页链接");
                     }
                 },

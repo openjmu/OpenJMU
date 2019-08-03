@@ -109,6 +109,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                 Navigator.of(context).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
             })
             ..on<TicketFailedEvent>().listen((event) {
+                notificationTimer?.cancel();
                 Navigator.of(context).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
             })
             ..on<HasUpdateEvent>().listen((event) {
@@ -118,9 +119,8 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                 );
             })
             ..on<ChangeThemeEvent>().listen((event) {
-                if (this.mounted) setState(() {
-                    currentThemeColor = event.color;
-                });
+                currentThemeColor = event.color;
+                if (this.mounted) setState(() {});
             });
     }
 
@@ -195,7 +195,8 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                                     labelPadding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
                                     unselectedLabelStyle: tabUnselectedTextStyle,
                                     tabs: <Tab>[
-                                        for (int i = 0; i < sections[_tabIndex].length; i++) Tab(text: sections[_tabIndex][i])
+                                        for (int i = 0; i < sections[_tabIndex].length; i++)
+                                            Tab(text: sections[_tabIndex][i])
                                     ],
                                     controller: _tabControllers[_tabIndex],
                                 ),
@@ -264,20 +265,11 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                         text: bottomAppBarTitles[i],
                     )],
                 ),
-                floatingActionButton: Container(
+                floatingActionButton: SizedBox(
                     width: Constants.suSetSp(56.0),
                     height: Constants.suSetSp(40.0),
                     child: FloatingActionButton(
-                        child: Stack(
-                            children: <Widget>[
-                                Positioned(
-                                    child: Icon(
-                                        Icons.add,
-                                        size: Constants.suSetSp(30.0),
-                                    ),
-                                ),
-                            ],
-                        ),
+                        child: Icon(Icons.add, size: Constants.suSetSp(30.0)),
                         tooltip: "发布新动态",
                         foregroundColor: Colors.white,
                         backgroundColor: currentThemeColor,
@@ -294,19 +286,4 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
             ),
         );
     }
-}
-
-class GestureAppBar extends StatelessWidget implements PreferredSizeWidget {
-    final VoidCallback onTap;
-    final AppBar appBar;
-
-    const GestureAppBar({Key key, this.onTap,this.appBar}) : super(key: key);
-
-    @override
-    Widget build(BuildContext context) {
-        return GestureDetector(onTap: onTap, child: appBar);
-    }
-
-    @override
-    Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }

@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_text/extended_text.dart';
 
@@ -18,6 +19,7 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
+
 
 class PostController {
     final String postType;
@@ -69,7 +71,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     bool error = false;
 
     Widget _body = Center(
-        child: CircularProgressIndicator(),
+        child: Constants.progressIndicator(),
     );
 
     List<int> _idList = [];
@@ -259,7 +261,10 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             int _count = int.parse(result['count'].toString());
 
             for (var postData in _topics) {
-                if (!UserAPI.blacklist.contains(int.parse(postData['topic']['user']['uid'].toString()))) {
+                if (!UserAPI.blacklist.contains(jsonEncode({
+                    "uid": postData['topic']['user']['uid'].toString(),
+                    "username": postData['topic']['user']['nickname'],
+                }))) {
                     postList.add(PostAPI.createPost(postData['topic']));
                     _idList.add(
                         postData['id'] is String
@@ -303,7 +308,10 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
 
             for (var postData in _topics) {
                 if (postData['topic'] != null && postData != "") {
-                    if (!UserAPI.blacklist.contains(int.parse(postData['topic']['user']['uid'].toString()))) {
+                    if (!UserAPI.blacklist.contains(jsonEncode({
+                        "uid": postData['topic']['user']['uid'].toString(),
+                        "username": postData['topic']['user']['nickname'],
+                    }))) {
                         postList.add(PostAPI.createPost(postData['topic']));
                         idList.add(
                             postData['id'] is String
@@ -396,7 +404,10 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
             }
             List<Post> posts = [];
             list.forEach((post) {
-                if (!UserAPI.blacklist.contains(int.parse(post['topic']['user']['uid'].toString()))) {
+                if (!UserAPI.blacklist.contains(jsonEncode({
+                    "uid": post['topic']['user']['uid'].toString(),
+                    "username": post['topic']['user']['nickname'],
+                }))) {
                     posts.add(PostAPI.createPost(post['topic']));
                 }
             });
@@ -425,7 +436,10 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
             if (response['count'] as int < total) canLoadMore = true;
             List<Post> posts = [];
             list.forEach((post) {
-                if (!UserAPI.blacklist.contains(int.parse(post['topic']['user']['uid'].toString()))) {
+                if (!UserAPI.blacklist.contains(jsonEncode({
+                    "uid": post['topic']['user']['uid'].toString(),
+                    "username": post['topic']['user']['nickname'],
+                }))) {
                     posts.add(PostAPI.createPost(post['topic']));
                 }
             });
@@ -501,7 +515,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                 SearchPage.search(context, text.substring(1, text.length - 1));
             } else if (text.startsWith("@")) {
                 UserPage.jump(context, data['uid']);
-            } else if (text.startsWith(Api.wbHost)) {
+            } else if (text.startsWith(API.wbHost)) {
                 CommonWebPage.jump(context, text, "网页链接");
             }
         },
@@ -515,7 +529,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
             width: MediaQuery.of(context).size.width,
             padding: isLoading ? EdgeInsets.symmetric(vertical: Constants.suSetSp(42)) : EdgeInsets.zero,
             child: isLoading ? Center(child: SizedBox(
-                child: CircularProgressIndicator(),
+                child: Constants.progressIndicator(),
             )) : Container(
                 color: Theme.of(context).cardColor,
                 padding: EdgeInsets.zero,
@@ -539,9 +553,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                             SizedBox(
                                                 width: Constants.suSetSp(15.0),
                                                 height: Constants.suSetSp(15.0),
-                                                child: Platform.isAndroid
-                                                        ? CircularProgressIndicator(strokeWidth: 2.0)
-                                                        : CupertinoActivityIndicator(),
+                                                child: Constants.progressIndicator(strokeWidth: 2.0),
                                             ),
                                             Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0))),
                                         ],

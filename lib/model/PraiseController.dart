@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:dio/dio.dart';
@@ -12,6 +14,7 @@ import 'package:OpenJMU/pages/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/cards/PraiseCard.dart';
+
 
 class PraiseController {
     final bool isMore;
@@ -48,7 +51,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
     bool error = false;
 
     Widget _body = Center(
-        child: CircularProgressIndicator(),
+        child: Constants.progressIndicator(),
     );
 
     List<Praise> _praiseList = [];
@@ -108,7 +111,10 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
             int _count = int.parse(result['count'].toString());
 
             for (var praiseData in _topics) {
-                if (!UserAPI.blacklist.contains(int.parse(praiseData['topic']['user']['uid'].toString()))) {
+                if (!UserAPI.blacklist.contains(jsonEncode({
+                    "uid": praiseData['topic']['user']['uid'].toString(),
+                    "username": praiseData['topic']['user']['nickname'],
+                }))) {
                     praiseList.add(PraiseAPI.createPraise(praiseData));
                 }
             }
@@ -141,7 +147,10 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
             int _count = int.parse(result['count'].toString());
 
             for (var praiseData in _topics) {
-                if (!UserAPI.blacklist.contains(int.parse(praiseData['topic']['user']['uid'].toString()))) {
+                if (!UserAPI.blacklist.contains(jsonEncode({
+                    "uid": praiseData['topic']['user']['uid'].toString(),
+                    "username": praiseData['topic']['user']['nickname'],
+                }))) {
                     praiseList.add(PraiseAPI.createPraise(praiseData));
                 }
             }
@@ -377,7 +386,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
             width: MediaQuery.of(context).size.width,
             padding: isLoading ? EdgeInsets.symmetric(vertical: Constants.suSetSp(42)) : EdgeInsets.zero,
             child: isLoading
-                    ? Center(child: CircularProgressIndicator())
+                    ? Center(child: Constants.progressIndicator())
                     : Container(
                 color: Theme.of(context).cardColor,
                 padding: EdgeInsets.zero,
@@ -401,11 +410,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                                             SizedBox(
                                                 width: Constants.suSetSp(15.0),
                                                 height: Constants.suSetSp(15.0),
-                                                child: Platform.isAndroid
-                                                        ? CircularProgressIndicator(
-                                                    strokeWidth: 2.0,
-                                                )
-                                                        : CupertinoActivityIndicator(),
+                                                child: Constants.progressIndicator(strokeWidth: 2.0),
                                             ),
                                             Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0))),
                                         ],

@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'dart:io';
 import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
@@ -23,255 +22,6 @@ import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
-
-
-//class TeamCommentController {
-//    final String commentType;
-//    final bool isMore;
-//    final Function lastValue;
-//    final Map<String, dynamic> additionAttrs;
-//
-//    TeamCommentController({
-//        @required this.commentType,
-//        @required this.isMore,
-//        @required this.lastValue,
-//        this.additionAttrs,
-//    });
-//
-//    _TeamCommentListState _teamCommentListState;
-//
-//    void reload() {
-//        _teamCommentListState._refreshData();
-//    }
-//
-//    int getCount() {
-//        return _teamCommentListState._commentList.length;
-//    }
-//}
-
-//class TeamCommentList extends StatefulWidget {
-//    final TeamCommentController _commentController;
-//    final bool needRefreshIndicator;
-//
-//    TeamCommentList(this._commentController, {
-//        Key key, this.needRefreshIndicator = true
-//    }) : super(key: key);
-//
-//    @override
-//    State createState() => _TeamCommentListState();
-//}
-//
-//class _TeamCommentListState extends State<TeamCommentList> with AutomaticKeepAliveClientMixin {
-//    final ScrollController _scrollController = ScrollController();
-//    Color currentColorTheme = ThemeUtils.currentThemeColor;
-//
-//    num _lastValue = 0;
-//    bool _isLoading = false;
-//    bool _canLoadMore = true;
-//    bool _firstLoadComplete = false;
-//    bool _showLoading = true;
-//
-//    var _itemList;
-//
-//    Widget _emptyChild;
-//    Widget _errorChild;
-//    bool error = false;
-//
-//    Widget _body = Center(
-//        child: CircularProgressIndicator(),
-//    );
-//
-//    List<Comment> _commentList = [];
-//    List<int> _idList = [];
-//
-//    @override
-//    bool get wantKeepAlive => true;
-//
-//    @override
-//    void initState() {
-//        super.initState();
-//        widget._commentController._teamCommentListState = this;
-//        Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
-//            if (
-//            this.mounted
-//                    &&
-//                    ((event.tabIndex == 0 && widget._commentController.commentType == "square") || (event.type == "Post"))
-//            ) {
-//                _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
-//            }
-//        });
-//
-//        _emptyChild = GestureDetector(
-//            onTap: () {
-//            },
-//            child: Container(
-//                child: Center(
-//                    child: Text('这里空空如也~', style: TextStyle(color: ThemeUtils.currentThemeColor)),
-//                ),
-//            ),
-//        );
-//
-//        _errorChild = GestureDetector(
-//            onTap: () {
-//                setState(() {
-//                    _isLoading = false;
-//                    _showLoading = true;
-//                    _refreshData();
-//                });
-//            },
-//            child: Container(
-//                child: Center(
-//                    child: Text('加载失败，轻触重试', style: TextStyle(color: ThemeUtils.currentThemeColor)),
-//                ),
-//            ),
-//        );
-//
-//        _refreshData();
-//    }
-//
-//    @mustCallSuper
-//    Widget build(BuildContext context) {
-//        super.build(context);
-//        if (!_showLoading) {
-//            if (_firstLoadComplete) {
-//                _itemList = ListView.separated(
-//                    padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
-//                    separatorBuilder: (context, index) => Container(
-//                        color: Theme.of(context).canvasColor,
-//                        height: Constants.suSetSp(8.0),
-//                    ),
-//                    itemBuilder: (context, index) {
-//                        if (index == _commentList.length) {
-//                            if (this._canLoadMore) {
-//                                _loadData();
-//                                return Container(
-//                                    height: Constants.suSetSp(40.0),
-//                                    child: Row(
-//                                        mainAxisAlignment: MainAxisAlignment.center,
-//                                        children: <Widget>[
-//                                            SizedBox(
-//                                                width: Constants.suSetSp(15.0),
-//                                                height: Constants.suSetSp(15.0),
-//                                                child: Platform.isAndroid
-//                                                        ? CircularProgressIndicator(
-//                                                    strokeWidth: 2.0,
-//                                                )
-//                                                        : CupertinoActivityIndicator(),
-//                                            ),
-//                                            Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0)))
-//                                        ],
-//                                    ),
-//                                );
-//                            } else {
-//                                return Container(
-//                                    height: Constants.suSetSp(50.0),
-//                                    color: Theme.of(context).canvasColor,
-//                                    child: Center(
-//                                        child: Text(Constants.endLineTag, style: TextStyle(
-//                                            fontSize: Constants.suSetSp(14.0),
-//                                        )),
-//                                    ),
-//                                );
-//                            }
-//                        } else {
-//                            return CommentCard(_commentList[index]);
-//                        }
-//                    },
-//                    itemCount: _commentList.length + 1,
-//                    controller: widget._commentController.commentType == "mention" ? null : _scrollController,
-//                );
-//
-//                if (widget.needRefreshIndicator) {
-//                    _body = RefreshIndicator(
-//                        color: currentColorTheme,
-//                        onRefresh: _refreshData,
-//                        child: _commentList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList,
-//                    );
-//                } else {
-//                    _body = _commentList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList;
-//                }
-//            }
-//            return _body;
-//        } else {
-//            return Container(
-//                child: Center(
-//                    child: CircularProgressIndicator(),
-//                ),
-//            );
-//        }
-//    }
-//
-//    Future<Null> _loadData() async {
-//        _firstLoadComplete = true;
-//        if (!_isLoading && _canLoadMore) {
-//            _isLoading = true;
-//
-//            Map result = (await CommentAPI.getCommentList(
-//                widget._commentController.commentType,
-//                true,
-//                _lastValue,
-//                additionAttrs: widget._commentController.additionAttrs,
-//            )).data;
-//            List<Comment> commentList = [];
-//            List _topics = result['replylist'];
-//            int _total = int.parse(result['total'].toString());
-//            int _count = int.parse(result['count'].toString());
-//            for (var commentData in _topics) {
-//                commentList.add(CommentAPI.createComment(commentData['reply']));
-//                _idList.add(commentData['id']);
-//            }
-//            _commentList.addAll(commentList);
-//
-//            if (mounted) {
-//                setState(() {
-//                    _showLoading = false;
-//                    _firstLoadComplete = true;
-//                    _isLoading = false;
-//                    _canLoadMore = _idList.length < _total && (_count != 0 && _count != "0");
-//                    _lastValue = _idList.isEmpty ? 0 : widget._commentController.lastValue(_idList.last);
-//                });
-//            }
-//        }
-//    }
-//
-//    Future<Null> _refreshData() async {
-//        if (!_isLoading) {
-//            _isLoading = true;
-//            _commentList.clear();
-//
-//            _lastValue = 0;
-//
-//            Map result = (await CommentAPI.getCommentList(
-//                widget._commentController.commentType,
-//                false,
-//                _lastValue,
-//                additionAttrs: widget._commentController.additionAttrs,
-//            )).data;
-//            List<Comment> commentList = [];
-//            List<int> idList = [];
-//            List _topics = result['replylist'];
-//            int _total = int.parse(result['total'].toString());
-//            int _count = int.parse(result['count'].toString());
-//            for (var commentData in _topics) {
-//                commentList.add(CommentAPI.createComment(commentData['reply']));
-//                idList.add(commentData['id']);
-//            }
-//            _commentList.addAll(commentList);
-//            _idList.addAll(idList);
-//
-//            if (mounted) {
-//                setState(() {
-//                    _showLoading = false;
-//                    _firstLoadComplete = true;
-//                    _isLoading = false;
-//                    _canLoadMore = _idList.length < _total && (_count != 0 && _count != "0");
-//                    _lastValue = _idList.isEmpty ? 0 : widget._commentController.lastValue(_idList.last);
-//
-//                });
-//            }
-//        }
-//    }
-//}
 
 
 class TeamCommentListInPostController {
@@ -488,11 +238,11 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                     SearchPage.search(context, text.substring(1, text.length-1));
                 } else if (text.startsWith("@")) {
                     UserPage.jump(context, data['uid']);
-                } else if (text.startsWith(Api.wbHost)) {
+                } else if (text.startsWith(API.wbHost)) {
                     CommonWebPage.jump(context, text, "网页链接");
                 } else if (text.startsWith("|")) {
                     int imageID = data['image'];
-                    String imageUrl = Api.commentImageUrl(imageID, "o");
+                    String imageUrl = API.commentImageUrl(imageID, "o");
                     Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
                         return ImageViewer(
                             0, [ImageBean(imageID, imageUrl, null)],
@@ -535,7 +285,7 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                     ? EdgeInsets.symmetric(vertical: Constants.suSetSp(42))
                     : EdgeInsets.zero,
             child: isLoading
-                    ? Center(child: CircularProgressIndicator())
+                    ? Center(child: Constants.progressIndicator())
                     : Container(
                 color: Theme.of(context).cardColor,
                 padding: EdgeInsets.zero,
@@ -559,9 +309,7 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                                             SizedBox(
                                                 width: Constants.suSetSp(15.0),
                                                 height: Constants.suSetSp(15.0),
-                                                child: Platform.isAndroid ? CircularProgressIndicator(
-                                                    strokeWidth: 2.0,
-                                                ) : CupertinoActivityIndicator(),
+                                                child: Constants.progressIndicator(strokeWidth: 2.0),
                                             ),
                                             Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0))),
                                         ],

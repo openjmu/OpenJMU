@@ -36,12 +36,13 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
         super.dispose();
     }
 
-    Future getNewsContent() async {
+    void getNewsContent() async {
         Map<String, dynamic> data = (await NewsAPI.getNewsContent(newsId: widget.news.id)).data;
         setState(() {
             pageContent = """<!DOCTYPE html>
                 <html>
                     <head>
+                        <meta charset="UTF-8" />
                         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no" />'
                         <title>${widget.news.title}</title>
                     </head>
@@ -81,7 +82,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                         },
                     ),
                     Center(
-                        child: _webViewLoaded ? SizedBox() : CircularProgressIndicator(),
+                        child: _webViewLoaded ? SizedBox() : Constants.progressIndicator(),
                     ),
                 ],
             ),

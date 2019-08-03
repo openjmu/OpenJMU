@@ -8,7 +8,7 @@ import 'package:OpenJMU/utils/EmojiUtils.dart';
 
 
 class LinkText extends SpecialText {
-    static String startKey = Api.wbHost;
+    static String startKey = API.wbHost;
     static const String endKey = " ";
 
     LinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap) : super(startKey, endKey, textStyle, onTap: onTap);
@@ -197,7 +197,7 @@ class CommentImageText extends SpecialText {
         final String imageText = toString();
         final int imageId = getImageIdFromContent(imageText);
         final double size = Constants.suSetSp(80);
-        final String url = Api.commentImageUrl(imageId, "m");
+        final String url = API.commentImageUrl(imageId, "m");
 
         return ImageSpan(
             NetworkImage(url),

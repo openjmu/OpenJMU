@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -51,7 +50,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
         if (!_isLoading) {
             _isLoading = true;
             if (!isLoadMore) lastTimeStamp = 0;
-            String _url = Api.newsList(maxTimeStamp: isLoadMore ? lastTimeStamp : null);
+            String _url = API.newsList(maxTimeStamp: isLoadMore ? lastTimeStamp : null);
             Map<String, dynamic> data = (await NetUtils.getWithHeaderSet(
                 _url, headers: Constants.header,
             )).data;
@@ -168,7 +167,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
     }
 
     Widget coverImg(News news) {
-        String imageUrl = "${Api.newsImageList}"
+        String imageUrl = "${API.newsImageList}"
                 "${news.cover}"
                 "/sid/${UserAPI.currentUser.sid}"
         ;
@@ -260,9 +259,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
                                                 SizedBox(
                                                     width: Constants.suSetSp(15.0),
                                                     height: Constants.suSetSp(15.0),
-                                                    child: Platform.isAndroid
-                                                            ? CircularProgressIndicator(strokeWidth: 2.0)
-                                                            : CupertinoActivityIndicator(),
+                                                    child: Constants.progressIndicator(strokeWidth: 2.0),
                                                 ),
                                                 Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0))),
                                             ],
@@ -289,13 +286,13 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
                 );
             } else {
                 return Center(
-                    child: CircularProgressIndicator(),
+                    child: Constants.progressIndicator(),
                 );
             }
         } else {
             return Container(
                 child: Center(
-                    child: CircularProgressIndicator(),
+                    child: Constants.progressIndicator(),
                 ),
             );
         }

@@ -33,7 +33,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
 
     Future<void> _update(path) async {
         taskId = await FlutterDownloader.enqueue(
-            url: Api.latestAndroid,
+            url: API.latestAndroid,
             savedDir: path,
             showNotification: true,
             openFileFromNotification: true,

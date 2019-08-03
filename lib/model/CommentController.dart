@@ -1,7 +1,9 @@
+import 'dart:io';
+import 'dart:convert';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io';
-import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -79,7 +81,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
     bool error = false;
 
     Widget _body = Center(
-        child: CircularProgressIndicator(),
+        child: Constants.progressIndicator(),
     );
 
     List<Comment> _commentList = [];
@@ -148,7 +150,10 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
             int _count = int.parse(result['count'].toString());
 
             for (var commentData in _topics) {
-                if (!UserAPI.blacklist.contains(int.parse(commentData['reply']['user']['uid'].toString()))) {
+                if (!UserAPI.blacklist.contains(jsonEncode({
+                    "uid": commentData['reply']['user']['uid'].toString(),
+                    "username": commentData['reply']['user']['nickname'],
+                }))) {
                     commentList.add(CommentAPI.createComment(commentData['reply']));
                     _idList.add(commentData['id']);
                 }
@@ -188,7 +193,10 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
             int _count = int.parse(result['count'].toString());
 
             for (var commentData in _topics) {
-                if (!UserAPI.blacklist.contains(int.parse(commentData['reply']['user']['uid'].toString()))) {
+                if (!UserAPI.blacklist.contains(jsonEncode({
+                    "uid": commentData['reply']['user']['uid'].toString(),
+                    "username": commentData['reply']['user']['nickname'],
+                }))) {
                     commentList.add(CommentAPI.createComment(commentData['reply']));
                     idList.add(commentData['id']);
                 }
@@ -343,7 +351,10 @@ class _CommentListInPostState extends State<CommentListInPost> {
 
             List<Comment> comments = [];
             list.forEach((comment) {
-                if (!UserAPI.blacklist.contains(int.parse(comment['reply']['user']['uid'].toString()))) {
+                if (!UserAPI.blacklist.contains(jsonEncode({
+                    "uid": comment['reply']['user']['uid'].toString(),
+                    "username": comment['reply']['user']['nickname']
+                }))) {
                     comment['reply']['post'] = widget.post;
                     comments.add(CommentAPI.createCommentInPost(comment['reply']));
                 }
@@ -375,7 +386,10 @@ class _CommentListInPostState extends State<CommentListInPost> {
 
             List<Comment> comments = [];
             list.forEach((comment) {
-                if (!UserAPI.blacklist.contains(int.parse(comment['reply']['user']['uid'].toString()))) {
+                if (!UserAPI.blacklist.contains(jsonEncode({
+                    "uid": comment['reply']['user']['uid'].toString(),
+                    "username": comment['reply']['user']['nickname']
+                }))) {
                     comment['reply']['post'] = widget.post;
                     comments.add(CommentAPI.createCommentInPost(comment['reply']));
                 }
@@ -461,11 +475,11 @@ class _CommentListInPostState extends State<CommentListInPost> {
                     SearchPage.search(context, text.substring(1, text.length-1));
                 } else if (text.startsWith("@")) {
                     UserPage.jump(context, data['uid']);
-                } else if (text.startsWith(Api.wbHost)) {
+                } else if (text.startsWith(API.wbHost)) {
                     CommonWebPage.jump(context, text, "网页链接");
                 } else if (text.startsWith("|")) {
                     int imageID = data['image'];
-                    String imageUrl = Api.commentImageUrl(imageID, "o");
+                    String imageUrl = API.commentImageUrl(imageID, "o");
                     Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
                         return ImageViewer(
                             0, [ImageBean(imageID, imageUrl, null)],
@@ -495,7 +509,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                     ? EdgeInsets.symmetric(vertical: Constants.suSetSp(42))
                     : EdgeInsets.zero,
             child: isLoading
-                    ? Center(child: CircularProgressIndicator())
+                    ? Center(child: Constants.progressIndicator())
                     : Container(
                 color: Theme.of(context).cardColor,
                 padding: EdgeInsets.zero,
@@ -519,9 +533,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                             SizedBox(
                                                 width: Constants.suSetSp(15.0),
                                                 height: Constants.suSetSp(15.0),
-                                                child: Platform.isAndroid ? CircularProgressIndicator(
-                                                    strokeWidth: 2.0,
-                                                ) : CupertinoActivityIndicator(),
+                                                child: Constants.progressIndicator(strokeWidth: 2.0),
                                             ),
                                             Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0))),
                                         ],

@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -40,18 +42,26 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
     String _fansCount, _idolsCount;
     int userLevel;
 
+    bool isSelf = false;
     bool isLoading = true;
     bool showTitle = false;
     bool refreshing = false;
 
+    List<String> _tabList = ["动态", "黑名单"];
+    TabController _tabController;
     PostController postController;
     ScrollController _scrollController = ScrollController();
+    double tabBarHeight = Constants.suSetSp(46.0);
     double expandedHeight = kToolbarHeight + Constants.suSetSp(212.0);
 
     @override
     void initState() {
         super.initState();
+        if (widget.uid == UserAPI.currentUser.uid) isSelf = true;
 
+        if (isSelf) expandedHeight += tabBarHeight;
+
+        _tabController = TabController(length: _tabList.length, vsync: this);
         postController = PostController(
             postType: "user",
             isFollowed: false,
@@ -74,6 +84,11 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
             ..on<AvatarUpdatedEvent>().listen((event) {
                 UserAPI.updateAvatarProvider();
                 _fetchUserInformation(widget.uid);
+            })
+            ..on<BlacklistUpdateEvent>().listen((event) {
+                Future.delayed(const Duration(milliseconds: 250), () {
+                    if (this.mounted) setState(() {});
+                });
             });
     }
 
@@ -93,13 +108,18 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
     }
 
     void listener() {
-        setState(() {
-            if (_scrollController.offset >= expandedHeight && !showTitle) {
+        double triggerHeight = expandedHeight - Constants.suSetSp(20.0);
+        if (isSelf) triggerHeight -= tabBarHeight;
+
+        if (_scrollController.offset >= triggerHeight && !showTitle) {
+            setState(() {
                 showTitle = true;
-            } else if (_scrollController.offset < expandedHeight && showTitle) {
+            });
+        } else if (_scrollController.offset < triggerHeight && showTitle) {
+            setState(() {
                 showTitle = false;
-            }
-        });
+            });
+        }
     }
 
     Future<Null> _fetchUserInformation(uid) async {
@@ -150,7 +170,7 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                 vertical: Constants.suSetSp(12.0),
             ),
             onPressed: () {
-                if (widget.uid == UserAPI.currentUser.uid) {
+                if (isSelf) {
                     showDialog<Null>(
                         context: context,
                         builder: (BuildContext context) => EditSignatureDialog(_user.signature),
@@ -171,10 +191,15 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                     }
                 }
             },
-            color: widget.uid == UserAPI.currentUser.uid ? Color(0x44ffffff) :
-            _user.isFollowing ? Color(0x44ffffff) : Color(ThemeUtils.currentThemeColor.value - 0x33000000),
+            color: isSelf ? Color(0x44ffffff) :
+            _user.isFollowing
+                    ? Color(0x44ffffff)
+                    : Color(
+                    ThemeUtils.currentThemeColor.value - 0x33000000
+            )
+            ,
             child: Text(
-                widget.uid == UserAPI.currentUser.uid ? "编辑签名" :
+                isSelf ? "编辑签名" :
                 _user.isFollowing ? "已关注" : "关注${_user.gender == 2 ? "她" : "他"}",
                 style: TextStyle(
                     color: Colors.white,
@@ -231,12 +256,13 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                     ),
                     Expanded(child: SizedBox()),
                     followButton(),
-                    if (widget.uid == UserAPI.currentUser.uid) qrCode(context),
+                    if (isSelf) qrCode(context),
                 ],
             ),
         ),
         Row(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
                 Text(
                     _user.name,
@@ -245,6 +271,7 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                         fontSize: Constants.suSetSp(24.0),
                         fontWeight: FontWeight.bold,
                     ),
+                    overflow: TextOverflow.ellipsis,
                 ),
                 Constants.emptyDivider(width: 8.0),
                 DecoratedBox(
@@ -274,6 +301,30 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                     ),
                     child: Text(
                         " Lv.$userLevel",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Constants.suSetSp(14.0),
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                        ),
+                    ),
+                ),
+                if (Constants.developerList.contains(_user.uid)) Constants.emptyDivider(width: 8.0),
+                if (Constants.developerList.contains(_user.uid)) Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: Constants.suSetSp(8.0),
+                        vertical: Constants.suSetSp(4.0),
+                    ),
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: <Color>[Colors.red, Colors.blue],
+                        ),
+                        borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
+                    ),
+                    child: Text(
+                        "# OpenJMU Team #",
                         style: TextStyle(
                             color: Colors.white,
                             fontSize: Constants.suSetSp(14.0),
@@ -394,14 +445,114 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
         ,
     ];
 
+    Widget blacklistUser(String user) {
+        Map<String, dynamic> _user = jsonDecode(user);
+        return Padding(
+            padding: EdgeInsets.all(Constants.suSetSp(8.0)),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                    SizedBox(
+                        width: Constants.suSetSp(64.0),
+                        height: Constants.suSetSp(64.0),
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(Constants.suSetSp(32.0)),
+                            child: FadeInImage(
+                                fadeInDuration: const Duration(milliseconds: 100),
+                                placeholder: AssetImage("assets/avatar_placeholder.png"),
+                                image: UserAPI.getAvatarProvider(uid: int.parse(_user['uid'].toString())),
+                            ),
+                        ),
+                    ),
+                    Text(
+                        _user['username'],
+                        style: TextStyle(
+                            fontSize: Constants.suSetSp(18.0),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) => PlatformAlertDialog(
+                                    title: Text(
+                                        "移出黑名单",
+                                        style: TextStyle(
+                                            fontSize: Constants.suSetSp(22.0),
+                                        ),
+                                    ),
+                                    content: Text(
+                                        "确定不再屏蔽此人吗？",
+                                        style: TextStyle(
+                                            fontSize: Constants.suSetSp(18.0),
+                                        ),
+                                    ),
+                                    actions: <Widget>[
+                                        PlatformButton(
+                                            android: (BuildContext context) => MaterialRaisedButtonData(
+                                                color: Theme.of(context).dialogBackgroundColor,
+                                                elevation: 0,
+                                                disabledElevation: 0.0,
+                                                highlightElevation: 0.0,
+                                                child: Text("确认", style: TextStyle(color: ThemeUtils.currentThemeColor)),
+                                            ),
+                                            ios: (BuildContext context) => CupertinoButtonData(
+                                                child: Text("确认", style: TextStyle(color: ThemeUtils.currentThemeColor),),
+                                            ),
+                                            onPressed: () {
+                                                UserAPI.fRemoveFromBlacklist(
+                                                    uid: int.parse(_user['uid']),
+                                                    name: _user['username'],
+                                                );
+                                                Navigator.pop(context);
+                                            },
+                                        ),
+                                        PlatformButton(
+                                            android: (BuildContext context) => MaterialRaisedButtonData(
+                                                color: ThemeUtils.currentThemeColor,
+                                                elevation: 0,
+                                                disabledElevation: 0.0,
+                                                highlightElevation: 0.0,
+                                                child: Text('取消', style: TextStyle(color: Colors.white)),
+                                            ),
+                                            ios: (BuildContext context) => CupertinoButtonData(
+                                                child: Text("取消", style: TextStyle(color: ThemeUtils.currentThemeColor)),
+                                            ),
+                                            onPressed: Navigator.of(context).pop,
+                                        ),
+                                    ],
+                                ),
+                            );
+                        },
+                        child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: Constants.suSetSp(10.0),
+                                vertical: Constants.suSetSp(6.0),
+                            ),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(Constants.suSetSp(10.0)),
+                                color: ThemeUtils.currentThemeColor.withAlpha(0x88),
+                            ),
+                            child: Text(
+                                "移出黑名单",
+                                style: TextStyle(
+                                    fontSize: Constants.suSetSp(16.0),
+                                ),
+                            ),
+                        ),
+                    ),
+                ],
+            ),
+        );
+    }
+
     @override
     Widget build(BuildContext context) {
         return Scaffold(
             body: isLoading
-                    ?
-            Center(child: CircularProgressIndicator())
-                    :
-            NestedScrollView(
+                    ? Center(child: Constants.progressIndicator())
+                    : NestedScrollView(
                 controller: _scrollController,
                 headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => <Widget>[
                     SliverAppBar(
@@ -443,11 +594,9 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                             refreshing ? Container(
                                 width: 56.0,
                                 padding: EdgeInsets.all(20.0),
-                                child: CircularProgressIndicator(
+                                child: Constants.progressIndicator(
                                     strokeWidth: 3.0,
-                                    valueColor: AlwaysStoppedAnimation<Color>(
-                                        !showTitle ? Colors.white : Theme.of(context).iconTheme.color,
-                                    ),
+                                    color: Colors.white,
                                 ),
                             ) : IconButton(
                                 icon: Icon(Icons.refresh),
@@ -490,9 +639,7 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                                             padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(20.0)),
                                             child: Column(
                                                 children: <Widget>[
-                                                    Constants.emptyDivider(
-                                                        height: kToolbarHeight + 4.0,
-                                                    ),
+                                                    Constants.emptyDivider(height: kToolbarHeight + 4.0),
                                                     ListView.builder(
                                                         physics: NeverScrollableScrollPhysics(),
                                                         shrinkWrap: true,
@@ -509,6 +656,42 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                                 ],
                             ),
                         ),
+                        bottom: isSelf ? PreferredSize(
+                            child: Container(
+                                height: Constants.suSetSp(40.0),
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(tabBarHeight / 3),
+                                        topRight: Radius.circular(tabBarHeight / 3),
+                                    ),
+                                ),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                        Flexible(child: TabBar(
+                                            controller: _tabController,
+                                            isScrollable: true,
+                                            indicatorSize: TabBarIndicatorSize.label,
+                                            indicatorWeight: Constants.suSetSp(3.0),
+                                            labelStyle: TextStyle(
+                                                fontSize: Constants.suSetSp(16.0),
+                                                fontWeight: FontWeight.bold,
+                                            ),
+                                            unselectedLabelStyle: TextStyle(
+                                                fontSize: Constants.suSetSp(16.0),
+                                                fontWeight: FontWeight.normal,
+                                            ),
+                                            tabs: <Widget>[
+                                                for (String _tabLabel in _tabList)
+                                                    Tab(text: _tabLabel)
+                                            ],
+                                        ))
+                                    ],
+                                ),
+                            ),
+                            preferredSize: Size.fromHeight(tabBarHeight),
+                        ) : null,
                         expandedHeight: kToolbarHeight + expandedHeight,
                         iconTheme: !showTitle
                                 ?
@@ -520,11 +703,34 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                         ,
                         primary: true,
                         centerTitle: true,
-                        floating: true,
                         pinned: true,
                     ),
                 ],
-                body: _post,
+                body: isSelf ? TabBarView(
+                    controller: _tabController,
+                    children: <Widget>[
+                        _post,
+                        UserAPI.blacklist.length > 0
+                                ?
+                        GridView.count(
+                            crossAxisCount: 3,
+                            children: <Widget>[
+                                for (int i = 0; i < UserAPI.blacklist.length; i++)
+                                    blacklistUser(UserAPI.blacklist[i])
+                                ,
+                            ],
+                        )
+                                :
+                        Center(
+                            child: Text(
+                                "黑名单为空",
+                                style: TextStyle(
+                                    fontSize: Constants.suSetSp(16.0),
+                                ),
+                            ),
+                        ),
+                    ],
+                ) : _post,
             ),
         );
     }
@@ -735,7 +941,7 @@ class _UserListState extends State<UserListPage> {
             )
                     : Center(child: Text("暂无内容", style: TextStyle(fontSize: Constants.suSetSp(20.0))))
                     : Center(
-                child: CircularProgressIndicator(),
+                child: Constants.progressIndicator(),
             ),
         );
     }

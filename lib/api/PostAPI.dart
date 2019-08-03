@@ -14,37 +14,37 @@ class PostAPI {
             case "square":
                 if (isMore) {
                     if (!isFollowed) {
-                        _postUrl = Api.postList + "/id_max/$lastValue";
+                        _postUrl = API.postList + "/id_max/$lastValue";
                     } else {
-                        _postUrl = Api.postFollowedList + "/id_max/$lastValue";
+                        _postUrl = API.postFollowedList + "/id_max/$lastValue";
                     }
                 } else {
                     if (!isFollowed) {
-                        _postUrl = Api.postList;
+                        _postUrl = API.postList;
                     } else {
-                        _postUrl = Api.postFollowedList;
+                        _postUrl = API.postFollowedList;
                     }
                 }
                 break;
             case "user":
                 if (isMore) {
-                    _postUrl = "${Api.postListByUid}${additionAttrs['uid']}/id_max/$lastValue";
+                    _postUrl = "${API.postListByUid}${additionAttrs['uid']}/id_max/$lastValue";
                 } else {
-                    _postUrl = "${Api.postListByUid}${additionAttrs['uid']}";
+                    _postUrl = "${API.postListByUid}${additionAttrs['uid']}";
                 }
                 break;
             case "search":
                 if (isMore) {
-                    _postUrl = "${Api.postListByWords}${additionAttrs['words']}/id_max/$lastValue";
+                    _postUrl = "${API.postListByWords}${additionAttrs['words']}/id_max/$lastValue";
                 } else {
-                    _postUrl = "${Api.postListByWords}${additionAttrs['words']}";
+                    _postUrl = "${API.postListByWords}${additionAttrs['words']}";
                 }
                 break;
             case "mention":
                 if (isMore) {
-                    _postUrl = "${Api.postListByMention}/id_max/$lastValue";
+                    _postUrl = "${API.postListByMention}/id_max/$lastValue";
                 } else {
-                    _postUrl = "${Api.postListByMention}";
+                    _postUrl = "${API.postListByMention}";
                 }
                 break;
         }
@@ -53,14 +53,14 @@ class PostAPI {
 
     static getForwardListInPost(int postId, {bool isMore, int lastValue}) async => NetUtils.getWithCookieAndHeaderSet(
         (isMore ?? false)
-                ? "${Api.postForwardsList}$postId/id_max/$lastValue"
-                : "${Api.postForwardsList}$postId"
+                ? "${API.postForwardsList}$postId/id_max/$lastValue"
+                : "${API.postForwardsList}$postId"
         ,
     );
 
     static glancePost(int postId) {
         return NetUtils.postWithCookieAndHeaderSet(
-            Api.postGlance,
+            API.postGlance,
             data: {"tids": [postId]},
         ).catchError((e) {
             debugPrint("${e.toString()}");
@@ -68,7 +68,7 @@ class PostAPI {
         });
     }
     static deletePost(int postId) => NetUtils.deleteWithCookieAndHeaderSet(
-        "${Api.postContent}/tid/$postId",
+        "${API.postContent}/tid/$postId",
     );
 
     static postForward(String content, int postId, bool replyAtTheMeanTime) async {
@@ -78,7 +78,7 @@ class PostAPI {
             "relay": replyAtTheMeanTime ? 3 : 0
         };
         return NetUtils.postWithCookieAndHeaderSet(
-            "${Api.postRequestForward}",
+            "${API.postRequestForward}",
             data: data,
         );
     }
@@ -86,7 +86,7 @@ class PostAPI {
 
     static Post createPost(postData) {
         Map<String, dynamic> _user = postData['user'];
-        String _avatar = "${Api.userAvatarInSecure}?uid=${_user['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
+        String _avatar = "${API.userAvatarInSecure}?uid=${_user['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
         String _postTime = DateTime.fromMillisecondsSinceEpoch(
             int.parse(postData['post_time']) * 1000,
         ).toString().substring(0,16);

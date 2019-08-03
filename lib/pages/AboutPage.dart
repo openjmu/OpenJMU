@@ -68,7 +68,7 @@ class _AboutPageState extends State<AboutPage> {
                                 TextSpan(
                                     recognizer: TapGestureRecognizer()
                                         ..onTap = () {
-                                            return CommonWebPage.jump(context, Api.homePage, "OpenJMU");
+                                            return CommonWebPage.jump(context, API.homePage, "OpenJMU");
                                         },
                                     text: "OpenJMU Team",
                                     style: TextStyle(

@@ -212,7 +212,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
         }
         Constants.eventBus
             ..on<ChangeBrightnessEvent>().listen((event) {
-                Iterable<Match> matches = Api.courseSchedule.allMatches(url);
+                Iterable<Match> matches = API.courseSchedule.allMatches(url);
                 String result;
                 for (Match m in matches) result = m.group(0);
                 if (this.mounted && result != null) loadCourseSchedule();
@@ -224,7 +224,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
 
     void loadCourseSchedule() {
         _webViewController.loadUrl(
-            "${UserAPI.currentUser.isTeacher ? Api.courseScheduleTeacher : Api.courseSchedule}"
+            "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
                     "?sid=${UserAPI.currentUser.sid}"
                     "&night=${ThemeUtils.isDark ? 1 : 0}"
             ,
