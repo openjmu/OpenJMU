@@ -123,7 +123,7 @@ class _ScorePageState extends State<ScorePage> {
     @override
     Widget build(BuildContext context) {
         return loading
-                ? Constants.progressIndicator()
+                ? Center(child: Constants.progressIndicator())
                 : GridView.count(
             shrinkWrap: true,
             crossAxisCount: 2,

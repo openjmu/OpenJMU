@@ -25,12 +25,10 @@ packages:
   cached_network_image:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: deafd0bd3a2e7cb6539a2cffbfb426acbabf195f
-      url: "https://github.com/openjmu/flutter_cached_network_image.git"
-    source: git
-    version: "0.8.0"
+      name: cached_network_image
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.1"
   charcode:
     dependency: transitive
     description:
@@ -151,12 +149,10 @@ packages:
   flutter_cache_manager:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: f25ee020c760170782daf98427f0a784968a8b27
-      url: "https://github.com/openjmu/flutter_cache_manager.git"
-    source: git
-    version: "0.3.2"
+      name: flutter_cache_manager
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.1.1"
   flutter_downloader:
     dependency: "direct main"
     description:
@@ -280,7 +276,7 @@ packages:
       name: image_downloader
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.16.0"
+    version: "0.16.2"
   image_gallery_saver:
     dependency: "direct main"
     description:
@@ -294,7 +290,7 @@ packages:
       name: image_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.0+17"
+    version: "0.6.1"
   intl:
     dependency: transitive
     description:
@@ -350,7 +346,7 @@ packages:
       name: package_info
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.0+5"
+    version: "0.4.0+6"
   path:
     dependency: transitive
     description:
@@ -392,7 +388,7 @@ packages:
       name: permission_handler
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "3.2.0"
+    version: "3.2.1+1"
   petitparser:
     dependency: transitive
     description:
@@ -453,7 +449,7 @@ packages:
       name: sqflite
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "1.1.6+2"
+    version: "1.1.6+3"
   stack_trace:
     dependency: transitive
     description:
@@ -516,7 +512,7 @@ packages:
       name: url_launcher
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "5.1.0"
+    version: "5.1.2"
   uuid:
     dependency: "direct main"
     description:
@@ -537,7 +533,7 @@ packages:
       name: webview_flutter
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.3.10+3"
+    version: "0.3.10+4"
   xml:
     dependency: transitive
     description:
