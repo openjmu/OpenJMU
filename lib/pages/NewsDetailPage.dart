@@ -70,7 +70,11 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
             body: Stack(
                 children: <Widget>[
                     if (pageContent != null) WebView(
-                        initialUrl: 'data:text/html;base64,${base64Encode(const Utf8Encoder().convert(pageContent))}',
+                        initialUrl: ''
+                                'data:text/html;'
+                                'charset=UTF-8;'
+                                'base64,${base64Encode(const Utf8Encoder().convert(pageContent))}'
+                        ,
                         javascriptMode: JavascriptMode.unrestricted,
                         onWebViewCreated: (WebViewController webViewController) {
                             _controller.complete(webViewController);
@@ -81,9 +85,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                             });
                         },
                     ),
-                    Center(
-                        child: _webViewLoaded ? SizedBox() : Constants.progressIndicator(),
-                    ),
+                    if (!_webViewLoaded) Constants.progressIndicator(),
                 ],
             ),
         );

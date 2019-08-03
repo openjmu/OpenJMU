@@ -100,7 +100,6 @@ class JMUAppClientState extends State<JMUAppClient> {
     void initQuickActions() {
         final QuickActions quickActions = QuickActions();
         quickActions.initialize((String shortcutType) {
-            main();
             debugPrint("QuickActions triggered: $shortcutType");
             Constants.eventBus.fire(ActionsEvent(shortcutType));
         });

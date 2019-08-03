@@ -287,15 +287,18 @@ class MyInfoPageState extends State<MyInfoPage> {
     }
 
     Widget userInfo() {
-        Widget avatar = SizedBox(
-            width: Constants.suSetSp(100.0),
-            height: Constants.suSetSp(100.0),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(Constants.suSetSp(50.0)),
-                child: FadeInImage(
-                    fadeInDuration: const Duration(milliseconds: 100),
-                    placeholder: AssetImage("assets/avatar_placeholder.png"),
-                    image: UserAPI.getAvatarProvider(uid: UserAPI.currentUser.uid),
+        Widget avatar = Hero(
+            tag: "user_${UserAPI.currentUser.uid}",
+            child: SizedBox(
+                width: Constants.suSetSp(100.0),
+                height: Constants.suSetSp(100.0),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(Constants.suSetSp(50.0)),
+                    child: FadeInImage(
+                        fadeInDuration: const Duration(milliseconds: 100),
+                        placeholder: AssetImage("assets/avatar_placeholder.png"),
+                        image: UserAPI.getAvatarProvider(uid: UserAPI.currentUser.uid),
+                    ),
                 ),
             ),
         );

@@ -215,7 +215,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                                     height: Constants.suSetSp(26.0),
                                 ),
                                 onPressed: () async {
-                                    Map<PermissionGroup, PermissionStatus> permissions =await PermissionHandler().requestPermissions([
+                                    Map<PermissionGroup, PermissionStatus>permissions = await PermissionHandler().requestPermissions([
                                         PermissionGroup.camera,
                                     ]);
                                     if (permissions[PermissionGroup.camera] == PermissionStatus.granted) {
@@ -260,6 +260,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                     iconSize: 30.0,
                     selectedColor: ThemeUtils.currentThemeColor,
                     onTabSelected: _selectedTab,
+                    initIndex: widget.initIndex,
                     items: [for (int i = 0; i < bottomAppBarTitles.length; i++) FABBottomAppBarItem(
                         iconPath: bottomAppBarIcons[i],
                         text: bottomAppBarTitles[i],
