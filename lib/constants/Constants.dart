@@ -35,9 +35,9 @@ class Constants {
     static final String postApiSecretIOS = "773958E5CFE0FF8252808C417A8ECCAB";
 
     /// Request header for team.
-    static Map<String, dynamic> header = {
+    static Map<String, dynamic> header({int id}) => {
         "APIKEY": apiKey,
-        "APPID": appId,
+        "APPID": id ?? appId,
         "CLIENTTYPE": Platform.isIOS ? "ios" : "android",
         "CLOUDID": "jmu",
         "CUID": UserAPI.currentUser.uid,
