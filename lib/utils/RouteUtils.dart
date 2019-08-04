@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
 // Routes Pages
-import 'package:OpenJMU/pages/AboutPage.dart';
+import 'package:OpenJMU/pages/settings/AboutPage.dart';
 import 'package:OpenJMU/pages/SplashPage.dart';
 import 'package:OpenJMU/pages/LoginPage.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
-import 'package:OpenJMU/pages/ScanQrCodePage.dart';
-import 'package:OpenJMU/pages/ScorePage.dart';
-import 'package:OpenJMU/pages/SearchPage.dart';
-import 'package:OpenJMU/pages/ChangeThemePage.dart';
-import 'package:OpenJMU/pages/PublishPostPage.dart';
-import 'package:OpenJMU/pages/NotificationPage.dart';
-import 'package:OpenJMU/pages/UserQrCodePage.dart';
+import 'package:OpenJMU/pages/home/ScanQrCodePage.dart';
+import 'package:OpenJMU/pages/home/ScorePage.dart';
+import 'package:OpenJMU/pages/post/SearchPostPage.dart';
+import 'package:OpenJMU/pages/settings/ChangeThemePage.dart';
+import 'package:OpenJMU/pages/post/PublishPostPage.dart';
+import 'package:OpenJMU/pages/notification/NotificationPage.dart';
+import 'package:OpenJMU/pages/user/UserQrCodePage.dart';
 //import 'package:OpenJMU/pages/NotificationTest.dart';
-import 'package:OpenJMU/pages/Test.dart';
+import 'package:OpenJMU/pages/settings/Test.dart';
 
 class RouteUtils {
     static Map<String, WidgetBuilder> routes = {

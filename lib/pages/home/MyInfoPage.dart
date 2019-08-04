@@ -13,7 +13,7 @@ import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/pages/UserPage.dart';
+import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUTils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';

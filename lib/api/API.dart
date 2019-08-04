@@ -21,6 +21,7 @@ class API {
     /// Hosts.
     static final String openjmuHost = "openjmu.jmu.edu.cn";
     static final String wbHost = "https://wb.jmu.edu.cn";
+    static final String wpHost = "https://wp.jmu.edu.cn";
     static final String file99Host = "https://file99.jmu.edu.cn";
     static final String oa99Host = "https://oa99.jmu.edu.cn";
     static final String oap99Host = "https://oap99.jmu.edu.cn";
@@ -143,6 +144,16 @@ class API {
     static final String jwglCheckCode = "$jwglHost/Common/CheckCode.aspx";
     static final String jwglStudentDefault = "$jwglHost/Student/default.aspx";
     static final String jwglStudentScoreAll = "$jwglHost/Student/ScoreCourse/ScoreAll.aspx";
+
+    /// 礼物相关
+    static String backPackItemType() {
+        return "$wpHost/itemc/itemtypelist?"
+                "sid=${UserAPI.currentUser.sid}"
+                "&cuid=${UserAPI.currentUser.uid}"
+                "&updatetime=0"
+        ;
+    }
+    static String backPackItemIcon({int itemType}) => "$wpHost/itemc/icon?itemtype=${itemType ?? 10000}&size=1&icontime=0";
 
     /// 静态scheme正则
     static final RegExp urlReg = RegExp(r"(https?)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]");

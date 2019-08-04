@@ -6,7 +6,7 @@ import 'package:flutter_qr_reader/qrcode_reader_view.dart';
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/pages/UserPage.dart';
+import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 

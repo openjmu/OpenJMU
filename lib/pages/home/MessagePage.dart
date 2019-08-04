@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/pages/UserPage.dart';
+import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
 
 

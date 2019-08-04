@@ -15,8 +15,19 @@ class ScorePage extends StatefulWidget {
 }
 
 class _ScorePageState extends State<ScorePage> {
-    bool loading = true, socketInitialized = false;
-    List<Map<String, dynamic>> scores;
+    bool loading = false, socketInitialized = false;
+    List<String> terms = ["20151", "20152"];
+    List<Map<String, dynamic>> scores = [
+        {
+            "term": "20151",
+            "courseId": "123456",
+            "courseName": "测试课程",
+            "courseTime": 24,
+            "coursePoint": 3.0,
+            "examScore": 75.0,
+            "examPoint": 2.5,
+        },
+    ];
     StreamSubscription scoresSubscription;
 
     @override
@@ -84,9 +95,9 @@ class _ScorePageState extends State<ScorePage> {
                                 score['examScore'] == "不合格"
                                     ||
                                 (
-                                    double.tryParse(score['examScore']) != null
+                                    double.parse(score['examScore'].toString()) != null
                                         &&
-                                    double.tryParse(score['examScore']) < 60.0
+                                    double.parse(score['examScore'].toString()) < 60.0
                                 )
                             )
                                     ? Colors.red
@@ -122,25 +133,44 @@ class _ScorePageState extends State<ScorePage> {
 
     @override
     Widget build(BuildContext context) {
-        return loading
-                ? Center(child: Constants.progressIndicator())
-                : GridView.count(
-            shrinkWrap: true,
-            crossAxisCount: 2,
-            childAspectRatio: 1.5,
+        return loading ? Center(child: Constants.progressIndicator())
+                :
+        Column(
             children: <Widget>[
-                if (scores != null) for (int i = 0; i < scores.length; i++) Card(
+                GestureDetector(
+                    behavior: HitTestBehavior.translucent,
                     child: Padding(
-                        padding: EdgeInsets.all(Constants.suSetSp(10.0)),
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        padding: EdgeInsets.symmetric(
+                            vertical: Constants.suSetSp(6.0),
+                            horizontal: Constants.suSetSp(12.0),
+                        ),
+                        child: Row(
                             children: <Widget>[
-                                _name(scores[i]),
-                                _score(scores[i]),
-                                _timeAndPoint(scores[i]),
+                                Text("20151"),
                             ],
                         ),
                     ),
+                    onTap: () {},
+                ),
+                GridView.count(
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                    childAspectRatio: 1.5,
+                    children: <Widget>[
+                        if (scores != null) for (int i = 0; i < scores.length; i++) Card(
+                            child: Padding(
+                                padding: EdgeInsets.all(Constants.suSetSp(10.0)),
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: <Widget>[
+                                        _name(scores[i]),
+                                        _score(scores[i]),
+                                        _timeAndPoint(scores[i]),
+                                    ],
+                                ),
+                            ),
+                        ),
+                    ],
                 ),
             ],
         );
