@@ -52,7 +52,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
             if (!isLoadMore) lastTimeStamp = 0;
             String _url = API.newsList(maxTimeStamp: isLoadMore ? lastTimeStamp : null);
             Map<String, dynamic> data = (await NetUtils.getWithHeaderSet(
-                _url, headers: Constants.header,
+                _url, headers: Constants.header(id: 273),
             )).data;
 
             List<News> _newsList = [];
