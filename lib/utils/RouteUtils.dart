@@ -20,6 +20,7 @@ class RouteUtils {
         "/home": (BuildContext context) => MainPage(),
         "/splash": (BuildContext context) => SplashPage(),
         "/login": (BuildContext context) => LoginPage(),
+
         "/search": (BuildContext context) => SearchPage(),
         "/scanqrcode": (BuildContext context, {arguments}) => ScanQrCodePage(),
         "/publishPost": (BuildContext context) => PublishPostPage(),

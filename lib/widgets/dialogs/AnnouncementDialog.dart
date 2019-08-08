@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:extended_text/extended_text.dart';
+import 'package:extended_text_library/extended_text_library.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 
 class AnnouncementDialog extends StatefulWidget {
@@ -27,15 +31,52 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
             ),
             content: Wrap(
                 children: <Widget>[
-                    Text(
+                    ExtendedText(
                         "${widget.announcement['content']}",
                         style: TextStyle(
                             fontSize: Constants.suSetSp(18.0),
                             color: Colors.white,
                         ),
+                        specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
+                        onSpecialTextTap: (dynamic data) {
+                            String text = data['content'];
+                            CommonWebPage.jump(context, text, "网页链接");
+                        },
                     ),
                 ],
             ),
         );
+    }
+}
+
+class LinkText extends SpecialText {
+    static String startKey = "https://";
+    static const String endKey = " ";
+
+    LinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap) : super(startKey, endKey, textStyle, onTap: onTap);
+
+    @override
+    TextSpan finishText() {
+        return TextSpan(
+            text: toString(),
+            style: textStyle?.copyWith(
+                decoration: TextDecoration.underline,
+            ),
+            recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                    Map<String, dynamic> data = {'content': toString()};
+                    if (onTap != null) onTap(data);
+                },
+        );
+    }
+}
+
+class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
+    @override
+    SpecialText createSpecialText(String flag, {TextStyle textStyle, SpecialTextGestureTapCallback onTap, int index,}) {
+        if (isStart(flag, LinkText.startKey)) {
+            return LinkText(textStyle, onTap);
+        }
+        return null;
     }
 }
