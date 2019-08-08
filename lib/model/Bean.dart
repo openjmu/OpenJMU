@@ -425,9 +425,6 @@ class CustomEndDockedFloatingActionButtonLocation extends CustomDockedPosition {
         final double fabX = _endOffset(scaffoldGeometry);
         return Offset(fabX, getDockedY(scaffoldGeometry) + Constants.suSetSp(this.offsetY));
     }
-
-    @override
-    String toString() => 'FloatingActionButtonLocation.endDocked';
 }
 
 class CustomCenterDockedFloatingActionButtonLocation extends CustomDockedPosition {
@@ -439,9 +436,6 @@ class CustomCenterDockedFloatingActionButtonLocation extends CustomDockedPositio
         final double fabX = (scaffoldGeometry.scaffoldSize.width - scaffoldGeometry.floatingActionButtonSize.width) / 2.0;
         return Offset(fabX, getDockedY(scaffoldGeometry) + Constants.suSetSp(this.offsetY));
     }
-
-    @override
-    String toString() => 'FloatingActionButtonLocation.customCenterDocked';
 }
 
 double _leftOffset(ScaffoldPrelayoutGeometry scaffoldGeometry, { double offset = 0.0 }) {

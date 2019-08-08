@@ -153,7 +153,29 @@ class API {
                 "&updatetime=0"
         ;
     }
-    static String backPackItemIcon({int itemType}) => "$wpHost/itemc/icon?itemtype=${itemType ?? 10000}&size=1&icontime=0";
+    static String backPackReceiveList({int count = 20, String start = "0"}) {
+        return "$wpHost/itemc/recvlist?"
+                "sid=${UserAPI.currentUser.sid}"
+                "&cuid=${UserAPI.currentUser.uid}"
+                "&count=$count"
+                "&start=$start"
+        ;
+    }
+    static String backPackMyItemList({int count = 20, String start = "0"}) {
+        return "$wpHost/itemc/myitemlist?"
+                "sid=${UserAPI.currentUser.sid}"
+                "&cuid=${UserAPI.currentUser.uid}"
+                "&count=$count"
+                "&start=$start"
+        ;
+    }
+    static String backPackItemIcon({int itemType}) {
+        return "$wpHost/itemc/icon?"
+                "itemtype=${itemType ?? 10000}"
+                "&size=1"
+                "&icontime=0"
+        ;
+    }
 
     /// 静态scheme正则
     static final RegExp urlReg = RegExp(r"(https?)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]");

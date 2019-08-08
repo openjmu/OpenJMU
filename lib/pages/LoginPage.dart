@@ -50,7 +50,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 );
             })
             ..on<LoginFailedEvent>().listen((event) {
-                setState(() {
+                if (mounted) setState(() {
                     _login = false;
                 });
             })
