@@ -13,7 +13,7 @@ import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/pages/UserPage.dart';
+import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUTils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
@@ -29,6 +29,9 @@ class MyInfoPage extends StatefulWidget {
 
 class MyInfoPageState extends State<MyInfoPage> {
     final List<List<String>> settingsSection = [
+        [
+            "背包"
+        ],
         [
             "夜间模式",
             "切换主题",
@@ -47,6 +50,9 @@ class MyInfoPageState extends State<MyInfoPage> {
         ],
     ];
     final List<List<String>> settingsIcon = [
+        [
+            "idols",
+        ],
         [
             "nightmode",
             "theme",
@@ -121,10 +127,11 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     void getAnnouncement() async {
         Map<String, dynamic> data = jsonDecode((await NetUtils.get(API.announcement)).data);
-        if (data['enabled']) setState(() {
+        if (data['enabled']) {
             showAnnouncement = data['enabled'];
             announcements = data['announcements'];
-        });
+        }
+        if (this.mounted) setState((){});
     }
 
     void getSignStatus() async {
@@ -528,30 +535,35 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     void _handleItemClick(context, String item) {
         switch (item) {
+            case "背包":
+                Navigator.pushNamed(context, "/backpack");
+                break;
+
+            case "夜间模式":
+                setDarkMode(!isDark);
+                break;
             case "切换主题":
                 Navigator.pushNamed(context, "/changeTheme");
                 break;
             case "启动页":
                 showSelectSplashDialog(context);
                 break;
-            case "夜间模式":
-                setDarkMode(!isDark);
-                break;
+
             case "检查更新":
                 OTAUtils.checkUpdate();
-                break;
-            case "测试页":
-                Navigator.pushNamed(context, "/test");
-                break;
-            case "获取成绩":
-                Navigator.pushNamed(context, "/score");
                 break;
             case "关于OpenJMU":
                 Navigator.pushNamed(context, "/about");
                 break;
+
             case "退出登录":
                 showLogoutDialog(context);
                 break;
+
+            case "测试页":
+                Navigator.pushNamed(context, "/test");
+                break;
+
             default:
                 break;
         }

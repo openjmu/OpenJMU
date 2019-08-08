@@ -107,7 +107,7 @@ class SplashState extends State<SplashPage> {
             if (!isUserLogin) {
                 try {
                     Navigator.of(context).pushAndRemoveUntil(PageRouteBuilder(
-                        transitionDuration: const Duration(milliseconds: 500),
+                        transitionDuration: const Duration(milliseconds: 1000),
                         pageBuilder: (
                             BuildContext context,
                             Animation animation,
@@ -131,10 +131,10 @@ class SplashState extends State<SplashPage> {
         });
     }
 
-    Hero logo() => Hero(
-        tag: "Logo",
-        child: Container(
-            margin: EdgeInsets.all(Constants.suSetSp(30.0)),
+    Widget logo() => Container(
+        margin: EdgeInsets.all(Constants.suSetSp(30.0)),
+        child: Hero(
+            tag: "Logo",
             child: Image.asset(
                 'images/ic_jmu_logo_trans.png',
                 width: Constants.suSetSp(120.0),

@@ -4,7 +4,7 @@ import 'package:extended_tabs/extended_tabs.dart';
 
 import 'package:OpenJMU/model/PostController.dart';
 //import 'package:OpenJMU/model/TeamPostController.dart';
-import 'package:OpenJMU/pages/NewsListPage.dart';
+import 'package:OpenJMU/pages/news/NewsListPage.dart';
 
 
 class PostSquareListPage extends StatefulWidget {

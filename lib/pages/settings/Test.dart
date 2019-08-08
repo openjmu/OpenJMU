@@ -22,13 +22,23 @@ class _TestPageState extends State<TestPage> {
     int queueingIndex = 1;
     String content = "";
 
-    static const platformMethodChannel = const MethodChannel("cn.edu.jmu.openjmu/setFlagSecure");
+    static const _pmc_flagSecure = const MethodChannel("cn.edu.jmu.openjmu/setFlagSecure");
+    static const _pmc_iosPushToken = const MethodChannel("cn.edu.jmu.openjmu/iospushtoken");
 
-    Future<Null> doNativeStuff() async {
+    Future<Null> setFlagSecure(bool secure) async {
         try {
-            await platformMethodChannel.invokeMethod("enable");
+            await _pmc_flagSecure.invokeMethod("enable");
         } on PlatformException catch (e) {
             print("Set flag secure failed: ${e.message}.");
+        }
+    }
+
+    Future iosPushGetter() async {
+        try {
+            var result = await _pmc_iosPushToken.invokeMethod("getpushtoken");
+            print(result);
+        } on PlatformException catch (e) {
+            print("iosPushGetter failed: ${e.message}.");
         }
     }
 
@@ -129,7 +139,7 @@ class _TestPageState extends State<TestPage> {
                         RaisedButton(
                             child: Text("Test MethodChannel"),
                             onPressed: () async {
-                                doNativeStuff();
+                                setFlagSecure(true);
                             },
                         ),
                         RaisedButton(

@@ -18,6 +18,8 @@ class SocketUtils {
         try {
             if (mSocket != null) throw("Socket already inited.");
             return Socket.connect(config.host, config.port).then((Socket socket) {
+                socket.setOption(SocketOption.tcpNoDelay, true);
+                socket.timeout(const Duration(milliseconds: 5000));
                 mSocket = socket;
                 mStream = mSocket.asBroadcastStream();
             }).catchError((e) {
@@ -30,6 +32,7 @@ class SocketUtils {
 
     static void unInitSocket() {
         mSocket?.destroy();
+        mSocket = null;
         mStream = null;
     }
 }

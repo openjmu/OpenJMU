@@ -16,10 +16,10 @@ import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 
-import 'package:OpenJMU/pages/AppCenterPage.dart';
-import 'package:OpenJMU/pages/MessagePage.dart';
-import 'package:OpenJMU/pages/MyInfoPage.dart';
-import 'package:OpenJMU/pages/PostSquareListPage.dart';
+import 'package:OpenJMU/pages/home/AppCenterPage.dart';
+import 'package:OpenJMU/pages/home/MessagePage.dart';
+import 'package:OpenJMU/pages/home/MyInfoPage.dart';
+import 'package:OpenJMU/pages/post/PostSquareListPage.dart';
 import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 
 
