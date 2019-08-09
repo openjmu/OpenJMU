@@ -1,12 +1,47 @@
 #include "AppDelegate.h"
 #include "GeneratedPluginRegistrant.h"
 #import <UserNotifications/UserNotifications.h>
+#import <Flutter/Flutter.h>
+const  NSString *SendTime;
+const  NSString *token1;
+const  NSString *isAddToPushSucess;
 @implementation AppDelegate
-static NSString *SendTime;
 - (BOOL)application:(UIApplication *)application
-    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  [GeneratedPluginRegistrant registerWithRegistry:self];
-  // Override point for customization after application launch.
+didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    [GeneratedPluginRegistrant registerWithRegistry:self];
+    FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
+    FlutterMethodChannel *iostokenChannel = [FlutterMethodChannel methodChannelWithName:@"cn.edu.jmu.openjmu/iospushtoken" binaryMessenger:controller];
+    [iostokenChannel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
+        
+        if ([@"getpushtoken" isEqualToString:call.method]) {
+            if (token1!=nil) {
+                result(@[token1]);
+                printf("Write sucess!");
+            }else{
+                result([FlutterError errorWithCode:@"01" message:[NSString stringWithFormat:@"异常"] details:@"进入trycatcherror"]);}
+        } else {
+            if ([@"getpushdate" isEqualToString:call.method]) {
+                if (SendTime!=nil) {
+                    result(@[SendTime]);
+                }else{
+                    result([FlutterError errorWithCode:@"02" message:[NSString stringWithFormat:@"异常"] details:@"进入trycatcherror"]);}// 回调数据
+            }
+            else {
+                if ([@"getpushsucess" isEqualToString:call.method]) {
+                    if (isAddToPushSucess!=nil) {
+                        result(@[isAddToPushSucess]);
+                    }else{
+                        result([FlutterError errorWithCode:@"03" message:[NSString stringWithFormat:@"异常"] details:@"进入trycatcherror"]); }// 回调数据
+                } else {
+                    result(FlutterMethodNotImplemented);
+                }
+            }
+        }
+        
+        
+    }];
+    // Override point for customization after application launch.
+    // Override point for customization after application launch.
     {
         //TODO:暂时还未实现的功能
         if (@available(iOS 10.0, *)) {
@@ -54,7 +89,7 @@ static NSString *SendTime;
         }
         return YES;
     }
-  return [super application:application didFinishLaunchingWithOptions:launchOptions];
+    return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler
 {
@@ -73,7 +108,7 @@ static NSString *SendTime;
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler{
     NSLog(@"%s", __func__);
-        completionHandler(UNNotificationPresentationOptionBadge | UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert);
+    completionHandler(UNNotificationPresentationOptionBadge | UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert);
     //在前台的时候显示通知
 }
 
@@ -94,29 +129,33 @@ static NSString *SendTime;
     NSDate *now = [NSDate date];//获取现在的时间
     NSDateFormatter *forMatter = [[NSDateFormatter alloc] init];
     [forMatter setDateFormat:@"yyyy/MM/dd/HH:mm:ss"];
-    NSString *SendTime = [forMatter stringFromDate:now];//转换系统现在的时间
-    NSString *pushToken = [[[[pToken description]
-                             stringByReplacingOccurrencesOfString:@"<" withString:@""]
-                            stringByReplacingOccurrencesOfString:@">" withString:@""]
-                           stringByReplacingOccurrencesOfString:@" " withString:@""];//把空格和<>去掉
-    NSURL *url = [NSURL URLWithString:@"http://push.openjmu.xyz:8787/push"];//创建请求IP
+    SendTime = [forMatter stringFromDate:now];//转换系统现在的时间
+    token1 = [[[[pToken description]
+                stringByReplacingOccurrencesOfString:@"<" withString:@""]
+               stringByReplacingOccurrencesOfString:@">" withString:@""]
+              stringByReplacingOccurrencesOfString:@" " withString:@""];//把空格和<>去掉
+    NSURL *url = [NSURL URLWithString:@"http://dns.135792468.xyz:8787/push"];//创建请求IP
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
     request.HTTPMethod = @"POST";//采用POST
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     NSDictionary *json = @{
-                           @"token":pushToken,
+                           @"token":token1,
                            @"date":SendTime,
                            };
+    isAddToPushSucess = @"Sucess";
     NSData *data = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingPrettyPrinted error:nil];
     request.HTTPBody = data;
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
     }];
 }
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSData *) error{
+    isAddToPushSucess = @"Fail";
+}
 
 /// Temporary migration with `quick_actions` package's event not triggered. See https://github.com/flutter/flutter/issues/13634#issuecomment-392303964
 - (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL succeeded))completionHandler {
     FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
-
+    
     FlutterMethodChannel* channel = [FlutterMethodChannel methodChannelWithName:@"plugins.flutter.io/quick_actions" binaryMessenger:controller];
     [channel invokeMethod:@"launch" arguments:shortcutItem.type];
 }
