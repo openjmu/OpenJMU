@@ -195,7 +195,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         }
     }
 
-    void setDarkMode(isDark) {
+    static void setDarkMode(isDark) {
         ThemeUtils.isDark = isDark;
         DataUtils.setBrightnessDark(isDark);
         Constants.eventBus.fire(ChangeBrightnessEvent(isDark));

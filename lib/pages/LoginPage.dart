@@ -11,6 +11,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
+//import 'package:OpenJMU/pages/home/MyInfoPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -42,8 +43,10 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     bool _loginDisabled = true;
     bool _isObscure = true;
     bool _usernameCanClear = false;
+    bool _keyboardAppeared = false;
 
-    Color _defaultIconColor = ThemeUtils.defaultColor;
+    bool _isDark = false;
+    Color _defaultIconColor = Colors.grey;
 
     bool showAnnouncement = false;
     List announcements = [];
@@ -55,7 +58,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         Constants.eventBus
             ..on<LoginEvent>().listen((event) {
                 Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)),
+                    platformPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)),
                 );
             })
             ..on<LoginFailedEvent>().listen((event) {
@@ -89,7 +92,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     @override
     void didChangeDependencies() {
         super.didChangeDependencies();
-        ThemeUtils.setDark(true);
+        ThemeUtils.setDark(_isDark);
     }
 
     @override
@@ -133,7 +136,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                             tag: "Logo",
                             child: Image.asset(
                                     'images/ic_jmu_logo_trans.png',
-                                    color: Colors.white,
+                                    color: Theme.of(context).primaryColor,
                                     width: Constants.suSetSp(80.0),
                                     height: Constants.suSetSp(80.0),
                                 ),
@@ -148,7 +151,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         Text(
                             "OPENJMU",
                             style: TextStyle(
-                                color: Colors.grey[850],
+                                color: Theme.of(context).iconTheme.color,
                                 fontSize: Constants.suSetSp(50.0),
                                 fontFamily: "chocolate",
                             ),
@@ -218,13 +221,13 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             decoration: InputDecoration(
                 prefixIcon: Icon(
                     Icons.person,
-                    color: Colors.black,
+                    color: Theme.of(context).iconTheme.color,
                     size: Constants.suSetSp(24.0),
                 ),
                 suffixIcon: _usernameCanClear ? IconButton(
                     icon: Icon(
                         Icons.clear,
-                        color: Colors.black,
+                        color: Theme.of(context).iconTheme.color,
                         size: Constants.suSetSp(24.0),
                     ),
                     onPressed: _usernameController.clear,
@@ -232,21 +235,21 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 border: InputBorder.none,
                 focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
-                        color: Colors.black,
+                        color: ThemeUtils.defaultColor,
                     ),
                 ),
                 contentPadding: EdgeInsets.all(Constants.suSetSp(12.0)),
                 labelText: '工号/学号',
                 labelStyle: TextStyle(
-                    color: Colors.black,
+                    color: Theme.of(context).textTheme.title.color,
                     fontSize: Constants.suSetSp(18.0),
                 ),
             ),
             style: TextStyle(
-                color: Colors.black,
+                color: Theme.of(context).textTheme.title.color,
                 fontSize: Constants.suSetSp(18.0),
             ),
-            cursorColor: Colors.black,
+            cursorColor: ThemeUtils.defaultColor,
             onSaved: (String value) => _username = value,
             validator: (String value) {
                 if (value.isEmpty) return '请输入账户';
@@ -267,17 +270,20 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 border: InputBorder.none,
                 focusedBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
-                        color: Colors.black,
+                        color: ThemeUtils.defaultColor,
                     ),
                 ),
                 contentPadding: EdgeInsets.all(Constants.suSetSp(10.0)),
                 prefixIcon: Icon(
                     Icons.lock,
-                    color: Colors.black,
+                    color: Theme.of(context).iconTheme.color,
                     size: Constants.suSetSp(24.0),
                 ),
                 labelText: '密码',
-                labelStyle: TextStyle(color: Colors.black, fontSize: Constants.suSetSp(18.0)),
+                labelStyle: TextStyle(
+                    color: Theme.of(context).textTheme.title.color,
+                    fontSize: Constants.suSetSp(18.0),
+                ),
                 suffixIcon: IconButton(
                     icon: Icon(
                         _isObscure
@@ -290,14 +296,17 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         setState(() {
                             _isObscure = !_isObscure;
                             _defaultIconColor = _isObscure
-                                    ? Colors.black
+                                    ? Colors.grey
                                     : ThemeUtils.defaultColor;
                         });
                     },
                 ),
             ),
-            style: TextStyle(color: Colors.black, fontSize: Constants.suSetSp(20.0)),
-            cursorColor: Colors.black,
+            style: TextStyle(
+                color: Theme.of(context).textTheme.title.color,
+                fontSize: Constants.suSetSp(20.0),
+            ),
+            cursorColor: ThemeUtils.defaultColor,
         );
     }
 
@@ -348,7 +357,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             children: <Widget>[
                 RoundedCheckbox(
                     value: _agreement,
-                    inactiveColor: Colors.black,
+                    inactiveColor: Theme.of(context).iconTheme.color,
                     onChanged: (value) {
                         setState(() {
                             _agreement = value;
@@ -360,7 +369,12 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 RichText(
                     text: TextSpan(
                         children: <TextSpan>[
-                            TextSpan(text: "登录即表明同意", style: TextStyle(color: Colors.black)),
+                            TextSpan(
+                                text: "同意",
+                                style: TextStyle(
+                                    color: Theme.of(context).textTheme.title.color,
+                                ),
+                            ),
                             TextSpan(
                                 text: "用户协议",
                                 style: TextStyle(color: Colors.redAccent),
@@ -382,116 +396,115 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
 
     Widget loginButton(context) {
-        return GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            child: Container(
-                width: Constants.suSetSp(120.0),
-                height: Constants.suSetSp(50.0),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Constants.suSetSp(6.0)),
-                    boxShadow: <BoxShadow>[
-                        BoxShadow(
-                            blurRadius: Constants.suSetSp(10.0),
-                            color: Color(0xffea1f1f).withAlpha(50),
-                            offset: Offset(0.0, Constants.suSetSp(10.0)),
-                        )
-                    ],
-                    gradient: LinearGradient(colors: <Color>[
-                        Color(0xfff68184), Color(0xffea1f1f),
-                    ]),
-                ),
-                child: Center(
-                    child: !_login ? SizedBox(
-                        height: Constants.suSetSp(20.0) * 1.2,
-                        child: Text(
-                            "登录",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: Constants.suSetSp(20.0),
-                            ),
-                        ),
-                    ) : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                            SizedBox(
-                                width: Constants.suSetSp(24.0),
-                                height: Constants.suSetSp(24.0),
-                                child: Constants.progressIndicator(color: Colors.white),
-                            ),
-                        ],
+        return Container(
+            width: Constants.suSetSp(120.0),
+            height: Constants.suSetSp(50.0),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(Constants.suSetSp(6.0)),
+                boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        blurRadius: Constants.suSetSp(10.0),
+                        color: Color(0xffea1f1f).withAlpha(50),
+                        offset: Offset(0.0, Constants.suSetSp(10.0)),
+                    )
+                ],
+                gradient: LinearGradient(colors: <Color>[
+                    Color(0xfff68184), Color(0xffea1f1f),
+                ]),
+            ),
+            child: Center(
+                child: !_login ? IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(
+                        Icons.arrow_forward,
+                        size: Constants.suSetSp(24.0),
+                        color: Colors.white,
                     ),
+                    onPressed: () {
+                        if (_login || _loginDisabled) {
+                            return null;
+                        } else {
+                            loginButtonPressed(context);
+                        }
+                    },
+                ) : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                        SizedBox(
+                            width: Constants.suSetSp(24.0),
+                            height: Constants.suSetSp(24.0),
+                            child: Constants.progressIndicator(color: Colors.white),
+                        ),
+                    ],
                 ),
             ),
-            onTap: () {
-                if (_login || _loginDisabled) {
-                    return null;
-                } else {
-                    loginButtonPressed(context);
-                }
-            },
         );
     }
 
-    Widget loginForm(context) => Form(
-        key: _formKey,
-        child: ScrollConfiguration(
-            behavior: NoGlowScrollBehavior(),
-            child: ListView(
-                controller: _formScrollController,
-                padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(50.0)),
-                physics: NeverScrollableScrollPhysics(),
-                children: <Widget>[
-                    Constants.emptyDivider(height: Constants.suSetSp(80.0)),
-                    logo(),
-                    Constants.emptyDivider(height: Constants.suSetSp(40.0)),
-                    Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: Constants.suSetSp(10.0),
-                            vertical: Constants.suSetSp(10.0),
-                        ),
-                        decoration: BoxDecoration(
-                            boxShadow: <BoxShadow>[
-                                BoxShadow(
-                                    blurRadius: 20.0,
-                                    color: Theme.of(context).dividerColor,
-                                )
-                            ],
-                            color: Theme.of(context).cardColor,
-                        ),
-                        child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                                if (showAnnouncement) announcement(),
-                                usernameTextField(),
-                                Constants.emptyDivider(height: Constants.suSetSp(10.0)),
-                                passwordTextField(),
-                                Constants.emptyDivider(height: Constants.suSetSp(10.0)),
-                                Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    Widget loginForm(context) {
+        return SafeArea(
+            child: Form(
+                key: _formKey,
+                child: ScrollConfiguration(
+                    behavior: NoGlowScrollBehavior(),
+                    child: ListView(
+                        controller: _formScrollController,
+                        padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(50.0)),
+                        physics: NeverScrollableScrollPhysics(parent: ClampingScrollPhysics()),
+                        children: <Widget>[
+                            Constants.emptyDivider(height: Constants.suSetSp(50.0)),
+                            logo(),
+                            Constants.emptyDivider(height: Constants.suSetSp(40.0)),
+                            Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Constants.suSetSp(10.0),
+                                    vertical: Constants.suSetSp(10.0),
+                                ),
+                                decoration: BoxDecoration(
+                                    boxShadow: <BoxShadow>[
+                                        BoxShadow(
+                                            blurRadius: 20.0,
+                                            color: Theme.of(context).dividerColor,
+                                        )
+                                    ],
+                                    color: Theme.of(context).cardColor,
+                                ),
+                                child: Column(
+                                    mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
-                                        noAccountButton(context),
-                                        forgetPasswordButton(context),
+                                        if (showAnnouncement) announcement(),
+                                        usernameTextField(),
+                                        Constants.emptyDivider(height: Constants.suSetSp(10.0)),
+                                        passwordTextField(),
+                                        Constants.emptyDivider(height: Constants.suSetSp(10.0)),
+                                        Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+//                                                noAccountButton(context),
+                                                forgetPasswordButton(context),
+                                            ],
+                                        ),
                                     ],
                                 ),
-                            ],
-                        ),
+                            ),
+                            Padding(
+                                padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                        userAgreementCheckbox(context),
+                                        loginButton(context),
+                                    ],
+                                ),
+                            ),
+                            Constants.emptyDivider(height: Constants.suSetSp(30.0)),
+                        ],
                     ),
-                    Padding(
-                        padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                                userAgreementCheckbox(context),
-                                loginButton(context),
-                            ],
-                        ),
-                    ),
-                    Constants.emptyDivider(height: Constants.suSetSp(30.0)),
-                ],
+                ),
+                onChanged: validateForm,
             ),
-        ),
-        onChanged: validateForm,
-    );
+        );
+    }
 
     void loginButtonPressed(context) {
         if (_formKey.currentState.validate()) {
@@ -565,13 +578,17 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             keyboardAppearing = true;
         } else {
             keyboardAppearing = false;
+            _keyboardAppeared = false;
         }
-        if (_formScrollController.hasClients && keyboardAppearing) {
+        if (_formScrollController.hasClients && keyboardAppearing && !_keyboardAppeared) {
+            _keyboardAppeared = true;
             _formScrollController.animateTo(
                 bottom,
                 duration: Duration(milliseconds: 200),
                 curve: Curves.linear,
             );
+        } else if (!keyboardAppearing && _keyboardAppeared) {
+            _keyboardAppeared = false;
         }
     }
 
@@ -581,7 +598,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         return WillPopScope(
             onWillPop: doubleBackExit,
             child: Scaffold(
-                backgroundColor: Colors.white,
+                backgroundColor: Theme.of(context).primaryColor,
                 body: Stack(
                     children: <Widget>[
                         Positioned(
@@ -594,6 +611,23 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                             ),
                         ),
                         loginForm(context),
+//                        Positioned(
+//                            top: MediaQuery.of(context).padding.top,
+//                            child: GestureDetector(
+//                                behavior: HitTestBehavior.translucent,
+//                                child: Padding(
+//                                    padding: const EdgeInsets.all(12.0),
+//                                    child: Icon(
+//                                        Icons.brightness_3,
+//                                    ),
+//                                ),
+//                                onTap: () {
+//                                    print(_isDark);
+//                                    _isDark = !_isDark;
+//                                    MyInfoPageState.setDarkMode(_isDark);
+//                                },
+//                            ),
+//                        ),
                     ],
                 ),
                 resizeToAvoidBottomInset: true,
