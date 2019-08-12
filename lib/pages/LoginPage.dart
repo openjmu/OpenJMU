@@ -34,6 +34,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     final TextEditingController _passwordController = TextEditingController();
     final List<Color> colorGradient = const <Color>[Color(0xffff8976), Color(0xffff3c33)];
 
+    BuildContext pageContext;
+
     String _username = "", _password = "";
 
     bool _agreement = false;
@@ -54,14 +56,13 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         super.initState();
         Constants.eventBus
             ..on<LoginEvent>().listen((event) {
-                Navigator.of(context).pushReplacement(
+                Navigator.of(pageContext).pushReplacement(
                     platformPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)),
                 );
             })
             ..on<LoginFailedEvent>().listen((event) {
-                if (mounted) setState(() {
-                    _login = false;
-                });
+                _login = false;
+                if (mounted) setState(() {});
             })
         ;
         _usernameController..addListener(() {
@@ -641,6 +642,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     @override
     Widget build(BuildContext context) {
         setAlignment(context);
+        pageContext = context;
         return WillPopScope(
             onWillPop: doubleBackExit,
             child: Scaffold(

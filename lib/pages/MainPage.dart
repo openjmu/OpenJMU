@@ -40,6 +40,8 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
     final Color primaryColor = Colors.white;
     static const double bottomBarHeight = 64.4;
 
+    BuildContext pageContext;
+
     TextStyle tabSelectedTextStyle = TextStyle(
         color: currentThemeColor,
         fontSize: Constants.suSetSp(23.0),
@@ -106,11 +108,11 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
             })
             ..on<LogoutEvent>().listen((event) {
                 notificationTimer?.cancel();
-                Navigator.of(context).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
+                Navigator.of(pageContext).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
             })
             ..on<TicketFailedEvent>().listen((event) {
                 notificationTimer?.cancel();
-                Navigator.of(context).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
+                Navigator.of(pageContext).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
             })
             ..on<HasUpdateEvent>().listen((event) {
                 if (this.mounted) showDialog(
@@ -166,6 +168,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
     @mustCallSuper
     Widget build(BuildContext context) {
         super.build(context);
+        pageContext = context;
         return WillPopScope(
             onWillPop: doubleBackExit,
             child: Scaffold(
