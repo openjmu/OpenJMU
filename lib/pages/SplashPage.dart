@@ -12,7 +12,6 @@ import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
 
 
 class SplashPage extends StatefulWidget {
@@ -28,6 +27,7 @@ class SplashState extends State<SplashPage> {
     bool isOnline;
     bool isUserLogin = false;
     bool showLoading = false;
+    bool isInLoginProcess = false;
 
     @override
     void initState() {
@@ -86,20 +86,23 @@ class SplashState extends State<SplashPage> {
     }
 
     void checkOnline(event) {
-        setState(() {
-            if (event.type != ConnectivityResult.none) {
-                this.isOnline = true;
-                DataUtils.isLogin().then((isLogin) {
-                    if (isLogin) {
-                        DataUtils.recoverLoginInfo();
-                    } else {
-                        Constants.eventBus.fire(TicketFailedEvent());
-                    }
-                });
-            } else {
-                this.isOnline = false;
-            }
-        });
+        if (!isInLoginProcess) {
+            isInLoginProcess = true;
+            setState(() {
+                if (event.type != ConnectivityResult.none) {
+                    this.isOnline = true;
+                    DataUtils.isLogin().then((isLogin) {
+                        if (isLogin) {
+                            DataUtils.recoverLoginInfo();
+                        } else {
+                            Constants.eventBus.fire(TicketFailedEvent());
+                        }
+                    });
+                } else {
+                    this.isOnline = false;
+                }
+            });
+        }
     }
 
     void navigate() {
@@ -119,7 +122,6 @@ class SplashState extends State<SplashPage> {
                     ), (Route<dynamic> route) => false);
                 } catch (e) {}
             } else {
-                debugPrint("CurrentUser's ${UserAPI.currentUser}");
                 try {
                     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                         builder: (_) => MainPage(initIndex: widget.initIndex),

@@ -122,6 +122,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                 currentThemeColor = event.color;
                 if (this.mounted) setState(() {});
             });
+        debugPrint("CurrentUser's ${UserAPI.currentUser}");
     }
 
     @override

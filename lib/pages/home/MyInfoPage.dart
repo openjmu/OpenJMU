@@ -137,7 +137,7 @@ class MyInfoPageState extends State<MyInfoPage> {
     void getSignStatus() async {
         var _signed = (await SignAPI.getTodayStatus()).data['status'];
         var _signedCount = (await SignAPI.getSignList()).data['signdata']?.length;
-        setState(() {
+        if (mounted) setState(() {
             this.signedCount = _signedCount;
             this.signed = _signed == 1 ? true : false;
         });
@@ -562,6 +562,7 @@ class MyInfoPageState extends State<MyInfoPage> {
 
             case "测试页":
                 Navigator.pushNamed(context, "/test");
+                showTimePicker(context: context, initialTime: TimeOfDay.now());
                 break;
 
             default:

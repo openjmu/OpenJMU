@@ -81,7 +81,12 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                         _tabController.animateTo(0);
                         Notifications _notify = currentNotifications;
                         setState(() {
-                            currentNotifications = Notifications(_notify.count - _notify.at, 0, _notify.comment, _notify.praise);
+                            currentNotifications = Notifications(
+                                count: _notify.count - _notify.at,
+                                at: 0,
+                                comment: _notify.comment,
+                                praise: _notify.praise,
+                            );
                         });
                     },
                 )
@@ -103,7 +108,12 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                         _tabController.animateTo(1);
                         Notifications _notify = currentNotifications;
                         setState(() {
-                            currentNotifications = Notifications(_notify.count - _notify.comment, _notify.at, 0, _notify.praise);
+                            currentNotifications = Notifications(
+                                count: _notify.count - _notify.comment,
+                                at: _notify.at,
+                                comment: 0,
+                                praise: _notify.praise,
+                            );
                         });
                     },
                 )
@@ -125,7 +135,12 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                         _tabController.animateTo(2);
                         Notifications _notify = currentNotifications;
                         setState(() {
-                            currentNotifications = Notifications(_notify.count - _notify.praise, _notify.at, _notify.comment, 0);
+                            currentNotifications = Notifications(
+                                count: _notify.count - _notify.praise,
+                                at: _notify.at,
+                                comment: _notify.comment,
+                                praise: 0,
+                            );
                         });
                     },
                 )

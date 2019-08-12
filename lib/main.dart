@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,7 +46,7 @@ class JMUAppClientState extends State<JMUAppClient> {
         ]);
         connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
             Constants.eventBus.fire(ConnectivityChangeEvent(result));
-            debugPrint("Connectivity: $result");
+            debugPrint("Current connectivity: $result");
         });
         DataUtils.getColorThemeIndex().then((index) {
             if (this.mounted && index != null) {
@@ -67,11 +68,11 @@ class JMUAppClientState extends State<JMUAppClient> {
                     });
                 }
             })
-            ..on<LogoutEvent>().listen((event) {
+            ..on<LogoutEvent>().listen((event) async {
                 setState(() {
                     currentThemeColor = ThemeUtils.defaultColor;
                 });
-                DataUtils.logout();
+                await DataUtils.logout();
             })
             ..on<ActionsEvent>().listen((event) {
                 if (event.type == "action_home") {
@@ -83,10 +84,17 @@ class JMUAppClientState extends State<JMUAppClient> {
                 } else if (event.type == "action_mine") {
                     initIndex = 3;
                 }
-            });
+            })
+            ..on<ChangeBrightnessEvent>().listen((event) {
+                setState(() {
+                    ThemeUtils.isDark = event.isDarkState;
+                });
+            })
+        ;
         listenToBrightness();
         NetUtils.initConfig();
         initQuickActions();
+        debugPrint("Android: ${Platform.isAndroid} | iOS: ${Platform.isIOS}");
     }
 
     @override
@@ -129,11 +137,6 @@ class JMUAppClientState extends State<JMUAppClient> {
                     });
                 }
             }
-        });
-        Constants.eventBus.on<ChangeBrightnessEvent>().listen((event) {
-            setState(() {
-                ThemeUtils.isDark = event.isDarkState;
-            });
         });
     }
 

@@ -37,22 +37,22 @@ class OTAUtils {
         }
     }
 
-    static void checkUpdate({bool fromStart}) {
-        debugPrint("Checking update...");
-        NetUtils.get(API.checkUpdate).then((response) {
-            getCurrentBuildNumber().then((buildNumber) {
-                Map<String, dynamic> _response = jsonDecode(response.data);
-                debugPrint("Current build: $buildNumber");
-                debugPrint("Remote build: ${_response['buildNumber']}");
-                int remoteBuildNumber = int.parse(_response['buildNumber'].toString());
-                if (buildNumber < remoteBuildNumber) {
-                    getCurrentVersion().then((version) {
-                        Constants.eventBus.fire(HasUpdateEvent(version, buildNumber, _response));
-                    });
-                } else {
-                    if (!(fromStart ?? false)) showShortToast("已更新为最新版本");
-                }
-            });
+    static void checkUpdate({bool fromStart}) async {
+        NetUtils.get(API.checkUpdate).then((response) async {
+            int currentBuild = await getCurrentBuildNumber();
+            String currentVersion = await getCurrentVersion();
+            Map<String, dynamic> _response = jsonDecode(response.data);
+            debugPrint(
+                    "Build: $currentVersion+$currentBuild"
+                    " | "
+                    "${_response['version']}+${_response['buildNumber']}"
+            );
+            int remoteBuildNumber = int.parse(_response['buildNumber'].toString());
+            if (currentBuild < remoteBuildNumber) {
+                Constants.eventBus.fire(HasUpdateEvent(currentVersion, currentBuild, _response));
+            } else {
+                if (!(fromStart ?? false)) showShortToast("已更新为最新版本");
+            }
         }).catchError((e) {
             debugPrint(e.toString());
             showCenterErrorShortToast("检查更新失败\n${e.toString()}");

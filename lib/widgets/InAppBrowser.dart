@@ -223,12 +223,16 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     }
 
     void loadCourseSchedule() {
-        _webViewController.loadUrl(
-            "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
-                    "?sid=${UserAPI.currentUser.sid}"
-                    "&night=${ThemeUtils.isDark ? 1 : 0}"
-            ,
-        );
+        try {
+            _webViewController.loadUrl(
+                "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
+                        "?sid=${UserAPI.currentUser.sid}"
+                        "&night=${ThemeUtils.isDark ? 1 : 0}"
+                ,
+            );
+        } catch (e) {
+            debugPrint("$e");
+        }
     }
     PreferredSize progressBar(context) {
         return PreferredSize(
