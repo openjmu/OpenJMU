@@ -80,6 +80,7 @@ class BackpackPage extends StatefulWidget {
 }
 
 class _BackpackPageState extends State<BackpackPage> {
+    final PageController _myItemListController = PageController(viewportFraction: 0.8);
     final _header = {"CLOUDID": "jmu"};
     bool isLoading = true;
 
@@ -94,38 +95,38 @@ class _BackpackPageState extends State<BackpackPage> {
 
     Future getBackpackItem() async {
         try {
-            NetUtils.getWithHeaderSet(
+            Map<String, dynamic> types = (await NetUtils.getWithHeaderSet(
                 API.backPackItemType(),
                 headers: _header,
-            ).then((response) {
-                List<dynamic> items = response.data['data'];
-                for (int i = 0; i < items.length; i++) {
-                    BackpackItemType item = BackpackItemType.fromJson(items[i]);
-                    _itemTypes["${item.type}"] = item;
-                }
-                Future.wait(<Future>[
-                    NetUtils.getWithHeaderSet(
-                        API.backPackMyItemList(),
-                        headers: _header,
-                    ).then((response) {
-                        List<dynamic> items = response.data['data'];
-                        for (int i = 0; i < items.length; i++) {
-                            items[i]['name'] = _itemTypes['${items[i]["itemtype"]}'].name;
-                            items[i]['desc'] = _itemTypes['${items[i]["itemtype"]}'].description;
-                            BackpackItem item = BackpackItem.fromJson(items[i]);
-                            myItems.add(item);
-                        }
-                    }),
-                    NetUtils.getWithHeaderSet(
-                        API.backPackReceiveList(),
-                        headers: _header,
-                    ).then((response) {
+            )).data;
+            List<dynamic> items = types['data'];
+            for (int i = 0; i < items.length; i++) {
+                BackpackItemType item = BackpackItemType.fromJson(items[i]);
+                _itemTypes["${item.type}"] = item;
+            }
+
+            Future.wait(<Future>[
+                NetUtils.getWithHeaderSet(
+                    API.backPackMyItemList(),
+                    headers: _header,
+                ).then((response) {
+                    List<dynamic> items = response.data['data'];
+                    for (int i = 0; i < items.length; i++) {
+                        items[i]['name'] = _itemTypes['${items[i]["itemtype"]}'].name;
+                        items[i]['desc'] = _itemTypes['${items[i]["itemtype"]}'].description;
+                        BackpackItem item = BackpackItem.fromJson(items[i]);
+                        myItems.add(item);
+                    }
+                }),
+                NetUtils.getWithHeaderSet(
+                    API.backPackReceiveList(),
+                    headers: _header,
+                ).then((response) {
 //                        print(response);
-                    }),
-                ]).then((responses) {
-                    setState(() {
-                        isLoading = false;
-                    });
+                }),
+            ]).then((responses) {
+                setState(() {
+                    isLoading = false;
                 });
             });
         } catch (e) {
@@ -169,12 +170,18 @@ class _BackpackPageState extends State<BackpackPage> {
                         fontWeight: FontWeight.bold,
                         fontSize: Constants.suSetSp(30.0),
                     ),
+                    overflow: TextOverflow.ellipsis,
                 ),
                 Constants.emptyDivider(height: 10.0),
-                Text(
-                    myItems[index].description,
-                    style: Theme.of(context).textTheme.subtitle.copyWith(
-                        fontSize: Constants.suSetSp(18.0),
+                SizedBox(
+                    height: Constants.suSetSp(54.0),
+                    child: Text(
+                        myItems[index].description,
+                        style: Theme.of(context).textTheme.subtitle.copyWith(
+                            fontSize: Constants.suSetSp(18.0),
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                     ),
                 ),
             ],
@@ -184,117 +191,127 @@ class _BackpackPageState extends State<BackpackPage> {
     Widget itemIcon(int index) {
         return Padding(
             padding: EdgeInsets.symmetric(
-                vertical: Constants.suSetSp(20.0),
+                vertical: Constants.suSetSp(10.0),
             ),
             child: Center(
-                child: BackpackIcon(myItems[index].type),
+                child: SizedBox(
+                    height: Constants.suSetSp(150.0),
+                    child: BackpackIcon(myItems[index].type),
+                ),
             ),
         );
     }
 
     Widget backpackItem(BuildContext context, int index) {
         return SizedBox(
-            width: MediaQuery.of(context).size.width - Constants.suSetSp(100.0),
-          child: Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: Constants.suSetSp(20.0),
-                  vertical: Constants.suSetSp(60.0),
-              ),
-              child: DecoratedBox(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(Constants.suSetSp(40.0)),
-                      boxShadow: <BoxShadow>[
-                          BoxShadow(
-                              blurRadius: Constants.suSetSp(10.0),
-                              color: Theme.of(context).canvasColor,
-                          ),
-                      ],
-                      color: ThemeUtils.currentThemeColor.withAlpha(30),
-                  ),
-                  child: Stack(
-                      children: <Widget>[
-                          itemCount(index),
-                          Padding(
-                              padding: EdgeInsets.all(Constants.suSetSp(20.0)),
-                              child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                      itemInfo(index),
-                                      itemIcon(index),
-                                  ],
-                              ),
-                          ),
-                      ],
-                  ),
-              ),
-          ),
+            child: Padding(
+                padding: EdgeInsets.symmetric(
+                    horizontal: Constants.suSetSp(20.0),
+                    vertical: Constants.suSetSp(60.0),
+                ),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                        DecoratedBox(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(Constants.suSetSp(40.0)),
+                                color: ThemeUtils.currentThemeColor.withAlpha(30),
+                            ),
+                            child: Stack(
+                                children: <Widget>[
+                                    itemCount(index),
+                                    Padding(
+                                        padding: EdgeInsets.all(Constants.suSetSp(20.0)),
+                                        child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: <Widget>[
+                                                itemInfo(index),
+                                                itemIcon(index),
+                                            ],
+                                        ),
+                                    ),
+                                ],
+                            ),
+                        ),
+                        Constants.emptyDivider(height: 50.0),
+                        DecoratedBox(
+                            decoration: BoxDecoration(
+                                border: Border.fromBorderSide(BorderSide(
+                                    color: ThemeUtils.currentThemeColor,
+                                )),
+                                borderRadius: BorderRadius.circular(50.0),
+                            ),
+                            child: FlatButton(
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Constants.suSetSp(20.0),
+                                    vertical: Constants.suSetSp(12.0),
+                                ),
+                                color: Colors.transparent,
+                                onPressed: () {},
+                                child: Text(
+                                    "打开礼包",
+                                    style: Theme.of(context).textTheme.title.copyWith(
+                                        fontSize: Constants.suSetSp(20.0),
+                                        color: ThemeUtils.currentThemeColor,
+                                    ),
+                                ),
+                            ),
+                        ),
+                    ],
+                ),
+            ),
         );
     }
 
     @override
     Widget build(BuildContext context) {
         return Scaffold(
-            body: SafeArea(
-                top: true,
-                bottom: true,
-                child: Stack(
-                    children: <Widget>[
-                        Positioned(
-                            left: 0.0,
-                            top: 0.0,
-                            child: BackButton(),
+            appBar: AppBar(elevation: 0),
+            body: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                    Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: Constants.suSetSp(40.0),
                         ),
-                        Column(
+                        child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                                Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: Constants.suSetSp(40.0),
-                                        vertical: Constants.suSetSp(40.0),
-                                    ),
-                                    child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: <Widget>[
-                                            Text(
-                                                "我的背包",
-                                                style: Theme.of(context).textTheme.title.copyWith(
-                                                    fontSize: Constants.suSetSp(40.0),
-                                                    fontWeight: FontWeight.bold,
-                                                ),
-                                            ),
-                                            Text(
-                                                "看看背包里有哪些好东西~",
-                                                style: Theme.of(context).textTheme.subtitle.copyWith(
-                                                    fontSize: Constants.suSetSp(20.0),
-                                                ),
-                                            ),
-                                        ],
+                                Text(
+                                    "我的背包",
+                                    style: Theme.of(context).textTheme.title.copyWith(
+                                        fontSize: Constants.suSetSp(40.0),
+                                        fontWeight: FontWeight.bold,
                                     ),
                                 ),
-                                isLoading
-                                        ?
-                                SizedBox(
-                                    height: Constants.suSetSp(500.0),
-                                    child: Center(child: Constants.progressIndicator()),
-                                )
-                                        :
-                                SizedBox(
-                                    height: MediaQuery.of(context).size.height - Constants.suSetSp(260.0),
-                                    child: SingleChildScrollView(
-                                        scrollDirection: Axis.horizontal,
-                                        physics: BouncingScrollPhysics(),
-                                        child: Row(
-                                            children: <Widget>[
-                                                for (int i = 0; i < myItems.length; i++)
-                                                    backpackItem(context, i)
-                                            ],
-                                        ),
+                                Text(
+                                    "看看背包里有哪些好东西~",
+                                    style: Theme.of(context).textTheme.subtitle.copyWith(
+                                        fontSize: Constants.suSetSp(20.0),
                                     ),
                                 ),
                             ],
                         ),
-                    ],
-                ),
+                    ),
+                    isLoading
+                            ?
+                    SizedBox(
+                        height: Constants.suSetSp(500.0),
+                        child: Center(child: Constants.progressIndicator()),
+                    )
+                            :
+                    Expanded(
+                        child: PageView.builder(
+                            controller: _myItemListController,
+                            physics: BouncingScrollPhysics(),
+                            itemCount: myItems.length,
+                            itemBuilder: (context, index) => backpackItem(context, index),
+                        ),
+                    ),
+                ],
             ),
         );
     }
@@ -308,10 +325,13 @@ class BackpackIcon extends StatefulWidget {
     _BackpackIconState createState() => _BackpackIconState();
 }
 
-class _BackpackIconState extends State<BackpackIcon> {
+class _BackpackIconState extends State<BackpackIcon> with AutomaticKeepAliveClientMixin {
     final _header = {"CLOUDID": "jmu"};
     bool loaded = false;
     Uint8List icon;
+
+    @override
+    bool get wantKeepAlive => true;
 
     @override
     void initState() {
@@ -332,17 +352,8 @@ class _BackpackIconState extends State<BackpackIcon> {
 
     @override
     Widget build(BuildContext context) {
-        return loaded
-                ?
-        Image.memory(
-            icon,
-            width: Constants.suSetSp(150.0),
-            height: Constants.suSetSp(150.0),
-            fit: BoxFit.cover,
-        )
-                :
-        SizedBox()
-        ;
+        super.build(context);
+        return loaded ? Image.memory(icon, fit: BoxFit.fitHeight) : SizedBox();
     }
 }
 

@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
@@ -11,7 +9,6 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
-//import 'package:OpenJMU/pages/home/MyInfoPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -35,6 +32,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     final ScrollController _formScrollController = ScrollController();
     final TextEditingController _usernameController = TextEditingController();
     final TextEditingController _passwordController = TextEditingController();
+    final List<Color> colorGradient = const <Color>[Color(0xffff8976), Color(0xffff3c33)];
+
+    BuildContext pageContext;
 
     String _username = "", _password = "";
 
@@ -54,17 +54,15 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     @override
     void initState() {
         super.initState();
-        DataUtils.resetTheme();
         Constants.eventBus
             ..on<LoginEvent>().listen((event) {
-                Navigator.of(context).pushReplacement(
+                Navigator.of(pageContext).pushReplacement(
                     platformPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)),
                 );
             })
             ..on<LoginFailedEvent>().listen((event) {
-                if (mounted) setState(() {
-                    _login = false;
-                });
+                _login = false;
+                if (mounted) setState(() {});
             })
         ;
         _usernameController..addListener(() {
@@ -124,36 +122,68 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         }
     }
 
-    Widget logo() {
-        return Column(
-            children: <Widget>[
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                        Container(
-                            margin: EdgeInsets.only(bottom: Constants.suSetSp(10.0)),
-                            child: Hero(
-                            tag: "Logo",
-                            child: Image.asset(
-                                    'images/ic_jmu_logo_trans.png',
-                                    color: Theme.of(context).primaryColor,
-                                    width: Constants.suSetSp(80.0),
-                                    height: Constants.suSetSp(80.0),
-                                ),
-                            ),
-                        ),
-                    ],
+    Widget topBackground(context) {
+        return Positioned(
+            right: 0.0,
+            top: 0.0,
+            child: Image.asset(
+                "images/login_top.png",
+                width: MediaQuery.of(context).size.width - Constants.suSetSp(60.0),
+                fit: BoxFit.fitWidth,
+            ),
+        );
+    }
+
+    Widget logo(context) {
+        return Positioned(
+            right: Constants.suSetSp(40.0),
+            top: Constants.suSetSp(50.0),
+            child: Hero(
+                tag: "Logo",
+                child: Image.asset(
+                    'images/ic_jmu_logo_trans.png',
+                    color: Theme.of(context).primaryColor.withAlpha(0x33),
+                    width: Constants.suSetSp(120.0),
+                    height: Constants.suSetSp(120.0),
                 ),
-                Constants.emptyDivider(height: Constants.suSetSp(40.0)),
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+            ),
+        );
+    }
+
+    Widget logoTitle() {
+//        final Shader linearGradient = LinearGradient(
+//            colors: colorGradient,
+//        ).createShader(Rect.fromLTWH(0.0, 0.0, 150, 60));
+        return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            textBaseline: TextBaseline.ideographic,
+            children: <Widget>[
+                Stack(
                     children: <Widget>[
-                        Text(
-                            "OPENJMU",
-                            style: TextStyle(
-                                color: Theme.of(context).iconTheme.color,
-                                fontSize: Constants.suSetSp(50.0),
-                                fontFamily: "chocolate",
+//                        Positioned(
+//                            left: 0.0,
+//                            top: 0.0,
+//                            child: Image.asset(
+//                                "images/ic_jmu_logo_circle.png",
+//                                width: Constants.suSetSp(13.0),
+//                                height: Constants.suSetSp(13.0),
+//                            ),
+//                        ),
+                        Container(
+                            margin: EdgeInsets.only(
+                                top: Constants.suSetSp(10.0),
+                                left: Constants.suSetSp(6.0),
+                                right: Constants.suSetSp(6.0),
+                            ),
+                            child: Text(
+                                "OPENJMU",
+                                style: TextStyle(
+                                    color: Theme.of(context).iconTheme.color,
+                                    fontSize: Constants.suSetSp(50.0),
+                                    fontFamily: "chocolate",
+//                                    foreground: Paint()..shader = linearGradient,
+                                ),
                             ),
                         ),
                     ],
@@ -318,13 +348,39 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 child: FlatButton(
                     padding: EdgeInsets.all(0.0),
                     child: Text(
-                        '没有账号？',
+                        '没有账号',
                         style: TextStyle(
                             color: Colors.grey,
                             fontSize: Constants.suSetSp(16.0),
                         ),
                     ),
                     onPressed: () {},
+                ),
+            ),
+        );
+    }
+
+    Padding findWorkId(BuildContext context) {
+        return Padding(
+            padding: EdgeInsets.zero,
+            child: Align(
+                alignment: Alignment.center,
+                child: FlatButton(
+                    padding: EdgeInsets.all(0.0),
+                    child: Text(
+                        '查询工号',
+                        style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: Constants.suSetSp(16.0),
+                        ),
+                    ),
+                    onPressed: () {
+                        CommonWebPage.jump(
+                            context,
+                            "http://myid.jmu.edu.cn/ids/EmployeeNoQuery.aspx",
+                            "集大通行证 - 工号查询",
+                        );
+                    },
                 ),
             ),
         );
@@ -338,7 +394,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 child: FlatButton(
                     padding: EdgeInsets.all(0.0),
                     child: Text(
-                        '忘记密码？',
+                        '忘记密码',
                         style: TextStyle(
                             color: Colors.grey,
                             fontSize: Constants.suSetSp(16.0),
@@ -370,20 +426,17 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                     text: TextSpan(
                         children: <TextSpan>[
                             TextSpan(
-                                text: "同意",
+                                text: "《用户协议》",
                                 style: TextStyle(
-                                    color: Theme.of(context).textTheme.title.color,
+                                    color: ThemeUtils.defaultColor,
+                                    decoration: TextDecoration.underline,
                                 ),
-                            ),
-                            TextSpan(
-                                text: "用户协议",
-                                style: TextStyle(color: Colors.redAccent),
                                 recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                         return CommonWebPage.jump(
                                             context,
                                             "${API.homePage}/license.html",
-                                            "OpenJMU用户协议",
+                                            "OpenJMU 用户协议",
                                         );
                                     },
                             ),
@@ -396,46 +449,44 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
 
     Widget loginButton(context) {
-        return Container(
-            width: Constants.suSetSp(120.0),
-            height: Constants.suSetSp(50.0),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Constants.suSetSp(6.0)),
-                boxShadow: <BoxShadow>[
-                    BoxShadow(
-                        blurRadius: Constants.suSetSp(10.0),
-                        color: Color(0xffea1f1f).withAlpha(50),
-                        offset: Offset(0.0, Constants.suSetSp(10.0)),
-                    )
-                ],
-                gradient: LinearGradient(colors: <Color>[
-                    Color(0xfff68184), Color(0xffea1f1f),
-                ]),
-            ),
-            child: Center(
-                child: !_login ? IconButton(
-                    padding: EdgeInsets.zero,
-                    icon: Icon(
+        return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+                if (_login || _loginDisabled) {
+                    return null;
+                } else {
+                    loginButtonPressed(context);
+                }
+            },
+            child: Container(
+                width: Constants.suSetSp(120.0),
+                height: Constants.suSetSp(50.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(Constants.suSetSp(6.0)),
+                    boxShadow: <BoxShadow>[
+                        BoxShadow(
+                            blurRadius: Constants.suSetSp(10.0),
+                            color: colorGradient[1].withAlpha(50),
+                            offset: Offset(0.0, Constants.suSetSp(10.0)),
+                        ),
+                    ],
+                    gradient: LinearGradient(colors: colorGradient),
+                ),
+                child: Center(
+                    child: !_login ? Icon(
                         Icons.arrow_forward,
                         size: Constants.suSetSp(24.0),
                         color: Colors.white,
+                    ) : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                            SizedBox(
+                                width: Constants.suSetSp(24.0),
+                                height: Constants.suSetSp(24.0),
+                                child: Constants.progressIndicator(color: Colors.white),
+                            ),
+                        ],
                     ),
-                    onPressed: () {
-                        if (_login || _loginDisabled) {
-                            return null;
-                        } else {
-                            loginButtonPressed(context);
-                        }
-                    },
-                ) : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                        SizedBox(
-                            width: Constants.suSetSp(24.0),
-                            height: Constants.suSetSp(24.0),
-                            child: Constants.progressIndicator(color: Colors.white),
-                        ),
-                    ],
                 ),
             ),
         );
@@ -447,58 +498,63 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 key: _formKey,
                 child: ScrollConfiguration(
                     behavior: NoGlowScrollBehavior(),
-                    child: ListView(
-                        controller: _formScrollController,
-                        padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(50.0)),
-                        physics: NeverScrollableScrollPhysics(parent: ClampingScrollPhysics()),
-                        children: <Widget>[
-                            Constants.emptyDivider(height: Constants.suSetSp(50.0)),
-                            logo(),
-                            Constants.emptyDivider(height: Constants.suSetSp(40.0)),
-                            Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: Constants.suSetSp(10.0),
-                                    vertical: Constants.suSetSp(10.0),
-                                ),
-                                decoration: BoxDecoration(
-                                    boxShadow: <BoxShadow>[
-                                        BoxShadow(
-                                            blurRadius: 20.0,
-                                            color: Theme.of(context).dividerColor,
-                                        )
-                                    ],
-                                    color: Theme.of(context).cardColor,
-                                ),
-                                child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                        if (showAnnouncement) announcement(),
-                                        usernameTextField(),
-                                        Constants.emptyDivider(height: Constants.suSetSp(10.0)),
-                                        passwordTextField(),
-                                        Constants.emptyDivider(height: Constants.suSetSp(10.0)),
-                                        Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
+                    child: Align(
+                        alignment: _keyboardAppeared ? Alignment.bottomCenter : Alignment.center,
+                        child: ListView(
+                            shrinkWrap: true,
+                            controller: _formScrollController,
+                            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(50.0)),
+                            physics: NeverScrollableScrollPhysics(parent: ClampingScrollPhysics()),
+                            children: <Widget>[
+                                logoTitle(),
+                                Constants.emptyDivider(height: Constants.suSetSp(40.0)),
+                                Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: Constants.suSetSp(10.0),
+                                        vertical: Constants.suSetSp(10.0),
+                                    ),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(Constants.suSetSp(6.0)),
+                                        boxShadow: <BoxShadow>[
+                                            BoxShadow(
+                                                blurRadius: 20.0,
+                                                color: Theme.of(context).dividerColor,
+                                            ),
+                                        ],
+                                        color: Theme.of(context).cardColor,
+                                    ),
+                                    child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                            if (showAnnouncement) announcement(),
+                                            usernameTextField(),
+                                            Constants.emptyDivider(height: Constants.suSetSp(10.0)),
+                                            passwordTextField(),
+                                            Constants.emptyDivider(height: Constants.suSetSp(10.0)),
+                                            Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: <Widget>[
 //                                                noAccountButton(context),
-                                                forgetPasswordButton(context),
-                                            ],
-                                        ),
-                                    ],
+                                                    findWorkId(context),
+                                                    forgetPasswordButton(context),
+                                                ],
+                                            ),
+                                        ],
+                                    ),
                                 ),
-                            ),
-                            Padding(
-                                padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                        userAgreementCheckbox(context),
-                                        loginButton(context),
-                                    ],
+                                Padding(
+                                    padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
+                                    child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                            userAgreementCheckbox(context),
+                                            loginButton(context),
+                                        ],
+                                    ),
                                 ),
-                            ),
-                            Constants.emptyDivider(height: Constants.suSetSp(30.0)),
-                        ],
+                                Constants.emptyDivider(height: Constants.suSetSp(30.0)),
+                            ],
+                        ),
                     ),
                 ),
                 onChanged: validateForm,
@@ -571,45 +627,30 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         }
     }
 
-    void tryScrollForm(context) {
-        bool keyboardAppearing;
-        double bottom = MediaQuery.of(context).size.height - MediaQuery.of(context).viewInsets.bottom;
-        if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
-            keyboardAppearing = true;
-        } else {
-            keyboardAppearing = false;
-            _keyboardAppeared = false;
-        }
-        if (_formScrollController.hasClients && keyboardAppearing && !_keyboardAppeared) {
-            _keyboardAppeared = true;
-            _formScrollController.animateTo(
-                bottom,
-                duration: Duration(milliseconds: 200),
-                curve: Curves.linear,
-            );
-        } else if (!keyboardAppearing && _keyboardAppeared) {
-            _keyboardAppeared = false;
+    void setAlignment(context) {
+        if (MediaQuery.of(context).viewInsets.bottom != 0.0 && !_keyboardAppeared) {
+            setState(() {
+                _keyboardAppeared = true;
+            });
+        } else if (MediaQuery.of(context).viewInsets.bottom == 0.0 && _keyboardAppeared) {
+            setState(() {
+                _keyboardAppeared = false;
+            });
         }
     }
 
     @override
     Widget build(BuildContext context) {
-        tryScrollForm(context);
+        setAlignment(context);
+        pageContext = context;
         return WillPopScope(
             onWillPop: doubleBackExit,
             child: Scaffold(
                 backgroundColor: Theme.of(context).primaryColor,
                 body: Stack(
                     children: <Widget>[
-                        Positioned(
-                            right: 0.0,
-                            top: 0.0,
-                            child: Image.asset(
-                                "images/login_top.png",
-                                width: MediaQuery.of(context).size.width - Constants.suSetSp(60.0),
-                                fit: BoxFit.fitWidth,
-                            ),
-                        ),
+                        topBackground(context),
+                        logo(context),
                         loginForm(context),
 //                        Positioned(
 //                            top: MediaQuery.of(context).padding.top,

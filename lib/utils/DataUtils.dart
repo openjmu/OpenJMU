@@ -80,17 +80,20 @@ class DataUtils {
         });
     }
 
-    static void logout() {
-        setHomeSplashIndex(0);
-        clearLoginInfo();
-        resetTheme();
+    static Future logout() async {
+        await clearLoginInfo();
+        await resetTheme();
     }
 
     static Future recoverLoginInfo() async {
-        Map<String, String> info = await getSpTicket();
-        UserAPI.currentUser.sid = info['ticket'];
-        UserAPI.currentUser.blowfish = info['blowfish'];
-        await getTicket();
+        try {
+            Map<String, String> info = await getSpTicket();
+            UserAPI.currentUser.sid = info['ticket'];
+            UserAPI.currentUser.blowfish = info['blowfish'];
+            await getTicket();
+        } catch (e) {
+            debugPrint("Error in recover login info: $e");
+        }
     }
 
     static Future getUserInfo([uid]) async {
@@ -171,13 +174,11 @@ class DataUtils {
     }
 
     static Future getTicket() async {
-        debugPrint("isIOS: ${Platform.isIOS}");
-        debugPrint("isAndroid: ${Platform.isAndroid}");
-        Map<String, dynamic> params = Constants.loginParams(
-            ticket: UserAPI.currentUser.sid,
-            blowfish: UserAPI.currentUser.blowfish,
-        );
         try {
+            Map<String, dynamic> params = Constants.loginParams(
+                ticket: UserAPI.currentUser.sid,
+                blowfish: UserAPI.currentUser.blowfish,
+            );
             Map<String, dynamic> response = (await NetUtils.post(API.loginTicket, data: params)).data;
             await updateSid(response);
             await getUserInfo();
@@ -210,10 +211,11 @@ class DataUtils {
     }
 
     // 重置主题配置
-    static void resetTheme() async {
+    static Future resetTheme() async {
         await setColorTheme(0);
         await setBrightnessDark(false);
         ThemeUtils.currentThemeColor = ThemeUtils.defaultColor;
+        Constants.eventBus.fire(ChangeBrightnessEvent(false));
         Constants.eventBus.fire(ChangeThemeEvent(ThemeUtils.defaultColor));
     }
 
@@ -252,7 +254,12 @@ class DataUtils {
             int praises = int.parse(data['t_praised']);
             int count = comment + postsAt + commsAt + praises;
 //            debugPrint("Count: $count, At: ${postsAt+commsAt}, Comment: $comment, Praise: $praises");
-            Notifications notifications = Notifications(count, postsAt+commsAt, comment, praises);
+            Notifications notifications = Notifications(
+                count: count,
+                at: postsAt+commsAt,
+                comment: comment,
+                praise: praises,
+            );
             Constants.notifications = notifications;
             Constants.eventBus.fire(NotificationsChangeEvent(notifications));
         }).catchError((e) {

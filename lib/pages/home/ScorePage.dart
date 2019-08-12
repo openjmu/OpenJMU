@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/events/Events.dart';
+import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/SocketUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 
@@ -48,8 +50,9 @@ class _ScorePageState extends State<ScorePage> {
             "point": 0.0,
         },
     };
-    bool loading = false, socketInitialized = false;
-    List terms, scores, scoresFiltered;
+    bool loading = true, socketInitialized = false;
+    List<String> terms;
+    List<Score> scores = [], scoresFiltered;
     String termSelected;
     String _scoreData = "";
     StreamSubscription scoresSubscription;
@@ -58,6 +61,14 @@ class _ScorePageState extends State<ScorePage> {
     void initState() {
         super.initState();
         loadScores();
+        Constants.eventBus
+            ..on<AppCenterRefreshEvent>().listen((event) {
+                if (this.mounted && event.currentIndex == 1) {
+                    resetScores();
+                    setState(() { loading = true; });
+                    loadScores();
+                }
+            });
     }
 
     @override
@@ -67,7 +78,7 @@ class _ScorePageState extends State<ScorePage> {
     }
 
     void sendRequest() {
-        if (SocketUtils.mSocket != null) SocketUtils.mSocket.add(utf8.encode(jsonEncode({
+        SocketUtils.mSocket.add(utf8.encode(jsonEncode({
             "uid": "${UserAPI.currentUser.uid}",
             "sid": "${UserAPI.currentUser.sid}",
             "workid": "${UserAPI.currentUser.workId}",
@@ -76,17 +87,27 @@ class _ScorePageState extends State<ScorePage> {
 
     void loadScores() async {
         if (!socketInitialized) {
-            try {
-                await SocketUtils.initSocket(API.scoreSocket);
+            SocketUtils.initSocket(API.scoreSocket).then((whatever) {
                 socketInitialized = true;
                 scoresSubscription = SocketUtils.mStream
                         .transform(utf8.decoder)
                         .listen(onReceive);
-            } catch (e) {
-                debugPrint("$e");
-            }
+                sendRequest();
+            }).catchError((e) {
+                debugPrint("Socket connect error: $e");
+            });
+        } else {
+            debugPrint("Socket already initialized.");
+            sendRequest();
         }
-        sendRequest();
+    }
+
+    void resetScores() {
+        unloadSocket();
+        terms = null;
+        scores.clear();
+        scoresFiltered = null;
+        _scoreData = "";
     }
 
     void unloadSocket() {
@@ -97,20 +118,25 @@ class _ScorePageState extends State<ScorePage> {
 
     void onReceive(data) async {
         _scoreData += data;
-        if (_scoreData.endsWith("]}}")) try {
-            Map<String, dynamic> response = json.decode(_scoreData)['obj'];
-            terms = response['terms'];
-            termSelected = terms.last;
-            scores = response['scores'];
-            scoresFiltered = List.from(scores);
-            if (scoresFiltered.length > 0) scoresFiltered.removeWhere((score) {
-                return score['termId'].toString() != (termSelected != null ? termSelected : terms.last);
-            });
-            setState(() {
-                loading = false;
-            });
-        } catch (e) {
-            debugPrint("$e");
+        if (_scoreData.endsWith("]}}")) {
+            try {
+                Map<String, dynamic> response = json.decode(_scoreData)['obj'];
+                terms = List<String>.from(response['terms']);
+                termSelected = terms.last;
+                List _scores = response['scores'];
+                _scores.forEach((score) {
+                    scores.add(Score.fromJson(score));
+                });
+                scoresFiltered = List.from(scores);
+                if (scoresFiltered.length > 0) scoresFiltered.removeWhere((score) {
+                    return score.termId != (termSelected != null ? termSelected : terms.last);
+                });
+                setState(() {
+                    loading = false;
+                });
+            } catch (e) {
+                debugPrint("$e");
+            }
         }
     }
 
@@ -119,7 +145,7 @@ class _ScorePageState extends State<ScorePage> {
             termSelected = terms[index];
             scoresFiltered = List.from(scores);
             if (scoresFiltered.length > 0) scoresFiltered.removeWhere((score) {
-                return score['termId'].toString() != (termSelected != null ? termSelected : terms.last);
+                return score.termId != (termSelected != null ? termSelected : terms.last);
             });
         });
     }
@@ -219,9 +245,9 @@ class _ScorePageState extends State<ScorePage> {
         );
     }
 
-    Widget _name(score) {
+    Widget _name(Score score) {
         return Text(
-            "${score['courseName']}",
+            "${score.courseName}",
             style: Theme.of(context).textTheme.title.copyWith(
                 fontSize: Constants.suSetSp(24.0),
             ),
@@ -229,8 +255,8 @@ class _ScorePageState extends State<ScorePage> {
         );
     }
 
-    Widget _score(score) {
-        var _score = score['score'];
+    Widget _score(Score score) {
+        var _score = score.score;
         bool pass = isPass(_score);
         double _scorePoint;
         if (double.tryParse(_score) != null) {
@@ -276,10 +302,10 @@ class _ScorePageState extends State<ScorePage> {
         );
     }
 
-    Widget _timeAndPoint(score) {
+    Widget _timeAndPoint(Score score) {
         return Text(
-            "学时: ${score['creditHour']}　"
-            "学分: ${double.parse(score['credit']).toStringAsFixed(1)}",
+            "学时: ${score.creditHour}　"
+            "学分: ${score.credit.toStringAsFixed(1)}",
             style: Theme.of(context).textTheme.body1.copyWith(
                 fontSize: Constants.suSetSp(20.0),
             ),

@@ -28,7 +28,7 @@ class AppCenterPage extends StatefulWidget {
 class AppCenterPageState extends State<AppCenterPage> {
     final ScrollController _scrollController = ScrollController();
     final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
-    static final List<String> tabs = ["课程表", if (Constants.isTest) "成绩", "应用"];
+    static final List<String> tabs = ["课程表", "成绩", "应用"];
 
     Color themeColor = ThemeUtils.currentThemeColor;
     Map<String, List<Widget>> webAppWidgetList = {};
@@ -57,7 +57,7 @@ class AppCenterPageState extends State<AppCenterPage> {
                 if (this.mounted) {
                     if (event.currentIndex == 0) {
                         Constants.eventBus.fire(CourseScheduleRefreshEvent());
-                    } else if (event.currentIndex == 1) {
+                    } else if (event.currentIndex == 2) {
                         _scrollController.jumpTo(0.0);
                         refreshIndicatorKey.currentState.show();
                         getAppList();
@@ -244,7 +244,7 @@ class AppCenterPageState extends State<AppCenterPage> {
                     withAction: false,
                     keepAlive: true,
                 ),
-                if (tabs[1] == "成绩") ScorePage(),
+                ScorePage(),
                 RefreshIndicator(
                     key: refreshIndicatorKey,
                     child: FutureBuilder(

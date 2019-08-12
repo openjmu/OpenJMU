@@ -78,7 +78,7 @@ class Constants {
 
     static final EventBus eventBus = new EventBus();
 
-    static Notifications notifications = Notifications(0, 0, 0, 0);
+    static Notifications notifications = Notifications();
 
     static double suSetSp(double size) {
         double value = ScreenUtil.getInstance().setSp(size) * 1.95;
