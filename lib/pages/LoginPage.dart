@@ -56,6 +56,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         super.initState();
         Constants.eventBus
             ..on<LoginEvent>().listen((event) {
+                if (!event.isWizard) {}
                 Navigator.of(pageContext).pushReplacement(
                     platformPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)),
                 );
@@ -568,7 +569,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             setState(() {
                 _login = true;
             });
-            DataUtils.doLogin(context, _username, _password).catchError((e) {
+            DataUtils.login(context, _username, _password).catchError((e) {
                 setState(() {
                     _login = false;
                 });

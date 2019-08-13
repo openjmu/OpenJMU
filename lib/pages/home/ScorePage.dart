@@ -50,7 +50,7 @@ class _ScorePageState extends State<ScorePage> {
             "point": 0.0,
         },
     };
-    bool loading = true, socketInitialized = false;
+    bool loading = true, socketInitialized = false, noScore = false;
     List<String> terms;
     List<Score> scores = [], scoresFiltered;
     String termSelected;
@@ -62,8 +62,8 @@ class _ScorePageState extends State<ScorePage> {
         super.initState();
         loadScores();
         Constants.eventBus
-            ..on<AppCenterRefreshEvent>().listen((event) {
-                if (this.mounted && event.currentIndex == 1) {
+            ..on<ScoreRefreshEvent>().listen((event) {
+                if (this.mounted) {
                     resetScores();
                     setState(() { loading = true; });
                     loadScores();
@@ -121,16 +121,20 @@ class _ScorePageState extends State<ScorePage> {
         if (_scoreData.endsWith("]}}")) {
             try {
                 Map<String, dynamic> response = json.decode(_scoreData)['obj'];
-                terms = List<String>.from(response['terms']);
-                termSelected = terms.last;
-                List _scores = response['scores'];
-                _scores.forEach((score) {
-                    scores.add(Score.fromJson(score));
-                });
-                scoresFiltered = List.from(scores);
-                if (scoresFiltered.length > 0) scoresFiltered.removeWhere((score) {
-                    return score.termId != (termSelected != null ? termSelected : terms.last);
-                });
+                if (response['terms'].length == 0 || response['scores'].length == 0) {
+                    noScore = true;
+                } else {
+                    terms = List<String>.from(response['terms']);
+                    termSelected = terms.last;
+                    List _scores = response['scores'];
+                    _scores.forEach((score) {
+                        scores.add(Score.fromJson(score));
+                    });
+                    scoresFiltered = List.from(scores);
+                    if (scoresFiltered.length > 0) scoresFiltered.removeWhere((score) {
+                        return score.termId != (termSelected != null ? termSelected : terms.last);
+                    });
+                }
                 setState(() {
                     loading = false;
                 });
@@ -316,7 +320,11 @@ class _ScorePageState extends State<ScorePage> {
     Widget build(BuildContext context) {
         return loading ? Center(child: Constants.progressIndicator())
                 :
-        SingleChildScrollView(
+        noScore ? Center(child: Text(
+            "暂时还没有你的成绩\n🤔",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: Constants.suSetSp(30.0)),
+        )) : SingleChildScrollView(
             child: Column(
                 children: <Widget>[
                     if (terms != null) Center(child: Container(

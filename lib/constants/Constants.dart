@@ -16,12 +16,13 @@ import 'package:OpenJMU/api/UserAPI.dart';
 class Constants {
     /// For test page.
     /// TODO: Set this to false before release.
-    static bool isTest = false;
-    static List<int> developerList = [136172, 182999, 164466, 184698, 153098, 168695, 162060, 189275, 183114, 183824];
+    static final bool isTest = false;
+    static final List<int> developerList = [136172, 182999, 164466, 184698, 153098, 168695, 162060, 189275, 183114, 183824];
 
     static final String endLineTag = "没有更多了~";
 
     static int homeSplashIndex = 0;
+    static List homeStartUpIndex = [0, 0, 0];
 
     // Fow news list.
     static final int appId = Platform.isIOS ? 274 : 273;

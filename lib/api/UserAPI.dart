@@ -19,6 +19,16 @@ class UserAPI {
 
     static List<Cookie> cookiesForJWGL;
 
+    static Future login(Map<String, dynamic> params) async {
+        return NetUtils.post(API.login, data: params);
+    }
+
+    static Future logout() async {
+        NetUtils.postWithCookieSet(API.logout).then((response) {
+            Constants.eventBus.fire(LogoutEvent());
+        });
+    }
+
     static UserInfo createUserInfo(Map<String, dynamic> userData) {
         userData.forEach((k, v) {
             if (userData[k] == "") userData[k] = null;
@@ -50,16 +60,6 @@ class UserAPI {
         isFollowing: userData["is_following"] == 1,
     );
 
-    static Future login(Map<String, dynamic> params) async {
-        return NetUtils.post(API.login, data: params);
-    }
-
-    static Future logout() async {
-        NetUtils.postWithCookieSet(API.logout).then((response) {
-            Constants.eventBus.fire(LogoutEvent());
-        });
-    }
-
     static UserTag createUserTag(tagData) => UserTag(
         id: tagData['id'],
         name: tagData['tagname'],
@@ -90,6 +90,10 @@ class UserAPI {
         } else {
             return NetUtils.getWithCookieAndHeaderSet(API.userInfo, data: {'uid': uid});
         }
+    }
+
+    static Future getStudentInfo({int uid}) async {
+        return NetUtils.getWithCookieSet(API.studentInfo(uid: uid ?? currentUser.uid));
     }
 
     static Future getLevel(int uid) {

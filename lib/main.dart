@@ -60,6 +60,9 @@ class JMUAppClientState extends State<JMUAppClient> {
         DataUtils.getHomeSplashIndex().then((index) {
             Constants.homeSplashIndex = index ?? 0;
         });
+        DataUtils.getHomeStartUpIndex().then((indexList) {
+            Constants.homeStartUpIndex = indexList ?? [0, 0, 0];
+        });
         Constants.eventBus
             ..on<ChangeThemeEvent>().listen((event) {
                 if (this.mounted) {
