@@ -23,10 +23,19 @@ class ActionsEvent {
         this.type = type;
     }
 }
-class LoginEvent {}
+class LoginEvent {
+    bool isWizard;  // 账号是否已通过新人引导
+    LoginEvent(bool isWizard) {
+        this.isWizard = isWizard;
+    }
+}
 class LogoutEvent {}
 class LoginFailedEvent {}
-class TicketGotEvent {}
+class TicketGotEvent {
+    bool isWizard;  // 账号是否已通过新人引导
+    TicketGotEvent(bool isWizard) {
+        this.isWizard = isWizard;
+    }}
 class TicketFailedEvent {}
 class PostForwardedEvent {
     int postId;
@@ -185,6 +194,7 @@ class PostChangeEvent {
 
     PostChangeEvent(this.post, [this.remove = false]);
 }
+
 class AppCenterRefreshEvent {
     int currentIndex;
 
@@ -192,4 +202,5 @@ class AppCenterRefreshEvent {
         this.currentIndex = currentIndex;
     }
 }
+class ScoreRefreshEvent {}
 class CourseScheduleRefreshEvent {}

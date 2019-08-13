@@ -19,7 +19,7 @@ import 'package:OpenJMU/utils/OTAUtils.dart';
 import 'package:OpenJMU/pages/home/AppCenterPage.dart';
 import 'package:OpenJMU/pages/home/MessagePage.dart';
 import 'package:OpenJMU/pages/home/MyInfoPage.dart';
-import 'package:OpenJMU/pages/post/PostSquareListPage.dart';
+import 'package:OpenJMU/pages/home/PostSquareListPage.dart';
 import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 
 
@@ -35,8 +35,8 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
     static Color currentThemeColor = ThemeUtils.currentThemeColor;
 
-    final List<String> bottomAppBarTitles = ['首页', '应用', '消息', '我的'];
-    final List<String> bottomAppBarIcons = ["home", "apps", "message", "mine"];
+    static final List<String> pagesTitle = ['首页', '应用', '消息', '我的'];
+    static final List<String> pagesIcon = ["home", "apps", "message", "mine"];
     final Color primaryColor = Colors.white;
     static const double bottomBarHeight = 64.4;
 
@@ -142,6 +142,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
     void initTabController() {
         for (int i = 0; i < _tabControllers.length; i++) {
             _tabControllers[i] = TabController(
+                initialIndex: Constants.homeStartUpIndex[i],
                 length: sections[i].length,
                 vsync: this,
             );
@@ -265,9 +266,9 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                     selectedColor: ThemeUtils.currentThemeColor,
                     onTabSelected: _selectedTab,
                     initIndex: widget.initIndex,
-                    items: [for (int i = 0; i < bottomAppBarTitles.length; i++) FABBottomAppBarItem(
-                        iconPath: bottomAppBarIcons[i],
-                        text: bottomAppBarTitles[i],
+                    items: [for (int i = 0; i < pagesTitle.length; i++) FABBottomAppBarItem(
+                        iconPath: pagesIcon[i],
+                        text: pagesTitle[i],
                     )],
                 ),
                 floatingActionButton: SizedBox(

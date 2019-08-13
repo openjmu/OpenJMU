@@ -35,9 +35,8 @@ class API {
 
     /// 用户相关
     static final String userInfo = "$oap99Host/user/info";
-    static String userLevel({int uid}) {
-        return "$oa99Host/ajax/score/info?uid=${uid ?? 0}";
-    }
+    static String studentInfo({int uid = 0}) => "$oa99Host/v2/api/class/studentinfo?uid=$uid";
+    static String userLevel({int uid = 0}) => "$oa99Host/ajax/score/info?uid=$uid";
 //    static final String userAvatar = "$oap99Host/face";
     static final String userAvatarInSecure = "$oap99Host/face";
     static final String userAvatarUpload = "$oap99Host/face/upload";

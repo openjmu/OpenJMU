@@ -46,6 +46,7 @@ class SplashState extends State<SplashPage> {
             })
             ..on<TicketGotEvent>().listen((event) {
                 debugPrint("Ticket Got.");
+                if (!event.isWizard) {}
                 if (this.mounted) {
                     setState(() {
                         this.isUserLogin = true;
@@ -54,6 +55,7 @@ class SplashState extends State<SplashPage> {
                 }
             })
             ..on<TicketFailedEvent>().listen((event) {
+                debugPrint("Ticket Failed.");
                 if (this.mounted) {
                     setState(() {
                         this.isUserLogin = false;

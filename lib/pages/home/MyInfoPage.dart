@@ -19,7 +19,6 @@ import 'package:OpenJMU/utils/NetUTils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/AnnouncementDialog.dart';
-import 'package:OpenJMU/widgets/dialogs/SelectSplashDialog.dart';
 
 
 class MyInfoPage extends StatefulWidget {
@@ -45,7 +44,6 @@ class MyInfoPageState extends State<MyInfoPage> {
             "退出登录",
         ],
         if (Constants.isTest) [
-//            "获取成绩",
             "测试页",
         ],
     ];
@@ -66,7 +64,6 @@ class MyInfoPageState extends State<MyInfoPage> {
             "exit",
         ],
         if (Constants.isTest) [
-//            "idols",
             "idols",
         ],
     ];
@@ -199,13 +196,6 @@ class MyInfoPageState extends State<MyInfoPage> {
         ThemeUtils.isDark = isDark;
         DataUtils.setBrightnessDark(isDark);
         Constants.eventBus.fire(ChangeBrightnessEvent(isDark));
-    }
-
-    void showSelectSplashDialog(BuildContext context) {
-        showDialog(
-            context: context,
-            builder: (_) => SelectSplashDialog(),
-        );
     }
 
     void showLogoutDialog(BuildContext context) {
@@ -546,7 +536,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 Navigator.pushNamed(context, "/changeTheme");
                 break;
             case "启动页":
-                showSelectSplashDialog(context);
+                Navigator.pushNamed(context, "/switchStartUpPage");
                 break;
 
             case "检查更新":
