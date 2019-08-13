@@ -21,8 +21,12 @@ class Constants {
 
     static final String endLineTag = "没有更多了~";
 
+    // Fow start index.
     static int homeSplashIndex = 0;
     static List homeStartUpIndex = [0, 0, 0];
+
+    static List announcements = [];
+    static bool announcementsEnabled = false;
 
     // Fow news list.
     static final int appId = Platform.isIOS ? 274 : 273;

@@ -15,10 +15,9 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/utils/NetUTils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/widgets/dialogs/AnnouncementDialog.dart';
+import 'package:OpenJMU/widgets/announcement/AnnouncementWidget.dart';
 
 
 class MyInfoPage extends StatefulWidget {
@@ -74,8 +73,6 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     bool isLogin = false, isDark = false;
     bool signing = false, signed = false;
-    bool showAnnouncement = false;
-    List announcements = [];
 
     int signedCount = 0, currentWeek;
 
@@ -88,7 +85,6 @@ class MyInfoPageState extends State<MyInfoPage> {
     void initState() {
         super.initState();
         updateHello();
-        getAnnouncement();
         getSignStatus();
         getCurrentWeek();
         if (this.mounted) updateHelloTimer = Timer.periodic(Duration(minutes: 1), (timer) {
@@ -120,15 +116,6 @@ class MyInfoPageState extends State<MyInfoPage> {
     void dispose() {
         super.dispose();
         updateHelloTimer?.cancel();
-    }
-
-    void getAnnouncement() async {
-        Map<String, dynamic> data = jsonDecode((await NetUtils.get(API.announcement)).data);
-        if (data['enabled']) {
-            showAnnouncement = data['enabled'];
-            announcements = data['announcements'];
-        }
-        if (this.mounted) setState((){});
     }
 
     void getSignStatus() async {
@@ -233,53 +220,6 @@ class MyInfoPageState extends State<MyInfoPage> {
                     ),
                 ],
             ),
-        );
-    }
-
-    Widget announcement() {
-        return GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Constants.suSetSp(24.0),
-                    vertical: Constants.suSetSp(10.0),
-                ),
-                color: ThemeUtils.currentThemeColor.withAlpha(0x44),
-                child: Row(
-                    children: <Widget>[
-                        Padding(
-                            padding: EdgeInsets.only(right: Constants.suSetSp(6.0)),
-                            child: Icon(
-                                Icons.error_outline,
-                                size: Constants.suSetSp(18.0),
-                                color: ThemeUtils.currentThemeColor,
-                            ),
-                        ),
-                        Expanded(child: Text(
-                            "${announcements[0]['title']}",
-                            style: TextStyle(
-                                color: ThemeUtils.currentThemeColor,
-                                fontSize: Constants.suSetSp(18.0),
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                        )),
-                        Padding(
-                            padding: EdgeInsets.only(left: Constants.suSetSp(6.0)),
-                            child: Icon(
-                                Icons.keyboard_arrow_right,
-                                size: Constants.suSetSp(18.0),
-                                color: ThemeUtils.currentThemeColor,
-                            ),
-                        ),
-                    ],
-                ),
-            ),
-            onTap: () {
-                showDialog<Null>(
-                    context: context,
-                    builder: (BuildContext context) => AnnouncementDialog(announcements[0]),
-                );
-            },
         );
     }
 
@@ -580,7 +520,11 @@ class MyInfoPageState extends State<MyInfoPage> {
                             child: ListView(
                                 shrinkWrap: true,
                                 children: <Widget>[
-                                    if (showAnnouncement) announcement(),
+                                    if (Constants.announcementsEnabled) AnnouncementWidget(
+                                        context,
+                                        color: ThemeUtils.currentThemeColor,
+                                        gap: 24.0,
+                                    ),
                                     userInfo(),
                                     Constants.separator(context),
                                     currentDay(now),

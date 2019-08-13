@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -10,12 +8,11 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/RoundedCheckBox.dart';
-import 'package:OpenJMU/widgets/dialogs/AnnouncementDialog.dart';
+import 'package:OpenJMU/widgets/announcement/AnnouncementWidget.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -47,9 +44,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 
     bool _isDark = false;
     Color _defaultIconColor = Colors.grey;
-
-    bool showAnnouncement = false;
-    List announcements = [];
 
     @override
     void initState() {
@@ -85,7 +79,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 _password = _passwordController.text;
             }
         });
-        getAnnouncement();
     }
 
     @override
@@ -99,15 +92,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         super.dispose();
         _usernameController?.dispose();
         _passwordController?.dispose();
-    }
-
-    void getAnnouncement() async {
-        Map<String, dynamic> data = jsonDecode((await NetUtils.get(API.announcement)).data);
-        if (data['enabled']) {
-            showAnnouncement = data['enabled'];
-            announcements = data['announcements'];
-        }
-        if (this.mounted) setState((){});
     }
 
     int last = 0;
@@ -131,6 +115,22 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 "images/login_top.png",
                 width: MediaQuery.of(context).size.width - Constants.suSetSp(60.0),
                 fit: BoxFit.fitWidth,
+            ),
+        );
+    }
+
+    Widget bottomBackground(context) {
+        return Positioned(
+            left: 0.0,
+            right: 0.0,
+            bottom: 15.0,
+            child: Center(
+                child: Image.asset(
+                    "images/login_bottom.png",
+                    color: Colors.grey.withAlpha(50),
+                    width: MediaQuery.of(context).size.width - 150.0,
+                    fit: BoxFit.fitWidth,
+                ),
             ),
         );
     }
@@ -190,59 +190,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                     ],
                 ),
             ],
-        );
-    }
-
-    Widget announcement() {
-        return GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            child: Container(
-                margin: EdgeInsets.symmetric(
-                    vertical: Constants.suSetSp(5.0),
-                ),
-                padding: EdgeInsets.symmetric(
-                    horizontal: Constants.suSetSp(15.0),
-                    vertical: Constants.suSetSp(10.0),
-                ),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Constants.suSetSp(5.0)),
-                    color: ThemeUtils.defaultColor.withAlpha(0x44),
-                ),
-                child: Row(
-                    children: <Widget>[
-                        Padding(
-                            padding: EdgeInsets.only(right: Constants.suSetSp(6.0)),
-                            child: Icon(
-                                Icons.error_outline,
-                                size: Constants.suSetSp(18.0),
-                                color: ThemeUtils.currentThemeColor,
-                            ),
-                        ),
-                        Expanded(child: Text(
-                            "${announcements[0]['title']}",
-                            style: TextStyle(
-                                color: ThemeUtils.currentThemeColor,
-                                fontSize: Constants.suSetSp(18.0),
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                        )),
-                        Padding(
-                            padding: EdgeInsets.only(left: Constants.suSetSp(6.0)),
-                            child: Icon(
-                                Icons.keyboard_arrow_right,
-                                size: Constants.suSetSp(18.0),
-                                color: ThemeUtils.currentThemeColor,
-                            ),
-                        ),
-                    ],
-                ),
-            ),
-            onTap: () {
-                showDialog<Null>(
-                    context: context,
-                    builder: (BuildContext context) => AnnouncementDialog(announcements[0]),
-                );
-            },
         );
     }
 
@@ -527,7 +474,10 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                                     child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
-                                            if (showAnnouncement) announcement(),
+                                            if (Constants.announcementsEnabled) AnnouncementWidget(
+                                                context,
+                                                radius: 6.0,
+                                            ),
                                             usernameTextField(),
                                             Constants.emptyDivider(height: Constants.suSetSp(10.0)),
                                             passwordTextField(),
@@ -651,25 +601,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 body: Stack(
                     children: <Widget>[
                         topBackground(context),
+                        bottomBackground(context),
                         logo(context),
                         loginForm(context),
-//                        Positioned(
-//                            top: MediaQuery.of(context).padding.top,
-//                            child: GestureDetector(
-//                                behavior: HitTestBehavior.translucent,
-//                                child: Padding(
-//                                    padding: const EdgeInsets.all(12.0),
-//                                    child: Icon(
-//                                        Icons.brightness_3,
-//                                    ),
-//                                ),
-//                                onTap: () {
-//                                    print(_isDark);
-//                                    _isDark = !_isDark;
-//                                    MyInfoPageState.setDarkMode(_isDark);
-//                                },
-//                            ),
-//                        ),
                     ],
                 ),
                 resizeToAvoidBottomInset: true,
