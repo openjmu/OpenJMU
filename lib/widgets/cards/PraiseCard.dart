@@ -145,44 +145,42 @@ class PraiseCard extends StatelessWidget {
                     return PostDetailPage(_post, beforeContext: context);
                 }));
             },
-            child: Container(
-                child: Card(
-                    margin: EdgeInsets.only(bottom: Constants.suSetSp(8.0)),
-                    child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                            Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: Constants.suSetSp(16.0),
-                                    vertical: Constants.suSetSp(12.0),
-                                ),
-                                child: Row(
-                                    children: <Widget>[
-                                        getPraiseAvatar(context, this.praise),
-                                        Expanded(
-                                            child: Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: Constants.suSetSp(16.0),
-                                                ),
-                                                child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: <Widget>[
-                                                        getPraiseNickname(context, this.praise),
-                                                        Constants.separator(context, height: 4.0),
-                                                        getPraiseInfo(this.praise),
-                                                    ],
-                                                ),
+            child: Card(
+                margin: EdgeInsets.only(bottom: Constants.suSetSp(8.0)),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                        Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: Constants.suSetSp(16.0),
+                                vertical: Constants.suSetSp(12.0),
+                            ),
+                            child: Row(
+                                children: <Widget>[
+                                    getPraiseAvatar(context, this.praise),
+                                    Expanded(
+                                        child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: Constants.suSetSp(16.0),
+                                            ),
+                                            child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: <Widget>[
+                                                    getPraiseNickname(context, this.praise),
+                                                    Constants.separator(context, height: 4.0),
+                                                    getPraiseInfo(this.praise),
+                                                ],
                                             ),
                                         ),
-                                    ],
-                                ),
+                                    ),
+                                ],
                             ),
-                            getPraiseContent(context, this.praise),
-                        ],
-                    ),
-                    elevation: 0,
+                        ),
+                        getPraiseContent(context, this.praise),
+                    ],
                 ),
+                elevation: 0,
             ),
         );
     }

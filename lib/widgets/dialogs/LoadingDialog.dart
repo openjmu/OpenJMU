@@ -67,7 +67,7 @@ class LoadingDialogState extends State<LoadingDialog> {
             child: SizedBox(
                 width: Constants.suSetSp(120.0),
                 height: Constants.suSetSp(120.0),
-                child: Container(
+                child: DecoratedBox(
                     decoration: BoxDecoration(
                         color: Theme.of(context).canvasColor,
                         borderRadius: BorderRadius.all(Radius.circular(Constants.suSetSp(8.0))),
@@ -81,9 +81,8 @@ class LoadingDialogState extends State<LoadingDialog> {
                                 padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
                                 child: Text(
                                     this.text,
-                                    style: TextStyle(
-                                        color: Theme.of(context).textTheme.body1.color,
-                                        fontSize: Constants.suSetSp(14.0),
+                                    style: Theme.of(context).textTheme.body1.copyWith(
+                                        fontSize: Constants.suSetSp(16.0),
                                     ),
                                 ),
                             ),
@@ -129,17 +128,25 @@ class LoadingDialogController {
         switch (type) {
             case 'success':
                 _loadingDialogState.updateContent("success",
-                    Icon(Icons.check_circle, color: Colors.green, size: Constants.suSetSp(50.0)),
+                    Icon(
+                        Icons.check_circle,
+                        color: Colors.green,
+                        size: Constants.suSetSp(60.0),
+                    ),
                     text,
                     duration,
-                    customPop: customPop
+                    customPop: customPop,
                 );
                 break;
             case 'failed':
                 _loadingDialogState.updateContent("failed",
                     RotationTransition(
                         turns: AlwaysStoppedAnimation(45 / 360),
-                        child: Icon(Icons.add_circle, color: Colors.redAccent, size: Constants.suSetSp(50.0)),
+                        child: Icon(
+                            Icons.add_circle,
+                            color: Colors.redAccent,
+                            size: Constants.suSetSp(60.0),
+                        ),
                     ),
                     text,
                     duration,

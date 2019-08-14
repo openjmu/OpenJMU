@@ -138,8 +138,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
 
     void initPushService() async {
         final UserInfo user = UserAPI.currentUser;
-        final String version = await OTAUtils.getCurrentVersion();
-        NetUtils.post(API.pushUpload, data: {
+        final Map<String, dynamic> data = {
             "token": Platform.isIOS
                     ? await ChannelUtils.iosGetPushToken()
                     : ""
@@ -148,9 +147,10 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
             "uid": user.uid,
             "name": user.name,
             "workid": user.workId,
-            "appversion": version,
+            "appversion": await OTAUtils.getCurrentVersion(),
             "platform": Platform.isIOS ? "ios" : "android"
-        }).then((response) {
+        };
+        NetUtils.post(API.pushUpload, data: data).then((response) {
             debugPrint("Push service info upload success.");
         });
     }

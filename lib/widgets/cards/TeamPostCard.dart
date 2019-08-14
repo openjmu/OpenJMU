@@ -179,7 +179,12 @@ class _TeamPostCardState extends State<TeamPostCard> {
                     child: GestureDetector(
                         onTap: () {
                             Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                                return TeamPostDetailPage(_post, index: widget.index, fromPage: widget.fromPage, beforeContext: context);
+                                return TeamPostDetailPage(
+                                    _post,
+                                    index: widget.index,
+                                    fromPage:widget.fromPage,
+                                    beforeContext: context,
+                                );
                             }));
                         },
                         child: Container(

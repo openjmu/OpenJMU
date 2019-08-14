@@ -588,14 +588,11 @@ class _UserPageState extends State<UserPage>
                         ListTile(
                             leading: Icon(Icons.photo_library),
                             title: Text("更换头像"),
-                            onTap: () {
-                                Navigator.of(sheetContext)..pop()..push(CupertinoPageRoute(
+                            onTap: () async {
+                                Navigator.of(sheetContext).pop();
+                                Navigator.push(context, CupertinoPageRoute(
                                     builder: (_) => ImageCropperPage(),
-                                )).then((result) {
-                                    if (result) {
-                                        Navigator.of(context).pop();
-                                    }
-                                });
+                                ));
                             },
                         ),
                     ],
