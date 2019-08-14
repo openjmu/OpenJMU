@@ -27,7 +27,7 @@ class MyInfoPage extends StatefulWidget {
 
 class MyInfoPageState extends State<MyInfoPage> {
     final List<List<String>> settingsSection = [
-        [
+        if (Constants.isTest) [
             "背包"
         ],
         [
@@ -47,7 +47,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         ],
     ];
     final List<List<String>> settingsIcon = [
-        [
+        if (Constants.isTest) [
             "idols",
         ],
         [

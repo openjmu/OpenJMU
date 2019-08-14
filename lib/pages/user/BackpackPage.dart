@@ -110,7 +110,7 @@ class _BackpackPageState extends State<BackpackPage> {
                     API.backPackMyItemList(),
                     headers: _header,
                 ).then((response) {
-                    List<dynamic> items = response.data['data'];
+                    List<dynamic> items = response.data['data'] ?? [];
                     for (int i = 0; i < items.length; i++) {
                         items[i]['name'] = _itemTypes['${items[i]["itemtype"]}'].name;
                         items[i]['desc'] = _itemTypes['${items[i]["itemtype"]}'].description;
