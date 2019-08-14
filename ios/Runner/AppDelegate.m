@@ -18,20 +18,20 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
                 result(@[token1]);
                 printf("Write sucess!");
             }else{
-                result([FlutterError errorWithCode:@"01" message:[NSString stringWithFormat:@"异常"] details:@"进入trycatcherror"]);}
+                result([FlutterError errorWithCode:@"01" message:[NSString stringWithFormat:@"getpushtoken返回异常"] details:@"进入trycatcherror"]);}
         } else {
             if ([@"getpushdate" isEqualToString:call.method]) {
                 if (SendTime!=nil) {
                     result(@[SendTime]);
                 }else{
-                    result([FlutterError errorWithCode:@"02" message:[NSString stringWithFormat:@"异常"] details:@"进入trycatcherror"]);}// 回调数据
+                    result([FlutterError errorWithCode:@"02" message:[NSString stringWithFormat:@"getpushdate返回异常"] details:@"进入trycatcherror"]);}// 回调数据
             }
             else {
                 if ([@"getpushsucess" isEqualToString:call.method]) {
                     if (isAddToPushSucess!=nil) {
                         result(@[isAddToPushSucess]);
                     }else{
-                        result([FlutterError errorWithCode:@"03" message:[NSString stringWithFormat:@"异常"] details:@"进入trycatcherror"]); }// 回调数据
+                        result([FlutterError errorWithCode:@"03" message:[NSString stringWithFormat:@"getpushsucess异常"] details:@"进入trycatcherror"]); }// 回调数据
                 } else {
                     result(FlutterMethodNotImplemented);
                 }
