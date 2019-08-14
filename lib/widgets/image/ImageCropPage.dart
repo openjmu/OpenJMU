@@ -145,7 +145,8 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
         ).then((response) {
             _controller.changeState("success", "头像更新成功");
             Future.delayed(Duration(milliseconds: 2200), () {
-                Navigator.pop(context);
+                Navigator.pop(context, true);
+                Navigator.popUntil(context, ModalRoute.withName('/login'));
                 Constants.eventBus.fire(new AvatarUpdatedEvent());
             });
         }).catchError((e) {
