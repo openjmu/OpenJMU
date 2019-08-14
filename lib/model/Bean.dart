@@ -234,11 +234,11 @@ class UserInfo {
     /// Common Object
     int uid;
     int unitId;
-    int workId;
     int classId;
     int gender;
     String name;
     String signature;
+    String workId;
     bool isFollowing;
 
     UserInfo({
