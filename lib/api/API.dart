@@ -28,7 +28,11 @@ class API {
     static final String middle99Host = "https://middle99.jmu.edu.cn";
     static final String upApiHost = "https://upapi.jmu.edu.cn";
     static final String jwglHost = "http://jwgls.jmu.edu.cn";
+    static final String pushHost = "http://push.openjmu.xyz:4443";
 
+    static final String pushUpload = "$pushHost/push";
+
+    /// 认证相关
     static final String login = "$oa99Host/v2/passport/api/user/login1";
     static final String logout = "$oap99Host/passport/logout";
     static final String loginTicket = "$oa99Host/v2/passport/api/user/loginticket1";

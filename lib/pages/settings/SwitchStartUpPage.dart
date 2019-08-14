@@ -17,7 +17,7 @@ class SwitchStartUpPage extends StatefulWidget {
 class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
     static final List<List<String>> pageTab = [
         List.from(PostSquareListPageState.tabs),
-        List.from(AppCenterPageState.tabs),
+        List.from(AppCenterPageState.tabs()),
     ];
     List<List<Map<String, dynamic>>> pageSection = [
         [

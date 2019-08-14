@@ -42,7 +42,7 @@ class UserAPI {
             blowfish: userData['blowfish'] ?? null,
             isTeacher: userData['isTeacher'] ?? int.parse(userData['type'].toString()) == 1,
             unitId: userData['unitId'] ?? userData['unitid'],
-            workId: int.parse((userData['workId'] ?? userData['workid'] ?? userData['uid']).toString()),
+            workId: (userData['workId'] ?? userData['workid'] ?? userData['uid']).toString(),
             classId: null,
             gender: int.parse(userData['gender'].toString()),
             isFollowing: false,

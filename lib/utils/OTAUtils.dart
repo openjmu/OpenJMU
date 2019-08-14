@@ -37,7 +37,7 @@ class OTAUtils {
         }
     }
 
-    static void checkUpdate({bool fromStart}) async {
+    static void checkUpdate({bool fromHome}) async {
         NetUtils.get(API.checkUpdate).then((response) async {
             int currentBuild = await getCurrentBuildNumber();
             String currentVersion = await getCurrentVersion();
@@ -51,7 +51,7 @@ class OTAUtils {
             if (currentBuild < remoteBuildNumber) {
                 Constants.eventBus.fire(HasUpdateEvent(currentVersion, currentBuild, _response));
             } else {
-                if (!(fromStart ?? false)) showShortToast("已更新为最新版本");
+                if (!(fromHome ?? false)) showShortToast("已更新为最新版本");
             }
         }).catchError((e) {
             debugPrint(e.toString());

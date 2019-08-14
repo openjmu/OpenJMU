@@ -2,36 +2,36 @@
 #include "GeneratedPluginRegistrant.h"
 #import <UserNotifications/UserNotifications.h>
 #import <Flutter/Flutter.h>
-const  NSString *SendTime;
-const  NSString *token1;
-const  NSString *isAddToPushSucess;
+const NSString *SendTime;
+const NSString *token1;
+const NSString *isAddToPushSuccess;
 @implementation AppDelegate
 - (BOOL)application:(UIApplication *)application
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [GeneratedPluginRegistrant registerWithRegistry:self];
     FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
-    FlutterMethodChannel *iostokenChannel = [FlutterMethodChannel methodChannelWithName:@"cn.edu.jmu.openjmu/iospushtoken" binaryMessenger:controller];
-    [iostokenChannel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
+    FlutterMethodChannel *iosTokenChannel = [FlutterMethodChannel methodChannelWithName:@"cn.edu.jmu.openjmu/iosPushToken" binaryMessenger:controller];
+    [iosTokenChannel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
         
-        if ([@"getpushtoken" isEqualToString:call.method]) {
-            if (token1!=nil) {
+        if ([@"getPushToken" isEqualToString:call.method]) {
+            if (token1 != nil) {
                 result(@[token1]);
-                printf("Write sucess!");
-            }else{
-                result([FlutterError errorWithCode:@"01" message:[NSString stringWithFormat:@"异常"] details:@"进入trycatcherror"]);}
+                printf("Write success!");
+            } else {
+                result([FlutterError errorWithCode:@"01" message:[NSString stringWithFormat:@"异常"] details:@"进入tryCatchError"]);}
         } else {
-            if ([@"getpushdate" isEqualToString:call.method]) {
-                if (SendTime!=nil) {
+            if ([@"getPushDate" isEqualToString:call.method]) {
+                if (SendTime != nil) {
                     result(@[SendTime]);
-                }else{
-                    result([FlutterError errorWithCode:@"02" message:[NSString stringWithFormat:@"异常"] details:@"进入trycatcherror"]);}// 回调数据
+                } else {
+                    result([FlutterError errorWithCode:@"02" message:[NSString stringWithFormat:@"异常"] details:@"进入tryCatchError"]);}
             }
             else {
-                if ([@"getpushsucess" isEqualToString:call.method]) {
-                    if (isAddToPushSucess!=nil) {
-                        result(@[isAddToPushSucess]);
-                    }else{
-                        result([FlutterError errorWithCode:@"03" message:[NSString stringWithFormat:@"异常"] details:@"进入trycatcherror"]); }// 回调数据
+                if ([@"getPushSuccess" isEqualToString:call.method]) {
+                    if (isAddToPushSuccess != nil) {
+                        result(@[isAddToPushSuccess]);
+                    } else {
+                        result([FlutterError errorWithCode:@"03" message:[NSString stringWithFormat:@"异常"] details:@"进入tryCatchError"]); }
                 } else {
                     result(FlutterMethodNotImplemented);
                 }
@@ -40,8 +40,6 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
         
         
     }];
-    // Override point for customization after application launch.
-    // Override point for customization after application launch.
     {
         //TODO:暂时还未实现的功能
         if (@available(iOS 10.0, *)) {
@@ -125,7 +123,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 }
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)pToken {
     //保存deviceToken并上传token
-    NSLog(@"regisger success:%@",pToken);//log当前的token
+    NSLog(@"Register success:%@", pToken);//log当前的token
     NSDate *now = [NSDate date];//获取现在的时间
     NSDateFormatter *forMatter = [[NSDateFormatter alloc] init];
     [forMatter setDateFormat:@"yyyy/MM/dd/HH:mm:ss"];
@@ -136,20 +134,20 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
               stringByReplacingOccurrencesOfString:@" " withString:@""];//把空格和<>去掉
     NSURL *url = [NSURL URLWithString:@"http://dns.135792468.xyz:8787/push"];//创建请求IP
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    request.HTTPMethod = @"POST";//采用POST
+    request.HTTPMethod = @"POST";
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     NSDictionary *json = @{
-                           @"token":token1,
-                           @"date":SendTime,
+                           @"token": token1,
+                           @"date": SendTime,
                            };
-    isAddToPushSucess = @"Sucess";
+    isAddToPushSuccess = @"Success";
     NSData *data = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingPrettyPrinted error:nil];
     request.HTTPBody = data;
     [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
     }];
 }
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSData *) error{
-    isAddToPushSucess = @"Fail";
+    isAddToPushSuccess = @"Fail";
 }
 
 /// Temporary migration with `quick_actions` package's event not triggered. See https://github.com/flutter/flutter/issues/13634#issuecomment-392303964

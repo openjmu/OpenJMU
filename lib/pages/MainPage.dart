@@ -7,13 +7,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'package:OpenJMU/api/API.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/utils/ChannelUtils.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 
 import 'package:OpenJMU/pages/home/AppCenterPage.dart';
@@ -37,8 +40,13 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
 
     static final List<String> pagesTitle = ['首页', '应用', '消息', '我的'];
     static final List<String> pagesIcon = ["home", "apps", "message", "mine"];
-    final Color primaryColor = Colors.white;
     static const double bottomBarHeight = 64.4;
+
+    List<List> sections = [
+        PostSquareListPageState.tabs,
+        AppCenterPageState.tabs(),
+        MessagePageState.tabs,
+    ];
 
     BuildContext pageContext;
 
@@ -57,11 +65,6 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
     Timer notificationTimer;
 
     List<TabController> _tabControllers = [null, null, null,];
-    List<List> sections = [
-        PostSquareListPageState.tabs,
-        AppCenterPageState.tabs,
-        MessagePageState.tabs,
-    ];
 
     int _tabIndex = Constants.homeSplashIndex;
     int userUid;
@@ -72,28 +75,22 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
 
     @override
     void initState() {
-        super.initState();
+        debugPrint("CurrentUser's ${UserAPI.currentUser}");
+
         if (widget.initIndex != null) _tabIndex = widget.initIndex;
-        if (Platform.isAndroid) OTAUtils.checkUpdate(fromStart: true);
-        DataUtils.isLogin().then((isLogin) {
-            DataUtils.getNotifications();
-            if (isLogin) {
-                notificationTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
-                    DataUtils.getNotifications();
-                });
-                setState(() {
-                    this.userSid = UserAPI.currentUser.sid;
-                    this.userUid = UserAPI.currentUser.uid;
-                });
-            }
-        });
+        if (Platform.isAndroid) OTAUtils.checkUpdate(fromHome: true);
+
+//        initPushService();
+        initNotification();
         initTabController();
+
         pages = [
             PostSquareListPage(controller: _tabControllers[0]),
             AppCenterPage(controller: _tabControllers[1]),
             MessagePage(),
             MyInfoPage(),
         ];
+
         Constants.eventBus
             ..on<ActionsEvent>().listen((event) {
                 if (event.type == "action_home") {
@@ -124,19 +121,49 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                 currentThemeColor = event.color;
                 if (this.mounted) setState(() {});
             });
-        debugPrint("CurrentUser's ${UserAPI.currentUser}");
+        super.initState();
     }
 
     @override
     void didChangeDependencies() {
-        super.didChangeDependencies();
         ThemeUtils.setDark(ThemeUtils.isDark);
+        super.didChangeDependencies();
     }
 
     @override
     void dispose() {
-        super.dispose();
         notificationTimer?.cancel();
+        super.dispose();
+    }
+
+    void initPushService() async {
+        final UserInfo user = UserAPI.currentUser;
+        final String version = await OTAUtils.getCurrentVersion();
+        NetUtils.post(API.pushUpload, data: {
+            "token": Platform.isIOS
+                    ? await ChannelUtils.iosGetPushToken()
+                    : ""
+            ,
+            "date": DateTime.now().millisecondsSinceEpoch,
+            "uid": user.uid,
+            "name": user.name,
+            "workid": user.workId,
+            "appversion": version,
+            "platform": Platform.isIOS ? "ios" : "android"
+        }).then((response) {
+            debugPrint("Push service info upload success.");
+        });
+    }
+
+    void initNotification() {
+        DataUtils.getNotifications();
+        notificationTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+            DataUtils.getNotifications();
+        });
+        setState(() {
+            this.userSid = UserAPI.currentUser.sid;
+            this.userUid = UserAPI.currentUser.uid;
+        });
     }
 
     void initTabController() {
