@@ -32,8 +32,9 @@ class DataUtils {
     static final String spBrightness        = "theme_brightness";
     static final String spColorThemeIndex   = "theme_colorThemeIndex";
     static final String spHomeSplashIndex   = "home_splash_index";
+    static final String spHomeStartUpIndex  = "home_startup_index";
 
-    static Future doLogin(context, String username, String password) async {
+    static Future login(context, String username, String password) async {
         final String blowfish = Uuid().v4();
         Map<String, dynamic> params = Constants.loginParams(
             blowfish: blowfish,
@@ -56,21 +57,23 @@ class DataUtils {
                 'isTeacher': int.parse(user['type'].toString()) == 1,
                 'unitId': data['unitid'],
                 'workId': user['workid'],
-//                    'userClassId': user['class_id'],
+//                'userClassId': user['class_id'],
                 'gender': int.parse(user['gender'].toString()),
             };
-            setUserInfo(userInfo);
-            saveLoginInfo(userInfo).then((R) async {
+            bool isWizard = true;
+            if (!userInfo["isTeacher"]) isWizard = await checkWizard();
+            try {
+                await saveLoginInfo(userInfo);
                 UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
-                Constants.eventBus.fire(LoginEvent());
+                Constants.eventBus.fire(LoginEvent(isWizard));
                 showShortToast("登录成功！");
-            }).catchError((e) {
+            } catch (e) {
                 Constants.eventBus.fire(LoginFailedEvent());
                 debugPrint(e.toString());
                 if (e.response != null) showLongToast(
                     "设置用户信息失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}",
                 );
-            });
+            }
         }).catchError((e) {
             Constants.eventBus.fire(LoginFailedEvent());
             debugPrint(e.toString());
@@ -80,21 +83,33 @@ class DataUtils {
         });
     }
 
-    static void logout() {
-        setHomeSplashIndex(0);
-        clearLoginInfo();
-        resetTheme();
+    static Future logout() async {
+        await clearLoginInfo();
+        await resetTheme();
+    }
+
+    static Future<bool> checkWizard() async {
+        Map<String, dynamic> info = (await UserAPI.getStudentInfo()).data;
+        if (info["wizard"].toString() == "1") {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     static Future recoverLoginInfo() async {
-        Map<String, String> info = await getSpTicket();
-        UserAPI.currentUser.sid = info['ticket'];
-        UserAPI.currentUser.blowfish = info['blowfish'];
-        await getTicket();
+        try {
+            Map<String, String> info = await getSpTicket();
+            UserAPI.currentUser.sid = info['ticket'];
+            UserAPI.currentUser.blowfish = info['blowfish'];
+            await getTicket();
+        } catch (e) {
+            debugPrint("Error in recover login info: $e");
+        }
     }
 
     static Future getUserInfo([uid]) async {
-        NetUtils.getWithCookieSet(
+        await NetUtils.getWithCookieSet(
             "${API.userInfo}?uid=${uid ?? UserAPI.currentUser.uid}",
             cookies: buildPHPSESSIDCookies(UserAPI.currentUser.sid),
         ).then((response) {
@@ -109,7 +124,7 @@ class DataUtils {
                 'isTeacher': int.parse(data['type'].toString()) == 1,
                 'unitId': data['unitid'],
                 'workId': data['workid'],
-//                    'userClassId': user['class_id'],
+//                'userClassId': user['class_id'],
                 'gender': int.parse(data['gender'].toString()),
             };
             setUserInfo(userInfo);
@@ -125,8 +140,9 @@ class DataUtils {
         UserAPI.currentUser = UserAPI.createUserInfo(data);
     }
 
-    static Future saveLoginInfo(Map data) async {
+    static Future<Null> saveLoginInfo(Map data) async {
         if (data != null) {
+            setUserInfo(data);
             SharedPreferences sp = await SharedPreferences.getInstance();
             await sp.setBool(spIsLogin, true);
             await sp.setBool(spIsTeacher, data['isTeacher']);
@@ -155,9 +171,10 @@ class DataUtils {
         await sp.remove(spUserUnitId);
         await sp.remove(spUserWorkId);
 //        await sp.remove(spUserClassId);
-
         await sp.remove(spBrightness);
         await sp.remove(spColorThemeIndex);
+        await sp.remove(spHomeSplashIndex);
+        await sp.remove(spHomeStartUpIndex);
         showShortToast("退出登录成功");
     }
 
@@ -171,18 +188,18 @@ class DataUtils {
     }
 
     static Future getTicket() async {
-        debugPrint("isIOS: ${Platform.isIOS}");
-        debugPrint("isAndroid: ${Platform.isAndroid}");
-        Map<String, dynamic> params = Constants.loginParams(
-            ticket: UserAPI.currentUser.sid,
-            blowfish: UserAPI.currentUser.blowfish,
-        );
         try {
+            Map<String, dynamic> params = Constants.loginParams(
+                ticket: UserAPI.currentUser.sid,
+                blowfish: UserAPI.currentUser.blowfish,
+            );
             Map<String, dynamic> response = (await NetUtils.post(API.loginTicket, data: params)).data;
             await updateSid(response);
             await getUserInfo();
+            bool isWizard = true;
+            if (!UserAPI.currentUser.isTeacher) isWizard = await checkWizard();
             UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
-            Constants.eventBus.fire(TicketGotEvent());
+            Constants.eventBus.fire(TicketGotEvent(isWizard));
         } catch (e) {
             if (e.response != null) {
                 debugPrint("Error response.");
@@ -210,10 +227,11 @@ class DataUtils {
     }
 
     // 重置主题配置
-    static void resetTheme() async {
+    static Future resetTheme() async {
         await setColorTheme(0);
         await setBrightnessDark(false);
         ThemeUtils.currentThemeColor = ThemeUtils.defaultColor;
+        Constants.eventBus.fire(ChangeBrightnessEvent(false));
         Constants.eventBus.fire(ChangeThemeEvent(ThemeUtils.defaultColor));
     }
 
@@ -252,7 +270,12 @@ class DataUtils {
             int praises = int.parse(data['t_praised']);
             int count = comment + postsAt + commsAt + praises;
 //            debugPrint("Count: $count, At: ${postsAt+commsAt}, Comment: $comment, Praise: $praises");
-            Notifications notifications = Notifications(count, postsAt+commsAt, comment, praises);
+            Notifications notifications = Notifications(
+                count: count,
+                at: postsAt+commsAt,
+                comment: comment,
+                praise: praises,
+            );
             Constants.notifications = notifications;
             Constants.eventBus.fire(NotificationsChangeEvent(notifications));
         }).catchError((e) {
@@ -267,11 +290,22 @@ class DataUtils {
         int index = sp.getInt(spHomeSplashIndex);
         return index;
     }
+    // 获取默认各页启动index
+    static Future<List> getHomeStartUpIndex() async {
+        SharedPreferences sp = await SharedPreferences.getInstance();
+        List index = jsonDecode(sp.getString(spHomeStartUpIndex) ?? "[0, 0, 0]");
+        return index;
+    }
 
     static Future<Null> setHomeSplashIndex(int index) async {
         Constants.homeSplashIndex = index;
         SharedPreferences sp = await SharedPreferences.getInstance();
         await sp.setInt(spHomeSplashIndex, index);
+    }
+    static Future<Null> setHomeStartUpIndex(List indexList) async {
+        Constants.homeStartUpIndex = indexList;
+        SharedPreferences sp = await SharedPreferences.getInstance();
+        await sp.setString(spHomeStartUpIndex, jsonEncode(indexList));
     }
 
     static Map<String, dynamic> buildPostHeaders(sid) {

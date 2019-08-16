@@ -7,19 +7,22 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'package:OpenJMU/api/API.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/utils/ChannelUtils.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 
 import 'package:OpenJMU/pages/home/AppCenterPage.dart';
 import 'package:OpenJMU/pages/home/MessagePage.dart';
 import 'package:OpenJMU/pages/home/MyInfoPage.dart';
-import 'package:OpenJMU/pages/post/PostSquareListPage.dart';
+import 'package:OpenJMU/pages/home/PostSquareListPage.dart';
 import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 
 
@@ -35,10 +38,17 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
     static Color currentThemeColor = ThemeUtils.currentThemeColor;
 
-    final List<String> bottomAppBarTitles = ['首页', '应用', '消息', '我的'];
-    final List<String> bottomAppBarIcons = ["home", "apps", "message", "mine"];
-    final Color primaryColor = Colors.white;
+    static final List<String> pagesTitle = ['首页', '应用', '消息', '我的'];
+    static final List<String> pagesIcon = ["home", "apps", "message", "mine"];
     static const double bottomBarHeight = 64.4;
+
+    List<List> sections = [
+        PostSquareListPageState.tabs,
+        AppCenterPageState.tabs(),
+        MessagePageState.tabs,
+    ];
+
+    BuildContext pageContext;
 
     TextStyle tabSelectedTextStyle = TextStyle(
         color: currentThemeColor,
@@ -55,11 +65,6 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
     Timer notificationTimer;
 
     List<TabController> _tabControllers = [null, null, null,];
-    List<List> sections = [
-        PostSquareListPageState.tabs,
-        AppCenterPageState.tabs,
-        MessagePageState.tabs,
-    ];
 
     int _tabIndex = Constants.homeSplashIndex;
     int userUid;
@@ -70,28 +75,22 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
 
     @override
     void initState() {
-        super.initState();
+        debugPrint("CurrentUser's ${UserAPI.currentUser}");
+
         if (widget.initIndex != null) _tabIndex = widget.initIndex;
-        if (Platform.isAndroid) OTAUtils.checkUpdate(fromStart: true);
-        DataUtils.isLogin().then((isLogin) {
-            DataUtils.getNotifications();
-            if (isLogin) {
-                notificationTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
-                    DataUtils.getNotifications();
-                });
-                setState(() {
-                    this.userSid = UserAPI.currentUser.sid;
-                    this.userUid = UserAPI.currentUser.uid;
-                });
-            }
-        });
+        if (Platform.isAndroid) OTAUtils.checkUpdate(fromHome: true);
+
+        initPushService();
+        initNotification();
         initTabController();
+
         pages = [
             PostSquareListPage(controller: _tabControllers[0]),
             AppCenterPage(controller: _tabControllers[1]),
             MessagePage(),
             MyInfoPage(),
         ];
+
         Constants.eventBus
             ..on<ActionsEvent>().listen((event) {
                 if (event.type == "action_home") {
@@ -106,11 +105,11 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
             })
             ..on<LogoutEvent>().listen((event) {
                 notificationTimer?.cancel();
-                Navigator.of(context).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
+                Navigator.of(pageContext).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
             })
             ..on<TicketFailedEvent>().listen((event) {
                 notificationTimer?.cancel();
-                Navigator.of(context).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
+                Navigator.of(pageContext).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
             })
             ..on<HasUpdateEvent>().listen((event) {
                 if (this.mounted) showDialog(
@@ -122,23 +121,55 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                 currentThemeColor = event.color;
                 if (this.mounted) setState(() {});
             });
+        super.initState();
     }
 
     @override
     void didChangeDependencies() {
-        super.didChangeDependencies();
         ThemeUtils.setDark(ThemeUtils.isDark);
+        super.didChangeDependencies();
     }
 
     @override
     void dispose() {
-        super.dispose();
         notificationTimer?.cancel();
+        super.dispose();
+    }
+
+    void initPushService() async {
+        final UserInfo user = UserAPI.currentUser;
+        final String version = await OTAUtils.getCurrentVersion();
+        NetUtils.post(API.pushUpload, data: {
+            "token": Platform.isIOS
+                    ? await ChannelUtils.iosGetPushToken()
+                    : ""
+            ,
+            "date": await ChannelUtils.iosGetPushDate(),
+            "uid": user.uid.toString(),
+            "name": user.name.toString(),
+            "workid": user.workId.toString(),
+            "appversion": version.toString(),
+            "platform": Platform.isIOS ? "ios" : "android"
+        }).then((response) {
+            debugPrint("Push service info upload success.");
+        });
+    }
+
+    void initNotification() {
+        DataUtils.getNotifications();
+        notificationTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
+            DataUtils.getNotifications();
+        });
+        setState(() {
+            this.userSid = UserAPI.currentUser.sid;
+            this.userUid = UserAPI.currentUser.uid;
+        });
     }
 
     void initTabController() {
         for (int i = 0; i < _tabControllers.length; i++) {
             _tabControllers[i] = TabController(
+                initialIndex: Constants.homeStartUpIndex[i],
                 length: sections[i].length,
                 vsync: this,
             );
@@ -165,6 +196,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
     @mustCallSuper
     Widget build(BuildContext context) {
         super.build(context);
+        pageContext = context;
         return WillPopScope(
             onWillPop: doubleBackExit,
             child: Scaffold(
@@ -261,9 +293,9 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                     selectedColor: ThemeUtils.currentThemeColor,
                     onTabSelected: _selectedTab,
                     initIndex: widget.initIndex,
-                    items: [for (int i = 0; i < bottomAppBarTitles.length; i++) FABBottomAppBarItem(
-                        iconPath: bottomAppBarIcons[i],
-                        text: bottomAppBarTitles[i],
+                    items: [for (int i = 0; i < pagesTitle.length; i++) FABBottomAppBarItem(
+                        iconPath: pagesIcon[i],
+                        text: pagesTitle[i],
                     )],
                 ),
                 floatingActionButton: SizedBox(

@@ -28,16 +28,19 @@ class API {
     static final String middle99Host = "https://middle99.jmu.edu.cn";
     static final String upApiHost = "https://upapi.jmu.edu.cn";
     static final String jwglHost = "http://jwgls.jmu.edu.cn";
+    static final String pushHost = "http://push.openjmu.xyz:8787";
 
+    static final String pushUpload = "$pushHost/push";
+
+    /// 认证相关
     static final String login = "$oa99Host/v2/passport/api/user/login1";
     static final String logout = "$oap99Host/passport/logout";
     static final String loginTicket = "$oa99Host/v2/passport/api/user/loginticket1";
 
     /// 用户相关
     static final String userInfo = "$oap99Host/user/info";
-    static String userLevel({int uid}) {
-        return "$oa99Host/ajax/score/info?uid=${uid ?? 0}";
-    }
+    static String studentInfo({int uid = 0}) => "$oa99Host/v2/api/class/studentinfo?uid=$uid";
+    static String userLevel({int uid = 0}) => "$oa99Host/ajax/score/info?uid=$uid";
 //    static final String userAvatar = "$oap99Host/face";
     static final String userAvatarInSecure = "$oap99Host/face";
     static final String userAvatarUpload = "$oap99Host/face/upload";

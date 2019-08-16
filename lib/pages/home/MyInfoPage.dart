@@ -15,11 +15,9 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/utils/NetUTils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/widgets/dialogs/AnnouncementDialog.dart';
-import 'package:OpenJMU/widgets/dialogs/SelectSplashDialog.dart';
+import 'package:OpenJMU/widgets/announcement/AnnouncementWidget.dart';
 
 
 class MyInfoPage extends StatefulWidget {
@@ -29,7 +27,7 @@ class MyInfoPage extends StatefulWidget {
 
 class MyInfoPageState extends State<MyInfoPage> {
     final List<List<String>> settingsSection = [
-        [
+        if (Constants.isTest) [
             "背包"
         ],
         [
@@ -45,12 +43,11 @@ class MyInfoPageState extends State<MyInfoPage> {
             "退出登录",
         ],
         if (Constants.isTest) [
-//            "获取成绩",
             "测试页",
         ],
     ];
     final List<List<String>> settingsIcon = [
-        [
+        if (Constants.isTest) [
             "idols",
         ],
         [
@@ -66,7 +63,6 @@ class MyInfoPageState extends State<MyInfoPage> {
             "exit",
         ],
         if (Constants.isTest) [
-//            "idols",
             "idols",
         ],
     ];
@@ -77,8 +73,6 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     bool isLogin = false, isDark = false;
     bool signing = false, signed = false;
-    bool showAnnouncement = false;
-    List announcements = [];
 
     int signedCount = 0, currentWeek;
 
@@ -91,7 +85,6 @@ class MyInfoPageState extends State<MyInfoPage> {
     void initState() {
         super.initState();
         updateHello();
-        getAnnouncement();
         getSignStatus();
         getCurrentWeek();
         if (this.mounted) updateHelloTimer = Timer.periodic(Duration(minutes: 1), (timer) {
@@ -125,19 +118,10 @@ class MyInfoPageState extends State<MyInfoPage> {
         updateHelloTimer?.cancel();
     }
 
-    void getAnnouncement() async {
-        Map<String, dynamic> data = jsonDecode((await NetUtils.get(API.announcement)).data);
-        if (data['enabled']) {
-            showAnnouncement = data['enabled'];
-            announcements = data['announcements'];
-        }
-        if (this.mounted) setState((){});
-    }
-
     void getSignStatus() async {
         var _signed = (await SignAPI.getTodayStatus()).data['status'];
         var _signedCount = (await SignAPI.getSignList()).data['signdata']?.length;
-        setState(() {
+        if (mounted) setState(() {
             this.signedCount = _signedCount;
             this.signed = _signed == 1 ? true : false;
         });
@@ -201,13 +185,6 @@ class MyInfoPageState extends State<MyInfoPage> {
         Constants.eventBus.fire(ChangeBrightnessEvent(isDark));
     }
 
-    void showSelectSplashDialog(BuildContext context) {
-        showDialog(
-            context: context,
-            builder: (_) => SelectSplashDialog(),
-        );
-    }
-
     void showLogoutDialog(BuildContext context) {
         showPlatformDialog(
             context: context,
@@ -243,53 +220,6 @@ class MyInfoPageState extends State<MyInfoPage> {
                     ),
                 ],
             ),
-        );
-    }
-
-    Widget announcement() {
-        return GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: Constants.suSetSp(24.0),
-                    vertical: Constants.suSetSp(10.0),
-                ),
-                color: ThemeUtils.currentThemeColor.withAlpha(0x44),
-                child: Row(
-                    children: <Widget>[
-                        Padding(
-                            padding: EdgeInsets.only(right: Constants.suSetSp(6.0)),
-                            child: Icon(
-                                Icons.error_outline,
-                                size: Constants.suSetSp(18.0),
-                                color: ThemeUtils.currentThemeColor,
-                            ),
-                        ),
-                        Expanded(child: Text(
-                            "${announcements[0]['title']}",
-                            style: TextStyle(
-                                color: ThemeUtils.currentThemeColor,
-                                fontSize: Constants.suSetSp(18.0),
-                            ),
-                            overflow: TextOverflow.ellipsis,
-                        )),
-                        Padding(
-                            padding: EdgeInsets.only(left: Constants.suSetSp(6.0)),
-                            child: Icon(
-                                Icons.keyboard_arrow_right,
-                                size: Constants.suSetSp(18.0),
-                                color: ThemeUtils.currentThemeColor,
-                            ),
-                        ),
-                    ],
-                ),
-            ),
-            onTap: () {
-                showDialog<Null>(
-                    context: context,
-                    builder: (BuildContext context) => AnnouncementDialog(announcements[0]),
-                );
-            },
         );
     }
 
@@ -546,7 +476,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 Navigator.pushNamed(context, "/changeTheme");
                 break;
             case "启动页":
-                showSelectSplashDialog(context);
+                Navigator.pushNamed(context, "/switchStartUpPage");
                 break;
 
             case "检查更新":
@@ -562,6 +492,7 @@ class MyInfoPageState extends State<MyInfoPage> {
 
             case "测试页":
                 Navigator.pushNamed(context, "/test");
+                showTimePicker(context: context, initialTime: TimeOfDay.now());
                 break;
 
             default:
@@ -589,7 +520,11 @@ class MyInfoPageState extends State<MyInfoPage> {
                             child: ListView(
                                 shrinkWrap: true,
                                 children: <Widget>[
-                                    if (showAnnouncement) announcement(),
+                                    if (Constants.announcementsEnabled) AnnouncementWidget(
+                                        context,
+                                        color: ThemeUtils.currentThemeColor,
+                                        gap: 24.0,
+                                    ),
                                     userInfo(),
                                     Constants.separator(context),
                                     currentDay(now),

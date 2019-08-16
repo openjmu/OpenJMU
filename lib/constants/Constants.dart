@@ -21,7 +21,12 @@ class Constants {
 
     static final String endLineTag = "没有更多了~";
 
+    // Fow start index.
     static int homeSplashIndex = 0;
+    static List homeStartUpIndex = [0, 0, 0];
+
+    static List announcements = [];
+    static bool announcementsEnabled = false;
 
     // Fow news list.
     static final int appId = Platform.isIOS ? 274 : 273;
@@ -78,7 +83,7 @@ class Constants {
 
     static final EventBus eventBus = new EventBus();
 
-    static Notifications notifications = Notifications(0, 0, 0, 0);
+    static Notifications notifications = Notifications();
 
     static double suSetSp(double size) {
         double value = ScreenUtil.getInstance().setSp(size) * 1.95;

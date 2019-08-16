@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -6,13 +7,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:connectivity/connectivity.dart';
 
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/LoginPage.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
 
 
 class SplashPage extends StatefulWidget {
@@ -28,6 +30,7 @@ class SplashState extends State<SplashPage> {
     bool isOnline;
     bool isUserLogin = false;
     bool showLoading = false;
+    bool isInLoginProcess = false;
 
     @override
     void initState() {
@@ -44,21 +47,23 @@ class SplashState extends State<SplashPage> {
             ..on<ConnectivityChangeEvent>().listen((event) {
                 if (this.mounted && isOnline != null) checkOnline(event);
             })
-            ..on<TicketGotEvent>().listen((event) {
+            ..on<TicketGotEvent>().listen((event) async {
                 debugPrint("Ticket Got.");
+                if (!event.isWizard) {}
                 if (this.mounted) {
                     setState(() {
                         this.isUserLogin = true;
-                        navigate();
                     });
+                    await navigate();
                 }
             })
-            ..on<TicketFailedEvent>().listen((event) {
+            ..on<TicketFailedEvent>().listen((event) async {
+                debugPrint("Ticket Failed.");
                 if (this.mounted) {
                     setState(() {
                         this.isUserLogin = false;
-                        navigate();
                     });
+                    await navigate();
                 }
             });
     }
@@ -86,23 +91,33 @@ class SplashState extends State<SplashPage> {
     }
 
     void checkOnline(event) {
-        setState(() {
-            if (event.type != ConnectivityResult.none) {
-                this.isOnline = true;
-                DataUtils.isLogin().then((isLogin) {
-                    if (isLogin) {
-                        DataUtils.recoverLoginInfo();
-                    } else {
-                        Constants.eventBus.fire(TicketFailedEvent());
-                    }
-                });
-            } else {
-                this.isOnline = false;
-            }
-        });
+        if (!isInLoginProcess) {
+            isInLoginProcess = true;
+            setState(() {
+                if (event.type != ConnectivityResult.none) {
+                    this.isOnline = true;
+                    DataUtils.isLogin().then((isLogin) {
+                        if (isLogin) {
+                            DataUtils.recoverLoginInfo();
+                        } else {
+                            Constants.eventBus.fire(TicketFailedEvent());
+                        }
+                    });
+                } else {
+                    this.isOnline = false;
+                }
+            });
+        }
     }
 
-    void navigate() {
+    Future getAnnouncement() async {
+        Map<String, dynamic> data = jsonDecode((await NetUtils.get(API.announcement)).data);
+        Constants.announcementsEnabled = data['enabled'];
+        Constants.announcements = data['announcements'];
+    }
+
+    Future navigate() async {
+        await getAnnouncement();
         Future.delayed(const Duration(seconds: 2), () {
             if (!isUserLogin) {
                 try {
@@ -119,7 +134,6 @@ class SplashState extends State<SplashPage> {
                     ), (Route<dynamic> route) => false);
                 } catch (e) {}
             } else {
-                debugPrint("CurrentUser's ${UserAPI.currentUser}");
                 try {
                     Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
                         builder: (_) => MainPage(initIndex: widget.initIndex),

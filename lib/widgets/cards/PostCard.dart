@@ -97,9 +97,8 @@ class _PostCardState extends State<PostCard> {
             });
     }
 
-    Widget getPostAvatar(context, post) => Hero(
-        tag: "user_${post.uid}",
-        child: SizedBox(
+    Widget getPostAvatar(context, post){
+        return SizedBox(
             width: Constants.suSetSp(48.0),
             height: Constants.suSetSp(48.0),
             child: GestureDetector(
@@ -113,8 +112,8 @@ class _PostCardState extends State<PostCard> {
                 ),
                 onTap: () => UserPage.jump(context, widget.post.uid),
             ),
-        ),
-    );
+        );
+    }
 
     Text getPostNickname(post) => Text(
         post.nickname ?? post.uid,
