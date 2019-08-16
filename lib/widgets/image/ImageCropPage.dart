@@ -11,7 +11,6 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
@@ -85,7 +84,7 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
         );
     }
 
-    Future<void> _openImage() async {
+    Future _openImage() async {
         final file = await ImagePicker.pickImage(source: ImageSource.gallery);
         final sample = await ImageCrop.sampleImage(
             file: file,
@@ -98,7 +97,7 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
         });
     }
 
-    Future<void> _cropImage(context) async {
+    Future _cropImage(context) async {
         final scale = cropKey.currentState.scale;
         final area = cropKey.currentState.area;
         if (area == null) return;
@@ -145,8 +144,7 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
         ).then((response) {
             _controller.changeState("success", "头像更新成功");
             Future.delayed(Duration(milliseconds: 2200), () {
-                Navigator.of(context).pop();
-                Constants.eventBus.fire(AvatarUpdatedEvent());
+                Navigator.of(context).pop(true);
             });
         }).catchError((e) {
             debugPrint(e.toString());
@@ -175,14 +173,14 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
                         Row(
                             children: <Widget>[
                                 IconButton(
-                                    icon: Icon(Icons.arrow_back),
+                                    icon: Icon(Icons.arrow_back, color: Colors.white),
                                     onPressed: () => Navigator.of(context).pop(false),
                                 ),
                             ],
                         ),
-                        Expanded(
+                        if (_sample != null) Expanded(
                             child: Container(
-                                child: _sample == null ? Container() : _buildCroppingImage(context),
+                                child: _buildCroppingImage(context),
                             ),
                         ),
                     ],

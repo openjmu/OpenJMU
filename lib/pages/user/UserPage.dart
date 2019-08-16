@@ -592,7 +592,9 @@ class _UserPageState extends State<UserPage>
                                 Navigator.of(sheetContext).pop();
                                 Navigator.push(context, CupertinoPageRoute(
                                     builder: (_) => ImageCropperPage(),
-                                ));
+                                )).then((result) {
+                                    if (result) Constants.eventBus.fire(AvatarUpdatedEvent());
+                                });
                             },
                         ),
                     ],

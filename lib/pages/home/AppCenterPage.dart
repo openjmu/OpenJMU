@@ -10,6 +10,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/home/ScorePage.dart';
+import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
@@ -17,20 +18,17 @@ import 'package:OpenJMU/widgets/InAppBrowser.dart';
 
 
 class AppCenterPage extends StatefulWidget {
-    final TabController controller;
-
-    AppCenterPage({Key key, @required this.controller}) : super(key: key);
-
     @override
     State<StatefulWidget> createState() => AppCenterPageState();
 }
 
-class AppCenterPageState extends State<AppCenterPage> {
+class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderStateMixin {
     final ScrollController _scrollController = ScrollController();
     final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
     static List<String> tabs() => ["课程表", if (!UserAPI.currentUser.isTeacher) "成绩", "应用"];
 
-    Color themeColor = ThemeUtils.currentThemeColor;
+    TabController _tabController;
+    Color currentThemeColor = ThemeUtils.currentThemeColor;
     Map<String, List<Widget>> webAppWidgetList = {};
     List<Widget> webAppList = [];
     List webAppListData;
@@ -41,7 +39,13 @@ class AppCenterPageState extends State<AppCenterPage> {
     @override
     void initState() {
         super.initState();
-        _futureBuilderFuture = getAppList();
+
+        _tabController = TabController(
+            initialIndex: Constants.homeStartUpIndex[1],
+            length: tabs().length,
+            vsync: this,
+        );
+
         Constants.eventBus
             ..on<ScrollToTopEvent>().listen((event) {
                 if (this.mounted && event.tabIndex == 1) {
@@ -50,7 +54,7 @@ class AppCenterPageState extends State<AppCenterPage> {
             })
             ..on<ChangeThemeEvent>().listen((event) {
                 if (this.mounted) setState(() {
-                    themeColor = event.color;
+                    currentThemeColor = event.color;
                 });
             })
             ..on<AppCenterRefreshEvent>().listen((event) {
@@ -69,7 +73,13 @@ class AppCenterPageState extends State<AppCenterPage> {
                             break;
                     }
                 }
+            })
+            ..on<ChangeThemeEvent>().listen((event) {
+                currentThemeColor = event.color;
+                if (this.mounted) setState(() {});
             });
+
+        _futureBuilderFuture = getAppList();
     }
 
     WebApp createWebApp(webAppData) {
@@ -106,7 +116,7 @@ class AppCenterPageState extends State<AppCenterPage> {
         webAppWidgetList = appList;
         List<Widget> _list = [];
         WebApp.category().forEach((name, value) {
-            _list.add(getSectionColumn(name));
+            _list.add(getSectionColumn(context, name));
         });
         return ListView.builder(
             controller: _scrollController,
@@ -181,7 +191,7 @@ class AppCenterPageState extends State<AppCenterPage> {
         return button;
     }
 
-    Widget getSectionColumn(name) {
+    Widget getSectionColumn(context, name) {
         if (webAppWidgetList[name] != null) {
             int rows = (webAppWidgetList[name].length / 3).ceil();
             if (webAppWidgetList[name].length != 0 && rows == 0) rows += 1;
@@ -230,37 +240,76 @@ class AppCenterPageState extends State<AppCenterPage> {
                 ),
             );
         } else {
-            return Container();
+            return SizedBox();
         }
     }
 
     @override
     Widget build(BuildContext context) {
-        return ExtendedTabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            cacheExtent: 2,
-            children: <Widget>[
-                if (UserAPI.currentUser.isTeacher != null) InAppBrowserPage(
-                    url: ""
-                            "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
-                            "?sid=${UserAPI.currentUser.sid}"
-                            "&night=${ThemeUtils.isDark ? 1 : 0}",
-                    title: "课程表",
-                    withAppBar: false,
-                    withAction: false,
-                    keepAlive: true,
-                ),
-                if (!UserAPI.currentUser.isTeacher ?? false) ScorePage(),
-                RefreshIndicator(
-                    key: refreshIndicatorKey,
-                    child: FutureBuilder(
-                        builder: _buildFuture,
-                        future: _futureBuilderFuture,
+        return Scaffold(
+                appBar: AppBar(
+                    title: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                            Flexible(
+                                child: TabBar(
+                                    isScrollable: true,
+                                    indicatorColor: currentThemeColor,
+                                    indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(16.0)),
+                                    indicatorSize: TabBarIndicatorSize.label,
+                                    indicatorWeight: Constants.suSetSp(6.0),
+                                    labelColor: Theme.of(context).textTheme.body1.color,
+                                    labelStyle: MainPageState.tabSelectedTextStyle,
+                                    labelPadding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+                                    unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
+                                    tabs: <Tab>[
+                                        for (int i = 0; i < tabs().length; i++)
+                                            Tab(text: tabs()[i])
+                                    ],
+                                    controller: _tabController,
+                                ),
+                            ),
+                        ],
                     ),
-                    onRefresh: getAppList,
+                    centerTitle: false,
+                    actions: <Widget>[
+                        Padding(
+                            padding: EdgeInsets.only(left: Constants.suSetSp(8.0)),
+                            child: IconButton(
+                                icon: Icon(Icons.refresh, size: Constants.suSetSp(24.0)),
+                                onPressed: () {
+                                    Constants.eventBus.fire(AppCenterRefreshEvent(_tabController.index));
+                                },
+                            ),
+                        )
+                    ],
                 ),
-            ],
-            controller: widget.controller,
+          body: ExtendedTabBarView(
+              physics: NeverScrollableScrollPhysics(),
+              controller: _tabController,
+              cacheExtent: 2,
+              children: <Widget>[
+                  if (UserAPI.currentUser.isTeacher != null) InAppBrowserPage(
+                      url: ""
+                              "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
+                              "?sid=${UserAPI.currentUser.sid}"
+                              "&night=${ThemeUtils.isDark ? 1 : 0}",
+                      title: "课程表",
+                      withAppBar: false,
+                      withAction: false,
+                      keepAlive: true,
+                  ),
+                  if (!UserAPI.currentUser.isTeacher ?? false) ScorePage(),
+                  RefreshIndicator(
+                      key: refreshIndicatorKey,
+                      child: FutureBuilder(
+                          builder: _buildFuture,
+                          future: _futureBuilderFuture,
+                      ),
+                      onRefresh: getAppList,
+                  ),
+              ],
+          ),
         );
     }
 }
