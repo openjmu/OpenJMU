@@ -11,7 +11,6 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
@@ -41,7 +40,7 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
         _lastCropped?.delete();
     }
 
-    Widget _buildCroppingImage() {
+    Widget _buildCroppingImage(context) {
         return Container(
             child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -64,7 +63,7 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
                                         '上传图片',
                                         style: Theme.of(context).textTheme.button.copyWith(color: Colors.white),
                                     ),
-                                    onPressed: () => _cropImage(),
+                                    onPressed: () => _cropImage(context),
                                 ),
                                 _buildOpenImage(),
                             ],
@@ -85,20 +84,20 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
         );
     }
 
-    Future<void> _openImage() async {
+    Future _openImage() async {
         final file = await ImagePicker.pickImage(source: ImageSource.gallery);
         final sample = await ImageCrop.sampleImage(
             file: file,
             preferredSize: context.size.longestSide.ceil(),
         );
 
-        setState(() {
+        if (sample != null) setState(() {
             _sample = sample;
             _file = file;
         });
     }
 
-    Future<void> _cropImage() async {
+    Future _cropImage(context) async {
         final scale = cropKey.currentState.scale;
         final area = cropKey.currentState.area;
         if (area == null) return;
@@ -125,17 +124,17 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
         _lastCropped?.delete();
         _lastCropped = file;
 
-        uploadImage(compressedFile);
+        uploadImage(context, compressedFile);
     }
 
-    Future uploadImage(file) async {
+    Future uploadImage(context, file) async {
         LoadingDialogController _controller = LoadingDialogController();
         showDialog<Null>(
             context: context,
-            builder: (BuildContext context) => LoadingDialog(
+            builder: (BuildContext ctx) => LoadingDialog(
                 text: "正在更新头像",
                 controller: _controller,
-                isGlobal: true,
+                isGlobal: false,
             ),
         );
         FormData _f = await createForm(file);
@@ -145,8 +144,7 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
         ).then((response) {
             _controller.changeState("success", "头像更新成功");
             Future.delayed(Duration(milliseconds: 2200), () {
-                Navigator.pop(context);
-                Constants.eventBus.fire(new AvatarUpdatedEvent());
+                Navigator.of(context).pop(true);
             });
         }).catchError((e) {
             debugPrint(e.toString());
@@ -175,14 +173,14 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
                         Row(
                             children: <Widget>[
                                 IconButton(
-                                    icon: Icon(Icons.arrow_back),
-                                    onPressed: () => Navigator.of(context).pop(),
+                                    icon: Icon(Icons.arrow_back, color: Colors.white),
+                                    onPressed: () => Navigator.of(context).pop(false),
                                 ),
                             ],
                         ),
-                        Expanded(
+                        if (_sample != null) Expanded(
                             child: Container(
-                                child: _sample == null ? Container() : _buildCroppingImage(),
+                                child: _buildCroppingImage(context),
                             ),
                         ),
                     ],

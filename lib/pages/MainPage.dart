@@ -1,11 +1,9 @@
-import 'dart:io';
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
@@ -19,6 +17,7 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 
+//import 'package:OpenJMU/pages/home/AddButtonPage.dart';
 import 'package:OpenJMU/pages/home/AppCenterPage.dart';
 import 'package:OpenJMU/pages/home/MessagePage.dart';
 import 'package:OpenJMU/pages/home/MyInfoPage.dart';
@@ -35,12 +34,22 @@ class MainPage extends StatefulWidget {
     State<StatefulWidget> createState() => MainPageState();
 }
 
-class MainPageState extends State<MainPage> with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     static Color currentThemeColor = ThemeUtils.currentThemeColor;
 
     static final List<String> pagesTitle = ['首页', '应用', '消息', '我的'];
     static final List<String> pagesIcon = ["home", "apps", "message", "mine"];
     static const double bottomBarHeight = 64.4;
+
+    static TextStyle tabSelectedTextStyle = TextStyle(
+        color: currentThemeColor,
+        fontSize: Constants.suSetSp(23.0),
+        fontWeight: FontWeight.bold,
+    );
+    static TextStyle tabUnselectedTextStyle = TextStyle(
+        color: currentThemeColor,
+        fontSize: Constants.suSetSp(18.0),
+    );
 
     List<List> sections = [
         PostSquareListPageState.tabs,
@@ -50,21 +59,9 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
 
     BuildContext pageContext;
 
-    TextStyle tabSelectedTextStyle = TextStyle(
-        color: currentThemeColor,
-        fontSize: Constants.suSetSp(23.0),
-        fontWeight: FontWeight.bold,
-    );
-    TextStyle tabUnselectedTextStyle = TextStyle(
-        color: currentThemeColor,
-        fontSize: Constants.suSetSp(18.0),
-    );
-
     List<Widget> pages;
     Notifications notifications = Constants.notifications;
     Timer notificationTimer;
-
-    List<TabController> _tabControllers = [null, null, null,];
 
     int _tabIndex = Constants.homeSplashIndex;
     int userUid;
@@ -80,13 +77,12 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
         if (widget.initIndex != null) _tabIndex = widget.initIndex;
         if (Platform.isAndroid) OTAUtils.checkUpdate(fromHome: true);
 
-        initPushService();
+//        initPushService();
         initNotification();
-        initTabController();
 
         pages = [
-            PostSquareListPage(controller: _tabControllers[0]),
-            AppCenterPage(controller: _tabControllers[1]),
+            PostSquareListPage(),
+            AppCenterPage(),
             MessagePage(),
             MyInfoPage(),
         ];
@@ -138,19 +134,19 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
 
     void initPushService() async {
         final UserInfo user = UserAPI.currentUser;
-        final String version = await OTAUtils.getCurrentVersion();
-        NetUtils.post(API.pushUpload, data: {
+        final Map<String, dynamic> data = {
             "token": Platform.isIOS
                     ? await ChannelUtils.iosGetPushToken()
                     : ""
             ,
-            "date": await ChannelUtils.iosGetPushDate(),
-            "uid": user.uid.toString(),
-            "name": user.name.toString(),
-            "workid": user.workId.toString(),
-            "appversion": version.toString(),
+            "date": DateTime.now().millisecondsSinceEpoch,
+            "uid": user.uid,
+            "name": user.name,
+            "workid": user.workId,
+            "appversion": await OTAUtils.getCurrentVersion(),
             "platform": Platform.isIOS ? "ios" : "android"
-        }).then((response) {
+        };
+        NetUtils.post(API.pushUpload, data: data).then((response) {
             debugPrint("Push service info upload success.");
         });
     }
@@ -164,16 +160,6 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
             this.userSid = UserAPI.currentUser.sid;
             this.userUid = UserAPI.currentUser.uid;
         });
-    }
-
-    void initTabController() {
-        for (int i = 0; i < _tabControllers.length; i++) {
-            _tabControllers[i] = TabController(
-                initialIndex: Constants.homeStartUpIndex[i],
-                length: sections[i].length,
-                vsync: this,
-            );
-        }
     }
 
     void _selectedTab(int index) {
@@ -200,87 +186,6 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
         return WillPopScope(
             onWillPop: doubleBackExit,
             child: Scaffold(
-                appBar: _tabIndex != 3 ? AppBar(
-                    title: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                            if (_tabIndex == 0) Padding(
-                                padding: EdgeInsets.only(right: Constants.suSetSp(4.0)),
-                                child: Text(
-                                    "Jmu",
-                                    style: TextStyle(
-                                        color: currentThemeColor,
-                                        fontSize: Constants.suSetSp(34),
-                                        fontFamily: "chocolate",
-                                    ),
-                                ),
-                            ),
-                            Flexible(
-                                child: TabBar(
-                                    isScrollable: true,
-                                    indicatorColor: currentThemeColor,
-                                    indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(16.0)),
-                                    indicatorSize: TabBarIndicatorSize.label,
-                                    indicatorWeight: Constants.suSetSp(6.0),
-                                    labelColor: Theme.of(context).textTheme.body1.color,
-                                    labelStyle: tabSelectedTextStyle,
-                                    labelPadding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
-                                    unselectedLabelStyle: tabUnselectedTextStyle,
-                                    tabs: <Tab>[
-                                        for (int i = 0; i < sections[_tabIndex].length; i++)
-                                            Tab(text: sections[_tabIndex][i])
-                                    ],
-                                    controller: _tabControllers[_tabIndex],
-                                ),
-                            ),
-                        ],
-                    ),
-                    centerTitle: (_tabIndex == 2) ? true : false,
-                    actions: <Widget>[
-                        if (_tabIndex == 0) Padding(
-                            padding: EdgeInsets.zero,
-                            child: IconButton(
-                                icon: SvgPicture.asset(
-                                    "assets/icons/scan-line.svg",
-                                    color: Theme.of(context).iconTheme.color,
-                                    width: Constants.suSetSp(26.0),
-                                    height: Constants.suSetSp(26.0),
-                                ),
-                                onPressed: () async {
-                                    Map<PermissionGroup, PermissionStatus>permissions = await PermissionHandler().requestPermissions([
-                                        PermissionGroup.camera,
-                                    ]);
-                                    if (permissions[PermissionGroup.camera] == PermissionStatus.granted) {
-                                        Navigator.of(context).pushNamed("/scanqrcode");
-                                    }
-                                },
-                            ),
-                        ),
-                        if (_tabIndex == 0) Padding(
-                            padding: EdgeInsets.zero,
-                            child: IconButton(
-                                icon: SvgPicture.asset(
-                                    "assets/icons/search-line.svg",
-                                    color: Theme.of(context).iconTheme.color,
-                                    width: Constants.suSetSp(26.0),
-                                    height: Constants.suSetSp(26.0),
-                                ),
-                                onPressed: () {
-                                    Navigator.of(context).pushNamed("/search");
-                                },
-                            ),
-                        ),
-                        if (_tabIndex == 1) Padding(
-                            padding: EdgeInsets.only(left: Constants.suSetSp(8.0)),
-                            child: IconButton(
-                                icon: Icon(Icons.refresh, size: Constants.suSetSp(24.0)),
-                                onPressed: () {
-                                    Constants.eventBus.fire(AppCenterRefreshEvent(_tabControllers[1].index));
-                                },
-                            ),
-                        )
-                    ],
-                ) : null,
                 body: IndexedStack(
                     children: pages,
                     index: _tabIndex,
@@ -290,7 +195,7 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                     color: Colors.grey[600],
                     height: bottomBarHeight,
                     iconSize: 30.0,
-                    selectedColor: ThemeUtils.currentThemeColor,
+                    selectedColor: currentThemeColor,
                     onTabSelected: _selectedTab,
                     initIndex: widget.initIndex,
                     items: [for (int i = 0; i < pagesTitle.length; i++) FABBottomAppBarItem(
@@ -308,6 +213,9 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                         backgroundColor: currentThemeColor,
                         elevation: 0,
                         onPressed: () {
+//                            Navigator.of(context).push(TransparentRoute(
+//                                builder: (context) => AddingButtonPage(),
+//                            ));
                             Navigator.of(context).pushNamed("/publishPost");
                         },
                         mini: true,
@@ -317,6 +225,37 @@ class MainPageState extends State<MainPage> with TickerProviderStateMixin, Autom
                 ),
                 floatingActionButtonLocation: const CustomCenterDockedFloatingActionButtonLocation(bottomBarHeight / 2),
             ),
+        );
+    }
+}
+
+class TransparentRoute extends PageRoute<void> {
+    TransparentRoute({
+        @required this.builder,
+        RouteSettings settings,
+    })  : assert(builder != null),
+                super(settings: settings, fullscreenDialog: false);
+
+    final WidgetBuilder builder;
+
+    @override
+    bool get opaque => false;
+    @override
+    Color get barrierColor => null;
+    @override
+    String get barrierLabel => null;
+    @override
+    bool get maintainState => true;
+    @override
+    Duration get transitionDuration => Duration(milliseconds: 0);
+
+    @override
+    Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        final result = builder(context);
+        return Semantics(
+            scopesRoute: true,
+            explicitChildNodes: true,
+            child: result,
         );
     }
 }

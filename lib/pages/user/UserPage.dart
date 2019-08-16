@@ -9,13 +9,16 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:OpenJMU/api/API.dart';
+import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/dialogs/EditSignatureDialog.dart';
+import 'package:OpenJMU/widgets/image/ImageCropPage.dart';
+import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
 
 class UserPage extends StatefulWidget {
@@ -35,7 +38,12 @@ class UserPage extends StatefulWidget {
     }
 }
 
-class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
+class _UserPageState extends State<UserPage>
+        with TickerProviderStateMixin, AutomaticKeepAliveClientMixin
+{
+    @override
+    bool get wantKeepAlive => true;
+
     UserInfo _user;
     List<UserTag> _tags = [];
     Widget _post;
@@ -162,6 +170,25 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
         });
     }
 
+    Widget avatar(context, double width) {
+        return GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () { avatarTap(context); },
+            child: SizedBox(
+                width: Constants.suSetSp(width),
+                height: Constants.suSetSp(width),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(Constants.suSetSp(width / 2)),
+                    child: FadeInImage(
+                        fadeInDuration: const Duration(milliseconds: 100),
+                        placeholder: AssetImage("assets/avatar_placeholder.png"),
+                        image: UserAPI.getAvatarProvider(uid: widget.uid),
+                    ),
+                ),
+            ),
+        );
+    }
+
     Widget followButton() => Padding(
         padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(4.0)),
         child: FlatButton(
@@ -242,18 +269,7 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                    SizedBox(
-                        width: Constants.suSetSp(100.0),
-                        height: Constants.suSetSp(100.0),
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(Constants.suSetSp(50.0)),
-                            child: FadeInImage(
-                                fadeInDuration: const Duration(milliseconds: 100),
-                                placeholder: AssetImage("assets/avatar_placeholder.png"),
-                                image: UserAPI.getAvatarProvider(uid: _user.uid),
-                            ),
-                        ),
-                    ),
+                    avatar(context, 100.0),
                     Expanded(child: SizedBox()),
                     followButton(),
                     if (isSelf) qrCode(context),
@@ -547,8 +563,57 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
         );
     }
 
+    void avatarTap(context) {
+        widget.uid == UserAPI.currentUser.uid ?
+        showModalBottomSheet(
+            context: context,
+            builder: (BuildContext sheetContext) {
+                return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                        ListTile(
+                            leading: Icon(Icons.account_circle),
+                            title: Text("查看大头像"),
+                            onTap: () => Navigator.of(sheetContext)..pop()..push(CupertinoPageRoute(
+                                builder: (_) => ImageViewer(
+                                    0, [ImageBean(
+                                    widget.uid,
+                                    API.userAvatarInSecure+"?uid=${widget.uid}&size=f640",
+                                    0,
+                                )],
+                                    needsClear: true,
+                                ),
+                            )),
+                        ),
+                        ListTile(
+                            leading: Icon(Icons.photo_library),
+                            title: Text("更换头像"),
+                            onTap: () async {
+                                Navigator.of(sheetContext).pop();
+                                Navigator.push(context, CupertinoPageRoute(
+                                    builder: (_) => ImageCropperPage(),
+                                )).then((result) {
+                                    if (result) Constants.eventBus.fire(AvatarUpdatedEvent());
+                                });
+                            },
+                        ),
+                    ],
+                );
+            },
+        )
+                : Navigator.of(context).push(
+            CupertinoPageRoute(
+                builder: (_) => ImageViewer(
+                    0, [ImageBean(widget.uid, API.userAvatarInSecure+"?uid=${widget.uid}&size=f640", 0)],
+                    needsClear: true,
+                ),
+            ),
+        );
+    }
+
     @override
     Widget build(BuildContext context) {
+        super.build(context);
         return Scaffold(
             body: isLoading
                     ? Center(child: Constants.progressIndicator())
@@ -568,18 +633,7 @@ class _UserPageState extends State<UserPage> with TickerProviderStateMixin {
                             child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
-                                    SizedBox(
-                                        width: Constants.suSetSp(40.0),
-                                        height: Constants.suSetSp(40.0),
-                                        child: ClipRRect(
-                                            borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
-                                            child: FadeInImage(
-                                                fadeInDuration: const Duration(milliseconds: 100),
-                                                placeholder: AssetImage("assets/avatar_placeholder.png"),
-                                                image: UserAPI.getAvatarProvider(uid: widget.uid),
-                                            ),
-                                        ),
-                                    ),
+                                    avatar(context, 40.0),
                                     Constants.emptyDivider(width: 8.0),
                                     Text(
                                         _user.name,

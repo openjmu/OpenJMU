@@ -280,12 +280,10 @@ class MyInfoPageState extends State<MyInfoPage> {
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
                 child: Container(
+                    color: ThemeUtils.currentThemeColor,
                     padding: EdgeInsets.symmetric(
                         horizontal: Constants.suSetSp(8.0),
                         vertical:  Constants.suSetSp(6.0),
-                    ),
-                    decoration: BoxDecoration(
-                        color: ThemeUtils.currentThemeColor,
                     ),
                     child: Row(
                         mainAxisSize: MainAxisSize.min,
