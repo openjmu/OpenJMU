@@ -23,5 +23,14 @@ class ChannelUtils {
             return null;
         }
     }
+    static Future iosGetPushDate() async {
+        try {
+            String result = await _pmc_iosPushToken.invokeMethod("getPushDate");
+            return result.substring(1, result.length - 1);
+        } on PlatformException catch (e) {
+            debugPrint("iosPushDate failed: ${e.message}.");
+            return null;
+        }
+    }
 
 }

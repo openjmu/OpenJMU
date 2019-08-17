@@ -2,6 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>alipayqr</string>
+		<string>alipay</string>
+		<string>alipayshare</string>
+	</array>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>仅在使用应用程序期间访问您的位置服务</string>
 	<key>NSLocationAlwaysUsageDescription</key>
@@ -37,6 +43,8 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleURLName</key>
+			<string>xyz.openjmu</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
@@ -62,7 +70,7 @@
 	<string>方便您分享图片至动态</string>
 	<key>UIBackgroundModes</key>
 	<array>
-	    <string>fetch</string>
+		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
@@ -84,8 +92,6 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
-	<string>YES</string>
-	<key>io.flutter.embedded_views_preview</key>
-    <true/>
+	<true/>
 </dict>
 </plist>

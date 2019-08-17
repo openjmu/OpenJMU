@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 
 class TestPage extends StatefulWidget {
     @override
@@ -139,7 +139,7 @@ class _TestPageState extends State<TestPage> {
                         RaisedButton(
                             child: Text("Test MethodChannel"),
                             onPressed: () async {
-                                setFlagSecure(true);
+                                _openOtherApp();
                             },
                         ),
                         RaisedButton(
@@ -234,4 +234,12 @@ class SocketUtils {
             '<\/msg>'),
         ],
     };
+}
+void _openOtherApp()  async {
+    const url = 'alipayqr://platformapi/startapp?'; //这个url就是由scheme和host组成的 ：scheme://host
+    if (await canLaunch(url)) {
+        await launch(url);
+    } else {
+        throw 'Could not launch $url';
+    }
 }
