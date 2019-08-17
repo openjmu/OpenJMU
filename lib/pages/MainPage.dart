@@ -17,7 +17,7 @@ import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 
-//import 'package:OpenJMU/pages/home/AddButtonPage.dart';
+import 'package:OpenJMU/pages/home/AddButtonPage.dart';
 import 'package:OpenJMU/pages/home/AppCenterPage.dart';
 import 'package:OpenJMU/pages/home/MessagePage.dart';
 import 'package:OpenJMU/pages/home/MyInfoPage.dart';
@@ -213,10 +213,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                         backgroundColor: currentThemeColor,
                         elevation: 0,
                         onPressed: () {
-//                            Navigator.of(context).push(TransparentRoute(
-//                                builder: (context) => AddingButtonPage(),
-//                            ));
-                            Navigator.of(context).pushNamed("/publishPost");
+                            Navigator.of(context).push(TransparentRoute(
+                                builder: (context) => AddingButtonPage(),
+                            ));
                         },
                         mini: true,
                         isExtended: false,
