@@ -23,22 +23,12 @@ class _TestPageState extends State<TestPage> {
     String content = "";
 
     static const _pmc_flagSecure = const MethodChannel("cn.edu.jmu.openjmu/setFlagSecure");
-    static const _pmc_iosPushToken = const MethodChannel("cn.edu.jmu.openjmu/iospushtoken");
 
     Future<Null> setFlagSecure(bool secure) async {
         try {
             await _pmc_flagSecure.invokeMethod("enable");
         } on PlatformException catch (e) {
             print("Set flag secure failed: ${e.message}.");
-        }
-    }
-
-    Future iosPushGetter() async {
-        try {
-            var result = await _pmc_iosPushToken.invokeMethod("getpushtoken");
-            print(result);
-        } on PlatformException catch (e) {
-            print("iosPushGetter failed: ${e.message}.");
         }
     }
 
@@ -59,49 +49,33 @@ class _TestPageState extends State<TestPage> {
 
     void _request() async{
         print("on connect...");
-        Socket.connect("frametest.jmu.edu.cn", 80).then((Socket socket) {
+        Socket.connect("210.34.130.61", 7777).then((Socket socket) {
             _socket = socket;
             socket.setOption(SocketOption.tcpNoDelay, true);
             socket.timeout(const Duration(milliseconds: 5000));
             print("Connected.");
             socket.listen(onReceive, onDone: () {print("Receive done.");});
-            _socket.add(createData([utf8.encode(jsonEncode({
-                "uid": "${UserAPI.currentUser.uid}",
-                "sid": "${UserAPI.currentUser.sid}",
-                "workid": "${UserAPI.currentUser.workId}",
-            }))]));
+
+            startQueue();
         }).catchError((e) {print(e);});
-//        Socket.connect("210.34.130.61", 7777).then((Socket socket) {
-//            _socket = socket;
-//            socket.setOption(SocketOption.tcpNoDelay, true);
-//            socket.timeout(const Duration(milliseconds: 5000));
-//            print("Connected.");
-//            socket.listen(onReceive, onDone: () {print("Receive done.");});
-//
-//            startQueue();
-//        }).catchError((e) {print(e);});
     }
 
     void onReceive(event) async {
         print("接收到的数据: $event");
-        print(utf8.decode(event));
-        setState(() {
-            content = utf8.decode(event);
-        });
-//        if (queueing) {
-//            _socket.add(createData(queue[queueingIndex]));
-//            queueingIndex++;
-//            print("发送$queueingIndex。");
-//            if (queueingIndex == queue.length) stopQueue();
-//        }
+        if (queueing) {
+            _socket.add(createData(queue[queueingIndex]));
+            queueingIndex++;
+            print("发送$queueingIndex。");
+            if (queueingIndex == queue.length) stopQueue();
+        }
     }
 
     List<List<List<int>>> queue = [
         SocketUtils.socketDataMap['sendTicket'],
         SocketUtils.socketDataMap['sendDeviceInfo'],
-//        SocketUtils.socketDataMap['getIDontKnowWhat_1'],
+        SocketUtils.socketDataMap['getIDontKnowWhat_1'],
         SocketUtils.socketDataMap['getIDontKnowWhat_2'],
-//        SocketUtils.socketDataMap['getUnreadMessage'],
+        SocketUtils.socketDataMap['getUnreadMessage'],
         SocketUtils.socketDataMap['clickMenu'],
     ];
 
@@ -120,7 +94,7 @@ class _TestPageState extends State<TestPage> {
         List<int> _data = [];
         List<List<int>> _list = [];
         _list
-//            ..addAll(SocketUtils.commonHeader)
+            ..addAll(SocketUtils.commonHeader)
             ..addAll(data)
         ;
         for (int i = 0; i < _list.length; i++) {

@@ -350,7 +350,7 @@ class _BackpackIconState extends State<BackpackIcon> with AutomaticKeepAliveClie
         });
     }
 
-    @override
+    @mustCallSuper
     Widget build(BuildContext context) {
         super.build(context);
         return loaded ? Image.memory(icon, fit: BoxFit.fitHeight) : SizedBox();

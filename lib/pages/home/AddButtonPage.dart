@@ -21,17 +21,25 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
 
     /// Animation.
     int _animateDuration = 300;
-    double backgroundSize = 0.0;
-    double buttonRotateAngle = 0.0;
+    double _backdropFilterSize = 0.0;
+    double _popButtonRotateAngle = 0.0;
     Animation<double> _backDropFilterAnimation;
     AnimationController _backDropFilterController;
     Animation<double> _popButtonAnimation;
     AnimationController _popButtonController;
+    List<double> _itemOffset;
+    List<Animation<double>> _itemAnimations;
+    List<CurvedAnimation> _itemCurveAnimations;
+    List<AnimationController> _itemAnimateControllers;
+    List<double> _itemOpacity;
+    List<Animation<double>> _itemOpacityAnimations;
+    List<CurvedAnimation> _itemOpacityCurveAnimations;
+    List<AnimationController> _itemOpacityAnimateControllers;
 
-    List<Color> buttonColors = [Colors.orange, Colors.teal];
-    List<String> buttonIcons = ["subscriptedAccount", "scan"];
-    List<String> buttonTitles = ["动态", "扫一扫"];
-    List<Function> buttonVoids = [
+    List<String> itemTitles = ["动态", "扫一扫"];
+    List<String> itemIcons = ["subscriptedAccount", "scan"];
+    List<Color> itemColors = [Colors.orange, Colors.teal];
+    List<Function> itemOnTap = [
         (context) { Navigator.of(context).pushNamed("/publishPost"); },
         (context) async {
             Map<PermissionGroup, PermissionStatus>permissions = await PermissionHandler().requestPermissions([
@@ -45,6 +53,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
 
     @override
     void initState() {
+        initItemsAnimation();
         SchedulerBinding.instance.addPostFrameCallback((_) => backDropFilterAnimate(context, true));
         super.initState();
     }
@@ -52,9 +61,70 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     @override
     void dispose() {
         _backDropFilterController?.dispose();
+        _popButtonController?.dispose();
+        _itemAnimateControllers?.forEach((controller) { controller?.dispose(); });
+        _itemOpacityAnimateControllers?.forEach((controller) { controller?.dispose(); });
         super.dispose();
     }
 
+    void initItemsAnimation() {
+        _itemOffset = <double>[for (int i=0; i<itemTitles.length; i++) 0.0];
+        _itemAnimations = List<Animation<double>>(itemTitles.length);
+        _itemCurveAnimations = List<CurvedAnimation>(itemTitles.length);
+        _itemAnimateControllers = List<AnimationController>(itemTitles.length);
+        _itemOpacity = <double>[for (int i=0; i<itemTitles.length; i++) 0.01];
+        _itemOpacityAnimations = List<Animation<double>>(itemTitles.length);
+        _itemOpacityCurveAnimations = List<CurvedAnimation>(itemTitles.length);
+        _itemOpacityAnimateControllers = List<AnimationController>(itemTitles.length);
+
+        for (int i = 0; i < itemTitles.length; i++) {
+            _itemAnimateControllers[i] = AnimationController(
+                duration: Duration(milliseconds: _animateDuration),
+                vsync: this,
+            );
+            _itemCurveAnimations[i] = CurvedAnimation(
+                parent: _itemAnimateControllers[i],
+                curve: Curves.bounceOut,
+            );
+            _itemAnimations[i] = Tween(
+                begin: -20.0,
+                end: 0.0,
+            ).animate(_itemCurveAnimations[i])
+                ..addListener(() {
+                    setState(() {
+                        _itemOffset[i] = _itemAnimations[i].value;
+                    });
+                });
+
+            _itemOpacityAnimateControllers[i] = AnimationController(
+                duration: Duration(milliseconds: _animateDuration),
+                vsync: this,
+            );
+            _itemOpacityCurveAnimations[i] = CurvedAnimation(
+                parent: _itemOpacityAnimateControllers[i],
+                curve: Curves.linear,
+            );
+            _itemOpacityAnimations[i] = Tween(
+                begin: 0.0,
+                end: 1.0,
+            ).animate(_itemOpacityCurveAnimations[i])
+                ..addListener(() {
+                    setState(() {
+                        _itemOpacity[i] = _itemOpacityAnimations[i].value;
+                    });
+                });
+        }
+    }
+    
+    void itemsAnimate() {
+        for (int i = 0; i < _itemAnimateControllers.length; i++) {
+            Future.delayed(Duration(milliseconds: 50 * i), () {
+                _itemAnimateControllers[i]?.forward();
+                _itemOpacityAnimateControllers[i]?.forward();
+            });
+        }
+    }
+    
     void popButtonAnimate(context, bool forward) {
         if (!forward) _popButtonController?.stop();
         final rotateDegree = 45 * (math.pi / 180) * 3;
@@ -68,18 +138,18 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
             curve: Curves.linear,
         );
         _popButtonAnimation = Tween(
-            begin: forward ? 0.0 : buttonRotateAngle,
+            begin: forward ? 0.0 : _popButtonRotateAngle,
             end: forward ? rotateDegree : 0.0,
         ).animate(_popButtonCurve)
             ..addListener(() {
                 setState(() {
-                    buttonRotateAngle = _popButtonAnimation.value;
+                    _popButtonRotateAngle = _popButtonAnimation.value;
                 });
             });
         _popButtonController.forward();
     }
 
-    void backDropFilterAnimate(BuildContext context, bool forward) {
+    void backDropFilterAnimate(BuildContext context, bool forward) async {
         if (!forward) _backDropFilterController?.stop();
         popButtonAnimate(context, forward);
 
@@ -92,7 +162,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
             curve: forward ? Curves.easeInOut : Curves.easeIn,
         );
         _backDropFilterAnimation = Tween(
-            begin: forward ? 0.0 : backgroundSize,
+            begin: forward ? 0.0 : _backdropFilterSize,
             end: forward ? pythagoreanTheorem(
                 MediaQuery.of(context).size.width,
                 MediaQuery.of(context).size.height,
@@ -100,10 +170,11 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
         ).animate(_backDropFilterCurve)
             ..addListener(() {
                 setState(() {
-                    backgroundSize = _backDropFilterAnimation.value;
+                    _backdropFilterSize = _backDropFilterAnimation.value;
                 });
             });
-        _backDropFilterController.forward();
+        await _backDropFilterController.forward();
+        if (forward) itemsAnimate();
     }
 
     double pythagoreanTheorem(double short, double long) {
@@ -118,7 +189,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                     width: MainPageState.bottomBarHeight,
                     height: MainPageState.bottomBarHeight,
                     child: Transform.rotate(
-                        angle: buttonRotateAngle,
+                        angle: _popButtonRotateAngle,
                         child: Icon(
                             Icons.add,
                             color: Colors.grey,
@@ -149,8 +220,8 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                         onTap: willPop,
                         child: Center(
                             child: SizedBox(
-                                width: backgroundSize,
-                                height: backgroundSize,
+                                width: _backdropFilterSize,
+                                height: _backdropFilterSize,
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(s.height * 2),
                                     child: BackdropFilter(
@@ -185,36 +256,48 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     }
 
     Widget item(BuildContext context, int index) {
-        return GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                    Container(
-                        padding: EdgeInsets.all(Constants.suSetSp(16.0)),
-                        decoration: BoxDecoration(
-                            color: buttonColors[index],
-                            shape: BoxShape.circle,
-                        ),
-                        child: SvgPicture.asset(
-                            "assets/icons/${buttonIcons[index]}-line.svg",
-                            color: Colors.white,
-                            width: Constants.suSetSp(28.0),
-                            height: Constants.suSetSp(28.0),
+        return Stack(
+            overflow: Overflow.visible,
+            children: <Widget>[
+                Positioned(
+                    left: 0.0, right: 0.0,
+                    top: _itemOffset[index],
+                    child: Opacity(
+                        opacity: _itemOpacity[index],
+                        child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                    Container(
+                                        padding: EdgeInsets.all(Constants.suSetSp(16.0)),
+                                        decoration: BoxDecoration(
+                                            color: itemColors[index],
+                                            shape: BoxShape.circle,
+                                        ),
+                                        child: SvgPicture.asset(
+                                            "assets/icons/${itemIcons[index]}-line.svg",
+                                            color: Colors.white,
+                                            width: Constants.suSetSp(28.0),
+                                            height: Constants.suSetSp(28.0),
+                                        ),
+                                    ),
+                                    Constants.emptyDivider(height: 10.0),
+                                    Text(
+                                        itemTitles[index],
+                                        style: Theme.of(context).textTheme.body1.copyWith(
+                                            fontSize: Constants.suSetSp(18.0),
+                                        ),
+                                    ),
+                                ],
+                            ),
+                            onTap: () {
+                                itemOnTap[index](context);
+                            },
                         ),
                     ),
-                    Constants.emptyDivider(height: 10.0),
-                    Text(
-                        buttonTitles[index],
-                        style: Theme.of(context).textTheme.body1.copyWith(
-                            fontSize: Constants.suSetSp(18.0),
-                        ),
-                    ),
-                ],
-            ),
-            onTap: () {
-                buttonVoids[index](context);
-            },
+                ),
+            ],
         );
     }
 
@@ -241,7 +324,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                         shrinkWrap: true,
                         crossAxisCount: 4,
                         children: <Widget>[
-                            for (int i = 0; i < buttonTitles.length; i++)
+                            for (int i = 0; i < itemTitles.length; i++)
                                 item(context, i),
                         ],
                     ),

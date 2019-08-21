@@ -132,12 +132,13 @@ class MyInfoPageState extends State<MyInfoPage> {
         DateTime startDate = DateTime.parse(_day);
         DateTime currentDate = DateTime.now();
         int difference = startDate.difference(currentDate).inDays - 1;
-        if (difference < 0) {
-            int week = (difference / 7).abs().ceil();
-            if (week <= 20) setState(() {
-              this.currentWeek = week;
-            });
+        int week = - (difference / 7).floor();
+        if (week > 0 && week <= 20) {
+            currentWeek = week;
+        } else {
+            currentWeek = null;
         }
+        if (mounted) setState(() {});
     }
 
     void updateHello() {
@@ -224,18 +225,15 @@ class MyInfoPageState extends State<MyInfoPage> {
     }
 
     Widget userInfo() {
-        Widget avatar = Hero(
-            tag: "user_${UserAPI.currentUser.uid}",
-            child: SizedBox(
-                width: Constants.suSetSp(100.0),
-                height: Constants.suSetSp(100.0),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(Constants.suSetSp(50.0)),
-                    child: FadeInImage(
-                        fadeInDuration: const Duration(milliseconds: 100),
-                        placeholder: AssetImage("assets/avatar_placeholder.png"),
-                        image: UserAPI.getAvatarProvider(uid: UserAPI.currentUser.uid),
-                    ),
+        Widget avatar = SizedBox(
+            width: Constants.suSetSp(100.0),
+            height: Constants.suSetSp(100.0),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(Constants.suSetSp(50.0)),
+                child: FadeInImage(
+                    fadeInDuration: const Duration(milliseconds: 100),
+                    placeholder: AssetImage("assets/avatar_placeholder.png"),
+                    image: UserAPI.getAvatarProvider(uid: UserAPI.currentUser.uid),
                 ),
             ),
         );
