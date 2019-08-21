@@ -139,11 +139,11 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                     ? await ChannelUtils.iosGetPushToken()
                     : ""
             ,
-            "date": DateTime.now().millisecondsSinceEpoch,
-            "uid": user.uid,
-            "name": user.name,
-            "workid": user.workId,
-            "appversion": await OTAUtils.getCurrentVersion(),
+            "date": await ChannelUtils.iosGetPushDate(),
+            "uid": user.uid.toString(),
+            "name": user.name.toString(),
+            "workid": user.workId.toString(),
+            "appversion": await OTAUtils.getCurrentVersion().toString(),
             "platform": Platform.isIOS ? "ios" : "android"
         };
         NetUtils.post(API.pushUpload, data: data).then((response) {
