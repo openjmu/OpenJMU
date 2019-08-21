@@ -84,7 +84,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
             );
             _itemCurveAnimations[i] = CurvedAnimation(
                 parent: _itemAnimateControllers[i],
-                curve: Curves.bounceOut,
+                curve: Curves.ease,
             );
             _itemAnimations[i] = Tween(
                 begin: -20.0,
@@ -116,11 +116,16 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
         }
     }
     
-    void itemsAnimate() {
+    void itemsAnimate(bool forward) {
         for (int i = 0; i < _itemAnimateControllers.length; i++) {
             Future.delayed(Duration(milliseconds: 50 * i), () {
-                _itemAnimateControllers[i]?.forward();
-                _itemOpacityAnimateControllers[i]?.forward();
+                if (forward) {
+                    _itemAnimateControllers[i]?.forward();
+                    _itemOpacityAnimateControllers[i]?.forward();
+                } else {
+                    _itemAnimateControllers[i]?.reverse();
+                    _itemOpacityAnimateControllers[i]?.reverse();
+                }
             });
         }
     }
@@ -150,6 +155,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     }
 
     void backDropFilterAnimate(BuildContext context, bool forward) async {
+        final Size s = MediaQuery.of(context).size;
         if (!forward) _backDropFilterController?.stop();
         popButtonAnimate(context, forward);
 
@@ -163,18 +169,22 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
         );
         _backDropFilterAnimation = Tween(
             begin: forward ? 0.0 : _backdropFilterSize,
-            end: forward ? pythagoreanTheorem(
-                MediaQuery.of(context).size.width,
-                MediaQuery.of(context).size.height,
-            ) * 2 : 0.0,
+            end: forward ? pythagoreanTheorem(s.width, s.height) * 2 : 0.0,
         ).animate(_backDropFilterCurve)
             ..addListener(() {
                 setState(() {
                     _backdropFilterSize = _backDropFilterAnimation.value;
                 });
             });
-        await _backDropFilterController.forward();
-        if (forward) itemsAnimate();
+        _backDropFilterController.forward();
+        if (forward) {
+            Future.delayed(
+                Duration(milliseconds: _animateDuration ~/ 2),
+                        () { itemsAnimate(true); },
+            );
+        } else {
+            itemsAnimate(false);
+        }
     }
 
     double pythagoreanTheorem(double short, double long) {
@@ -186,14 +196,14 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
             child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 child: SizedBox(
-                    width: MainPageState.bottomBarHeight,
-                    height: MainPageState.bottomBarHeight,
+                    width: Constants.suSetSp(MainPageState.bottomBarHeight),
+                    height: Constants.suSetSp(MainPageState.bottomBarHeight),
                     child: Transform.rotate(
                         angle: _popButtonRotateAngle,
                         child: Icon(
                             Icons.add,
                             color: Colors.grey,
-                            size: Constants.suSetSp(28.0),
+                            size: Constants.suSetSp(32.0),
                         ),
                     ),
                 ),
@@ -205,7 +215,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     Widget wrapper(context, {Widget child}) {
         final Size s = MediaQuery.of(context).size;
         final double topOverflow = pythagoreanTheorem(s.width, s.height) - s.height;
-        final double horizontalOverflow = (s.height - s.width);
+        final double horizontalOverflow = pythagoreanTheorem(s.width, s.height) - s.width;
 
         return Stack(
             overflow: Overflow.visible,
@@ -225,24 +235,25 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                                 child: ClipRRect(
                                     borderRadius: BorderRadius.circular(s.height * 2),
                                     child: BackdropFilter(
-                                        filter: ui.ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
-                                        child: Align(
-                                            alignment: Alignment.topCenter,
-                                            child: Container(
-                                                margin: EdgeInsets.only(top: topOverflow),
-                                                width: s.width,
-                                                height: s.height,
-                                                constraints: BoxConstraints(
-                                                    maxWidth: s.width,
-                                                    maxHeight: s.height,
-                                                ),
-                                                child: child ?? SizedBox(),
-                                            ),
-                                        ),
+                                        filter: ui.ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+                                        child: Text(" ")
                                     ),
                                 ),
                             ),
                         ),
+                    ),
+                ),
+                Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                        margin: EdgeInsets.only(top: topOverflow),
+                        width: s.width,
+                        height: s.height,
+                        constraints: BoxConstraints(
+                            maxWidth: s.width,
+                            maxHeight: s.height,
+                        ),
+                        child: child ?? SizedBox(),
                     ),
                 ),
                 Positioned(
