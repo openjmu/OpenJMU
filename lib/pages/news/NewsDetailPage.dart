@@ -23,6 +23,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     final Completer<WebViewController> _controller = Completer<WebViewController>();
 
     String pageContent;
+    bool _contentLoaded = false;
     bool _webViewLoaded = false;
 
     @override
@@ -38,20 +39,19 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
 
     void getNewsContent() async {
         Map<String, dynamic> data = (await NewsAPI.getNewsContent(newsId: widget.news.id)).data;
-        setState(() {
-            pageContent = """<!DOCTYPE html>
+        pageContent = """<!DOCTYPE html>
                 <html>
                     <head>
                         <meta charset="UTF-8" />
                         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,shrink-to-fit=no" />'
                         <title>${widget.news.title}</title>
                     </head>
-                    <body>
-                        ${data['content']}
-                    </body>
+                    <body>${data['content']}</body>
                 </html>
             """;
-        });
+        pageContent = 'data:text/html;charset=UTF-8;base64,${base64Encode(const Utf8Encoder().convert(pageContent))}';
+        _contentLoaded = true;
+        if (mounted) setState(() {});
     }
 
     @override
@@ -69,12 +69,8 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
             ),
             body: Stack(
                 children: <Widget>[
-                    if (pageContent != null) WebView(
-                        initialUrl: ''
-                                'data:text/html;'
-                                'charset=UTF-8;'
-                                'base64,${base64Encode(const Utf8Encoder().convert(pageContent))}'
-                        ,
+                    if (pageContent != null && _contentLoaded) WebView(
+                        initialUrl: pageContent,
                         javascriptMode: JavascriptMode.unrestricted,
                         onWebViewCreated: (WebViewController webViewController) {
                             _controller.complete(webViewController);
@@ -85,7 +81,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                             });
                         },
                     ),
-                    if (!_webViewLoaded) Constants.progressIndicator(),
+                    if (!_webViewLoaded) Center(child: Constants.progressIndicator()),
                 ],
             ),
         );

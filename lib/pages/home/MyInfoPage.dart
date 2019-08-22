@@ -164,7 +164,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         });
     }
 
-    void requestSign() async {
+    void requestSign() {
         if (!signed) {
             setState(() { signing = true; });
             SignAPI.requestSign().then((response) {

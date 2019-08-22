@@ -22,11 +22,14 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     /// Animation.
     int _animateDuration = 300;
     double _backdropFilterSize = 0.0;
+    double _popButtonOpacity = 0.01;
     double _popButtonRotateAngle = 0.0;
     Animation<double> _backDropFilterAnimation;
     AnimationController _backDropFilterController;
     Animation<double> _popButtonAnimation;
     AnimationController _popButtonController;
+    Animation<double> _popButtonOpacityAnimation;
+    AnimationController _popButtonOpacityController;
     List<double> _itemOffset;
     List<Animation<double>> _itemAnimations;
     List<CurvedAnimation> _itemCurveAnimations;
@@ -131,16 +134,19 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     }
     
     void popButtonAnimate(context, bool forward) {
-        if (!forward) _popButtonController?.stop();
+        if (!forward) {
+            _popButtonController?.stop();
+            _popButtonOpacityController?.stop();
+        }
         final rotateDegree = 45 * (math.pi / 180) * 3;
 
-        _popButtonController = AnimationController(
+        _popButtonOpacityController = _popButtonController = AnimationController(
             duration: Duration(milliseconds: _animateDuration),
             vsync: this,
         );
         Animation _popButtonCurve = CurvedAnimation(
             parent: _popButtonController,
-            curve: Curves.linear,
+            curve: Curves.easeInOut,
         );
         _popButtonAnimation = Tween(
             begin: forward ? 0.0 : _popButtonRotateAngle,
@@ -151,11 +157,23 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                     _popButtonRotateAngle = _popButtonAnimation.value;
                 });
             });
+        _popButtonOpacityAnimation = Tween(
+            begin: forward ? 0.01 : _popButtonOpacity,
+            end: forward ? 1.0 : 0.01,
+        ).animate(_popButtonCurve)
+            ..addListener(() {
+                setState(() {
+                    _popButtonOpacity = _popButtonOpacityAnimation.value;
+                });
+            });
         _popButtonController.forward();
+        _popButtonOpacityController.forward();
     }
 
-    void backDropFilterAnimate(BuildContext context, bool forward) async {
-        final Size s = MediaQuery.of(context).size;
+    Future backDropFilterAnimate(BuildContext context, bool forward) async {
+        final MediaQueryData m = MediaQuery.of(context);
+        final Size s = m.size;
+        final double r = pythagoreanTheorem(s.width, s.height * 2 + m.padding.top) / 2;
         if (!forward) _backDropFilterController?.stop();
         popButtonAnimate(context, forward);
 
@@ -169,14 +187,13 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
         );
         _backDropFilterAnimation = Tween(
             begin: forward ? 0.0 : _backdropFilterSize,
-            end: forward ? pythagoreanTheorem(s.width, s.height) * 2 : 0.0,
+            end: forward ? r * 2 : 0.0,
         ).animate(_backDropFilterCurve)
             ..addListener(() {
                 setState(() {
                     _backdropFilterSize = _backDropFilterAnimation.value;
                 });
             });
-        _backDropFilterController.forward();
         if (forward) {
             Future.delayed(
                 Duration(milliseconds: _animateDuration ~/ 2),
@@ -185,6 +202,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
         } else {
             itemsAnimate(false);
         }
+        await _backDropFilterController.forward();
     }
 
     double pythagoreanTheorem(double short, double long) {
@@ -192,30 +210,35 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     }
 
     Widget popButton() {
-        return Center(
-            child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                child: SizedBox(
-                    width: Constants.suSetSp(MainPageState.bottomBarHeight),
-                    height: Constants.suSetSp(MainPageState.bottomBarHeight),
-                    child: Transform.rotate(
-                        angle: _popButtonRotateAngle,
-                        child: Icon(
-                            Icons.add,
-                            color: Colors.grey,
-                            size: Constants.suSetSp(32.0),
+        return Opacity(
+            opacity:_popButtonOpacity,
+            child: Center(
+                child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    child: SizedBox(
+                        width: Constants.suSetSp(MainPageState.bottomBarHeight),
+                        height: Constants.suSetSp(MainPageState.bottomBarHeight),
+                        child: Transform.rotate(
+                            angle: _popButtonRotateAngle,
+                            child: Icon(
+                                Icons.add,
+                                color: Colors.grey,
+                                size: Constants.suSetSp(32.0),
+                            ),
                         ),
                     ),
+                    onTap: willPop,
                 ),
-                onTap: willPop,
             ),
         );
     }
 
     Widget wrapper(context, {Widget child}) {
-        final Size s = MediaQuery.of(context).size;
-        final double topOverflow = pythagoreanTheorem(s.width, s.height) - s.height;
-        final double horizontalOverflow = pythagoreanTheorem(s.width, s.height) - s.width;
+        final MediaQueryData m = MediaQuery.of(context);
+        final Size s = m.size;
+        final double r = pythagoreanTheorem(s.width, s.height * 2 + m.padding.top) / 2;
+        final double topOverflow = r - s.height;
+        final double horizontalOverflow = r - s.width;
 
         return Stack(
             overflow: Overflow.visible,
@@ -224,7 +247,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                     left: - horizontalOverflow,
                     right: - horizontalOverflow,
                     top: - topOverflow,
-                    bottom: - pythagoreanTheorem(s.width, s.height),
+                    bottom: - r,
                     child: GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: willPop,
@@ -233,7 +256,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                                 width: _backdropFilterSize,
                                 height: _backdropFilterSize,
                                 child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(s.height * 2),
+                                    borderRadius: BorderRadius.circular(r * 2),
                                     child: BackdropFilter(
                                         filter: ui.ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
                                         child: Text(" ")
@@ -313,7 +336,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     }
 
     Future<bool> willPop() async {
-        backDropFilterAnimate(context, false);
+        await backDropFilterAnimate(context, false);
         if (!popping) {
             popping = true;
             await Future.delayed(Duration(milliseconds: _animateDuration), () {
