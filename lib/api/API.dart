@@ -28,7 +28,7 @@ class API {
     static final String middle99Host = "https://middle99.jmu.edu.cn";
     static final String upApiHost = "https://upapi.jmu.edu.cn";
     static final String jwglHost = "http://jwgls.jmu.edu.cn";
-    static final String pushHost = "http://push.openjmu.xyz:4443";
+    static final String pushHost = "http://push.openjmu.xyz:8787";
 
     static final String pushUpload = "$pushHost/push";
 

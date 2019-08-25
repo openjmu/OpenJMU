@@ -78,7 +78,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         if (widget.initIndex != null) _tabIndex = widget.initIndex;
         if (Platform.isAndroid) OTAUtils.checkUpdate(fromHome: true);
 
-//        initPushService();
+        initPushService();
         initNotification();
 
         pages = [
@@ -138,7 +138,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         final Map<String, dynamic> data = {
             "token": Platform.isIOS
                     ? await ChannelUtils.iosGetPushToken()
-                    : ""
+                    : "null"
             ,
             "date": DateFormat("yyyy/MM/dd/HH:mm:ss", "en").format(DateTime.now()),
             "uid": user.uid.toString(),
