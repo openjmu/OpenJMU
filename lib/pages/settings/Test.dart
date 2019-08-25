@@ -34,8 +34,8 @@ class _TestPageState extends State<TestPage> {
 
     @override
     void initState() {
-        super.initState();
         _request();
+        super.initState();
 
     }
 
@@ -107,6 +107,13 @@ class _TestPageState extends State<TestPage> {
     @override
     Widget build(BuildContext context) {
         return Scaffold(
+            appBar: AppBar(
+                title: Text(
+                    "Test page",
+                    style: Theme.of(context).textTheme.title,
+                ),
+                centerTitle: true,
+            ),
             body: Center(
                 child: ListView(
                     children: <Widget>[
