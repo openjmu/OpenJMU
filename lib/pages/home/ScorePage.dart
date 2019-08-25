@@ -50,11 +50,12 @@ class _ScorePageState extends State<ScorePage> {
             "point": 0.0,
         },
     };
-    bool loading = true, socketInitialized = false, noScore = false;
+    bool loading = true, socketInitialized = false, noScore = false, loadError = false;
     List<String> terms;
     List<Score> scores = [], scoresFiltered;
     String termSelected;
     String _scoreData = "";
+    Widget errorWidget = SizedBox();
     StreamSubscription scoresSubscription;
 
     @override
@@ -95,6 +96,7 @@ class _ScorePageState extends State<ScorePage> {
                 sendRequest();
             }).catchError((e) {
                 debugPrint("Socket connect error: $e");
+                fetchError(e.toString());
             });
         } else {
             debugPrint("Socket already initialized.");
@@ -180,6 +182,29 @@ class _ScorePageState extends State<ScorePage> {
             }
         }
         return result;
+    }
+
+    void fetchError(String error) {
+        String result;
+
+        if (error.contains("The method 'transform' was called on null")) {
+            result = "电波暂时无法到达成绩业务的门口\n😰";
+        } else {
+            result = "成绩好像还没有准备好呢\n🤒";
+        }
+
+        loading = false; loadError = true;
+        errorWidget = Center(
+            child: Text(
+                result,
+                style: TextStyle(
+                    fontSize: Constants.suSetSp(23.0),
+                    fontWeight: FontWeight.normal,
+                ),
+                textAlign: TextAlign.center,
+            ),
+        );
+        if (mounted) setState(() {});
     }
 
     Widget _term(term, index) {
@@ -318,7 +343,10 @@ class _ScorePageState extends State<ScorePage> {
 
     @override
     Widget build(BuildContext context) {
-        return loading ? Center(child: Constants.progressIndicator())
+        return loading ?
+        Center(child: Constants.progressIndicator())
+            : loadError
+                ? errorWidget
                 :
         noScore ? Center(child: Text(
             "暂时还没有你的成绩\n🤔",

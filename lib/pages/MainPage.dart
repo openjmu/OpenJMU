@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
@@ -139,7 +140,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                     ? await ChannelUtils.iosGetPushToken()
                     : ""
             ,
-            "date": DateTime.now().millisecondsSinceEpoch,
+            "date": DateFormat("yyyy/MM/dd/HH:mm:ss", "en").format(DateTime.now()),
             "uid": user.uid.toString(),
             "name": user.name.toString(),
             "workid": user.workId.toString(),
@@ -148,6 +149,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         };
         NetUtils.post(API.pushUpload, data: data).then((response) {
             debugPrint("Push service info upload success.");
+        }).catchError((e) {
+            debugPrint("Push service upload error: $e");
         });
     }
 
