@@ -14,7 +14,7 @@ class LinkText extends SpecialText {
     LinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap) : super(startKey, endKey, textStyle, onTap: onTap);
 
     @override
-    TextSpan finishText() {
+    InlineSpan finishText() {
         return TextSpan(
             text: " 网页链接 ",
             style: textStyle?.copyWith(color: Colors.blue),
@@ -34,7 +34,7 @@ class LinkOlderText extends SpecialText {
     LinkOlderText(TextStyle textStyle, SpecialTextGestureTapCallback onTap) : super(startKey, endKey, textStyle, onTap: onTap);
 
     @override
-    TextSpan finishText() {
+    InlineSpan finishText() {
         return TextSpan(
             text: " 网页链接 ",
             style: textStyle?.copyWith(color: Colors.blue),
@@ -77,7 +77,7 @@ class MentionText extends SpecialText {
     }
 
     @override
-    TextSpan finishText() {
+    InlineSpan finishText() {
         String mentionOriginalText = toString();
         String mentionText = removeUidFromContent(mentionOriginalText);
         mentionOriginalText = "${mentionOriginalText.substring(0, mentionOriginalText.length - MentionText.endKey.length)}>";
@@ -112,7 +112,7 @@ class PoundText extends SpecialText {
     PoundText(TextStyle textStyle, SpecialTextGestureTapCallback onTap, {this.start, this.type}) : super(flag, flag, textStyle, onTap: onTap);
 
     @override
-    TextSpan finishText() {
+    InlineSpan finishText() {
         final String poundText = getContent();
         if (type == BuilderType.extendedTextField) {
             return SpecialTextSpan(
@@ -144,7 +144,7 @@ class EmoticonText extends SpecialText {
     EmoticonText(TextStyle textStyle, {this.start, this.type}) : super(EmoticonText.flag, "]", textStyle);
 
     @override
-    TextSpan finishText() {
+    InlineSpan finishText() {
         var key = toString();
         if (EmoticonUtils.instance.emoticonMap.containsKey(key)) {
             final double size = 30.0 / 27.0 * ((textStyle != null) ? textStyle.fontSize : 17);
@@ -193,7 +193,7 @@ class CommentImageText extends SpecialText {
     }
 
     @override
-    TextSpan finishText() {
+    InlineSpan finishText() {
         final String imageText = toString();
         final int imageId = getImageIdFromContent(imageText);
         final double size = Constants.suSetSp(80);
@@ -209,11 +209,10 @@ class CommentImageText extends SpecialText {
                 bottom: Constants.suSetSp(20.0),
                 right: Constants.suSetSp(4.0),
             ),
-            recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                    Map<String, dynamic> data = {'content': toString(), 'image': imageId};
-                    if (onTap != null) onTap(data);
-                },
+            onTap: () {
+                Map<String, dynamic> data = {'content': toString(), 'image': imageId};
+                if (onTap != null) onTap(data);
+            },
         );
     }
 }

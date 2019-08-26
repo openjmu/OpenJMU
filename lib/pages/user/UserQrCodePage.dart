@@ -38,7 +38,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         RenderRepaintBoundary boundary = previewContainer.currentContext.findRenderObject();
         ui.Image image = await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
         ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-        final result = await ImageGallerySaver.save(byteData.buffer.asUint8List());
+        final result = await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
         if (result) {
             showShortToast("保存成功");
         } else {
@@ -130,7 +130,6 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                                 Stack(
                                     children: <Widget>[
                                         QrImage(
-                                            version: 3,
                                             data: "openjmu://user/${UserAPI.currentUser.uid}",
                                             padding: EdgeInsets.zero,
                                             foregroundColor: Theme.of(context).iconTheme.color,

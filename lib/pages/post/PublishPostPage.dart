@@ -157,6 +157,8 @@ class PublishPostPageState extends State<PublishPostPage> {
                 );
             } on PlatformException catch (e) {
                 showCenterErrorShortToast(e.message);
+            } catch (e) {
+                debugPrint(e.toString());
             }
         } else return;
         setState(() {
@@ -371,7 +373,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     }
 
     Future<FormData> createForm(Asset asset) async {
-        ByteData byteData = await asset.requestOriginal();
+        ByteData byteData = await asset.getByteData();
         List<int> imageData = byteData.buffer.asUint8List();
         return FormData.from({
             "image": UploadFileInfo.fromBytes(imageData, "${asset.name}.jpg"),
