@@ -25,7 +25,7 @@ class AppCenterPage extends StatefulWidget {
 class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderStateMixin {
     final ScrollController _scrollController = ScrollController();
     final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
-    static List<String> tabs() => ["课程表", if (!UserAPI.currentUser.isTeacher) "成绩", "应用"];
+    static List<String> tabs() => ["课程表", if (!(UserAPI.currentUser.isTeacher ?? true)) "成绩", "应用"];
 
     TabController _tabController;
     Color currentThemeColor = ThemeUtils.currentThemeColor;

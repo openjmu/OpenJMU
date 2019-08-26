@@ -132,11 +132,25 @@ class OTAUtils {
             actions: <Widget>[
                 FlatButton(
                     onPressed: () {Navigator.pop(_);},
-                    child: Text("取消", style: TextStyle(color: Colors.white)),
+                    child: Text(
+                        "取消",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Constants.suSetSp(20.0),
+                        ),
+                    ),
                 ),
                 FlatButton(
+                    color: Colors.white,
                     onPressed: () {_checkPermission(_);},
-                    child: Text("更新", style: TextStyle(fontWeight: FontWeight.bold)), color: Colors.white,
+                    child: Text(
+                        "更新",
+                        style: TextStyle(
+                            color: ThemeUtils.currentThemeColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: Constants.suSetSp(20.0),
+                        ),
+                    ),
                 ),
             ],
             elevation: 0,
