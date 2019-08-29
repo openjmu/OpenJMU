@@ -193,51 +193,44 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
 
     Widget getSectionColumn(context, name) {
         if (webAppWidgetList[name] != null) {
-            int rows = (webAppWidgetList[name].length / 3).ceil();
-            if (webAppWidgetList[name].length != 0 && rows == 0) rows += 1;
-            num _width = MediaQuery.of(context).size.width / 3;
-            num _height = (_width / 1.3 * rows) + Constants.suSetSp(59);
-            return Container(
-                height: _height,
-                child: Column(
-                    children: <Widget>[
-                        Container(
-                            margin: EdgeInsets.symmetric(
-                                horizontal: Constants.suSetSp(36.0),
-                                vertical: Constants.suSetSp(8.0),
-                            ),
-                            padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(8.0)),
-                            width: MediaQuery.of(context).size.width,
-                            child: Center(
-                                child: Text(
-                                    WebApp.category()[name],
-                                    style: TextStyle(
-                                        color: Theme.of(context).textTheme.title.color,
-                                        fontSize: Constants.suSetSp(18.0),
-                                        fontWeight: FontWeight.bold,
-                                    ),
-                                ),
-                            ),
-                            decoration: BoxDecoration(
-                                border: Border(
-                                    bottom: Divider.createBorderSide(
-                                        context,
-                                        color: Theme.of(context).dividerColor,
-                                        width: 2.0,
-                                    ),
+            return Column(
+                children: <Widget>[
+                    Container(
+                        margin: EdgeInsets.symmetric(
+                            horizontal: Constants.suSetSp(36.0),
+                            vertical: Constants.suSetSp(8.0),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(8.0)),
+                        width: MediaQuery.of(context).size.width,
+                        child: Center(
+                            child: Text(
+                                WebApp.category()[name],
+                                style: TextStyle(
+                                    color: Theme.of(context).textTheme.title.color,
+                                    fontSize: Constants.suSetSp(18.0),
+                                    fontWeight: FontWeight.bold,
                                 ),
                             ),
                         ),
-                        GridView.count(
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            crossAxisCount: 3,
-                            childAspectRatio: 1.3 / 1,
-                            children: webAppWidgetList[name],
+                        decoration: BoxDecoration(
+                            border: Border(
+                                bottom: Divider.createBorderSide(
+                                    context,
+                                    color: Theme.of(context).dividerColor,
+                                    width: 2.0,
+                                ),
+                            ),
                         ),
-                    ],
-                ),
+                    ),
+                    GridView.count(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        crossAxisCount: 3,
+                        childAspectRatio: 1.3 / 1,
+                        children: webAppWidgetList[name],
+                    ),
+                ],
             );
         } else {
             return SizedBox();
@@ -247,69 +240,69 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
     @override
     Widget build(BuildContext context) {
         return Scaffold(
-                appBar: AppBar(
-                    title: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                            Flexible(
-                                child: TabBar(
-                                    isScrollable: true,
-                                    indicatorColor: currentThemeColor,
-                                    indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(16.0)),
-                                    indicatorSize: TabBarIndicatorSize.label,
-                                    indicatorWeight: Constants.suSetSp(6.0),
-                                    labelColor: Theme.of(context).textTheme.body1.color,
-                                    labelStyle: MainPageState.tabSelectedTextStyle,
-                                    labelPadding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
-                                    unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
-                                    tabs: <Tab>[
-                                        for (int i = 0; i < tabs().length; i++)
-                                            Tab(text: tabs()[i])
-                                    ],
-                                    controller: _tabController,
-                                ),
+            appBar: AppBar(
+                title: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                        Flexible(
+                            child: TabBar(
+                                isScrollable: true,
+                                indicatorColor: currentThemeColor,
+                                indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(16.0)),
+                                indicatorSize: TabBarIndicatorSize.label,
+                                indicatorWeight: Constants.suSetSp(6.0),
+                                labelColor: Theme.of(context).textTheme.body1.color,
+                                labelStyle: MainPageState.tabSelectedTextStyle,
+                                labelPadding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+                                unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
+                                tabs: <Tab>[
+                                    for (int i = 0; i < tabs().length; i++)
+                                        Tab(text: tabs()[i])
+                                ],
+                                controller: _tabController,
                             ),
-                        ],
-                    ),
-                    centerTitle: false,
-                    actions: <Widget>[
-                        Padding(
-                            padding: EdgeInsets.only(left: Constants.suSetSp(8.0)),
-                            child: IconButton(
-                                icon: Icon(Icons.refresh, size: Constants.suSetSp(24.0)),
-                                onPressed: () {
-                                    Constants.eventBus.fire(AppCenterRefreshEvent(_tabController.index));
-                                },
-                            ),
-                        )
+                        ),
                     ],
                 ),
-          body: ExtendedTabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              controller: _tabController,
-              cacheExtent: 2,
-              children: <Widget>[
-                  if (UserAPI.currentUser.isTeacher != null) InAppBrowserPage(
-                      url: ""
-                              "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
-                              "?sid=${UserAPI.currentUser.sid}"
-                              "&night=${ThemeUtils.isDark ? 1 : 0}",
-                      title: "课程表",
-                      withAppBar: false,
-                      withAction: false,
-                      keepAlive: true,
-                  ),
-                  if (!UserAPI.currentUser.isTeacher ?? false) ScorePage(),
-                  RefreshIndicator(
-                      key: refreshIndicatorKey,
-                      child: FutureBuilder(
-                          builder: _buildFuture,
-                          future: _futureBuilderFuture,
-                      ),
-                      onRefresh: getAppList,
-                  ),
-              ],
-          ),
+                centerTitle: false,
+                actions: <Widget>[
+                    Padding(
+                        padding: EdgeInsets.only(left: Constants.suSetSp(8.0)),
+                        child: IconButton(
+                            icon: Icon(Icons.refresh, size: Constants.suSetSp(24.0)),
+                            onPressed: () {
+                                Constants.eventBus.fire(AppCenterRefreshEvent(_tabController.index));
+                            },
+                        ),
+                    )
+                ],
+            ),
+            body: ExtendedTabBarView(
+                physics: NeverScrollableScrollPhysics(),
+                controller: _tabController,
+                cacheExtent: 2,
+                children: <Widget>[
+                    if (UserAPI.currentUser.isTeacher != null) InAppBrowserPage(
+                        url: ""
+                                "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
+                                "?sid=${UserAPI.currentUser.sid}"
+                                "&night=${ThemeUtils.isDark ? 1 : 0}",
+                        title: "课程表",
+                        withAppBar: false,
+                        withAction: false,
+                        keepAlive: true,
+                    ),
+                    if (!UserAPI.currentUser.isTeacher ?? false) ScorePage(),
+                    RefreshIndicator(
+                        key: refreshIndicatorKey,
+                        child: FutureBuilder(
+                            builder: _buildFuture,
+                            future: _futureBuilderFuture,
+                        ),
+                        onRefresh: getAppList,
+                    ),
+                ],
+            ),
         );
     }
 }
