@@ -280,7 +280,7 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
             body: ExtendedTabBarView(
                 physics: NeverScrollableScrollPhysics(),
                 controller: _tabController,
-                cacheExtent: 2,
+                cacheExtent: null,
                 children: <Widget>[
                     if (UserAPI.currentUser.isTeacher != null) InAppBrowserPage(
                         url: ""

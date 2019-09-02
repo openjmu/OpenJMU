@@ -21,7 +21,8 @@ import 'package:OpenJMU/utils/RouteUtils.dart';
 import 'package:OpenJMU/widgets/NoScaleTextWidget.dart';
 
 
-void main() {
+void main() async {
+    await DataUtils.initSharedPreferences();
     runApp(JMUAppClient());
 }
 

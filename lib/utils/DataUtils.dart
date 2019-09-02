@@ -34,6 +34,11 @@ class DataUtils {
     static final String spHomeSplashIndex   = "home_splash_index";
     static final String spHomeStartUpIndex  = "home_startup_index";
 
+    static SharedPreferences sp;
+    static Future initSharedPreferences() async {
+        sp = await SharedPreferences.getInstance();
+    }
+
     static Future login(context, String username, String password) async {
         final String blowfish = Uuid().v4();
         Map<String, dynamic> params = Constants.loginParams(
@@ -97,6 +102,8 @@ class DataUtils {
         }
     }
 
+    static String recoverWorkId() => sp.getString(spUserWorkId);
+
     static Future recoverLoginInfo() async {
         try {
             Map<String, String> info = await getSpTicket();
@@ -143,7 +150,6 @@ class DataUtils {
     static Future<Null> saveLoginInfo(Map data) async {
         if (data != null) {
             setUserInfo(data);
-            SharedPreferences sp = await SharedPreferences.getInstance();
             await sp.setBool(spIsLogin, true);
             await sp.setBool(spIsTeacher, data['isTeacher']);
             await sp.setString(spUserSid, data['sid']);
@@ -152,7 +158,7 @@ class DataUtils {
             await sp.setString(spUserName, data['name']);
             await sp.setInt(spUserUid, data['uid']);
             await sp.setInt(spUserUnitId, data['unitId']);
-            await sp.setInt(spUserWorkId, int.parse(data['workId']));
+            await sp.setString(spUserWorkId, data['workId']);
 //            await sp.setInt(spUserClassId, data['userClassId']);
         }
     }
@@ -160,7 +166,6 @@ class DataUtils {
     // 清除登录信息
     static Future clearLoginInfo() async {
         UserAPI.currentUser = UserInfo();
-        SharedPreferences sp = await SharedPreferences.getInstance();
         await sp.remove(spIsLogin);
         await sp.remove(spIsTeacher);
         await sp.remove(spUserSid);
@@ -169,7 +174,7 @@ class DataUtils {
         await sp.remove(spUserName);
         await sp.remove(spUserUid);
         await sp.remove(spUserUnitId);
-        await sp.remove(spUserWorkId);
+//        await sp.remove(spUserWorkId);
 //        await sp.remove(spUserClassId);
         await sp.remove(spBrightness);
         await sp.remove(spColorThemeIndex);
@@ -179,7 +184,6 @@ class DataUtils {
     }
 
     static Future<Map> getSpTicket() async {
-        SharedPreferences sp = await SharedPreferences.getInstance();
         Map<String, String> tickets = {
             'ticket': sp.getString(spTicket),
             'blowfish': sp.getString(spBlowfish),
@@ -213,7 +217,6 @@ class DataUtils {
     }
 
     static Future updateSid(response) async {
-        SharedPreferences sp = await SharedPreferences.getInstance();
         await sp.setString(spUserSid, response['sid']);
         UserAPI.currentUser.sid = response['sid'];
         UserAPI.currentUser.uid = sp.getInt(spUserUid);
@@ -221,7 +224,6 @@ class DataUtils {
 
     // 是否登录
     static Future<bool> isLogin() async {
-        SharedPreferences sp = await SharedPreferences.getInstance();
         bool b = sp.getBool(spIsLogin);
         return b != null && b;
     }
@@ -237,24 +239,20 @@ class DataUtils {
 
     // 获取设置的主题色
     static Future<int> getColorThemeIndex() async {
-        SharedPreferences sp = await SharedPreferences.getInstance();
         return sp.getInt(spColorThemeIndex);
     }
 
     // 设置选择的主题色
     static Future setColorTheme(int colorThemeIndex) async {
-        SharedPreferences sp = await SharedPreferences.getInstance();
         await sp.setInt(spColorThemeIndex, colorThemeIndex);
     }
 
     // 获取设置的夜间模式
     static Future<bool> getBrightnessDark() async {
-        SharedPreferences sp = await SharedPreferences.getInstance();
         return sp.getBool(spBrightness);
     }
     // 设置选择的夜间模式
     static Future setBrightnessDark(bool isDark) async {
-        SharedPreferences sp = await SharedPreferences.getInstance();
         await sp.setBool(spBrightness, isDark);
     }
 
@@ -286,25 +284,21 @@ class DataUtils {
 
     // 获取默认启动页index
     static Future<int> getHomeSplashIndex() async {
-        SharedPreferences sp = await SharedPreferences.getInstance();
         int index = sp.getInt(spHomeSplashIndex);
         return index;
     }
     // 获取默认各页启动index
     static Future<List> getHomeStartUpIndex() async {
-        SharedPreferences sp = await SharedPreferences.getInstance();
         List index = jsonDecode(sp.getString(spHomeStartUpIndex) ?? "[0, 0, 0]");
         return index;
     }
 
     static Future<Null> setHomeSplashIndex(int index) async {
         Constants.homeSplashIndex = index;
-        SharedPreferences sp = await SharedPreferences.getInstance();
         await sp.setInt(spHomeSplashIndex, index);
     }
     static Future<Null> setHomeStartUpIndex(List indexList) async {
         Constants.homeStartUpIndex = indexList;
-        SharedPreferences sp = await SharedPreferences.getInstance();
         await sp.setString(spHomeStartUpIndex, jsonEncode(indexList));
     }
 

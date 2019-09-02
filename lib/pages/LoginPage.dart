@@ -27,7 +27,9 @@ class LoginPage extends StatefulWidget {
 class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
     final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
     final ScrollController _formScrollController = ScrollController();
-    final TextEditingController _usernameController = TextEditingController();
+    final TextEditingController _usernameController = TextEditingController(
+        text: DataUtils.recoverWorkId(),
+    );
     final TextEditingController _passwordController = TextEditingController();
     final List<Color> colorGradient = const <Color>[Color(0xffff8976), Color(0xffff3c33)];
 
@@ -47,7 +49,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 
     @override
     void initState() {
-        super.initState();
         Constants.eventBus
             ..on<LoginEvent>().listen((event) {
                 if (!event.isWizard) {}
@@ -79,19 +80,20 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 _password = _passwordController.text;
             }
         });
+        super.initState();
     }
 
     @override
     void didChangeDependencies() {
-        super.didChangeDependencies();
         ThemeUtils.setDark(_isDark);
+        super.didChangeDependencies();
     }
 
     @override
     void dispose() {
-        super.dispose();
         _usernameController?.dispose();
         _passwordController?.dispose();
+        super.dispose();
     }
 
     int last = 0;

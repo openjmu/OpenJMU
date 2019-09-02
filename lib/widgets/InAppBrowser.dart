@@ -129,7 +129,6 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
 
     @override
     void initState() {
-        super.initState();
         url = widget.url;
         title = widget.title;
         _webView = InAppWebView(
@@ -144,8 +143,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
                 });
             },
             onLoadStop: (InAppWebViewController controller, String url) {
-                if (this.mounted) controller.getTitle().then((title) {
-                    setState(() { this.title = title; });
+                controller.getTitle().then((title) {
+                    if (this.mounted) setState(() { this.title = title; });
                 });
             },
             onProgressChanged: (InAppWebViewController controller, int progress) {
@@ -220,6 +219,13 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             ..on<CourseScheduleRefreshEvent>().listen((event) {
                 if (this.mounted) loadCourseSchedule();
             });
+        super.initState();
+    }
+
+    @override
+    void dispose() {
+        debugPrint("Disposing browser page...");
+        super.dispose();
     }
 
     void loadCourseSchedule() {
@@ -234,6 +240,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             debugPrint("$e");
         }
     }
+
     PreferredSize progressBar(context) {
         return PreferredSize(
             child: SizedBox(
