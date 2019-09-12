@@ -253,7 +253,14 @@ class _TeamPostCardState extends State<TeamPostCard> {
                         Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
                             return ImageViewer(
                                 index,
-                                data.map<ImageBean>((f) => ImageBean(imageID, imageUrl, widget.post.id)).toList(),
+                                data.map<ImageBean>((f) {
+                                    return ImageBean(
+                                        id: imageID,
+                                        imageUrl: imageUrl,
+                                        imageThumbUrl: imageUrl,
+                                        postId: widget.post.id,
+                                    );
+                                }).toList(),
                             );
                         }));
                     },

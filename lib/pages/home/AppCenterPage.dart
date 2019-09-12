@@ -241,28 +241,21 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
-                title: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                        Flexible(
-                            child: TabBar(
-                                isScrollable: true,
-                                indicatorColor: currentThemeColor,
-                                indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(16.0)),
-                                indicatorSize: TabBarIndicatorSize.label,
-                                indicatorWeight: Constants.suSetSp(6.0),
-                                labelColor: Theme.of(context).textTheme.body1.color,
-                                labelStyle: MainPageState.tabSelectedTextStyle,
-                                labelPadding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
-                                unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
-                                tabs: <Tab>[
-                                    for (int i = 0; i < tabs().length; i++)
-                                        Tab(text: tabs()[i])
-                                ],
-                                controller: _tabController,
-                            ),
-                        ),
+                title: TabBar(
+                    isScrollable: true,
+                    indicatorColor: currentThemeColor,
+                    indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(16.0)),
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicatorWeight: Constants.suSetSp(6.0),
+                    labelColor: Theme.of(context).textTheme.body1.color,
+                    labelStyle: MainPageState.tabSelectedTextStyle,
+                    labelPadding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+                    unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
+                    tabs: <Tab>[
+                        for (int i = 0; i < tabs().length; i++)
+                            Tab(text: tabs()[i])
                     ],
+                    controller: _tabController,
                 ),
                 centerTitle: false,
                 actions: <Widget>[
@@ -278,21 +271,20 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
                 ],
             ),
             body: ExtendedTabBarView(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 controller: _tabController,
-                cacheExtent: null,
                 children: <Widget>[
                     if (UserAPI.currentUser.isTeacher != null) InAppBrowserPage(
-                        url: ""
-                                "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
+                        url: "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
                                 "?sid=${UserAPI.currentUser.sid}"
-                                "&night=${ThemeUtils.isDark ? 1 : 0}",
+                                "&night=${ThemeUtils.isDark ? 1 : 0}"
+                        ,
                         title: "课程表",
                         withAppBar: false,
                         withAction: false,
                         keepAlive: true,
                     ),
-                    if (!UserAPI.currentUser.isTeacher ?? false) ScorePage(),
+                    if (!(UserAPI.currentUser.isTeacher ?? false)) ScorePage(),
                     RefreshIndicator(
                         key: refreshIndicatorKey,
                         child: FutureBuilder(

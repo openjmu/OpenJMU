@@ -38,7 +38,7 @@ class PostController {
 
     _PostListState _postListState;
 
-    Future reload({bool needLoader}) => _postListState._refreshData();
+    Future reload() => _postListState._refreshData();
 }
 
 class PostList extends StatefulWidget {

@@ -31,7 +31,7 @@ PODS:
     - Flutter
   - image_picker (0.0.1):
     - Flutter
-  - multi_image_picker (4.3.6):
+  - multi_image_picker (4.5.2):
     - BSImagePicker (~> 2.10.0)
     - Flutter
   - package_info (0.0.1):
@@ -133,19 +133,19 @@ SPEC CHECKSUMS:
   BSImagePicker: fa0c15b6740e8aa7a7b7f0fe38a71ad4cfa0ec4a
   BSImageView: a149459433a2687157d034c78e059d30ac7f2544
   connectivity: c72716e202a1225ec4810740d5cb56b8ae3bf4cc
-  Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
   flutter_inappbrowser: 0a086e210a3bd4058d7e5623eb82b90dc147e7ab
   flutter_native_image: 9c0b7451838484458e5b0fae007b86a4c2d4bdfe
   flutter_qr_reader: 254fd9eea45a65ef461e050d6607daf9cfb753e8
-  flutter_webview_plugin: 56bc479945548240bc34f886aac9d1930b563bae
+  flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   image_crop: e0a67085d3ebf3cf46ca46d61c53a082507b0bc3
   image_downloader: 0cce746db85ab8e068b7bcf8acacbdf71bca185e
-  image_gallery_saver: 1798f45aab0db52c4a2a161409c361340a19908e
+  image_gallery_saver: 73b3cd8ad9c950c739878af9c311744d1bf5405d
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
-  multi_image_picker: 3a6afea72a3271d9b0bcc67d8888d38c4ff53efd
+  multi_image_picker: ded524cc6197e3a2aaca82db43bb8bbddf97ee16
   package_info: 78cabb3c322943c55d39676f4a5bfc748c01d055
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
   permission_handler: d59f41439f5bc6c4d1005f3355e98f05ddc68ece

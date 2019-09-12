@@ -216,6 +216,21 @@ class User {
 
     @override
     int get hashCode => id.hashCode;
+
+    @override
+    String toString() {
+        return 'User ${JsonEncoder.withIndent("  ").convert({
+            "id": id,
+            "nickname": nickname,
+            "gender": gender,
+            "topics": topics,
+            "latestTid": latestTid,
+            "fans": fans,
+            "idols": idols,
+            "isFollowing": isFollowing,
+        })}';
+    }
+
 }
 
 ///

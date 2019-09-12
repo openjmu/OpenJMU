@@ -112,8 +112,8 @@ class PublishPostPageState extends State<PublishPostPage> {
             debugPrint("Popped.");
             if (result != null) {
                 debugPrint("Mentioned User: ${result.toString()}");
-                Future.delayed(Duration(milliseconds: 250), () {
-                    FocusScope.of(context).requestFocus(_focusNode);
+                FocusScope.of(context).requestFocus(_focusNode);
+                Future.delayed(const Duration(milliseconds: 250), () {
                     insertText("<M ${result.id}>@${result.nickname}<\/M>");
                 });
             } else {
@@ -129,7 +129,6 @@ class PublishPostPageState extends State<PublishPostPage> {
         });
         String currentColorValue = "#${ThemeUtils.currentThemeColor.value.toRadixString(16).substring(2, 8)}";
         List<Asset> resultList = List<Asset>();
-        /// Prompt permissions.
         Map<PermissionGroup, PermissionStatus> permissions = await PermissionHandler().requestPermissions([
             PermissionGroup.camera,
             PermissionGroup.photos,
@@ -371,7 +370,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     }
 
     Future<FormData> createForm(Asset asset) async {
-        ByteData byteData = await asset.requestOriginal();
+        ByteData byteData = await asset.getByteData();
         List<int> imageData = byteData.buffer.asUint8List();
         return FormData.from({
             "image": UploadFileInfo.fromBytes(imageData, "${asset.name}.jpg"),
@@ -380,7 +379,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     }
 
     void insertText(String text) {
-        var value = _textEditingController.value;
+        TextEditingValue value = _textEditingController.value;
         int start = value.selection.baseOffset;
         int end = value.selection.extentOffset;
         if (value.selection.isValid) {
@@ -396,15 +395,14 @@ class PublishPostPageState extends State<PublishPostPage> {
             } else {
                 newText = value.text.replaceRange(start, end, text);
             }
-            setState(() {
-                _textEditingController.value = value.copyWith(
-                    text: newText,
-                    selection: value.selection.copyWith(
-                        baseOffset: end + text.length,
-                        extentOffset: end + text.length,
-                    ),
-                );
-            });
+            _textEditingController.value = value.copyWith(
+                text: newText,
+                selection: value.selection.copyWith(
+                    baseOffset: end + text.length,
+                    extentOffset: end + text.length,
+                ),
+            );
+            if (mounted) setState(() {});
         }
     }
 

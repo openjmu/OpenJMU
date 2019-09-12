@@ -576,11 +576,14 @@ class _UserPageState extends State<UserPage>
                             title: Text("查看大头像"),
                             onTap: () => Navigator.of(sheetContext)..pop()..push(CupertinoPageRoute(
                                 builder: (_) => ImageViewer(
-                                    0, [ImageBean(
-                                    widget.uid,
-                                    API.userAvatarInSecure+"?uid=${widget.uid}&size=f640",
                                     0,
-                                )],
+                                    [ImageBean(
+                                        id: widget.uid,
+                                        imageUrl: "${API.userAvatarInSecure}"
+                                                "?uid=${widget.uid}"
+                                                "&size=f640"
+                                        ,
+                                    )],
                                     needsClear: true,
                                 ),
                             )),
@@ -604,14 +607,18 @@ class _UserPageState extends State<UserPage>
                 : Navigator.of(context).push(
             CupertinoPageRoute(
                 builder: (_) => ImageViewer(
-                    0, [ImageBean(widget.uid, API.userAvatarInSecure+"?uid=${widget.uid}&size=f640", 0)],
+                    0,
+                    [ImageBean(
+                        id: widget.uid,
+                        imageUrl: API.userAvatarInSecure+"?uid=${widget.uid}&size=f640",
+                    )],
                     needsClear: true,
                 ),
             ),
         );
     }
 
-    @override
+    @mustCallSuper
     Widget build(BuildContext context) {
         super.build(context);
         return Scaffold(

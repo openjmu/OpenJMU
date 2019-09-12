@@ -13,7 +13,7 @@ import 'package:OpenJMU/pages/user/BackpackPage.dart';
 import 'package:OpenJMU/pages/user/UserQrCodePage.dart';
 import 'package:OpenJMU/pages/settings/ChangeThemePage.dart';
 import 'package:OpenJMU/pages/settings/SwitchStartUpPage.dart';
-import 'package:OpenJMU/pages/settings/Test.dart';
+import 'package:OpenJMU/pages/test/TestDashBoardPage.dart';
 //import 'package:OpenJMU/pages/NotificationTest.dart';
 
 class RouteUtils {
@@ -31,7 +31,7 @@ class RouteUtils {
         "${pathDivider}changeTheme": (BuildContext context) => ChangeThemePage(),
         "${pathDivider}switchStartUpPage": (BuildContext context) => SwitchStartUpPage(),
 //        "${_pd}notificationTest": (BuildContext context) => NotificationTestPage(),
-        "${pathDivider}test": (BuildContext context) => TestPage(),
+        "${pathDivider}test": (BuildContext context) => TestDashBoardPage(),
         "${pathDivider}about": (BuildContext context) => AboutPage(),
 
         "${pathDivider}backpack": (BuildContext context, {arguments}) => BackpackPage(),

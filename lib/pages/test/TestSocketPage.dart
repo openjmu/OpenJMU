@@ -11,12 +11,12 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
 
 
-class TestPage extends StatefulWidget {
+class TestSocketPage extends StatefulWidget {
     @override
-    State<StatefulWidget> createState() => _TestPageState();
+    State<StatefulWidget> createState() => _TestSocketPageState();
 }
 
-class _TestPageState extends State<TestPage> {
+class _TestSocketPageState extends State<TestSocketPage> {
     Socket _socket;
     bool queueing = false;
     int queueingIndex = 1;

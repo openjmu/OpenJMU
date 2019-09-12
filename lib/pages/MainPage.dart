@@ -134,24 +134,26 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     }
 
     void initPushService() async {
-        final UserInfo user = UserAPI.currentUser;
-        final Map<String, dynamic> data = {
-            "token": Platform.isIOS
-                    ? await ChannelUtils.iosGetPushToken()
-                    : "null"
-            ,
-            "date": DateFormat("yyyy/MM/dd/HH:mm:ss", "en").format(DateTime.now()),
-            "uid": user.uid.toString(),
-            "name": user.name.toString(),
-            "workid": user.workId.toString(),
-            "appversion": await OTAUtils.getCurrentVersion(),
-            "platform": Platform.isIOS ? "ios" : "android"
-        };
-        NetUtils.post(API.pushUpload, data: data).then((response) {
-            debugPrint("Push service info upload success.");
-        }).catchError((e) {
+        try {
+            final UserInfo user = UserAPI.currentUser;
+            final Map<String, dynamic> data = {
+                "token": Platform.isIOS
+                        ? await ChannelUtils.iosGetPushToken()
+                        : "null"
+                ,
+                "date": DateFormat("yyyy/MM/dd/HH:mm:ss", "en").format(DateTime.now()),
+                "uid": user.uid.toString(),
+                "name": user.name.toString(),
+                "workid": user.workId.toString(),
+                "appversion": await OTAUtils.getCurrentVersion(),
+                "platform": Platform.isIOS ? "ios" : "android"
+            };
+            NetUtils.post(API.pushUpload, data: data).then((response) {
+                debugPrint("Push service info upload success.");
+            });
+        } catch (e) {
             debugPrint("Push service upload error: $e");
-        });
+        }
     }
 
     void initNotification() {

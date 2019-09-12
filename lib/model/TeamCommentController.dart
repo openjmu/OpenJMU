@@ -245,7 +245,7 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                     String imageUrl = API.commentImageUrl(imageID, "o");
                     Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
                         return ImageViewer(
-                            0, [ImageBean(imageID, imageUrl, null)],
+                            0, [ImageBean(id: imageID, imageUrl: imageUrl)],
                         );
                     }));
                 }

@@ -488,7 +488,6 @@ class MyInfoPageState extends State<MyInfoPage> {
 
             case "测试页":
                 Navigator.pushNamed(context, "/test");
-                showTimePicker(context: context, initialTime: TimeOfDay.now());
                 break;
 
             default:

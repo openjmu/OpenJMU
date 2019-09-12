@@ -13,21 +13,26 @@ class MentionPeopleDialog extends StatefulWidget {
 }
 
 class EditSignatureDialogState extends State<MentionPeopleDialog> {
-    TextEditingController _textEditingController = TextEditingController();
-    String content;
+    final TextEditingController _textEditingController = TextEditingController();
+    String content = "";
     List<User> people = [];
 
     bool loading = false, loaded = false;
 
     @override
     void initState() {
-        super.initState();
-        content = "";
-        _textEditingController..addListener(() {
+        _textEditingController.addListener(() {
             setState(() {
                 content = _textEditingController.text;
             });
         });
+        super.initState();
+    }
+
+    @override
+    void dispose() {
+        _textEditingController?.dispose();
+        super.dispose();
     }
 
     void requestSearch() {
@@ -164,7 +169,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                         behavior: HitTestBehavior.translucent,
                                         child: Icon(Icons.close, color: Theme.of(context).textTheme.title.color),
                                         onTap: () {
-                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop(null);
                                         },
                                     ),
                                 ),

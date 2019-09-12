@@ -130,7 +130,7 @@ class PraiseCard extends StatelessWidget {
                 }
             },
             specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-            overflow: ExtendedTextOverflow.ellipsis,
+            overflow: TextOverflow.ellipsis,
             maxLines: 7,
         );
     }

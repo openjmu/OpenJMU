@@ -167,12 +167,12 @@ class _PostCardState extends State<PostCard> {
         ),
     );
 
-    Widget getPostImages(post) => Container(
+    Widget getPostImages(context, post) => Container(
         padding: post.pics != null && post.pics.length > 0
                 ? EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0), vertical: Constants.suSetSp(4.0))
                 : EdgeInsets.zero
         ,
-        child: getImages(post.pics),
+        child: getImages(context, post.pics),
     );
 
     Widget getRootPost(context, rootTopic) {
@@ -214,7 +214,7 @@ class _PostCardState extends State<PostCard> {
                                     getExtendedText(topic, isRoot: true),
                                     if (rootTopic['topic']['image'] != null) Padding(
                                         padding: const EdgeInsets.only(top: 8.0),
-                                        child: getRootPostImages(rootTopic['topic']),
+                                        child: getRootPostImages(context, rootTopic['topic']),
                                     ),
                                 ],
                             ),
@@ -230,9 +230,9 @@ class _PostCardState extends State<PostCard> {
         }
     }
 
-    Widget getRootPostImages(rootTopic) => getImages(rootTopic['image']);
+    Widget getRootPostImages(context, rootTopic) => getImages(context, rootTopic['image']);
 
-    Widget getImages(data) {
+    Widget getImages(context, data) {
         if (data != null) {
             List<Widget> imagesWidget = [];
             for (var index = 0; index < data.length; index++) {
@@ -252,7 +252,7 @@ class _PostCardState extends State<PostCard> {
                 }
                 if (isDark) {
                     _exImage = Stack(
-                        children: <Widget>[_exImage, Constants.nightModeCover(),],
+                        children: <Widget>[_exImage, Constants.nightModeCover()],
                     );
                 }
                 imagesWidget.add(GestureDetector(
@@ -261,7 +261,12 @@ class _PostCardState extends State<PostCard> {
                             return ImageViewer(
                                 index,
                                 data.map<ImageBean>((f) {
-                                    return ImageBean(imageID, f['image_original'], widget.post.id);
+                                    return ImageBean(
+                                        id: imageID,
+                                        imageUrl: f['image_original'],
+                                        imageThumbUrl: f['image_thumb'],
+                                        postId: widget.post.id,
+                                    );
                                 }).toList(),
                             );
                         }));
@@ -713,7 +718,7 @@ class _PostCardState extends State<PostCard> {
                             ),
                         ),
                         getPostContent(context, widget.post),
-                        getPostImages(widget.post),
+                        getPostImages(context, widget.post),
                         isDetail ? Container(
                             width: MediaQuery.of(context).size.width,
                             padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(8.0)),
