@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -136,18 +137,34 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     void initPushService() async {
         try {
             final UserInfo user = UserAPI.currentUser;
+            final DateTime now = DateTime.now();
             final Map<String, dynamic> data = {
                 "token": Platform.isIOS
                         ? await ChannelUtils.iosGetPushToken()
                         : "null"
                 ,
-                "date": DateFormat("yyyy/MM/dd/HH:mm:ss", "en").format(DateTime.now()),
+                "date": DateFormat("yyyy/MM/dd/HH:mm:ss", "en").format(now),
                 "uid": user.uid.toString(),
                 "name": user.name.toString(),
                 "workid": user.workId.toString(),
                 "appversion": await OTAUtils.getCurrentVersion(),
                 "platform": Platform.isIOS ? "ios" : "android"
             };
+            final Map<String, dynamic> platformData = {
+                "token": Platform.isIOS
+                        ? await ChannelUtils.iosGetPushToken()
+                        : "null"
+                ,
+                "date": await ChannelUtils.iosGetPushDate(),
+                "uid": user.uid.toString(),
+                "name": user.name.toString(),
+                "workid": user.workId.toString(),
+                "appversion": await OTAUtils.getCurrentVersion(),
+                "platform": Platform.isIOS ? "ios" : "android"
+            };
+            debugPrint("data from dart:　${JsonEncoder.withIndent("  ").convert(data)}");
+            debugPrint("data from platform:　${JsonEncoder.withIndent("  ").convert(platformData)}");
+
             NetUtils.post(API.pushUpload, data: data).then((response) {
                 debugPrint("Push service info upload success.");
             });

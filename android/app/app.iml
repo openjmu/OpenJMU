@@ -112,7 +112,7 @@
     <content url="file://$MODULE_DIR$/../../build/app/generated/source/buildConfig/debug">
       <sourceFolder url="file://$MODULE_DIR$/../../build/app/generated/source/buildConfig/debug" isTestSource="false" generated="true" />
     </content>
-    <orderEntry type="jdk" jdkName="Android API 28 Platform" jdkType="Android SDK" />
+    <orderEntry type="jdk" jdkName="Android API 29 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="TEST" name="Gradle: junit:junit:4.12@jar" level="project" />
     <orderEntry type="library" scope="TEST" name="Gradle: org.hamcrest:hamcrest-integration:1.3@jar" level="project" />
@@ -159,25 +159,25 @@
     <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-livedata:2.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-livedata-core:2.0.0@aar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.arch.core:core-runtime:2.0.1@aar" level="project" />
-    <orderEntry type="module" module-name="image_picker-0.6.1+1-android-image_picker" />
-    <orderEntry type="module" module-name="image_gallery_saver-1.2.1-android-image_gallery_saver" />
-    <orderEntry type="module" module-name="quick_actions-0.3.2+2-android-quick_actions" />
-    <orderEntry type="module" module-name="image_crop-0.3.1-android-image_crop" />
-    <orderEntry type="module" module-name="flutter_downloader-1.2.1-android-flutter_downloader" />
-    <orderEntry type="module" module-name="multi_image_picker-4.5.3-android-multi_image_picker" />
-    <orderEntry type="module" module-name="package_info-0.4.0+6-android-package_info" />
-    <orderEntry type="module" module-name="permission_handler-3.2.2-android-permission_handler" />
-    <orderEntry type="module" module-name="android-flutter_native_image" />
-    <orderEntry type="module" module-name="shared_preferences-0.5.3+4-android-shared_preferences" />
-    <orderEntry type="module" module-name="android-webview_flutter" />
-    <orderEntry type="module" module-name="image_downloader-0.18.1-android-image_downloader" />
-    <orderEntry type="module" module-name="flutter_qr_reader-1.0.2-android-flutter_qr_reader" />
-    <orderEntry type="module" module-name="fluttertoast-3.1.3-android-fluttertoast" />
-    <orderEntry type="module" module-name="sqflite-1.1.6+3-android-sqflite" />
-    <orderEntry type="module" module-name="url_launcher-5.1.2-android-url_launcher" />
-    <orderEntry type="module" module-name="connectivity-0.4.4-android-connectivity" />
-    <orderEntry type="module" module-name="path_provider-1.2.2-android-path_provider" />
-    <orderEntry type="module" module-name="flutter_inappbrowser-1.2.1-android-flutter_inappbrowser" />
-    <orderEntry type="module" module-name="flutter_webview_plugin-0.3.7-android-flutter_webview_plugin" />
+    <orderEntry type="module" module-name="image_picker" />
+    <orderEntry type="module" module-name="image_gallery_saver" />
+    <orderEntry type="module" module-name="quick_actions" />
+    <orderEntry type="module" module-name="image_crop" />
+    <orderEntry type="module" module-name="flutter_downloader" />
+    <orderEntry type="module" module-name="multi_image_picker" />
+    <orderEntry type="module" module-name="package_info" />
+    <orderEntry type="module" module-name="permission_handler" />
+    <orderEntry type="module" module-name="flutter_native_image" />
+    <orderEntry type="module" module-name="shared_preferences" />
+    <orderEntry type="module" module-name="webview_flutter" />
+    <orderEntry type="module" module-name="image_downloader" />
+    <orderEntry type="module" module-name="flutter_qr_reader" />
+    <orderEntry type="module" module-name="fluttertoast" />
+    <orderEntry type="module" module-name="sqflite" />
+    <orderEntry type="module" module-name="url_launcher" />
+    <orderEntry type="module" module-name="connectivity" />
+    <orderEntry type="module" module-name="path_provider" />
+    <orderEntry type="module" module-name="flutter_inappbrowser" />
+    <orderEntry type="module" module-name="android-flutter_webview_plugin" />
   </component>
 </module>
