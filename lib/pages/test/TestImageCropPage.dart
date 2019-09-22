@@ -1,10 +1,13 @@
 import 'dart:io';
 import 'dart:math' as math;
 
-import 'package:flutter/cupertino.dart';
+import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'package:OpenJMU/constants/Constants.dart';
 
 
 class TestImageCropPage extends StatefulWidget {
@@ -26,7 +29,7 @@ class _TestImageCropPageState extends State<TestImageCropPage> {
 
     Future _openImage() async {
         final file = await ImagePicker.pickImage(source: ImageSource.gallery);
-        _file = file;
+        if (file != null) _file = file;
         if (mounted) setState(() {});
     }
 
@@ -42,6 +45,13 @@ class _TestImageCropPageState extends State<TestImageCropPage> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
+                title: Text(
+                    _file == null ? "上传头像" : "裁剪头像",
+                    style: Theme.of(context).textTheme.title.copyWith(
+                        fontSize: Constants.suSetSp(21.0),
+                    ),
+                ),
+                centerTitle: true,
                 actions: _file != null ? <Widget>[
                     IconButton(
                         icon: Icon(Icons.check),
@@ -62,11 +72,46 @@ class _TestImageCropPageState extends State<TestImageCropPage> {
                         cropAspectRatio: 1.0,
                     );
                 },
-            ) : FlatButton(
-                child: Text("Choose File"),
-                onPressed: _openImage,
+            ) : Center(
+                child: InkWell(
+                    onTap: _openImage,
+                    child: Padding(
+                        padding: EdgeInsets.all(Constants.suSetSp(60.0)),
+                        child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                                Icon(
+                                    Icons.add,
+                                    size: Constants.suSetSp(60.0),
+                                ),
+                                Constants.emptyDivider(height: 20.0),
+                                Text(
+                                    "选择需要上传的头像",
+                                    style: Theme.of(context).textTheme.body1.copyWith(
+                                        fontSize: Constants.suSetSp(20.0),
+                                    ),
+                                ),
+                            ],
+                        ),
+                    ),
+                    highlightColor: Colors.red,
+                    customBorder: CircleBorder(),
+                ),
+//                child: FlatButton(
+//                    child: Text(
+//                        "选择需要上传的头像",
+//                        style: Theme.of(context).textTheme.body1.copyWith(
+//                            fontSize: Constants.suSetSp(18.0),
+//                        ),
+//                    ),
+//                    onPressed: _openImage,
+//                    color: ThemeUtils.currentThemeColor,
+//                    shape: RoundedRectangleBorder(
+//                        borderRadius: BorderRadius.circular(30.0),
+//                    ),
+//                ),
             ),
-            bottomNavigationBar: BottomAppBar(
+            bottomNavigationBar: _file != null ? BottomAppBar(
                 color: Theme.of(context).primaryColor,
                 elevation: 0.0,
                 child: Row(
@@ -94,7 +139,7 @@ class _TestImageCropPageState extends State<TestImageCropPage> {
                         ),
                     ],
                 ),
-            ),
+            ) : null,
         );
     }
 }
