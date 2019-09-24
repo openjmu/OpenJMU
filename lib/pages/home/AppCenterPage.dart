@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -15,6 +16,7 @@ import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/InAppBrowser.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 
 class AppCenterPage extends StatefulWidget {
@@ -153,11 +155,7 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
     }
 
     Widget getWebAppButton(webApp) {
-        String url = replaceParamsInUrl(webApp.url);
-        String imageUrl = "${API.webAppIcons}"
-                "appid=${webApp.id}"
-                "&code=${webApp.code}"
-        ;
+        final String url = replaceParamsInUrl(webApp.url);
         Widget button = FlatButton(
             padding: EdgeInsets.zero,
             child: Column(
@@ -168,12 +166,7 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
                         height: Constants.suSetSp(68.0),
                         child: CircleAvatar(
                             backgroundColor: Theme.of(context).dividerColor,
-                            child: Image(
-                                width: Constants.suSetSp(44.0),
-                                height: Constants.suSetSp(44.0),
-                                image: CachedNetworkImageProvider(imageUrl, cacheManager: DefaultCacheManager()),
-                                fit: BoxFit.cover,
-                            ),
+                            child: AppIcon(app: webApp),
                         ),
                     ),
                     Text(
@@ -295,6 +288,48 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
                     ),
                 ],
             ),
+        );
+    }
+}
+
+class AppIcon extends StatelessWidget {
+    final WebApp app;
+
+    const AppIcon({Key key, @required this.app}) : super(key: key);
+
+
+    Future<Widget> loadAsset(WebApp app) async {
+        final String basePath = "assets/icons/appCenter";
+        final String assetPath = "$basePath/${app.code}-${app.name}.svg";
+        try {
+            ByteData _ = await rootBundle.load(assetPath);
+            return SvgPicture.asset(
+                assetPath,
+                width: Constants.suSetSp(60.0),
+                height: Constants.suSetSp(60.0),
+            );
+        } catch (e) {
+            final String imageUrl = "${API.webAppIcons}"
+                    "appid=${app.id}"
+                    "&code=${app.code}"
+            ;
+            return Image(
+                width: Constants.suSetSp(44.0),
+                height: Constants.suSetSp(44.0),
+                image: CachedNetworkImageProvider(imageUrl, cacheManager: DefaultCacheManager()),
+                fit: BoxFit.cover,
+            );
+        }
+    }
+
+    @override
+    Widget build(BuildContext context) {
+        return FutureBuilder(
+            initialData: SizedBox(),
+            future: loadAsset(app),
+            builder: (context, snapshot) {
+                return snapshot.data;
+            },
         );
     }
 }

@@ -206,6 +206,20 @@
 			remoteGlobalIDString = B799BFFEC5B11F90F501202080A57F37;
 			remoteInfo = sqflite;
 		};
+		FA4BB6CA2338C9CB008A8438 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 88201E9CFC476A9A0003632CB83B1D0A;
+			remoteInfo = url_launcher;
+		};
+		FA4BB6CC2338C9CB008A8438 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 2F9E4A4DFBB3FA382E47DEEF13A9ED68;
+			remoteInfo = webview_flutter;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -362,6 +376,8 @@
 				ABC8B9FB22BE365C00F92406 /* Reachability.framework */,
 				ABC8B9FD22BE365C00F92406 /* shared_preferences.framework */,
 				ABC8B9FF22BE365C00F92406 /* sqflite.framework */,
+				FA4BB6CB2338C9CB008A8438 /* url_launcher.framework */,
+				FA4BB6CD2338C9CB008A8438 /* webview_flutter.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -638,6 +654,20 @@
 			fileType = wrapper.framework;
 			path = sqflite.framework;
 			remoteRef = ABC8B9FE22BE365C00F92406 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA4BB6CB2338C9CB008A8438 /* url_launcher.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = url_launcher.framework;
+			remoteRef = FA4BB6CA2338C9CB008A8438 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA4BB6CD2338C9CB008A8438 /* webview_flutter.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = webview_flutter.framework;
+			remoteRef = FA4BB6CC2338C9CB008A8438 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

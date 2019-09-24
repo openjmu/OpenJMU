@@ -1,9 +1,8 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 import 'package:OpenJMU/api/NewsAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
@@ -20,11 +19,8 @@ class NewsDetailPage extends StatefulWidget {
 }
 
 class _NewsDetailPageState extends State<NewsDetailPage> {
-    final Completer<WebViewController> _controller = Completer<WebViewController>();
-
     String pageContent;
     bool _contentLoaded = false;
-    bool _webViewLoaded = false;
 
     @override
     void initState() {
@@ -49,7 +45,11 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                     <body>${data['content']}</body>
                 </html>
             """;
-        pageContent = 'data:text/html;charset=UTF-8;base64,${base64Encode(const Utf8Encoder().convert(pageContent))}';
+        pageContent = Uri.dataFromString(
+            pageContent,
+            mimeType: 'text/html',
+            encoding: Encoding.getByName('utf-8'),
+        ).toString();
         _contentLoaded = true;
         if (mounted) setState(() {});
     }
@@ -67,23 +67,14 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                 ),
                 centerTitle: true,
             ),
-            body: Stack(
-                children: <Widget>[
-                    if (pageContent != null && _contentLoaded) WebView(
-                        initialUrl: pageContent,
-                        javascriptMode: JavascriptMode.unrestricted,
-                        onWebViewCreated: (WebViewController webViewController) {
-                            _controller.complete(webViewController);
-                        },
-                        onPageFinished: (String url) {
-                            setState(() {
-                                _webViewLoaded = true;
-                            });
-                        },
-                    ),
-                    if (!_webViewLoaded) Center(child: Constants.progressIndicator()),
-                ],
-            ),
+            body: (pageContent != null && _contentLoaded) ? WebviewScaffold(
+                url: pageContent,
+                allowFileURLs: true,
+                enableAppScheme: true,
+                withJavascript: true,
+                withLocalStorage: true,
+                resizeToAvoidBottomInset: true,
+            ) : Center(child: Constants.progressIndicator()),
         );
     }
 }
