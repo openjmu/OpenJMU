@@ -1,3 +1,4 @@
+import 'package:OpenJMU/pages/test/TestAnimatedWidgetPage.dart';
 import 'package:OpenJMU/pages/test/TestImageCropPage.dart';
 import 'package:OpenJMU/pages/test/TestTextPage.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,8 @@ class TestDashBoardPage extends StatelessWidget {
         TestSocketPage(),
         TestDragPage(),
         TestTextPage(),
-        TestImageCropPage()
+        TestImageCropPage(),
+        TestAnimatedWidgetPage(),
     ];
 
     final List<String> pageTitleList = [
@@ -23,6 +25,7 @@ class TestDashBoardPage extends StatelessWidget {
         "滑动测试页",
         "输入测试页",
         "裁剪测试页",
+        "动画测试页",
     ];
 
     final List<IconData> pageIconList = [
@@ -31,6 +34,7 @@ class TestDashBoardPage extends StatelessWidget {
         Icons.crop_free,
         Icons.border_color,
         Icons.crop,
+        Icons.av_timer,
     ];
 
     @override
