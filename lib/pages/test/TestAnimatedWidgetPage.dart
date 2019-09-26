@@ -87,12 +87,13 @@ class _PanelItemState extends State<PanelItem> {
                 ),
                 AnimatedContainer(
                     color: Colors.teal,
-                    height: _expanded ? 300.0 : 0.0,
                     curve: Curves.fastOutSlowIn,
                     duration: const Duration(milliseconds: 300),
-                    child: Center(
+                    child: Padding(
+                        padding: const EdgeInsets.all(30.0),
                         child: Text("Panel"),
                     ),
+                    transform: Matrix4.diagonal3Values(1, _expanded ? 1 : 0, 1),
                 )
             ],
         );

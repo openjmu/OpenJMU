@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:extended_tabs/extended_tabs.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:extended_tabs/extended_tabs.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
@@ -16,7 +17,6 @@ import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/InAppBrowser.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 
 class AppCenterPage extends StatefulWidget {
@@ -40,8 +40,6 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
 
     @override
     void initState() {
-        super.initState();
-
         _tabController = TabController(
             initialIndex: Constants.homeStartUpIndex[1],
             length: tabs().length,
@@ -82,17 +80,14 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
             });
 
         _futureBuilderFuture = getAppList();
+        super.initState();
     }
 
-    WebApp createWebApp(webAppData) {
-        return WebApp(
-            id: webAppData['appid'],
-            sequence: webAppData['sequence'],
-            code: webAppData['code'],
-            name: webAppData['name'],
-            url: webAppData['url'],
-            menuType: webAppData['menutype'],
-        );
+    @override
+    void dispose() {
+        _scrollController?.dispose();
+        _tabController?.dispose();
+        super.dispose();
     }
 
     Future getAppList() async => NetUtils.getWithCookieSet(API.webAppLists);
@@ -100,24 +95,25 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
     Widget categoryListView(BuildContext context, AsyncSnapshot snapshot) {
         List<dynamic> data = snapshot.data?.data;
         Map<String, List<Widget>> appList = {};
-        for (var i = 0; i < data.length; i++) {
+        for (int i = 0; i < data.length; i++) {
             String url = data[i]['url'];
             String name = data[i]['name'];
-            if ((url != "" && url != null) && (name != "" && name != null)) {
-                WebApp _app = createWebApp(data[i]);
-                WebApp.category().forEach((name, value) {
-                    if (_app.menuType == name) {
-                        if (appList[name.toString()] == null) {
-                            appList[name.toString()] = [];
-                        }
-                        appList[name].add(getWebAppButton(_app));
-                    }
-                });
+            if (
+                (url != "" && url != null)
+                    &&
+                (name != "" && name != null)
+            ) {
+                WebApp _app = WebApp.fromJson(data[i]);
+                _app = appWrapper(_app);
+                if (appList[_app.menuType] == null) {
+                    appList[_app.menuType] = [];
+                }
+                if (!appFiltered(_app)) appList[_app.menuType].add(getWebAppButton(_app));
             }
         }
         webAppWidgetList = appList;
         List<Widget> _list = [];
-        WebApp.category().forEach((name, value) {
+        WebApp.category.forEach((name, value) {
             _list.add(getSectionColumn(context, name));
         });
         return ListView.builder(
@@ -125,6 +121,35 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
             itemCount: _list.length,
             itemBuilder: (BuildContext context, index) => _list[index],
         );
+    }
+
+    WebApp appWrapper(WebApp app) {
+//        print("${app.code}-${app.name}");
+        switch (app.name) {
+//            case "集大通":
+//                app.name = "OpenJMU";
+//                app.url = "https://openjmu.jmu.edu.cn/";
+//                break;
+            default:
+                break;
+        }
+        return app;
+    }
+
+    bool appFiltered(WebApp app) {
+        if (
+            (!UserAPI.currentUser.isCY && app.code == "6101")
+                ||
+            (UserAPI.currentUser.isCY && app.code == "5001")
+                ||
+            (app.code == "6501")
+                ||
+            (app.code == "4001" && app.name == "集大通")
+        ) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     Widget _buildFuture(BuildContext context, AsyncSnapshot snapshot) {
@@ -154,21 +179,22 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
         return result;
     }
 
-    Widget getWebAppButton(webApp) {
+    Widget getWebAppButton(WebApp webApp) {
         final String url = replaceParamsInUrl(webApp.url);
         Widget button = FlatButton(
             padding: EdgeInsets.zero,
             child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                    SizedBox(
-                        width: Constants.suSetSp(68.0),
-                        height: Constants.suSetSp(68.0),
-                        child: CircleAvatar(
-                            backgroundColor: Theme.of(context).dividerColor,
-                            child: AppIcon(app: webApp),
-                        ),
-                    ),
+                    AppIcon(app: webApp, size: 80.0),
+//                    SizedBox(
+//                        width: Constants.suSetSp(68.0),
+//                        height: Constants.suSetSp(68.0),
+//                        child: CircleAvatar(
+//                            backgroundColor: Theme.of(context).dividerColor,
+//                            child: AppIcon(app: webApp),
+//                        ),
+//                    ),
                     Text(
                         webApp.name,
                         style: TextStyle(
@@ -197,7 +223,7 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
                         width: MediaQuery.of(context).size.width,
                         child: Center(
                             child: Text(
-                                WebApp.category()[name],
+                                WebApp.category[name],
                                 style: TextStyle(
                                     color: Theme.of(context).textTheme.title.color,
                                     fontSize: Constants.suSetSp(18.0),
@@ -215,13 +241,34 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
                             ),
                         ),
                     ),
-                    GridView.count(
+                    GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 3,
+                            childAspectRatio: 1.3 / 1,
+                        ),
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
-                        crossAxisCount: 3,
-                        childAspectRatio: 1.3 / 1,
-                        children: webAppWidgetList[name],
+                        itemCount: webAppWidgetList[name].length,
+                        itemBuilder: (context, index) {
+                            Widget _w = webAppWidgetList[name][index];
+//                            if ((index + 1) / 3 < ((index + 1) / 3).ceil()) {
+                                _w = DecoratedBox(
+                                    decoration: BoxDecoration(
+                                        border: Border(
+                                            bottom: BorderSide(
+                                                color: Theme.of(context).canvasColor,
+                                            ),
+                                            right: BorderSide(
+                                                color: Theme.of(context).canvasColor,
+                                            ),
+                                        ),
+                                    ),
+                                    child: _w,
+                                );
+//                            }
+                            return _w;
+                        },
                     ),
                 ],
             );
@@ -294,8 +341,13 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
 
 class AppIcon extends StatelessWidget {
     final WebApp app;
+    final double size;
 
-    const AppIcon({Key key, @required this.app}) : super(key: key);
+    AppIcon({
+        Key key,
+        @required this.app,
+        this.size = 60.0,
+    }) : super(key: key);
 
 
     Future<Widget> loadAsset(WebApp app) async {
@@ -305,8 +357,8 @@ class AppIcon extends StatelessWidget {
             ByteData _ = await rootBundle.load(assetPath);
             return SvgPicture.asset(
                 assetPath,
-                width: Constants.suSetSp(60.0),
-                height: Constants.suSetSp(60.0),
+                width: Constants.suSetSp(size),
+                height: Constants.suSetSp(size),
             );
         } catch (e) {
             final String imageUrl = "${API.webAppIcons}"
@@ -314,22 +366,40 @@ class AppIcon extends StatelessWidget {
                     "&code=${app.code}"
             ;
             return Image(
-                width: Constants.suSetSp(44.0),
-                height: Constants.suSetSp(44.0),
                 image: CachedNetworkImageProvider(imageUrl, cacheManager: DefaultCacheManager()),
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
             );
         }
     }
 
     @override
     Widget build(BuildContext context) {
-        return FutureBuilder(
+        return Constants.newAppCenterIcon ? FutureBuilder(
             initialData: SizedBox(),
             future: loadAsset(app),
             builder: (context, snapshot) {
-                return snapshot.data;
+                return SizedBox(
+                    width: Constants.suSetSp(size),
+                    height: Constants.suSetSp(size),
+                    child: Center(
+                        child: snapshot.data,
+                    ),
+                );
             },
+        ) : SizedBox(
+            width: Constants.suSetSp(60),
+            height: Constants.suSetSp(60),
+            child: Center(
+                child: Image(
+                    image: CachedNetworkImageProvider(
+                        "${API.webAppIcons}"
+                                "appid=${app.id}"
+                                "&code=${app.code}",
+                        cacheManager: DefaultCacheManager(),
+                    ),
+                    fit: BoxFit.fill,
+                ),
+            ),
         );
     }
 }

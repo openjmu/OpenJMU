@@ -245,6 +245,7 @@ class UserInfo {
     String ticket;
     String blowfish;
     bool isTeacher;
+    bool isCY;
 
     /// Common Object
     int uid;
@@ -264,6 +265,7 @@ class UserInfo {
         this.ticket,
         this.blowfish,
         this.isTeacher,
+        this.isCY,
         this.unitId,
         this.workId,
         this.classId,
@@ -287,6 +289,7 @@ class UserInfo {
             'ticket': ticket,
             'blowfish': blowfish,
             'isTeacher': isTeacher,
+            'isCY': isCY,
             'unitId': unitId,
             'workId': workId,
 //            'classId': classId,
@@ -328,13 +331,24 @@ class WebApp {
 
     WebApp({this.id, this.sequence, this.code, this.name, this.url, this.menuType});
 
+    factory WebApp.fromJson(Map<String, dynamic> json) {
+        return WebApp(
+            id: json['appid'],
+            sequence: json['sequence'],
+            code: json['code'],
+            name: json['name'],
+            url: json['url'],
+            menuType: json['menutype'],
+        );
+    }
+
     @override
     bool operator ==(Object other) => identical(this, other) || other is WebApp && runtimeType == other.runtimeType && id == other.id;
 
     @override
     int get hashCode => id.hashCode;
 
-    static Map category() => {
+    static Map category = {
 //        "10": "个人事务",
         "A4": "我的服务",
         "A3": "我的系统",

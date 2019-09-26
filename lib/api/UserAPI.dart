@@ -41,6 +41,7 @@ class UserAPI {
             ticket: userData['sid'] ?? null,
             blowfish: userData['blowfish'] ?? null,
             isTeacher: userData['isTeacher'] ?? int.parse(userData['type'].toString()) == 1,
+            isCY: userData['isCY'],
             unitId: userData['unitId'] ?? userData['unitid'],
             workId: (userData['workId'] ?? userData['workid'] ?? userData['uid']).toString(),
             classId: null,
@@ -67,12 +68,12 @@ class UserAPI {
 
     /// Update cache network image provider after avatar is updated.
     static int avatarLastModified = DateTime.now().millisecondsSinceEpoch;
-    static CachedNetworkImageProvider getAvatarProvider({int uid, int size, int t}) {
+    static CachedNetworkImageProvider getAvatarProvider({int uid, int size = 152, int t}) {
         return CachedNetworkImageProvider(
             "${API.userAvatarInSecure}"
                     "?uid=${uid ?? currentUser.uid}"
                     "&_t=${t ?? avatarLastModified}"
-                    "&size=f${size ?? 152}"
+                    "&size=f$size"
             ,
             cacheManager: DefaultCacheManager(),
         );

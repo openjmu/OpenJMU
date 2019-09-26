@@ -20,7 +20,6 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
-		DB91F8C02287D678009255DD /* AuthenticationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DB91F8BF2287D677009255DD /* AuthenticationServices.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -260,7 +259,6 @@
 		DB51988F228BE7E600448D85 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Main.strings"; sourceTree = "<group>"; };
 		DB519890228BE7E600448D85 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		DB91F8BE2287CF95009255DD /* Runner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Runner.entitlements; sourceTree = "<group>"; };
-		DB91F8BF2287D677009255DD /* AuthenticationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AuthenticationServices.framework; path = System/Library/Frameworks/AuthenticationServices.framework; sourceTree = SDKROOT; };
 		DBDE9C1F2260B5D700A8DB97 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		E3CEEA7D71626005C70A9A3A /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -270,7 +268,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DB91F8C02287D678009255DD /* AuthenticationServices.framework in Frameworks */,
 				9705A1C61CF904A100538489 /* Flutter.framework in Frameworks */,
 				3B80C3941E831B6300D905FE /* App.framework in Frameworks */,
 				2B6A4E63DE02E796A77508E2 /* Pods_Runner.framework in Frameworks */,
@@ -283,7 +280,6 @@
 		6A42DF306D47F0E5108106BF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				DB91F8BF2287D677009255DD /* AuthenticationServices.framework */,
 				6A8C9B3E87B737BED357EAB8 /* Pods_Runner.framework */,
 			);
 			name = Frameworks;
@@ -433,7 +429,7 @@
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
 							com.apple.AutoFillCredentialProvider = {
-								enabled = 1;
+								enabled = 0;
 							};
 							com.apple.BackgroundModes = {
 								enabled = 1;

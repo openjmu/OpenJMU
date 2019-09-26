@@ -17,7 +17,6 @@ import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/widgets/announcement/AnnouncementWidget.dart';
 
 
 class MyInfoPage extends StatefulWidget {
@@ -515,11 +514,6 @@ class MyInfoPageState extends State<MyInfoPage> {
                             child: ListView(
                                 shrinkWrap: true,
                                 children: <Widget>[
-                                    if (Constants.announcementsEnabled) AnnouncementWidget(
-                                        context,
-                                        color: ThemeUtils.currentThemeColor,
-                                        gap: 24.0,
-                                    ),
                                     userInfo(),
                                     Constants.separator(context),
                                     currentDay(now),

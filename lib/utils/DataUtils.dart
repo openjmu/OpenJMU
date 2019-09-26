@@ -18,6 +18,7 @@ import 'package:OpenJMU/api/UserAPI.dart';
 class DataUtils {
     static final String spIsLogin           = "isLogin";
     static final String spIsTeacher         = "isTeacher";
+    static final String spIsCY              = "isCY";
 
     static final String spUserSid           = "sid";
     static final String spTicket            = "ticket";
@@ -60,6 +61,7 @@ class DataUtils {
                 'ticket': data['ticket'],
                 'blowfish': blowfish,
                 'isTeacher': int.parse(user['type'].toString()) == 1,
+                'isCY': checkCY(user['workid']),
                 'unitId': data['unitid'],
                 'workId': user['workid'],
 //                'userClassId': user['class_id'],
@@ -102,6 +104,19 @@ class DataUtils {
         }
     }
 
+    static bool checkCY(String workId) {
+        if (workId.length != 12) {
+            return false;
+        } else {
+            final int code = int.tryParse(workId.substring(4, 6));
+            if (code >= 41 && code <= 45) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
     static String recoverWorkId() => sp.getString(spUserWorkId);
 
     static Future recoverLoginInfo() async {
@@ -129,6 +144,7 @@ class DataUtils {
                 'ticket': UserAPI.currentUser.sid,
                 'blowfish': UserAPI.currentUser.blowfish,
                 'isTeacher': int.parse(data['type'].toString()) == 1,
+                'isCY': checkCY(data['workid']),
                 'unitId': data['unitid'],
                 'workId': data['workid'],
 //                'userClassId': user['class_id'],
@@ -152,6 +168,7 @@ class DataUtils {
             setUserInfo(data);
             await sp.setBool(spIsLogin, true);
             await sp.setBool(spIsTeacher, data['isTeacher']);
+            await sp.setBool(spIsCY, data['isCY']);
             await sp.setString(spUserSid, data['sid']);
             await sp.setString(spTicket, data['ticket']);
             await sp.setString(spBlowfish, data['blowfish']);
@@ -168,6 +185,7 @@ class DataUtils {
         UserAPI.currentUser = UserInfo();
         await sp.remove(spIsLogin);
         await sp.remove(spIsTeacher);
+        await sp.remove(spIsCY);
         await sp.remove(spUserSid);
         await sp.remove(spTicket);
         await sp.remove(spBlowfish);

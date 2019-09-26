@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:OpenJMU/widgets/announcement/AnnouncementWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -208,9 +209,22 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         return WillPopScope(
             onWillPop: doubleBackExit,
             child: Scaffold(
-                body: IndexedStack(
-                    children: pages,
-                    index: _tabIndex,
+                body: SafeArea(
+                    child: Column(
+                        children: <Widget>[
+                            if (Constants.announcementsEnabled) AnnouncementWidget(
+                                context,
+                                color: ThemeUtils.currentThemeColor,
+                                gap: 24.0,
+                            ),
+                            Expanded(
+                                child: IndexedStack(
+                                    children: pages,
+                                    index: _tabIndex,
+                                ),
+                            ),
+                        ],
+                    ),
                 ),
                 bottomNavigationBar: FABBottomAppBar(
                     backgroundColor: Theme.of(context).scaffoldBackgroundColor,
