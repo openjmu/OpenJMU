@@ -22,7 +22,7 @@ class AnnouncementDialog extends StatefulWidget {
 class _AnnouncementDialogState extends State<AnnouncementDialog> {
     @override
     Widget build(BuildContext context) {
-        if (!Platform.isIOS) {
+        if (Platform.isIOS) {
             return CupertinoAlertDialog(
                 title: Text(
                     "${widget.announcement['title']}",

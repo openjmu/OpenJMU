@@ -17,9 +17,6 @@ class AnnouncementWidget extends StatelessWidget {
         return GestureDetector(
             behavior: HitTestBehavior.translucent,
             child: Container(
-                margin: EdgeInsets.symmetric(
-                    vertical: Constants.suSetSp(5.0),
-                ),
                 padding: EdgeInsets.symmetric(
                     horizontal: Constants.suSetSp(gap ?? 15.0),
                     vertical: Constants.suSetSp(10.0),

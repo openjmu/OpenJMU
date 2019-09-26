@@ -181,20 +181,12 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
 
     Widget getWebAppButton(WebApp webApp) {
         final String url = replaceParamsInUrl(webApp.url);
-        Widget button = FlatButton(
+        return FlatButton(
             padding: EdgeInsets.zero,
             child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                    AppIcon(app: webApp, size: 80.0),
-//                    SizedBox(
-//                        width: Constants.suSetSp(68.0),
-//                        height: Constants.suSetSp(68.0),
-//                        child: CircleAvatar(
-//                            backgroundColor: Theme.of(context).dividerColor,
-//                            child: AppIcon(app: webApp),
-//                        ),
-//                    ),
+                    AppIcon(app: webApp, size: 70.0),
                     Text(
                         webApp.name,
                         style: TextStyle(
@@ -207,70 +199,71 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
             ),
             onPressed: () => CommonWebPage.jump(context, url, webApp.name),
         );
-        return button;
     }
 
     Widget getSectionColumn(context, name) {
         if (webAppWidgetList[name] != null) {
-            return Column(
-                children: <Widget>[
-                    Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: Constants.suSetSp(36.0),
-                            vertical: Constants.suSetSp(8.0),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(8.0)),
-                        width: MediaQuery.of(context).size.width,
-                        child: Center(
-                            child: Text(
-                                WebApp.category[name],
-                                style: TextStyle(
-                                    color: Theme.of(context).textTheme.title.color,
-                                    fontSize: Constants.suSetSp(18.0),
-                                    fontWeight: FontWeight.bold,
+            return Container(
+                margin: const EdgeInsets.all(8.0),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    color: Theme.of(context).primaryColor,
+                ),
+                child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                        Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: Constants.suSetSp(16.0),
+                            ),
+                            child: Center(
+                                child: Text(
+                                    WebApp.category[name],
+                                    style: Theme.of(context).textTheme.body1.copyWith(
+                                        fontSize: Constants.suSetSp(18.0),
+                                    ),
+                                ),
+                            ),
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: Theme.of(context).canvasColor,
+                                    ),
                                 ),
                             ),
                         ),
-                        decoration: BoxDecoration(
-                            border: Border(
-                                bottom: Divider.createBorderSide(
-                                    context,
-                                    color: Theme.of(context).dividerColor,
-                                    width: 2.0,
-                                ),
+                        GridView.builder(
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                childAspectRatio: 1,
                             ),
-                        ),
-                    ),
-                    GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3,
-                            childAspectRatio: 1.3 / 1,
-                        ),
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: EdgeInsets.zero,
-                        itemCount: webAppWidgetList[name].length,
-                        itemBuilder: (context, index) {
-                            Widget _w = webAppWidgetList[name][index];
-//                            if ((index + 1) / 3 < ((index + 1) / 3).ceil()) {
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            padding: EdgeInsets.zero,
+                            itemCount: webAppWidgetList[name].length,
+                            itemBuilder: (context, index) {
+                                final int _rows = (webAppWidgetList[name].length / 3).ceil();
+                                final bool showBottom = ((index + 1) / 3).ceil() != _rows;
+                                final bool showRight = ((index + 1) / 3).ceil() != (index + 1) ~/ 3;
+                                Widget _w = webAppWidgetList[name][index];
                                 _w = DecoratedBox(
                                     decoration: BoxDecoration(
                                         border: Border(
-                                            bottom: BorderSide(
+                                            bottom: showBottom ? BorderSide(
                                                 color: Theme.of(context).canvasColor,
-                                            ),
-                                            right: BorderSide(
+                                            ) : BorderSide.none,
+                                            right: showRight ? BorderSide(
                                                 color: Theme.of(context).canvasColor,
-                                            ),
+                                            ) : BorderSide.none,
                                         ),
                                     ),
                                     child: _w,
                                 );
-//                            }
-                            return _w;
-                        },
-                    ),
-                ],
+                                return _w;
+                            },
+                        ),
+                    ],
+                ),
             );
         } else {
             return SizedBox();
@@ -280,6 +273,7 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
     @override
     Widget build(BuildContext context) {
         return Scaffold(
+            backgroundColor: Theme.of(context).canvasColor,
             appBar: AppBar(
                 title: TabBar(
                     isScrollable: true,

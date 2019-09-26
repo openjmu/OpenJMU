@@ -14,6 +14,8 @@ import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
 class NetUtils {
     static Dio dio = Dio();
+    static Dio tokenDio = Dio();
+
     static CookieJar cookieJar = CookieJar();
     static CookieManager cookieManager = CookieManager(cookieJar);
 
