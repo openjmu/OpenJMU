@@ -298,6 +298,58 @@ class UserInfo {
         })}";
     }
 
+    factory UserInfo.fromJson(Map<String, dynamic> json) {
+        json.forEach((k, v) {
+            if (json[k] == "") json[k] = null;
+        });
+        return UserInfo(
+            sid: json['sid'],
+            uid: json['uid'],
+            name: json['username'] ?? json['uid'].toString(),
+            signature: json['signature'],
+            ticket: json['sid'],
+            blowfish: json['blowfish'],
+            isTeacher: json['isTeacher'] ?? int.parse(json['type'].toString()) == 1,
+            isCY: json['isCY'],
+            unitId: json['unitId'] ?? json['unitid'],
+            workId: (json['workId'] ?? json['workid'] ?? json['uid']).toString(),
+            classId: null,
+            gender: int.parse(json['gender'].toString()),
+            isFollowing: false,
+        );
+    }
+
+    UserInfo copyWith({
+        String sid,
+        String ticket,
+        String blowfish,
+        bool isTeacher,
+        bool isCY,
+        int uid,
+        int unitId,
+        int classId,
+        int gender,
+        String name,
+        String signature,
+        String workId,
+        bool isFollowing,
+    }) {
+        return UserInfo(
+            sid: sid ?? this.sid,
+            ticket: ticket ?? this.ticket,
+            blowfish: blowfish ?? this.blowfish,
+            isTeacher: isTeacher ?? this.isTeacher,
+            isCY: isCY ?? this.isCY,
+            uid: uid ?? this.uid,
+            unitId: unitId ?? this.unitId,
+            classId: classId ?? this.classId,
+            gender: gender ?? this.gender,
+            name: name ?? this.name,
+            signature: signature ?? this.signature,
+            workId: workId ?? this.workId,
+            isFollowing: isFollowing ?? this.isFollowing,
+        );
+    }
 }
 
 ///

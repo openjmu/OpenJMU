@@ -135,7 +135,7 @@ class _UserPageState extends State<UserPage>
             _user = UserAPI.currentUser;
         } else {
             Map<String, dynamic> user = (await UserAPI.getUserInfo(uid: uid)).data;
-            _user = UserAPI.createUserInfo(user);
+            _user = UserInfo.fromJson(user);
         }
 
         Future.wait(<Future>[

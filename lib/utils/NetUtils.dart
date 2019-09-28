@@ -22,8 +22,8 @@ class NetUtils {
     static void updateTicket() async {
         dio.lock();  /// Lock dio while requesting new ticket.
 
-        Duration duration = Duration(milliseconds: 1500);
-        LoadingDialogController _c = LoadingDialogController();
+        final Duration duration = Duration(milliseconds: 1500);
+        final LoadingDialogController _c = LoadingDialogController();
         ToastFuture toast = showToastWidget(
             LoadingDialog(
                 text: "正在更新用户状态",
@@ -31,8 +31,9 @@ class NetUtils {
                 isGlobal: true,
             ),
             dismissOtherToast: true,
-            duration: Duration(days: 1),
+            duration: const Duration(days: 1),
         );
+
         if (await DataUtils.getTicket()) {
             _c.changeState("success", "更新成功");
         } else {

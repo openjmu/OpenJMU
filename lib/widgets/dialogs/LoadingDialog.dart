@@ -17,19 +17,18 @@ class LoadingDialog extends StatefulWidget {
 }
 
 class LoadingDialogState extends State<LoadingDialog> {
-    String type;
-    Widget icon = CircularProgressIndicator();
-    String text;
     Duration duration = Duration(milliseconds: 1500);
+    String type, text;
     Function customPop;
+    Widget icon = CircularProgressIndicator();
 
     @override
     void initState() {
-        super.initState();
         widget.controller?._loadingDialogState = this;
         setState(() {
             this.text = widget.text;
         });
+        super.initState();
     }
 
     void updateContent(String type, Widget icon, String text, Duration duration, {Function customPop}) {
@@ -65,8 +64,8 @@ class LoadingDialogState extends State<LoadingDialog> {
         }
         Widget child = Center(
             child: SizedBox(
-                width: Constants.suSetSp(120.0),
-                height: Constants.suSetSp(120.0),
+                width: Constants.suSetSp(180.0),
+                height: Constants.suSetSp(180.0),
                 child: DecoratedBox(
                     decoration: BoxDecoration(
                         color: Theme.of(context).canvasColor,

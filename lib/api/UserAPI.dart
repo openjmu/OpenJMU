@@ -29,27 +29,6 @@ class UserAPI {
         });
     }
 
-    static UserInfo createUserInfo(Map<String, dynamic> userData) {
-        userData.forEach((k, v) {
-            if (userData[k] == "") userData[k] = null;
-        });
-        return UserInfo(
-            sid: userData['sid'] ?? null,
-            uid: userData['uid'],
-            name: userData['username'] ?? userData['uid'].toString(),
-            signature: userData['signature'],
-            ticket: userData['sid'] ?? null,
-            blowfish: userData['blowfish'] ?? null,
-            isTeacher: userData['isTeacher'] ?? int.parse(userData['type'].toString()) == 1,
-            isCY: userData['isCY'],
-            unitId: userData['unitId'] ?? userData['unitid'],
-            workId: (userData['workId'] ?? userData['workid'] ?? userData['uid']).toString(),
-            classId: null,
-            gender: int.parse(userData['gender'].toString()),
-            isFollowing: false,
-        );
-    }
-
     static User createUser(userData) => User(
         id: int.parse(userData['uid'].toString()),
         nickname: userData["nickname"] ?? userData["username"] ?? userData["name"] ?? userData["uid"].toString(),

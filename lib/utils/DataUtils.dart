@@ -122,8 +122,10 @@ class DataUtils {
     static Future recoverLoginInfo() async {
         try {
             Map<String, String> info = await getSpTicket();
-            UserAPI.currentUser.sid = info['ticket'];
-            UserAPI.currentUser.blowfish = info['blowfish'];
+            UserAPI.currentUser.copyWith(
+                sid: info['ticket'],
+                blowfish: info['blowfish'],
+            );
             await getTicket();
         } catch (e) {
             debugPrint("Error in recover login info: $e");
@@ -159,11 +161,11 @@ class DataUtils {
         });
     }
 
-    static void setUserInfo(data) {
-        UserAPI.currentUser = UserAPI.createUserInfo(data);
+    static void setUserInfo(Map<String, dynamic> data) {
+        UserAPI.currentUser = UserInfo.fromJson(data);
     }
 
-    static Future<Null> saveLoginInfo(Map data) async {
+    static Future<Null> saveLoginInfo(Map<String, dynamic> data) async {
         if (data != null) {
             setUserInfo(data);
             await sp.setBool(spIsLogin, true);
@@ -192,7 +194,6 @@ class DataUtils {
         await sp.remove(spUserName);
         await sp.remove(spUserUid);
         await sp.remove(spUserUnitId);
-//        await sp.remove(spUserWorkId);
 //        await sp.remove(spUserClassId);
         await sp.remove(spBrightness);
         await sp.remove(spColorThemeIndex);
@@ -209,19 +210,23 @@ class DataUtils {
         return tickets;
     }
 
-    static Future getTicket() async {
+    static Future<bool> getTicket() async {
         try {
             Map<String, dynamic> params = Constants.loginParams(
                 ticket: UserAPI.currentUser.sid,
                 blowfish: UserAPI.currentUser.blowfish,
             );
-            Map<String, dynamic> response = (await NetUtils.post(API.loginTicket, data: params)).data;
+            Map<String, dynamic> response = (await NetUtils.tokenDio.post(
+                API.loginTicket,
+                data: params,
+            )).data;
             await updateSid(response);
             await getUserInfo();
             bool isWizard = true;
             if (!UserAPI.currentUser.isTeacher) isWizard = await checkWizard();
             UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
             Constants.eventBus.fire(TicketGotEvent(isWizard));
+            return true;
         } catch (e) {
             if (e.response != null) {
                 debugPrint("Error response.");
@@ -231,13 +236,16 @@ class DataUtils {
                 debugPrint(e.response.request);
             }
             Constants.eventBus.fire(TicketFailedEvent());
+            return false;
         }
     }
 
     static Future updateSid(response) async {
         await sp.setString(spUserSid, response['sid']);
-        UserAPI.currentUser.sid = response['sid'];
-        UserAPI.currentUser.uid = sp.getInt(spUserUid);
+        UserAPI.currentUser.copyWith(
+            sid: response['sid'],
+            uid: sp.getInt(spUserUid),
+        );
     }
 
     // 是否登录
@@ -325,14 +333,15 @@ class DataUtils {
             "CLOUDID": "jmu",
             "CLOUD-ID": "jmu",
             "UAP-SID": sid,
+            "WEIBO-API-KEY": Platform.isIOS
+                    ? Constants.postApiKeyIOS
+                    : Constants.postApiKeyAndroid
+            ,
+            "WEIBO-API-SECRET": Platform.isIOS
+                    ? Constants.postApiSecretIOS
+                    : Constants.postApiSecretAndroid
+            ,
         };
-        if (Platform.isIOS) {
-            headers["WEIBO-API-KEY"] = Constants.postApiKeyIOS;
-            headers["WEIBO-API-SECRET"] = Constants.postApiSecretIOS;
-        } else if (Platform.isAndroid) {
-            headers["WEIBO-API-KEY"] = Constants.postApiKeyAndroid;
-            headers["WEIBO-API-SECRET"] = Constants.postApiSecretAndroid;
-        }
         return headers;
     }
 

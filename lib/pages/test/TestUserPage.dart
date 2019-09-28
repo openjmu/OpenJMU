@@ -9,7 +9,6 @@ import 'package:pull_to_refresh_notification/pull_to_refresh_notification.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/PostAPI.dart';
@@ -17,7 +16,6 @@ import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/model/PostController.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/widgets/dialogs/EditSignatureDialog.dart';
@@ -132,7 +130,7 @@ class _TestUserPageState extends State<TestUserPage> with TickerProviderStateMix
             _user = UserAPI.currentUser;
         } else {
             Map<String, dynamic> user = (await UserAPI.getUserInfo(uid: uid)).data;
-            _user = UserAPI.createUserInfo(user);
+            _user = UserInfo.fromJson(user);
         }
 
         Future.wait(<Future>[
