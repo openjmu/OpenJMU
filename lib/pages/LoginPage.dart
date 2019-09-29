@@ -33,9 +33,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     final TextEditingController _passwordController = TextEditingController();
     final List<Color> colorGradient = const <Color>[Color(0xffff8976), Color(0xffff3c33)];
 
-    BuildContext pageContext;
-
-    String _username = "", _password = "";
+    String _username = DataUtils.recoverWorkId() ?? "", _password = "";
 
     bool _agreement = false;
     bool _login = false;
@@ -52,7 +50,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         Constants.eventBus
             ..on<LoginEvent>().listen((event) {
                 if (!event.isWizard) {}
-                Navigator.of(pageContext).pushReplacement(
+                Constants.navigatorKey.currentState.pushReplacement(
                     platformPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)),
                 );
             })
@@ -233,6 +231,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             onSaved: (String value) => _username = value,
             validator: (String value) {
                 if (value.isEmpty) return '请输入账户';
+                return null;
             },
             keyboardType: TextInputType.number,
         );
@@ -245,6 +244,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             obscureText: _isObscure,
             validator: (String value) {
                 if (value.isEmpty) return '请输入密码';
+                return null;
             },
             decoration: InputDecoration(
                 border: InputBorder.none,
@@ -400,7 +400,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 
     Widget loginButton(context) {
         return GestureDetector(
-            behavior: HitTestBehavior.translucent,
+            behavior: HitTestBehavior.opaque,
             onTap: () {
                 if (_login || _loginDisabled) {
                     return null;
@@ -595,7 +595,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     @override
     Widget build(BuildContext context) {
         setAlignment(context);
-        pageContext = context;
         return WillPopScope(
             onWillPop: doubleBackExit,
             child: Scaffold(

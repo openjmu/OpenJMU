@@ -63,8 +63,8 @@ class SplashState extends State<SplashPage> {
                     setState(() {
                         this.isUserLogin = false;
                     });
-                    await navigate();
                 }
+                await navigate();
             });
     }
 
@@ -121,7 +121,7 @@ class SplashState extends State<SplashPage> {
         Future.delayed(const Duration(seconds: 2), () {
             if (!isUserLogin) {
                 try {
-                    Navigator.of(context).pushAndRemoveUntil(PageRouteBuilder(
+                    Constants.navigatorKey.currentState.pushAndRemoveUntil(PageRouteBuilder(
                         transitionDuration: const Duration(milliseconds: 1000),
                         pageBuilder: (
                             BuildContext context,
@@ -135,7 +135,7 @@ class SplashState extends State<SplashPage> {
                 } catch (e) {}
             } else {
                 try {
-                    Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(
+                    Constants.navigatorKey.currentState.pushAndRemoveUntil(MaterialPageRoute(
                         builder: (_) => MainPage(initIndex: widget.initIndex),
                     ), (Route<dynamic> route) => false);
                 } catch (e) {

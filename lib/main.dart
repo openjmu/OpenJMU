@@ -23,15 +23,17 @@ import 'package:OpenJMU/widgets/NoScaleTextWidget.dart';
 
 void main() async {
     await DataUtils.initSharedPreferences();
-    runApp(JMUAppClient());
+    runApp(OpenJMUApp());
 }
 
-class JMUAppClient extends StatefulWidget {
+class OpenJMUApp extends StatefulWidget {
     @override
-    State<StatefulWidget> createState() => JMUAppClientState();
+    State<StatefulWidget> createState() => OpenJMUAppState();
 }
 
-class JMUAppClientState extends State<JMUAppClient> {
+class OpenJMUAppState extends State<OpenJMUApp> {
+    final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
     StreamSubscription<ConnectivityResult> connectivitySubscription;
     bool isUserLogin = false;
     int initIndex;
@@ -40,7 +42,6 @@ class JMUAppClientState extends State<JMUAppClient> {
 
     @override
     void initState() {
-        super.initState();
         SystemChrome.setPreferredOrientations([
             DeviceOrientation.portraitUp,
             DeviceOrientation.portraitDown,
@@ -99,13 +100,15 @@ class JMUAppClientState extends State<JMUAppClient> {
         NetUtils.initConfig();
         initQuickActions();
         debugPrint("Android: ${Platform.isAndroid} | iOS: ${Platform.isIOS}");
+
+        super.initState();
     }
 
     @override
     void dispose() {
-        super.dispose();
         connectivitySubscription?.cancel();
         debugPrint("Main dart disposed.");
+        super.dispose();
     }
 
     void initQuickActions() {
@@ -146,10 +149,12 @@ class JMUAppClientState extends State<JMUAppClient> {
 
     @override
     Widget build(BuildContext context) {
+        Constants.navigatorKey = _navigatorKey;
         return Theme(
             data: ThemeUtils.isDark ? ThemeUtils.darkTheme() : ThemeUtils.lightTheme(),
             child: OKToast(
                 child: MaterialApp(
+                    navigatorKey: _navigatorKey,
                     builder: (BuildContext c, Widget w) => NoScaleTextWidget(child: w),
                     debugShowCheckedModeBanner: false,
                     routes: RouteUtils.routes,

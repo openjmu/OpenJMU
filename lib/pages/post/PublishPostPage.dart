@@ -10,10 +10,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:dio/dio.dart';
-import 'package:extended_text_field/extended_text_field.dart';
-import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:dragablegridview_flutter/dragablegridview_flutter.dart';
 import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
+import 'package:extended_text_field/extended_text_field.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:OpenJMU/api/API.dart';
@@ -565,7 +565,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     }
 }
 
-class ItemBin extends DragAbleGridViewBin{
+class ItemBin extends DragAbleGridViewBin {
     Asset data;
     ItemBin(this.data);
 }

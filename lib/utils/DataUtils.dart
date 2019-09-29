@@ -129,6 +129,7 @@ class DataUtils {
             await getTicket();
         } catch (e) {
             debugPrint("Error in recover login info: $e");
+            Constants.eventBus.fire(TicketFailedEvent());
         }
     }
 

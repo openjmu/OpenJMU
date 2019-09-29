@@ -21,6 +21,7 @@ class Constants {
     static final List<int> developerList = [136172, 182999, 164466, 184698, 153098, 168695, 162060, 189275, 183114, 183824];
 
     static final String endLineTag = "没有更多了~";
+    static GlobalKey<NavigatorState> navigatorKey;
 
     // Fow start index.
     static int homeSplashIndex = 0;
