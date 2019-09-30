@@ -16,30 +16,17 @@ class NetUtils {
     static Dio dio = Dio();
     static Dio tokenDio = Dio();
 
-    static CookieJar cookieJar = CookieJar();
+    static DefaultCookieJar cookieJar = DefaultCookieJar();
     static CookieManager cookieManager = CookieManager(cookieJar);
+    static DefaultCookieJar tokenCookieJar = DefaultCookieJar();
+    static CookieManager tokenCookieManager = CookieManager(tokenCookieJar);
 
     static void updateTicket() async {
         dio.lock();  /// Lock dio while requesting new ticket.
 
-        final Duration duration = Duration(milliseconds: 1500);
-        final LoadingDialogController _c = LoadingDialogController();
-        ToastFuture toast = showToastWidget(
-            LoadingDialog(
-                text: "正在更新用户状态",
-                controller: _c,
-                isGlobal: true,
-            ),
-            dismissOtherToast: true,
-            duration: const Duration(days: 1),
-        );
-
-        if (await DataUtils.getTicket()) {
-            _c.changeState("success", "更新成功");
-        } else {
-            _c.changeState("error", "更新失败");
+        if (!await DataUtils.getTicket()) {
+            debugPrint("Ticket updated error: ${UserAPI.currentUser.sid}");
         }
-        Future.delayed(duration, () { toast.dismiss(showAnim: true); });
 
         dio.unlock();  /// Release lock.
     }
@@ -59,7 +46,7 @@ class NetUtils {
                 return e;
             },
         ));
-        tokenDio.interceptors.add(cookieManager);
+        tokenDio.interceptors.add(tokenCookieManager);
         tokenDio.interceptors.add(InterceptorsWrapper(
             onError: (DioError e) async {
                 debugPrint("Token DioError: ${e.message}");

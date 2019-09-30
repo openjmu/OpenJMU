@@ -63,8 +63,8 @@ class SplashState extends State<SplashPage> {
                     setState(() {
                         this.isUserLogin = false;
                     });
+                    await navigate();
                 }
-                await navigate();
             });
     }
 

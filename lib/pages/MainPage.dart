@@ -103,11 +103,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
             })
             ..on<LogoutEvent>().listen((event) {
                 notificationTimer?.cancel();
-                Navigator.of(pageContext).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
-            })
-            ..on<TicketFailedEvent>().listen((event) {
-                notificationTimer?.cancel();
-                Navigator.of(pageContext).pushNamedAndRemoveUntil("/login", (Route<dynamic> route) => false);
+                Constants.navigatorKey.currentState.pushNamedAndRemoveUntil(
+                    "/login", (Route<dynamic> route) => false,
+                );
             })
             ..on<HasUpdateEvent>().listen((event) {
                 if (this.mounted) showDialog(

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -129,6 +130,10 @@ class DataUtils {
             UserAPI.currentUser.sid = info['ticket'];
             UserAPI.currentUser.blowfish = info['blowfish'];
             await getTicket();
+            bool isWizard = true;
+            if (!UserAPI.currentUser.isTeacher) isWizard = await checkWizard();
+            UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
+            Constants.eventBus.fire(TicketGotEvent(isWizard));
         } catch (e) {
             debugPrint("Error in recover login info: $e");
             Constants.eventBus.fire(TicketFailedEvent());
@@ -136,9 +141,11 @@ class DataUtils {
     }
 
     static Future getUserInfo([uid]) async {
-        await NetUtils.getWithCookieSet(
+        await NetUtils.tokenDio.get(
             "${API.userInfo}?uid=${uid ?? UserAPI.currentUser.uid}",
-            cookies: buildPHPSESSIDCookies(UserAPI.currentUser.sid),
+            options: Options(
+                cookies: buildPHPSESSIDCookies(UserAPI.currentUser.sid),
+            ),
         ).then((response) {
             Map<String, dynamic> data = response.data;
             Map<String, dynamic> userInfo = {
@@ -157,10 +164,7 @@ class DataUtils {
             };
             setUserInfo(userInfo);
         }).catchError((e) {
-            debugPrint(e);
-            debugPrint(e.toString());
-            showShortToast(e.toString());
-            return e;
+            print("Get user info error: ${e.request.cookies}");
         });
     }
 
@@ -219,24 +223,21 @@ class DataUtils {
                 ticket: UserAPI.currentUser.sid,
                 blowfish: UserAPI.currentUser.blowfish,
             );
+            print(params);
+            print(NetUtils.tokenCookieJar.loadForRequest(Uri.parse(API.loginTicket)));
+            NetUtils.tokenCookieJar.deleteAll();
+            print(NetUtils.tokenCookieJar.loadForRequest(Uri.parse(API.loginTicket)));
             Map<String, dynamic> response = (await NetUtils.tokenDio.post(
                 API.loginTicket,
                 data: params,
             )).data;
             await updateSid(response);
             await getUserInfo();
-            bool isWizard = true;
-            if (!UserAPI.currentUser.isTeacher) isWizard = await checkWizard();
-            UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
-            Constants.eventBus.fire(TicketGotEvent(isWizard));
             return true;
         } catch (e) {
             if (e.response != null) {
                 debugPrint("Error response.");
-                debugPrint(e);
-                debugPrint(e.response.data);
-                debugPrint(e.response.headers);
-                debugPrint(e.response.request);
+                debugPrint(e.response.data.toString());
             }
             Constants.eventBus.fire(TicketFailedEvent());
             return false;
@@ -244,6 +245,7 @@ class DataUtils {
     }
 
     static Future updateSid(response) async {
+        print(response);
         await sp.setString(spUserSid, response['sid']);
         UserAPI.currentUser.sid = response['sid'];
         UserAPI.currentUser.ticket = response['sid'];
@@ -347,6 +349,9 @@ class DataUtils {
         return headers;
     }
 
-    static List<Cookie> buildPHPSESSIDCookies(sid) => [Cookie("PHPSESSID", sid)];
+    static List<Cookie> buildPHPSESSIDCookies(sid) => [
+        Cookie("PHPSESSID", sid),
+        Cookie("OAPSID", sid),
+    ];
 
 }

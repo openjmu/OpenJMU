@@ -25,9 +25,8 @@ class LoadingDialogState extends State<LoadingDialog> {
     @override
     void initState() {
         widget.controller?._loadingDialogState = this;
-        setState(() {
-            this.text = widget.text;
-        });
+        this.text = widget.text;
+        if (mounted) setState(() {});
         super.initState();
     }
 

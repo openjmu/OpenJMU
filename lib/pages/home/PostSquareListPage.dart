@@ -1,3 +1,4 @@
+import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -103,14 +104,19 @@ class PostSquareListPageState extends State<PostSquareListPage> with SingleTicke
                 title: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                        Padding(
-                            padding: EdgeInsets.only(right: Constants.suSetSp(4.0)),
-                            child: Text(
-                                "Jmu",
-                                style: TextStyle(
-                                    color: currentThemeColor,
-                                    fontSize: Constants.suSetSp(34),
-                                    fontFamily: "chocolate",
+                        GestureDetector(
+                            onLongPress: () {
+                                NetUtils.updateTicket();
+                            },
+                            child: Padding(
+                                padding: EdgeInsets.only(right: Constants.suSetSp(4.0)),
+                                child: Text(
+                                    "Jmu",
+                                    style: TextStyle(
+                                        color: currentThemeColor,
+                                        fontSize: Constants.suSetSp(34),
+                                        fontFamily: "chocolate",
+                                    ),
                                 ),
                             ),
                         ),
