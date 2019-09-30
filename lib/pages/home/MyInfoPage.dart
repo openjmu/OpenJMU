@@ -33,6 +33,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             "夜间模式",
             "切换主题",
             "启动页",
+//            "设置"
         ],
         [
             if (Platform.isAndroid) "检查更新",
@@ -53,6 +54,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             "nightmode",
             "theme",
             "homeSplash",
+//            "homeSplash",
         ],
         [
             if (Platform.isAndroid) "checkUpdate",

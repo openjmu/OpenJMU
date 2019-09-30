@@ -318,38 +318,6 @@ class UserInfo {
             isFollowing: false,
         );
     }
-
-    UserInfo copyWith({
-        String sid,
-        String ticket,
-        String blowfish,
-        bool isTeacher,
-        bool isCY,
-        int uid,
-        int unitId,
-        int classId,
-        int gender,
-        String name,
-        String signature,
-        String workId,
-        bool isFollowing,
-    }) {
-        return UserInfo(
-            sid: sid ?? this.sid,
-            ticket: ticket ?? this.ticket,
-            blowfish: blowfish ?? this.blowfish,
-            isTeacher: isTeacher ?? this.isTeacher,
-            isCY: isCY ?? this.isCY,
-            uid: uid ?? this.uid,
-            unitId: unitId ?? this.unitId,
-            classId: classId ?? this.classId,
-            gender: gender ?? this.gender,
-            name: name ?? this.name,
-            signature: signature ?? this.signature,
-            workId: workId ?? this.workId,
-            isFollowing: isFollowing ?? this.isFollowing,
-        );
-    }
 }
 
 ///

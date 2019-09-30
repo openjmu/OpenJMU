@@ -35,6 +35,10 @@ class DataUtils {
     static final String spHomeSplashIndex   = "home_splash_index";
     static final String spHomeStartUpIndex  = "home_startup_index";
 
+    static final String spSettingFontScale  = "setting_font_scale";
+    static final String spSettingNewIcons   = "setting_new_icons";
+
+
     static SharedPreferences sp;
     static Future initSharedPreferences() async {
         sp = await SharedPreferences.getInstance();
@@ -121,11 +125,9 @@ class DataUtils {
 
     static Future recoverLoginInfo() async {
         try {
-            Map<String, String> info = await getSpTicket();
-            UserAPI.currentUser.copyWith(
-                sid: info['ticket'],
-                blowfish: info['blowfish'],
-            );
+            Map<String, String> info = getSpTicket();
+            UserAPI.currentUser.sid = info['ticket'];
+            UserAPI.currentUser.blowfish = info['blowfish'];
             await getTicket();
         } catch (e) {
             debugPrint("Error in recover login info: $e");
@@ -203,7 +205,7 @@ class DataUtils {
         showShortToast("退出登录成功");
     }
 
-    static Future<Map> getSpTicket() async {
+    static Map getSpTicket() {
         Map<String, String> tickets = {
             'ticket': sp.getString(spTicket),
             'blowfish': sp.getString(spBlowfish),
@@ -243,10 +245,9 @@ class DataUtils {
 
     static Future updateSid(response) async {
         await sp.setString(spUserSid, response['sid']);
-        UserAPI.currentUser.copyWith(
-            sid: response['sid'],
-            uid: sp.getInt(spUserUid),
-        );
+        UserAPI.currentUser.sid = response['sid'];
+        UserAPI.currentUser.ticket = response['sid'];
+        UserAPI.currentUser.uid = sp.getInt(spUserUid);
     }
 
     // 是否登录

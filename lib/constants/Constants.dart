@@ -83,12 +83,14 @@ class Constants {
     /// Flea Market.
     static final int fleaMarketTeamId = 430;
 
-    static final EventBus eventBus = new EventBus();
+    static final EventBus eventBus = EventBus();
 
     static Notifications notifications = Notifications();
 
+    /// Screen capability method.
+    static double fontScale = 1.0;
     static double suSetSp(double size) {
-        double value = ScreenUtil.getInstance().setSp(size) * 1.95;
+        double value = ScreenUtil.getInstance().setSp(size) * 2 * fontScale;
         if (Platform.isIOS) {
             if (ScreenUtil.screenWidthDp <= 414.0) {
                 value = size / 1.25;
