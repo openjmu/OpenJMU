@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:OpenJMU/widgets/announcement/AnnouncementWidget.dart';
@@ -139,11 +138,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         try {
             final UserInfo user = UserAPI.currentUser;
             final DateTime now = DateTime.now();
+            String token = Platform.isIOS ? await ChannelUtils.iosGetPushToken() : "null";
             final Map<String, dynamic> data = {
-                "token": Platform.isIOS
-                        ? await ChannelUtils.iosGetPushToken()
-                        : "null"
-                ,
+                "token": token,
                 "date": DateFormat("yyyy/MM/dd/HH:mm:ss", "en").format(now),
                 "uid": user.uid.toString(),
                 "name": user.name.toString(),
@@ -151,26 +148,13 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 "appversion": await OTAUtils.getCurrentVersion(),
                 "platform": Platform.isIOS ? "ios" : "android"
             };
-            final Map<String, dynamic> platformData = {
-                "token": Platform.isIOS
-                        ? await ChannelUtils.iosGetPushToken()
-                        : "null"
-                ,
-                "date": await ChannelUtils.iosGetPushDate(),
-                "uid": user.uid.toString(),
-                "name": user.name.toString(),
-                "workid": user.workId.toString(),
-                "appversion": await OTAUtils.getCurrentVersion(),
-                "platform": Platform.isIOS ? "ios" : "android"
-            };
-            debugPrint("data from dart:　${JsonEncoder.withIndent("  ").convert(data)}");
-            debugPrint("data from platform:　${JsonEncoder.withIndent("  ").convert(platformData)}");
-
             NetUtils.post(API.pushUpload, data: data).then((response) {
                 debugPrint("Push service info upload success.");
+            }).catchError((e) {
+                debugPrint("Push service upload error: $e");
             });
         } catch (e) {
-            debugPrint("Push service upload error: $e");
+            debugPrint("Push service init error: $e");
         }
     }
 
