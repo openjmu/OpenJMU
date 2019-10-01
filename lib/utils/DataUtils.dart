@@ -127,6 +127,7 @@ class DataUtils {
     static Future recoverLoginInfo() async {
         try {
             Map<String, String> info = getSpTicket();
+            UserAPI.lastTicket = info['ticket'];
             UserAPI.currentUser.sid = info['ticket'];
             UserAPI.currentUser.blowfish = info['blowfish'];
             await getTicket();
@@ -217,16 +218,16 @@ class DataUtils {
         return tickets;
     }
 
-    static Future<bool> getTicket() async {
+    static Future<bool> getTicket({bool update = false}) async {
         try {
             Map<String, dynamic> params = Constants.loginParams(
-                ticket: UserAPI.currentUser.sid,
+                ticket: update
+                        ? UserAPI.lastTicket
+                        : UserAPI.currentUser.sid
+                ,
                 blowfish: UserAPI.currentUser.blowfish,
             );
-            print(params);
-            print(NetUtils.tokenCookieJar.loadForRequest(Uri.parse(API.loginTicket)));
             NetUtils.tokenCookieJar.deleteAll();
-            print(NetUtils.tokenCookieJar.loadForRequest(Uri.parse(API.loginTicket)));
             Map<String, dynamic> response = (await NetUtils.tokenDio.post(
                 API.loginTicket,
                 data: params,
@@ -244,8 +245,7 @@ class DataUtils {
         }
     }
 
-    static Future updateSid(response) async {
-        print(response);
+    static Future updateSid(response, {bool update = false}) async {
         await sp.setString(spUserSid, response['sid']);
         UserAPI.currentUser.sid = response['sid'];
         UserAPI.currentUser.ticket = response['sid'];

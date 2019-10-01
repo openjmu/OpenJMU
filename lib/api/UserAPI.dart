@@ -15,6 +15,7 @@ import 'package:OpenJMU/utils/ToastUtils.dart';
 
 
 class UserAPI {
+    static String lastTicket;
     static UserInfo currentUser = UserInfo();
 
     static List<Cookie> cookiesForJWGL;

@@ -1,30 +1,29 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
-import 'package:oktoast/oktoast.dart';
-
-import 'package:flutter/foundation.dart';
 
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
-import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
 
 class NetUtils {
-    static Dio dio = Dio();
-    static Dio tokenDio = Dio();
+    static final Dio dio = Dio();
+    static final Dio tokenDio = Dio();
 
-    static DefaultCookieJar cookieJar = DefaultCookieJar();
-    static CookieManager cookieManager = CookieManager(cookieJar);
-    static DefaultCookieJar tokenCookieJar = DefaultCookieJar();
-    static CookieManager tokenCookieManager = CookieManager(tokenCookieJar);
+    static final DefaultCookieJar cookieJar = DefaultCookieJar();
+    static final CookieManager cookieManager = CookieManager(cookieJar);
+    static final DefaultCookieJar tokenCookieJar = DefaultCookieJar();
+    static final CookieManager tokenCookieManager = CookieManager(tokenCookieJar);
 
     static void updateTicket() async {
         dio.lock();  /// Lock dio while requesting new ticket.
 
-        if (!await DataUtils.getTicket()) {
+        if (await DataUtils.getTicket(update: true)) {
+            debugPrint("Ticket updated success with new ticket: ${UserAPI.currentUser.sid}");
+        } else  {
             debugPrint("Ticket updated error: ${UserAPI.currentUser.sid}");
         }
 
@@ -32,10 +31,10 @@ class NetUtils {
     }
 
     static void initConfig() async {
-//        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-//            client.findProxy = (uri) => "PROXY 192.168.1.128:8888";
-//            client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-//        };
+        (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
+//            client.findProxy = (uri) => "PROXY 192.168.0.101:8088";
+            client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        };
         dio.interceptors.add(cookieManager);
         dio.interceptors.add(InterceptorsWrapper(
             onError: (DioError e) async {
@@ -46,6 +45,10 @@ class NetUtils {
                 return e;
             },
         ));
+        (tokenDio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
+//            client.findProxy = (uri) => "PROXY 192.168.0.101:8088";
+            client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        };
         tokenDio.interceptors.add(tokenCookieManager);
         tokenDio.interceptors.add(InterceptorsWrapper(
             onError: (DioError e) async {

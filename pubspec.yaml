@@ -1,7 +1,7 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.5.3+82
+version: 0.5.3+83
 
 environment:
     sdk: ">=2.5.0 <3.0.0"
@@ -12,7 +12,6 @@ dependencies:
         sdk: flutter
     flutter_localizations:
         sdk: flutter
-    image: any
 
     badges: 1.1.0
     cached_network_image: 1.1.1
@@ -30,9 +29,7 @@ dependencies:
     flutter_cache_manager: 1.1.1
     flutter_downloader: 1.2.1
     flutter_icons: 0.2.5
-#    flutter_inappbrowser: 1.2.1
-    flutter_inappbrowser:
-        git: https://github.com/AlexVincent525/flutter_inappbrowser.git
+    flutter_inappbrowser: 1.2.1
     flutter_native_image:
         git: https://github.com/btastic/flutter_native_image.git
     flutter_platform_widgets: 0.12.0
@@ -41,6 +38,7 @@ dependencies:
     flutter_svg: 0.14.1
     flutter_webview_plugin: 0.3.8
     html: 0.14.0+2
+    image: any
     image_crop: 0.3.1
     image_downloader: 0.18.1
     image_gallery_saver: 1.2.1
