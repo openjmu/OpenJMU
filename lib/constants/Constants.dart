@@ -8,27 +8,17 @@ import 'package:crypto/crypto.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:OpenJMU/api/UserAPI.dart';
+import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
 
 
 class Constants {
-    /// For test page.
-    /// TODO: Set this to false before release.
-    static final bool isTest = false;
-    static final bool newAppCenterIcon = true;
     static final List<int> developerList = [136172, 182999, 164466, 184698, 153098, 168695, 162060, 189275, 183114, 183824];
 
     static final String endLineTag = "没有更多了~";
     static GlobalKey<NavigatorState> navigatorKey;
-
-    // Fow start index.
-    static int homeSplashIndex = 0;
-    static List homeStartUpIndex = [0, 0, 0];
-
-    static List announcements = [];
-    static bool announcementsEnabled = false;
 
     // Fow news list.
     static final int appId = Platform.isIOS ? 274 : 273;
@@ -88,9 +78,8 @@ class Constants {
     static Notifications notifications = Notifications();
 
     /// Screen capability method.
-    static double fontScale = 1.0;
-    static double suSetSp(double size) {
-        double value = ScreenUtil.getInstance().setSp(size) * 2 * fontScale;
+    static double suSetSp(double size, {double scale}) {
+        double value = ScreenUtil.getInstance().setSp(size) * 2 * (scale ?? Configs.fontScale);
         if (Platform.isIOS) {
             if (ScreenUtil.screenWidthDp <= 414.0) {
                 value = size / 1.25;

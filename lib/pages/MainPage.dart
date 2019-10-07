@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
+import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -65,7 +66,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     Notifications notifications = Constants.notifications;
     Timer notificationTimer;
 
-    int _tabIndex = Constants.homeSplashIndex;
+    int _tabIndex = Configs.homeSplashIndex;
     int userUid;
     String userSid;
 
@@ -194,7 +195,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 body: SafeArea(
                     child: Column(
                         children: <Widget>[
-                            if (Constants.announcementsEnabled) AnnouncementWidget(
+                            if (Configs.announcementsEnabled) AnnouncementWidget(
                                 context,
                                 color: ThemeUtils.currentThemeColor,
                                 gap: 24.0,

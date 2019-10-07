@@ -1,11 +1,11 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.5.3+83
+version: 0.5.3+84
 
 environment:
     sdk: ">=2.5.0 <3.0.0"
-    flutter: 1.9.1+hotfix.2
+    flutter: 1.9.1+hotfix.4
 
 dependencies:
     flutter:
@@ -43,6 +43,7 @@ dependencies:
     image_downloader: 0.18.1
     image_gallery_saver: 1.2.1
     image_picker: 0.6.1+1
+    intl: 0.15.8
     like_button: 0.1.9
     multi_image_picker: 4.5.3
     oktoast: 2.2.0

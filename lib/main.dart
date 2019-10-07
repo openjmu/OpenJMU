@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
@@ -10,9 +9,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:quick_actions/quick_actions.dart';
 
+import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/localications/cupertino_zh.dart';
 import 'package:OpenJMU/pages/SplashPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
@@ -50,33 +49,15 @@ class OpenJMUAppState extends State<OpenJMUApp> {
             Constants.eventBus.fire(ConnectivityChangeEvent(result));
             debugPrint("Current connectivity: $result");
         });
-        DataUtils.getColorThemeIndex().then((index) {
-            if (this.mounted && index != null) {
-                setState(() {
-                    currentThemeColor = ThemeUtils.supportColors[index];
-                });
-                ThemeUtils.currentThemeColor = ThemeUtils.supportColors[index];
-                Constants.eventBus.fire(ChangeThemeEvent(ThemeUtils.supportColors[index]));
-            }
-        });
-        DataUtils.getHomeSplashIndex().then((index) {
-            Constants.homeSplashIndex = index ?? 0;
-        });
-        DataUtils.getHomeStartUpIndex().then((indexList) {
-            Constants.homeStartUpIndex = indexList ?? [0, 0, 0];
-        });
+
         Constants.eventBus
             ..on<ChangeThemeEvent>().listen((event) {
-                if (this.mounted) {
-                    setState(() {
-                        currentThemeColor = event.color;
-                    });
-                }
+                currentThemeColor = event.color;
+                if (mounted) setState(() {});
             })
             ..on<LogoutEvent>().listen((event) async {
-                setState(() {
-                    currentThemeColor = ThemeUtils.defaultColor;
-                });
+                currentThemeColor = ThemeUtils.defaultColor;
+                if (mounted) setState(() {});
                 await DataUtils.logout();
             })
             ..on<ActionsEvent>().listen((event) {
@@ -91,12 +72,12 @@ class OpenJMUAppState extends State<OpenJMUApp> {
                 }
             })
             ..on<ChangeBrightnessEvent>().listen((event) {
-                setState(() {
-                    ThemeUtils.isDark = event.isDarkState;
-                });
+                ThemeUtils.isDark = event.isDarkState;
+                if (mounted) setState(() {});
             })
         ;
-        listenToBrightness();
+
+        initSettings();
         NetUtils.initConfig();
         initQuickActions();
         debugPrint("Android: ${Platform.isAndroid} | iOS: ${Platform.isIOS}");
@@ -111,6 +92,20 @@ class OpenJMUAppState extends State<OpenJMUApp> {
         super.dispose();
     }
 
+    void initSettings() async {
+        Color color = ThemeUtils.supportColors[DataUtils.getColorThemeIndex()];
+        currentThemeColor = ThemeUtils.currentThemeColor = color;
+        Constants.eventBus.fire(ChangeThemeEvent(color));
+        ThemeUtils.isDark = DataUtils.getBrightnessDark();
+
+        Configs.homeSplashIndex = DataUtils.getHomeSplashIndex();
+        Configs.homeStartUpIndex = DataUtils.getHomeStartUpIndex();
+        Configs.fontScale = DataUtils.getFontScale();
+        Configs.newAppCenterIcon = DataUtils.getEnabledNewAppsIcon();
+
+        if (mounted) setState(() {});
+    }
+
     void initQuickActions() {
         final QuickActions quickActions = QuickActions();
         quickActions.initialize((String shortcutType) {
@@ -123,28 +118,6 @@ class OpenJMUAppState extends State<OpenJMUApp> {
             const ShortcutItem(type: 'action_message', localizedTitle: '消息', icon: 'actions_message'),
             const ShortcutItem(type: 'action_mine', localizedTitle: '我的', icon: 'actions_mine'),
         ]);
-    }
-
-    void listenToBrightness() {
-        DataUtils.getBrightnessDark().then((isDark) {
-            if (isDark == null) {
-                DataUtils.setBrightnessDark(false).then((whatever) {
-                    setState(() {
-                        ThemeUtils.isDark = false;
-                    });
-                });
-            } else {
-                if (isDark) {
-                    setState(() {
-                        ThemeUtils.isDark = true;
-                    });
-                } else {
-                    setState(() {
-                        ThemeUtils.isDark = false;
-                    });
-                }
-            }
-        });
     }
 
     @override
@@ -164,10 +137,15 @@ class OpenJMUAppState extends State<OpenJMUApp> {
                     localizationsDelegates: [
                         GlobalMaterialLocalizations.delegate,
                         GlobalWidgetsLocalizations.delegate,
-                        ChineseCupertinoLocalizations.delegate,
+                        GlobalCupertinoLocalizations.delegate,
                     ],
                     supportedLocales: [
-                        const Locale('zh'),
+                        const Locale.fromSubtags(languageCode: 'zh'),
+                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
+                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),
+                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'HK'),
                         const Locale('en'),
                     ],
                 ),

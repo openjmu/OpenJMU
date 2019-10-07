@@ -1,8 +1,6 @@
-import 'dart:async';
 import 'dart:core';
 
 import 'package:OpenJMU/api/UserAPI.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/SocketUtils.dart';
 
 
@@ -183,8 +181,4 @@ class API {
     /// 静态scheme正则
     static final RegExp urlReg = RegExp(r"(https?)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]");
     static final RegExp schemeUserPage = RegExp(r"^openjmu://user/*");
-}
-
-class DateAPI {
-    static Future getCurrentWeek () async => NetUtils.get(API.firstDayOfTerm);
 }

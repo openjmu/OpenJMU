@@ -86,6 +86,7 @@ class ThemeUtils {
         primaryColor: Colors.white,
         primaryColorBrightness: Brightness.light,
         primaryColorLight: Colors.white,
+        primaryColorDark: Colors.white,
         accentColor: currentThemeColor,
         accentColorBrightness: Brightness.light,
         canvasColor: Colors.grey[200],
@@ -114,12 +115,14 @@ class ThemeUtils {
             labelColor: Colors.black,
             unselectedLabelColor: Colors.black,
         ),
+        buttonColor: currentThemeColor,
     );
 
     static ThemeData darkTheme() => ThemeData.dark().copyWith(
         brightness: Brightness.dark,
         primaryColor: Colors.black,
         primaryColorBrightness: Brightness.dark,
+        primaryColorLight: Colors.black,
         primaryColorDark: Colors.black,
         accentColor: currentThemeColor,
         accentColorBrightness: Brightness.dark,
@@ -187,6 +190,7 @@ class ThemeUtils {
                 color: Colors.grey[350],
             ),
         ),
+        buttonColor: currentThemeColor,
     );
 }
 

@@ -17,20 +17,19 @@ class ChangeThemePageState extends State<ChangeThemePage> {
 
     @override
     void initState() {
-        super.initState();
-        DataUtils.getColorThemeIndex().then((index) {
-            if (this.mounted) setState(() { this.selected = index; });
-        });
-        Constants.eventBus..on<ChangeThemeEvent>().listen((event) {
-            if (this.mounted) setState(() {
+        selected = DataUtils.getColorThemeIndex();
+        Constants.eventBus
+            ..on<ChangeThemeEvent>().listen((event) {
                 ThemeUtils.currentThemeColor = event.color;
                 currentColor = event.color;
-            });
-        });
+                if (this.mounted) setState(() {});
+            })
+        ;
+        super.initState();
     }
 
     void changeColorTheme(Color color) {
-        Constants.eventBus.fire(new ChangeThemeEvent(color));
+        Constants.eventBus.fire(ChangeThemeEvent(color));
     }
 
     @override
@@ -45,34 +44,32 @@ class ChangeThemePageState extends State<ChangeThemePage> {
                 ),
                 centerTitle: true,
             ),
-            body: Container(
-                child: GridView.count(
-                    crossAxisCount: 4,
-                    children: List.generate(colors.length, (index) {
-                        return InkWell(
-                            onTap: () {
-                                setState(() { this.selected = index; });
-                                DataUtils.setColorTheme(index);
-                                changeColorTheme(colors[index]);
-                            },
-                            child: Stack(
-                                children: <Widget>[
-                                    Container(
-                                        color: colors[index],
-                                        margin: EdgeInsets.all(Constants.suSetSp(10.0)),
-                                    ),
-                                    if (this.selected == index) Container(
-                                        color: const Color(0x66ffffff),
-                                        margin: EdgeInsets.all(Constants.suSetSp(10.0)),
-                                        child: Icon(Icons.check, color: Colors.white, size: Constants.suSetSp(40.0)),
-                                        width: MediaQuery.of(context).size.width,
-                                        height: MediaQuery.of(context).size.height,
-                                    ),
-                                ],
-                            ),
-                        );
-                    }),
-                ),
+            body: GridView.count(
+                crossAxisCount: 4,
+                children: List.generate(colors.length, (index) {
+                    return InkWell(
+                        onTap: () {
+                            setState(() { selected = index; });
+                            DataUtils.setColorTheme(index);
+                            changeColorTheme(colors[index]);
+                        },
+                        child: Stack(
+                            children: <Widget>[
+                                Container(
+                                    color: colors[index],
+                                    margin: EdgeInsets.all(Constants.suSetSp(10.0)),
+                                ),
+                                if (selected == index) Container(
+                                    color: const Color(0x66ffffff),
+                                    margin: EdgeInsets.all(Constants.suSetSp(10.0)),
+                                    child: Icon(Icons.check, color: Colors.white, size: Constants.suSetSp(40.0)),
+                                    width: MediaQuery.of(context).size.width,
+                                    height: MediaQuery.of(context).size.height,
+                                ),
+                            ],
+                        ),
+                    );
+                }),
             ),
         );
     }

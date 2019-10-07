@@ -1,40 +1,46 @@
-import 'package:OpenJMU/pages/test/TestAnimatedWidgetPage.dart';
-import 'package:OpenJMU/pages/test/TestImageCropPage.dart';
-import 'package:OpenJMU/pages/test/TestTextPage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:OpenJMU/api/UserAPI.dart';
+import 'package:OpenJMU/pages/test/TestAnimatedWidgetPage.dart';
+import 'package:OpenJMU/pages/test/TestCourseSchedulePage.dart';
 import 'package:OpenJMU/pages/test/TestDragPage.dart';
-import 'package:OpenJMU/pages/test/TestUserPage.dart';
+import 'package:OpenJMU/pages/test/TestImageCropPage.dart';
 import 'package:OpenJMU/pages/test/TestSocketPage.dart';
+import 'package:OpenJMU/pages/test/TestUserPage.dart';
 
 
 class TestDashBoardPage extends StatelessWidget {
-    final List<Widget> pageList = [
-        TestUserPage(UserAPI.currentUser.uid),
-        TestSocketPage(),
-        TestDragPage(),
-        TestTextPage(),
-        TestImageCropPage(),
-        TestAnimatedWidgetPage(),
-    ];
-
-    final List<String> pageTitleList = [
-        "用户测试页",
-        "连接测试页",
-        "滑动测试页",
-        "输入测试页",
-        "裁剪测试页",
-        "动画测试页",
-    ];
-
-    final List<IconData> pageIconList = [
-        Icons.supervised_user_circle,
-        Icons.settings_ethernet,
-        Icons.crop_free,
-        Icons.border_color,
-        Icons.crop,
-        Icons.av_timer,
+    final List<Map<String, dynamic>> pageList = [
+        {
+            "builder": TestUserPage(UserAPI.currentUser.uid),
+            "name": "用户测试页",
+            "icon": Icons.supervised_user_circle,
+        },
+        {
+            "builder": TestSocketPage(),
+            "name": "连接测试页",
+            "icon": Icons.settings_ethernet,
+        },
+        {
+            "builder": TestDragPage(),
+            "name": "滑动测试页",
+            "icon": Icons.crop_free,
+        },
+        {
+            "builder": TestImageCropPage(),
+            "name": "裁剪测试页",
+            "icon": Icons.crop,
+        },
+        {
+            "builder": TestAnimatedWidgetPage(),
+            "name": "动画测试页",
+            "icon": Icons.av_timer,
+        },
+        {
+            "builder": TestCourseSchedulePage(),
+            "name": "课表测试页",
+            "icon": Icons.date_range,
+        },
     ];
 
     @override
@@ -57,8 +63,8 @@ class TestDashBoardPage extends StatelessWidget {
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                    Icon(pageIconList[index]),
-                                    Text(pageTitleList[index]),
+                                    Icon(pageList[index]['icon']),
+                                    Text(pageList[index]['name']),
                                 ],
                             ),
                             onTap: () {
@@ -70,7 +76,7 @@ class TestDashBoardPage extends StatelessWidget {
                                             Animation secondaryAnimation
                                             ) => FadeTransition(
                                         opacity: animation,
-                                        child: pageList[index],
+                                        child: pageList[index]['builder'],
                                     ),
                                 ));
                             },

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
-import 'package:OpenJMU/pages/home/PostSquareListPage.dart';
 import 'package:OpenJMU/pages/home/AppCenterPage.dart';
+import 'package:OpenJMU/pages/home/PostSquareListPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 
 
@@ -24,14 +24,14 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
             {
                 "name": "启动页",
                 "pages": List.from(MainPageState.pagesTitle),
-                "index": Constants.homeSplashIndex,
+                "index": Configs.homeSplashIndex,
             },
         ],
         [
             for (int i = 0; i < pageTab.length; i++) {
                 "name": MainPageState.pagesTitle[i],
                 "pages": pageTab[i],
-                "index": Constants.homeStartUpIndex[i],
+                "index": Configs.homeStartUpIndex[i],
             }
         ],
     ];
@@ -108,7 +108,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                 if (page["name"] == "启动页") {
                     DataUtils.setHomeSplashIndex(index);
                 } else {
-                    List _list = List.from(Constants.homeStartUpIndex);
+                    List _list = List.from(Configs.homeStartUpIndex);
                     _list[pageIndex] = index;
                     DataUtils.setHomeStartUpIndex(_list);
                 }

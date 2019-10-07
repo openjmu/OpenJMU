@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:connectivity/connectivity.dart';
 
 import 'package:OpenJMU/api/API.dart';
+import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/LoginPage.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
@@ -93,27 +92,24 @@ class SplashState extends State<SplashPage> {
     void checkOnline(event) {
         if (!isInLoginProcess) {
             isInLoginProcess = true;
-            setState(() {
                 if (event.type != ConnectivityResult.none) {
                     this.isOnline = true;
-                    DataUtils.isLogin().then((isLogin) {
-                        if (isLogin) {
-                            DataUtils.recoverLoginInfo();
-                        } else {
-                            Constants.eventBus.fire(TicketFailedEvent());
-                        }
-                    });
+                    if (DataUtils.isLogin()) {
+                        DataUtils.recoverLoginInfo();
+                    } else {
+                        Constants.eventBus.fire(TicketFailedEvent());
+                    }
                 } else {
                     this.isOnline = false;
                 }
-            });
         }
+        if (mounted) setState(() {});
     }
 
     Future getAnnouncement() async {
         Map<String, dynamic> data = jsonDecode((await NetUtils.get(API.announcement)).data);
-        Constants.announcementsEnabled = data['enabled'];
-        Constants.announcements = data['announcements'];
+        Configs.announcementsEnabled = data['enabled'];
+        Configs.announcements = data['announcements'];
     }
 
     Future navigate() async {
@@ -163,9 +159,7 @@ class SplashState extends State<SplashPage> {
                 margin: EdgeInsets.only(bottom: Constants.suSetSp(20.0)),
                 width: Constants.suSetSp(24.0),
                 height: Constants.suSetSp(24.0),
-                child: Platform.isAndroid ? CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ) : CupertinoActivityIndicator(),
+                child: Constants.progressIndicator(color: Colors.white),
             ),
             Text(
                 "正在登录",

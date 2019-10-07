@@ -1,3 +1,4 @@
+import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -74,7 +75,7 @@ class PostSquareListPageState extends State<PostSquareListPage> with SingleTicke
         super.initState();
 
         _tabController = TabController(
-            initialIndex: Constants.homeStartUpIndex[0],
+            initialIndex: Configs.homeStartUpIndex[0],
             length: tabs.length,
             vsync: this,
         );

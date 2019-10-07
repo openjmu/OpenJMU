@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 
@@ -47,7 +48,7 @@ class FABBottomAppBar extends StatefulWidget {
 }
 
 class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliveClientMixin {
-    int _selectedIndex = Constants.homeSplashIndex;
+    int _selectedIndex = Configs.homeSplashIndex;
     bool showNotification = false;
 
     @override

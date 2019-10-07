@@ -1,9 +1,11 @@
 import 'dart:core';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/api/UserAPI.dart';
+import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -30,7 +32,7 @@ class MessagePageState extends State<MessagePage> with SingleTickerProviderState
     void initState() {
         super.initState();
         _tabController = TabController(
-            initialIndex: Constants.homeStartUpIndex[2],
+            initialIndex: Configs.homeStartUpIndex[2],
             length: tabs.length,
             vsync: this,
         );
@@ -53,7 +55,7 @@ class MessagePageState extends State<MessagePage> with SingleTickerProviderState
                 Navigator.of(context).pushNamed("/notification");
                 break;
             case "粉丝":
-                Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
+                Navigator.of(context).push(platformPageRoute(builder: (context) {
                     return UserListPage(UserAPI.currentUser, 2);
                 }));
                 break;

@@ -202,5 +202,6 @@ class AppCenterRefreshEvent {
         this.currentIndex = currentIndex;
     }
 }
+class AppCenterSettingsUpdateEvent {}
 class ScoreRefreshEvent {}
 class CourseScheduleRefreshEvent {}

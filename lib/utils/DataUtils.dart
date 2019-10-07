@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:OpenJMU/api/API.dart';
+import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -97,7 +98,9 @@ class DataUtils {
 
     static Future logout() async {
         await clearLoginInfo();
+        await clearSettings();
         await resetTheme();
+        showShortToast("退出登录成功");
     }
 
     static Future<bool> checkWizard() async {
@@ -122,7 +125,7 @@ class DataUtils {
         }
     }
 
-    static String recoverWorkId() => sp.getString(spUserWorkId);
+    static String recoverWorkId() => sp?.getString(spUserWorkId);
 
     static Future recoverLoginInfo() async {
         try {
@@ -176,44 +179,50 @@ class DataUtils {
     static Future<Null> saveLoginInfo(Map<String, dynamic> data) async {
         if (data != null) {
             setUserInfo(data);
-            await sp.setBool(spIsLogin, true);
-            await sp.setBool(spIsTeacher, data['isTeacher']);
-            await sp.setBool(spIsCY, data['isCY']);
-            await sp.setString(spUserSid, data['sid']);
-            await sp.setString(spTicket, data['ticket']);
-            await sp.setString(spBlowfish, data['blowfish']);
-            await sp.setString(spUserName, data['name']);
-            await sp.setInt(spUserUid, data['uid']);
-            await sp.setInt(spUserUnitId, data['unitId']);
-            await sp.setString(spUserWorkId, data['workId']);
-//            await sp.setInt(spUserClassId, data['userClassId']);
+            await sp?.setBool(spIsLogin, true);
+            await sp?.setBool(spIsTeacher, data['isTeacher']);
+            await sp?.setBool(spIsCY, data['isCY']);
+            await sp?.setString(spUserSid, data['sid']);
+            await sp?.setString(spTicket, data['ticket']);
+            await sp?.setString(spBlowfish, data['blowfish']);
+            await sp?.setString(spUserName, data['name']);
+            await sp?.setInt(spUserUid, data['uid']);
+            await sp?.setInt(spUserUnitId, data['unitId']);
+            await sp?.setString(spUserWorkId, data['workId']);
+//            await sp?.setInt(spUserClassId, data['userClassId']);
         }
     }
 
-    // 清除登录信息
+    /// 清除登录信息
     static Future clearLoginInfo() async {
         UserAPI.currentUser = UserInfo();
-        await sp.remove(spIsLogin);
-        await sp.remove(spIsTeacher);
-        await sp.remove(spIsCY);
-        await sp.remove(spUserSid);
-        await sp.remove(spTicket);
-        await sp.remove(spBlowfish);
-        await sp.remove(spUserName);
-        await sp.remove(spUserUid);
-        await sp.remove(spUserUnitId);
-//        await sp.remove(spUserClassId);
-        await sp.remove(spBrightness);
-        await sp.remove(spColorThemeIndex);
-        await sp.remove(spHomeSplashIndex);
-        await sp.remove(spHomeStartUpIndex);
-        showShortToast("退出登录成功");
+        await sp?.remove(spIsLogin);
+        await sp?.remove(spIsTeacher);
+        await sp?.remove(spIsCY);
+        await sp?.remove(spUserSid);
+        await sp?.remove(spTicket);
+        await sp?.remove(spBlowfish);
+        await sp?.remove(spUserName);
+        await sp?.remove(spUserUid);
+        await sp?.remove(spUserUnitId);
+//        await sp?.remove(spUserClassId);
+    }
+
+    /// 清除设置信息
+    static Future clearSettings() async {
+        Configs.reset();
+        await sp?.remove(spBrightness);
+        await sp?.remove(spColorThemeIndex);
+        await sp?.remove(spHomeSplashIndex);
+        await sp?.remove(spHomeStartUpIndex);
+        await sp?.remove(spSettingFontScale);
+        await sp?.remove(spSettingNewIcons);
     }
 
     static Map getSpTicket() {
         Map<String, String> tickets = {
-            'ticket': sp.getString(spTicket),
-            'blowfish': sp.getString(spBlowfish),
+            'ticket': sp?.getString(spTicket),
+            'blowfish': sp?.getString(spBlowfish),
         };
         return tickets;
     }
@@ -246,16 +255,15 @@ class DataUtils {
     }
 
     static Future updateSid(response, {bool update = false}) async {
-        await sp.setString(spUserSid, response['sid']);
+        await sp?.setString(spUserSid, response['sid']);
         UserAPI.currentUser.sid = response['sid'];
         UserAPI.currentUser.ticket = response['sid'];
-        UserAPI.currentUser.uid = sp.getInt(spUserUid);
+        UserAPI.currentUser.uid = sp?.getInt(spUserUid);
     }
 
     // 是否登录
-    static Future<bool> isLogin() async {
-        bool b = sp.getBool(spIsLogin);
-        return b != null && b;
+    static bool isLogin() {
+        return sp?.getBool(spIsLogin) ?? false;
     }
 
     // 重置主题配置
@@ -268,22 +276,20 @@ class DataUtils {
     }
 
     // 获取设置的主题色
-    static Future<int> getColorThemeIndex() async {
-        return sp.getInt(spColorThemeIndex);
+    static int getColorThemeIndex() {
+        return sp?.getInt(spColorThemeIndex) ?? 0;
     }
-
+    // 获取设置的夜间模式
+    static bool getBrightnessDark() {
+        return sp?.getBool(spBrightness) ?? false;
+    }
     // 设置选择的主题色
     static Future setColorTheme(int colorThemeIndex) async {
-        await sp.setInt(spColorThemeIndex, colorThemeIndex);
-    }
-
-    // 获取设置的夜间模式
-    static Future<bool> getBrightnessDark() async {
-        return sp.getBool(spBrightness);
+        await sp?.setInt(spColorThemeIndex, colorThemeIndex);
     }
     // 设置选择的夜间模式
     static Future setBrightnessDark(bool isDark) async {
-        await sp.setBool(spBrightness, isDark);
+        await sp?.setBool(spBrightness, isDark);
     }
 
     // 获取未读信息数
@@ -313,23 +319,41 @@ class DataUtils {
     }
 
     // 获取默认启动页index
-    static Future<int> getHomeSplashIndex() async {
-        int index = sp.getInt(spHomeSplashIndex);
+    static int getHomeSplashIndex() {
+        int index = sp?.getInt(spHomeSplashIndex) ?? 0;
         return index;
     }
     // 获取默认各页启动index
-    static Future<List> getHomeStartUpIndex() async {
-        List index = jsonDecode(sp.getString(spHomeStartUpIndex) ?? "[0, 0, 0]");
+    static List getHomeStartUpIndex() {
+        List index = jsonDecode(sp?.getString(spHomeStartUpIndex) ?? "[0, 0, 0]");
         return index;
+    }
+    // 获取字体缩放设置
+    static double getFontScale() {
+        double scale = sp?.getDouble(spSettingFontScale) ?? 1.0;
+        return scale;
+    }
+    // 获取字体缩放设置
+    static bool getEnabledNewAppsIcon() {
+        bool enabled = sp?.getBool(spSettingNewIcons) ?? true;
+        return enabled;
     }
 
     static Future<Null> setHomeSplashIndex(int index) async {
-        Constants.homeSplashIndex = index;
-        await sp.setInt(spHomeSplashIndex, index);
+        Configs.homeSplashIndex = index;
+        await sp?.setInt(spHomeSplashIndex, index);
     }
     static Future<Null> setHomeStartUpIndex(List indexList) async {
-        Constants.homeStartUpIndex = indexList;
-        await sp.setString(spHomeStartUpIndex, jsonEncode(indexList));
+        Configs.homeStartUpIndex = indexList;
+        await sp?.setString(spHomeStartUpIndex, jsonEncode(indexList));
+    }
+    static Future<Null> setFontScale(double scale) async {
+        Configs.fontScale = scale;
+        await sp?.setDouble(spSettingFontScale, scale);
+    }
+    static Future<Null> setEnabledNewAppsIcon(bool enable) async {
+        Configs.newAppCenterIcon = enable;
+        await sp?.setBool(spSettingNewIcons, enable);
     }
 
     static Map<String, dynamic> buildPostHeaders(sid) {

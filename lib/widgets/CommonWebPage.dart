@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'dart:async';
 
+import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/widgets/AppIcon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -15,6 +17,7 @@ import 'package:OpenJMU/utils/ToastUtils.dart';
 class CommonWebPage extends StatefulWidget {
     final String url;
     final String title;
+    final WebApp app;
     final bool withCookie;
     final bool withAppBar;
     final bool withAction;
@@ -23,6 +26,7 @@ class CommonWebPage extends StatefulWidget {
         Key key,
         @required this.url,
         @required this.title,
+        this.app,
         this.withCookie,
         this.withAppBar,
         this.withAction,
@@ -31,9 +35,17 @@ class CommonWebPage extends StatefulWidget {
     @override
     State<StatefulWidget> createState() => CommonWebPageState();
 
-    static void jump(BuildContext context, String url, String title, {bool withCookie}) {
+    static void jump(
+            BuildContext context, String url, String title,
+            {WebApp app, bool withCookie,}
+    ) {
         Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-            return CommonWebPage(url: url, title: title, withCookie: withCookie);
+            return CommonWebPage(
+                url: url,
+                title: title,
+                app: app,
+                withCookie: withCookie,
+            );
         }));
     }
 }
@@ -158,11 +170,19 @@ class CommonWebPageState extends State<CommonWebPage> {
                         icon: Icon(Icons.close),
                         onPressed: Navigator.of(context).pop,
                     ),
-                    title: Container(
-                        child: Column(
+                    title: GestureDetector(
+                        onLongPress: () {
+                            _launchURL();
+                        },
+                        onDoubleTap: () {
+                            Clipboard.setData(ClipboardData(text: _url));
+                            showShortToast("已复制网址到剪贴板");
+                        },
+                        child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: <Widget>[
+                                if (widget.app != null) AppIcon(app: widget.app, size: 40.0),
                                 Text(
                                     _title,
                                     style: TextStyle(
@@ -170,23 +190,6 @@ class CommonWebPageState extends State<CommonWebPage> {
                                         fontSize: Constants.suSetSp(20.0),
                                     ),
                                     overflow: TextOverflow.fade,
-                                ),
-                                GestureDetector(
-                                    onLongPress: () {
-                                        _launchURL();
-                                    },
-                                    onDoubleTap: () {
-                                        Clipboard.setData(ClipboardData(text: _url));
-                                        showShortToast("已复制网址到剪贴板");
-                                    },
-                                    child: Text(
-                                        _url,
-                                        style: TextStyle(
-                                            color: Theme.of(context).textTheme.title.color,
-                                            fontSize: Constants.suSetSp(14.0),
-                                        ),
-                                        overflow: TextOverflow.fade,
-                                    ),
                                 ),
                             ],
                         ),

@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
-import 'package:OpenJMU/api/API.dart';
+import 'package:OpenJMU/api/DateAPI.dart';
 import 'package:OpenJMU/api/SignAPI.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
+import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -25,46 +26,44 @@ class MyInfoPage extends StatefulWidget {
 }
 
 class MyInfoPageState extends State<MyInfoPage> {
-    final List<List<String>> settingsSection = [
-        if (Constants.isTest) [
-            "背包"
+    final List<List<Map<String, String>>> settingsSection = [
+        if (Configs.isTest) [
+            {
+                "name": "背包",
+                "icon": "idols",
+            },
         ],
         [
-            "夜间模式",
-            "切换主题",
-            "启动页",
-//            "设置"
+            {
+                "name": "夜间模式",
+                "icon": "nightmode",
+            },
+            {
+                "name": "设置",
+                "icon": "settings",
+            },
         ],
         [
-            if (Platform.isAndroid) "检查更新",
-            "关于OpenJMU",
+            if (Platform.isAndroid) {
+                "name": "检查更新",
+                "icon": "checkUpdate",
+            },
+            {
+                "name": "关于OpenJMU",
+                "icon": "idols",
+            },
         ],
         [
-            "退出登录",
+            {
+                "name": "退出登录",
+                "icon": "exit",
+            },
         ],
-        if (Constants.isTest) [
-            "测试页",
-        ],
-    ];
-    final List<List<String>> settingsIcon = [
-        if (Constants.isTest) [
-            "idols",
-        ],
-        [
-            "nightmode",
-            "theme",
-            "homeSplash",
-//            "homeSplash",
-        ],
-        [
-            if (Platform.isAndroid) "checkUpdate",
-            "idols",
-        ],
-        [
-            "exit",
-        ],
-        if (Constants.isTest) [
-            "idols",
+        if (Configs.isTest) [
+            {
+                "name": "测试页",
+                "icon": "idols",
+            },
         ],
     ];
 
@@ -84,39 +83,31 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     @override
     void initState() {
-        super.initState();
+        isDark = DataUtils.getBrightnessDark();
         updateHello();
         getSignStatus();
         getCurrentWeek();
-        if (this.mounted) updateHelloTimer = Timer.periodic(Duration(minutes: 1), (timer) {
+        updateHelloTimer = Timer.periodic(Duration(minutes: 1), (timer) {
             updateHello();
-        });
-        DataUtils.getBrightnessDark().then((isDark) {
-            setState(() {
-                if (isDark != null) {
-                    this.isDark = isDark;
-                } else {
-                    this.isDark = false;
-                }
-            });
         });
         Constants.eventBus
             ..on<ChangeThemeEvent>().listen((event) {
-                if (this.mounted) {
-                    setState(() {
-                        themeColor = event.color;
-                    });
-                }
+                themeColor = event.color;
+                if (mounted) setState(() {});
+
             })
             ..on<ChangeBrightnessEvent>().listen((event) {
-                if (this.mounted) isDark = event.isDarkState;
-            });
+                isDark = event.isDarkState;
+                if (mounted) setState(() {});
+            })
+        ;
+        super.initState();
     }
 
     @override
     void dispose() {
-        super.dispose();
         updateHelloTimer?.cancel();
+        super.dispose();
     }
 
     void getSignStatus() async {
@@ -144,25 +135,24 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     void updateHello() {
         int hour = DateTime.now().hour;
-        setState(() {
-            now = DateTime.now();
+        now = DateTime.now();
 
-            if (hour >= 0 && hour < 6) {
-                this.hello = "深夜了，注意休息";
-            } else if (hour >= 6 && hour < 8) {
-                this.hello = "早上好";
-            } else if (hour >= 8 && hour < 11) {
-                this.hello = "上午好";
-            } else if (hour >= 11 && hour < 14) {
-                this.hello = "中午好";
-            } else if (hour >= 14 && hour < 18) {
-                this.hello = "下午好";
-            } else if (hour >= 18 && hour < 20) {
-                this.hello = "傍晚好";
-            } else if (hour >= 20 && hour <= 24) {
-                this.hello = "晚上好";
-            }
-        });
+        if (hour >= 0 && hour < 6) {
+            this.hello = "深夜了，注意休息";
+        } else if (hour >= 6 && hour < 8) {
+            this.hello = "早上好";
+        } else if (hour >= 8 && hour < 11) {
+            this.hello = "上午好";
+        } else if (hour >= 11 && hour < 14) {
+            this.hello = "中午好";
+        } else if (hour >= 14 && hour < 18) {
+            this.hello = "下午好";
+        } else if (hour >= 18 && hour < 20) {
+            this.hello = "傍晚好";
+        } else if (hour >= 20 && hour <= 24) {
+            this.hello = "晚上好";
+        }
+        if (mounted) setState(() {});
     }
 
     void requestSign() {
@@ -392,7 +382,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         ),
     );
 
-    Widget settingSectionListView(int index) {
+    Widget settingSectionListView(int sectionIndex) {
         return ListView.separated(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -401,12 +391,13 @@ class MyInfoPageState extends State<MyInfoPage> {
                 color: Theme.of(context).canvasColor,
                 height: 1.0,
             ),
-            itemCount: settingsSection[index].length,
-            itemBuilder: (context, i) => settingItem(index, i),
+            itemCount: settingsSection[sectionIndex].length,
+            itemBuilder: (context, itemIndex) => settingItem(sectionIndex, itemIndex),
         );
     }
 
-    Widget settingItem(int index, int i) {
+    Widget settingItem(int sectionIndex, int itemIndex) {
+        final Map<String, String> item = settingsSection[sectionIndex][itemIndex];
         return GestureDetector(
             behavior: HitTestBehavior.translucent,
             child: Padding(
@@ -422,11 +413,11 @@ class MyInfoPageState extends State<MyInfoPage> {
                                 right: Constants.suSetSp(16.0),
                             ),
                             child: SvgPicture.asset(
-                                (settingsSection[index][i] == "夜间模式")
+                                (item['name'] == "夜间模式")
                                         ? isDark
                                         ? "assets/icons/daymode-line.svg"
-                                        : "assets/icons/${settingsIcon[index][i]}-line.svg"
-                                        : "assets/icons/${settingsIcon[index][i]}-line.svg"
+                                        : "assets/icons/${item['icon']}-line.svg"
+                                        : "assets/icons/${item['icon']}-line.svg"
                                 ,
                                 color: Theme.of(context).iconTheme.color,
                                 width: Constants.suSetSp(30.0),
@@ -435,11 +426,11 @@ class MyInfoPageState extends State<MyInfoPage> {
                         ),
                         Expanded(
                             child: Text(
-                                (settingsSection[index][i] == "夜间模式")
+                                (item['name'] == "夜间模式")
                                         ? isDark
                                         ? "日间模式"
-                                        : settingsSection[index][i]
-                                        : settingsSection[index][i]
+                                        : item['name']
+                                        : item['name']
                                 ,
                                 style: TextStyle(fontSize: Constants.suSetSp(19.0)),
                             ),
@@ -456,7 +447,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                     ],
                 ),
             ),
-            onTap: () { _handleItemClick(context, settingsSection[index][i]); },
+            onTap: () { _handleItemClick(context, item['name']); },
         );
     }
 
@@ -472,8 +463,8 @@ class MyInfoPageState extends State<MyInfoPage> {
             case "切换主题":
                 Navigator.pushNamed(context, "/changeTheme");
                 break;
-            case "启动页":
-                Navigator.pushNamed(context, "/switchStartUpPage");
+            case "设置":
+                Navigator.pushNamed(context, "/settings");
                 break;
 
             case "检查更新":
@@ -498,40 +489,31 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     @override
     Widget build(BuildContext context) {
-        return SafeArea(
-            top: true,
-            child: Stack(
-                children: <Widget>[
-                    Container(
-                        width: double.infinity,
-                        height: double.infinity,
-                        color: Theme.of(context).canvasColor,
-                    ),
-                    DecoratedBox(
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).cardColor,
-                        ),
-                        child: ScrollConfiguration(
-                            behavior: NoGlowScrollBehavior(),
-                            child: ListView(
+        return Scaffold(
+            backgroundColor: Theme.of(context).canvasColor,
+            body: DecoratedBox(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                ),
+                child: ScrollConfiguration(
+                    behavior: NoGlowScrollBehavior(),
+                    child: ListView(
+                        shrinkWrap: true,
+                        children: <Widget>[
+                            userInfo(),
+                            Constants.separator(context),
+                            currentDay(now),
+                            Constants.separator(context),
+                            ListView.separated(
+                                physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
-                                children: <Widget>[
-                                    userInfo(),
-                                    Constants.separator(context),
-                                    currentDay(now),
-                                    Constants.separator(context),
-                                    ListView.separated(
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        shrinkWrap: true,
-                                        separatorBuilder: (context, index) => Constants.separator(context),
-                                        itemCount: settingsSection.length,
-                                        itemBuilder: (context, index) => settingSectionListView(index),
-                                    ),
-                                ],
+                                separatorBuilder: (context, index) => Constants.separator(context),
+                                itemCount: settingsSection.length,
+                                itemBuilder: (context, index) => settingSectionListView(index),
                             ),
-                        ),
+                        ],
                     ),
-                ],
+                ),
             ),
         );
     }

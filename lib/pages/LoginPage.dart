@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/api/API.dart';
+import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -476,7 +477,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                                     child: Column(
                                         mainAxisSize: MainAxisSize.min,
                                         children: <Widget>[
-                                            if (Constants.announcementsEnabled) AnnouncementWidget(
+                                            if (Configs.announcementsEnabled) AnnouncementWidget(
                                                 context,
                                                 radius: 6.0,
                                             ),

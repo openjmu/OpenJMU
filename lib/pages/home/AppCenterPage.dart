@@ -1,13 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_tabs/extended_tabs.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
+import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
@@ -15,6 +11,7 @@ import 'package:OpenJMU/pages/home/ScorePage.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/widgets/AppIcon.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/InAppBrowser.dart';
 
@@ -35,13 +32,14 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
     List<Widget> webAppList = [];
     List webAppListData;
     int listTotalSize = 0;
+    bool enableNewIcon = Configs.newAppCenterIcon;
 
     Future _futureBuilderFuture;
 
     @override
     void initState() {
         _tabController = TabController(
-            initialIndex: Constants.homeStartUpIndex[1],
+            initialIndex: Configs.homeStartUpIndex[1],
             length: tabs().length,
             vsync: this,
         );
@@ -53,26 +51,28 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
                 }
             })
             ..on<ChangeThemeEvent>().listen((event) {
-                if (this.mounted) setState(() {
-                    currentThemeColor = event.color;
-                });
+                currentThemeColor = event.color;
+                if (this.mounted) setState(() {});
             })
             ..on<AppCenterRefreshEvent>().listen((event) {
-                if (this.mounted) {
-                    switch (tabs()[event.currentIndex]) {
-                        case "课程表":
-                            Constants.eventBus.fire(CourseScheduleRefreshEvent());
-                            break;
-                        case "成绩":
-                            Constants.eventBus.fire(ScoreRefreshEvent());
-                            break;
-                        case "应用":
-                            _scrollController.jumpTo(0.0);
-                            refreshIndicatorKey.currentState.show();
-                            getAppList();
-                            break;
-                    }
+                switch (tabs()[event.currentIndex]) {
+                    case "课程表":
+                        Constants.eventBus.fire(CourseScheduleRefreshEvent());
+                        break;
+                    case "成绩":
+                        Constants.eventBus.fire(ScoreRefreshEvent());
+                        break;
+                    case "应用":
+                        _scrollController.jumpTo(0.0);
+                        refreshIndicatorKey.currentState.show();
+                        getAppList();
+                        break;
                 }
+                if (this.mounted) setState(() {});
+            })
+            ..on<AppCenterSettingsUpdateEvent>().listen((event) {
+                enableNewIcon = Configs.newAppCenterIcon;
+                if (mounted) setState(() {});
             })
             ..on<ChangeThemeEvent>().listen((event) {
                 currentThemeColor = event.color;
@@ -197,7 +197,10 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
                     ),
                 ],
             ),
-            onPressed: () => CommonWebPage.jump(context, url, webApp.name),
+            onPressed: () => CommonWebPage.jump(
+                context, url, webApp.name,
+                app: webApp,
+            ),
         );
     }
 
@@ -328,71 +331,6 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
                         onRefresh: getAppList,
                     ),
                 ],
-            ),
-        );
-    }
-}
-
-class AppIcon extends StatelessWidget {
-    final WebApp app;
-    final double size;
-
-    AppIcon({
-        Key key,
-        @required this.app,
-        this.size = 60.0,
-    }) : super(key: key);
-
-
-    Future<Widget> loadAsset(WebApp app) async {
-        final String basePath = "assets/icons/appCenter";
-        final String assetPath = "$basePath/${app.code}-${app.name}.svg";
-        try {
-            ByteData _ = await rootBundle.load(assetPath);
-            return SvgPicture.asset(
-                assetPath,
-                width: Constants.suSetSp(size),
-                height: Constants.suSetSp(size),
-            );
-        } catch (e) {
-            final String imageUrl = "${API.webAppIcons}"
-                    "appid=${app.id}"
-                    "&code=${app.code}"
-            ;
-            return Image(
-                image: CachedNetworkImageProvider(imageUrl, cacheManager: DefaultCacheManager()),
-                fit: BoxFit.fill,
-            );
-        }
-    }
-
-    @override
-    Widget build(BuildContext context) {
-        return Constants.newAppCenterIcon ? FutureBuilder(
-            initialData: SizedBox(),
-            future: loadAsset(app),
-            builder: (context, snapshot) {
-                return SizedBox(
-                    width: Constants.suSetSp(size),
-                    height: Constants.suSetSp(size),
-                    child: Center(
-                        child: snapshot.data,
-                    ),
-                );
-            },
-        ) : SizedBox(
-            width: Constants.suSetSp(60),
-            height: Constants.suSetSp(60),
-            child: Center(
-                child: Image(
-                    image: CachedNetworkImageProvider(
-                        "${API.webAppIcons}"
-                                "appid=${app.id}"
-                                "&code=${app.code}",
-                        cacheManager: DefaultCacheManager(),
-                    ),
-                    fit: BoxFit.fill,
-                ),
             ),
         );
     }

@@ -32,9 +32,7 @@ class UserPage extends StatefulWidget {
     static Future jump(BuildContext context, int uid) {
         return Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
             return UserPage(uid: uid);
-        })).then((dynamic) {
-            ThemeUtils.setDark(ThemeUtils.isDark);
-        });
+        }));
     }
 }
 

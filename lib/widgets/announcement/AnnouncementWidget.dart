@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/announcement/AnnouncementDialog.dart';
@@ -36,7 +37,7 @@ class AnnouncementWidget extends StatelessWidget {
                             ),
                         ),
                         Expanded(child: Text(
-                            "${Constants.announcements[0]['title']}",
+                            "${Configs.announcements[0]['title']}",
                             style: TextStyle(
                                 color: color ?? ThemeUtils.defaultColor,
                                 fontSize: Constants.suSetSp(18.0),
@@ -57,7 +58,7 @@ class AnnouncementWidget extends StatelessWidget {
             onTap: () {
                 showDialog<Null>(
                     context: context,
-                    builder: (BuildContext context) => AnnouncementDialog(Constants.announcements[0]),
+                    builder: (BuildContext context) => AnnouncementDialog(Configs.announcements[0]),
                 );
             },
         );

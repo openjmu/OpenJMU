@@ -12,29 +12,32 @@ import 'package:OpenJMU/pages/notification/NotificationPage.dart';
 import 'package:OpenJMU/pages/user/BackpackPage.dart';
 import 'package:OpenJMU/pages/user/UserQrCodePage.dart';
 import 'package:OpenJMU/pages/settings/ChangeThemePage.dart';
+import 'package:OpenJMU/pages/settings/FontScalePage.dart';
+import 'package:OpenJMU/pages/settings/SettingsPage.dart';
 import 'package:OpenJMU/pages/settings/SwitchStartUpPage.dart';
 import 'package:OpenJMU/pages/test/TestDashBoardPage.dart';
 //import 'package:OpenJMU/pages/NotificationTest.dart';
 
 class RouteUtils {
-    static final String pathDivider = "/";
     static Map<String, WidgetBuilder> routes = {
-        "${pathDivider}home": (BuildContext context) => MainPage(),
-        "${pathDivider}splash": (BuildContext context) => SplashPage(),
-        "${pathDivider}login": (BuildContext context) => LoginPage(),
+        "/home": (BuildContext context) => MainPage(),
+        "/splash": (BuildContext context) => SplashPage(),
+        "/login": (BuildContext context) => LoginPage(),
 
-        "${pathDivider}search": (BuildContext context) => SearchPage(),
-        "${pathDivider}scanqrcode": (BuildContext context, {arguments}) => ScanQrCodePage(),
-        "${pathDivider}publishPost": (BuildContext context) => PublishPostPage(),
-        "${pathDivider}notification": (BuildContext context, {arguments}) => NotificationPage(),
+        "/search": (BuildContext context) => SearchPage(),
+        "/scanqrcode": (BuildContext context, {arguments}) => ScanQrCodePage(),
+        "/publishPost": (BuildContext context) => PublishPostPage(),
+        "/notification": (BuildContext context, {arguments}) => NotificationPage(),
 
-        "${pathDivider}changeTheme": (BuildContext context) => ChangeThemePage(),
-        "${pathDivider}switchStartUpPage": (BuildContext context) => SwitchStartUpPage(),
-//        "${_pd}notificationTest": (BuildContext context) => NotificationTestPage(),
-        "${pathDivider}test": (BuildContext context) => TestDashBoardPage(),
-        "${pathDivider}about": (BuildContext context) => AboutPage(),
+        "/changeTheme": (BuildContext context) => ChangeThemePage(),
+        "/settings": (BuildContext context) => SettingsPage(),
+        "/switchStartUp": (BuildContext context) => SwitchStartUpPage(),
+        "/fontScale": (BuildContext context) => FontScalePage(),
+//        "/notificationTest": (BuildContext context) => NotificationTestPage(),
+        "/test": (BuildContext context) => TestDashBoardPage(),
+        "/about": (BuildContext context) => AboutPage(),
 
-        "${pathDivider}backpack": (BuildContext context, {arguments}) => BackpackPage(),
-        "${pathDivider}userqrcode": (BuildContext context, {arguments}) => UserQrCodePage(),
+        "/backpack": (BuildContext context, {arguments}) => BackpackPage(),
+        "/userqrcode": (BuildContext context, {arguments}) => UserQrCodePage(),
     };
 }

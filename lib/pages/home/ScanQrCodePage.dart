@@ -5,7 +5,6 @@ import 'package:flutter_qr_reader/qrcode_reader_view.dart';
 
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
@@ -16,19 +15,7 @@ class ScanQrCodePage extends StatefulWidget {
 }
 
 class _ScanQrCodePageState extends State<ScanQrCodePage> {
-    GlobalKey<QrcodeReaderViewState> _key = GlobalKey();
-
-    @override
-    void initState() {
-        super.initState();
-        ThemeUtils.setDark(true);
-    }
-
-    @override
-    void dispose() {
-        super.dispose();
-        ThemeUtils.setDark(ThemeUtils.isDark);
-    }
+    final GlobalKey<QrcodeReaderViewState> _key = GlobalKey();
 
     Widget backdrop({double width, double height, Widget child}) => Container(
         width: width ?? double.infinity,
@@ -68,6 +55,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
     Widget build(BuildContext context) {
         return Scaffold(
             appBar: AppBar(
+                brightness: Brightness.dark,
                 backgroundColor: Colors.transparent,
                 title: Text("扫描二维码", style: Theme.of(context).textTheme.title.copyWith(
                     fontSize: Constants.suSetSp(21.0),
