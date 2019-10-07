@@ -440,6 +440,87 @@ class Notifications {
 
     Notifications({this.count = 0, this.at = 0, this.comment = 0, this.praise = 0});
 }
+
+///
+/// 课程
+/// [name] 课程名称, [time] 上课时间, [location] 上课地点, [className] 班级名称, [teacher] 教师名称,
+/// [day] 上课日, [startWeek] 开始周, [endWeek] 结束周,
+/// [classesName] 共同上课的班级,
+/// [isEleven] 是否第十一节,
+/// [oddEven] 是否为单双周, 0为普通, 1为单周, 2为双周
+///
+class Course {
+    String name, time, location, className, teacher;
+    int day, startWeek, endWeek, oddEven;
+    List<String> classesName;
+    bool isEleven;
+
+    Course({
+        this.name,
+        this.time,
+        this.location,
+        this.className,
+        this.teacher,
+        this.day,
+        this.startWeek,
+        this.endWeek,
+        this.classesName,
+        this.isEleven,
+        this.oddEven,
+    });
+
+    String get uniqueId => "$name\$$time\$$day\$$startWeek\$$endWeek";
+
+    static int judgeOddEven(Map<String, dynamic> json) {
+        int _oddEven = 0;
+        List _split = json['allWeek'].split(' ');
+        if (_split.length > 1) {
+            if (_split[1] == "单周") {
+                _oddEven = 1;
+            } else if (_split[1] == "双周") {
+                _oddEven = 2;
+            }
+        }
+        return _oddEven;
+    }
+
+    factory Course.fromJson(Map<String, dynamic> json) {
+        int _oddEven = judgeOddEven(json);
+        List weeks = json['allWeek'].split(' ')[0].split('-');
+        return Course(
+            name: json['couName'],
+            time: json['coudeTime'],
+            location: json['couRoom'],
+            className: json['className'],
+            teacher: json['couTeaName'],
+            day: json['couDayTime'],
+            startWeek: int.parse(weeks[0]),
+            endWeek: int.parse(weeks[1]),
+            classesName: json['comboClassName'].split(','),
+            isEleven: json['three'] != 'n',
+            oddEven: _oddEven,
+        );
+    }
+
+    @override
+    String toString() {
+        return "Course ${JsonEncoder.withIndent("  ").convert({
+            'name': name,
+            'time': time,
+            'room': location,
+            'className': className,
+            'teacher': teacher,
+            'day': day,
+            'startWeek': startWeek,
+            'endWeek': endWeek,
+            'classesName': classesName,
+            'isEleven': isEleven,
+            'oddEven': oddEven,
+        })}";
+    }
+
+}
+
 ///
 /// 成绩类
 /// [code] 课程代码, [courseName] 课程名称, [score] 成绩, [termId] 学年学期, [credit] 学分, [creditHour] 学时

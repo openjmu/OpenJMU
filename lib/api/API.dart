@@ -26,6 +26,8 @@ class API {
     static final String middle99Host = "https://middle99.jmu.edu.cn";
     static final String upApiHost = "https://upapi.jmu.edu.cn";
     static final String jwglHost = "http://jwgls.jmu.edu.cn";
+    static final String labsHost = "http://labs.jmu.edu.cn";
+
     static final String pushHost = "http://push.openjmu.xyz:8787";
 
     static final String pushUpload = "$pushHost/push";
@@ -137,8 +139,12 @@ class API {
     /// 成绩相关
     static final SocketConfig scoreSocket = SocketConfig("$openjmuHost", 4000);
     /// 课程表相关
-    static final String courseSchedule = "http://labs.jmu.edu.cn/courseSchedule/course.html";
-    static final String courseScheduleTeacher = "http://labs.jmu.edu.cn/courseSchedule/Tcourse.html";
+    static final String courseSchedule = "$labsHost/courseSchedule/course.html";
+    static final String courseScheduleTeacher = "$labsHost/courseSchedule/Tcourse.html";
+
+    static final String courseScheduleCourses = "$labsHost/courseSchedule/StudentCourseSchedule";
+    static final String courseScheduleClassRemark = "$labsHost/courseSchedule/StudentClassRemark";
+    static final String courseScheduleTermLists = "$labsHost/courseSchedule/GetSemesters";
 
     /// 教务相关
     static final String jwglLogin = "$jwglHost/login.aspx";
