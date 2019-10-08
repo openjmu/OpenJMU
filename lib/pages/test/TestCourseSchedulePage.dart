@@ -138,13 +138,13 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
     }
 
     Widget weekDayIndicator(context) {
-        String _mmm() => DateFormat("MMM", "zh_CN").format(
+        String _month() => DateFormat("MMM", "zh_CN").format(
             now.subtract(Duration(days: now.weekday - 1)),
         );
-        String _eee(int i) => DateFormat("EEE", "zh_CN").format(
+        String _weekday(int i) => DateFormat("EEE", "zh_CN").format(
             now.subtract(Duration(days: now.weekday - 1 - i)),
         );
-        String _mmdd(int i) => DateFormat("MM/dd").format(
+        String _date(int i) => DateFormat("MM/dd").format(
             now.subtract(Duration(days: now.weekday - 1 - i)),
         );
 
@@ -157,9 +157,9 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                         width: monthWidth,
                         child: Center(
                             child: Text(
-                                "${_mmm().substring(0, _mmm().length - 1)}"
-                                        "\n"
-                                        "${_mmm().substring(_mmm().length - 1, _mmm().length)}"
+                                "${_month().substring(0, _month().length - 1)}"
+                                "\n"
+                                "${_month().substring(_month().length - 1, _month().length)}"
                                 ,
                                 style: TextStyle(
                                     fontSize: Constants.suSetSp(16),
@@ -175,14 +175,14 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                         Text(
-                                            _eee(i),
+                                            _weekday(i),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: Constants.suSetSp(16),
                                             ),
                                         ),
                                         Text(
-                                            _mmdd(i),
+                                            _date(i),
                                             style: TextStyle(
                                                 fontSize: Constants.suSetSp(12),
                                             ),
@@ -199,8 +199,7 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
 
     Widget courseLineGrid(context) {
         final MediaQueryData _m = MediaQuery.of(context);
-        final double totalHeight = _m.size.height
-                - _m.padding.top - _m.padding.bottom
+        final double totalHeight = _m.size.height - _m.padding.top
                 - kToolbarHeight - Constants.suSetSp(indicatorHeight)
         ;
 
@@ -235,7 +234,7 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                                             child: Text(
                                                 (i + 1).toString(),
                                                 style: TextStyle(
-                                                    fontSize: Constants.suSetSp(14),
+                                                    fontSize: Constants.suSetSp(16),
                                                 ),
                                             ),
                                         ),
@@ -249,10 +248,6 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                             child: Column(
                                 children: <Widget>[
                                     for (int count = 1; count < _maxCoursesPerDay+1; count++)
-//                                        if (count.isEven) course(
-//                                            courses[day][count - 1],
-//                                            count: hasEleven && count == 10 ? 10 : null,
-//                                        )
                                         if (count.isEven) CourseWidget(
                                             courseList: courses[day][count - 1],
                                             count: hasEleven && count == 10 ? 10 : null,
@@ -284,7 +279,7 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                             Text(
                                 "测试课表",
                                 style: Theme.of(context).textTheme.title.copyWith(
-                                    fontSize: Constants.suSetSp(21.0),
+                                    fontSize: Constants.suSetSp(23.0),
                                 ),
                             ),
                             Expanded(child: Row(
