@@ -18,8 +18,6 @@ class Configs {
     static void reset() {
         homeSplashIndex = 0;
         homeStartUpIndex = [0, 0, 0];
-        announcements = [];
-        announcementsEnabled = false;
         newAppCenterIcon = true;
         fontScale = 1.0;
     }

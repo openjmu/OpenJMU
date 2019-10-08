@@ -582,11 +582,12 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
 
     void setAlignment(context) {
-        if (MediaQuery.of(context).viewInsets.bottom != 0.0 && !_keyboardAppeared) {
+        final double inputMethodHeight = MediaQuery.of(context).viewInsets.bottom;
+        if (inputMethodHeight > 1.0 && !_keyboardAppeared) {
             setState(() {
                 _keyboardAppeared = true;
             });
-        } else if (MediaQuery.of(context).viewInsets.bottom == 0.0 && _keyboardAppeared) {
+        } else if (inputMethodHeight <= 1.0 && _keyboardAppeared) {
             setState(() {
                 _keyboardAppeared = false;
             });

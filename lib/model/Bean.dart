@@ -485,8 +485,8 @@ class Course {
     }
 
     factory Course.fromJson(Map<String, dynamic> json) {
-        int _oddEven = judgeOddEven(json);
-        List weeks = json['allWeek'].split(' ')[0].split('-');
+        final int _oddEven = judgeOddEven(json);
+        final List weeks = json['allWeek'].split(' ')[0].split('-');
         return Course(
             name: json['couName'],
             time: json['coudeTime'],
@@ -497,7 +497,7 @@ class Course {
             startWeek: int.parse(weeks[0]),
             endWeek: int.parse(weeks[1]),
             classesName: json['comboClassName'].split(','),
-            isEleven: json['three'] != 'n',
+            isEleven: json['three'] == 'y',
             oddEven: _oddEven,
         );
     }

@@ -1,10 +1,11 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
 import 'package:OpenJMU/api/CourseAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 
 class TestCourseSchedulePage extends StatefulWidget {
@@ -16,6 +17,7 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
     final Duration _showTermDuration = const Duration(milliseconds: 300);
     final Curve _showTermCurve = Curves.fastOutSlowIn;
     final DateTime now = DateTime.now();
+
     bool loading = true;
     bool _showTerm = false;
     double monthWidth = 40.0;
@@ -37,8 +39,16 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
     }
 
     void resetCourse() {
-        courses = {for (int i = 1; i < 7+1; i++) i: {for (int i = 1; i < maxCoursesPerDay+1; i++) i: []}};
-        for (int key in courses.keys) courses[key] = {for (int i = 1; i < maxCoursesPerDay+1; i++) i: []};
+        courses = {
+            for (int i = 1; i < 7+1; i++)
+                i: {
+                    for (int i = 1; i < maxCoursesPerDay+1; i++) i: []
+                }
+            ,
+        };
+        for (int key in courses.keys) courses[key] = {
+            for (int i = 1; i < maxCoursesPerDay+1; i++) i: []
+        };
     }
 
     void getCourses() async {
@@ -147,10 +157,14 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                         width: monthWidth,
                         child: Center(
                             child: Text(
-                                _mmm(),
+                                "${_mmm().substring(0, _mmm().length - 1)}"
+                                        "\n"
+                                        "${_mmm().substring(_mmm().length - 1, _mmm().length)}"
+                                ,
                                 style: TextStyle(
                                     fontSize: Constants.suSetSp(16),
                                 ),
+                                textAlign: TextAlign.center,
                             ),
                         ),
                     ),
@@ -190,14 +204,21 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                 - kToolbarHeight - Constants.suSetSp(indicatorHeight)
         ;
 
+        bool hasEleven = false;
         int _maxCoursesPerDay = 10;
         for (int day in courses.keys) {
-            if (courses[day][11].isNotEmpty) {
+            if (
+                courses[day][9].isNotEmpty
+                    &&
+                courses[day][9].where((course) => course.isEleven).isNotEmpty
+            ) {
+                hasEleven = true;
+            } else if (courses[day][11].isNotEmpty) {
                 _maxCoursesPerDay = 12;
-                if (mounted) setState(() {});
                 break;
             }
         }
+        if (mounted) setState(() {});
 
         return Expanded(
             child: Row(
@@ -208,7 +229,7 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                         height: totalHeight,
                         child: Column(
                             children: <Widget>[
-                                for (int i = 0; i < _maxCoursesPerDay; i++)
+                                for (int i = 0; i < _maxCoursesPerDay + (hasEleven ? 1 : 0); i++)
                                     Expanded(
                                         child: Center(
                                             child: Text(
@@ -228,44 +249,20 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                             child: Column(
                                 children: <Widget>[
                                     for (int count = 1; count < _maxCoursesPerDay+1; count++)
-                                        if (count.isOdd) course(courses[day][count])
+//                                        if (count.isEven) course(
+//                                            courses[day][count - 1],
+//                                            count: hasEleven && count == 10 ? 10 : null,
+//                                        )
+                                        if (count.isEven) CourseWidget(
+                                            courseList: courses[day][count - 1],
+                                            count: hasEleven && count == 10 ? 10 : null,
+                                        )
                                     ,
                                 ],
                             ),
                         )
                     ,
                 ],
-            ),
-        );
-    }
-
-    Widget course(List<Course> courseList) {
-        return Expanded(
-            child: Container(
-                margin: const EdgeInsets.all(1.5),
-                padding: EdgeInsets.all(Constants.suSetSp(4.0)),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5.0),
-                    color: courseList.isNotEmpty ? CourseAPI.randomCourseColor() : null,
-                ),
-                child: courseList.isNotEmpty ? RichText(
-                    text: TextSpan(
-                        children: <InlineSpan>[
-                            TextSpan(
-                                text: courseList[0].name,
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            TextSpan(text: "\n"),
-                            TextSpan(
-                                text: "@${courseList[0].location}",
-                            ),
-                        ],
-                        style: TextStyle(
-                            color: Colors.grey[200],
-                            fontSize: Constants.suSetSp(14.0),
-                        ),
-                    ),
-                ) : SizedBox(),
             ),
         );
     }
@@ -332,6 +329,61 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                             courseLineGrid(context),
                         ],
                     ),
+                ),
+            ),
+        );
+    }
+}
+
+
+class CourseWidget extends StatefulWidget {
+    final List<Course> courseList;
+    final int count;
+
+    const CourseWidget({
+        Key key,
+        @required this.courseList,
+        this.count,
+    }) : super(key: key);
+
+  @override
+  _CourseWidgetState createState() => _CourseWidgetState();
+}
+
+class _CourseWidgetState extends State<CourseWidget> {
+    final Color color = CourseAPI.randomCourseColor();
+
+    @override
+    Widget build(BuildContext context) {
+        final isEleven = widget.count != null && widget.count == 10;
+        return Expanded(
+            flex: isEleven ? 3 : 2,
+            child: Container(
+                margin: const EdgeInsets.all(1.5),
+                padding: EdgeInsets.all(Constants.suSetSp(4.0)),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.0),
+                    color: widget.courseList.isNotEmpty ? color : null,
+                ),
+                child: SizedBox.expand(
+                    child: widget.courseList.isNotEmpty ? RichText(
+                        text: TextSpan(
+                            children: <InlineSpan>[
+                                TextSpan(
+                                    text: widget.courseList[0].name,
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                TextSpan(text: "\n"),
+                                TextSpan(
+                                    text: "@${widget.courseList[0].location}",
+                                ),
+                            ],
+                            style: TextStyle(
+                                color: Colors.grey[200],
+                                fontSize: Constants.suSetSp(14.0),
+                            ),
+                        ),
+                    ) : null,
                 ),
             ),
         );
