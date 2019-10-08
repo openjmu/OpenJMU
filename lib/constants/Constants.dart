@@ -79,7 +79,7 @@ class Constants {
 
     /// Screen capability method.
     static double suSetSp(double size, {double scale}) {
-        double value = ScreenUtil.getInstance().setSp(size) * 2 * (scale ?? Configs.fontScale);
+        double value = ScreenUtil.getInstance().setSp(size) * 2;
         if (Platform.isIOS) {
             if (ScreenUtil.screenWidthDp <= 414.0) {
                 value = size / 1.25;
@@ -87,7 +87,7 @@ class Constants {
                 value = size;
             }
         }
-        return value;
+        return value * (scale ?? Configs.fontScale);
     }
 
     ///

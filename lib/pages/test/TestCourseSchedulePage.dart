@@ -128,13 +128,13 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
     }
 
     Widget weekDayIndicator(context) {
-        String _mmm() => DateFormat("MMM", "zh_CN").format(
+        String _month() => DateFormat("MMM", "zh_CN").format(
             now.subtract(Duration(days: now.weekday - 1)),
         );
-        String _eee(int i) => DateFormat("EEE", "zh_CN").format(
+        String _weekday(int i) => DateFormat("EEE", "zh_CN").format(
             now.subtract(Duration(days: now.weekday - 1 - i)),
         );
-        String _mmdd(int i) => DateFormat("MM/dd").format(
+        String _date(int i) => DateFormat("MM/dd").format(
             now.subtract(Duration(days: now.weekday - 1 - i)),
         );
 
@@ -147,7 +147,7 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                         width: monthWidth,
                         child: Center(
                             child: Text(
-                                _mmm(),
+                                _month(),
                                 style: TextStyle(
                                     fontSize: Constants.suSetSp(16),
                                 ),
@@ -161,14 +161,14 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                         Text(
-                                            _eee(i),
+                                            _weekday(i),
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: Constants.suSetSp(16),
                                             ),
                                         ),
                                         Text(
-                                            _mmdd(i),
+                                            _date(i),
                                             style: TextStyle(
                                                 fontSize: Constants.suSetSp(12),
                                             ),
@@ -185,8 +185,7 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
 
     Widget courseLineGrid(context) {
         final MediaQueryData _m = MediaQuery.of(context);
-        final double totalHeight = _m.size.height
-                - _m.padding.top - _m.padding.bottom
+        final double totalHeight = _m.size.height - _m.padding.top
                 - kToolbarHeight - Constants.suSetSp(indicatorHeight)
         ;
 
@@ -214,7 +213,7 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                                             child: Text(
                                                 (i + 1).toString(),
                                                 style: TextStyle(
-                                                    fontSize: Constants.suSetSp(14),
+                                                    fontSize: Constants.suSetSp(16),
                                                 ),
                                             ),
                                         ),
@@ -243,7 +242,7 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
         return Expanded(
             child: Container(
                 margin: const EdgeInsets.all(1.5),
-                padding: EdgeInsets.all(Constants.suSetSp(4.0)),
+                padding: EdgeInsets.all(Constants.suSetSp(5.0)),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
                     color: courseList.isNotEmpty ? CourseAPI.randomCourseColor() : null,
@@ -256,13 +255,13 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                                 style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             TextSpan(text: "\n"),
-                            TextSpan(
+                            if (courseList[0].location != "") TextSpan(
                                 text: "@${courseList[0].location}",
                             ),
                         ],
                         style: TextStyle(
                             color: Colors.grey[200],
-                            fontSize: Constants.suSetSp(14.0),
+                            fontSize: Constants.suSetSp(16.0),
                         ),
                     ),
                 ) : SizedBox(),
@@ -287,7 +286,7 @@ class _TestCourseSchedulePageState extends State<TestCourseSchedulePage> {
                             Text(
                                 "测试课表",
                                 style: Theme.of(context).textTheme.title.copyWith(
-                                    fontSize: Constants.suSetSp(21.0),
+                                    fontSize: Constants.suSetSp(23.0),
                                 ),
                             ),
                             Expanded(child: Row(
