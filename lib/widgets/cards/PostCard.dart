@@ -242,6 +242,7 @@ class _PostCardState extends State<PostCard> {
                     imageUrl,
                     fit: BoxFit.cover,
                     cache: true,
+                    enableMemoryCache: false,
                 );
                 if (data.length > 1) {
                     _exImage = Container(

@@ -27,7 +27,7 @@ class MyInfoPage extends StatefulWidget {
 
 class MyInfoPageState extends State<MyInfoPage> {
     final List<List<Map<String, String>>> settingsSection = [
-        if (Configs.isTest) [
+        if (Configs.debug) [
             {
                 "name": "背包",
                 "icon": "idols",
@@ -59,7 +59,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 "icon": "exit",
             },
         ],
-        if (Configs.isTest) [
+        if (Configs.debug) [
             {
                 "name": "测试页",
                 "icon": "idols",
@@ -76,18 +76,23 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     int signedCount = 0, currentWeek;
 
-    DateTime now;
+    DateTime now = DateTime.now();
     String hello = "你好";
 
-    Timer updateHelloTimer;
+    Timer _timer;
 
     @override
     void initState() {
         isDark = DataUtils.getBrightnessDark();
-        updateHello();
+
         getSignStatus();
         getCurrentWeek();
-        updateHelloTimer = Timer.periodic(Duration(minutes: 1), (timer) {
+        updateHello();
+
+        _timer = Timer.periodic(Duration(minutes: 1), (timer) {
+            now = DateTime.now();
+            getSignStatus();
+            getCurrentWeek();
             updateHello();
         });
         Constants.eventBus
@@ -106,13 +111,13 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     @override
     void dispose() {
-        updateHelloTimer?.cancel();
+        _timer?.cancel();
         super.dispose();
     }
 
     void getSignStatus() async {
-        var _signed = (await SignAPI.getTodayStatus()).data['status'];
-        var _signedCount = (await SignAPI.getSignList()).data['signdata']?.length;
+        int _signed = (await SignAPI.getTodayStatus()).data['status'];
+        int _signedCount = (await SignAPI.getSignList()).data['signdata']?.length;
         if (mounted) setState(() {
             this.signedCount = _signedCount;
             this.signed = _signed == 1 ? true : false;
@@ -120,13 +125,14 @@ class MyInfoPageState extends State<MyInfoPage> {
     }
 
     void getCurrentWeek() async {
-        String _day = jsonDecode((await DateAPI.getCurrentWeek()).data)['start'];
-        DateTime startDate = DateTime.parse(_day);
-        DateTime currentDate = DateTime.now();
-        int difference = startDate.difference(currentDate).inDays - 1;
-        int week = - (difference / 7).floor();
-        if (week > 0 && week <= 20) {
-            currentWeek = week;
+        if (DateAPI.startDate == null) {
+            String _day = jsonDecode((await DateAPI.getCurrentWeek()).data)['start'];
+            DateAPI.startDate = DateTime.parse(_day);
+        }
+        DateAPI.difference = DateAPI.startDate.difference(now).inDays - 1;
+        DateAPI.currentWeek = -(DateAPI.difference / 7).floor();
+        if (DateAPI.currentWeek <= 20) {
+            currentWeek = DateAPI.currentWeek;
         } else {
             currentWeek = null;
         }
@@ -135,7 +141,6 @@ class MyInfoPageState extends State<MyInfoPage> {
 
     void updateHello() {
         int hour = DateTime.now().hour;
-        now = DateTime.now();
 
         if (hour >= 0 && hour < 6) {
             this.hello = "深夜了，注意休息";

@@ -129,6 +129,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         inPageView: true,
                     );
                 },
+                enableMemoryCache: false,
             ),
             padding: EdgeInsets.all(5.0),
         );

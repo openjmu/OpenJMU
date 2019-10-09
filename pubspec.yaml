@@ -1,7 +1,7 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.5.3+85
+version: 0.5.3+86
 
 environment:
     sdk: ">=2.5.0 <3.0.0"
@@ -53,7 +53,6 @@ dependencies:
     qr_flutter: 3.0.1
     quick_actions: 0.3.2+2
     shared_preferences: 0.5.3+4
-#    sqflite: 1.1.6+3
     url_launcher: 5.1.2
     uuid: 2.0.2
     webview_flutter: 0.3.14

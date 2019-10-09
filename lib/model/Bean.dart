@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart' show ScaffoldPrelayoutGeometry, FloatingActionButtonLocation;
 import 'package:flutter/widgets.dart';
 
+import 'package:OpenJMU/api/CourseAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 
 
@@ -454,6 +455,7 @@ class Course {
     int day, startWeek, endWeek, oddEven;
     List<String> classesName;
     bool isEleven;
+    Color color;
 
     Course({
         this.name,
@@ -469,8 +471,6 @@ class Course {
         this.oddEven,
     });
 
-    String get uniqueId => "$name\$$time\$$day\$$startWeek\$$endWeek";
-
     static int judgeOddEven(Map<String, dynamic> json) {
         int _oddEven = 0;
         List _split = json['allWeek'].split(' ');
@@ -485,9 +485,13 @@ class Course {
     }
 
     factory Course.fromJson(Map<String, dynamic> json) {
+        json.forEach((k, v) {
+            if (json[k] == "") json[k] = null;
+        });
         final int _oddEven = judgeOddEven(json);
         final List weeks = json['allWeek'].split(' ')[0].split('-');
-        return Course(
+
+        Course _c = Course(
             name: json['couName'],
             time: json['coudeTime'],
             location: json['couRoom'],
@@ -500,6 +504,29 @@ class Course {
             isEleven: json['three'] == 'y',
             oddEven: _oddEven,
         );
+        if (_c.isEleven && _c.time == "90") _c.time = "911";
+
+        final Iterable<Map<String, Color>> courses = CourseAPI.coursesColor.where(
+            (course) => course.containsKey(_c.name)
+        );
+        if (courses.isNotEmpty) {
+            _c.color = courses.elementAt(0)[_c.name];
+        } else {
+            uniqueColor(_c, CourseAPI.randomCourseColor());
+        }
+        return _c;
+    }
+
+    static void uniqueColor<bool>(Course course, Color color) {
+        Iterable<Map<String, Color>> courses = CourseAPI.coursesColor.where(
+            (course) => course.containsValue(color)
+        );
+        if (courses.isNotEmpty) {
+            uniqueColor(course, CourseAPI.randomCourseColor());
+        } else {
+            course.color = color;
+            CourseAPI.coursesColor.add({"${course.name}": color});
+        }
     }
 
     @override

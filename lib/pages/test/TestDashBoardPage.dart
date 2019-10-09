@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/pages/test/TestAnimatedWidgetPage.dart';
+import 'package:OpenJMU/pages/test/TestCerStarAskPage.dart';
 import 'package:OpenJMU/pages/test/TestCourseSchedulePage.dart';
 import 'package:OpenJMU/pages/test/TestDragPage.dart';
 import 'package:OpenJMU/pages/test/TestImageCropPage.dart';
@@ -40,6 +41,11 @@ class TestDashBoardPage extends StatelessWidget {
             "builder": TestCourseSchedulePage(),
             "name": "课表测试页",
             "icon": Icons.date_range,
+        },
+        {
+            "builder": TestCerStarAskPage(),
+            "name": "客服测试页",
+            "icon": Icons.hearing,
         },
     ];
 
