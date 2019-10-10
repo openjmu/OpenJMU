@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/constants/Screens.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 
 
@@ -19,8 +20,24 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     /// Boolean to prevent duplicate pop.
     bool popping = false;
 
+    /// Items definition.
+    final List<String> itemTitles = ["动态", "扫一扫"];
+    final List<String> itemIcons = ["subscriptedAccount", "scan"];
+    final List<Color> itemColors = [Colors.orange, Colors.teal];
+    final List<Function> itemOnTap = [
+                (context) { Navigator.of(context).pushNamed("/publishPost"); },
+                (context) async {
+            Map<PermissionGroup, PermissionStatus>permissions = await PermissionHandler().requestPermissions([
+                PermissionGroup.camera,
+            ]);
+            if (permissions[PermissionGroup.camera] == PermissionStatus.granted) {
+                Navigator.of(context).pushNamed("/scanqrcode");
+            }
+        },
+    ];
+
     /// Animation.
-    int _animateDuration = 300;
+    final int _animateDuration = 300;
     double _backdropFilterSize = 0.0;
     double _popButtonOpacity = 0.01;
     double _popButtonRotateAngle = 0.0;
@@ -39,20 +56,6 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     List<CurvedAnimation> _itemOpacityCurveAnimations;
     List<AnimationController> _itemOpacityAnimateControllers;
 
-    List<String> itemTitles = ["动态", "扫一扫"];
-    List<String> itemIcons = ["subscriptedAccount", "scan"];
-    List<Color> itemColors = [Colors.orange, Colors.teal];
-    List<Function> itemOnTap = [
-        (context) { Navigator.of(context).pushNamed("/publishPost"); },
-        (context) async {
-            Map<PermissionGroup, PermissionStatus>permissions = await PermissionHandler().requestPermissions([
-                PermissionGroup.camera,
-            ]);
-            if (permissions[PermissionGroup.camera] == PermissionStatus.granted) {
-                Navigator.of(context).pushNamed("/scanqrcode");
-            }
-        },
-    ];
 
     @override
     void initState() {
@@ -171,9 +174,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     }
 
     Future backDropFilterAnimate(BuildContext context, bool forward) async {
-        final MediaQueryData m = MediaQuery.of(context);
-        final Size s = m.size;
-        final double r = pythagoreanTheorem(s.width, s.height * 2 + m.padding.top) / 2;
+        final double r = pythagoreanTheorem(Screen.width, Screen.height * 2 + Screen.topSafeHeight) / 2;
         if (!forward) _backDropFilterController?.stop();
         popButtonAnimate(context, forward);
 
@@ -234,11 +235,9 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     }
 
     Widget wrapper(context, {Widget child}) {
-        final MediaQueryData m = MediaQuery.of(context);
-        final Size s = m.size;
-        final double r = pythagoreanTheorem(s.width, s.height * 2 + m.padding.top) / 2;
-        final double topOverflow = r - s.height;
-        final double horizontalOverflow = r - s.width;
+        final double r = pythagoreanTheorem(Screen.width, Screen.height * 2 + Screen.topSafeHeight) / 2;
+        final double topOverflow = r - Screen.height;
+        final double horizontalOverflow = r - Screen.width;
 
         return Stack(
             overflow: Overflow.visible,
@@ -270,11 +269,11 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                     alignment: Alignment.topCenter,
                     child: Container(
                         margin: EdgeInsets.only(top: topOverflow),
-                        width: s.width,
-                        height: s.height,
+                        width: Screen.width,
+                        height: Screen.height,
                         constraints: BoxConstraints(
-                            maxWidth: s.width,
-                            maxHeight: s.height,
+                            maxWidth: Screen.width,
+                            maxHeight: Screen.height,
                         ),
                         child: child ?? SizedBox(),
                     ),
@@ -282,7 +281,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                 Positioned(
                     left: 0.0,
                     right: 0.0,
-                    bottom: 0.0,
+                    bottom: Screen.bottomSafeHeight,
                     child: popButton(),
                 ),
             ],
