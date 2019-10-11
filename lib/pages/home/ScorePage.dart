@@ -66,11 +66,10 @@ class _ScorePageState extends State<ScorePage> with AutomaticKeepAliveClientMixi
         loadScores();
         Constants.eventBus
             ..on<ScoreRefreshEvent>().listen((event) {
-                if (this.mounted) {
-                    resetScores();
-                    setState(() { loading = true; });
-                    loadScores();
-                }
+                resetScores();
+                loading = true;
+                loadScores();
+                if (this.mounted) setState(() {});
             });
         super.initState();
     }
@@ -82,7 +81,7 @@ class _ScorePageState extends State<ScorePage> with AutomaticKeepAliveClientMixi
     }
 
     void sendRequest() {
-        SocketUtils.mSocket.add(utf8.encode(jsonEncode({
+        SocketUtils.mSocket?.add(utf8.encode(jsonEncode({
             "uid": "${UserAPI.currentUser.uid}",
             "sid": "${UserAPI.currentUser.sid}",
             "workid": "${UserAPI.currentUser.workId}",
@@ -91,17 +90,20 @@ class _ScorePageState extends State<ScorePage> with AutomaticKeepAliveClientMixi
 
     void loadScores() async {
         if (!socketInitialized) {
-            SocketUtils.initSocket(API.scoreSocket).then((whatever) {
-                socketInitialized = true;
+            try {
+                if (SocketUtils.mStream == null) {
+                    await SocketUtils.initSocket(API.scoreSocket);
+                    socketInitialized = true;
+                }
                 scoresSubscription = utf8.decoder
                         .bind(SocketUtils.mStream)
                         .listen(onReceive)
                 ;
                 sendRequest();
-            }).catchError((e) {
+            } catch (e) {
                 debugPrint("Socket connect error: $e");
                 fetchError(e.toString());
-            });
+            }
         } else {
             debugPrint("Socket already initialized.");
             sendRequest();
@@ -141,9 +143,8 @@ class _ScorePageState extends State<ScorePage> with AutomaticKeepAliveClientMixi
                         return score.termId != (termSelected != null ? termSelected : terms.last);
                     });
                 }
-                setState(() {
-                    loading = false;
-                });
+                loading = false;
+                if (mounted) setState(() {});
             } catch (e) {
                 debugPrint("$e");
             }

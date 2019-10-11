@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
@@ -89,8 +88,8 @@ class _BackpackPageState extends State<BackpackPage> {
 
     @override
     void initState() {
-        super.initState();
         getBackpackItem();
+        super.initState();
     }
 
     Future getBackpackItem() async {
@@ -143,8 +142,8 @@ class _BackpackPageState extends State<BackpackPage> {
                 badgeColor: ThemeUtils.currentThemeColor,
                 badgeContent: Text(
                     "${
-                            myItems[index].count > 999
-                                    ? "999+"
+                            myItems[index].count > 99
+                                    ? "99+"
                                     : myItems[index].count
                     }",
                     style: TextStyle(
@@ -196,7 +195,11 @@ class _BackpackPageState extends State<BackpackPage> {
             child: Center(
                 child: SizedBox(
                     height: Constants.suSetSp(150.0),
-                    child: BackpackIcon(myItems[index].type),
+                    child: Image.network(
+                        "${API.backPackItemIcon(itemType: myItems[index].type)}",
+                        headers: {"CLOUDID": "jmu"},
+                            fit: BoxFit.fitHeight,
+                    ),
                 ),
             ),
         );
@@ -235,27 +238,24 @@ class _BackpackPageState extends State<BackpackPage> {
                             ),
                         ),
                         Constants.emptyDivider(height: 50.0),
-                        DecoratedBox(
-                            decoration: BoxDecoration(
-                                border: Border.fromBorderSide(BorderSide(
+                        FlatButton(
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(
                                     color: ThemeUtils.currentThemeColor,
-                                )),
+                                ),
                                 borderRadius: BorderRadius.circular(50.0),
                             ),
-                            child: FlatButton(
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50.0)),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: Constants.suSetSp(20.0),
-                                    vertical: Constants.suSetSp(12.0),
-                                ),
-                                color: Colors.transparent,
-                                onPressed: () {},
-                                child: Text(
-                                    "打开礼包",
-                                    style: Theme.of(context).textTheme.title.copyWith(
-                                        fontSize: Constants.suSetSp(20.0),
-                                        color: ThemeUtils.currentThemeColor,
-                                    ),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: Constants.suSetSp(20.0),
+                                vertical: Constants.suSetSp(12.0),
+                            ),
+                            color: Colors.transparent,
+                            onPressed: () {},
+                            child: Text(
+                                "打开礼包",
+                                style: Theme.of(context).textTheme.title.copyWith(
+                                    fontSize: Constants.suSetSp(20.0),
+                                    color: ThemeUtils.currentThemeColor,
                                 ),
                             ),
                         ),
@@ -316,44 +316,3 @@ class _BackpackPageState extends State<BackpackPage> {
         );
     }
 }
-
-class BackpackIcon extends StatefulWidget {
-    final int type;
-    BackpackIcon(this.type);
-
-    @override
-    _BackpackIconState createState() => _BackpackIconState();
-}
-
-class _BackpackIconState extends State<BackpackIcon> with AutomaticKeepAliveClientMixin {
-    final _header = {"CLOUDID": "jmu"};
-    bool loaded = false;
-    Uint8List icon;
-
-    @override
-    bool get wantKeepAlive => true;
-
-    @override
-    void initState() {
-        getIcon();
-        super.initState();
-    }
-
-    void getIcon() {
-        if (!loaded) NetUtils.getBytesWithHeader(
-            API.backPackItemIcon(itemType: widget.type),
-            headers: _header,
-        ).then((response) {
-            loaded = true;
-            icon = Uint8List.fromList(response.data);
-            if (mounted) setState(() {});
-        });
-    }
-
-    @mustCallSuper
-    Widget build(BuildContext context) {
-        super.build(context);
-        return loaded ? Image.memory(icon, fit: BoxFit.fitHeight) : SizedBox();
-    }
-}
-

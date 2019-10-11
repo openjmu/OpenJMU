@@ -6,6 +6,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AboutPage extends StatefulWidget {
     @override
@@ -32,14 +33,13 @@ class _AboutPageState extends State<AboutPage> {
                 child: Column(
                     children: <Widget>[
                         Container(
-                            margin: EdgeInsets.only(bottom: Constants.suSetSp(12.0)),
-                            child: Image.asset(
-                                "images/ic_jmu_logo_trans.png",
-                                color: ThemeUtils.currentThemeColor,
-                                width: Constants.suSetSp(120.0),
-                                height: Constants.suSetSp(120.0),
+                            margin: EdgeInsets.only(bottom: Constants.suSetSp(20.0)),
+                            child: SvgPicture.asset(
+                                "images/splash_page_logo.svg",
+                                width: Constants.suSetSp(180.0),
+                                height: Constants.suSetSp(180.0),
+                                color: ThemeUtils.defaultColor,
                             ),
-                            decoration: BoxDecoration(shape: BoxShape.circle),
                         ),
                         SizedBox(height: Constants.suSetSp(30.0)),
                         Container(

@@ -56,9 +56,12 @@ class OpenJMUAppState extends State<OpenJMUApp> {
                 if (mounted) setState(() {});
             })
             ..on<LogoutEvent>().listen((event) async {
+                await DataUtils.logout();
+                Constants.navigatorKey.currentState.pushNamedAndRemoveUntil(
+                    "/login", (_) => true,
+                );
                 currentThemeColor = ThemeUtils.defaultColor;
                 if (mounted) setState(() {});
-                await DataUtils.logout();
             })
             ..on<ActionsEvent>().listen((event) {
                 if (event.type == "action_home") {

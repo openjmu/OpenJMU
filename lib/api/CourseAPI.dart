@@ -19,6 +19,11 @@ class CourseAPI {
         data: {"sid": UserAPI.currentUser.sid},
     );
 
+    static Future getRemark() async => NetUtils.get(
+        API.courseScheduleClassRemark,
+        data: {"sid": UserAPI.currentUser.sid},
+    );
+
     static TimeOfDay _time(int hour, int minute) => TimeOfDay(hour: hour, minute: minute);
 
 

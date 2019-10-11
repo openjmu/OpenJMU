@@ -48,10 +48,12 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         color: currentThemeColor,
         fontSize: Constants.suSetSp(23.0),
         fontWeight: FontWeight.bold,
+        textBaseline: TextBaseline.alphabetic,
     );
     static TextStyle tabUnselectedTextStyle = TextStyle(
         color: currentThemeColor,
         fontSize: Constants.suSetSp(18.0),
+        textBaseline: TextBaseline.alphabetic,
     );
 
     List<List> sections = [
@@ -101,12 +103,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 } else if (event.type == "action_user") {
                     _selectedTab(3);
                 }
-            })
-            ..on<LogoutEvent>().listen((event) {
-                notificationTimer?.cancel();
-                Constants.navigatorKey.currentState.pushNamedAndRemoveUntil(
-                    "/login", (Route<dynamic> route) => false,
-                );
             })
             ..on<HasUpdateEvent>().listen((event) {
                 if (this.mounted) showDialog(

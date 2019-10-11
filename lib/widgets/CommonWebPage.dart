@@ -139,15 +139,14 @@ class CommonWebPageState extends State<CommonWebPage> {
 
     PreferredSize progressBar(context) => PreferredSize(
         child: Container(
-            color: currentThemeColor,
-            height: Constants.suSetSp(2.0),
+            color: !(currentProgress == 0.0) ? currentThemeColor : null,
             child: LinearProgressIndicator(
                 backgroundColor: Theme.of(context).primaryColor,
                 value: currentProgress,
                 valueColor: AlwaysStoppedAnimation<Color>(currentThemeColor),
             ),
         ),
-        preferredSize: null,
+        preferredSize: Size.fromHeight(Constants.suSetSp(2.0)),
     );
 
     @override

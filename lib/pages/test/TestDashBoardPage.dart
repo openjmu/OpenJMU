@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:OpenJMU/api/UserAPI.dart';
-import 'package:OpenJMU/pages/test/TestAnimatedWidgetPage.dart';
 import 'package:OpenJMU/pages/test/TestCerStarAskPage.dart';
-import 'package:OpenJMU/pages/test/TestCourseSchedulePage.dart';
 import 'package:OpenJMU/pages/test/TestDragPage.dart';
 import 'package:OpenJMU/pages/test/TestImageCropPage.dart';
 import 'package:OpenJMU/pages/test/TestSocketPage.dart';
@@ -31,16 +29,6 @@ class TestDashBoardPage extends StatelessWidget {
             "builder": TestImageCropPage(),
             "name": "裁剪测试页",
             "icon": Icons.crop,
-        },
-        {
-            "builder": TestAnimatedWidgetPage(),
-            "name": "动画测试页",
-            "icon": Icons.av_timer,
-        },
-        {
-            "builder": TestCourseSchedulePage(),
-            "name": "课表测试页",
-            "icon": Icons.date_range,
         },
         {
             "builder": TestCerStarAskPage(),

@@ -25,7 +25,6 @@ import 'package:OpenJMU/utils/EmojiUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/ToggleButton.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
@@ -36,55 +35,56 @@ class PublishPostPage extends StatefulWidget {
 }
 
 class PublishPostPageState extends State<PublishPostPage> {
+    final TextEditingController _textEditingController = TextEditingController();
+    final EditSwitchController _editSwitchController = EditSwitchController();
+    final LoadingDialogController _loadingDialogController = LoadingDialogController();
+    final FocusNode _focusNode = FocusNode();
+    final double _iconSize = Constants.suSetSp(28.0);
+    final int gridCount = 5;
+    final int maxLength = 300;
+
     List<ItemBin> imagesBin = <ItemBin>[];
     List _imageIdList = [];
 
     int imagesLength = 0, maxImagesLength = 9, uploadedImages = 1;
 
-    TextEditingController _textEditingController = TextEditingController();
-    EditSwitchController _editSwitchController = EditSwitchController();
-    LoadingDialogController _loadingDialogController = LoadingDialogController();
-    FocusNode _focusNode = FocusNode();
-
     bool isFocus = false;
     bool isLoading = false;
     bool textFieldEnable = true;
 
-    int gridCount = 5;
 
-    int currentLength = 0, maxLength = 300, currentOffset;
+    int currentLength = 0, currentOffset;
     Color counterTextColor = Colors.grey;
     double _keyboardHeight = EmotionPadState.emoticonPadDefaultHeight;
 
     bool emoticonPadActive = false;
 
     String msg = "";
-    String sid = UserAPI.currentUser.sid;
 
-    static double _iconWidth = Constants.suSetSp(24.0);
-    static double _iconHeight = Constants.suSetSp(24.0);
 
     Widget poundIcon(context) => SvgPicture.asset(
         "assets/icons/add-topic.svg",
         color: Theme.of(context).iconTheme.color,
-        width: _iconWidth,
-        height: _iconHeight,
+        width: _iconSize,
+        height: _iconSize,
     );
 
     @override
     void initState() {
-        super.initState();
         Constants.eventBus.on<AddEmoticonEvent>().listen((event) {
             if (mounted && event.route == "publish") {
                 insertText(event.emoticon);
             }
         });
+        super.initState();
     }
 
     @override
     void dispose() {
-        super.dispose();
         _textEditingController?.dispose();
+        _focusNode?.unfocus();
+        _focusNode?.dispose();
+        super.dispose();
     }
 
     void addTopic() {
@@ -305,7 +305,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                             icon: Icon(
                                 Platform.isAndroid ? Ionicons.getIconData("ios-at") : Ionicons.getIconData("md-at"),
                                 color: Theme.of(context).iconTheme.color,
-                                size: _iconWidth,
+                                size: _iconSize,
                             ),
                         ),
                         IconButton(
@@ -313,19 +313,19 @@ class PublishPostPageState extends State<PublishPostPage> {
                             icon: Icon(
                                 Icons.add_photo_alternate,
                                 color: Theme.of(context).iconTheme.color,
-                                size: _iconWidth,
+                                size: _iconSize,
                             ),
                         ),
                         ToggleButton(
                             activeWidget: Icon(
                                 Icons.sentiment_very_satisfied,
                                 color: ThemeUtils.currentThemeColor,
-                                size: _iconWidth,
+                                size: _iconSize,
                             ),
                             unActiveWidget: Icon(
                                 Icons.sentiment_very_satisfied,
                                 color: Theme.of(context).iconTheme.color,
-                                size: _iconWidth,
+                                size: _iconSize,
                             ),
                             activeChanged: (bool active) {
                                 Function change = () {

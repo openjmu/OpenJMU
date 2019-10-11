@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:OpenJMU/api/API.dart';
+import 'package:OpenJMU/api/CourseAPI.dart';
 import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
@@ -46,54 +47,45 @@ class DataUtils {
         sp = await SharedPreferences.getInstance();
     }
 
-    static Future login(context, String username, String password) async {
+    static Future<bool> login(context, String username, String password) async {
         final String blowfish = Uuid().v4();
         Map<String, dynamic> params = Constants.loginParams(
             blowfish: blowfish,
             username: "$username",
             password: password,
         );
-        UserAPI.login(params).then((response) async {
-            Map<String, dynamic> data = response.data;
-            UserAPI.currentUser.sid = data['sid'];
-            UserAPI.currentUser.ticket = data['ticket'];
-
-            Map<String, dynamic> user = (await UserAPI.getUserInfo(uid: data['uid'])).data;
+        try {
+            Map<String, dynamic> loginData = (await UserAPI.login(params)).data;
+            UserAPI.currentUser.sid = loginData['sid'];
+            UserAPI.currentUser.ticket = loginData['ticket'];
+            Map<String, dynamic> user = (await UserAPI.getUserInfo(uid: loginData['uid'])).data;
             Map<String, dynamic> userInfo = {
-                'sid': data['sid'],
-                'uid': data['uid'],
+                'sid': loginData['sid'],
+                'uid': loginData['uid'],
                 'username': user['username'],
                 'signature': user['signature'],
-                'ticket': data['ticket'],
+                'ticket': loginData['ticket'],
                 'blowfish': blowfish,
                 'isTeacher': int.parse(user['type'].toString()) == 1,
                 'isCY': checkCY(user['workid']),
-                'unitId': data['unitid'],
+                'unitId': loginData['unitid'],
                 'workId': user['workid'],
 //                'userClassId': user['class_id'],
                 'gender': int.parse(user['gender'].toString()),
             };
             bool isWizard = true;
             if (!userInfo["isTeacher"]) isWizard = await checkWizard();
-            try {
-                await saveLoginInfo(userInfo);
-                UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
-                Constants.eventBus.fire(LoginEvent(isWizard));
-                showShortToast("登录成功！");
-            } catch (e) {
-                Constants.eventBus.fire(LoginFailedEvent());
-                debugPrint(e.toString());
-                if (e.response != null) showLongToast(
-                    "设置用户信息失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}",
-                );
-            }
-        }).catchError((e) {
-            Constants.eventBus.fire(LoginFailedEvent());
+            await saveLoginInfo(userInfo);
+            UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
+            showShortToast("登录成功！");
+            return true;
+        } catch (e) {
             debugPrint(e.toString());
             if (e.response != null) showLongToast(
                 "登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}",
             );
-        });
+            return false;
+        }
     }
 
     static Future logout() async {
@@ -210,6 +202,7 @@ class DataUtils {
 
     /// 清除设置信息
     static Future clearSettings() async {
+        CourseAPI.coursesColor.clear();
         Configs.reset();
         await sp?.remove(spBrightness);
         await sp?.remove(spColorThemeIndex);

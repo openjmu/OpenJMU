@@ -7,8 +7,9 @@ import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/pages/home/ScorePage.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
+import 'package:OpenJMU/pages/home/CourseSchedulePage.dart';
+import 'package:OpenJMU/pages/home/ScorePage.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/AppIcon.dart';
@@ -21,10 +22,14 @@ class AppCenterPage extends StatefulWidget {
     State<StatefulWidget> createState() => AppCenterPageState();
 }
 
-class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderStateMixin {
+class AppCenterPageState extends State<AppCenterPage>
+        with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
+    AppCenterPageState _appCenterPageState;
+    final GlobalKey<CourseSchedulePageState> coursePageKey = GlobalKey();
+    final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey();
+
     final ScrollController _scrollController = ScrollController();
-    final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
-    static List<String> tabs() => ["课程表", if (!(UserAPI.currentUser.isTeacher ?? true)) "成绩", "应用"];
+    static List<String> tabs() => ["课程表", if (!(UserAPI.currentUser?.isTeacher ?? true)) "成绩", "应用"];
 
     TabController _tabController;
     Color currentThemeColor = ThemeUtils.currentThemeColor;
@@ -37,7 +42,12 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
     Future _futureBuilderFuture;
 
     @override
+    bool get wantKeepAlive => true;
+
+    @override
     void initState() {
+        _appCenterPageState = this;
+
         _tabController = TabController(
             initialIndex: Configs.homeStartUpIndex[1],
             length: tabs().length,
@@ -46,13 +56,13 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
 
         Constants.eventBus
             ..on<ScrollToTopEvent>().listen((event) {
-                if (this.mounted && event.tabIndex == 1) {
+                if (mounted && event.tabIndex == 1) {
                     _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
                 }
             })
             ..on<ChangeThemeEvent>().listen((event) {
                 currentThemeColor = event.color;
-                if (this.mounted) setState(() {});
+                if (mounted) setState(() {});
             })
             ..on<AppCenterRefreshEvent>().listen((event) {
                 switch (tabs()[event.currentIndex]) {
@@ -68,7 +78,7 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
                         getAppList();
                         break;
                 }
-                if (this.mounted) setState(() {});
+                if (mounted) setState(() {});
             })
             ..on<AppCenterSettingsUpdateEvent>().listen((event) {
                 enableNewIcon = Configs.newAppCenterIcon;
@@ -76,7 +86,7 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
             })
             ..on<ChangeThemeEvent>().listen((event) {
                 currentThemeColor = event.color;
-                if (this.mounted) setState(() {});
+                if (mounted) setState(() {});
             });
 
         _futureBuilderFuture = getAppList();
@@ -273,8 +283,59 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
         }
     }
 
+    Widget _tab(String name) {
+        Widget tab;
+        switch (name) {
+            case "成绩":
+            case "应用":
+                tab = Tab(text: name);
+                break;
+            case "课程表":
+                tab = Tab(child: GestureDetector(
+                    onTap: (
+                        coursePageKey.currentState != null
+                            &&
+                        coursePageKey.currentState.hasCourse
+                    ) ? () {
+                        if (_tabController.index != 0) {
+                            _tabController.animateTo(0);
+                        } else {
+                            coursePageKey.currentState.showWeekWidget();
+                        }
+                    } : null,
+                    child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                            Text(name),
+                            if (
+                                coursePageKey.currentState != null
+                                    &&
+                                coursePageKey.currentState.hasCourse
+                            ) AnimatedCrossFade(
+                                firstChild: Icon(Icons.keyboard_arrow_down),
+                                secondChild: Icon(Icons.keyboard_arrow_up),
+                                crossFadeState: coursePageKey.currentState.showWeek
+                                        ? CrossFadeState.showSecond
+                                        : CrossFadeState.showFirst
+                                ,
+                                duration: coursePageKey.currentState.showWeekDuration,
+                            ),
+                        ],
+                    ),
+                ));
+        }
+        return tab;
+    }
+
     @override
     Widget build(BuildContext context) {
+        super.build(context);
+        _appCenterPageState = this;
+        _tabController = TabController(
+            initialIndex: _tabController.index,
+            length: tabs().length,
+            vsync: this,
+        );
         return Scaffold(
             backgroundColor: Theme.of(context).canvasColor,
             appBar: AppBar(
@@ -289,8 +350,8 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
                     labelPadding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
                     unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
                     tabs: <Tab>[
-                        for (int i = 0; i < tabs().length; i++)
-                            Tab(text: tabs()[i])
+                        for (int i = 0; i < List.from(tabs()).length; i++)
+                            _tab(tabs()[i])
                     ],
                     controller: _tabController,
                 ),
@@ -304,15 +365,16 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
                                 Constants.eventBus.fire(AppCenterRefreshEvent(_tabController.index));
                             },
                         ),
-                    )
+                    ),
                 ],
             ),
             body: ExtendedTabBarView(
                 physics: const NeverScrollableScrollPhysics(),
                 controller: _tabController,
                 children: <Widget>[
-                    if (UserAPI.currentUser.isTeacher != null) InAppBrowserPage(
-                        url: "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
+                    UserAPI.currentUser.isTeacher != null ?
+                    UserAPI.currentUser.isTeacher ? InAppBrowserPage(
+                        url: "${API.courseScheduleTeacher}"
                                 "?sid=${UserAPI.currentUser.sid}"
                                 "&night=${ThemeUtils.isDark ? 1 : 0}"
                         ,
@@ -320,8 +382,11 @@ class AppCenterPageState extends State<AppCenterPage> with SingleTickerProviderS
                         withAppBar: false,
                         withAction: false,
                         keepAlive: true,
-                    ),
-                    if (!(UserAPI.currentUser.isTeacher ?? false)) ScorePage(),
+                    ) : CourseSchedulePage(
+                        key: coursePageKey,
+                        appCenterPageState: _appCenterPageState,
+                    ) : SizedBox(),
+                    if (!(UserAPI.currentUser?.isTeacher ?? true)) ScorePage(),
                     RefreshIndicator(
                         key: refreshIndicatorKey,
                         child: FutureBuilder(

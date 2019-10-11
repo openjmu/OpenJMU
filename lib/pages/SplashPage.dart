@@ -14,6 +14,7 @@ import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 
 class SplashPage extends StatefulWidget {
@@ -69,9 +70,9 @@ class SplashState extends State<SplashPage> {
 
     @override
     void didChangeDependencies() {
-        super.didChangeDependencies();
         ThemeUtils.setDark(true);
         ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
+        super.didChangeDependencies();
     }
 
     Future<ConnectivityResult> checkConnectivity() async {
@@ -145,48 +146,60 @@ class SplashState extends State<SplashPage> {
         margin: EdgeInsets.all(Constants.suSetSp(30.0)),
         child: Hero(
             tag: "Logo",
-            child: Image.asset(
-                'images/ic_jmu_logo_trans.png',
-                width: Constants.suSetSp(120.0),
-                height: Constants.suSetSp(120.0),
+            child: SvgPicture.asset(
+                "images/splash_page_logo.svg",
+                width: Constants.suSetSp(150.0),
+                height: Constants.suSetSp(150.0),
             ),
         ),
     );
 
-    Widget loginWidget() => Column(
+    Widget get loginWidget => Column(
         children: <Widget>[
-            Container(
-                margin: EdgeInsets.only(bottom: Constants.suSetSp(20.0)),
-                width: Constants.suSetSp(24.0),
-                height: Constants.suSetSp(24.0),
-                child: Constants.progressIndicator(color: Colors.white),
+            Expanded(
+                child: Center(
+                    child: Container(
+                        margin: EdgeInsets.only(bottom: Constants.suSetSp(10.0)),
+                        width: Constants.suSetSp(28.0),
+                        height: Constants.suSetSp(28.0),
+                        child: Constants.progressIndicator(color: Colors.white),
+                    ),
+                ),
             ),
-            Text(
-                "正在登录",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: Constants.suSetSp(20.0),
+            Expanded(
+                child: Center(
+                    child: Text(
+                        "正在登录",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Constants.suSetSp(20.0),
+                        ),
+                    ),
                 ),
             )
         ],
     );
 
-    Widget warningWidget() => Column(
+    Widget get warningWidget => Column(
         children: <Widget>[
-            Container(
-                margin: EdgeInsets.only(bottom: Constants.suSetSp(20.0)),
-                height: Constants.suSetSp(24.0),
-                child: Icon(
-                    Icons.warning,
-                    color: Colors.white,
-                    size: Constants.suSetSp(40.0),
+            Expanded(
+                child: Center(
+                    child: Icon(
+                        Icons.warning,
+                        color: Colors.white,
+                        size: Constants.suSetSp(40.0),
+                    ),
                 ),
             ),
-            Text(
-                "请检查联网状态",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: Constants.suSetSp(20.0),
+            Expanded(
+                child: Center(
+                    child: Text(
+                        "请检查联网状态",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: Constants.suSetSp(20.0),
+                        ),
+                    ),
                 ),
             )
         ],
@@ -196,19 +209,27 @@ class SplashState extends State<SplashPage> {
     Widget build(BuildContext context) {
         return Scaffold(
             backgroundColor: ThemeUtils.currentThemeColor,
-            body: Padding(
-                padding: EdgeInsets.only(bottom: Constants.suSetSp(100.0)),
-                child: Center(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                            logo(),
-                            Constants.emptyDivider(height: Constants.suSetSp(20.0)),
-                            if (showLoading && isOnline != null)
-                                isOnline ? loginWidget() : warningWidget(),
-                            if (!showLoading) SizedBox(height: Constants.suSetSp(68.0)),
-                        ],
-                    ),
+            body: Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                        logo(),
+                        AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            margin: EdgeInsets.only(
+                                top: Constants.suSetSp(showLoading && isOnline != null ? 20.0 : 0.0),
+                            ),
+                            height: Constants.suSetSp(showLoading && isOnline != null ? 80.0 : 0.0),
+                            child: Center(
+                                child: showLoading && isOnline != null ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[Expanded(
+                                        child: isOnline ? loginWidget : warningWidget,
+                                    )],
+                                ) : null,
+                            ),
+                        )
+                    ],
                 ),
             ),
         );

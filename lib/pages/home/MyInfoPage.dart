@@ -89,7 +89,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         getCurrentWeek();
         updateHello();
 
-        _timer = Timer.periodic(Duration(minutes: 1), (timer) {
+        if (_timer == null) _timer = Timer.periodic(Duration(minutes: 1), (timer) {
             now = DateTime.now();
             getSignStatus();
             getCurrentWeek();
@@ -99,7 +99,6 @@ class MyInfoPageState extends State<MyInfoPage> {
             ..on<ChangeThemeEvent>().listen((event) {
                 themeColor = event.color;
                 if (mounted) setState(() {});
-
             })
             ..on<ChangeBrightnessEvent>().listen((event) {
                 isDark = event.isDarkState;
@@ -137,6 +136,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             currentWeek = null;
         }
         if (mounted) setState(() {});
+        Constants.eventBus.fire(CurrentWeekUpdatedEvent());
     }
 
     void updateHello() {
@@ -200,7 +200,10 @@ class MyInfoPageState extends State<MyInfoPage> {
                         ios: (BuildContext context) => CupertinoButtonData(
                             child: Text("确认", style: TextStyle(color: ThemeUtils.currentThemeColor),),
                         ),
-                        onPressed: UserAPI.logout,
+                        onPressed: () {
+                            Navigator.of(context).pop();
+                            UserAPI.logout();
+                        },
                     ),
                     PlatformButton(
                         android: (BuildContext context) => MaterialRaisedButtonData(
@@ -318,7 +321,8 @@ class MyInfoPageState extends State<MyInfoPage> {
         return GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () => UserPage.jump(context, UserAPI.currentUser.uid),
-            child: Padding(
+            child: Container(
+                color: Theme.of(context).primaryColor,
                 padding: EdgeInsets.symmetric(
                     horizontal: Constants.suSetSp(24.0),
                     vertical: Constants.suSetSp(16.0),
@@ -362,7 +366,8 @@ class MyInfoPageState extends State<MyInfoPage> {
         );
     }
 
-    Widget currentDay(DateTime now) => Padding(
+    Widget currentDay(context, DateTime now) => Container(
+        color: Theme.of(context).primaryColor,
         padding: EdgeInsets.symmetric(
             horizontal: Constants.suSetSp(30.0),
             vertical: Constants.suSetSp(20.0),
@@ -387,7 +392,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         ),
     );
 
-    Widget settingSectionListView(int sectionIndex) {
+    Widget settingSectionListView(context, int sectionIndex) {
         return ListView.separated(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -397,15 +402,16 @@ class MyInfoPageState extends State<MyInfoPage> {
                 height: 1.0,
             ),
             itemCount: settingsSection[sectionIndex].length,
-            itemBuilder: (context, itemIndex) => settingItem(sectionIndex, itemIndex),
+            itemBuilder: (context, itemIndex) => settingItem(context, sectionIndex, itemIndex),
         );
     }
 
-    Widget settingItem(int sectionIndex, int itemIndex) {
+    Widget settingItem(context, int sectionIndex, int itemIndex) {
         final Map<String, String> item = settingsSection[sectionIndex][itemIndex];
         return GestureDetector(
             behavior: HitTestBehavior.translucent,
-            child: Padding(
+            child: Container(
+                color: Theme.of(context).primaryColor,
                 padding: EdgeInsets.symmetric(
                     horizontal: Constants.suSetSp(18.0),
                     vertical: Constants.suSetSp(18.0),
@@ -496,28 +502,22 @@ class MyInfoPageState extends State<MyInfoPage> {
     Widget build(BuildContext context) {
         return Scaffold(
             backgroundColor: Theme.of(context).canvasColor,
-            body: DecoratedBox(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                ),
-                child: ScrollConfiguration(
-                    behavior: NoGlowScrollBehavior(),
-                    child: ListView(
-                        shrinkWrap: true,
-                        children: <Widget>[
-                            userInfo(),
-                            Constants.separator(context),
-                            currentDay(now),
-                            Constants.separator(context),
-                            ListView.separated(
-                                physics: const NeverScrollableScrollPhysics(),
-                                shrinkWrap: true,
-                                separatorBuilder: (context, index) => Constants.separator(context),
-                                itemCount: settingsSection.length,
-                                itemBuilder: (context, index) => settingSectionListView(index),
-                            ),
-                        ],
-                    ),
+            body: ScrollConfiguration(
+                behavior: NoGlowScrollBehavior(),
+                child: ListView(
+                    children: <Widget>[
+                        userInfo(),
+                        Constants.separator(context),
+                        currentDay(context, now),
+                        Constants.separator(context),
+                        ListView.separated(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            separatorBuilder: (context, index) => Constants.separator(context),
+                            itemCount: settingsSection.length,
+                            itemBuilder: (context, index) => settingSectionListView(context, index),
+                        ),
+                    ],
                 ),
             ),
         );

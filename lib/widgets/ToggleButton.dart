@@ -33,7 +33,10 @@ class _ToggleButtonState extends State<ToggleButton> {
                 });
             },
             child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(10.0), vertical: Constants.suSetSp(10.0)),
+                padding: EdgeInsets.symmetric(
+                    horizontal: Constants.suSetSp(10.0),
+                    vertical: Constants.suSetSp(10.0),
+                ),
                 child: widget.active ? widget.activeWidget : widget.unActiveWidget,
             ),
         );

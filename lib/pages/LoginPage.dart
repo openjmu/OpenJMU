@@ -5,7 +5,6 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
@@ -48,18 +47,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 
     @override
     void initState() {
-        Constants.eventBus
-            ..on<LoginEvent>().listen((event) {
-                if (!event.isWizard) {}
-                Constants.navigatorKey.currentState.pushReplacement(
-                    platformPageRoute(builder: (_) => MainPage(initIndex: widget.initIndex)),
-                );
-            })
-            ..on<LoginFailedEvent>().listen((event) {
-                _login = false;
-                if (mounted) setState(() {});
-            })
-        ;
         _usernameController..addListener(() {
             if (this.mounted) {
                 _username = _usernameController.text;
@@ -163,15 +150,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             children: <Widget>[
                 Stack(
                     children: <Widget>[
-//                        Positioned(
-//                            left: 0.0,
-//                            top: 0.0,
-//                            child: Image.asset(
-//                                "images/ic_jmu_logo_circle.png",
-//                                width: Constants.suSetSp(13.0),
-//                                height: Constants.suSetSp(13.0),
-//                            ),
-//                        ),
                         Container(
                             margin: EdgeInsets.only(
                                 top: Constants.suSetSp(10.0),
@@ -522,10 +500,22 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             setState(() {
                 _login = true;
             });
-            DataUtils.login(context, _username, _password).catchError((e) {
-                setState(() {
+            DataUtils.login(context, _username, _password).then((result) {
+                if (result) {
+                    Constants.navigatorKey.currentState.pushAndRemoveUntil(
+                        platformPageRoute(
+                            context: context,
+                            builder: (_) => MainPage(initIndex: widget.initIndex),
+                        ),
+                        (_) => false,
+                    );
+                } else {
                     _login = false;
-                });
+                    if (mounted) setState(() {});
+                }
+            }).catchError((e) {
+                _login = false;
+                if (mounted) setState(() {});
             });
         }
     }
