@@ -330,9 +330,9 @@ class DataUtils {
         double scale = sp?.getDouble(spSettingFontScale) ?? 1.0;
         return scale;
     }
-    // 获取字体缩放设置
+    // 获取新图标是否开启
     static bool getEnabledNewAppsIcon() {
-        bool enabled = sp?.getBool(spSettingNewIcons) ?? true;
+        bool enabled = sp?.getBool(spSettingNewIcons) ?? false;
         return enabled;
     }
 

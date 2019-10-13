@@ -54,7 +54,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         _forwardController?.dispose();
     }
 
-    Widget textField() {
+    Widget textField(context) {
         return ScrollConfiguration(
             behavior: NoGlowScrollBehavior(),
             child: ExtendedTextField(
@@ -67,7 +67,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                     focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: ThemeUtils.currentThemeColor)),
                 ),
                 enabled: !_forwarding,
-                style: TextStyle(fontSize: Constants.suSetSp(18.0)),
+                style: Theme.of(context).textTheme.body1.copyWith(fontSize: Constants.suSetSp(18.0)),
                 cursorColor: ThemeUtils.currentThemeColor,
                 autofocus: true,
                 maxLines: 3,
@@ -236,7 +236,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                    textField(),
+                                    textField(context),
                                     toolbar(),
                                 ],
                             ),

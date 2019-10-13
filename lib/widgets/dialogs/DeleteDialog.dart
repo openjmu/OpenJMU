@@ -23,7 +23,12 @@ class DeleteDialog extends Dialog {
     Widget build(BuildContext context) {
         return PlatformAlertDialog(
             title: Text("删除$whatToDelete"),
-            content: Text("是否确认删除这条$whatToDelete？"),
+            content: Text(
+                "是否确认删除这条$whatToDelete？",
+                style: Theme.of(context).textTheme.body1.copyWith(
+                    fontSize: Constants.suSetSp(16.0),
+                ),
+            ),
             actions: <Widget>[
                 PlatformButton(
                     android: (BuildContext context) => MaterialRaisedButtonData(

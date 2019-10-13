@@ -92,7 +92,9 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                                 padding: EdgeInsets.all(Constants.suSetSp(20.0)),
                                                 child: TextField(
                                                     autofocus: true,
-                                                    style: TextStyle(fontSize: Constants.suSetSp(18.0)),
+                                                    style: Theme.of(context).textTheme.body1.copyWith(
+                                                        fontSize: Constants.suSetSp(18.0),
+                                                    ),
                                                     controller: _textEditingController,
                                                     cursorColor: ThemeUtils.currentThemeColor,
                                                     decoration: InputDecoration(

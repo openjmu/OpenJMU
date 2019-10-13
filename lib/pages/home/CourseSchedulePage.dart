@@ -29,10 +29,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         with AutomaticKeepAliveClientMixin {
 
     final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey();
-    ScrollController weekScrollController = ScrollController();
     final Duration showWeekDuration = const Duration(milliseconds: 300);
     final Curve showWeekCurve = Curves.fastOutSlowIn;
     final double weekSize = 100.0;
+    ScrollController weekScrollController;
 
     bool _firstLoaded = false;
     bool hasCourse = true;
@@ -63,15 +63,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             ..on<CurrentWeekUpdatedEvent>().listen((event) {
                 if (currentWeek == null) {
                     currentWeek = DateAPI.currentWeek;
+                    updateScrollController();
                     if (mounted) setState(() {});
-                    weekScrollController = ScrollController(
-                        initialScrollOffset: math.max(
-                            0,
-                            (DateAPI.currentWeek - 0.5) * Constants.suSetSp(weekSize)
-                                    - Screen.width / 2
-                            ,
-                        ),
-                    );
+                    if (weekScrollController.hasClients) scrollToWeek(currentWeek);
                 }
             })
         ;
@@ -103,6 +97,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                     widget.appCenterPageState.setState(() {});
                 }
             }
+            updateScrollController();
             if (mounted) setState(() {});
             if (DateAPI.currentWeek != null) scrollToWeek(DateAPI.currentWeek);
         });
@@ -144,6 +139,15 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             if (data != null) _remark = data['classScheduleRemark'];
             if (remark != _remark && _remark != "") remark = _remark;
         });
+    }
+
+    void updateScrollController() {
+        weekScrollController ??= ScrollController(
+            initialScrollOffset: DateAPI.currentWeek != null ? math.max(
+                0,
+                (DateAPI.currentWeek - 0.5) * Constants.suSetSp(weekSize) - Screen.width / 2,
+            ) : null,
+        );
     }
 
     void scrollToWeek(int week) {

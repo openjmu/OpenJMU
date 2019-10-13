@@ -187,7 +187,10 @@ class MyInfoPageState extends State<MyInfoPage> {
             context: context,
             builder: (_) => PlatformAlertDialog(
                 title: Text("退出登录"),
-                content: Text("是否确认退出登录？"),
+                content: Text(
+                    "是否确认退出登录？",
+                    style: Theme.of(context).textTheme.body1,
+                ),
                 actions: <Widget>[
                     PlatformButton(
                         android: (BuildContext context) => MaterialRaisedButtonData(
@@ -201,7 +204,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                             child: Text("确认", style: TextStyle(color: ThemeUtils.currentThemeColor),),
                         ),
                         onPressed: () {
-                            Navigator.of(context).pop();
+                            Navigator.of(_).pop();
                             UserAPI.logout();
                         },
                     ),
@@ -216,7 +219,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                         ios: (BuildContext context) => CupertinoButtonData(
                             child: Text("取消", style: TextStyle(color: ThemeUtils.currentThemeColor)),
                         ),
-                        onPressed: Navigator.of(context).pop,
+                        onPressed: Navigator.of(_).pop,
                     ),
                 ],
             ),

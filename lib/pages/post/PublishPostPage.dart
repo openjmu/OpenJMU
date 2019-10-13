@@ -175,7 +175,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         });
     }
 
-    Widget textField() {
+    Widget textField(context) {
         return Expanded(
             child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(12.0), vertical: Constants.suSetSp(2.0)),
@@ -196,7 +196,9 @@ class PublishPostPageState extends State<PublishPostPage> {
                         labelStyle: TextStyle(color: Colors.white, fontSize: Constants.suSetSp(18.0)),
                         counterStyle: TextStyle(color: Colors.transparent),
                     ),
-                    style: TextStyle(fontSize: Constants.suSetSp(18.0)),
+                    style: Theme.of(context).textTheme.body1.copyWith(
+                        fontSize: Constants.suSetSp(18.0),
+                    ),
                     maxLength: maxLength,
                     maxLines: null,
                     onChanged: (content) {
@@ -555,7 +557,7 @@ class PublishPostPageState extends State<PublishPostPage> {
             ),
             body: Stack(
                 children: <Widget>[
-                    Column(children: <Widget>[textField()]),
+                    Column(children: <Widget>[textField(context)]),
                     customGridView(context),
                     _counter(context), _toolbar(context),
                     emoticonPad(context),

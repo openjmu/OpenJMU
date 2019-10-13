@@ -96,7 +96,7 @@ class CommentPositionedState extends State<CommentPositioned> {
         data: formData,
     );
 
-    Widget textField() {
+    Widget textField(context) {
         String _hintText;
         toComment != null ? _hintText = "回复:@${toComment.fromUserName} " : _hintText = null;
         return ScrollConfiguration(
@@ -121,7 +121,7 @@ class CommentPositionedState extends State<CommentPositioned> {
                     ) : null,
                 ),
                 enabled: !_commenting,
-                style: TextStyle(fontSize: Constants.suSetSp(18.0)),
+                style: Theme.of(context).textTheme.body1.copyWith(fontSize: Constants.suSetSp(18.0)),
                 cursorColor: ThemeUtils.currentThemeColor,
                 autofocus: true,
                 maxLines: 3,
@@ -319,7 +319,7 @@ class CommentPositionedState extends State<CommentPositioned> {
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[textField(), toolbar(context)],
+                                children: <Widget>[textField(context), toolbar(context)],
                             ),
                         ),
                     ),

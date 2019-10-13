@@ -492,7 +492,7 @@ class Course {
         final List weeks = json['allWeek'].split(' ')[0].split('-');
 
         Course _c = Course(
-            name: json['couName'],
+            name: json['couName'] ?? "(空)",
             time: json['coudeTime'],
             location: json['couRoom'],
             className: json['className'],
