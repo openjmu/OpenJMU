@@ -1,3 +1,5 @@
+import 'package:OpenJMU/pages/test/TestChannelPage.dart';
+import 'package:OpenJMU/pages/test/TestOldSocketPage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:OpenJMU/api/UserAPI.dart';
@@ -19,6 +21,16 @@ class TestDashBoardPage extends StatelessWidget {
             "builder": TestSocketPage(),
             "name": "连接测试页",
             "icon": Icons.settings_ethernet,
+        },
+        {
+            "builder": TestOldSocketPage(),
+            "name": "旧连接测试",
+            "icon": Icons.settings_ethernet,
+        },
+        {
+            "builder": TestChannelPage(),
+            "name": "通信测试页",
+            "icon": Icons.android,
         },
         {
             "builder": TestDragPage(),

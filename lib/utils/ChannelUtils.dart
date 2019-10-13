@@ -8,7 +8,13 @@ class ChannelUtils {
 
     static Future<Null> setFlagSecure(bool secure) async {
         try {
-            await _pmc_flagSecure.invokeMethod("enable");
+            String method;
+            if (secure) {
+                method = "enable";
+            } else {
+                method = "disable";
+            }
+            await _pmc_flagSecure.invokeMethod(method);
         } on PlatformException catch (e) {
             debugPrint("Set flag secure failed: ${e.message}.");
         }
