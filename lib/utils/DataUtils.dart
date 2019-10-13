@@ -183,6 +183,10 @@ class DataUtils {
             await sp?.setString(spUserWorkId, data['workId']);
 //            await sp?.setInt(spUserClassId, data['userClassId']);
         }
+        if (!data['isTeacher']) {
+            setEnabledNewAppsIcon(true);
+            Constants.eventBus.fire(AppCenterSettingsUpdateEvent());
+        }
     }
 
     /// 清除登录信息

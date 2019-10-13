@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:OpenJMU/utils/DeviceUtils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -22,6 +23,7 @@ import 'package:OpenJMU/widgets/NoScaleTextWidget.dart';
 
 void main() async {
     await DataUtils.initSharedPreferences();
+    await DeviceUtils.getModel();
     runApp(OpenJMUApp());
 }
 
@@ -135,7 +137,19 @@ class OpenJMUAppState extends State<OpenJMUApp> {
                     debugShowCheckedModeBanner: false,
                     routes: RouteUtils.routes,
                     title: "OpenJMU",
-                    theme: ThemeUtils.isDark ? ThemeUtils.darkTheme() : ThemeUtils.lightTheme(),
+                    theme: (ThemeUtils.isDark
+                            ? ThemeUtils.darkTheme()
+                            : ThemeUtils.lightTheme()
+                    ).copyWith(
+                        textTheme: (ThemeUtils.isDark
+                                ? Theme.of(context).typography.white
+                                : Theme.of(context).typography.black
+                        ).copyWith(
+                            subhead: TextStyle(
+                                textBaseline: TextBaseline.alphabetic,
+                            ),
+                        )
+                    ),
                     home: SplashPage(initIndex: initIndex),
                     localizationsDelegates: [
                         GlobalMaterialLocalizations.delegate,
@@ -143,12 +157,32 @@ class OpenJMUAppState extends State<OpenJMUApp> {
                         GlobalCupertinoLocalizations.delegate,
                     ],
                     supportedLocales: [
-                        const Locale.fromSubtags(languageCode: 'zh'),
-                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
-                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
-                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
-                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),
-                        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'HK'),
+                        const Locale.fromSubtags(
+                            languageCode: 'zh',
+                        ),
+                        const Locale.fromSubtags(
+                            languageCode: 'zh',
+                            scriptCode: 'Hans',
+                        ),
+                        const Locale.fromSubtags(
+                            languageCode: 'zh',
+                            scriptCode: 'Hant',
+                        ),
+                        const Locale.fromSubtags(
+                            languageCode: 'zh',
+                            scriptCode: 'Hans',
+                            countryCode: 'CN',
+                        ),
+                        const Locale.fromSubtags(
+                            languageCode: 'zh',
+                            scriptCode: 'Hant',
+                            countryCode: 'TW',
+                        ),
+                        const Locale.fromSubtags(
+                            languageCode: 'zh',
+                            scriptCode: 'Hant',
+                            countryCode: 'HK',
+                        ),
                         const Locale('en'),
                     ],
                 ),

@@ -1,7 +1,7 @@
 PODS:
-  - BSGridCollectionViewLayout (1.2.3)
-  - BSImagePicker (2.10.0):
-    - BSGridCollectionViewLayout (= 1.2.3)
+  - BSGridCollectionViewLayout (1.2.5)
+  - BSImagePicker (2.10.3):
+    - BSGridCollectionViewLayout (= 1.2.5)
     - BSImageView (= 1.0.3)
   - BSImageView (1.0.3)
   - connectivity (0.0.1):
@@ -31,8 +31,8 @@ PODS:
     - Flutter
   - image_picker (0.0.1):
     - Flutter
-  - multi_image_picker (4.5.2):
-    - BSImagePicker (~> 2.10.0)
+  - multi_image_picker (4.5.8):
+    - BSImagePicker (~> 2.10.3)
     - Flutter
   - package_info (0.0.1):
     - Flutter
@@ -129,8 +129,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
-  BSGridCollectionViewLayout: 568273e113fbc815f868f1898ef0465aee68f955
-  BSImagePicker: fa0c15b6740e8aa7a7b7f0fe38a71ad4cfa0ec4a
+  BSGridCollectionViewLayout: 333dcb457a5a3bdd9212607ab5756553dcfe06cb
+  BSImagePicker: 07404254f2fcdaf5a2eb403c0f8c337267ce8738
   BSImageView: a149459433a2687157d034c78e059d30ac7f2544
   connectivity: c72716e202a1225ec4810740d5cb56b8ae3bf4cc
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
@@ -145,7 +145,7 @@ SPEC CHECKSUMS:
   image_downloader: 0cce746db85ab8e068b7bcf8acacbdf71bca185e
   image_gallery_saver: 73b3cd8ad9c950c739878af9c311744d1bf5405d
   image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
-  multi_image_picker: ded524cc6197e3a2aaca82db43bb8bbddf97ee16
+  multi_image_picker: b1f4d88e59966c2083848c605dbe36a5d05a3fb2
   package_info: 78cabb3c322943c55d39676f4a5bfc748c01d055
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
   permission_handler: d59f41439f5bc6c4d1005f3355e98f05ddc68ece

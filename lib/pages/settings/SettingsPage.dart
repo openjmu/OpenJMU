@@ -40,7 +40,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 "description": "设置各个页面的启动页",
                 "route": "/switchStartUp",
             },
-            if (UserAPI.currentUser.isTeacher) {
+            {
                 "icon": "apps",
                 "name": "应用中心新图标",
                 "description": "全新图标设计，简洁直达",
@@ -70,7 +70,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 null,
                 null,
-                if (UserAPI.currentUser.isTeacher) PlatformSwitch(
+                PlatformSwitch(
                     activeColor: ThemeUtils.currentThemeColor,
                     value: Configs.newAppCenterIcon,
                     onChanged: (bool value) {
