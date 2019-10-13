@@ -84,7 +84,7 @@ class _FontScalePageState extends State<FontScalePage> {
                                     Slider(
                                         min: scaleRange[0],
                                         max: scaleRange[1],
-                                        divisions: 4,
+                                        divisions: 6,
                                         activeColor: ThemeUtils.currentThemeColor,
                                         inactiveColor: ThemeUtils.currentThemeColor.withAlpha(50),
                                         value: scale,
