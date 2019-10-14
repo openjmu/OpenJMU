@@ -151,7 +151,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     }
 
     void scrollToWeek(int week) {
-        weekScrollController.animateTo(
+        if (weekScrollController.hasClients) weekScrollController.animateTo(
             math.max(0, (week - 0.5) * Constants.suSetSp(weekSize) - Screen.width / 2),
             duration: const Duration(milliseconds: 300),
             curve: Curves.ease,

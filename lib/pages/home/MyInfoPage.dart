@@ -13,7 +13,6 @@ import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/OTAUtils.dart';
@@ -505,23 +504,20 @@ class MyInfoPageState extends State<MyInfoPage> {
     Widget build(BuildContext context) {
         return Scaffold(
             backgroundColor: Theme.of(context).canvasColor,
-            body: ScrollConfiguration(
-                behavior: NoGlowScrollBehavior(),
-                child: ListView(
-                    children: <Widget>[
-                        userInfo(),
-                        Constants.separator(context),
-                        currentDay(context, now),
-                        Constants.separator(context),
-                        ListView.separated(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            separatorBuilder: (context, index) => Constants.separator(context),
-                            itemCount: settingsSection.length,
-                            itemBuilder: (context, index) => settingSectionListView(context, index),
-                        ),
-                    ],
-                ),
+            body: ListView(
+                children: <Widget>[
+                    userInfo(),
+                    Constants.separator(context),
+                    currentDay(context, now),
+                    Constants.separator(context),
+                    ListView.separated(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        separatorBuilder: (context, index) => Constants.separator(context),
+                        itemCount: settingsSection.length,
+                        itemBuilder: (context, index) => settingSectionListView(context, index),
+                    ),
+                ],
             ),
         );
     }

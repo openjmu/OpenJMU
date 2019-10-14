@@ -99,34 +99,38 @@ class CommentPositionedState extends State<CommentPositioned> {
     Widget textField(context) {
         String _hintText;
         toComment != null ? _hintText = "回复:@${toComment.fromUserName} " : _hintText = null;
-        return ScrollConfiguration(
-            behavior: NoGlowScrollBehavior(),
-            child: ExtendedTextField(
-                specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
-                focusNode: _focusNode,
-                controller: _commentController,
-                decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(Constants.suSetSp(12.0)),
-                    border: OutlineInputBorder(borderSide: BorderSide(color: ThemeUtils.currentThemeColor)),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: ThemeUtils.currentThemeColor)),
-                    hintText: _hintText,
-                    suffixIcon: _image != null ? SizedBox(
-                        width: Constants.suSetSp(60.0),
-                        child: Container(
-                            margin: EdgeInsets.only(right: Constants.suSetSp(12.0)),
-                            decoration: BoxDecoration(
-                                image: DecorationImage(image: FileImage(_image), fit: BoxFit.cover),
+        return ExtendedTextField(
+            specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
+            focusNode: _focusNode,
+            controller: _commentController,
+            decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(Constants.suSetSp(12.0)),
+                border: OutlineInputBorder(
+                    borderSide: BorderSide(color: ThemeUtils.currentThemeColor),
+                ),
+                focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: ThemeUtils.currentThemeColor),
+                ),
+                hintText: _hintText,
+                suffixIcon: _image != null ? SizedBox(
+                    width: Constants.suSetSp(60.0),
+                    child: Container(
+                        margin: EdgeInsets.only(right: Constants.suSetSp(12.0)),
+                        decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: FileImage(_image),
+                                fit: BoxFit.cover,
                             ),
                         ),
-                    ) : null,
-                ),
-                enabled: !_commenting,
-                style: Theme.of(context).textTheme.body1.copyWith(fontSize: Constants.suSetSp(18.0)),
-                cursorColor: ThemeUtils.currentThemeColor,
-                autofocus: true,
-                maxLines: 3,
-                maxLength: 140,
+                    ),
+                ) : null,
             ),
+            enabled: !_commenting,
+            style: Theme.of(context).textTheme.body1.copyWith(fontSize: Constants.suSetSp(18.0)),
+            cursorColor: ThemeUtils.currentThemeColor,
+            autofocus: true,
+            maxLines: 3,
+            maxLength: 140,
         );
     }
 

@@ -142,54 +142,51 @@ class _TeamPostListState extends State<TeamPostList> with AutomaticKeepAliveClie
         super.build(context);
         if (!_showLoading) {
             if (_firstLoadComplete) {
-                _itemList = ScrollConfiguration(
-                    behavior: NoGlowScrollBehavior(),
-                    child: ListView.separated(
-                        padding: EdgeInsets.zero,
-                        separatorBuilder: (context, index) => Container(
-                            color: Theme.of(context).canvasColor,
-                            height: Constants.suSetSp(8.0),
-                        ),
-                        itemBuilder: (context, index) {
-                            if (index == _postList.length) {
-                                if (this._canLoadMore) {
-                                    _loadData();
-                                    return Container(
-                                        height: Constants.suSetSp(40.0),
-                                        child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                                SizedBox(
-                                                    width: Constants.suSetSp(15.0),
-                                                    height: Constants.suSetSp(15.0),
-                                                    child: Platform.isAndroid
-                                                            ? CircularProgressIndicator(strokeWidth: 2.0)
-                                                            : CupertinoActivityIndicator(),
-                                                ),
-                                                Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0))),
-                                            ],
-                                        ),
-                                    );
-                                } else {
-                                    return Container(
-                                        height: Constants.suSetSp(50.0),
-                                        color: Theme.of(context).canvasColor,
-                                        child: Center(
-                                            child: Text(Constants.endLineTag, style: TextStyle(
-                                                fontSize: Constants.suSetSp(14.0),
-                                            )),
-                                        ),
-                                    );
-                                }
-                            } else if (index < _postList.length) {
-                                return TeamPostCard(_postList[index], fromPage: "team", index: index, isDetail: false);
-                            } else {
-                                return Container();
-                            }
-                        },
-                        itemCount: _postList.length + 1,
-                        controller: _scrollController,
+                _itemList = ListView.separated(
+                    padding: EdgeInsets.zero,
+                    separatorBuilder: (context, index) => Container(
+                        color: Theme.of(context).canvasColor,
+                        height: Constants.suSetSp(8.0),
                     ),
+                    itemBuilder: (context, index) {
+                        if (index == _postList.length) {
+                            if (this._canLoadMore) {
+                                _loadData();
+                                return Container(
+                                    height: Constants.suSetSp(40.0),
+                                    child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                            SizedBox(
+                                                width: Constants.suSetSp(15.0),
+                                                height: Constants.suSetSp(15.0),
+                                                child: Platform.isAndroid
+                                                        ? CircularProgressIndicator(strokeWidth: 2.0)
+                                                        : CupertinoActivityIndicator(),
+                                            ),
+                                            Text("　正在加载", style: TextStyle(fontSize: Constants.suSetSp(14.0))),
+                                        ],
+                                    ),
+                                );
+                            } else {
+                                return Container(
+                                    height: Constants.suSetSp(50.0),
+                                    color: Theme.of(context).canvasColor,
+                                    child: Center(
+                                        child: Text(Constants.endLineTag, style: TextStyle(
+                                            fontSize: Constants.suSetSp(14.0),
+                                        )),
+                                    ),
+                                );
+                            }
+                        } else if (index < _postList.length) {
+                            return TeamPostCard(_postList[index], fromPage: "team", index: index, isDetail: false);
+                        } else {
+                            return Container();
+                        }
+                    },
+                    itemCount: _postList.length + 1,
+                    controller: _scrollController,
                 );
 
                 if (widget.needRefreshIndicator) {

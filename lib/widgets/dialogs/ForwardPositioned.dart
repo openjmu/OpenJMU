@@ -55,24 +55,21 @@ class ForwardPositionedState extends State<ForwardPositioned> {
     }
 
     Widget textField(context) {
-        return ScrollConfiguration(
-            behavior: NoGlowScrollBehavior(),
-            child: ExtendedTextField(
-                specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
-                focusNode: _focusNode,
-                controller: _forwardController,
-                decoration: InputDecoration(
-                    contentPadding: EdgeInsets.all(Constants.suSetSp(12.0)),
-                    border: OutlineInputBorder(borderSide: BorderSide(color: ThemeUtils.currentThemeColor)),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: ThemeUtils.currentThemeColor)),
-                ),
-                enabled: !_forwarding,
-                style: Theme.of(context).textTheme.body1.copyWith(fontSize: Constants.suSetSp(18.0)),
-                cursorColor: ThemeUtils.currentThemeColor,
-                autofocus: true,
-                maxLines: 3,
-                maxLength: 140,
+        return ExtendedTextField(
+            specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
+            focusNode: _focusNode,
+            controller: _forwardController,
+            decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(Constants.suSetSp(12.0)),
+                border: OutlineInputBorder(borderSide: BorderSide(color: ThemeUtils.currentThemeColor)),
+                focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: ThemeUtils.currentThemeColor)),
             ),
+            enabled: !_forwarding,
+            style: Theme.of(context).textTheme.body1.copyWith(fontSize: Constants.suSetSp(18.0)),
+            cursorColor: ThemeUtils.currentThemeColor,
+            autofocus: true,
+            maxLines: 3,
+            maxLength: 140,
         );
     }
 

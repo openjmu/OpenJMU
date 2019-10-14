@@ -1,9 +1,8 @@
-import 'package:OpenJMU/pages/test/TestChannelPage.dart';
-import 'package:OpenJMU/pages/test/TestOldSocketPage.dart';
 import 'package:flutter/material.dart';
 
 import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/pages/test/TestCerStarAskPage.dart';
+import 'package:OpenJMU/pages/test/TestChannelPage.dart';
 import 'package:OpenJMU/pages/test/TestDragPage.dart';
 import 'package:OpenJMU/pages/test/TestImageCropPage.dart';
 import 'package:OpenJMU/pages/test/TestSocketPage.dart';
@@ -20,11 +19,6 @@ class TestDashBoardPage extends StatelessWidget {
         {
             "builder": TestSocketPage(),
             "name": "连接测试页",
-            "icon": Icons.settings_ethernet,
-        },
-        {
-            "builder": TestOldSocketPage(),
-            "name": "旧连接测试",
             "icon": Icons.settings_ethernet,
         },
         {

@@ -5,7 +5,6 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -425,68 +424,65 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         return SafeArea(
             child: Form(
                 key: _formKey,
-                child: ScrollConfiguration(
-                    behavior: NoGlowScrollBehavior(),
-                    child: Align(
-                        alignment: _keyboardAppeared ? Alignment.bottomCenter : Alignment.center,
-                        child: ListView(
-                            shrinkWrap: true,
-                            controller: _formScrollController,
-                            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(50.0)),
-                            physics: NeverScrollableScrollPhysics(parent: ClampingScrollPhysics()),
-                            children: <Widget>[
-                                logoTitle(),
-                                Constants.emptyDivider(height: Constants.suSetSp(40.0)),
-                                Container(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: Constants.suSetSp(10.0),
-                                        vertical: Constants.suSetSp(10.0),
-                                    ),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(Constants.suSetSp(6.0)),
-                                        boxShadow: <BoxShadow>[
-                                            BoxShadow(
-                                                blurRadius: 20.0,
-                                                color: Theme.of(context).dividerColor,
-                                            ),
-                                        ],
-                                        color: Theme.of(context).cardColor,
-                                    ),
-                                    child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                            if (Configs.announcementsEnabled) AnnouncementWidget(
-                                                context,
-                                                radius: 6.0,
-                                            ),
-                                            usernameTextField(),
-                                            Constants.emptyDivider(height: Constants.suSetSp(10.0)),
-                                            passwordTextField(),
-                                            Constants.emptyDivider(height: Constants.suSetSp(10.0)),
-                                            Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: <Widget>[
+                child: Align(
+                    alignment: _keyboardAppeared ? Alignment.bottomCenter : Alignment.center,
+                    child: ListView(
+                        shrinkWrap: true,
+                        controller: _formScrollController,
+                        padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(50.0)),
+                        physics: NeverScrollableScrollPhysics(parent: ClampingScrollPhysics()),
+                        children: <Widget>[
+                            logoTitle(),
+                            Constants.emptyDivider(height: Constants.suSetSp(40.0)),
+                            Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Constants.suSetSp(10.0),
+                                    vertical: Constants.suSetSp(10.0),
+                                ),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(Constants.suSetSp(6.0)),
+                                    boxShadow: <BoxShadow>[
+                                        BoxShadow(
+                                            blurRadius: 20.0,
+                                            color: Theme.of(context).dividerColor,
+                                        ),
+                                    ],
+                                    color: Theme.of(context).cardColor,
+                                ),
+                                child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                        if (Configs.announcementsEnabled) AnnouncementWidget(
+                                            context,
+                                            radius: 6.0,
+                                        ),
+                                        usernameTextField(),
+                                        Constants.emptyDivider(height: Constants.suSetSp(10.0)),
+                                        passwordTextField(),
+                                        Constants.emptyDivider(height: Constants.suSetSp(10.0)),
+                                        Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
 //                                                noAccountButton(context),
-                                                    findWorkId(context),
-                                                    forgetPasswordButton(context),
-                                                ],
-                                            ),
-                                        ],
-                                    ),
+                                                findWorkId(context),
+                                                forgetPasswordButton(context),
+                                            ],
+                                        ),
+                                    ],
                                 ),
-                                Padding(
-                                    padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
-                                    child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                            userAgreementCheckbox(context),
-                                            loginButton(context),
-                                        ],
-                                    ),
+                            ),
+                            Padding(
+                                padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                        userAgreementCheckbox(context),
+                                        loginButton(context),
+                                    ],
                                 ),
-                                Constants.emptyDivider(height: Constants.suSetSp(30.0)),
-                            ],
-                        ),
+                            ),
+                            Constants.emptyDivider(height: Constants.suSetSp(30.0)),
+                        ],
                     ),
                 ),
                 onChanged: validateForm,

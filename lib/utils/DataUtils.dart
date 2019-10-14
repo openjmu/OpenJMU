@@ -166,6 +166,10 @@ class DataUtils {
 
     static void setUserInfo(Map<String, dynamic> data) {
         UserAPI.currentUser = UserInfo.fromJson(data);
+        if (!data['isTeacher'] && sp.getBool(spSettingNewIcons) != null) {
+            setEnabledNewAppsIcon(true);
+            Constants.eventBus.fire(AppCenterSettingsUpdateEvent());
+        }
     }
 
     static Future<Null> saveLoginInfo(Map<String, dynamic> data) async {
@@ -182,10 +186,6 @@ class DataUtils {
             await sp?.setInt(spUserUnitId, data['unitId']);
             await sp?.setString(spUserWorkId, data['workId']);
 //            await sp?.setInt(spUserClassId, data['userClassId']);
-        }
-        if (!data['isTeacher']) {
-            setEnabledNewAppsIcon(true);
-            Constants.eventBus.fire(AppCenterSettingsUpdateEvent());
         }
     }
 

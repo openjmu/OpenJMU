@@ -1,10 +1,8 @@
-import 'dart:async';
 import 'dart:core';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 
 import 'package:OpenJMU/constants/Messages.dart';
 import 'package:OpenJMU/utils/MessageUtils.dart';
@@ -56,15 +54,15 @@ class _TestSocketPageState extends State<TestSocketPage> {
         );
     }
 
-    void addPackage(String command) {
+    void addPackage(String command, [List<int> content]) {
         debugPrint("\n$command: ${MessageUtils.package(
             Messages.messageCommands[command],
-            Messages.messagePacks[command] != null ? Messages.messagePacks[command]() : null,
+            Messages.messagePacks[command] != null ? Messages.messagePacks[command]() : content,
             false,
         )}");
         _socket.add(MessageUtils.package(
             Messages.messageCommands[command],
-            Messages.messagePacks[command] != null ? Messages.messagePacks[command]() : null,
+            Messages.messagePacks[command] != null ? Messages.messagePacks[command]() : content,
         ));
     }
 
@@ -79,17 +77,47 @@ class _TestSocketPageState extends State<TestSocketPage> {
                 centerTitle: true,
             ),
             body: Center(
-                child: ListView.builder(
+                child: ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    itemCount: Messages.messageCommands.keys.length,
-                    itemBuilder: (context, index) {
-                        return RaisedButton(
-                            child: Text(Messages.messageCommands.entries.elementAt(index).key),
+                    children: <Widget>[
+                        RaisedButton(
+                            child: Text("WY_VERIFY_CHECKCODE"),
                             onPressed: () {
-                                addPackage(Messages.messageCommands.entries.elementAt(index).key);
+                                addPackage("WY_VERIFY_CHECKCODE");
                             },
-                        );
-                    },
+                        ),
+                        RaisedButton(
+                            child: Text("WY_MULTPOINT_LOGIN"),
+                            onPressed: () {
+                                addPackage("WY_MULTPOINT_LOGIN");
+                            },
+                        ),
+                        RaisedButton(
+                            child: Text("WY_KEEPALIVE"),
+                            onPressed: () {
+                                addPackage("WY_KEEPALIVE");
+                            },
+                        ),
+                        RaisedButton(
+                            child: Text("WY_MSG"),
+                            onPressed: () {
+                                addPackage(
+                                    "WY_MSG",
+                                    M_WY_VERIFY_CHECKCODE(
+                                        type: "MSG_A2A",
+                                        uid: 164466,
+                                        message: "Hello Message from OpenJMU:  ${DateTime.now()}",
+                                    ).requestBody(),
+                                );
+                            },
+                        ),
+                        RaisedButton(
+                            child: Text("WY_LOGOUT"),
+                            onPressed: () {
+                                addPackage("WY_LOGOUT");
+                            },
+                        ),
+                    ],
                 ),
             ),
         );

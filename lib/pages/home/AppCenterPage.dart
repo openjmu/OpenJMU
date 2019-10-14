@@ -29,7 +29,7 @@ class AppCenterPageState extends State<AppCenterPage>
     final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey();
 
     final ScrollController _scrollController = ScrollController();
-    static List<String> tabs() => ["课程表", if (!(UserAPI.currentUser?.isTeacher ?? true)) "成绩", "应用"];
+    static List<String> tabs() => ["课程表", if (!(UserAPI.currentUser?.isTeacher ?? false)) "成绩", "应用"];
 
     TabController _tabController;
     Color currentThemeColor = ThemeUtils.currentThemeColor;
@@ -386,7 +386,7 @@ class AppCenterPageState extends State<AppCenterPage>
                         key: coursePageKey,
                         appCenterPageState: _appCenterPageState,
                     ) : SizedBox(),
-                    if (!(UserAPI.currentUser?.isTeacher ?? true)) ScorePage(),
+                    if (tabs().contains("成绩")) ScorePage(),
                     RefreshIndicator(
                         key: refreshIndicatorKey,
                         child: FutureBuilder(

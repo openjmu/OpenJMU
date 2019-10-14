@@ -12,6 +12,7 @@ import 'package:quick_actions/quick_actions.dart';
 import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
+import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/SplashPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
 import 'package:OpenJMU/utils/DeviceUtils.dart';
@@ -131,60 +132,63 @@ class OpenJMUAppState extends State<OpenJMUApp> {
         return Theme(
             data: ThemeUtils.isDark ? ThemeUtils.darkTheme() : ThemeUtils.lightTheme(),
             child: OKToast(
-                child: MaterialApp(
-                    navigatorKey: _navigatorKey,
-                    builder: (BuildContext c, Widget w) => NoScaleTextWidget(child: w),
-                    debugShowCheckedModeBanner: false,
-                    routes: RouteUtils.routes,
-                    title: "OpenJMU",
-                    theme: (ThemeUtils.isDark
-                            ? ThemeUtils.darkTheme()
-                            : ThemeUtils.lightTheme()
-                    ).copyWith(
-                        textTheme: (ThemeUtils.isDark
-                                ? Theme.of(context).typography.white
-                                : Theme.of(context).typography.black
+                child: ScrollConfiguration(
+                    behavior: NoGlowScrollBehavior(),
+                    child: MaterialApp(
+                        navigatorKey: _navigatorKey,
+                        builder: (BuildContext c, Widget w) => NoScaleTextWidget(child: w),
+                        debugShowCheckedModeBanner: false,
+                        routes: RouteUtils.routes,
+                        title: "OpenJMU",
+                        theme: (ThemeUtils.isDark
+                                ? ThemeUtils.darkTheme()
+                                : ThemeUtils.lightTheme()
                         ).copyWith(
-                            subhead: TextStyle(
-                                textBaseline: TextBaseline.alphabetic,
+                                textTheme: (ThemeUtils.isDark
+                                        ? Theme.of(context).typography.white
+                                        : Theme.of(context).typography.black
+                                ).copyWith(
+                                    subhead: TextStyle(
+                                        textBaseline: TextBaseline.alphabetic,
+                                    ),
+                                )
+                        ),
+                        home: SplashPage(initIndex: initIndex),
+                        localizationsDelegates: [
+                            GlobalMaterialLocalizations.delegate,
+                            GlobalWidgetsLocalizations.delegate,
+                            GlobalCupertinoLocalizations.delegate,
+                        ],
+                        supportedLocales: [
+                            const Locale.fromSubtags(
+                                languageCode: 'zh',
                             ),
-                        )
+                            const Locale.fromSubtags(
+                                languageCode: 'zh',
+                                scriptCode: 'Hans',
+                            ),
+                            const Locale.fromSubtags(
+                                languageCode: 'zh',
+                                scriptCode: 'Hant',
+                            ),
+                            const Locale.fromSubtags(
+                                languageCode: 'zh',
+                                scriptCode: 'Hans',
+                                countryCode: 'CN',
+                            ),
+                            const Locale.fromSubtags(
+                                languageCode: 'zh',
+                                scriptCode: 'Hant',
+                                countryCode: 'TW',
+                            ),
+                            const Locale.fromSubtags(
+                                languageCode: 'zh',
+                                scriptCode: 'Hant',
+                                countryCode: 'HK',
+                            ),
+                            const Locale('en'),
+                        ],
                     ),
-                    home: SplashPage(initIndex: initIndex),
-                    localizationsDelegates: [
-                        GlobalMaterialLocalizations.delegate,
-                        GlobalWidgetsLocalizations.delegate,
-                        GlobalCupertinoLocalizations.delegate,
-                    ],
-                    supportedLocales: [
-                        const Locale.fromSubtags(
-                            languageCode: 'zh',
-                        ),
-                        const Locale.fromSubtags(
-                            languageCode: 'zh',
-                            scriptCode: 'Hans',
-                        ),
-                        const Locale.fromSubtags(
-                            languageCode: 'zh',
-                            scriptCode: 'Hant',
-                        ),
-                        const Locale.fromSubtags(
-                            languageCode: 'zh',
-                            scriptCode: 'Hans',
-                            countryCode: 'CN',
-                        ),
-                        const Locale.fromSubtags(
-                            languageCode: 'zh',
-                            scriptCode: 'Hant',
-                            countryCode: 'TW',
-                        ),
-                        const Locale.fromSubtags(
-                            languageCode: 'zh',
-                            scriptCode: 'Hant',
-                            countryCode: 'HK',
-                        ),
-                        const Locale('en'),
-                    ],
                 ),
             ),
         );
