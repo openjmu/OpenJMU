@@ -24,14 +24,18 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
         child: child ?? null,
     );
 
-    Future onScan(String data) async {
+    Future onScan(context, String data) async {
         if (API.urlReg.stringMatch(data) != null) {
             Navigator.of(context).pushReplacement(platformPageRoute(
+                context: context,
                 builder: (_) => CommonWebPage(url: data, title: ""),
             ));
         } else if (API.schemeUserPage.stringMatch(data) != null) {
             Navigator.of(context).pushReplacement(platformPageRoute(
-                builder: (_) => UserPage(uid: int.parse(data.substring(API.schemeUserPage.pattern.length - 2))),
+                context: context,
+                builder: (_) => UserPage(
+                    uid: int.parse(data.substring(API.schemeUserPage.pattern.length - 2)),
+                ),
             ));
         } else {
             await showCupertinoDialog(
@@ -62,7 +66,9 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
                 )),
                 centerTitle: true,
             ),
-            body: QrcodeReaderView(key: _key, onScan: onScan),
+            body: QrcodeReaderView(key: _key, onScan: (String data) {
+                return onScan(context, data);
+            }),
         );
     }
 }

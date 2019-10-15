@@ -292,7 +292,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                         ),
                     ],
                     style: Theme.of(context).textTheme.body1.copyWith(
-                        fontSize: Constants.suSetSp(19.0),
+                        fontSize: Constants.suSetSp(17.0),
                     ),
                 ),
                 textAlign: TextAlign.center,

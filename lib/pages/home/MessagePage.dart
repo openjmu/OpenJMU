@@ -55,9 +55,12 @@ class MessagePageState extends State<MessagePage> with SingleTickerProviderState
                 Navigator.of(context).pushNamed("/notification");
                 break;
             case "粉丝":
-                Navigator.of(context).push(platformPageRoute(builder: (context) {
-                    return UserListPage(UserAPI.currentUser, 2);
-                }));
+                Navigator.of(context).push(platformPageRoute(
+                    context: context,
+                    builder: (context) {
+                        return UserListPage(UserAPI.currentUser, 2);
+                    },
+                ));
                 break;
             default:
                 break;
