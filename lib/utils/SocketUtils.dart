@@ -21,7 +21,7 @@ class SocketUtils {
                 socket.setOption(SocketOption.tcpNoDelay, true);
                 socket.timeout(const Duration(milliseconds: 5000));
                 mSocket = socket;
-                mStream = mSocket.asBroadcastStream();
+                mStream = socket.asBroadcastStream();
             }).catchError((e) {
                 debugPrint("mSocket Error: $e");
             });
@@ -31,7 +31,7 @@ class SocketUtils {
     }
 
     static void unInitSocket() {
-        mSocket?.destroy();
+        if (mSocket != null) mSocket..close()..destroy();
         mSocket = null;
         mStream = null;
     }

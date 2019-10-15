@@ -1,79 +1,3 @@
-//import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
-//import 'package:OpenJMU/utils/DataUtils.dart';
-//import 'package:OpenJMU/utils/ThemeUtils.dart';
-
-//class JMUInAppBrowser extends InAppBrowser {
-//    @override
-//    Future onLoadStart(String url) async {
-//        debugPrint("\n\nStarted $url\n\n");
-//    }
-//
-//    @override
-//    Future onLoadStop(String url) async {
-//        debugPrint("\n\nStopped $url\n\n");
-//    }
-//
-//    @override
-//    void onLoadError(String url, int code, String message) {
-//        debugPrint("\n\nCan't load $url.. Error: $message\n\n");
-//    }
-//
-//    @override
-//    void onExit() {
-//        debugPrint("\n\nBrowser closed!\n\n");
-//    }
-//}
-//
-//JMUInAppBrowser inAppBrowserFallback = JMUInAppBrowser();
-//
-//class JMUChromeSafariBrowser extends ChromeSafariBrowser {
-//
-//    JMUChromeSafariBrowser(browserFallback) : super(browserFallback);
-//
-//    @override
-//    void onOpened() {
-//        debugPrint("ChromeSafari browser opened");
-//    }
-//
-//    @override
-//    void onLoaded() {
-//        debugPrint("ChromeSafari browser loaded");
-//    }
-//
-//    @override
-//    void onClosed() {
-//        debugPrint("ChromeSafari browser closed");
-//    }
-//}
-//
-//JMUChromeSafariBrowser chromeSafariBrowser = JMUChromeSafariBrowser(inAppBrowserFallback);
-//
-//class InAppBrowserUtils {
-//    static void open(url) {
-//        DataUtils.getBrightnessDark().then((isDark) {
-//            String colorStr = ThemeUtils.currentThemeColor.toString();
-//            if (isDark) {
-//                colorStr = "000000";
-//            } else {
-//                colorStr.length > 18 ? colorStr = colorStr.substring(39, 45) : colorStr = colorStr.substring(10, 16);
-//            }
-//            chromeSafariBrowser.open(
-//                url,
-//                options: {
-//                    "addShareButton": false,
-//                    "toolbarBackgroundColor": "#$colorStr",
-//                    "dismissButtonStyle": 1,
-//                    "preferredBarTintColor": "#$colorStr",
-//                },
-//                optionsFallback: {
-//                    "toolbarTopBackgroundColor": "#$colorStr",
-//                    "closeButtonCaption": "Close"
-//                },
-//            );
-//        });
-//    }
-//}
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
@@ -109,12 +33,15 @@ class InAppBrowserPage extends StatefulWidget {
     _InAppBrowserPageState createState() => _InAppBrowserPageState();
 
     static void open(BuildContext context, String url, String title) {
-        Navigator.of(context).push(platformPageRoute(builder: (context) {
-            return InAppBrowserPage(
-                url: url,
-                title: title,
-            );
-        }));
+        Navigator.of(context).push(platformPageRoute(
+            context: context,
+            builder: (context) {
+                return InAppBrowserPage(
+                    url: url,
+                    title: title,
+                );
+            },
+        ));
     }
 }
 
@@ -224,7 +151,6 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
 
     @override
     void dispose() {
-        debugPrint("Disposing browser page...");
         super.dispose();
     }
 

@@ -62,6 +62,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             })
             ..on<CurrentWeekUpdatedEvent>().listen((event) {
                 if (currentWeek == null) {
+                    if (now != null) _firstLoaded = true;
                     currentWeek = DateAPI.currentWeek;
                     updateScrollController();
                     if (mounted) setState(() {});
@@ -92,7 +93,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             currentWeek = DateAPI.currentWeek;
             now = DateTime.now();
             if (!_firstLoaded) {
-                _firstLoaded = true;
+                if (currentWeek != null) _firstLoaded = true;
                 if (widget.appCenterPageState.mounted) {
                     widget.appCenterPageState.setState(() {});
                 }

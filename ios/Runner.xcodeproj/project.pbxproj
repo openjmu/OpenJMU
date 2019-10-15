@@ -219,6 +219,13 @@
 			remoteGlobalIDString = 2F9E4A4DFBB3FA382E47DEEF13A9ED68;
 			remoteInfo = webview_flutter;
 		};
+		FA7BFF482354271300F18AC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = A900426DED1EC95760B4FAEB208BEBF9;
+			remoteInfo = device_info;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -351,6 +358,7 @@
 				ABC8B9D122BE365C00F92406 /* BSImagePicker.bundle */,
 				ABC8B9D322BE365C00F92406 /* BSImageView.framework */,
 				ABC8B9D522BE365C00F92406 /* connectivity.framework */,
+				FA7BFF492354271300F18AC3 /* device_info.framework */,
 				ABC8B9D722BE365C00F92406 /* flutter_downloader.framework */,
 				ABC8B9D922BE365C00F92406 /* FlutterDownloaderDatabase.bundle */,
 				ABC8B9DB22BE365C00F92406 /* flutter_inappbrowser.framework */,
@@ -664,6 +672,13 @@
 			fileType = wrapper.framework;
 			path = webview_flutter.framework;
 			remoteRef = FA4BB6CC2338C9CB008A8438 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA7BFF492354271300F18AC3 /* device_info.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = device_info.framework;
+			remoteRef = FA7BFF482354271300F18AC3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

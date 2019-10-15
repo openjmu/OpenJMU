@@ -89,9 +89,9 @@ class DataUtils {
     }
 
     static Future logout() async {
+        await resetTheme();
         await clearLoginInfo();
         await clearSettings();
-        await resetTheme();
         showShortToast("退出登录成功");
     }
 
@@ -166,7 +166,7 @@ class DataUtils {
 
     static void setUserInfo(Map<String, dynamic> data) {
         UserAPI.currentUser = UserInfo.fromJson(data);
-        if (!data['isTeacher'] && sp.getBool(spSettingNewIcons) != null) {
+        if (!data['isTeacher'] && sp.getBool(spSettingNewIcons) == null) {
             setEnabledNewAppsIcon(true);
             Constants.eventBus.fire(AppCenterSettingsUpdateEvent());
         }
@@ -317,22 +317,26 @@ class DataUtils {
 
     // 获取默认启动页index
     static int getHomeSplashIndex() {
-        int index = sp?.getInt(spHomeSplashIndex) ?? 0;
+        int index = sp?.getInt(spHomeSplashIndex) ?? Configs.homeSplashIndex;
         return index;
     }
     // 获取默认各页启动index
     static List getHomeStartUpIndex() {
-        List index = jsonDecode(sp?.getString(spHomeStartUpIndex) ?? "[0, 0, 0]");
+        List index = jsonDecode(
+            sp?.getString(spHomeStartUpIndex)
+                ??
+            "${Configs.homeStartUpIndex}"
+        );
         return index;
     }
     // 获取字体缩放设置
     static double getFontScale() {
-        double scale = sp?.getDouble(spSettingFontScale) ?? 1.0;
+        double scale = sp?.getDouble(spSettingFontScale) ?? Configs.fontScale;
         return scale;
     }
     // 获取新图标是否开启
     static bool getEnabledNewAppsIcon() {
-        bool enabled = sp?.getBool(spSettingNewIcons) ?? false;
+        bool enabled = sp?.getBool(spSettingNewIcons) ?? Configs.newAppCenterIcon;
         return enabled;
     }
 
@@ -371,8 +375,8 @@ class DataUtils {
     }
 
     static List<Cookie> buildPHPSESSIDCookies(sid) => [
-        Cookie("PHPSESSID", sid),
-        Cookie("OAPSID", sid),
+        if (sid != null) Cookie("PHPSESSID", sid),
+        if (sid != null) Cookie("OAPSID", sid),
     ];
 
 }

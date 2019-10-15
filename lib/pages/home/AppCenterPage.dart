@@ -369,7 +369,10 @@ class AppCenterPageState extends State<AppCenterPage>
                 ],
             ),
             body: ExtendedTabBarView(
-                physics: const NeverScrollableScrollPhysics(),
+                physics: tabs().contains("成绩")
+                        ? const ScrollPhysics()
+                        : const NeverScrollableScrollPhysics()
+                ,
                 controller: _tabController,
                 children: <Widget>[
                     UserAPI.currentUser.isTeacher != null ?

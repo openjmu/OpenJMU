@@ -49,20 +49,27 @@ class _TestSocketPageState extends State<TestSocketPage> {
                 "receive: $event\n"
                 "without header: ${event.sublist(28)}\n"
                 "status: ${MessageUtils.getPackageUint(event.sublist(4, 6), 16)}\n"
+                "command: 0x${MessageUtils.getPackageUint(event.sublist(18, 20), 16).toRadixString(16)}\n"
                 "sequence: ${MessageUtils.getPackageUint(event.sublist(20, 24), 32)}\n"
                 "length: ${MessageUtils.getPackageUint(event.sublist(24, 28), 32)}\n"
         );
     }
 
-    void addPackage(String command, [List<int> content]) {
+    void addPackage(String command, [MessageRequest content]) {
         debugPrint("\n$command: ${MessageUtils.package(
             Messages.messageCommands[command],
-            Messages.messagePacks[command] != null ? Messages.messagePacks[command]() : content,
+            Messages.messagePacks[command] != null
+                    ? Messages.messagePacks[command]()
+                    : content?.requestBody() ?? null
+            ,
             false,
         )}");
         _socket.add(MessageUtils.package(
             Messages.messageCommands[command],
-            Messages.messagePacks[command] != null ? Messages.messagePacks[command]() : content,
+            Messages.messagePacks[command] != null
+                    ? Messages.messagePacks[command]()
+                    : content?.requestBody() ?? null
+            ,
         ));
     }
 
@@ -107,7 +114,7 @@ class _TestSocketPageState extends State<TestSocketPage> {
                                         type: "MSG_A2A",
                                         uid: 164466,
                                         message: "Hello Message from OpenJMU:  ${DateTime.now()}",
-                                    ).requestBody(),
+                                    ),
                                 );
                             },
                         ),
