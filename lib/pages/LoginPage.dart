@@ -203,7 +203,11 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             ),
             style: TextStyle(
                 color: Theme.of(context).textTheme.title.color,
+            ),
+            strutStyle: StrutStyle(
                 fontSize: Constants.suSetSp(18.0),
+                height: Constants.suSetSp(1.7),
+                forceStrutHeight: true,
             ),
             cursorColor: ThemeUtils.defaultColor,
             onSaved: (String value) => _username = value,
@@ -212,6 +216,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 return null;
             },
             keyboardType: TextInputType.number,
+            enabled: !_login,
         );
     }
 
@@ -231,7 +236,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         color: ThemeUtils.defaultColor,
                     ),
                 ),
-                contentPadding: EdgeInsets.all(Constants.suSetSp(10.0)),
+                contentPadding: EdgeInsets.all(Constants.suSetSp(12.0)),
                 prefixIcon: Icon(
                     Icons.lock,
                     color: Theme.of(context).iconTheme.color,
@@ -262,9 +267,14 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             ),
             style: TextStyle(
                 color: Theme.of(context).textTheme.title.color,
-                fontSize: Constants.suSetSp(20.0),
+            ),
+            strutStyle: StrutStyle(
+                fontSize: Constants.suSetSp(18.0),
+                height: Constants.suSetSp(1.7),
+                forceStrutHeight: true,
             ),
             cursorColor: ThemeUtils.defaultColor,
+            enabled: !_login,
         );
     }
 
@@ -342,12 +352,12 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 RoundedCheckbox(
                     value: _agreement,
                     inactiveColor: Theme.of(context).iconTheme.color,
-                    onChanged: (value) {
+                    onChanged: !_login ? (value) {
                         setState(() {
                             _agreement = value;
                         });
                         validateForm();
-                    },
+                    } : null,
                     materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
                 RichText(

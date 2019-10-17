@@ -243,6 +243,18 @@ class _PostCardState extends State<PostCard> {
                     fit: BoxFit.cover,
                     cache: true,
                     enableMemoryCache: false,
+                    loadStateChanged: (ExtendedImageState state) {
+                        Widget loader;
+                        switch (state.extendedImageLoadState) {
+                            case LoadState.loading:
+                                loader = Constants.progressIndicator();
+                                break;
+                            case LoadState.completed:
+                            case LoadState.failed:
+                                break;
+                        }
+                        return loader;
+                    },
                 );
                 if (data.length > 1) {
                     _exImage = Container(

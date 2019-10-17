@@ -147,7 +147,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             initialScrollOffset: DateAPI.currentWeek != null ? math.max(
                 0,
                 (DateAPI.currentWeek - 0.5) * Constants.suSetSp(weekSize) - Screen.width / 2,
-            ) : null,
+            ) : 0.0,
         );
     }
 
@@ -388,8 +388,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     }
 
     Widget courseLineGrid(context) {
-        final double totalHeight =
-                Screen.height - Screen.topSafeHeight - kToolbarHeight - Constants.suSetSp(indicatorHeight);
+        final double totalHeight = Screen.height
+                - Screen.topSafeHeight - kToolbarHeight
+                - Constants.suSetSp(indicatorHeight)
+        ;
 
         bool hasEleven = false;
         int _maxCoursesPerDay = 8;

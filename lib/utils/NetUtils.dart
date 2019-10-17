@@ -19,7 +19,7 @@ class NetUtils {
     static final CookieManager tokenCookieManager = CookieManager(tokenCookieJar);
 
     static void updateTicket() async {
-        dio.lock();  /// Lock dio while requesting new ticket.
+        dio..lock()..clear();  /// Lock and clear dio while requesting new ticket.
 
         if (await DataUtils.getTicket(update: true)) {
             debugPrint("Ticket updated success with new ticket: ${UserAPI.currentUser.sid}");
