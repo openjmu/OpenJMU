@@ -310,6 +310,8 @@ class AppCenterPageState extends State<AppCenterPage>
                             if (
                                 coursePageKey.currentState != null
                                     &&
+                                coursePageKey.currentState.firstLoaded
+                                    &&
                                 coursePageKey.currentState.hasCourse
                             ) AnimatedCrossFade(
                                 firstChild: Icon(Icons.keyboard_arrow_down),

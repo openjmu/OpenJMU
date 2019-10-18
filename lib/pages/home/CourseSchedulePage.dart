@@ -34,7 +34,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     final double weekSize = 100.0;
     ScrollController weekScrollController;
 
-    bool _firstLoaded = false;
+    bool firstLoaded = false;
     bool hasCourse = true;
     bool showWeek = false;
     double monthWidth = 40.0;
@@ -51,7 +51,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
     @override
     void initState() {
-        if (!_firstLoaded) initSchedule();
+        if (!firstLoaded) initSchedule();
 
         Constants.eventBus
             ..on<CourseScheduleRefreshEvent>().listen((event) {
@@ -62,11 +62,14 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             })
             ..on<CurrentWeekUpdatedEvent>().listen((event) {
                 if (currentWeek == null) {
-                    if (now != null) _firstLoaded = true;
+                    if (now != null) firstLoaded = true;
                     currentWeek = DateAPI.currentWeek;
                     updateScrollController();
                     if (mounted) setState(() {});
                     if (weekScrollController.hasClients) scrollToWeek(currentWeek);
+                    if (widget.appCenterPageState.mounted) {
+                        widget.appCenterPageState.setState(() {});
+                    }
                 }
             })
         ;
@@ -92,8 +95,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         ]).then((responses) {
             currentWeek = DateAPI.currentWeek;
             now = DateTime.now();
-            if (!_firstLoaded) {
-                if (currentWeek != null) _firstLoaded = true;
+            if (!firstLoaded) {
+                if (currentWeek != null) firstLoaded = true;
                 if (widget.appCenterPageState.mounted) {
                     widget.appCenterPageState.setState(() {});
                 }
@@ -477,15 +480,15 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                 color: Theme.of(context).primaryColor,
                 child: AnimatedCrossFade(
                     duration: const Duration(milliseconds: 300),
-                    crossFadeState: !_firstLoaded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                    crossFadeState: !firstLoaded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                     firstChild: Center(child: Constants.progressIndicator()),
                     secondChild: Column(
                         children: <Widget>[
                             if (remark != null) remarkWidget,
                             weekSelection(context),
-                            if (_firstLoaded && hasCourse) weekDayIndicator(context),
-                            if (_firstLoaded && hasCourse) courseLineGrid(context),
-                            if (_firstLoaded && !hasCourse) emptyTips,
+                            if (firstLoaded && hasCourse) weekDayIndicator(context),
+                            if (firstLoaded && hasCourse) courseLineGrid(context),
+                            if (firstLoaded && !hasCourse) emptyTips,
                         ],
                     ),
                 ),

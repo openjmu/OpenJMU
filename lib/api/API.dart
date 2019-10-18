@@ -5,12 +5,8 @@ import 'package:OpenJMU/utils/SocketUtils.dart';
 
 
 class API {
-    static final String homePage = "https://openjmu.xyz";
-    /// github channel.
-//    static final String firstDayOfTerm = "https://raw.githubusercontent.com/openjmu/OpenJMU/master/release/first-day-of-term";
-//    static final String checkUpdate = "https://raw.githubusercontent.com/openjmu/OpenJMU/master/release/latest-version";
-//    static final String latestAndroid = "https://raw.githubusercontent.com/openjmu/OpenJMU/master/release/openjmu-latest.apk";
-    /// custom channel.
+    static final String homePage = "https://openjmu.jmu.edu.cn";
+
     static final String firstDayOfTerm = "https://project.alexv525.com/openjmu/first-day-of-term";
     static final String checkUpdate = "https://project.alexv525.com/openjmu/latest-version";
     static final String latestAndroid = "https://project.alexv525.com/openjmu/openjmu-latest.apk";

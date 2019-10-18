@@ -41,7 +41,7 @@ class _TestSocketPageState extends State<TestSocketPage> {
             debugPrint("Connected.");
             socket.listen(onReceive, onDone: () {debugPrint("Pipe close.");});
 
-        }).catchError((e) {debugPrint(e);});
+        }).catchError((e) {debugPrint(e.toString());});
     }
 
     void onReceive(List<int> event) async {

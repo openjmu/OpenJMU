@@ -86,7 +86,7 @@ class OpenJMUAppState extends State<OpenJMUApp> {
         initSettings();
         NetUtils.initConfig();
         initQuickActions();
-        debugPrint("Android: ${Platform.isAndroid} | iOS: ${Platform.isIOS}");
+        debugPrint("Current platform is: ${Platform.operatingSystem}");
 
         super.initState();
     }
@@ -144,14 +144,14 @@ class OpenJMUAppState extends State<OpenJMUApp> {
                                 ? ThemeUtils.darkTheme()
                                 : ThemeUtils.lightTheme()
                         ).copyWith(
-                                textTheme: (ThemeUtils.isDark
-                                        ? Theme.of(context).typography.white
-                                        : Theme.of(context).typography.black
-                                ).copyWith(
-                                    subhead: TextStyle(
-                                        textBaseline: TextBaseline.alphabetic,
-                                    ),
-                                )
+                            textTheme: (ThemeUtils.isDark
+                                    ? Theme.of(context).typography.white
+                                    : Theme.of(context).typography.black
+                            ).copyWith(
+                                subhead: TextStyle(
+                                    textBaseline: TextBaseline.alphabetic,
+                                ),
+                            ),
                         ),
                         home: SplashPage(initIndex: initIndex),
                         localizationsDelegates: [
