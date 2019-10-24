@@ -15,8 +15,10 @@ import 'package:OpenJMU/pages/settings/ChangeThemePage.dart';
 import 'package:OpenJMU/pages/settings/FontScalePage.dart';
 import 'package:OpenJMU/pages/settings/SettingsPage.dart';
 import 'package:OpenJMU/pages/settings/SwitchStartUpPage.dart';
+
+/// TODO: Remove the below file if it doesn't exist.
 import 'package:OpenJMU/pages/test/TestDashBoardPage.dart';
-//import 'package:OpenJMU/pages/NotificationTest.dart';
+
 
 class RouteUtils {
     static Map<String, WidgetBuilder> routes = {
@@ -33,11 +35,12 @@ class RouteUtils {
         "/settings": (BuildContext context) => SettingsPage(),
         "/switchStartUp": (BuildContext context) => SwitchStartUpPage(),
         "/fontScale": (BuildContext context) => FontScalePage(),
-//        "/notificationTest": (BuildContext context) => NotificationTestPage(),
-        "/test": (BuildContext context) => TestDashBoardPage(),
         "/about": (BuildContext context) => AboutPage(),
 
         "/backpack": (BuildContext context, {arguments}) => BackpackPage(),
         "/userqrcode": (BuildContext context, {arguments}) => UserQrCodePage(),
+
+        /// TODO: Remove the below file if it doesn't exist.
+        "/test": (BuildContext context) => TestDashBoardPage(),
     };
 }
