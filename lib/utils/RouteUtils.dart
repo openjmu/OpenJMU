@@ -17,30 +17,29 @@ import 'package:OpenJMU/pages/settings/SettingsPage.dart';
 import 'package:OpenJMU/pages/settings/SwitchStartUpPage.dart';
 
 /// TODO: Remove the below file if it doesn't exist.
-import 'package:OpenJMU/pages/test/TestDashBoardPage.dart';
-
+//import 'package:OpenJMU/pages/test/TestDashBoardPage.dart';
 
 class RouteUtils {
-    static Map<String, WidgetBuilder> routes = {
-        "/home": (BuildContext context) => MainPage(),
-        "/splash": (BuildContext context) => SplashPage(),
-        "/login": (BuildContext context) => LoginPage(),
+  static Map<String, WidgetBuilder> routes = {
+    "/home": (BuildContext context) => MainPage(),
+    "/splash": (BuildContext context) => SplashPage(),
+    "/login": (BuildContext context) => LoginPage(),
 
-        "/search": (BuildContext context) => SearchPage(),
-        "/scanqrcode": (BuildContext context, {arguments}) => ScanQrCodePage(),
-        "/publishPost": (BuildContext context) => PublishPostPage(),
-        "/notification": (BuildContext context, {arguments}) => NotificationPage(),
+    "/search": (BuildContext context) => SearchPage(),
+    "/scanqrcode": (BuildContext context, {arguments}) => ScanQrCodePage(),
+    "/publishPost": (BuildContext context) => PublishPostPage(),
+    "/notification": (BuildContext context, {arguments}) => NotificationPage(),
 
-        "/changeTheme": (BuildContext context) => ChangeThemePage(),
-        "/settings": (BuildContext context) => SettingsPage(),
-        "/switchStartUp": (BuildContext context) => SwitchStartUpPage(),
-        "/fontScale": (BuildContext context) => FontScalePage(),
-        "/about": (BuildContext context) => AboutPage(),
+    "/changeTheme": (BuildContext context) => ChangeThemePage(),
+    "/settings": (BuildContext context) => SettingsPage(),
+    "/switchStartUp": (BuildContext context) => SwitchStartUpPage(),
+    "/fontScale": (BuildContext context) => FontScalePage(),
+    "/about": (BuildContext context) => AboutPage(),
 
-        "/backpack": (BuildContext context, {arguments}) => BackpackPage(),
-        "/userqrcode": (BuildContext context, {arguments}) => UserQrCodePage(),
+    "/backpack": (BuildContext context, {arguments}) => BackpackPage(),
+    "/userqrcode": (BuildContext context, {arguments}) => UserQrCodePage(),
 
-        /// TODO: Remove the below file if it doesn't exist.
-        "/test": (BuildContext context) => TestDashBoardPage(),
-    };
+    /// TODO: Remove the below file if it doesn't exist.
+//        "/test": (BuildContext context) => TestDashBoardPage(),
+  };
 }

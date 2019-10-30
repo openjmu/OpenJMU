@@ -8,34 +8,34 @@ import 'package:OpenJMU/api/NewsAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
 
-
 class NewsDetailPage extends StatefulWidget {
-    final News news;
+  final News news;
 
-    const NewsDetailPage({Key key, this.news}) : super(key: key);
+  const NewsDetailPage({Key key, this.news}) : super(key: key);
 
-    @override
-    State<StatefulWidget> createState() => _NewsDetailPageState();
+  @override
+  State<StatefulWidget> createState() => _NewsDetailPageState();
 }
 
 class _NewsDetailPageState extends State<NewsDetailPage> {
-    String pageContent;
-    bool _contentLoaded = false;
+  String pageContent;
+  bool _contentLoaded = false;
 
-    @override
-    void initState() {
-        super.initState();
-        getNewsContent();
-    }
+  @override
+  void initState() {
+    super.initState();
+    getNewsContent();
+  }
 
-    @override
-    void dispose() {
-        super.dispose();
-    }
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
-    void getNewsContent() async {
-        Map<String, dynamic> data = (await NewsAPI.getNewsContent(newsId: widget.news.id)).data;
-        pageContent = """<!DOCTYPE html>
+  void getNewsContent() async {
+    Map<String, dynamic> data =
+        (await NewsAPI.getNewsContent(newsId: widget.news.id)).data;
+    pageContent = """<!DOCTYPE html>
                 <html>
                     <head>
                         <meta charset="UTF-8" />
@@ -45,36 +45,38 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                     <body>${data['content']}</body>
                 </html>
             """;
-        pageContent = Uri.dataFromString(
-            pageContent,
-            mimeType: 'text/html',
-            encoding: Encoding.getByName('utf-8'),
-        ).toString();
-        _contentLoaded = true;
-        if (mounted) setState(() {});
-    }
+    pageContent = Uri.dataFromString(
+      pageContent,
+      mimeType: 'text/html',
+      encoding: Encoding.getByName('utf-8'),
+    ).toString();
+    _contentLoaded = true;
+    if (mounted) setState(() {});
+  }
 
-    @override
-    Widget build(BuildContext context) {
-        return Scaffold(
-            appBar: AppBar(
-                title: Text(
-                    widget.news.title,
-                    style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: Constants.suSetSp(21.0),
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                ),
-                centerTitle: true,
-            ),
-            body: (pageContent != null && _contentLoaded) ? WebviewScaffold(
-                url: pageContent,
-                allowFileURLs: true,
-                enableAppScheme: true,
-                withJavascript: true,
-                withLocalStorage: true,
-                resizeToAvoidBottomInset: true,
-            ) : Center(child: Constants.progressIndicator()),
-        );
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          widget.news.title,
+          style: Theme.of(context).textTheme.title.copyWith(
+                fontSize: Constants.suSetSp(21.0),
+              ),
+          overflow: TextOverflow.ellipsis,
+        ),
+        centerTitle: true,
+      ),
+      body: (pageContent != null && _contentLoaded)
+          ? WebviewScaffold(
+              url: pageContent,
+              allowFileURLs: true,
+              enableAppScheme: true,
+              withJavascript: true,
+              withLocalStorage: true,
+              resizeToAvoidBottomInset: true,
+            )
+          : Center(child: Constants.progressIndicator()),
+    );
+  }
 }

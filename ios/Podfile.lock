@@ -80,7 +80,7 @@ DEPENDENCIES:
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - BSGridCollectionViewLayout
     - BSImagePicker
     - BSImageView
@@ -164,4 +164,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: b195afb696f193b3298da970dc2f6eec29dbdb8f
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.8.4
