@@ -197,7 +197,9 @@ class PublishPostPageState extends State<PublishPostPage> {
             ),
             border: InputBorder.none,
             labelStyle: TextStyle(
-                color: Colors.white, fontSize: Constants.suSetSp(18.0)),
+              color: Colors.white,
+              fontSize: Constants.suSetSp(18.0),
+            ),
             counterStyle: TextStyle(color: Colors.transparent),
           ),
           style: Theme.of(context).textTheme.body1.copyWith(
@@ -229,51 +231,44 @@ class PublishPostPageState extends State<PublishPostPage> {
   Widget customGridView(context) {
     int size = (MediaQuery.of(context).size.width / gridCount).floor() -
         (18 - gridCount);
-    return Positioned(
-      bottom: (emoticonPadActive ? _keyboardHeight : 0.0) +
-              MediaQuery.of(context).padding.bottom ??
-          0.0,
-      left: 0.0,
-      right: 0.0,
-      child: Container(
-        margin: EdgeInsets.only(bottom: Constants.suSetSp(80)),
-        height: MediaQuery.of(context).size.width /
-            gridCount *
-            (imagesBin.length / gridCount).ceil(),
-        child: DragAbleGridView(
-          childAspectRatio: 1,
-          crossAxisCount: gridCount,
-          itemBins: imagesBin,
-          editSwitchController: _editSwitchController,
-          isOpenDragAble: true,
-          animationDuration: 300,
-          longPressDuration: 500,
-          deleteIcon: Container(
-            padding: EdgeInsets.all(Constants.suSetSp(3.0)),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.redAccent,
-            ),
-            child: Icon(
-              Platform.isAndroid
-                  ? Icons.delete
-                  : Ionicons.getIconData("ios-trash"),
-              color: Colors.white,
-              size: Constants.suSetSp(10.0 + 16 * (1 / gridCount)),
-            ),
+    return Container(
+      margin: EdgeInsets.only(bottom: Constants.suSetSp(80)),
+      height: MediaQuery.of(context).size.width /
+          gridCount *
+          (imagesBin.length / gridCount).ceil(),
+      child: DragAbleGridView(
+        childAspectRatio: 1,
+        crossAxisCount: gridCount,
+        itemBins: imagesBin,
+        editSwitchController: _editSwitchController,
+        isOpenDragAble: true,
+        animationDuration: 300,
+        longPressDuration: 500,
+        deleteIcon: Container(
+          padding: EdgeInsets.all(Constants.suSetSp(3.0)),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.redAccent,
           ),
-          child: (int position) {
-            return Container(
-              margin: EdgeInsets.all(Constants.suSetSp(4.0)),
-              padding: EdgeInsets.zero,
-              child: AssetThumb(
-                asset: imagesBin[position].data,
-                width: size,
-                height: size,
-              ),
-            );
-          },
+          child: Icon(
+            Platform.isAndroid
+                ? Icons.delete
+                : Ionicons.getIconData("ios-trash"),
+            color: Colors.white,
+            size: Constants.suSetSp(10.0 + 16 * (1 / gridCount)),
+          ),
         ),
+        child: (int position) {
+          return Container(
+            margin: EdgeInsets.all(Constants.suSetSp(4.0)),
+            padding: EdgeInsets.zero,
+            child: AssetThumb(
+              asset: imagesBin[position].data,
+              width: size,
+              height: size,
+            ),
+          );
+        },
       ),
     );
   }
@@ -587,14 +582,21 @@ class PublishPostPageState extends State<PublishPostPage> {
           ),
         ],
       ),
-      body: Stack(
-        children: <Widget>[
-          Column(children: <Widget>[textField(context)]),
-          customGridView(context),
-          _counter(context),
-          _toolbar(context),
-          emoticonPad(context),
-        ],
+      body: ScrollConfiguration(
+        behavior: NoGlowScrollBehavior(),
+        child: Stack(
+          children: <Widget>[
+            Column(
+              children: <Widget>[
+                textField(context),
+                customGridView(context),
+              ],
+            ),
+            _counter(context),
+            _toolbar(context),
+            emoticonPad(context),
+          ],
+        ),
       ),
     );
   }

@@ -40,6 +40,6 @@ class RouteUtils {
     "/userqrcode": (BuildContext context, {arguments}) => UserQrCodePage(),
 
     /// TODO: Remove the below file if it doesn't exist.
-//        "/test": (BuildContext context) => TestDashBoardPage(),
+//    "/test": (BuildContext context) => TestDashBoardPage(),
   };
 }

@@ -61,15 +61,11 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     MessagePageState.tabs,
   ];
 
-  BuildContext pageContext;
-
   List<Widget> pages;
   Notifications notifications = Constants.notifications;
   Timer notificationTimer;
 
   int _tabIndex = Configs.homeSplashIndex;
-  int userUid;
-  String userSid;
 
   @override
   bool get wantKeepAlive => true;
@@ -142,7 +138,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         "name": user.name.toString(),
         "workid": user.workId.toString(),
         "appversion": await OTAUtils.getCurrentVersion(),
-        "platform": Platform.isIOS ? "ios" : "android"
+        "platform": Platform.isIOS ? "ios" : "android",
       };
       NetUtils.post(API.pushUpload, data: data).then((response) {
         debugPrint("Push service info upload success.");
@@ -158,10 +154,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     DataUtils.getNotifications();
     notificationTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
       DataUtils.getNotifications();
-    });
-    setState(() {
-      this.userSid = UserAPI.currentUser.sid;
-      this.userUid = UserAPI.currentUser.uid;
     });
   }
 
@@ -187,27 +179,24 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
-    pageContext = context;
     return WillPopScope(
       onWillPop: doubleBackExit,
       child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: <Widget>[
-              if (Configs.announcementsEnabled)
-                AnnouncementWidget(
-                  context,
-                  color: ThemeUtils.currentThemeColor,
-                  gap: 24.0,
-                ),
-              Expanded(
-                child: IndexedStack(
-                  children: pages,
-                  index: _tabIndex,
-                ),
+        body: Column(
+          children: <Widget>[
+            if (Configs.announcementsEnabled)
+              AnnouncementWidget(
+                context,
+                color: ThemeUtils.currentThemeColor,
+                gap: 24.0,
               ),
-            ],
-          ),
+            Expanded(
+              child: IndexedStack(
+                children: pages,
+                index: _tabIndex,
+              ),
+            ),
+          ],
         ),
         bottomNavigationBar: FABBottomAppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -222,7 +211,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
               FABBottomAppBarItem(
                 iconPath: pagesIcon[i],
                 text: pagesTitle[i],
-              )
+              ),
           ],
         ),
         floatingActionButton: SizedBox(
@@ -247,7 +236,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         ),
         floatingActionButtonLocation:
             const CustomCenterDockedFloatingActionButtonLocation(
-                bottomBarHeight / 2),
+          bottomBarHeight / 2,
+        ),
       ),
     );
   }

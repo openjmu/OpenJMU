@@ -12,6 +12,7 @@ import 'package:OpenJMU/api/SignAPI.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/constants/Screens.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/utils/DataUtils.dart';
@@ -332,49 +333,52 @@ class MyInfoPageState extends State<MyInfoPage> {
         ),
       ),
     );
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () => UserPage.jump(context, UserAPI.currentUser.uid),
-      child: Container(
-        color: Theme.of(context).primaryColor,
-        padding: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(24.0),
-          vertical: Constants.suSetSp(16.0),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  avatar,
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: Constants.suSetSp(20.0)),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          name,
-                          Constants.emptyDivider(
-                            height: Constants.suSetSp(10.0),
-                          ),
-                          signature,
-                          Constants.emptyDivider(
-                            height: Constants.suSetSp(3.0),
-                          ),
-                        ],
+    return Container(
+      color: Theme.of(context).primaryColor,
+      padding: EdgeInsets.only(top: Screen.topSafeHeight),
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => UserPage.jump(context, UserAPI.currentUser.uid),
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: Constants.suSetSp(24.0),
+            vertical: Constants.suSetSp(16.0),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    avatar,
+                    Expanded(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: Constants.suSetSp(20.0)),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            name,
+                            Constants.emptyDivider(
+                              height: Constants.suSetSp(10.0),
+                            ),
+                            signature,
+                            Constants.emptyDivider(
+                              height: Constants.suSetSp(3.0),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  sign,
-                ],
+                    sign,
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -408,6 +412,7 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   Widget settingSectionListView(context, int sectionIndex) {
     return ListView.separated(
+      padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       separatorBuilder: (context, i) => Constants.separator(
@@ -516,12 +521,14 @@ class MyInfoPageState extends State<MyInfoPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
       body: ListView(
+        padding: EdgeInsets.zero,
         children: <Widget>[
           userInfo(),
           Constants.separator(context),
           currentDay(context, now),
           Constants.separator(context),
           ListView.separated(
+            padding: EdgeInsets.zero,
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             separatorBuilder: (context, index) => Constants.separator(context),

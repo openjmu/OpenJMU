@@ -72,8 +72,6 @@ class PostSquareListPageState extends State<PostSquareListPage>
 
   @override
   void initState() {
-    super.initState();
-
     _tabController = TabController(
       initialIndex: Configs.homeStartUpIndex[0],
       length: tabs.length,
@@ -97,6 +95,8 @@ class PostSquareListPageState extends State<PostSquareListPage>
       currentThemeColor = event.color;
       if (this.mounted) setState(() {});
     });
+
+    super.initState();
   }
 
   @override

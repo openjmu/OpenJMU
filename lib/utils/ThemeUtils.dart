@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 class ThemeUtils {
   static Color defaultColor = Color(0xFFE5322D);
 
-  static List<Color> supportColors = [
+  static final List<Color> supportColors = [
     defaultColor,
     Colors.red[900],
     Colors.red[500],
@@ -94,7 +94,7 @@ class ThemeUtils {
         highlightColor: Colors.transparent,
         splashFactory: const NoSplashFactory(),
         toggleableActiveColor: currentThemeColor,
-        textSelectionColor: currentThemeColor,
+        textSelectionColor: currentThemeColor.withAlpha(100),
         cursorColor: currentThemeColor,
         textSelectionHandleColor: currentThemeColor,
         indicatorColor: currentThemeColor,

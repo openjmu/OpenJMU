@@ -53,8 +53,7 @@ class PostList extends StatefulWidget {
   PostList newController(_controller) => PostList(_controller);
 }
 
-class _PostListState extends State<PostList>
-    with AutomaticKeepAliveClientMixin {
+class _PostListState extends State<PostList> {
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   final ScrollController _scrollController = ScrollController();
@@ -78,9 +77,6 @@ class _PostListState extends State<PostList>
 
   List<int> _idList = [];
   List<Post> _postList = [];
-
-  @override
-  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -164,7 +160,6 @@ class _PostListState extends State<PostList>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     if (!_showLoading) {
       if (_firstLoadComplete) {
         _itemList = ListView.separated(
@@ -594,7 +589,6 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                           }
                         } else if (index < _posts.length) {
                           return Row(
-                            mainAxisSize: MainAxisSize.max,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               getPostAvatar(context, _posts[index]),
