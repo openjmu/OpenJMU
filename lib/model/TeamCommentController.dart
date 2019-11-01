@@ -127,7 +127,7 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
 
       if (this.mounted) {
         setState(() {
-          Constants.eventBus
+          Instances.eventBus
               .fire(new CommentInPostUpdatedEvent(widget.post.id, total));
           _comments = comments;
           isLoading = false;

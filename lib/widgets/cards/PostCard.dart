@@ -71,7 +71,7 @@ class _PostCardState extends State<PostCard> {
         isDetail = false;
       });
     }
-    Constants.eventBus
+    Instances.eventBus
       ..on<ChangeBrightnessEvent>().listen((event) {
         if (mounted) {
           setState(() {
@@ -257,7 +257,7 @@ class _PostCardState extends State<PostCard> {
           imageUrl,
           fit: BoxFit.cover,
           cache: true,
-          enableMemoryCache: false,
+//          enableMemoryCache: false,
           loadStateChanged: (ExtendedImageState state) {
             Widget loader;
             switch (state.extendedImageLoadState) {

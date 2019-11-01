@@ -33,6 +33,19 @@ class PostDetailPage extends StatefulWidget {
 }
 
 class PostDetailPageState extends State<PostDetailPage> {
+  final forwardListInPostController = ForwardListInPostController();
+  final commentListInPostController = CommentListInPostController();
+
+  final textActiveStyle = TextStyle(
+    color: Colors.white,
+    fontSize: Constants.suSetSp(16.0),
+    fontWeight: FontWeight.bold,
+  );
+  final textInActiveStyle = TextStyle(
+    color: Colors.grey,
+    fontSize: Constants.suSetSp(16.0),
+  );
+
   Widget _forwardsList;
   Widget _commentsList;
   Widget _praisesList;
@@ -46,16 +59,6 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   TextStyle forwardsStyle, commentsStyle, praisesStyle;
 
-  TextStyle textActiveStyle = TextStyle(
-    color: Colors.white,
-    fontSize: Constants.suSetSp(16.0),
-    fontWeight: FontWeight.bold,
-  );
-  TextStyle textInActiveStyle = TextStyle(
-    color: Colors.grey,
-    fontSize: Constants.suSetSp(16.0),
-  );
-
   double iconSize = 20.0;
   double actionFontSize = 17.0;
 
@@ -64,10 +67,6 @@ class PostDetailPageState extends State<PostDetailPage> {
       praisesColor;
   Color activeColor = ThemeUtils.currentThemeColor;
 
-  ForwardListInPostController forwardListInPostController =
-      new ForwardListInPostController();
-  CommentListInPostController commentListInPostController =
-      new CommentListInPostController();
 
   @override
   void initState() {
@@ -84,7 +83,7 @@ class PostDetailPageState extends State<PostDetailPage> {
     _post = PostCard(widget.post,
         index: widget.index, fromPage: widget.fromPage, isDetail: true);
 
-    Constants.eventBus
+    Instances.eventBus
       ..on<PostDeletedEvent>().listen((event) {
         if (this.mounted && event.postId == widget.post.id) {
           Future.delayed(Duration(milliseconds: 2200), () {
@@ -137,7 +136,7 @@ class PostDetailPageState extends State<PostDetailPage> {
             event.postId == widget.post.id &&
             this.forwards != null) {
           if (event.count < this.forwards) {
-            Constants.eventBus
+            Instances.eventBus
                 .fire(new PostForwardDeletedEvent(widget.post.id, event.count));
           }
           setState(() {
@@ -377,7 +376,7 @@ class PostDetailPageState extends State<PostDetailPage> {
     completer.complete(!isLiked);
 
     PraiseAPI.requestPraise(id, !isLiked).then((response) {
-      Constants.eventBus.fire(PraiseInPostUpdatedEvent(
+      Instances.eventBus.fire(PraiseInPostUpdatedEvent(
         id: widget.post.id,
         count: praises,
         type: "square",

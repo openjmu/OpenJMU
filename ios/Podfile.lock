@@ -33,14 +33,14 @@ PODS:
     - Flutter
   - image_picker (0.0.1):
     - Flutter
-  - multi_image_picker (4.5.8):
+  - multi_image_picker (4.5.9):
     - BSImagePicker (~> 2.10.3)
     - Flutter
   - package_info (0.0.1):
     - Flutter
   - path_provider (0.0.1):
     - Flutter
-  - permission_handler (3.2.2):
+  - permission_handler (3.3.0):
     - Flutter
   - quick_actions (0.0.1):
     - Flutter
@@ -137,8 +137,8 @@ SPEC CHECKSUMS:
   BSGridCollectionViewLayout: 333dcb457a5a3bdd9212607ab5756553dcfe06cb
   BSImagePicker: 07404254f2fcdaf5a2eb403c0f8c337267ce8738
   BSImageView: a149459433a2687157d034c78e059d30ac7f2544
-  connectivity: c72716e202a1225ec4810740d5cb56b8ae3bf4cc
-  device_info: 3ebad48f726348f69abd802f3334a8d1ed795fbd
+  connectivity: 6e94255659cc86dcbef1d452ad3e0491bb1b3e75
+  device_info: cbf09d2ec12aa7110e0b09fabe54b5bd6c8efe74
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_downloader: 058b9c41564a90500f67f3e432e3524613a7fd83
   flutter_inappbrowser: 0a086e210a3bd4058d7e5623eb82b90dc147e7ab
@@ -150,17 +150,17 @@ SPEC CHECKSUMS:
   image_crop: e0a67085d3ebf3cf46ca46d61c53a082507b0bc3
   image_downloader: 0cce746db85ab8e068b7bcf8acacbdf71bca185e
   image_gallery_saver: 73b3cd8ad9c950c739878af9c311744d1bf5405d
-  image_picker: 16e5fec1fbc87fd3b297c53e4048521eaf17cd06
-  multi_image_picker: b1f4d88e59966c2083848c605dbe36a5d05a3fb2
-  package_info: 78cabb3c322943c55d39676f4a5bfc748c01d055
-  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
-  permission_handler: d59f41439f5bc6c4d1005f3355e98f05ddc68ece
+  image_picker: e3eacd46b94694dde7cf2705955cece853aa1a8f
+  multi_image_picker: 68d86c3e3616a64096cb5ef46de9a8195930a3e4
+  package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
+  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
+  permission_handler: 67637977b227d62d46bfbf524f335f8568de5a73
   quick_actions: 07414f1e5cb71fc4d32a0670b62c460e619366b2
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  shared_preferences: 1feebfa37bb57264736e16865e7ffae7fc99b523
+  shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
   sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
-  url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
-  webview_flutter: 1aa7604e6cdb451a9b7ed2c37d5454c0b440246b
+  url_launcher: a1c0cc845906122c4784c542523d8cacbded5626
+  webview_flutter: db3aba222b23e4dc432e0c5882834123dc50ff9f
 
 PODFILE CHECKSUM: b195afb696f193b3298da970dc2f6eec29dbdb8f
 

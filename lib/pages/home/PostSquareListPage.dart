@@ -91,7 +91,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
       pageLoad[_tabController.index]();
     });
 
-    Constants.eventBus.on<ChangeThemeEvent>().listen((event) {
+    Instances.eventBus.on<ChangeThemeEvent>().listen((event) {
       currentThemeColor = event.color;
       if (this.mounted) setState(() {});
     });

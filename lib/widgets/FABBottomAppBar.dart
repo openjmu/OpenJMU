@@ -58,7 +58,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
   void initState() {
     super.initState();
     if (widget.initIndex != null) _selectedIndex = widget.initIndex;
-    Constants.eventBus
+    Instances.eventBus
       ..on<ActionsEvent>().listen((event) {
         if (event.type == "action_home") {
           _selectedIndex = 0;
@@ -88,7 +88,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
 
   void _updateIndex(int index) {
     if (_selectedIndex == 0 && index == 0) {
-      Constants.eventBus.fire(new ScrollToTopEvent(
+      Instances.eventBus.fire(new ScrollToTopEvent(
           tabIndex: index, type: widget.items[index].text));
     }
     widget.onTabSelected(index);

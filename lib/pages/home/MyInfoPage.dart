@@ -98,7 +98,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         getCurrentWeek();
         updateHello();
       });
-    Constants.eventBus
+    Instances.eventBus
       ..on<ChangeThemeEvent>().listen((event) {
         themeColor = event.color;
         if (mounted) setState(() {});
@@ -139,7 +139,7 @@ class MyInfoPageState extends State<MyInfoPage> {
       currentWeek = null;
     }
     if (mounted) setState(() {});
-    Constants.eventBus.fire(CurrentWeekUpdatedEvent());
+    Instances.eventBus.fire(CurrentWeekUpdatedEvent());
   }
 
   void updateHello() {
@@ -184,7 +184,7 @@ class MyInfoPageState extends State<MyInfoPage> {
   static void setDarkMode(isDark) {
     ThemeUtils.isDark = isDark;
     DataUtils.setBrightnessDark(isDark);
-    Constants.eventBus.fire(ChangeBrightnessEvent(isDark));
+    Instances.eventBus.fire(ChangeBrightnessEvent(isDark));
   }
 
   void showLogoutDialog(BuildContext context) {

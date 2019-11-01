@@ -92,7 +92,7 @@ class CommentCard extends StatelessWidget {
   }
 
   Widget getCommentContent(context, comment) {
-    String content = comment.content;
+    String content = comment.query;
     return Row(
       children: <Widget>[
         Expanded(

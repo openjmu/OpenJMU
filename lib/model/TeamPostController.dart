@@ -74,7 +74,7 @@ class _TeamPostListState extends State<TeamPostList>
   void initState() {
     super.initState();
     widget._teamPostController._postListState = this;
-    Constants.eventBus
+    Instances.eventBus
       ..on<PostChangeEvent>().listen((event) {
         if (event.remove) {
           if (mounted) {

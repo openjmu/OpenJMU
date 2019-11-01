@@ -45,7 +45,7 @@ class SplashState extends State<SplashPage> {
         checkOnline(ConnectivityChangeEvent(result));
       }
     });
-    Constants.eventBus
+    Instances.eventBus
       ..on<ConnectivityChangeEvent>().listen((event) {
         if (this.mounted && isOnline != null) checkOnline(event);
       })
@@ -102,7 +102,7 @@ class SplashState extends State<SplashPage> {
         if (DataUtils.isLogin()) {
           DataUtils.recoverLoginInfo();
         } else {
-          Constants.eventBus.fire(TicketFailedEvent());
+          Instances.eventBus.fire(TicketFailedEvent());
         }
       } else {
         this.isOnline = false;

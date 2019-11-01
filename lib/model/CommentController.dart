@@ -94,7 +94,7 @@ class _CommentListState extends State<CommentList>
   void initState() {
     super.initState();
     widget._commentController._commentListState = this;
-    Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
+    Instances.eventBus.on<ScrollToTopEvent>().listen((event) {
       if (this.mounted &&
           ((event.tabIndex == 0 &&
                   widget._commentController.commentType == "square") ||
@@ -417,7 +417,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
 
       if (this.mounted) {
         setState(() {
-          Constants.eventBus
+          Instances.eventBus
               .fire(new CommentInPostUpdatedEvent(widget.post.id, total));
           _comments = comments;
           isLoading = false;

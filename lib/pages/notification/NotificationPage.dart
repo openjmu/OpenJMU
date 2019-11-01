@@ -42,7 +42,7 @@ class NotificationPageState extends State<NotificationPage>
   @override
   void initState() {
     super.initState();
-    currentNotifications = Constants.notifications;
+    currentNotifications = Instances.notifications;
     _tabController = TabController(length: 3, vsync: this);
     _tabController.animation.addListener(() {
       if (_tabController.indexIsChanging) {
@@ -56,7 +56,7 @@ class NotificationPageState extends State<NotificationPage>
     commentByMention();
     commentByReply();
     praiseList();
-    Constants.eventBus.on<NotificationsChangeEvent>().listen((event) {
+    Instances.eventBus.on<NotificationsChangeEvent>().listen((event) {
       if (this.mounted) {
         setState(() {
           currentNotifications = event.notifications;

@@ -65,7 +65,7 @@ class _PraiseListState extends State<PraiseList>
   @override
   void initState() {
     super.initState();
-    Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
+    Instances.eventBus.on<ScrollToTopEvent>().listen((event) {
       if (this.mounted && event.type == "Praise") {
         _scrollController.animateTo(0,
             duration: Duration(milliseconds: 500), curve: Curves.ease);
@@ -313,7 +313,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
       });
       if (this.mounted) {
         setState(() {
-          Constants.eventBus.fire(PraiseInPostUpdatedEvent(
+          Instances.eventBus.fire(PraiseInPostUpdatedEvent(
             id: widget.post.id,
             count: total,
             type: "normal",
@@ -350,7 +350,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
       });
       if (this.mounted) {
         setState(() {
-          Constants.eventBus.fire(PraiseInPostUpdatedEvent(
+          Instances.eventBus.fire(PraiseInPostUpdatedEvent(
             id: widget.post.id,
             count: total,
             type: "normal",

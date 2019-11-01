@@ -51,7 +51,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   void initState() {
     if (!firstLoaded) initSchedule();
 
-    Constants.eventBus
+    Instances.eventBus
       ..on<CourseScheduleRefreshEvent>().listen((event) {
         if (this.mounted) {
           refreshIndicatorKey.currentState.show();
@@ -119,13 +119,14 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   Future getCourses() async {
     return CourseAPI.getCourse().then((response) {
       Map<String, dynamic> data = jsonDecode(response.data);
-      List _cs = data['courses'];
+      List _courseList = data['courses'];
+      List _customCourseList = data['othCase'];
       Map<int, Map<int, List<Course>>> _courses;
       _courses = resetCourse(_courses);
-      if (_cs.length == 0) {
+      if (_courseList.length == 0) {
         hasCourse = false;
       }
-      _cs.forEach((course) {
+      _courseList.forEach((course) {
         Course _c = Course.fromJson(course);
         addCourse(_c, _courses);
       });
@@ -574,54 +575,60 @@ class CourseWidget extends StatelessWidget {
         children: <Widget>[
           Expanded(
             flex: 2,
-            child: GestureDetector(
-              onTap: courseList.isNotEmpty
-                  ? () {
-                      showCoursesDetail(context);
-                    }
-                  : null,
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    margin: const EdgeInsets.all(1.5),
-                    padding: EdgeInsets.all(Constants.suSetSp(8.0)),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5.0),
-                      color: courseList.isNotEmpty
-                          ? CourseAPI.inCurrentWeek(course,
-                                  currentWeek: currentWeek)
-                              ? course.color.withAlpha(200)
-                              : Theme.of(context).dividerColor
-                          : null,
-                    ),
-                    child: SizedBox.expand(
-                      child: course != null
-                          ? RichText(
-                              text: TextSpan(
-                                children: <InlineSpan>[
-                                  if (!CourseAPI.inCurrentWeek(course,
-                                      currentWeek: currentWeek))
-                                    TextSpan(
-                                      text: "[非本周]\n",
-                                    ),
-                                  TextSpan(
-                                    text: course.name.substring(
-                                      0,
-                                      math.min(10, course.name.length),
-                                    ),
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  if (course.name.length > 10)
-                                    TextSpan(text: "..."),
-                                  if (course.location != null)
-                                    TextSpan(
-                                      text: "\n📍${course.location}",
-                                    ),
-                                ],
-                                style:
-                                    Theme.of(context).textTheme.body1.copyWith(
+            child: Stack(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(1.5),
+                  child: Material(
+                    type: MaterialType.transparency,
+                    child: InkWell(
+                      customBorder: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      onTap: () {
+                        if (courseList.isNotEmpty) showCoursesDetail(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(Constants.suSetSp(8.0)),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5.0),
+                          color: courseList.isNotEmpty
+                              ? CourseAPI.inCurrentWeek(course,
+                                      currentWeek: currentWeek)
+                                  ? course.color.withAlpha(200)
+                                  : Theme.of(context).dividerColor
+                              : null,
+                        ),
+                        child: SizedBox.expand(
+                          child: course != null
+                              ? RichText(
+                                  text: TextSpan(
+                                    children: <InlineSpan>[
+                                      if (!CourseAPI.inCurrentWeek(course,
+                                          currentWeek: currentWeek))
+                                        TextSpan(
+                                          text: "[非本周]\n",
+                                        ),
+                                      TextSpan(
+                                        text: course.name.substring(
+                                          0,
+                                          math.min(10, course.name.length),
+                                        ),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      if (course.name.length > 10)
+                                        TextSpan(text: "..."),
+                                      if (course.location != null)
+                                        TextSpan(
+                                          text: "\n📍${course.location}",
+                                        ),
+                                    ],
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .body1
+                                        .copyWith(
                                           color: !CourseAPI.inCurrentWeek(
                                             course,
                                             currentWeek: currentWeek,
@@ -630,15 +637,24 @@ class CourseWidget extends StatelessWidget {
                                               : Colors.black,
                                           fontSize: Constants.suSetSp(15.0),
                                         ),
-                              ),
-                              overflow: TextOverflow.fade,
-                            )
-                          : null,
+                                  ),
+                                  overflow: TextOverflow.fade,
+                                )
+                              : Icon(
+                                  Icons.add,
+                                  color: Theme.of(context)
+                                      .iconTheme
+                                      .color
+                                      .withOpacity(0.15).withRed(180)
+                                      .withBlue(180).withGreen(180),
+                                ),
+                        ),
+                      ),
                     ),
                   ),
-                  if (courseList.length > 1) courseCountIndicator(course),
-                ],
-              ),
+                ),
+                if (courseList.length > 1) courseCountIndicator(course),
+              ],
             ),
           ),
           if (!currentIsEleven && isEleven)

@@ -63,7 +63,7 @@ class _SettingsPageState extends State<SettingsPage> {
           onChanged: (bool value) {
             ThemeUtils.isDark = value;
             DataUtils.setBrightnessDark(value);
-            Constants.eventBus.fire(ChangeBrightnessEvent(value));
+            Instances.eventBus.fire(ChangeBrightnessEvent(value));
           },
         ),
         null,
@@ -73,7 +73,7 @@ class _SettingsPageState extends State<SettingsPage> {
           value: Configs.newAppCenterIcon,
           onChanged: (bool value) {
             DataUtils.setEnabledNewAppsIcon(value);
-            Constants.eventBus.fire(AppCenterSettingsUpdateEvent());
+            Instances.eventBus.fire(AppCenterSettingsUpdateEvent());
             if (mounted) setState(() {});
           },
         ),

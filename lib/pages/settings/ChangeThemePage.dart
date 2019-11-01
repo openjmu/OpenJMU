@@ -18,7 +18,7 @@ class ChangeThemePageState extends State<ChangeThemePage> {
   @override
   void initState() {
     selected = DataUtils.getColorThemeIndex();
-    Constants.eventBus
+    Instances.eventBus
       ..on<ChangeThemeEvent>().listen((event) {
         ThemeUtils.currentThemeColor = event.color;
         currentColor = event.color;
@@ -28,7 +28,7 @@ class ChangeThemePageState extends State<ChangeThemePage> {
   }
 
   void changeColorTheme(Color color) {
-    Constants.eventBus.fire(ChangeThemeEvent(color));
+    Instances.eventBus.fire(ChangeThemeEvent(color));
   }
 
   @override

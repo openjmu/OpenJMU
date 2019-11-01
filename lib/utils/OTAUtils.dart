@@ -46,7 +46,7 @@ class OTAUtils {
           "${_response['version']}+${_response['buildNumber']}");
       int remoteBuildNumber = int.parse(_response['buildNumber'].toString());
       if (currentBuild < remoteBuildNumber) {
-        Constants.eventBus
+        Instances.eventBus
             .fire(HasUpdateEvent(currentVersion, currentBuild, _response));
       } else {
         if (!(fromHome ?? false)) showShortToast("已更新为最新版本");

@@ -131,10 +131,10 @@ class DataUtils {
       bool isWizard = true;
       if (!UserAPI.currentUser.isTeacher) isWizard = await checkWizard();
       UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
-      Constants.eventBus.fire(TicketGotEvent(isWizard));
+      Instances.eventBus.fire(TicketGotEvent(isWizard));
     } catch (e) {
       debugPrint("Error in recover login info: $e");
-      Constants.eventBus.fire(TicketFailedEvent());
+      Instances.eventBus.fire(TicketFailedEvent());
     }
   }
 
@@ -172,7 +172,7 @@ class DataUtils {
     UserAPI.currentUser = UserInfo.fromJson(data);
     if (!data['isTeacher'] && sp.getBool(spSettingNewIcons) == null) {
       setEnabledNewAppsIcon(true);
-      Constants.eventBus.fire(AppCenterSettingsUpdateEvent());
+      Instances.eventBus.fire(AppCenterSettingsUpdateEvent());
     }
   }
 
@@ -248,7 +248,7 @@ class DataUtils {
         debugPrint("Error response.");
         debugPrint(e.response.data.toString());
       }
-      Constants.eventBus.fire(TicketFailedEvent());
+      Instances.eventBus.fire(TicketFailedEvent());
       return false;
     }
   }
@@ -270,8 +270,9 @@ class DataUtils {
     await setColorTheme(0);
     await setBrightnessDark(false);
     ThemeUtils.currentThemeColor = ThemeUtils.defaultColor;
-    Constants.eventBus.fire(ChangeBrightnessEvent(false));
-    Constants.eventBus.fire(ChangeThemeEvent(ThemeUtils.defaultColor));
+    Instances.eventBus
+      ..fire(ChangeBrightnessEvent(false))
+      ..fire(ChangeThemeEvent(ThemeUtils.defaultColor));
   }
 
   // 获取设置的主题色
@@ -312,8 +313,8 @@ class DataUtils {
         comment: comment,
         praise: praises,
       );
-      Constants.notifications = notifications;
-      Constants.eventBus.fire(NotificationsChangeEvent(notifications));
+      Instances.notifications = notifications;
+      Instances.eventBus.fire(NotificationsChangeEvent(notifications));
     }).catchError((e) {
       debugPrint(e.toString());
       return e;

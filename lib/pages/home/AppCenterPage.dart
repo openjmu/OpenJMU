@@ -54,7 +54,7 @@ class AppCenterPageState extends State<AppCenterPage>
       vsync: this,
     );
 
-    Constants.eventBus
+    Instances.eventBus
       ..on<ScrollToTopEvent>().listen((event) {
         if (mounted && event.tabIndex == 1) {
           _scrollController.animateTo(0,
@@ -68,10 +68,10 @@ class AppCenterPageState extends State<AppCenterPage>
       ..on<AppCenterRefreshEvent>().listen((event) {
         switch (tabs()[event.currentIndex]) {
           case "课程表":
-            Constants.eventBus.fire(CourseScheduleRefreshEvent());
+            Instances.eventBus.fire(CourseScheduleRefreshEvent());
             break;
           case "成绩":
-            Constants.eventBus.fire(ScoreRefreshEvent());
+            Instances.eventBus.fire(ScoreRefreshEvent());
             break;
           case "应用":
             _scrollController.jumpTo(0.0);
@@ -362,7 +362,7 @@ class AppCenterPageState extends State<AppCenterPage>
             child: IconButton(
               icon: Icon(Icons.refresh, size: Constants.suSetSp(24.0)),
               onPressed: () {
-                Constants.eventBus
+                Instances.eventBus
                     .fire(AppCenterRefreshEvent(_tabController.index));
               },
             ),

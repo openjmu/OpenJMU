@@ -76,7 +76,7 @@ class _UserPageState extends State<UserPage>
 
     _fetchUserInformation(widget.uid);
 
-    Constants.eventBus
+    Instances.eventBus
       ..on<SignatureUpdatedEvent>().listen((event) {
         Future.delayed(Duration(milliseconds: 2400), () {
           if (this.mounted)
@@ -618,7 +618,7 @@ class _UserPageState extends State<UserPage>
                             builder: (_) => ImageCropperPage(),
                           )).then((result) {
                         if (result)
-                          Constants.eventBus.fire(AvatarUpdatedEvent());
+                          Instances.eventBus.fire(AvatarUpdatedEvent());
                       });
                     },
                   ),

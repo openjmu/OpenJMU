@@ -158,7 +158,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
         ),
       );
     }
-    Constants.eventBus
+    Instances.eventBus
       ..on<ChangeBrightnessEvent>().listen((event) {
         Iterable<Match> matches = API.courseSchedule.allMatches(url);
         String result;

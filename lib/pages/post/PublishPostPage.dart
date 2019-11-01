@@ -70,7 +70,7 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   @override
   void initState() {
-    Constants.eventBus.on<AddEmoticonEvent>().listen((event) {
+    Instances.eventBus.on<AddEmoticonEvent>().listen((event) {
       if (mounted && event.route == "publish") {
         insertText(event.emoticon);
       }

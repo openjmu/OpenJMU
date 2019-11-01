@@ -26,7 +26,7 @@ class MessagePageState extends State<MessagePage>
   List<String> topItems = ["评论/留言", "粉丝"];
   List<String> topIcons = ["liuyan", "idols"];
 
-  Notifications notifications = Constants.notifications;
+  Notifications notifications = Instances.notifications;
   Color currentThemeColor = ThemeUtils.currentThemeColor;
   TabController _tabController;
 
@@ -39,7 +39,7 @@ class MessagePageState extends State<MessagePage>
       vsync: this,
     );
 
-    Constants.eventBus
+    Instances.eventBus
       ..on<NotificationsChangeEvent>().listen((event) {
         if (this.mounted)
           setState(() {

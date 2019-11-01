@@ -67,7 +67,7 @@ class CommentPositionedState extends State<CommentPositioned> {
           commentContent = _commentController.text;
         });
       });
-    Constants.eventBus.on<AddEmoticonEvent>().listen((event) {
+    Instances.eventBus.on<AddEmoticonEvent>().listen((event) {
       if (mounted && event.route == "comment") insertText(event.emoticon);
     });
   }
@@ -180,7 +180,7 @@ class CommentPositionedState extends State<CommentPositioned> {
           _commenting = false;
         });
         Navigator.of(context).pop();
-        Constants.eventBus.fire(new PostCommentedEvent(widget.post.id));
+        Instances.eventBus.fire(new PostCommentedEvent(widget.post.id));
       });
     }
   }

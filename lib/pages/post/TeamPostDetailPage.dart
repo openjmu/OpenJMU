@@ -281,7 +281,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     completer.complete(!isLiked);
 
     PraiseAPI.requestPraise(id, !isLiked).then((response) {
-      Constants.eventBus.fire(PraiseInPostUpdatedEvent(
+      Instances.eventBus.fire(PraiseInPostUpdatedEvent(
         id: widget.post.id,
         count: praises,
         type: "team",

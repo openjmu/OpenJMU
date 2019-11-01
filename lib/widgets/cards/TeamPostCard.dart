@@ -68,7 +68,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
         isDetail = false;
       });
     }
-    Constants.eventBus
+    Instances.eventBus
       ..on<ChangeBrightnessEvent>().listen((event) {
         if (mounted) {
           setState(() {
@@ -155,7 +155,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            getExtendedText(post.content),
+            getExtendedText(post.query),
             if (post.rootTopic != null) getRootPost(context, post.rootTopic),
           ],
         ),

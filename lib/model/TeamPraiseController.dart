@@ -61,7 +61,7 @@ class _TeamPraiseListState extends State<TeamPraiseList>
   @override
   void initState() {
     super.initState();
-    Constants.eventBus.on<ScrollToTopEvent>().listen((event) {
+    Instances.eventBus.on<ScrollToTopEvent>().listen((event) {
       if (this.mounted && event.type == "Praise") {
         _scrollController.animateTo(0,
             duration: Duration(milliseconds: 500), curve: Curves.ease);

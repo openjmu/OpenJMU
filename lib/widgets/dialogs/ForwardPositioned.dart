@@ -40,7 +40,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
   @override
   void initState() {
     super.initState();
-    Constants.eventBus.on<AddEmoticonEvent>().listen((event) {
+    Instances.eventBus.on<AddEmoticonEvent>().listen((event) {
       if (mounted && event.route == "forward") insertText(event.emoticon);
     });
   }
@@ -93,7 +93,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         _forwarding = false;
       });
       Navigator.of(context).pop();
-      Constants.eventBus
+      Instances.eventBus
           .fire(new PostForwardedEvent(widget.post.id, widget.post.forwards));
     });
   }

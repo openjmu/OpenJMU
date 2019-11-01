@@ -176,8 +176,8 @@ class EmotionPadState extends State<EmotionPad> {
               fit: BoxFit.fill,
             ),
             onPressed: () {
-              Constants.eventBus.fire(
-                  new AddEmoticonEvent(emoticonNames[index], widget.route));
+              Instances.eventBus
+                  .fire(AddEmoticonEvent(emoticonNames[index], widget.route));
             },
           ),
         ),

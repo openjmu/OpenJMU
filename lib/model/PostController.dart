@@ -80,9 +80,8 @@ class _PostListState extends State<PostList> {
 
   @override
   void initState() {
-    super.initState();
     widget._postController._postListState = this;
-    Constants.eventBus
+    Instances.eventBus
       ..on<ScrollToTopEvent>().listen((event) {
         if (this.mounted &&
             ((event.tabIndex == 0 &&
@@ -156,6 +155,7 @@ class _PostListState extends State<PostList> {
     );
 
     _refreshData();
+    super.initState();
   }
 
   @override
@@ -163,11 +163,15 @@ class _PostListState extends State<PostList> {
     if (!_showLoading) {
       if (_firstLoadComplete) {
         _itemList = ListView.separated(
+          controller: widget._postController.postType == "user"
+              ? null
+              : _scrollController,
           padding: EdgeInsets.zero,
           separatorBuilder: (context, index) => Container(
             color: Theme.of(context).canvasColor,
             height: Constants.suSetSp(8.0),
           ),
+          itemCount: _postList.length + 1,
           itemBuilder: (context, index) {
             if (index == _postList.length) {
               if (this._canLoadMore) {
@@ -184,8 +188,12 @@ class _PostListState extends State<PostList> {
                             ? CircularProgressIndicator(strokeWidth: 2.0)
                             : CupertinoActivityIndicator(),
                       ),
-                      Text("　正在加载",
-                          style: TextStyle(fontSize: Constants.suSetSp(14.0))),
+                      Text(
+                        "　正在加载",
+                        style: TextStyle(
+                          fontSize: Constants.suSetSp(14.0),
+                        ),
+                      ),
                     ],
                   ),
                 );
@@ -194,41 +202,39 @@ class _PostListState extends State<PostList> {
                   height: Constants.suSetSp(50.0),
                   color: Theme.of(context).canvasColor,
                   child: Center(
-                    child: Text(Constants.endLineTag,
-                        style: TextStyle(
-                          fontSize: Constants.suSetSp(14.0),
-                        )),
+                    child: Text(
+                      Constants.endLineTag,
+                      style: TextStyle(
+                        fontSize: Constants.suSetSp(14.0),
+                      ),
+                    ),
                   ),
                 );
               }
             } else if (index < _postList.length) {
-              return PostCard(_postList[index],
-                  fromPage: widget._postController.postType,
-                  index: index,
-                  isDetail: false);
+              return PostCard(
+                _postList[index],
+                fromPage: widget._postController.postType,
+                index: index,
+                isDetail: false,
+              );
             } else {
               return Container();
             }
           },
-          itemCount: _postList.length + 1,
-          controller: widget._postController.postType == "user"
-              ? null
-              : _scrollController,
         );
+
+        _body = _postList.isEmpty
+            ? (error ? _errorChild : _emptyChild)
+            : _itemList;
 
         if (widget.needRefreshIndicator) {
           _body = RefreshIndicator(
             key: refreshIndicatorKey,
             color: currentColorTheme,
             onRefresh: _refreshData,
-            child: _postList.isEmpty
-                ? (error ? _errorChild : _emptyChild)
-                : _itemList,
+            child: _body,
           );
-        } else {
-          _body = _postList.isEmpty
-              ? (error ? _errorChild : _emptyChild)
-              : _itemList;
         }
       }
       return _body;
@@ -289,7 +295,7 @@ class _PostListState extends State<PostList> {
     }
   }
 
-  Future<Null> _refreshData({bool needLoader}) async {
+  Future<Null> _refreshData({bool needLoader = false}) async {
     if (!_isLoading) {
       _isLoading = true;
       _lastValue = 0;
@@ -326,7 +332,7 @@ class _PostListState extends State<PostList> {
       }
       _postList = postList;
 
-      if (needLoader != null && needLoader) {
+      if (needLoader) {
         if (idList.toString() != _idList.toString()) {
           _idList = idList;
         }
@@ -454,7 +460,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
       });
       if (this.mounted) {
         setState(() {
-          Constants.eventBus
+          Instances.eventBus
               .fire(new ForwardInPostUpdatedEvent(widget.post.id, total));
           _posts = posts;
           isLoading = false;

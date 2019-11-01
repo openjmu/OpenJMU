@@ -25,7 +25,7 @@ class UserAPI {
 
   static Future logout() async {
     NetUtils.postWithCookieSet(API.logout).then((response) {
-      Constants.eventBus.fire(LogoutEvent());
+      Instances.eventBus.fire(LogoutEvent());
     });
   }
 
@@ -162,7 +162,7 @@ class UserAPI {
     ).then((response) {
       addToBlacklist(uid: uid, name: name);
       showShortToast("屏蔽成功");
-      Constants.eventBus.fire(BlacklistUpdateEvent());
+      Instances.eventBus.fire(BlacklistUpdateEvent());
       UserAPI.unFollow(uid).catchError((e) {
         debugPrint("${e.toString()}");
       });
@@ -179,7 +179,7 @@ class UserAPI {
     ).then((response) {
       removeFromBlackList(uid: uid, name: name);
       showShortToast("取消屏蔽成功");
-      Constants.eventBus.fire(BlacklistUpdateEvent());
+      Instances.eventBus.fire(BlacklistUpdateEvent());
     }).catchError((e) {
       showShortToast("取消屏蔽失败");
       debugPrint("Remove $name $uid from blacklist failed: $e");

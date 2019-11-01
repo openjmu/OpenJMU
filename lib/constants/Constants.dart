@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:badges/badges.dart';
 import 'package:crypto/crypto.dart';
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Configs.dart';
-import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
+
+export 'package:OpenJMU/constants/Instances.dart';
+export 'package:OpenJMU/model/Bean.dart';
 
 class Constants {
   static final List<int> developerList = [
@@ -28,7 +29,7 @@ class Constants {
   ];
 
   static final String endLineTag = "没有更多了~";
-  static GlobalKey<NavigatorState> navigatorKey;
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   // Fow news list.
   static final int appId = Platform.isIOS ? 274 : 273;
@@ -84,10 +85,6 @@ class Constants {
 
   /// Flea Market.
   static final int fleaMarketTeamId = 430;
-
-  static final EventBus eventBus = EventBus();
-
-  static Notifications notifications = Notifications();
 
   /// Screen capability method.
   static double suSetSp(double size, {double scale}) {

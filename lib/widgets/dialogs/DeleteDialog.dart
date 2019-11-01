@@ -66,7 +66,7 @@ class DeleteDialog extends Dialog {
                   .then((response) {
                 _loadingDialogController.changeState(
                     "success", "$whatToDelete删除成功");
-                Constants.eventBus
+                Instances.eventBus
                     .fire(new PostCommentDeletedEvent(this.comment.post.id));
               }).catchError((e) {
                 debugPrint(e.toString());
@@ -77,7 +77,7 @@ class DeleteDialog extends Dialog {
               PostAPI.deletePost(this.post.id).then((response) {
                 _loadingDialogController.changeState(
                     "success", "$whatToDelete删除成功");
-                Constants.eventBus.fire(new PostDeletedEvent(
+                Instances.eventBus.fire(new PostDeletedEvent(
                     this.post.id, this.fromPage, this.index));
               }).catchError((e) {
                 debugPrint(e.toString());

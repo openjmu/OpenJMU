@@ -375,10 +375,24 @@ class WebApp {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'appid': this.id,
+      'sequence': this.sequence,
+      'code': this.code,
+      'name': this.name,
+      'url': this.url,
+      'menutype': this.menuType,
+    };
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is WebApp && runtimeType == other.runtimeType && id == other.id;
+      other is WebApp &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          code == other.code;
 
   @override
   int get hashCode => id.hashCode;
@@ -453,13 +467,15 @@ class Notifications {
 
 ///
 /// 课程
-/// [name] 课程名称, [time] 上课时间, [location] 上课地点, [className] 班级名称, [teacher] 教师名称,
-/// [day] 上课日, [startWeek] 开始周, [endWeek] 结束周,
+/// [isCustom] **必需**是否自定义课程,
+/// [name] 课程名称, [time] 上课时间, [location] 上课地点, [className] 班级名称,
+/// [teacher] 教师名称, [day] 上课日, [startWeek] 开始周, [endWeek] 结束周,
 /// [classesName] 共同上课的班级,
 /// [isEleven] 是否第十一节,
 /// [oddEven] 是否为单双周, 0为普通, 1为单周, 2为双周
 ///
 class Course {
+  bool isCustom;
   String name, time, location, className, teacher;
   int day, startWeek, endWeek, oddEven;
   List<String> classesName;
@@ -467,6 +483,7 @@ class Course {
   Color color;
 
   Course({
+    @required this.isCustom,
     this.name,
     this.time,
     this.location,
@@ -493,23 +510,25 @@ class Course {
     return _oddEven;
   }
 
-  factory Course.fromJson(Map<String, dynamic> json) {
+  factory Course.fromJson(Map<String, dynamic> json, {bool isCustom = false}) {
     json.forEach((k, v) {
       if (json[k] == "") json[k] = null;
     });
-    final int _oddEven = judgeOddEven(json);
-    final List weeks = json['allWeek'].split(' ')[0].split('-');
+    final int _oddEven = !isCustom ? judgeOddEven(json) : null;
+    final List weeks =
+        !isCustom ? json['allWeek'].split(' ')[0].split('-') : null;
 
     Course _c = Course(
-      name: json['couName'] ?? "(空)",
-      time: json['coudeTime'],
+      isCustom: isCustom,
+      name: !isCustom ? json['couName'] ?? "(空)" : json['content'],
+      time: !isCustom ? json['coudeTime'] : json['courseTime'],
       location: json['couRoom'],
       className: json['className'],
       teacher: json['couTeaName'],
-      day: json['couDayTime'],
-      startWeek: int.parse(weeks[0]),
-      endWeek: int.parse(weeks[1]),
-      classesName: json['comboClassName'].split(','),
+      day: !isCustom ? json['couDayTime'] : json['courseDayTime'],
+      startWeek: !isCustom ? int.parse(weeks[0]) : null,
+      endWeek: !isCustom ? int.parse(weeks[1]) : null,
+      classesName: !isCustom ? json['comboClassName'].split(',') : null,
       isEleven: json['three'] == 'y',
       oddEven: _oddEven,
     );

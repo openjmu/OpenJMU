@@ -17,7 +17,7 @@ import 'package:OpenJMU/pages/settings/SettingsPage.dart';
 import 'package:OpenJMU/pages/settings/SwitchStartUpPage.dart';
 
 /// TODO: Remove the below file if it doesn't exist.
-//import 'package:OpenJMU/pages/test/TestDashBoardPage.dart';
+import 'package:OpenJMU/pages/test/TestDashBoardPage.dart';
 
 class RouteUtils {
   static Map<String, WidgetBuilder> routes = {
@@ -40,6 +40,6 @@ class RouteUtils {
     "/userqrcode": (BuildContext context, {arguments}) => UserQrCodePage(),
 
     /// TODO: Remove the below file if it doesn't exist.
-//    "/test": (BuildContext context) => TestDashBoardPage(),
+        "/test": (BuildContext context) => TestDashBoardPage(),
   };
 }

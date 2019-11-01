@@ -67,7 +67,7 @@ class _ScorePageState extends State<ScorePage>
   @override
   void initState() {
     loadScores();
-    Constants.eventBus
+    Instances.eventBus
       ..on<ScoreRefreshEvent>().listen((event) {
         resetScores();
         loading = true;

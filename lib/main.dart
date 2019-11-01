@@ -33,8 +33,6 @@ class OpenJMUApp extends StatefulWidget {
 }
 
 class OpenJMUAppState extends State<OpenJMUApp> {
-  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-
   StreamSubscription<ConnectivityResult> connectivitySubscription;
   bool isUserLogin = false;
   int initIndex;
@@ -50,11 +48,11 @@ class OpenJMUAppState extends State<OpenJMUApp> {
     connectivitySubscription = Connectivity()
         .onConnectivityChanged
         .listen((ConnectivityResult result) {
-      Constants.eventBus.fire(ConnectivityChangeEvent(result));
+      Instances.eventBus.fire(ConnectivityChangeEvent(result));
       debugPrint("Current connectivity: $result");
     });
 
-    Constants.eventBus
+    Instances.eventBus
       ..on<ChangeThemeEvent>().listen((event) {
         currentThemeColor = event.color;
         if (mounted) setState(() {});
@@ -102,7 +100,7 @@ class OpenJMUAppState extends State<OpenJMUApp> {
   void initSettings() async {
     Color color = ThemeUtils.supportColors[DataUtils.getColorThemeIndex()];
     currentThemeColor = ThemeUtils.currentThemeColor = color;
-    Constants.eventBus.fire(ChangeThemeEvent(color));
+    Instances.eventBus.fire(ChangeThemeEvent(color));
     ThemeUtils.isDark = DataUtils.getBrightnessDark();
 
     Configs.homeSplashIndex = DataUtils.getHomeSplashIndex();
@@ -117,7 +115,7 @@ class OpenJMUAppState extends State<OpenJMUApp> {
     final QuickActions quickActions = QuickActions();
     quickActions.initialize((String shortcutType) {
       debugPrint("QuickActions triggered: $shortcutType");
-      Constants.eventBus.fire(ActionsEvent(shortcutType));
+      Instances.eventBus.fire(ActionsEvent(shortcutType));
     });
     quickActions.setShortcutItems(<ShortcutItem>[
       const ShortcutItem(
@@ -135,7 +133,6 @@ class OpenJMUAppState extends State<OpenJMUApp> {
 
   @override
   Widget build(BuildContext context) {
-    Constants.navigatorKey = _navigatorKey;
     return Theme(
       data:
           ThemeUtils.isDark ? ThemeUtils.darkTheme() : ThemeUtils.lightTheme(),
@@ -143,9 +140,8 @@ class OpenJMUAppState extends State<OpenJMUApp> {
         child: ScrollConfiguration(
           behavior: NoGlowScrollBehavior(),
           child: MaterialApp(
-            navigatorKey: _navigatorKey,
+            navigatorKey: Constants.navigatorKey,
             builder: (BuildContext c, Widget w) => NoScaleTextWidget(child: w),
-            debugShowCheckedModeBanner: false,
             routes: RouteUtils.routes,
             title: "OpenJMU",
             theme: (ThemeUtils.isDark

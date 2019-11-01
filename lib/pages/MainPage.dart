@@ -62,7 +62,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   ];
 
   List<Widget> pages;
-  Notifications notifications = Constants.notifications;
+  Notifications notifications = Instances.notifications;
   Timer notificationTimer;
 
   int _tabIndex = Configs.homeSplashIndex;
@@ -87,7 +87,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       MyInfoPage(),
     ];
 
-    Constants.eventBus
+    Instances.eventBus
       ..on<ActionsEvent>().listen((event) {
         if (event.type == "action_home") {
           _selectedTab(0);
