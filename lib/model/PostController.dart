@@ -2,20 +2,15 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:OpenJMU/constants/Screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_text/extended_text.dart';
 
-import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/api/PostAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/post/SearchPostPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
@@ -98,36 +93,25 @@ class _PostListState extends State<PostList> {
       })
       ..on<PostChangeEvent>().listen((event) {
         if (event.remove) {
-          if (mounted) {
-            setState(() {
-              _postList.removeWhere((post) => event.post.id == post.id);
-            });
-          }
+          _postList.removeWhere((post) => event.post.id == post.id);
         } else {
-          if (mounted) {
-            setState(() {
-              var index = _postList.indexOf(event.post);
-              _postList.replaceRange(index, index + 1, [event.post.copy()]);
-            });
-          }
+          int index = _postList.indexOf(event.post);
+          _postList.replaceRange(index, index + 1, [event.post.copy()]);
         }
+        if (mounted) setState(() {});
       })
       ..on<ChangeThemeEvent>().listen((event) {
-        if (mounted) {
-          setState(() {
-            currentColorTheme = event.color;
-          });
-        }
+        currentColorTheme = event.color;
+        if (mounted) setState(() {});
       })
       ..on<PostDeletedEvent>().listen((event) {
         debugPrint(
             "PostDeleted: ${event.postId} / ${event.page} / ${event.index}");
-        if (mounted && (event.page == "user") && event.index != null) {
-          setState(() {
-            _idList.removeAt(event.index);
-            _postList.removeAt(event.index);
-          });
+        if ((event.page == "user") && event.index != null) {
+          _idList.removeAt(event.index);
+          _postList.removeAt(event.index);
         }
+        if (mounted) setState(() {});
       });
 
     _emptyChild = GestureDetector(
@@ -156,95 +140,6 @@ class _PostListState extends State<PostList> {
 
     _refreshData();
     super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (!_showLoading) {
-      if (_firstLoadComplete) {
-        _itemList = ListView.separated(
-          controller: widget._postController.postType == "user"
-              ? null
-              : _scrollController,
-          padding: EdgeInsets.zero,
-          separatorBuilder: (context, index) => Container(
-            color: Theme.of(context).canvasColor,
-            height: Constants.suSetSp(8.0),
-          ),
-          itemCount: _postList.length + 1,
-          itemBuilder: (context, index) {
-            if (index == _postList.length) {
-              if (this._canLoadMore) {
-                _loadData();
-                return Container(
-                  height: Constants.suSetSp(40.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        width: Constants.suSetSp(15.0),
-                        height: Constants.suSetSp(15.0),
-                        child: Platform.isAndroid
-                            ? CircularProgressIndicator(strokeWidth: 2.0)
-                            : CupertinoActivityIndicator(),
-                      ),
-                      Text(
-                        "　正在加载",
-                        style: TextStyle(
-                          fontSize: Constants.suSetSp(14.0),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return Container(
-                  height: Constants.suSetSp(50.0),
-                  color: Theme.of(context).canvasColor,
-                  child: Center(
-                    child: Text(
-                      Constants.endLineTag,
-                      style: TextStyle(
-                        fontSize: Constants.suSetSp(14.0),
-                      ),
-                    ),
-                  ),
-                );
-              }
-            } else if (index < _postList.length) {
-              return PostCard(
-                _postList[index],
-                fromPage: widget._postController.postType,
-                index: index,
-                isDetail: false,
-              );
-            } else {
-              return Container();
-            }
-          },
-        );
-
-        _body = _postList.isEmpty
-            ? (error ? _errorChild : _emptyChild)
-            : _itemList;
-
-        if (widget.needRefreshIndicator) {
-          _body = RefreshIndicator(
-            key: refreshIndicatorKey,
-            color: currentColorTheme,
-            onRefresh: _refreshData,
-            child: _body,
-          );
-        }
-      }
-      return _body;
-    } else {
-      return Container(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
   }
 
   Future<Null> _loadData() async {
@@ -281,17 +176,13 @@ class _PostListState extends State<PostList> {
       }
       _postList.addAll(postList);
 
-      if (mounted) {
-        setState(() {
-          _showLoading = false;
-          _firstLoadComplete = true;
-          _isLoading = false;
-          _canLoadMore = _idList.length < _total && _count != 0;
-          _lastValue = _idList.isEmpty
-              ? 0
-              : widget._postController.lastValue(_idList.last);
-        });
-      }
+      _showLoading = false;
+      _firstLoadComplete = true;
+      _isLoading = false;
+      _canLoadMore = _idList.length < _total && _count != 0;
+      _lastValue =
+          _idList.isEmpty ? 0 : widget._postController.lastValue(_idList.last);
+      if (mounted) setState(() {});
     }
   }
 
@@ -340,17 +231,102 @@ class _PostListState extends State<PostList> {
         _idList = idList;
       }
 
-      if (mounted) {
-        setState(() {
-          _showLoading = false;
-          _firstLoadComplete = true;
-          _isLoading = false;
-          _canLoadMore = _idList.length < _total && _count != 0;
-          _lastValue = _idList.isEmpty
-              ? 0
-              : widget._postController.lastValue(_idList.last);
-        });
+      _showLoading = false;
+      _firstLoadComplete = true;
+      _isLoading = false;
+      _canLoadMore = _idList.length < _total && _count != 0;
+      _lastValue =
+          _idList.isEmpty ? 0 : widget._postController.lastValue(_idList.last);
+      if (mounted) setState(() {});
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_showLoading) {
+      if (_firstLoadComplete) {
+        _itemList = ListView.separated(
+          controller: widget._postController.postType == "user"
+              ? null
+              : _scrollController,
+          padding: EdgeInsets.zero,
+          separatorBuilder: (context, index) => Divider(
+            thickness: Constants.suSetSp(8.0),
+            height: Constants.suSetSp(8.0),
+          ),
+          itemCount: _postList.length + 1,
+          itemBuilder: (context, index) {
+            if (index == _postList.length) {
+              if (this._canLoadMore) {
+                _loadData();
+                return Container(
+                  height: Constants.suSetSp(40.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        width: Constants.suSetSp(15.0),
+                        height: Constants.suSetSp(15.0),
+                        child: Platform.isAndroid
+                            ? CircularProgressIndicator(strokeWidth: 2.0)
+                            : CupertinoActivityIndicator(),
+                      ),
+                      Text(
+                        "　正在加载",
+                        style: TextStyle(
+                          fontSize: Constants.suSetSp(14.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else {
+                return Container(
+                  height: Constants.suSetSp(50.0),
+                  color: Theme.of(context).canvasColor,
+                  child: Center(
+                    child: Text(
+                      Constants.endLineTag,
+                      style: TextStyle(
+                        fontSize: Constants.suSetSp(14.0),
+                      ),
+                    ),
+                  ),
+                );
+              }
+            } else if (index < _postList.length) {
+              return PostCard(
+                _postList[index],
+                fromPage: widget._postController.postType,
+                index: index,
+                isDetail: false,
+                parentContext: context,
+              );
+            } else {
+              return Container();
+            }
+          },
+        );
+
+        _body =
+            _postList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList;
+
+        if (widget.needRefreshIndicator) {
+          _body = RefreshIndicator(
+            key: refreshIndicatorKey,
+            color: currentColorTheme,
+            onRefresh: _refreshData,
+            child: _body,
+          );
+        }
       }
+      return _body;
+    } else {
+      return Container(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
     }
   }
 }
@@ -385,15 +361,14 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
 
   @override
   void initState() {
-    super.initState();
     _refreshList();
+    super.initState();
   }
 
   void _refreshData() {
-    setState(() {
-      isLoading = true;
-      _posts = [];
-    });
+    isLoading = true;
+    _posts = [];
+    if (mounted) setState(() {});
     _refreshList();
   }
 
@@ -401,9 +376,10 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
     isLoading = true;
     try {
       Map<String, dynamic> response = (await PostAPI.getForwardListInPost(
-              widget.post.id,
-              isMore: true,
-              lastValue: lastValue))
+        widget.post.id,
+        isMore: true,
+        lastValue: lastValue,
+      ))
           ?.data;
       List<dynamic> list = response['topics'];
       int total = response['total'] as int;
@@ -421,13 +397,10 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
           posts.add(PostAPI.createPost(post['topic']));
         }
       });
-      if (this.mounted) {
-        setState(() {
-          _posts.addAll(posts);
-        });
-        isLoading = false;
-        lastValue = _posts.isEmpty ? 0 : _posts.last.id;
-      }
+      _posts.addAll(posts);
+      isLoading = false;
+      lastValue = _posts.isEmpty ? 0 : _posts.last.id;
+      if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
         debugPrint("${e.response.data}");
@@ -440,9 +413,8 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
   }
 
   Future<Null> _refreshList() async {
-    setState(() {
-      isLoading = true;
-    });
+    isLoading = true;
+    if (mounted) setState(() {});
     try {
       Map<String, dynamic> response =
           (await PostAPI.getForwardListInPost(widget.post.id))?.data;
@@ -458,16 +430,12 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
           posts.add(PostAPI.createPost(post['topic']));
         }
       });
-      if (this.mounted) {
-        setState(() {
-          Instances.eventBus
-              .fire(new ForwardInPostUpdatedEvent(widget.post.id, total));
-          _posts = posts;
-          isLoading = false;
-          firstLoadComplete = true;
-        });
-        lastValue = _posts.isEmpty ? 0 : _posts.last.id;
-      }
+      Instances.eventBus.fire(ForwardInPostUpdatedEvent(widget.post.id, total));
+      _posts = posts;
+      isLoading = false;
+      firstLoadComplete = true;
+      lastValue = _posts.isEmpty ? 0 : _posts.last.id;
+      if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
         debugPrint("${e.response.data}");
@@ -485,14 +453,16 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
         width: Constants.suSetSp(40.0),
         height: Constants.suSetSp(40.0),
         margin: EdgeInsets.symmetric(
-            horizontal: Constants.suSetSp(16.0),
-            vertical: Constants.suSetSp(10.0)),
+          horizontal: Constants.suSetSp(16.0),
+          vertical: Constants.suSetSp(10.0),
+        ),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: const Color(0xFFECECEC),
           image: DecorationImage(
-              image: UserAPI.getAvatarProvider(uid: post.uid),
-              fit: BoxFit.cover),
+            image: UserAPI.getAvatarProvider(uid: post.uid),
+            fit: BoxFit.cover,
+          ),
         ),
       ),
       onTap: () {
@@ -521,10 +491,9 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
     }
     return Text(
       _postTime,
-      style: Theme.of(context)
-          .textTheme
-          .caption
-          .copyWith(fontSize: Constants.suSetSp(14.0)),
+      style: Theme.of(context).textTheme.caption.copyWith(
+            fontSize: Constants.suSetSp(14.0),
+          ),
     );
   }
 
@@ -548,15 +517,16 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).cardColor,
-      width: MediaQuery.of(context).size.width,
+      width: Screen.width,
       padding: isLoading
           ? EdgeInsets.symmetric(vertical: Constants.suSetSp(42))
           : EdgeInsets.zero,
       child: isLoading
           ? Center(
               child: SizedBox(
-              child: Constants.progressIndicator(),
-            ))
+                child: Constants.progressIndicator(),
+              ),
+            )
           : Container(
               color: Theme.of(context).cardColor,
               padding: EdgeInsets.zero,
@@ -564,8 +534,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                   ? ListView.separated(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      separatorBuilder: (context, index) => Container(
-                        color: Theme.of(context).dividerColor,
+                      separatorBuilder: (context, index) => Divider(
                         height: Constants.suSetSp(1.0),
                       ),
                       itemCount: _posts.length + 1,
@@ -573,20 +542,24 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                         if (index == _posts.length) {
                           if (canLoadMore && !isLoading) {
                             _loadList();
-                            return Container(
-                              height: Constants.suSetSp(40.0),
+                            return SizedBox(
+                              height: Constants.suSetSp(50.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   SizedBox(
-                                    width: Constants.suSetSp(15.0),
-                                    height: Constants.suSetSp(15.0),
+                                    width: Constants.suSetSp(20.0),
+                                    height: Constants.suSetSp(20.0),
                                     child: Constants.progressIndicator(
-                                        strokeWidth: 2.0),
+                                      strokeWidth: 2.0,
+                                    ),
                                   ),
-                                  Text("　正在加载",
-                                      style: TextStyle(
-                                          fontSize: Constants.suSetSp(14.0))),
+                                  Text(
+                                    "　正在加载",
+                                    style: TextStyle(
+                                      fontSize: Constants.suSetSp(16.0),
+                                    ),
+                                  ),
                                 ],
                               ),
                             );
@@ -624,10 +597,13 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                   : Container(
                       height: Constants.suSetSp(120.0),
                       child: Center(
-                        child: Text("暂无内容",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: Constants.suSetSp(18.0))),
+                        child: Text(
+                          "暂无内容",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: Constants.suSetSp(18.0),
+                          ),
+                        ),
                       ),
                     ),
             ),

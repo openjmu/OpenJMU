@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class NoScaleTextWidget extends StatelessWidget {
   final Widget child;
 
-  const NoScaleTextWidget({Key key, @required this.child}) : super(key: key);
+  const NoScaleTextWidget({@required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +20,7 @@ class MaxScaleTextWidget extends StatelessWidget {
   final double max;
   final Widget child;
 
-  const MaxScaleTextWidget({Key key, this.max = 1.0, @required this.child})
-      : super(key: key);
+  const MaxScaleTextWidget({this.max = 1.0, @required this.child});
 
   @override
   Widget build(BuildContext context) {

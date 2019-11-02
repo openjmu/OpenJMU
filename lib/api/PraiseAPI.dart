@@ -1,8 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
+import 'package:OpenJMU/constants/Constants.dart';
 
 class PraiseAPI {
   static getPraiseList(bool isMore, int lastValue) async =>

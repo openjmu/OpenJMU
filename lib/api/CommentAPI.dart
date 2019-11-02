@@ -1,11 +1,12 @@
-import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/api/PostAPI.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
+import 'package:OpenJMU/constants/Constants.dart';
 
 class CommentAPI {
-  static getCommentList(String commentType, bool isMore, int lastValue,
-      {additionAttrs}) async {
+  static getCommentList(
+    String commentType,
+    bool isMore,
+    int lastValue, {
+    additionAttrs,
+  }) async {
     String _commentUrl;
     switch (commentType) {
       case "reply":
@@ -33,8 +34,12 @@ class CommentAPI {
             : "${API.postCommentsList}$id",
       );
 
-  static postComment(String content, int postId, bool forwardAtTheMeanTime,
-      {int replyToId}) async {
+  static postComment(
+    String content,
+    int postId,
+    bool forwardAtTheMeanTime, {
+    int replyToId,
+  }) async {
     Map<String, dynamic> data = {
       "content": Uri.encodeFull(content),
       "reflag": 0,

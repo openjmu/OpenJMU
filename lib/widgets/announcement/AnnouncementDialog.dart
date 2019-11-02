@@ -7,7 +7,6 @@ import 'package:extended_text/extended_text.dart';
 import 'package:extended_text_library/extended_text_library.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class AnnouncementDialog extends StatefulWidget {

@@ -2,9 +2,7 @@ import 'dart:core';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
+import 'package:OpenJMU/constants/Constants.dart';
 
 class PostAPI {
   static getPostList(

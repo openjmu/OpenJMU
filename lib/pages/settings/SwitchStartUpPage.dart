@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/pages/home/AppCenterPage.dart';
 import 'package:OpenJMU/pages/home/PostSquareListPage.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
 
 class SwitchStartUpPage extends StatefulWidget {
   @override

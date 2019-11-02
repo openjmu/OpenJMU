@@ -7,12 +7,8 @@ import 'package:extended_tabs/extended_tabs.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/PostController.dart';
-//import 'package:OpenJMU/model/TeamPostController.dart';
-import 'package:OpenJMU/pages/news/NewsListPage.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/pages/news/NewsListPage.dart';
 
 class PostSquareListPage extends StatefulWidget {
   @override

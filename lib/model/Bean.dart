@@ -5,8 +5,15 @@ import 'package:flutter/material.dart'
     show ScaffoldPrelayoutGeometry, FloatingActionButtonLocation;
 import 'package:flutter/widgets.dart';
 
-import 'package:OpenJMU/api/CourseAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
+
+export 'package:OpenJMU/model/CommentController.dart';
+export 'package:OpenJMU/model/PostController.dart';
+export 'package:OpenJMU/model/PraiseController.dart';
+export 'package:OpenJMU/model/SpecialText.dart';
+export 'package:OpenJMU/model/TeamCommentController.dart';
+export 'package:OpenJMU/model/TeamPostController.dart';
+export 'package:OpenJMU/model/TeamPraiseController.dart';
 
 /// 动态实体
 /// [id] 动态id, [uid] 用户uid, [nickname] 用户名称, [avatar] 用户头像, [postTime] 动态时间, [from] 动态来源
@@ -520,12 +527,14 @@ class Course {
 
     Course _c = Course(
       isCustom: isCustom,
-      name: !isCustom ? json['couName'] ?? "(空)" : json['content'],
-      time: !isCustom ? json['coudeTime'] : json['courseTime'],
+      name: !isCustom
+          ? json['couName'] ?? "(空)"
+          : Uri.decodeComponent(json['content']),
+      time: !isCustom ? json['coudeTime'] : json['courseTime'].toString(),
       location: json['couRoom'],
       className: json['className'],
       teacher: json['couTeaName'],
-      day: !isCustom ? json['couDayTime'] : json['courseDayTime'],
+      day: !isCustom ? json['couDayTime'] : json['courseDaytime'],
       startWeek: !isCustom ? int.parse(weeks[0]) : null,
       endWeek: !isCustom ? int.parse(weeks[1]) : null,
       classesName: !isCustom ? json['comboClassName'].split(',') : null,

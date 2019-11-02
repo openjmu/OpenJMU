@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-
-import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/OTAUtils.dart';
-import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class AboutPage extends StatefulWidget {
   @override

@@ -7,12 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/UpdatingDialog.dart';
 
 class OTAUtils {

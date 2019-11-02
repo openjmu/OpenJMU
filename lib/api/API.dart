@@ -1,7 +1,17 @@
 import 'dart:core';
 
 import 'package:OpenJMU/api/UserAPI.dart';
-import 'package:OpenJMU/utils/SocketUtils.dart';
+import 'package:OpenJMU/utils/Utils.dart';
+
+export 'package:OpenJMU/api/CommentAPI.dart';
+export 'package:OpenJMU/api/CourseAPI.dart';
+export 'package:OpenJMU/api/DateAPI.dart';
+export 'package:OpenJMU/api/NewsAPI.dart';
+export 'package:OpenJMU/api/PostAPI.dart';
+export 'package:OpenJMU/api/PraiseAPI.dart';
+export 'package:OpenJMU/api/SignAPI.dart';
+export 'package:OpenJMU/api/TeamAPI.dart';
+export 'package:OpenJMU/api/UserAPI.dart';
 
 class API {
   static final String homePage = "https://openjmu.jmu.edu.cn";

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/announcement/AnnouncementDialog.dart';
 
 class AnnouncementWidget extends StatelessWidget {

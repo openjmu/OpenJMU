@@ -7,17 +7,8 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
-import 'package:OpenJMU/api/DateAPI.dart';
-import 'package:OpenJMU/api/SignAPI.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
-import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/constants/Screens.dart';
-import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/utils/OTAUtils.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class MyInfoPage extends StatefulWidget {
   @override

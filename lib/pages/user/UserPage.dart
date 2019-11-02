@@ -9,13 +9,7 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/model/PostController.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/EditSignatureDialog.dart';
 import 'package:OpenJMU/widgets/image/ImageCropPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';

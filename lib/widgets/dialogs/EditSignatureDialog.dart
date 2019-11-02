@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
 class EditSignatureDialog extends StatefulWidget {

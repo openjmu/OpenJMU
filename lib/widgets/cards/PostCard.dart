@@ -9,19 +9,10 @@ import 'package:extended_text/extended_text.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:like_button/like_button.dart';
 
-import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/api/PostAPI.dart';
-import 'package:OpenJMU/api/PraiseAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/post/SearchPostPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/pages/post/PostDetailPage.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
@@ -33,10 +24,16 @@ class PostCard extends StatefulWidget {
   final bool isRootContent;
   final String fromPage;
   final int index;
+  final BuildContext parentContext;
 
-  PostCard(this.post,
-      {this.isDetail, this.isRootContent, this.fromPage, this.index, Key key})
-      : super(key: key);
+  PostCard(
+    this.post, {
+    this.isDetail,
+    this.isRootContent,
+    this.fromPage,
+    this.index,
+    @required this.parentContext,
+  });
 
   @override
   State createState() => _PostCardState();
@@ -55,12 +52,18 @@ class _PostCardState extends State<PostCard> {
   Color _forwardColor = Colors.grey;
   Color _repliesColor = Colors.grey;
 
-  Widget pics;
+  /// Widget list
+  Widget avatar = SizedBox.shrink(),
+      nickname = SizedBox.shrink(),
+      postInfo = SizedBox.shrink(),
+      content = SizedBox.shrink(),
+      pics = SizedBox.shrink(),
+      actions = SizedBox.shrink();
+
   bool isDetail, isShield, isDark = ThemeUtils.isDark;
 
   @override
   void initState() {
-    super.initState();
     isShield = widget.post.content != "此微博已经被屏蔽" ? false : true;
     if (widget.isDetail != null && widget.isDetail == true) {
       setState(() {
@@ -71,61 +74,74 @@ class _PostCardState extends State<PostCard> {
         isDetail = false;
       });
     }
+
+    initContent();
+
     Instances.eventBus
       ..on<ChangeBrightnessEvent>().listen((event) {
-        if (mounted) {
-          setState(() {
-            if (event.isDarkState) {
-              isDark = true;
-            } else {
-              isDark = false;
-            }
-          });
+        if (event.isDarkState) {
+          isDark = true;
+        } else {
+          isDark = false;
         }
+        if (mounted) setState(() {});
       })
       ..on<ForwardInPostUpdatedEvent>().listen((event) {
-        if (mounted && event.postId == widget.post.id) {
-          setState(() {
-            widget.post.forwards = event.count;
-          });
-        }
+        if (event.postId == widget.post.id) widget.post.forwards = event.count;
+        if (mounted) setState(() {});
       })
       ..on<CommentInPostUpdatedEvent>().listen((event) {
-        if (mounted && event.postId == widget.post.id) {
-          setState(() {
-            widget.post.comments = event.count;
-          });
-        }
+        if (event.postId == widget.post.id) widget.post.comments = event.count;
+        if (mounted) setState(() {});
       })
       ..on<PraiseInPostUpdatedEvent>().listen((event) {
-        if (this.mounted && event.postId == widget.post.id) {
-          setState(() {
-            if (event.isLike != null) widget.post.isLike = event.isLike;
-            widget.post.praises = event.count;
-          });
+        if (event.postId == widget.post.id) {
+          if (event.isLike != null) widget.post.isLike = event.isLike;
+          widget.post.praises = event.count;
         }
+        if (this.mounted) setState(() {});
       });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void initContent() {
+    final context = widget.parentContext;
+    final post = widget.post;
+    avatar = getPostAvatar(context, post);
+    nickname = getPostNickname(context, post);
+    postInfo = getPostInfo(post);
+    content = getPostContent(context, post);
+    pics = getPostImages(context, post);
+    actions = getPostActions(context);
   }
 
   Widget getPostAvatar(context, post) {
-    return SizedBox(
-      width: Constants.suSetSp(48.0),
-      height: Constants.suSetSp(48.0),
-      child: GestureDetector(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(Constants.suSetSp(24.0)),
-          child: FadeInImage(
-            fadeInDuration: const Duration(milliseconds: 100),
-            placeholder: AssetImage("assets/avatar_placeholder.png"),
-            image: UserAPI.getAvatarProvider(uid: post.uid),
+    return Hero(
+      tag: "post-${widget.post.id}-avatar-${widget.post.avatar}",
+      child: SizedBox(
+        width: Constants.suSetSp(48.0),
+        height: Constants.suSetSp(48.0),
+        child: GestureDetector(
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(Constants.suSetSp(24.0)),
+            child: FadeInImage(
+              fadeInDuration: const Duration(milliseconds: 100),
+              placeholder: AssetImage("assets/avatar_placeholder.png"),
+              image: UserAPI.getAvatarProvider(uid: post.uid),
+            ),
           ),
+          onTap: () => UserPage.jump(context, widget.post.uid),
         ),
-        onTap: () => UserPage.jump(context, widget.post.uid),
       ),
     );
   }
 
-  Text getPostNickname(post) => Text(
+  Text getPostNickname(context, post) => Text(
         post.nickname ?? post.uid,
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
@@ -164,7 +180,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget getPostContent(context, post) => Container(
-        width: MediaQuery.of(context).size.width,
+        width: Screen.width,
         margin: EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -175,15 +191,6 @@ class _PostCardState extends State<PostCard> {
             if (post.rootTopic != null) getRootPost(context, post.rootTopic),
           ],
         ),
-      );
-
-  Widget getPostImages(context, post) => Container(
-        padding: post.pics != null && post.pics.length > 0
-            ? EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(16.0),
-                vertical: Constants.suSetSp(4.0))
-            : EdgeInsets.zero,
-        child: getImages(context, post.pics),
       );
 
   Widget getRootPost(context, rootTopic) {
@@ -209,12 +216,12 @@ class _PostCardState extends State<PostCard> {
                   _post,
                   index: widget.index,
                   fromPage: widget.fromPage,
-                  beforeContext: context,
+                  parentContext: context,
                 );
               }));
             },
             child: Container(
-              width: MediaQuery.of(context).size.width,
+              width: Screen.width,
               padding: EdgeInsets.symmetric(
                 horizontal: Constants.suSetSp(contentPadding),
                 vertical: Constants.suSetSp(10.0),
@@ -228,7 +235,7 @@ class _PostCardState extends State<PostCard> {
                   if (rootTopic['topic']['image'] != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
-                      child: getRootPostImages(context, rootTopic['topic']),
+//                      child: getRootPostImages(context, rootTopic['topic']),
                     ),
                 ],
               ),
@@ -244,25 +251,36 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  Widget getRootPostImages(context, rootTopic) =>
-      getImages(context, rootTopic['image']);
+  Widget getPostImages(context, post) {
+    return Padding(
+      padding: post.pics != null && post.pics.length > 0
+          ? EdgeInsets.symmetric(
+              horizontal: Constants.suSetSp(16.0),
+              vertical: Constants.suSetSp(4.0))
+          : EdgeInsets.zero,
+      child: getImages(context, post.pics),
+    );
+  }
+
+  Widget getRootPostImages(context, rootTopic) {
+    return getImages(context, rootTopic['image']);
+  }
 
   Widget getImages(context, data) {
     if (data != null) {
       List<Widget> imagesWidget = [];
-      for (var index = 0; index < data.length; index++) {
+      for (int index = 0; index < data.length; index++) {
         int imageID = int.parse(data[index]['id'].toString());
         String imageUrl = data[index]['image_middle'];
         Widget _exImage = ExtendedImage.network(
           imageUrl,
           fit: BoxFit.cover,
           cache: true,
-//          enableMemoryCache: false,
           loadStateChanged: (ExtendedImageState state) {
             Widget loader;
             switch (state.extendedImageLoadState) {
               case LoadState.loading:
-                loader = Constants.progressIndicator();
+                loader = Center(child: Constants.progressIndicator());
                 break;
               case LoadState.completed:
               case LoadState.failed:
@@ -271,13 +289,6 @@ class _PostCardState extends State<PostCard> {
             return loader;
           },
         );
-        if (data.length > 1) {
-          _exImage = Container(
-            width: double.infinity,
-            height: double.infinity,
-            child: _exImage,
-          );
-        }
         if (isDark) {
           _exImage = Stack(
             children: <Widget>[_exImage, Constants.nightModeCover()],
@@ -299,17 +310,17 @@ class _PostCardState extends State<PostCard> {
               );
             }));
           },
-//                    child: Hero(
-//                        tag: "$imageID${index.toString()}${widget.post.id.toString()}",
-          child: _exImage,
-//                    ),
+          child: Hero(
+            tag: "$imageID${index.toString()}${widget.post.id.toString()}",
+            child: _exImage,
+          ),
         ));
       }
       int itemCount = 3;
       Widget _image;
       if (data.length == 1) {
         _image = Container(
-          width: MediaQuery.of(context).size.width,
+          width: Screen.width,
           padding: EdgeInsets.only(top: Constants.suSetSp(4.0)),
           child: imagesWidget[0],
         );
@@ -329,7 +340,7 @@ class _PostCardState extends State<PostCard> {
       }
       return _image;
     } else {
-      return Container();
+      return SizedBox.shrink();
     }
   }
 
@@ -338,7 +349,7 @@ class _PostCardState extends State<PostCard> {
     int comments = widget.post.comments;
     int praises = widget.post.praises;
 
-    return Container(
+    return SizedBox(
       height: Constants.suSetSp(44.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -445,11 +456,13 @@ class _PostCardState extends State<PostCard> {
       color: Color(ThemeUtils.currentThemeColor.value - 0x88000000),
       padding: EdgeInsets.all(Constants.suSetSp(30.0)),
       child: Center(
-        child: Text(content,
-            style: TextStyle(
-              color: isDark ? Colors.grey[350] : Colors.white,
-              fontSize: Constants.suSetSp(20.0),
-            )),
+        child: Text(
+          content,
+          style: TextStyle(
+            color: isDark ? Colors.grey[350] : Colors.white,
+            fontSize: Constants.suSetSp(20.0),
+          ),
+        ),
       ),
     );
   }
@@ -465,7 +478,8 @@ class _PostCardState extends State<PostCard> {
           padding: (isRoot ?? false)
               ? EdgeInsets.zero
               : EdgeInsets.symmetric(
-                  horizontal: Constants.suSetSp(contentPadding)),
+                  horizontal: Constants.suSetSp(contentPadding),
+                ),
           child: ExtendedText(
             content != null ? "$content " : null,
             style: TextStyle(fontSize: Constants.suSetSp(18.0)),
@@ -490,7 +504,7 @@ class _PostCardState extends State<PostCard> {
                         style: TextStyle(
                           color: ThemeUtils.currentThemeColor,
                         ),
-                      )
+                      ),
                     ],
                   ),
             specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
@@ -516,26 +530,38 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget deleteButton() => IconButton(
-        icon: Icon(Icons.delete,
-            color: Colors.grey, size: Constants.suSetSp(24.0)),
+        icon: Icon(
+          Icons.delete,
+          color: Colors.grey,
+          size: Constants.suSetSp(24.0),
+        ),
         onPressed: confirmDelete,
       );
 
   Widget postActionButton(context) => IconButton(
-        icon: Icon(Icons.expand_more,
-            color: Colors.grey, size: Constants.suSetSp(24.0)),
+        icon: Icon(
+          Icons.expand_more,
+          color: Colors.grey,
+          size: Constants.suSetSp(24.0),
+        ),
         onPressed: () {
-          Widget _listTile(
-              {IconData icon, String text, GestureTapCallback onTap}) {
+          Widget _listTile({
+            IconData icon,
+            String text,
+            GestureTapCallback onTap,
+          }) {
             return Padding(
-              padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(12.0)),
+              padding: EdgeInsets.symmetric(
+                vertical: Constants.suSetSp(12.0),
+              ),
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
                 child: Row(
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: Constants.suSetSp(10.0)),
+                        horizontal: Constants.suSetSp(10.0),
+                      ),
                       child: Icon(
                         icon,
                         color: Theme.of(context).iconTheme.color,
@@ -545,7 +571,8 @@ class _PostCardState extends State<PostCard> {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: Constants.suSetSp(10.0)),
+                          horizontal: Constants.suSetSp(10.0),
+                        ),
                         child: Text(
                           text,
                           style: TextStyle(
@@ -573,147 +600,166 @@ class _PostCardState extends State<PostCard> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     _listTile(
-                        icon: Icons.visibility_off,
-                        text: "屏蔽此人",
-                        onTap: () {
-                          showDialog(
-                              context: context,
-                              builder: (context) => PlatformAlertDialog(
-                                    title: Text(
-                                      "屏蔽此人",
-                                      style: TextStyle(
-                                        fontSize: Constants.suSetSp(22.0),
-                                      ),
-                                    ),
-                                    content: Text(
-                                      "确定屏蔽此人吗？",
-                                      style: TextStyle(
-                                        fontSize: Constants.suSetSp(18.0),
-                                      ),
-                                    ),
-                                    actions: <Widget>[
-                                      PlatformButton(
-                                        android: (BuildContext context) =>
-                                            MaterialRaisedButtonData(
-                                          color: Theme.of(context)
-                                              .dialogBackgroundColor,
-                                          elevation: 0,
-                                          disabledElevation: 0.0,
-                                          highlightElevation: 0.0,
-                                          child: Text("确认",
-                                              style: TextStyle(
-                                                  color: ThemeUtils
-                                                      .currentThemeColor)),
-                                        ),
-                                        ios: (BuildContext context) =>
-                                            CupertinoButtonData(
-                                          child: Text(
-                                            "确认",
-                                            style: TextStyle(
-                                                color: ThemeUtils
-                                                    .currentThemeColor),
-                                          ),
-                                        ),
-                                        onPressed: () {
-                                          UserAPI.fAddToBlacklist(
-                                            uid: widget.post.uid,
-                                            name: widget.post.nickname,
-                                          );
-                                          Navigator.pop(context);
-                                        },
-                                      ),
-                                      PlatformButton(
-                                        android: (BuildContext context) =>
-                                            MaterialRaisedButtonData(
-                                          color: ThemeUtils.currentThemeColor,
-                                          elevation: 0,
-                                          disabledElevation: 0.0,
-                                          highlightElevation: 0.0,
-                                          child: Text('取消',
-                                              style: TextStyle(
-                                                  color: Colors.white)),
-                                        ),
-                                        ios: (BuildContext context) =>
-                                            CupertinoButtonData(
-                                          child: Text("取消",
-                                              style: TextStyle(
-                                                  color: ThemeUtils
-                                                      .currentThemeColor)),
-                                        ),
-                                        onPressed: Navigator.of(context).pop,
-                                      ),
-                                    ],
-                                  ));
-                        }),
-                    _listTile(
-                        icon: Icons.report,
-                        text: "举报动态",
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => PlatformAlertDialog(
-                              title: Text(
-                                "举报动态",
-                                style: TextStyle(
-                                  fontSize: Constants.suSetSp(22.0),
-                                ),
+                      icon: Icons.visibility_off,
+                      text: "屏蔽此人",
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => PlatformAlertDialog(
+                            title: Text(
+                              "屏蔽此人",
+                              style: TextStyle(
+                                fontSize: Constants.suSetSp(22.0),
                               ),
-                              content: Text(
-                                "确定举报该条动态吗？",
-                                style: TextStyle(
-                                  fontSize: Constants.suSetSp(18.0),
-                                ),
-                              ),
-                              actions: <Widget>[
-                                PlatformButton(
-                                  android: (BuildContext context) =>
-                                      MaterialRaisedButtonData(
-                                    color:
-                                        Theme.of(context).dialogBackgroundColor,
-                                    elevation: 0,
-                                    disabledElevation: 0.0,
-                                    highlightElevation: 0.0,
-                                    child: Text("确认",
-                                        style: TextStyle(
-                                            color:
-                                                ThemeUtils.currentThemeColor)),
-                                  ),
-                                  ios: (BuildContext context) =>
-                                      CupertinoButtonData(
-                                    child: Text(
-                                      "确认",
-                                      style: TextStyle(
-                                          color: ThemeUtils.currentThemeColor),
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    showShortToast("举报成功");
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                PlatformButton(
-                                  android: (BuildContext context) =>
-                                      MaterialRaisedButtonData(
-                                    color: ThemeUtils.currentThemeColor,
-                                    elevation: 0,
-                                    disabledElevation: 0.0,
-                                    highlightElevation: 0.0,
-                                    child: Text('取消',
-                                        style: TextStyle(color: Colors.white)),
-                                  ),
-                                  ios: (BuildContext context) =>
-                                      CupertinoButtonData(
-                                    child: Text("取消",
-                                        style: TextStyle(
-                                            color:
-                                                ThemeUtils.currentThemeColor)),
-                                  ),
-                                  onPressed: Navigator.of(context).pop,
-                                ),
-                              ],
                             ),
-                          );
-                        }),
+                            content: Text(
+                              "确定屏蔽此人吗？",
+                              style: TextStyle(
+                                fontSize: Constants.suSetSp(18.0),
+                              ),
+                            ),
+                            actions: <Widget>[
+                              PlatformButton(
+                                android: (BuildContext context) =>
+                                    MaterialRaisedButtonData(
+                                  color:
+                                      Theme.of(context).dialogBackgroundColor,
+                                  elevation: 0,
+                                  disabledElevation: 0.0,
+                                  highlightElevation: 0.0,
+                                  child: Text(
+                                    "确认",
+                                    style: TextStyle(
+                                      color: ThemeUtils.currentThemeColor,
+                                    ),
+                                  ),
+                                ),
+                                ios: (BuildContext context) =>
+                                    CupertinoButtonData(
+                                  child: Text(
+                                    "确认",
+                                    style: TextStyle(
+                                      color: ThemeUtils.currentThemeColor,
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  UserAPI.fAddToBlacklist(
+                                    uid: widget.post.uid,
+                                    name: widget.post.nickname,
+                                  );
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              PlatformButton(
+                                android: (BuildContext context) =>
+                                    MaterialRaisedButtonData(
+                                  color: ThemeUtils.currentThemeColor,
+                                  elevation: 0,
+                                  disabledElevation: 0.0,
+                                  highlightElevation: 0.0,
+                                  child: Text(
+                                    '取消',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                ios: (BuildContext context) =>
+                                    CupertinoButtonData(
+                                  child: Text(
+                                    "取消",
+                                    style: TextStyle(
+                                      color: ThemeUtils.currentThemeColor,
+                                    ),
+                                  ),
+                                ),
+                                onPressed: Navigator.of(context).pop,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    _listTile(
+                      icon: Icons.report,
+                      text: "举报动态",
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => PlatformAlertDialog(
+                            title: Text(
+                              "举报动态",
+                              style: TextStyle(
+                                fontSize: Constants.suSetSp(22.0),
+                              ),
+                            ),
+                            content: Text(
+                              "确定举报该条动态吗？",
+                              style: TextStyle(
+                                fontSize: Constants.suSetSp(18.0),
+                              ),
+                            ),
+                            actions: <Widget>[
+                              PlatformButton(
+                                android: (BuildContext context) =>
+                                    MaterialRaisedButtonData(
+                                  color:
+                                      Theme.of(context).dialogBackgroundColor,
+                                  elevation: 0,
+                                  disabledElevation: 0.0,
+                                  highlightElevation: 0.0,
+                                  child: Text(
+                                    "确认",
+                                    style: TextStyle(
+                                      color: ThemeUtils.currentThemeColor,
+                                    ),
+                                  ),
+                                ),
+                                ios: (BuildContext context) =>
+                                    CupertinoButtonData(
+                                  child: Text(
+                                    "确认",
+                                    style: TextStyle(
+                                      color: ThemeUtils.currentThemeColor,
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  showShortToast("举报成功");
+                                  Navigator.pop(context);
+                                },
+                              ),
+                              PlatformButton(
+                                android: (BuildContext context) =>
+                                    MaterialRaisedButtonData(
+                                  color: ThemeUtils.currentThemeColor,
+                                  elevation: 0,
+                                  disabledElevation: 0.0,
+                                  highlightElevation: 0.0,
+                                  child: Text(
+                                    '取消',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                ios: (BuildContext context) =>
+                                    CupertinoButtonData(
+                                  child: Text(
+                                    "取消",
+                                    style: TextStyle(
+                                      color: ThemeUtils.currentThemeColor,
+                                    ),
+                                  ),
+                                ),
+                                onPressed: Navigator.of(context).pop,
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   ],
                 ),
               );
@@ -745,7 +791,7 @@ class _PostCardState extends State<PostCard> {
                   widget.post,
                   index: widget.index,
                   fromPage: widget.fromPage,
-                  beforeContext: context,
+                  parentContext: context,
                 );
               }));
             },
@@ -764,7 +810,7 @@ class _PostCardState extends State<PostCard> {
                     ),
                     child: Row(
                       children: <Widget>[
-                        getPostAvatar(context, widget.post),
+                        avatar,
                         Expanded(
                           child: Padding(
                             padding: EdgeInsets.symmetric(
@@ -774,9 +820,9 @@ class _PostCardState extends State<PostCard> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                getPostNickname(widget.post),
+                                nickname,
                                 Constants.separator(context, height: 4.0),
-                                getPostInfo(widget.post),
+                                postInfo,
                               ],
                             ),
                           ),
@@ -788,15 +834,16 @@ class _PostCardState extends State<PostCard> {
                       ],
                     ),
                   ),
-                  getPostContent(context, widget.post),
-                  getPostImages(context, widget.post),
+                  content,
+                  pics,
                   isDetail
                       ? Container(
-                          width: MediaQuery.of(context).size.width,
+                          width: Screen.width,
                           padding: EdgeInsets.symmetric(
-                              vertical: Constants.suSetSp(8.0)),
+                            vertical: Constants.suSetSp(8.0),
+                          ),
                         )
-                      : getPostActions(context)
+                      : actions
                 ]
               : <Widget>[getPostBanned("shield")],
         ),

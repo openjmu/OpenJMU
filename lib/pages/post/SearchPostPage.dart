@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/model/PostController.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class SearchPage extends StatefulWidget {
   final String content;

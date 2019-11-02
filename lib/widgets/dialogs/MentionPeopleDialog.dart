@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class MentionPeopleDialog extends StatefulWidget {
   @override

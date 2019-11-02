@@ -1,6 +1,6 @@
 import 'package:event_bus/event_bus.dart';
 
-import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/constants/Constants.dart';
 
 class Instances {
 

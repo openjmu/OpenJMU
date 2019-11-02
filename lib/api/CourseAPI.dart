@@ -1,11 +1,8 @@
 import 'dart:math';
 
-import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/api/DateAPI.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:flutter/material.dart';
+
+import 'package:OpenJMU/constants/Constants.dart';
 
 final _random = Random();
 
@@ -28,6 +25,7 @@ class CourseAPI {
       TimeOfDay(hour: hour, minute: minute);
 
   static bool inCurrentWeek(Course course, {int currentWeek}) {
+    if (course.isCustom) return true;
     final int week = currentWeek ?? DateAPI.currentWeek;
     bool result;
     bool inRange = week >= course.startWeek && week <= course.endWeek;
@@ -55,10 +53,15 @@ class CourseAPI {
   };
 
   static Map<String, String> courseTimeChinese = {
+    "1": "一二节",
     "12": "一二节",
+    "3": "三四节",
     "34": "三四节",
+    "5": "五六节",
     "56": "五六节",
+    "7": "七八节",
     "78": "七八节",
+    "9": "九十节",
     "90": "九十节",
     "11": "十一节",
     "911": "九十十一节",
@@ -84,6 +87,7 @@ class CourseAPI {
     Color(0xffBCAAA4),
     Color(0xffEEEEEE),
     Color(0xffB0BEC5),
+
     Color(0xffd8b5df),
     Color(0xff68c0ca),
     Color(0xff05bac3),

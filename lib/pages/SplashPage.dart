@@ -6,15 +6,9 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/LoginPage.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class SplashPage extends StatefulWidget {
   final int initIndex;

@@ -5,13 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/CacheUtils.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
 
 class UserAPI {
   static String lastTicket;

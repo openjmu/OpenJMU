@@ -1,6 +1,6 @@
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:OpenJMU/utils/ThemeUtils.dart';
+import 'package:OpenJMU/constants/Constants.dart';
 
 void showLongToast(String text) {
   Fluttertoast.showToast(

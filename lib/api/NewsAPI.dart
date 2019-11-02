@@ -1,7 +1,4 @@
-import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
 
 class NewsAPI {
   static News createNews(Map<String, dynamic> newsData) {

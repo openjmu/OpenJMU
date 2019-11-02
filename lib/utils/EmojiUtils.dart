@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
 
 class EmoticonUtils {
   final Map<String, String> _emoticonMap = Map<String, String>();

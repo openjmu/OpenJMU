@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 
 class ChangeThemePage extends StatefulWidget {
   @override

@@ -5,11 +5,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import 'package:OpenJMU/api/TeamAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/cards/TeamPostCard.dart';
 
 class TeamPostController {

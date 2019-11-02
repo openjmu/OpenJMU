@@ -2,15 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:extended_text/extended_text.dart';
 
-import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/api/PostAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/post/SearchPostPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/pages/post/PostDetailPage.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class PraiseCard extends StatelessWidget {
@@ -145,7 +140,7 @@ class PraiseCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-          return PostDetailPage(_post, beforeContext: context);
+          return PostDetailPage(_post, parentContext: context);
         }));
       },
       child: Card(

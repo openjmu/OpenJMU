@@ -1,17 +1,11 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:like_button/like_button.dart';
 
-import 'package:OpenJMU/api/PraiseAPI.dart';
-import 'package:OpenJMU/api/TeamAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/model/TeamCommentController.dart';
-import 'package:OpenJMU/model/TeamPraiseController.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/cards/TeamPostCard.dart';
 import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 

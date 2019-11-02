@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 import 'dart:io';
 
 import 'package:flutter/material.dart' hide Image;
@@ -10,7 +9,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:image_downloader/image_downloader.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
 import 'package:OpenJMU/widgets/image/ImageGestureDetector.dart';
 
 class ImageViewer extends StatefulWidget {
@@ -137,15 +135,15 @@ class _ImageViewerState extends State<ImageViewer>
       ),
       padding: EdgeInsets.all(5.0),
     );
-//        if (index == currentIndex) {
-//            image = Hero(
-//                tag: "${widget.pics[index].id}"
-//                        "${index.toString()}"
-//                        "${widget.pics[index].postId.toString()}"
-//                ,
-//                child: image,
-//            );
-//        }
+    if (index == currentIndex) {
+      image = Hero(
+        tag: "${widget.pics[index].id}"
+            "${index.toString()}"
+            "${widget.pics[index].postId.toString()}"
+        ,
+        child: image,
+      );
+    }
     return ImageGestureDetector(
       child: image,
       context: context,

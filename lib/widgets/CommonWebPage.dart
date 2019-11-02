@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'dart:async';
 
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/widgets/AppIcon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -10,8 +8,7 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
+import 'package:OpenJMU/widgets/AppIcon.dart';
 
 class CommonWebPage extends StatefulWidget {
   final String url;

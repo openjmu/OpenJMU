@@ -1,9 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
 
 class TeamPostAPI {
   static Future getPostList(

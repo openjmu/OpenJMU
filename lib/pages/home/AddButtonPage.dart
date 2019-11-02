@@ -7,7 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/constants/Screens.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 
 class AddingButtonPage extends StatefulWidget {

@@ -9,9 +9,7 @@ import 'package:image_crop/image_crop.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 
-import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 
 class ImageCropperPage extends StatefulWidget {

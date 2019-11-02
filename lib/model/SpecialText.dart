@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:extended_text_library/extended_text_library.dart';
 
-import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/utils/EmojiUtils.dart';
 
 class LinkText extends SpecialText {
   static String startKey = API.wbHost;

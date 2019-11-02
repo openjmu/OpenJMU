@@ -1,18 +1,11 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:like_button/like_button.dart';
 
-import 'package:OpenJMU/api/PostAPI.dart';
-import 'package:OpenJMU/api/PraiseAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/model/PostController.dart';
-import 'package:OpenJMU/model/CommentController.dart';
-import 'package:OpenJMU/model/PraiseController.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
 import 'package:OpenJMU/widgets/dialogs/ForwardPositioned.dart';
 import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
@@ -21,10 +14,14 @@ class PostDetailPage extends StatefulWidget {
   final Post post;
   final int index;
   final String fromPage;
-  final BuildContext beforeContext;
-  PostDetailPage(this.post,
-      {this.index, this.fromPage, this.beforeContext, Key key})
-      : super(key: key);
+  final BuildContext parentContext;
+
+  const PostDetailPage(
+    this.post, {
+    this.index,
+    this.fromPage,
+    this.parentContext,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -67,7 +64,6 @@ class PostDetailPageState extends State<PostDetailPage> {
       praisesColor;
   Color activeColor = ThemeUtils.currentThemeColor;
 
-
   @override
   void initState() {
     super.initState();
@@ -78,10 +74,15 @@ class PostDetailPageState extends State<PostDetailPage> {
       isLike = widget.post.isLike;
     });
     _requestData();
-    setCurrentTabActive(widget.beforeContext, 1, "comments");
+    setCurrentTabActive(widget.parentContext, 1, "comments");
     PostAPI.glancePost(widget.post.id);
-    _post = PostCard(widget.post,
-        index: widget.index, fromPage: widget.fromPage, isDetail: true);
+    _post = PostCard(
+      widget.post,
+      index: widget.index,
+      fromPage: widget.fromPage,
+      isDetail: true,
+      parentContext: widget.parentContext,
+    );
 
     Instances.eventBus
       ..on<PostDeletedEvent>().listen((event) {
@@ -204,7 +205,7 @@ class PostDetailPageState extends State<PostDetailPage> {
   }
 
   Widget actionLists(context) {
-    return new Container(
+    return Container(
       color: Theme.of(context).cardColor,
       margin: EdgeInsets.only(top: Constants.suSetSp(4.0)),
       padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
@@ -406,30 +407,18 @@ class PostDetailPageState extends State<PostDetailPage> {
       body: Column(
         children: <Widget>[
           Expanded(
-            child: ListView(
+            child: Column(
               children: <Widget>[
-                Row(
-                  mainAxisSize: MainAxisSize.max,
+                _post,
+                actionLists(context),
+                IndexedStack(
                   children: <Widget>[
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          _post,
-                          actionLists(context),
-                          IndexedStack(
-                            children: <Widget>[
-                              _forwardsList,
-                              _commentsList,
-                              _praisesList,
-                            ],
-                            index: _tabIndex,
-                          )
-                        ],
-                      ),
-                    ),
+                    _forwardsList,
+                    _commentsList,
+                    _praisesList,
                   ],
-                ),
+                  index: _tabIndex,
+                )
               ],
             ),
           ),

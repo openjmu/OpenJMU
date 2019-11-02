@@ -4,7 +4,7 @@ class Configs {
   /// For test page.
   /// TODO: Set this to false before release.
   static final bool debug = !kReleaseMode && false;
-//  static final bool debug = !kReleaseMode && true;
+//  static final bool debug = true;
 
   // Fow start index.
   static int homeSplashIndex = 0;

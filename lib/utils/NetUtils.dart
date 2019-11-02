@@ -5,8 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 
-import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
+import 'package:OpenJMU/constants/Constants.dart';
 
 class NetUtils {
   static final Dio dio = Dio();

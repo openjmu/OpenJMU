@@ -1,24 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:OpenJMU/widgets/announcement/AnnouncementWidget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
-import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/ChannelUtils.dart';
-import 'package:OpenJMU/utils/DataUtils.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
-import 'package:OpenJMU/utils/ToastUtils.dart';
-import 'package:OpenJMU/utils/OTAUtils.dart';
 
 import 'package:OpenJMU/pages/home/AddButtonPage.dart';
 import 'package:OpenJMU/pages/home/AppCenterPage.dart';
@@ -26,6 +14,7 @@ import 'package:OpenJMU/pages/home/MessagePage.dart';
 import 'package:OpenJMU/pages/home/MyInfoPage.dart';
 import 'package:OpenJMU/pages/home/PostSquareListPage.dart';
 import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
+import 'package:OpenJMU/widgets/announcement/AnnouncementWidget.dart';
 
 class MainPage extends StatefulWidget {
   final int initIndex;

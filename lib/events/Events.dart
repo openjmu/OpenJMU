@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 
-import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/constants/Constants.dart';
 
 /// Event for testing.
 class TestEvent {

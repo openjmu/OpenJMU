@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:extended_tabs/extended_tabs.dart';
 
-import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
-import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/pages/home/CourseSchedulePage.dart';
 import 'package:OpenJMU/pages/home/ScorePage.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/AppIcon.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/InAppBrowser.dart';

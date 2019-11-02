@@ -4,13 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:OpenJMU/api/CourseAPI.dart';
-import 'package:OpenJMU/api/DateAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/constants/Screens.dart';
-import 'package:OpenJMU/events/Events.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/pages/home/AppCenterPage.dart';
 
 class CourseSchedulePage extends StatefulWidget {
@@ -55,7 +49,6 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       ..on<CourseScheduleRefreshEvent>().listen((event) {
         if (this.mounted) {
           refreshIndicatorKey.currentState.show();
-          initSchedule();
         }
       })
       ..on<CurrentWeekUpdatedEvent>().listen((event) {
@@ -130,6 +123,12 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         Course _c = Course.fromJson(course);
         addCourse(_c, _courses);
       });
+      _customCourseList.forEach((course) {
+        if (course['content'].trim().isNotEmpty) {
+          Course _c = Course.fromJson(course, isCustom: true);
+          addCourse(_c, _courses);
+        }
+      });
       if (courses.toString() != _courses.toString()) {
         courses = _courses;
       }
@@ -168,26 +167,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   }
 
   void addCourse(Course course, Map<int, Map<int, List<Course>>> courses) {
-    switch (course.time) {
-      case "12":
-        courses[course.day][1].add(course);
-        break;
-      case "34":
-        courses[course.day][3].add(course);
-        break;
-      case "56":
-        courses[course.day][5].add(course);
-        break;
-      case "78":
-        courses[course.day][7].add(course);
-        break;
-      case "90":
-      case "911":
-        courses[course.day][9].add(course);
-        break;
-      case "11":
-        courses[course.day][11].add(course);
-        break;
+    if (course.time == "11") {
+      courses[course.day][11].add(course);
+    } else {
+      courses[course.day][int.parse(course.time.substring(0, 1))].add(course);
     }
   }
 
@@ -451,8 +434,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                     if (count.isEven)
                       CourseWidget(
                         courseList: courses[day][count - 1],
-                        count: hasEleven && count == 10 ? 10 : null,
+                        hasEleven: hasEleven && count == 10,
                         currentWeek: currentWeek,
+                        coordinate: [day, count],
                       ),
                 ],
               ),
@@ -464,13 +448,14 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   Widget get emptyTips => Expanded(
         child: Center(
-            child: Text(
-          "没有课的日子\n往往就是这么的朴实无华\n且枯燥\n😆",
-          style: TextStyle(
-            fontSize: Constants.suSetSp(30.0),
+          child: Text(
+            "没有课的日子\n往往就是这么的朴实无华\n且枯燥\n😆",
+            style: TextStyle(
+              fontSize: Constants.suSetSp(30.0),
+            ),
+            textAlign: TextAlign.center,
           ),
-          textAlign: TextAlign.center,
-        )),
+        ),
       );
 
   @mustCallSuper
@@ -506,15 +491,18 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
 class CourseWidget extends StatelessWidget {
   final List<Course> courseList;
-  final int count;
+  final List<int> coordinate;
+  final bool hasEleven;
   final int currentWeek;
 
   const CourseWidget({
     Key key,
     @required this.courseList,
-    this.count,
+    @required this.coordinate,
+    this.hasEleven,
     this.currentWeek,
-  }) : super(key: key);
+  })  : assert(coordinate.length == 2, "Invalid course coordinate"),
+        super(key: key);
 
   void showCoursesDetail(context) {
     showDialog(
@@ -525,7 +513,38 @@ class CourseWidget extends StatelessWidget {
     );
   }
 
-  Widget courseCountIndicator(Course course) => Positioned(
+  Widget courseCustomIndicator(Course course) => Positioned(
+        bottom: 1.5,
+        left: 1.5,
+        child: Container(
+          width: Constants.suSetSp(24.0),
+          height: Constants.suSetSp(24.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(10.0),
+              bottomLeft: Radius.circular(5.0),
+            ),
+            color: ThemeUtils.currentThemeColor.withAlpha(100),
+          ),
+          child: Center(
+            child: Text(
+              "✍️",
+              style: TextStyle(
+                color: !CourseAPI.inCurrentWeek(
+                  course,
+                  currentWeek: currentWeek,
+                )
+                    ? Colors.grey
+                    : Colors.black,
+                fontSize: Constants.suSetSp(12.0),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+      );
+
+  Widget get courseCountIndicator => Positioned(
         bottom: 1.5,
         right: 1.5,
         child: Container(
@@ -542,13 +561,8 @@ class CourseWidget extends StatelessWidget {
             child: Text(
               "${courseList.length}",
               style: TextStyle(
-                color: !CourseAPI.inCurrentWeek(
-                  course,
-                  currentWeek: currentWeek,
-                )
-                    ? Colors.grey
-                    : Colors.black,
-                fontSize: Constants.suSetSp(16.0),
+                color: Colors.black,
+                fontSize: Constants.suSetSp(14.0),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -558,8 +572,7 @@ class CourseWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isEleven = count != null && count == 10;
-    bool currentIsEleven = false;
+    bool isEleven = false;
     Course course;
     if (courseList != null && courseList.isNotEmpty) {
       course = courseList.firstWhere(
@@ -568,9 +581,9 @@ class CourseWidget extends StatelessWidget {
       );
     }
     if (course == null && courseList.isNotEmpty) course = courseList[0];
-    if (isEleven) currentIsEleven = course?.isEleven ?? false;
+    if (hasEleven) isEleven = course?.isEleven ?? false;
     return Expanded(
-      flex: isEleven ? 3 : 2,
+      flex: hasEleven ? 3 : 2,
       child: Column(
         children: <Widget>[
           Expanded(
@@ -587,6 +600,9 @@ class CourseWidget extends StatelessWidget {
                       ),
                       onTap: () {
                         if (courseList.isNotEmpty) showCoursesDetail(context);
+                      },
+                      onLongPress: () {
+                        print("longPressed at: $coordinate");
                       },
                       child: Container(
                         padding: EdgeInsets.all(Constants.suSetSp(8.0)),
@@ -635,7 +651,7 @@ class CourseWidget extends StatelessWidget {
                                           )
                                               ? Colors.grey
                                               : Colors.black,
-                                          fontSize: Constants.suSetSp(15.0),
+                                          fontSize: Constants.suSetSp(14.0),
                                         ),
                                   ),
                                   overflow: TextOverflow.fade,
@@ -645,23 +661,23 @@ class CourseWidget extends StatelessWidget {
                                   color: Theme.of(context)
                                       .iconTheme
                                       .color
-                                      .withOpacity(0.15).withRed(180)
-                                      .withBlue(180).withGreen(180),
+                                      .withOpacity(0.15)
+                                      .withRed(180)
+                                      .withBlue(180)
+                                      .withGreen(180),
                                 ),
                         ),
                       ),
                     ),
                   ),
                 ),
-                if (courseList.length > 1) courseCountIndicator(course),
+                if (courseList.where((course) => course.isCustom).isNotEmpty)
+                  courseCustomIndicator(course),
+                if (courseList.length > 1) courseCountIndicator,
               ],
             ),
           ),
-          if (!currentIsEleven && isEleven)
-            Expanded(
-              flex: 1,
-              child: SizedBox(),
-            ),
+          if (!isEleven && hasEleven) Spacer(flex: 1),
         ],
       ),
     );
@@ -683,9 +699,10 @@ class CoursesDialog extends StatelessWidget {
   void showCoursesDetail(context, Course course) {
     showDialog(
       context: context,
-      builder: (context) {
-        return CoursesDialog(courseList: [course], currentWeek: currentWeek);
-      },
+      builder: (context) => CoursesDialog(
+        courseList: [course],
+        currentWeek: currentWeek,
+      ),
     );
   }
 
@@ -694,169 +711,233 @@ class CoursesDialog extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         itemCount: courseList.length,
         itemBuilder: (context, index) {
-          return Container(
-            margin: EdgeInsets.symmetric(
-              vertical: 0.2 * 0.7 * Screen.height / 3,
+          return Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 10.0,
+              vertical: 0.2 * 0.7 * Screen.height / 3 + 10.0,
             ),
             child: GestureDetector(
               onTap: () {
                 showCoursesDetail(context, courseList[index]);
               },
-              child: Container(
-                margin: const EdgeInsets.all(10.0),
-                padding: const EdgeInsets.all(20.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20.0),
-                  color: courseList.isNotEmpty
-                      ? CourseAPI.inCurrentWeek(courseList[index],
-                              currentWeek: currentWeek)
-                          ? ThemeUtils.isDark
-                              ? courseList[index].color.withAlpha(darkModeAlpha)
-                              : courseList[index].color
-                          : Colors.grey
-                      : null,
-                ),
-                child: Center(
-                  child: RichText(
-                    text: TextSpan(
-                      children: <InlineSpan>[
-                        if (!CourseAPI.inCurrentWeek(courseList[index],
-                            currentWeek: currentWeek))
-                          TextSpan(
-                            text: "[非本周]"
-                                "\n",
+              child: Stack(
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.all(20.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(15.0),
+                      color: courseList.isNotEmpty
+                          ? CourseAPI.inCurrentWeek(
+                              courseList[index],
+                              currentWeek: currentWeek,
+                            )
+                              ? ThemeUtils.isDark
+                                  ? courseList[index]
+                                      .color
+                                      .withAlpha(darkModeAlpha)
+                                  : courseList[index].color
+                              : Colors.grey
+                          : null,
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          if (courseList[index].isCustom)
+                            Text(
+                              "[自定义]",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: Constants.suSetSp(20.0),
+                                height: 1.5,
+                              ),
+                            ),
+                          if (!CourseAPI.inCurrentWeek(
+                            courseList[index],
+                            currentWeek: currentWeek,
+                          ))
+                            Text(
+                              "[非本周]",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: Constants.suSetSp(20.0),
+                                height: 1.5,
+                              ),
+                            ),
+                          Text(
+                            courseList[index].name,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: Constants.suSetSp(20.0),
+                              fontWeight: FontWeight.bold,
+                              height: 1.5,
+                            ),
                           ),
-                        TextSpan(
-                          text: courseList[index].name,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        if (courseList[index].location != null)
-                          TextSpan(text: "\n"),
-                        if (courseList[index].location != null)
-                          TextSpan(text: "📍${courseList[index].location}"),
-                      ],
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: Constants.suSetSp(20.0),
-                        height: 1.5,
+                          if (courseList[index].location != null)
+                            Text(
+                              "📍${courseList[index].location}",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: Constants.suSetSp(20.0),
+                                height: 1.5,
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                    textAlign: TextAlign.center,
                   ),
-                ),
+                ],
               ),
             ),
           );
         },
       );
 
-  Widget courseDetail(Course course) => DecoratedBox(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.0),
-          color: courseList.isNotEmpty
-              ? CourseAPI.inCurrentWeek(course, currentWeek: currentWeek)
-                  ? ThemeUtils.isDark
-                      ? course.color.withAlpha(darkModeAlpha)
-                      : course.color
-                  : Colors.grey
-              : null,
-        ),
-        child: Padding(
-          padding: EdgeInsets.all(Constants.suSetSp(12.0)),
-          child: Center(
-            child: RichText(
-              text: TextSpan(
-                children: <InlineSpan>[
-                  if (!CourseAPI.inCurrentWeek(course,
-                      currentWeek: currentWeek))
-                    TextSpan(
-                      text: "[非本周]"
-                          "\n",
-                    ),
-                  TextSpan(
-                    text: "${courseList[0].name}"
-                        "\n",
-                    style: TextStyle(
-                      fontSize: Constants.suSetSp(24.0),
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  if (course.location != null)
-                    TextSpan(
-                      text: "📍 ${course.location}"
-                          "\n",
-                    ),
-                  TextSpan(
-                    text: "📅 ${course.startWeek}"
-                        "-"
-                        "${course.endWeek}"
-                        "${course.oddEven == 1 ? "单" : course.oddEven == 2 ? "双" : ""}周"
-                        "\n",
-                  ),
-                  TextSpan(
-                    text: "⏰ ${DateAPI.shortWeekdays[course.day - 1]} "
-                        "${CourseAPI.courseTimeChinese[course.time]}"
-                        "\n",
-                  ),
-                  if (course.teacher != null)
-                    TextSpan(text: "🎓 ${course.teacher}"),
-                ],
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: Constants.suSetSp(20.0),
-                  height: 2.0,
-                ),
+  Widget courseDetail(Course course) {
+    final style = TextStyle(
+      color: Colors.black,
+      fontSize: Constants.suSetSp(20.0),
+      height: 1.8,
+    );
+    return Container(
+      width: double.maxFinite,
+      height: double.maxFinite,
+      padding: EdgeInsets.all(Constants.suSetSp(12.0)),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15.0),
+        color: courseList.isNotEmpty
+            ? CourseAPI.inCurrentWeek(course, currentWeek: currentWeek)
+                ? ThemeUtils.isDark
+                    ? course.color.withAlpha(darkModeAlpha)
+                    : course.color
+                : Colors.grey
+            : null,
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            if (course.isCustom)
+              Text(
+                "[自定义]",
+                style: style,
               ),
-              textAlign: TextAlign.center,
+            if (!CourseAPI.inCurrentWeek(
+              course,
+              currentWeek: currentWeek,
+            ))
+              Text(
+                "[非本周]",
+                style: style,
+              ),
+            Text(
+              "${courseList[0].name}",
+              style: style.copyWith(
+                fontSize: Constants.suSetSp(24.0),
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
+            if (course.location != null)
+              Text(
+                "📍 ${course.location}",
+                style: style,
+              ),
+            if (course.startWeek != null && course.endWeek != null)
+              Text(
+                "📅 ${course.startWeek}"
+                "-"
+                "${course.endWeek}"
+                "${course.oddEven == 1 ? "单" : course.oddEven == 2 ? "双" : ""}周",
+                style: style,
+              ),
+            Text(
+              "⏰ ${DateAPI.shortWeekdays[course.day - 1]} "
+              "${CourseAPI.courseTimeChinese[course.time]}",
+              style: style,
+            ),
+            if (course.teacher != null)
+              Text(
+                "🎓 ${course.teacher}",
+                style: style,
+              ),
+            SizedBox(height: 12.0),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget closeButton(context) => Positioned(
+        top: 0.0,
+        right: 0.0,
+        child: IconButton(
+          icon: Icon(Icons.close, color: Colors.black),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
       );
 
   @override
   Widget build(BuildContext context) {
-    final bool hasMoreThanOneCourses = courseList.length > 1;
+    final bool isDetail = courseList.length == 1;
     final Course firstCourse = courseList[0];
     return SimpleDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
       contentPadding: EdgeInsets.zero,
       children: <Widget>[
         SizedBox(
           width: Screen.width / 2,
-          height: Screen.height / 3,
+          height: Constants.suSetSp(370.0),
           child: Stack(
             children: <Widget>[
-              hasMoreThanOneCourses ? coursesPage : courseDetail(firstCourse),
-              Positioned(
-                top: 0.0,
-                right: 0.0,
-                child: IconButton(
-                  icon: Icon(Icons.close, color: Colors.black),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+              !isDetail ? coursesPage : courseDetail(firstCourse),
+              closeButton(context),
+              if (isDetail && courseList[0].isCustom)
+                Positioned(
+                  bottom: 10.0,
+                  left: Screen.width / 7,
+                  right: Screen.width / 7,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: <Widget>[
+                      MaterialButton(
+                        splashColor: Colors.grey[600],
+                        padding: EdgeInsets.zero,
+                        minWidth: 40.0,
+                        height: 40.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(Screen.width / 2),
+                        ),
+                        child: Icon(
+                          Icons.delete,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {},
+                      ),
+                      MaterialButton(
+                        splashColor: Colors.grey[600],
+                        padding: EdgeInsets.zero,
+                        minWidth: 40.0,
+                        height: 40.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(Screen.width / 2),
+                        ),
+                        child: Icon(
+                          Icons.edit,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {},
+                      ),
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
         ),
       ],
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
     );
   }
-}
-
-class TriangleClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.lineTo(size.width, 0.0);
-    path.lineTo(size.width / 2, size.height);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(TriangleClipper oldClipper) => false;
 }
