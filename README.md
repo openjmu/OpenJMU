@@ -1,5 +1,7 @@
 # OpenJMU
 
+![](illustration.png)
+
 使用 [Flutter](https://flutter.dev/) 对 [集大通](http://99.jmu.edu.cn/) 进行重写的客户端。
 
 Rebuild from [JiDaTong](http://99.jmu.edu.cn/) client using [Flutter](https://flutter.dev/).
