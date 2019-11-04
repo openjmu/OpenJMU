@@ -1,0 +1,17 @@
+name: CI
+
+on: [push, pull_request, create, delete, deployment, issues]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - name: Webhook Action
+      uses: joelwmale/webhook-action@1.0.0
+      env:
+        WEBHOOK_URL: ${{ secret.WX_WEBHOOK_URL }}
+        data: "{'msgtype': 'text','text': {'content': 'Ping from github actions.'}}"
