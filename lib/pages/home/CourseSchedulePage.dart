@@ -598,6 +598,8 @@ class CourseWidget extends StatelessWidget {
                       customBorder: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
+                      splashFactory: InkSplash.splashFactory,
+                      hoverColor: Colors.black,
                       onTap: () {
                         if (courseList.isNotEmpty) showCoursesDetail(context);
                       },

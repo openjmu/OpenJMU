@@ -10,7 +10,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:like_button/like_button.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/post/SearchPostPage.dart';
+import 'package:OpenJMU/pages/SearchPostPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/pages/post/PostDetailPage.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
@@ -26,7 +26,7 @@ class PostCard extends StatefulWidget {
   final int index;
   final BuildContext parentContext;
 
-  PostCard(
+  const PostCard(
     this.post, {
     this.isDetail,
     this.isRootContent,
@@ -203,7 +203,7 @@ class _PostCardState extends State<PostCard> {
           child: getPostBanned("shield"),
         );
       } else {
-        Post _post = PostAPI.createPost(content);
+        Post _post = Post.fromJson(content);
         String topic =
             "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ";
         topic += content['article'] ?? content['content'];
@@ -235,7 +235,7 @@ class _PostCardState extends State<PostCard> {
                   if (rootTopic['topic']['image'] != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
-//                      child: getRootPostImages(context, rootTopic['topic']),
+                      child: getRootPostImages(context, rootTopic['topic']),
                     ),
                 ],
               ),

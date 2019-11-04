@@ -2,14 +2,13 @@ import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:OpenJMU/constants/Screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_text/extended_text.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/post/SearchPostPage.dart';
+import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
@@ -166,7 +165,7 @@ class _PostListState extends State<PostList> {
           "uid": postData['topic']['user']['uid'].toString(),
           "username": postData['topic']['user']['nickname'],
         }))) {
-          postList.add(PostAPI.createPost(postData['topic']));
+          postList.add(Post.fromJson(postData['topic']));
           _idList.add(
             postData['id'] is String
                 ? int.parse(postData['id'])
@@ -212,7 +211,7 @@ class _PostListState extends State<PostList> {
             "uid": postData['topic']['user']['uid'].toString(),
             "username": postData['topic']['user']['nickname'],
           }))) {
-            postList.add(PostAPI.createPost(postData['topic']));
+            postList.add(Post.fromJson(postData['topic']));
             idList.add(
               postData['id'] is String
                   ? int.parse(postData['id'])
@@ -394,7 +393,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
           "uid": post['topic']['user']['uid'].toString(),
           "username": post['topic']['user']['nickname'],
         }))) {
-          posts.add(PostAPI.createPost(post['topic']));
+          posts.add(Post.fromJson(post['topic']));
         }
       });
       _posts.addAll(posts);
@@ -427,7 +426,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
           "uid": post['topic']['user']['uid'].toString(),
           "username": post['topic']['user']['nickname'],
         }))) {
-          posts.add(PostAPI.createPost(post['topic']));
+          posts.add(Post.fromJson(post['topic']));
         }
       });
       Instances.eventBus.fire(ForwardInPostUpdatedEvent(widget.post.id, total));
@@ -519,7 +518,9 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
       color: Theme.of(context).cardColor,
       width: Screen.width,
       padding: isLoading
-          ? EdgeInsets.symmetric(vertical: Constants.suSetSp(42))
+          ? EdgeInsets.symmetric(
+              vertical: Constants.suSetSp(42),
+            )
           : EdgeInsets.zero,
       child: isLoading
           ? Center(
@@ -580,7 +581,9 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                     getPostNickname(context, _posts[index]),
                                     Container(height: Constants.suSetSp(4.0)),
                                     getExtendedText(
-                                        context, _posts[index].content),
+                                      context,
+                                      _posts[index].content,
+                                    ),
                                     Container(height: Constants.suSetSp(6.0)),
                                     getPostTime(context, _posts[index]),
                                     Container(height: Constants.suSetSp(10.0)),

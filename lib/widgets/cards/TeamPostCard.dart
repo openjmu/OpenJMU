@@ -9,7 +9,10 @@ import 'package:extended_text/extended_text.dart';
 import 'package:like_button/like_button.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/post/SearchPostPage.dart';
+import 'package:OpenJMU/events/Events.dart';
+import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/model/SpecialText.dart';
+import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/pages/post/TeamPostDetailPage.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';

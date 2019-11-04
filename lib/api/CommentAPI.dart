@@ -93,7 +93,7 @@ class CommentAPI {
               itemData['to_topic']['topic']['content']
           : null,
       post: itemData['to_topic']['topic'] != null
-          ? PostAPI.createPost(itemData['to_topic']['topic'])
+          ? Post.fromJson(itemData['to_topic']['topic'])
           : null,
     );
     return _comment;

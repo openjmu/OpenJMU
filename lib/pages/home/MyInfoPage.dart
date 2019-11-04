@@ -185,7 +185,9 @@ class MyInfoPageState extends State<MyInfoPage> {
         title: Text("退出登录"),
         content: Text(
           "是否确认退出登录？",
-          style: Theme.of(context).textTheme.body1,
+          style: Theme.of(context).textTheme.body1.copyWith(
+            color: Colors.black,
+          ),
         ),
         actions: <Widget>[
           PlatformButton(

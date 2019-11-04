@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:extended_text/extended_text.dart';
 
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/post/SearchPostPage.dart';
+import 'package:OpenJMU/model/Bean.dart';
+import 'package:OpenJMU/model/SpecialText.dart';
+import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/pages/post/PostDetailPage.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
@@ -94,7 +97,7 @@ class PraiseCard extends StatelessWidget {
   }
 
   Widget getRootContent(context, praise) {
-    Post _post = PostAPI.createPost(praise.post);
+    Post _post = Post.fromJson(praise.post);
     String topic = "<M ${_post.uid}>@${_post.nickname}<\/M>: ";
     topic += _post.content;
     return Container(
@@ -136,7 +139,7 @@ class PraiseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Post _post = PostAPI.createPost(this.praise.post);
+    Post _post = Post.fromJson(this.praise.post);
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(CupertinoPageRoute(builder: (context) {

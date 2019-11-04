@@ -23,20 +23,6 @@ class UserAPI {
     });
   }
 
-  static User createUser(userData) => User(
-        id: int.parse(userData['uid'].toString()),
-        nickname: userData["nickname"] ??
-            userData["username"] ??
-            userData["name"] ??
-            userData["uid"].toString(),
-        gender: userData["gender"] ?? 0,
-        topics: userData["topics"] ?? 0,
-        latestTid: userData["latest_tid"] ?? null,
-        fans: userData["fans"] ?? 0,
-        idols: userData["idols"] ?? 0,
-        isFollowing: userData["is_following"] == 1,
-      );
-
   static UserTag createUserTag(tagData) => UserTag(
         id: tagData['id'],
         name: tagData['tagname'],
@@ -134,8 +120,13 @@ class UserAPI {
         data: {"signature": content});
   }
 
-  static Future searchUser(name) async {
-    return NetUtils.getWithCookieSet(API.searchUser, data: {"keyword": name});
+  static Future<Map<String, dynamic>> searchUser(name) async {
+    Map<String, dynamic> users = (await NetUtils.getWithCookieSet(
+      API.searchUser,
+      data: {"keyword": name},
+    )).data;
+    if (users['total'] == null) users = {"total": 1, "data": [users]};
+    return users;
   }
 
   ///

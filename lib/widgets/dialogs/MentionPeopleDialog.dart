@@ -38,15 +38,10 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
     loading = true;
     if (mounted) setState(() {});
     UserAPI.searchUser(query).then((response) {
-      Map _r = response.data;
       users.clear();
-      if (_r['data'] != null) {
-        _r['data'].forEach((userData) {
-          users.add(UserAPI.createUser(userData));
-        });
-      } else {
-        users.add(UserAPI.createUser(_r));
-      }
+      response['data'].forEach((userData) {
+        users.add(User.fromJson(userData));
+      });
       loading = false;
       if (mounted) setState(() {});
     }).catchError((e) {
