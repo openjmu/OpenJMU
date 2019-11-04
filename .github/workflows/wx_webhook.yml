@@ -1,0 +1,16 @@
+name: CI
+
+on: [push, pull_request, create, delete, deployment, issues]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Notify WeChat Work
+      uses: chhpt/wechat-work-messenger@v1.0.0
+      env:
+        BOT_KEY: ${{ secrets.WX_WORK_BOT_KEY }}
+        POST_MESSAGE: 'Markdown Message'
