@@ -9,6 +9,14 @@ import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/CourseAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 
+export 'package:OpenJMU/model/CommentController.dart';
+export 'package:OpenJMU/model/PostController.dart';
+export 'package:OpenJMU/model/PraiseController.dart';
+export 'package:OpenJMU/model/SpecialText.dart';
+export 'package:OpenJMU/model/TeamCommentController.dart';
+export 'package:OpenJMU/model/TeamPostController.dart';
+export 'package:OpenJMU/model/TeamPraiseController.dart';
+
 /// 动态实体
 /// [id] 动态id, [uid] 用户uid, [nickname] 用户名称, [avatar] 用户头像, [postTime] 动态时间, [from] 动态来源
 /// [glances] 被查看次数, [category] 动态类型, [content] 动态内容, [pics] 动态图片

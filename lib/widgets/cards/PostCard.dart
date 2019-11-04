@@ -10,7 +10,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:like_button/like_button.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/SearchPostPage.dart';
+import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/pages/post/PostDetailPage.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
