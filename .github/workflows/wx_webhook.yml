@@ -13,5 +13,5 @@ jobs:
     - name: Webhook Action
       uses: joelwmale/webhook-action@1.0.0
       env:
-        WEBHOOK_URL: ${{ secret.WX_WEBHOOK_URL }}
+        WEBHOOK_URL: ${{ secrets.WX_WEBHOOK_URL }}
         data: "{'msgtype': 'text','text': {'content': 'Ping from github actions.'}}"
