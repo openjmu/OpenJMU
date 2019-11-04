@@ -9,9 +9,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-
-    - name: Webhook Action
-      uses: joelwmale/webhook-action@1.0.0
+    - name: Notify WeChat Work
+      uses: chhpt/wechat-work-messenger@v1.0.0
       env:
-        WEBHOOK_URL: ${{ secrets.WX_WEBHOOK_URL }}
-        data: "{'msgtype': 'text','text': {'content': 'Ping from github actions.'}}"
+        BOT_KEY: ${{ secrets.WX_WORK_BOT_KEY }}
+        POST_MESSAGE: 'Markdown Message'
