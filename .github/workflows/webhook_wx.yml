@@ -13,5 +13,5 @@ jobs:
     - name: Webhook Action
       uses: joelwmale/webhook-action@1.0.0
       env:
-        WEBHOOK_URL: ${{ https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=c9473770-af13-4207-9187-fbba24a1e9f7 }}
+        WEBHOOK_URL: https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=c9473770-af13-4207-9187-fbba24a1e9f7
         data: "Hello from github actions!"
