@@ -28,7 +28,7 @@ class PostDetailPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return new PostDetailPageState();
+    return PostDetailPageState();
   }
 }
 
@@ -137,7 +137,7 @@ class PostDetailPageState extends State<PostDetailPage> {
             this.forwards != null) {
           if (event.count < this.forwards) {
             Instances.eventBus
-                .fire(new PostForwardDeletedEvent(widget.post.id, event.count));
+                .fire(PostForwardDeletedEvent(widget.post.id, event.count));
           }
           setState(() {
             this.forwards = event.count;
@@ -204,7 +204,7 @@ class PostDetailPageState extends State<PostDetailPage> {
   }
 
   Widget actionLists(context) {
-    return new Container(
+    return Container(
       color: Theme.of(context).cardColor,
       margin: EdgeInsets.only(top: Constants.suSetSp(4.0)),
       padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
@@ -368,7 +368,7 @@ class PostDetailPageState extends State<PostDetailPage> {
   }
 
   Future<bool> onLikeButtonTap(bool isLiked) {
-    final Completer<bool> completer = new Completer<bool>();
+    final Completer<bool> completer = Completer<bool>();
     int id = widget.post.id;
 
     widget.post.isLike = !widget.post.isLike;
@@ -408,27 +408,15 @@ class PostDetailPageState extends State<PostDetailPage> {
           Expanded(
             child: ListView(
               children: <Widget>[
-                Row(
-                  mainAxisSize: MainAxisSize.max,
+                _post,
+                actionLists(context),
+                IndexedStack(
                   children: <Widget>[
-                    Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          _post,
-                          actionLists(context),
-                          IndexedStack(
-                            children: <Widget>[
-                              _forwardsList,
-                              _commentsList,
-                              _praisesList,
-                            ],
-                            index: _tabIndex,
-                          )
-                        ],
-                      ),
-                    ),
+                    _forwardsList,
+                    _commentsList,
+                    _praisesList,
                   ],
+                  index: _tabIndex,
                 ),
               ],
             ),

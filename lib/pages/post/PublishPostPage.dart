@@ -468,15 +468,13 @@ class PublishPostPageState extends State<PublishPostPage> {
               _postContent(data);
             } else {
               _loadingDialogController.changeState("failed", "图片上传失败");
-              setState(() {
-                isLoading = false;
-              });
+              isLoading = false;
+              if (mounted) setState(() {});
             }
           }).catchError((e) {
             _loadingDialogController.changeState("failed", "图片上传失败");
-            setState(() {
-              isLoading = false;
-            });
+            isLoading = false;
+            if (mounted) setState(() {});
             debugPrint(e.toString());
           });
         } catch (exception) {

@@ -3,11 +3,10 @@ import 'dart:core';
 import 'package:flutter/foundation.dart';
 
 import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 
 class PostAPI {
-  static getPostList(
+  static Future getPostList(
       String postType, bool isFollowed, bool isMore, int lastValue,
       {additionAttrs}) async {
     String _postUrl;
@@ -90,30 +89,4 @@ class PostAPI {
     );
   }
 
-  static Post createPost(postData) {
-    Map<String, dynamic> _user = postData['user'];
-    String _avatar =
-        "${API.userAvatarInSecure}?uid=${_user['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
-    String _postTime = DateTime.fromMillisecondsSinceEpoch(
-      int.parse(postData['post_time']) * 1000,
-    ).toString().substring(0, 16);
-    Post _post = Post(
-      id: int.parse(postData['tid'].toString()),
-      uid: int.parse(postData['uid'].toString()),
-      nickname: _user['nickname'],
-      avatar: _avatar,
-      postTime: _postTime,
-      from: postData['from_string'],
-      glances: int.parse(postData['glances'].toString()),
-      category: postData['category'],
-      content: postData['article'] ?? postData['content'],
-      pics: postData['image'],
-      forwards: int.parse(postData['forwards'].toString()),
-      comments: int.parse(postData['replys'].toString()),
-      praises: int.parse(postData['praises']),
-      rootTopic: postData['root_topic'],
-      isLike: int.parse(postData['praised'].toString()) == 1,
-    );
-    return _post;
-  }
 }

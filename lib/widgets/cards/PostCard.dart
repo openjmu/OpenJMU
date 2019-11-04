@@ -10,13 +10,12 @@ import 'package:extended_image/extended_image.dart';
 import 'package:like_button/like_button.dart';
 
 import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/api/PostAPI.dart';
 import 'package:OpenJMU/api/PraiseAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
-import 'package:OpenJMU/pages/post/SearchPostPage.dart';
+import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/pages/post/PostDetailPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
@@ -34,9 +33,13 @@ class PostCard extends StatefulWidget {
   final String fromPage;
   final int index;
 
-  PostCard(this.post,
-      {this.isDetail, this.isRootContent, this.fromPage, this.index, Key key})
-      : super(key: key);
+  PostCard(
+    this.post, {
+    @required this.isDetail,
+    this.isRootContent,
+    this.fromPage,
+    this.index,
+  });
 
   @override
   State createState() => _PostCardState();
@@ -196,7 +199,7 @@ class _PostCardState extends State<PostCard> {
           child: getPostBanned("shield"),
         );
       } else {
-        Post _post = PostAPI.createPost(content);
+        Post _post = Post.fromJson(content);
         String topic =
             "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ";
         topic += content['article'] ?? content['content'];
@@ -445,11 +448,13 @@ class _PostCardState extends State<PostCard> {
       color: Color(ThemeUtils.currentThemeColor.value - 0x88000000),
       padding: EdgeInsets.all(Constants.suSetSp(30.0)),
       child: Center(
-        child: Text(content,
-            style: TextStyle(
-              color: isDark ? Colors.grey[350] : Colors.white,
-              fontSize: Constants.suSetSp(20.0),
-            )),
+        child: Text(
+          content,
+          style: TextStyle(
+            color: isDark ? Colors.grey[350] : Colors.white,
+            fontSize: Constants.suSetSp(20.0),
+          ),
+        ),
       ),
     );
   }
@@ -465,7 +470,8 @@ class _PostCardState extends State<PostCard> {
           padding: (isRoot ?? false)
               ? EdgeInsets.zero
               : EdgeInsets.symmetric(
-                  horizontal: Constants.suSetSp(contentPadding)),
+                  horizontal: Constants.suSetSp(contentPadding),
+                ),
           child: ExtendedText(
             content != null ? "$content " : null,
             style: TextStyle(fontSize: Constants.suSetSp(18.0)),
@@ -794,7 +800,8 @@ class _PostCardState extends State<PostCard> {
                       ? Container(
                           width: MediaQuery.of(context).size.width,
                           padding: EdgeInsets.symmetric(
-                              vertical: Constants.suSetSp(8.0)),
+                            vertical: Constants.suSetSp(8.0),
+                          ),
                         )
                       : getPostActions(context)
                 ]

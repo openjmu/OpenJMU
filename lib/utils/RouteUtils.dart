@@ -6,7 +6,7 @@ import 'package:OpenJMU/pages/SplashPage.dart';
 import 'package:OpenJMU/pages/LoginPage.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/pages/home/ScanQrCodePage.dart';
-import 'package:OpenJMU/pages/post/SearchPostPage.dart';
+import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/post/PublishPostPage.dart';
 import 'package:OpenJMU/pages/notification/NotificationPage.dart';
 import 'package:OpenJMU/pages/user/BackpackPage.dart';

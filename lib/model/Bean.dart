@@ -5,6 +5,7 @@ import 'package:flutter/material.dart'
     show ScaffoldPrelayoutGeometry, FloatingActionButtonLocation;
 import 'package:flutter/widgets.dart';
 
+import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/CourseAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 
@@ -75,6 +76,40 @@ class Post {
       "rootTopic": rootTopic,
       "isLike": isLike,
     })}";
+  }
+
+  factory Post.fromJson(Map<String, dynamic> json) {
+    json.forEach((k, v) {
+      if (json[k] == "") json[k] = null;
+    });
+    Map<String, dynamic> _user = json['user'];
+    _user.forEach((k, v) {
+      if (_user[k] == "") _user[k] = null;
+    });
+    String _avatar =
+        "${API.userAvatarInSecure}?uid=${_user['uid']}&size=f152&_t=${DateTime
+        .now().millisecondsSinceEpoch}";
+    String _postTime = DateTime.fromMillisecondsSinceEpoch(
+      int.parse(json['post_time']) * 1000,
+    ).toString().substring(0, 16);
+    Post _post = Post(
+      id: int.parse(json['tid'].toString()),
+      uid: int.parse(json['uid'].toString()),
+      nickname: _user['nickname'] ?? _user['uid'].toString(),
+      avatar: _avatar,
+      postTime: _postTime,
+      from: json['from_string'],
+      glances: int.parse(json['glances'].toString()),
+      category: json['category'],
+      content: json['article'] ?? json['content'],
+      pics: json['image'],
+      forwards: int.parse(json['forwards'].toString()),
+      comments: int.parse(json['replys'].toString()),
+      praises: int.parse(json['praises']),
+      rootTopic: json['root_topic'],
+      isLike: int.parse(json['praised'].toString()) == 1,
+    );
+    return _post;
   }
 
   Post copy() {
@@ -217,6 +252,22 @@ class User {
     this.idols,
     this.isFollowing,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: int.parse(json['uid'].toString()),
+      nickname: json["nickname"] ??
+          json["username"] ??
+          json["name"] ??
+          json["uid"].toString(),
+      gender: json["gender"] ?? 0,
+      topics: json["topics"] ?? 0,
+      latestTid: json["latest_tid"] ?? null,
+      fans: json["fans"] ?? 0,
+      idols: json["idols"] ?? 0,
+      isFollowing: json["is_following"] == 1,
+    );
+  }
 
   @override
   bool operator ==(Object other) =>

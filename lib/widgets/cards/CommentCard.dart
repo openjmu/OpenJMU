@@ -8,7 +8,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
 import 'package:OpenJMU/pages/post/PostDetailPage.dart';
-import 'package:OpenJMU/pages/post/SearchPostPage.dart';
+import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/api/UserAPI.dart';

@@ -13,7 +13,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
-import 'package:OpenJMU/pages/post/SearchPostPage.dart';
+import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
@@ -224,9 +224,8 @@ class _PostListState extends State<PostList> {
           },
         );
 
-        _body = _postList.isEmpty
-            ? (error ? _errorChild : _emptyChild)
-            : _itemList;
+        _body =
+            _postList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList;
 
         if (widget.needRefreshIndicator) {
           _body = RefreshIndicator(
@@ -271,7 +270,7 @@ class _PostListState extends State<PostList> {
           "uid": postData['topic']['user']['uid'].toString(),
           "username": postData['topic']['user']['nickname'],
         }))) {
-          postList.add(PostAPI.createPost(postData['topic']));
+          postList.add(Post.fromJson(postData['topic']));
           _idList.add(
             postData['id'] is String
                 ? int.parse(postData['id'])
@@ -321,7 +320,7 @@ class _PostListState extends State<PostList> {
             "uid": postData['topic']['user']['uid'].toString(),
             "username": postData['topic']['user']['nickname'],
           }))) {
-            postList.add(PostAPI.createPost(postData['topic']));
+            postList.add(Post.fromJson(postData['topic']));
             idList.add(
               postData['id'] is String
                   ? int.parse(postData['id'])
@@ -418,7 +417,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
           "uid": post['topic']['user']['uid'].toString(),
           "username": post['topic']['user']['nickname'],
         }))) {
-          posts.add(PostAPI.createPost(post['topic']));
+          posts.add(Post.fromJson(post['topic']));
         }
       });
       if (this.mounted) {
@@ -455,7 +454,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
           "uid": post['topic']['user']['uid'].toString(),
           "username": post['topic']['user']['nickname'],
         }))) {
-          posts.add(PostAPI.createPost(post['topic']));
+          posts.add(Post.fromJson(post['topic']));
         }
       });
       if (this.mounted) {
@@ -550,7 +549,9 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
       color: Theme.of(context).cardColor,
       width: MediaQuery.of(context).size.width,
       padding: isLoading
-          ? EdgeInsets.symmetric(vertical: Constants.suSetSp(42))
+          ? EdgeInsets.symmetric(
+              vertical: Constants.suSetSp(42),
+            )
           : EdgeInsets.zero,
       child: isLoading
           ? Center(
@@ -582,11 +583,15 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                     width: Constants.suSetSp(15.0),
                                     height: Constants.suSetSp(15.0),
                                     child: Constants.progressIndicator(
-                                        strokeWidth: 2.0),
+                                      strokeWidth: 2.0,
+                                    ),
                                   ),
-                                  Text("　正在加载",
-                                      style: TextStyle(
-                                          fontSize: Constants.suSetSp(14.0))),
+                                  Text(
+                                    "　正在加载",
+                                    style: TextStyle(
+                                      fontSize: Constants.suSetSp(14.0),
+                                    ),
+                                  ),
                                 ],
                               ),
                             );
@@ -607,7 +612,9 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                     getPostNickname(context, _posts[index]),
                                     Container(height: Constants.suSetSp(4.0)),
                                     getExtendedText(
-                                        context, _posts[index].content),
+                                      context,
+                                      _posts[index].content,
+                                    ),
                                     Container(height: Constants.suSetSp(6.0)),
                                     getPostTime(context, _posts[index]),
                                     Container(height: Constants.suSetSp(10.0)),
@@ -624,10 +631,13 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                   : Container(
                       height: Constants.suSetSp(120.0),
                       child: Center(
-                        child: Text("暂无内容",
-                            style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: Constants.suSetSp(18.0))),
+                        child: Text(
+                          "暂无内容",
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: Constants.suSetSp(18.0),
+                          ),
+                        ),
                       ),
                     ),
             ),
