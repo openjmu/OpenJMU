@@ -121,22 +121,19 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget getPostAvatar(context, post) {
-    return Hero(
-      tag: "post-${widget.post.id}-avatar-${widget.post.avatar}",
-      child: SizedBox(
-        width: Constants.suSetSp(48.0),
-        height: Constants.suSetSp(48.0),
-        child: GestureDetector(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(Constants.suSetSp(24.0)),
-            child: FadeInImage(
-              fadeInDuration: const Duration(milliseconds: 100),
-              placeholder: AssetImage("assets/avatar_placeholder.png"),
-              image: UserAPI.getAvatarProvider(uid: post.uid),
-            ),
+    return SizedBox(
+      width: Constants.suSetSp(48.0),
+      height: Constants.suSetSp(48.0),
+      child: GestureDetector(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(Constants.suSetSp(24.0)),
+          child: FadeInImage(
+            fadeInDuration: const Duration(milliseconds: 100),
+            placeholder: AssetImage("assets/avatar_placeholder.png"),
+            image: UserAPI.getAvatarProvider(uid: post.uid),
           ),
-          onTap: () => UserPage.jump(context, widget.post.uid),
         ),
+        onTap: () => UserPage.jump(context, widget.post.uid),
       ),
     );
   }
@@ -310,11 +307,14 @@ class _PostCardState extends State<PostCard> {
               );
             }));
           },
-          child: Hero(
+          child: _exImage,
+        ));
+        if (widget.isDetail) {
+          _exImage = Hero(
             tag: "$imageID${index.toString()}${widget.post.id.toString()}",
             child: _exImage,
-          ),
-        ));
+          );
+        }
       }
       int itemCount = 3;
       Widget _image;
@@ -782,72 +782,70 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: isDetail
-          ? null
-          : () {
-              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                return PostDetailPage(
-                  widget.post,
-                  index: widget.index,
-                  fromPage: widget.fromPage,
-                  parentContext: context,
-                );
-              }));
-            },
-      child: Card(
-        margin: isShield
-            ? EdgeInsets.zero
-            : EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: !isShield
-              ? <Widget>[
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: Constants.suSetSp(contentPadding),
-                      vertical: Constants.suSetSp(12.0),
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        avatar,
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: Constants.suSetSp(contentPadding),
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                nickname,
-                                Constants.separator(context, height: 4.0),
-                                postInfo,
-                              ],
+    return Hero(
+      tag: "postcard-id-${widget.post.id}",
+      child: GestureDetector(
+        onTap: isDetail
+            ? null
+            : () {
+                Navigator.of(context)
+                    .push(CupertinoPageRoute(builder: (context) {
+                  return PostDetailPage(
+                    widget.post,
+                    index: widget.index,
+                    fromPage: widget.fromPage,
+                    parentContext: context,
+                  );
+                }));
+              },
+        child: Card(
+          margin: isShield
+              ? EdgeInsets.zero
+              : EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
+          child: Column(
+            children: !isShield
+                ? <Widget>[
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: Constants.suSetSp(contentPadding),
+                        vertical: Constants.suSetSp(12.0),
+                      ),
+                      child: Row(
+                        children: <Widget>[
+                          avatar,
+                          Expanded(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: Constants.suSetSp(contentPadding),
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  nickname,
+                                  Constants.separator(context, height: 4.0),
+                                  postInfo,
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        ((widget.post.uid == UserAPI.currentUser.uid) &&
-                                isDetail)
-                            ? deleteButton()
-                            : postActionButton(context),
-                      ],
+                          ((widget.post.uid == UserAPI.currentUser.uid) &&
+                                  isDetail)
+                              ? deleteButton()
+                              : postActionButton(context),
+                        ],
+                      ),
                     ),
-                  ),
-                  content,
-                  pics,
-                  isDetail
-                      ? Container(
-                          width: Screen.width,
-                          padding: EdgeInsets.symmetric(
-                            vertical: Constants.suSetSp(8.0),
-                          ),
-                        )
-                      : actions
-                ]
-              : <Widget>[getPostBanned("shield")],
+                    content,
+                    pics,
+                    isDetail
+                        ? SizedBox(height: Constants.suSetSp(16.0))
+                        : actions,
+                  ]
+                : <Widget>[getPostBanned("shield")],
+          ),
+          elevation: 0,
         ),
-        elevation: 0,
       ),
     );
   }

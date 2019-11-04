@@ -170,7 +170,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     if (course.time == "11") {
       courses[course.day][11].add(course);
     } else {
-      courses[course.day][int.parse(course.time.substring(0, 1))].add(course);
+      if (courses.keys.contains(course.day)) {
+        courses[course.day][int.parse(course.time.substring(0, 1))].add(course);
+      }
     }
   }
 

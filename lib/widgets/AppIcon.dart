@@ -55,8 +55,8 @@ class AppIcon extends StatelessWidget {
             },
           )
         : SizedBox(
-            width: Constants.suSetSp(60),
-            height: Constants.suSetSp(60),
+            width: Constants.suSetSp(size),
+            height: Constants.suSetSp(size),
             child: Center(
               child: Image(
                 image: CachedNetworkImageProvider(

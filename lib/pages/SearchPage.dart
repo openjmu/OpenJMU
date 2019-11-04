@@ -179,7 +179,7 @@ class SearchPageState extends State<SearchPage> {
   }
 
   Widget userListView(context) {
-    if (userList.isEmpty) return SizedBox.shrink();
+    if (userList == null || userList.isEmpty) return SizedBox.shrink();
     return SizedBox(
       height: Constants.suSetSp(140.0),
       child: Column(
@@ -279,46 +279,60 @@ class SearchPageState extends State<SearchPage> {
           ),
         ),
       ),
-//      body: _postResult != null ? _postResult : SizedBox.shrink(),
       body: _loaded
-          ? ListView.builder(
-              itemCount: postList.length + 2,
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  return userListView(context);
-                } else if (index == 1) {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      top: Constants.suSetSp(16.0),
-                      left: 12.0,
-                    ),
-                    child: Text(
-                      "相关动态",
-                      style: Theme.of(context).textTheme.caption.copyWith(
-                            fontSize: Constants.suSetSp(16.0),
-                          ),
-                    ),
-                  );
-                } else if (index == postList.length - 1) {
-                  if (_canLoadMore)
-                    search(
-                      context,
-                      _controller.text,
-                      isMore: true,
-                    );
-                  return PostCard(postList[index - 2], isDetail: false);
-                } else if (index == postList.length) {
-                  return SizedBox(
-                    height: Constants.suSetSp(50.0),
-                    child: Center(
-                      child: Text(Constants.endLineTag),
-                    ),
-                  );
-                } else {
-                  return PostCard(postList[index - 2], isDetail: false);
-                }
-              },
-            )
+          ? postList.length != null
+              ? ListView.builder(
+                  itemCount: postList.length + 2,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return userListView(context);
+                    } else if (index == 1) {
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          top: Constants.suSetSp(16.0),
+                          left: 12.0,
+                        ),
+                        child: Text(
+                          "相关动态",
+                          style: Theme.of(context).textTheme.caption.copyWith(
+                                fontSize: Constants.suSetSp(16.0),
+                              ),
+                        ),
+                      );
+                    } else if (index == postList.length - 1) {
+                      if (_canLoadMore)
+                        search(
+                          context,
+                          _controller.text,
+                          isMore: true,
+                        );
+                      return PostCard(
+                        postList[index - 2],
+                        isDetail: false,
+                        parentContext: context,
+                      );
+                    } else if (index == postList.length) {
+                      return SizedBox(
+                        height: Constants.suSetSp(50.0),
+                        child: Center(
+                          child: Text(Constants.endLineTag),
+                        ),
+                      );
+                    } else {
+                      return PostCard(
+                        postList[index - 2],
+                        isDetail: false,
+                        parentContext: context,
+                      );
+                    }
+                  },
+                )
+              : SizedBox(
+                  height: 300.0,
+                  child: Center(
+                    child: Text("没有搜索到动态内容~"),
+                  ),
+                )
           : SizedBox.shrink(),
     );
   }

@@ -82,6 +82,7 @@ class DataUtils {
 
   static Future logout() async {
     NetUtils.dio.clear();
+    MessageUtils.logout();
     await resetTheme();
     await clearLoginInfo();
     await clearSettings();

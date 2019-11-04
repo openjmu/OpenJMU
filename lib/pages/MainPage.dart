@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-
 import 'package:OpenJMU/pages/home/AddButtonPage.dart';
 import 'package:OpenJMU/pages/home/AppCenterPage.dart';
 import 'package:OpenJMU/pages/home/MessagePage.dart';
@@ -50,7 +49,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     MessagePageState.tabs,
   ];
 
-  List<Widget> pages;
   Notifications notifications = Instances.notifications;
   Timer notificationTimer;
 
@@ -68,13 +66,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
     initPushService();
     initNotification();
-
-    pages = [
-      PostSquareListPage(),
-      AppCenterPage(),
-      MessagePage(),
-      MyInfoPage(),
-    ];
+    MessageUtils.initMessageSocket();
 
     Instances.eventBus
       ..on<ActionsEvent>().listen((event) {
@@ -181,7 +173,12 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
               ),
             Expanded(
               child: IndexedStack(
-                children: pages,
+                children: <Widget>[
+                  PostSquareListPage(),
+                  AppCenterPage(),
+                  MessagePage(),
+                  MyInfoPage(),
+                ],
                 index: _tabIndex,
               ),
             ),
