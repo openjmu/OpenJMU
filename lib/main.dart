@@ -126,65 +126,59 @@ class OpenJMUAppState extends State<OpenJMUApp> {
   @override
   Widget build(BuildContext context) {
     return Theme(
-      data:
-          ThemeUtils.isDark ? ThemeUtils.darkTheme() : ThemeUtils.lightTheme(),
+      data: ThemeUtils.isDark ? ThemeUtils.dark() : ThemeUtils.light(),
       child: OKToast(
-        child: ScrollConfiguration(
-          behavior: NoGlowScrollBehavior(),
-          child: MaterialApp(
-            navigatorKey: Constants.navigatorKey,
-            builder: (BuildContext c, Widget w) => NoScaleTextWidget(child: w),
-            routes: RouteUtils.routes,
-            title: "OpenJMU",
-            theme: (ThemeUtils.isDark
-                    ? ThemeUtils.darkTheme()
-                    : ThemeUtils.lightTheme())
+        child: MaterialApp(
+          navigatorKey: Constants.navigatorKey,
+          builder: (BuildContext c, Widget w) => NoScaleTextWidget(child: w),
+          routes: RouteUtils.routes,
+          title: "OpenJMU",
+          theme: (ThemeUtils.isDark ? ThemeUtils.dark() : ThemeUtils.light())
+              .copyWith(
+            textTheme: (ThemeUtils.isDark
+                    ? Theme.of(context).typography.white
+                    : Theme.of(context).typography.black)
                 .copyWith(
-              textTheme: (ThemeUtils.isDark
-                      ? Theme.of(context).typography.white
-                      : Theme.of(context).typography.black)
-                  .copyWith(
-                subhead: TextStyle(
-                  textBaseline: TextBaseline.alphabetic,
-                ),
+              subhead: TextStyle(
+                textBaseline: TextBaseline.alphabetic,
               ),
             ),
-            home: SplashPage(initIndex: initIndex),
-            localizationsDelegates: [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale.fromSubtags(
-                languageCode: 'zh',
-              ),
-              const Locale.fromSubtags(
-                languageCode: 'zh',
-                scriptCode: 'Hans',
-              ),
-              const Locale.fromSubtags(
-                languageCode: 'zh',
-                scriptCode: 'Hant',
-              ),
-              const Locale.fromSubtags(
-                languageCode: 'zh',
-                scriptCode: 'Hans',
-                countryCode: 'CN',
-              ),
-              const Locale.fromSubtags(
-                languageCode: 'zh',
-                scriptCode: 'Hant',
-                countryCode: 'TW',
-              ),
-              const Locale.fromSubtags(
-                languageCode: 'zh',
-                scriptCode: 'Hant',
-                countryCode: 'HK',
-              ),
-              const Locale('en'),
-            ],
           ),
+          home: SplashPage(initIndex: initIndex),
+          localizationsDelegates: [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: [
+            const Locale.fromSubtags(
+              languageCode: 'zh',
+            ),
+            const Locale.fromSubtags(
+              languageCode: 'zh',
+              scriptCode: 'Hans',
+            ),
+            const Locale.fromSubtags(
+              languageCode: 'zh',
+              scriptCode: 'Hant',
+            ),
+            const Locale.fromSubtags(
+              languageCode: 'zh',
+              scriptCode: 'Hans',
+              countryCode: 'CN',
+            ),
+            const Locale.fromSubtags(
+              languageCode: 'zh',
+              scriptCode: 'Hant',
+              countryCode: 'TW',
+            ),
+            const Locale.fromSubtags(
+              languageCode: 'zh',
+              scriptCode: 'Hant',
+              countryCode: 'HK',
+            ),
+            const Locale('en'),
+          ],
         ),
       ),
     );

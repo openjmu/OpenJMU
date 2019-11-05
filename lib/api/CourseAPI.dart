@@ -21,6 +21,12 @@ class CourseAPI {
         data: {"sid": UserAPI.currentUser.sid},
       );
 
+  static Future setCustomCourse(Map<String, dynamic> course) async =>
+      NetUtils.post(
+        "${API.courseScheduleCustom}?sid=${UserAPI.currentUser.sid}",
+        data: course,
+      );
+
   static TimeOfDay _time(int hour, int minute) =>
       TimeOfDay(hour: hour, minute: minute);
 
@@ -85,7 +91,6 @@ class CourseAPI {
     Color(0xffFFCC80),
     Color(0xffFFAB91),
     Color(0xffBCAAA4),
-
     Color(0xffd8b5df),
     Color(0xff68c0ca),
     Color(0xff05bac3),

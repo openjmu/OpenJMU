@@ -132,8 +132,18 @@ class PraiseCard extends StatelessWidget {
         }
       },
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-      overflow: TextOverflow.ellipsis,
-      maxLines: 7,
+      maxLines: 8,
+      overFlowTextSpan: OverFlowTextSpan(
+        children: <TextSpan>[
+          TextSpan(text: " ... "),
+          TextSpan(
+            text: "全文",
+            style: TextStyle(
+              color: ThemeUtils.currentThemeColor,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

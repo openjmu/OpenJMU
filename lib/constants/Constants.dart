@@ -12,6 +12,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 export 'package:OpenJMU/api/API.dart';
 export 'package:OpenJMU/constants/Configs.dart';
 export 'package:OpenJMU/constants/Instances.dart';
+export 'package:OpenJMU/constants/Messages.dart';
 export 'package:OpenJMU/constants/Screens.dart';
 export 'package:OpenJMU/events/Events.dart';
 export 'package:OpenJMU/model/Bean.dart';

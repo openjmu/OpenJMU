@@ -82,6 +82,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       fromPage: widget.fromPage,
       isDetail: true,
       parentContext: widget.parentContext,
+      key: ValueKey("post-key-${widget.post.id}"),
     );
 
     Instances.eventBus

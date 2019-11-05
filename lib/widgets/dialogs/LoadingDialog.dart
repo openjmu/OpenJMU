@@ -5,19 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 
 class LoadingDialog extends StatefulWidget {
-  final String text;
   final LoadingDialogController controller;
+  final String text;
   final bool isGlobal;
 
-  LoadingDialog({Key key, this.text, this.controller, this.isGlobal})
-      : super(key: key);
+  LoadingDialog({
+    Key key,
+    this.text,
+    this.controller,
+    this.isGlobal,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => LoadingDialogState();
 }
 
 class LoadingDialogState extends State<LoadingDialog> {
-  Duration duration = Duration(milliseconds: 1500);
+  Duration duration = const Duration(milliseconds: 1500);
   String type, text;
   Function customPop;
   Widget icon = CircularProgressIndicator();

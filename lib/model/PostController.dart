@@ -196,8 +196,7 @@ class _PostListState extends State<PostList> {
         false,
         _lastValue,
         additionAttrs: widget._postController.additionAttrs,
-      ))
-          .data;
+      )).data;
 
       List<Post> postList = [];
       List<int> idList = [];
@@ -300,6 +299,7 @@ class _PostListState extends State<PostList> {
                 index: index,
                 isDetail: false,
                 parentContext: context,
+                key: ValueKey("post-key-${_postList[index].id}"),
               );
             } else {
               return Container();

@@ -171,6 +171,8 @@ class API {
       "$labsHost/courseSchedule/StudentClassRemark";
   static final String courseScheduleTermLists =
       "$labsHost/courseSchedule/GetSemesters";
+  static final String courseScheduleCustom =
+      "$labsHost/courseSchedule/StudentCustomSchedule";
 
   /// 教务相关
   static final String jwglLogin = "$jwglHost/login.aspx";

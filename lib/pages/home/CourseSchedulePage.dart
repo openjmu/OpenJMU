@@ -510,7 +510,11 @@ class CourseWidget extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) {
-        return CoursesDialog(courseList: courseList, currentWeek: currentWeek);
+        return CoursesDialog(
+          courseList: courseList,
+          currentWeek: currentWeek,
+          coordinate: coordinate,
+        );
       },
     );
   }
@@ -606,7 +610,14 @@ class CourseWidget extends StatelessWidget {
                         if (courseList.isNotEmpty) showCoursesDetail(context);
                       },
                       onLongPress: () {
-                        print("longPressed at: $coordinate");
+                        showDialog(
+                          context: context,
+                          builder: (context) => CourseEditDialog(
+                            course: null,
+                            coordinate: coordinate,
+                          ),
+                          barrierDismissible: false,
+                        );
                       },
                       child: Container(
                         padding: EdgeInsets.all(Constants.suSetSp(8.0)),
@@ -691,11 +702,13 @@ class CourseWidget extends StatelessWidget {
 class CoursesDialog extends StatelessWidget {
   final List<Course> courseList;
   final int currentWeek;
+  final List<int> coordinate;
 
   const CoursesDialog({
     Key key,
     @required this.courseList,
     @required this.currentWeek,
+    @required this.coordinate,
   }) : super(key: key);
 
   final int darkModeAlpha = 200;
@@ -706,6 +719,7 @@ class CoursesDialog extends StatelessWidget {
       builder: (context) => CoursesDialog(
         courseList: [course],
         currentWeek: currentWeek,
+        coordinate: coordinate,
       ),
     );
   }
@@ -900,44 +914,255 @@ class CoursesDialog extends StatelessWidget {
               !isDetail ? coursesPage : courseDetail(firstCourse),
               closeButton(context),
               if (isDetail && courseList[0].isCustom)
-                Positioned(
-                  bottom: 10.0,
-                  left: Screen.width / 7,
-                  right: Screen.width / 7,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: <Widget>[
-                      MaterialButton(
-                        splashColor: Colors.grey[600],
-                        padding: EdgeInsets.zero,
-                        minWidth: 40.0,
-                        height: 40.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(Screen.width / 2),
+                Theme(
+                  data: Theme.of(context).copyWith(
+                    splashFactory: InkSplash.splashFactory,
+                  ),
+                  child: Positioned(
+                    bottom: 10.0,
+                    left: Screen.width / 7,
+                    right: Screen.width / 7,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: <Widget>[
+                        MaterialButton(
+                          padding: EdgeInsets.zero,
+                          minWidth: 40.0,
+                          height: 40.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(Screen.width / 2),
+                          ),
+                          child: Icon(
+                            Icons.delete,
+                            color: Colors.black,
+                          ),
+                          onPressed: () {
+                            CourseAPI.setCustomCourse({
+                              "content": Uri.encodeComponent(""),
+                              "couDayTime": courseList[0].day,
+                              "coudeTime": courseList[0].time,
+                            }).then((response) {
+                              if (jsonDecode(response.data)['isOk']) {
+                                Constants.navigatorKey.currentState
+                                    .popUntil(ModalRoute.withName('/home'));
+                              }
+                              Instances.eventBus.fire(CourseScheduleRefreshEvent());
+                            });
+                            courseList.removeAt(0);
+                          },
                         ),
-                        child: Icon(
-                          Icons.delete,
-                          color: Colors.black,
+                        MaterialButton(
+                          padding: EdgeInsets.zero,
+                          minWidth: 40.0,
+                          height: 40.0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.circular(Screen.width / 2),
+                          ),
+                          child: Icon(
+                            Icons.edit,
+                            color: Colors.black,
+                          ),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => CourseEditDialog(
+                                course: courseList[0],
+                                coordinate: coordinate,
+                              ),
+                              barrierDismissible: false,
+                            );
+                          },
                         ),
-                        onPressed: () {},
-                      ),
-                      MaterialButton(
-                        splashColor: Colors.grey[600],
-                        padding: EdgeInsets.zero,
-                        minWidth: 40.0,
-                        height: 40.0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(Screen.width / 2),
-                        ),
-                        child: Icon(
-                          Icons.edit,
-                          color: Colors.black,
-                        ),
-                        onPressed: () {},
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class CourseEditDialog extends StatefulWidget {
+  final Course course;
+  final List<int> coordinate;
+
+  const CourseEditDialog({
+    Key key,
+    @required this.course,
+    @required this.coordinate,
+  }) : super(key: key);
+
+  @override
+  _CourseEditDialogState createState() => _CourseEditDialogState();
+}
+
+class _CourseEditDialogState extends State<CourseEditDialog> {
+  final int darkModeAlpha = 200;
+
+  TextEditingController _controller;
+  String content;
+  bool loading = false;
+
+  @override
+  void initState() {
+    content = widget.course?.name;
+    _controller = TextEditingController(text: content);
+    super.initState();
+  }
+
+  Widget get courseEditField {
+    return Container(
+      padding: EdgeInsets.all(Constants.suSetSp(12.0)),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15.0),
+        color: widget.course != null
+            ? ThemeUtils.isDark
+                ? widget.course.color.withAlpha(darkModeAlpha)
+                : widget.course.color
+            : Theme.of(context).dividerColor,
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(
+          top: Constants.suSetSp(30.0),
+          bottom: Constants.suSetSp(30.0),
+        ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: Screen.width / 2,
+            ),
+            child: ScrollConfiguration(
+              behavior: NoGlowScrollBehavior(),
+              child: TextField(
+                controller: _controller,
+                autofocus: true,
+                enabled: !loading,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: Constants.suSetSp(24.0),
+                  height: 1.5,
+                  textBaseline: TextBaseline.alphabetic,
+                ),
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: "自定义内容",
+                  hintStyle: TextStyle(
+                    color: Colors.grey,
+                    fontSize: Constants.suSetSp(24.0),
+                    height: 1.5,
+                    textBaseline: TextBaseline.alphabetic,
+                  ),
+                ),
+                maxLines: null,
+                maxLength: 30,
+                buildCounter: (_, {currentLength, maxLength, isFocused}) =>
+                    SizedBox.shrink(),
+                onChanged: (String value) {
+                  content = value;
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget closeButton(context) => Positioned(
+        top: 0.0,
+        right: 0.0,
+        child: IconButton(
+          icon: Icon(Icons.close, color: Colors.black),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      );
+
+  Widget updateButton(context) => Theme(
+        data: Theme.of(context).copyWith(
+          splashFactory: InkSplash.splashFactory,
+        ),
+        child: Positioned(
+          bottom: Constants.suSetSp(8.0),
+          left: Screen.width / 7,
+          right: Screen.width / 7,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              MaterialButton(
+                padding: EdgeInsets.zero,
+                minWidth: Constants.suSetSp(48.0),
+                height: Constants.suSetSp(48.0),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(Screen.width / 2),
+                ),
+                child: loading
+                    ? Center(
+                        child: SizedBox(
+                          width: Constants.suSetSp(30.0),
+                          height: Constants.suSetSp(30.0),
+                          child: Constants.progressIndicator(),
+                        ),
+                      )
+                    : Icon(
+                        Icons.check,
+                        color: content == widget.course?.name
+                            ? Colors.black.withAlpha(50)
+                            : Colors.black,
+                      ),
+                onPressed: content == widget.course?.name
+                    ? null
+                    : () {
+                        loading = true;
+                        if (mounted) setState(() {});
+                        CourseAPI.setCustomCourse({
+                          "content": Uri.encodeComponent(content),
+                          "couDayTime": widget.course != null
+                              ? widget.course.time
+                              : widget.coordinate[0],
+                          "coudeTime": widget.course != null
+                              ? widget.course.time
+                              : "${widget.coordinate[1] - 1}${widget.coordinate[1]}",
+                        }).then((response) {
+                          loading = false;
+                          if (mounted) setState(() {});
+                          if (jsonDecode(response.data)['isOk']) {
+                            Constants.navigatorKey.currentState
+                                .popUntil(ModalRoute.withName('/home'));
+                          }
+                          Instances.eventBus.fire(CourseScheduleRefreshEvent());
+                        });
+                      },
+              ),
+            ],
+          ),
+        ),
+      );
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleDialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      contentPadding: EdgeInsets.zero,
+      children: <Widget>[
+        SizedBox(
+          width: Screen.width / 2,
+          height: Constants.suSetSp(370.0),
+          child: Stack(
+            children: <Widget>[
+              courseEditField,
+              closeButton(context),
+              updateButton(context),
             ],
           ),
         ),

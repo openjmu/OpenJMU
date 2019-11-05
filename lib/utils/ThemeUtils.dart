@@ -79,7 +79,7 @@ class ThemeUtils {
         : SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   }
 
-  static ThemeData lightTheme() => ThemeData.light().copyWith(
+  static ThemeData light() => ThemeData.light().copyWith(
         brightness: Brightness.light,
         primaryColor: Colors.white,
         primaryColorBrightness: Brightness.light,
@@ -116,7 +116,7 @@ class ThemeUtils {
         buttonColor: currentThemeColor,
       );
 
-  static ThemeData darkTheme() => ThemeData.dark().copyWith(
+  static ThemeData dark() => ThemeData.dark().copyWith(
         brightness: Brightness.dark,
         primaryColor: Colors.black,
         primaryColorBrightness: Brightness.dark,
@@ -226,9 +226,10 @@ class NoSplash extends InteractiveInkFeature {
   })  : assert(controller != null),
         assert(referenceBox != null),
         super(
-            controller: controller,
-            referenceBox: referenceBox,
-            onRemoved: onRemoved) {
+          controller: controller,
+          referenceBox: referenceBox,
+          onRemoved: onRemoved,
+        ) {
     controller.addInkFeature(this);
   }
   @override

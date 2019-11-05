@@ -3,11 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:OpenJMU/api/PostAPI.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
-import 'package:OpenJMU/utils/ThemeUtils.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
 
 class SearchPage extends StatefulWidget {
@@ -25,17 +22,18 @@ class SearchPage extends StatefulWidget {
   }
 }
 
-class SearchPageState extends State<SearchPage> {
+class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin {
   final FocusNode _focusNode = FocusNode();
   TextEditingController _controller = TextEditingController();
 
   List<User> userList;
   List<Post> postList;
 
-  bool _loaded = false;
-  bool _canLoadMore = true;
-  bool _canClear = false;
-  bool _autoFocus = true;
+  bool _loaded = false,
+      _loading = false,
+      _canLoadMore = true,
+      _canClear = false,
+      _autoFocus = true;
 
   @override
   void initState() {
@@ -56,6 +54,9 @@ class SearchPageState extends State<SearchPage> {
     super.didChangeDependencies();
   }
 
+  @override
+  bool get wantKeepAlive => true;
+
   Future getPost(String searchQuery) async {
     bool loadMore = false;
     if (postList != null && postList.length > 0) {
@@ -69,7 +70,6 @@ class SearchPageState extends State<SearchPage> {
       additionAttrs: {'words': searchQuery},
     ).then((response) {
       List _ps = response.data['topics'];
-      print(_ps.length);
       if (_ps.length == 0) _canLoadMore = false;
       _ps.forEach((post) {
         Post p = Post.fromJson(post['topic']);
@@ -81,6 +81,7 @@ class SearchPageState extends State<SearchPage> {
 
   void search(context, String content, {bool isMore = false}) {
     _focusNode.unfocus();
+    _loading = true;
     if (!isMore) {
       _loaded = false;
       _canLoadMore = true;
@@ -101,6 +102,7 @@ class SearchPageState extends State<SearchPage> {
       getPost(content)
     ]).then((responses) {
       if (!_loaded) _loaded = true;
+      _loading = false;
       if (mounted) setState(() {});
     });
   }
@@ -249,91 +251,104 @@ class SearchPageState extends State<SearchPage> {
     );
   }
 
-  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(kToolbarHeight),
         child: SafeArea(
           top: true,
-          child: Row(
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              Expanded(
-                child: searchTextField(context),
-              ),
-              IconButton(
-                icon: Icon(Icons.search),
-                onPressed: () {
-                  if (_controller.text != null && _controller.text != "") {
-                    search(context, _controller.text);
-                  }
-                },
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              children: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                Expanded(
+                  child: searchTextField(context),
+                ),
+                IconButton(
+                  icon: Icon(Icons.search),
+                  onPressed: () {
+                    if (_controller.text != null && _controller.text != "") {
+                      search(context, _controller.text);
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
-      body: _loaded
-          ? postList.length != null
-              ? ListView.builder(
-                  itemCount: postList.length + 2,
-                  itemBuilder: (context, index) {
-                    if (index == 0) {
-                      return userListView(context);
-                    } else if (index == 1) {
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          top: Constants.suSetSp(16.0),
-                          left: 12.0,
-                        ),
+      body: !_loading
+          ? _loaded
+              ? postList != null && postList.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: postList.length + 2,
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          return userListView(context);
+                        } else if (index == 1) {
+                          return Padding(
+                            padding: EdgeInsets.only(
+                              top: Constants.suSetSp(16.0),
+                              left: 12.0,
+                            ),
+                            child: Text(
+                              "相关动态",
+                              style:
+                                  Theme.of(context).textTheme.caption.copyWith(
+                                        fontSize: Constants.suSetSp(16.0),
+                                      ),
+                            ),
+                          );
+                        } else if (index == postList.length - 1) {
+                          if (_canLoadMore)
+                            search(
+                              context,
+                              _controller.text,
+                              isMore: true,
+                            );
+                          return PostCard(
+                            postList[index - 2],
+                            isDetail: false,
+                            parentContext: context,
+                          );
+                        } else if (index == postList.length) {
+                          return SizedBox(
+                            height: Constants.suSetSp(50.0),
+                            child: Center(
+                              child: Text(Constants.endLineTag),
+                            ),
+                          );
+                        } else {
+                          return PostCard(
+                            postList[index - 2],
+                            isDetail: false,
+                            parentContext: context,
+                          );
+                        }
+                      },
+                    )
+                  : SizedBox(
+                      height: 300.0,
+                      child: Center(
                         child: Text(
-                          "相关动态",
-                          style: Theme.of(context).textTheme.caption.copyWith(
-                                fontSize: Constants.suSetSp(16.0),
-                              ),
+                          "没有搜索到动态内容~\n🧐",
+                          style: TextStyle(
+                            fontSize: Constants.suSetSp(24.0),
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                      );
-                    } else if (index == postList.length - 1) {
-                      if (_canLoadMore)
-                        search(
-                          context,
-                          _controller.text,
-                          isMore: true,
-                        );
-                      return PostCard(
-                        postList[index - 2],
-                        isDetail: false,
-                        parentContext: context,
-                      );
-                    } else if (index == postList.length) {
-                      return SizedBox(
-                        height: Constants.suSetSp(50.0),
-                        child: Center(
-                          child: Text(Constants.endLineTag),
-                        ),
-                      );
-                    } else {
-                      return PostCard(
-                        postList[index - 2],
-                        isDetail: false,
-                        parentContext: context,
-                      );
-                    }
-                  },
-                )
-              : SizedBox(
-                  height: 300.0,
-                  child: Center(
-                    child: Text("没有搜索到动态内容~"),
-                  ),
-                )
-          : SizedBox.shrink(),
+                      ),
+                    )
+              : SizedBox.shrink()
+          : Center(child: Constants.progressIndicator()),
     );
   }
 }

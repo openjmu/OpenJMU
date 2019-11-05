@@ -76,4 +76,3 @@ lib/api/API.dart
 lib/constants/CerStarConfigs.dart
 lib/constants/Messages.dart
 lib/pages/test
-lib/utils/MessageUtils.dart

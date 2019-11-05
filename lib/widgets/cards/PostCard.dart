@@ -33,7 +33,8 @@ class PostCard extends StatefulWidget {
     this.fromPage,
     this.index,
     @required this.parentContext,
-  });
+    Key key,
+  }) : super(key: key);
 
   @override
   State createState() => _PostCardState();
@@ -493,7 +494,7 @@ class _PostCardState extends State<PostCard> {
                 CommonWebPage.jump(context, text, "网页链接");
               }
             },
-            maxLines: widget.isDetail ?? false ? null : 10,
+            maxLines: widget.isDetail ?? false ? null : 8,
             overFlowTextSpan: widget.isDetail ?? false
                 ? null
                 : OverFlowTextSpan(
@@ -780,29 +781,41 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
+  void pushToDetail(context) {
+    Navigator.of(context).push(
+      platformPageRoute(
+        context: context,
+        builder: (context) {
+          return PostDetailPage(
+            widget.post,
+            index: widget.index,
+            fromPage: widget.fromPage,
+            parentContext: context,
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Hero(
       tag: "postcard-id-${widget.post.id}",
       child: GestureDetector(
-        onTap: isDetail
+        onTap: isDetail || isShield
             ? null
-            : () {
-                Navigator.of(context)
-                    .push(CupertinoPageRoute(builder: (context) {
-                  return PostDetailPage(
-                    widget.post,
-                    index: widget.index,
-                    fromPage: widget.fromPage,
-                    parentContext: context,
-                  );
-                }));
-              },
+            : () { pushToDetail(context); },
+        onLongPress: isShield
+            ? () { pushToDetail(context); }
+            : null,
         child: Card(
           margin: isShield
               ? EdgeInsets.zero
               : EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
-          child: Column(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
             children: !isShield
                 ? <Widget>[
                     Padding(

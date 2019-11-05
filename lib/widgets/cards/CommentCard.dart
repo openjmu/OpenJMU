@@ -86,8 +86,8 @@ class CommentCard extends StatelessWidget {
     );
   }
 
-  Widget getCommentContent(context, comment) {
-    String content = comment.query;
+  Widget getCommentContent(context, Comment comment) {
+    String content = comment.content;
     return Row(
       children: <Widget>[
         Expanded(
@@ -175,6 +175,18 @@ class CommentCard extends StatelessWidget {
             CommonWebPage.jump(context, text, "网页链接");
           }
         },
+        maxLines: 8,
+        overFlowTextSpan: OverFlowTextSpan(
+          children: <TextSpan>[
+            TextSpan(text: " ... "),
+            TextSpan(
+              text: "全文",
+              style: TextStyle(
+                color: ThemeUtils.currentThemeColor,
+              ),
+            ),
+          ],
+        ),
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       ),
     );

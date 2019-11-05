@@ -480,7 +480,7 @@ class LoginPageState extends State<LoginPage>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-//                                                noAccountButton(context),
+//                        noAccountButton(context),
                         findWorkId(context),
                         forgetPasswordButton(context),
                       ],
@@ -518,6 +518,7 @@ class LoginPageState extends State<LoginPage>
           Constants.navigatorKey.currentState.pushAndRemoveUntil(
             platformPageRoute(
               context: context,
+              settings: RouteSettings(name: "/home"),
               builder: (_) => MainPage(initIndex: widget.initIndex),
             ),
             (_) => false,

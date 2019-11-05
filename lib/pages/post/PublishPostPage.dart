@@ -33,7 +33,7 @@ class PublishPostPageState extends State<PublishPostPage> {
   final FocusNode _focusNode = FocusNode();
   final double _iconSize = Constants.suSetSp(28.0);
   final int gridCount = 5;
-  final int maxLength = 300;
+//  final int maxLength = 2000;
 
   List<ItemBin> imagesBin = <ItemBin>[];
   List _imageIdList = [];
@@ -196,20 +196,20 @@ class PublishPostPageState extends State<PublishPostPage> {
           style: Theme.of(context).textTheme.body1.copyWith(
                 fontSize: Constants.suSetSp(18.0),
               ),
-          maxLength: maxLength,
+//          maxLength: maxLength,
           maxLines: null,
           onChanged: (content) {
-            if (content.length == maxLength) {
-              setState(() {
-                counterTextColor = Colors.red;
-              });
-            } else {
+//            if (content.length == maxLength) {
+//              setState(() {
+//                counterTextColor = Colors.red;
+//              });
+//            } else {
               if (counterTextColor != Colors.grey) {
                 setState(() {
                   counterTextColor = Colors.grey;
                 });
               }
-            }
+//            }
             setState(() {
               currentLength = content.length;
             });
@@ -276,7 +276,8 @@ class PublishPostPageState extends State<PublishPostPage> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
             Text(
-              "$currentLength/$maxLength",
+              "$currentLength",
+//              "$currentLength/$maxLength",
               style: TextStyle(
                 color: counterTextColor,
               ),

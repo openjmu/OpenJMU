@@ -132,10 +132,12 @@ class SplashState extends State<SplashPage> {
       } else {
         try {
           Constants.navigatorKey.currentState.pushAndRemoveUntil(
-              MaterialPageRoute(
-                builder: (_) => MainPage(initIndex: widget.initIndex),
-              ),
-              (Route<dynamic> route) => false);
+            MaterialPageRoute(
+              settings: RouteSettings(name: "/home"),
+              builder: (_) => MainPage(initIndex: widget.initIndex),
+            ),
+            (Route<dynamic> route) => false,
+          );
         } catch (e) {
           debugPrint("$e");
         }

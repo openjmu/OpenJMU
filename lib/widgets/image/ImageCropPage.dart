@@ -1,155 +1,105 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
-import 'package:path/path.dart' as path;
-import 'package:image_crop/image_crop.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
+import 'package:OpenJMU/widgets/image/ImageCropHelper.dart';
 
-class ImageCropperPage extends StatefulWidget {
+class ImageCropPage extends StatefulWidget {
   @override
-  _ImageCropperPageState createState() => _ImageCropperPageState();
+  _ImageCropPageState createState() => _ImageCropPageState();
 }
 
-class _ImageCropperPageState extends State<ImageCropperPage> {
-  final cropKey = GlobalKey<CropState>();
-  File _file, _sample, _lastCropped;
+class _ImageCropPageState extends State<ImageCropPage> {
+  final GlobalKey<ExtendedImageEditorState> _editorKey =
+  GlobalKey<ExtendedImageEditorState>();
+  LoadingDialogController _controller = LoadingDialogController();
+  File _file;
+  bool _cropping = false;
   bool firstLoad = true;
 
   @override
   void initState() {
+    _openImage().catchError((e) {});
     super.initState();
-    _openImage().catchError((e) {
-      Navigator.pop(context);
-    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _sample?.delete();
-    _lastCropped?.delete();
-  }
-
-  Widget _buildCroppingImage(context) {
-    return Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Expanded(
-            child: Crop.file(
-              _sample,
-              key: cropKey,
-              aspectRatio: 1,
-            ),
-          ),
-          Container(
-            padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
-            alignment: AlignmentDirectional.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                FlatButton(
-                  child: Text(
-                    '上传图片',
-                    style: Theme.of(context)
-                        .textTheme
-                        .button
-                        .copyWith(color: Colors.white),
-                  ),
-                  onPressed: () => _cropImage(context),
-                ),
-                _buildOpenImage(),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildOpenImage() {
-    return FlatButton(
-      child: Text(
-        '选择图片',
-        style: Theme.of(context).textTheme.button.copyWith(color: Colors.white),
-      ),
-      onPressed: () => _openImage(),
-    );
+    _file?.delete();
   }
 
   Future _openImage() async {
     final file = await ImagePicker.pickImage(source: ImageSource.gallery);
-    final sample = await ImageCrop.sampleImage(
-      file: file,
-      preferredSize: context.size.longestSide.ceil(),
-    );
-
-    if (sample != null)
-      setState(() {
-        _sample = sample;
-        _file = file;
-      });
+    if (file != null) _file = file;
+    if (mounted) setState(() {});
+    resetCrop();
   }
 
-  Future _cropImage(context) async {
-    final scale = cropKey.currentState.scale;
-    final area = cropKey.currentState.area;
-    if (area == null) return;
-
-    final sample = await ImageCrop.sampleImage(
-      file: _file,
-      preferredSize: (640 / scale).round(),
-    );
-
-    final file = await ImageCrop.cropImage(
-      file: sample,
-      area: area,
-    );
-
-    File compressedFile = await FlutterNativeImage.compressImage(
-      file.path,
-      quality: 100,
-      targetWidth: 640,
-      targetHeight: 640,
-    );
-
-    sample.delete();
-
-    _lastCropped?.delete();
-    _lastCropped = file;
-
-    uploadImage(context, compressedFile);
+  void resetCrop() {
+    _editorKey.currentState.reset();
   }
 
-  Future uploadImage(context, file) async {
-    LoadingDialogController _controller = LoadingDialogController();
+  void flipCrop() {
+    _editorKey.currentState.flip();
+  }
+
+  void rotateRightCrop(bool right) {
+    _editorKey.currentState.rotate(right: right);
+  }
+
+  void _cropImage(context) async {
+    if (_cropping) return;
     showDialog<Null>(
       context: context,
       builder: (BuildContext ctx) => LoadingDialog(
         text: "正在更新头像",
         controller: _controller,
-        isGlobal: false,
       ),
     );
-    FormData _f = await createForm(file);
+    _cropping = true;
+    try {
+      final path = (await getApplicationDocumentsDirectory()).path;
+      File file = File("$path/_temp_avatar.jpg");
+      file.writeAsBytes(await cropImage(state: _editorKey.currentState));
+      File compressedFile = await FlutterNativeImage.compressImage(
+        file.path,
+        quality: 100,
+        targetWidth: 640,
+        targetHeight: 640,
+      );
+      uploadImage(context, compressedFile);
+    } catch (e) {
+      debugPrint("Crop image faild: $e");
+      _controller.changeState("failed", "头像更新失败");
+    }
+  }
+
+  Future uploadImage(context, file) async {
+    final formData = await createForm(file);
     NetUtils.postWithCookieSet(
       API.userAvatarUpload,
-      data: _f,
+      data: formData,
     ).then((response) {
       _controller.changeState("success", "头像更新成功");
+      _cropping = false;
       Future.delayed(Duration(milliseconds: 2200), () {
         Navigator.of(context).pop(true);
       });
     }).catchError((e) {
       debugPrint(e.toString());
       _controller.changeState("failed", "头像更新失败");
+      _cropping = false;
     });
   }
 
@@ -166,28 +116,100 @@ class _ImageCropperPageState extends State<ImageCropperPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Row(
+      appBar: AppBar(
+        title: Text(
+          _file == null ? "上传头像" : "裁剪头像",
+          style: Theme.of(context).textTheme.title.copyWith(
+            fontSize: Constants.suSetSp(21.0),
+          ),
+        ),
+        centerTitle: true,
+        actions: _file != null
+            ? <Widget>[
+          IconButton(
+            icon: Icon(Icons.check),
+            onPressed: () {
+              _cropImage(context);
+            },
+          ),
+        ]
+            : null,
+      ),
+      body: _file != null
+          ? ExtendedImage.file(
+        _file,
+        fit: BoxFit.contain,
+        mode: ExtendedImageMode.editor,
+        enableLoadState: true,
+        extendedImageEditorKey: _editorKey,
+        initEditorConfigHandler: (state) {
+          return EditorConfig(
+            maxScale: 8.0,
+            cropRectPadding: const EdgeInsets.all(30.0),
+            cropAspectRatio: 1.0,
+            hitTestSize: 30.0,
+            cornerColor: Colors.grey,
+            lineColor: Colors.grey,
+          );
+        },
+      )
+          : Center(
+        child: InkWell(
+          onTap: _openImage,
+          child: Padding(
+            padding: EdgeInsets.all(Constants.suSetSp(60.0)),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () => Navigator.of(context).pop(false),
+                Icon(
+                  Icons.add,
+                  size: Constants.suSetSp(60.0),
+                ),
+                Constants.emptyDivider(height: 20.0),
+                Text(
+                  "选择需要上传的头像",
+                  style: Theme.of(context).textTheme.body1.copyWith(
+                    fontSize: Constants.suSetSp(20.0),
+                  ),
                 ),
               ],
             ),
-            if (_sample != null)
-              Expanded(
-                child: Container(
-                  child: _buildCroppingImage(context),
-                ),
-              ),
-          ],
+          ),
+          highlightColor: Colors.red,
+          customBorder: CircleBorder(),
         ),
       ),
+      bottomNavigationBar: _file != null
+          ? BottomAppBar(
+        color: Theme.of(context).primaryColor,
+        elevation: 0.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.image),
+              onPressed: _openImage,
+            ),
+            IconButton(
+              icon: Icon(Icons.refresh),
+              onPressed: resetCrop,
+            ),
+            IconButton(
+              icon: Icon(Icons.rotate_left),
+              onPressed: () {
+                rotateRightCrop(false);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.rotate_right),
+              onPressed: () {
+                rotateRightCrop(true);
+              },
+            ),
+          ],
+        ),
+      )
+          : null,
     );
   }
 }

@@ -609,7 +609,7 @@ class _UserPageState extends State<UserPage>
                       Navigator.push(
                           context,
                           CupertinoPageRoute(
-                            builder: (_) => ImageCropperPage(),
+                            builder: (_) => ImageCropPage(),
                           )).then((result) {
                         if (result)
                           Instances.eventBus.fire(AvatarUpdatedEvent());
