@@ -1,13 +1,18 @@
 import 'dart:core';
 
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
 class PostAPI {
   static Future getPostList(
-      String postType, bool isFollowed, bool isMore, int lastValue,
-      {additionAttrs}) async {
+    String postType,
+    bool isFollowed,
+    bool isMore,
+    int lastValue, {
+    additionAttrs,
+  }) async {
     String _postUrl;
     switch (postType) {
       case "square":
@@ -52,14 +57,18 @@ class PostAPI {
     return NetUtils.getWithCookieAndHeaderSet(_postUrl);
   }
 
-  static getForwardListInPost(int postId, {bool isMore, int lastValue}) async =>
+  static Future getForwardListInPost(
+    int postId, {
+    bool isMore,
+    int lastValue,
+  }) async =>
       NetUtils.getWithCookieAndHeaderSet(
         (isMore ?? false)
             ? "${API.postForwardsList}$postId/id_max/$lastValue"
             : "${API.postForwardsList}$postId",
       );
 
-  static glancePost(int postId) {
+  static Future glancePost(int postId) {
     return NetUtils.postWithCookieAndHeaderSet(
       API.postGlance,
       data: {
@@ -71,12 +80,15 @@ class PostAPI {
     });
   }
 
-  static deletePost(int postId) => NetUtils.deleteWithCookieAndHeaderSet(
+  static Future deletePost(int postId) => NetUtils.deleteWithCookieAndHeaderSet(
         "${API.postContent}/tid/$postId",
       );
 
-  static postForward(
-      String content, int postId, bool replyAtTheMeanTime) async {
+  static Future postForward(
+    String content,
+    int postId,
+    bool replyAtTheMeanTime,
+  ) async {
     Map<String, dynamic> data = {
       "content": Uri.encodeFull(content),
       "root_tid": postId,
@@ -88,4 +100,20 @@ class PostAPI {
     );
   }
 
+  static Future reportPost(Post post) async {
+    MessageUtils.addPackage(
+      "WY_MSG",
+      M_WY_MSG(
+        type: "MSG_A2A",
+        uid: 145685,
+        message: "————微博内容举报————\n"
+            "举报时间：${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}\n"
+            "举报对象：${post.nickname}\n"
+            "微博ＩＤ：${post.id}\n"
+            "发布时间：${post.postTime}\n"
+            "举报理由：违反微博广场公约\n"
+            "———From OpenJMU———",
+      ),
+    );
+  }
 }

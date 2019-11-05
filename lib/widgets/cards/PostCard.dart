@@ -148,7 +148,7 @@ class _PostCardState extends State<PostCard> {
         textAlign: TextAlign.left,
       );
 
-  Row getPostInfo(post) {
+  Row getPostInfo(Post post) {
     String _postTime = post.postTime;
     DateTime now = DateTime.now();
     if (int.parse(_postTime.substring(0, 4)) == now.year) {
@@ -553,7 +553,7 @@ class _PostCardState extends State<PostCard> {
           }) {
             return Padding(
               padding: EdgeInsets.symmetric(
-                vertical: Constants.suSetSp(12.0),
+                vertical: Constants.suSetSp(20.0),
               ),
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
@@ -566,7 +566,7 @@ class _PostCardState extends State<PostCard> {
                       child: Icon(
                         icon,
                         color: Theme.of(context).iconTheme.color,
-                        size: Constants.suSetSp(26.0),
+                        size: Constants.suSetSp(30.0),
                       ),
                     ),
                     Expanded(
@@ -577,7 +577,7 @@ class _PostCardState extends State<PostCard> {
                         child: Text(
                           text,
                           style: TextStyle(
-                            fontSize: Constants.suSetSp(18.0),
+                            fontSize: Constants.suSetSp(20.0),
                           ),
                         ),
                       ),
@@ -615,7 +615,7 @@ class _PostCardState extends State<PostCard> {
                             ),
                             content: Text(
                               "确定屏蔽此人吗？",
-                              style: TextStyle(
+                              style: Theme.of(context).textTheme.body1.copyWith(
                                 fontSize: Constants.suSetSp(18.0),
                               ),
                             ),
@@ -697,7 +697,7 @@ class _PostCardState extends State<PostCard> {
                             ),
                             content: Text(
                               "确定举报该条动态吗？",
-                              style: TextStyle(
+                              style: Theme.of(context).textTheme.body1.copyWith(
                                 fontSize: Constants.suSetSp(18.0),
                               ),
                             ),
@@ -727,8 +727,10 @@ class _PostCardState extends State<PostCard> {
                                   ),
                                 ),
                                 onPressed: () {
+                                  PostAPI.reportPost(widget.post);
                                   showShortToast("举报成功");
                                   Navigator.pop(context);
+                                  Constants.navigatorKey.currentState.pop();
                                 },
                               ),
                               PlatformButton(

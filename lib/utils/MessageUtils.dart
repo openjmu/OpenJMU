@@ -74,11 +74,15 @@ class MessageUtils {
     return _uc.asUint8List();
   }
 
-  static List<int> package(int command,
-      [List<int> data, bool increaseSequence = true]) {
+  static List<int> package(
+    int command, [
+    List<int> data,
+    bool increaseSequence = true,
+  ]) {
     final header = commonHeader(command, data?.length ?? 0);
     if (increaseSequence) packageSequence++;
-    return [...header, ...data ?? []];
+    final result = <int>[...header, ...(data ?? [])];
+    return result;
   }
 
   static int getPackageUint(List<int> data, int radix) {
@@ -93,6 +97,17 @@ class MessageUtils {
     } else if (radix == 64) {
       result = byteData.getUint64(0);
     }
+    return result;
+  }
+
+  static Map<String, dynamic> getPackageString(List<int> data) {
+    final byteData =
+        ByteData.view(Uint8List.fromList(data.sublist(0, 2)).buffer);
+    Map<String, dynamic> result = {
+      'length': byteData.getUint16(0),
+      'content': null,
+    };
+    result['content'] = utf8.decode(data.sublist(2, 2 + result['length']));
     return result;
   }
 
@@ -122,6 +137,14 @@ class MessageUtils {
             Timer.periodic(const Duration(seconds: 30), (t) async {
           addPackage("WY_KEEPALIVE");
         });
+        break;
+      case 0x1f:
+        debugPrint("Message Type: ${getPackageUint(content.sublist(0, 1), 8)}\n"
+            "Sender UID: ${getPackageUint(content.sublist(1, 9), 64)}\n"
+            "Sender Multi Port ID: ${getPackageUint(content.sublist(9, 17), 64)}\n"
+            "Send Time: ${getPackageUint(content.sublist(17, 21), 32)}\n"
+            "Ack ID: ${getPackageUint(content.sublist(21, 29), 64)}\n"
+            "Message Content: ${getPackageString(content.sublist(29))}\n");
         break;
       default:
         break;
@@ -172,8 +195,9 @@ class UintConverter {
   }
 
   void addString(String value) {
-    addWrapper(UintWrapper(value.length, 16));
-    for (int byte in ascii.encode(value)) add(byte, 8);
+    final bytes = utf8.encode(value);
+    addWrapper(UintWrapper(bytes.length, 16));
+    for (final byte in bytes) add(byte, 8);
   }
 
   Uint8List asUint8List() {
