@@ -11,6 +11,7 @@ class AboutPage extends StatefulWidget {
 }
 
 class _AboutPageState extends State<AboutPage> {
+  int tries = 0;
   String currentVersion;
 
   @override
@@ -23,19 +24,27 @@ class _AboutPageState extends State<AboutPage> {
     });
   }
 
+  void tryDisplayDebugInfo() {
+    tries++;
+    if (tries == 10) setState(() {});
+  }
+
   Widget about() {
     return Container(
       padding: EdgeInsets.all(Constants.suSetSp(20.0)),
       child: Center(
         child: Column(
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(bottom: Constants.suSetSp(20.0)),
-              child: SvgPicture.asset(
-                "images/splash_page_logo.svg",
-                width: Constants.suSetSp(180.0),
-                height: Constants.suSetSp(180.0),
-                color: ThemeUtils.defaultColor,
+            GestureDetector(
+              onTap: tries < 10 ? tryDisplayDebugInfo : null,
+              child: Container(
+                margin: EdgeInsets.only(bottom: Constants.suSetSp(20.0)),
+                child: SvgPicture.asset(
+                  "images/splash_page_logo.svg",
+                  width: Constants.suSetSp(180.0),
+                  height: Constants.suSetSp(180.0),
+                  color: ThemeUtils.defaultColor,
+                ),
               ),
             ),
             SizedBox(height: Constants.suSetSp(30.0)),
@@ -92,24 +101,47 @@ class _AboutPageState extends State<AboutPage> {
     );
   }
 
+  Widget debugInfo() {
+    final user = UserAPI.currentUser;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        SelectableText(
+          "———— START DEBUG INFO ————\n"
+          "uid: ${user.uid}\n"
+          "sid: ${user.sid}\n"
+          "workId: ${user.workId}\n"
+          "blowfish: ${user.blowfish}\n"
+          "————— END DEBUG INFO —————\n",
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "关于OpenJMU",
-            style: Theme.of(context).textTheme.title.copyWith(
-                  fontSize: Constants.suSetSp(21.0),
-                ),
-          ),
-          centerTitle: true,
+      appBar: AppBar(
+        title: Text(
+          "关于OpenJMU",
+          style: Theme.of(context).textTheme.title.copyWith(
+                fontSize: Constants.suSetSp(21.0),
+              ),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            about(),
-            SizedBox(height: Constants.suSetSp(100.0))
-          ],
-        ));
+        centerTitle: true,
+      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              about(),
+              tries == 10 ? debugInfo() : SizedBox.shrink(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

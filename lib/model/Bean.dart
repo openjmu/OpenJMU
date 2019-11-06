@@ -17,6 +17,7 @@ export 'package:OpenJMU/model/TeamCommentController.dart';
 export 'package:OpenJMU/model/TeamPostController.dart';
 export 'package:OpenJMU/model/TeamPraiseController.dart';
 
+///
 /// 动态实体
 /// [id] 动态id, [uid] 用户uid, [nickname] 用户名称, [avatar] 用户头像, [postTime] 动态时间, [from] 动态来源
 /// [glances] 被查看次数, [category] 动态类型, [content] 动态内容, [pics] 动态图片
@@ -95,8 +96,7 @@ class Post {
       if (_user[k] == "") _user[k] = null;
     });
     String _avatar =
-        "${API.userAvatarInSecure}?uid=${_user['uid']}&size=f152&_t=${DateTime
-        .now().millisecondsSinceEpoch}";
+        "${API.userAvatarInSecure}?uid=${_user['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
     String _postTime = DateTime.fromMillisecondsSinceEpoch(
       int.parse(json['post_time']) * 1000,
     ).toString().substring(0, 16);
@@ -726,13 +726,17 @@ class CustomCenterDockedFloatingActionButtonLocation
   }
 }
 
-double _leftOffset(ScaffoldPrelayoutGeometry scaffoldGeometry,
-    {double offset = 0.0}) {
+double _leftOffset(
+  ScaffoldPrelayoutGeometry scaffoldGeometry, {
+  double offset = 0.0,
+}) {
   return 16 + scaffoldGeometry.minInsets.left - offset;
 }
 
-double _rightOffset(ScaffoldPrelayoutGeometry scaffoldGeometry,
-    {double offset = 0.0}) {
+double _rightOffset(
+  ScaffoldPrelayoutGeometry scaffoldGeometry, {
+  double offset = 0.0,
+}) {
   return scaffoldGeometry.scaffoldSize.width -
       16 -
       scaffoldGeometry.minInsets.right -
@@ -740,8 +744,10 @@ double _rightOffset(ScaffoldPrelayoutGeometry scaffoldGeometry,
       offset;
 }
 
-double _endOffset(ScaffoldPrelayoutGeometry scaffoldGeometry,
-    {double offset = 0.0}) {
+double _endOffset(
+  ScaffoldPrelayoutGeometry scaffoldGeometry, {
+  double offset = 0.0,
+}) {
   assert(scaffoldGeometry.textDirection != null);
   switch (scaffoldGeometry.textDirection) {
     case TextDirection.rtl:
