@@ -221,16 +221,23 @@ class _CommentListState extends State<CommentList>
     if (!_showLoading) {
       if (_firstLoadComplete) {
         _itemList = ListView.separated(
-          padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
-          separatorBuilder: (context, index) => Container(
+          padding: EdgeInsets.symmetric(
+            vertical: Constants.suSetSp(4.0),
+          ),
+          controller: widget._commentController.commentType == "mention"
+              ? null
+              : _scrollController,
+          separatorBuilder: (context, index) => Divider(
             color: Theme.of(context).canvasColor,
+            thickness: Constants.suSetSp(8.0),
             height: Constants.suSetSp(8.0),
           ),
+          itemCount: _commentList.length + 1,
           itemBuilder: (context, index) {
             if (index == _commentList.length) {
               if (this._canLoadMore) {
                 _loadData();
-                return Container(
+                return SizedBox(
                   height: Constants.suSetSp(40.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -239,13 +246,15 @@ class _CommentListState extends State<CommentList>
                         width: Constants.suSetSp(15.0),
                         height: Constants.suSetSp(15.0),
                         child: Platform.isAndroid
-                            ? CircularProgressIndicator(
-                                strokeWidth: 2.0,
-                              )
+                            ? CircularProgressIndicator(strokeWidth: 2.0)
                             : CupertinoActivityIndicator(),
                       ),
-                      Text("　正在加载",
-                          style: TextStyle(fontSize: Constants.suSetSp(14.0)))
+                      Text(
+                        "　正在加载",
+                        style: TextStyle(
+                          fontSize: Constants.suSetSp(14.0),
+                        ),
+                      )
                     ],
                   ),
                 );
@@ -254,10 +263,12 @@ class _CommentListState extends State<CommentList>
                   height: Constants.suSetSp(50.0),
                   color: Theme.of(context).canvasColor,
                   child: Center(
-                    child: Text(Constants.endLineTag,
-                        style: TextStyle(
-                          fontSize: Constants.suSetSp(14.0),
-                        )),
+                    child: Text(
+                      Constants.endLineTag,
+                      style: TextStyle(
+                        fontSize: Constants.suSetSp(14.0),
+                      ),
+                    ),
                   ),
                 );
               }
@@ -265,10 +276,6 @@ class _CommentListState extends State<CommentList>
               return CommentCard(_commentList[index]);
             }
           },
-          itemCount: _commentList.length + 1,
-          controller: widget._commentController.commentType == "mention"
-              ? null
-              : _scrollController,
         );
 
         if (widget.needRefreshIndicator) {

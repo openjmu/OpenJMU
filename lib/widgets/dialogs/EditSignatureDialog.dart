@@ -79,14 +79,16 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Center(
-                      child: Text("修改签名",
-                          style: Theme.of(context).textTheme.title)),
-                  Container(
+                    child:
+                        Text("修改签名", style: Theme.of(context).textTheme.title),
+                  ),
+                  Padding(
                     padding: EdgeInsets.all(Constants.suSetSp(20.0)),
                     child: TextField(
                       autofocus: true,
                       style: Theme.of(context).textTheme.body1.copyWith(
                             fontSize: Constants.suSetSp(16.0),
+                            textBaseline: TextBaseline.alphabetic,
                           ),
                       controller: _textEditingController,
                       maxLength: 127,
@@ -99,6 +101,9 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                           borderSide: BorderSide(color: Colors.grey[850]),
                         ),
                         hintText: UserAPI.currentUser.signature,
+                        hintStyle: TextStyle(
+                          textBaseline: TextBaseline.alphabetic,
+                        ),
                       ),
                     ),
                   ),

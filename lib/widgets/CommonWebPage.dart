@@ -66,34 +66,26 @@ class CommonWebPageState extends State<CommonWebPage> {
       if (state.type == WebViewState.finishLoad) {
         String script = 'window.document.title';
         String title = await flutterWebViewPlugin.evalJavascript(script);
-        if (this.mounted)
-          setState(() {
-            if (Platform.isAndroid) {
-              this._title = title.substring(1, title.length - 1);
-            } else {
-              this._title = title;
-            }
-          });
+        if (Platform.isAndroid) {
+          this._title = title.substring(1, title.length - 1);
+        } else {
+          this._title = title;
+        }
+        if (this.mounted) setState(() {});
         Future.delayed(const Duration(milliseconds: 500), () {
-          if (this.mounted) {
-            setState(() {
-              isLoading = false;
-              currentProgress = 0.0;
-            });
-          }
+          isLoading = false;
+          currentProgress = 0.0;
+          if (this.mounted) setState(() {});
+
         });
       } else if (state.type == WebViewState.startLoad) {
-        if (this.mounted)
-          setState(() {
-            isLoading = true;
-          });
+        isLoading = true;
+        if (this.mounted) setState(() {});
       }
     });
     flutterWebViewPlugin.onProgressChanged.listen((progress) {
-      if (this.mounted)
-        setState(() {
-          currentProgress = progress;
-        });
+      currentProgress = progress;
+      if (this.mounted) setState(() {});
     });
     flutterWebViewPlugin.onUrlChanged.listen((url) {
       if (this.mounted)
@@ -143,6 +135,7 @@ class CommonWebPageState extends State<CommonWebPage> {
 
   PreferredSize progressBar(context) => PreferredSize(
         child: Container(
+          height: Constants.suSetSp(3.0),
           color: !(currentProgress == 0.0) ? currentThemeColor : null,
           child: LinearProgressIndicator(
             backgroundColor: Theme.of(context).primaryColor,
@@ -150,7 +143,7 @@ class CommonWebPageState extends State<CommonWebPage> {
             valueColor: AlwaysStoppedAnimation<Color>(currentThemeColor),
           ),
         ),
-        preferredSize: Size.fromHeight(Constants.suSetSp(2.0)),
+        preferredSize: Size.fromHeight(Constants.suSetSp(3.0)),
       );
 
   @override

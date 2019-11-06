@@ -94,8 +94,8 @@ class ThemeUtils {
         highlightColor: Colors.transparent,
         splashFactory: const NoSplashFactory(),
         toggleableActiveColor: currentThemeColor,
-        textSelectionColor: currentThemeColor.withAlpha(100),
         cursorColor: currentThemeColor,
+        textSelectionColor: currentThemeColor.withAlpha(100),
         textSelectionHandleColor: currentThemeColor,
         indicatorColor: currentThemeColor,
         appBarTheme: AppBarTheme(
@@ -131,8 +131,8 @@ class ThemeUtils {
         highlightColor: Colors.transparent,
         splashFactory: const NoSplashFactory(),
         toggleableActiveColor: currentThemeColor,
-        textSelectionColor: currentThemeColor,
         cursorColor: currentThemeColor,
+        textSelectionColor: currentThemeColor.withAlpha(100),
         textSelectionHandleColor: currentThemeColor,
         indicatorColor: currentThemeColor,
         appBarTheme: AppBarTheme(

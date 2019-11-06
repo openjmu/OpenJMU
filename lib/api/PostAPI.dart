@@ -18,9 +18,9 @@ class PostAPI {
       case "square":
         if (isMore) {
           if (!isFollowed) {
-            _postUrl = API.postList + "/id_max/$lastValue";
+            _postUrl = "${API.postList}/id_max/$lastValue";
           } else {
-            _postUrl = API.postFollowedList + "/id_max/$lastValue";
+            _postUrl = "${API.postFollowedList}/id_max/$lastValue";
           }
         } else {
           if (!isFollowed) {
@@ -39,11 +39,11 @@ class PostAPI {
         }
         break;
       case "search":
+        final keyword = Uri.encodeQueryComponent(additionAttrs['words']);
         if (isMore) {
-          _postUrl =
-              "${API.postListByWords}${additionAttrs['words']}/id_max/$lastValue";
+          _postUrl = "${API.postListByWords}$keyword/id_max/$lastValue";
         } else {
-          _postUrl = "${API.postListByWords}${additionAttrs['words']}";
+          _postUrl = "${API.postListByWords}$keyword";
         }
         break;
       case "mention":
@@ -101,18 +101,19 @@ class PostAPI {
   }
 
   static Future reportPost(Post post) async {
+    final message = "————微博内容举报————\n"
+        "举报时间：${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}\n"
+        "举报对象：${post.nickname}\n"
+        "微博ＩＤ：${post.id}\n"
+        "发布时间：${post.postTime}\n"
+        "举报理由：违反微博广场公约\n"
+        "———From OpenJMU———";
     MessageUtils.addPackage(
       "WY_MSG",
       M_WY_MSG(
         type: "MSG_A2A",
         uid: 145685,
-        message: "————微博内容举报————\n"
-            "举报时间：${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}\n"
-            "举报对象：${post.nickname}\n"
-            "微博ＩＤ：${post.id}\n"
-            "发布时间：${post.postTime}\n"
-            "举报理由：违反微博广场公约\n"
-            "———From OpenJMU———",
+        message: message,
       ),
     );
   }

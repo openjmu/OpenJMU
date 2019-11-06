@@ -184,8 +184,11 @@ class _UserPageState extends State<UserPage>
     );
   }
 
-  Widget followButton() => Padding(
-        padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(4.0)),
+  Widget followButton() => Container(
+        height: Constants.suSetSp(48.0),
+        padding: EdgeInsets.symmetric(
+          horizontal: Constants.suSetSp(4.0),
+        ),
         child: FlatButton(
           padding: EdgeInsets.symmetric(
             horizontal: Constants.suSetSp(28.0),
@@ -201,15 +204,13 @@ class _UserPageState extends State<UserPage>
             } else {
               if (_user.isFollowing) {
                 UserAPI.unFollow(widget.uid).then((response) {
-                  setState(() {
-                    _user.isFollowing = false;
-                  });
+                  _user.isFollowing = false;
+                  if (mounted) setState(() {});
                 });
               } else {
                 UserAPI.follow(widget.uid).then((response) {
-                  setState(() {
-                    _user.isFollowing = true;
-                  });
+                  _user.isFollowing = true;
+                  if (mounted) setState(() {});
                 });
               }
             }
@@ -236,27 +237,23 @@ class _UserPageState extends State<UserPage>
         ),
       );
 
-  Widget qrCode(context) => Padding(
-        padding: EdgeInsets.only(
-          left: Constants.suSetSp(4.0),
+  Widget qrCode(context) => Container(
+        width: Constants.suSetSp(48.0),
+        height: Constants.suSetSp(48.0),
+        decoration: BoxDecoration(
+          color: const Color(0x44ffffff),
+          shape: BoxShape.circle,
         ),
-        child: Container(
-          padding: EdgeInsets.all(Constants.suSetSp(10.0)),
-          decoration: BoxDecoration(
-            color: const Color(0x44ffffff),
-            shape: BoxShape.circle,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          child: Icon(
+            AntDesign.getIconData("qrcode"),
+            size: Constants.suSetSp(26.0),
+            color: Colors.white,
           ),
-          child: GestureDetector(
-            behavior: HitTestBehavior.translucent,
-            child: Icon(
-              AntDesign.getIconData("qrcode"),
-              size: Constants.suSetSp(26.0),
-              color: Colors.white,
-            ),
-            onTap: () {
-              Navigator.of(context).pushNamed("/userqrcode");
-            },
-          ),
+          onTap: () {
+            Navigator.of(context).pushNamed("/userqrcode");
+          },
         ),
       );
 

@@ -299,13 +299,14 @@ class MyInfoPageState extends State<MyInfoPage> {
                   right: Constants.suSetSp(signing ? 8.0 : 4.0),
                 ),
                 child: signing
-                    ? SizedBox(
-                        width: Constants.suSetSp(18.0),
-                        height: Constants.suSetSp(18.0),
-                        child: Constants.progressIndicator(
+                    ? Container(
+                        width: Constants.suSetSp(24.0),
+                        height: Constants.suSetSp(24.0),
+                        padding: EdgeInsets.all(Constants.suSetSp(3.0)),
+                        child: CircularProgressIndicator(
                           strokeWidth: 3.0,
-                          color: Colors.white,
-                        ),
+                          valueColor: AlwaysStoppedAnimation(Colors.white),
+                        )
                       )
                     : Icon(
                         Icons.assignment_turned_in,

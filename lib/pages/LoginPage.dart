@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
@@ -129,9 +130,9 @@ class LoginPageState extends State<LoginPage>
       top: Constants.suSetSp(50.0),
       child: Hero(
         tag: "Logo",
-        child: Image.asset(
-          'images/ic_jmu_logo_trans.png',
-          color: Theme.of(context).primaryColor.withAlpha(0x33),
+        child: SvgPicture.asset(
+          "images/splash_page_logo.svg",
+          color: Theme.of(context).primaryColor.withOpacity(0.3),
           width: Constants.suSetSp(120.0),
           height: Constants.suSetSp(120.0),
         ),

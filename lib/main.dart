@@ -111,43 +111,54 @@ class OpenJMUAppState extends State<OpenJMUApp> {
     });
     quickActions.setShortcutItems(<ShortcutItem>[
       const ShortcutItem(
-          type: 'action_home', localizedTitle: '首页', icon: 'actions_home'),
+        type: 'action_home',
+        localizedTitle: '首页',
+        icon: 'actions_home',
+      ),
       const ShortcutItem(
-          type: 'action_apps', localizedTitle: '应用', icon: 'actions_apps'),
+        type: 'action_apps',
+        localizedTitle: '应用',
+        icon: 'actions_apps',
+      ),
       const ShortcutItem(
-          type: 'action_message',
-          localizedTitle: '消息',
-          icon: 'actions_message'),
+        type: 'action_message',
+        localizedTitle: '消息',
+        icon: 'actions_message',
+      ),
       const ShortcutItem(
-          type: 'action_mine', localizedTitle: '我的', icon: 'actions_mine'),
+        type: 'action_mine',
+        localizedTitle: '我的',
+        icon: 'actions_mine',
+      ),
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = (ThemeUtils.isDark ? ThemeUtils.dark() : ThemeUtils.light())
+        .copyWith(
+      textTheme: (ThemeUtils.isDark
+          ? Theme.of(context).typography.white
+          : Theme.of(context).typography.black)
+          .copyWith(
+        subhead: TextStyle(
+          textBaseline: TextBaseline.alphabetic,
+        ),
+      ),
+    );
     return Theme(
-      data: ThemeUtils.isDark ? ThemeUtils.dark() : ThemeUtils.light(),
+      data: theme,
       child: OKToast(
         child: MaterialApp(
           navigatorKey: Constants.navigatorKey,
           builder: (BuildContext c, Widget w) => NoScaleTextWidget(child: w),
           routes: RouteUtils.routes,
           title: "OpenJMU",
-          theme: (ThemeUtils.isDark ? ThemeUtils.dark() : ThemeUtils.light())
-              .copyWith(
-            textTheme: (ThemeUtils.isDark
-                    ? Theme.of(context).typography.white
-                    : Theme.of(context).typography.black)
-                .copyWith(
-              subhead: TextStyle(
-                textBaseline: TextBaseline.alphabetic,
-              ),
-            ),
-          ),
+          theme: theme,
           home: SplashPage(initIndex: initIndex),
           localizationsDelegates: [
-            GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
           supportedLocales: [

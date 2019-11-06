@@ -131,7 +131,22 @@ class _ImageViewerState extends State<ImageViewer>
             inPageView: true,
           );
         },
-        enableMemoryCache: false,
+        loadStateChanged: (ExtendedImageState state) {
+          Widget loader;
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              loader = Center(
+                child: Constants.progressIndicator(
+                  color: Colors.grey,
+                ),
+              );
+              break;
+            case LoadState.completed:
+            case LoadState.failed:
+              break;
+          }
+          return loader;
+        },
       ),
       padding: EdgeInsets.all(5.0),
     );
@@ -139,8 +154,7 @@ class _ImageViewerState extends State<ImageViewer>
       image = Hero(
         tag: "${widget.pics[index].id}"
             "${index.toString()}"
-            "${widget.pics[index].postId.toString()}"
-        ,
+            "${widget.pics[index].postId.toString()}",
         child: image,
       );
     }

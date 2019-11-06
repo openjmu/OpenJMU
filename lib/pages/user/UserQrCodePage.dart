@@ -150,8 +150,11 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                           height: Constants.suSetSp(avatarSize),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            border: Border.all(color: Colors.white, width: 4.0),
-                            borderRadius: BorderRadius.circular(15.0),
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 3.0,
+                            ),
+                            borderRadius: BorderRadius.circular(10.0),
                             boxShadow: <BoxShadow>[
                               BoxShadow(
                                 offset: Offset(0.0, 3.0),
@@ -160,7 +163,8 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                               )
                             ],
                             image: DecorationImage(
-                              image: AssetImage("images/ic_jmu_logo.png"),
+                              image: AssetImage("images/logo_1024.png"),
+                              fit: BoxFit.fill,
                             ),
                           ),
                         ),

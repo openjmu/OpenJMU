@@ -4,8 +4,8 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/post/PostDetailPage.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
+import 'package:OpenJMU/pages/post/PostDetailPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
@@ -14,14 +14,22 @@ import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 class CommentCard extends StatelessWidget {
   final Comment comment;
 
-  CommentCard(this.comment, {Key key}) : super(key: key);
+  CommentCard(
+    this.comment, {
+    Key key,
+  }) : super(key: key);
 
-  final TextStyle subtitleStyle =
-      TextStyle(color: Colors.grey, fontSize: Constants.suSetSp(15.0));
-  final TextStyle rootTopicTextStyle =
-      TextStyle(fontSize: Constants.suSetSp(15.0));
-  final TextStyle rootTopicMentionStyle =
-      TextStyle(color: Colors.blue, fontSize: Constants.suSetSp(15.0));
+  final TextStyle subtitleStyle = TextStyle(
+    color: Colors.grey,
+    fontSize: Constants.suSetSp(15.0),
+  );
+  final TextStyle rootTopicTextStyle = TextStyle(
+    fontSize: Constants.suSetSp(15.0),
+  );
+  final TextStyle rootTopicMentionStyle = TextStyle(
+    color: Colors.blue,
+    fontSize: Constants.suSetSp(15.0),
+  );
   final Color subIconColor = Colors.grey;
 
   Widget getCommentAvatar(context, comment) => SizedBox(
@@ -234,8 +242,11 @@ class CommentCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   IconButton(
-                    icon: Icon(Icons.reply,
-                        size: Constants.suSetSp(36.0), color: Colors.white),
+                    icon: Icon(
+                      Icons.reply,
+                      size: Constants.suSetSp(36.0),
+                      color: Colors.white,
+                    ),
                     padding: EdgeInsets.all(Constants.suSetSp(6.0)),
                     onPressed: () {
                       Navigator.pop(context);
@@ -249,10 +260,13 @@ class CommentCard extends StatelessWidget {
                       );
                     },
                   ),
-                  Text("回复评论",
-                      style: TextStyle(
-                          fontSize: Constants.suSetSp(16.0),
-                          color: Colors.white))
+                  Text(
+                    "回复评论",
+                    style: TextStyle(
+                      fontSize: Constants.suSetSp(16.0),
+                      color: Colors.white,
+                    ),
+                  )
                 ],
               ),
               Column(
@@ -290,13 +304,17 @@ class CommentCard extends StatelessWidget {
     } else {
       return SimpleDialog(
         backgroundColor: Colors.redAccent,
-        contentPadding: EdgeInsets.symmetric(vertical: Constants.suSetSp(16.0)),
+        contentPadding: EdgeInsets.symmetric(
+          vertical: Constants.suSetSp(16.0),
+        ),
         children: <Widget>[
           Center(
             child: Text(
               "该动态已被屏蔽或删除",
               style: TextStyle(
-                  color: Colors.white, fontSize: Constants.suSetSp(20.0)),
+                color: Colors.white,
+                fontSize: Constants.suSetSp(20.0),
+              ),
             ),
           )
         ],
@@ -308,9 +326,12 @@ class CommentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => showDialog<Null>(
-          context: context, builder: (BuildContext context) => dialog(context)),
+        context: context,
+        builder: (BuildContext context) => dialog(context),
+      ),
       child: Card(
-        margin: EdgeInsets.only(bottom: Constants.suSetSp(16.0)),
+        margin: EdgeInsets.zero,
+        elevation: 0,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -344,7 +365,6 @@ class CommentCard extends StatelessWidget {
             getCommentContent(context, this.comment),
           ],
         ),
-        elevation: 0,
       ),
     );
   }

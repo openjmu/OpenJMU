@@ -53,14 +53,6 @@ class _PostCardState extends State<PostCard> {
   Color _forwardColor = Colors.grey;
   Color _repliesColor = Colors.grey;
 
-  /// Widget list
-  Widget avatar = SizedBox.shrink(),
-      nickname = SizedBox.shrink(),
-      postInfo = SizedBox.shrink(),
-      content = SizedBox.shrink(),
-      pics = SizedBox.shrink(),
-      actions = SizedBox.shrink();
-
   bool isDetail, isShield, isDark = ThemeUtils.isDark;
 
   @override
@@ -75,8 +67,6 @@ class _PostCardState extends State<PostCard> {
         isDetail = false;
       });
     }
-
-    initContent();
 
     Instances.eventBus
       ..on<ChangeBrightnessEvent>().listen((event) {
@@ -108,17 +98,6 @@ class _PostCardState extends State<PostCard> {
   @override
   void dispose() {
     super.dispose();
-  }
-
-  void initContent() {
-    final context = widget.parentContext;
-    final post = widget.post;
-    avatar = getPostAvatar(context, post);
-    nickname = getPostNickname(context, post);
-    postInfo = getPostInfo(post);
-    content = getPostContent(context, post);
-    pics = getPostImages(context, post);
-    actions = getPostActions(context);
   }
 
   Widget getPostAvatar(context, post) {
@@ -274,6 +253,8 @@ class _PostCardState extends State<PostCard> {
           imageUrl,
           fit: BoxFit.cover,
           cache: true,
+          color: isDark ? Colors.black.withAlpha(50) : null,
+          colorBlendMode: isDark ? BlendMode.darken : BlendMode.srcIn,
           loadStateChanged: (ExtendedImageState state) {
             Widget loader;
             switch (state.extendedImageLoadState) {
@@ -287,35 +268,27 @@ class _PostCardState extends State<PostCard> {
             return loader;
           },
         );
-        if (isDark) {
-          _exImage = Stack(
-            children: <Widget>[_exImage, Constants.nightModeCover()],
-          );
-        }
         imagesWidget.add(GestureDetector(
           onTap: () {
-            Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
-              return ImageViewer(
-                index,
-                data.map<ImageBean>((f) {
-                  return ImageBean(
-                    id: imageID,
-                    imageUrl: f['image_original'],
-                    imageThumbUrl: f['image_thumb'],
-                    postId: widget.post.id,
-                  );
-                }).toList(),
-              );
-            }));
+            Navigator.of(context).push(
+              platformPageRoute(
+                context: context,
+                builder: (_) => ImageViewer(
+                  index,
+                  data.map<ImageBean>((f) {
+                    return ImageBean(
+                      id: imageID,
+                      imageUrl: f['image_original'],
+                      imageThumbUrl: f['image_thumb'],
+                      postId: widget.post.id,
+                    );
+                  }).toList(),
+                ),
+              ),
+            );
           },
           child: _exImage,
         ));
-        if (widget.isDetail) {
-          _exImage = Hero(
-            tag: "$imageID${index.toString()}${widget.post.id.toString()}",
-            child: _exImage,
-          );
-        }
       }
       int itemCount = 3;
       Widget _image;
@@ -616,8 +589,8 @@ class _PostCardState extends State<PostCard> {
                             content: Text(
                               "确定屏蔽此人吗？",
                               style: Theme.of(context).textTheme.body1.copyWith(
-                                fontSize: Constants.suSetSp(18.0),
-                              ),
+                                    fontSize: Constants.suSetSp(18.0),
+                                  ),
                             ),
                             actions: <Widget>[
                               PlatformButton(
@@ -698,8 +671,8 @@ class _PostCardState extends State<PostCard> {
                             content: Text(
                               "确定举报该条动态吗？",
                               style: Theme.of(context).textTheme.body1.copyWith(
-                                fontSize: Constants.suSetSp(18.0),
-                              ),
+                                    fontSize: Constants.suSetSp(18.0),
+                                  ),
                             ),
                             actions: <Widget>[
                               PlatformButton(
@@ -801,14 +774,19 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
+    final post = widget.post;
     return Hero(
-      tag: "postcard-id-${widget.post.id}",
+      tag: "postcard-id-${post.id}",
       child: GestureDetector(
         onTap: isDetail || isShield
             ? null
-            : () { pushToDetail(context); },
+            : () {
+                pushToDetail(context);
+              },
         onLongPress: isShield
-            ? () { pushToDetail(context); }
+            ? () {
+                pushToDetail(context);
+              }
             : null,
         child: Card(
           margin: isShield
@@ -827,7 +805,7 @@ class _PostCardState extends State<PostCard> {
                       ),
                       child: Row(
                         children: <Widget>[
-                          avatar,
+                          getPostAvatar(context, post),
                           Expanded(
                             child: Padding(
                               padding: EdgeInsets.symmetric(
@@ -837,25 +815,24 @@ class _PostCardState extends State<PostCard> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  nickname,
+                                  getPostNickname(context, post),
                                   Constants.separator(context, height: 4.0),
-                                  postInfo,
+                                  getPostInfo(post),
                                 ],
                               ),
                             ),
                           ),
-                          ((widget.post.uid == UserAPI.currentUser.uid) &&
-                                  isDetail)
+                          ((post.uid == UserAPI.currentUser.uid) && isDetail)
                               ? deleteButton()
                               : postActionButton(context),
                         ],
                       ),
                     ),
-                    content,
-                    pics,
+                    getPostContent(context, post),
+                    getPostImages(context, post),
                     isDetail
                         ? SizedBox(height: Constants.suSetSp(16.0))
-                        : actions,
+                        : getPostActions(context),
                   ]
                 : <Widget>[getPostBanned("shield")],
           ),

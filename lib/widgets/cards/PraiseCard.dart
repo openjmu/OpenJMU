@@ -14,14 +14,22 @@ import 'package:OpenJMU/widgets/CommonWebPage.dart';
 class PraiseCard extends StatelessWidget {
   final Praise praise;
 
-  PraiseCard(this.praise, {Key key}) : super(key: key);
+  PraiseCard(
+    this.praise, {
+    Key key,
+  }) : super(key: key);
 
-  final TextStyle subtitleStyle =
-      TextStyle(color: Colors.grey, fontSize: Constants.suSetSp(15.0));
-  final TextStyle rootTopicTextStyle =
-      TextStyle(fontSize: Constants.suSetSp(15.0));
-  final TextStyle rootTopicMentionStyle =
-      TextStyle(color: Colors.blue, fontSize: Constants.suSetSp(15.0));
+  final TextStyle subtitleStyle = TextStyle(
+    color: Colors.grey,
+    fontSize: Constants.suSetSp(15.0),
+  );
+  final TextStyle rootTopicTextStyle = TextStyle(
+    fontSize: Constants.suSetSp(15.0),
+  );
+  final TextStyle rootTopicMentionStyle = TextStyle(
+    color: Colors.blue,
+    fontSize: Constants.suSetSp(15.0),
+  );
   final Color subIconColor = Colors.grey;
 
   Widget getPraiseAvatar(context, praise) => SizedBox(
@@ -75,17 +83,22 @@ class PraiseCard extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: Container(
-            margin: EdgeInsets.only(bottom: Constants.suSetSp(8.0)),
+          child: Card(
+            margin: EdgeInsets.zero,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
-                  child: Text("赞了这条微博",
-                      style: TextStyle(fontSize: Constants.suSetSp(18.0))),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Constants.suSetSp(16.0),
+                  ),
+                  child: Text(
+                    "赞了这条微博",
+                    style: TextStyle(
+                      fontSize: Constants.suSetSp(18.0),
+                    ),
+                  ),
                 ),
                 getRootContent(context, praise)
               ],
@@ -104,8 +117,9 @@ class PraiseCard extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.only(top: Constants.suSetSp(10.0)),
       padding: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(16.0),
-          vertical: Constants.suSetSp(10.0)),
+        horizontal: Constants.suSetSp(16.0),
+        vertical: Constants.suSetSp(10.0),
+      ),
       decoration: BoxDecoration(color: Theme.of(context).canvasColor),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -157,7 +171,7 @@ class PraiseCard extends StatelessWidget {
         }));
       },
       child: Card(
-        margin: EdgeInsets.only(bottom: Constants.suSetSp(8.0)),
+        margin: EdgeInsets.zero,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[

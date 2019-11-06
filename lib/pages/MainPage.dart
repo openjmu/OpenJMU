@@ -204,9 +204,13 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           width: Constants.suSetSp(56.0),
           height: Constants.suSetSp(40.0),
           child: FloatingActionButton(
-            child: Icon(Icons.add, size: Constants.suSetSp(30.0)),
+            child: Icon(
+              Icons.add,
+              size: Constants.suSetSp(30.0),
+            ),
             tooltip: "发布新动态",
-            foregroundColor: Colors.white,
+            foregroundColor:
+                Colors.white.withOpacity(ThemeUtils.isDark ? 0.7 : 1.0),
             backgroundColor: currentThemeColor,
             elevation: 0,
             onPressed: () {
@@ -217,7 +221,10 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
             mini: true,
             isExtended: false,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Constants.suSetSp(14.0))),
+              borderRadius: BorderRadius.circular(
+                Constants.suSetSp(14.0),
+              ),
+            ),
           ),
         ),
         floatingActionButtonLocation:

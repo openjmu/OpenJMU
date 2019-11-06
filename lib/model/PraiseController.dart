@@ -179,15 +179,16 @@ class _PraiseListState extends State<PraiseList>
       if (_firstLoadComplete) {
         _itemList = ListView.separated(
           padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
-          separatorBuilder: (context, index) => Container(
+          separatorBuilder: (context, index) => Divider(
             color: Theme.of(context).canvasColor,
             height: Constants.suSetSp(8.0),
+            thickness: Constants.suSetSp(8.0),
           ),
           itemBuilder: (context, index) {
             if (index == _praiseList.length) {
               if (this._canLoadMore) {
                 _loadData();
-                return Container(
+                return SizedBox(
                   height: Constants.suSetSp(40.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -200,7 +201,7 @@ class _PraiseListState extends State<PraiseList>
                             : CupertinoActivityIndicator(),
                       ),
                       Text("　正在加载",
-                          style: TextStyle(fontSize: Constants.suSetSp(14.0)))
+                          style: TextStyle(fontSize: Constants.suSetSp(14.0),),)
                     ],
                   ),
                 );
@@ -212,7 +213,7 @@ class _PraiseListState extends State<PraiseList>
                     child: Text(Constants.endLineTag,
                         style: TextStyle(
                           fontSize: Constants.suSetSp(14.0),
-                        )),
+                        ),),
                   ),
                 );
               }

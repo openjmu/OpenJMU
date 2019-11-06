@@ -3,6 +3,7 @@ import 'dart:core';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
@@ -26,14 +27,13 @@ class PublishPostPage extends StatefulWidget {
 }
 
 class PublishPostPageState extends State<PublishPostPage> {
-  final TextEditingController _textEditingController = TextEditingController();
-  final EditSwitchController _editSwitchController = EditSwitchController();
-  final LoadingDialogController _loadingDialogController =
-      LoadingDialogController();
-  final FocusNode _focusNode = FocusNode();
-  final double _iconSize = Constants.suSetSp(28.0);
-  final int gridCount = 5;
-//  final int maxLength = 2000;
+  final _textEditingController = TextEditingController();
+  final _editSwitchController = EditSwitchController();
+  final _loadingDialogController = LoadingDialogController();
+  final _focusNode = FocusNode();
+  final _iconSize = Constants.suSetSp(28.0);
+  final gridCount = 5;
+//  final maxLength = 2000;
 
   List<ItemBin> imagesBin = <ItemBin>[];
   List _imageIdList = [];
@@ -49,8 +49,6 @@ class PublishPostPageState extends State<PublishPostPage> {
   double _keyboardHeight = EmotionPadState.emoticonPadDefaultHeight;
 
   bool emoticonPadActive = false;
-
-  String msg = "";
 
   Widget poundIcon(context) => SvgPicture.asset(
         "assets/icons/add-topic.svg",
@@ -115,6 +113,7 @@ class PublishPostPageState extends State<PublishPostPage> {
   }
 
   Future<Null> loadAssets() async {
+    if (imagesLength == maxImagesLength) return;
     _focusNode.unfocus();
     setState(() {
       textFieldEnable = false;
@@ -130,7 +129,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     if (permissions[PermissionGroup.camera] == PermissionStatus.granted &&
         permissions[PermissionGroup.photos] == PermissionStatus.granted) {
       try {
-        resultList = await MultiImagePicker.pickImages(
+        final results = await MultiImagePicker.pickImages(
           maxImages: maxImagesLength - imagesLength,
           enableCamera: true,
           cupertinoOptions: CupertinoOptions(
@@ -145,11 +144,13 @@ class PublishPostPageState extends State<PublishPostPage> {
             allViewTitle: "所有图片",
           ),
         );
+        if (results != null) resultList = results;
       } on PlatformException catch (e) {
         showCenterErrorShortToast(e.message);
       }
-    } else
+    } else {
       return;
+    }
     setState(() {
       textFieldEnable = true;
     });
@@ -161,10 +162,9 @@ class PublishPostPageState extends State<PublishPostPage> {
       _bin.add(ItemBin(assets));
     }
 
-    setState(() {
-      imagesBin.addAll(_bin);
-      imagesLength = imagesBin.length;
-    });
+    imagesBin.addAll(_bin);
+    imagesLength = imagesBin.length;
+    if (mounted) setState(() {});
   }
 
   Widget textField(context) {
@@ -178,23 +178,27 @@ class PublishPostPageState extends State<PublishPostPage> {
           controller: _textEditingController,
           focusNode: _focusNode,
           autofocus: true,
+          cursorColor: Theme.of(context).cursorColor,
           enabled: textFieldEnable,
           decoration: InputDecoration(
             enabled: !isLoading,
             hintText: "分享你的动态...",
             hintStyle: TextStyle(
               color: Colors.grey,
-              fontSize: Constants.suSetSp(18.0),
+              fontSize: Constants.suSetSp(19.0),
+              textBaseline: TextBaseline.alphabetic,
             ),
             border: InputBorder.none,
             labelStyle: TextStyle(
               color: Colors.white,
-              fontSize: Constants.suSetSp(18.0),
+              fontSize: Constants.suSetSp(19.0),
+              textBaseline: TextBaseline.alphabetic,
             ),
             counterStyle: TextStyle(color: Colors.transparent),
           ),
           style: Theme.of(context).textTheme.body1.copyWith(
-                fontSize: Constants.suSetSp(18.0),
+                fontSize: Constants.suSetSp(19.0),
+                textBaseline: TextBaseline.alphabetic,
               ),
 //          maxLength: maxLength,
           maxLines: null,
@@ -204,11 +208,11 @@ class PublishPostPageState extends State<PublishPostPage> {
 //                counterTextColor = Colors.red;
 //              });
 //            } else {
-              if (counterTextColor != Colors.grey) {
-                setState(() {
-                  counterTextColor = Colors.grey;
-                });
-              }
+            if (counterTextColor != Colors.grey) {
+              setState(() {
+                counterTextColor = Colors.grey;
+              });
+            }
 //            }
             setState(() {
               currentLength = content.length;
@@ -220,18 +224,22 @@ class PublishPostPageState extends State<PublishPostPage> {
   }
 
   Widget customGridView(context) {
-    int size = (MediaQuery.of(context).size.width / gridCount).floor() -
+    final size = (MediaQuery.of(context).size.width / gridCount).floor() -
         (18 - gridCount);
     return Container(
-      margin: EdgeInsets.only(bottom: Constants.suSetSp(80)),
+      margin: EdgeInsets.only(
+        bottom: (emoticonPadActive ? _keyboardHeight : 0.0) +
+            (MediaQuery.of(context).padding.bottom ?? 0) +
+            Constants.suSetSp(80.0),
+      ),
       height: MediaQuery.of(context).size.width /
           gridCount *
           (imagesBin.length / gridCount).ceil(),
       child: DragAbleGridView(
-        childAspectRatio: 1,
-        crossAxisCount: gridCount,
         itemBins: imagesBin,
         editSwitchController: _editSwitchController,
+        crossAxisCount: gridCount,
+        childAspectRatio: 1,
         isOpenDragAble: true,
         animationDuration: 300,
         longPressDuration: 500,
@@ -246,9 +254,14 @@ class PublishPostPageState extends State<PublishPostPage> {
                 ? Icons.delete
                 : Ionicons.getIconData("ios-trash"),
             color: Colors.white,
-            size: Constants.suSetSp(10.0 + 16 * (1 / gridCount)),
+            size: Constants.suSetSp(18.0),
           ),
         ),
+        deleteIconClickListener: (int index) {
+          imagesBin.remove(index);
+          imagesLength--;
+          if (mounted) setState(() {});
+        },
         child: (int position) {
           return Container(
             margin: EdgeInsets.all(Constants.suSetSp(4.0)),
@@ -270,7 +283,8 @@ class PublishPostPageState extends State<PublishPostPage> {
           (MediaQuery.of(context).padding.bottom ?? 0) +
           Constants.suSetSp(60.0),
       right: 0.0,
-      child: Padding(
+      child: Container(
+        height: Constants.suSetSp(20.0),
         padding: EdgeInsets.only(right: Constants.suSetSp(11.0)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
@@ -295,6 +309,7 @@ class PublishPostPageState extends State<PublishPostPage> {
           Constants.suSetSp(60.0),
       left: 0.0,
       right: 0.0,
+      height: Constants.suSetSp(60.0),
       child: Container(
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -387,9 +402,10 @@ class PublishPostPageState extends State<PublishPostPage> {
   }
 
   void insertText(String text) {
-    TextEditingValue value = _textEditingController.value;
-    int start = value.selection.baseOffset;
-    int end = value.selection.extentOffset;
+    final value = _textEditingController.value;
+    final start = value.selection.baseOffset;
+    final end = value.selection.extentOffset;
+
     if (value.selection.isValid) {
       String newText = "";
       if (value.selection.isCollapsed) {
@@ -410,12 +426,13 @@ class PublishPostPageState extends State<PublishPostPage> {
           extentOffset: end + text.length,
         ),
       );
+      currentLength = _textEditingController.text.length;
       if (mounted) setState(() {});
     }
   }
 
   void post(context) async {
-    String content = _textEditingController.text;
+    final content = _textEditingController.text;
     if (content.length == 0 || content.trim().length == 0) {
       showCenterShortToast("内容不能为空");
     } else {
@@ -543,6 +560,47 @@ class PublishPostPageState extends State<PublishPostPage> {
     });
   }
 
+  Future<bool> checkEmptyWhenPop() async {
+    if (imagesLength != 0 || currentLength != 0) {
+      final result = await showCupertinoDialog<bool>(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+          title: Text(
+            "退出发布动态",
+          ),
+          content: Text(
+            "仍有未发送的内容，是否退出？",
+          ),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text("确认"),
+              isDefaultAction: false,
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              textStyle: TextStyle(
+                color: ThemeUtils.currentThemeColor,
+              ),
+            ),
+            CupertinoDialogAction(
+              child: Text("取消"),
+              isDefaultAction: true,
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              textStyle: TextStyle(
+                color: ThemeUtils.currentThemeColor,
+              ),
+            ),
+          ],
+        ),
+      );
+      return result;
+    } else {
+      return true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
@@ -551,41 +609,44 @@ class PublishPostPageState extends State<PublishPostPage> {
     }
     _keyboardHeight = max(_keyboardHeight, keyboardHeight);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Center(
-          child: Text(
-            "发布动态",
-            style: Theme.of(context).textTheme.title.copyWith(
-                  fontSize: Constants.suSetSp(21.0),
-                ),
-          ),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Platform.isAndroid
-                  ? Icons.send
-                  : Ionicons.getIconData("ios-send"),
+    return WillPopScope(
+      onWillPop: checkEmptyWhenPop,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Center(
+            child: Text(
+              "发布动态",
+              style: Theme.of(context).textTheme.title.copyWith(
+                    fontSize: Constants.suSetSp(21.0),
+                  ),
             ),
-            onPressed: () => post(context),
           ),
-        ],
-      ),
-      body: ScrollConfiguration(
-        behavior: NoGlowScrollBehavior(),
-        child: Stack(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                textField(context),
-                customGridView(context),
-              ],
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Platform.isAndroid
+                    ? Icons.send
+                    : Ionicons.getIconData("ios-send"),
+              ),
+              onPressed: () => post(context),
             ),
-            _counter(context),
-            _toolbar(context),
-            emoticonPad(context),
           ],
+        ),
+        body: ScrollConfiguration(
+          behavior: NoGlowScrollBehavior(),
+          child: Stack(
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  textField(context),
+                  customGridView(context),
+                ],
+              ),
+              _counter(context),
+              _toolbar(context),
+              emoticonPad(context),
+            ],
+          ),
         ),
       ),
     );

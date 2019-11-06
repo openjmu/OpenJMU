@@ -22,7 +22,8 @@ class SearchPage extends StatefulWidget {
   }
 }
 
-class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin {
+class SearchPageState extends State<SearchPage>
+    with AutomaticKeepAliveClientMixin {
   final FocusNode _focusNode = FocusNode();
   TextEditingController _controller = TextEditingController();
 
@@ -37,17 +38,23 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
 
   @override
   void initState() {
-    _controller.addListener(() {
-      _canClear = _controller.text.length > 0;
-      if (mounted) setState(() {});
-    });
+    _controller.addListener(canClearListener);
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller?.removeListener(canClearListener);
+    _controller?.dispose();
+    _focusNode..unfocus()..dispose();
+    super.dispose();
   }
 
   @override
   void didChangeDependencies() {
     if (widget.content != null) {
       _autoFocus = false;
+      _controller?.removeListener(canClearListener);
       _controller = TextEditingController(text: widget.content);
       search(context, widget.content);
     }
@@ -57,7 +64,25 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
   @override
   bool get wantKeepAlive => true;
 
-  Future getPost(String searchQuery) async {
+  void canClearListener() {
+    _canClear = _controller.text.length > 0;
+    if (mounted) setState(() {});
+  }
+
+  Future getUsers(String searchQuery) async {
+    await UserAPI.searchUser(searchQuery).then((response) {
+      List _us = response['data'];
+      _us.forEach((user) {
+        User u = User.fromJson(user);
+        if (userList == null) userList = [];
+        userList.add(u);
+      });
+    }).catchError((e) {
+      debugPrint(e.toString());
+    });
+  }
+
+  Future getPosts(String searchQuery) async {
     bool loadMore = false;
     if (postList != null && postList.length > 0) {
       loadMore = true;
@@ -76,6 +101,8 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
         if (postList == null) postList = [];
         postList.add(p);
       });
+    }).catchError((e) {
+      debugPrint(e.toString());
     });
   }
 
@@ -90,16 +117,8 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
       if (mounted) setState(() {});
     }
     Future.wait([
-      if (!_loaded)
-        UserAPI.searchUser(content).then((response) {
-          List _us = response['data'];
-          _us.forEach((user) {
-            User u = User.fromJson(user);
-            if (userList == null) userList = [];
-            userList.add(u);
-          });
-        }),
-      getPost(content)
+      if (!_loaded) getUsers(content),
+      getPosts(content),
     ]).then((responses) {
       if (!_loaded) _loaded = true;
       _loading = false;
@@ -289,7 +308,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
           ? _loaded
               ? postList != null && postList.isNotEmpty
                   ? ListView.builder(
-                      itemCount: postList.length + 2,
+                      itemCount: postList.length + 3,
                       itemBuilder: (context, index) {
                         if (index == 0) {
                           return userListView(context);
@@ -297,6 +316,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                           return Padding(
                             padding: EdgeInsets.only(
                               top: Constants.suSetSp(16.0),
+                              bottom: Constants.suSetSp(8.0),
                               left: 12.0,
                             ),
                             child: Text(
@@ -307,7 +327,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                                       ),
                             ),
                           );
-                        } else if (index == postList.length - 1) {
+                        } else if (index == postList.length + 1) {
                           if (_canLoadMore)
                             search(
                               context,
@@ -319,13 +339,27 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                             isDetail: false,
                             parentContext: context,
                           );
-                        } else if (index == postList.length) {
-                          return SizedBox(
-                            height: Constants.suSetSp(50.0),
-                            child: Center(
-                              child: Text(Constants.endLineTag),
-                            ),
-                          );
+                        } else if (index == postList.length + 2) {
+                          if (_canLoadMore) {
+                            return SizedBox(
+                              height: Constants.suSetSp(50.0),
+                              child:
+                              SizedBox(
+                                width: Constants.suSetSp(20.0),
+                                height: Constants.suSetSp(20.0),
+                                child: Constants.progressIndicator(
+                                  strokeWidth: 3.0,
+                                ),
+                              ),
+                            );
+                          } else {
+                            return SizedBox(
+                              height: Constants.suSetSp(50.0),
+                              child: Center(
+                                child: Text(Constants.endLineTag),
+                              ),
+                            );
+                          }
                         } else {
                           return PostCard(
                             postList[index - 2],
