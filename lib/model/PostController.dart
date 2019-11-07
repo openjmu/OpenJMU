@@ -465,7 +465,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
         ),
       ),
       onTap: () {
-        return UserPage.jump(context, post.uid);
+        return UserPage.jump(post.uid);
       },
     );
   }
@@ -504,7 +504,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
           if (text.startsWith("#")) {
             SearchPage.search(context, text.substring(1, text.length - 1));
           } else if (text.startsWith("@")) {
-            UserPage.jump(context, data['uid']);
+            UserPage.jump(data['uid']);
           } else if (text.startsWith(API.wbHost)) {
             CommonWebPage.jump(context, text, "网页链接");
           }

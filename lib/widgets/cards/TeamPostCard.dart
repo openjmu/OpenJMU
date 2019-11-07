@@ -103,7 +103,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
               image: UserAPI.getAvatarProvider(uid: post.uid),
             ),
           ),
-          onTap: () => UserPage.jump(context, widget.post.uid),
+          onTap: () => UserPage.jump(widget.post.uid),
         ),
       );
 
@@ -425,7 +425,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
               if (text.startsWith("#")) {
                 SearchPage.search(context, text.substring(1, text.length - 1));
               } else if (text.startsWith("@")) {
-                UserPage.jump(context, data['uid']);
+                UserPage.jump(data['uid']);
               } else if (text.startsWith(API.wbHost)) {
                 CommonWebPage.jump(context, text, "网页链接");
               }

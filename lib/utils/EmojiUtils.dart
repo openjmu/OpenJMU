@@ -136,7 +136,14 @@ class EmoticonUtils {
 class EmotionPad extends StatefulWidget {
   final String route;
   final double height;
-  EmotionPad(this.route, this.height, {Key key}) : super(key: key);
+  final TextEditingController controller;
+
+  EmotionPad({
+    Key key,
+    this.route,
+    this.height,
+    this.controller,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => EmotionPadState();
@@ -157,6 +164,34 @@ class EmotionPadState extends State<EmotionPad> {
     });
   }
 
+  void insertText(String text) {
+    final value = widget.controller.value;
+    final start = value.selection.baseOffset;
+    final end = value.selection.extentOffset;
+
+    if (value.selection.isValid) {
+      String newText = "";
+      if (value.selection.isCollapsed) {
+        if (end > 0) {
+          newText += value.text.substring(0, end);
+        }
+        newText += text;
+        if (value.text.length > end) {
+          newText += value.text.substring(end, value.text.length);
+        }
+      } else {
+        newText = value.text.replaceRange(start, end, text);
+      }
+      widget.controller.value = value.copyWith(
+        text: newText,
+        selection: value.selection.copyWith(
+          baseOffset: end + text.length,
+          extentOffset: end + text.length,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double height = max(emoticonPadDefaultHeight, widget.height);
@@ -164,6 +199,7 @@ class EmotionPadState extends State<EmotionPad> {
       color: Theme.of(context).canvasColor,
       height: height,
       child: GridView.builder(
+        padding: EdgeInsets.only(bottom: Screen.bottomSafeHeight),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 8,
         ),
@@ -175,8 +211,7 @@ class EmotionPadState extends State<EmotionPad> {
               fit: BoxFit.fill,
             ),
             onPressed: () {
-              Instances.eventBus
-                  .fire(AddEmoticonEvent(emoticonNames[index], widget.route));
+              insertText(emoticonNames[index]);
             },
           ),
         ),

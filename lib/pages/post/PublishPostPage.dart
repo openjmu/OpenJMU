@@ -50,20 +50,8 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   bool emoticonPadActive = false;
 
-  Widget poundIcon(context) => SvgPicture.asset(
-        "assets/icons/add-topic.svg",
-        color: Theme.of(context).iconTheme.color,
-        width: _iconSize,
-        height: _iconSize,
-      );
-
   @override
   void initState() {
-    Instances.eventBus.on<AddEmoticonEvent>().listen((event) {
-      if (mounted && event.route == "publish") {
-        insertText(event.emoticon);
-      }
-    });
     super.initState();
   }
 
@@ -76,7 +64,7 @@ class PublishPostPageState extends State<PublishPostPage> {
   }
 
   void addTopic() {
-    int currentPosition = _textEditingController.selection.baseOffset;
+    final currentPosition = _textEditingController.selection.baseOffset;
     String result;
     if (_textEditingController.text.length > 0) {
       String leftText =
@@ -100,10 +88,11 @@ class PublishPostPageState extends State<PublishPostPage> {
       builder: (BuildContext context) => MentionPeopleDialog(),
     ).then((result) {
       debugPrint("Popped.");
+      if (_focusNode.canRequestFocus) _focusNode.requestFocus();
       if (result != null) {
         debugPrint("Mentioned User: ${result.toString()}");
-        FocusScope.of(context).requestFocus(_focusNode);
         Future.delayed(const Duration(milliseconds: 250), () {
+          if (_focusNode.canRequestFocus) _focusNode.requestFocus();
           insertText("<M ${result.id}>@${result.nickname}<\/M>");
         });
       } else {
@@ -115,10 +104,7 @@ class PublishPostPageState extends State<PublishPostPage> {
   Future<Null> loadAssets() async {
     if (imagesLength == maxImagesLength) return;
     _focusNode.unfocus();
-    setState(() {
-      textFieldEnable = false;
-    });
-    String currentColorValue =
+    final currentColorValue =
         "#${ThemeUtils.currentThemeColor.value.toRadixString(16).substring(2, 8)}";
     List<Asset> resultList = List<Asset>();
     Map<PermissionGroup, PermissionStatus> permissions =
@@ -143,36 +129,40 @@ class PublishPostPageState extends State<PublishPostPage> {
             actionBarTitle: "选择图片",
             allViewTitle: "所有图片",
           ),
-        );
+        ).catchError((e) {
+          debugPrint(e.toString());
+        });
         if (results != null) resultList = results;
+        if (_focusNode.canRequestFocus) _focusNode.requestFocus();
       } on PlatformException catch (e) {
         showCenterErrorShortToast(e.message);
       }
     } else {
       return;
     }
-    setState(() {
-      textFieldEnable = true;
-    });
-
     if (!mounted) return;
 
-    List<ItemBin> _bin = List<ItemBin>();
-    for (Asset assets in resultList) {
-      _bin.add(ItemBin(assets));
+    for (final assets in resultList) {
+      imagesBin.add(ItemBin(assets));
     }
-
-    imagesBin.addAll(_bin);
     imagesLength = imagesBin.length;
     if (mounted) setState(() {});
   }
+
+  Widget poundIcon(context) => SvgPicture.asset(
+    "assets/icons/add-topic.svg",
+    color: Theme.of(context).iconTheme.color,
+    width: _iconSize,
+    height: _iconSize,
+  );
 
   Widget textField(context) {
     return Expanded(
       child: Padding(
         padding: EdgeInsets.symmetric(
-            horizontal: Constants.suSetSp(12.0),
-            vertical: Constants.suSetSp(2.0)),
+          horizontal: Constants.suSetSp(12.0),
+          vertical: Constants.suSetSp(2.0),
+        ),
         child: ExtendedTextField(
           specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
           controller: _textEditingController,
@@ -228,8 +218,9 @@ class PublishPostPageState extends State<PublishPostPage> {
         (18 - gridCount);
     return Container(
       margin: EdgeInsets.only(
-        bottom: (emoticonPadActive ? _keyboardHeight : 0.0) +
-            (MediaQuery.of(context).padding.bottom ?? 0) +
+        bottom: (emoticonPadActive
+                ? _keyboardHeight
+                : MediaQuery.of(context).padding.bottom) +
             Constants.suSetSp(80.0),
       ),
       height: MediaQuery.of(context).size.width /
@@ -279,8 +270,9 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   Widget _counter(context) {
     return Positioned(
-      bottom: (emoticonPadActive ? _keyboardHeight : 0.0) +
-          (MediaQuery.of(context).padding.bottom ?? 0) +
+      bottom: (emoticonPadActive
+              ? _keyboardHeight
+              : MediaQuery.of(context).padding.bottom) +
           Constants.suSetSp(60.0),
       right: 0.0,
       child: Container(
@@ -304,9 +296,9 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   Widget _toolbar(context) {
     return Positioned(
-      bottom: (emoticonPadActive ? _keyboardHeight : 0.0) +
-              MediaQuery.of(context).padding.bottom ??
-          Constants.suSetSp(60.0),
+      bottom: emoticonPadActive
+          ? _keyboardHeight
+          : MediaQuery.of(context).padding.bottom,
       left: 0.0,
       right: 0.0,
       height: Constants.suSetSp(60.0),
@@ -349,13 +341,10 @@ class PublishPostPageState extends State<PublishPostPage> {
                 size: _iconSize,
               ),
               activeChanged: (bool active) {
-                Function change = () {
-                  setState(() {
-                    if (active) FocusScope.of(context).requestFocus(_focusNode);
-                    emoticonPadActive = active;
-                  });
-                };
-                updatePadStatus(change);
+                if (active && _focusNode.canRequestFocus) {
+                  _focusNode.requestFocus();
+                }
+                updatePadStatus(active);
               },
               active: emoticonPadActive,
             ),
@@ -365,29 +354,37 @@ class PublishPostPageState extends State<PublishPostPage> {
     );
   }
 
-  void updatePadStatus(Function change) {
+  void updatePadStatus(bool active) {
+    final change = () {
+      emoticonPadActive = active;
+      if (mounted) setState(() {});
+    };
     emoticonPadActive
         ? change()
-        : SystemChannels.textInput
-            .invokeMethod('TextInput.hide')
-            .whenComplete(() {
-            Future.delayed(Duration(milliseconds: 200)).whenComplete(change);
-          });
-  }
-
-  Widget buildEmoticonPad() {
-    if (!emoticonPadActive) return Container();
-    return EmotionPad("publish", _keyboardHeight);
+        : MediaQuery.of(context).viewInsets.bottom != 0.0
+            ? SystemChannels.textInput
+                .invokeMethod('TextInput.hide')
+                .whenComplete(
+                () async {
+                  Future.delayed(const Duration(milliseconds: 300), () {})
+                      .whenComplete(change);
+                },
+              )
+            : change();
   }
 
   Widget emoticonPad(context) {
     return Positioned(
-      bottom: MediaQuery.of(context).padding.bottom ?? 0,
+      bottom: 0.0,
       left: 0.0,
       right: 0.0,
       child: Visibility(
         visible: emoticonPadActive,
-        child: EmotionPad("publish", _keyboardHeight),
+        child: EmotionPad(
+          route: "publish",
+          height: _keyboardHeight,
+          controller: _textEditingController,
+        ),
       ),
     );
   }

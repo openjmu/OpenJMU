@@ -22,10 +22,13 @@ class UserPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _UserPageState();
 
-  static Future jump(BuildContext context, int uid) {
-    return Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-      return UserPage(uid: uid);
-    }));
+  static Future jump(int uid) {
+    return Constants.navigatorKey.currentState.push(
+      platformPageRoute(
+        context: Constants.navigatorKey.currentContext,
+        builder: (context) => UserPage(uid: uid),
+      ),
+    );
   }
 }
 
@@ -917,7 +920,7 @@ class _UserListState extends State<UserListPage> {
     if (name.length > 3) name = "${name.substring(0, 3)}...";
     TextStyle _textStyle = TextStyle(fontSize: Constants.suSetSp(16.0));
     return GestureDetector(
-      onTap: () => UserPage.jump(context, int.parse(_user['uid'].toString())),
+      onTap: () => UserPage.jump(int.parse(_user['uid'].toString())),
       child: Container(
         margin: EdgeInsets.fromLTRB(
           Constants.suSetSp(12.0),

@@ -386,7 +386,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
         ),
       ),
       onTap: () {
-        UserPage.jump(context, praise.uid);
+        UserPage.jump(praise.uid);
       },
     );
   }

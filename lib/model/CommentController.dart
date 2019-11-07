@@ -452,7 +452,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
           ),
         ),
       ),
-      onTap: () => UserPage.jump(context, comment.fromUserUid),
+      onTap: () => UserPage.jump(comment.fromUserUid),
     );
   }
 
@@ -493,7 +493,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
         if (text.startsWith("#")) {
           SearchPage.search(context, text.substring(1, text.length - 1));
         } else if (text.startsWith("@")) {
-          UserPage.jump(context, data['uid']);
+          UserPage.jump(data['uid']);
         } else if (text.startsWith(API.wbHost)) {
           CommonWebPage.jump(context, text, "网页链接");
         } else if (text.startsWith("|")) {

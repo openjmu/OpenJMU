@@ -20,8 +20,8 @@ class ForwardPositioned extends StatefulWidget {
 }
 
 class ForwardPositionedState extends State<ForwardPositioned> {
-  final TextEditingController _forwardController = TextEditingController();
-  FocusNode _focusNode = FocusNode();
+  final _forwardController = TextEditingController();
+  final _focusNode = FocusNode();
 
   bool _forwarding = false;
   bool commentAtTheMeanTime = false;
@@ -33,9 +33,6 @@ class ForwardPositionedState extends State<ForwardPositioned> {
   @override
   void initState() {
     super.initState();
-    Instances.eventBus.on<AddEmoticonEvent>().listen((event) {
-      if (mounted && event.route == "forward") insertText(event.emoticon);
-    });
   }
 
   @override
@@ -138,7 +135,11 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       right: 0.0,
       child: Visibility(
         visible: emoticonPadActive,
-        child: EmotionPad("forward", _keyboardHeight),
+        child: EmotionPad(
+          route: "forward",
+          height: _keyboardHeight,
+          controller: _forwardController,
+        ),
       ),
     );
   }

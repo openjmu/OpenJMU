@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'dart:convert';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/pages/user/UserPage.dart';
 
 class UserAPI {
   static String lastTicket;
@@ -30,13 +31,37 @@ class UserAPI {
 
   /// Update cache network image provider after avatar is updated.
   static int avatarLastModified = DateTime.now().millisecondsSinceEpoch;
-  static CachedNetworkImageProvider getAvatarProvider(
-      {int uid, int size = 152, int t}) {
+  static Widget getAvatar({
+    double size = 48.0,
+    int uid,
+    int t,
+  }) {
+    return SizedBox(
+      width: Constants.suSetSp(size),
+      height: Constants.suSetSp(size),
+      child: GestureDetector(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(Constants.suSetSp(size / 2)),
+          child: FadeInImage(
+            fadeInDuration: const Duration(milliseconds: 100),
+            placeholder: AssetImage("assets/avatar_placeholder.png"),
+            image: getAvatarProvider(uid: uid),
+          ),
+        ),
+        onTap: () => UserPage.jump(uid),
+      ),
+    );
+  }
+
+  static CachedNetworkImageProvider getAvatarProvider({
+    int uid,
+    int t,
+  }) {
     return CachedNetworkImageProvider(
       "${API.userAvatarInSecure}"
       "?uid=${uid ?? currentUser.uid}"
       "&_t=${t ?? avatarLastModified}"
-      "&size=f$size",
+      "&size=f152",
       cacheManager: DefaultCacheManager(),
     );
   }
@@ -124,8 +149,13 @@ class UserAPI {
     Map<String, dynamic> users = (await NetUtils.getWithCookieSet(
       API.searchUser,
       data: {"keyword": name},
-    )).data;
-    if (users['total'] == null) users = {"total": 1, "data": [users]};
+    ))
+        .data;
+    if (users['total'] == null)
+      users = {
+        "total": 1,
+        "data": [users]
+      };
     return users;
   }
 

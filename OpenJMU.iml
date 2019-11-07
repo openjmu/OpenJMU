@@ -76,6 +76,12 @@
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/image_downloader/example/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/image_downloader/example/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/image_downloader/example/build" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/image_editor/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/image_editor/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/image_editor/build" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/image_editor/example/.dart_tool" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/image_editor/example/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/image_editor/example/build" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/image_gallery_saver/.dart_tool" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/image_gallery_saver/.pub" />
       <excludeFolder url="file://$MODULE_DIR$/ios/.symlinks/plugins/image_gallery_saver/build" />

@@ -31,8 +31,8 @@ class CommentPositioned extends StatefulWidget {
 }
 
 class CommentPositionedState extends State<CommentPositioned> {
-  final TextEditingController _commentController = TextEditingController();
-  FocusNode _focusNode = FocusNode();
+  final _commentController = TextEditingController();
+  final _focusNode = FocusNode();
   File _image;
   int _imageID;
 
@@ -59,9 +59,6 @@ class CommentPositionedState extends State<CommentPositioned> {
           commentContent = _commentController.text;
         });
       });
-    Instances.eventBus.on<AddEmoticonEvent>().listen((event) {
-      if (mounted && event.route == "comment") insertText(event.emoticon);
-    });
   }
 
   @override
@@ -224,7 +221,11 @@ class CommentPositionedState extends State<CommentPositioned> {
       right: 0.0,
       child: Visibility(
         visible: emoticonPadActive,
-        child: EmotionPad("comment", _keyboardHeight),
+        child: EmotionPad(
+          route: "comment",
+          height: _keyboardHeight,
+          controller: _commentController,
+        ),
       ),
     );
   }

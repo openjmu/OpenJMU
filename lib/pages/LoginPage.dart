@@ -10,9 +10,12 @@ import 'package:OpenJMU/widgets/RoundedCheckBox.dart';
 import 'package:OpenJMU/widgets/announcement/AnnouncementWidget.dart';
 
 class LoginPage extends StatefulWidget {
-  final int initIndex;
+  final String initAction;
 
-  LoginPage({this.initIndex, Key key}) : super(key: key);
+  const LoginPage({
+    Key key,
+    this.initAction,
+  }) : super(key: key);
 
   @override
   LoginPageState createState() => LoginPageState();
@@ -520,7 +523,7 @@ class LoginPageState extends State<LoginPage>
             platformPageRoute(
               context: context,
               settings: RouteSettings(name: "/home"),
-              builder: (_) => MainPage(initIndex: widget.initIndex),
+              builder: (_) => MainPage(initAction: widget.initAction),
             ),
             (_) => false,
           );

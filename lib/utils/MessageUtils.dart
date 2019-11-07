@@ -124,7 +124,7 @@ class MessageUtils {
 //        "header: $header\n"
         "content: $content\n"
         "status: $status\n"
-        "command: $command\n"
+        "command: 0x${command.toRadixString(16)}\n"
         "sequence: $sequence\n"
         "length: $length");
     switch (command) {
@@ -139,12 +139,26 @@ class MessageUtils {
         });
         break;
       case 0x1f:
-        debugPrint("Message Type: ${getPackageUint(content.sublist(0, 1), 8)}\n"
-            "Sender UID: ${getPackageUint(content.sublist(1, 9), 64)}\n"
-            "Sender Multi Port ID: ${getPackageUint(content.sublist(9, 17), 64)}\n"
-            "Send Time: ${getPackageUint(content.sublist(17, 21), 32)}\n"
-            "Ack ID: ${getPackageUint(content.sublist(21, 29), 64)}\n"
-            "Message Content: ${getPackageString(content.sublist(29))}\n");
+        final _type = getPackageUint(content.sublist(0, 1), 8);
+        final _senderUid = getPackageUint(content.sublist(1, 9), 64);
+        final _senderMultiPortId = getPackageUint(content.sublist(9, 17), 64);
+        final _sendTime = getPackageUint(content.sublist(17, 21), 32);
+        final _ackId = getPackageUint(content.sublist(21, 29), 64);
+        final _content = getPackageString(content.sublist(29));
+        debugPrint("Message Type: $_type\n"
+            "Sender UID: $_senderUid\n"
+            "Sender Multi Port ID: $_senderMultiPortId\n"
+            "Send Time: $_sendTime\n"
+            "Ack ID: $_ackId\n"
+            "Message Content: $_content\n");
+        Instances.eventBus.fire(MessageReceivedEvent(
+          type: _type,
+          senderUid: _senderUid,
+          senderMultiPortId: _senderMultiPortId.toString(),
+          sendTime: DateTime.fromMillisecondsSinceEpoch(_sendTime * 1000),
+          ackId: _ackId.toString(),
+          content: _content,
+        ));
         break;
       default:
         break;
@@ -170,6 +184,19 @@ class MessageUtils {
 
   static void logout() {
     addPackage("WY_LOGOUT");
+  }
+
+  static void sendTextMessage(String message, int uid) {
+    MessageUtils.addPackage(
+      "WY_MSG",
+      M_WY_MSG(type: "MSG_A2A", uid: uid, message: message),
+    );
+    Instances.eventBus.fire(MessageReceivedEvent(
+      type: 0,
+      senderUid: UserAPI.currentUser.uid,
+      sendTime: DateTime.now(),
+      content: getPackageString(commonString(message)),
+    ));
   }
 }
 

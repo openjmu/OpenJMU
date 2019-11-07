@@ -332,7 +332,7 @@ class MyInfoPageState extends State<MyInfoPage> {
       padding: EdgeInsets.only(top: Screen.topSafeHeight),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () => UserPage.jump(context, UserAPI.currentUser.uid),
+        onTap: () => UserPage.jump(UserAPI.currentUser.uid),
         child: Padding(
           padding: EdgeInsets.symmetric(
             horizontal: Constants.suSetSp(24.0),

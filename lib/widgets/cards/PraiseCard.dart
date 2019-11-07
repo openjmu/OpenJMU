@@ -44,7 +44,7 @@ class PraiseCard extends StatelessWidget {
               image: UserAPI.getAvatarProvider(uid: praise.uid),
             ),
           ),
-          onTap: () => UserPage.jump(context, praise.uid),
+          onTap: () => UserPage.jump(praise.uid),
         ),
       );
 
@@ -140,7 +140,7 @@ class PraiseCard extends StatelessWidget {
         if (text.startsWith("#")) {
           SearchPage.search(context, text.substring(1, text.length - 1));
         } else if (text.startsWith("@")) {
-          UserPage.jump(context, data['uid']);
+          UserPage.jump(data['uid']);
         } else if (text.startsWith(API.wbHost)) {
           CommonWebPage.jump(context, text, "网页链接");
         }

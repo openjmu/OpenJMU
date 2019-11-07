@@ -82,6 +82,8 @@ class Messages {
     "GROUP_TYPE_FLAG_CLASSMATE": 0x2000, // 个人版校友
     "GROUP_TYPE_FLAG_NEWUAP": 0x3000, // NEWUAP
   };
+
+  static final String inputting = "inputing now";
 }
 
 ///

@@ -245,10 +245,7 @@ class SearchPageState extends State<SearchPage>
                               ),
                             ),
                           ),
-                          onTap: () => UserPage.jump(
-                            context,
-                            userList[index].id,
-                          ),
+                          onTap: () => UserPage.jump(userList[index].id),
                         ),
                       ),
                       SizedBox(height: Constants.suSetSp(8.0)),

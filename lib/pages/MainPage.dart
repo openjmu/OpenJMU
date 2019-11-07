@@ -16,9 +16,12 @@ import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 import 'package:OpenJMU/widgets/announcement/AnnouncementWidget.dart';
 
 class MainPage extends StatefulWidget {
-  final int initIndex;
+  final String initAction;
 
-  MainPage({this.initIndex, Key key}) : super(key: key);
+  const MainPage({
+    this.initAction,
+    Key key,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => MainPageState();
@@ -61,7 +64,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   void initState() {
     debugPrint("CurrentUser's ${UserAPI.currentUser}");
 
-    if (widget.initIndex != null) _tabIndex = widget.initIndex;
+    if (widget.initAction != null)
+      _tabIndex = pagesTitle.indexOf(widget.initAction);
     if (Platform.isAndroid) OTAUtils.checkUpdate(fromHome: true);
 
     initPushService();
@@ -191,7 +195,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           iconSize: 30.0,
           selectedColor: currentThemeColor,
           onTabSelected: _selectedTab,
-          initIndex: widget.initIndex,
+          initIndex: pagesTitle.indexOf(widget.initAction),
           items: [
             for (int i = 0; i < pagesTitle.length; i++)
               FABBottomAppBarItem(

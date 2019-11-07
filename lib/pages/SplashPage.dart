@@ -11,9 +11,12 @@ import 'package:OpenJMU/pages/LoginPage.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 
 class SplashPage extends StatefulWidget {
-  final int initIndex;
+  final String initAction;
 
-  SplashPage({Key key, this.initIndex}) : super(key: key);
+  const SplashPage({
+    this.initAction,
+    Key key,
+  }) : super(key: key);
 
   @override
   SplashState createState() => SplashState();
@@ -134,7 +137,7 @@ class SplashState extends State<SplashPage> {
           Constants.navigatorKey.currentState.pushAndRemoveUntil(
             MaterialPageRoute(
               settings: RouteSettings(name: "/home"),
-              builder: (_) => MainPage(initIndex: widget.initIndex),
+              builder: (_) => MainPage(initAction: widget.initAction),
             ),
             (Route<dynamic> route) => false,
           );

@@ -675,6 +675,46 @@ class Score {
 }
 
 ///
+/// 消息实体
+/// [type] 消息类型 ([Messages.PRPL_91U_MSG_TYPE])
+/// [senderUid] 发送方uid
+/// [senderMultiPortId] 发送方多点ID
+/// [sendTime] 发送时间
+/// [ackId] ACK ID
+/// [content] 内容
+///
+class Message {
+  int type;
+  int senderUid;
+  String senderMultiPortId;
+  DateTime sendTime;
+  String ackId;
+  Map<String, dynamic> content;
+
+  Message({
+    this.type,
+    this.senderUid,
+    this.senderMultiPortId,
+    this.sendTime,
+    this.ackId,
+    this.content,
+  });
+
+  factory Message.fromEvent(MessageReceivedEvent event) {
+    return Message(
+      type: event.type,
+      senderUid: event.senderUid,
+      senderMultiPortId: event.senderMultiPortId,
+      sendTime: event.sendTime,
+      ackId: event.ackId,
+      content: event.content,
+    );
+  }
+
+  bool get isSelf => this.senderUid == UserAPI.currentUser.uid;
+}
+
+///
 /// Inherit from default centerDockedLocation.
 ///
 abstract class CustomDockedPosition extends FloatingActionButtonLocation {

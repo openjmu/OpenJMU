@@ -25,9 +25,15 @@ class OpenJMUApp extends StatefulWidget {
 }
 
 class OpenJMUAppState extends State<OpenJMUApp> {
+  final _quickActions = [
+    ['actions_home', '首页'],
+    ['actions_apps', '应用'],
+    ['actions_message', '消息'],
+    ['actions_mine', '我的'],
+  ];
   StreamSubscription<ConnectivityResult> connectivitySubscription;
   bool isUserLogin = false;
-  int initIndex;
+  String initAction;
 
   Color currentThemeColor = ThemeUtils.currentThemeColor;
 
@@ -59,15 +65,9 @@ class OpenJMUAppState extends State<OpenJMUApp> {
         if (mounted) setState(() {});
       })
       ..on<ActionsEvent>().listen((event) {
-        if (event.type == "action_home") {
-          initIndex = 0;
-        } else if (event.type == "action_apps") {
-          initIndex = 1;
-        } else if (event.type == "action_message") {
-          initIndex = 2;
-        } else if (event.type == "action_mine") {
-          initIndex = 3;
-        }
+        initAction = _quickActions.firstWhere((action) {
+          return action[0] == event.type;
+        })[1];
       })
       ..on<ChangeBrightnessEvent>().listen((event) {
         ThemeUtils.isDark = event.isDarkState;
@@ -110,36 +110,22 @@ class OpenJMUAppState extends State<OpenJMUApp> {
       Instances.eventBus.fire(ActionsEvent(shortcutType));
     });
     quickActions.setShortcutItems(<ShortcutItem>[
-      const ShortcutItem(
-        type: 'action_home',
-        localizedTitle: '首页',
-        icon: 'actions_home',
-      ),
-      const ShortcutItem(
-        type: 'action_apps',
-        localizedTitle: '应用',
-        icon: 'actions_apps',
-      ),
-      const ShortcutItem(
-        type: 'action_message',
-        localizedTitle: '消息',
-        icon: 'actions_message',
-      ),
-      const ShortcutItem(
-        type: 'action_mine',
-        localizedTitle: '我的',
-        icon: 'actions_mine',
-      ),
+      for (final action in _quickActions)
+        ShortcutItem(
+          type: action[0],
+          icon: action[0],
+          localizedTitle: action[1],
+        ),
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    final theme = (ThemeUtils.isDark ? ThemeUtils.dark() : ThemeUtils.light())
-        .copyWith(
+    final theme =
+        (ThemeUtils.isDark ? ThemeUtils.dark() : ThemeUtils.light()).copyWith(
       textTheme: (ThemeUtils.isDark
-          ? Theme.of(context).typography.white
-          : Theme.of(context).typography.black)
+              ? Theme.of(context).typography.white
+              : Theme.of(context).typography.black)
           .copyWith(
         subhead: TextStyle(
           textBaseline: TextBaseline.alphabetic,
@@ -155,7 +141,7 @@ class OpenJMUAppState extends State<OpenJMUApp> {
           routes: RouteUtils.routes,
           title: "OpenJMU",
           theme: theme,
-          home: SplashPage(initIndex: initIndex),
+          home: SplashPage(initAction: initAction),
           localizationsDelegates: [
             GlobalWidgetsLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,

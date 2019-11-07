@@ -271,7 +271,7 @@ class _TeamPraiseListInPostState extends State<TeamPraiseListInPost> {
         ),
       ),
       onTap: () {
-        UserPage.jump(context, int.parse(praise['uid'].toString()));
+        UserPage.jump(int.parse(praise['uid'].toString()));
       },
     );
   }

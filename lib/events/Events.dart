@@ -246,3 +246,22 @@ class CoursePageShowWeekEvent {
     this.show = show;
   }
 }
+
+/// Events for message
+class MessageReceivedEvent {
+  int type;
+  int senderUid;
+  String senderMultiPortId;
+  DateTime sendTime;
+  String ackId;
+  Map<String, dynamic> content;
+
+  MessageReceivedEvent({
+    this.type,
+    this.senderUid,
+    this.senderMultiPortId,
+    this.sendTime,
+    this.ackId,
+    this.content,
+  });
+}
