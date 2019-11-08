@@ -661,36 +661,49 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Container(
-                                            height: Constants.suSetSp(10.0)),
+                                          height: Constants.suSetSp(10.0),
+                                        ),
                                         getCommentNickname(
-                                            context, _comments[index]),
+                                          context,
+                                          _comments[index],
+                                        ),
                                         Container(
-                                            height: Constants.suSetSp(4.0)),
+                                          height: Constants.suSetSp(4.0),
+                                        ),
                                         getExtendedText(
-                                            context, _comments[index].content),
+                                          context,
+                                          _comments[index].content,
+                                        ),
                                         Container(
-                                            height: Constants.suSetSp(6.0)),
+                                          height: Constants.suSetSp(6.0),
+                                        ),
                                         getCommentTime(
                                             context, _comments[index]),
                                         Container(
-                                            height: Constants.suSetSp(10.0)),
+                                          height: Constants.suSetSp(10.0),
+                                        ),
                                       ],
                                     ),
                                   ),
                                   IconButton(
-                                    padding:
-                                        EdgeInsets.all(Constants.suSetSp(26.0)),
-                                    icon:
-                                        Icon(Icons.comment, color: Colors.grey),
+                                    padding: EdgeInsets.all(
+                                      Constants.suSetSp(26.0),
+                                    ),
+                                    icon: Icon(
+                                      Icons.comment,
+                                      color: Colors.grey,
+                                    ),
                                     onPressed: () {
-                                      showDialog<Null>(
+                                      showModalBottomSheet(
                                         context: context,
-                                        builder: (BuildContext context) =>
-                                            CommentPositioned(
+                                        builder: (_) => CommentPositioned(
                                           post: widget.post,
                                           postType: PostType.square,
                                           comment: _comments[index],
                                         ),
+                                        isScrollControlled: true,
+                                        backgroundColor:
+                                            Theme.of(context).primaryColor,
                                       );
                                     },
                                   ),
@@ -708,7 +721,9 @@ class _CommentListInPostState extends State<CommentListInPost> {
                       child: Center(
                         child: Text(
                           "暂无内容",
-                          style: TextStyle(fontSize: Constants.suSetSp(18.0)),
+                          style: TextStyle(
+                            fontSize: Constants.suSetSp(18.0),
+                          ),
                         ),
                       ),
                     ),

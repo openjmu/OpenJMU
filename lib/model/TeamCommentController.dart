@@ -430,14 +430,15 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                                     size: Constants.suSetSp(20.0),
                                   ),
                                   onPressed: () {
-                                    showDialog<Null>(
+                                    showModalBottomSheet(
                                       context: context,
-                                      builder: (BuildContext context) =>
-                                          CommentPositioned(
+                                      builder: (_) => CommentPositioned(
                                         post: widget.post,
                                         postType: PostType.team,
                                         comment: _comments[index],
                                       ),
+                                      isScrollControlled: true,
+                                      backgroundColor: Theme.of(context).primaryColor,
                                     );
                                   },
                                 ),

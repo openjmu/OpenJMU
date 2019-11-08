@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:provider/provider.dart';
 import 'package:quick_actions/quick_actions.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -132,50 +133,53 @@ class OpenJMUAppState extends State<OpenJMUApp> {
         ),
       ),
     );
-    return Theme(
-      data: theme,
-      child: OKToast(
-        child: MaterialApp(
-          navigatorKey: Constants.navigatorKey,
-          builder: (BuildContext c, Widget w) => NoScaleTextWidget(child: w),
-          routes: RouteUtils.routes,
-          title: "OpenJMU",
-          theme: theme,
-          home: SplashPage(initAction: initAction),
-          localizationsDelegates: [
-            GlobalWidgetsLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: [
-            const Locale.fromSubtags(
-              languageCode: 'zh',
-            ),
-            const Locale.fromSubtags(
-              languageCode: 'zh',
-              scriptCode: 'Hans',
-            ),
-            const Locale.fromSubtags(
-              languageCode: 'zh',
-              scriptCode: 'Hant',
-            ),
-            const Locale.fromSubtags(
-              languageCode: 'zh',
-              scriptCode: 'Hans',
-              countryCode: 'CN',
-            ),
-            const Locale.fromSubtags(
-              languageCode: 'zh',
-              scriptCode: 'Hant',
-              countryCode: 'TW',
-            ),
-            const Locale.fromSubtags(
-              languageCode: 'zh',
-              scriptCode: 'Hant',
-              countryCode: 'HK',
-            ),
-            const Locale('en'),
-          ],
+    return MultiProvider(
+      providers: providers,
+      child: Theme(
+        data: theme,
+        child: OKToast(
+          child: MaterialApp(
+            navigatorKey: Constants.navigatorKey,
+            builder: (BuildContext c, Widget w) => NoScaleTextWidget(child: w),
+            routes: RouteUtils.routes,
+            title: "OpenJMU",
+            theme: theme,
+            home: SplashPage(initAction: initAction),
+            localizationsDelegates: [
+              GlobalWidgetsLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale.fromSubtags(
+                languageCode: 'zh',
+              ),
+              const Locale.fromSubtags(
+                languageCode: 'zh',
+                scriptCode: 'Hans',
+              ),
+              const Locale.fromSubtags(
+                languageCode: 'zh',
+                scriptCode: 'Hant',
+              ),
+              const Locale.fromSubtags(
+                languageCode: 'zh',
+                scriptCode: 'Hans',
+                countryCode: 'CN',
+              ),
+              const Locale.fromSubtags(
+                languageCode: 'zh',
+                scriptCode: 'Hant',
+                countryCode: 'TW',
+              ),
+              const Locale.fromSubtags(
+                languageCode: 'zh',
+                scriptCode: 'Hant',
+                countryCode: 'HK',
+              ),
+              const Locale('en'),
+            ],
+          ),
         ),
       ),
     );

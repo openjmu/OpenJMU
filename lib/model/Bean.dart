@@ -420,8 +420,14 @@ class WebApp {
   String url;
   String menuType;
 
-  WebApp(
-      {this.id, this.sequence, this.code, this.name, this.url, this.menuType});
+  WebApp({
+    this.id,
+    this.sequence,
+    this.code,
+    this.name,
+    this.url,
+    this.menuType,
+  });
 
   factory WebApp.fromJson(Map<String, dynamic> json) {
     return WebApp(
@@ -520,8 +526,22 @@ class News {
 class Notifications {
   int count, at, comment, praise;
 
-  Notifications(
-      {this.count = 0, this.at = 0, this.comment = 0, this.praise = 0});
+  Notifications({
+    this.count = 0,
+    this.at = 0,
+    this.comment = 0,
+    this.praise = 0,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Notifications &&
+          runtimeType == other.runtimeType &&
+          count == other.count;
+
+  @override
+  int get hashCode => count.hashCode;
 }
 
 ///
@@ -642,13 +662,14 @@ class Score {
   String code, courseName, score, termId;
   double credit, creditHour;
 
-  Score(
-      {this.code,
-      this.courseName,
-      this.score,
-      this.termId,
-      this.credit,
-      this.creditHour});
+  Score({
+    this.code,
+    this.courseName,
+    this.score,
+    this.termId,
+    this.credit,
+    this.creditHour,
+  });
 
   factory Score.fromJson(Map<String, dynamic> json) {
     return Score(

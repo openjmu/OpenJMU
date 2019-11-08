@@ -24,7 +24,7 @@ class MaxScaleTextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData data = MediaQuery.of(context);
+    final data = MediaQuery.of(context);
     double scale = Math.min(max, data.textScaleFactor);
     return MediaQuery(
       data: data.copyWith(textScaleFactor: scale),

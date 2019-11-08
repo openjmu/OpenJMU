@@ -331,10 +331,11 @@ class _PostCardState extends State<PostCard> {
           Expanded(
             child: FlatButton.icon(
               onPressed: () {
-                showDialog<Null>(
+                showModalBottomSheet(
                   context: context,
-                  builder: (BuildContext context) =>
-                      ForwardPositioned(widget.post),
+                  builder: (_) => ForwardPositioned(widget.post),
+                  isScrollControlled: true,
+                  backgroundColor: Theme.of(context).primaryColor,
                 );
               },
               icon: SvgPicture.asset(
@@ -563,6 +564,7 @@ class _PostCardState extends State<PostCard> {
           }
 
           showModalBottomSheet(
+            isScrollControlled: true,
             context: context,
             builder: (context) {
               return Padding(

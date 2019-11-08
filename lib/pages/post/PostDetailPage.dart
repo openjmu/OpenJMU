@@ -264,10 +264,11 @@ class PostDetailPageState extends State<PostDetailPage> {
                   color: Theme.of(context).cardColor,
                   child: FlatButton.icon(
                     onPressed: () {
-                      showDialog<Null>(
+                      showModalBottomSheet(
                         context: context,
-                        builder: (BuildContext context) =>
-                            ForwardPositioned(widget.post),
+                        builder: (_) => ForwardPositioned(widget.post),
+                        isScrollControlled: true,
+                        backgroundColor: Theme.of(context).primaryColor,
                       );
                     },
                     icon: SvgPicture.asset(
@@ -291,12 +292,14 @@ class PostDetailPageState extends State<PostDetailPage> {
                   color: Theme.of(context).cardColor,
                   child: FlatButton.icon(
                     onPressed: () {
-                      showDialog<Null>(
+                      showModalBottomSheet(
                         context: context,
-                        builder: (BuildContext context) => CommentPositioned(
+                        builder: (_) => CommentPositioned(
                           post: widget.post,
                           postType: PostType.square,
                         ),
+                        isScrollControlled: true,
+                        backgroundColor: Theme.of(context).primaryColor,
                       );
                     },
                     icon: SvgPicture.asset(

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class MessagePage extends StatefulWidget {
   @override
@@ -15,6 +18,7 @@ class MessagePage extends StatefulWidget {
 
 class MessagePageState extends State<MessagePage>
     with SingleTickerProviderStateMixin {
+//  static final List<String> tabs = ["消息", "通知"];
   static final List<String> tabs = ["消息"];
 
   /// ["消息", "联系人"]
@@ -27,7 +31,6 @@ class MessagePageState extends State<MessagePage>
 
   @override
   void initState() {
-    super.initState();
     _tabController = TabController(
       initialIndex: Configs.homeStartUpIndex[2],
       length: tabs.length,
@@ -36,15 +39,14 @@ class MessagePageState extends State<MessagePage>
 
     Instances.eventBus
       ..on<NotificationsChangeEvent>().listen((event) {
-        if (this.mounted)
-          setState(() {
-            notifications = event.notifications;
-          });
+        notifications = event.notifications;
+        if (this.mounted) setState(() {});
       })
       ..on<ChangeThemeEvent>().listen((event) {
         currentThemeColor = event.color;
         if (this.mounted) setState(() {});
       });
+    super.initState();
   }
 
   void _handleItemClick(context, String item) {
@@ -85,14 +87,16 @@ class MessagePageState extends State<MessagePage>
               child: TabBar(
                 isScrollable: true,
                 indicatorColor: currentThemeColor,
-                indicatorPadding:
-                    EdgeInsets.only(bottom: Constants.suSetSp(16.0)),
+                indicatorPadding: EdgeInsets.only(
+                  bottom: Constants.suSetSp(16.0),
+                ),
                 indicatorSize: TabBarIndicatorSize.label,
                 indicatorWeight: Constants.suSetSp(6.0),
                 labelColor: Theme.of(context).textTheme.body1.color,
                 labelStyle: MainPageState.tabSelectedTextStyle,
-                labelPadding:
-                    EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+                labelPadding: EdgeInsets.symmetric(
+                  horizontal: Constants.suSetSp(16.0),
+                ),
                 unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
                 tabs: <Tab>[
                   for (int i = 0; i < tabs.length; i++) Tab(text: tabs[i])
@@ -102,81 +106,299 @@ class MessagePageState extends State<MessagePage>
             ),
           ],
         ),
+//        centerTitle: false,
         centerTitle: true,
       ),
-      body: ListView(
-        shrinkWrap: true,
-        children: <Widget>[
-          ListView.separated(
-            physics: const NeverScrollableScrollPhysics(),
+      body:
+//      TabBarView(
+//        controller: _tabController,
+//        children: <Widget>[
+          ListView(
             shrinkWrap: true,
-            separatorBuilder: (context, index) => Constants.separator(
-              context,
-              color: Theme.of(context).canvasColor,
-              height: 1.0,
-            ),
-            itemCount: topItems.length,
-            itemBuilder: (context, index) => GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: Constants.suSetSp(18.0),
-                  vertical: Constants.suSetSp(8.0),
+            children: <Widget>[
+              ListView.separated(
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                separatorBuilder: (context, index) => Constants.separator(
+                  context,
+                  color: Theme.of(context).canvasColor,
+                  height: 1.0,
                 ),
-                child: Row(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(right: Constants.suSetSp(16.0)),
-                      child: index == 0 && notifications.count != 0
-                          ? Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Constants.badgeIcon(
-                                content: notifications.count,
-                                icon: _icon(index),
-                              ),
-                            )
-                          : IconButton(
-                              icon: _icon(index),
-                              onPressed: null,
+                itemCount: topItems.length,
+                itemBuilder: (context, index) => GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Constants.suSetSp(18.0),
+                      vertical: Constants.suSetSp(8.0),
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                            right: Constants.suSetSp(16.0),
+                          ),
+                          child: index == 0 && notifications.count != 0
+                              ? Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Constants.badgeIcon(
+                                    content: notifications.count,
+                                    icon: _icon(index),
+                                  ),
+                                )
+                              : IconButton(
+                                  icon: _icon(index),
+                                  onPressed: null,
+                                ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            topItems[index],
+                            style: TextStyle(
+                              fontSize: Constants.suSetSp(19.0),
                             ),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                            right: Constants.suSetSp(12.0),
+                          ),
+                          child: SvgPicture.asset(
+                            "assets/icons/arrow-right.svg",
+                            color: Colors.grey,
+                            width: Constants.suSetSp(24.0),
+                            height: Constants.suSetSp(24.0),
+                          ),
+                        ),
+                      ],
                     ),
-                    Expanded(
-                      child: Text(
-                        topItems[index],
-                        style: TextStyle(fontSize: Constants.suSetSp(19.0)),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(right: Constants.suSetSp(12.0)),
-                      child: SvgPicture.asset(
-                        "assets/icons/arrow-right.svg",
-                        color: Colors.grey,
-                        width: Constants.suSetSp(24.0),
-                        height: Constants.suSetSp(24.0),
-                      ),
-                    ),
-                  ],
+                  ),
+                  onTap: () {
+                    _handleItemClick(context, topItems[index]);
+                  },
                 ),
               ),
-              onTap: () {
-                _handleItemClick(context, topItems[index]);
-              },
-            ),
-          ),
-          Constants.separator(context),
-          Padding(
-            padding: EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(12.0),
-                vertical: Constants.suSetSp(30.0)),
-            child: SizedBox(
-              height: Constants.suSetSp(40.0),
-              child: Center(
-                child: Text(
-                  "无新消息",
-                  style: TextStyle(
-                    fontSize: Constants.suSetSp(14.0),
+              Constants.separator(context),
+              if (Configs.debug)
+                Consumer<MessagesProvider>(
+                  builder: (context, provider, _) {
+                    if (UserAPI.currentUser.uid == null) return SizedBox.shrink();
+                    if (provider.personalMessages.entries.isEmpty) {
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: Constants.suSetSp(12.0),
+                          vertical: Constants.suSetSp(30.0),
+                        ),
+                        child: SizedBox(
+                          height: Constants.suSetSp(40.0),
+                          child: Center(
+                            child: Text(
+                              "无新消息",
+                              style: TextStyle(
+                                fontSize: Constants.suSetSp(14.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        reverse: true,
+                        itemCount: provider
+                            .personalMessages[UserAPI.currentUser.uid]
+                            .entries
+                            .length,
+                        itemBuilder: (context, index) {
+                          final mine =
+                              provider.personalMessages[UserAPI.currentUser.uid];
+                          final uid = mine.keys.elementAt(index);
+                          final message = mine[uid][0];
+                          return MessagePreviewWidget(
+                            uid: uid,
+                            message: message,
+                            unreadMessages: mine[uid],
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
+              if (!Configs.debug)
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Constants.suSetSp(12.0),
+                    vertical: Constants.suSetSp(30.0),
+                  ),
+                  child: SizedBox(
+                    height: Constants.suSetSp(40.0),
+                    child: Center(
+                      child: Text(
+                        "无新消息",
+                        style: TextStyle(
+                          fontSize: Constants.suSetSp(14.0),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
+            ],
+          ),
+//          SizedBox(),
+//        ],
+//      ),
+    );
+  }
+}
+
+class MessagePreviewWidget extends StatefulWidget {
+  final int uid;
+  final WebApp app;
+  final Message message;
+  final List<Message> unreadMessages;
+
+  const MessagePreviewWidget({
+    this.uid,
+    this.app,
+    @required this.message,
+    @required this.unreadMessages,
+    Key key,
+  })  : assert(uid != null || app != null),
+        super(key: key);
+
+  @override
+  _MessagePreviewWidgetState createState() => _MessagePreviewWidgetState();
+}
+
+class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
+    with AutomaticKeepAliveClientMixin {
+  UserInfo user;
+
+  Timer timeUpdateTimer;
+  String formattedTime;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    UserAPI.getUserInfo(uid: widget.uid).then((response) {
+      user = UserInfo.fromJson(response.data);
+      if (mounted) setState(() {});
+    }).catchError((e) {
+      debugPrint("$e");
+    });
+
+    timeFormat(null);
+    timeUpdateTimer = Timer.periodic(const Duration(minutes: 1), timeFormat);
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    timeUpdateTimer?.cancel();
+    super.dispose();
+  }
+
+  void timeFormat(_) {
+    final now = DateTime.now();
+    if (widget.message.sendTime.day == now.day &&
+        widget.message.sendTime.month == now.month &&
+        widget.message.sendTime.year == now.year) {
+      formattedTime = DateFormat("HH:mm").format(widget.message.sendTime);
+    } else if (widget.message.sendTime.year == now.year) {
+      formattedTime = DateFormat("MM-dd HH:mm").format(widget.message.sendTime);
+    } else {
+      formattedTime =
+          DateFormat("YY-MM-dd HH:mm").format(widget.message.sendTime);
+    }
+    if (mounted) setState(() {});
+  }
+
+  @mustCallSuper
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: Constants.suSetSp(16.0),
+      ),
+      height: Constants.suSetSp(90.0),
+      decoration: BoxDecoration(),
+      child: Row(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(
+              right: Constants.suSetSp(16.0),
+            ),
+            child: UserAPI.getAvatar(size: 60.0, uid: widget.uid),
+          ),
+          Expanded(
+            child: SizedBox(
+              height: Constants.suSetSp(60.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      SizedBox(
+                        height: Constants.suSetSp(30.0),
+                        child: user != null
+                            ? Text(
+                                "${user.name ?? user.uid}",
+                                style:
+                                    Theme.of(context).textTheme.body1.copyWith(
+                                          fontSize: Constants.suSetSp(20.0),
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                              )
+                            : SizedBox.shrink(),
+                      ),
+                      Text(
+                        " $formattedTime",
+                        style: Theme.of(context).textTheme.body1.copyWith(
+                              color: Theme.of(context)
+                                  .textTheme
+                                  .body1
+                                  .color
+                                  .withOpacity(0.5),
+                            ),
+                      ),
+                      Spacer(),
+                      Container(
+                        width: Constants.suSetSp(20.0),
+                        height: Constants.suSetSp(20.0),
+                        decoration: BoxDecoration(
+                          color: ThemeUtils.currentThemeColor.withOpacity(0.5),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            "${widget.unreadMessages.length}",
+                            style: TextStyle(
+                              fontSize: Constants.suSetSp(14),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    "${widget.message.content['content']}",
+                    style: Theme.of(context).textTheme.body1.copyWith(
+                          color: Theme.of(context)
+                              .textTheme
+                              .body1
+                              .color
+                              .withOpacity(0.5),
+                        ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
               ),
             ),
           ),

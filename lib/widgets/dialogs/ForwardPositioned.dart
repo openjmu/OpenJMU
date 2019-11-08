@@ -13,7 +13,10 @@ import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
 class ForwardPositioned extends StatefulWidget {
   final Post post;
 
-  ForwardPositioned(this.post, {Key key}) : super(key: key);
+  const ForwardPositioned(
+    this.post, {
+    Key key,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ForwardPositionedState();
@@ -49,15 +52,20 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       decoration: InputDecoration(
         contentPadding: EdgeInsets.all(Constants.suSetSp(12.0)),
         border: OutlineInputBorder(
-            borderSide: BorderSide(color: ThemeUtils.currentThemeColor)),
+          borderSide: BorderSide(
+            color: ThemeUtils.currentThemeColor,
+          ),
+        ),
         focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: ThemeUtils.currentThemeColor)),
+          borderSide: BorderSide(
+            color: ThemeUtils.currentThemeColor,
+          ),
+        ),
       ),
       enabled: !_forwarding,
-      style: Theme.of(context)
-          .textTheme
-          .body1
-          .copyWith(fontSize: Constants.suSetSp(18.0)),
+      style: Theme.of(context).textTheme.body1.copyWith(
+            fontSize: Constants.suSetSp(18.0),
+          ),
       cursorColor: ThemeUtils.currentThemeColor,
       autofocus: true,
       maxLines: 3,
@@ -83,19 +91,30 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         _forwarding = false;
       });
       Navigator.of(context).pop();
-      Instances.eventBus
-          .fire(new PostForwardedEvent(widget.post.id, widget.post.forwards));
+      Instances.eventBus.fire(PostForwardedEvent(
+        widget.post.id,
+        widget.post.forwards,
+      ));
     });
   }
 
-  void updatePadStatus(Function change) {
+  void updatePadStatus(context, bool active) {
+    final change = () {
+      emoticonPadActive = active;
+      if (mounted) setState(() {});
+    };
     emoticonPadActive
         ? change()
-        : SystemChannels.textInput
-            .invokeMethod('TextInput.hide')
-            .whenComplete(() {
-            Future.delayed(Duration(milliseconds: 200)).whenComplete(change);
-          });
+        : MediaQuery.of(context).viewInsets.bottom != 0.0
+            ? SystemChannels.textInput
+                .invokeMethod('TextInput.hide')
+                .whenComplete(
+                () async {
+                  Future.delayed(const Duration(milliseconds: 300), () {})
+                      .whenComplete(change);
+                },
+              )
+            : change();
   }
 
   void insertText(String text) {
@@ -128,23 +147,17 @@ class ForwardPositionedState extends State<ForwardPositioned> {
   }
 
   Widget emoticonPad(context) {
-    return Positioned(
-      bottom: MediaQuery.of(context).viewInsets.bottom +
-          (MediaQuery.of(context).padding.bottom ?? 0),
-      left: 0.0,
-      right: 0.0,
-      child: Visibility(
-        visible: emoticonPadActive,
-        child: EmotionPad(
-          route: "forward",
-          height: _keyboardHeight,
-          controller: _forwardController,
-        ),
+    return Visibility(
+      visible: emoticonPadActive,
+      child: EmotionPad(
+        route: "comment",
+        height: _keyboardHeight,
+        controller: _forwardController,
       ),
     );
   }
 
-  void mentionPeople() {
+  void mentionPeople(context) {
     showDialog<User>(
       context: context,
       builder: (BuildContext context) => MentionPeopleDialog(),
@@ -157,60 +170,96 @@ class ForwardPositionedState extends State<ForwardPositioned> {
     });
   }
 
-  Widget toolbar() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Checkbox(
-          activeColor: ThemeUtils.currentThemeColor,
-          value: commentAtTheMeanTime,
-          onChanged: (value) {
-            setState(() {
-              commentAtTheMeanTime = value;
-            });
-          },
-        ),
-        Text("同时评论到微博", style: TextStyle(fontSize: Constants.suSetSp(16.0))),
-        Expanded(child: Container()),
-        IconButton(
-          onPressed: mentionPeople,
-          icon: Icon(Icons.alternate_email),
-        ),
-        ToggleButton(
-          activeWidget: Icon(
-            Icons.sentiment_very_satisfied,
-            color: ThemeUtils.currentThemeColor,
-          ),
-          unActiveWidget: Icon(
-            Icons.sentiment_very_satisfied,
-            color: Theme.of(context).iconTheme.color,
-          ),
-          activeChanged: (bool active) {
-            updatePadStatus(() {
+  Widget toolbar(context) {
+    return SizedBox(
+      height: Constants.suSetSp(40.0),
+      child: Row(
+        children: <Widget>[
+          Checkbox(
+            activeColor: ThemeUtils.currentThemeColor,
+            value: commentAtTheMeanTime,
+            onChanged: (value) {
               setState(() {
-                if (active) FocusScope.of(context).requestFocus(_focusNode);
-                emoticonPadActive = active;
+                commentAtTheMeanTime = value;
               });
-            });
-          },
-          active: emoticonPadActive,
-        ),
-        !_forwarding
-            ? IconButton(
-                icon: Icon(Icons.send),
-                color: ThemeUtils.currentThemeColor,
-                onPressed: () => _requestForward(context),
-              )
-            : Container(
-                padding:
-                    EdgeInsets.symmetric(horizontal: Constants.suSetSp(14.0)),
-                child: SizedBox(
-                  width: Constants.suSetSp(18.0),
-                  height: Constants.suSetSp(18.0),
-                  child: Constants.progressIndicator(strokeWidth: 2.0),
-                ),
+            },
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          Text("同时评论到微博", style: TextStyle(fontSize: Constants.suSetSp(16.0),
+          ),
+          ),
+          Spacer(),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              mentionPeople(context);
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: Constants.suSetSp(6.0),
               ),
-      ],
+              child: Icon(
+                Icons.alternate_email,
+                size: Constants.suSetSp(26.0),
+              ),
+            ),
+          ),
+          ToggleButton(
+            activeWidget: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: Constants.suSetSp(6.0),
+              ),
+              child: Icon(
+                Icons.sentiment_very_satisfied,
+                size: Constants.suSetSp(26.0),
+                color: ThemeUtils.currentThemeColor,
+              ),
+            ),
+            unActiveWidget: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: Constants.suSetSp(6.0),
+              ),
+              child: Icon(
+                Icons.sentiment_very_satisfied,
+                size: Constants.suSetSp(26.0),
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
+            activeChanged: (bool active) {
+              if (active && _focusNode.canRequestFocus) {
+                _focusNode.requestFocus();
+              }
+              updatePadStatus(context, active);
+            },
+            active: emoticonPadActive,
+          ),
+          !_forwarding
+              ? GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: Constants.suSetSp(6.0),
+              ),
+              child: Icon(
+                Icons.send,
+                size: Constants.suSetSp(26.0),
+                color: ThemeUtils.currentThemeColor,
+              ),
+            ),
+            onTap: () { _requestForward(context);},
+          )
+              : Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: Constants.suSetSp(14.0),
+            ),
+            child: SizedBox(
+              width: Constants.suSetSp(10.0),
+              height: Constants.suSetSp(10.0),
+              child: Constants.progressIndicator(strokeWidth: 2.0),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -222,35 +271,31 @@ class ForwardPositionedState extends State<ForwardPositioned> {
     }
     _keyboardHeight = max(keyboardHeight, _keyboardHeight ?? 0);
 
-    return Material(
-      type: MaterialType.transparency,
-      child: Stack(
-        children: <Widget>[
-          GestureDetector(onTap: () => Navigator.of(context).pop()),
-          Positioned(
-            /// viewInsets for keyboard pop up, padding bottom for iOS navigator.
-            bottom: emoticonPadActive
-                ? _keyboardHeight
-                : MediaQuery.of(context).viewInsets.bottom +
-                    (MediaQuery.of(context).padding.bottom ?? 0),
-            left: 0.0,
-            right: 0.0,
-            child: Container(
-              padding: EdgeInsets.all(Constants.suSetSp(10.0)),
-              color: Theme.of(context).cardColor,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  textField(context),
-                  toolbar(),
-                ],
-              ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: !emoticonPadActive
+                ? MediaQuery.of(context).padding.bottom
+                : 0.0,
+          ),
+          child: Container(
+            padding: EdgeInsets.all(Constants.suSetSp(10.0)),
+            color: Theme.of(context).cardColor,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                textField(context),
+                toolbar(context),
+              ],
             ),
           ),
-          emoticonPad(context),
-        ],
-      ),
+        ),
+        emoticonPad(context),
+      ],
     );
   }
 }

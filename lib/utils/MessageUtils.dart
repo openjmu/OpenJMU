@@ -12,6 +12,8 @@ class MessageUtils {
   static Socket messageSocket;
   static int packageSequence = 4;
   static Timer messageKeepAliveTimer;
+  static ObserverList<Function> messageListeners =
+      ObserverList<Function>();
 
   static void initMessageSocket() {
     debugPrint("Connecting socket...");
@@ -151,14 +153,18 @@ class MessageUtils {
             "Send Time: $_sendTime\n"
             "Ack ID: $_ackId\n"
             "Message Content: $_content\n");
-        Instances.eventBus.fire(MessageReceivedEvent(
+        final event = MessageReceivedEvent(
           type: _type,
           senderUid: _senderUid,
           senderMultiPortId: _senderMultiPortId.toString(),
           sendTime: DateTime.fromMillisecondsSinceEpoch(_sendTime * 1000),
           ackId: _ackId.toString(),
           content: _content,
-        ));
+        );
+        Instances.eventBus.fire(event);
+        for (final listener in messageListeners) {
+          listener(event);
+        }
         break;
       default:
         break;

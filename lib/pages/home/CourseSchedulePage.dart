@@ -176,6 +176,47 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     }
   }
 
+  void showRemarkDetail() {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (_) {
+        return SimpleDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          backgroundColor: Theme.of(context).canvasColor.withOpacity(0.8),
+          contentPadding: EdgeInsets.zero,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(bottom: Constants.suSetSp(10.0)),
+                    child: Text(
+                      "班级备注",
+                      style: Theme.of(context).textTheme.title.copyWith(
+                            fontSize: Constants.suSetSp(23.0),
+                          ),
+                    ),
+                  ),
+                  Text(
+                    "$remark",
+                    style: TextStyle(
+                      fontSize: Constants.suSetSp(18.0),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void showWeekWidget() {
     showWeek = !showWeek;
     widget.appCenterPageState.setState(() {});
@@ -260,37 +301,43 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     );
   }
 
-  Widget get remarkWidget => AnimatedContainer(
-        duration: showWeekDuration,
-        width: Screen.width,
-        constraints: BoxConstraints(
-          maxHeight: Constants.suSetSp(64.0),
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(20.0),
-        ),
-        color: showWeek
-            ? Theme.of(context).primaryColor
-            : Theme.of(context).canvasColor,
-        child: Center(
-          child: RichText(
-            text: TextSpan(
-              children: <InlineSpan>[
-                TextSpan(
-                  text: "班级备注: ",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
+  Widget get remarkWidget => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: showRemarkDetail,
+        child: AnimatedContainer(
+          duration: showWeekDuration,
+          width: Screen.width,
+          constraints: BoxConstraints(
+            maxHeight: Constants.suSetSp(48.0),
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: Constants.suSetSp(20.0),
+          ),
+          color: showWeek
+              ? Theme.of(context).primaryColor
+              : Theme.of(context).canvasColor,
+          child: Center(
+            child: RichText(
+              text: TextSpan(
+                children: <InlineSpan>[
+                  TextSpan(
+                    text: "班级备注: ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                TextSpan(
-                  text: "$remark",
-                ),
-              ],
-              style: Theme.of(context).textTheme.body1.copyWith(
-                    fontSize: Constants.suSetSp(17.0),
+                  TextSpan(
+                    text: "$remark",
                   ),
+                ],
+                style: Theme.of(context).textTheme.body1.copyWith(
+                      fontSize: Constants.suSetSp(17.0),
+                    ),
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-            textAlign: TextAlign.center,
           ),
         ),
       );
@@ -947,7 +994,8 @@ class CoursesDialog extends StatelessWidget {
                                 Constants.navigatorKey.currentState
                                     .popUntil(ModalRoute.withName('/home'));
                               }
-                              Instances.eventBus.fire(CourseScheduleRefreshEvent());
+                              Instances.eventBus
+                                  .fire(CourseScheduleRefreshEvent());
                             });
                             courseList.removeAt(0);
                           },

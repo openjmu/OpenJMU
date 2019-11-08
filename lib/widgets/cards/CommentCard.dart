@@ -250,13 +250,15 @@ class CommentCard extends StatelessWidget {
                     padding: EdgeInsets.all(Constants.suSetSp(6.0)),
                     onPressed: () {
                       Navigator.pop(context);
-                      showDialog<Null>(
+                      showModalBottomSheet(
                         context: context,
-                        builder: (BuildContext context) => CommentPositioned(
+                        builder: (_) => CommentPositioned(
                           post: this.comment.post,
                           postType: PostType.square,
                           comment: this.comment,
                         ),
+                        isScrollControlled: true,
+                        backgroundColor: Theme.of(context).primaryColor,
                       );
                     },
                   ),

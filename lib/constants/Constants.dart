@@ -16,6 +16,7 @@ export 'package:OpenJMU/constants/Messages.dart';
 export 'package:OpenJMU/constants/Screens.dart';
 export 'package:OpenJMU/events/Events.dart';
 export 'package:OpenJMU/model/Bean.dart';
+export 'package:OpenJMU/providers/Providers.dart';
 export 'package:OpenJMU/utils/Utils.dart';
 
 class Constants {

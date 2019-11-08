@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 
@@ -265,9 +264,7 @@ class _PostListState extends State<PostList> {
                       SizedBox(
                         width: Constants.suSetSp(15.0),
                         height: Constants.suSetSp(15.0),
-                        child: Platform.isAndroid
-                            ? CircularProgressIndicator(strokeWidth: 2.0)
-                            : CupertinoActivityIndicator(),
+                        child: Constants.progressIndicator(strokeWidth: 2.0),
                       ),
                       Text(
                         "　正在加载",
@@ -323,7 +320,7 @@ class _PostListState extends State<PostList> {
     } else {
       return Container(
         child: Center(
-          child: CircularProgressIndicator(),
+          child: Constants.progressIndicator(),
         ),
       );
     }

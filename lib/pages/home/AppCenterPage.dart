@@ -97,19 +97,19 @@ class AppCenterPageState extends State<AppCenterPage>
   Future getAppList() async => NetUtils.getWithCookieSet(API.webAppLists);
 
   Widget categoryListView(BuildContext context, AsyncSnapshot snapshot) {
-    List<dynamic> data = snapshot.data?.data;
+    final data = snapshot.data?.data;
     Map<String, List<Widget>> appList = {};
     for (int i = 0; i < data.length; i++) {
-      String url = data[i]['url'];
-      String name = data[i]['name'];
+      final url = data[i]['url'];
+      final name = data[i]['name'];
       if ((url != "" && url != null) && (name != "" && name != null)) {
-        WebApp _app = WebApp.fromJson(data[i]);
-        _app = appWrapper(_app);
+        final _app = appWrapper(WebApp.fromJson(data[i]));
         if (appList[_app.menuType] == null) {
           appList[_app.menuType] = [];
         }
-        if (!appFiltered(_app))
+        if (!appFiltered(_app)) {
           appList[_app.menuType].add(getWebAppButton(_app));
+        }
       }
     }
     webAppWidgetList = appList;
@@ -125,12 +125,12 @@ class AppCenterPageState extends State<AppCenterPage>
   }
 
   WebApp appWrapper(WebApp app) {
-//        print("${app.code}-${app.name}");
+//    print("${app.code}-${app.name}");
     switch (app.name) {
-//            case "集大通":
-//                app.name = "OpenJMU";
-//                app.url = "https://openjmu.jmu.edu.cn/";
-//                break;
+//      case "集大通":
+//        app.name = "OpenJMU";
+//        app.url = "https://openjmu.jmu.edu.cn/";
+//        break;
       default:
         break;
     }
@@ -340,8 +340,9 @@ class AppCenterPageState extends State<AppCenterPage>
           indicatorWeight: Constants.suSetSp(6.0),
           labelColor: Theme.of(context).textTheme.body1.color,
           labelStyle: MainPageState.tabSelectedTextStyle,
-          labelPadding:
-              EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+          labelPadding: EdgeInsets.symmetric(
+            horizontal: Constants.suSetSp(16.0),
+          ),
           unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
           tabs: <Tab>[
             for (int i = 0; i < List.from(tabs()).length; i++) _tab(tabs()[i])
@@ -351,9 +352,14 @@ class AppCenterPageState extends State<AppCenterPage>
         centerTitle: false,
         actions: <Widget>[
           Padding(
-            padding: EdgeInsets.only(left: Constants.suSetSp(8.0)),
+            padding: EdgeInsets.only(
+              left: Constants.suSetSp(8.0),
+            ),
             child: IconButton(
-              icon: Icon(Icons.refresh, size: Constants.suSetSp(24.0)),
+              icon: Icon(
+                Icons.refresh,
+                size: Constants.suSetSp(24.0),
+              ),
               onPressed: () {
                 Instances.eventBus
                     .fire(AppCenterRefreshEvent(_tabController.index));

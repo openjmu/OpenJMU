@@ -19,7 +19,7 @@ class CommentPositioned extends StatefulWidget {
   final PostType postType;
   final Comment comment;
 
-  CommentPositioned({
+  const CommentPositioned({
     Key key,
     @required this.post,
     @required this.postType,
@@ -174,14 +174,23 @@ class CommentPositionedState extends State<CommentPositioned> {
     }
   }
 
-  void updatePadStatus(Function change) {
+  void updatePadStatus(context, bool active) {
+    final change = () {
+      emoticonPadActive = active;
+      if (mounted) setState(() {});
+    };
     emoticonPadActive
         ? change()
-        : SystemChannels.textInput
-            .invokeMethod('TextInput.hide')
-            .whenComplete(() {
-            Future.delayed(Duration(milliseconds: 200)).whenComplete(change);
-          });
+        : MediaQuery.of(context).viewInsets.bottom != 0.0
+            ? SystemChannels.textInput
+                .invokeMethod('TextInput.hide')
+                .whenComplete(
+                () async {
+                  Future.delayed(const Duration(milliseconds: 300), () {})
+                      .whenComplete(change);
+                },
+              )
+            : change();
   }
 
   void insertText(String text) {
@@ -214,18 +223,12 @@ class CommentPositionedState extends State<CommentPositioned> {
   }
 
   Widget emoticonPad(context) {
-    return Positioned(
-      bottom: MediaQuery.of(context).viewInsets.bottom +
-          (MediaQuery.of(context).padding.bottom ?? 0),
-      left: 0.0,
-      right: 0.0,
-      child: Visibility(
-        visible: emoticonPadActive,
-        child: EmotionPad(
-          route: "comment",
-          height: _keyboardHeight,
-          controller: _commentController,
-        ),
+    return Visibility(
+      visible: emoticonPadActive,
+      child: EmotionPad(
+        route: "comment",
+        height: _keyboardHeight,
+        controller: _commentController,
       ),
     );
   }
@@ -244,68 +247,113 @@ class CommentPositionedState extends State<CommentPositioned> {
   }
 
   Widget toolbar(context) {
-    return Row(
-      children: <Widget>[
-        Checkbox(
-          activeColor: ThemeUtils.currentThemeColor,
-          value: forwardAtTheMeanTime,
-          onChanged: (value) {
-            setState(() {
-              forwardAtTheMeanTime = value;
-            });
-          },
-        ),
-        Text("同时转发到微博", style: TextStyle(fontSize: Constants.suSetSp(16.0))),
-        Expanded(child: Container()),
-        IconButton(
-          onPressed: _addImage,
-          icon: Icon(Icons.add_photo_alternate),
-        ),
-        IconButton(
-          onPressed: () {
-            mentionPeople(context);
-          },
-          icon: Icon(Icons.alternate_email),
-        ),
-        ToggleButton(
-          activeWidget: Icon(
-            Icons.sentiment_very_satisfied,
-            color: ThemeUtils.currentThemeColor,
-          ),
-          unActiveWidget: Icon(
-            Icons.sentiment_very_satisfied,
-            color: Theme.of(context).iconTheme.color,
-          ),
-          activeChanged: (bool active) {
-            Function change = () {
+    return SizedBox(
+      height: Constants.suSetSp(40.0),
+      child: Row(
+        children: <Widget>[
+          Checkbox(
+            activeColor: ThemeUtils.currentThemeColor,
+            value: forwardAtTheMeanTime,
+            onChanged: (value) {
               setState(() {
-                if (active) FocusScope.of(context).requestFocus(_focusNode);
-                emoticonPadActive = active;
+                forwardAtTheMeanTime = value;
               });
-            };
-            updatePadStatus(change);
-          },
-          active: emoticonPadActive,
-        ),
-        !_commenting
-            ? IconButton(
-                icon: Icon(Icons.send),
-                color: ThemeUtils.currentThemeColor,
-                onPressed:
-                    (_commentController.text.length > 0 || _image != null)
-                        ? () => _request(context)
-                        : null,
-              )
-            : Container(
-                padding:
-                    EdgeInsets.symmetric(horizontal: Constants.suSetSp(14.0)),
-                child: SizedBox(
-                  width: Constants.suSetSp(18.0),
-                  height: Constants.suSetSp(18.0),
-                  child: Constants.progressIndicator(strokeWidth: 2.0),
-                ),
+            },
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+          Text(
+            "同时转发到微博",
+            style: TextStyle(
+              fontSize: Constants.suSetSp(16.0),
+            ),
+          ),
+          Spacer(),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: _addImage,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: Constants.suSetSp(6.0),
               ),
-      ],
+              child: Icon(
+                Icons.add_photo_alternate,
+                size: Constants.suSetSp(26.0),
+              ),
+            ),
+          ),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              mentionPeople(context);
+            },
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: Constants.suSetSp(6.0),
+              ),
+              child: Icon(
+                Icons.alternate_email,
+                size: Constants.suSetSp(26.0),
+              ),
+            ),
+          ),
+          ToggleButton(
+            activeWidget: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: Constants.suSetSp(6.0),
+              ),
+              child: Icon(
+                Icons.sentiment_very_satisfied,
+                size: Constants.suSetSp(26.0),
+                color: ThemeUtils.currentThemeColor,
+              ),
+            ),
+            unActiveWidget: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: Constants.suSetSp(6.0),
+              ),
+              child: Icon(
+                Icons.sentiment_very_satisfied,
+                size: Constants.suSetSp(26.0),
+                color: Theme.of(context).iconTheme.color,
+              ),
+            ),
+            activeChanged: (bool active) {
+              if (active && _focusNode.canRequestFocus) {
+                _focusNode.requestFocus();
+              }
+              updatePadStatus(context, active);
+            },
+            active: emoticonPadActive,
+          ),
+          !_commenting
+              ? GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: Constants.suSetSp(6.0),
+                    ),
+                    child: Icon(
+                      Icons.send,
+                      size: Constants.suSetSp(26.0),
+                      color: ThemeUtils.currentThemeColor,
+                    ),
+                  ),
+                  onTap: (_commentController.text.length > 0 || _image != null)
+                      ? () => _request(context)
+                      : null,
+                )
+              : Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: Constants.suSetSp(14.0),
+                  ),
+                  child: SizedBox(
+                    width: Constants.suSetSp(10.0),
+                    height: Constants.suSetSp(10.0),
+                    child: Constants.progressIndicator(strokeWidth: 2.0),
+                  ),
+                ),
+        ],
+      ),
     );
   }
 
@@ -317,33 +365,31 @@ class CommentPositionedState extends State<CommentPositioned> {
     }
     _keyboardHeight = max(keyboardHeight, _keyboardHeight ?? 0);
 
-    return Material(
-      type: MaterialType.transparency,
-      child: Stack(
-        children: <Widget>[
-          GestureDetector(onTap: () => Navigator.of(context).pop()),
-          Positioned(
-            /// viewInsets for keyboard pop up, padding bottom for iOS navigator.
-            bottom: emoticonPadActive
-                ? _keyboardHeight
-                : MediaQuery.of(context).viewInsets.bottom +
-                    (MediaQuery.of(context).padding.bottom ?? 0),
-            left: 0.0,
-            right: 0.0,
-            child: Container(
-              padding: EdgeInsets.all(Constants.suSetSp(10.0)),
-              color: Theme.of(context).cardColor,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[textField(context), toolbar(context)],
-              ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.only(
+            bottom: !emoticonPadActive
+                ? MediaQuery.of(context).padding.bottom
+                : 0.0,
+          ),
+          child: Container(
+            padding: EdgeInsets.all(Constants.suSetSp(10.0)),
+            color: Theme.of(context).cardColor,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                textField(context),
+                toolbar(context),
+              ],
             ),
           ),
-          emoticonPad(context),
-        ],
-      ),
+        ),
+        emoticonPad(context),
+      ],
     );
   }
 }

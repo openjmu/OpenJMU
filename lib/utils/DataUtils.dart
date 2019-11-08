@@ -22,7 +22,7 @@ class DataUtils {
   static final String spUserName = "userName";
   static final String spUserUnitId = "userUnitId";
   static final String spUserWorkId = "userWorkId";
-//    static final String spUserClassId       = "userClassId";
+//  static final String spUserClassId = "userClassId";
 
   static final String spBrightness = "theme_brightness";
   static final String spColorThemeIndex = "theme_colorThemeIndex";
@@ -305,8 +305,10 @@ class DataUtils {
         comment: comment,
         praise: praises,
       );
-      Instances.notifications = notifications;
-      Instances.eventBus.fire(NotificationsChangeEvent(notifications));
+      if (Instances.notifications != notifications) {
+        Instances.notifications = notifications;
+        Instances.eventBus.fire(NotificationsChangeEvent(notifications));
+      }
     }).catchError((e) {
       debugPrint(e.toString());
       return e;
