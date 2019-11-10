@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:oktoast/oktoast.dart';
 import 'package:provider/provider.dart';
 import 'package:quick_actions/quick_actions.dart';
@@ -71,7 +72,9 @@ class OpenJMUAppState extends State<OpenJMUApp> {
         })[1];
       })
       ..on<ChangeBrightnessEvent>().listen((event) {
-        ThemeUtils.isDark = event.isDarkState;
+        if (mounted) setState(() {});
+      })
+      ..on<ChangeAMOLEDDarkEvent>().listen((event) {
         if (mounted) setState(() {});
       });
 
@@ -140,7 +143,10 @@ class OpenJMUAppState extends State<OpenJMUApp> {
         child: OKToast(
           child: MaterialApp(
             navigatorKey: Constants.navigatorKey,
-            builder: (BuildContext c, Widget w) => NoScaleTextWidget(child: w),
+            builder: (c, w) {
+              ScreenUtil.instance = ScreenUtil.getInstance()..init(c);
+              return NoScaleTextWidget(child: w);
+            },
             routes: RouteUtils.routes,
             title: "OpenJMU",
             theme: theme,

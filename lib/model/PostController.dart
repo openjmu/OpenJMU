@@ -46,7 +46,7 @@ class PostList extends StatefulWidget {
   PostList newController(_controller) => PostList(_controller);
 }
 
-class _PostListState extends State<PostList> {
+class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   final ScrollController _scrollController = ScrollController();
@@ -70,6 +70,9 @@ class _PostListState extends State<PostList> {
 
   List<int> _idList = [];
   List<Post> _postList = [];
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -238,8 +241,9 @@ class _PostListState extends State<PostList> {
     }
   }
 
-  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
+    super.build(context);
     if (!_showLoading) {
       if (_firstLoadComplete) {
         _itemList = ListView.separated(
@@ -276,14 +280,13 @@ class _PostListState extends State<PostList> {
                   ),
                 );
               } else {
-                return Container(
+                return SizedBox(
                   height: Constants.suSetSp(50.0),
-                  color: Theme.of(context).canvasColor,
                   child: Center(
                     child: Text(
                       Constants.endLineTag,
                       style: TextStyle(
-                        fontSize: Constants.suSetSp(14.0),
+                        fontSize: Constants.suSetSp(16.0),
                       ),
                     ),
                   ),
@@ -503,7 +506,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
           } else if (text.startsWith("@")) {
             UserPage.jump(data['uid']);
           } else if (text.startsWith(API.wbHost)) {
-            CommonWebPage.jump(context, text, "网页链接");
+            CommonWebPage.jump(text, "网页链接");
           }
         },
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),

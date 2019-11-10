@@ -9,7 +9,10 @@ import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 class EditSignatureDialog extends StatefulWidget {
   final String signature;
 
-  EditSignatureDialog(this.signature, {Key key}) : super(key: key);
+  const EditSignatureDialog(
+    this.signature, {
+    Key key,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => EditSignatureDialogState();
@@ -34,9 +37,8 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
       });
   }
 
-  void updateSignature() {
-    LoadingDialogController _loadingDialogController =
-        LoadingDialogController();
+  void updateSignature(context) {
+    final _loadingDialogController = LoadingDialogController();
     showDialog<Null>(
       context: context,
       builder: (BuildContext context) => LoadingDialog(
@@ -70,8 +72,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).canvasColor,
-                borderRadius:
-                    BorderRadius.all(Radius.circular(Constants.suSetSp(12.0))),
+                borderRadius: BorderRadius.circular(Constants.suSetSp(12.0)),
               ),
               width: MediaQuery.of(context).size.width - Constants.suSetSp(100),
               padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
@@ -79,8 +80,10 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Center(
-                    child:
-                        Text("修改签名", style: Theme.of(context).textTheme.title),
+                    child: Text(
+                      "修改签名",
+                      style: Theme.of(context).textTheme.title,
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(Constants.suSetSp(20.0)),
@@ -111,24 +114,28 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
                       CupertinoButton(
-                        child: Text("取消",
-                            style: TextStyle(
-                              color: Theme.of(context).textTheme.body1.color,
-                              fontSize: Constants.suSetSp(18.0),
-                            )),
+                        child: Text(
+                          "取消",
+                          style: TextStyle(
+                            color: Theme.of(context).textTheme.body1.color,
+                            fontSize: Constants.suSetSp(18.0),
+                          ),
+                        ),
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       CupertinoButton(
-                        child: Text("保存",
-                            style: TextStyle(
-                              color: canSave
-                                  ? ThemeUtils.currentThemeColor
-                                  : Theme.of(context).disabledColor,
-                              fontSize: Constants.suSetSp(18.0),
-                            )),
+                        child: Text(
+                          "保存",
+                          style: TextStyle(
+                            color: canSave
+                                ? ThemeUtils.currentThemeColor
+                                : Theme.of(context).disabledColor,
+                            fontSize: Constants.suSetSp(18.0),
+                          ),
+                        ),
                         onPressed: () {
                           if (canSave) {
-                            updateSignature();
+                            updateSignature(context);
                           } else {
                             return null;
                           }

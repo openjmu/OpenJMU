@@ -41,7 +41,7 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
               specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
               onSpecialTextTap: (dynamic data) {
                 String text = data['content'];
-                CommonWebPage.jump(context, text, "网页链接");
+                CommonWebPage.jump(text, "网页链接");
               },
               textAlign: TextAlign.left,
             )
@@ -82,7 +82,7 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
               specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
               onSpecialTextTap: (dynamic data) {
                 String text = data['content'];
-                CommonWebPage.jump(context, text, "网页链接");
+                CommonWebPage.jump(text, "网页链接");
               },
             ),
           ],

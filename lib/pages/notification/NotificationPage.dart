@@ -13,7 +13,6 @@ class NotificationPage extends StatefulWidget {
 
 class NotificationPageState extends State<NotificationPage>
     with TickerProviderStateMixin {
-  TabController _tabController, _mentionTabController;
   final List<IconData> actionsIcons = [
     Platform.isAndroid
         ? Ionicons.getIconData("ios-at")
@@ -22,8 +21,8 @@ class NotificationPageState extends State<NotificationPage>
     Platform.isAndroid ? Icons.thumb_up : Ionicons.getIconData("ios-thumbs-up")
   ];
 
-  Color badgeColor = ThemeUtils.currentThemeColor;
-  Color primaryColor = Colors.white;
+  TabController _tabController, _mentionTabController;
+
   Notifications currentNotifications;
 
   PostList _mentionPost;
@@ -35,7 +34,6 @@ class NotificationPageState extends State<NotificationPage>
 
   @override
   void initState() {
-    super.initState();
     currentNotifications = Instances.notifications;
     _tabController = TabController(length: 3, vsync: this);
     _tabController.animation.addListener(() {
@@ -46,22 +44,18 @@ class NotificationPageState extends State<NotificationPage>
       }
     });
     _mentionTabController = TabController(length: 2, vsync: this);
+
     postByMention();
     commentByMention();
     commentByReply();
     praiseList();
-    Instances.eventBus.on<NotificationsChangeEvent>().listen((event) {
-      if (this.mounted) {
-        setState(() {
-          currentNotifications = event.notifications;
-        });
-      }
-    });
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
+    Instances.eventBus
+      ..on<NotificationsChangeEvent>().listen((event) {
+        currentNotifications = event.notifications;
+        if (this.mounted) setState(() {});
+      });
+    super.initState();
   }
 
   List<Widget> actions() {
@@ -73,7 +67,10 @@ class NotificationPageState extends State<NotificationPage>
                   content: currentNotifications.at == 0
                       ? ""
                       : currentNotifications.at,
-                  icon: Icon(actionsIcons[0], size: Constants.suSetSp(26.0)),
+                  icon: Icon(
+                    actionsIcons[0],
+                    size: Constants.suSetSp(26.0),
+                  ),
                 ),
                 onPressed: () {
                   _tabController.animateTo(0);
@@ -90,7 +87,10 @@ class NotificationPageState extends State<NotificationPage>
               )
             : Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Icon(actionsIcons[0], size: Constants.suSetSp(26.0)),
+                child: Icon(
+                  actionsIcons[0],
+                  size: Constants.suSetSp(26.0),
+                ),
               ),
       ),
       Tab(
@@ -100,7 +100,10 @@ class NotificationPageState extends State<NotificationPage>
                   content: currentNotifications.comment == 0
                       ? ""
                       : currentNotifications.comment,
-                  icon: Icon(actionsIcons[1], size: Constants.suSetSp(26.0)),
+                  icon: Icon(
+                    actionsIcons[1],
+                    size: Constants.suSetSp(26.0),
+                  ),
                 ),
                 onPressed: () {
                   _tabController.animateTo(1);
@@ -117,7 +120,10 @@ class NotificationPageState extends State<NotificationPage>
               )
             : Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Icon(actionsIcons[1], size: Constants.suSetSp(26.0)),
+                child: Icon(
+                  actionsIcons[1],
+                  size: Constants.suSetSp(26.0),
+                ),
               ),
       ),
       Tab(
@@ -127,7 +133,10 @@ class NotificationPageState extends State<NotificationPage>
                   content: currentNotifications.praise == 0
                       ? ""
                       : currentNotifications.praise,
-                  icon: Icon(actionsIcons[2], size: Constants.suSetSp(26.0)),
+                  icon: Icon(
+                    actionsIcons[2],
+                    size: Constants.suSetSp(26.0),
+                  ),
                 ),
                 onPressed: () {
                   _tabController.animateTo(2);
@@ -144,7 +153,10 @@ class NotificationPageState extends State<NotificationPage>
               )
             : Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Icon(actionsIcons[2], size: Constants.suSetSp(26.0)),
+                child: Icon(
+                  actionsIcons[2],
+                  size: Constants.suSetSp(26.0),
+                ),
               ),
       ),
     ];
@@ -156,8 +168,9 @@ class NotificationPageState extends State<NotificationPage>
           indicatorPadding: const EdgeInsets.only(bottom: 18.0),
           indicatorSize: TabBarIndicatorSize.label,
           indicatorWeight: 6.0,
-          labelPadding:
-              EdgeInsets.symmetric(horizontal: Constants.suSetSp(8.0)),
+          labelPadding: EdgeInsets.symmetric(
+            horizontal: Constants.suSetSp(8.0),
+          ),
           tabs: _tabs,
           controller: _tabController,
         ),
@@ -223,16 +236,19 @@ class NotificationPageState extends State<NotificationPage>
         children: <Widget>[
           Column(
             children: <Widget>[
-              Container(
+              SizedBox(
                 width: MediaQuery.of(context).size.width,
                 height: Constants.suSetSp(42.0),
                 child: TabBar(
                   indicatorColor: ThemeUtils.currentThemeColor,
-                  indicatorPadding:
-                      EdgeInsets.only(bottom: Constants.suSetSp(6.0)),
+                  indicatorPadding: EdgeInsets.only(
+                    bottom: Constants.suSetSp(6.0),
+                  ),
                   indicatorSize: TabBarIndicatorSize.label,
                   indicatorWeight: Constants.suSetSp(4.0),
-                  labelStyle: TextStyle(fontSize: Constants.suSetSp(17.0)),
+                  labelStyle: TextStyle(
+                    fontSize: Constants.suSetSp(17.0),
+                  ),
                   tabs: <Tab>[
                     Tab(text: "@我的评论"),
                     Tab(text: "@我的动态"),

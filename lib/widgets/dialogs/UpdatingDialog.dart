@@ -18,7 +18,6 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
 
   @override
   void initState() {
-    super.initState();
     FlutterDownloader.registerCallback((id, status, progress) {
       if (status.value == 3) {
         Navigator.pop(context);
@@ -27,6 +26,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
       updateProgress(progress);
     });
     tryOtaUpdate();
+    super.initState();
   }
 
   Future<void> _update(path) async {
@@ -48,7 +48,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
   }
 
   Future<String> _getPath() async {
-    String _localPath = (await _findLocalPath()) + '/Download';
+    final _localPath = (await _findLocalPath()) + '/Download';
     final savedDir = Directory(_localPath);
     bool hasExisted = await savedDir.exists();
     if (!hasExisted) {
@@ -63,9 +63,8 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
   }
 
   void updateProgress(int progress) {
-    setState(() {
-      this.progress = progress;
-    });
+    this.progress = progress;
+    if (mounted) setState(() {});
   }
 
   @override
@@ -81,17 +80,19 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).canvasColor,
-                borderRadius:
-                    BorderRadius.all(Radius.circular(Constants.suSetSp(8.0))),
+                borderRadius: BorderRadius.circular(Constants.suSetSp(8.0)),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   CircularProgressIndicator(
-                      value: progress == 0 ? null : progress / 100),
+                    value: progress == 0 ? null : progress / 100,
+                  ),
                   Padding(
-                    padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
+                    padding: EdgeInsets.only(
+                      top: Constants.suSetSp(20.0),
+                    ),
                     child: Text(
                       "正在下载 $progress%",
                       style: TextStyle(

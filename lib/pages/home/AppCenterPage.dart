@@ -171,9 +171,13 @@ class AppCenterPageState extends State<AppCenterPage>
     RegExp uidReg = RegExp(r"{UID}");
     String result = url;
     result = result.replaceAllMapped(
-        sidReg, (match) => UserAPI.currentUser.sid.toString());
+      sidReg,
+      (match) => UserAPI.currentUser.sid.toString(),
+    );
     result = result.replaceAllMapped(
-        uidReg, (match) => UserAPI.currentUser.uid.toString());
+      uidReg,
+      (match) => UserAPI.currentUser.uid.toString(),
+    );
     return result;
   }
 
@@ -187,16 +191,14 @@ class AppCenterPageState extends State<AppCenterPage>
           AppIcon(app: webApp, size: 70.0),
           Text(
             webApp.name,
-            style: TextStyle(
-              fontSize: Constants.suSetSp(17.0),
-              color: Theme.of(context).textTheme.body1.color,
-              fontWeight: FontWeight.normal,
-            ),
+            style: Theme.of(context).textTheme.body1.copyWith(
+                  fontSize: Constants.suSetSp(17.0),
+                  fontWeight: FontWeight.normal,
+                ),
           ),
         ],
       ),
       onPressed: () => CommonWebPage.jump(
-        context,
         url,
         webApp.name,
         app: webApp,
@@ -219,19 +221,19 @@ class AppCenterPageState extends State<AppCenterPage>
               padding: EdgeInsets.symmetric(
                 vertical: Constants.suSetSp(16.0),
               ),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Theme.of(context).canvasColor,
+                  ),
+                ),
+              ),
               child: Center(
                 child: Text(
                   WebApp.category[name],
                   style: Theme.of(context).textTheme.body1.copyWith(
                         fontSize: Constants.suSetSp(18.0),
                       ),
-                ),
-              ),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: Theme.of(context).canvasColor,
-                  ),
                 ),
               ),
             ),
@@ -274,7 +276,7 @@ class AppCenterPageState extends State<AppCenterPage>
         ),
       );
     } else {
-      return SizedBox();
+      return SizedBox.shrink();
     }
   }
 
@@ -287,35 +289,42 @@ class AppCenterPageState extends State<AppCenterPage>
         break;
       case "课程表":
         tab = Tab(
-            child: GestureDetector(
-          onTap: (coursePageKey.currentState != null &&
-                  coursePageKey.currentState.hasCourse)
-              ? () {
-                  if (_tabController.index != 0) {
-                    _tabController.animateTo(0);
-                  } else {
-                    coursePageKey.currentState.showWeekWidget();
+          child: GestureDetector(
+            onTap: (coursePageKey.currentState != null &&
+                    coursePageKey.currentState.hasCourse)
+                ? () {
+                    if (_tabController.index != 0) {
+                      _tabController.animateTo(0);
+                    } else {
+                      coursePageKey.currentState.showWeekWidget();
+                    }
                   }
-                }
-              : null,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(name),
-              if (coursePageKey.currentState != null &&
-                  coursePageKey.currentState.firstLoaded &&
-                  coursePageKey.currentState.hasCourse)
-                AnimatedCrossFade(
-                  firstChild: Icon(Icons.keyboard_arrow_down),
-                  secondChild: Icon(Icons.keyboard_arrow_up),
-                  crossFadeState: coursePageKey.currentState.showWeek
-                      ? CrossFadeState.showSecond
-                      : CrossFadeState.showFirst,
-                  duration: coursePageKey.currentState.showWeekDuration,
-                ),
-            ],
+                : null,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text(name),
+                if (coursePageKey.currentState != null &&
+                    coursePageKey.currentState.firstLoaded &&
+                    coursePageKey.currentState.hasCourse)
+                  AnimatedCrossFade(
+                    firstChild: Icon(
+                      Icons.keyboard_arrow_down,
+                      size: Constants.suSetSp(28.0),
+                    ),
+                    secondChild: Icon(
+                      Icons.keyboard_arrow_up,
+                      size: Constants.suSetSp(28.0),
+                    ),
+                    crossFadeState: coursePageKey.currentState.showWeek
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
+                    duration: coursePageKey.currentState.showWeekDuration,
+                  ),
+              ],
+            ),
           ),
-        ));
+        );
     }
     return tab;
   }
@@ -335,7 +344,9 @@ class AppCenterPageState extends State<AppCenterPage>
         title: TabBar(
           isScrollable: true,
           indicatorColor: currentThemeColor,
-          indicatorPadding: EdgeInsets.only(bottom: Constants.suSetSp(16.0)),
+          indicatorPadding: EdgeInsets.only(
+            bottom: Constants.suSetSp(16.0),
+          ),
           indicatorSize: TabBarIndicatorSize.label,
           indicatorWeight: Constants.suSetSp(6.0),
           labelColor: Theme.of(context).textTheme.body1.color,

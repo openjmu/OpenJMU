@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/services.dart';
@@ -16,7 +17,11 @@ class ImageViewer extends StatefulWidget {
   final List<ImageBean> pics;
   final bool needsClear;
 
-  ImageViewer(this.index, this.pics, {this.needsClear});
+  const ImageViewer(
+    this.index,
+    this.pics, {
+    this.needsClear,
+  });
 
   @override
   _ImageViewerState createState() => _ImageViewerState();
@@ -24,7 +29,7 @@ class ImageViewer extends StatefulWidget {
 
 class _ImageViewerState extends State<ImageViewer>
     with TickerProviderStateMixin {
-  StreamController<int> rebuild = StreamController<int>.broadcast();
+  final rebuild = StreamController<int>.broadcast();
   int currentIndex;
 
   AnimationController _doubleTapAnimationController;
@@ -33,6 +38,7 @@ class _ImageViewerState extends State<ImageViewer>
   Function _doubleTapListener;
 
   PageController _controller;
+
   @override
   void initState() {
     if (widget.needsClear ?? false) {
@@ -112,7 +118,7 @@ class _ImageViewerState extends State<ImageViewer>
   }
 
   Widget pageBuilder(context, index) {
-    String item = widget.pics[index].imageUrl;
+    final item = widget.pics[index].imageUrl;
     Widget image = Container(
       child: ExtendedImage.network(
         item,
@@ -123,7 +129,7 @@ class _ImageViewerState extends State<ImageViewer>
         initGestureConfigHandler: (ExtendedImageState state) {
           return GestureConfig(
             initialScale: 1.0,
-            minScale: 1.0,
+            minScale: 0.9,
             maxScale: 3.0,
             animationMinScale: 0.5,
             animationMaxScale: 4.0,
@@ -166,17 +172,30 @@ class _ImageViewerState extends State<ImageViewer>
       onLongPress: () {
         showModalBottomSheet(
           context: context,
+          isScrollControlled: true,
+          backgroundColor: Colors.grey[850],
           builder: (_) => Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ListTile(
-                leading: Icon(Icons.account_circle),
-                title: Text("保存图片"),
+                leading: Icon(
+                  Icons.save_alt,
+                  size: Constants.suSetSp(32.0),
+                  color: Colors.white,
+                ),
+                title: Text(
+                  "保存图片",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: Constants.suSetSp(20.0),
+                  ),
+                ),
                 onTap: () {
                   _downloadImage(widget.pics[currentIndex].imageUrl);
                   Navigator.of(context).pop();
                 },
               ),
+              SizedBox(height: Screen.bottomSafeHeight),
             ],
           ),
         );
@@ -186,47 +205,49 @@ class _ImageViewerState extends State<ImageViewer>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => _pop(context, false),
-      child: Scaffold(
-        backgroundColor: Colors.black,
-        body: Stack(
-          children: <Widget>[
-            ExtendedImageGesturePageView.builder(
-              physics: const BouncingScrollPhysics(),
-              controller: _controller,
-              itemCount: widget.pics.length,
-              itemBuilder: pageBuilder,
-              onPageChanged: (int index) {
-                currentIndex = index;
-                rebuild.add(index);
-              },
-              scrollDirection: Axis.horizontal,
-            ),
-            Positioned(
-              top: (MediaQuery.of(context).padding.top ?? 0.0),
-              left: 0.0,
-              right: 0.0,
-              height: kToolbarHeight,
-              child: ViewAppBar(
-                widget.pics,
-                currentIndex,
-                rebuild,
-              ),
-            ),
-            Positioned(
-              left: 0.0,
-              right: 0.0,
-              bottom: kToolbarHeight,
-              child: ImageList(
-                context: context,
+    return Container(
+      color: Colors.black,
+      child: AnnotatedRegion(
+        value: SystemUiOverlayStyle.light,
+        child: WillPopScope(
+          onWillPop: () => _pop(context, false),
+          child: Stack(
+            children: <Widget>[
+              ExtendedImageGesturePageView.builder(
+                physics: const BouncingScrollPhysics(),
                 controller: _controller,
-                reBuild: rebuild,
-                index: currentIndex,
-                pics: widget.pics,
+                itemCount: widget.pics.length,
+                itemBuilder: pageBuilder,
+                onPageChanged: (int index) {
+                  currentIndex = index;
+                  rebuild.add(index);
+                },
+                scrollDirection: Axis.horizontal,
               ),
-            ),
-          ],
+              Positioned(
+                top: 0.0,
+                left: 0.0,
+                right: 0.0,
+                child: ViewAppBar(
+                  widget.pics,
+                  currentIndex,
+                  rebuild,
+                ),
+              ),
+              Positioned(
+                left: 0.0,
+                right: 0.0,
+                bottom: 0.0,
+                child: ImageList(
+                  context: context,
+                  controller: _controller,
+                  reBuild: rebuild,
+                  index: currentIndex,
+                  pics: widget.pics,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -250,52 +271,66 @@ class ImageList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<int>(
-      initialData: index,
-      stream: reBuild.stream,
-      builder: (context, data) => Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          for (int i = 0; i < pics.length; i++)
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              child: Transform.scale(
-                scale: i == data.data ? 1.2 : 1.0,
-                child: Container(
-                  margin: EdgeInsets.symmetric(
-                    horizontal: Constants.suSetSp(5.0),
-                  ),
-                  width: Constants.suSetSp(36.0),
-                  height: Constants.suSetSp(36.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Constants.suSetSp(8.0)),
-                    border: Border.all(
-                      color: i == data.data ? Colors.white : Colors.black,
-                      width: Constants.suSetSp(i == data.data ? 2.0 : 1.0),
-                    ),
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      controller?.animateToPage(
-                        i,
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.fastOutSlowIn,
-                      );
-                    },
-                    child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(Constants.suSetSp(6.0)),
-                      child: CachedNetworkImage(
-                        placeholder: (context, text) => Container(),
-                        imageUrl: pics[i].imageUrl,
-                        fit: BoxFit.cover,
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
+        child: Container(
+          color: Colors.grey[850].withOpacity(0.3),
+          padding: EdgeInsets.only(
+            top: Constants.suSetSp(10.0),
+            bottom: Screen.bottomSafeHeight + Constants.suSetSp(10.0),
+          ),
+          child: StreamBuilder<int>(
+            initialData: index,
+            stream: reBuild.stream,
+            builder: (context, data) => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                for (int i = 0; i < pics.length; i++)
+                  AnimatedContainer(
+                    duration: kTabScrollDuration,
+                    child: Transform.scale(
+                      scale: i == data.data ? 1.3 : 1.0,
+                      child: Container(
+                        margin: EdgeInsets.symmetric(
+                          horizontal: Constants.suSetSp(5.0),
+                        ),
+                        width: Constants.suSetSp(36.0),
+                        height: Constants.suSetSp(36.0),
+                        decoration: BoxDecoration(
+                          borderRadius:
+                              BorderRadius.circular(Constants.suSetSp(8.0)),
+                          border: Border.all(
+                            color: i == data.data ? Colors.white : Colors.black,
+                            width:
+                                Constants.suSetSp(i == data.data ? 3.0 : 2.0),
+                          ),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            controller?.animateToPage(
+                              i,
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.fastOutSlowIn,
+                            );
+                          },
+                          child: ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(Constants.suSetSp(6.0)),
+                            child: CachedNetworkImage(
+                              placeholder: (context, text) => Container(),
+                              imageUrl: pics[i].imageUrl,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
+              ],
             ),
-        ],
+          ),
+        ),
       ),
     );
   }
@@ -305,42 +340,65 @@ class ViewAppBar extends StatelessWidget {
   final List<ImageBean> pics;
   final int index;
   final StreamController<int> reBuild;
-  final TextStyle indicatorStyle = TextStyle(
-    color: Colors.white,
-    fontSize: Constants.suSetSp(20.0),
-  );
 
-  ViewAppBar(this.pics, this.index, this.reBuild);
+  const ViewAppBar(
+    this.pics,
+    this.index,
+    this.reBuild,
+  );
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        BackButton(color: Colors.white),
-        Expanded(
-          child: StreamBuilder<int>(
-            builder: (BuildContext context, data) {
-              return SizedBox(
-                height: Constants.suSetSp(50.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      "${data.data + 1} / ${pics.length}",
-                      style: indicatorStyle,
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+    return ClipRect(
+      child: BackdropFilter(
+        filter: ui.ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+        child: Material(
+          color: Colors.grey[850].withOpacity(0.3),
+          child: Padding(
+            padding: EdgeInsets.only(top: Screen.topSafeHeight),
+            child: Row(
+              children: <Widget>[
+                BackButton(color: Colors.white),
+                Expanded(
+                  child: StreamBuilder<int>(
+                    builder: (BuildContext context, data) {
+                      return SizedBox(
+                        height: Constants.suSetSp(50.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Text(
+                              "${data.data + 1} / ${pics.length}",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: Constants.suSetSp(22.0),
+                                  fontWeight: FontWeight.bold,
+                                  shadows: <Shadow>[
+                                    Shadow(
+                                        color: Colors.black,
+                                        offset: Offset(
+                                          Constants.suSetSp(1.0),
+                                          Constants.suSetSp(1.0),
+                                        ),
+                                        blurRadius: Constants.suSetSp(3.0)),
+                                  ]),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    initialData: index,
+                    stream: reBuild.stream,
+                  ),
                 ),
-              );
-            },
-            initialData: index,
-            stream: reBuild.stream,
+                Container(width: 56.0),
+              ],
+            ),
           ),
         ),
-        Container(width: 56.0),
-      ],
+      ),
     );
   }
 }

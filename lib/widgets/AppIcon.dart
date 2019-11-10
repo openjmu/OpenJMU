@@ -10,7 +10,7 @@ class AppIcon extends StatelessWidget {
   final WebApp app;
   final double size;
 
-  AppIcon({
+  const AppIcon({
     Key key,
     @required this.app,
     this.size = 60.0,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/news/NewsDetailPage.dart';
@@ -30,22 +31,23 @@ class NewsListPageState extends State<NewsListPage>
 
   @override
   void initState() {
-    super.initState();
     getNewsList(isLoadMore: false);
+    super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     _scrollController?.dispose();
+    super.dispose();
   }
 
   Future getNewsList({bool isLoadMore}) async {
     if (!_isLoading) {
       _isLoading = true;
       if (!isLoadMore) lastTimeStamp = 0;
-      String _url =
-          API.newsList(maxTimeStamp: isLoadMore ? lastTimeStamp : null);
+      final _url = API.newsList(
+        maxTimeStamp: isLoadMore ? lastTimeStamp : null,
+      );
       Map<String, dynamic> data = (await NetUtils.getWithHeaderSet(
         _url,
         headers: Constants.header(id: 273),
@@ -53,14 +55,14 @@ class NewsListPageState extends State<NewsListPage>
           .data;
 
       List<News> _newsList = [];
-      List _news = data["data"];
+      final _news = data["data"];
       int _total = int.parse(data['total'].toString());
       int _count = int.parse(data['count'].toString());
       int _lastTimeStamp = int.parse(data['min_ts'].toString());
 
       for (var newsData in _news) {
         if (newsData != null && newsData != "") {
-          _newsList.add(NewsAPI.createNews(newsData));
+          _newsList.add(News.fromJson(newsData));
         }
       }
       if (isLoadMore) {
@@ -69,15 +71,12 @@ class NewsListPageState extends State<NewsListPage>
         newsList = _newsList;
       }
 
-      if (mounted) {
-        setState(() {
-          _showLoading = false;
-          _firstLoadComplete = true;
-          _isLoading = false;
-          _canLoadMore = newsList.length < _total && _count != 0;
-          lastTimeStamp = _lastTimeStamp;
-        });
-      }
+      _showLoading = false;
+      _firstLoadComplete = true;
+      _isLoading = false;
+      _canLoadMore = newsList.length < _total && _count != 0;
+      lastTimeStamp = _lastTimeStamp;
+      if (mounted) setState(() {});
     }
   }
 
@@ -156,7 +155,7 @@ class NewsListPageState extends State<NewsListPage>
                 Icons.remove_red_eye,
                 color: Colors.grey,
                 size: Constants.suSetSp(14.0),
-              )
+              ),
             ],
           ),
         ),
@@ -182,15 +181,20 @@ class NewsListPageState extends State<NewsListPage>
     );
   }
 
-  Widget newsItem(News news) {
+  Widget newsItem(context, News news) {
     return Container(
       height: Constants.suSetSp(96.0),
       padding: EdgeInsets.all(Constants.suSetSp(8.0)),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-            return NewsDetailPage(news: news);
-          }));
+          Navigator.of(context).push(
+            platformPageRoute(
+              context: context,
+              builder: (context) {
+                return NewsDetailPage(news: news);
+              },
+            ),
+          );
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -260,11 +264,15 @@ class NewsListPageState extends State<NewsListPage>
                                 width: Constants.suSetSp(15.0),
                                 height: Constants.suSetSp(15.0),
                                 child: Constants.progressIndicator(
-                                    strokeWidth: 2.0),
+                                  strokeWidth: 2.0,
+                                ),
                               ),
-                              Text("　正在加载",
-                                  style: TextStyle(
-                                      fontSize: Constants.suSetSp(14.0))),
+                              Text(
+                                "　正在加载",
+                                style: TextStyle(
+                                  fontSize: Constants.suSetSp(14.0),
+                                ),
+                              ),
                             ],
                           ),
                         );
@@ -273,15 +281,17 @@ class NewsListPageState extends State<NewsListPage>
                           height: Constants.suSetSp(50.0),
                           color: Theme.of(context).canvasColor,
                           child: Center(
-                            child: Text(Constants.endLineTag,
-                                style: TextStyle(
-                                  fontSize: Constants.suSetSp(14.0),
-                                )),
+                            child: Text(
+                              Constants.endLineTag,
+                              style: TextStyle(
+                                fontSize: Constants.suSetSp(14.0),
+                              ),
+                            ),
                           ),
                         );
                       }
                     } else if (index < newsList.length) {
-                      return newsItem(newsList[index]);
+                      return newsItem(context, newsList[index]);
                     } else {
                       return SizedBox();
                     }
@@ -289,15 +299,11 @@ class NewsListPageState extends State<NewsListPage>
                 ),
         );
       } else {
-        return Center(
-          child: Constants.progressIndicator(),
-        );
+        return Center(child: Constants.progressIndicator());
       }
     } else {
       return Container(
-        child: Center(
-          child: Constants.progressIndicator(),
-        ),
+        child: Center(child: Constants.progressIndicator()),
       );
     }
   }

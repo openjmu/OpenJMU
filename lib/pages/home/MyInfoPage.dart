@@ -62,8 +62,6 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   Color themeColor = ThemeUtils.currentThemeColor;
 
-  TextStyle titleTextStyle = TextStyle(fontSize: Constants.suSetSp(16.0));
-
   bool isLogin = false, isDark = false;
   bool signing = false, signed = false;
 

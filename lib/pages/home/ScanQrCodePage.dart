@@ -59,17 +59,20 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
       appBar: AppBar(
         brightness: Brightness.dark,
         backgroundColor: Colors.transparent,
-        title: Text("扫描二维码",
-            style: Theme.of(context).textTheme.title.copyWith(
-                  fontSize: Constants.suSetSp(21.0),
-                )),
+        title: Text(
+          "扫描二维码",
+          style: Theme.of(context).textTheme.title.copyWith(
+                fontSize: Constants.suSetSp(21.0),
+              ),
+        ),
         centerTitle: true,
       ),
       body: QrcodeReaderView(
-          key: _key,
-          onScan: (String data) {
-            return onScan(context, data);
-          }),
+        key: _key,
+        onScan: (String data) {
+          return onScan(context, data);
+        },
+      ),
     );
   }
 }

@@ -20,12 +20,15 @@ class MaxScaleTextWidget extends StatelessWidget {
   final double max;
   final Widget child;
 
-  const MaxScaleTextWidget({this.max = 1.0, @required this.child});
+  const MaxScaleTextWidget({
+    this.max = 1.0,
+    @required this.child,
+  });
 
   @override
   Widget build(BuildContext context) {
     final data = MediaQuery.of(context);
-    double scale = Math.min(max, data.textScaleFactor);
+    final scale = Math.min(max, data.textScaleFactor);
     return MediaQuery(
       data: data.copyWith(textScaleFactor: scale),
       child: child,

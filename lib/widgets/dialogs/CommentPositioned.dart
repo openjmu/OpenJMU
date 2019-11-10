@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/widgets/RoundedCheckBox.dart';
 import 'package:OpenJMU/widgets/ToggleButton.dart';
 import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
 
@@ -70,13 +71,15 @@ class CommentPositionedState extends State<CommentPositioned> {
   Future<void> _addImage() async {
     final file = await ImagePicker.pickImage(source: ImageSource.gallery);
     if (file == null) return;
-    setState(() {
-      _image = file;
-    });
+
+    _image = file;
+    if (mounted) setState(() {});
   }
 
-  FormData createForm(File file) => FormData.from(
-      {"image": UploadFileInfo(file, basename(file.path)), "image_type": 0});
+  FormData createForm(File file) => FormData.from({
+        "image": UploadFileInfo(file, basename(file.path)),
+        "image_type": 0,
+      });
 
   Future getImageRequest(FormData formData) async =>
       NetUtils.postWithCookieAndHeaderSet(
@@ -102,11 +105,15 @@ class CommentPositionedState extends State<CommentPositioned> {
           borderSide: BorderSide(color: ThemeUtils.currentThemeColor),
         ),
         hintText: _hintText,
+        hintStyle: TextStyle(
+          fontSize: Constants.suSetSp(20.0),
+          textBaseline: TextBaseline.alphabetic,
+        ),
         suffixIcon: _image != null
             ? SizedBox(
-                width: Constants.suSetSp(60.0),
+                width: Constants.suSetSp(70.0),
                 child: Container(
-                  margin: EdgeInsets.only(right: Constants.suSetSp(12.0)),
+                  margin: EdgeInsets.only(right: Constants.suSetSp(14.0)),
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: FileImage(_image),
@@ -118,14 +125,14 @@ class CommentPositionedState extends State<CommentPositioned> {
             : null,
       ),
       enabled: !_commenting,
-      style: Theme.of(context)
-          .textTheme
-          .body1
-          .copyWith(fontSize: Constants.suSetSp(18.0)),
+      style: Theme.of(context).textTheme.body1.copyWith(
+            fontSize: Constants.suSetSp(20.0),
+            textBaseline: TextBaseline.alphabetic,
+          ),
       cursorColor: ThemeUtils.currentThemeColor,
       autofocus: true,
       maxLines: 3,
-      maxLength: 140,
+      maxLength: 233,
     );
   }
 
@@ -156,8 +163,6 @@ class CommentPositionedState extends State<CommentPositioned> {
         content += "\n|$_imageID|";
       }
 
-      ///
-
       CommentAPI.postComment(
         content,
         widget.post.id,
@@ -169,7 +174,7 @@ class CommentPositionedState extends State<CommentPositioned> {
           _commenting = false;
         });
         Navigator.of(context).pop();
-        Instances.eventBus.fire(new PostCommentedEvent(widget.post.id));
+        Instances.eventBus.fire(PostCommentedEvent(widget.post.id));
       });
     }
   }
@@ -251,7 +256,7 @@ class CommentPositionedState extends State<CommentPositioned> {
       height: Constants.suSetSp(40.0),
       child: Row(
         children: <Widget>[
-          Checkbox(
+          RoundedCheckbox(
             activeColor: ThemeUtils.currentThemeColor,
             value: forwardAtTheMeanTime,
             onChanged: (value) {
@@ -359,37 +364,50 @@ class CommentPositionedState extends State<CommentPositioned> {
 
   @override
   Widget build(BuildContext context) {
-    double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     if (keyboardHeight > 0) {
       emoticonPadActive = false;
     }
     _keyboardHeight = max(keyboardHeight, _keyboardHeight ?? 0);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(
-            bottom: !emoticonPadActive
-                ? MediaQuery.of(context).padding.bottom
-                : 0.0,
-          ),
-          child: Container(
-            padding: EdgeInsets.all(Constants.suSetSp(10.0)),
-            color: Theme.of(context).cardColor,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                textField(context),
-                toolbar(context),
-              ],
+    return Material(
+      color: Colors.black38,
+      child: Column(
+        children: <Widget>[
+          Expanded(
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                Navigator.of(context).pop();
+              },
             ),
           ),
-        ),
-        emoticonPad(context),
-      ],
+          Container(
+            color: Theme.of(context).cardColor,
+            padding: EdgeInsets.only(
+              bottom: !emoticonPadActive
+                  ? MediaQuery.of(context).padding.bottom
+                  : 0.0,
+            ),
+            child: Padding(
+              padding: EdgeInsets.all(Constants.suSetSp(10.0)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  textField(context),
+                  toolbar(context),
+                ],
+              ),
+            ),
+          ),
+          emoticonPad(context),
+          SizedBox(
+            height: MediaQuery.of(context).viewInsets.bottom,
+          ),
+        ],
+      ),
     );
   }
 }

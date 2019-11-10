@@ -259,7 +259,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
               } else if (text.startsWith("@")) {
                 UserPage.jump(data['uid']);
               } else if (text.startsWith(API.wbHost)) {
-                CommonWebPage.jump(context, text, "网页链接");
+                CommonWebPage.jump(text, "网页链接");
               }
             },
             specialTextSpanBuilder: StackSpecialTextSpanBuilder(),

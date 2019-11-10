@@ -1,7 +1,7 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.6.1+102
+version: 0.6.1+103
 
 environment:
   sdk: ">=2.5.0 <3.0.0"
@@ -21,6 +21,7 @@ dependencies:
   device_info: ^0.4.1+1
   dio: 2.1.16
   dragablegridview_flutter: ^0.2.5
+  draggable_container: ^0.1.7
   event_bus: 1.1.0
   extended_image: ^0.6.5
   extended_tabs: ^0.2.2
@@ -44,7 +45,7 @@ dependencies:
   image_editor: ^0.1.4
   image_downloader: ^0.19.1
   image_gallery_saver: 1.2.2
-  image_picker: ^0.6.1+10
+  image_picker: ^0.6.1+11
   intl: any
   isolate: 2.0.2
   like_button: ^0.1.9

@@ -12,15 +12,20 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   final List<List<Map<String, dynamic>>> pageSection = [
     [
-//            {
-//                "name": "示例设置项1",
-//                "description": "示例描述",
-//                "onTap": action(),
-//            },
+//      {
+//        "name": "示例设置项1",
+//        "description": "示例描述",
+//        "onTap": action(),
+//      },
       {
         "icon": "nightmode",
         "name": "夜间模式",
         "description": "减轻眩光，提升夜间使用体验",
+      },
+      {
+        "icon": "nightmode",
+        "name": "A屏黑",
+        "description": "使用AMOLED黑主题作为夜间模式",
       },
       {
         "icon": "theme",
@@ -49,7 +54,7 @@ class _SettingsPageState extends State<SettingsPage> {
   ];
   List<List<Widget>> settingsWidget;
 
-  Widget settingItem(context, index, sectionIndex) {
+  Widget settingItem({context, int index, int sectionIndex}) {
     final Map<String, dynamic> page = pageSection[sectionIndex][index];
     settingsWidget = [
       [
@@ -60,6 +65,15 @@ class _SettingsPageState extends State<SettingsPage> {
             ThemeUtils.isDark = value;
             DataUtils.setBrightnessDark(value);
             Instances.eventBus.fire(ChangeBrightnessEvent(value));
+          },
+        ),
+        PlatformSwitch(
+          activeColor: ThemeUtils.currentThemeColor,
+          value: ThemeUtils.isAMOLEDDark,
+          onChanged: (bool value) {
+            ThemeUtils.isAMOLEDDark = value;
+            DataUtils.setAMOLEDDark(value);
+            Instances.eventBus.fire(ChangeAMOLEDDarkEvent(value));
           },
         ),
         null,
@@ -86,7 +100,9 @@ class _SettingsPageState extends State<SettingsPage> {
         child: Row(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(right: Constants.suSetSp(12.0)),
+              margin: EdgeInsets.only(
+                right: Constants.suSetSp(12.0),
+              ),
               child: SvgPicture.asset(
                 "assets/icons/${page['icon']}-line.svg",
                 color: Theme.of(context).iconTheme.color,
@@ -135,8 +151,14 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  Widget pageSelectionItem(
-      context, sectionIndex, page, pageIndex, index, selectedIndex) {
+  Widget pageSelectionItem({
+    context,
+    sectionIndex,
+    page,
+    pageIndex,
+    index,
+    selectedIndex,
+  }) {
     return GestureDetector(
       child: DecoratedBox(
         decoration: BoxDecoration(
@@ -200,8 +222,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: pageSection[sectionIndex].length,
-                itemBuilder: (context, index) =>
-                    settingItem(context, index, sectionIndex),
+                itemBuilder: (context, index) => settingItem(
+                  context: context,
+                  index: index,
+                  sectionIndex: sectionIndex,
+                ),
               ),
             ),
           ],

@@ -35,8 +35,9 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
     }
     RenderRepaintBoundary boundary =
         previewContainer.currentContext.findRenderObject();
-    ui.Image image =
-        await boundary.toImage(pixelRatio: ui.window.devicePixelRatio);
+    ui.Image image = await boundary.toImage(
+      pixelRatio: ui.window.devicePixelRatio,
+    );
     ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     final result =
         await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
@@ -56,7 +57,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
 
   @override
   Widget build(BuildContext context) {
-    double avatarSize = 64.0;
+    final avatarSize = 64.0;
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
       appBar: AppBar(
@@ -160,7 +161,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                                 offset: Offset(0.0, 3.0),
                                 blurRadius: 5.0,
                                 color: Theme.of(context).iconTheme.color,
-                              )
+                              ),
                             ],
                             image: DecorationImage(
                               image: AssetImage("images/logo_1024.png"),

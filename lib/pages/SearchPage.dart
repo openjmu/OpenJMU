@@ -340,12 +340,13 @@ class SearchPageState extends State<SearchPage>
                           if (_canLoadMore) {
                             return SizedBox(
                               height: Constants.suSetSp(50.0),
-                              child:
-                              SizedBox(
-                                width: Constants.suSetSp(20.0),
-                                height: Constants.suSetSp(20.0),
-                                child: Constants.progressIndicator(
-                                  strokeWidth: 3.0,
+                              child: Center(
+                                child: SizedBox(
+                                  width: Constants.suSetSp(20.0),
+                                  height: Constants.suSetSp(20.0),
+                                  child: Constants.progressIndicator(
+                                    strokeWidth: 3.0,
+                                  ),
                                 ),
                               ),
                             );

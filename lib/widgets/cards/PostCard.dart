@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -59,22 +61,15 @@ class _PostCardState extends State<PostCard> {
   void initState() {
     isShield = widget.post.content != "此微博已经被屏蔽" ? false : true;
     if (widget.isDetail != null && widget.isDetail == true) {
-      setState(() {
-        isDetail = true;
-      });
+      isDetail = true;
     } else {
-      setState(() {
-        isDetail = false;
-      });
+      isDetail = false;
     }
+    if (mounted) setState(() {});
 
     Instances.eventBus
       ..on<ChangeBrightnessEvent>().listen((event) {
-        if (event.isDarkState) {
-          isDark = true;
-        } else {
-          isDark = false;
-        }
+        isDark = event.isDarkState;
         if (mounted) setState(() {});
       })
       ..on<ForwardInPostUpdatedEvent>().listen((event) {
@@ -100,25 +95,7 @@ class _PostCardState extends State<PostCard> {
     super.dispose();
   }
 
-  Widget getPostAvatar(context, post) {
-    return SizedBox(
-      width: Constants.suSetSp(48.0),
-      height: Constants.suSetSp(48.0),
-      child: GestureDetector(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(Constants.suSetSp(24.0)),
-          child: FadeInImage(
-            fadeInDuration: const Duration(milliseconds: 100),
-            placeholder: AssetImage("assets/avatar_placeholder.png"),
-            image: UserAPI.getAvatarProvider(uid: post.uid),
-          ),
-        ),
-        onTap: () => UserPage.jump(widget.post.uid),
-      ),
-    );
-  }
-
-  Text getPostNickname(context, post) => Text(
+  Widget getPostNickname(context, post) => Text(
         post.nickname ?? post.uid,
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
@@ -127,7 +104,7 @@ class _PostCardState extends State<PostCard> {
         textAlign: TextAlign.left,
       );
 
-  Row getPostInfo(Post post) {
+  Widget getPostInfo(Post post) {
     String _postTime = post.postTime;
     DateTime now = DateTime.now();
     if (int.parse(_postTime.substring(0, 4)) == now.year) {
@@ -247,8 +224,8 @@ class _PostCardState extends State<PostCard> {
     if (data != null) {
       List<Widget> imagesWidget = [];
       for (int index = 0; index < data.length; index++) {
-        int imageID = int.parse(data[index]['id'].toString());
-        String imageUrl = data[index]['image_middle'];
+        final imageID = int.parse(data[index]['id'].toString());
+        final imageUrl = data[index]['image_middle'];
         Widget _exImage = ExtendedImage.network(
           imageUrl,
           fit: BoxFit.cover,
@@ -262,52 +239,64 @@ class _PostCardState extends State<PostCard> {
                 loader = Center(child: Constants.progressIndicator());
                 break;
               case LoadState.completed:
+                final info = state.extendedImageInfo;
+                if (info != null) {
+                  loader = scaledImage(
+                    image: info.image,
+                    length: data.length,
+                    num300: Constants.suSetSp(200),
+                    num400: Constants.suSetSp(400),
+                  );
+                }
+                break;
               case LoadState.failed:
                 break;
             }
             return loader;
           },
         );
-        imagesWidget.add(GestureDetector(
-          onTap: () {
-            Navigator.of(context).push(
-              platformPageRoute(
-                context: context,
-                builder: (_) => ImageViewer(
-                  index,
-                  data.map<ImageBean>((f) {
-                    return ImageBean(
-                      id: imageID,
-                      imageUrl: f['image_original'],
-                      imageThumbUrl: f['image_thumb'],
-                      postId: widget.post.id,
-                    );
-                  }).toList(),
+        imagesWidget.add(
+          GestureDetector(
+            onTap: () {
+              Navigator.of(context).push(
+                platformPageRoute(
+                  context: context,
+                  builder: (_) => ImageViewer(
+                    index,
+                    data.map<ImageBean>((f) {
+                      return ImageBean(
+                        id: imageID,
+                        imageUrl: f['image_original'],
+                        imageThumbUrl: f['image_thumb'],
+                        postId: widget.post.id,
+                      );
+                    }).toList(),
+                  ),
                 ),
-              ),
-            );
-          },
-          child: _exImage,
-        ));
+              );
+            },
+            child: _exImage,
+          ),
+        );
       }
-      int itemCount = 3;
       Widget _image;
       if (data.length == 1) {
         _image = Container(
-          width: Screen.width,
-          padding: EdgeInsets.only(top: Constants.suSetSp(4.0)),
-          child: imagesWidget[0],
+          padding: EdgeInsets.only(
+            top: Constants.suSetSp(4.0),
+          ),
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: imagesWidget[0],
+          ),
         );
-      } else if (data.length < 3) {
-        itemCount = data.length;
-      }
-      if (data.length > 1) {
+      } else if (data.length > 1) {
         _image = GridView.count(
           padding: EdgeInsets.zero,
           shrinkWrap: true,
           primary: false,
           mainAxisSpacing: Constants.suSetSp(10.0),
-          crossAxisCount: itemCount,
+          crossAxisCount: 3,
           crossAxisSpacing: Constants.suSetSp(10.0),
           children: imagesWidget,
         );
@@ -331,11 +320,10 @@ class _PostCardState extends State<PostCard> {
           Expanded(
             child: FlatButton.icon(
               onPressed: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (_) => ForwardPositioned(widget.post),
-                  isScrollControlled: true,
-                  backgroundColor: Theme.of(context).primaryColor,
+                Constants.navigatorKey.currentState.push(
+                  TransparentRoute(
+                    builder: (_) => ForwardPositioned(widget.post),
+                  ),
                 );
               },
               icon: SvgPicture.asset(
@@ -465,7 +453,7 @@ class _PostCardState extends State<PostCard> {
               } else if (text.startsWith("@")) {
                 UserPage.jump(data['uid']);
               } else if (text.startsWith(API.wbHost)) {
-                CommonWebPage.jump(context, text, "网页链接");
+                CommonWebPage.jump(text, "网页链接");
               }
             },
             maxLines: widget.isDetail ?? false ? null : 8,
@@ -488,7 +476,7 @@ class _PostCardState extends State<PostCard> {
       );
 
   Future<bool> onLikeButtonTap(bool isLiked) {
-    final Completer<bool> completer = new Completer<bool>();
+    final Completer<bool> completer = Completer<bool>();
     int id = widget.post.id;
 
     widget.post.isLike = !widget.post.isLike;
@@ -504,7 +492,7 @@ class _PostCardState extends State<PostCard> {
     return completer.future;
   }
 
-  Widget deleteButton() => IconButton(
+  Widget get deleteButton => IconButton(
         icon: Icon(
           Icons.delete,
           color: Colors.grey,
@@ -513,7 +501,7 @@ class _PostCardState extends State<PostCard> {
         onPressed: confirmDelete,
       );
 
-  Widget postActionButton(context) => IconButton(
+  Widget get postActionButton => IconButton(
         icon: Icon(
           Icons.expand_more,
           color: Colors.grey,
@@ -738,6 +726,7 @@ class _PostCardState extends State<PostCard> {
                         );
                       },
                     ),
+                    SizedBox(height: Screen.bottomSafeHeight),
                   ],
                 ),
               );
@@ -807,7 +796,7 @@ class _PostCardState extends State<PostCard> {
                       ),
                       child: Row(
                         children: <Widget>[
-                          getPostAvatar(context, post),
+                          UserAPI.getAvatar(uid: widget.post.uid),
                           Expanded(
                             child: Padding(
                               padding: EdgeInsets.symmetric(
@@ -824,9 +813,9 @@ class _PostCardState extends State<PostCard> {
                               ),
                             ),
                           ),
-                          ((post.uid == UserAPI.currentUser.uid) && isDetail)
-                              ? deleteButton()
-                              : postActionButton(context),
+                          post.uid == UserAPI.currentUser.uid
+                              ? deleteButton
+                              : postActionButton,
                         ],
                       ),
                     ),
@@ -842,5 +831,114 @@ class _PostCardState extends State<PostCard> {
         ),
       ),
     );
+  }
+
+  Widget scaledImage({
+    @required ui.Image image,
+    @required int length,
+    @required double num300,
+    @required double num400,
+  }) {
+    final ratio = image.height / image.width;
+    Widget imageWidget;
+    if (length == 1) {
+      if (ratio >= 4 / 3) {
+        imageWidget = ExtendedRawImage(
+          image: image,
+          height: num400,
+          fit: BoxFit.contain,
+        );
+      } else if (4 / 3 > ratio && ratio > 3 / 4) {
+        final maxValue = math.max(image.width, image.height);
+        final width = num400 * image.width / maxValue;
+        imageWidget = ExtendedRawImage(
+          width: math.min(width / 2, image.width.toDouble()),
+          image: image,
+          fit: BoxFit.contain,
+        );
+      } else if (ratio <= 3 / 4) {
+        imageWidget = ExtendedRawImage(
+          image: image,
+          width: math.min(num400, image.width.toDouble()),
+          fit: BoxFit.contain,
+        );
+      }
+    } else {
+      imageWidget = ExtendedRawImage(
+        image: image,
+        fit: BoxFit.cover,
+      );
+    }
+    if (ratio >= 4) {
+      imageWidget = Container(
+        width: num300,
+        height: num400,
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              top: 0.0,
+              right: 0.0,
+              left: 0.0,
+              bottom: 0.0,
+              child: imageWidget,
+            ),
+            Positioned(
+              bottom: 0.0,
+              right: 0.0,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Constants.suSetSp(6.0),
+                  vertical: Constants.suSetSp(2.0),
+                ),
+                color: ThemeUtils.currentThemeColor.withOpacity(0.7),
+                child: Text(
+                  "长图",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: Constants.suSetSp(13.0),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    if (ratio <= 1 / 4) {
+      imageWidget = SizedBox(
+        width: num400,
+        height: num300,
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              top: 0.0,
+              right: 0.0,
+              left: 0.0,
+              bottom: 0.0,
+              child: imageWidget,
+            ),
+            Positioned(
+              bottom: 0.0,
+              right: 0.0,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Constants.suSetSp(6.0),
+                  vertical: Constants.suSetSp(2.0),
+                ),
+                color: ThemeUtils.currentThemeColor.withOpacity(0.7),
+                child: Text(
+                  "长图",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: Constants.suSetSp(13.0),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return imageWidget ?? SizedBox.shrink();
   }
 }

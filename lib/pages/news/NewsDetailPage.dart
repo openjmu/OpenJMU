@@ -21,18 +21,14 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
 
   @override
   void initState() {
-    super.initState();
     getNewsContent();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+    super.initState();
   }
 
   void getNewsContent() async {
-    Map<String, dynamic> data =
-        (await NewsAPI.getNewsContent(newsId: widget.news.id)).data;
+    Map<String, dynamic> data = (await NewsAPI.getNewsContent(
+      newsId: widget.news.id,
+    )).data;
     pageContent = """<!DOCTYPE html>
                 <html>
                     <head>

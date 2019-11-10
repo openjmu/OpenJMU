@@ -58,7 +58,7 @@ class UserAPI {
     int t,
   }) {
     return CachedNetworkImageProvider(
-      "${API.userAvatarInSecure}"
+      "${API.userAvatar}"
       "?uid=${uid ?? currentUser.uid}"
       "&_t=${t ?? avatarLastModified}"
       "&size=f152",
@@ -68,9 +68,17 @@ class UserAPI {
 
   static void updateAvatarProvider() {
     CacheUtils.remove(
-        "${API.userAvatarInSecure}?uid=${currentUser.uid}&size=f152&_t=$avatarLastModified");
+      "${API.userAvatar}"
+      "?uid=${currentUser.uid}"
+      "&size=f152"
+      "&_t=$avatarLastModified",
+    );
     CacheUtils.remove(
-        "${API.userAvatarInSecure}?uid=${currentUser.uid}&size=f640&_t=$avatarLastModified");
+      "${API.userAvatar}"
+      "?uid=${currentUser.uid}"
+      "&size=f640"
+      "&_t=$avatarLastModified",
+    );
     avatarLastModified = DateTime.now().millisecondsSinceEpoch;
   }
 
@@ -78,8 +86,10 @@ class UserAPI {
     if (uid == null) {
       return currentUser;
     } else {
-      return NetUtils.getWithCookieAndHeaderSet(API.userInfo,
-          data: {'uid': uid});
+      return NetUtils.getWithCookieAndHeaderSet(
+        API.userInfo,
+        data: {'uid': uid},
+      );
     }
   }
 
@@ -93,7 +103,10 @@ class UserAPI {
   }
 
   static Future getTags(int uid) {
-    return NetUtils.getWithCookieAndHeaderSet(API.userTags, data: {"uid": uid});
+    return NetUtils.getWithCookieAndHeaderSet(
+      API.userTags,
+      data: {"uid": uid},
+    );
   }
 
   static Future getFans(int uid) {
@@ -106,12 +119,14 @@ class UserAPI {
 
   static Future getFansList(int uid, int page) {
     return NetUtils.getWithCookieAndHeaderSet(
-        "${API.userFans}$uid/page/$page/page_size/20");
+      "${API.userFans}$uid/page/$page/page_size/20",
+    );
   }
 
   static Future getIdolsList(int uid, int page) {
     return NetUtils.getWithCookieAndHeaderSet(
-        "${API.userIdols}$uid/page/$page/page_size/20");
+      "${API.userIdols}$uid/page/$page/page_size/20",
+    );
   }
 
   static Future getFansAndFollowingsCount(int uid) {
@@ -121,8 +136,10 @@ class UserAPI {
   static Future follow(int uid) async {
     NetUtils.postWithCookieAndHeaderSet("${API.userRequestFollow}$uid")
         .then((response) {
-      return NetUtils.postWithCookieAndHeaderSet(API.userFollowAdd,
-          data: {"fid": uid, "tagid": 0});
+      return NetUtils.postWithCookieAndHeaderSet(
+        API.userFollowAdd,
+        data: {"fid": uid, "tagid": 0},
+      );
     }).catchError((e) {
       debugPrint(e.toString());
       showCenterErrorShortToast("关注失败，${jsonDecode(e.response.data)['msg']}");
@@ -132,8 +149,10 @@ class UserAPI {
   static Future unFollow(int uid) async {
     NetUtils.deleteWithCookieAndHeaderSet("${API.userRequestFollow}$uid")
         .then((response) {
-      return NetUtils.postWithCookieAndHeaderSet(API.userFollowDel,
-          data: {"fid": uid});
+      return NetUtils.postWithCookieAndHeaderSet(
+        API.userFollowDel,
+        data: {"fid": uid},
+      );
     }).catchError((e) {
       debugPrint(e.toString());
       showCenterErrorShortToast("取消关注失败，${jsonDecode(e.response.data)['msg']}");
@@ -141,21 +160,23 @@ class UserAPI {
   }
 
   static Future setSignature(content) async {
-    return NetUtils.postWithCookieAndHeaderSet(API.userSignature,
-        data: {"signature": content});
+    return NetUtils.postWithCookieAndHeaderSet(
+      API.userSignature,
+      data: {"signature": content},
+    );
   }
 
   static Future<Map<String, dynamic>> searchUser(name) async {
     Map<String, dynamic> users = (await NetUtils.getWithCookieSet(
       API.searchUser,
       data: {"keyword": name},
-    ))
-        .data;
-    if (users['total'] == null)
+    )).data;
+    if (users['total'] == null) {
       users = {
         "total": 1,
         "data": [users]
       };
+    }
     return users;
   }
 

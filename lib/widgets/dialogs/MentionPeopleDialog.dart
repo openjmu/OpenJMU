@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
@@ -9,18 +8,17 @@ class MentionPeopleDialog extends StatefulWidget {
 }
 
 class EditSignatureDialogState extends State<MentionPeopleDialog> {
-  final TextEditingController _textEditingController = TextEditingController();
+  final _textEditingController = TextEditingController();
   String query = "";
   List<User> users = [];
 
-  bool loading = false, loaded = false;
+  bool loading = false;
 
   @override
   void initState() {
     _textEditingController.addListener(() {
-      setState(() {
-        query = _textEditingController.text;
-      });
+      query = _textEditingController.text;
+      if (mounted) setState(() {});
     });
     super.initState();
   }
@@ -32,9 +30,6 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
   }
 
   void requestSearch() {
-    if (!loaded) {
-      loaded = true;
-    }
     loading = true;
     if (mounted) setState(() {});
     UserAPI.searchUser(query).then((response) {
@@ -64,11 +59,8 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                   Container(
                     decoration: BoxDecoration(
                       color: Theme.of(context).canvasColor,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(
-                          Constants.suSetSp(12.0),
-                        ),
-                      ),
+                      borderRadius:
+                          BorderRadius.circular(Constants.suSetSp(12.0)),
                     ),
                     width: MediaQuery.of(context).size.width -
                         Constants.suSetSp(100),
@@ -80,54 +72,79 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                       children: <Widget>[
                         Center(
                           child: Text(
-                            "请输入要@的姓名",
+                            "提到用户",
                             style: Theme.of(context).textTheme.title.copyWith(
-                                  fontSize: Constants.suSetSp(21.0),
+                                  fontSize: Constants.suSetSp(22.0),
                                 ),
                           ),
                         ),
-                        Padding(
-                          padding: EdgeInsets.all(Constants.suSetSp(20.0)),
-                          child: TextField(
-                            autofocus: true,
-                            style: Theme.of(context).textTheme.body1.copyWith(
-                                  fontSize: Constants.suSetSp(18.0),
-                                ),
-                            controller: _textEditingController,
-                            cursorColor: ThemeUtils.currentThemeColor,
-                            decoration: InputDecoration(
-                              border: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey[700],
-                                ),
-                              ),
-                              disabledBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey[500],
-                                ),
-                              ),
-                              focusedBorder: UnderlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey[850],
-                                ),
-                              ),
-                              contentPadding: EdgeInsets.all(
-                                Constants.suSetSp(10.0),
-                              ),
-                              suffixIcon: GestureDetector(
-                                onTap: () {
-                                  if (query.length > 0 && !loading) {
-                                    requestSearch();
-                                  }
-                                },
-                                child: Icon(
-                                  Icons.search,
-                                  color:
-                                      Theme.of(context).textTheme.title.color,
-                                ),
+                        Container(
+                          height: Constants.suSetSp(40.0),
+                          margin: EdgeInsets.symmetric(
+                            horizontal: Constants.suSetSp(20.0),
+                            vertical: Constants.suSetSp(20.0),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: Constants.suSetSp(8.0),
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              bottom: BorderSide(
+                                color: ThemeUtils.currentThemeColor,
                               ),
                             ),
-                            maxLength: 30,
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                child: TextField(
+                                  autofocus: true,
+                                  controller: _textEditingController,
+                                  cursorColor: ThemeUtils.currentThemeColor,
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    contentPadding: EdgeInsets.zero,
+                                    hintText: "请输入名字进行搜索",
+                                    hintStyle: TextStyle(
+                                      textBaseline: TextBaseline.alphabetic,
+                                    ),
+                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .body1
+                                      .copyWith(
+                                        fontSize: Constants.suSetSp(22.0),
+                                        textBaseline: TextBaseline.alphabetic,
+                                      ),
+                                  scrollPadding: EdgeInsets.zero,
+                                  maxLines: 1,
+                                  onChanged: (String value) {
+                                    if (value.length + 1 == 30) return null;
+                                  },
+                                ),
+                              ),
+                              !loading
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        if (query.length > 0 && !loading) {
+                                          requestSearch();
+                                        }
+                                      },
+                                      child: Icon(
+                                        Icons.search,
+                                        size: Constants.suSetSp(28.0),
+                                        color: Theme.of(context)
+                                            .textTheme
+                                            .title
+                                            .color,
+                                      ),
+                                    )
+                                  : SizedBox(
+                                      width: Constants.suSetSp(28.0),
+                                      height: Constants.suSetSp(28.0),
+                                      child: Constants.progressIndicator(),
+                                    ),
+                            ],
                           ),
                         ),
                         users.length == 0
@@ -217,7 +234,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
             ),
           ),
           SizedBox(
-            height: MediaQuery.of(context).viewInsets.bottom ?? 0,
+            height: MediaQuery.of(context).viewInsets.bottom,
           )
         ],
       ),

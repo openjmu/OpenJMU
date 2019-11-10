@@ -89,7 +89,7 @@ class _ScorePageState extends State<ScorePage>
     if (!socketInitialized) {
       try {
         if (SocketUtils.mStream == null) {
-          await SocketUtils.initSocket(API.scoreSocket);
+          await SocketUtils.initSocket(SocketConfig(API.openjmuHost, 4000));
           socketInitialized = true;
         }
         scoresSubscription =

@@ -4,12 +4,12 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class MessagePage extends StatefulWidget {
   @override

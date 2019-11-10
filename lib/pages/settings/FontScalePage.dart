@@ -63,10 +63,8 @@ class _FontScalePageState extends State<FontScalePage> {
                         Text(
                           "标准",
                           style: TextStyle(
-                            fontSize: Constants.suSetSp(
-                              18,
-                              scale: (scaleRange[0] + scaleRange[1]) / 2,
-                            ),
+                            fontSize: Constants.suSetSp(18,
+                                scale: (scaleRange[0] + scaleRange[1]) / 2),
                           ),
                         ),
                         Text(

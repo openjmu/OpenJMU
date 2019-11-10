@@ -24,6 +24,14 @@ void showCenterShortToast(String text) {
   );
 }
 
+void showErrorShortToast(String text) {
+  Fluttertoast.showToast(
+    msg: text,
+    backgroundColor: ThemeUtils.defaultColor,
+    toastLength: Toast.LENGTH_SHORT,
+  );
+}
+
 void showCenterErrorShortToast(String text) {
   Fluttertoast.showToast(
     msg: text,

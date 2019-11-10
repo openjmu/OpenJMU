@@ -14,7 +14,7 @@ class InAppBrowserPage extends StatefulWidget {
   final bool withScaffold;
   final bool keepAlive;
 
-  InAppBrowserPage({
+  const InAppBrowserPage({
     Key key,
     @required this.url,
     @required this.title,
@@ -31,12 +31,10 @@ class InAppBrowserPage extends StatefulWidget {
   static void open(BuildContext context, String url, String title) {
     Navigator.of(context).push(platformPageRoute(
       context: context,
-      builder: (context) {
-        return InAppBrowserPage(
-          url: url,
-          title: title,
-        );
-      },
+      builder: (context) => InAppBrowserPage(
+        url: url,
+        title: title,
+      ),
     ));
   }
 }

@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -30,12 +30,9 @@ class SplashState extends State<SplashPage> {
 
   @override
   void initState() {
-    super.initState();
     Future.delayed(const Duration(seconds: 5), () {
-      if (this.mounted)
-        setState(() {
-          showLoading = true;
-        });
+      showLoading = true;
+      if (this.mounted) setState(() {});
     });
     checkConnectivity().then((ConnectivityResult result) {
       if (result != ConnectivityResult.none) {
@@ -49,29 +46,21 @@ class SplashState extends State<SplashPage> {
       ..on<TicketGotEvent>().listen((event) async {
         debugPrint("Ticket Got.");
         if (!event.isWizard) {}
+        this.isUserLogin = true;
         if (this.mounted) {
-          setState(() {
-            this.isUserLogin = true;
-          });
+          setState(() {});
           await navigate();
         }
       })
       ..on<TicketFailedEvent>().listen((event) async {
         debugPrint("Ticket Failed.");
+        this.isUserLogin = false;
         if (this.mounted) {
-          setState(() {
-            this.isUserLogin = false;
-          });
+          setState(() {});
           await navigate();
         }
       });
-  }
-
-  @override
-  void didChangeDependencies() {
-    ThemeUtils.setDark(true);
-    ScreenUtil.instance = ScreenUtil.getInstance()..init(context);
-    super.didChangeDependencies();
+    super.initState();
   }
 
   Future<ConnectivityResult> checkConnectivity() async {
@@ -123,9 +112,7 @@ class SplashState extends State<SplashPage> {
           Constants.navigatorKey.currentState.pushAndRemoveUntil(
               PageRouteBuilder(
                 transitionDuration: const Duration(milliseconds: 1000),
-                pageBuilder: (BuildContext context, Animation animation,
-                        Animation secondaryAnimation) =>
-                    FadeTransition(
+                pageBuilder: (_, animation, __) => FadeTransition(
                   opacity: animation,
                   child: LoginPage(),
                 ),
@@ -148,7 +135,7 @@ class SplashState extends State<SplashPage> {
     });
   }
 
-  Widget logo() => Container(
+  Widget get logo => Container(
         margin: EdgeInsets.all(Constants.suSetSp(30.0)),
         child: Hero(
           tag: "Logo",
@@ -165,10 +152,14 @@ class SplashState extends State<SplashPage> {
           Expanded(
             child: Center(
               child: Container(
-                margin: EdgeInsets.only(bottom: Constants.suSetSp(10.0)),
+                margin: EdgeInsets.only(
+                  bottom: Constants.suSetSp(10.0),
+                ),
                 width: Constants.suSetSp(28.0),
                 height: Constants.suSetSp(28.0),
-                child: Constants.progressIndicator(color: Colors.white),
+                child: Constants.progressIndicator(
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
@@ -213,35 +204,40 @@ class SplashState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: ThemeUtils.currentThemeColor,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            logo(),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: EdgeInsets.only(
-                top: Constants.suSetSp(
-                    showLoading && isOnline != null ? 20.0 : 0.0),
+    return AnnotatedRegion(
+      value: SystemUiOverlayStyle.light,
+      child: Scaffold(
+        backgroundColor: ThemeUtils.currentThemeColor,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              logo,
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                margin: EdgeInsets.only(
+                  top: Constants.suSetSp(
+                    showLoading && isOnline != null ? 20.0 : 0.0,
+                  ),
+                ),
+                height: Constants.suSetSp(
+                  showLoading && isOnline != null ? 80.0 : 0.0,
+                ),
+                child: Center(
+                  child: showLoading && isOnline != null
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Expanded(
+                              child: isOnline ? loginWidget : warningWidget,
+                            ),
+                          ],
+                        )
+                      : null,
+                ),
               ),
-              height: Constants.suSetSp(
-                  showLoading && isOnline != null ? 80.0 : 0.0),
-              child: Center(
-                child: showLoading && isOnline != null
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Expanded(
-                            child: isOnline ? loginWidget : warningWidget,
-                          )
-                        ],
-                      )
-                    : null,
-              ),
-            )
-          ],
+            ],
+          ),
         ),
       ),
     );

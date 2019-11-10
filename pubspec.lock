@@ -204,6 +204,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.2.5"
+  draggable_container:
+    dependency: "direct main"
+    description:
+      name: draggable_container
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.7"
   event_bus:
     dependency: "direct main"
     description:
@@ -467,7 +474,7 @@ packages:
       name: image_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.1+10"
+    version: "0.6.1+11"
   intl:
     dependency: "direct main"
     description:

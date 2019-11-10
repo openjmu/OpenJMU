@@ -264,11 +264,10 @@ class PostDetailPageState extends State<PostDetailPage> {
                   color: Theme.of(context).cardColor,
                   child: FlatButton.icon(
                     onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (_) => ForwardPositioned(widget.post),
-                        isScrollControlled: true,
-                        backgroundColor: Theme.of(context).primaryColor,
+                      Constants.navigatorKey.currentState.push(
+                        TransparentRoute(
+                          builder: (_) => ForwardPositioned(widget.post),
+                        ),
                       );
                     },
                     icon: SvgPicture.asset(
@@ -292,14 +291,13 @@ class PostDetailPageState extends State<PostDetailPage> {
                   color: Theme.of(context).cardColor,
                   child: FlatButton.icon(
                     onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (_) => CommentPositioned(
-                          post: widget.post,
-                          postType: PostType.square,
+                      Constants.navigatorKey.currentState.push(
+                        TransparentRoute(
+                          builder: (context) => CommentPositioned(
+                            post: widget.post,
+                            postType: PostType.square,
+                          ),
                         ),
-                        isScrollControlled: true,
-                        backgroundColor: Theme.of(context).primaryColor,
                       );
                     },
                     icon: SvgPicture.asset(
@@ -382,7 +380,7 @@ class PostDetailPageState extends State<PostDetailPage> {
 
     PraiseAPI.requestPraise(id, !isLiked).then((response) {
       Instances.eventBus.fire(PraiseInPostUpdatedEvent(
-        id: widget.post.id,
+        postId: widget.post.id,
         count: praises,
         type: "square",
         isLike: !isLiked,

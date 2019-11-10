@@ -427,7 +427,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
               } else if (text.startsWith("@")) {
                 UserPage.jump(data['uid']);
               } else if (text.startsWith(API.wbHost)) {
-                CommonWebPage.jump(context, text, "网页链接");
+                CommonWebPage.jump(text, "网页链接");
               }
             },
             maxLines: widget.isDetail ?? false ? null : 10,
@@ -450,7 +450,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
       );
 
   Future<bool> onLikeButtonTap(bool isLiked) {
-    final Completer<bool> completer = new Completer<bool>();
+    final Completer<bool> completer = Completer<bool>();
     int id = widget.post.id;
 
     widget.post.isLike = !widget.post.isLike;

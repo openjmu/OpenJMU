@@ -76,10 +76,8 @@ class _UserPageState extends State<UserPage>
     Instances.eventBus
       ..on<SignatureUpdatedEvent>().listen((event) {
         Future.delayed(Duration(milliseconds: 2400), () {
-          if (this.mounted)
-            setState(() {
-              _user.signature = event.signature;
-            });
+          _user.signature = event.signature;
+          if (this.mounted) setState(() {});
         });
       })
       ..on<AvatarUpdatedEvent>().listen((event) {
@@ -592,7 +590,7 @@ class _UserPageState extends State<UserPage>
                           [
                             ImageBean(
                               id: widget.uid,
-                              imageUrl: "${API.userAvatarInSecure}"
+                              imageUrl: "${API.userAvatar}"
                                   "?uid=${widget.uid}"
                                   "&size=f640",
                             )
@@ -628,7 +626,7 @@ class _UserPageState extends State<UserPage>
                   ImageBean(
                     id: widget.uid,
                     imageUrl:
-                        API.userAvatarInSecure + "?uid=${widget.uid}&size=f640",
+                        API.userAvatar + "?uid=${widget.uid}&size=f640",
                   )
                 ],
                 needsClear: true,

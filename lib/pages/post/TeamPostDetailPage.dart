@@ -139,7 +139,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   }
 
   Widget actionLists(context) {
-    return new Container(
+    return Container(
       color: Theme.of(context).cardColor,
       margin: EdgeInsets.only(top: Constants.suSetSp(4.0)),
       padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
@@ -188,14 +188,13 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                   color: Theme.of(context).cardColor,
                   child: FlatButton.icon(
                     onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (_) => CommentPositioned(
-                          post: widget.post,
-                          postType: PostType.team,
+                      Constants.navigatorKey.currentState.push(
+                        TransparentRoute(
+                          builder: (context) => CommentPositioned(
+                            post: widget.post,
+                            postType: PostType.team,
+                          ),
                         ),
-                        isScrollControlled: true,
-                        backgroundColor: Theme.of(context).primaryColor,
                       );
                     },
                     icon: SvgPicture.asset(
@@ -269,7 +268,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   }
 
   Future<bool> onLikeButtonTap(bool isLiked) {
-    final Completer<bool> completer = new Completer<bool>();
+    final Completer<bool> completer = Completer<bool>();
     int id = widget.post.id;
 
     widget.post.isLike = !widget.post.isLike;
@@ -278,7 +277,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
 
     PraiseAPI.requestPraise(id, !isLiked).then((response) {
       Instances.eventBus.fire(PraiseInPostUpdatedEvent(
-        id: widget.post.id,
+        postId: widget.post.id,
         count: praises,
         type: "team",
         isLike: !isLiked,

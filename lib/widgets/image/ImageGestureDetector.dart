@@ -7,7 +7,7 @@ class ImageGestureDetector extends StatefulWidget {
   final bool enableTapPop;
   final bool enablePullDownPop;
 
-  ImageGestureDetector({
+  const ImageGestureDetector({
     Key key,
     this.child,
     this.context,
@@ -22,16 +22,6 @@ class ImageGestureDetector extends StatefulWidget {
 
 class _ImageGestureDetectorState extends State<ImageGestureDetector>
     with TickerProviderStateMixin {
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

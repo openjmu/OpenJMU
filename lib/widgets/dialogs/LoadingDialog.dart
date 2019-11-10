@@ -23,19 +23,36 @@ class LoadingDialog extends StatefulWidget {
 class LoadingDialogState extends State<LoadingDialog> {
   Duration duration = const Duration(milliseconds: 1500);
   String type, text;
-  Function customPop;
+  VoidCallback customPop;
   Widget icon = CircularProgressIndicator();
 
   @override
   void initState() {
-    widget.controller?._loadingDialogState = this;
+    widget.controller?.dialogState = this;
     this.text = widget.text;
     if (mounted) setState(() {});
     super.initState();
   }
 
-  void updateContent(String type, Widget icon, String text, Duration duration,
-      {Function customPop}) {
+  @override
+  void didChangeDependencies() {
+    widget.controller?.dialogState = this;
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didUpdateWidget(oldWidget) {
+    widget.controller?.dialogState = this;
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void updateContent(
+    String type,
+    Widget icon,
+    String text,
+    Duration duration, {
+    Function customPop,
+  }) {
     this.customPop = customPop;
     setState(() {
       if (duration != null) this.duration = duration;
@@ -62,10 +79,18 @@ class LoadingDialogState extends State<LoadingDialog> {
     if (!(widget.isGlobal ?? false)) {
       if (this.type != null && this.type != "loading") {
         Future.delayed(duration, () {
-          customPop ?? Navigator.pop(context);
+          if (customPop != null) {
+            customPop();
+          } else {
+            Navigator.pop(context);
+          }
         });
       } else if (this.type == "dismiss") {
-        customPop ?? Navigator.pop(context);
+        if (customPop != null) {
+          customPop();
+        } else {
+          Navigator.pop(context);
+        }
       }
     }
     Widget child = Center(
@@ -84,7 +109,7 @@ class LoadingDialogState extends State<LoadingDialog> {
             children: <Widget>[
               this.icon,
               Padding(
-                padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
+                padding: EdgeInsets.only(top: Constants.suSetSp(40.0)),
                 child: Text(
                   this.text,
                   style: Theme.of(context).textTheme.body1.copyWith(
@@ -108,6 +133,9 @@ class LoadingDialogState extends State<LoadingDialog> {
         child: child,
       );
     }
+
+    widget.controller?.dialogState = this;
+
     return WillPopScope(
       onWillPop: () async => false,
       child: child,
@@ -116,25 +144,29 @@ class LoadingDialogState extends State<LoadingDialog> {
 }
 
 class LoadingDialogController {
-  LoadingDialogState _loadingDialogState;
+  LoadingDialogState dialogState;
 
   void updateText(text) {
-    _loadingDialogState.updateText(text);
+    dialogState.updateText(text);
   }
 
   void updateIcon(icon) {
-    _loadingDialogState.updateIcon(icon);
+    dialogState.updateIcon(icon);
   }
 
   void updateContent(type, icon, text, duration) {
-    _loadingDialogState.updateContent(type, icon, text, duration);
+    dialogState.updateContent(type, icon, text, duration);
   }
 
-  void changeState(String type, String text,
-      {Duration duration, Function customPop}) {
+  void changeState(
+    String type,
+    String text, {
+    Duration duration,
+    Function customPop,
+  }) {
     switch (type) {
       case 'success':
-        _loadingDialogState.updateContent(
+        dialogState.updateContent(
           "success",
           Icon(
             Icons.check_circle,
@@ -147,7 +179,7 @@ class LoadingDialogController {
         );
         break;
       case 'failed':
-        _loadingDialogState.updateContent(
+        dialogState.updateContent(
           "failed",
           RotationTransition(
             turns: AlwaysStoppedAnimation(45 / 360),
@@ -162,7 +194,7 @@ class LoadingDialogController {
         );
         break;
       case 'loading':
-        _loadingDialogState.updateContent(
+        dialogState.updateContent(
           "loading",
           CircularProgressIndicator(),
           text,
@@ -170,7 +202,7 @@ class LoadingDialogController {
         );
         break;
       case 'dismiss':
-        _loadingDialogState.updateContent(
+        dialogState.updateContent(
           "dismiss",
           CircularProgressIndicator(),
           text,

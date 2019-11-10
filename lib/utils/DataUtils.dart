@@ -25,6 +25,7 @@ class DataUtils {
 //  static final String spUserClassId = "userClassId";
 
   static final String spBrightness = "theme_brightness";
+  static final String spAMOLEDDark = "theme_AMOLEDDark";
   static final String spColorThemeIndex = "theme_colorThemeIndex";
   static final String spHomeSplashIndex = "home_splash_index";
   static final String spHomeStartUpIndex = "home_startup_index";
@@ -37,7 +38,7 @@ class DataUtils {
     sp = await SharedPreferences.getInstance();
   }
 
-  static Future<bool> login(context, String username, String password) async {
+  static Future<bool> login(String username, String password) async {
     final String blowfish = Uuid().v4();
     Map<String, dynamic> params = Constants.loginParams(
       blowfish: blowfish,
@@ -83,10 +84,12 @@ class DataUtils {
   static Future logout() async {
     NetUtils.dio.clear();
     MessageUtils.logout();
-    await resetTheme();
-    await clearLoginInfo();
-    await clearSettings();
-    showShortToast("退出登录成功");
+    Future.delayed(const Duration(milliseconds: 300), () {
+      resetTheme();
+      clearLoginInfo();
+      clearSettings();
+      showShortToast("退出登录成功");
+    });
   }
 
   static Future<bool> checkWizard() async {
@@ -260,6 +263,7 @@ class DataUtils {
   // 重置主题配置
   static Future resetTheme() async {
     await setColorTheme(0);
+    await setAMOLEDDark(false);
     await setBrightnessDark(false);
     ThemeUtils.currentThemeColor = ThemeUtils.defaultColor;
     Instances.eventBus
@@ -277,6 +281,11 @@ class DataUtils {
     return sp?.getBool(spBrightness) ?? false;
   }
 
+  // 获取设置的AMOLED夜间模式
+  static bool getAMOLEDDark() {
+    return sp?.getBool(spAMOLEDDark) ?? false;
+  }
+
   // 设置选择的主题色
   static Future setColorTheme(int colorThemeIndex) async {
     await sp?.setInt(spColorThemeIndex, colorThemeIndex);
@@ -285,6 +294,11 @@ class DataUtils {
   // 设置选择的夜间模式
   static Future setBrightnessDark(bool isDark) async {
     await sp?.setBool(spBrightness, isDark);
+  }
+
+  // 设置AMOLED夜间模式
+  static Future setAMOLEDDark(bool isAMOLEDDark) async {
+    await sp?.setBool(spAMOLEDDark, isAMOLEDDark);
   }
 
   // 获取未读信息数

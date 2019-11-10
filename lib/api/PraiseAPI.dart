@@ -34,12 +34,15 @@ class PraiseAPI {
   }
 
   static Praise createPraiseInPost(itemData) {
-    String _avatar =
-        "${API.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
-    String _praiseTime = DateTime.fromMillisecondsSinceEpoch(
-      itemData['praise_time'] * 1000,
-    ).toString().substring(0, 16);
-    Praise _praise = Praise(
+    final _avatar = "${API.userAvatar}"
+        "?uid=${itemData['user']['uid']}"
+        "&size=f152"
+        "&_t=${DateTime.now().millisecondsSinceEpoch}";
+    final _praiseTime =
+        DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
+            .toString()
+            .substring(0, 16);
+    final _praise = Praise(
       id: itemData['id'],
       uid: itemData['user']['uid'],
       avatar: _avatar,
@@ -55,12 +58,15 @@ class PraiseAPI {
   }
 
   static Praise createPraise(itemData) {
-    String _avatar =
-        "${API.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
-    String _praiseTime = DateTime.fromMillisecondsSinceEpoch(
-      itemData['praise_time'] * 1000,
-    ).toString().substring(0, 16);
-    Praise _praise = Praise(
+    final _avatar = "${API.userAvatar}"
+        "?uid=${itemData['user']['uid']}"
+        "&size=f152"
+        "&_t=${DateTime.now().millisecondsSinceEpoch}";
+    final _praiseTime =
+        DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
+            .toString()
+            .substring(0, 16);
+    final _praise = Praise(
       id: itemData['id'],
       uid: itemData['user']['uid'],
       avatar: _avatar,

@@ -71,9 +71,7 @@ class PostAPI {
   static Future glancePost(int postId) {
     return NetUtils.postWithCookieAndHeaderSet(
       API.postGlance,
-      data: {
-        "tids": [postId]
-      },
+      data: {"tids": [postId]},
     ).catchError((e) {
       debugPrint("${e.toString()}");
       debugPrint("${e.response}");

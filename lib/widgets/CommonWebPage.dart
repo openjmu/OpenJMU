@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,7 +19,7 @@ class CommonWebPage extends StatefulWidget {
   final bool withAppBar;
   final bool withAction;
 
-  CommonWebPage({
+  const CommonWebPage({
     Key key,
     @required this.url,
     @required this.title,
@@ -32,20 +33,24 @@ class CommonWebPage extends StatefulWidget {
   State<StatefulWidget> createState() => CommonWebPageState();
 
   static void jump(
-    BuildContext context,
     String url,
     String title, {
     WebApp app,
     bool withCookie,
   }) {
-    Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-      return CommonWebPage(
-        url: url,
-        title: title,
-        app: app,
-        withCookie: withCookie,
-      );
-    }));
+    Constants.navigatorKey.currentState.push(
+      platformPageRoute(
+        context: Constants.navigatorKey.currentContext,
+        builder: (context) {
+          return CommonWebPage(
+            url: url,
+            title: title,
+            app: app,
+            withCookie: withCookie,
+          );
+        },
+      ),
+    );
   }
 }
 
@@ -59,7 +64,6 @@ class CommonWebPageState extends State<CommonWebPage> {
 
   @override
   void initState() {
-    super.initState();
     _url = widget.url;
     _title = widget.title;
     flutterWebViewPlugin.onStateChanged.listen((state) async {
@@ -76,7 +80,6 @@ class CommonWebPageState extends State<CommonWebPage> {
           isLoading = false;
           currentProgress = 0.0;
           if (this.mounted) setState(() {});
-
         });
       } else if (state.type == WebViewState.startLoad) {
         isLoading = true;
@@ -99,14 +102,15 @@ class CommonWebPageState extends State<CommonWebPage> {
           });
         });
     });
+    super.initState();
   }
 
   @override
   void dispose() {
-    super.dispose();
     flutterWebViewPlugin?.hide();
     flutterWebViewPlugin?.close();
     flutterWebViewPlugin?.dispose();
+    super.dispose();
   }
 
   Future<Null> _launchURL() async {
@@ -135,7 +139,7 @@ class CommonWebPageState extends State<CommonWebPage> {
 
   PreferredSize progressBar(context) => PreferredSize(
         child: Container(
-          height: Constants.suSetSp(3.0),
+          height: Constants.suSetSp(2.0),
           color: !(currentProgress == 0.0) ? currentThemeColor : null,
           child: LinearProgressIndicator(
             backgroundColor: Theme.of(context).primaryColor,
@@ -157,10 +161,15 @@ class CommonWebPageState extends State<CommonWebPage> {
     return WillPopScope(
       onWillPop: waitForClose,
       child: WebviewScaffold(
-        clearCache: _clear,
-        clearCookies: _clear,
         url: widget.url,
         allowFileURLs: true,
+        clearCache: _clear,
+        clearCookies: _clear,
+        enableAppScheme: true,
+        withJavascript: true,
+        withLocalStorage: true,
+        withZoom: true,
+        resizeToAvoidBottomInset: true,
         appBar: !(widget.withAppBar ?? false)
             ? AppBar(
                 leading: IconButton(
@@ -205,7 +214,7 @@ class CommonWebPageState extends State<CommonWebPage> {
           color: Theme.of(context).canvasColor,
           child: isLoading
               ? Center(child: Constants.progressIndicator())
-              : Container(),
+              : SizedBox.shrink(),
         ),
         persistentFooterButtons: !(widget.withAction ?? false)
             ? <Widget>[
@@ -250,10 +259,6 @@ class CommonWebPageState extends State<CommonWebPage> {
                 ),
               ]
             : null,
-        enableAppScheme: true,
-        withJavascript: true,
-        withLocalStorage: true,
-        resizeToAvoidBottomInset: true,
       ),
     );
   }

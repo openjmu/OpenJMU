@@ -24,8 +24,8 @@ class _AddingButtonPageState extends State<AddingButtonPage>
   final List<String> itemIcons = ["subscriptedAccount", "scan"];
   final List<Color> itemColors = [Colors.orange, Colors.teal];
   final List<Function> itemOnTap = [
-    (context) {
-      Navigator.of(context).pushNamed("/publishPost");
+    (context) async {
+      final result = await Navigator.of(context).pushNamed("/publishPost");
     },
     (context) async {
       Map<PermissionGroup, PermissionStatus> permissions =

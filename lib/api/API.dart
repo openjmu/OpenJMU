@@ -1,7 +1,8 @@
 import 'dart:core';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:OpenJMU/api/UserAPI.dart';
-import 'package:OpenJMU/utils/Utils.dart';
 
 export 'package:OpenJMU/api/CommentAPI.dart';
 export 'package:OpenJMU/api/CourseAPI.dart';
@@ -53,8 +54,7 @@ class API {
       "$oa99Host/v2/api/class/studentinfo?uid=$uid";
   static String userLevel({int uid = 0}) =>
       "$oa99Host/ajax/score/info?uid=$uid";
-//    static final String userAvatar = "$oap99Host/face";
-  static final String userAvatarInSecure = "$oap99Host/face";
+  static final String userAvatar = "$oap99Host/face";
   static final String userAvatarUpload = "$oap99Host/face/upload";
   static final String userPhotoWallUpload = "$oap99Host/photowall/upload";
   static final String userTags = "$oa99Host/v2/api/usertag/getusertags";
@@ -68,8 +68,8 @@ class API {
   static final String searchUser = "$oa99Host/v2/api/search/users";
 
   /// Blacklist
-  static String blacklist({int pos, int size}) {
-    return "$oa99Host/v2/friend/api/blacklist/list?pos=${pos ?? 0}&size=${size ?? 20}";
+  static String blacklist({int pos = 0, int size = 20}) {
+    return "$oa99Host/v2/friend/api/blacklist/list?pos=$pos&size=$size";
   }
 
   static final String addToBlacklist = "$oa99Host/v2/friend/api/blacklist/new";
@@ -82,10 +82,10 @@ class API {
       "$oap99Host/app/menuicon?size=f128&unitid=55&";
 
   /// 资讯相关
-  static String newsList({int maxTimeStamp, int size}) {
+  static String newsList({int maxTimeStamp, int size = 20}) {
     return "$middle99Host/mg/api/aid/posts_list/region_type/1"
         "${maxTimeStamp != null ? "/max_ts/$maxTimeStamp" : ""}"
-        "/size/${size ?? 20}";
+        "/size/$size";
   }
 
   static final String newsDetail =
@@ -114,32 +114,48 @@ class API {
 
   /// 小组相关
   static final String teamInfo = "$middle99Host/mg/api/aid/team_info";
-  static String teamPosts(
-      {int teamId, int size, int regionType, int postType, int maxTimeStamp}) {
+  static String teamPosts({
+    @required int teamId,
+    int size = 30,
+    int regionType = 8,
+    int postType = 2,
+    int maxTimeStamp,
+  }) {
     return "$middle99Host/mg/api/aid/posts_list"
-        "/region_type/${regionType ?? 8}"
-        "/post_type/${postType ?? 2}"
+        "/region_type/$regionType"
+        "/post_type/$postType"
         "/region_id/$teamId"
         "${maxTimeStamp != null ? "/max_ts$maxTimeStamp}" : ""}"
-        "/size/${size ?? 30}";
+        "/size/$size";
   }
 
-  static String teamPostDetail({int postId, int postType}) {
-    return "$middle99Host/mg/api/aid/posts_detail/post_type/${postType ?? 2}/post_id/$postId";
+  static String teamPostDetail({
+    @required int postId,
+    int postType = 2,
+  }) {
+    return "$middle99Host/mg/api/aid/posts_detail/post_type/$postType/post_id/$postId";
   }
 
-  static String teamPostCommentsList(
-      {int postId, int size, int regionType, int postType, int page}) {
+  static String teamPostCommentsList({
+    @required int postId,
+    int size = 20,
+    int regionType = 128,
+    int postType = 7,
+    int page = 1,
+  }) {
     return "$middle99Host/mg/api/aid/posts_list"
-        "/region_type/${regionType ?? 128}"
-        "/post_type/${postType ?? 7}"
+        "/region_type/$regionType"
+        "/post_type/$postType"
         "/region_id/$postId"
-        "/page/${page ?? 1}"
+        "/page/$page"
         "/replys/2"
-        "/size/${size ?? 30}";
+        "/size/$size";
   }
 
-  static String teamFile({int fid, String sid}) {
+  static String teamFile({
+    @required int fid,
+    String sid,
+  }) {
     return "$file99Host/show/file/fid/$fid/sid/${sid ?? UserAPI.currentUser.sid}";
   }
 
@@ -156,9 +172,6 @@ class API {
   static final String signSummary = "$oa99Host/ajax/sign/usersign";
 
   static final String task = "$oa99Host/ajax/tasks";
-
-  /// 成绩相关
-  static final SocketConfig scoreSocket = SocketConfig("$openjmuHost", 4000);
 
   /// 课程表相关
   static final String courseSchedule = "$labsHost/courseSchedule/course.html";
@@ -205,9 +218,9 @@ class API {
         "&start=$start";
   }
 
-  static String backPackItemIcon({int itemType}) {
+  static String backPackItemIcon({int itemType = 10000}) {
     return "$wpHost/itemc/icon?"
-        "itemtype=${itemType ?? 10000}"
+        "itemtype=$itemType"
         "&size=1"
         "&icontime=0";
   }

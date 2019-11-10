@@ -61,8 +61,10 @@ class CommentAPI {
       );
 
   static Comment createComment(itemData) {
-    String _avatar =
-        "${API.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
+    String _avatar = "${API.userAvatar}"
+        "?uid=${itemData['user']['uid']}"
+        "&size=f152"
+        "&_t=${DateTime.now().millisecondsSinceEpoch}";
     String _commentTime = DateTime.fromMillisecondsSinceEpoch(
       itemData['post_time'] * 1000,
     ).toString().substring(0, 16);
@@ -100,8 +102,10 @@ class CommentAPI {
   }
 
   static Comment createCommentInPost(itemData) {
-    String _avatar =
-        "${API.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
+    String _avatar = "${API.userAvatar}"
+        "?uid=${itemData['user']['uid']}"
+        "&size=f152"
+        "&_t=${DateTime.now().millisecondsSinceEpoch}";
     String _commentTime = DateTime.fromMillisecondsSinceEpoch(
       itemData['post_time'] * 1000,
     ).toString().substring(0, 16);

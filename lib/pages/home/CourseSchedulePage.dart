@@ -24,17 +24,17 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   final Duration showWeekDuration = const Duration(milliseconds: 300);
   final Curve showWeekCurve = Curves.fastOutSlowIn;
   final double weekSize = 100.0;
+  final double monthWidth = 40.0;
+  final double indicatorHeight = 60.0;
+  final int maxCoursesPerDay = 12;
   ScrollController weekScrollController;
 
   bool firstLoaded = false;
   bool hasCourse = true;
   bool showWeek = false;
-  double monthWidth = 40.0;
-  double indicatorHeight = 60.0;
   int currentWeek;
   DateTime now;
 
-  int maxCoursesPerDay = 12;
   String remark;
   Map<int, Map<int, List<Course>>> courses;
 
@@ -140,7 +140,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       Map<String, dynamic> data = jsonDecode(response.data);
       String _remark;
       if (data != null) _remark = data['classScheduleRemark'];
-      if (remark != _remark && _remark != "") remark = _remark;
+      if (remark != _remark && _remark != "" && _remark != null) {
+        remark = _remark;
+      }
     });
   }
 
@@ -311,7 +313,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             maxHeight: Constants.suSetSp(48.0),
           ),
           padding: EdgeInsets.symmetric(
-            horizontal: Constants.suSetSp(20.0),
+            horizontal: Constants.suSetSp(30.0),
           ),
           color: showWeek
               ? Theme.of(context).primaryColor
@@ -501,6 +503,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             "没有课的日子\n往往就是这么的朴实无华\n且枯燥\n😆",
             style: TextStyle(
               fontSize: Constants.suSetSp(30.0),
+            ),
+            strutStyle: StrutStyle(
+              height: 1.8,
             ),
             textAlign: TextAlign.center,
           ),

@@ -8,7 +8,13 @@ class AnnouncementWidget extends StatelessWidget {
   final Color color;
   final double gap;
   final double radius;
-  AnnouncementWidget(this.context, {this.color, this.gap, this.radius});
+
+  const AnnouncementWidget(
+    this.context, {
+    this.color,
+    this.gap,
+    this.radius,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -36,14 +42,15 @@ class AnnouncementWidget extends StatelessWidget {
               ),
             ),
             Expanded(
-                child: Text(
-              "${Configs.announcements[0]['title']}",
-              style: TextStyle(
-                color: color ?? ThemeUtils.defaultColor,
-                fontSize: Constants.suSetSp(18.0),
+              child: Text(
+                "${Configs.announcements[0]['title']}",
+                style: TextStyle(
+                  color: color ?? ThemeUtils.defaultColor,
+                  fontSize: Constants.suSetSp(18.0),
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
-              overflow: TextOverflow.ellipsis,
-            )),
+            ),
             Padding(
               padding: EdgeInsets.only(left: Constants.suSetSp(6.0)),
               child: Icon(

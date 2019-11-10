@@ -22,8 +22,8 @@ class DeleteDialog extends Dialog {
       content: Text(
         "是否确认删除这条$whatToDelete？",
         style: Theme.of(context).textTheme.body1.copyWith(
-              fontSize: Constants.suSetSp(16.0),
-            ),
+          fontSize: Constants.suSetSp(16.0),
+        ),
       ),
       actions: <Widget>[
         PlatformButton(
@@ -32,20 +32,27 @@ class DeleteDialog extends Dialog {
             elevation: 0,
             disabledElevation: 0.0,
             highlightElevation: 0.0,
-            child: Text('确认',
-                style: TextStyle(color: ThemeUtils.currentThemeColor)),
+            child: Text(
+              '确认',
+              style: TextStyle(
+                color: ThemeUtils.currentThemeColor,
+              ),
+            ),
           ),
           ios: (BuildContext context) => CupertinoButtonData(
-            child: Text('确认',
-                style: TextStyle(color: ThemeUtils.currentThemeColor)),
+            child: Text(
+              '确认',
+              style: TextStyle(
+                color: ThemeUtils.currentThemeColor,
+              ),
+            ),
           ),
           onPressed: () {
             Navigator.of(context).pop();
             if (this.comment != null) {
               Navigator.of(context).pop();
             }
-            LoadingDialogController _loadingDialogController =
-                LoadingDialogController();
+            final _loadingDialogController = LoadingDialogController();
             showDialog(
               context: context,
               builder: (BuildContext dialogContext) => LoadingDialog(
@@ -60,25 +67,36 @@ class DeleteDialog extends Dialog {
               CommentAPI.deleteComment(this.comment.post.id, this.comment.id)
                   .then((response) {
                 _loadingDialogController.changeState(
-                    "success", "$whatToDelete删除成功");
+                  "success",
+                  "$whatToDelete删除成功",
+                );
                 Instances.eventBus
-                    .fire(new PostCommentDeletedEvent(this.comment.post.id));
+                    .fire(PostCommentDeletedEvent(this.comment.post.id));
               }).catchError((e) {
                 debugPrint(e.toString());
                 _loadingDialogController.changeState(
-                    "failed", "$whatToDelete删除失败");
+                  "failed",
+                  "$whatToDelete删除失败",
+                );
               });
             } else if (this.post != null) {
               PostAPI.deletePost(this.post.id).then((response) {
                 _loadingDialogController.changeState(
-                    "success", "$whatToDelete删除成功");
-                Instances.eventBus.fire(new PostDeletedEvent(
-                    this.post.id, this.fromPage, this.index));
+                  "success",
+                  "$whatToDelete删除成功",
+                );
+                Instances.eventBus.fire(PostDeletedEvent(
+                  this.post.id,
+                  this.fromPage,
+                  this.index,
+                ));
               }).catchError((e) {
                 debugPrint(e.toString());
                 debugPrint(e.response?.toString());
                 _loadingDialogController.changeState(
-                    "failed", "$whatToDelete删除失败");
+                  "failed",
+                  "$whatToDelete删除失败",
+                );
               });
             }
           },
@@ -89,11 +107,20 @@ class DeleteDialog extends Dialog {
             elevation: 0,
             disabledElevation: 0.0,
             highlightElevation: 0.0,
-            child: Text('取消', style: TextStyle(color: Colors.white)),
+            child: Text(
+              '取消',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
           ),
           ios: (BuildContext context) => CupertinoButtonData(
-            child: Text('取消',
-                style: TextStyle(color: ThemeUtils.currentThemeColor)),
+            child: Text(
+              '取消',
+              style: TextStyle(
+                color: ThemeUtils.currentThemeColor,
+              ),
+            ),
           ),
           onPressed: () {
             Navigator.of(context).pop();

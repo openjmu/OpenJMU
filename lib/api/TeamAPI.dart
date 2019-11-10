@@ -3,14 +3,21 @@ import 'package:flutter/foundation.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 
 class TeamPostAPI {
-  static Future getPostList(
-      {bool isMore, int lastTimeStamp, additionAttrs}) async {
+  static Future getPostList({
+    bool isMore,
+    int lastTimeStamp,
+    additionAttrs,
+  }) async {
     String _postUrl;
     if (isMore) {
       _postUrl = API.teamPosts(
-          teamId: Constants.fleaMarketTeamId, maxTimeStamp: lastTimeStamp);
+        teamId: Constants.fleaMarketTeamId,
+        maxTimeStamp: lastTimeStamp,
+      );
     } else {
-      _postUrl = API.teamPosts(teamId: Constants.fleaMarketTeamId);
+      _postUrl = API.teamPosts(
+        teamId: Constants.fleaMarketTeamId,
+      );
     }
     return NetUtils.getWithCookieAndHeaderSet(
       _postUrl,
@@ -20,12 +27,15 @@ class TeamPostAPI {
 
   static Post createPost(postData) {
     var _user = postData['user_info'];
-    String _avatar =
-        "${API.userAvatarInSecure}?uid=${_user['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
-    String _postTime = DateTime.fromMillisecondsSinceEpoch(
-      int.parse(postData['post_time']),
-    ).toString().substring(0, 16);
-    Post _post = Post(
+    final _avatar = "${API.userAvatar}"
+        "?uid=${_user['uid']}"
+        "&size=f152"
+        "&_t=${DateTime.now().millisecondsSinceEpoch}";
+    final _postTime =
+        DateTime.fromMillisecondsSinceEpoch(int.parse(postData['post_time']))
+            .toString()
+            .substring(0, 16);
+    final _post = Post(
       id: int.parse(postData['tid'].toString()),
       uid: int.parse(_user['uid'].toString()),
       nickname: _user['nickname'],
@@ -45,7 +55,7 @@ class TeamPostAPI {
     return _post;
   }
 
-  static Future getPostDetail({int id, int postType}) =>
+  static Future getPostDetail({int id, int postType}) async =>
       NetUtils.getWithCookieAndHeaderSet(
         API.teamPostDetail(postId: id, postType: postType),
         headers: Constants.header,
@@ -60,13 +70,15 @@ class TeamCommentAPI {
       );
 
   static Comment createCommentInPost(itemData) {
-    String _avatar = "{Api.userAvatarInSecure}"
+    final _avatar = "${API.userAvatar}"
         "?uid=${itemData['user_info']['uid']}"
-        "&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
-    String _commentTime = DateTime.fromMillisecondsSinceEpoch(
-      int.parse(itemData['post_time']),
-    ).toString().substring(0, 16);
-    Comment _comment = Comment(
+        "&size=f152"
+        "&_t=${DateTime.now().millisecondsSinceEpoch}";
+    String _commentTime =
+        DateTime.fromMillisecondsSinceEpoch(int.parse(itemData['post_time']))
+            .toString()
+            .substring(0, 16);
+    final _comment = Comment(
       id: int.parse(itemData['tid'].toString()),
       floor: int.parse(itemData['floor'].toString()),
       fromUserUid: int.parse(itemData['user_info']['uid'].toString()),
@@ -114,14 +126,15 @@ class TeamPraiseAPI {
   }
 
   static Praise createPraiseInPost(itemData) {
-    String _avatar = "${API.userAvatarInSecure}"
+    final _avatar = "${API.userAvatar}"
         "?uid=${itemData['user']['uid']}"
         "&size=f152"
         "&_t=${DateTime.now().millisecondsSinceEpoch}";
-    String _praiseTime = DateTime.fromMillisecondsSinceEpoch(
-      itemData['praise_time'] * 1000,
-    ).toString().substring(0, 16);
-    Praise _praise = Praise(
+    final _praiseTime =
+        DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
+            .toString()
+            .substring(0, 16);
+    final _praise = Praise(
       id: itemData['id'],
       uid: itemData['user']['uid'],
       avatar: _avatar,
@@ -137,12 +150,15 @@ class TeamPraiseAPI {
   }
 
   static Praise createPraise(itemData) {
-    String _avatar =
-        "${API.userAvatarInSecure}?uid=${itemData['user']['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
-    String _praiseTime = DateTime.fromMillisecondsSinceEpoch(
-      itemData['praise_time'] * 1000,
-    ).toString().substring(0, 16);
-    Praise _praise = Praise(
+    final _avatar = "${API.userAvatar}"
+        "?uid=${itemData['user']['uid']}"
+        "&size=f152"
+        "&_t=${DateTime.now().millisecondsSinceEpoch}";
+    final _praiseTime =
+        DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
+            .toString()
+            .substring(0, 16);
+    final _praise = Praise(
       id: itemData['id'],
       uid: itemData['user']['uid'],
       avatar: _avatar,

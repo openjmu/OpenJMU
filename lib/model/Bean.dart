@@ -96,7 +96,7 @@ class Post {
       if (_user[k] == "") _user[k] = null;
     });
     String _avatar =
-        "${API.userAvatarInSecure}?uid=${_user['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
+        "${API.userAvatar}?uid=${_user['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
     String _postTime = DateTime.fromMillisecondsSinceEpoch(
       int.parse(json['post_time']) * 1000,
     ).toString().substring(0, 16);
@@ -189,6 +189,12 @@ class Comment {
     this.toTopicContent,
     this.post,
   });
+
+
+  @override
+  String toString() {
+    return 'Comment{id: $id, fromUserUid: $fromUserUid, floor: $floor, fromUserName: $fromUserName, fromUserAvatar: $fromUserAvatar, content: $content, commentTime: $commentTime, from: $from, toReplyExist: $toReplyExist, toTopicExist: $toTopicExist, toReplyUid: $toReplyUid, toTopicUid: $toTopicUid, toReplyUserName: $toReplyUserName, toTopicUserName: $toTopicUserName, toReplyContent: $toReplyContent, toTopicContent: $toTopicContent, post: $post}';
+  }
 
   @override
   bool operator ==(Object other) =>
@@ -509,6 +515,29 @@ class News {
     this.glances,
     this.isLiked,
   });
+
+  factory News.fromJson(Map<String, dynamic> json) {
+    return News(
+      id: int.parse(json['post_id'].toString()),
+      title: json['title'],
+      summary: json['summary'],
+      postTime: DateTime.fromMillisecondsSinceEpoch(
+        int.parse(json['post_time'].toString()),
+      ).toString().substring(0, 16),
+      cover: json['cover_img'] != null
+          ? int.parse(json['cover_img']['fid'].toString())
+          : null,
+      relateTopicId: json['relate_topic'] != null &&
+          json['relate_topic'].isNotEmpty
+          ? int.parse(json['relate_topic'][0]['post_id'].toString())
+          : null,
+      heat: int.parse(json['heat'].toString()),
+      praises: int.parse(json['praises'].toString()),
+      replies: int.parse(json['replys'].toString()),
+      glances: int.parse(json['glances'].toString()),
+      isLiked: int.parse(json['praised'].toString()) == 1,
+    );
+  }
 
   @override
   bool operator ==(Object other) =>

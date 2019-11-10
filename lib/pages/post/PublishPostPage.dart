@@ -10,6 +10,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:dio/dio.dart';
+import 'package:draggable_container/draggable_container.dart';
 import 'package:dragablegridview_flutter/dragablegridview_flutter.dart';
 import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
 import 'package:extended_text_field/extended_text_field.dart';
@@ -27,15 +28,19 @@ class PublishPostPage extends StatefulWidget {
 }
 
 class PublishPostPageState extends State<PublishPostPage> {
+//  final GlobalKey<DraggableContainerState> _stateKey = GlobalKey();
   final _textEditingController = TextEditingController();
   final _editSwitchController = EditSwitchController();
-  final _loadingDialogController = LoadingDialogController();
+  final _dialogController = LoadingDialogController();
   final _focusNode = FocusNode();
   final _iconSize = Constants.suSetSp(28.0);
   final gridCount = 5;
 //  final maxLength = 2000;
 
+  List<Future> query;
+  List<Asset> assets = <Asset>[];
   List<ItemBin> imagesBin = <ItemBin>[];
+  Set<int> failedImages = {};
   List _imageIdList = [];
 
   int imagesLength = 0, maxImagesLength = 9, uploadedImages = 1;
@@ -67,9 +72,9 @@ class PublishPostPageState extends State<PublishPostPage> {
     final currentPosition = _textEditingController.selection.baseOffset;
     String result;
     if (_textEditingController.text.length > 0) {
-      String leftText =
+      final leftText =
           _textEditingController.text.substring(0, currentPosition);
-      String rightText = _textEditingController.text
+      final rightText = _textEditingController.text
           .substring(currentPosition, _textEditingController.text.length);
       result = "$leftText##$rightText";
     } else {
@@ -116,10 +121,10 @@ class PublishPostPageState extends State<PublishPostPage> {
         permissions[PermissionGroup.photos] == PermissionStatus.granted) {
       try {
         final results = await MultiImagePicker.pickImages(
-          maxImages: maxImagesLength - imagesLength,
+          maxImages: maxImagesLength,
           enableCamera: true,
+          selectedAssets: assets,
           cupertinoOptions: CupertinoOptions(
-            backgroundColor: currentColorValue,
             selectionFillColor: currentColorValue,
             takePhotoIcon: "chat",
           ),
@@ -128,6 +133,7 @@ class PublishPostPageState extends State<PublishPostPage> {
             statusBarColor: currentColorValue,
             actionBarTitle: "选择图片",
             allViewTitle: "所有图片",
+            selectionLimitReachedText: "已达到最大张数限制",
           ),
         ).catchError((e) {
           debugPrint(e.toString());
@@ -142,19 +148,65 @@ class PublishPostPageState extends State<PublishPostPage> {
     }
     if (!mounted) return;
 
-    for (final assets in resultList) {
-      imagesBin.add(ItemBin(assets));
+    for (final asset in resultList) {
+      assets.add(asset);
+      imagesBin.add(ItemBin(asset));
     }
-    imagesLength = imagesBin.length;
-    if (mounted) setState(() {});
+//    for (int i = 0; i < resultList.length; i++) {
+//      assets.add(resultList[i]);
+//      imagesBin.add(ItemBin(resultList[i]));
+//      if (_stateKey.currentState != null) {
+//        _stateKey.currentState.addItem(imageDraggableItem(context, i));
+//      }
+//    }
+    setState(() {
+      imagesLength = assets.length;
+    });
+  }
+
+  DraggableItem imageDraggableItem(context, int position) {
+    final size = (MediaQuery.of(context).size.width / gridCount).floor() -
+        (18 - gridCount);
+    return DraggableItem(
+      deletable: true,
+      child: Padding(
+        padding: EdgeInsets.all(Constants.suSetSp(4.0)),
+        child: Stack(
+          children: <Widget>[
+            AssetThumb(
+              asset: assets[position],
+              width: size,
+              height: size,
+            ),
+            if (failedImages.contains(position))
+              Positioned(
+                top: 0.0,
+                bottom: 0.0,
+                left: 0.0,
+                right: 0.0,
+                child: Container(
+                  color: Colors.white.withOpacity(0.7),
+                  child: Center(
+                    child: Icon(
+                      Icons.error,
+                      color: Colors.redAccent,
+                      size: Constants.suSetSp(36.0),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget poundIcon(context) => SvgPicture.asset(
-    "assets/icons/add-topic.svg",
-    color: Theme.of(context).iconTheme.color,
-    width: _iconSize,
-    height: _iconSize,
-  );
+        "assets/icons/add-topic.svg",
+        color: Theme.of(context).iconTheme.color,
+        width: _iconSize,
+        height: _iconSize,
+      );
 
   Widget textField(context) {
     return Expanded(
@@ -223,10 +275,36 @@ class PublishPostPageState extends State<PublishPostPage> {
                 : MediaQuery.of(context).padding.bottom) +
             Constants.suSetSp(80.0),
       ),
-      height: MediaQuery.of(context).size.width /
-          gridCount *
-          (imagesBin.length / gridCount).ceil(),
+//      child: imagesLength != 0 ? DraggableContainer(
+//        key: _stateKey,
+//        autoReorder: true,
+//        dragDecoration: BoxDecoration(
+//          boxShadow: [
+//            BoxShadow(color: Colors.grey[850], blurRadius: 3),
+//          ],
+//        ),
+//        slotSize: Size.square(MediaQuery.of(context).size.width / 5),
+//        deleteButton: Container(
+//          width: Constants.suSetSp(20.0),
+//          height: Constants.suSetSp(20.0),
+//          decoration: BoxDecoration(
+//            color: Colors.redAccent,
+//            shape: BoxShape.circle,
+//          ),
+//          child: Icon(
+//            Icons.delete_forever,
+//            color: Colors.white,
+//            size: Constants.suSetSp(18.0),
+//          ),
+//        ),
+//        // item list
+//        items: <DraggableItem>[
+//          for (int i = 0; i < imagesLength; i++)
+//            imageDraggableItem(context, i),
+//        ],
+//      ) : SizedBox.shrink(),
       child: DragAbleGridView(
+        shrinkWrap: true,
         itemBins: imagesBin,
         editSwitchController: _editSwitchController,
         crossAxisCount: gridCount,
@@ -241,26 +319,46 @@ class PublishPostPageState extends State<PublishPostPage> {
             color: Colors.redAccent,
           ),
           child: Icon(
-            Platform.isAndroid
-                ? Icons.delete
-                : Ionicons.getIconData("ios-trash"),
+            Icons.delete_forever,
             color: Colors.white,
             size: Constants.suSetSp(18.0),
           ),
         ),
         deleteIconClickListener: (int index) {
+          assets.remove(index);
           imagesBin.remove(index);
           imagesLength--;
+          if (failedImages.isNotEmpty) failedImages.clear();
           if (mounted) setState(() {});
         },
         child: (int position) {
-          return Container(
-            margin: EdgeInsets.all(Constants.suSetSp(4.0)),
-            padding: EdgeInsets.zero,
-            child: AssetThumb(
-              asset: imagesBin[position].data,
-              width: size,
-              height: size,
+          return Padding(
+            padding: EdgeInsets.all(Constants.suSetSp(4.0)),
+            child: Stack(
+              children: <Widget>[
+                AssetThumb(
+                  asset: assets[position],
+                  width: size,
+                  height: size,
+                ),
+                if (failedImages.contains(position))
+                  Positioned(
+                    top: 0.0,
+                    bottom: 0.0,
+                    left: 0.0,
+                    right: 0.0,
+                    child: Container(
+                      color: Colors.white.withOpacity(0.7),
+                      child: Center(
+                        child: Icon(
+                          Icons.error,
+                          color: Colors.redAccent,
+                          size: Constants.suSetSp(36.0),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
             ),
           );
         },
@@ -436,20 +534,20 @@ class PublishPostPageState extends State<PublishPostPage> {
       setState(() {
         isLoading = true;
       });
-      showDialog<Null>(
+      showDialog(
         context: context,
         barrierDismissible: false,
         builder: (BuildContext context) {
-          if (imagesBin.length > 0) {
+          if (assets.length > 0) {
             return LoadingDialog(
-              text: "正在上传图片 (1/${imagesBin.length})",
-              controller: _loadingDialogController,
+              text: "正在上传图片 (1/${assets.length})",
+              controller: _dialogController,
               isGlobal: false,
             );
           } else {
             return LoadingDialog(
               text: "正在发布动态...",
-              controller: _loadingDialogController,
+              controller: _dialogController,
               isGlobal: false,
             );
           }
@@ -458,33 +556,39 @@ class PublishPostPageState extends State<PublishPostPage> {
       Map<String, dynamic> data = {};
       data['category'] = "text";
       data['content'] = Uri.encodeFull(content);
-      if (imagesBin.length > 0) {
+      if (assets.length > 0) {
         try {
-          List<Future> query = List(imagesBin.length);
-          _imageIdList = List(imagesBin.length);
-          for (int i = 0; i < imagesBin.length; i++) {
-            Asset imageData = imagesBin[i].data;
-            FormData _form = await createForm(imageData);
+          if (query == null) query = List(assets.length);
+          _imageIdList = List(assets.length);
+          for (int i = 0; i < assets.length; i++) {
+            final imageData = assets[i];
+            final _form = await createForm(imageData);
             query[i] = getImageRequest(_form, i);
           }
-          _postImagesQuery(query).then((responses) {
-            if (responses != null && responses.length == imagesBin.length) {
-              String extraId = _imageIdList.toString();
+          _postImagesQuery().then((responses) {
+            final rs = responses as List;
+            if (rs != null &&
+                rs.length == assets.length &&
+                !rs.contains(null)) {
+              final extraId = _imageIdList.toString();
               data['extra_id'] = extraId.substring(1, extraId.length - 1);
               _postContent(data);
             } else {
-              _loadingDialogController.changeState("failed", "图片上传失败");
+              query.clear();
+              _dialogController.changeState("failed", "图片上传失败");
               isLoading = false;
               if (mounted) setState(() {});
             }
           }).catchError((e) {
-            _loadingDialogController.changeState("failed", "图片上传失败");
+            query.clear();
+            _dialogController.changeState("failed", "图片上传失败");
             isLoading = false;
             if (mounted) setState(() {});
             debugPrint(e.toString());
           });
         } catch (exception) {
-          showCenterErrorShortToast(exception);
+          query?.clear();
+          debugPrint(exception.toString());
         }
       } else {
         Map<String, dynamic> data = {};
@@ -500,59 +604,69 @@ class PublishPostPageState extends State<PublishPostPage> {
       API.postUploadImage,
       data: formData,
     ).then((response) {
+      if (response.statusCode != 200) throw Error();
       _incrementImagesCounter();
       int imageId = int.parse(response.data['image_id'].toString());
       _imageIdList[index] = imageId;
       return response;
     }).catchError((e) {
+      query.clear();
       debugPrint(e.toString());
       debugPrint(e.response.toString());
-      debugPrint("$formData");
-      showCenterErrorShortToast(e.response.toString());
+      showErrorShortToast(e.response.data['msg'] as String);
+      failedImages.add(uploadedImages - 1);
+      _dialogController.changeState("failed", "图片上传失败");
+      isLoading = false;
+      if (mounted) setState(() {});
     });
   }
 
   void _incrementImagesCounter() {
-    setState(() {
-      uploadedImages++;
-    });
-    _loadingDialogController
-        .updateText("正在上传图片 ($uploadedImages/${imagesBin.length})");
+    uploadedImages++;
+    if (mounted) setState(() {});
+    _dialogController.updateText("正在上传图片 ($uploadedImages/${assets.length})");
   }
 
-  Future _postImagesQuery(query) async => await Future.wait(query);
+  Future _postImagesQuery() async => await Future.wait(
+        query,
+        eagerError: true,
+      ).catchError((e) {
+        query.clear();
+        _dialogController.changeState("failed", "图片上传失败");
+        isLoading = false;
+        if (mounted) setState(() {});
+      });
 
   Future _postContent(content) async {
-    if (imagesBin.length > 0) {
-      _loadingDialogController.updateText("正在发布动态...");
+    if (assets.length > 0) {
+      _dialogController.updateText("正在发布动态...");
     }
     NetUtils.postWithCookieAndHeaderSet(
       API.postContent,
       data: content,
     ).then((response) {
-      setState(() {
-        isLoading = false;
-      });
+      isLoading = false;
+      if (mounted) setState(() {});
       if (response.data["tid"] != null) {
-        Future.delayed(Duration(milliseconds: 2100), () {
-          Navigator.popUntil(context, (route) => route.isFirst);
-        });
-        _loadingDialogController.changeState(
+        _dialogController.changeState(
           "success",
           "动态发布成功",
+          duration: const Duration(seconds: 3),
           customPop: () {
-            Navigator.popUntil(context, (route) => route.isFirst);
+            Constants.navigatorKey.currentState.popUntil(
+              ModalRoute.withName("/home"),
+            );
           },
         );
       } else {
-        _loadingDialogController.changeState("failed", "动态发布失败");
+        _dialogController.changeState("failed", "动态发布失败");
       }
       return response;
     }).catchError((e) {
       setState(() {
         isLoading = false;
       });
-      _loadingDialogController.changeState("failed", "动态发布失败");
+      _dialogController.changeState("failed", "动态发布失败");
       debugPrint(e.toString());
     });
   }
@@ -592,8 +706,10 @@ class PublishPostPageState extends State<PublishPostPage> {
           ],
         ),
       );
+      if (result) Navigator.of(context).pop(false);
       return result;
     } else {
+      Navigator.of(context).pop(false);
       return true;
     }
   }
@@ -620,11 +736,7 @@ class PublishPostPageState extends State<PublishPostPage> {
           ),
           actions: <Widget>[
             IconButton(
-              icon: Icon(
-                Platform.isAndroid
-                    ? Icons.send
-                    : Ionicons.getIconData("ios-send"),
-              ),
+              icon: Icon(Icons.send),
               onPressed: () => post(context),
             ),
           ],
@@ -653,4 +765,15 @@ class PublishPostPageState extends State<PublishPostPage> {
 class ItemBin extends DragAbleGridViewBin {
   Asset data;
   ItemBin(this.data);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is ItemBin &&
+            runtimeType == other.runtimeType &&
+            data.identifier == other.data.identifier;
+  }
+
+  @override
+  int get hashCode => data.hashCode;
 }

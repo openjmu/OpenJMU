@@ -70,6 +70,7 @@ class ThemeUtils {
   ];
 
   static bool isDark = false;
+  static bool isAMOLEDDark = false;
   static Brightness currentBrightness = Brightness.light;
   static Color currentThemeColor = defaultColor;
 
@@ -118,16 +119,16 @@ class ThemeUtils {
 
   static ThemeData dark() => ThemeData.dark().copyWith(
         brightness: Brightness.dark,
-        primaryColor: Colors.black,
+        primaryColor: isAMOLEDDark ? Colors.black : Colors.grey[900],
         primaryColorBrightness: Brightness.dark,
-        primaryColorLight: Colors.black,
-        primaryColorDark: Colors.black,
+        primaryColorLight: isAMOLEDDark ? Colors.black : Colors.grey[900],
+        primaryColorDark: isAMOLEDDark ? Colors.black : Colors.grey[900],
         accentColor: currentThemeColor,
         accentColorBrightness: Brightness.dark,
-        canvasColor: const Color(0xFF111111),
-        scaffoldBackgroundColor: Colors.black,
-        bottomAppBarColor: Colors.black,
-        cardColor: Colors.black,
+        canvasColor: isAMOLEDDark ? Color(0xFF111111) : Colors.grey[850],
+        scaffoldBackgroundColor: isAMOLEDDark ? Colors.black : Colors.grey[900],
+        bottomAppBarColor: isAMOLEDDark ? Colors.black : Colors.grey[900],
+        cardColor: isAMOLEDDark ? Colors.black : Colors.grey[900],
         highlightColor: Colors.transparent,
         splashFactory: const NoSplashFactory(),
         toggleableActiveColor: currentThemeColor,
@@ -208,7 +209,7 @@ class NoSplashFactory extends InteractiveInkFeatureFactory {
     double radius,
     VoidCallback onRemoved,
   }) {
-    return new NoSplash(
+    return NoSplash(
       controller: controller,
       referenceBox: referenceBox,
       color: color,

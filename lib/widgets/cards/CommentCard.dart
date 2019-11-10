@@ -169,7 +169,9 @@ class CommentCard extends StatelessWidget {
     return Padding(
       padding: (isRoot ?? false)
           ? EdgeInsets.zero
-          : EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+          : EdgeInsets.symmetric(
+              horizontal: Constants.suSetSp(16.0),
+            ),
       child: ExtendedText(
         content != null ? "$content " : null,
         style: TextStyle(fontSize: Constants.suSetSp(18.0)),
@@ -180,13 +182,13 @@ class CommentCard extends StatelessWidget {
           } else if (text.startsWith("@")) {
             UserPage.jump(data['uid']);
           } else if (text.startsWith(API.wbHost)) {
-            CommonWebPage.jump(context, text, "网页链接");
+            CommonWebPage.jump(text, "网页链接");
           }
         },
         maxLines: 8,
         overFlowTextSpan: OverFlowTextSpan(
           children: <TextSpan>[
-            TextSpan(text: " ... "),
+            TextSpan(text: " ..."),
             TextSpan(
               text: "全文",
               style: TextStyle(
@@ -210,27 +212,66 @@ class CommentCard extends StatelessWidget {
             children: <Widget>[
               if (this.comment.fromUserUid == UserAPI.currentUser.uid ||
                   this.comment.post.uid == UserAPI.currentUser.uid)
-                Column(
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    if (this.comment.fromUserUid == UserAPI.currentUser.uid ||
+                        this.comment.post.uid == UserAPI.currentUser.uid) {
+                      showPlatformDialog(
+                        context: context,
+                        builder: (_) =>
+                            DeleteDialog("评论", comment: this.comment),
+                      );
+                    }
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.all(Constants.suSetSp(6.0)),
+                        child: Icon(
+                          Icons.delete,
+                          size: Constants.suSetSp(36.0),
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        "删除评论",
+                        style: TextStyle(
+                          fontSize: Constants.suSetSp(16.0),
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  Navigator.pop(context);
+                  Constants.navigatorKey.currentState.push(
+                    TransparentRoute(
+                      builder: (context) => CommentPositioned(
+                        post: this.comment.post,
+                        postType: PostType.square,
+                        comment: this.comment
+                      ),
+                    ),
+                  );
+                },
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.delete,
-                          size: Constants.suSetSp(36.0), color: Colors.white),
+                    Padding(
                       padding: EdgeInsets.all(Constants.suSetSp(6.0)),
-                      onPressed: () {
-                        if (this.comment.fromUserUid ==
-                                UserAPI.currentUser.uid ||
-                            this.comment.post.uid == UserAPI.currentUser.uid) {
-                          showPlatformDialog(
-                            context: context,
-                            builder: (_) =>
-                                DeleteDialog("评论", comment: this.comment),
-                          );
-                        }
-                      },
+                      child: Icon(
+                        Icons.reply,
+                        size: Constants.suSetSp(36.0),
+                        color: Colors.white,
+                      ),
                     ),
                     Text(
-                      "删除评论",
+                      "回复评论",
                       style: TextStyle(
                         fontSize: Constants.suSetSp(16.0),
                         color: Colors.white,
@@ -238,66 +279,41 @@ class CommentCard extends StatelessWidget {
                     ),
                   ],
                 ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(
-                      Icons.reply,
-                      size: Constants.suSetSp(36.0),
-                      color: Colors.white,
-                    ),
-                    padding: EdgeInsets.all(Constants.suSetSp(6.0)),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (_) => CommentPositioned(
-                          post: this.comment.post,
-                          postType: PostType.square,
-                          comment: this.comment,
-                        ),
-                        isScrollControlled: true,
-                        backgroundColor: Theme.of(context).primaryColor,
-                      );
-                    },
-                  ),
-                  Text(
-                    "回复评论",
-                    style: TextStyle(
-                      fontSize: Constants.suSetSp(16.0),
-                      color: Colors.white,
-                    ),
-                  )
-                ],
               ),
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.pageview,
-                        size: Constants.suSetSp(36.0), color: Colors.white),
-                    padding: EdgeInsets.all(Constants.suSetSp(6.0)),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(
-                        CupertinoPageRoute(
-                          builder: (context) => PostDetailPage(
-                            this.comment.post,
-                            parentContext: context,
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  Text(
-                    "查看动态",
-                    style: TextStyle(
-                      fontSize: Constants.suSetSp(16.0),
-                      color: Colors.white,
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).push(
+                    platformPageRoute(
+                      context: context,
+                      builder: (context) => PostDetailPage(
+                        this.comment.post,
+                        parentContext: context,
+                      ),
                     ),
-                  ),
-                ],
+                  );
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(Constants.suSetSp(6.0)),
+                      child: Icon(
+                        Icons.pageview,
+                        size: Constants.suSetSp(36.0),
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      "查看动态",
+                      style: TextStyle(
+                        fontSize: Constants.suSetSp(16.0),
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           )

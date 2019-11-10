@@ -35,8 +35,8 @@ class _ImageCropPageState extends State<ImageCropPage> {
 
   @override
   void dispose() {
-    super.dispose();
     _file?.delete();
+    super.dispose();
   }
 
   Future _openImage() async {

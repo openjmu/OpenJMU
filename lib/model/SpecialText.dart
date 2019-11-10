@@ -213,7 +213,7 @@ class CommentImageText extends SpecialText {
       fit: BoxFit.cover,
       margin: EdgeInsets.only(
         top: Constants.suSetSp(8.0),
-        bottom: Constants.suSetSp(20.0),
+        bottom: Constants.suSetSp(10.0),
         right: Constants.suSetSp(4.0),
       ),
       onTap: () {

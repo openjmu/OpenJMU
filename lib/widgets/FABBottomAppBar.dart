@@ -54,7 +54,6 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
 
   @override
   void initState() {
-    super.initState();
     if (widget.initIndex != null) _selectedIndex = widget.initIndex;
     Instances.eventBus
       ..on<ActionsEvent>().listen((event) {
@@ -82,11 +81,12 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
           }
         }
       });
+    super.initState();
   }
 
   void _updateIndex(int index) {
     if (_selectedIndex == 0 && index == 0) {
-      Instances.eventBus.fire(new ScrollToTopEvent(
+      Instances.eventBus.fire(ScrollToTopEvent(
           tabIndex: index, type: widget.items[index].text));
     }
     widget.onTabSelected(index);
@@ -119,56 +119,79 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
     int index,
     ValueChanged<int> onPressed,
   }) {
-    Color color = _selectedIndex == index ? widget.selectedColor : widget.color;
-    String iconPath = "assets/icons/bottomNavigation/"
-        "${item.iconPath}"
-        "-"
-        "${_selectedIndex == index ? "fill" : "line"}"
-        ".svg";
     return Expanded(
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () => onPressed(index),
         child: Stack(
-          alignment: AlignmentDirectional.center,
           children: <Widget>[
             SizedBox(
               height: Constants.suSetSp(widget.height),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SvgPicture.asset(
-                    iconPath,
-                    color: color,
-                    width: Constants.suSetSp(widget.iconSize),
-                    height: Constants.suSetSp(widget.iconSize),
+              child: Center(
+                child: AnimatedCrossFade(
+                  duration: kTabScrollDuration,
+                  crossFadeState: _selectedIndex == index
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  firstChild: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SvgPicture.asset(
+                        "assets/icons/bottomNavigation/"
+                        "${item.iconPath}-fill.svg",
+                        color: widget.selectedColor,
+                        width: Constants.suSetSp(widget.iconSize),
+                        height: Constants.suSetSp(widget.iconSize),
+                      ),
+                      Text(
+                        item.text,
+                        style: TextStyle(
+                          color: widget.selectedColor,
+                          fontSize: Constants.suSetSp(widget.itemFontSize),
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    item.text,
-                    style: TextStyle(
-                      color: color,
-                      fontSize: Constants.suSetSp(widget.itemFontSize),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Visibility(
-              visible: showNotification && index == 2,
-              child: Positioned(
-                top: Constants.suSetSp(5),
-                right: Constants.suSetSp(28),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(Constants.suSetSp(5)),
-                  child: Container(
-                    width: Constants.suSetSp(10),
-                    height: Constants.suSetSp(10),
-                    color: widget.selectedColor,
+                  secondChild: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SvgPicture.asset(
+                        "assets/icons/bottomNavigation/"
+                        "${item.iconPath}-line.svg",
+                        color: widget.color,
+                        width: Constants.suSetSp(widget.iconSize),
+                        height: Constants.suSetSp(widget.iconSize),
+                      ),
+                      Text(
+                        item.text,
+                        style: TextStyle(
+                          color: widget.color,
+                          fontSize: Constants.suSetSp(widget.itemFontSize),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
+            if (index == 2)
+              Positioned(
+                top: Constants.suSetSp(5),
+                right: Constants.suSetSp(28),
+                child: Visibility(
+                  visible: showNotification,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(Constants.suSetSp(5)),
+                    child: Container(
+                      width: Constants.suSetSp(10),
+                      height: Constants.suSetSp(10),
+                      color: widget.selectedColor,
+                    ),
+                  ),
+                ),
+              ),
           ],
         ),
       ),

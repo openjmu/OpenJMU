@@ -310,7 +310,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
       if (this.mounted) {
         setState(() {
           Instances.eventBus.fire(PraiseInPostUpdatedEvent(
-            id: widget.post.id,
+            postId: widget.post.id,
             count: total,
             type: "normal",
           ));
@@ -347,7 +347,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
       if (this.mounted) {
         setState(() {
           Instances.eventBus.fire(PraiseInPostUpdatedEvent(
-            id: widget.post.id,
+            postId: widget.post.id,
             count: total,
             type: "normal",
           ));

@@ -120,7 +120,7 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
       if (this.mounted) {
         setState(() {
           Instances.eventBus
-              .fire(new CommentInPostUpdatedEvent(widget.post.id, total));
+              .fire(CommentInPostUpdatedEvent(widget.post.id, total));
           _comments = comments;
           isLoading = false;
           firstLoadComplete = true;
@@ -238,7 +238,7 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
         } else if (text.startsWith("@")) {
           UserPage.jump(data['uid']);
         } else if (text.startsWith(API.wbHost)) {
-          CommonWebPage.jump(context, text, "网页链接");
+          CommonWebPage.jump(text, "网页链接");
         } else if (text.startsWith("|")) {
           int imageID = data['image'];
           String imageUrl = API.commentImageUrl(imageID, "o");
@@ -430,15 +430,14 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
                                     size: Constants.suSetSp(20.0),
                                   ),
                                   onPressed: () {
-                                    showModalBottomSheet(
-                                      context: context,
-                                      builder: (_) => CommentPositioned(
-                                        post: widget.post,
-                                        postType: PostType.team,
-                                        comment: _comments[index],
+                                    Constants.navigatorKey.currentState.push(
+                                      TransparentRoute(
+                                        builder: (context) => CommentPositioned(
+                                          post: widget.post,
+                                          postType: PostType.team,
+                                          comment: _comments[index],
+                                        ),
                                       ),
-                                      isScrollControlled: true,
-                                      backgroundColor: Theme.of(context).primaryColor,
                                     );
                                   },
                                 ),

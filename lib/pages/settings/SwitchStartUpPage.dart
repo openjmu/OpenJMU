@@ -150,8 +150,14 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                   childAspectRatio: 2.1,
                   children: <Widget>[
                     for (int i = 0; i < page['pages'].length; i++)
-                      pageSelectionItem(context, sectionIndex, page, pageIndex,
-                          i, page["index"]),
+                      pageSelectionItem(
+                        context,
+                        sectionIndex,
+                        page,
+                        pageIndex,
+                        i,
+                        page["index"],
+                      ),
                   ],
                 ),
               ],
@@ -208,8 +214,11 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: pageSection[sectionIndex].length,
-                itemBuilder: (context, index) =>
-                    settingItem(context, index, sectionIndex),
+                itemBuilder: (context, index) => settingItem(
+                  context,
+                  index,
+                  sectionIndex,
+                ),
               ),
             ),
           ],
