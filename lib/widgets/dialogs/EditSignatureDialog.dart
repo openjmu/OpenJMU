@@ -90,13 +90,16 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                     child: TextField(
                       autofocus: true,
                       style: Theme.of(context).textTheme.body1.copyWith(
-                            fontSize: Constants.suSetSp(16.0),
+                            fontSize: Constants.suSetSp(18.0),
                             textBaseline: TextBaseline.alphabetic,
                           ),
                       controller: _textEditingController,
                       maxLength: 127,
                       maxLines: null,
                       decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                          vertical: Constants.suSetSp(6.0),
+                        ),
                         border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey[700]),
                         ),
@@ -108,6 +111,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                           textBaseline: TextBaseline.alphabetic,
                         ),
                       ),
+                      cursorColor: ThemeUtils.currentThemeColor,
                     ),
                   ),
                   Row(

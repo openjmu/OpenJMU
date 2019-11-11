@@ -1,10 +1,14 @@
+import 'dart:io';
 import 'dart:math';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:dio/dio.dart';
 import 'package:extended_text_field/extended_text_field.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart' as path;
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/ToggleButton.dart';
@@ -26,6 +30,8 @@ class ForwardPositioned extends StatefulWidget {
 class ForwardPositionedState extends State<ForwardPositioned> {
   final _forwardController = TextEditingController();
   final _focusNode = FocusNode();
+  File _image;
+  int _imageID;
 
   bool _forwarding = false;
   bool commentAtTheMeanTime = false;
@@ -45,6 +51,25 @@ class ForwardPositionedState extends State<ForwardPositioned> {
     super.dispose();
   }
 
+  Future<void> _addImage() async {
+    final file = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (file == null) return;
+
+    _image = file;
+    if (mounted) setState(() {});
+  }
+
+  FormData createForm(File file) => FormData.from({
+        "image": UploadFileInfo(file, path.basename(file.path)),
+        "image_type": 0,
+      });
+
+  Future getImageRequest(FormData formData) async =>
+      NetUtils.postWithCookieAndHeaderSet(
+        API.postUploadImage,
+        data: formData,
+      );
+
   Widget get textField => ExtendedTextField(
         specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
         focusNode: _focusNode,
@@ -61,6 +86,20 @@ class ForwardPositionedState extends State<ForwardPositioned> {
               color: ThemeUtils.currentThemeColor,
             ),
           ),
+          suffixIcon: _image != null
+              ? SizedBox(
+                  width: Constants.suSetSp(70.0),
+                  child: Container(
+                    margin: EdgeInsets.only(right: Constants.suSetSp(14.0)),
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: FileImage(_image),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                )
+              : null,
         ),
         enabled: !_forwarding,
         style: Theme.of(context).textTheme.body1.copyWith(
@@ -72,16 +111,25 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         maxLines: 3,
       );
 
-  void _requestForward(context) {
+  void _request(context) async {
     setState(() {
       _forwarding = true;
     });
-    String _content;
+    String content;
     _forwardController.text.length == 0
-        ? _content = "转发"
-        : _content = _forwardController.text;
+        ? content = "转发"
+        : content = _forwardController.text;
+
+    /// Sending image if it exist.
+    if (_image != null) {
+      Map<String, dynamic> data =
+          (await getImageRequest(createForm(_image))).data;
+      _imageID = int.parse(data['image_id']);
+      content += " |$_imageID| ";
+    }
+
     PostAPI.postForward(
-      _content,
+      content,
       widget.post.id,
       commentAtTheMeanTime,
     ).then((response) {
@@ -189,6 +237,19 @@ class ForwardPositionedState extends State<ForwardPositioned> {
             Spacer(),
             GestureDetector(
               behavior: HitTestBehavior.opaque,
+              onTap: _addImage,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: Constants.suSetSp(6.0),
+                ),
+                child: Icon(
+                  Icons.add_photo_alternate,
+                  size: Constants.suSetSp(26.0),
+                ),
+              ),
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
               onTap: () {
                 mentionPeople(context);
               },
@@ -244,9 +305,10 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                         color: ThemeUtils.currentThemeColor,
                       ),
                     ),
-                    onTap: () {
-                      _requestForward(context);
-                    },
+                    onTap:
+                        (_forwardController.text.length > 0 || _image != null)
+                            ? () => _request(context)
+                            : null,
                   )
                 : Padding(
                     padding: EdgeInsets.symmetric(

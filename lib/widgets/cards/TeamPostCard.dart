@@ -12,10 +12,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/events/Events.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
-import 'package:OpenJMU/pages/SearchPage.dart';
-import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/pages/post/TeamPostDetailPage.dart';
-import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
@@ -90,22 +87,6 @@ class _TeamPostCardState extends State<TeamPostCard> {
         }
       });
   }
-
-  Widget getPostAvatar(context, post) => SizedBox(
-        width: Constants.suSetSp(48.0),
-        height: Constants.suSetSp(48.0),
-        child: GestureDetector(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(Constants.suSetSp(24.0)),
-            child: FadeInImage(
-              fadeInDuration: const Duration(milliseconds: 100),
-              placeholder: AssetImage("assets/avatar_placeholder.png"),
-              image: UserAPI.getAvatarProvider(uid: post.uid),
-            ),
-          ),
-          onTap: () => UserPage.jump(widget.post.uid),
-        ),
-      );
 
   Text getPostNickname(post) => Text(
         post.nickname ?? post.uid,
@@ -182,14 +163,19 @@ class _TeamPostCardState extends State<TeamPostCard> {
           margin: EdgeInsets.only(top: Constants.suSetSp(8.0)),
           child: GestureDetector(
             onTap: () {
-              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                return TeamPostDetailPage(
-                  _post,
-                  index: widget.index,
-                  fromPage: widget.fromPage,
-                  beforeContext: context,
-                );
-              }));
+              Navigator.of(context).push(
+                platformPageRoute(
+                  context: context,
+                  builder: (context) {
+                    return TeamPostDetailPage(
+                      _post,
+                      index: widget.index,
+                      fromPage: widget.fromPage,
+                      beforeContext: context,
+                    );
+                  },
+                ),
+              );
             },
             child: Container(
               width: MediaQuery.of(context).size.width,
@@ -258,24 +244,26 @@ class _TeamPostCardState extends State<TeamPostCard> {
         }
         imagesWidget.add(GestureDetector(
           onTap: () {
-            Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
-              return ImageViewer(
-                index,
-                data.map<ImageBean>((f) {
-                  return ImageBean(
-                    id: imageID,
-                    imageUrl: imageUrl,
-                    imageThumbUrl: imageUrl,
-                    postId: widget.post.id,
+            Navigator.of(context).push(
+              platformPageRoute(
+                context: context,
+                builder: (_) {
+                  return ImageViewer(
+                    index,
+                    data.map<ImageBean>((f) {
+                      return ImageBean(
+                        id: imageID,
+                        imageUrl: imageUrl,
+                        imageThumbUrl: imageUrl,
+                        postId: widget.post.id,
+                      );
+                    }).toList(),
                   );
-                }).toList(),
-              );
-            }));
+                },
+              ),
+            );
           },
-//                    child: Hero(
-//                        tag: "$imageID${index.toString()}${widget.post.id.toString()}",
           child: _exImage,
-//                    ),
         ));
       }
       int itemCount = 3;
@@ -420,16 +408,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
           child: ExtendedText(
             content != null ? "$content " : null,
             style: TextStyle(fontSize: Constants.suSetSp(18.0)),
-            onSpecialTextTap: (dynamic data) {
-              String text = data['content'];
-              if (text.startsWith("#")) {
-                SearchPage.search(context, text.substring(1, text.length - 1));
-              } else if (text.startsWith("@")) {
-                UserPage.jump(data['uid']);
-              } else if (text.startsWith(API.wbHost)) {
-                CommonWebPage.jump(text, "网页链接");
-              }
-            },
+            onSpecialTextTap: specialTextTapRecognizer,
             maxLines: widget.isDetail ?? false ? null : 10,
             overFlowTextSpan: widget.isDetail ?? false
                 ? null
@@ -486,14 +465,19 @@ class _TeamPostCardState extends State<TeamPostCard> {
       onTap: isDetail
           ? null
           : () {
-              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                return TeamPostDetailPage(
-                  widget.post,
-                  index: widget.index,
-                  fromPage: widget.fromPage,
-                  beforeContext: context,
-                );
-              }));
+              Navigator.of(context).push(
+                platformPageRoute(
+                  context: context,
+                  builder: (context) {
+                    return TeamPostDetailPage(
+                      widget.post,
+                      index: widget.index,
+                      fromPage: widget.fromPage,
+                      beforeContext: context,
+                    );
+                  },
+                ),
+              );
             },
       child: Card(
         margin: isShield
@@ -510,7 +494,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                     ),
                     child: Row(
                       children: <Widget>[
-                        getPostAvatar(context, widget.post),
+                        UserAPI.getAvatar(uid: widget.post.uid),
                         Expanded(
                           child: Padding(
                             padding: EdgeInsets.symmetric(

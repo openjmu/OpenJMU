@@ -8,12 +8,9 @@ import 'package:extended_text/extended_text.dart';
 import 'package:dio/dio.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
-import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
-import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
 class TeamCommentListInPostController {
   _TeamCommentListInPostState _commentListInPostState;
@@ -231,26 +228,7 @@ class _TeamCommentListInPostState extends State<TeamCommentListInPost> {
     return ExtendedText(
       content != null ? "$content " : null,
       style: TextStyle(fontSize: Constants.suSetSp(17.0)),
-      onSpecialTextTap: (dynamic data) {
-        String text = data['content'];
-        if (text.startsWith("#")) {
-          SearchPage.search(context, text.substring(1, text.length - 1));
-        } else if (text.startsWith("@")) {
-          UserPage.jump(data['uid']);
-        } else if (text.startsWith(API.wbHost)) {
-          CommonWebPage.jump(text, "网页链接");
-        } else if (text.startsWith("|")) {
-          int imageID = data['image'];
-          String imageUrl = API.commentImageUrl(imageID, "o");
-          Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
-            return ImageViewer(
-              0,
-              [ImageBean(id: imageID, imageUrl: imageUrl)],
-            );
-          }));
-        }
-      },
-      specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+      onSpecialTextTap: specialTextTapRecognizer,
     );
   }
 

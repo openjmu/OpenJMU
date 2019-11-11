@@ -4,20 +4,16 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/services.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:dio/dio.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
-import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/cards/CommentCard.dart';
 import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
-import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
 class CommentController {
   final String commentType;
@@ -456,7 +452,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
     );
   }
 
-  Text getCommentNickname(context, comment) {
+  Widget getCommentNickname(context, comment) {
     return Text(
       comment.fromUserName,
       style: TextStyle(
@@ -466,7 +462,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
     );
   }
 
-  Text getCommentTime(context, comment) {
+  Widget getCommentTime(context, comment) {
     String _commentTime = comment.commentTime;
     DateTime now = DateTime.now();
     if (int.parse(_commentTime.substring(0, 4)) == now.year) {
@@ -488,26 +484,10 @@ class _CommentListInPostState extends State<CommentListInPost> {
     return ExtendedText(
       content != null ? "$content " : null,
       style: TextStyle(fontSize: Constants.suSetSp(17.0)),
-      onSpecialTextTap: (dynamic data) {
-        String text = data['content'];
-        if (text.startsWith("#")) {
-          SearchPage.search(context, text.substring(1, text.length - 1));
-        } else if (text.startsWith("@")) {
-          UserPage.jump(data['uid']);
-        } else if (text.startsWith(API.wbHost)) {
-          CommonWebPage.jump(text, "网页链接");
-        } else if (text.startsWith("|")) {
-          int imageID = data['image'];
-          String imageUrl = API.commentImageUrl(imageID, "o");
-          Navigator.of(context).push(CupertinoPageRoute(builder: (_) {
-            return ImageViewer(
-              0,
-              [ImageBean(id: imageID, imageUrl: imageUrl, postId: null)],
-            );
-          }));
-        }
-      },
-      specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+      onSpecialTextTap: specialTextTapRecognizer,
+      specialTextSpanBuilder: StackSpecialTextSpanBuilder(
+        widgetType: WidgetType.comment,
+      ),
     );
   }
 
@@ -695,12 +675,11 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                   ),
                                 ),
                                 IconButton(
-                                  padding: EdgeInsets.all(
-                                    Constants.suSetSp(26.0),
-                                  ),
+                                  padding: EdgeInsets.zero,
                                   icon: Icon(
-                                    Icons.comment,
+                                    Icons.reply,
                                     color: Colors.grey,
+                                    size: Constants.suSetSp(28.0),
                                   ),
                                   onPressed: () {
                                     if (_comments.length >= index &&

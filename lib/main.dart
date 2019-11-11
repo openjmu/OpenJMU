@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -33,7 +32,14 @@ class OpenJMUAppState extends State<OpenJMUApp> {
     ['actions_message', '消息'],
     ['actions_mine', '我的'],
   ];
-  StreamSubscription<ConnectivityResult> connectivitySubscription;
+
+  final connectivitySubscription = Connectivity().onConnectivityChanged.listen(
+    (ConnectivityResult result) {
+      Instances.eventBus.fire(ConnectivityChangeEvent(result));
+      debugPrint("Current connectivity: $result");
+    },
+  );
+
   bool isUserLogin = false;
   String initAction;
 
@@ -45,12 +51,6 @@ class OpenJMUAppState extends State<OpenJMUApp> {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
-    connectivitySubscription = Connectivity()
-        .onConnectivityChanged
-        .listen((ConnectivityResult result) {
-      Instances.eventBus.fire(ConnectivityChangeEvent(result));
-      debugPrint("Current connectivity: $result");
-    });
 
     Instances.eventBus
       ..on<ChangeThemeEvent>().listen((event) {

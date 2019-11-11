@@ -12,10 +12,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:like_button/like_button.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/SearchPage.dart';
-import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/pages/post/PostDetailPage.dart';
-import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/ForwardPositioned.dart';
@@ -165,14 +162,19 @@ class _PostCardState extends State<PostCard> {
           margin: EdgeInsets.only(top: Constants.suSetSp(8.0)),
           child: GestureDetector(
             onTap: () {
-              Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-                return PostDetailPage(
-                  _post,
-                  index: widget.index,
-                  fromPage: widget.fromPage,
-                  parentContext: context,
-                );
-              }));
+              Navigator.of(context).push(
+                platformPageRoute(
+                  context: context,
+                  builder: (context) {
+                    return PostDetailPage(
+                      _post,
+                      index: widget.index,
+                      fromPage: widget.fromPage,
+                      parentContext: context,
+                    );
+                  },
+                ),
+              );
             },
             child: Container(
               width: Screen.width,
@@ -446,16 +448,7 @@ class _PostCardState extends State<PostCard> {
           child: ExtendedText(
             content != null ? "$content " : null,
             style: TextStyle(fontSize: Constants.suSetSp(18.0)),
-            onSpecialTextTap: (dynamic data) {
-              String text = data['content'];
-              if (text.startsWith("#")) {
-                SearchPage.search(context, text.substring(1, text.length - 1));
-              } else if (text.startsWith("@")) {
-                UserPage.jump(data['uid']);
-              } else if (text.startsWith(API.wbHost)) {
-                CommonWebPage.jump(text, "网页链接");
-              }
-            },
+            onSpecialTextTap: specialTextTapRecognizer,
             maxLines: widget.isDetail ?? false ? null : 8,
             overFlowTextSpan: widget.isDetail ?? false
                 ? null
@@ -538,9 +531,9 @@ class _PostCardState extends State<PostCard> {
                         ),
                         child: Text(
                           text,
-                          style: TextStyle(
-                            fontSize: Constants.suSetSp(20.0),
-                          ),
+                          style: Theme.of(context).textTheme.body1.copyWith(
+                                fontSize: Constants.suSetSp(20.0),
+                              ),
                         ),
                       ),
                     ),

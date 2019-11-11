@@ -364,10 +364,14 @@ class _UserPageState extends State<UserPage>
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
-                Navigator.of(context)
-                    .push(CupertinoPageRoute(builder: (context) {
-                  return UserListPage(_user, 1);
-                }));
+                Navigator.of(context).push(
+                  platformPageRoute(
+                    context: context,
+                    builder: (context) {
+                      return UserListPage(_user, 1);
+                    },
+                  ),
+                );
               },
               child: RichText(
                   text: TextSpan(children: <TextSpan>[
@@ -392,10 +396,14 @@ class _UserPageState extends State<UserPage>
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
-                Navigator.of(context)
-                    .push(CupertinoPageRoute(builder: (context) {
-                  return UserListPage(_user, 2);
-                }));
+                Navigator.of(context).push(
+                  platformPageRoute(
+                    context: context,
+                    builder: (context) {
+                      return UserListPage(_user, 2);
+                    },
+                  ),
+                );
               },
               child: RichText(
                   text: TextSpan(children: <TextSpan>[
@@ -575,58 +583,85 @@ class _UserPageState extends State<UserPage>
     widget.uid == UserAPI.currentUser.uid
         ? showModalBottomSheet(
             context: context,
+            isScrollControlled: true,
             builder: (BuildContext sheetContext) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   ListTile(
-                    leading: Icon(Icons.account_circle),
-                    title: Text("查看大头像"),
+                    leading: Icon(
+                      Icons.account_circle,
+                      color: Theme.of(context).iconTheme.color,
+                      size: Constants.suSetSp(30.0),
+                    ),
+                    title: Text(
+                      "查看大头像",
+                      style: Theme.of(context).textTheme.body1.copyWith(
+                            fontSize: Constants.suSetSp(20.0),
+                          ),
+                    ),
                     onTap: () => Navigator.of(sheetContext)
                       ..pop()
-                      ..push(CupertinoPageRoute(
-                        builder: (_) => ImageViewer(
-                          0,
-                          [
-                            ImageBean(
-                              id: widget.uid,
-                              imageUrl: "${API.userAvatar}"
-                                  "?uid=${widget.uid}"
-                                  "&size=f640",
-                            )
-                          ],
-                          needsClear: true,
+                      ..push(
+                        platformPageRoute(
+                          context: context,
+                          builder: (_) => ImageViewer(
+                            0,
+                            [
+                              ImageBean(
+                                id: widget.uid,
+                                imageUrl: "${API.userAvatar}"
+                                    "?uid=${widget.uid}"
+                                    "&size=f640",
+                              )
+                            ],
+                            needsClear: true,
+                          ),
                         ),
-                      )),
+                      ),
                   ),
                   ListTile(
-                    leading: Icon(Icons.photo_library),
-                    title: Text("更换头像"),
+                    leading: Icon(
+                      Icons.photo_library,
+                      color: Theme.of(context).iconTheme.color,
+                      size: Constants.suSetSp(30.0),
+                    ),
+                    title: Text(
+                      "更换头像",
+                      style: Theme.of(context).textTheme.body1.copyWith(
+                            fontSize: Constants.suSetSp(20.0),
+                          ),
+                    ),
                     onTap: () async {
                       Navigator.of(sheetContext).pop();
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (_) => ImageCropPage(),
-                          )).then((result) {
-                        if (result)
+                      Navigator.of(context)
+                          .push(
+                        platformPageRoute(
+                          context: context,
+                          builder: (_) => ImageCropPage(),
+                        ),
+                      )
+                          .then((result) {
+                        if (result != null || result) {
                           Instances.eventBus.fire(AvatarUpdatedEvent());
+                        }
                       });
                     },
                   ),
+                  SizedBox(height: Screen.bottomSafeHeight),
                 ],
               );
             },
           )
         : Navigator.of(context).push(
-            CupertinoPageRoute(
+            platformPageRoute(
+              context: context,
               builder: (_) => ImageViewer(
                 0,
                 [
                   ImageBean(
                     id: widget.uid,
-                    imageUrl:
-                        API.userAvatar + "?uid=${widget.uid}&size=f640",
+                    imageUrl: API.userAvatar + "?uid=${widget.uid}&size=f640",
                   )
                 ],
                 needsClear: true,
@@ -814,7 +849,7 @@ class _UserPageState extends State<UserPage>
                                 child: Text(
                                   "黑名单为空",
                                   style: TextStyle(
-                                    fontSize: Constants.suSetSp(16.0),
+                                    fontSize: Constants.suSetSp(18.0),
                                   ),
                                 ),
                               ),

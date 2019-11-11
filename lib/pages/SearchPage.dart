@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
@@ -15,10 +16,15 @@ class SearchPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => SearchPageState();
 
-  static void search(BuildContext context, String content) {
-    Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-      return SearchPage(content: content);
-    }));
+  static void search(String content) {
+    Constants.navigatorKey.currentState.push(
+      platformPageRoute(
+        context: Constants.navigatorKey.currentContext,
+        builder: (context) {
+          return SearchPage(content: content);
+        },
+      ),
+    );
   }
 }
 
@@ -46,7 +52,9 @@ class SearchPageState extends State<SearchPage>
   void dispose() {
     _controller?.removeListener(canClearListener);
     _controller?.dispose();
-    _focusNode..unfocus()..dispose();
+    _focusNode
+      ..unfocus()
+      ..dispose();
     super.dispose();
   }
 

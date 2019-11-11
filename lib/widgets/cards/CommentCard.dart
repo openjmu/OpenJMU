@@ -4,10 +4,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/post/PostDetailPage.dart';
-import 'package:OpenJMU/pages/user/UserPage.dart';
-import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 
@@ -31,22 +28,6 @@ class CommentCard extends StatelessWidget {
     fontSize: Constants.suSetSp(15.0),
   );
   final Color subIconColor = Colors.grey;
-
-  Widget getCommentAvatar(context, comment) => SizedBox(
-        width: Constants.suSetSp(48.0),
-        height: Constants.suSetSp(48.0),
-        child: GestureDetector(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(Constants.suSetSp(24.0)),
-            child: FadeInImage(
-              fadeInDuration: const Duration(milliseconds: 100),
-              placeholder: AssetImage("assets/avatar_placeholder.png"),
-              image: UserAPI.getAvatarProvider(uid: comment.fromUserUid),
-            ),
-          ),
-          onTap: () => UserPage.jump(comment.fromUserUid),
-        ),
-      );
 
   Text getCommentNickname(context, comment) {
     return Text(
@@ -175,16 +156,7 @@ class CommentCard extends StatelessWidget {
       child: ExtendedText(
         content != null ? "$content " : null,
         style: TextStyle(fontSize: Constants.suSetSp(18.0)),
-        onSpecialTextTap: (dynamic data) {
-          String text = data['content'];
-          if (text.startsWith("#")) {
-            SearchPage.search(context, text.substring(1, text.length - 1));
-          } else if (text.startsWith("@")) {
-            UserPage.jump(data['uid']);
-          } else if (text.startsWith(API.wbHost)) {
-            CommonWebPage.jump(text, "网页链接");
-          }
-        },
+        onSpecialTextTap: specialTextTapRecognizer,
         maxLines: 8,
         overFlowTextSpan: OverFlowTextSpan(
           children: <TextSpan>[
@@ -360,7 +332,7 @@ class CommentCard extends StatelessWidget {
               ),
               child: Row(
                 children: <Widget>[
-                  getCommentAvatar(context, this.comment),
+                  UserAPI.getAvatar(uid: comment.fromUserUid),
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(

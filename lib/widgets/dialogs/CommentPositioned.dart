@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as path;
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/RoundedCheckBox.dart';
@@ -77,7 +77,7 @@ class CommentPositionedState extends State<CommentPositioned> {
   }
 
   FormData createForm(File file) => FormData.from({
-        "image": UploadFileInfo(file, basename(file.path)),
+        "image": UploadFileInfo(file, path.basename(file.path)),
         "image_type": 0,
       });
 
@@ -160,7 +160,7 @@ class CommentPositionedState extends State<CommentPositioned> {
         Map<String, dynamic> data =
             (await getImageRequest(createForm(_image))).data;
         _imageID = int.parse(data['image_id']);
-        content += "\n|$_imageID|";
+        content += " |$_imageID| ";
       }
 
       CommentAPI.postComment(

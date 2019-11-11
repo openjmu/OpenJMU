@@ -4,13 +4,10 @@
 ///
 import 'dart:math' as math;
 
-import 'package:OpenJMU/pages/SearchPage.dart';
-import 'package:OpenJMU/pages/user/UserPage.dart';
-import 'package:OpenJMU/widgets/CommonWebPage.dart';
-import 'package:extended_text/extended_text.dart';
-import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:extended_text/extended_text.dart';
+import 'package:extended_text_field/extended_text_field.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
@@ -252,16 +249,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
             style: TextStyle(
               fontSize: Constants.suSetSp(19.0),
             ),
-            onSpecialTextTap: (dynamic data) {
-              String text = data['content'];
-              if (text.startsWith("#")) {
-                SearchPage.search(context, text.substring(1, text.length - 1));
-              } else if (text.startsWith("@")) {
-                UserPage.jump(data['uid']);
-              } else if (text.startsWith(API.wbHost)) {
-                CommonWebPage.jump(text, "网页链接");
-              }
-            },
+            onSpecialTextTap: specialTextTapRecognizer,
             specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
           ),
         ),

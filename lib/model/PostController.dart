@@ -7,10 +7,8 @@ import 'package:dio/dio.dart';
 import 'package:extended_text/extended_text.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/SearchPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/api/UserAPI.dart';
-import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
 
 class PostController {
@@ -499,16 +497,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
   Widget getExtendedText(context, content) => ExtendedText(
         content != null ? "$content " : null,
         style: TextStyle(fontSize: Constants.suSetSp(17.0)),
-        onSpecialTextTap: (dynamic data) {
-          String text = data['content'];
-          if (text.startsWith("#")) {
-            SearchPage.search(context, text.substring(1, text.length - 1));
-          } else if (text.startsWith("@")) {
-            UserPage.jump(data['uid']);
-          } else if (text.startsWith(API.wbHost)) {
-            CommonWebPage.jump(text, "网页链接");
-          }
-        },
+        onSpecialTextTap: specialTextTapRecognizer,
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       );
 

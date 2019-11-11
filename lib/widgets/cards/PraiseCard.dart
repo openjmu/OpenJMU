@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:extended_text/extended_text.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/model/Bean.dart';
 import 'package:OpenJMU/model/SpecialText.dart';
-import 'package:OpenJMU/pages/SearchPage.dart';
-import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/pages/post/PostDetailPage.dart';
-import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class PraiseCard extends StatelessWidget {
   final Praise praise;
@@ -31,22 +29,6 @@ class PraiseCard extends StatelessWidget {
     fontSize: Constants.suSetSp(15.0),
   );
   final Color subIconColor = Colors.grey;
-
-  Widget getPraiseAvatar(context, praise) => SizedBox(
-        width: Constants.suSetSp(48.0),
-        height: Constants.suSetSp(48.0),
-        child: GestureDetector(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(Constants.suSetSp(24.0)),
-            child: FadeInImage(
-              fadeInDuration: const Duration(milliseconds: 100),
-              placeholder: AssetImage("assets/avatar_placeholder.png"),
-              image: UserAPI.getAvatarProvider(uid: praise.uid),
-            ),
-          ),
-          onTap: () => UserPage.jump(praise.uid),
-        ),
-      );
 
   Text getPraiseNickname(context, praise) => Text(
         praise.nickname ?? praise.uid,
@@ -135,16 +117,7 @@ class PraiseCard extends StatelessWidget {
     return ExtendedText(
       content != null ? "$content " : null,
       style: TextStyle(fontSize: Constants.suSetSp(18.0)),
-      onSpecialTextTap: (dynamic data) {
-        String text = data['content'];
-        if (text.startsWith("#")) {
-          SearchPage.search(context, text.substring(1, text.length - 1));
-        } else if (text.startsWith("@")) {
-          UserPage.jump(data['uid']);
-        } else if (text.startsWith(API.wbHost)) {
-          CommonWebPage.jump(text, "网页链接");
-        }
-      },
+      onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       maxLines: 8,
       overFlowTextSpan: OverFlowTextSpan(
@@ -166,9 +139,14 @@ class PraiseCard extends StatelessWidget {
     Post _post = Post.fromJson(this.praise.post);
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(CupertinoPageRoute(builder: (context) {
-          return PostDetailPage(_post, parentContext: context);
-        }));
+        Navigator.of(context).push(
+          platformPageRoute(
+            context: context,
+            builder: (context) {
+              return PostDetailPage(_post, parentContext: context);
+            },
+          ),
+        );
       },
       child: Card(
         margin: EdgeInsets.zero,
@@ -182,7 +160,7 @@ class PraiseCard extends StatelessWidget {
               ),
               child: Row(
                 children: <Widget>[
-                  getPraiseAvatar(context, this.praise),
+                  UserAPI.getAvatar(uid: praise.uid),
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
