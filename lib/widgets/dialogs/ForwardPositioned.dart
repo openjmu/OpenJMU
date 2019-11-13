@@ -305,10 +305,9 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                         color: ThemeUtils.currentThemeColor,
                       ),
                     ),
-                    onTap:
-                        (_forwardController.text.length > 0 || _image != null)
-                            ? () => _request(context)
-                            : null,
+                    onTap: () {
+                      _request(context);
+                    },
                   )
                 : Padding(
                     padding: EdgeInsets.symmetric(

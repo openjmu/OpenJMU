@@ -90,7 +90,7 @@ class PostAPI {
     Map<String, dynamic> data = {
       "content": Uri.encodeFull(content),
       "root_tid": postId,
-      "relay": replyAtTheMeanTime ? 3 : 0
+      "reply_flag": replyAtTheMeanTime ? 3 : 0
     };
     return NetUtils.postWithCookieAndHeaderSet(
       "${API.postRequestForward}",

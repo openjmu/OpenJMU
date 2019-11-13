@@ -44,7 +44,8 @@ class PostList extends StatefulWidget {
   PostList newController(_controller) => PostList(_controller);
 }
 
-class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
+class _PostListState extends State<PostList>
+    with AutomaticKeepAliveClientMixin {
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   final ScrollController _scrollController = ScrollController();
@@ -106,7 +107,8 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       ..on<PostDeletedEvent>().listen((event) {
         debugPrint(
             "PostDeleted: ${event.postId} / ${event.page} / ${event.index}");
-        if ((event.page == "user") && event.index != null) {
+        if ((event.page == widget._postController.postType) &&
+            event.index != null) {
           _idList.removeAt(event.index);
           _postList.removeAt(event.index);
         }
