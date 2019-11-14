@@ -71,6 +71,7 @@ class ThemeUtils {
 
   static bool isDark = false;
   static bool isAMOLEDDark = false;
+  static bool isPlatformBrightness = false;
   static Brightness currentBrightness = Brightness.light;
   static Color currentThemeColor = defaultColor;
 

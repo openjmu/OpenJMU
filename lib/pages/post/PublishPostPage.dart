@@ -748,7 +748,7 @@ class PublishPostPageState extends State<PublishPostPage> {
               Column(
                 children: <Widget>[
                   textField(context),
-                  customGridView(context),
+                  if (assets.isNotEmpty) customGridView(context),
                 ],
               ),
               _counter(context),

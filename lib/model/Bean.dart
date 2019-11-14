@@ -626,11 +626,20 @@ class Course {
     final List weeks =
         !isCustom ? json['allWeek'].split(' ')[0].split('-') : null;
 
+    String name;
+    if (isCustom) {
+      try {
+        name = Uri.decodeComponent(json['content']);
+      } catch (e) {
+        name = json['content'];
+      }
+    } else {
+      name = json['couName'] ?? "(空)";
+    }
+
     Course _c = Course(
       isCustom: isCustom,
-      name: !isCustom
-          ? json['couName'] ?? "(空)"
-          : Uri.decodeComponent(json['content']),
+      name: name,
       time: !isCustom ? json['coudeTime'] : json['courseTime'].toString(),
       location: json['couRoom'],
       className: json['className'],

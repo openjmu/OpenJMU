@@ -1,5 +1,6 @@
 import 'package:OpenJMU/constants/Configs.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
+import 'package:OpenJMU/widgets/dialogs/ManuallySetSidDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -104,7 +105,15 @@ class PostSquareListPageState extends State<PostSquareListPage>
           children: <Widget>[
             GestureDetector(
               onLongPress: () {
-                NetUtils.updateTicket();
+                if (Configs.debug) {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (_) => ManuallySetSidDialog(),
+                  );
+                } else {
+                  NetUtils.updateTicket();
+                }
               },
               child: Padding(
                 padding: EdgeInsets.only(right: Constants.suSetSp(4.0)),

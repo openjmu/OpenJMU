@@ -432,41 +432,43 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  Widget getExtendedText(content, {isRoot}) => GestureDetector(
-        onLongPress: widget.isDetail
-            ? () {
-                Clipboard.setData(ClipboardData(text: content));
-                showShortToast("已复制到剪贴板");
-              }
-            : null,
-        child: Padding(
-          padding: (isRoot ?? false)
-              ? EdgeInsets.zero
-              : EdgeInsets.symmetric(
-                  horizontal: Constants.suSetSp(contentPadding),
-                ),
-          child: ExtendedText(
-            content != null ? "$content " : null,
-            style: TextStyle(fontSize: Constants.suSetSp(18.0)),
-            onSpecialTextTap: specialTextTapRecognizer,
-            maxLines: widget.isDetail ?? false ? null : 8,
-            overFlowTextSpan: widget.isDetail ?? false
-                ? null
-                : OverFlowTextSpan(
-                    children: <TextSpan>[
-                      TextSpan(text: " ... "),
-                      TextSpan(
-                        text: "全文",
-                        style: TextStyle(
-                          color: ThemeUtils.currentThemeColor,
-                        ),
+  Widget getExtendedText(content, {isRoot}) {
+    return GestureDetector(
+      onLongPress: widget.isDetail
+          ? () {
+              Clipboard.setData(ClipboardData(text: content));
+              showShortToast("已复制到剪贴板");
+            }
+          : null,
+      child: Padding(
+        padding: (isRoot ?? false)
+            ? EdgeInsets.zero
+            : EdgeInsets.symmetric(
+                horizontal: Constants.suSetSp(contentPadding),
+              ),
+        child: ExtendedText(
+          content != null ? "$content " : null,
+          style: TextStyle(fontSize: Constants.suSetSp(18.0)),
+          onSpecialTextTap: specialTextTapRecognizer,
+          maxLines: widget.isDetail ?? false ? null : 8,
+          overFlowTextSpan: widget.isDetail ?? false
+              ? null
+              : OverFlowTextSpan(
+                  children: <TextSpan>[
+                    TextSpan(text: " ... "),
+                    TextSpan(
+                      text: "全文",
+                      style: TextStyle(
+                        color: ThemeUtils.currentThemeColor,
                       ),
-                    ],
-                  ),
-            specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-          ),
+                    ),
+                  ],
+                ),
+          specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
         ),
-      );
+      ),
+    );
+  }
 
   Future<bool> onLikeButtonTap(bool isLiked) {
     final Completer<bool> completer = Completer<bool>();

@@ -16,7 +16,7 @@ class MyInfoPage extends StatefulWidget {
 }
 
 class MyInfoPageState extends State<MyInfoPage> {
-  final List<List<Map<String, String>>> settingsSection = [
+  List<List<Map<String, String>>> settingsSection() => [
     if (Configs.debug)
       [
         {
@@ -25,7 +25,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         },
       ],
     [
-      {
+      if (!ThemeUtils.isPlatformBrightness) {
         "name": "夜间模式",
         "icon": "nightmode",
       },
@@ -74,7 +74,7 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   @override
   void initState() {
-    isDark = DataUtils.getBrightnessDark();
+    isDark = DataUtils.getBrightness();
 
     getSignStatus();
     getCurrentWeek();
@@ -172,7 +172,7 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   static void setDarkMode(isDark) {
     ThemeUtils.isDark = isDark;
-    DataUtils.setBrightnessDark(isDark);
+    DataUtils.setBrightness(isDark);
     Instances.eventBus.fire(ChangeBrightnessEvent(isDark));
   }
 
@@ -412,14 +412,14 @@ class MyInfoPageState extends State<MyInfoPage> {
         color: Theme.of(context).canvasColor,
         height: 1.0,
       ),
-      itemCount: settingsSection[sectionIndex].length,
+      itemCount: settingsSection()[sectionIndex].length,
       itemBuilder: (context, itemIndex) =>
           settingItem(context, sectionIndex, itemIndex),
     );
   }
 
   Widget settingItem(context, int sectionIndex, int itemIndex) {
-    final Map<String, String> item = settingsSection[sectionIndex][itemIndex];
+    final Map<String, String> item = settingsSection()[sectionIndex][itemIndex];
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       child: Container(
@@ -524,7 +524,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             separatorBuilder: (context, index) => Constants.separator(context),
-            itemCount: settingsSection.length,
+            itemCount: settingsSection().length,
             itemBuilder: (context, index) =>
                 settingSectionListView(context, index),
           ),

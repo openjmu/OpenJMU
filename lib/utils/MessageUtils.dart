@@ -12,8 +12,7 @@ class MessageUtils {
   static Socket messageSocket;
   static int packageSequence = 4;
   static Timer messageKeepAliveTimer;
-  static ObserverList<Function> messageListeners =
-      ObserverList<Function>();
+  static ObserverList<Function> messageListeners = ObserverList<Function>();
 
   static void initMessageSocket() {
     debugPrint("Connecting socket...");
@@ -36,7 +35,7 @@ class MessageUtils {
           messageSocket = null;
         },
       );
-      login();
+      sendLogin();
     }).catchError((e) {
       debugPrint(e.toString());
     });
@@ -134,11 +133,12 @@ class MessageUtils {
         addPackage("WY_MULTPOINT_LOGIN");
         break;
       case 0x9000:
-        addPackage("WY_KEEPALIVE");
-        messageKeepAliveTimer =
-            Timer.periodic(const Duration(seconds: 30), (t) async {
-          addPackage("WY_KEEPALIVE");
-        });
+        sendKeepAlive(null);
+        messageKeepAliveTimer = Timer.periodic(
+          const Duration(seconds: 30),
+          sendKeepAlive,
+        );
+        sendGetOfflineMessage();
         break;
       case 0x1f:
         final _type = getPackageUint(content.sublist(0, 1), 8);
@@ -161,10 +161,12 @@ class MessageUtils {
           ackId: _ackId.toString(),
           content: _content,
         );
+
+        /// Fire [MessageReceivedEvent].
         Instances.eventBus.fire(event);
-        for (final listener in messageListeners) {
-          listener(event);
-        }
+
+        /// Notify each listener with event.
+        for (final listener in messageListeners) listener(event);
         break;
       default:
         break;
@@ -184,14 +186,15 @@ class MessageUtils {
     messageSocket.add(package);
   }
 
-  static void login() {
-    addPackage("WY_VERIFY_CHECKCODE");
-  }
-
-  static void logout() {
-    addPackage("WY_LOGOUT");
-  }
-
+  ///
+  /// Send Methods.
+  ///
+  /// These methods included semantic void to call package add.
+  ///
+  static void sendLogin() => addPackage("WY_VERIFY_CHECKCODE");
+  static void sendLogout() => addPackage("WY_LOGOUT");
+  static void sendKeepAlive(_) => addPackage("WY_KEEPALIVE");
+  static void sendGetOfflineMessage() => addPackage("WY_GET_OFFLINEMSG");
   static void sendTextMessage(String message, int uid) {
     MessageUtils.addPackage(
       "WY_MSG",

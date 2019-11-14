@@ -24,6 +24,11 @@ class _SettingsPageState extends State<SettingsPage> {
       },
       {
         "icon": "nightmode",
+        "name": "跟随系统夜间模式",
+        "description": "夜间模式跟随系统主题切换",
+      },
+      {
+        "icon": "nightmode",
         "name": "A屏黑",
         "description": "使用AMOLED黑主题作为夜间模式",
       },
@@ -61,10 +66,22 @@ class _SettingsPageState extends State<SettingsPage> {
         PlatformSwitch(
           activeColor: ThemeUtils.currentThemeColor,
           value: ThemeUtils.isDark,
-          onChanged: (bool value) {
+          onChanged: !ThemeUtils.isPlatformBrightness ? (bool value) {
             ThemeUtils.isDark = value;
-            DataUtils.setBrightnessDark(value);
+            DataUtils.setBrightness(value);
             Instances.eventBus.fire(ChangeBrightnessEvent(value));
+          } : null,
+        ),
+        PlatformSwitch(
+          activeColor: ThemeUtils.currentThemeColor,
+          value: ThemeUtils.isPlatformBrightness,
+          onChanged: (bool value) {
+            ThemeUtils.isPlatformBrightness = value;
+            DataUtils.setBrightnessPlatform(value);
+            Instances.eventBus.fire(ChangeBrightnessEvent(
+              MediaQuery.of(context).platformBrightness == Brightness.dark,
+            ));
+            if (mounted) setState(() {});
           },
         ),
         PlatformSwitch(

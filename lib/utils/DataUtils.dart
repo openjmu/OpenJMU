@@ -27,6 +27,7 @@ class DataUtils {
   static final String spBrightness = "theme_brightness";
   static final String spAMOLEDDark = "theme_AMOLEDDark";
   static final String spColorThemeIndex = "theme_colorThemeIndex";
+  static final String spBrightnessPlatform = "theme_brightness_platform";
   static final String spHomeSplashIndex = "home_splash_index";
   static final String spHomeStartUpIndex = "home_startup_index";
 
@@ -83,7 +84,7 @@ class DataUtils {
 
   static Future logout() async {
     NetUtils.dio.clear();
-    MessageUtils.logout();
+    MessageUtils.sendLogout();
     Future.delayed(const Duration(milliseconds: 300), () {
       resetTheme();
       clearLoginInfo();
@@ -208,6 +209,8 @@ class DataUtils {
     CourseAPI.coursesColor.clear();
     Configs.reset();
     await sp?.remove(spBrightness);
+    await sp?.remove(spBrightnessPlatform);
+    await sp?.remove(spAMOLEDDark);
     await sp?.remove(spColorThemeIndex);
     await sp?.remove(spHomeSplashIndex);
     await sp?.remove(spHomeStartUpIndex);
@@ -264,7 +267,7 @@ class DataUtils {
   static Future resetTheme() async {
     await setColorTheme(0);
     await setAMOLEDDark(false);
-    await setBrightnessDark(false);
+    await setBrightness(false);
     ThemeUtils.currentThemeColor = ThemeUtils.defaultColor;
     Instances.eventBus
       ..fire(ChangeBrightnessEvent(false))
@@ -277,7 +280,7 @@ class DataUtils {
   }
 
   // 获取设置的夜间模式
-  static bool getBrightnessDark() {
+  static bool getBrightness() {
     return sp?.getBool(spBrightness) ?? false;
   }
 
@@ -286,19 +289,29 @@ class DataUtils {
     return sp?.getBool(spAMOLEDDark) ?? false;
   }
 
+  // 获取设置的跟随系统夜间模式
+  static bool getBrightnessPlatform() {
+    return sp?.getBool(spBrightnessPlatform) ?? false;
+  }
+
   // 设置选择的主题色
   static Future setColorTheme(int colorThemeIndex) async {
     await sp?.setInt(spColorThemeIndex, colorThemeIndex);
   }
 
   // 设置选择的夜间模式
-  static Future setBrightnessDark(bool isDark) async {
+  static Future setBrightness(bool isDark) async {
     await sp?.setBool(spBrightness, isDark);
   }
 
   // 设置AMOLED夜间模式
   static Future setAMOLEDDark(bool isAMOLEDDark) async {
     await sp?.setBool(spAMOLEDDark, isAMOLEDDark);
+  }
+
+  // 设置跟随系统的夜间模式
+  static Future setBrightnessPlatform(bool isFollowPlatform) async {
+    await sp?.setBool(spBrightnessPlatform, isFollowPlatform);
   }
 
   // 获取未读信息数

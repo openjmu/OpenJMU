@@ -6,7 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hive/hive.dart';
 import 'package:oktoast/oktoast.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:quick_actions/quick_actions.dart';
 
@@ -15,6 +17,10 @@ import 'package:OpenJMU/pages/SplashPage.dart';
 import 'package:OpenJMU/widgets/NoScaleTextWidget.dart';
 
 void main() async {
+  if (!kIsWeb) {
+    final dir = await getApplicationDocumentsDirectory();
+    Hive.init(dir.path);
+  }
   await DataUtils.initSharedPreferences();
   await DeviceUtils.getModel();
   runApp(OpenJMUApp());
@@ -44,6 +50,7 @@ class OpenJMUAppState extends State<OpenJMUApp> {
   String initAction;
 
   Color currentThemeColor = ThemeUtils.currentThemeColor;
+  Brightness brightness;
 
   @override
   void initState() {
@@ -94,10 +101,12 @@ class OpenJMUAppState extends State<OpenJMUApp> {
   }
 
   void initSettings() async {
-    Color color = ThemeUtils.supportColors[DataUtils.getColorThemeIndex()];
+    final color = ThemeUtils.supportColors[DataUtils.getColorThemeIndex()];
     currentThemeColor = ThemeUtils.currentThemeColor = color;
     Instances.eventBus.fire(ChangeThemeEvent(color));
-    ThemeUtils.isDark = DataUtils.getBrightnessDark();
+    ThemeUtils.isDark = DataUtils.getBrightness();
+    ThemeUtils.isAMOLEDDark = DataUtils.getAMOLEDDark();
+    ThemeUtils.isPlatformBrightness = DataUtils.getBrightnessPlatform();
 
     Configs.homeSplashIndex = DataUtils.getHomeSplashIndex();
     Configs.homeStartUpIndex = DataUtils.getHomeStartUpIndex();
@@ -125,17 +134,27 @@ class OpenJMUAppState extends State<OpenJMUApp> {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        (ThemeUtils.isDark ? ThemeUtils.dark() : ThemeUtils.light()).copyWith(
-      textTheme: (ThemeUtils.isDark
-              ? Theme.of(context).typography.white
-              : Theme.of(context).typography.black)
-          .copyWith(
-        subhead: TextStyle(
-          textBaseline: TextBaseline.alphabetic,
-        ),
-      ),
-    );
+    if (brightness != null) {
+      brightness = MediaQuery.of(Constants.navigatorKey.currentContext)
+          .platformBrightness;
+    }
+
+    final isDark = !ThemeUtils.isPlatformBrightness
+        ? ThemeUtils.isDark
+        : brightness != null && brightness == Brightness.dark;
+
+    final theme = isDark
+        ? ThemeUtils.dark()
+        : ThemeUtils.light().copyWith(
+            textTheme: (isDark
+                    ? Theme.of(context).typography.white
+                    : Theme.of(context).typography.black)
+                .copyWith(
+            subhead: TextStyle(
+              textBaseline: TextBaseline.alphabetic,
+            ),
+          ));
+
     return MultiProvider(
       providers: providers,
       child: Theme(
@@ -144,6 +163,9 @@ class OpenJMUAppState extends State<OpenJMUApp> {
           child: MaterialApp(
             navigatorKey: Constants.navigatorKey,
             builder: (c, w) {
+              brightness = ThemeUtils.isPlatformBrightness
+                  ? MediaQuery.of(c).platformBrightness
+                  : ThemeUtils.isDark ? Brightness.dark : Brightness.light;
               ScreenUtil.instance = ScreenUtil.getInstance()..init(c);
               return NoScaleTextWidget(child: w);
             },

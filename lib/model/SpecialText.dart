@@ -32,6 +32,27 @@ class LinkText extends SpecialText {
   }
 }
 
+class LinkWithWrapText extends SpecialText {
+  static String startKey = API.wbHost;
+  static const String endKey = "\n";
+
+  LinkWithWrapText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
+      : super(startKey, endKey, textStyle, onTap: onTap);
+
+  @override
+  InlineSpan finishText() {
+    return TextSpan(
+      text: " 网页链接 \n",
+      style: textStyle?.copyWith(color: Colors.blue),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          Map<String, dynamic> data = {'content': toString()};
+          if (onTap != null) onTap(data);
+        },
+    );
+  }
+}
+
 class LinkOlderText extends SpecialText {
   static const String startKey = "http://wb.jmu.edu.cn/";
   static const String endKey = " ";
@@ -43,6 +64,28 @@ class LinkOlderText extends SpecialText {
   InlineSpan finishText() {
     return TextSpan(
       text: " 网页链接 ",
+      style: textStyle?.copyWith(color: Colors.blue),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          Map<String, dynamic> data = {'content': toString()};
+          if (onTap != null) onTap(data);
+        },
+    );
+  }
+}
+
+class LinkOlderWithWrapText extends SpecialText {
+  static String startKey = "http://wb.jmu.edu.cn/";
+  static const String endKey = "\n";
+
+  LinkOlderWithWrapText(TextStyle textStyle, SpecialTextGestureTapCallback
+  onTap)
+      : super(startKey, endKey, textStyle, onTap: onTap);
+
+  @override
+  InlineSpan finishText() {
+    return TextSpan(
+      text: " 网页链接 \n",
       style: textStyle?.copyWith(color: Colors.blue),
       recognizer: TapGestureRecognizer()
         ..onTap = () {
@@ -283,6 +326,10 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       return PoundText(textStyle, onTap, type: BuilderType.extendedText);
     } else if (isStart(flag, EmoticonText.flag)) {
       return EmoticonText(textStyle, type: BuilderType.extendedText);
+    } else if (isStart(flag, LinkWithWrapText.startKey)) {
+      return LinkWithWrapText(textStyle, onTap);
+    } else if (isStart(flag, LinkOlderWithWrapText.startKey)) {
+      return LinkOlderWithWrapText(textStyle, onTap);
     } else if (isStart(flag, LinkText.startKey)) {
       return LinkText(textStyle, onTap);
     } else if (isStart(flag, LinkOlderText.startKey)) {
@@ -339,7 +386,9 @@ void specialTextTapRecognizer(data) {
     SearchPage.search(text.substring(1, text.length - 1));
   } else if (text.startsWith("@")) {
     UserPage.jump(data['uid']);
-  } else if (text.startsWith(API.wbHost)) {
+  } else if (text.startsWith("https://")) {
+    CommonWebPage.jump(text, "网页链接");
+  } else if (text.startsWith("http://")) {
     CommonWebPage.jump(text, "网页链接");
   } else if (text.startsWith("|")) {
     int imageID = data['image'];

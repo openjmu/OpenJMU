@@ -64,8 +64,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   void initState() {
     debugPrint("CurrentUser's ${UserAPI.currentUser}");
 
-    if (widget.initAction != null)
+    if (widget.initAction != null) {
       _tabIndex = pagesTitle.indexOf(widget.initAction);
+    }
     if (Platform.isAndroid) OTAUtils.checkUpdate(fromHome: true);
 
     initPushService();
