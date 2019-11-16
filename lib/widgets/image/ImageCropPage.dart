@@ -47,15 +47,15 @@ class _ImageCropPageState extends State<ImageCropPage> {
   }
 
   void resetCrop() {
-    _editorKey.currentState.reset();
+    _editorKey.currentState?.reset();
   }
 
   void flipCrop() {
-    _editorKey.currentState.flip();
+    _editorKey.currentState?.flip();
   }
 
   void rotateRightCrop(bool right) {
-    _editorKey.currentState.rotate(right: right);
+    _editorKey.currentState?.rotate(right: right);
   }
 
   void _cropImage(context) async {
@@ -70,9 +70,9 @@ class _ImageCropPageState extends State<ImageCropPage> {
     _cropping = true;
     try {
       final path = (await getApplicationDocumentsDirectory()).path;
-      File file = File("$path/_temp_avatar.jpg");
-      file.writeAsBytes(await cropImage(state: _editorKey.currentState));
-      File compressedFile = await FlutterNativeImage.compressImage(
+      final file = File("$path/_temp_avatar.jpg");
+      file.writeAsBytesSync(await cropImage(state: _editorKey.currentState));
+      final compressedFile = await FlutterNativeImage.compressImage(
         file.path,
         quality: 100,
         targetWidth: 640,
@@ -120,7 +120,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
         title: Text(
           _file == null ? "上传头像" : "裁剪头像",
           style: Theme.of(context).textTheme.title.copyWith(
-            fontSize: Constants.suSetSp(21.0),
+            fontSize: suSetSp(21.0),
           ),
         ),
         centerTitle: true,
@@ -157,19 +157,19 @@ class _ImageCropPageState extends State<ImageCropPage> {
         child: InkWell(
           onTap: _openImage,
           child: Padding(
-            padding: EdgeInsets.all(Constants.suSetSp(60.0)),
+            padding: EdgeInsets.all(suSetSp(60.0)),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Icon(
                   Icons.add,
-                  size: Constants.suSetSp(60.0),
+                  size: suSetSp(60.0),
                 ),
                 Constants.emptyDivider(height: 20.0),
                 Text(
                   "选择需要上传的头像",
                   style: Theme.of(context).textTheme.body1.copyWith(
-                    fontSize: Constants.suSetSp(20.0),
+                    fontSize: suSetSp(20.0),
                   ),
                 ),
               ],

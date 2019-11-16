@@ -31,25 +31,25 @@ class _AboutPageState extends State<AboutPage> {
 
   Widget about() {
     return Container(
-      padding: EdgeInsets.all(Constants.suSetSp(20.0)),
+      padding: EdgeInsets.all(suSetSp(20.0)),
       child: Center(
         child: Column(
           children: <Widget>[
             GestureDetector(
               onTap: tries < 10 ? tryDisplayDebugInfo : null,
               child: Container(
-                margin: EdgeInsets.only(bottom: Constants.suSetSp(20.0)),
+                margin: EdgeInsets.only(bottom: suSetSp(20.0)),
                 child: SvgPicture.asset(
                   "images/splash_page_logo.svg",
-                  width: Constants.suSetSp(180.0),
-                  height: Constants.suSetSp(180.0),
+                  width: suSetSp(180.0),
+                  height: suSetSp(180.0),
                   color: ThemeUtils.defaultColor,
                 ),
               ),
             ),
-            SizedBox(height: Constants.suSetSp(30.0)),
+            SizedBox(height: suSetSp(30.0)),
             Container(
-              margin: EdgeInsets.only(bottom: Constants.suSetSp(12.0)),
+              margin: EdgeInsets.only(bottom: suSetSp(12.0)),
               child: RichText(
                   text: TextSpan(children: <TextSpan>[
                 TextSpan(
@@ -57,7 +57,7 @@ class _AboutPageState extends State<AboutPage> {
                   style: TextStyle(
                     fontFamily: 'chocolate',
                     color: ThemeUtils.currentThemeColor,
-                    fontSize: Constants.suSetSp(50.0),
+                    fontSize: suSetSp(50.0),
                   ),
                 ),
                 TextSpan(
@@ -65,7 +65,7 @@ class _AboutPageState extends State<AboutPage> {
                     style: Theme.of(context).textTheme.subtitle),
               ])),
             ),
-            SizedBox(height: Constants.suSetSp(20.0)),
+            SizedBox(height: suSetSp(20.0)),
             RichText(
                 text: TextSpan(
               children: <TextSpan>[
@@ -82,7 +82,7 @@ class _AboutPageState extends State<AboutPage> {
                   style: TextStyle(
                     color: Colors.lightBlue,
                     fontFamily: 'chocolate',
-                    fontSize: Constants.suSetSp(24.0),
+                    fontSize: suSetSp(24.0),
                   ),
                 ),
                 TextSpan(
@@ -91,7 +91,7 @@ class _AboutPageState extends State<AboutPage> {
                         color: Theme.of(context).textTheme.body1.color)),
               ],
             )),
-            SizedBox(height: Constants.suSetSp(80.0)),
+            SizedBox(height: suSetSp(80.0)),
           ],
         ),
       ),
@@ -123,7 +123,7 @@ class _AboutPageState extends State<AboutPage> {
         title: Text(
           "关于OpenJMU",
           style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: Constants.suSetSp(21.0),
+                fontSize: suSetSp(21.0),
               ),
         ),
         centerTitle: true,

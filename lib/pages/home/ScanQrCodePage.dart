@@ -62,7 +62,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
         title: Text(
           "扫描二维码",
           style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: Constants.suSetSp(21.0),
+                fontSize: suSetSp(21.0),
               ),
         ),
         centerTitle: true,

@@ -135,15 +135,15 @@ class _BackpackPageState extends State<BackpackPage> {
 
   Widget itemCount(int index) {
     return Positioned(
-      right: Constants.suSetSp(20.0),
-      top: Constants.suSetSp(20.0),
+      right: suSetSp(20.0),
+      top: suSetSp(20.0),
       child: Badge(
-        padding: EdgeInsets.all(Constants.suSetSp(10.0)),
+        padding: EdgeInsets.all(suSetSp(10.0)),
         badgeColor: ThemeUtils.currentThemeColor,
         badgeContent: Text(
           "${myItems[index].count > 99 ? "99+" : myItems[index].count}",
           style: TextStyle(
-            fontSize: Constants.suSetSp(18.0),
+            fontSize: suSetSp(18.0),
             color: Colors.white,
             fontWeight: FontWeight.bold,
           ),
@@ -163,17 +163,17 @@ class _BackpackPageState extends State<BackpackPage> {
           myItems[index].name,
           style: Theme.of(context).textTheme.title.copyWith(
                 fontWeight: FontWeight.bold,
-                fontSize: Constants.suSetSp(30.0),
+                fontSize: suSetSp(30.0),
               ),
           overflow: TextOverflow.ellipsis,
         ),
         Constants.emptyDivider(height: 10.0),
         SizedBox(
-          height: Constants.suSetSp(54.0),
+          height: suSetSp(54.0),
           child: Text(
             myItems[index].description,
             style: Theme.of(context).textTheme.subtitle.copyWith(
-                  fontSize: Constants.suSetSp(18.0),
+                  fontSize: suSetSp(18.0),
                 ),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -186,11 +186,11 @@ class _BackpackPageState extends State<BackpackPage> {
   Widget itemIcon(int index) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        vertical: Constants.suSetSp(10.0),
+        vertical: suSetSp(10.0),
       ),
       child: Center(
         child: SizedBox(
-          height: Constants.suSetSp(150.0),
+          height: suSetSp(150.0),
           child: Image.network(
             "${API.backPackItemIcon(itemType: myItems[index].type)}",
             headers: {"CLOUDID": "jmu"},
@@ -205,22 +205,22 @@ class _BackpackPageState extends State<BackpackPage> {
     return SizedBox(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(20.0),
-          vertical: Constants.suSetSp(60.0),
+          horizontal: suSetSp(20.0),
+          vertical: suSetSp(60.0),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             DecoratedBox(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Constants.suSetSp(40.0)),
+                borderRadius: BorderRadius.circular(suSetSp(40.0)),
                 color: ThemeUtils.currentThemeColor.withAlpha(30),
               ),
               child: Stack(
                 children: <Widget>[
                   itemCount(index),
                   Padding(
-                    padding: EdgeInsets.all(Constants.suSetSp(20.0)),
+                    padding: EdgeInsets.all(suSetSp(20.0)),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -242,15 +242,15 @@ class _BackpackPageState extends State<BackpackPage> {
                 borderRadius: BorderRadius.circular(50.0),
               ),
               padding: EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(20.0),
-                vertical: Constants.suSetSp(12.0),
+                horizontal: suSetSp(20.0),
+                vertical: suSetSp(12.0),
               ),
               color: Colors.transparent,
               onPressed: () {},
               child: Text(
                 "打开礼包",
                 style: Theme.of(context).textTheme.title.copyWith(
-                      fontSize: Constants.suSetSp(20.0),
+                      fontSize: suSetSp(20.0),
                       color: ThemeUtils.currentThemeColor,
                     ),
               ),
@@ -271,7 +271,7 @@ class _BackpackPageState extends State<BackpackPage> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: Constants.suSetSp(40.0),
+              horizontal: suSetSp(40.0),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -279,14 +279,14 @@ class _BackpackPageState extends State<BackpackPage> {
                 Text(
                   "我的背包",
                   style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: Constants.suSetSp(40.0),
+                        fontSize: suSetSp(40.0),
                         fontWeight: FontWeight.bold,
                       ),
                 ),
                 Text(
                   "看看背包里有哪些好东西~",
                   style: Theme.of(context).textTheme.subtitle.copyWith(
-                        fontSize: Constants.suSetSp(20.0),
+                        fontSize: suSetSp(20.0),
                       ),
                 ),
               ],
@@ -294,7 +294,7 @@ class _BackpackPageState extends State<BackpackPage> {
           ),
           isLoading
               ? SizedBox(
-                  height: Constants.suSetSp(500.0),
+                  height: suSetSp(500.0),
                   child: Center(child: Constants.progressIndicator()),
                 )
               : Expanded(

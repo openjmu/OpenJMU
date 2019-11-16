@@ -192,7 +192,7 @@ class AppCenterPageState extends State<AppCenterPage>
           Text(
             webApp.name,
             style: Theme.of(context).textTheme.body1.copyWith(
-                  fontSize: Constants.suSetSp(17.0),
+                  fontSize: suSetSp(17.0),
                   fontWeight: FontWeight.normal,
                 ),
           ),
@@ -219,7 +219,7 @@ class AppCenterPageState extends State<AppCenterPage>
           children: <Widget>[
             Container(
               padding: EdgeInsets.symmetric(
-                vertical: Constants.suSetSp(16.0),
+                vertical: suSetSp(16.0),
               ),
               decoration: BoxDecoration(
                 border: Border(
@@ -232,7 +232,7 @@ class AppCenterPageState extends State<AppCenterPage>
                 child: Text(
                   WebApp.category[name],
                   style: Theme.of(context).textTheme.body1.copyWith(
-                        fontSize: Constants.suSetSp(18.0),
+                        fontSize: suSetSp(18.0),
                       ),
                 ),
               ),
@@ -310,11 +310,11 @@ class AppCenterPageState extends State<AppCenterPage>
                   AnimatedCrossFade(
                     firstChild: Icon(
                       Icons.keyboard_arrow_down,
-                      size: Constants.suSetSp(28.0),
+                      size: suSetSp(28.0),
                     ),
                     secondChild: Icon(
                       Icons.keyboard_arrow_up,
-                      size: Constants.suSetSp(28.0),
+                      size: suSetSp(28.0),
                     ),
                     crossFadeState: coursePageKey.currentState.showWeek
                         ? CrossFadeState.showSecond
@@ -345,14 +345,14 @@ class AppCenterPageState extends State<AppCenterPage>
           isScrollable: true,
           indicatorColor: currentThemeColor,
           indicatorPadding: EdgeInsets.only(
-            bottom: Constants.suSetSp(16.0),
+            bottom: suSetSp(16.0),
           ),
           indicatorSize: TabBarIndicatorSize.label,
-          indicatorWeight: Constants.suSetSp(6.0),
+          indicatorWeight: suSetSp(6.0),
           labelColor: Theme.of(context).textTheme.body1.color,
           labelStyle: MainPageState.tabSelectedTextStyle,
           labelPadding: EdgeInsets.symmetric(
-            horizontal: Constants.suSetSp(16.0),
+            horizontal: suSetSp(16.0),
           ),
           unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
           tabs: <Tab>[
@@ -364,12 +364,12 @@ class AppCenterPageState extends State<AppCenterPage>
         actions: <Widget>[
           Padding(
             padding: EdgeInsets.only(
-              left: Constants.suSetSp(8.0),
+              left: suSetSp(8.0),
             ),
             child: IconButton(
               icon: Icon(
                 Icons.refresh,
-                size: Constants.suSetSp(24.0),
+                size: suSetSp(24.0),
               ),
               onPressed: () {
                 Instances.eventBus

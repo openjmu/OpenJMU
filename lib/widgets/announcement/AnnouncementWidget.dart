@@ -22,22 +22,22 @@ class AnnouncementWidget extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(gap ?? 15.0),
-          vertical: Constants.suSetSp(10.0),
+          horizontal: suSetSp(gap ?? 15.0),
+          vertical: suSetSp(10.0),
         ),
         decoration: BoxDecoration(
           borderRadius: radius != null
-              ? BorderRadius.circular(Constants.suSetSp(radius))
+              ? BorderRadius.circular(suSetSp(radius))
               : null,
           color: (color ?? ThemeUtils.defaultColor).withAlpha(0x44),
         ),
         child: Row(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(right: Constants.suSetSp(6.0)),
+              padding: EdgeInsets.only(right: suSetSp(6.0)),
               child: Icon(
                 Icons.error_outline,
-                size: Constants.suSetSp(18.0),
+                size: suSetSp(18.0),
                 color: color ?? ThemeUtils.defaultColor,
               ),
             ),
@@ -46,16 +46,16 @@ class AnnouncementWidget extends StatelessWidget {
                 "${Configs.announcements[0]['title']}",
                 style: TextStyle(
                   color: color ?? ThemeUtils.defaultColor,
-                  fontSize: Constants.suSetSp(18.0),
+                  fontSize: suSetSp(18.0),
                 ),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: Constants.suSetSp(6.0)),
+              padding: EdgeInsets.only(left: suSetSp(6.0)),
               child: Icon(
                 Icons.keyboard_arrow_right,
-                size: Constants.suSetSp(18.0),
+                size: suSetSp(18.0),
                 color: color ?? ThemeUtils.defaultColor,
               ),
             ),

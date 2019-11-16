@@ -252,8 +252,8 @@ class _PostListState extends State<PostList>
               : _scrollController,
           padding: EdgeInsets.zero,
           separatorBuilder: (context, index) => Divider(
-            thickness: Constants.suSetSp(8.0),
-            height: Constants.suSetSp(8.0),
+            thickness: suSetSp(8.0),
+            height: suSetSp(8.0),
           ),
           itemCount: _postList.length + 1,
           itemBuilder: (context, index) {
@@ -261,19 +261,19 @@ class _PostListState extends State<PostList>
               if (this._canLoadMore) {
                 _loadData();
                 return Container(
-                  height: Constants.suSetSp(40.0),
+                  height: suSetSp(40.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       SizedBox(
-                        width: Constants.suSetSp(15.0),
-                        height: Constants.suSetSp(15.0),
+                        width: suSetSp(15.0),
+                        height: suSetSp(15.0),
                         child: Constants.progressIndicator(strokeWidth: 2.0),
                       ),
                       Text(
                         "　正在加载",
                         style: TextStyle(
-                          fontSize: Constants.suSetSp(14.0),
+                          fontSize: suSetSp(14.0),
                         ),
                       ),
                     ],
@@ -281,12 +281,12 @@ class _PostListState extends State<PostList>
                 );
               } else {
                 return SizedBox(
-                  height: Constants.suSetSp(50.0),
+                  height: suSetSp(50.0),
                   child: Center(
                     child: Text(
                       Constants.endLineTag,
                       style: TextStyle(
-                        fontSize: Constants.suSetSp(16.0),
+                        fontSize: suSetSp(16.0),
                       ),
                     ),
                   ),
@@ -449,11 +449,11 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
   GestureDetector getPostAvatar(context, post) {
     return GestureDetector(
       child: Container(
-        width: Constants.suSetSp(40.0),
-        height: Constants.suSetSp(40.0),
+        width: suSetSp(40.0),
+        height: suSetSp(40.0),
         margin: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(16.0),
-          vertical: Constants.suSetSp(10.0),
+          horizontal: suSetSp(16.0),
+          vertical: suSetSp(10.0),
         ),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
@@ -474,7 +474,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
         post.nickname,
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
-          fontSize: Constants.suSetSp(18.0),
+          fontSize: suSetSp(18.0),
         ),
       );
 
@@ -491,14 +491,14 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
     return Text(
       _postTime,
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: Constants.suSetSp(14.0),
+            fontSize: suSetSp(14.0),
           ),
     );
   }
 
   Widget getExtendedText(context, content) => ExtendedText(
         content != null ? "$content " : null,
-        style: TextStyle(fontSize: Constants.suSetSp(17.0)),
+        style: TextStyle(fontSize: suSetSp(17.0)),
         onSpecialTextTap: specialTextTapRecognizer,
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       );
@@ -510,7 +510,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
       width: Screen.width,
       padding: isLoading
           ? EdgeInsets.symmetric(
-              vertical: Constants.suSetSp(42),
+              vertical: suSetSp(42),
             )
           : EdgeInsets.zero,
       child: isLoading
@@ -527,7 +527,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       separatorBuilder: (context, index) => Divider(
-                        height: Constants.suSetSp(1.0),
+                        height: suSetSp(1.0),
                       ),
                       itemCount: _posts.length + 1,
                       itemBuilder: (context, index) {
@@ -535,13 +535,13 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                           if (canLoadMore && !isLoading) {
                             _loadList();
                             return SizedBox(
-                              height: Constants.suSetSp(50.0),
+                              height: suSetSp(50.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   SizedBox(
-                                    width: Constants.suSetSp(20.0),
-                                    height: Constants.suSetSp(20.0),
+                                    width: suSetSp(20.0),
+                                    height: suSetSp(20.0),
                                     child: Constants.progressIndicator(
                                       strokeWidth: 2.0,
                                     ),
@@ -549,7 +549,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                   Text(
                                     "　正在加载",
                                     style: TextStyle(
-                                      fontSize: Constants.suSetSp(16.0),
+                                      fontSize: suSetSp(16.0),
                                     ),
                                   ),
                                 ],
@@ -568,16 +568,16 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Container(height: Constants.suSetSp(10.0)),
+                                    Container(height: suSetSp(10.0)),
                                     getPostNickname(context, _posts[index]),
-                                    Container(height: Constants.suSetSp(4.0)),
+                                    Container(height: suSetSp(4.0)),
                                     getExtendedText(
                                       context,
                                       _posts[index].content,
                                     ),
-                                    Container(height: Constants.suSetSp(6.0)),
+                                    Container(height: suSetSp(6.0)),
                                     getPostTime(context, _posts[index]),
-                                    Container(height: Constants.suSetSp(10.0)),
+                                    Container(height: suSetSp(10.0)),
                                   ],
                                 ),
                               ),
@@ -589,13 +589,13 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                       },
                     )
                   : Container(
-                      height: Constants.suSetSp(120.0),
+                      height: suSetSp(120.0),
                       child: Center(
                         child: Text(
                           "暂无内容",
                           style: TextStyle(
                             color: Colors.grey,
-                            fontSize: Constants.suSetSp(18.0),
+                            fontSize: suSetSp(18.0),
                           ),
                         ),
                       ),

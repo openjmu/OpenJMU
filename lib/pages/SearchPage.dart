@@ -141,7 +141,7 @@ class SearchPageState extends State<SearchPage>
     return Container(
       height: kToolbarHeight / 1.3,
       padding: EdgeInsets.only(
-        left: Constants.suSetSp(16.0),
+        left: suSetSp(16.0),
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(kToolbarHeight / 2),
@@ -168,7 +168,7 @@ class SearchPageState extends State<SearchPage>
                 focusNode: _focusNode,
                 keyboardType: TextInputType.text,
                 style: Theme.of(context).textTheme.title.copyWith(
-                      fontSize: Constants.suSetSp(20.0),
+                      fontSize: suSetSp(20.0),
                       fontWeight: FontWeight.normal,
                       textBaseline: TextBaseline.alphabetic,
                     ),
@@ -189,11 +189,11 @@ class SearchPageState extends State<SearchPage>
               behavior: HitTestBehavior.opaque,
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: Constants.suSetSp(16.0),
+                  horizontal: suSetSp(16.0),
                 ),
                 child: Icon(
                   Icons.clear,
-                  size: Constants.suSetSp(24.0),
+                  size: suSetSp(24.0),
                   color: Theme.of(context).iconTheme.color,
                 ),
               ),
@@ -210,20 +210,20 @@ class SearchPageState extends State<SearchPage>
   Widget userListView(context) {
     if (userList == null || userList.isEmpty) return SizedBox.shrink();
     return SizedBox(
-      height: Constants.suSetSp(140.0),
+      height: suSetSp(140.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(
-              top: Constants.suSetSp(16.0),
+              top: suSetSp(16.0),
               left: 12.0,
             ),
             child: Text(
               "相关用户 (${userList.length})",
               style: Theme.of(context).textTheme.caption.copyWith(
-                    fontSize: Constants.suSetSp(16.0),
+                    fontSize: suSetSp(16.0),
                   ),
             ),
           ),
@@ -238,12 +238,12 @@ class SearchPageState extends State<SearchPage>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       SizedBox(
-                        width: Constants.suSetSp(48.0),
-                        height: Constants.suSetSp(48.0),
+                        width: suSetSp(48.0),
+                        height: suSetSp(48.0),
                         child: GestureDetector(
                           child: ClipRRect(
                             borderRadius:
-                                BorderRadius.circular(Constants.suSetSp(24.0)),
+                                BorderRadius.circular(suSetSp(24.0)),
                             child: FadeInImage(
                               fadeInDuration: const Duration(milliseconds: 100),
                               placeholder:
@@ -256,11 +256,11 @@ class SearchPageState extends State<SearchPage>
                           onTap: () => UserPage.jump(userList[index].id),
                         ),
                       ),
-                      SizedBox(height: Constants.suSetSp(8.0)),
+                      SizedBox(height: suSetSp(8.0)),
                       Text(
                         userList[index].nickname,
                         style: Theme.of(context).textTheme.body1.copyWith(
-                              fontSize: Constants.suSetSp(16.0),
+                              fontSize: suSetSp(16.0),
                             ),
                       ),
                     ],
@@ -320,15 +320,15 @@ class SearchPageState extends State<SearchPage>
                         } else if (index == 1) {
                           return Padding(
                             padding: EdgeInsets.only(
-                              top: Constants.suSetSp(16.0),
-                              bottom: Constants.suSetSp(8.0),
+                              top: suSetSp(16.0),
+                              bottom: suSetSp(8.0),
                               left: 12.0,
                             ),
                             child: Text(
                               "相关动态",
                               style:
                                   Theme.of(context).textTheme.caption.copyWith(
-                                        fontSize: Constants.suSetSp(16.0),
+                                        fontSize: suSetSp(16.0),
                                       ),
                             ),
                           );
@@ -347,11 +347,11 @@ class SearchPageState extends State<SearchPage>
                         } else if (index == postList.length + 2) {
                           if (_canLoadMore) {
                             return SizedBox(
-                              height: Constants.suSetSp(50.0),
+                              height: suSetSp(50.0),
                               child: Center(
                                 child: SizedBox(
-                                  width: Constants.suSetSp(20.0),
-                                  height: Constants.suSetSp(20.0),
+                                  width: suSetSp(20.0),
+                                  height: suSetSp(20.0),
                                   child: Constants.progressIndicator(
                                     strokeWidth: 3.0,
                                   ),
@@ -360,7 +360,7 @@ class SearchPageState extends State<SearchPage>
                             );
                           } else {
                             return SizedBox(
-                              height: Constants.suSetSp(50.0),
+                              height: suSetSp(50.0),
                               child: Center(
                                 child: Text(Constants.endLineTag),
                               ),
@@ -381,7 +381,7 @@ class SearchPageState extends State<SearchPage>
                         child: Text(
                           "没有搜索到动态内容~\n🧐",
                           style: TextStyle(
-                            fontSize: Constants.suSetSp(24.0),
+                            fontSize: suSetSp(24.0),
                           ),
                           textAlign: TextAlign.center,
                         ),

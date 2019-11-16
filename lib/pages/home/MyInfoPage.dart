@@ -229,10 +229,10 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   Widget userInfo() {
     Widget avatar = SizedBox(
-      width: Constants.suSetSp(100.0),
-      height: Constants.suSetSp(100.0),
+      width: suSetSp(100.0),
+      height: suSetSp(100.0),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(Constants.suSetSp(50.0)),
+        borderRadius: BorderRadius.circular(suSetSp(50.0)),
         child: FadeInImage(
           fadeInDuration: const Duration(milliseconds: 100),
           placeholder: AssetImage("assets/avatar_placeholder.png"),
@@ -250,7 +250,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 "${UserAPI.currentUser.name}",
                 style: TextStyle(
                   color: Theme.of(context).textTheme.title.color,
-                  fontSize: Constants.suSetSp(24.0),
+                  fontSize: suSetSp(24.0),
                   fontWeight: FontWeight.bold,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -268,7 +268,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             UserAPI.currentUser.signature ?? "这里空空如也~",
             style: TextStyle(
               color: Theme.of(context).textTheme.caption.color,
-              fontSize: Constants.suSetSp(18.0),
+              fontSize: suSetSp(18.0),
             ),
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.start,
@@ -279,28 +279,28 @@ class MyInfoPageState extends State<MyInfoPage> {
     Widget sign = InkWell(
       onTap: signed ? () {} : requestSign,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
+        borderRadius: BorderRadius.circular(suSetSp(20.0)),
         child: Container(
           color: ThemeUtils.currentThemeColor,
           padding: EdgeInsets.symmetric(
-            horizontal: Constants.suSetSp(8.0),
-            vertical: Constants.suSetSp(6.0),
+            horizontal: suSetSp(8.0),
+            vertical: suSetSp(6.0),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(
-                  top: Constants.suSetSp(signing ? 3.0 : 0.0),
-                  bottom: Constants.suSetSp(signing ? 3.0 : 0.0),
-                  left: Constants.suSetSp(signing ? 2.0 : 0.0),
-                  right: Constants.suSetSp(signing ? 8.0 : 4.0),
+                  top: suSetSp(signing ? 3.0 : 0.0),
+                  bottom: suSetSp(signing ? 3.0 : 0.0),
+                  left: suSetSp(signing ? 2.0 : 0.0),
+                  right: suSetSp(signing ? 8.0 : 4.0),
                 ),
                 child: signing
                     ? Container(
-                        width: Constants.suSetSp(24.0),
-                        height: Constants.suSetSp(24.0),
-                        padding: EdgeInsets.all(Constants.suSetSp(3.0)),
+                        width: suSetSp(24.0),
+                        height: suSetSp(24.0),
+                        padding: EdgeInsets.all(suSetSp(3.0)),
                         child: CircularProgressIndicator(
                           strokeWidth: 3.0,
                           valueColor: AlwaysStoppedAnimation(Colors.white),
@@ -309,14 +309,14 @@ class MyInfoPageState extends State<MyInfoPage> {
                     : Icon(
                         Icons.assignment_turned_in,
                         color: Colors.white,
-                        size: Constants.suSetSp(24.0),
+                        size: suSetSp(24.0),
                       ),
               ),
               Text(
                 signed ? "已签$signedCount天" : "签到",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: Constants.suSetSp(18.0),
+                  fontSize: suSetSp(18.0),
                   textBaseline: TextBaseline.alphabetic,
                 ),
               ),
@@ -333,8 +333,8 @@ class MyInfoPageState extends State<MyInfoPage> {
         onTap: () => UserPage.jump(UserAPI.currentUser.uid),
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: Constants.suSetSp(24.0),
-            vertical: Constants.suSetSp(16.0),
+            horizontal: suSetSp(24.0),
+            vertical: suSetSp(16.0),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -348,18 +348,18 @@ class MyInfoPageState extends State<MyInfoPage> {
                     avatar,
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.only(left: Constants.suSetSp(20.0)),
+                        padding: EdgeInsets.only(left: suSetSp(20.0)),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             name,
                             Constants.emptyDivider(
-                              height: Constants.suSetSp(10.0),
+                              height: suSetSp(10.0),
                             ),
                             signature,
                             Constants.emptyDivider(
-                              height: Constants.suSetSp(3.0),
+                              height: suSetSp(3.0),
                             ),
                           ],
                         ),
@@ -379,8 +379,8 @@ class MyInfoPageState extends State<MyInfoPage> {
   Widget currentDay(context, DateTime now) => Container(
         color: Theme.of(context).primaryColor,
         padding: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(30.0),
-          vertical: Constants.suSetSp(20.0),
+          horizontal: suSetSp(30.0),
+          vertical: suSetSp(20.0),
         ),
         child: Center(
           child: RichText(
@@ -394,7 +394,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 TextSpan(text: "${DateFormat("EEEE", "zh_CN").format(now)}"),
               ],
               style: TextStyle(
-                fontSize: Constants.suSetSp(20.0),
+                fontSize: suSetSp(20.0),
                 color: Theme.of(context).textTheme.body1.color,
               ),
             ),
@@ -425,15 +425,15 @@ class MyInfoPageState extends State<MyInfoPage> {
       child: Container(
         color: Theme.of(context).primaryColor,
         padding: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(18.0),
-          vertical: Constants.suSetSp(18.0),
+          horizontal: suSetSp(18.0),
+          vertical: suSetSp(18.0),
         ),
         child: Row(
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(
-                left: Constants.suSetSp(12.0),
-                right: Constants.suSetSp(16.0),
+                left: suSetSp(12.0),
+                right: suSetSp(16.0),
               ),
               child: SvgPicture.asset(
                 (item['name'] == "夜间模式")
@@ -442,8 +442,8 @@ class MyInfoPageState extends State<MyInfoPage> {
                         : "assets/icons/${item['icon']}-line.svg"
                     : "assets/icons/${item['icon']}-line.svg",
                 color: Theme.of(context).iconTheme.color,
-                width: Constants.suSetSp(30.0),
-                height: Constants.suSetSp(30.0),
+                width: suSetSp(30.0),
+                height: suSetSp(30.0),
               ),
             ),
             Expanded(
@@ -451,16 +451,16 @@ class MyInfoPageState extends State<MyInfoPage> {
                 (item['name'] == "夜间模式")
                     ? isDark ? "日间模式" : item['name']
                     : item['name'],
-                style: TextStyle(fontSize: Constants.suSetSp(19.0)),
+                style: TextStyle(fontSize: suSetSp(19.0)),
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(right: Constants.suSetSp(12.0)),
+              padding: EdgeInsets.only(right: suSetSp(12.0)),
               child: SvgPicture.asset(
                 "assets/icons/arrow-right.svg",
                 color: Colors.grey,
-                width: Constants.suSetSp(24.0),
-                height: Constants.suSetSp(24.0),
+                width: suSetSp(24.0),
+                height: suSetSp(24.0),
               ),
             ),
           ],

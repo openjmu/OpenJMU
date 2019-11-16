@@ -218,15 +218,15 @@ class _CommentListState extends State<CommentList>
       if (_firstLoadComplete) {
         _itemList = ListView.separated(
           padding: EdgeInsets.symmetric(
-            vertical: Constants.suSetSp(4.0),
+            vertical: suSetSp(4.0),
           ),
           controller: widget._commentController.commentType == "mention"
               ? null
               : _scrollController,
           separatorBuilder: (context, index) => Divider(
             color: Theme.of(context).canvasColor,
-            thickness: Constants.suSetSp(8.0),
-            height: Constants.suSetSp(8.0),
+            thickness: suSetSp(8.0),
+            height: suSetSp(8.0),
           ),
           itemCount: _commentList.length + 1,
           itemBuilder: (context, index) {
@@ -234,13 +234,13 @@ class _CommentListState extends State<CommentList>
               if (this._canLoadMore) {
                 _loadData();
                 return SizedBox(
-                  height: Constants.suSetSp(40.0),
+                  height: suSetSp(40.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       SizedBox(
-                        width: Constants.suSetSp(15.0),
-                        height: Constants.suSetSp(15.0),
+                        width: suSetSp(15.0),
+                        height: suSetSp(15.0),
                         child: Platform.isAndroid
                             ? CircularProgressIndicator(strokeWidth: 2.0)
                             : CupertinoActivityIndicator(),
@@ -248,7 +248,7 @@ class _CommentListState extends State<CommentList>
                       Text(
                         "　正在加载",
                         style: TextStyle(
-                          fontSize: Constants.suSetSp(14.0),
+                          fontSize: suSetSp(14.0),
                         ),
                       )
                     ],
@@ -256,13 +256,13 @@ class _CommentListState extends State<CommentList>
                 );
               } else {
                 return Container(
-                  height: Constants.suSetSp(50.0),
+                  height: suSetSp(50.0),
                   color: Theme.of(context).canvasColor,
                   child: Center(
                     child: Text(
                       Constants.endLineTag,
                       style: TextStyle(
-                        fontSize: Constants.suSetSp(14.0),
+                        fontSize: suSetSp(14.0),
                       ),
                     ),
                   ),
@@ -434,11 +434,11 @@ class _CommentListInPostState extends State<CommentListInPost> {
   GestureDetector getCommentAvatar(context, comment) {
     return GestureDetector(
       child: Container(
-        width: Constants.suSetSp(40.0),
-        height: Constants.suSetSp(40.0),
+        width: suSetSp(40.0),
+        height: suSetSp(40.0),
         margin: EdgeInsets.symmetric(
-            horizontal: Constants.suSetSp(16.0),
-            vertical: Constants.suSetSp(10.0)),
+            horizontal: suSetSp(16.0),
+            vertical: suSetSp(10.0)),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: const Color(0xFFECECEC),
@@ -457,7 +457,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
       comment.fromUserName,
       style: TextStyle(
         color: Theme.of(context).textTheme.title.color,
-        fontSize: Constants.suSetSp(18.0),
+        fontSize: suSetSp(18.0),
       ),
     );
   }
@@ -475,7 +475,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
     return Text(
       _commentTime,
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: Constants.suSetSp(14.0),
+            fontSize: suSetSp(14.0),
           ),
     );
   }
@@ -483,7 +483,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
   Widget getExtendedText(context, content) {
     return ExtendedText(
       content != null ? "$content " : null,
-      style: TextStyle(fontSize: Constants.suSetSp(17.0)),
+      style: TextStyle(fontSize: suSetSp(17.0)),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(
         widgetType: WidgetType.comment,
@@ -506,7 +506,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
       color: Theme.of(context).cardColor,
       width: MediaQuery.of(context).size.width,
       padding: isLoading
-          ? EdgeInsets.symmetric(vertical: Constants.suSetSp(42))
+          ? EdgeInsets.symmetric(vertical: suSetSp(42))
           : EdgeInsets.zero,
       child: isLoading
           ? Center(child: Constants.progressIndicator())
@@ -527,19 +527,19 @@ class _CommentListInPostState extends State<CommentListInPost> {
                           if (canLoadMore && !isLoading) {
                             _loadList();
                             return Container(
-                              height: Constants.suSetSp(40.0),
+                              height: suSetSp(40.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   SizedBox(
-                                    width: Constants.suSetSp(15.0),
-                                    height: Constants.suSetSp(15.0),
+                                    width: suSetSp(15.0),
+                                    height: suSetSp(15.0),
                                     child: Constants.progressIndicator(
                                         strokeWidth: 2.0),
                                   ),
                                   Text("　正在加载",
                                       style: TextStyle(
-                                          fontSize: Constants.suSetSp(14.0))),
+                                          fontSize: suSetSp(14.0))),
                                 ],
                               ),
                             );
@@ -580,11 +580,11 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                               children: <Widget>[
                                                 Padding(
                                                   padding: EdgeInsets.all(
-                                                      Constants.suSetSp(6.0)),
+                                                      suSetSp(6.0)),
                                                   child: Icon(
                                                     Icons.delete,
                                                     size:
-                                                        Constants.suSetSp(36.0),
+                                                        suSetSp(36.0),
                                                     color: Colors.white,
                                                   ),
                                                 ),
@@ -592,7 +592,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                                   "删除评论",
                                                   style: TextStyle(
                                                     fontSize:
-                                                        Constants.suSetSp(16.0),
+                                                        suSetSp(16.0),
                                                     color: Colors.white,
                                                   ),
                                                 ),
@@ -615,10 +615,10 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                             children: <Widget>[
                                               Padding(
                                                 padding: EdgeInsets.all(
-                                                    Constants.suSetSp(6.0)),
+                                                    suSetSp(6.0)),
                                                 child: Icon(
                                                   Icons.content_copy,
-                                                  size: Constants.suSetSp(36.0),
+                                                  size: suSetSp(36.0),
                                                   color: Colors.white,
                                                 ),
                                               ),
@@ -626,7 +626,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                                 "复制评论",
                                                 style: TextStyle(
                                                   fontSize:
-                                                      Constants.suSetSp(16.0),
+                                                      suSetSp(16.0),
                                                   color: Colors.white,
                                                 ),
                                               ),
@@ -651,25 +651,25 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Container(
-                                        height: Constants.suSetSp(10.0),
+                                        height: suSetSp(10.0),
                                       ),
                                       getCommentNickname(
                                         context,
                                         _comments[index],
                                       ),
                                       Container(
-                                        height: Constants.suSetSp(4.0),
+                                        height: suSetSp(4.0),
                                       ),
                                       getExtendedText(
                                         context,
                                         _comments[index].content,
                                       ),
                                       Container(
-                                        height: Constants.suSetSp(6.0),
+                                        height: suSetSp(6.0),
                                       ),
                                       getCommentTime(context, _comments[index]),
                                       Container(
-                                        height: Constants.suSetSp(10.0),
+                                        height: suSetSp(10.0),
                                       ),
                                     ],
                                   ),
@@ -679,7 +679,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                   icon: Icon(
                                     Icons.reply,
                                     color: Colors.grey,
-                                    size: Constants.suSetSp(28.0),
+                                    size: suSetSp(28.0),
                                   ),
                                   onPressed: () {
                                     if (_comments.length >= index &&
@@ -708,12 +708,12 @@ class _CommentListInPostState extends State<CommentListInPost> {
                       },
                     )
                   : SizedBox(
-                      height: Constants.suSetSp(120.0),
+                      height: suSetSp(120.0),
                       child: Center(
                         child: Text(
                           "暂无内容",
                           style: TextStyle(
-                            fontSize: Constants.suSetSp(18.0),
+                            fontSize: suSetSp(18.0),
                           ),
                         ),
                       ),

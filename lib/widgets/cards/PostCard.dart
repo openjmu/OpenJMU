@@ -41,11 +41,11 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   final TextStyle subtitleStyle =
-      TextStyle(color: Colors.grey, fontSize: Constants.suSetSp(15.0));
+      TextStyle(color: Colors.grey, fontSize: suSetSp(15.0));
   final TextStyle rootTopicTextStyle =
-      TextStyle(fontSize: Constants.suSetSp(15.0));
+      TextStyle(fontSize: suSetSp(15.0));
   final TextStyle rootTopicMentionStyle =
-      TextStyle(color: Colors.blue, fontSize: Constants.suSetSp(15.0));
+      TextStyle(color: Colors.blue, fontSize: suSetSp(15.0));
   final Color subIconColor = Colors.grey;
   final double contentPadding = 18.0;
 
@@ -96,7 +96,7 @@ class _PostCardState extends State<PostCard> {
         post.nickname ?? post.uid,
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
-          fontSize: Constants.suSetSp(19.0),
+          fontSize: suSetSp(19.0),
         ),
         textAlign: TextAlign.left,
       );
@@ -116,15 +116,15 @@ class _PostCardState extends State<PostCard> {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Icon(Icons.access_time,
-            color: Colors.grey, size: Constants.suSetSp(13.0)),
+            color: Colors.grey, size: suSetSp(13.0)),
         Text(" $_postTime", style: subtitleStyle),
-        SizedBox(width: Constants.suSetSp(10.0)),
+        SizedBox(width: suSetSp(10.0)),
         Icon(Icons.smartphone,
-            color: Colors.grey, size: Constants.suSetSp(13.0)),
+            color: Colors.grey, size: suSetSp(13.0)),
         Text(" ${post.from}", style: subtitleStyle),
-        SizedBox(width: Constants.suSetSp(10.0)),
+        SizedBox(width: suSetSp(10.0)),
         Icon(Icons.remove_red_eye,
-            color: Colors.grey, size: Constants.suSetSp(13.0)),
+            color: Colors.grey, size: suSetSp(13.0)),
         Text(" ${post.glances}", style: subtitleStyle)
       ],
     );
@@ -132,7 +132,7 @@ class _PostCardState extends State<PostCard> {
 
   Widget getPostContent(context, post) => Container(
         width: Screen.width,
-        margin: EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
+        margin: EdgeInsets.symmetric(vertical: suSetSp(4.0)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -150,7 +150,7 @@ class _PostCardState extends State<PostCard> {
       if (content['article'] == "此微博已经被屏蔽" ||
           content['content'] == "此微博已经被屏蔽") {
         return Container(
-          margin: EdgeInsets.only(top: Constants.suSetSp(10.0)),
+          margin: EdgeInsets.only(top: suSetSp(10.0)),
           child: getPostBanned("shield"),
         );
       } else {
@@ -159,7 +159,7 @@ class _PostCardState extends State<PostCard> {
             "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ";
         topic += content['article'] ?? content['content'];
         return Container(
-          margin: EdgeInsets.only(top: Constants.suSetSp(8.0)),
+          margin: EdgeInsets.only(top: suSetSp(8.0)),
           child: GestureDetector(
             onTap: () {
               Navigator.of(context).push(
@@ -179,8 +179,8 @@ class _PostCardState extends State<PostCard> {
             child: Container(
               width: Screen.width,
               padding: EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(contentPadding),
-                vertical: Constants.suSetSp(10.0),
+                horizontal: suSetSp(contentPadding),
+                vertical: suSetSp(10.0),
               ),
               decoration: BoxDecoration(color: Theme.of(context).canvasColor),
               child: Column(
@@ -201,7 +201,7 @@ class _PostCardState extends State<PostCard> {
       }
     } else {
       return Container(
-        margin: EdgeInsets.only(top: Constants.suSetSp(10.0)),
+        margin: EdgeInsets.only(top: suSetSp(10.0)),
         child: getPostBanned("delete"),
       );
     }
@@ -211,8 +211,8 @@ class _PostCardState extends State<PostCard> {
     return Padding(
       padding: post.pics != null && post.pics.length > 0
           ? EdgeInsets.symmetric(
-              horizontal: Constants.suSetSp(16.0),
-              vertical: Constants.suSetSp(4.0))
+              horizontal: suSetSp(16.0),
+              vertical: suSetSp(4.0))
           : EdgeInsets.zero,
       child: getImages(context, post.pics),
     );
@@ -246,8 +246,8 @@ class _PostCardState extends State<PostCard> {
                   loader = scaledImage(
                     image: info.image,
                     length: data.length,
-                    num300: Constants.suSetSp(200),
-                    num400: Constants.suSetSp(400),
+                    num300: suSetSp(200),
+                    num400: suSetSp(400),
                   );
                 }
                 break;
@@ -285,7 +285,7 @@ class _PostCardState extends State<PostCard> {
       if (data.length == 1) {
         _image = Container(
           padding: EdgeInsets.only(
-            top: Constants.suSetSp(4.0),
+            top: suSetSp(4.0),
           ),
           child: Align(
             alignment: Alignment.topLeft,
@@ -297,9 +297,9 @@ class _PostCardState extends State<PostCard> {
           padding: EdgeInsets.zero,
           shrinkWrap: true,
           primary: false,
-          mainAxisSpacing: Constants.suSetSp(10.0),
+          mainAxisSpacing: suSetSp(10.0),
           crossAxisCount: 3,
-          crossAxisSpacing: Constants.suSetSp(10.0),
+          crossAxisSpacing: suSetSp(10.0),
           children: imagesWidget,
         );
       }
@@ -315,7 +315,7 @@ class _PostCardState extends State<PostCard> {
     int praises = widget.post.praises;
 
     return SizedBox(
-      height: Constants.suSetSp(44.0),
+      height: suSetSp(44.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
@@ -331,14 +331,14 @@ class _PostCardState extends State<PostCard> {
               icon: SvgPicture.asset(
                 "assets/icons/postActions/forward-line.svg",
                 color: _forwardColor,
-                width: Constants.suSetSp(18.0),
-                height: Constants.suSetSp(18.0),
+                width: suSetSp(18.0),
+                height: suSetSp(18.0),
               ),
               label: Text(
                 forwards == 0 ? "转发" : "$forwards",
                 style: TextStyle(
                   color: _forwardColor,
-                  fontSize: Constants.suSetSp(16.0),
+                  fontSize: suSetSp(16.0),
                   fontWeight: FontWeight.normal,
                 ),
               ),
@@ -352,14 +352,14 @@ class _PostCardState extends State<PostCard> {
               icon: SvgPicture.asset(
                 "assets/icons/postActions/comment-line.svg",
                 color: _repliesColor,
-                width: Constants.suSetSp(18.0),
-                height: Constants.suSetSp(18.0),
+                width: suSetSp(18.0),
+                height: suSetSp(18.0),
               ),
               label: Text(
                 comments == 0 ? "评论" : "$comments",
                 style: TextStyle(
                   color: _repliesColor,
-                  fontSize: Constants.suSetSp(16.0),
+                  fontSize: suSetSp(16.0),
                   fontWeight: FontWeight.normal,
                 ),
               ),
@@ -369,7 +369,7 @@ class _PostCardState extends State<PostCard> {
           ),
           Expanded(
             child: LikeButton(
-              size: Constants.suSetSp(18.0),
+              size: suSetSp(18.0),
               circleColor: CircleColor(
                 start: ThemeUtils.currentThemeColor,
                 end: ThemeUtils.currentThemeColor,
@@ -378,7 +378,7 @@ class _PostCardState extends State<PostCard> {
                 count == 0 ? "赞" : text,
                 style: TextStyle(
                   color: isLiked ? ThemeUtils.currentThemeColor : Colors.grey,
-                  fontSize: Constants.suSetSp(16.0),
+                  fontSize: suSetSp(16.0),
                   fontWeight: FontWeight.normal,
                 ),
               ),
@@ -389,14 +389,14 @@ class _PostCardState extends State<PostCard> {
               likeBuilder: (bool isLiked) => SvgPicture.asset(
                 "assets/icons/postActions/thumbUp-${isLiked ? "fill" : "line"}.svg",
                 color: isLiked ? ThemeUtils.currentThemeColor : Colors.grey,
-                width: Constants.suSetSp(18.0),
-                height: Constants.suSetSp(18.0),
+                width: suSetSp(18.0),
+                height: suSetSp(18.0),
               ),
               likeCount: praises,
               likeCountAnimationType: LikeCountAnimationType.none,
               likeCountPadding: EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(4.0),
-                vertical: Constants.suSetSp(12.0),
+                horizontal: suSetSp(4.0),
+                vertical: suSetSp(12.0),
               ),
               isLiked: widget.post.isLike,
               onTap: onLikeButtonTap,
@@ -419,13 +419,13 @@ class _PostCardState extends State<PostCard> {
     }
     return Container(
       color: Color(ThemeUtils.currentThemeColor.value - 0x88000000),
-      padding: EdgeInsets.all(Constants.suSetSp(30.0)),
+      padding: EdgeInsets.all(suSetSp(30.0)),
       child: Center(
         child: Text(
           content,
           style: TextStyle(
             color: isDark ? Colors.grey[350] : Colors.white,
-            fontSize: Constants.suSetSp(20.0),
+            fontSize: suSetSp(20.0),
           ),
         ),
       ),
@@ -444,11 +444,11 @@ class _PostCardState extends State<PostCard> {
         padding: (isRoot ?? false)
             ? EdgeInsets.zero
             : EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(contentPadding),
+                horizontal: suSetSp(contentPadding),
               ),
         child: ExtendedText(
           content != null ? "$content " : null,
-          style: TextStyle(fontSize: Constants.suSetSp(18.0)),
+          style: TextStyle(fontSize: suSetSp(18.0)),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: widget.isDetail ?? false ? null : 8,
           overFlowTextSpan: widget.isDetail ?? false
@@ -491,7 +491,7 @@ class _PostCardState extends State<PostCard> {
         icon: Icon(
           Icons.delete,
           color: Colors.grey,
-          size: Constants.suSetSp(24.0),
+          size: suSetSp(24.0),
         ),
         onPressed: confirmDelete,
       );
@@ -500,7 +500,7 @@ class _PostCardState extends State<PostCard> {
         icon: Icon(
           Icons.expand_more,
           color: Colors.grey,
-          size: Constants.suSetSp(24.0),
+          size: suSetSp(24.0),
         ),
         onPressed: () {
           Widget _listTile({
@@ -510,7 +510,7 @@ class _PostCardState extends State<PostCard> {
           }) {
             return Padding(
               padding: EdgeInsets.symmetric(
-                vertical: Constants.suSetSp(20.0),
+                vertical: suSetSp(20.0),
               ),
               child: GestureDetector(
                 behavior: HitTestBehavior.translucent,
@@ -518,23 +518,23 @@ class _PostCardState extends State<PostCard> {
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.symmetric(
-                        horizontal: Constants.suSetSp(10.0),
+                        horizontal: suSetSp(10.0),
                       ),
                       child: Icon(
                         icon,
                         color: Theme.of(context).iconTheme.color,
-                        size: Constants.suSetSp(30.0),
+                        size: suSetSp(30.0),
                       ),
                     ),
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: Constants.suSetSp(10.0),
+                          horizontal: suSetSp(10.0),
                         ),
                         child: Text(
                           text,
                           style: Theme.of(context).textTheme.body1.copyWith(
-                                fontSize: Constants.suSetSp(20.0),
+                                fontSize: suSetSp(20.0),
                               ),
                         ),
                       ),
@@ -552,8 +552,8 @@ class _PostCardState extends State<PostCard> {
             builder: (context) {
               return Padding(
                 padding: EdgeInsets.symmetric(
-                  vertical: Constants.suSetSp(6.0),
-                  horizontal: Constants.suSetSp(16.0),
+                  vertical: suSetSp(6.0),
+                  horizontal: suSetSp(16.0),
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -568,13 +568,13 @@ class _PostCardState extends State<PostCard> {
                             title: Text(
                               "屏蔽此人",
                               style: TextStyle(
-                                fontSize: Constants.suSetSp(22.0),
+                                fontSize: suSetSp(22.0),
                               ),
                             ),
                             content: Text(
                               "确定屏蔽此人吗？",
                               style: Theme.of(context).textTheme.body1.copyWith(
-                                    fontSize: Constants.suSetSp(18.0),
+                                    fontSize: suSetSp(18.0),
                                   ),
                             ),
                             actions: <Widget>[
@@ -650,13 +650,13 @@ class _PostCardState extends State<PostCard> {
                             title: Text(
                               "举报动态",
                               style: TextStyle(
-                                fontSize: Constants.suSetSp(22.0),
+                                fontSize: suSetSp(22.0),
                               ),
                             ),
                             content: Text(
                               "确定举报该条动态吗？",
                               style: Theme.of(context).textTheme.body1.copyWith(
-                                    fontSize: Constants.suSetSp(18.0),
+                                    fontSize: suSetSp(18.0),
                                   ),
                             ),
                             actions: <Widget>[
@@ -777,7 +777,7 @@ class _PostCardState extends State<PostCard> {
         child: Card(
           margin: isShield
               ? EdgeInsets.zero
-              : EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
+              : EdgeInsets.symmetric(vertical: suSetSp(4.0)),
           child: ListView(
             padding: EdgeInsets.zero,
             physics: const NeverScrollableScrollPhysics(),
@@ -786,8 +786,8 @@ class _PostCardState extends State<PostCard> {
                 ? <Widget>[
                     Padding(
                       padding: EdgeInsets.symmetric(
-                        horizontal: Constants.suSetSp(contentPadding),
-                        vertical: Constants.suSetSp(12.0),
+                        horizontal: suSetSp(contentPadding),
+                        vertical: suSetSp(12.0),
                       ),
                       child: Row(
                         children: <Widget>[
@@ -795,7 +795,7 @@ class _PostCardState extends State<PostCard> {
                           Expanded(
                             child: Padding(
                               padding: EdgeInsets.symmetric(
-                                horizontal: Constants.suSetSp(contentPadding),
+                                horizontal: suSetSp(contentPadding),
                               ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -817,7 +817,7 @@ class _PostCardState extends State<PostCard> {
                     getPostContent(context, post),
                     getPostImages(context, post),
                     isDetail
-                        ? SizedBox(height: Constants.suSetSp(16.0))
+                        ? SizedBox(height: suSetSp(16.0))
                         : getPostActions(context),
                   ]
                 : <Widget>[getPostBanned("shield")],
@@ -882,15 +882,15 @@ class _PostCardState extends State<PostCard> {
               right: 0.0,
               child: Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: Constants.suSetSp(6.0),
-                  vertical: Constants.suSetSp(2.0),
+                  horizontal: suSetSp(6.0),
+                  vertical: suSetSp(2.0),
                 ),
                 color: ThemeUtils.currentThemeColor.withOpacity(0.7),
                 child: Text(
                   "长图",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: Constants.suSetSp(13.0),
+                    fontSize: suSetSp(13.0),
                   ),
                 ),
               ),
@@ -917,15 +917,15 @@ class _PostCardState extends State<PostCard> {
               right: 0.0,
               child: Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: Constants.suSetSp(6.0),
-                  vertical: Constants.suSetSp(2.0),
+                  horizontal: suSetSp(6.0),
+                  vertical: suSetSp(2.0),
                 ),
                 color: ThemeUtils.currentThemeColor.withOpacity(0.7),
                 child: Text(
                   "长图",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: Constants.suSetSp(13.0),
+                    fontSize: suSetSp(13.0),
                   ),
                 ),
               ),

@@ -112,19 +112,19 @@ class _SettingsPageState extends State<SettingsPage> {
       behavior: HitTestBehavior.translucent,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: Constants.suSetSp(18.0),
+          vertical: suSetSp(18.0),
         ),
         child: Row(
           children: <Widget>[
             Container(
               margin: EdgeInsets.only(
-                right: Constants.suSetSp(12.0),
+                right: suSetSp(12.0),
               ),
               child: SvgPicture.asset(
                 "assets/icons/${page['icon']}-line.svg",
                 color: Theme.of(context).iconTheme.color,
-                width: Constants.suSetSp(30.0),
-                height: Constants.suSetSp(30.0),
+                width: suSetSp(30.0),
+                height: suSetSp(30.0),
               ),
             ),
             Expanded(
@@ -135,13 +135,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   Text(
                     "${page["name"]}",
                     style: TextStyle(
-                      fontSize: Constants.suSetSp(22.0),
+                      fontSize: suSetSp(22.0),
                     ),
                   ),
                   Text(
                     "${page["description"]}",
                     style: Theme.of(context).textTheme.caption.copyWith(
-                          fontSize: Constants.suSetSp(14.0),
+                          fontSize: suSetSp(14.0),
                         ),
                   ),
                 ],
@@ -152,8 +152,8 @@ class _SettingsPageState extends State<SettingsPage> {
               SvgPicture.asset(
                 "assets/icons/arrow-right.svg",
                 color: Colors.grey,
-                width: Constants.suSetSp(24.0),
-                height: Constants.suSetSp(24.0),
+                width: suSetSp(24.0),
+                height: suSetSp(24.0),
               ),
           ],
         ),
@@ -182,13 +182,13 @@ class _SettingsPageState extends State<SettingsPage> {
           border: Border.all(
             color: Theme.of(context).dividerColor,
           ),
-          borderRadius: BorderRadius.circular(Constants.suSetSp(10.0)),
+          borderRadius: BorderRadius.circular(suSetSp(10.0)),
         ),
         child: Center(
           child: Text(
             "${page['pages'][index]}",
             style: TextStyle(
-              fontSize: Constants.suSetSp(20.0),
+              fontSize: suSetSp(20.0),
             ),
           ),
         ),
@@ -203,7 +203,7 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(elevation: 0),
       body: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(40.0),
+          horizontal: suSetSp(40.0),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -214,14 +214,14 @@ class _SettingsPageState extends State<SettingsPage> {
                 Text(
                   "设置",
                   style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: Constants.suSetSp(40.0),
+                        fontSize: suSetSp(40.0),
                         fontWeight: FontWeight.bold,
                       ),
                 ),
                 Text(
                   "管理该应用的各项设置",
                   style: Theme.of(context).textTheme.subtitle.copyWith(
-                        fontSize: Constants.suSetSp(20.0),
+                        fontSize: suSetSp(20.0),
                       ),
                 ),
                 Constants.emptyDivider(height: 20.0),

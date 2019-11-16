@@ -20,7 +20,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   final _textEditingController = TextEditingController();
   final _scrollController = ScrollController();
   final _focusNode = FocusNode();
-  final topBarHeight = Constants.suSetSp(100.0);
+  final topBarHeight = suSetSp(100.0);
   final color = ThemeUtils.currentThemeColor;
 
   List<Message> messages = [];
@@ -53,14 +53,14 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   Widget get topBar => Container(
         height: Screen.topSafeHeight + topBarHeight,
         padding: EdgeInsets.only(
-          top: Screen.topSafeHeight + Constants.suSetSp(4.0),
-          bottom: Constants.suSetSp(4.0),
+          top: Screen.topSafeHeight + suSetSp(4.0),
+          bottom: suSetSp(4.0),
         ),
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
               color: Theme.of(context).canvasColor,
-              width: Constants.suSetSp(1.5),
+              width: suSetSp(1.5),
             ),
           ),
         ),
@@ -76,7 +76,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
                 Text(
                   "陈嘉旺",
                   style: Theme.of(context).textTheme.body1.copyWith(
-                        fontSize: Constants.suSetSp(19.0),
+                        fontSize: suSetSp(19.0),
                         fontWeight: FontWeight.w500,
                       ),
                 )
@@ -91,17 +91,17 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
         padding: EdgeInsets.zero,
         elevation: 0.0,
         highlightElevation: 2.0,
-        minWidth: Constants.suSetSp(68.0),
-        height: Constants.suSetSp(52.0),
+        minWidth: suSetSp(68.0),
+        height: suSetSp(52.0),
         color: emoticonPadActive ? color : Colors.grey[400],
         child: Center(
           child: Image.asset(
             "assets/emotionIcons/憨笑.png",
-            width: Constants.suSetSp(32.0),
+            width: suSetSp(32.0),
           ),
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Constants.suSetSp(30.0)),
+          borderRadius: BorderRadius.circular(suSetSp(30.0)),
         ),
         onPressed: updatePadStatus,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -111,8 +111,8 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
         padding: EdgeInsets.zero,
         elevation: 0.0,
         highlightElevation: 2.0,
-        minWidth: Constants.suSetSp(68.0),
-        height: Constants.suSetSp(52.0),
+        minWidth: suSetSp(68.0),
+        height: suSetSp(52.0),
         color: color,
         disabledColor: Colors.grey[400],
         child: Center(
@@ -122,7 +122,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
           ),
         ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Constants.suSetSp(30.0)),
+          borderRadius: BorderRadius.circular(suSetSp(30.0)),
         ),
         onPressed: pendingMessage.trim().isNotEmpty ? sendMessage : null,
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -131,19 +131,19 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   Widget get messageTextField => Expanded(
         child: Container(
           margin: EdgeInsets.symmetric(
-            horizontal: Constants.suSetSp(8.0),
+            horizontal: suSetSp(8.0),
           ),
           constraints: BoxConstraints(
-            minHeight: Constants.suSetSp(52.0),
-            maxHeight: Constants.suSetSp(140.0),
+            minHeight: suSetSp(52.0),
+            maxHeight: suSetSp(140.0),
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(
-              Constants.suSetSp(30.0),
+              suSetSp(30.0),
             ),
             color: Theme.of(context).primaryColor,
           ),
-          padding: EdgeInsets.all(Constants.suSetSp(14.0)),
+          padding: EdgeInsets.all(suSetSp(14.0)),
           child: ExtendedTextField(
             specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
             controller: _textEditingController,
@@ -158,7 +158,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
               ),
             ),
             style: Theme.of(context).textTheme.body1.copyWith(
-                  fontSize: Constants.suSetSp(20.0),
+                  fontSize: suSetSp(20.0),
                   textBaseline: TextBaseline.alphabetic,
                 ),
             maxLines: null,
@@ -181,7 +181,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
             color: Theme.of(context).canvasColor,
           ),
           child: Padding(
-            padding: EdgeInsets.all(Constants.suSetSp(10.0)),
+            padding: EdgeInsets.all(suSetSp(10.0)),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
@@ -227,11 +227,11 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
             message.isSelf ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
           padding: EdgeInsets.symmetric(
-            horizontal: Constants.suSetSp(16.0),
-            vertical: Constants.suSetSp(10.0),
+            horizontal: suSetSp(16.0),
+            vertical: suSetSp(10.0),
           ),
           constraints: BoxConstraints(
-            minHeight: Constants.suSetSp(30.0),
+            minHeight: suSetSp(30.0),
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.0),
@@ -247,7 +247,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
               (message.content['content'] as String).indexOf('&<img>'),
             )}",
             style: TextStyle(
-              fontSize: Constants.suSetSp(19.0),
+              fontSize: suSetSp(19.0),
             ),
             onSpecialTextTap: specialTextTapRecognizer,
             specialTextSpanBuilder: StackSpecialTextSpanBuilder(),

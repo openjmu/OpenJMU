@@ -19,14 +19,14 @@ class PraiseCard extends StatelessWidget {
 
   final TextStyle subtitleStyle = TextStyle(
     color: Colors.grey,
-    fontSize: Constants.suSetSp(15.0),
+    fontSize: suSetSp(15.0),
   );
   final TextStyle rootTopicTextStyle = TextStyle(
-    fontSize: Constants.suSetSp(15.0),
+    fontSize: suSetSp(15.0),
   );
   final TextStyle rootTopicMentionStyle = TextStyle(
     color: Colors.blue,
-    fontSize: Constants.suSetSp(15.0),
+    fontSize: suSetSp(15.0),
   );
   final Color subIconColor = Colors.grey;
 
@@ -34,7 +34,7 @@ class PraiseCard extends StatelessWidget {
         praise.nickname ?? praise.uid,
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
-          fontSize: Constants.suSetSp(19.0),
+          fontSize: suSetSp(19.0),
         ),
         textAlign: TextAlign.left,
       );
@@ -54,7 +54,7 @@ class PraiseCard extends StatelessWidget {
         Icon(
           Icons.access_time,
           color: Colors.grey,
-          size: Constants.suSetSp(13.0),
+          size: suSetSp(13.0),
         ),
         Text(" $_praiseTime", style: subtitleStyle),
       ],
@@ -73,12 +73,12 @@ class PraiseCard extends StatelessWidget {
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: Constants.suSetSp(16.0),
+                    horizontal: suSetSp(16.0),
                   ),
                   child: Text(
                     "赞了这条微博",
                     style: TextStyle(
-                      fontSize: Constants.suSetSp(18.0),
+                      fontSize: suSetSp(18.0),
                     ),
                   ),
                 ),
@@ -97,10 +97,10 @@ class PraiseCard extends StatelessWidget {
     topic += _post.content;
     return Container(
       width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.only(top: Constants.suSetSp(10.0)),
+      margin: EdgeInsets.only(top: suSetSp(10.0)),
       padding: EdgeInsets.symmetric(
-        horizontal: Constants.suSetSp(16.0),
-        vertical: Constants.suSetSp(10.0),
+        horizontal: suSetSp(16.0),
+        vertical: suSetSp(10.0),
       ),
       decoration: BoxDecoration(color: Theme.of(context).canvasColor),
       child: Column(
@@ -116,7 +116,7 @@ class PraiseCard extends StatelessWidget {
   Widget getExtendedText(context, content) {
     return ExtendedText(
       content != null ? "$content " : null,
-      style: TextStyle(fontSize: Constants.suSetSp(18.0)),
+      style: TextStyle(fontSize: suSetSp(18.0)),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       maxLines: 8,
@@ -155,8 +155,8 @@ class PraiseCard extends StatelessWidget {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(16.0),
-                vertical: Constants.suSetSp(12.0),
+                horizontal: suSetSp(16.0),
+                vertical: suSetSp(12.0),
               ),
               child: Row(
                 children: <Widget>[
@@ -164,7 +164,7 @@ class PraiseCard extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                        horizontal: Constants.suSetSp(16.0),
+                        horizontal: suSetSp(16.0),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

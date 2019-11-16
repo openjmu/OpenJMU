@@ -180,14 +180,14 @@ class _ImageViewerState extends State<ImageViewer>
               ListTile(
                 leading: Icon(
                   Icons.save_alt,
-                  size: Constants.suSetSp(32.0),
+                  size: suSetSp(32.0),
                   color: Colors.white,
                 ),
                 title: Text(
                   "保存图片",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: Constants.suSetSp(20.0),
+                    fontSize: suSetSp(20.0),
                   ),
                 ),
                 onTap: () {
@@ -277,8 +277,8 @@ class ImageList extends StatelessWidget {
         child: Container(
           color: Colors.grey[850].withOpacity(0.3),
           padding: EdgeInsets.only(
-            top: Constants.suSetSp(10.0),
-            bottom: Screen.bottomSafeHeight + Constants.suSetSp(10.0),
+            top: suSetSp(10.0),
+            bottom: Screen.bottomSafeHeight + suSetSp(10.0),
           ),
           child: StreamBuilder<int>(
             initialData: index,
@@ -293,17 +293,17 @@ class ImageList extends StatelessWidget {
                       scale: i == data.data ? 1.3 : 1.0,
                       child: Container(
                         margin: EdgeInsets.symmetric(
-                          horizontal: Constants.suSetSp(5.0),
+                          horizontal: suSetSp(5.0),
                         ),
-                        width: Constants.suSetSp(36.0),
-                        height: Constants.suSetSp(36.0),
+                        width: suSetSp(36.0),
+                        height: suSetSp(36.0),
                         decoration: BoxDecoration(
                           borderRadius:
-                              BorderRadius.circular(Constants.suSetSp(8.0)),
+                              BorderRadius.circular(suSetSp(8.0)),
                           border: Border.all(
                             color: i == data.data ? Colors.white : Colors.black,
                             width:
-                                Constants.suSetSp(i == data.data ? 3.0 : 2.0),
+                                suSetSp(i == data.data ? 3.0 : 2.0),
                           ),
                         ),
                         child: GestureDetector(
@@ -316,7 +316,7 @@ class ImageList extends StatelessWidget {
                           },
                           child: ClipRRect(
                             borderRadius:
-                                BorderRadius.circular(Constants.suSetSp(6.0)),
+                                BorderRadius.circular(suSetSp(6.0)),
                             child: CachedNetworkImage(
                               placeholder: (context, text) => Container(),
                               imageUrl: pics[i].imageUrl,
@@ -363,7 +363,7 @@ class ViewAppBar extends StatelessWidget {
                   child: StreamBuilder<int>(
                     builder: (BuildContext context, data) {
                       return SizedBox(
-                        height: Constants.suSetSp(50.0),
+                        height: suSetSp(50.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
@@ -372,16 +372,16 @@ class ViewAppBar extends StatelessWidget {
                               "${data.data + 1} / ${pics.length}",
                               style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: Constants.suSetSp(22.0),
+                                  fontSize: suSetSp(22.0),
                                   fontWeight: FontWeight.bold,
                                   shadows: <Shadow>[
                                     Shadow(
                                         color: Colors.black,
                                         offset: Offset(
-                                          Constants.suSetSp(1.0),
-                                          Constants.suSetSp(1.0),
+                                          suSetSp(1.0),
+                                          suSetSp(1.0),
                                         ),
-                                        blurRadius: Constants.suSetSp(3.0)),
+                                        blurRadius: suSetSp(3.0)),
                                   ]),
                               textAlign: TextAlign.center,
                             ),

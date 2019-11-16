@@ -23,8 +23,8 @@ class AppIcon extends StatelessWidget {
       ByteData _ = await rootBundle.load(assetPath);
       return SvgPicture.asset(
         assetPath,
-        width: Constants.suSetSp(size),
-        height: Constants.suSetSp(size),
+        width: suSetSp(size),
+        height: suSetSp(size),
       );
     } catch (e) {
       final String imageUrl = "${API.webAppIcons}"
@@ -46,8 +46,8 @@ class AppIcon extends StatelessWidget {
             future: loadAsset(app),
             builder: (context, snapshot) {
               return SizedBox(
-                width: Constants.suSetSp(size),
-                height: Constants.suSetSp(size),
+                width: suSetSp(size),
+                height: suSetSp(size),
                 child: Center(
                   child: snapshot.data,
                 ),
@@ -55,8 +55,8 @@ class AppIcon extends StatelessWidget {
             },
           )
         : SizedBox(
-            width: Constants.suSetSp(size),
-            height: Constants.suSetSp(size),
+            width: suSetSp(size),
+            height: suSetSp(size),
             child: Center(
               child: Image(
                 image: CachedNetworkImageProvider(

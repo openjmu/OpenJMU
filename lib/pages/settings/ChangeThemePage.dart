@@ -35,7 +35,7 @@ class ChangeThemePageState extends State<ChangeThemePage> {
         title: Text(
           '切换主题',
           style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: Constants.suSetSp(21.0),
+                fontSize: suSetSp(21.0),
               ),
         ),
         centerTitle: true,
@@ -55,14 +55,14 @@ class ChangeThemePageState extends State<ChangeThemePage> {
               children: <Widget>[
                 Container(
                   color: colors[index],
-                  margin: EdgeInsets.all(Constants.suSetSp(10.0)),
+                  margin: EdgeInsets.all(suSetSp(10.0)),
                 ),
                 if (selected == index)
                   Container(
                     color: const Color(0x66ffffff),
-                    margin: EdgeInsets.all(Constants.suSetSp(10.0)),
+                    margin: EdgeInsets.all(suSetSp(10.0)),
                     child: Icon(Icons.check,
-                        color: Colors.white, size: Constants.suSetSp(40.0)),
+                        color: Colors.white, size: suSetSp(40.0)),
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height,
                   ),

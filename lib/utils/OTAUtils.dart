@@ -89,18 +89,18 @@ class OTAUtils {
           children: <Widget>[
             Center(
                 child: Container(
-              margin: EdgeInsets.only(bottom: Constants.suSetSp(12.0)),
+              margin: EdgeInsets.only(bottom: suSetSp(12.0)),
               child: Image.asset(
                 "images/ic_jmu_logo_trans.png",
                 color: Colors.white,
-                width: Constants.suSetSp(80.0),
-                height: Constants.suSetSp(80.0),
+                width: suSetSp(80.0),
+                height: suSetSp(80.0),
               ),
               decoration: BoxDecoration(shape: BoxShape.circle),
             )),
             Center(
                 child: Container(
-              margin: EdgeInsets.symmetric(vertical: Constants.suSetSp(12.0)),
+              margin: EdgeInsets.symmetric(vertical: suSetSp(12.0)),
               child: RichText(
                   text: TextSpan(children: <TextSpan>[
                 TextSpan(
@@ -108,13 +108,13 @@ class OTAUtils {
                   style: TextStyle(
                       fontFamily: 'chocolate',
                       color: Colors.white,
-                      fontSize: Constants.suSetSp(24.0)),
+                      fontSize: suSetSp(24.0)),
                 ),
               ])),
             )),
             Center(
                 child: Container(
-              margin: EdgeInsets.symmetric(vertical: Constants.suSetSp(6.0)),
+              margin: EdgeInsets.symmetric(vertical: suSetSp(6.0)),
               child: RichText(
                   text: TextSpan(children: <TextSpan>[
                 TextSpan(
@@ -122,7 +122,7 @@ class OTAUtils {
                   style: TextStyle(
                       fontFamily: 'chocolate',
                       color: Colors.white,
-                      fontSize: Constants.suSetSp(20.0)),
+                      fontSize: suSetSp(20.0)),
                 ),
               ])),
             )),
@@ -135,7 +135,7 @@ class OTAUtils {
           ],
         ),
       ),
-      contentPadding: EdgeInsets.all(Constants.suSetSp(24.0)),
+      contentPadding: EdgeInsets.all(suSetSp(24.0)),
       actions: <Widget>[
         FlatButton(
           onPressed: () {
@@ -145,7 +145,7 @@ class OTAUtils {
             "取消",
             style: TextStyle(
               color: Colors.white,
-              fontSize: Constants.suSetSp(20.0),
+              fontSize: suSetSp(20.0),
             ),
           ),
         ),
@@ -159,7 +159,7 @@ class OTAUtils {
             style: TextStyle(
               color: ThemeUtils.currentThemeColor,
               fontWeight: FontWeight.bold,
-              fontSize: Constants.suSetSp(20.0),
+              fontSize: suSetSp(20.0),
             ),
           ),
         ),

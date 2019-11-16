@@ -26,7 +26,7 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
         title: Text(
           "${widget.announcement['title']}",
           style: TextStyle(
-            fontSize: Constants.suSetSp(22.0),
+            fontSize: suSetSp(22.0),
             color: Colors.black,
           ),
         ),
@@ -35,7 +35,7 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
             ExtendedText(
               "${widget.announcement['content']}",
               style: TextStyle(
-                fontSize: Constants.suSetSp(18.0),
+                fontSize: suSetSp(18.0),
                 color: Colors.black,
               ),
               specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
@@ -52,7 +52,7 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
             child: Text(
               "确认",
               style: TextStyle(
-                fontSize: Constants.suSetSp(19.0),
+                fontSize: suSetSp(19.0),
               ),
             ),
             onPressed: () {
@@ -67,7 +67,7 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
         title: Text(
           "${widget.announcement['title']}",
           style: TextStyle(
-            fontSize: Constants.suSetSp(22.0),
+            fontSize: suSetSp(22.0),
             color: Colors.white,
           ),
         ),
@@ -76,7 +76,7 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
             ExtendedText(
               "${widget.announcement['content']}",
               style: TextStyle(
-                fontSize: Constants.suSetSp(18.0),
+                fontSize: suSetSp(18.0),
                 color: Colors.white,
               ),
               specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
@@ -93,7 +93,7 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
               "确认",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: Constants.suSetSp(18.0),
+                fontSize: suSetSp(18.0),
               ),
             ),
             onPressed: () {

@@ -151,7 +151,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       initialScrollOffset: DateAPI.currentWeek != null
           ? math.max(
               0,
-              (DateAPI.currentWeek - 0.5) * Constants.suSetSp(weekSize) -
+              (DateAPI.currentWeek - 0.5) * suSetSp(weekSize) -
                   Screen.width / 2,
             )
           : 0.0,
@@ -162,7 +162,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     if (weekScrollController.hasClients)
       weekScrollController.animateTo(
         math.max(
-            0, (week - 0.5) * Constants.suSetSp(weekSize) - Screen.width / 2),
+            0, (week - 0.5) * suSetSp(weekSize) - Screen.width / 2),
         duration: const Duration(milliseconds: 300),
         curve: Curves.ease,
       );
@@ -196,18 +196,18 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.only(bottom: Constants.suSetSp(10.0)),
+                    padding: EdgeInsets.only(bottom: suSetSp(10.0)),
                     child: Text(
                       "班级备注",
                       style: Theme.of(context).textTheme.title.copyWith(
-                            fontSize: Constants.suSetSp(23.0),
+                            fontSize: suSetSp(23.0),
                           ),
                     ),
                   ),
                   Text(
                     "$remark",
                     style: TextStyle(
-                      fontSize: Constants.suSetSp(18.0),
+                      fontSize: suSetSp(18.0),
                     ),
                   ),
                 ],
@@ -251,11 +251,11 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         scrollToWeek(index + 1);
       },
       child: Container(
-        width: Constants.suSetSp(weekSize),
-        padding: EdgeInsets.all(Constants.suSetSp(10.0)),
+        width: suSetSp(weekSize),
+        padding: EdgeInsets.all(suSetSp(10.0)),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
+            borderRadius: BorderRadius.circular(suSetSp(20.0)),
             border: (DateAPI.currentWeek == index + 1 &&
                     currentWeek != DateAPI.currentWeek)
                 ? Border.all(
@@ -281,7 +281,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                           TextSpan(
                             text: "${index + 1}",
                             style: TextStyle(
-                              fontSize: Constants.suSetSp(26.0),
+                              fontSize: suSetSp(26.0),
                             ),
                           ),
                           TextSpan(
@@ -289,7 +289,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                           ),
                         ],
                         style: Theme.of(context).textTheme.body1.copyWith(
-                              fontSize: Constants.suSetSp(16.0),
+                              fontSize: suSetSp(16.0),
                             ),
                       ),
                     ),
@@ -310,10 +310,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
           duration: showWeekDuration,
           width: Screen.width,
           constraints: BoxConstraints(
-            maxHeight: Constants.suSetSp(48.0),
+            maxHeight: suSetSp(48.0),
           ),
           padding: EdgeInsets.symmetric(
-            horizontal: Constants.suSetSp(30.0),
+            horizontal: suSetSp(30.0),
           ),
           color: showWeek
               ? Theme.of(context).primaryColor
@@ -333,7 +333,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                   ),
                 ],
                 style: Theme.of(context).textTheme.body1.copyWith(
-                      fontSize: Constants.suSetSp(17.0),
+                      fontSize: suSetSp(17.0),
                     ),
               ),
               textAlign: TextAlign.center,
@@ -348,7 +348,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         curve: showWeekCurve,
         duration: const Duration(milliseconds: 300),
         width: Screen.width,
-        height: showWeek ? Constants.suSetSp(weekSize / 1.5) : 0.0,
+        height: showWeek ? suSetSp(weekSize / 1.5) : 0.0,
         child: ListView.builder(
           controller: weekScrollController,
           physics: const ClampingScrollPhysics(),
@@ -371,7 +371,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
     return Container(
       color: Theme.of(context).canvasColor,
-      height: Constants.suSetSp(indicatorHeight),
+      height: suSetSp(indicatorHeight),
       child: Row(
         children: <Widget>[
           SizedBox(
@@ -385,7 +385,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                   _month().length,
                 )}",
                 style: TextStyle(
-                  fontSize: Constants.suSetSp(16),
+                  fontSize: suSetSp(16),
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -396,7 +396,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 1.5),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Constants.suSetSp(5.0)),
+                  borderRadius: BorderRadius.circular(suSetSp(5.0)),
                   color: DateFormat("MM/dd").format(
                             now.subtract(Duration(days: now.weekday - 1 - i)),
                           ) ==
@@ -412,13 +412,13 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                         _weekday(i),
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: Constants.suSetSp(16),
+                          fontSize: suSetSp(16),
                         ),
                       ),
                       Text(
                         _date(i),
                         style: TextStyle(
-                          fontSize: Constants.suSetSp(12),
+                          fontSize: suSetSp(12),
                         ),
                       ),
                     ],
@@ -435,7 +435,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     final double totalHeight = Screen.height -
         Screen.topSafeHeight -
         kToolbarHeight -
-        Constants.suSetSp(indicatorHeight);
+        suSetSp(indicatorHeight);
 
     bool hasEleven = false;
     int _maxCoursesPerDay = 8;
@@ -469,7 +469,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                       child: Text(
                         (i + 1).toString(),
                         style: TextStyle(
-                          fontSize: Constants.suSetSp(16),
+                          fontSize: suSetSp(16),
                         ),
                       ),
                     ),
@@ -502,7 +502,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
           child: Text(
             "没有课的日子\n往往就是这么的朴实无华\n且枯燥\n😆",
             style: TextStyle(
-              fontSize: Constants.suSetSp(30.0),
+              fontSize: suSetSp(30.0),
             ),
             strutStyle: StrutStyle(
               height: 1.8,
@@ -575,8 +575,8 @@ class CourseWidget extends StatelessWidget {
         bottom: 1.5,
         left: 1.5,
         child: Container(
-          width: Constants.suSetSp(24.0),
-          height: Constants.suSetSp(24.0),
+          width: suSetSp(24.0),
+          height: suSetSp(24.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(10.0),
@@ -594,7 +594,7 @@ class CourseWidget extends StatelessWidget {
                 )
                     ? Colors.grey
                     : Colors.black,
-                fontSize: Constants.suSetSp(12.0),
+                fontSize: suSetSp(12.0),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -606,8 +606,8 @@ class CourseWidget extends StatelessWidget {
         bottom: 1.5,
         right: 1.5,
         child: Container(
-          width: Constants.suSetSp(24.0),
-          height: Constants.suSetSp(24.0),
+          width: suSetSp(24.0),
+          height: suSetSp(24.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10.0),
@@ -620,7 +620,7 @@ class CourseWidget extends StatelessWidget {
               "${courseList.length}",
               style: TextStyle(
                 color: Colors.black,
-                fontSize: Constants.suSetSp(14.0),
+                fontSize: suSetSp(14.0),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -672,7 +672,7 @@ class CourseWidget extends StatelessWidget {
                         );
                       },
                       child: Container(
-                        padding: EdgeInsets.all(Constants.suSetSp(8.0)),
+                        padding: EdgeInsets.all(suSetSp(8.0)),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5.0),
                           color: courseList.isNotEmpty
@@ -718,7 +718,7 @@ class CourseWidget extends StatelessWidget {
                                           )
                                               ? Colors.grey
                                               : Colors.black,
-                                          fontSize: Constants.suSetSp(14.0),
+                                          fontSize: suSetSp(14.0),
                                         ),
                                   ),
                                   overflow: TextOverflow.fade,
@@ -818,7 +818,7 @@ class CoursesDialog extends StatelessWidget {
                               "[自定义]",
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: Constants.suSetSp(20.0),
+                                fontSize: suSetSp(20.0),
                                 height: 1.5,
                               ),
                             ),
@@ -830,7 +830,7 @@ class CoursesDialog extends StatelessWidget {
                               "[非本周]",
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: Constants.suSetSp(20.0),
+                                fontSize: suSetSp(20.0),
                                 height: 1.5,
                               ),
                             ),
@@ -838,7 +838,7 @@ class CoursesDialog extends StatelessWidget {
                             courseList[index].name,
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: Constants.suSetSp(20.0),
+                              fontSize: suSetSp(20.0),
                               fontWeight: FontWeight.bold,
                               height: 1.5,
                             ),
@@ -848,7 +848,7 @@ class CoursesDialog extends StatelessWidget {
                               "📍${courseList[index].location}",
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: Constants.suSetSp(20.0),
+                                fontSize: suSetSp(20.0),
                                 height: 1.5,
                               ),
                             ),
@@ -866,13 +866,13 @@ class CoursesDialog extends StatelessWidget {
   Widget courseDetail(Course course) {
     final style = TextStyle(
       color: Colors.black,
-      fontSize: Constants.suSetSp(20.0),
+      fontSize: suSetSp(20.0),
       height: 1.8,
     );
     return Container(
       width: double.maxFinite,
       height: double.maxFinite,
-      padding: EdgeInsets.all(Constants.suSetSp(12.0)),
+      padding: EdgeInsets.all(suSetSp(12.0)),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.0),
         color: courseList.isNotEmpty
@@ -903,7 +903,7 @@ class CoursesDialog extends StatelessWidget {
             Text(
               "${courseList[0].name}",
               style: style.copyWith(
-                fontSize: Constants.suSetSp(24.0),
+                fontSize: suSetSp(24.0),
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -960,7 +960,7 @@ class CoursesDialog extends StatelessWidget {
       children: <Widget>[
         SizedBox(
           width: Screen.width / 2,
-          height: Constants.suSetSp(370.0),
+          height: suSetSp(370.0),
           child: Stack(
             children: <Widget>[
               !isDetail ? coursesPage : courseDetail(firstCourse),
@@ -1070,7 +1070,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
 
   Widget get courseEditField {
     return Container(
-      padding: EdgeInsets.all(Constants.suSetSp(12.0)),
+      padding: EdgeInsets.all(suSetSp(12.0)),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.0),
         color: widget.course != null
@@ -1081,8 +1081,8 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
       ),
       child: Padding(
         padding: EdgeInsets.only(
-          top: Constants.suSetSp(30.0),
-          bottom: Constants.suSetSp(30.0),
+          top: suSetSp(30.0),
+          bottom: suSetSp(30.0),
         ),
         child: Center(
           child: ConstrainedBox(
@@ -1097,7 +1097,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                 enabled: !loading,
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: Constants.suSetSp(24.0),
+                  fontSize: suSetSp(24.0),
                   height: 1.5,
                   textBaseline: TextBaseline.alphabetic,
                 ),
@@ -1107,7 +1107,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                   hintText: "自定义内容",
                   hintStyle: TextStyle(
                     color: Colors.grey,
-                    fontSize: Constants.suSetSp(24.0),
+                    fontSize: suSetSp(24.0),
                     height: 1.5,
                     textBaseline: TextBaseline.alphabetic,
                   ),
@@ -1144,7 +1144,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
           splashFactory: InkSplash.splashFactory,
         ),
         child: Positioned(
-          bottom: Constants.suSetSp(8.0),
+          bottom: suSetSp(8.0),
           left: Screen.width / 7,
           right: Screen.width / 7,
           child: Row(
@@ -1152,16 +1152,16 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
             children: <Widget>[
               MaterialButton(
                 padding: EdgeInsets.zero,
-                minWidth: Constants.suSetSp(48.0),
-                height: Constants.suSetSp(48.0),
+                minWidth: suSetSp(48.0),
+                height: suSetSp(48.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(Screen.width / 2),
                 ),
                 child: loading
                     ? Center(
                         child: SizedBox(
-                          width: Constants.suSetSp(30.0),
-                          height: Constants.suSetSp(30.0),
+                          width: suSetSp(30.0),
+                          height: suSetSp(30.0),
                           child: Constants.progressIndicator(),
                         ),
                       )
@@ -1210,7 +1210,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
       children: <Widget>[
         SizedBox(
           width: Screen.width / 2,
-          height: Constants.suSetSp(370.0),
+          height: suSetSp(370.0),
           child: Stack(
             children: <Widget>[
               courseEditField,

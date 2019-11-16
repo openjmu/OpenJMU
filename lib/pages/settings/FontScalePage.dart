@@ -23,7 +23,7 @@ class _FontScalePageState extends State<FontScalePage> {
           title: Text(
             "调节字体大小",
             style: Theme.of(context).textTheme.title.copyWith(
-                  fontSize: Constants.suSetSp(21.0),
+                  fontSize: suSetSp(21.0),
                 ),
           ),
           centerTitle: true,
@@ -36,7 +36,7 @@ class _FontScalePageState extends State<FontScalePage> {
                   "这是一行示例文字\nThis is a sample sentence",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: Constants.suSetSp(20.0, scale: scale),
+                    fontSize: suSetSp(20.0, scale: scale),
                   ),
                 ),
               ),
@@ -57,13 +57,13 @@ class _FontScalePageState extends State<FontScalePage> {
                           "小",
                           style: TextStyle(
                             fontSize:
-                                Constants.suSetSp(18, scale: scaleRange[0]),
+                                suSetSp(18, scale: scaleRange[0]),
                           ),
                         ),
                         Text(
                           "标准",
                           style: TextStyle(
-                            fontSize: Constants.suSetSp(18,
+                            fontSize: suSetSp(18,
                                 scale: (scaleRange[0] + scaleRange[1]) / 2),
                           ),
                         ),
@@ -71,7 +71,7 @@ class _FontScalePageState extends State<FontScalePage> {
                           "大",
                           style: TextStyle(
                             fontSize:
-                                Constants.suSetSp(18, scale: scaleRange[1]),
+                                suSetSp(18, scale: scaleRange[1]),
                           ),
                         ),
                       ],

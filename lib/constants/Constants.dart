@@ -91,20 +91,6 @@ class Constants {
   /// Flea Market.
   static final int fleaMarketTeamId = 430;
 
-  /// Screen capability method.
-  static double suSetSp(double size, {double scale}) {
-    double value = ScreenUtil.getInstance().setSp(size) * 2;
-    if (Platform.isIOS) {
-      if (ScreenUtil.screenWidthDp <= 414.0) {
-        value = size / 1.2;
-      } else if (ScreenUtil.screenWidthDp > 414.0 &&
-          ScreenUtil.screenWidthDp > 750.0) {
-        value = size;
-      }
-    }
-    return value * (scale ?? Configs.fontScale);
-  }
-
   ///
   /// Constant widgets.
   /// This section was declared for widgets that will be reuse in code.
@@ -114,8 +100,9 @@ class Constants {
   /// Common separator. Used in setting separate.
   static DecoratedBox separator(context, {Color color, double height}) =>
       DecoratedBox(
-        decoration:
-            BoxDecoration(color: color ?? Theme.of(context).canvasColor),
+        decoration: BoxDecoration(
+          color: color ?? Theme.of(context).canvasColor,
+        ),
         child: SizedBox(height: suSetSp(height ?? 8.0)),
       );
 
@@ -132,9 +119,10 @@ class Constants {
         right: 0.0,
         bottom: 0.0,
         child: DecoratedBox(
-            decoration: BoxDecoration(
-          color: const Color(0x44000000),
-        )),
+          decoration: BoxDecoration(
+            color: const Color(0x44000000),
+          ),
+        ),
       );
 
   /// Badge Icon. Used in notification.

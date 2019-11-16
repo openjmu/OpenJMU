@@ -60,12 +60,12 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                     decoration: BoxDecoration(
                       color: Theme.of(context).canvasColor,
                       borderRadius:
-                          BorderRadius.circular(Constants.suSetSp(12.0)),
+                          BorderRadius.circular(suSetSp(12.0)),
                     ),
                     width: MediaQuery.of(context).size.width -
-                        Constants.suSetSp(100),
+                        suSetSp(100),
                     padding: EdgeInsets.only(
-                      top: Constants.suSetSp(20.0),
+                      top: suSetSp(20.0),
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -74,18 +74,18 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                           child: Text(
                             "提到用户",
                             style: Theme.of(context).textTheme.title.copyWith(
-                                  fontSize: Constants.suSetSp(22.0),
+                                  fontSize: suSetSp(22.0),
                                 ),
                           ),
                         ),
                         Container(
-                          height: Constants.suSetSp(40.0),
+                          height: suSetSp(40.0),
                           margin: EdgeInsets.symmetric(
-                            horizontal: Constants.suSetSp(20.0),
-                            vertical: Constants.suSetSp(20.0),
+                            horizontal: suSetSp(20.0),
+                            vertical: suSetSp(20.0),
                           ),
                           padding: EdgeInsets.symmetric(
-                            horizontal: Constants.suSetSp(8.0),
+                            horizontal: suSetSp(8.0),
                           ),
                           decoration: BoxDecoration(
                             border: Border(
@@ -113,7 +113,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                       .textTheme
                                       .body1
                                       .copyWith(
-                                        fontSize: Constants.suSetSp(22.0),
+                                        fontSize: suSetSp(22.0),
                                         textBaseline: TextBaseline.alphabetic,
                                       ),
                                   scrollPadding: EdgeInsets.zero,
@@ -132,7 +132,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                       },
                                       child: Icon(
                                         Icons.search,
-                                        size: Constants.suSetSp(28.0),
+                                        size: suSetSp(28.0),
                                         color: Theme.of(context)
                                             .textTheme
                                             .title
@@ -140,8 +140,8 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                       ),
                                     )
                                   : SizedBox(
-                                      width: Constants.suSetSp(28.0),
-                                      height: Constants.suSetSp(28.0),
+                                      width: suSetSp(28.0),
+                                      height: suSetSp(28.0),
                                       child: Constants.progressIndicator(),
                                     ),
                             ],
@@ -153,7 +153,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                 constraints: BoxConstraints(
                                   maxHeight:
                                       MediaQuery.of(context).size.height -
-                                          Constants.suSetSp(400),
+                                          suSetSp(400),
                                 ),
                                 child: GridView.builder(
                                   padding: EdgeInsets.zero,
@@ -178,8 +178,8 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                         Expanded(
                                           child: Center(
                                             child: SizedBox.fromSize(
-                                              size: Size(Constants.suSetSp(50),
-                                                  Constants.suSetSp(50)),
+                                              size: Size(suSetSp(50),
+                                                  suSetSp(50)),
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   image: DecorationImage(
@@ -201,7 +201,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                               users[index].nickname,
                                               style: TextStyle(
                                                 fontSize:
-                                                    Constants.suSetSp(18.0),
+                                                    suSetSp(18.0),
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                             ),
@@ -216,8 +216,8 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                     ),
                   ),
                   Positioned(
-                    top: Constants.suSetSp(10.0),
-                    right: Constants.suSetSp(10.0),
+                    top: suSetSp(10.0),
+                    right: suSetSp(10.0),
                     child: GestureDetector(
                       behavior: HitTestBehavior.translucent,
                       child: Icon(

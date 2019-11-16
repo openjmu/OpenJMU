@@ -228,14 +228,14 @@ class _AddingButtonPageState extends State<AddingButtonPage>
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           child: SizedBox(
-            width: Constants.suSetSp(MainPageState.bottomBarHeight),
-            height: Constants.suSetSp(MainPageState.bottomBarHeight),
+            width: suSetSp(MainPageState.bottomBarHeight),
+            height: suSetSp(MainPageState.bottomBarHeight),
             child: Transform.rotate(
               angle: _popButtonRotateAngle,
               child: Icon(
                 Icons.add,
                 color: Colors.grey,
-                size: Constants.suSetSp(32.0),
+                size: suSetSp(32.0),
               ),
             ),
           ),
@@ -316,7 +316,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.all(Constants.suSetSp(16.0)),
+                    padding: EdgeInsets.all(suSetSp(16.0)),
                     decoration: BoxDecoration(
                       color: itemColors[index],
                       shape: BoxShape.circle,
@@ -324,15 +324,15 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                     child: SvgPicture.asset(
                       "assets/icons/${itemIcons[index]}-line.svg",
                       color: Colors.white,
-                      width: Constants.suSetSp(28.0),
-                      height: Constants.suSetSp(28.0),
+                      width: suSetSp(28.0),
+                      height: suSetSp(28.0),
                     ),
                   ),
                   Constants.emptyDivider(height: 10.0),
                   Text(
                     itemTitles[index],
                     style: Theme.of(context).textTheme.body1.copyWith(
-                          fontSize: Constants.suSetSp(18.0),
+                          fontSize: suSetSp(18.0),
                         ),
                   ),
                 ],

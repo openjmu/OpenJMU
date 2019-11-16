@@ -106,7 +106,7 @@ class LoginPageState extends State<LoginPage>
         top: 0.0,
         child: Image.asset(
           "images/login_top.png",
-          width: MediaQuery.of(context).size.width - Constants.suSetSp(60.0),
+          width: MediaQuery.of(context).size.width - suSetSp(60.0),
           fit: BoxFit.fitWidth,
         ),
       );
@@ -126,15 +126,15 @@ class LoginPageState extends State<LoginPage>
       );
 
   Widget get logo => Positioned(
-        right: Constants.suSetSp(40.0),
-        top: Constants.suSetSp(50.0),
+        right: suSetSp(40.0),
+        top: suSetSp(50.0),
         child: Hero(
           tag: "Logo",
           child: SvgPicture.asset(
             "images/splash_page_logo.svg",
             color: Theme.of(context).primaryColor.withOpacity(0.3),
-            width: Constants.suSetSp(120.0),
-            height: Constants.suSetSp(120.0),
+            width: suSetSp(120.0),
+            height: suSetSp(120.0),
           ),
         ),
       );
@@ -148,15 +148,15 @@ class LoginPageState extends State<LoginPage>
             children: <Widget>[
               Container(
                 margin: EdgeInsets.only(
-                  top: Constants.suSetSp(10.0),
-                  left: Constants.suSetSp(6.0),
-                  right: Constants.suSetSp(6.0),
+                  top: suSetSp(10.0),
+                  left: suSetSp(6.0),
+                  right: suSetSp(6.0),
                 ),
                 child: Text(
                   "OPENJMU",
                   style: TextStyle(
                     color: Theme.of(context).iconTheme.color,
-                    fontSize: Constants.suSetSp(50.0),
+                    fontSize: suSetSp(50.0),
                     fontFamily: "chocolate",
                   ),
                 ),
@@ -172,14 +172,14 @@ class LoginPageState extends State<LoginPage>
           prefixIcon: Icon(
             Icons.person,
             color: Theme.of(context).iconTheme.color,
-            size: Constants.suSetSp(24.0),
+            size: suSetSp(24.0),
           ),
           suffixIcon: _usernameCanClear
               ? IconButton(
                   icon: Icon(
                     Icons.clear,
                     color: Theme.of(context).iconTheme.color,
-                    size: Constants.suSetSp(24.0),
+                    size: suSetSp(24.0),
                   ),
                   onPressed: _usernameController.clear,
                 )
@@ -190,19 +190,19 @@ class LoginPageState extends State<LoginPage>
               color: ThemeUtils.defaultColor,
             ),
           ),
-          contentPadding: EdgeInsets.all(Constants.suSetSp(12.0)),
+          contentPadding: EdgeInsets.all(suSetSp(12.0)),
           labelText: '工号/学号',
           labelStyle: TextStyle(
             color: Theme.of(context).textTheme.title.color,
-            fontSize: Constants.suSetSp(18.0),
+            fontSize: suSetSp(18.0),
           ),
         ),
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
         ),
         strutStyle: StrutStyle(
-          fontSize: Constants.suSetSp(18.0),
-          height: Constants.suSetSp(1.7),
+          fontSize: suSetSp(18.0),
+          height: suSetSp(1.7),
           forceStrutHeight: true,
         ),
         cursorColor: ThemeUtils.defaultColor,
@@ -230,22 +230,22 @@ class LoginPageState extends State<LoginPage>
               color: ThemeUtils.defaultColor,
             ),
           ),
-          contentPadding: EdgeInsets.all(Constants.suSetSp(12.0)),
+          contentPadding: EdgeInsets.all(suSetSp(12.0)),
           prefixIcon: Icon(
             Icons.lock,
             color: Theme.of(context).iconTheme.color,
-            size: Constants.suSetSp(24.0),
+            size: suSetSp(24.0),
           ),
           labelText: '密码',
           labelStyle: TextStyle(
             color: Theme.of(context).textTheme.title.color,
-            fontSize: Constants.suSetSp(18.0),
+            fontSize: suSetSp(18.0),
           ),
           suffixIcon: IconButton(
             icon: Icon(
               _isObscure ? Icons.visibility : Icons.visibility_off,
               color: _defaultIconColor,
-              size: Constants.suSetSp(24.0),
+              size: suSetSp(24.0),
             ),
             onPressed: () {
               setState(() {
@@ -260,8 +260,8 @@ class LoginPageState extends State<LoginPage>
           color: Theme.of(context).textTheme.title.color,
         ),
         strutStyle: StrutStyle(
-          fontSize: Constants.suSetSp(18.0),
-          height: Constants.suSetSp(1.7),
+          fontSize: suSetSp(18.0),
+          height: suSetSp(1.7),
           forceStrutHeight: true,
         ),
         cursorColor: ThemeUtils.defaultColor,
@@ -278,7 +278,7 @@ class LoginPageState extends State<LoginPage>
               '没有账号',
               style: TextStyle(
                 color: Colors.grey,
-                fontSize: Constants.suSetSp(16.0),
+                fontSize: suSetSp(16.0),
               ),
             ),
             onPressed: () {},
@@ -296,7 +296,7 @@ class LoginPageState extends State<LoginPage>
               '查询工号',
               style: TextStyle(
                 color: Colors.grey,
-                fontSize: Constants.suSetSp(16.0),
+                fontSize: suSetSp(16.0),
               ),
             ),
             onPressed: () {
@@ -319,7 +319,7 @@ class LoginPageState extends State<LoginPage>
               '忘记密码',
               style: TextStyle(
                 color: Colors.grey,
-                fontSize: Constants.suSetSp(16.0),
+                fontSize: suSetSp(16.0),
               ),
             ),
             onPressed: resetPassword,
@@ -360,7 +360,7 @@ class LoginPageState extends State<LoginPage>
                         ),
                 ),
               ],
-              style: TextStyle(fontSize: Constants.suSetSp(15.0)),
+              style: TextStyle(fontSize: suSetSp(15.0)),
             ),
           ),
         ],
@@ -376,15 +376,15 @@ class LoginPageState extends State<LoginPage>
           }
         },
         child: Container(
-          width: Constants.suSetSp(120.0),
-          height: Constants.suSetSp(50.0),
+          width: suSetSp(120.0),
+          height: suSetSp(50.0),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Constants.suSetSp(6.0)),
+            borderRadius: BorderRadius.circular(suSetSp(6.0)),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                blurRadius: Constants.suSetSp(10.0),
+                blurRadius: suSetSp(10.0),
                 color: colorGradient[1].withAlpha(50),
-                offset: Offset(0.0, Constants.suSetSp(10.0)),
+                offset: Offset(0.0, suSetSp(10.0)),
               ),
             ],
             gradient: LinearGradient(colors: colorGradient),
@@ -393,15 +393,15 @@ class LoginPageState extends State<LoginPage>
             child: !_login
                 ? Icon(
                     Icons.arrow_forward,
-                    size: Constants.suSetSp(24.0),
+                    size: suSetSp(24.0),
                     color: Colors.white,
                   )
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       SizedBox(
-                        width: Constants.suSetSp(24.0),
-                        height: Constants.suSetSp(24.0),
+                        width: suSetSp(24.0),
+                        height: suSetSp(24.0),
                         child: Constants.progressIndicator(color: Colors.white),
                       ),
                     ],
@@ -420,19 +420,19 @@ class LoginPageState extends State<LoginPage>
               shrinkWrap: true,
               controller: _formScrollController,
               padding:
-                  EdgeInsets.symmetric(horizontal: Constants.suSetSp(50.0)),
+                  EdgeInsets.symmetric(horizontal: suSetSp(50.0)),
               physics:
                   NeverScrollableScrollPhysics(parent: ClampingScrollPhysics()),
               children: <Widget>[
                 logoTitle,
-                Constants.emptyDivider(height: Constants.suSetSp(40.0)),
+                Constants.emptyDivider(height: suSetSp(40.0)),
                 Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: Constants.suSetSp(10.0),
-                    vertical: Constants.suSetSp(10.0),
+                    horizontal: suSetSp(10.0),
+                    vertical: suSetSp(10.0),
                   ),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(Constants.suSetSp(6.0)),
+                    borderRadius: BorderRadius.circular(suSetSp(6.0)),
                     boxShadow: <BoxShadow>[
                       BoxShadow(
                         blurRadius: 20.0,
@@ -450,9 +450,9 @@ class LoginPageState extends State<LoginPage>
                           radius: 6.0,
                         ),
                       usernameTextField,
-                      Constants.emptyDivider(height: Constants.suSetSp(10.0)),
+                      Constants.emptyDivider(height: suSetSp(10.0)),
                       passwordTextField,
-                      Constants.emptyDivider(height: Constants.suSetSp(10.0)),
+                      Constants.emptyDivider(height: suSetSp(10.0)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -465,7 +465,7 @@ class LoginPageState extends State<LoginPage>
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: Constants.suSetSp(20.0)),
+                  padding: EdgeInsets.only(top: suSetSp(20.0)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
@@ -474,7 +474,7 @@ class LoginPageState extends State<LoginPage>
                     ],
                   ),
                 ),
-                Constants.emptyDivider(height: Constants.suSetSp(30.0)),
+                Constants.emptyDivider(height: suSetSp(30.0)),
               ],
             ),
           ),

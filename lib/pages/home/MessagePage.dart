@@ -71,8 +71,8 @@ class MessagePageState extends State<MessagePage>
     return SvgPicture.asset(
       "assets/icons/${topIcons[index]}-line.svg",
       color: Theme.of(context).iconTheme.color,
-      width: Constants.suSetSp(30.0),
-      height: Constants.suSetSp(30.0),
+      width: suSetSp(30.0),
+      height: suSetSp(30.0),
     );
   }
 
@@ -88,14 +88,14 @@ class MessagePageState extends State<MessagePage>
                 isScrollable: true,
                 indicatorColor: currentThemeColor,
                 indicatorPadding: EdgeInsets.only(
-                  bottom: Constants.suSetSp(16.0),
+                  bottom: suSetSp(16.0),
                 ),
                 indicatorSize: TabBarIndicatorSize.label,
-                indicatorWeight: Constants.suSetSp(6.0),
+                indicatorWeight: suSetSp(6.0),
                 labelColor: Theme.of(context).textTheme.body1.color,
                 labelStyle: MainPageState.tabSelectedTextStyle,
                 labelPadding: EdgeInsets.symmetric(
-                  horizontal: Constants.suSetSp(16.0),
+                  horizontal: suSetSp(16.0),
                 ),
                 unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
                 tabs: <Tab>[
@@ -129,14 +129,14 @@ class MessagePageState extends State<MessagePage>
                   behavior: HitTestBehavior.translucent,
                   child: Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: Constants.suSetSp(18.0),
-                      vertical: Constants.suSetSp(8.0),
+                      horizontal: suSetSp(18.0),
+                      vertical: suSetSp(8.0),
                     ),
                     child: Row(
                       children: <Widget>[
                         Padding(
                           padding: EdgeInsets.only(
-                            right: Constants.suSetSp(16.0),
+                            right: suSetSp(16.0),
                           ),
                           child: index == 0 && notifications.count != 0
                               ? Padding(
@@ -155,19 +155,19 @@ class MessagePageState extends State<MessagePage>
                           child: Text(
                             topItems[index],
                             style: TextStyle(
-                              fontSize: Constants.suSetSp(19.0),
+                              fontSize: suSetSp(19.0),
                             ),
                           ),
                         ),
                         Padding(
                           padding: EdgeInsets.only(
-                            right: Constants.suSetSp(12.0),
+                            right: suSetSp(12.0),
                           ),
                           child: SvgPicture.asset(
                             "assets/icons/arrow-right.svg",
                             color: Colors.grey,
-                            width: Constants.suSetSp(24.0),
-                            height: Constants.suSetSp(24.0),
+                            width: suSetSp(24.0),
+                            height: suSetSp(24.0),
                           ),
                         ),
                       ],
@@ -186,16 +186,16 @@ class MessagePageState extends State<MessagePage>
                     if (provider.personalMessages.entries.isEmpty) {
                       return Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: Constants.suSetSp(12.0),
-                          vertical: Constants.suSetSp(30.0),
+                          horizontal: suSetSp(12.0),
+                          vertical: suSetSp(30.0),
                         ),
                         child: SizedBox(
-                          height: Constants.suSetSp(40.0),
+                          height: suSetSp(40.0),
                           child: Center(
                             child: Text(
                               "无新消息",
                               style: TextStyle(
-                                fontSize: Constants.suSetSp(14.0),
+                                fontSize: suSetSp(14.0),
                               ),
                             ),
                           ),
@@ -228,16 +228,16 @@ class MessagePageState extends State<MessagePage>
               if (!Configs.debug)
                 Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: Constants.suSetSp(12.0),
-                    vertical: Constants.suSetSp(30.0),
+                    horizontal: suSetSp(12.0),
+                    vertical: suSetSp(30.0),
                   ),
                   child: SizedBox(
-                    height: Constants.suSetSp(40.0),
+                    height: suSetSp(40.0),
                     child: Center(
                       child: Text(
                         "无新消息",
                         style: TextStyle(
-                          fontSize: Constants.suSetSp(14.0),
+                          fontSize: suSetSp(14.0),
                         ),
                       ),
                     ),
@@ -322,21 +322,21 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
     super.build(context);
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: Constants.suSetSp(16.0),
+        horizontal: suSetSp(16.0),
       ),
-      height: Constants.suSetSp(90.0),
+      height: suSetSp(90.0),
       decoration: BoxDecoration(),
       child: Row(
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(
-              right: Constants.suSetSp(16.0),
+              right: suSetSp(16.0),
             ),
             child: UserAPI.getAvatar(size: 60.0, uid: widget.uid),
           ),
           Expanded(
             child: SizedBox(
-              height: Constants.suSetSp(60.0),
+              height: suSetSp(60.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -344,13 +344,13 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                   Row(
                     children: <Widget>[
                       SizedBox(
-                        height: Constants.suSetSp(30.0),
+                        height: suSetSp(30.0),
                         child: user != null
                             ? Text(
                                 "${user.name ?? user.uid}",
                                 style:
                                     Theme.of(context).textTheme.body1.copyWith(
-                                          fontSize: Constants.suSetSp(20.0),
+                                          fontSize: suSetSp(20.0),
                                           fontWeight: FontWeight.w500,
                                         ),
                               )
@@ -368,8 +368,8 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                       ),
                       Spacer(),
                       Container(
-                        width: Constants.suSetSp(20.0),
-                        height: Constants.suSetSp(20.0),
+                        width: suSetSp(20.0),
+                        height: suSetSp(20.0),
                         decoration: BoxDecoration(
                           color: ThemeUtils.currentThemeColor.withOpacity(0.5),
                           shape: BoxShape.circle,
@@ -378,7 +378,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                           child: Text(
                             "${widget.unreadMessages.length}",
                             style: TextStyle(
-                              fontSize: Constants.suSetSp(14),
+                              fontSize: suSetSp(14),
                               fontWeight: FontWeight.bold,
                             ),
                           ),

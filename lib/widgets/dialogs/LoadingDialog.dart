@@ -95,13 +95,13 @@ class LoadingDialogState extends State<LoadingDialog> {
     }
     Widget child = Center(
       child: SizedBox(
-        width: Constants.suSetSp(180.0),
-        height: Constants.suSetSp(180.0),
+        width: suSetSp(180.0),
+        height: suSetSp(180.0),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: Theme.of(context).canvasColor,
             borderRadius:
-                BorderRadius.all(Radius.circular(Constants.suSetSp(8.0))),
+                BorderRadius.all(Radius.circular(suSetSp(8.0))),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -109,11 +109,11 @@ class LoadingDialogState extends State<LoadingDialog> {
             children: <Widget>[
               this.icon,
               Padding(
-                padding: EdgeInsets.only(top: Constants.suSetSp(40.0)),
+                padding: EdgeInsets.only(top: suSetSp(40.0)),
                 child: Text(
                   this.text,
                   style: Theme.of(context).textTheme.body1.copyWith(
-                        fontSize: Constants.suSetSp(16.0),
+                        fontSize: suSetSp(16.0),
                       ),
                 ),
               ),
@@ -171,7 +171,7 @@ class LoadingDialogController {
           Icon(
             Icons.check_circle,
             color: Colors.green,
-            size: Constants.suSetSp(60.0),
+            size: suSetSp(60.0),
           ),
           text,
           duration,
@@ -186,7 +186,7 @@ class LoadingDialogController {
             child: Icon(
               Icons.add_circle,
               color: Colors.redAccent,
-              size: Constants.suSetSp(60.0),
+              size: suSetSp(60.0),
             ),
           ),
           text,

@@ -98,12 +98,12 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
   Widget _buildMiddleTabItem() {
     return Expanded(
       child: SizedBox(
-        height: Constants.suSetSp(widget.height),
+        height: suSetSp(widget.height),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            SizedBox(height: Constants.suSetSp(widget.iconSize)),
+            SizedBox(height: suSetSp(widget.iconSize)),
             Text(
               widget.centerItemText ?? '',
               style: TextStyle(color: widget.color),
@@ -126,7 +126,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
         child: Stack(
           children: <Widget>[
             SizedBox(
-              height: Constants.suSetSp(widget.height),
+              height: suSetSp(widget.height),
               child: Center(
                 child: AnimatedCrossFade(
                   duration: kTabScrollDuration,
@@ -141,14 +141,14 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                         "assets/icons/bottomNavigation/"
                         "${item.iconPath}-fill.svg",
                         color: widget.selectedColor,
-                        width: Constants.suSetSp(widget.iconSize),
-                        height: Constants.suSetSp(widget.iconSize),
+                        width: suSetSp(widget.iconSize),
+                        height: suSetSp(widget.iconSize),
                       ),
                       Text(
                         item.text,
                         style: TextStyle(
                           color: widget.selectedColor,
-                          fontSize: Constants.suSetSp(widget.itemFontSize),
+                          fontSize: suSetSp(widget.itemFontSize),
                         ),
                       ),
                     ],
@@ -161,14 +161,14 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                         "assets/icons/bottomNavigation/"
                         "${item.iconPath}-line.svg",
                         color: widget.color,
-                        width: Constants.suSetSp(widget.iconSize),
-                        height: Constants.suSetSp(widget.iconSize),
+                        width: suSetSp(widget.iconSize),
+                        height: suSetSp(widget.iconSize),
                       ),
                       Text(
                         item.text,
                         style: TextStyle(
                           color: widget.color,
-                          fontSize: Constants.suSetSp(widget.itemFontSize),
+                          fontSize: suSetSp(widget.itemFontSize),
                         ),
                       ),
                     ],
@@ -178,15 +178,15 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
             ),
             if (index == 2)
               Positioned(
-                top: Constants.suSetSp(5),
-                right: Constants.suSetSp(28),
+                top: suSetSp(5),
+                right: suSetSp(28),
                 child: Visibility(
                   visible: showNotification,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(Constants.suSetSp(5)),
+                    borderRadius: BorderRadius.circular(suSetSp(5)),
                     child: Container(
-                      width: Constants.suSetSp(10),
-                      height: Constants.suSetSp(10),
+                      width: suSetSp(10),
+                      height: suSetSp(10),
                       color: widget.selectedColor,
                     ),
                   ),
@@ -221,7 +221,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
       appBar = ClipRect(
         child: BackdropFilter(
           filter: ui.ImageFilter.blur(
-              sigmaX: Constants.suSetSp(20.0), sigmaY: Constants.suSetSp(20.0)),
+              sigmaX: suSetSp(20.0), sigmaY: suSetSp(20.0)),
           child: appBar,
         ),
       );

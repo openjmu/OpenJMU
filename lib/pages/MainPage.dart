@@ -36,13 +36,13 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   static TextStyle tabSelectedTextStyle = TextStyle(
     color: currentThemeColor,
-    fontSize: Constants.suSetSp(23.0),
+    fontSize: suSetSp(23.0),
     fontWeight: FontWeight.bold,
     textBaseline: TextBaseline.alphabetic,
   );
   static TextStyle tabUnselectedTextStyle = TextStyle(
     color: currentThemeColor,
-    fontSize: Constants.suSetSp(18.0),
+    fontSize: suSetSp(18.0),
     textBaseline: TextBaseline.alphabetic,
   );
 
@@ -208,12 +208,12 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           ],
         ),
         floatingActionButton: SizedBox(
-          width: Constants.suSetSp(56.0),
-          height: Constants.suSetSp(40.0),
+          width: suSetSp(56.0),
+          height: suSetSp(40.0),
           child: FloatingActionButton(
             child: Icon(
               Icons.add,
-              size: Constants.suSetSp(30.0),
+              size: suSetSp(30.0),
             ),
             tooltip: "发布新动态",
             foregroundColor:
@@ -229,7 +229,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
             isExtended: false,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(
-                Constants.suSetSp(14.0),
+                suSetSp(14.0),
               ),
             ),
           ),

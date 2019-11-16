@@ -97,7 +97,7 @@ class CommentPositionedState extends State<CommentPositioned> {
       focusNode: _focusNode,
       controller: _commentController,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.all(Constants.suSetSp(12.0)),
+        contentPadding: EdgeInsets.all(suSetSp(12.0)),
         border: OutlineInputBorder(
           borderSide: BorderSide(color: ThemeUtils.currentThemeColor),
         ),
@@ -106,14 +106,14 @@ class CommentPositionedState extends State<CommentPositioned> {
         ),
         hintText: _hintText,
         hintStyle: TextStyle(
-          fontSize: Constants.suSetSp(20.0),
+          fontSize: suSetSp(20.0),
           textBaseline: TextBaseline.alphabetic,
         ),
         suffixIcon: _image != null
             ? SizedBox(
-                width: Constants.suSetSp(70.0),
+                width: suSetSp(70.0),
                 child: Container(
-                  margin: EdgeInsets.only(right: Constants.suSetSp(14.0)),
+                  margin: EdgeInsets.only(right: suSetSp(14.0)),
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: FileImage(_image),
@@ -126,7 +126,7 @@ class CommentPositionedState extends State<CommentPositioned> {
       ),
       enabled: !_commenting,
       style: Theme.of(context).textTheme.body1.copyWith(
-            fontSize: Constants.suSetSp(20.0),
+            fontSize: suSetSp(20.0),
             textBaseline: TextBaseline.alphabetic,
           ),
       cursorColor: ThemeUtils.currentThemeColor,
@@ -253,7 +253,7 @@ class CommentPositionedState extends State<CommentPositioned> {
 
   Widget toolbar(context) {
     return SizedBox(
-      height: Constants.suSetSp(40.0),
+      height: suSetSp(40.0),
       child: Row(
         children: <Widget>[
           RoundedCheckbox(
@@ -269,7 +269,7 @@ class CommentPositionedState extends State<CommentPositioned> {
           Text(
             "同时转发到微博",
             style: TextStyle(
-              fontSize: Constants.suSetSp(16.0),
+              fontSize: suSetSp(16.0),
             ),
           ),
           Spacer(),
@@ -278,11 +278,11 @@ class CommentPositionedState extends State<CommentPositioned> {
             onTap: _addImage,
             child: Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(6.0),
+                horizontal: suSetSp(6.0),
               ),
               child: Icon(
                 Icons.add_photo_alternate,
-                size: Constants.suSetSp(26.0),
+                size: suSetSp(26.0),
               ),
             ),
           ),
@@ -293,32 +293,32 @@ class CommentPositionedState extends State<CommentPositioned> {
             },
             child: Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(6.0),
+                horizontal: suSetSp(6.0),
               ),
               child: Icon(
                 Icons.alternate_email,
-                size: Constants.suSetSp(26.0),
+                size: suSetSp(26.0),
               ),
             ),
           ),
           ToggleButton(
             activeWidget: Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(6.0),
+                horizontal: suSetSp(6.0),
               ),
               child: Icon(
                 Icons.sentiment_very_satisfied,
-                size: Constants.suSetSp(26.0),
+                size: suSetSp(26.0),
                 color: ThemeUtils.currentThemeColor,
               ),
             ),
             unActiveWidget: Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(6.0),
+                horizontal: suSetSp(6.0),
               ),
               child: Icon(
                 Icons.sentiment_very_satisfied,
-                size: Constants.suSetSp(26.0),
+                size: suSetSp(26.0),
                 color: Theme.of(context).iconTheme.color,
               ),
             ),
@@ -335,11 +335,11 @@ class CommentPositionedState extends State<CommentPositioned> {
                   behavior: HitTestBehavior.opaque,
                   child: Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: Constants.suSetSp(6.0),
+                      horizontal: suSetSp(6.0),
                     ),
                     child: Icon(
                       Icons.send,
-                      size: Constants.suSetSp(26.0),
+                      size: suSetSp(26.0),
                       color: ThemeUtils.currentThemeColor,
                     ),
                   ),
@@ -349,11 +349,11 @@ class CommentPositionedState extends State<CommentPositioned> {
                 )
               : Padding(
                   padding: EdgeInsets.symmetric(
-                    horizontal: Constants.suSetSp(14.0),
+                    horizontal: suSetSp(14.0),
                   ),
                   child: SizedBox(
-                    width: Constants.suSetSp(10.0),
-                    height: Constants.suSetSp(10.0),
+                    width: suSetSp(10.0),
+                    height: suSetSp(10.0),
                     child: Constants.progressIndicator(strokeWidth: 2.0),
                   ),
                 ),
@@ -390,7 +390,7 @@ class CommentPositionedState extends State<CommentPositioned> {
                   : 0.0,
             ),
             child: Padding(
-              padding: EdgeInsets.all(Constants.suSetSp(10.0)),
+              padding: EdgeInsets.all(suSetSp(10.0)),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,

@@ -150,10 +150,10 @@ class OpenJMUAppState extends State<OpenJMUApp> {
                     ? Theme.of(context).typography.white
                     : Theme.of(context).typography.black)
                 .copyWith(
-            subhead: TextStyle(
-              textBaseline: TextBaseline.alphabetic,
-            ),
-          ));
+              subhead: TextStyle(
+                textBaseline: TextBaseline.alphabetic,
+              ),
+            ));
 
     return MultiProvider(
       providers: providers,

@@ -136,13 +136,13 @@ class SplashState extends State<SplashPage> {
   }
 
   Widget get logo => Container(
-        margin: EdgeInsets.all(Constants.suSetSp(30.0)),
+        margin: EdgeInsets.all(suSetSp(30.0)),
         child: Hero(
           tag: "Logo",
           child: SvgPicture.asset(
             "images/splash_page_logo.svg",
-            width: Constants.suSetSp(150.0),
-            height: Constants.suSetSp(150.0),
+            width: suSetSp(150.0),
+            height: suSetSp(150.0),
           ),
         ),
       );
@@ -153,10 +153,10 @@ class SplashState extends State<SplashPage> {
             child: Center(
               child: Container(
                 margin: EdgeInsets.only(
-                  bottom: Constants.suSetSp(10.0),
+                  bottom: suSetSp(10.0),
                 ),
-                width: Constants.suSetSp(28.0),
-                height: Constants.suSetSp(28.0),
+                width: suSetSp(28.0),
+                height: suSetSp(28.0),
                 child: Constants.progressIndicator(
                   color: Colors.white,
                 ),
@@ -169,7 +169,7 @@ class SplashState extends State<SplashPage> {
                 "正在登录",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: Constants.suSetSp(20.0),
+                  fontSize: suSetSp(20.0),
                 ),
               ),
             ),
@@ -184,7 +184,7 @@ class SplashState extends State<SplashPage> {
               child: Icon(
                 Icons.warning,
                 color: Colors.white,
-                size: Constants.suSetSp(40.0),
+                size: suSetSp(40.0),
               ),
             ),
           ),
@@ -194,7 +194,7 @@ class SplashState extends State<SplashPage> {
                 "请检查联网状态",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: Constants.suSetSp(20.0),
+                  fontSize: suSetSp(20.0),
                 ),
               ),
             ),
@@ -216,11 +216,11 @@ class SplashState extends State<SplashPage> {
               AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 margin: EdgeInsets.only(
-                  top: Constants.suSetSp(
+                  top: suSetSp(
                     showLoading && isOnline != null ? 20.0 : 0.0,
                   ),
                 ),
-                height: Constants.suSetSp(
+                height: suSetSp(
                   showLoading && isOnline != null ? 80.0 : 0.0,
                 ),
                 child: Center(

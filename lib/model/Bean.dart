@@ -13,9 +13,6 @@ export 'package:OpenJMU/model/CommentController.dart';
 export 'package:OpenJMU/model/PostController.dart';
 export 'package:OpenJMU/model/PraiseController.dart';
 export 'package:OpenJMU/model/SpecialText.dart';
-export 'package:OpenJMU/model/TeamCommentController.dart';
-export 'package:OpenJMU/model/TeamPostController.dart';
-export 'package:OpenJMU/model/TeamPraiseController.dart';
 
 ///
 /// 动态实体
@@ -806,7 +803,7 @@ class CustomEndDockedFloatingActionButtonLocation extends CustomDockedPosition {
   Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
     final double fabX = _endOffset(scaffoldGeometry);
     return Offset(
-        fabX, getDockedY(scaffoldGeometry) + Constants.suSetSp(this.offsetY));
+        fabX, getDockedY(scaffoldGeometry) + suSetSp(this.offsetY));
   }
 }
 
@@ -821,7 +818,7 @@ class CustomCenterDockedFloatingActionButtonLocation
             scaffoldGeometry.floatingActionButtonSize.width) /
         2.0;
     return Offset(
-        fabX, getDockedY(scaffoldGeometry) + Constants.suSetSp(this.offsetY));
+        fabX, getDockedY(scaffoldGeometry) + suSetSp(this.offsetY));
   }
 }
 

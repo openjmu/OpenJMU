@@ -139,7 +139,7 @@ class CommonWebPageState extends State<CommonWebPage> {
 
   PreferredSize progressBar(context) => PreferredSize(
         child: Container(
-          height: Constants.suSetSp(2.0),
+          height: suSetSp(2.0),
           color: !(currentProgress == 0.0) ? currentThemeColor : null,
           child: LinearProgressIndicator(
             backgroundColor: Theme.of(context).primaryColor,
@@ -147,7 +147,7 @@ class CommonWebPageState extends State<CommonWebPage> {
             valueColor: AlwaysStoppedAnimation<Color>(currentThemeColor),
           ),
         ),
-        preferredSize: Size.fromHeight(Constants.suSetSp(3.0)),
+        preferredSize: Size.fromHeight(suSetSp(3.0)),
       );
 
   @override
@@ -194,7 +194,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                         _title,
                         style: TextStyle(
                           color: Theme.of(context).textTheme.title.color,
-                          fontSize: Constants.suSetSp(20.0),
+                          fontSize: suSetSp(20.0),
                         ),
                         overflow: TextOverflow.fade,
                       ),
@@ -222,7 +222,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                   margin: EdgeInsets.zero,
                   padding: EdgeInsets.zero,
                   width: MediaQuery.of(context).size.width - 16,
-                  height: Constants.suSetSp(24.0),
+                  height: suSetSp(24.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -232,7 +232,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                         icon: Icon(
                           Icons.keyboard_arrow_left,
                           color: currentThemeColor,
-                          size: Constants.suSetSp(24.0),
+                          size: suSetSp(24.0),
                         ),
                         onPressed: flutterWebViewPlugin.goBack,
                       ),
@@ -241,7 +241,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                         icon: Icon(
                           Icons.keyboard_arrow_right,
                           color: currentThemeColor,
-                          size: Constants.suSetSp(24.0),
+                          size: suSetSp(24.0),
                         ),
                         onPressed: flutterWebViewPlugin.goForward,
                       ),
@@ -250,7 +250,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                         icon: Icon(
                           Icons.refresh,
                           color: currentThemeColor,
-                          size: Constants.suSetSp(24.0),
+                          size: suSetSp(24.0),
                         ),
                         onPressed: flutterWebViewPlugin.reload,
                       ),

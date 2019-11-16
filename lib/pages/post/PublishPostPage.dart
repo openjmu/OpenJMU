@@ -33,7 +33,7 @@ class PublishPostPageState extends State<PublishPostPage> {
   final _editSwitchController = EditSwitchController();
   final _dialogController = LoadingDialogController();
   final _focusNode = FocusNode();
-  final _iconSize = Constants.suSetSp(28.0);
+  final _iconSize = suSetSp(28.0);
   final gridCount = 5;
 //  final maxLength = 2000;
 
@@ -170,7 +170,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     return DraggableItem(
       deletable: true,
       child: Padding(
-        padding: EdgeInsets.all(Constants.suSetSp(4.0)),
+        padding: EdgeInsets.all(suSetSp(4.0)),
         child: Stack(
           children: <Widget>[
             AssetThumb(
@@ -190,7 +190,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                     child: Icon(
                       Icons.error,
                       color: Colors.redAccent,
-                      size: Constants.suSetSp(36.0),
+                      size: suSetSp(36.0),
                     ),
                   ),
                 ),
@@ -212,8 +212,8 @@ class PublishPostPageState extends State<PublishPostPage> {
     return Expanded(
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(12.0),
-          vertical: Constants.suSetSp(2.0),
+          horizontal: suSetSp(12.0),
+          vertical: suSetSp(2.0),
         ),
         child: ExtendedTextField(
           specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
@@ -227,19 +227,19 @@ class PublishPostPageState extends State<PublishPostPage> {
             hintText: "分享你的动态...",
             hintStyle: TextStyle(
               color: Colors.grey,
-              fontSize: Constants.suSetSp(19.0),
+              fontSize: suSetSp(19.0),
               textBaseline: TextBaseline.alphabetic,
             ),
             border: InputBorder.none,
             labelStyle: TextStyle(
               color: Colors.white,
-              fontSize: Constants.suSetSp(19.0),
+              fontSize: suSetSp(19.0),
               textBaseline: TextBaseline.alphabetic,
             ),
             counterStyle: TextStyle(color: Colors.transparent),
           ),
           style: Theme.of(context).textTheme.body1.copyWith(
-                fontSize: Constants.suSetSp(19.0),
+                fontSize: suSetSp(19.0),
                 textBaseline: TextBaseline.alphabetic,
               ),
 //          maxLength: maxLength,
@@ -273,7 +273,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         bottom: (emoticonPadActive
                 ? _keyboardHeight
                 : MediaQuery.of(context).padding.bottom) +
-            Constants.suSetSp(80.0),
+            suSetSp(80.0),
       ),
 //      child: imagesLength != 0 ? DraggableContainer(
 //        key: _stateKey,
@@ -285,8 +285,8 @@ class PublishPostPageState extends State<PublishPostPage> {
 //        ),
 //        slotSize: Size.square(MediaQuery.of(context).size.width / 5),
 //        deleteButton: Container(
-//          width: Constants.suSetSp(20.0),
-//          height: Constants.suSetSp(20.0),
+//          width: suSetSp(20.0),
+//          height: suSetSp(20.0),
 //          decoration: BoxDecoration(
 //            color: Colors.redAccent,
 //            shape: BoxShape.circle,
@@ -294,7 +294,7 @@ class PublishPostPageState extends State<PublishPostPage> {
 //          child: Icon(
 //            Icons.delete_forever,
 //            color: Colors.white,
-//            size: Constants.suSetSp(18.0),
+//            size: suSetSp(18.0),
 //          ),
 //        ),
 //        // item list
@@ -313,7 +313,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         animationDuration: 300,
         longPressDuration: 500,
         deleteIcon: Container(
-          padding: EdgeInsets.all(Constants.suSetSp(3.0)),
+          padding: EdgeInsets.all(suSetSp(3.0)),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: Colors.redAccent,
@@ -321,7 +321,7 @@ class PublishPostPageState extends State<PublishPostPage> {
           child: Icon(
             Icons.delete_forever,
             color: Colors.white,
-            size: Constants.suSetSp(18.0),
+            size: suSetSp(18.0),
           ),
         ),
         deleteIconClickListener: (int index) {
@@ -333,7 +333,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         },
         child: (int position) {
           return Padding(
-            padding: EdgeInsets.all(Constants.suSetSp(4.0)),
+            padding: EdgeInsets.all(suSetSp(4.0)),
             child: Stack(
               children: <Widget>[
                 AssetThumb(
@@ -353,7 +353,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                         child: Icon(
                           Icons.error,
                           color: Colors.redAccent,
-                          size: Constants.suSetSp(36.0),
+                          size: suSetSp(36.0),
                         ),
                       ),
                     ),
@@ -371,11 +371,11 @@ class PublishPostPageState extends State<PublishPostPage> {
       bottom: (emoticonPadActive
               ? _keyboardHeight
               : MediaQuery.of(context).padding.bottom) +
-          Constants.suSetSp(60.0),
+          suSetSp(60.0),
       right: 0.0,
       child: Container(
-        height: Constants.suSetSp(20.0),
-        padding: EdgeInsets.only(right: Constants.suSetSp(11.0)),
+        height: suSetSp(20.0),
+        padding: EdgeInsets.only(right: suSetSp(11.0)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: <Widget>[
@@ -399,7 +399,7 @@ class PublishPostPageState extends State<PublishPostPage> {
           : MediaQuery.of(context).padding.bottom,
       left: 0.0,
       right: 0.0,
-      height: Constants.suSetSp(60.0),
+      height: suSetSp(60.0),
       child: Container(
         child: Row(
           mainAxisSize: MainAxisSize.max,
@@ -730,7 +730,7 @@ class PublishPostPageState extends State<PublishPostPage> {
             child: Text(
               "发布动态",
               style: Theme.of(context).textTheme.title.copyWith(
-                    fontSize: Constants.suSetSp(21.0),
+                    fontSize: suSetSp(21.0),
                   ),
             ),
           ),

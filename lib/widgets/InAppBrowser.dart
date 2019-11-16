@@ -96,7 +96,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
                       url,
                       style: TextStyle(
                           color: ThemeUtils.currentThemeColor,
-                          fontSize: Constants.suSetSp(14.0)),
+                          fontSize: suSetSp(14.0)),
                     ),
                   ],
                 ),
@@ -113,7 +113,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
               ),
               if (widget.withAction ?? false)
                 SizedBox(
-                  height: Constants.suSetSp(24.0),
+                  height: suSetSp(24.0),
                   child: ButtonBar(
                     alignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
@@ -185,7 +185,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
   PreferredSize progressBar(context) {
     return PreferredSize(
       child: SizedBox(
-        height: Constants.suSetSp(2.0),
+        height: suSetSp(2.0),
         child: LinearProgressIndicator(
           backgroundColor: Theme.of(context).primaryColor,
           value: progress,

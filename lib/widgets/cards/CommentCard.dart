@@ -18,14 +18,14 @@ class CommentCard extends StatelessWidget {
 
   final TextStyle subtitleStyle = TextStyle(
     color: Colors.grey,
-    fontSize: Constants.suSetSp(15.0),
+    fontSize: suSetSp(15.0),
   );
   final TextStyle rootTopicTextStyle = TextStyle(
-    fontSize: Constants.suSetSp(15.0),
+    fontSize: suSetSp(15.0),
   );
   final TextStyle rootTopicMentionStyle = TextStyle(
     color: Colors.blue,
-    fontSize: Constants.suSetSp(15.0),
+    fontSize: suSetSp(15.0),
   );
   final Color subIconColor = Colors.grey;
 
@@ -34,7 +34,7 @@ class CommentCard extends StatelessWidget {
       comment.fromUserName ?? comment.fromUid,
       style: TextStyle(
         color: Theme.of(context).textTheme.title.color,
-        fontSize: Constants.suSetSp(19.0),
+        fontSize: suSetSp(19.0),
       ),
       textAlign: TextAlign.left,
     );
@@ -55,17 +55,17 @@ class CommentCard extends StatelessWidget {
         Icon(
           Icons.access_time,
           color: Colors.grey,
-          size: Constants.suSetSp(12.0),
+          size: suSetSp(12.0),
         ),
         Text(
           " $_commentTime",
           style: subtitleStyle,
         ),
-        Container(width: Constants.suSetSp(10.0)),
+        Container(width: suSetSp(10.0)),
         Icon(
           Icons.smartphone,
           color: Colors.grey,
-          size: Constants.suSetSp(12.0),
+          size: suSetSp(12.0),
         ),
         Text(
           " ${comment.from}",
@@ -108,10 +108,10 @@ class CommentCard extends StatelessWidget {
       topic += content;
       return Container(
         width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.only(top: Constants.suSetSp(10.0)),
+        margin: EdgeInsets.only(top: suSetSp(10.0)),
         padding: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(16.0),
-          vertical: Constants.suSetSp(10.0),
+          horizontal: suSetSp(16.0),
+          vertical: suSetSp(10.0),
         ),
         decoration: BoxDecoration(
           color: Theme.of(context).canvasColor,
@@ -132,14 +132,14 @@ class CommentCard extends StatelessWidget {
   Widget getPostBanned() {
     return Container(
       color: const Color(0xffaa4444),
-      margin: EdgeInsets.only(top: Constants.suSetSp(10.0)),
-      padding: EdgeInsets.all(Constants.suSetSp(30.0)),
+      margin: EdgeInsets.only(top: suSetSp(10.0)),
+      padding: EdgeInsets.all(suSetSp(30.0)),
       child: Center(
         child: Text(
           "该条微博已被屏蔽或删除",
           style: TextStyle(
             color: Colors.white,
-            fontSize: Constants.suSetSp(20.0),
+            fontSize: suSetSp(20.0),
           ),
         ),
       ),
@@ -151,11 +151,11 @@ class CommentCard extends StatelessWidget {
       padding: (isRoot ?? false)
           ? EdgeInsets.zero
           : EdgeInsets.symmetric(
-              horizontal: Constants.suSetSp(16.0),
+              horizontal: suSetSp(16.0),
             ),
       child: ExtendedText(
         content != null ? "$content " : null,
-        style: TextStyle(fontSize: Constants.suSetSp(18.0)),
+        style: TextStyle(fontSize: suSetSp(18.0)),
         onSpecialTextTap: specialTextTapRecognizer,
         maxLines: 8,
         overFlowTextSpan: OverFlowTextSpan(
@@ -200,17 +200,17 @@ class CommentCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Padding(
-                        padding: EdgeInsets.all(Constants.suSetSp(6.0)),
+                        padding: EdgeInsets.all(suSetSp(6.0)),
                         child: Icon(
                           Icons.delete,
-                          size: Constants.suSetSp(36.0),
+                          size: suSetSp(36.0),
                           color: Colors.white,
                         ),
                       ),
                       Text(
                         "删除评论",
                         style: TextStyle(
-                          fontSize: Constants.suSetSp(16.0),
+                          fontSize: suSetSp(16.0),
                           color: Colors.white,
                         ),
                       ),
@@ -235,17 +235,17 @@ class CommentCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.all(Constants.suSetSp(6.0)),
+                      padding: EdgeInsets.all(suSetSp(6.0)),
                       child: Icon(
                         Icons.reply,
-                        size: Constants.suSetSp(36.0),
+                        size: suSetSp(36.0),
                         color: Colors.white,
                       ),
                     ),
                     Text(
                       "回复评论",
                       style: TextStyle(
-                        fontSize: Constants.suSetSp(16.0),
+                        fontSize: suSetSp(16.0),
                         color: Colors.white,
                       ),
                     ),
@@ -270,17 +270,17 @@ class CommentCard extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.all(Constants.suSetSp(6.0)),
+                      padding: EdgeInsets.all(suSetSp(6.0)),
                       child: Icon(
                         Icons.pageview,
-                        size: Constants.suSetSp(36.0),
+                        size: suSetSp(36.0),
                         color: Colors.white,
                       ),
                     ),
                     Text(
                       "查看动态",
                       style: TextStyle(
-                        fontSize: Constants.suSetSp(16.0),
+                        fontSize: suSetSp(16.0),
                         color: Colors.white,
                       ),
                     ),
@@ -295,7 +295,7 @@ class CommentCard extends StatelessWidget {
       return SimpleDialog(
         backgroundColor: Colors.redAccent,
         contentPadding: EdgeInsets.symmetric(
-          vertical: Constants.suSetSp(16.0),
+          vertical: suSetSp(16.0),
         ),
         children: <Widget>[
           Center(
@@ -303,7 +303,7 @@ class CommentCard extends StatelessWidget {
               "该动态已被屏蔽或删除",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: Constants.suSetSp(20.0),
+                fontSize: suSetSp(20.0),
               ),
             ),
           )
@@ -327,8 +327,8 @@ class CommentCard extends StatelessWidget {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(16.0),
-                vertical: Constants.suSetSp(12.0),
+                horizontal: suSetSp(16.0),
+                vertical: suSetSp(12.0),
               ),
               child: Row(
                 children: <Widget>[
@@ -336,7 +336,7 @@ class CommentCard extends StatelessWidget {
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                        horizontal: Constants.suSetSp(16.0),
+                        horizontal: suSetSp(16.0),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

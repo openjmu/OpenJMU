@@ -204,7 +204,7 @@ class _ScorePageState extends State<ScorePage>
       child: Text(
         result,
         style: TextStyle(
-          fontSize: Constants.suSetSp(23.0),
+          fontSize: suSetSp(23.0),
           fontWeight: FontWeight.normal,
         ),
         textAlign: TextAlign.center,
@@ -222,10 +222,10 @@ class _ScorePageState extends State<ScorePage>
         selectTerm(index);
       },
       child: Container(
-        padding: EdgeInsets.all(Constants.suSetSp(6.0)),
+        padding: EdgeInsets.all(suSetSp(6.0)),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(Constants.suSetSp(10.0)),
+            borderRadius: BorderRadius.circular(suSetSp(10.0)),
             boxShadow: <BoxShadow>[
               BoxShadow(
                 blurRadius: 5.0,
@@ -238,7 +238,7 @@ class _ScorePageState extends State<ScorePage>
           ),
           child: Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: Constants.suSetSp(8.0),
+              horizontal: suSetSp(8.0),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -252,7 +252,7 @@ class _ScorePageState extends State<ScorePage>
                     fontWeight: _term == termSelected
                         ? FontWeight.bold
                         : FontWeight.normal,
-                    fontSize: Constants.suSetSp(16.0),
+                    fontSize: suSetSp(16.0),
                   ),
                 ),
                 Text(
@@ -264,7 +264,7 @@ class _ScorePageState extends State<ScorePage>
                     fontWeight: _term == termSelected
                         ? FontWeight.bold
                         : FontWeight.normal,
-                    fontSize: Constants.suSetSp(18.0),
+                    fontSize: suSetSp(18.0),
                   ),
                 ),
               ],
@@ -279,7 +279,7 @@ class _ScorePageState extends State<ScorePage>
     return Text(
       "${score.courseName}",
       style: Theme.of(context).textTheme.title.copyWith(
-            fontSize: Constants.suSetSp(24.0),
+            fontSize: suSetSp(24.0),
           ),
       overflow: TextOverflow.ellipsis,
     );
@@ -309,7 +309,7 @@ class _ScorePageState extends State<ScorePage>
           TextSpan(
             text: "$_score",
             style: Theme.of(context).textTheme.title.copyWith(
-                  fontSize: Constants.suSetSp(36.0),
+                  fontSize: suSetSp(36.0),
                   fontWeight: FontWeight.bold,
                   color: !pass
                       ? Colors.red
@@ -325,7 +325,7 @@ class _ScorePageState extends State<ScorePage>
           TextSpan(
             text: "$_scorePoint",
             style: Theme.of(context).textTheme.subtitle.copyWith(
-                  fontSize: Constants.suSetSp(20.0),
+                  fontSize: suSetSp(20.0),
                 ),
           ),
         ],
@@ -338,7 +338,7 @@ class _ScorePageState extends State<ScorePage>
       "学时: ${score.creditHour}　"
       "学分: ${score.credit.toStringAsFixed(1)}",
       style: Theme.of(context).textTheme.body1.copyWith(
-            fontSize: Constants.suSetSp(20.0),
+            fontSize: suSetSp(20.0),
           ),
     );
   }
@@ -355,7 +355,7 @@ class _ScorePageState extends State<ScorePage>
                     child: Text(
                     "暂时还没有你的成绩\n🤔",
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: Constants.suSetSp(30.0)),
+                    style: TextStyle(fontSize: suSetSp(30.0)),
                   ))
                 : SingleChildScrollView(
                     child: Column(
@@ -364,9 +364,9 @@ class _ScorePageState extends State<ScorePage>
                           Center(
                               child: Container(
                             padding: EdgeInsets.symmetric(
-                              vertical: Constants.suSetSp(5.0),
+                              vertical: suSetSp(5.0),
                             ),
-                            height: Constants.suSetSp(80.0),
+                            height: suSetSp(80.0),
                             child: ListView.builder(
                               padding: EdgeInsets.zero,
                               scrollDirection: Axis.horizontal,
@@ -376,7 +376,7 @@ class _ScorePageState extends State<ScorePage>
                               itemBuilder: (context, index) {
                                 if (index == 0 || index == terms.length + 1) {
                                   return SizedBox(
-                                      width: Constants.suSetSp(5.0));
+                                      width: suSetSp(5.0));
                                 } else {
                                   return _term(
                                     terms[terms.length - index],
@@ -398,7 +398,7 @@ class _ScorePageState extends State<ScorePage>
                                 Card(
                                   child: Padding(
                                     padding:
-                                        EdgeInsets.all(Constants.suSetSp(10.0)),
+                                        EdgeInsets.all(suSetSp(10.0)),
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,

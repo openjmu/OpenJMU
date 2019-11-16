@@ -55,7 +55,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
         title: Text(
           widget.news.title,
           style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: Constants.suSetSp(21.0),
+                fontSize: suSetSp(21.0),
               ),
           overflow: TextOverflow.ellipsis,
         ),

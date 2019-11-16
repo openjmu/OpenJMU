@@ -75,12 +75,12 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
         type: MaterialType.transparency,
         child: Center(
           child: SizedBox(
-            width: Constants.suSetSp(120.0),
-            height: Constants.suSetSp(120.0),
+            width: suSetSp(120.0),
+            height: suSetSp(120.0),
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).canvasColor,
-                borderRadius: BorderRadius.circular(Constants.suSetSp(8.0)),
+                borderRadius: BorderRadius.circular(suSetSp(8.0)),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -91,13 +91,13 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
                   ),
                   Padding(
                     padding: EdgeInsets.only(
-                      top: Constants.suSetSp(20.0),
+                      top: suSetSp(20.0),
                     ),
                     child: Text(
                       "正在下载 $progress%",
                       style: TextStyle(
                         color: Theme.of(context).textTheme.body1.color,
-                        fontSize: Constants.suSetSp(14.0),
+                        fontSize: suSetSp(14.0),
                       ),
                     ),
                   ),

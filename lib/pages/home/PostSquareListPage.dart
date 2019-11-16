@@ -21,7 +21,6 @@ class PostSquareListPageState extends State<PostSquareListPage>
   static final List<String> tabs = [
     "首页",
     "关注",
-//        "二手市场",
     "新闻",
   ];
   static List<Widget> _post;
@@ -51,17 +50,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
         needRefreshIndicator: true,
       );
     },
-//                () {
-//            _post[2] = TeamPostList(
-//                TeamPostController(
-//                    isMore: false,
-//                    lastTimeStamp: (int timestamp) => timestamp,
-//                ),
-//                needRefreshIndicator: true,
-//            );
-//        },
     () {
-//            _post[3] = NewsListPage();
       _post[2] = NewsListPage();
     },
   ];
@@ -116,12 +105,12 @@ class PostSquareListPageState extends State<PostSquareListPage>
                 }
               },
               child: Padding(
-                padding: EdgeInsets.only(right: Constants.suSetSp(4.0)),
+                padding: EdgeInsets.only(right: suSetSp(4.0)),
                 child: Text(
                   "Jmu",
                   style: TextStyle(
                     color: currentThemeColor,
-                    fontSize: Constants.suSetSp(34),
+                    fontSize: suSetSp(34),
                     fontFamily: "chocolate",
                   ),
                 ),
@@ -132,13 +121,13 @@ class PostSquareListPageState extends State<PostSquareListPage>
                 isScrollable: true,
                 indicatorColor: currentThemeColor,
                 indicatorPadding:
-                    EdgeInsets.only(bottom: Constants.suSetSp(16.0)),
+                    EdgeInsets.only(bottom: suSetSp(16.0)),
                 indicatorSize: TabBarIndicatorSize.label,
-                indicatorWeight: Constants.suSetSp(6.0),
+                indicatorWeight: suSetSp(6.0),
                 labelColor: Theme.of(context).textTheme.body1.color,
                 labelStyle: MainPageState.tabSelectedTextStyle,
                 labelPadding:
-                    EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+                    EdgeInsets.symmetric(horizontal: suSetSp(16.0)),
                 unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
                 tabs: <Tab>[
                   for (int i = 0; i < tabs.length; i++) Tab(text: tabs[i])
@@ -156,8 +145,8 @@ class PostSquareListPageState extends State<PostSquareListPage>
               icon: SvgPicture.asset(
                 "assets/icons/scan-line.svg",
                 color: Theme.of(context).iconTheme.color,
-                width: Constants.suSetSp(26.0),
-                height: Constants.suSetSp(26.0),
+                width: suSetSp(26.0),
+                height: suSetSp(26.0),
               ),
               onPressed: () async {
                 Map<PermissionGroup, PermissionStatus> permissions =
@@ -177,8 +166,8 @@ class PostSquareListPageState extends State<PostSquareListPage>
               icon: SvgPicture.asset(
                 "assets/icons/search-line.svg",
                 color: Theme.of(context).iconTheme.color,
-                width: Constants.suSetSp(26.0),
-                height: Constants.suSetSp(26.0),
+                width: suSetSp(26.0),
+                height: suSetSp(26.0),
               ),
               onPressed: () {
                 Navigator.of(context).pushNamed("/search");
@@ -192,7 +181,9 @@ class PostSquareListPageState extends State<PostSquareListPage>
         controller: _tabController,
         children: <Widget>[
           for (int i = 0; i < _tabController.length; i++)
-            hasLoaded[i] ? CupertinoScrollbar(child: _post[i]) : SizedBox(),
+            hasLoaded[i]
+                ? CupertinoScrollbar(child: _post[i])
+                : SizedBox.shrink(),
         ],
       ),
     );

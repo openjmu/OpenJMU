@@ -69,7 +69,7 @@ class NotificationPageState extends State<NotificationPage>
                       : currentNotifications.at,
                   icon: Icon(
                     actionsIcons[0],
-                    size: Constants.suSetSp(26.0),
+                    size: suSetSp(26.0),
                   ),
                 ),
                 onPressed: () {
@@ -89,7 +89,7 @@ class NotificationPageState extends State<NotificationPage>
                 padding: const EdgeInsets.all(8.0),
                 child: Icon(
                   actionsIcons[0],
-                  size: Constants.suSetSp(26.0),
+                  size: suSetSp(26.0),
                 ),
               ),
       ),
@@ -102,7 +102,7 @@ class NotificationPageState extends State<NotificationPage>
                       : currentNotifications.comment,
                   icon: Icon(
                     actionsIcons[1],
-                    size: Constants.suSetSp(26.0),
+                    size: suSetSp(26.0),
                   ),
                 ),
                 onPressed: () {
@@ -122,7 +122,7 @@ class NotificationPageState extends State<NotificationPage>
                 padding: const EdgeInsets.all(8.0),
                 child: Icon(
                   actionsIcons[1],
-                  size: Constants.suSetSp(26.0),
+                  size: suSetSp(26.0),
                 ),
               ),
       ),
@@ -135,7 +135,7 @@ class NotificationPageState extends State<NotificationPage>
                       : currentNotifications.praise,
                   icon: Icon(
                     actionsIcons[2],
-                    size: Constants.suSetSp(26.0),
+                    size: suSetSp(26.0),
                   ),
                 ),
                 onPressed: () {
@@ -155,21 +155,21 @@ class NotificationPageState extends State<NotificationPage>
                 padding: const EdgeInsets.all(8.0),
                 child: Icon(
                   actionsIcons[2],
-                  size: Constants.suSetSp(26.0),
+                  size: suSetSp(26.0),
                 ),
               ),
       ),
     ];
     return [
       SizedBox(
-        width: Constants.suSetSp(210.0),
+        width: suSetSp(210.0),
         child: TabBar(
           indicatorColor: ThemeUtils.currentThemeColor,
           indicatorPadding: const EdgeInsets.only(bottom: 18.0),
           indicatorSize: TabBarIndicatorSize.label,
           indicatorWeight: 6.0,
           labelPadding: EdgeInsets.symmetric(
-            horizontal: Constants.suSetSp(8.0),
+            horizontal: suSetSp(8.0),
           ),
           tabs: _tabs,
           controller: _tabController,
@@ -238,16 +238,16 @@ class NotificationPageState extends State<NotificationPage>
             children: <Widget>[
               SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: Constants.suSetSp(42.0),
+                height: suSetSp(42.0),
                 child: TabBar(
                   indicatorColor: ThemeUtils.currentThemeColor,
                   indicatorPadding: EdgeInsets.only(
-                    bottom: Constants.suSetSp(6.0),
+                    bottom: suSetSp(6.0),
                   ),
                   indicatorSize: TabBarIndicatorSize.label,
-                  indicatorWeight: Constants.suSetSp(4.0),
+                  indicatorWeight: suSetSp(4.0),
                   labelStyle: TextStyle(
-                    fontSize: Constants.suSetSp(17.0),
+                    fontSize: suSetSp(17.0),
                   ),
                   tabs: <Tab>[
                     Tab(text: "@我的评论"),

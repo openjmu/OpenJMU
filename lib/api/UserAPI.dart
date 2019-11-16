@@ -37,11 +37,11 @@ class UserAPI {
     int t,
   }) {
     return SizedBox(
-      width: Constants.suSetSp(size),
-      height: Constants.suSetSp(size),
+      width: suSetSp(size),
+      height: suSetSp(size),
       child: GestureDetector(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(Constants.suSetSp(size / 2)),
+          borderRadius: BorderRadius.circular(suSetSp(size / 2)),
           child: FadeInImage(
             fadeInDuration: const Duration(milliseconds: 100),
             placeholder: AssetImage("assets/avatar_placeholder.png"),

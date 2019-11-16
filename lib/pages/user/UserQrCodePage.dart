@@ -64,7 +64,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         title: Text(
           "二维码名片",
           style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: Constants.suSetSp(21.0),
+                fontSize: suSetSp(21.0),
               ),
         ),
         actions: <Widget>[
@@ -81,7 +81,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         child: RepaintBoundary(
           key: previewContainer,
           child: Container(
-            width: MediaQuery.of(context).size.width - Constants.suSetSp(60.0),
+            width: MediaQuery.of(context).size.width - suSetSp(60.0),
             padding: EdgeInsets.all(24.0),
             color: Theme.of(context).cardColor,
             child: Column(
@@ -90,8 +90,8 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                 Row(
                   children: <Widget>[
                     Container(
-                      width: Constants.suSetSp(avatarSize),
-                      height: Constants.suSetSp(avatarSize),
+                      width: suSetSp(avatarSize),
+                      height: suSetSp(avatarSize),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15.0),
                         image: DecorationImage(
@@ -102,7 +102,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(
-                          horizontal: Constants.suSetSp(18.0),
+                          horizontal: suSetSp(18.0),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -118,7 +118,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                                           .textTheme
                                           .title
                                           .color,
-                                      fontSize: Constants.suSetSp(21.0),
+                                      fontSize: suSetSp(21.0),
                                     ),
                                     textAlign: TextAlign.left,
                                   ),
@@ -131,7 +131,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                     ),
                   ],
                 ),
-                SizedBox(height: Constants.suSetSp(30.0)),
+                SizedBox(height: suSetSp(30.0)),
                 Stack(
                   children: <Widget>[
                     QrImage(
@@ -147,8 +147,8 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                       bottom: 0,
                       child: Center(
                         child: Container(
-                          width: Constants.suSetSp(avatarSize),
-                          height: Constants.suSetSp(avatarSize),
+                          width: suSetSp(avatarSize),
+                          height: suSetSp(avatarSize),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(

@@ -52,8 +52,8 @@ class _UserPageState extends State<UserPage>
   TabController _tabController;
   PostController postController;
   ScrollController _scrollController = ScrollController();
-  double tabBarHeight = Constants.suSetSp(46.0);
-  double expandedHeight = kToolbarHeight + Constants.suSetSp(212.0);
+  double tabBarHeight = suSetSp(46.0);
+  double expandedHeight = kToolbarHeight + suSetSp(212.0);
 
   @override
   void initState() {
@@ -108,7 +108,7 @@ class _UserPageState extends State<UserPage>
   }
 
   void listener() {
-    double triggerHeight = expandedHeight - Constants.suSetSp(20.0);
+    double triggerHeight = expandedHeight - suSetSp(20.0);
     if (isSelf) triggerHeight -= tabBarHeight;
 
     if (_scrollController.offset >= triggerHeight && !showTitle) {
@@ -171,10 +171,10 @@ class _UserPageState extends State<UserPage>
         avatarTap(context);
       },
       child: SizedBox(
-        width: Constants.suSetSp(width),
-        height: Constants.suSetSp(width),
+        width: suSetSp(width),
+        height: suSetSp(width),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(Constants.suSetSp(width / 2)),
+          borderRadius: BorderRadius.circular(suSetSp(width / 2)),
           child: FadeInImage(
             fadeInDuration: const Duration(milliseconds: 100),
             placeholder: AssetImage("assets/avatar_placeholder.png"),
@@ -186,14 +186,14 @@ class _UserPageState extends State<UserPage>
   }
 
   Widget followButton() => Container(
-        height: Constants.suSetSp(48.0),
+        height: suSetSp(48.0),
         padding: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(4.0),
+          horizontal: suSetSp(4.0),
         ),
         child: FlatButton(
           padding: EdgeInsets.symmetric(
-            horizontal: Constants.suSetSp(28.0),
-            vertical: Constants.suSetSp(12.0),
+            horizontal: suSetSp(28.0),
+            vertical: suSetSp(12.0),
           ),
           onPressed: () {
             if (isSelf) {
@@ -229,18 +229,18 @@ class _UserPageState extends State<UserPage>
                     : "关注${_user.gender == 2 ? "她" : "他"}",
             style: TextStyle(
               color: Colors.white,
-              fontSize: Constants.suSetSp(18.0),
+              fontSize: suSetSp(18.0),
             ),
           ),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(Constants.suSetSp(32.0)),
+            borderRadius: BorderRadius.circular(suSetSp(32.0)),
           ),
         ),
       );
 
   Widget qrCode(context) => Container(
-        width: Constants.suSetSp(48.0),
-        height: Constants.suSetSp(48.0),
+        width: suSetSp(48.0),
+        height: suSetSp(48.0),
         decoration: BoxDecoration(
           color: const Color(0x44ffffff),
           shape: BoxShape.circle,
@@ -249,7 +249,7 @@ class _UserPageState extends State<UserPage>
           behavior: HitTestBehavior.translucent,
           child: Icon(
             AntDesign.getIconData("qrcode"),
-            size: Constants.suSetSp(26.0),
+            size: suSetSp(26.0),
             color: Colors.white,
           ),
           onTap: () {
@@ -260,7 +260,7 @@ class _UserPageState extends State<UserPage>
 
   List<Widget> flexSpaceWidgets(context) => [
         Padding(
-          padding: EdgeInsets.only(bottom: Constants.suSetSp(12.0)),
+          padding: EdgeInsets.only(bottom: suSetSp(12.0)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -279,7 +279,7 @@ class _UserPageState extends State<UserPage>
               _user.name,
               style: TextStyle(
                 color: Colors.white,
-                fontSize: Constants.suSetSp(24.0),
+                fontSize: suSetSp(24.0),
                 fontWeight: FontWeight.bold,
               ),
               overflow: TextOverflow.ellipsis,
@@ -292,11 +292,11 @@ class _UserPageState extends State<UserPage>
                 shape: BoxShape.circle,
               ),
               child: Padding(
-                padding: EdgeInsets.all(Constants.suSetSp(3.0)),
+                padding: EdgeInsets.all(suSetSp(3.0)),
                 child: SvgPicture.asset(
                   "assets/icons/gender/${_user.gender == 2 ? "fe" : ""}male.svg",
-                  width: Constants.suSetSp(16.0),
-                  height: Constants.suSetSp(16.0),
+                  width: suSetSp(16.0),
+                  height: suSetSp(16.0),
                   color: Colors.white,
                 ),
               ),
@@ -304,18 +304,18 @@ class _UserPageState extends State<UserPage>
             Constants.emptyDivider(width: 8.0),
             Container(
               padding: EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(8.0),
-                vertical: Constants.suSetSp(4.0),
+                horizontal: suSetSp(8.0),
+                vertical: suSetSp(4.0),
               ),
               decoration: BoxDecoration(
                 color: ThemeUtils.defaultColor,
-                borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
+                borderRadius: BorderRadius.circular(suSetSp(20.0)),
               ),
               child: Text(
                 " Lv.$userLevel",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: Constants.suSetSp(14.0),
+                  fontSize: suSetSp(14.0),
                   fontWeight: FontWeight.bold,
                   fontStyle: FontStyle.italic,
                 ),
@@ -326,8 +326,8 @@ class _UserPageState extends State<UserPage>
             if (Constants.developerList.contains(_user.uid))
               Container(
                 padding: EdgeInsets.symmetric(
-                  horizontal: Constants.suSetSp(8.0),
-                  vertical: Constants.suSetSp(4.0),
+                  horizontal: suSetSp(8.0),
+                  vertical: suSetSp(4.0),
                 ),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
@@ -335,13 +335,13 @@ class _UserPageState extends State<UserPage>
                     end: Alignment.centerRight,
                     colors: <Color>[Colors.red, Colors.blue],
                   ),
-                  borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
+                  borderRadius: BorderRadius.circular(suSetSp(20.0)),
                 ),
                 child: Text(
                   "# OpenJMU Team #",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: Constants.suSetSp(14.0),
+                    fontSize: suSetSp(14.0),
                     fontWeight: FontWeight.bold,
                     fontStyle: FontStyle.italic,
                   ),
@@ -353,7 +353,7 @@ class _UserPageState extends State<UserPage>
           _user.signature ?? "这个人很懒，什么都没写",
           style: TextStyle(
             color: Colors.grey[350],
-            fontSize: Constants.suSetSp(16.0),
+            fontSize: suSetSp(16.0),
           ),
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
@@ -380,14 +380,14 @@ class _UserPageState extends State<UserPage>
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: Constants.suSetSp(24.0),
+                    fontSize: suSetSp(24.0),
                   ),
                 ),
                 TextSpan(
                   text: " 关注",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: Constants.suSetSp(18.0),
+                    fontSize: suSetSp(18.0),
                   ),
                 ),
               ])),
@@ -412,14 +412,14 @@ class _UserPageState extends State<UserPage>
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: Constants.suSetSp(24.0),
+                    fontSize: suSetSp(24.0),
                   ),
                 ),
                 TextSpan(
                   text: " 粉丝",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: Constants.suSetSp(18.0),
+                    fontSize: suSetSp(18.0),
                   ),
                 ),
               ])),
@@ -433,13 +433,13 @@ class _UserPageState extends State<UserPage>
                   children: <Widget>[
                     for (int i = 0; i < _tags.length; i++)
                       Container(
-                        margin: EdgeInsets.only(right: Constants.suSetSp(12.0)),
+                        margin: EdgeInsets.only(right: suSetSp(12.0)),
                         child: ClipRRect(
                           borderRadius:
-                              BorderRadius.circular(Constants.suSetSp(20.0)),
+                              BorderRadius.circular(suSetSp(20.0)),
                           child: Container(
                             padding: EdgeInsets.symmetric(
-                              horizontal: Constants.suSetSp(8.0),
+                              horizontal: suSetSp(8.0),
                             ),
                             decoration: BoxDecoration(
                               color: Color(0x44ffffff),
@@ -448,7 +448,7 @@ class _UserPageState extends State<UserPage>
                               _tags[i].name,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: Constants.suSetSp(16.0),
+                                fontSize: suSetSp(16.0),
                               ),
                             ),
                           ),
@@ -461,7 +461,7 @@ class _UserPageState extends State<UserPage>
                 "${_user.gender == 2 ? "她" : "他"}还没有设置个性标签",
                 style: TextStyle(
                   color: Colors.grey[350],
-                  fontSize: Constants.suSetSp(16.0),
+                  fontSize: suSetSp(16.0),
                 ),
               ),
       ];
@@ -469,15 +469,15 @@ class _UserPageState extends State<UserPage>
   Widget blacklistUser(String user) {
     Map<String, dynamic> _user = jsonDecode(user);
     return Padding(
-      padding: EdgeInsets.all(Constants.suSetSp(8.0)),
+      padding: EdgeInsets.all(suSetSp(8.0)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           SizedBox(
-            width: Constants.suSetSp(64.0),
-            height: Constants.suSetSp(64.0),
+            width: suSetSp(64.0),
+            height: suSetSp(64.0),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(Constants.suSetSp(32.0)),
+              borderRadius: BorderRadius.circular(suSetSp(32.0)),
               child: FadeInImage(
                 fadeInDuration: const Duration(milliseconds: 100),
                 placeholder: AssetImage("assets/avatar_placeholder.png"),
@@ -489,7 +489,7 @@ class _UserPageState extends State<UserPage>
           Text(
             _user['username'],
             style: TextStyle(
-              fontSize: Constants.suSetSp(18.0),
+              fontSize: suSetSp(18.0),
             ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -501,13 +501,13 @@ class _UserPageState extends State<UserPage>
                   title: Text(
                     "移出黑名单",
                     style: TextStyle(
-                      fontSize: Constants.suSetSp(22.0),
+                      fontSize: suSetSp(22.0),
                     ),
                   ),
                   content: Text(
                     "确定不再屏蔽此人吗？",
                     style: TextStyle(
-                      fontSize: Constants.suSetSp(18.0),
+                      fontSize: suSetSp(18.0),
                     ),
                   ),
                   actions: <Widget>[
@@ -559,17 +559,17 @@ class _UserPageState extends State<UserPage>
             },
             child: Container(
               padding: EdgeInsets.symmetric(
-                horizontal: Constants.suSetSp(10.0),
-                vertical: Constants.suSetSp(6.0),
+                horizontal: suSetSp(10.0),
+                vertical: suSetSp(6.0),
               ),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(Constants.suSetSp(10.0)),
+                borderRadius: BorderRadius.circular(suSetSp(10.0)),
                 color: ThemeUtils.currentThemeColor.withAlpha(0x88),
               ),
               child: Text(
                 "移出黑名单",
                 style: TextStyle(
-                  fontSize: Constants.suSetSp(16.0),
+                  fontSize: suSetSp(16.0),
                 ),
               ),
             ),
@@ -592,12 +592,12 @@ class _UserPageState extends State<UserPage>
                     leading: Icon(
                       Icons.account_circle,
                       color: Theme.of(context).iconTheme.color,
-                      size: Constants.suSetSp(30.0),
+                      size: suSetSp(30.0),
                     ),
                     title: Text(
                       "查看大头像",
                       style: Theme.of(context).textTheme.body1.copyWith(
-                            fontSize: Constants.suSetSp(20.0),
+                            fontSize: suSetSp(20.0),
                           ),
                     ),
                     onTap: () => Navigator.of(sheetContext)
@@ -624,12 +624,12 @@ class _UserPageState extends State<UserPage>
                     leading: Icon(
                       Icons.photo_library,
                       color: Theme.of(context).iconTheme.color,
-                      size: Constants.suSetSp(30.0),
+                      size: suSetSp(30.0),
                     ),
                     title: Text(
                       "更换头像",
                       style: Theme.of(context).textTheme.body1.copyWith(
-                            fontSize: Constants.suSetSp(20.0),
+                            fontSize: suSetSp(20.0),
                           ),
                     ),
                     onTap: () async {
@@ -642,7 +642,7 @@ class _UserPageState extends State<UserPage>
                         ),
                       )
                           .then((result) {
-                        if (result != null || result) {
+                        if (result != null && result) {
                           Instances.eventBus.fire(AvatarUpdatedEvent());
                         }
                       });
@@ -700,7 +700,7 @@ class _UserPageState extends State<UserPage>
                                 _user.name,
                                 style:
                                     Theme.of(context).textTheme.title.copyWith(
-                                          fontSize: Constants.suSetSp(21.0),
+                                          fontSize: suSetSp(21.0),
                                         ),
                               ),
                             ],
@@ -756,7 +756,7 @@ class _UserPageState extends State<UserPage>
                           top: true,
                           child: Padding(
                             padding: EdgeInsets.symmetric(
-                                horizontal: Constants.suSetSp(20.0)),
+                                horizontal: suSetSp(20.0)),
                             child: Column(
                               children: <Widget>[
                                 Constants.emptyDivider(
@@ -769,7 +769,7 @@ class _UserPageState extends State<UserPage>
                                       (BuildContext context, int index) =>
                                           Padding(
                                     padding: EdgeInsets.only(
-                                        bottom: Constants.suSetSp(12.0)),
+                                        bottom: suSetSp(12.0)),
                                     child: flexSpaceWidgets(context)[index],
                                   ),
                                 ),
@@ -783,7 +783,7 @@ class _UserPageState extends State<UserPage>
                   bottom: isSelf
                       ? PreferredSize(
                           child: Container(
-                            height: Constants.suSetSp(40.0),
+                            height: suSetSp(40.0),
                             decoration: BoxDecoration(
                               color: Theme.of(context).primaryColor,
                               borderRadius: BorderRadius.only(
@@ -799,13 +799,13 @@ class _UserPageState extends State<UserPage>
                                   controller: _tabController,
                                   isScrollable: true,
                                   indicatorSize: TabBarIndicatorSize.label,
-                                  indicatorWeight: Constants.suSetSp(3.0),
+                                  indicatorWeight: suSetSp(3.0),
                                   labelStyle: TextStyle(
-                                    fontSize: Constants.suSetSp(16.0),
+                                    fontSize: suSetSp(16.0),
                                     fontWeight: FontWeight.bold,
                                   ),
                                   unselectedLabelStyle: TextStyle(
-                                    fontSize: Constants.suSetSp(16.0),
+                                    fontSize: suSetSp(16.0),
                                     fontWeight: FontWeight.normal,
                                   ),
                                   tabs: <Widget>[
@@ -849,7 +849,7 @@ class _UserPageState extends State<UserPage>
                                 child: Text(
                                   "黑名单为空",
                                   style: TextStyle(
-                                    fontSize: Constants.suSetSp(18.0),
+                                    fontSize: suSetSp(18.0),
                                   ),
                                 ),
                               ),
@@ -951,22 +951,22 @@ class _UserListState extends State<UserListPage> {
     var _user = userData['user'];
     String name = _user['nickname'];
     if (name.length > 3) name = "${name.substring(0, 3)}...";
-    TextStyle _textStyle = TextStyle(fontSize: Constants.suSetSp(16.0));
+    TextStyle _textStyle = TextStyle(fontSize: suSetSp(16.0));
     return GestureDetector(
       onTap: () => UserPage.jump(int.parse(_user['uid'].toString())),
       child: Container(
         margin: EdgeInsets.fromLTRB(
-          Constants.suSetSp(12.0),
-          Constants.suSetSp(20.0),
-          Constants.suSetSp(12.0),
-          Constants.suSetSp(0.0),
+          suSetSp(12.0),
+          suSetSp(20.0),
+          suSetSp(12.0),
+          suSetSp(0.0),
         ),
         padding: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(20.0),
-          vertical: Constants.suSetSp(12.0),
+          horizontal: suSetSp(20.0),
+          vertical: suSetSp(12.0),
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Constants.suSetSp(16.0)),
+          borderRadius: BorderRadius.circular(suSetSp(16.0)),
           color: Theme.of(context).canvasColor,
         ),
         child: Row(
@@ -974,10 +974,10 @@ class _UserListState extends State<UserListPage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Container(
-              width: Constants.suSetSp(64.0),
-              height: Constants.suSetSp(64.0),
+              width: suSetSp(64.0),
+              height: suSetSp(64.0),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(Constants.suSetSp(32.0)),
+                borderRadius: BorderRadius.circular(suSetSp(32.0)),
                 child: FadeInImage(
                   fadeInDuration: const Duration(milliseconds: 100),
                   placeholder: AssetImage("assets/avatar_placeholder.png"),
@@ -986,7 +986,7 @@ class _UserListState extends State<UserListPage> {
                 ),
               ),
             ),
-            SizedBox(width: Constants.suSetSp(12.0)),
+            SizedBox(width: suSetSp(12.0)),
             Row(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -999,28 +999,28 @@ class _UserListState extends State<UserListPage> {
                       children: <Widget>[
                         Text(
                           name,
-                          style: TextStyle(fontSize: Constants.suSetSp(20.0)),
+                          style: TextStyle(fontSize: suSetSp(20.0)),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
-                    Divider(height: Constants.suSetSp(6.0)),
+                    Divider(height: suSetSp(6.0)),
                     Row(
                       children: <Widget>[
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Text("关注", style: _textStyle),
-                            Divider(height: Constants.suSetSp(4.0)),
+                            Divider(height: suSetSp(4.0)),
                             Text(userData['idols'], style: _textStyle),
                           ],
                         ),
-                        SizedBox(width: Constants.suSetSp(6.0)),
+                        SizedBox(width: suSetSp(6.0)),
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Text("粉丝", style: _textStyle),
-                            Divider(height: Constants.suSetSp(4.0)),
+                            Divider(height: suSetSp(4.0)),
                             Text(userData['fans'], style: _textStyle),
                           ],
                         )
@@ -1056,7 +1056,7 @@ class _UserListState extends State<UserListPage> {
         title: Text(
           "$_type列表",
           style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: Constants.suSetSp(21.0),
+                fontSize: suSetSp(21.0),
               ),
         ),
       ),
@@ -1069,7 +1069,7 @@ class _UserListState extends State<UserListPage> {
                 )
               : Center(
                   child: Text("暂无内容",
-                      style: TextStyle(fontSize: Constants.suSetSp(20.0))))
+                      style: TextStyle(fontSize: suSetSp(20.0))))
           : Center(
               child: Constants.progressIndicator(),
             ),

@@ -86,23 +86,23 @@ class NewsListPageState extends State<NewsListPage>
         Expanded(
           child: Text(
             news.title,
-            style: TextStyle(fontSize: Constants.suSetSp(18.0)),
+            style: TextStyle(fontSize: suSetSp(18.0)),
             overflow: TextOverflow.ellipsis,
           ),
         ),
         if (news.relateTopicId != null)
           Container(
-            margin: EdgeInsets.only(left: Constants.suSetSp(6.0)),
-            padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(6.0)),
+            margin: EdgeInsets.only(left: suSetSp(6.0)),
+            padding: EdgeInsets.symmetric(horizontal: suSetSp(6.0)),
             decoration: BoxDecoration(
               color: ThemeUtils.currentThemeColor,
-              borderRadius: BorderRadius.circular(Constants.suSetSp(20.0)),
+              borderRadius: BorderRadius.circular(suSetSp(20.0)),
             ),
             child: Text(
               "专题",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: Constants.suSetSp(18.0),
+                fontSize: suSetSp(18.0),
               ),
             ),
           ),
@@ -118,7 +118,7 @@ class NewsListPageState extends State<NewsListPage>
             news.summary,
             style: TextStyle(
               color: Colors.grey,
-              fontSize: Constants.suSetSp(16.0),
+              fontSize: suSetSp(16.0),
             ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -136,7 +136,7 @@ class NewsListPageState extends State<NewsListPage>
             news.postTime,
             style: TextStyle(
               color: Colors.grey,
-              fontSize: Constants.suSetSp(14.0),
+              fontSize: suSetSp(14.0),
             ),
           ),
         ),
@@ -148,13 +148,13 @@ class NewsListPageState extends State<NewsListPage>
                 "${news.glances} ",
                 style: TextStyle(
                   color: Colors.grey,
-                  fontSize: Constants.suSetSp(14.0),
+                  fontSize: suSetSp(14.0),
                 ),
               ),
               Icon(
                 Icons.remove_red_eye,
                 color: Colors.grey,
-                size: Constants.suSetSp(14.0),
+                size: suSetSp(14.0),
               ),
             ],
           ),
@@ -170,8 +170,8 @@ class NewsListPageState extends State<NewsListPage>
     ImageProvider coverImg = CachedNetworkImageProvider(imageUrl,
         cacheManager: DefaultCacheManager());
     return SizedBox(
-      width: Constants.suSetSp(80.0),
-      height: Constants.suSetSp(80.0),
+      width: suSetSp(80.0),
+      height: suSetSp(80.0),
       child: FadeInImage(
         fadeInDuration: const Duration(milliseconds: 100),
         placeholder: AssetImage("assets/avatar_placeholder.png"),
@@ -183,8 +183,8 @@ class NewsListPageState extends State<NewsListPage>
 
   Widget newsItem(context, News news) {
     return Container(
-      height: Constants.suSetSp(96.0),
-      padding: EdgeInsets.all(Constants.suSetSp(8.0)),
+      height: suSetSp(96.0),
+      padding: EdgeInsets.all(suSetSp(8.0)),
       child: InkWell(
         onTap: () {
           Navigator.of(context).push(
@@ -202,10 +202,10 @@ class NewsListPageState extends State<NewsListPage>
             Expanded(
               child: Padding(
                 padding: EdgeInsets.fromLTRB(
-                  Constants.suSetSp(4.0),
-                  Constants.suSetSp(4.0),
-                  Constants.suSetSp(10.0),
-                  Constants.suSetSp(4.0),
+                  suSetSp(4.0),
+                  suSetSp(4.0),
+                  suSetSp(10.0),
+                  suSetSp(4.0),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -222,10 +222,10 @@ class NewsListPageState extends State<NewsListPage>
               coverImg(news)
             else
               Padding(
-                padding: EdgeInsets.all(Constants.suSetSp(4.0)),
+                padding: EdgeInsets.all(suSetSp(4.0)),
                 child: Container(
-                  width: Constants.suSetSp(80.0),
-                  height: Constants.suSetSp(80.0),
+                  width: suSetSp(80.0),
+                  height: suSetSp(80.0),
                 ),
               ),
           ],
@@ -256,13 +256,13 @@ class NewsListPageState extends State<NewsListPage>
                       if (this._canLoadMore) {
                         getNewsList(isLoadMore: true);
                         return SizedBox(
-                          height: Constants.suSetSp(40.0),
+                          height: suSetSp(40.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               SizedBox(
-                                width: Constants.suSetSp(15.0),
-                                height: Constants.suSetSp(15.0),
+                                width: suSetSp(15.0),
+                                height: suSetSp(15.0),
                                 child: Constants.progressIndicator(
                                   strokeWidth: 2.0,
                                 ),
@@ -270,7 +270,7 @@ class NewsListPageState extends State<NewsListPage>
                               Text(
                                 "　正在加载",
                                 style: TextStyle(
-                                  fontSize: Constants.suSetSp(14.0),
+                                  fontSize: suSetSp(14.0),
                                 ),
                               ),
                             ],
@@ -278,13 +278,13 @@ class NewsListPageState extends State<NewsListPage>
                         );
                       } else {
                         return Container(
-                          height: Constants.suSetSp(50.0),
+                          height: suSetSp(50.0),
                           color: Theme.of(context).canvasColor,
                           child: Center(
                             child: Text(
                               Constants.endLineTag,
                               style: TextStyle(
-                                fontSize: Constants.suSetSp(14.0),
+                                fontSize: suSetSp(14.0),
                               ),
                             ),
                           ),

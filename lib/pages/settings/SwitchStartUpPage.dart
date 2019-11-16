@@ -40,7 +40,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
       behavior: HitTestBehavior.translucent,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: Constants.suSetSp(18.0),
+          vertical: suSetSp(18.0),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,14 +52,14 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                 Text(
                   "${page["name"]}",
                   style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: Constants.suSetSp(24.0),
+                        fontSize: suSetSp(24.0),
                         fontWeight: FontWeight.normal,
                       ),
                 ),
                 Text(
                   "${page["pages"][page["index"]]}",
                   style: Theme.of(context).textTheme.subtitle.copyWith(
-                        fontSize: Constants.suSetSp(16.0),
+                        fontSize: suSetSp(16.0),
                         fontWeight: FontWeight.normal,
                       ),
                 ),
@@ -68,8 +68,8 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
             SvgPicture.asset(
               "assets/icons/arrow-right.svg",
               color: Colors.grey,
-              width: Constants.suSetSp(24.0),
-              height: Constants.suSetSp(24.0),
+              width: suSetSp(24.0),
+              height: suSetSp(24.0),
             ),
           ],
         ),
@@ -93,13 +93,13 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
           border: Border.all(
             color: Theme.of(context).dividerColor,
           ),
-          borderRadius: BorderRadius.circular(Constants.suSetSp(10.0)),
+          borderRadius: BorderRadius.circular(suSetSp(10.0)),
         ),
         child: Center(
           child: Text(
             "${page['pages'][index]}",
             style: TextStyle(
-              fontSize: Constants.suSetSp(20.0),
+              fontSize: suSetSp(20.0),
             ),
           ),
         ),
@@ -124,20 +124,20 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
         builder: (context) {
           return Padding(
             padding: EdgeInsets.symmetric(
-              vertical: Constants.suSetSp(20.0),
-              horizontal: Constants.suSetSp(16.0),
+              vertical: suSetSp(20.0),
+              horizontal: suSetSp(16.0),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Padding(
                   padding: EdgeInsets.only(
-                    bottom: Constants.suSetSp(12.0),
+                    bottom: suSetSp(12.0),
                   ),
                   child: Text(
                     "选择页面",
                     style: TextStyle(
-                      fontSize: Constants.suSetSp(24.0),
+                      fontSize: suSetSp(24.0),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -145,8 +145,8 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                 GridView.count(
                   shrinkWrap: true,
                   crossAxisCount: 4,
-                  mainAxisSpacing: Constants.suSetSp(6.0),
-                  crossAxisSpacing: Constants.suSetSp(12.0),
+                  mainAxisSpacing: suSetSp(6.0),
+                  crossAxisSpacing: suSetSp(12.0),
                   childAspectRatio: 2.1,
                   children: <Widget>[
                     for (int i = 0; i < page['pages'].length; i++)
@@ -178,7 +178,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
       appBar: AppBar(elevation: 0),
       body: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: Constants.suSetSp(40.0),
+          horizontal: suSetSp(40.0),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,14 +189,14 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                 Text(
                   "启动页设置",
                   style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: Constants.suSetSp(40.0),
+                        fontSize: suSetSp(40.0),
                         fontWeight: FontWeight.bold,
                       ),
                 ),
                 Text(
                   "设置各个页面的启动页",
                   style: Theme.of(context).textTheme.subtitle.copyWith(
-                        fontSize: Constants.suSetSp(20.0),
+                        fontSize: suSetSp(20.0),
                       ),
                 ),
                 Constants.emptyDivider(height: 20.0),

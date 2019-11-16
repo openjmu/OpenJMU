@@ -15,8 +15,11 @@ class PraiseController {
   final Function lastValue;
   final Map<String, dynamic> additionAttrs;
 
-  PraiseController(
-      {@required this.isMore, @required this.lastValue, this.additionAttrs});
+  PraiseController({
+    @required this.isMore,
+    @required this.lastValue,
+    this.additionAttrs,
+  });
 }
 
 class PraiseList extends StatefulWidget {
@@ -178,42 +181,48 @@ class _PraiseListState extends State<PraiseList>
     if (!_showLoading) {
       if (_firstLoadComplete) {
         _itemList = ListView.separated(
-          padding: EdgeInsets.symmetric(vertical: Constants.suSetSp(4.0)),
+          padding: EdgeInsets.symmetric(vertical: suSetSp(4.0)),
           separatorBuilder: (context, index) => Divider(
             color: Theme.of(context).canvasColor,
-            height: Constants.suSetSp(8.0),
-            thickness: Constants.suSetSp(8.0),
+            height: suSetSp(8.0),
+            thickness: suSetSp(8.0),
           ),
           itemBuilder: (context, index) {
             if (index == _praiseList.length) {
               if (this._canLoadMore) {
                 _loadData();
                 return SizedBox(
-                  height: Constants.suSetSp(40.0),
+                  height: suSetSp(40.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       SizedBox(
-                        width: Constants.suSetSp(15.0),
-                        height: Constants.suSetSp(15.0),
+                        width: suSetSp(15.0),
+                        height: suSetSp(15.0),
                         child: Platform.isAndroid
                             ? CircularProgressIndicator(strokeWidth: 2.0)
                             : CupertinoActivityIndicator(),
                       ),
-                      Text("　正在加载",
-                          style: TextStyle(fontSize: Constants.suSetSp(14.0),),)
+                      Text(
+                        "　正在加载",
+                        style: TextStyle(
+                          fontSize: suSetSp(14.0),
+                        ),
+                      )
                     ],
                   ),
                 );
               } else {
                 return Container(
-                  height: Constants.suSetSp(50.0),
+                  height: suSetSp(50.0),
                   color: Theme.of(context).canvasColor,
                   child: Center(
-                    child: Text(Constants.endLineTag,
-                        style: TextStyle(
-                          fontSize: Constants.suSetSp(14.0),
-                        ),),
+                    child: Text(
+                      Constants.endLineTag,
+                      style: TextStyle(
+                        fontSize: suSetSp(14.0),
+                      ),
+                    ),
                   ),
                 );
               }
@@ -371,11 +380,11 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
   GestureDetector getPostAvatar(context, praise) {
     return GestureDetector(
       child: Container(
-        width: Constants.suSetSp(44.0),
-        height: Constants.suSetSp(44.0),
+        width: suSetSp(44.0),
+        height: suSetSp(44.0),
         margin: EdgeInsets.symmetric(
-            horizontal: Constants.suSetSp(16.0),
-            vertical: Constants.suSetSp(10.0)),
+            horizontal: suSetSp(16.0),
+            vertical: suSetSp(10.0)),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: const Color(0xFFECECEC),
@@ -396,7 +405,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
       praise.nickname,
       style: TextStyle(
         color: Theme.of(context).textTheme.body1.color,
-        fontSize: Constants.suSetSp(18.0),
+        fontSize: suSetSp(18.0),
       ),
     );
   }
@@ -407,7 +416,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
       color: Theme.of(context).cardColor,
       width: MediaQuery.of(context).size.width,
       padding: isLoading
-          ? EdgeInsets.symmetric(vertical: Constants.suSetSp(42))
+          ? EdgeInsets.symmetric(vertical: suSetSp(42))
           : EdgeInsets.zero,
       child: isLoading
           ? Center(child: Constants.progressIndicator())
@@ -420,7 +429,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                       shrinkWrap: true,
                       separatorBuilder: (context, index) => Container(
                         color: Theme.of(context).dividerColor,
-                        height: Constants.suSetSp(1.0),
+                        height: suSetSp(1.0),
                       ),
                       itemCount: _praises.length + 1,
                       itemBuilder: (context, index) {
@@ -428,19 +437,19 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                           if (canLoadMore && !isLoading) {
                             _loadList();
                             return Container(
-                              height: Constants.suSetSp(40.0),
+                              height: suSetSp(40.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
                                   SizedBox(
-                                    width: Constants.suSetSp(15.0),
-                                    height: Constants.suSetSp(15.0),
+                                    width: suSetSp(15.0),
+                                    height: suSetSp(15.0),
                                     child: Constants.progressIndicator(
                                         strokeWidth: 2.0),
                                   ),
                                   Text("　正在加载",
                                       style: TextStyle(
-                                          fontSize: Constants.suSetSp(14.0))),
+                                          fontSize: suSetSp(14.0))),
                                 ],
                               ),
                             );
@@ -470,13 +479,13 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                       },
                     )
                   : Container(
-                      height: Constants.suSetSp(120.0),
+                      height: suSetSp(120.0),
                       child: Center(
                         child: Text(
                           "暂无内容",
                           style: TextStyle(
                             color: Colors.grey,
-                            fontSize: Constants.suSetSp(18.0),
+                            fontSize: suSetSp(18.0),
                           ),
                         ),
                       ),

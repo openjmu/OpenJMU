@@ -35,12 +35,12 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   final textActiveStyle = TextStyle(
     color: Colors.white,
-    fontSize: Constants.suSetSp(16.0),
+    fontSize: suSetSp(16.0),
     fontWeight: FontWeight.bold,
   );
   final textInActiveStyle = TextStyle(
     color: Colors.grey,
-    fontSize: Constants.suSetSp(16.0),
+    fontSize: suSetSp(16.0),
   );
 
   Widget _forwardsList;
@@ -208,8 +208,8 @@ class PostDetailPageState extends State<PostDetailPage> {
   Widget actionLists(context) {
     return Container(
       color: Theme.of(context).cardColor,
-      margin: EdgeInsets.only(top: Constants.suSetSp(4.0)),
-      padding: EdgeInsets.symmetric(horizontal: Constants.suSetSp(16.0)),
+      margin: EdgeInsets.only(top: suSetSp(4.0)),
+      padding: EdgeInsets.symmetric(horizontal: suSetSp(16.0)),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -217,7 +217,7 @@ class PostDetailPageState extends State<PostDetailPage> {
             children: <Widget>[
               MaterialButton(
                 color: forwardsColor,
-                minWidth: Constants.suSetSp(10.0),
+                minWidth: suSetSp(10.0),
                 elevation: 0,
                 child: Text("转发 $forwards", style: forwardsStyle),
                 onPressed: () {
@@ -226,7 +226,7 @@ class PostDetailPageState extends State<PostDetailPage> {
               ),
               MaterialButton(
                 color: commentsColor,
-                minWidth: Constants.suSetSp(10.0),
+                minWidth: suSetSp(10.0),
                 elevation: 0,
                 child: Text("评论 $comments", style: commentsStyle),
                 onPressed: () {
@@ -236,7 +236,7 @@ class PostDetailPageState extends State<PostDetailPage> {
               Expanded(child: Container()),
               MaterialButton(
                 color: praisesColor,
-                minWidth: Constants.suSetSp(10.0),
+                minWidth: suSetSp(10.0),
                 elevation: 0,
                 child: Text("赞 $praises", style: praisesStyle),
                 onPressed: () {
@@ -273,13 +273,13 @@ class PostDetailPageState extends State<PostDetailPage> {
                     icon: SvgPicture.asset(
                       "assets/icons/postActions/forward-line.svg",
                       color: Theme.of(context).textTheme.body1.color,
-                      width: Constants.suSetSp(iconSize),
-                      height: Constants.suSetSp(iconSize),
+                      width: suSetSp(iconSize),
+                      height: suSetSp(iconSize),
                     ),
                     label: Text(
                       "转发",
                       style: Theme.of(context).textTheme.body1.copyWith(
-                            fontSize: Constants.suSetSp(actionFontSize),
+                            fontSize: suSetSp(actionFontSize),
                           ),
                     ),
                     splashColor: Colors.grey,
@@ -303,13 +303,13 @@ class PostDetailPageState extends State<PostDetailPage> {
                     icon: SvgPicture.asset(
                       "assets/icons/postActions/comment-line.svg",
                       color: Theme.of(context).textTheme.body1.color,
-                      width: Constants.suSetSp(iconSize),
-                      height: Constants.suSetSp(iconSize),
+                      width: suSetSp(iconSize),
+                      height: suSetSp(iconSize),
                     ),
                     label: Text(
                       "评论",
                       style: Theme.of(context).textTheme.body1.copyWith(
-                            fontSize: Constants.suSetSp(actionFontSize),
+                            fontSize: suSetSp(actionFontSize),
                           ),
                     ),
                     splashColor: Colors.grey,
@@ -320,7 +320,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                 child: Container(
                   color: Theme.of(context).cardColor,
                   child: LikeButton(
-                    size: Constants.suSetSp(iconSize),
+                    size: suSetSp(iconSize),
                     circleColor: CircleColor(
                       start: ThemeUtils.currentThemeColor,
                       end: ThemeUtils.currentThemeColor,
@@ -332,7 +332,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                             color: isLiked
                                 ? ThemeUtils.currentThemeColor
                                 : Theme.of(context).textTheme.body1.color,
-                            fontSize: Constants.suSetSp(actionFontSize),
+                            fontSize: suSetSp(actionFontSize),
                           ),
                     ),
                     bubblesColor: BubblesColor(
@@ -344,14 +344,14 @@ class PostDetailPageState extends State<PostDetailPage> {
                       color: isLiked
                           ? ThemeUtils.currentThemeColor
                           : Theme.of(context).textTheme.body1.color,
-                      width: Constants.suSetSp(iconSize),
-                      height: Constants.suSetSp(iconSize),
+                      width: suSetSp(iconSize),
+                      height: suSetSp(iconSize),
                     ),
                     likeCount: praises,
                     likeCountAnimationType: LikeCountAnimationType.none,
                     likeCountPadding: EdgeInsets.symmetric(
-                      horizontal: Constants.suSetSp(4.0),
-                      vertical: Constants.suSetSp(12.0),
+                      horizontal: suSetSp(4.0),
+                      vertical: suSetSp(12.0),
                     ),
                     isLiked: widget.post.isLike,
                     onTap: onLikeButtonTap,
@@ -401,7 +401,7 @@ class PostDetailPageState extends State<PostDetailPage> {
         title: Text(
           "动态正文",
           style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: Constants.suSetSp(21.0),
+                fontSize: suSetSp(21.0),
               ),
         ),
         centerTitle: true,
