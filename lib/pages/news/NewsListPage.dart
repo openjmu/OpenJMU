@@ -50,7 +50,7 @@ class NewsListPageState extends State<NewsListPage>
       );
       Map<String, dynamic> data = (await NetUtils.getWithHeaderSet(
         _url,
-        headers: Constants.header(id: 273),
+        headers: Constants.teamHeader,
       ))
           .data;
 

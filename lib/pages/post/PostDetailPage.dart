@@ -295,7 +295,6 @@ class PostDetailPageState extends State<PostDetailPage> {
                         TransparentRoute(
                           builder: (context) => CommentPositioned(
                             post: widget.post,
-                            postType: PostType.square,
                           ),
                         ),
                       );

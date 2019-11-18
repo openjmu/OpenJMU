@@ -1,4 +1,5 @@
 import 'package:OpenJMU/constants/Configs.dart';
+import 'package:OpenJMU/pages/post/MarketingPage.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/ManuallySetSidDialog.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
   static final List<String> tabs = [
     "首页",
     "关注",
+//    "集市",
     "新闻",
   ];
   static List<Widget> _post;
@@ -50,7 +52,11 @@ class PostSquareListPageState extends State<PostSquareListPage>
         needRefreshIndicator: true,
       );
     },
+//    () {
+//      _post[2] = MarketingPage();
+//    },
     () {
+//      _post[3] = NewsListPage();
       _post[2] = NewsListPage();
     },
   ];

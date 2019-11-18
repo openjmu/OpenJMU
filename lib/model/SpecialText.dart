@@ -1,5 +1,3 @@
-//import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:extended_text_library/extended_text_library.dart';
@@ -32,27 +30,6 @@ class LinkText extends SpecialText {
   }
 }
 
-class LinkWithWrapText extends SpecialText {
-  static String startKey = API.wbHost;
-  static const String endKey = "\n";
-
-  LinkWithWrapText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
-      : super(startKey, endKey, textStyle, onTap: onTap);
-
-  @override
-  InlineSpan finishText() {
-    return TextSpan(
-      text: " 网页链接 \n",
-      style: textStyle?.copyWith(color: Colors.blue),
-      recognizer: TapGestureRecognizer()
-        ..onTap = () {
-          Map<String, dynamic> data = {'content': toString()};
-          if (onTap != null) onTap(data);
-        },
-    );
-  }
-}
-
 class LinkOlderText extends SpecialText {
   static const String startKey = "http://wb.jmu.edu.cn/";
   static const String endKey = " ";
@@ -64,28 +41,6 @@ class LinkOlderText extends SpecialText {
   InlineSpan finishText() {
     return TextSpan(
       text: " 网页链接 ",
-      style: textStyle?.copyWith(color: Colors.blue),
-      recognizer: TapGestureRecognizer()
-        ..onTap = () {
-          Map<String, dynamic> data = {'content': toString()};
-          if (onTap != null) onTap(data);
-        },
-    );
-  }
-}
-
-class LinkOlderWithWrapText extends SpecialText {
-  static String startKey = "http://wb.jmu.edu.cn/";
-  static const String endKey = "\n";
-
-  LinkOlderWithWrapText(TextStyle textStyle, SpecialTextGestureTapCallback
-  onTap)
-      : super(startKey, endKey, textStyle, onTap: onTap);
-
-  @override
-  InlineSpan finishText() {
-    return TextSpan(
-      text: " 网页链接 \n",
       style: textStyle?.copyWith(color: Colors.blue),
       recognizer: TapGestureRecognizer()
         ..onTap = () {
@@ -305,11 +260,75 @@ class ImageText extends SpecialText {
 class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
   final BuilderType builderType;
   final WidgetType widgetType;
+  final linkRegExp = RegExp(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
+      r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)');
 
   StackSpecialTextSpanBuilder({
     this.builderType: BuilderType.extendedText,
     this.widgetType: WidgetType.post,
   });
+
+  @override
+  TextSpan build(
+    String data, {
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap,
+  }) {
+    if (data == null || data == "") return null;
+    final inlineList = <InlineSpan>[];
+    if (linkRegExp.allMatches(data).isNotEmpty) {
+      final matches = linkRegExp.allMatches(data);
+      matches.forEach((match) {
+        data = data.replaceFirst(match.group(0), " ${match.group(0)} ");
+      });
+    }
+    if (data.isNotEmpty) {
+      SpecialText specialText;
+      String textStack = "";
+      for (int i = 0; i < data.length; i++) {
+        final char = data[i];
+        textStack += char;
+        if (specialText != null) {
+          if (!specialText.isEnd(textStack)) {
+            specialText.appendContent(char);
+          } else {
+            inlineList.add(specialText.finishText());
+            specialText = null;
+            textStack = "";
+          }
+        } else {
+          specialText = createSpecialText(
+            textStack,
+            textStyle: textStyle,
+            onTap: onTap,
+            index: i,
+          );
+          if (specialText != null) {
+            if (textStack.length - specialText.startFlag.length >= 0) {
+              textStack = textStack.substring(
+                  0, textStack.length - specialText.startFlag.length);
+              if (textStack.length > 0) {
+                inlineList.add(TextSpan(text: textStack, style: textStyle));
+              }
+            }
+            textStack = "";
+          }
+        }
+      }
+      if (specialText != null) {
+        inlineList.add(TextSpan(
+          text: specialText.startFlag + specialText.getContent(),
+          style: textStyle,
+        ));
+      } else if (textStack.length > 0) {
+        inlineList.add(TextSpan(text: textStack, style: textStyle));
+      }
+    } else {
+      inlineList.add(TextSpan(text: data, style: textStyle));
+    }
+
+    return TextSpan(children: inlineList, style: textStyle);
+  }
 
   @override
   SpecialText createSpecialText(
@@ -326,10 +345,6 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       return PoundText(textStyle, onTap, type: BuilderType.extendedText);
     } else if (isStart(flag, EmoticonText.flag)) {
       return EmoticonText(textStyle, type: BuilderType.extendedText);
-    } else if (isStart(flag, LinkWithWrapText.startKey)) {
-      return LinkWithWrapText(textStyle, onTap);
-    } else if (isStart(flag, LinkOlderWithWrapText.startKey)) {
-      return LinkOlderWithWrapText(textStyle, onTap);
     } else if (isStart(flag, LinkText.startKey)) {
       return LinkText(textStyle, onTap);
     } else if (isStart(flag, LinkOlderText.startKey)) {
@@ -381,7 +396,7 @@ enum BuilderType { extendedText, extendedTextField }
 enum WidgetType { post, comment }
 
 void specialTextTapRecognizer(data) {
-  String text = data['content'];
+  final text = data['content'];
   if (text.startsWith("#")) {
     SearchPage.search(text.substring(1, text.length - 1));
   } else if (text.startsWith("@")) {

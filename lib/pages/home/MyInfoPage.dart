@@ -421,7 +421,7 @@ class MyInfoPageState extends State<MyInfoPage> {
   Widget settingItem(context, int sectionIndex, int itemIndex) {
     final Map<String, String> item = settingsSection()[sectionIndex][itemIndex];
     return GestureDetector(
-      behavior: HitTestBehavior.translucent,
+      behavior: HitTestBehavior.opaque,
       child: Container(
         color: Theme.of(context).primaryColor,
         padding: EdgeInsets.symmetric(

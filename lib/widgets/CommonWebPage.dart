@@ -190,13 +190,15 @@ class CommonWebPageState extends State<CommonWebPage> {
                     children: <Widget>[
                       if (widget.app != null)
                         AppIcon(app: widget.app, size: 40.0),
-                      Text(
-                        _title,
-                        style: TextStyle(
-                          color: Theme.of(context).textTheme.title.color,
-                          fontSize: suSetSp(20.0),
+                      Flexible(
+                        child: Text(
+                          _title,
+                          style: TextStyle(
+                            color: Theme.of(context).textTheme.title.color,
+                            fontSize: suSetSp(20.0),
+                          ),
+                          overflow: TextOverflow.fade,
                         ),
-                        overflow: TextOverflow.fade,
                       ),
                     ],
                   ),

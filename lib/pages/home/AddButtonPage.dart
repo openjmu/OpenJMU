@@ -16,16 +16,24 @@ class AddingButtonPage extends StatefulWidget {
 
 class _AddingButtonPageState extends State<AddingButtonPage>
     with TickerProviderStateMixin {
-  /// Boolean to prevent duplicate pop.
-  bool popping = false;
-
-  /// Items definition.
-  final List<String> itemTitles = ["动态", "扫一扫"];
-  final List<String> itemIcons = ["subscriptedAccount", "scan"];
-  final List<Color> itemColors = [Colors.orange, Colors.teal];
+  final List<String> itemTitles = [
+    "动态",
+    "扫一扫",
+//    "集市",
+  ];
+  final List<String> itemIcons = [
+    "subscriptedAccount",
+    "scan",
+//    "scan",
+  ];
+  final List<Color> itemColors = [
+    Colors.orange,
+    Colors.teal,
+//    Colors.indigoAccent,
+  ];
   final List<Function> itemOnTap = [
     (context) async {
-      final result = await Navigator.of(context).pushNamed("/publishPost");
+      Navigator.of(context).pushNamed("/publishPost");
     },
     (context) async {
       Map<PermissionGroup, PermissionStatus> permissions =
@@ -36,9 +44,12 @@ class _AddingButtonPageState extends State<AddingButtonPage>
         Navigator.of(context).pushNamed("/scanqrcode");
       }
     },
+//    (context) async {},
   ];
 
   /// Animation.
+  /// Boolean to prevent duplicate pop.
+  bool popping = false;
   final int _animateDuration = 300;
   double _backdropFilterSize = 0.0;
   double _popButtonOpacity = 0.01;
@@ -81,14 +92,13 @@ class _AddingButtonPageState extends State<AddingButtonPage>
 
   void initItemsAnimation() {
     _itemOffset = <double>[for (int i = 0; i < itemTitles.length; i++) 0.0];
-    _itemAnimations = List<Animation<double>>(itemTitles.length);
-    _itemCurveAnimations = List<CurvedAnimation>(itemTitles.length);
-    _itemAnimateControllers = List<AnimationController>(itemTitles.length);
+    _itemAnimations = List(itemTitles.length);
+    _itemCurveAnimations = List(itemTitles.length);
+    _itemAnimateControllers = List(itemTitles.length);
     _itemOpacity = <double>[for (int i = 0; i < itemTitles.length; i++) 0.01];
-    _itemOpacityAnimations = List<Animation<double>>(itemTitles.length);
-    _itemOpacityCurveAnimations = List<CurvedAnimation>(itemTitles.length);
-    _itemOpacityAnimateControllers =
-        List<AnimationController>(itemTitles.length);
+    _itemOpacityAnimations = List(itemTitles.length);
+    _itemOpacityCurveAnimations = List(itemTitles.length);
+    _itemOpacityAnimateControllers = List(itemTitles.length);
 
     for (int i = 0; i < itemTitles.length; i++) {
       _itemAnimateControllers[i] = AnimationController(
@@ -235,7 +245,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
               child: Icon(
                 Icons.add,
                 color: Colors.grey,
-                size: suSetSp(32.0),
+                size: suSetWidth(36.0),
               ),
             ),
           ),
@@ -247,7 +257,10 @@ class _AddingButtonPageState extends State<AddingButtonPage>
 
   Widget wrapper(context, {Widget child}) {
     final double r = pythagoreanTheorem(
-            Screen.width, Screen.height * 2 + Screen.topSafeHeight) /
+            Screen.width,
+            Screen.height * 2 +
+                Screen.topSafeHeight +
+                Screen.bottomSafeHeight) /
         2;
     final double topOverflow = r - Screen.height;
     final double horizontalOverflow = r - Screen.width;
@@ -270,8 +283,9 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(r * 2),
                   child: BackdropFilter(
-                      filter: ui.ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-                      child: Text(" ")),
+                    filter: ui.ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+                    child: Text(" "),
+                  ),
                 ),
               ),
             ),
@@ -362,21 +376,23 @@ class _AddingButtonPageState extends State<AddingButtonPage>
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: willPop,
-      child: wrapper(context,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              GridView.count(
-                shrinkWrap: true,
-                crossAxisCount: 4,
-                children: <Widget>[
-                  for (int i = 0; i < itemTitles.length; i++) item(context, i),
-                ],
-              ),
-              Constants.emptyDivider(height: 100.0),
-            ],
-          )),
+      child: wrapper(
+        context,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 4,
+              children: <Widget>[
+                for (int i = 0; i < itemTitles.length; i++) item(context, i),
+              ],
+            ),
+            SizedBox(height: suSetHeight(120.0)),
+          ],
+        ),
+      ),
     );
   }
 }

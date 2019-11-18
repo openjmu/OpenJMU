@@ -225,7 +225,6 @@ class CommentCard extends StatelessWidget {
                     TransparentRoute(
                       builder: (context) => CommentPositioned(
                         post: this.comment.post,
-                        postType: PostType.square,
                         comment: this.comment
                       ),
                     ),

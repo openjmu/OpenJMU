@@ -3,22 +3,24 @@ import 'dart:core';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_icons/flutter_icons.dart';
 import 'package:dio/dio.dart';
-import 'package:draggable_container/draggable_container.dart';
 import 'package:dragablegridview_flutter/dragablegridview_flutter.dart';
 import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
+import 'package:draggable_container/draggable_container.dart';
 import 'package:extended_text_field/extended_text_field.dart';
+import 'package:flutter_icons/flutter_icons.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/ToggleButton.dart';
+import 'package:OpenJMU/widgets/dialogs/ConventionDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
 
@@ -526,75 +528,188 @@ class PublishPostPageState extends State<PublishPostPage> {
     }
   }
 
+  Widget confirmConventionDialog(context) {
+    return Center(
+      child: Material(
+        type: MaterialType.transparency,
+        child: Container(
+          padding: EdgeInsets.all(suSetWidth(20.0)),
+          width: suSetWidth(500.0),
+          height: suSetHeight(360.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(suSetWidth(20.0)),
+            color: Theme.of(context).cardColor.withOpacity(0.6),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Icon(
+                Icons.error_outline,
+                size: suSetWidth(120.0),
+              ),
+              Text.rich(
+                TextSpan(children: <InlineSpan>[
+                  TextSpan(
+                    text: "发布动态前，请确认您已阅读并知晓",
+                  ),
+                  TextSpan(
+                      text: "《集大通平台公约》",
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => ConventionDialog(),
+                          );
+                        }),
+                  TextSpan(
+                    text: "，且发布的内容符合公约要求。",
+                  ),
+                ]),
+                style: TextStyle(
+                  fontSize: suSetSp(22.0),
+                  fontWeight: FontWeight.normal,
+                  height: 1.7,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      child: Container(
+                        height: suSetHeight(56.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.0),
+                          color: Theme.of(context).canvasColor.withOpacity(0.6),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "我再想想",
+                            style: TextStyle(
+                              fontSize: suSetSp(20.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pop(false);
+                      },
+                    ),
+                  ),
+                  SizedBox(width: suSetWidth(20.0)),
+                  Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      child: Container(
+                        height: suSetHeight(56.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.0),
+                          color: ThemeUtils.currentThemeColor.withOpacity(0.6),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "确认无误",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: suSetSp(20.0),
+                            ),
+                          ),
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.of(context).pop(true);
+                      },
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void post(context) async {
     final content = _textEditingController.text;
     if (content.length == 0 || content.trim().length == 0) {
       showCenterShortToast("内容不能为空");
     } else {
-      setState(() {
-        isLoading = true;
-      });
-      showDialog(
+      final result = await showDialog(
         context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          if (assets.length > 0) {
-            return LoadingDialog(
-              text: "正在上传图片 (1/${assets.length})",
-              controller: _dialogController,
-              isGlobal: false,
-            );
-          } else {
-            return LoadingDialog(
-              text: "正在发布动态...",
-              controller: _dialogController,
-              isGlobal: false,
-            );
-          }
-        },
+        builder: (_) => confirmConventionDialog(_),
       );
-      Map<String, dynamic> data = {};
-      data['category'] = "text";
-      data['content'] = Uri.encodeFull(content);
-      if (assets.length > 0) {
-        try {
-          if (query == null) query = List(assets.length);
-          _imageIdList = List(assets.length);
-          for (int i = 0; i < assets.length; i++) {
-            final imageData = assets[i];
-            final _form = await createForm(imageData);
-            query[i] = getImageRequest(_form, i);
-          }
-          _postImagesQuery().then((responses) {
-            final rs = responses as List;
-            if (rs != null &&
-                rs.length == assets.length &&
-                !rs.contains(null)) {
-              final extraId = _imageIdList.toString();
-              data['extra_id'] = extraId.substring(1, extraId.length - 1);
-              _postContent(data);
+      if (result != null && result) {
+        setState(() {
+          isLoading = true;
+        });
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            if (assets.length > 0) {
+              return LoadingDialog(
+                text: "正在上传图片 (1/${assets.length})",
+                controller: _dialogController,
+                isGlobal: false,
+              );
             } else {
+              return LoadingDialog(
+                text: "正在发布动态...",
+                controller: _dialogController,
+                isGlobal: false,
+              );
+            }
+          },
+        );
+        Map<String, dynamic> data = {};
+        data['category'] = "text";
+        data['content'] = Uri.encodeFull(content);
+        if (assets.length > 0) {
+          try {
+            if (query == null) query = List(assets.length);
+            _imageIdList = List(assets.length);
+            for (int i = 0; i < assets.length; i++) {
+              final imageData = assets[i];
+              final _form = await createForm(imageData);
+              query[i] = getImageRequest(_form, i);
+            }
+            _postImagesQuery().then((responses) {
+              final rs = responses as List;
+              if (rs != null &&
+                  rs.length == assets.length &&
+                  !rs.contains(null)) {
+                final extraId = _imageIdList.toString();
+                data['extra_id'] = extraId.substring(1, extraId.length - 1);
+                _postContent(data);
+              } else {
+                query.clear();
+                _dialogController.changeState("failed", "图片上传失败");
+                isLoading = false;
+                if (mounted) setState(() {});
+              }
+            }).catchError((e) {
               query.clear();
               _dialogController.changeState("failed", "图片上传失败");
               isLoading = false;
               if (mounted) setState(() {});
-            }
-          }).catchError((e) {
-            query.clear();
-            _dialogController.changeState("failed", "图片上传失败");
-            isLoading = false;
-            if (mounted) setState(() {});
-            debugPrint(e.toString());
-          });
-        } catch (exception) {
-          query?.clear();
-          debugPrint(exception.toString());
+              debugPrint(e.toString());
+            });
+          } catch (exception) {
+            query?.clear();
+            debugPrint(exception.toString());
+          }
+        } else {
+          Map<String, dynamic> data = {};
+          data['category'] = "text";
+          data['content'] = Uri.encodeFull(content);
+          _postContent(data);
         }
-      } else {
-        Map<String, dynamic> data = {};
-        data['category'] = "text";
-        data['content'] = Uri.encodeFull(content);
-        _postContent(data);
       }
     }
   }

@@ -86,8 +86,12 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
 
   void _updateIndex(int index) {
     if (_selectedIndex == 0 && index == 0) {
-      Instances.eventBus.fire(ScrollToTopEvent(
-          tabIndex: index, type: widget.items[index].text));
+      Instances.eventBus.fire(
+        ScrollToTopEvent(
+          tabIndex: index,
+          type: widget.items[index].text,
+        ),
+      );
     }
     widget.onTabSelected(index);
     setState(() {
@@ -221,7 +225,9 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
       appBar = ClipRect(
         child: BackdropFilter(
           filter: ui.ImageFilter.blur(
-              sigmaX: suSetSp(20.0), sigmaY: suSetSp(20.0)),
+            sigmaX: suSetSp(20.0),
+            sigmaY: suSetSp(20.0),
+          ),
           child: appBar,
         ),
       );

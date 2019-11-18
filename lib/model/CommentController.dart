@@ -689,7 +689,6 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                           builder: (context) =>
                                               CommentPositioned(
                                             post: widget.post,
-                                            postType: PostType.square,
                                             comment:
                                                 _comments?.elementAt(index) ??
                                                     null,

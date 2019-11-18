@@ -42,8 +42,7 @@ class PostCard extends StatefulWidget {
 class _PostCardState extends State<PostCard> {
   final TextStyle subtitleStyle =
       TextStyle(color: Colors.grey, fontSize: suSetSp(15.0));
-  final TextStyle rootTopicTextStyle =
-      TextStyle(fontSize: suSetSp(15.0));
+  final TextStyle rootTopicTextStyle = TextStyle(fontSize: suSetSp(15.0));
   final TextStyle rootTopicMentionStyle =
       TextStyle(color: Colors.blue, fontSize: suSetSp(15.0));
   final Color subIconColor = Colors.grey;
@@ -115,16 +114,13 @@ class _PostCardState extends State<PostCard> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
-        Icon(Icons.access_time,
-            color: Colors.grey, size: suSetSp(13.0)),
+        Icon(Icons.access_time, color: Colors.grey, size: suSetSp(13.0)),
         Text(" $_postTime", style: subtitleStyle),
         SizedBox(width: suSetSp(10.0)),
-        Icon(Icons.smartphone,
-            color: Colors.grey, size: suSetSp(13.0)),
+        Icon(Icons.smartphone, color: Colors.grey, size: suSetSp(13.0)),
         Text(" ${post.from}", style: subtitleStyle),
         SizedBox(width: suSetSp(10.0)),
-        Icon(Icons.remove_red_eye,
-            color: Colors.grey, size: suSetSp(13.0)),
+        Icon(Icons.remove_red_eye, color: Colors.grey, size: suSetSp(13.0)),
         Text(" ${post.glances}", style: subtitleStyle)
       ],
     );
@@ -211,8 +207,7 @@ class _PostCardState extends State<PostCard> {
     return Padding(
       padding: post.pics != null && post.pics.length > 0
           ? EdgeInsets.symmetric(
-              horizontal: suSetSp(16.0),
-              vertical: suSetSp(4.0))
+              horizontal: suSetSp(16.0), vertical: suSetSp(4.0))
           : EdgeInsets.zero,
       child: getImages(context, post.pics),
     );
@@ -232,8 +227,6 @@ class _PostCardState extends State<PostCard> {
           imageUrl,
           fit: BoxFit.cover,
           cache: true,
-          color: isDark ? Colors.black.withAlpha(50) : null,
-          colorBlendMode: isDark ? BlendMode.darken : BlendMode.srcIn,
           loadStateChanged: (ExtendedImageState state) {
             Widget loader;
             switch (state.extendedImageLoadState) {
@@ -246,7 +239,7 @@ class _PostCardState extends State<PostCard> {
                   loader = scaledImage(
                     image: info.image,
                     length: data.length,
-                    num300: suSetSp(200),
+                    num200: suSetSp(200),
                     num400: suSetSp(400),
                   );
                 }
@@ -826,114 +819,5 @@ class _PostCardState extends State<PostCard> {
         ),
       ),
     );
-  }
-
-  Widget scaledImage({
-    @required ui.Image image,
-    @required int length,
-    @required double num300,
-    @required double num400,
-  }) {
-    final ratio = image.height / image.width;
-    Widget imageWidget;
-    if (length == 1) {
-      if (ratio >= 4 / 3) {
-        imageWidget = ExtendedRawImage(
-          image: image,
-          height: num400,
-          fit: BoxFit.contain,
-        );
-      } else if (4 / 3 > ratio && ratio > 3 / 4) {
-        final maxValue = math.max(image.width, image.height);
-        final width = num400 * image.width / maxValue;
-        imageWidget = ExtendedRawImage(
-          width: math.min(width / 2, image.width.toDouble()),
-          image: image,
-          fit: BoxFit.contain,
-        );
-      } else if (ratio <= 3 / 4) {
-        imageWidget = ExtendedRawImage(
-          image: image,
-          width: math.min(num400, image.width.toDouble()),
-          fit: BoxFit.contain,
-        );
-      }
-    } else {
-      imageWidget = ExtendedRawImage(
-        image: image,
-        fit: BoxFit.cover,
-      );
-    }
-    if (ratio >= 4) {
-      imageWidget = Container(
-        width: num300,
-        height: num400,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              top: 0.0,
-              right: 0.0,
-              left: 0.0,
-              bottom: 0.0,
-              child: imageWidget,
-            ),
-            Positioned(
-              bottom: 0.0,
-              right: 0.0,
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: suSetSp(6.0),
-                  vertical: suSetSp(2.0),
-                ),
-                color: ThemeUtils.currentThemeColor.withOpacity(0.7),
-                child: Text(
-                  "长图",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: suSetSp(13.0),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    if (ratio <= 1 / 4) {
-      imageWidget = SizedBox(
-        width: num400,
-        height: num300,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              top: 0.0,
-              right: 0.0,
-              left: 0.0,
-              bottom: 0.0,
-              child: imageWidget,
-            ),
-            Positioned(
-              bottom: 0.0,
-              right: 0.0,
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: suSetSp(6.0),
-                  vertical: suSetSp(2.0),
-                ),
-                color: ThemeUtils.currentThemeColor.withOpacity(0.7),
-                child: Text(
-                  "长图",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: suSetSp(13.0),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-    return imageWidget ?? SizedBox.shrink();
   }
 }

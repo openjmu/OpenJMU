@@ -138,15 +138,14 @@ class OpenJMUAppState extends State<OpenJMUApp> {
       brightness = MediaQuery.of(Constants.navigatorKey.currentContext)
           .platformBrightness;
     }
+    if (ThemeUtils.isPlatformBrightness) {
+      ThemeUtils.isDark = brightness == Brightness.dark;
+    }
 
-    final isDark = !ThemeUtils.isPlatformBrightness
-        ? ThemeUtils.isDark
-        : brightness != null && brightness == Brightness.dark;
-
-    final theme = isDark
+    final theme = ThemeUtils.isDark
         ? ThemeUtils.dark()
         : ThemeUtils.light().copyWith(
-            textTheme: (isDark
+            textTheme: (ThemeUtils.isDark
                     ? Theme.of(context).typography.white
                     : Theme.of(context).typography.black)
                 .copyWith(

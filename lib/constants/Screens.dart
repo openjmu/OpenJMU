@@ -47,3 +47,22 @@ double suSetSp(double size, {double scale}) {
   }
   return value * (scale ?? Configs.fontScale);
 }
+
+double suSetWidth(double size, {double scale}) =>
+    _sizeCapable(ScreenUtil.getInstance().setWidth(size) * 2, scale: scale);
+
+double suSetHeight(double size, {double scale}) =>
+    _sizeCapable(ScreenUtil.getInstance().setHeight(size) * 2, scale: scale);
+
+double _sizeCapable(double size, {double scale}) {
+  double _size = size;
+  if (Platform.isIOS) {
+    if (ScreenUtil.screenWidthDp <= 414.0) {
+      _size = size / 1.2;
+    } else if (ScreenUtil.screenWidthDp > 414.0 &&
+        ScreenUtil.screenWidthDp > 750.0) {
+      _size = size;
+    }
+  }
+  return _size * (scale ?? Configs.fontScale);
+}

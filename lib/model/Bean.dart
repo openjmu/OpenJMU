@@ -139,12 +139,114 @@ class Post {
 }
 
 ///
-/// 动态枚举类型
-/// [square] 来自广场的动态, [team] 来自小组的动态
+/// 小组动态实体
+/// [tid] 动态id, [uid] 用户uid, [nickname] 用户名称,
+/// [postTime] 动态时间, [category] 动态类型,
+/// [title] 动态标题, [content] 动态内容, [pics] 动态图片,
+/// [postInfo] 动态评论内容, [userInfo] 用户信息,
+/// [repliesCount] 评论次数, [praisesCount] 点赞次数, [glances] 被查看次数,
+/// [isLike] 当前用户是否已赞, [heat] 热度,
+/// [unitId] 机构id, [groupId] 组别id,
 ///
-enum PostType {
-  square,
-  team,
+class TeamPost {
+  int tid;
+  int uid;
+  String nickname;
+  DateTime postTime;
+  String category;
+  String title;
+  String content;
+  List pics;
+  List postInfo;
+  Map<String, dynamic> userInfo;
+  int repliesCount;
+  int praisesCount;
+  int glances;
+  bool isLike;
+  double heat;
+  int unitId;
+  int groupId;
+
+  TeamPost({
+    this.tid,
+    this.uid,
+    this.nickname,
+    this.postTime,
+    this.category,
+    this.title,
+    this.content,
+    this.pics,
+    this.postInfo,
+    this.userInfo,
+    this.repliesCount,
+    this.praisesCount,
+    this.glances,
+    this.isLike = false,
+    this.heat,
+    this.unitId,
+    this.groupId,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TeamPost && runtimeType == other.runtimeType && tid == other.tid;
+
+  @override
+  int get hashCode => tid.hashCode;
+
+  @override
+  String toString() {
+    return "TeamPost ${JsonEncoder.withIndent("  ").convert({
+      "tid": tid,
+      "uid": uid,
+      "nickname": nickname,
+      "postTime": postTime,
+      "category": category,
+      "title": title,
+      "content": content,
+      "pics": pics,
+      "postInfo": postInfo,
+      "userInfo": userInfo,
+      "repliesCount": repliesCount,
+      "praisesCount": praisesCount,
+      "glances": glances,
+      "isLike": isLike,
+      "heat": heat,
+      "unitId": unitId,
+      "groupId": groupId,
+    })}";
+  }
+
+  factory TeamPost.fromJson(Map<String, dynamic> json) {
+    json.forEach((k, v) {
+      if (json[k] == "") json[k] = null;
+    });
+    Map<String, dynamic> _user = json['user_info'];
+    _user.forEach((k, v) {
+      if (_user[k] == "") _user[k] = null;
+    });
+    TeamPost _post = TeamPost(
+      tid: int.parse(json['tid'].toString()),
+      uid: int.parse(_user['uid'].toString()),
+      nickname: _user['nickname'] ?? _user['uid'].toString(),
+      postTime:
+          DateTime.fromMillisecondsSinceEpoch(int.parse(json['post_time'])),
+      category: json['category'],
+      content: json['content'],
+      pics: json['file_info'],
+      postInfo: json['post_info'],
+      userInfo: json['_user'],
+      repliesCount: int.parse(json['replys'].toString()),
+      praisesCount: int.parse(json['praises'].toString()),
+      glances: int.parse(json['glances'].toString()),
+      isLike: int.parse(json['praised'].toString()) == 1,
+      heat: double.parse(json['heat'].toString()),
+      unitId: int.parse(json['unit_id'].toString()),
+      groupId: int.parse(json['group_id'].toString()),
+    );
+    return _post;
+  }
 }
 
 ///
@@ -186,7 +288,6 @@ class Comment {
     this.toTopicContent,
     this.post,
   });
-
 
   @override
   String toString() {
@@ -524,10 +625,10 @@ class News {
       cover: json['cover_img'] != null
           ? int.parse(json['cover_img']['fid'].toString())
           : null,
-      relateTopicId: json['relate_topic'] != null &&
-          json['relate_topic'].isNotEmpty
-          ? int.parse(json['relate_topic'][0]['post_id'].toString())
-          : null,
+      relateTopicId:
+          json['relate_topic'] != null && json['relate_topic'].isNotEmpty
+              ? int.parse(json['relate_topic'][0]['post_id'].toString())
+              : null,
       heat: int.parse(json['heat'].toString()),
       praises: int.parse(json['praises'].toString()),
       replies: int.parse(json['replys'].toString()),
@@ -802,8 +903,7 @@ class CustomEndDockedFloatingActionButtonLocation extends CustomDockedPosition {
   @override
   Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
     final double fabX = _endOffset(scaffoldGeometry);
-    return Offset(
-        fabX, getDockedY(scaffoldGeometry) + suSetSp(this.offsetY));
+    return Offset(fabX, getDockedY(scaffoldGeometry) + suSetSp(this.offsetY));
   }
 }
 
@@ -817,8 +917,7 @@ class CustomCenterDockedFloatingActionButtonLocation
     final double fabX = (scaffoldGeometry.scaffoldSize.width -
             scaffoldGeometry.floatingActionButtonSize.width) /
         2.0;
-    return Offset(
-        fabX, getDockedY(scaffoldGeometry) + suSetSp(this.offsetY));
+    return Offset(fabX, getDockedY(scaffoldGeometry) + suSetSp(this.offsetY));
   }
 }
 

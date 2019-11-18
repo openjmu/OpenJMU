@@ -17,13 +17,11 @@ import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
 
 class CommentPositioned extends StatefulWidget {
   final Post post;
-  final PostType postType;
   final Comment comment;
 
   const CommentPositioned({
     Key key,
     @required this.post,
-    @required this.postType,
     this.comment,
   }) : super(key: key);
 

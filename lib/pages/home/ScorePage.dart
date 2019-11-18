@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 class ScorePage extends StatefulWidget {
   @override
@@ -213,6 +215,73 @@ class _ScorePageState extends State<ScorePage>
     if (mounted) setState(() {});
   }
 
+  void evaluate() {
+    String url;
+    if (UserAPI.currentUser.isCY) {
+      url = "http://cyjwb.jmu.edu.cn/";
+    } else {
+      url = "http://sso.jmu.edu.cn/imapps/1070?sid=${UserAPI.currentUser.sid}";
+    }
+    CommonWebPage.jump(url, "教学评测");
+  }
+
+  Widget get evaluateTips => Container(
+        padding: EdgeInsets.symmetric(
+          vertical: suSetHeight(20.0),
+        ),
+        child: Row(
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: suSetWidth(30.0),
+              ),
+              width: suSetWidth(14.0),
+              height: suSetHeight(14.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).textTheme.caption.color,
+              ),
+            ),
+            Expanded(
+              child: Text.rich(
+                TextSpan(
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text: "请及时完成",
+                    ),
+                    TextSpan(
+                      text: "教学评测",
+                      style: TextStyle(
+                        decoration: TextDecoration.underline,
+                      ),
+                      recognizer: TapGestureRecognizer()..onTap = evaluate,
+                    ),
+                    TextSpan(
+                      text: "\n未教学评测的科目成绩将不予显示",
+                    ),
+                  ],
+                ),
+                style: Theme.of(context).textTheme.caption.copyWith(
+                      fontSize: suSetSp(17.0),
+                    ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: suSetWidth(30.0),
+              ),
+              width: suSetWidth(14.0),
+              height: suSetHeight(14.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Theme.of(context).textTheme.caption.color,
+              ),
+            ),
+          ],
+        ),
+      );
+
   Widget _term(term, index) {
     String _term = term.toString();
     int currentYear = int.parse(_term.substring(0, 4));
@@ -348,72 +417,81 @@ class _ScorePageState extends State<ScorePage>
     super.build(context);
     return loading
         ? Center(child: Constants.progressIndicator())
-        : loadError
-            ? errorWidget
-            : noScore
-                ? Center(
-                    child: Text(
-                    "暂时还没有你的成绩\n🤔",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: suSetSp(30.0)),
-                  ))
-                : SingleChildScrollView(
-                    child: Column(
-                      children: <Widget>[
-                        if (terms != null)
-                          Center(
-                              child: Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: suSetSp(5.0),
-                            ),
-                            height: suSetSp(80.0),
-                            child: ListView.builder(
-                              padding: EdgeInsets.zero,
-                              scrollDirection: Axis.horizontal,
-                              physics: BouncingScrollPhysics(),
-                              shrinkWrap: true,
-                              itemCount: terms.length + 2,
-                              itemBuilder: (context, index) {
-                                if (index == 0 || index == terms.length + 1) {
-                                  return SizedBox(
-                                      width: suSetSp(5.0));
-                                } else {
-                                  return _term(
-                                    terms[terms.length - index],
-                                    terms.length - index,
-                                  );
-                                }
-                              },
-                            ),
-                          )),
-                        GridView.count(
-                          physics: NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          crossAxisCount: 2,
-                          childAspectRatio: 1.5,
-                          children: <Widget>[
-                            if (scoresFiltered != null)
-                              for (int i = 0; i < scoresFiltered.length; i++)
-                                Card(
-                                  child: Padding(
-                                    padding:
-                                        EdgeInsets.all(suSetSp(10.0)),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: <Widget>[
-                                        _name(scoresFiltered[i]),
-                                        _score(scoresFiltered[i]),
-                                        _timeAndPoint(scoresFiltered[i]),
-                                      ],
+        : Column(
+            children: <Widget>[
+              Expanded(
+                child: loadError
+                    ? errorWidget
+                    : noScore
+                        ? Center(
+                            child: Text(
+                            "暂时还没有你的成绩\n🤔",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: suSetSp(30.0)),
+                          ))
+                        : Column(
+                            children: <Widget>[
+                              if (terms != null)
+                                Center(
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                      vertical: suSetSp(5.0),
+                                    ),
+                                    height: suSetSp(80.0),
+                                    child: ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      scrollDirection: Axis.horizontal,
+                                      physics: BouncingScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: terms.length + 2,
+                                      itemBuilder: (context, index) {
+                                        if (index == 0 ||
+                                            index == terms.length + 1) {
+                                          return SizedBox(width: suSetSp(5.0));
+                                        } else {
+                                          return _term(
+                                            terms[terms.length - index],
+                                            terms.length - index,
+                                          );
+                                        }
+                                      },
                                     ),
                                   ),
                                 ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
+                              Expanded(
+                                child: GridView.count(
+                                  padding: EdgeInsets.zero,
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 1.5,
+                                  children: <Widget>[
+                                    if (scoresFiltered != null)
+                                      for (int i = 0;
+                                          i < scoresFiltered.length;
+                                          i++)
+                                        Card(
+                                          child: Padding(
+                                            padding:
+                                                EdgeInsets.all(suSetSp(10.0)),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: <Widget>[
+                                                _name(scoresFiltered[i]),
+                                                _score(scoresFiltered[i]),
+                                                _timeAndPoint(
+                                                    scoresFiltered[i]),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+              ),
+              evaluateTips,
+            ],
+          );
   }
 }

@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
+import 'dart:ui' as ui;
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:badges/badges.dart';
 import 'package:crypto/crypto.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
@@ -20,7 +22,7 @@ export 'package:OpenJMU/providers/Providers.dart';
 export 'package:OpenJMU/utils/Utils.dart';
 
 class Constants {
-  static final List<int> developerList = [
+  static final developerList = <int>[
     136172,
     182999,
     164466,
@@ -33,39 +35,42 @@ class Constants {
     183824
   ];
 
-  static final String endLineTag = "没有更多了~";
+  static final endLineTag = "没有更多了~";
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-  // Fow news list.
-  static final int appId = Platform.isIOS ? 274 : 273;
-  static final String apiKey = "c2bd7a89a377595c1da3d49a0ca825d5";
-  static final String deviceType = Platform.isIOS ? "iPhone" : "android";
+  /// Fow news list.
+  static final appId = Platform.isIOS ? 274 : 273;
+  static final apiKey = "c2bd7a89a377595c1da3d49a0ca825d5";
+  static final cloudId = "jmu";
+  static final deviceType = Platform.isIOS ? "iPhone" : "Android";
+  static final marketTeamId = 430;
+  static final unitCode = "jmu";
+  static final unitId = 55;
 
-  // For posts. Different type of devices (iOS/Android) use different pair of key and secret.
-  static final String postApiKeyAndroid = "1FD8506EF9FF0FAB7CAFEBB610F536A1";
-  static final String postApiSecretAndroid = "E3277DE3AED6E2E5711A12F707FA2365";
-  static final String postApiKeyIOS = "3E63F9003DF7BE296A865910D8DEE630";
-  static final String postApiSecretIOS = "773958E5CFE0FF8252808C417A8ECCAB";
+  static final postApiKeyAndroid = "1FD8506EF9FF0FAB7CAFEBB610F536A1";
+  static final postApiSecretAndroid = "E3277DE3AED6E2E5711A12F707FA2365";
+  static final postApiKeyIOS = "3E63F9003DF7BE296A865910D8DEE630";
+  static final postApiSecretIOS = "773958E5CFE0FF8252808C417A8ECCAB";
 
   /// Request header for team.
-  static Map<String, dynamic> header({int id}) => {
+  static get teamHeader => {
         "APIKEY": apiKey,
-        "APPID": id ?? appId,
-        "CLIENTTYPE": Platform.isIOS ? "ios" : "android",
-        "CLOUDID": "jmu",
+        "APPID": 273,
+        "CLIENTTYPE": Platform.operatingSystem,
+        "CLOUDID": cloudId,
         "CUID": UserAPI.currentUser.uid,
         "SID": UserAPI.currentUser.sid,
         "TAGID": 1,
       };
 
   static Map<String, dynamic> loginClientInfo = {
-    "appid": Platform.isIOS ? 274 : 273,
+    "appid": appId,
     if (Platform.isIOS) "packetid": "",
     "platform": Platform.isIOS ? 40 : 30,
     "platformver": Platform.isIOS ? "2.3.2" : "2.3.1",
     "deviceid": "",
     "devicetype": deviceType,
-    "systype": Platform.isIOS ? "iPhone OS" : "Android OS",
+    "systype": "$deviceType OS",
     "sysver": Platform.isIOS ? "12.2" : "9.0",
   };
 
@@ -76,20 +81,18 @@ class Constants {
     String ticket,
   }) =>
       {
-        "appid": Platform.isIOS ? 274 : 273,
+        "appid": appId,
         "blowfish": "$blowfish",
         if (ticket != null) "ticket": "$ticket",
         if (username != null) "account": "$username",
         if (password != null)
           "password": "${sha1.convert(utf8.encode(password))}",
         if (password != null) "encrypt": 1,
-        if (username != null) "unitid": 55,
+        if (username != null) "unitid": unitId,
         if (username != null) "unitcode": "jmu",
         "clientinfo": jsonEncode(loginClientInfo),
       };
 
-  /// Flea Market.
-  static final int fleaMarketTeamId = 430;
 
   ///
   /// Constant widgets.
@@ -187,4 +190,129 @@ class TransparentRoute extends PageRoute<void> {
       child: result,
     );
   }
+}
+
+Widget scaledImage({
+  @required ui.Image image,
+  @required int length,
+  @required double num200,
+  @required double num400,
+}) {
+  final ratio = image.height / image.width;
+  Widget imageWidget;
+  if (length == 1) {
+    if (ratio >= 4 / 3) {
+      imageWidget = ExtendedRawImage(
+        image: image,
+        height: num400,
+        fit: BoxFit.contain,
+        color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
+        colorBlendMode: ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
+      );
+    } else if (4 / 3 > ratio && ratio > 3 / 4) {
+      final maxValue = math.max(image.width, image.height);
+      final width = num400 * image.width / maxValue;
+      imageWidget = ExtendedRawImage(
+        width: math.min(width / 2, image.width.toDouble()),
+        image: image,
+        fit: BoxFit.contain,
+        color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
+        colorBlendMode: ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
+      );
+    } else if (ratio <= 3 / 4) {
+      imageWidget = ExtendedRawImage(
+        image: image,
+        width: math.min(num400, image.width.toDouble()),
+        fit: BoxFit.contain,
+        color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
+        colorBlendMode: ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
+      );
+    }
+  } else {
+    imageWidget = ExtendedRawImage(
+      image: image,
+      fit: BoxFit.cover,
+      color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
+      colorBlendMode: ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
+    );
+  }
+  if (ratio >= 4) {
+    imageWidget = Container(
+      width: num200,
+      height: num400,
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+            top: 0.0,
+            right: 0.0,
+            left: 0.0,
+            bottom: 0.0,
+            child: imageWidget,
+          ),
+          Positioned(
+            bottom: 0.0,
+            right: 0.0,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: suSetSp(6.0),
+                vertical: suSetSp(2.0),
+              ),
+              color: ThemeUtils.currentThemeColor.withOpacity(0.7),
+              child: Text(
+                "长图",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: suSetSp(13.0),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  if (ratio <= 1 / 4) {
+    imageWidget = SizedBox(
+      width: num400,
+      height: num200,
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+            top: 0.0,
+            right: 0.0,
+            left: 0.0,
+            bottom: 0.0,
+            child: imageWidget,
+          ),
+          Positioned(
+            bottom: 0.0,
+            right: 0.0,
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: suSetSp(6.0),
+                vertical: suSetSp(2.0),
+              ),
+              color: ThemeUtils.currentThemeColor.withOpacity(0.7),
+              child: Text(
+                "长图",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: suSetSp(13.0),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+  if (imageWidget != null) {
+    imageWidget = ClipRRect(
+      borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+      child: imageWidget,
+    );
+  } else {
+    imageWidget = SizedBox.shrink();
+  }
+  return imageWidget;
 }

@@ -38,7 +38,7 @@ class NetUtils {
   static void initConfig() async {
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
-//            client.findProxy = (uri) => "PROXY 192.168.0.101:8088";
+//            client.findProxy = (uri) => "PROXY 192.168.0.101:8888";
 //      client.badCertificateCallback =
 //          (X509Certificate cert, String host, int port) => true;
     };
@@ -54,7 +54,7 @@ class NetUtils {
     ));
     (tokenDio.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (HttpClient client) {
-//            client.findProxy = (uri) => "PROXY 192.168.0.101:8088";
+//            client.findProxy = (uri) => "PROXY 192.168.0.101:8888";
 //      client.badCertificateCallback =
 //          (X509Certificate cert, String host, int port) => true;
     };
