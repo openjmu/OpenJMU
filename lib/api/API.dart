@@ -30,6 +30,7 @@ class API {
   static final openjmuHost = "openjmu.jmu.edu.cn";
   static final wbHost = "https://wb.jmu.edu.cn";
   static final wpHost = "https://wp.jmu.edu.cn";
+  static final forum99Host = "https://forum99.jmu.edu.cn";
   static final file99Host = "https://file99.jmu.edu.cn";
   static final oa99Host = "https://oa99.jmu.edu.cn";
   static final oap99Host = "https://oap99.jmu.edu.cn";
@@ -45,8 +46,11 @@ class API {
   /// 认证相关
   static final login = "$oa99Host/v2/passport/api/user/login1";
   static final logout = "$oap99Host/passport/logout";
-  static final loginTicket =
-      "$oa99Host/v2/passport/api/user/loginticket1";
+  static final loginTicket = "$oa99Host/v2/passport/api/user/loginticket1";
+
+  /// 文件相关
+  static final showFile = "$file99Host/show/file/fid/";
+  static final uploadFile = "$file99Host/files";
 
   /// 用户相关
   static final userInfo = "$oap99Host/user/info";
@@ -67,19 +71,16 @@ class API {
   static final userSignature = "$oa99Host/v2/api/user/signature_edit";
   static final searchUser = "$oa99Host/v2/api/search/users";
 
-  /// Blacklist
+  /// 黑名单
   static String blacklist({int pos = 0, int size = 20}) {
     return "$oa99Host/v2/friend/api/blacklist/list?pos=$pos&size=$size";
   }
-
   static final addToBlacklist = "$oa99Host/v2/friend/api/blacklist/new";
-  static final removeFromBlacklist =
-      "$oa99Host/v2/friend/api/blacklist/remove";
+  static final removeFromBlacklist = "$oa99Host/v2/friend/api/blacklist/remove";
 
   /// 应用中心
   static final webAppLists = "$oap99Host/app/unitmenu?cfg=1";
-  static final webAppIcons =
-      "$oap99Host/app/menuicon?size=f128&unitid=55&";
+  static final webAppIcons = "$oap99Host/app/menuicon?size=f128&unitid=55&";
 
   /// 资讯相关
   static String newsList({int maxTimeStamp, int size = 20}) {
@@ -90,7 +91,6 @@ class API {
 
   static final newsDetail =
       "$middle99Host/mg/api/aid/posts_detail/post_type/3/post_id/";
-  static final newsImageList = "$file99Host/show/file/fid/";
 
   /// 微博相关
   static final postUnread = "$wbHost/user_api/unread";
@@ -138,7 +138,7 @@ class API {
 
   static String teamPostCommentsList({
     @required int postId,
-    int size = 20,
+    int size = 30,
     int regionType = 128,
     int postType = 7,
     int page = 1,
@@ -151,8 +151,11 @@ class API {
         "/replys/2"
         "/size/$size";
   }
+
+  static final teamPostPublish = "$middle99Host/mg/api/aid/posts_post";
   static final teamPostRequestPraise = "$middle99Host/mg/api/aid/uia_api_posts";
-  static final teamPostRequestUnPraise = "$middle99Host/mg/api/aid/uia_api_posts_del";
+  static final teamPostRequestUnPraise =
+      "$middle99Host/mg/api/aid/uia_api_posts_del";
 
   static String teamFile({
     @required int fid,
@@ -177,8 +180,7 @@ class API {
 
   /// 课程表相关
   static final courseSchedule = "$labsHost/courseSchedule/course.html";
-  static final courseScheduleTeacher =
-      "$labsHost/courseSchedule/Tcourse.html";
+  static final courseScheduleTeacher = "$labsHost/courseSchedule/Tcourse.html";
 
   static final courseScheduleCourses =
       "$labsHost/courseSchedule/StudentCourseSchedule";

@@ -1,10 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
+@FFRoute(
+  name: "openjmu://inappbrowser",
+  routeName: "网页浏览",
+  argumentNames: [
+    "url",
+    "title",
+    "withCookie",
+    "withAppBar",
+    "withAction",
+    "withScaffold",
+    "keepAlive",
+  ],
+)
 class InAppBrowserPage extends StatefulWidget {
   final String url;
   final String title;
@@ -29,13 +42,13 @@ class InAppBrowserPage extends StatefulWidget {
   _InAppBrowserPageState createState() => _InAppBrowserPageState();
 
   static void open(BuildContext context, String url, String title) {
-    Navigator.of(context).push(platformPageRoute(
-      context: context,
-      builder: (context) => InAppBrowserPage(
-        url: url,
-        title: title,
-      ),
-    ));
+    currentState.pushNamed(
+      "openjmu://inappbrowser",
+      arguments: {
+        "url": url,
+        "title": title,
+      },
+    );
   }
 }
 

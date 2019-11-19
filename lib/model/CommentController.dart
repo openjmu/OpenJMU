@@ -12,7 +12,6 @@ import 'package:dio/dio.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/widgets/cards/CommentCard.dart';
-import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
 
 class CommentController {
@@ -437,8 +436,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
         width: suSetSp(40.0),
         height: suSetSp(40.0),
         margin: EdgeInsets.symmetric(
-            horizontal: suSetSp(16.0),
-            vertical: suSetSp(10.0)),
+            horizontal: suSetSp(16.0), vertical: suSetSp(10.0)),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: const Color(0xFFECECEC),
@@ -538,8 +536,8 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                         strokeWidth: 2.0),
                                   ),
                                   Text("　正在加载",
-                                      style: TextStyle(
-                                          fontSize: suSetSp(14.0))),
+                                      style:
+                                          TextStyle(fontSize: suSetSp(14.0))),
                                 ],
                               ),
                             );
@@ -583,16 +581,14 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                                       suSetSp(6.0)),
                                                   child: Icon(
                                                     Icons.delete,
-                                                    size:
-                                                        suSetSp(36.0),
+                                                    size: suSetSp(36.0),
                                                     color: Colors.white,
                                                   ),
                                                 ),
                                                 Text(
                                                   "删除评论",
                                                   style: TextStyle(
-                                                    fontSize:
-                                                        suSetSp(16.0),
+                                                    fontSize: suSetSp(16.0),
                                                     color: Colors.white,
                                                   ),
                                                 ),
@@ -625,8 +621,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                               Text(
                                                 "复制评论",
                                                 style: TextStyle(
-                                                  fontSize:
-                                                      suSetSp(16.0),
+                                                  fontSize: suSetSp(16.0),
                                                   color: Colors.white,
                                                 ),
                                               ),
@@ -684,16 +679,14 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                   onPressed: () {
                                     if (_comments.length >= index &&
                                         _comments[index] != null) {
-                                      Constants.navigatorKey.currentState.push(
-                                        TransparentRoute(
-                                          builder: (context) =>
-                                              CommentPositioned(
-                                            post: widget.post,
-                                            comment:
-                                                _comments?.elementAt(index) ??
-                                                    null,
-                                          ),
-                                        ),
+                                      currentState.pushNamed(
+                                        "openjmu://add-comment",
+                                        arguments: {
+                                          "post": widget.post,
+                                          "comment":
+                                              _comments?.elementAt(index) ??
+                                                  null,
+                                        },
                                       );
                                     }
                                   },

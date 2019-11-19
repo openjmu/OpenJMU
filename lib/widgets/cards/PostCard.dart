@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,10 +10,8 @@ import 'package:extended_image/extended_image.dart';
 import 'package:like_button/like_button.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/post/PostDetailPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
-import 'package:OpenJMU/widgets/dialogs/ForwardPositioned.dart';
 
 class PostCard extends StatefulWidget {
   final Post post;
@@ -91,13 +87,28 @@ class _PostCardState extends State<PostCard> {
     super.dispose();
   }
 
-  Widget getPostNickname(context, post) => Text(
-        post.nickname ?? post.uid,
-        style: TextStyle(
-          color: Theme.of(context).textTheme.title.color,
-          fontSize: suSetSp(19.0),
-        ),
-        textAlign: TextAlign.left,
+  Widget getPostNickname(context, post) => Row(
+        children: <Widget>[
+          Text(
+            post.nickname ?? post.uid,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.title.color,
+              fontSize: suSetSp(19.0),
+            ),
+            textAlign: TextAlign.left,
+          ),
+          if (Constants.developerList.contains(post.uid))
+            Container(
+              margin: EdgeInsets.only(left: suSetWidth(14.0)),
+              child: Constants.developerTag(
+                padding: EdgeInsets.symmetric(
+                  horizontal: suSetWidth(8.0),
+                  vertical: suSetHeight(4.0),
+                ),
+                fontSize: 13.0,
+              ),
+            ),
+        ],
       );
 
   Widget getPostInfo(Post post) {
@@ -158,18 +169,14 @@ class _PostCardState extends State<PostCard> {
           margin: EdgeInsets.only(top: suSetSp(8.0)),
           child: GestureDetector(
             onTap: () {
-              Navigator.of(context).push(
-                platformPageRoute(
-                  context: context,
-                  builder: (context) {
-                    return PostDetailPage(
-                      _post,
-                      index: widget.index,
-                      fromPage: widget.fromPage,
-                      parentContext: context,
-                    );
-                  },
-                ),
+              currentState.pushNamed(
+                "openjmu://post-detail",
+                arguments: {
+                  "post": _post,
+                  "index": widget.index,
+                  "fromPage": widget.fromPage,
+                  "parentContext": context,
+                },
               );
             },
             child: Container(
@@ -253,21 +260,19 @@ class _PostCardState extends State<PostCard> {
         imagesWidget.add(
           GestureDetector(
             onTap: () {
-              Navigator.of(context).push(
-                platformPageRoute(
-                  context: context,
-                  builder: (_) => ImageViewer(
-                    index,
-                    data.map<ImageBean>((f) {
-                      return ImageBean(
-                        id: imageID,
-                        imageUrl: f['image_original'],
-                        imageThumbUrl: f['image_thumb'],
-                        postId: widget.post.id,
-                      );
-                    }).toList(),
-                  ),
-                ),
+              currentState.pushNamed(
+                "openjmu://image-viewer",
+                arguments: {
+                  "index": index,
+                  "pics": data.map<ImageBean>((f) {
+                    return ImageBean(
+                      id: imageID,
+                      imageUrl: f['image_original'],
+                      imageThumbUrl: f['image_thumb'],
+                      postId: widget.post.id,
+                    );
+                  }).toList(),
+                },
               );
             },
             child: _exImage,
@@ -315,10 +320,9 @@ class _PostCardState extends State<PostCard> {
           Expanded(
             child: FlatButton.icon(
               onPressed: () {
-                Constants.navigatorKey.currentState.push(
-                  TransparentRoute(
-                    builder: (_) => ForwardPositioned(widget.post),
-                  ),
+                currentState.pushNamed(
+                  "openjmu://add-forward",
+                  arguments: {"post": widget.post},
                 );
               },
               icon: SvgPicture.asset(
@@ -482,7 +486,7 @@ class _PostCardState extends State<PostCard> {
 
   Widget get deleteButton => IconButton(
         icon: Icon(
-          Icons.delete,
+          Icons.delete_outline,
           color: Colors.grey,
           size: suSetSp(24.0),
         ),
@@ -681,7 +685,7 @@ class _PostCardState extends State<PostCard> {
                                   PostAPI.reportPost(widget.post);
                                   showShortToast("举报成功");
                                   Navigator.pop(context);
-                                  Constants.navigatorKey.currentState.pop();
+                                  currentState.pop();
                                 },
                               ),
                               PlatformButton(
@@ -735,19 +739,15 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  void pushToDetail(context) {
-    Navigator.of(context).push(
-      platformPageRoute(
-        context: context,
-        builder: (context) {
-          return PostDetailPage(
-            widget.post,
-            index: widget.index,
-            fromPage: widget.fromPage,
-            parentContext: context,
-          );
-        },
-      ),
+  void pushToDetail() {
+    currentState.pushNamed(
+      "openjmu://post-detail",
+      arguments: {
+        "post": widget.post,
+        "index": widget.index,
+        "fromPage": widget.fromPage,
+        "parentContext": context,
+      },
     );
   }
 
@@ -757,16 +757,8 @@ class _PostCardState extends State<PostCard> {
     return Hero(
       tag: "postcard-id-${post.id}",
       child: GestureDetector(
-        onTap: isDetail || isShield
-            ? null
-            : () {
-                pushToDetail(context);
-              },
-        onLongPress: isShield
-            ? () {
-                pushToDetail(context);
-              }
-            : null,
+        onTap: isDetail || isShield ? null : pushToDetail,
+        onLongPress: isShield ? pushToDetail : null,
         child: Card(
           margin: isShield
               ? EdgeInsets.zero

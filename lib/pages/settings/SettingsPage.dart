@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
+@FFRoute(
+  name: "openjmu://settings",
+  routeName: "设置页",
+)
 class SettingsPage extends StatefulWidget {
   @override
   _SettingsPageState createState() => _SettingsPageState();
@@ -36,13 +41,13 @@ class _SettingsPageState extends State<SettingsPage> {
         "icon": "theme",
         "name": "切换主题",
         "description": "多彩颜色，丰富你的界面",
-        "route": "/changeTheme",
+        "route": "theme",
       },
       {
         "icon": "homeSplash",
         "name": "启动页设置",
         "description": "设置各个页面的启动页",
-        "route": "/switchStartUp",
+        "route": "switch-startup",
       },
       {
         "icon": "apps",
@@ -53,7 +58,7 @@ class _SettingsPageState extends State<SettingsPage> {
         "icon": "fontScale",
         "name": "调节字体大小",
         "description": "选择最适合你的字体大小",
-        "route": "/fontScale"
+        "route": "font-scale"
       },
     ],
   ];
@@ -161,7 +166,7 @@ class _SettingsPageState extends State<SettingsPage> {
       onTap: () {
         if (page['onTap'] != null) page['onTap']();
         if (pageWidget == null && page['route'] != null) {
-          Navigator.of(context).pushNamed(page['route']);
+          currentState.pushNamed("openjmu://${page['route']}");
         }
         return null;
       },

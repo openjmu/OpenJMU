@@ -1,7 +1,7 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.6.2+105
+version: 0.7.0+106
 
 environment:
   sdk: ">=2.5.0 <3.0.0"
@@ -21,7 +21,7 @@ dependencies:
   device_info: ^0.4.1+1
   dio: 2.1.16
   dragablegridview_flutter: ^0.2.5
-  draggable_container: ^0.1.7
+  draggable_container: ^0.1.8+4
   event_bus: 1.1.0
   extended_image: ^0.6.5
   extended_tabs: ^0.2.2
@@ -39,7 +39,7 @@ dependencies:
   flutter_qr_reader: 1.0.3
   flutter_screenutil: ^0.6.0
   flutter_svg: ^0.14.3
-  flutter_webview_plugin: ^0.3.8
+  flutter_webview_plugin: ^0.3.9+1
   html: ^0.14.0+3
   image: 2.1.7
   image_editor: ^0.1.4
@@ -70,6 +70,7 @@ dev_dependencies:
   build_runner: any
   flutter_test:
     sdk: flutter
+  ff_annotation_route: ^1.1.0
 
 
 flutter:

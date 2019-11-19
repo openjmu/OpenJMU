@@ -2,14 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/LoginPage.dart';
-import 'package:OpenJMU/pages/MainPage.dart';
 
+@FFRoute(
+  name: "openjmu://splash",
+  routeName: "启动页",
+  argumentNames: ["initAction"],
+)
 class SplashPage extends StatefulWidget {
   final String initAction;
 
@@ -109,24 +114,22 @@ class SplashState extends State<SplashPage> {
     Future.delayed(const Duration(seconds: 2), () {
       if (!isUserLogin) {
         try {
-          Constants.navigatorKey.currentState.pushAndRemoveUntil(
+          currentState.pushAndRemoveUntil(
               PageRouteBuilder(
                 transitionDuration: const Duration(milliseconds: 1000),
                 pageBuilder: (_, animation, __) => FadeTransition(
                   opacity: animation,
-                  child: LoginPage(),
+                  child: LoginPage(initAction: widget.initAction),
                 ),
               ),
               (Route<dynamic> route) => false);
         } catch (e) {}
       } else {
         try {
-          Constants.navigatorKey.currentState.pushAndRemoveUntil(
-            MaterialPageRoute(
-              settings: RouteSettings(name: "/home"),
-              builder: (_) => MainPage(initAction: widget.initAction),
-            ),
+          currentState.pushNamedAndRemoveUntil(
+            "openjmu://home",
             (Route<dynamic> route) => false,
+            arguments: {"initAction": widget.initAction},
           );
         } catch (e) {
           debugPrint("$e");

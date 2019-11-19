@@ -19,7 +19,7 @@
         <option name="ALLOW_USER_CONFIGURATION" value="false" />
         <option name="MANIFEST_FILE_RELATIVE_PATH" value="/src/main/AndroidManifest.xml" />
         <option name="RES_FOLDER_RELATIVE_PATH" value="/src/main/res" />
-        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res" />
+        <option name="RES_FOLDERS_RELATIVE_PATH" value="file://$MODULE_DIR$/src/main/res;file://$MODULE_DIR$/../../build/app/generated/res/resValues/debug" />
         <option name="TEST_RES_FOLDERS_RELATIVE_PATH" value="" />
         <option name="ASSETS_FOLDER_RELATIVE_PATH" value="/src/main/assets" />
       </configuration>
@@ -155,6 +155,6 @@
     <orderEntry type="module" module-name="connectivity" />
     <orderEntry type="module" module-name="path_provider" />
     <orderEntry type="module" module-name="flutter_inappbrowser" />
-    <orderEntry type="module" module-name="flutter_webview_plugin" />
+    <orderEntry type="module" module-name="android-flutter_webview_plugin" />
   </component>
 </module>

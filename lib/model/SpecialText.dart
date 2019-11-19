@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:extended_text_library/extended_text_library.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/SearchPage.dart';
@@ -35,6 +34,48 @@ class LinkOlderText extends SpecialText {
   static const String endKey = " ";
 
   LinkOlderText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
+      : super(startKey, endKey, textStyle, onTap: onTap);
+
+  @override
+  InlineSpan finishText() {
+    return TextSpan(
+      text: " 网页链接 ",
+      style: textStyle?.copyWith(color: Colors.blue),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          Map<String, dynamic> data = {'content': toString()};
+          if (onTap != null) onTap(data);
+        },
+    );
+  }
+}
+
+class ForumLinkText extends SpecialText {
+  static String startKey = API.forum99Host;
+  static const String endKey = " ";
+
+  ForumLinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
+      : super(startKey, endKey, textStyle, onTap: onTap);
+
+  @override
+  InlineSpan finishText() {
+    return TextSpan(
+      text: " 网页链接 ",
+      style: textStyle?.copyWith(color: Colors.blue),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          Map<String, dynamic> data = {'content': toString()};
+          if (onTap != null) onTap(data);
+        },
+    );
+  }
+}
+
+class ForumLinkOlderText extends SpecialText {
+  static const String startKey = "http://forum99.jmu.edu.cn/";
+  static const String endKey = " ";
+
+  ForumLinkOlderText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
       : super(startKey, endKey, textStyle, onTap: onTap);
 
   @override
@@ -85,8 +126,10 @@ class MentionText extends SpecialText {
   InlineSpan finishText() {
     String mentionOriginalText = toString();
     String mentionText = removeUidFromContent(mentionOriginalText);
-    mentionOriginalText =
-        "${mentionOriginalText.substring(0, mentionOriginalText.length - MentionText.endKey.length)}>";
+    mentionOriginalText = "${mentionOriginalText.substring(
+      0,
+      mentionOriginalText.length - MentionText.endKey.length,
+    )}>";
 
     if (type == BuilderType.extendedTextField) {
       return SpecialTextSpan(
@@ -260,13 +303,18 @@ class ImageText extends SpecialText {
 class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
   final BuilderType builderType;
   final WidgetType widgetType;
-  final linkRegExp = RegExp(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
-      r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)');
+  final List<InlineSpan> prefixSpans;
+  final List<InlineSpan> suffixSpans;
 
   StackSpecialTextSpanBuilder({
     this.builderType: BuilderType.extendedText,
     this.widgetType: WidgetType.post,
+    this.prefixSpans,
+    this.suffixSpans,
   });
+
+  final linkRegExp = RegExp(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
+      r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)');
 
   @override
   TextSpan build(
@@ -326,7 +374,8 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     } else {
       inlineList.add(TextSpan(text: data, style: textStyle));
     }
-
+    if (prefixSpans != null) inlineList.insertAll(0, prefixSpans);
+    if (suffixSpans != null) inlineList.addAll(suffixSpans);
     return TextSpan(children: inlineList, style: textStyle);
   }
 
@@ -349,6 +398,10 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       return LinkText(textStyle, onTap);
     } else if (isStart(flag, LinkOlderText.startKey)) {
       return LinkOlderText(textStyle, onTap);
+    } else if (isStart(flag, ForumLinkText.startKey)) {
+      return ForumLinkText(textStyle, onTap);
+    } else if (isStart(flag, ForumLinkOlderText.startKey)) {
+      return ForumLinkOlderText(textStyle, onTap);
     } else if (isStart(flag, ImageText.startKey)) {
       return ImageText(textStyle, onTap, widgetType: widgetType);
     }
@@ -406,24 +459,20 @@ void specialTextTapRecognizer(data) {
   } else if (text.startsWith("http://")) {
     CommonWebPage.jump(text, "网页链接");
   } else if (text.startsWith("|")) {
-    int imageID = data['image'];
-    String imageUrl = API.commentImageUrl(imageID, "o");
-    Constants.navigatorKey.currentState.push(
-      platformPageRoute(
-        context: Constants.navigatorKey.currentContext,
-        builder: (_) {
-          return ImageViewer(
-            0,
-            [
-              ImageBean(
-                id: imageID,
-                imageUrl: imageUrl,
-                postId: null,
-              )
-            ],
+    final imageId = data['image'];
+    final imageUrl = API.commentImageUrl(imageId, "o");
+    currentState.pushNamed(
+      "openjmu://image-viewer",
+      arguments: {
+        "index": 0,
+        "pics": data.map<ImageBean>((f) {
+          return ImageBean(
+            id: imageId,
+            imageUrl: imageUrl,
+            postId: null,
           );
-        },
-      ),
+        }).toList(),
+      },
     );
   }
 }

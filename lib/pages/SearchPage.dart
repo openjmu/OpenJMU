@@ -2,12 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
 
+@FFRoute(
+  name: "openjmu://search",
+  routeName: "搜索页",
+  argumentNames: ["content"],
+)
 class SearchPage extends StatefulWidget {
   final String content;
 
@@ -17,13 +22,9 @@ class SearchPage extends StatefulWidget {
   State<StatefulWidget> createState() => SearchPageState();
 
   static void search(String content) {
-    Constants.navigatorKey.currentState.push(
-      platformPageRoute(
-        context: Constants.navigatorKey.currentContext,
-        builder: (context) {
-          return SearchPage(content: content);
-        },
-      ),
+    currentState.pushNamed(
+      "openjmu://search",
+      arguments: {"content": content},
     );
   }
 }

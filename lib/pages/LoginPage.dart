@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 import 'package:OpenJMU/widgets/RoundedCheckBox.dart';
 import 'package:OpenJMU/widgets/announcement/AnnouncementWidget.dart';
 
+@FFRoute(
+  name: "openjmu://login",
+  routeName: "登录页",
+  argumentNames: ["initAction"],
+  pageRouteType: PageRouteType.material,
+)
 class LoginPage extends StatefulWidget {
   final String initAction;
 
@@ -419,8 +425,7 @@ class LoginPageState extends State<LoginPage>
             child: ListView(
               shrinkWrap: true,
               controller: _formScrollController,
-              padding:
-                  EdgeInsets.symmetric(horizontal: suSetSp(50.0)),
+              padding: EdgeInsets.symmetric(horizontal: suSetSp(50.0)),
               physics:
                   NeverScrollableScrollPhysics(parent: ClampingScrollPhysics()),
               children: <Widget>[
@@ -490,13 +495,10 @@ class LoginPageState extends State<LoginPage>
       });
       DataUtils.login(_username, _password).then((result) {
         if (result) {
-          Constants.navigatorKey.currentState.pushAndRemoveUntil(
-            platformPageRoute(
-              context: Constants.navigatorKey.currentContext,
-              settings: RouteSettings(name: "/home"),
-              builder: (_) => MainPage(initAction: widget.initAction),
-            ),
+          currentState.pushNamedAndRemoveUntil(
+            "openjmu://home",
             (_) => false,
+            arguments: {"initAction": widget.initAction},
           );
         } else {
           _login = false;

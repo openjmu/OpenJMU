@@ -2,14 +2,12 @@ import 'dart:async';
 import 'dart:core';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
-import 'package:OpenJMU/pages/user/UserPage.dart';
 
 class MessagePage extends StatefulWidget {
   @override
@@ -21,7 +19,6 @@ class MessagePageState extends State<MessagePage>
 //  static final List<String> tabs = ["消息", "通知"];
   static final List<String> tabs = ["消息"];
 
-  /// ["消息", "联系人"]
   List<String> topItems = ["评论/留言", "粉丝"];
   List<String> topIcons = ["liuyan", "idols"];
 
@@ -52,15 +49,16 @@ class MessagePageState extends State<MessagePage>
   void _handleItemClick(context, String item) {
     switch (item) {
       case "评论/留言":
-        Navigator.of(context).pushNamed("/notification");
+        currentState.pushNamed("openjmu://notifications");
         break;
       case "粉丝":
-        Navigator.of(context).push(platformPageRoute(
-          context: context,
-          builder: (context) {
-            return UserListPage(UserAPI.currentUser, 2);
+        currentState.pushNamed(
+          "openjmu://userlist",
+          arguments: {
+            "user": UserAPI.currentUser,
+            "type": 2,
           },
-        ));
+        );
         break;
       default:
         break;
@@ -114,137 +112,137 @@ class MessagePageState extends State<MessagePage>
 //        controller: _tabController,
 //        children: <Widget>[
           ListView(
+        shrinkWrap: true,
+        children: <Widget>[
+          ListView.separated(
+            physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            children: <Widget>[
-              ListView.separated(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                separatorBuilder: (context, index) => Constants.separator(
-                  context,
-                  color: Theme.of(context).canvasColor,
-                  height: 1.0,
+            separatorBuilder: (context, index) => Constants.separator(
+              context,
+              color: Theme.of(context).canvasColor,
+              height: 1.0,
+            ),
+            itemCount: topItems.length,
+            itemBuilder: (context, index) => GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: suSetSp(18.0),
+                  vertical: suSetSp(8.0),
                 ),
-                itemCount: topItems.length,
-                itemBuilder: (context, index) => GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: suSetSp(18.0),
-                      vertical: suSetSp(8.0),
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        Padding(
-                          padding: EdgeInsets.only(
-                            right: suSetSp(16.0),
-                          ),
-                          child: index == 0 && notifications.count != 0
-                              ? Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Constants.badgeIcon(
-                                    content: notifications.count,
-                                    icon: _icon(index),
-                                  ),
-                                )
-                              : IconButton(
-                                  icon: _icon(index),
-                                  onPressed: null,
-                                ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            topItems[index],
-                            style: TextStyle(
-                              fontSize: suSetSp(19.0),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                            right: suSetSp(12.0),
-                          ),
-                          child: SvgPicture.asset(
-                            "assets/icons/arrow-right.svg",
-                            color: Colors.grey,
-                            width: suSetSp(24.0),
-                            height: suSetSp(24.0),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    _handleItemClick(context, topItems[index]);
-                  },
-                ),
-              ),
-              Constants.separator(context),
-              if (Configs.debug)
-                Consumer<MessagesProvider>(
-                  builder: (context, provider, _) {
-                    if (UserAPI.currentUser.uid == null) return SizedBox.shrink();
-                    if (provider.personalMessages.entries.isEmpty) {
-                      return Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: suSetSp(12.0),
-                          vertical: suSetSp(30.0),
-                        ),
-                        child: SizedBox(
-                          height: suSetSp(40.0),
-                          child: Center(
-                            child: Text(
-                              "无新消息",
-                              style: TextStyle(
-                                fontSize: suSetSp(14.0),
+                child: Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: suSetSp(16.0),
+                      ),
+                      child: index == 0 && notifications.count != 0
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Constants.badgeIcon(
+                                content: notifications.count,
+                                icon: _icon(index),
                               ),
+                            )
+                          : IconButton(
+                              icon: _icon(index),
+                              onPressed: null,
                             ),
-                          ),
-                        ),
-                      );
-                    } else {
-                      return ListView.builder(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        reverse: true,
-                        itemCount: provider
-                            .personalMessages[UserAPI.currentUser.uid]
-                            .entries
-                            .length,
-                        itemBuilder: (context, index) {
-                          final mine =
-                              provider.personalMessages[UserAPI.currentUser.uid];
-                          final uid = mine.keys.elementAt(index);
-                          final message = mine[uid][0];
-                          return MessagePreviewWidget(
-                            uid: uid,
-                            message: message,
-                            unreadMessages: mine[uid],
-                          );
-                        },
-                      );
-                    }
-                  },
-                ),
-              if (!Configs.debug)
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: suSetSp(12.0),
-                    vertical: suSetSp(30.0),
-                  ),
-                  child: SizedBox(
-                    height: suSetSp(40.0),
-                    child: Center(
+                    ),
+                    Expanded(
                       child: Text(
-                        "无新消息",
+                        topItems[index],
                         style: TextStyle(
-                          fontSize: suSetSp(14.0),
+                          fontSize: suSetSp(19.0),
                         ),
                       ),
                     ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        right: suSetSp(12.0),
+                      ),
+                      child: SvgPicture.asset(
+                        "assets/icons/arrow-right.svg",
+                        color: Colors.grey,
+                        width: suSetSp(24.0),
+                        height: suSetSp(24.0),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              onTap: () {
+                _handleItemClick(context, topItems[index]);
+              },
+            ),
+          ),
+          Constants.separator(context),
+          if (Configs.debug)
+            Consumer<MessagesProvider>(
+              builder: (context, provider, _) {
+                if (UserAPI.currentUser.uid == null) return SizedBox.shrink();
+                if (provider.personalMessages.entries.isEmpty) {
+                  return Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: suSetSp(12.0),
+                      vertical: suSetSp(30.0),
+                    ),
+                    child: SizedBox(
+                      height: suSetSp(40.0),
+                      child: Center(
+                        child: Text(
+                          "无新消息",
+                          style: TextStyle(
+                            fontSize: suSetSp(14.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                } else {
+                  return ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    reverse: true,
+                    itemCount: provider
+                        .personalMessages[UserAPI.currentUser.uid]
+                        .entries
+                        .length,
+                    itemBuilder: (context, index) {
+                      final mine =
+                          provider.personalMessages[UserAPI.currentUser.uid];
+                      final uid = mine.keys.elementAt(index);
+                      final message = mine[uid][0];
+                      return MessagePreviewWidget(
+                        uid: uid,
+                        message: message,
+                        unreadMessages: mine[uid],
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          if (!Configs.debug)
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: suSetSp(12.0),
+                vertical: suSetSp(30.0),
+              ),
+              child: SizedBox(
+                height: suSetSp(40.0),
+                child: Center(
+                  child: Text(
+                    "无新消息",
+                    style: TextStyle(
+                      fontSize: suSetSp(14.0),
+                    ),
                   ),
                 ),
-            ],
-          ),
+              ),
+            ),
+        ],
+      ),
 //          SizedBox(),
 //        ],
 //      ),

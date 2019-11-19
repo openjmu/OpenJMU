@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_text_field/extended_text_field.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
@@ -15,6 +16,12 @@ import 'package:OpenJMU/widgets/RoundedCheckBox.dart';
 import 'package:OpenJMU/widgets/ToggleButton.dart';
 import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
 
+@FFRoute(
+  name: "openjmu://add-comment",
+  routeName: "新增评论",
+  argumentNames: ["post", "comment"],
+  pageRouteType: PageRouteType.transparent,
+)
 class CommentPositioned extends StatefulWidget {
   final Post post;
   final Comment comment;

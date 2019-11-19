@@ -5,29 +5,35 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/dialogs/EditSignatureDialog.dart';
-import 'package:OpenJMU/widgets/image/ImageCropPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
+@FFRoute(
+  name: "openjmu://user",
+  routeName: "用户页",
+  argumentNames: ["uid"],
+)
 class UserPage extends StatefulWidget {
   final int uid;
 
-  UserPage({Key key, @required this.uid}) : super(key: key);
+  const UserPage({
+    Key key,
+    @required this.uid,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _UserPageState();
 
   static Future jump(int uid) {
-    return Constants.navigatorKey.currentState.push(
-      platformPageRoute(
-        context: Constants.navigatorKey.currentContext,
-        builder: (context) => UserPage(uid: uid),
-      ),
+    return currentState.pushNamed(
+      "openjmu://user",
+      arguments: {"uid": uid},
     );
   }
 }
@@ -253,7 +259,7 @@ class _UserPageState extends State<UserPage>
             color: Colors.white,
           ),
           onTap: () {
-            Navigator.of(context).pushNamed("/userqrcode");
+            currentState.pushNamed("openjmu://user-qrcode");
           },
         ),
       );
@@ -324,28 +330,12 @@ class _UserPageState extends State<UserPage>
             if (Constants.developerList.contains(_user.uid))
               Constants.emptyDivider(width: 8.0),
             if (Constants.developerList.contains(_user.uid))
-              Container(
+              Constants.developerTag(
                 padding: EdgeInsets.symmetric(
                   horizontal: suSetSp(8.0),
                   vertical: suSetSp(4.0),
                 ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: <Color>[Colors.red, Colors.blue],
-                  ),
-                  borderRadius: BorderRadius.circular(suSetSp(20.0)),
-                ),
-                child: Text(
-                  "# OpenJMU Team #",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: suSetSp(14.0),
-                    fontWeight: FontWeight.bold,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
+                fontSize: 14.0,
               ),
           ],
         ),
@@ -364,13 +354,9 @@ class _UserPageState extends State<UserPage>
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
-                Navigator.of(context).push(
-                  platformPageRoute(
-                    context: context,
-                    builder: (context) {
-                      return UserListPage(_user, 1);
-                    },
-                  ),
+                currentState.pushNamed(
+                  "openjmu://userlist",
+                  arguments: {"user": _user, "type": 1},
                 );
               },
               child: RichText(
@@ -396,33 +382,32 @@ class _UserPageState extends State<UserPage>
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
-                Navigator.of(context).push(
-                  platformPageRoute(
-                    context: context,
-                    builder: (context) {
-                      return UserListPage(_user, 2);
-                    },
-                  ),
+                currentState.pushNamed(
+                  "openjmu://userlist",
+                  arguments: {"user": _user, "type": 2},
                 );
               },
               child: RichText(
-                  text: TextSpan(children: <TextSpan>[
-                TextSpan(
-                  text: _fansCount,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: suSetSp(24.0),
-                  ),
+                text: TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: _fansCount,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: suSetSp(24.0),
+                      ),
+                    ),
+                    TextSpan(
+                      text: " 粉丝",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: suSetSp(18.0),
+                      ),
+                    ),
+                  ],
                 ),
-                TextSpan(
-                  text: " 粉丝",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: suSetSp(18.0),
-                  ),
-                ),
-              ])),
+              ),
             ),
           ],
         ),
@@ -435,8 +420,7 @@ class _UserPageState extends State<UserPage>
                       Container(
                         margin: EdgeInsets.only(right: suSetSp(12.0)),
                         child: ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(suSetSp(20.0)),
+                          borderRadius: BorderRadius.circular(suSetSp(20.0)),
                           child: Container(
                             padding: EdgeInsets.symmetric(
                               horizontal: suSetSp(8.0),
@@ -600,25 +584,24 @@ class _UserPageState extends State<UserPage>
                             fontSize: suSetSp(20.0),
                           ),
                     ),
-                    onTap: () => Navigator.of(sheetContext)
-                      ..pop()
-                      ..push(
-                        platformPageRoute(
-                          context: context,
-                          builder: (_) => ImageViewer(
-                            0,
-                            [
-                              ImageBean(
-                                id: widget.uid,
-                                imageUrl: "${API.userAvatar}"
-                                    "?uid=${widget.uid}"
-                                    "&size=f640",
-                              )
-                            ],
-                            needsClear: true,
-                          ),
-                        ),
-                      ),
+                    onTap: () {
+                      Navigator.of(sheetContext).pop();
+                      currentState.pushNamed(
+                        "openjmu://image-viewer",
+                        arguments: {
+                          "index": 0,
+                          "pics": [
+                            ImageBean(
+                              id: widget.uid,
+                              imageUrl: "${API.userAvatar}"
+                                  "?uid=${widget.uid}"
+                                  "&size=f640",
+                            ),
+                          ],
+                          "needsClear": true,
+                        },
+                      );
+                    },
                   ),
                   ListTile(
                     leading: Icon(
@@ -634,13 +617,8 @@ class _UserPageState extends State<UserPage>
                     ),
                     onTap: () async {
                       Navigator.of(sheetContext).pop();
-                      Navigator.of(context)
-                          .push(
-                        platformPageRoute(
-                          context: context,
-                          builder: (_) => ImageCropPage(),
-                        ),
-                      )
+                      currentState
+                          .pushNamed("openjmu://image-crop")
                           .then((result) {
                         if (result != null && result) {
                           Instances.eventBus.fire(AvatarUpdatedEvent());
@@ -653,20 +631,18 @@ class _UserPageState extends State<UserPage>
               );
             },
           )
-        : Navigator.of(context).push(
-            platformPageRoute(
-              context: context,
-              builder: (_) => ImageViewer(
-                0,
-                [
-                  ImageBean(
-                    id: widget.uid,
-                    imageUrl: API.userAvatar + "?uid=${widget.uid}&size=f640",
-                  )
-                ],
-                needsClear: true,
-              ),
-            ),
+        : currentState.pushNamed(
+            "openjmu://image-viewer",
+            arguments: {
+              "index": 0,
+              "pics": [
+                ImageBean(
+                  id: widget.uid,
+                  imageUrl: API.userAvatar + "?uid=${widget.uid}&size=f640",
+                )
+              ],
+              "needsClear": true,
+            },
           );
   }
 
@@ -755,8 +731,8 @@ class _UserPageState extends State<UserPage>
                         SafeArea(
                           top: true,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: suSetSp(20.0)),
+                            padding:
+                                EdgeInsets.symmetric(horizontal: suSetSp(20.0)),
                             child: Column(
                               children: <Widget>[
                                 Constants.emptyDivider(
@@ -768,8 +744,8 @@ class _UserPageState extends State<UserPage>
                                   itemBuilder:
                                       (BuildContext context, int index) =>
                                           Padding(
-                                    padding: EdgeInsets.only(
-                                        bottom: suSetSp(12.0)),
+                                    padding:
+                                        EdgeInsets.only(bottom: suSetSp(12.0)),
                                     child: flexSpaceWidgets(context)[index],
                                   ),
                                 ),
@@ -861,11 +837,20 @@ class _UserPageState extends State<UserPage>
   }
 }
 
+@FFRoute(
+  name: "openjmu://userlist",
+  routeName: "用户列表页",
+  argumentNames: ["user", "type"],
+)
 class UserListPage extends StatefulWidget {
   final UserInfo user;
   final int type; // 0 is search, 1 is idols, 2 is fans.
 
-  UserListPage(this.user, this.type, {Key key}) : super(key: key);
+  UserListPage({
+    Key key,
+    @required this.user,
+    @required this.type,
+  }) : super(key: key);
 
   @override
   State createState() => _UserListState();
@@ -1068,8 +1053,8 @@ class _UserListState extends State<UserListPage> {
                   itemBuilder: (context, i) => renderRow(context, i),
                 )
               : Center(
-                  child: Text("暂无内容",
-                      style: TextStyle(fontSize: suSetSp(20.0))))
+                  child:
+                      Text("暂无内容", style: TextStyle(fontSize: suSetSp(20.0))))
           : Center(
               child: Constants.progressIndicator(),
             ),

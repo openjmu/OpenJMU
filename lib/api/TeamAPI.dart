@@ -23,42 +23,53 @@ class TeamPostAPI {
     );
   }
 
-  static Post createPost(postData) {
-    var _user = postData['user_info'];
-    final _avatar = "${API.userAvatar}"
-        "?uid=${_user['uid']}"
-        "&size=f152";
-    final _postTime =
-        DateTime.fromMillisecondsSinceEpoch(int.parse(postData['post_time']))
-            .toString()
-            .substring(0, 16);
-    final _post = Post(
-      id: int.parse(postData['tid'].toString()),
-      uid: int.parse(_user['uid'].toString()),
-      nickname: _user['nickname'],
-      avatar: _avatar,
-      postTime: _postTime,
-      from: null,
-      glances: int.parse(postData['glances'].toString()),
-      category: postData['category'],
-      content: postData['article'] ?? postData['content'],
-      pics: postData['file_info'],
-      forwards: null,
-      comments: int.parse(postData['replys'].toString()),
-      praises: int.parse(postData['praises'].toString()),
-      rootTopic: postData['root_topic'],
-      isLike: int.parse(postData['praised'].toString()) == 1,
-    );
-    return _post;
-  }
-
-  static Future getPostDetail({int id, int postType}) async =>
+  static Future getPostDetail({int id, int postType = 2}) async =>
       NetUtils.getWithCookieAndHeaderSet(
         API.teamPostDetail(postId: id, postType: postType),
         headers: Constants.teamHeader,
       );
 
   static Future getImage(int fid) async => NetUtils.get(API.teamFile(fid: fid));
+
+  static Map<String, dynamic> fileInfo(int fid) {
+    return {
+      "create_time": 0,
+      "desc": "",
+      "ext": "",
+      "fid": fid,
+      "grid": 0,
+      "group": "",
+      "height": 0,
+      "length": 0,
+      "name": "",
+      "size": 0,
+      "source": "",
+      "type": "",
+      "width": 0
+    };
+  }
+
+  static Future publishPost({
+    @required String content,
+    List<Map<String, dynamic>> files,
+    int postType = 2,
+    int regionId = 430,
+    int regionType = 8,
+  }) async =>
+      NetUtils.postWithCookieAndHeaderSet(
+        API.teamPostPublish,
+        data: {
+          "article": content,
+          "file": [if (files != null) ...files],
+          "latitude": 0,
+          "longitude": 0,
+          "post_type": postType,
+          "region_id": regionId,
+          "region_type": regionType,
+          "template": 0
+        },
+        headers: Constants.teamHeader,
+      );
 }
 
 class TeamCommentAPI {
@@ -97,6 +108,28 @@ class TeamCommentAPI {
     );
     return _comment;
   }
+
+  static Future publishComment({
+    @required String content,
+    List<Map<String, dynamic>> files,
+    int postType = 7,
+    @required int postId,
+    int regionType = 128,
+  }) async =>
+      NetUtils.postWithCookieAndHeaderSet(
+        API.teamPostPublish,
+        data: {
+          "article": content,
+          "file": files,
+          "latitude": 0,
+          "longitude": 0,
+          "post_type": postType,
+          "region_id": postId,
+          "region_type": regionType,
+          "template": 0
+        },
+        headers: Constants.teamHeader,
+      );
 }
 
 class TeamPraiseAPI {

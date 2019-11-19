@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:extended_text/extended_text.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
-import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/model/Bean.dart';
-import 'package:OpenJMU/model/SpecialText.dart';
-import 'package:OpenJMU/pages/post/PostDetailPage.dart';
 
 class PraiseCard extends StatelessWidget {
   final Praise praise;
@@ -139,13 +134,12 @@ class PraiseCard extends StatelessWidget {
     Post _post = Post.fromJson(this.praise.post);
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(
-          platformPageRoute(
-            context: context,
-            builder: (context) {
-              return PostDetailPage(_post, parentContext: context);
-            },
-          ),
+        currentState.pushNamed(
+          "openjmu://post-detail",
+          arguments: {
+            "post": _post,
+            "parentContext": context,
+          },
         );
       },
       child: Card(

@@ -4,13 +4,25 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/AppIcon.dart';
 
+@FFRoute(
+  name: "openjmu://webpage",
+  routeName: "网页浏览",
+  argumentNames: [
+    "url",
+    "title",
+    "app",
+    "withCookie",
+    "withAppBar",
+    "withAction",
+  ],
+)
 class CommonWebPage extends StatefulWidget {
   final String url;
   final String title;
@@ -38,18 +50,14 @@ class CommonWebPage extends StatefulWidget {
     WebApp app,
     bool withCookie,
   }) {
-    Constants.navigatorKey.currentState.push(
-      platformPageRoute(
-        context: Constants.navigatorKey.currentContext,
-        builder: (context) {
-          return CommonWebPage(
-            url: url,
-            title: title,
-            app: app,
-            withCookie: withCookie,
-          );
-        },
-      ),
+    currentState.pushNamed(
+      "openjmu://webpage",
+      arguments: {
+        "url": url,
+        "title": title,
+        "app": app,
+        "withCookie": withCookie,
+      }
     );
   }
 }

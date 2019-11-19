@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:image_downloader/image_downloader.dart';
@@ -12,14 +13,19 @@ import 'package:image_downloader/image_downloader.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/image/ImageGestureDetector.dart';
 
+@FFRoute(
+  name: "openjmu://image-viewer",
+  routeName: "图片浏览",
+  argumentNames: ["index", "pics", "needsClear"],
+)
 class ImageViewer extends StatefulWidget {
   final int index;
   final List<ImageBean> pics;
   final bool needsClear;
 
-  const ImageViewer(
-    this.index,
-    this.pics, {
+  const ImageViewer({
+    @required this.index,
+    @required this.pics,
     this.needsClear,
   });
 
@@ -298,12 +304,10 @@ class ImageList extends StatelessWidget {
                         width: suSetSp(36.0),
                         height: suSetSp(36.0),
                         decoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(suSetSp(8.0)),
+                          borderRadius: BorderRadius.circular(suSetSp(8.0)),
                           border: Border.all(
                             color: i == data.data ? Colors.white : Colors.black,
-                            width:
-                                suSetSp(i == data.data ? 3.0 : 2.0),
+                            width: suSetSp(i == data.data ? 3.0 : 2.0),
                           ),
                         ),
                         child: GestureDetector(
@@ -315,11 +319,11 @@ class ImageList extends StatelessWidget {
                             );
                           },
                           child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.circular(suSetSp(6.0)),
+                            borderRadius: BorderRadius.circular(suSetSp(6.0)),
                             child: CachedNetworkImage(
                               placeholder: (context, text) => Container(),
-                              imageUrl: pics[i].imageUrl,
+                              imageUrl:
+                                  pics[i].imageThumbUrl ?? pics[i].imageUrl,
                               fit: BoxFit.cover,
                             ),
                           ),

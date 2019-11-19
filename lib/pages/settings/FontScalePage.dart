@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
+@FFRoute(
+  name: "openjmu://font-scale",
+  routeName: "更改字号页",
+)
 class FontScalePage extends StatefulWidget {
   @override
   _FontScalePageState createState() => _FontScalePageState();

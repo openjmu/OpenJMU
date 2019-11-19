@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:badges/badges.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -70,6 +71,10 @@ class BackpackItemType {
   }
 }
 
+@FFRoute(
+  name: "openjmu://backpack",
+  routeName: "背包页",
+)
 class BackpackPage extends StatefulWidget {
   @override
   _BackpackPageState createState() => _BackpackPageState();

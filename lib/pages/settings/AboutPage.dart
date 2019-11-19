@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
+@FFRoute(
+  name: "openjmu://about",
+  routeName: "关于页",
+)
 class AboutPage extends StatefulWidget {
   @override
   _AboutPageState createState() => _AboutPageState();

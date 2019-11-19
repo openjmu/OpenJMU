@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:intl/intl.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -15,6 +16,11 @@ import 'package:OpenJMU/pages/home/PostSquareListPage.dart';
 import 'package:OpenJMU/widgets/FABBottomAppBar.dart';
 import 'package:OpenJMU/widgets/announcement/AnnouncementWidget.dart';
 
+@FFRoute(
+  name: "openjmu://home",
+  routeName: "首页",
+  argumentNames: ["initAction"],
+)
 class MainPage extends StatefulWidget {
   final String initAction;
 

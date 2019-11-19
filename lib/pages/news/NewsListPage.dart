@@ -4,10 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/news/NewsDetailPage.dart';
 
 class NewsListPage extends StatefulWidget {
   @override
@@ -164,7 +162,7 @@ class NewsListPageState extends State<NewsListPage>
   }
 
   Widget coverImg(News news) {
-    String imageUrl = "${API.newsImageList}"
+    String imageUrl = "${API.showFile}"
         "${news.cover}"
         "/sid/${UserAPI.currentUser.sid}";
     ImageProvider coverImg = CachedNetworkImageProvider(imageUrl,
@@ -181,19 +179,15 @@ class NewsListPageState extends State<NewsListPage>
     );
   }
 
-  Widget newsItem(context, News news) {
+  Widget newsItem(News news) {
     return Container(
       height: suSetSp(96.0),
       padding: EdgeInsets.all(suSetSp(8.0)),
       child: InkWell(
         onTap: () {
-          Navigator.of(context).push(
-            platformPageRoute(
-              context: context,
-              builder: (context) {
-                return NewsDetailPage(news: news);
-              },
-            ),
+          currentState.pushNamed(
+            "openjmu://news-detail",
+            arguments: {"news": news},
           );
         },
         child: Row(
@@ -291,7 +285,7 @@ class NewsListPageState extends State<NewsListPage>
                         );
                       }
                     } else if (index < newsList.length) {
-                      return newsItem(context, newsList[index]);
+                      return newsItem(newsList[index]);
                     } else {
                       return SizedBox();
                     }

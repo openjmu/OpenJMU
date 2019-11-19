@@ -113,7 +113,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                       .textTheme
                                       .body1
                                       .copyWith(
-                                        fontSize: suSetSp(22.0),
+                                        fontSize: suSetSp(19.0),
                                         textBaseline: TextBaseline.alphabetic,
                                       ),
                                   scrollPadding: EdgeInsets.zero,

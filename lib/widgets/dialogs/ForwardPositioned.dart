@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_text_field/extended_text_field.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
@@ -15,12 +16,18 @@ import 'package:OpenJMU/widgets/ToggleButton.dart';
 import 'package:OpenJMU/widgets/RoundedCheckBox.dart';
 import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
 
+@FFRoute(
+  name: "openjmu://add-forward",
+  routeName: "新增转发",
+  argumentNames: ["post"],
+  pageRouteType: PageRouteType.transparent,
+)
 class ForwardPositioned extends StatefulWidget {
   final Post post;
 
-  const ForwardPositioned(
-    this.post, {
+  const ForwardPositioned({
     Key key,
+    @required this.post,
   }) : super(key: key);
 
   @override

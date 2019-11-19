@@ -2,14 +2,23 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
+@FFRoute(
+  name: "openjmu://news-detail",
+  routeName: "新闻详情页",
+  argumentNames: ["news"],
+)
 class NewsDetailPage extends StatefulWidget {
   final News news;
 
-  const NewsDetailPage({Key key, this.news}) : super(key: key);
+  const NewsDetailPage({
+    Key key,
+    this.news,
+  }) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _NewsDetailPageState();
@@ -28,7 +37,8 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
   void getNewsContent() async {
     Map<String, dynamic> data = (await NewsAPI.getNewsContent(
       newsId: widget.news.id,
-    )).data;
+    ))
+        .data;
     pageContent = """<!DOCTYPE html>
                 <html>
                     <head>

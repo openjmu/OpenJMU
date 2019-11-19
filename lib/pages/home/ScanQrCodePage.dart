@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_qr_reader/qrcode_reader_view.dart';
 
@@ -7,6 +8,10 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
+@FFRoute(
+  name: "openjmu://scan-qrcode",
+  routeName: "扫描二维码",
+)
 class ScanQrCodePage extends StatefulWidget {
   @override
   _ScanQrCodePageState createState() => _ScanQrCodePageState();

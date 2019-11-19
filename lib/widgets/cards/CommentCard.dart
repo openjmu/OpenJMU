@@ -4,9 +4,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/post/PostDetailPage.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
-import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 
 class CommentCard extends StatelessWidget {
   final Comment comment;
@@ -221,13 +219,12 @@ class CommentCard extends StatelessWidget {
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
                   Navigator.pop(context);
-                  Constants.navigatorKey.currentState.push(
-                    TransparentRoute(
-                      builder: (context) => CommentPositioned(
-                        post: this.comment.post,
-                        comment: this.comment
-                      ),
-                    ),
+                  currentState.pushNamed(
+                    "openjmu://add-comment",
+                    arguments: {
+                      "post": this.comment.post,
+                      "comment": this.comment,
+                    },
                   );
                 },
                 child: Column(
@@ -255,14 +252,12 @@ class CommentCard extends StatelessWidget {
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
                   Navigator.of(context).pop();
-                  Navigator.of(context).push(
-                    platformPageRoute(
-                      context: context,
-                      builder: (context) => PostDetailPage(
-                        this.comment.post,
-                        parentContext: context,
-                      ),
-                    ),
+                  currentState.pushNamed(
+                    "openjmu://post-detail",
+                    arguments: {
+                      "post": this.comment.post,
+                      "parentContext": context,
+                    }
                   );
                 },
                 child: Column(

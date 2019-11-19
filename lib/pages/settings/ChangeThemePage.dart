@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
+@FFRoute(
+  name: "openjmu://theme",
+  routeName: "更改主题",
+)
 class ChangeThemePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => ChangeThemePageState();

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -6,6 +7,10 @@ import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/pages/home/AppCenterPage.dart';
 import 'package:OpenJMU/pages/home/PostSquareListPage.dart';
 
+@FFRoute(
+  name: "openjmu://switch-startup",
+  routeName: "切换启动页",
+)
 class SwitchStartUpPage extends StatefulWidget {
   @override
   _SwitchStartUpPageState createState() => _SwitchStartUpPageState();

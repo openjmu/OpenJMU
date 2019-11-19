@@ -2,7 +2,6 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2019-11-17 02:55
 ///
-
 import 'package:flutter/material.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -61,8 +60,10 @@ class _MarketingPageState extends State<MarketingPage> {
             ? ListView.builder(
                 controller: _scrollController,
                 itemCount: posts.length,
-                itemBuilder: (context, index) =>
-                    TeamPostPreviewCard(post: posts[index]),
+                itemBuilder: (context, index) => TeamPostPreviewCard(
+                  key: ValueKey("marketPost-${posts[index].tid}"),
+                  post: posts[index],
+                ),
               )
             : Center(child: Constants.progressIndicator()),
       ),

@@ -1,7 +1,3 @@
-import 'package:OpenJMU/constants/Configs.dart';
-import 'package:OpenJMU/pages/post/MarketingPage.dart';
-import 'package:OpenJMU/utils/NetUtils.dart';
-import 'package:OpenJMU/widgets/dialogs/ManuallySetSidDialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,6 +7,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/pages/news/NewsListPage.dart';
+import 'package:OpenJMU/pages/post/MarketingPage.dart';
+import 'package:OpenJMU/utils/NetUtils.dart';
+import 'package:OpenJMU/widgets/dialogs/ManuallySetSidDialog.dart';
 
 class PostSquareListPage extends StatefulWidget {
   @override
@@ -22,7 +21,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
   static final List<String> tabs = [
     "首页",
     "关注",
-//    "集市",
+    "集市",
     "新闻",
   ];
   static List<Widget> _post;
@@ -52,12 +51,12 @@ class PostSquareListPageState extends State<PostSquareListPage>
         needRefreshIndicator: true,
       );
     },
-//    () {
-//      _post[2] = MarketingPage();
-//    },
     () {
-//      _post[3] = NewsListPage();
-      _post[2] = NewsListPage();
+      _post[2] = MarketingPage();
+    },
+    () {
+      _post[3] = NewsListPage();
+//      _post[2] = NewsListPage();
     },
   ];
   TabController _tabController;
@@ -126,14 +125,12 @@ class PostSquareListPageState extends State<PostSquareListPage>
               child: TabBar(
                 isScrollable: true,
                 indicatorColor: currentThemeColor,
-                indicatorPadding:
-                    EdgeInsets.only(bottom: suSetSp(16.0)),
+                indicatorPadding: EdgeInsets.only(bottom: suSetSp(16.0)),
                 indicatorSize: TabBarIndicatorSize.label,
                 indicatorWeight: suSetSp(6.0),
                 labelColor: Theme.of(context).textTheme.body1.color,
                 labelStyle: MainPageState.tabSelectedTextStyle,
-                labelPadding:
-                    EdgeInsets.symmetric(horizontal: suSetSp(16.0)),
+                labelPadding: EdgeInsets.symmetric(horizontal: suSetSp(16.0)),
                 unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
                 tabs: <Tab>[
                   for (int i = 0; i < tabs.length; i++) Tab(text: tabs[i])
@@ -145,40 +142,37 @@ class PostSquareListPageState extends State<PostSquareListPage>
         ),
         centerTitle: false,
         actions: <Widget>[
-          Padding(
-            padding: EdgeInsets.zero,
-            child: IconButton(
-              icon: SvgPicture.asset(
-                "assets/icons/scan-line.svg",
-                color: Theme.of(context).iconTheme.color,
-                width: suSetSp(26.0),
-                height: suSetSp(26.0),
-              ),
-              onPressed: () async {
-                Map<PermissionGroup, PermissionStatus> permissions =
-                    await PermissionHandler().requestPermissions([
-                  PermissionGroup.camera,
-                ]);
-                if (permissions[PermissionGroup.camera] ==
-                    PermissionStatus.granted) {
-                  Navigator.of(context).pushNamed("/scanqrcode");
-                }
-              },
+          IconButton(
+            icon: SvgPicture.asset(
+              "assets/icons/scan-line.svg",
+              color: Theme.of(context).iconTheme.color,
+              width: suSetSp(26.0),
+              height: suSetSp(26.0),
             ),
+            onPressed: () async {
+              Map<PermissionGroup, PermissionStatus> permissions =
+                  await PermissionHandler().requestPermissions([
+                PermissionGroup.camera,
+              ]);
+              if (permissions[PermissionGroup.camera] ==
+                  PermissionStatus.granted) {
+                currentState.pushNamed("openjmu://scan-qrcode");
+              }
+            },
           ),
-          Padding(
-            padding: EdgeInsets.zero,
-            child: IconButton(
-              icon: SvgPicture.asset(
-                "assets/icons/search-line.svg",
-                color: Theme.of(context).iconTheme.color,
-                width: suSetSp(26.0),
-                height: suSetSp(26.0),
-              ),
-              onPressed: () {
-                Navigator.of(context).pushNamed("/search");
-              },
+          IconButton(
+            icon: SvgPicture.asset(
+              "assets/icons/search-line.svg",
+              color: Theme.of(context).iconTheme.color,
+              width: suSetSp(26.0),
+              height: suSetSp(26.0),
             ),
+            onPressed: () {
+              currentState.pushNamed(
+                "openjmu://search",
+                arguments: {"content": null},
+              );
+            },
           ),
         ],
       ),

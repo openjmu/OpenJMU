@@ -1,16 +1,19 @@
+///
+/// [Author] Alex (https://github.com/AlexVincent525)
+/// [Date] 2019-11-18 16:45
+///
 import 'dart:async';
 import 'dart:core';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:dio/dio.dart';
-import 'package:dragablegridview_flutter/dragablegridview_flutter.dart';
-import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
 import 'package:draggable_container/draggable_container.dart';
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
@@ -26,27 +29,25 @@ import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
 
 @FFRoute(
-  name: "openjmu://publish-post",
-  routeName: "发布动态",
+  name: "openjmu://publish-team-post",
+  routeName: "发布小组动态",
 )
-class PublishPostPage extends StatefulWidget {
+class PublishTeamPostPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => PublishPostPageState();
+  State<StatefulWidget> createState() => PublishTeamPostPageState();
 }
 
-class PublishPostPageState extends State<PublishPostPage> {
-//  final GlobalKey<DraggableContainerState> _stateKey = GlobalKey();
+class PublishTeamPostPageState extends State<PublishTeamPostPage> {
+  final _stateKey = GlobalKey<DraggableContainerState>();
   final _textEditingController = TextEditingController();
-  final _editSwitchController = EditSwitchController();
   final _dialogController = LoadingDialogController();
   final _focusNode = FocusNode();
   final _iconSize = suSetSp(28.0);
   final gridCount = 5;
-//  final maxLength = 2000;
+  final size = Size.square(Screen.width / 5);
 
   List<Future> query;
   List<Asset> assets = <Asset>[];
-  List<ItemBin> imagesBin = <ItemBin>[];
   Set<int> failedImages = {};
   List _imageIdList = [];
 
@@ -61,6 +62,8 @@ class PublishPostPageState extends State<PublishPostPage> {
   double _keyboardHeight = EmotionPadState.emoticonPadDefaultHeight;
 
   bool emoticonPadActive = false;
+
+  Widget draggableContainer;
 
   @override
   void initState() {
@@ -99,7 +102,6 @@ class PublishPostPageState extends State<PublishPostPage> {
       context: context,
       builder: (BuildContext context) => MentionPeopleDialog(),
     ).then((result) {
-      debugPrint("Popped.");
       if (_focusNode.canRequestFocus) _focusNode.requestFocus();
       if (result != null) {
         debugPrint("Mentioned User: ${result.toString()}");
@@ -156,36 +158,87 @@ class PublishPostPageState extends State<PublishPostPage> {
     if (!mounted) return;
 
     for (final asset in resultList) {
-      assets.add(asset);
-      imagesBin.add(ItemBin(asset));
+      if (assets.where((a) => a.identifier == asset.identifier).isEmpty) {
+        assets.add(asset);
+      }
     }
-//    for (int i = 0; i < resultList.length; i++) {
-//      assets.add(resultList[i]);
-//      imagesBin.add(ItemBin(resultList[i]));
-//      if (_stateKey.currentState != null) {
-//        _stateKey.currentState.addItem(imageDraggableItem(context, i));
-//      }
-//    }
-    setState(() {
-      imagesLength = assets.length;
-    });
+    imagesLength = assets.length;
+    resetDraggableContainer();
+
+    if (mounted) setState(() {});
   }
 
-  DraggableItem imageDraggableItem(context, int position) {
-    final size = (MediaQuery.of(context).size.width / gridCount).floor() -
-        (18 - gridCount);
+  void resetDraggableContainer() async {
+    if (_stateKey.currentState != null && _stateKey.currentState.mounted) {
+      draggableContainer = null;
+    }
+    if (imagesLength != 0) {
+      await Future.delayed(const Duration(milliseconds: 100), () {
+        draggableContainer = DraggableContainer(
+          key: _stateKey,
+          autoReorder: true,
+          dragDecoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).dividerColor,
+                blurRadius: 1.0,
+              ),
+            ],
+          ),
+          slotSize: size,
+          deleteButton: Container(
+            width: suSetSp(20.0),
+            height: suSetSp(20.0),
+            decoration: BoxDecoration(
+              color: Colors.redAccent,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.delete_forever,
+              color: Colors.white,
+              size: suSetSp(18.0),
+            ),
+          ),
+          // item list
+          items: <DraggableItem>[
+            for (int i = 0; i < imagesLength; i++)
+              imageDraggableItem(context, size, i),
+          ],
+          onBeforeDelete: (int index, item) async {
+            assets.removeWhere(
+              (asset) => asset.identifier == assets.toList()[index].identifier,
+            );
+            failedImages.remove(index);
+            imagesLength--;
+            final item =
+                await _stateKey.currentState.popSlot(triggerEvent: false);
+            _stateKey.currentState
+              ..removeIndex(index, triggerEvent: false)
+              ..reorder()
+              ..addItem(item);
+            if (mounted) setState(() {});
+            return false;
+          },
+        );
+        if (mounted) setState(() {});
+      });
+    }
+  }
+
+  DraggableItem imageDraggableItem(context, Size size, int index) {
     return DraggableItem(
+      fixed: true,
       deletable: true,
       child: Padding(
-        padding: EdgeInsets.all(suSetSp(4.0)),
+        padding: EdgeInsets.all(suSetWidth(8.0)),
         child: Stack(
           children: <Widget>[
             AssetThumb(
-              asset: assets[position],
-              width: size,
-              height: size,
+              asset: assets.toList()[index],
+              width: size.width.toInt(),
+              height: size.width.toInt(),
             ),
-            if (failedImages.contains(position))
+            if (failedImages.contains(index))
               Positioned(
                 top: 0.0,
                 bottom: 0.0,
@@ -249,20 +302,13 @@ class PublishPostPageState extends State<PublishPostPage> {
                 fontSize: suSetSp(19.0),
                 textBaseline: TextBaseline.alphabetic,
               ),
-//          maxLength: maxLength,
           maxLines: null,
           onChanged: (content) {
-//            if (content.length == maxLength) {
-//              setState(() {
-//                counterTextColor = Colors.red;
-//              });
-//            } else {
             if (counterTextColor != Colors.grey) {
               setState(() {
                 counterTextColor = Colors.grey;
               });
             }
-//            }
             setState(() {
               currentLength = content.length;
             });
@@ -273,8 +319,6 @@ class PublishPostPageState extends State<PublishPostPage> {
   }
 
   Widget customGridView(context) {
-    final size = (MediaQuery.of(context).size.width / gridCount).floor() -
-        (18 - gridCount);
     return Container(
       margin: EdgeInsets.only(
         bottom: (emoticonPadActive
@@ -282,120 +326,8 @@ class PublishPostPageState extends State<PublishPostPage> {
                 : MediaQuery.of(context).padding.bottom) +
             suSetSp(80.0),
       ),
-//      child: imagesLength != 0 ? DraggableContainer(
-//        key: _stateKey,
-//        autoReorder: true,
-//        dragDecoration: BoxDecoration(
-//          boxShadow: [
-//            BoxShadow(color: Colors.grey[850], blurRadius: 3),
-//          ],
-//        ),
-//        slotSize: Size.square(MediaQuery.of(context).size.width / 5),
-//        deleteButton: Container(
-//          width: suSetSp(20.0),
-//          height: suSetSp(20.0),
-//          decoration: BoxDecoration(
-//            color: Colors.redAccent,
-//            shape: BoxShape.circle,
-//          ),
-//          child: Icon(
-//            Icons.delete_forever,
-//            color: Colors.white,
-//            size: suSetSp(18.0),
-//          ),
-//        ),
-//        // item list
-//        items: <DraggableItem>[
-//          for (int i = 0; i < imagesLength; i++)
-//            imageDraggableItem(context, i),
-//        ],
-//      ) : SizedBox.shrink(),
-      child: DragAbleGridView(
-        shrinkWrap: true,
-        itemBins: imagesBin,
-        editSwitchController: _editSwitchController,
-        crossAxisCount: gridCount,
-        childAspectRatio: 1,
-        isOpenDragAble: true,
-        animationDuration: 300,
-        longPressDuration: 500,
-        deleteIcon: Container(
-          padding: EdgeInsets.all(suSetSp(3.0)),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.redAccent,
-          ),
-          child: Icon(
-            Icons.delete_forever,
-            color: Colors.white,
-            size: suSetSp(18.0),
-          ),
-        ),
-        deleteIconClickListener: (int index) {
-          assets.remove(index);
-          imagesBin.remove(index);
-          imagesLength--;
-          if (failedImages.isNotEmpty) failedImages.clear();
-          if (mounted) setState(() {});
-        },
-        child: (int position) {
-          return Padding(
-            padding: EdgeInsets.all(suSetSp(4.0)),
-            child: Stack(
-              children: <Widget>[
-                AssetThumb(
-                  asset: assets[position],
-                  width: size,
-                  height: size,
-                ),
-                if (failedImages.contains(position))
-                  Positioned(
-                    top: 0.0,
-                    bottom: 0.0,
-                    left: 0.0,
-                    right: 0.0,
-                    child: Container(
-                      color: Colors.white.withOpacity(0.7),
-                      child: Center(
-                        child: Icon(
-                          Icons.error,
-                          color: Colors.redAccent,
-                          size: suSetSp(36.0),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _counter(context) {
-    return Positioned(
-      bottom: (emoticonPadActive
-              ? _keyboardHeight
-              : MediaQuery.of(context).padding.bottom) +
-          suSetSp(60.0),
-      right: 0.0,
-      child: Container(
-        height: suSetSp(20.0),
-        padding: EdgeInsets.only(right: suSetSp(11.0)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Text(
-              "$currentLength",
-//              "$currentLength/$maxLength",
-              style: TextStyle(
-                color: counterTextColor,
-              ),
-            ),
-          ],
-        ),
-      ),
+      child:
+          draggableContainer != null ? draggableContainer : SizedBox.shrink(),
     );
   }
 
@@ -495,12 +427,20 @@ class PublishPostPageState extends State<PublishPostPage> {
   }
 
   Future<FormData> createForm(Asset asset) async {
-    ByteData byteData = await asset.getByteData();
-    List<int> imageData = byteData.buffer.asUint8List();
-    return FormData.from({
-      "image": UploadFileInfo.fromBytes(imageData, "${asset.name}.jpg"),
-      "image_type": 0
+    final byteData = await asset.getByteData();
+    final imageData = byteData.buffer.asUint8List();
+    final formData = FormData.from({
+      "file": UploadFileInfo.fromBytes(imageData, "${asset.name}"),
+      "type": 3,
+      "sid": UserAPI.currentUser.sid,
+      "id": 77,
+      "md5": md5.convert(imageData),
+      "path": "/${UserAPI.currentUser.uid}",
+      "name": "${asset.name}",
+      "set_default": 0,
+      "size": imageData.length,
     });
+    return formData;
   }
 
   void insertText(String text) {
@@ -641,8 +581,9 @@ class PublishPostPageState extends State<PublishPostPage> {
   }
 
   void post(context) async {
-    final content = _textEditingController.text;
-    if (content.length == 0 || content.trim().length == 0) {
+    String content = _textEditingController.text;
+    if ((content.length == 0 || content.trim().length == 0) &&
+        imagesLength == 0) {
       showCenterShortToast("内容不能为空");
     } else {
       final result = await showDialog(
@@ -672,15 +613,13 @@ class PublishPostPageState extends State<PublishPostPage> {
             }
           },
         );
-        Map<String, dynamic> data = {};
-        data['category'] = "text";
-        data['content'] = Uri.encodeFull(content);
+
         if (assets.length > 0) {
           try {
             if (query == null) query = List(assets.length);
             _imageIdList = List(assets.length);
             for (int i = 0; i < assets.length; i++) {
-              final imageData = assets[i];
+              final imageData = assets.toList()[i];
               final _form = await createForm(imageData);
               query[i] = getImageRequest(_form, i);
             }
@@ -689,31 +628,26 @@ class PublishPostPageState extends State<PublishPostPage> {
               if (rs != null &&
                   rs.length == assets.length &&
                   !rs.contains(null)) {
-                final extraId = _imageIdList.toString();
-                data['extra_id'] = extraId.substring(1, extraId.length - 1);
-                _postContent(data);
+                _postContent();
               } else {
-                query.clear();
+                query = [];
                 _dialogController.changeState("failed", "图片上传失败");
                 isLoading = false;
                 if (mounted) setState(() {});
               }
             }).catchError((e) {
-              query.clear();
+              query = [];
               _dialogController.changeState("failed", "图片上传失败");
               isLoading = false;
               if (mounted) setState(() {});
               debugPrint(e.toString());
             });
           } catch (exception) {
-            query?.clear();
+            query = [];
             debugPrint(exception.toString());
           }
         } else {
-          Map<String, dynamic> data = {};
-          data['category'] = "text";
-          data['content'] = Uri.encodeFull(content);
-          _postContent(data);
+          _postContent();
         }
       }
     }
@@ -721,19 +655,21 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   Future getImageRequest(FormData formData, int index) async {
     return NetUtils.postWithCookieAndHeaderSet(
-      API.postUploadImage,
+      API.uploadFile,
       data: formData,
+      headers: Constants.teamHeader,
     ).then((response) {
       if (response.statusCode != 200) throw Error();
       _incrementImagesCounter();
-      int imageId = int.parse(response.data['image_id'].toString());
+      print(response.data);
+      final imageId = int.parse(response.data['fid'].toString());
       _imageIdList[index] = imageId;
       return response;
     }).catchError((e) {
-      query.clear();
       debugPrint(e.toString());
       debugPrint(e.response.toString());
       showErrorShortToast(e.response.data['msg'] as String);
+      query = [];
       failedImages.add(uploadedImages - 1);
       _dialogController.changeState("failed", "图片上传失败");
       isLoading = false;
@@ -751,22 +687,40 @@ class PublishPostPageState extends State<PublishPostPage> {
         query,
         eagerError: true,
       ).catchError((e) {
-        query.clear();
+        query = [];
         _dialogController.changeState("failed", "图片上传失败");
         isLoading = false;
         if (mounted) setState(() {});
       });
 
-  Future _postContent(content) async {
+  Future _postContent() async {
+    String content = _textEditingController.text;
+    if (imagesLength != 0 && content == null || content.trim().length == 0) {
+      content = "分享图片~";
+    }
     if (assets.length > 0) {
       _dialogController.updateText("正在发布动态...");
     }
-    NetUtils.postWithCookieAndHeaderSet(
-      API.postContent,
-      data: content,
+    TeamPostAPI.publishPost(
+      content: content,
+      files: _imageIdList
+          .map((id) => {
+                "create_time": 0,
+                "desc": "",
+                "ext": "",
+                "fid": id,
+                "grid": 0,
+                "group": "",
+                "height": 0,
+                "length": 0,
+                "name": "",
+                "size": 0,
+                "source": "",
+                "type": "",
+                "width": 0,
+              })
+          .toList(),
     ).then((response) {
-      isLoading = false;
-      if (mounted) setState(() {});
       if (response.data["tid"] != null) {
         _dialogController.changeState(
           "success",
@@ -783,11 +737,11 @@ class PublishPostPageState extends State<PublishPostPage> {
       }
       return response;
     }).catchError((e) {
-      setState(() {
-        isLoading = false;
-      });
       _dialogController.changeState("failed", "动态发布失败");
       debugPrint(e.toString());
+    }).whenComplete(() {
+      isLoading = false;
+      if (mounted) setState(() {});
     });
   }
 
@@ -848,7 +802,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         appBar: AppBar(
           title: Center(
             child: Text(
-              "发布动态",
+              "发布集市动态",
               style: Theme.of(context).textTheme.title.copyWith(
                     fontSize: suSetSp(21.0),
                   ),
@@ -871,7 +825,6 @@ class PublishPostPageState extends State<PublishPostPage> {
                   if (assets.isNotEmpty) customGridView(context),
                 ],
               ),
-              _counter(context),
               _toolbar(context),
               emoticonPad(context),
             ],
@@ -880,20 +833,4 @@ class PublishPostPageState extends State<PublishPostPage> {
       ),
     );
   }
-}
-
-class ItemBin extends DragAbleGridViewBin {
-  Asset data;
-  ItemBin(this.data);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        other is ItemBin &&
-            runtimeType == other.runtimeType &&
-            data.identifier == other.data.identifier;
-  }
-
-  @override
-  int get hashCode => data.hashCode;
 }

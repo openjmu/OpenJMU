@@ -161,8 +161,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   void scrollToWeek(int week) {
     if (weekScrollController.hasClients)
       weekScrollController.animateTo(
-        math.max(
-            0, (week - 0.5) * suSetSp(weekSize) - Screen.width / 2),
+        math.max(0, (week - 0.5) * suSetSp(weekSize) - Screen.width / 2),
         duration: const Duration(milliseconds: 300),
         curve: Curves.ease,
       );
@@ -996,7 +995,7 @@ class CoursesDialog extends StatelessWidget {
                               "coudeTime": courseList[0].time,
                             }).then((response) {
                               if (jsonDecode(response.data)['isOk']) {
-                                Constants.navigatorKey.currentState
+                                currentState
                                     .popUntil(ModalRoute.withName('/home'));
                               }
                               Instances.eventBus
@@ -1188,7 +1187,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                           loading = false;
                           if (mounted) setState(() {});
                           if (jsonDecode(response.data)['isOk']) {
-                            Constants.navigatorKey.currentState
+                            currentState
                                 .popUntil(ModalRoute.withName('/home'));
                           }
                           Instances.eventBus.fire(CourseScheduleRefreshEvent());

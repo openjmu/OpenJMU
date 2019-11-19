@@ -1,29 +1,29 @@
 ///
 /// [Author] Alex (https://github.com/AlexVincent525)
-/// [Date] 2019-11-17 06:15
+/// [Date] 2019-11-19 15:56
 ///
 import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:OpenJMU/pages/post/TeamPostDetailPage.dart';
-import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_text/extended_text.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:like_button/like_button.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
-class TeamPostPreviewCard extends StatelessWidget {
+class TeamCommentPreviewCard extends StatelessWidget {
   final TeamPost post;
+  final TeamPost topPost;
 
-  const TeamPostPreviewCard({
+  const TeamCommentPreviewCard({
     Key key,
-    this.post,
+    @required this.post,
+    @required this.topPost,
   }) : super(key: key);
 
   Widget _header(context) => Container(
@@ -33,7 +33,7 @@ class TeamPostPreviewCard extends StatelessWidget {
         ),
         child: Row(
           children: <Widget>[
-            UserAPI.getAvatar(uid: post.uid),
+            UserAPI.getAvatar(uid: post.uid, size: 40.0),
             SizedBox(width: suSetWidth(16.0)),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -44,19 +44,41 @@ class TeamPostPreviewCard extends StatelessWidget {
                     Text(
                       post.nickname ?? post.uid.toString(),
                       style: TextStyle(
-                        fontSize: suSetSp(19.0),
+                        fontSize: suSetSp(17.0),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+                    if (post.uid == topPost.uid)
+                      Container(
+                        margin: EdgeInsets.only(
+                          left: suSetWidth(10.0),
+                        ),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: suSetWidth(6.0),
+                          vertical: suSetHeight(0.5),
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+                          color: ThemeUtils.currentThemeColor,
+                        ),
+                        child: Text(
+                          "楼主",
+                          style: TextStyle(
+                            fontSize: suSetSp(12.0),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     if (Constants.developerList.contains(post.uid))
                       Container(
                         margin: EdgeInsets.only(left: suSetWidth(14.0)),
                         child: Constants.developerTag(
                           padding: EdgeInsets.symmetric(
                             horizontal: suSetWidth(8.0),
-                            vertical: suSetHeight(4.0),
+                            vertical: suSetHeight(3.0),
                           ),
-                          fontSize: 13.0,
+                          fontSize: 11.0,
                         ),
                       ),
                   ],
@@ -65,16 +87,17 @@ class TeamPostPreviewCard extends StatelessWidget {
               ],
             ),
             Spacer(),
-            IconButton(
-              icon: Icon(
-                post.uid == UserAPI.currentUser.uid
-                    ? Icons.delete_outline
-                    : Icons.keyboard_arrow_down,
-                size: suSetWidth(40.0),
-                color: Theme.of(context).dividerColor,
+            if (post.uid == UserAPI.currentUser.uid)
+              IconButton(
+                padding: EdgeInsets.zero,
+                icon: Icon(
+                  Icons.delete_outline,
+                  color: Theme.of(context).dividerColor,
+                ),
+                iconSize: suSetWidth(40.0),
+                alignment: Alignment.centerRight,
+                onPressed: () {},
               ),
-              onPressed: post.uid == UserAPI.currentUser.uid ? () {} : () {},
-            ),
           ],
         ),
       );
@@ -100,9 +123,9 @@ class TeamPostPreviewCard extends StatelessWidget {
       time += DateFormat("yyyy-MM-dd HH:mm").format(_postTime);
     }
     return Text(
-      "$time",
+      "第${post.floor}楼 · $time",
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(16.0),
+            fontSize: suSetSp(15.0),
             fontWeight: FontWeight.normal,
           ),
     );
@@ -115,7 +138,7 @@ class TeamPostPreviewCard extends StatelessWidget {
         child: ExtendedText(
           post.content,
           style: TextStyle(
-            fontSize: suSetSp(18.0),
+            fontSize: suSetSp(17.0),
           ),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
@@ -126,7 +149,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                 text: "全文",
                 style: TextStyle(
                   color: ThemeUtils.currentThemeColor,
-                  fontSize: suSetSp(18.0),
+                  fontSize: suSetSp(17.0),
                 ),
               ),
             ],
@@ -135,7 +158,7 @@ class TeamPostPreviewCard extends StatelessWidget {
         ),
       );
 
-  Widget _postInfo(context) => Container(
+  Widget _replyInfo(context) => Container(
         margin: EdgeInsets.symmetric(
           vertical: suSetHeight(12.0),
         ),
@@ -148,11 +171,13 @@ class TeamPostPreviewCard extends StatelessWidget {
           color: Theme.of(context).canvasColor.withOpacity(0.5),
         ),
         child: ListView.builder(
+          padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: post.postInfo.length + (post.repliesCount > 2 ? 1 : 0),
+          itemCount: post.replyInfo.length +
+              (post.replyInfo.length != post.repliesCount ? 1 : 0),
           itemBuilder: (_, index) {
-            if (index == post.postInfo.length)
+            if (index == post.replyInfo.length)
               return Container(
                 margin: EdgeInsets.only(
                   top: suSetHeight(12.0),
@@ -160,11 +185,6 @@ class TeamPostPreviewCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Icon(
-                      Icons.expand_more,
-                      size: suSetWidth(20.0),
-                      color: Theme.of(context).textTheme.caption.color,
-                    ),
                     Text(
                       "查看更多回复",
                       style: Theme.of(context).textTheme.caption.copyWith(
@@ -179,61 +199,79 @@ class TeamPostPreviewCard extends StatelessWidget {
                   ],
                 ),
               );
-            final _post = post.postInfo[index];
+            final _post = post.replyInfo[index];
             return Padding(
               padding: EdgeInsets.symmetric(
                 vertical: suSetHeight(4.0),
               ),
-              child: ExtendedText(
-                _post['content'],
-                specialTextSpanBuilder:
-                    StackSpecialTextSpanBuilder(prefixSpans: <InlineSpan>[
-                  TextSpan(
-                    text: "@${_post['user_info']['nickname']}",
-                    style: TextStyle(
-                      color: Colors.blue,
-                    ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        UserPage.jump(int.parse(_post['user_info']['uid']));
-                      },
-                  ),
-                  if (int.parse(_post['user_info']['uid']) == post.uid)
-                    WidgetSpan(
-                      alignment: ui.PlaceholderAlignment.middle,
-                      child: Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: suSetWidth(6.0),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: suSetWidth(6.0),
-                          vertical: suSetHeight(1.0),
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(suSetWidth(5.0)),
-                          color: ThemeUtils.currentThemeColor,
-                        ),
-                        child: Text(
-                          "楼主",
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: ExtendedText(
+                      _post['content'],
+                      specialTextSpanBuilder:
+                          StackSpecialTextSpanBuilder(prefixSpans: <InlineSpan>[
+                        TextSpan(
+                          text: "@${_post['user']['nickname']}",
                           style: TextStyle(
-                            fontSize: suSetSp(15.0),
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              UserPage.jump(int.parse(_post['user']['uid']));
+                            },
+                        ),
+                        if (int.parse(_post['user']['uid']) == topPost.uid)
+                          WidgetSpan(
+                            alignment: ui.PlaceholderAlignment.middle,
+                            child: Container(
+                              margin: EdgeInsets.symmetric(
+                                horizontal: suSetWidth(6.0),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: suSetWidth(6.0),
+                                vertical: suSetHeight(1.0),
+                              ),
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.circular(suSetWidth(5.0)),
+                                color: ThemeUtils.currentThemeColor,
+                              ),
+                              child: Text(
+                                "楼主",
+                                style: TextStyle(
+                                  fontSize: suSetSp(15.0),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        TextSpan(
+                          text: "：",
+                          style: TextStyle(
+                            color: Colors.blue,
                           ),
                         ),
-                      ),
-                    ),
-                  TextSpan(
-                    text: "：",
-                    style: TextStyle(
-                      color: Colors.blue,
+                      ]),
+                      style: Theme.of(context).textTheme.body1.copyWith(
+                            fontSize: suSetSp(17.0),
+                          ),
+                      onSpecialTextTap: specialTextTapRecognizer,
                     ),
                   ),
-                ]),
-                style: Theme.of(context).textTheme.body1.copyWith(
-                      fontSize: suSetSp(17.0),
+                  if (int.parse(_post['user']['uid']) ==
+                      UserAPI.currentUser.uid)
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: () {},
+                      child: Icon(
+                        Icons.delete_outline,
+                        color: Theme.of(context).dividerColor,
+                        size: suSetWidth(40.0),
+                      ),
                     ),
-                onSpecialTextTap: specialTextTapRecognizer,
+                ],
               ),
             );
           },
@@ -322,74 +360,6 @@ class TeamPostPreviewCard extends StatelessWidget {
     return _image;
   }
 
-  Widget _actions(context) => SizedBox(
-        height: suSetSp(44.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            Expanded(
-              child: FlatButton.icon(
-                onPressed: null,
-                icon: SvgPicture.asset(
-                  "assets/icons/postActions/comment-line.svg",
-                  color: Theme.of(context).textTheme.body1.color,
-                  width: suSetWidth(24.0),
-                  height: suSetHeight(24.0),
-                ),
-                label: Text(
-                  post.repliesCount == 0 ? "评论" : "${post.repliesCount}",
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.body1.color,
-                    fontSize: suSetSp(16.0),
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-                splashColor: Theme.of(context).cardColor,
-                highlightColor: Theme.of(context).cardColor,
-              ),
-            ),
-            Expanded(
-              child: LikeButton(
-                size: suSetWidth(30.0),
-                circleColor: CircleColor(
-                  start: ThemeUtils.currentThemeColor,
-                  end: ThemeUtils.currentThemeColor,
-                ),
-                countBuilder: (int count, bool isLiked, String text) => Text(
-                  count == 0 ? "赞" : text,
-                  style: TextStyle(
-                    color: isLiked
-                        ? ThemeUtils.currentThemeColor
-                        : Theme.of(context).textTheme.body1.color,
-                    fontSize: suSetSp(16.0),
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-                bubblesColor: BubblesColor(
-                  dotPrimaryColor: ThemeUtils.currentThemeColor,
-                  dotSecondaryColor: ThemeUtils.currentThemeColor,
-                ),
-                likeBuilder: (bool isLiked) => SvgPicture.asset(
-                  "assets/icons/postActions/thumbUp-${isLiked ? "fill" : "line"}.svg",
-                  color: isLiked
-                      ? ThemeUtils.currentThemeColor
-                      : Theme.of(context).textTheme.body1.color,
-                  width: suSetWidth(24.0),
-                  height: suSetHeight(24.0),
-                ),
-                likeCount: post.praisesCount,
-                likeCountAnimationType: LikeCountAnimationType.none,
-                likeCountPadding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(8.0),
-                ),
-                isLiked: post.isLike,
-                onTap: onLikeButtonTap,
-              ),
-            ),
-          ],
-        ),
-      );
-
   Future<bool> onLikeButtonTap(bool isLiked) {
     final completer = Completer<bool>();
 
@@ -414,12 +384,12 @@ class TeamPostPreviewCard extends StatelessWidget {
       children: <Widget>[
         GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () {
+          onTap: post.replyInfo != null && post.replyInfo.isNotEmpty ? () {
             currentState.pushNamed(
               "openjmu://team-post-detail",
-              arguments: {"post": post, "type": TeamPostType.post},
+              arguments: {"post": post, "type": TeamPostType.comment},
             );
-          },
+          } : null,
           child: Container(
             margin: EdgeInsets.symmetric(
               horizontal: suSetWidth(12.0),
@@ -440,9 +410,8 @@ class TeamPostPreviewCard extends StatelessWidget {
                 _header(context),
                 _content,
                 if (post.pics != null && post.pics.isNotEmpty) _images(context),
-                if (post.postInfo != null && post.postInfo.isNotEmpty)
-                  _postInfo(context),
-                _actions(context),
+                if (post.replyInfo != null && post.replyInfo.isNotEmpty)
+                  _replyInfo(context),
               ],
             ),
           ),

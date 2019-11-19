@@ -19,21 +19,21 @@ class _AddingButtonPageState extends State<AddingButtonPage>
   final List<String> itemTitles = [
     "动态",
     "扫一扫",
-//    "集市",
+    "集市",
   ];
   final List<String> itemIcons = [
     "subscriptedAccount",
     "scan",
-//    "scan",
+    "scan",
   ];
   final List<Color> itemColors = [
     Colors.orange,
     Colors.teal,
-//    Colors.indigoAccent,
+    Colors.indigoAccent,
   ];
   final List<Function> itemOnTap = [
     (context) async {
-      Navigator.of(context).pushNamed("/publishPost");
+      currentState.pushNamed("openjmu://publish-post");
     },
     (context) async {
       Map<PermissionGroup, PermissionStatus> permissions =
@@ -41,10 +41,12 @@ class _AddingButtonPageState extends State<AddingButtonPage>
         PermissionGroup.camera,
       ]);
       if (permissions[PermissionGroup.camera] == PermissionStatus.granted) {
-        Navigator.of(context).pushNamed("/scanqrcode");
+        currentState.pushNamed("openjmu://scan-qrcode");
       }
     },
-//    (context) async {},
+    (context) async {
+      currentState.pushNamed("openjmu://publish-team-post");
+    },
   ];
 
   /// Animation.
@@ -245,7 +247,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
               child: Icon(
                 Icons.add,
                 color: Colors.grey,
-                size: suSetWidth(36.0),
+                size: suSetWidth(48.0),
               ),
             ),
           ),

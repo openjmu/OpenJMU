@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
@@ -14,15 +15,18 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 import 'package:OpenJMU/widgets/image/ImageCropHelper.dart';
 
+@FFRoute(
+  name: "openjmu://image-crop",
+  routeName: "图片裁剪",
+)
 class ImageCropPage extends StatefulWidget {
   @override
   _ImageCropPageState createState() => _ImageCropPageState();
 }
 
 class _ImageCropPageState extends State<ImageCropPage> {
-  final GlobalKey<ExtendedImageEditorState> _editorKey =
-  GlobalKey<ExtendedImageEditorState>();
-  LoadingDialogController _controller = LoadingDialogController();
+  final _editorKey = GlobalKey<ExtendedImageEditorState>();
+  final _controller = LoadingDialogController();
   File _file;
   bool _cropping = false;
   bool firstLoad = true;
@@ -120,95 +124,95 @@ class _ImageCropPageState extends State<ImageCropPage> {
         title: Text(
           _file == null ? "上传头像" : "裁剪头像",
           style: Theme.of(context).textTheme.title.copyWith(
-            fontSize: suSetSp(21.0),
-          ),
+                fontSize: suSetSp(21.0),
+              ),
         ),
         centerTitle: true,
         actions: _file != null
             ? <Widget>[
-          IconButton(
-            icon: Icon(Icons.check),
-            onPressed: () {
-              _cropImage(context);
-            },
-          ),
-        ]
+                IconButton(
+                  icon: Icon(Icons.check),
+                  onPressed: () {
+                    _cropImage(context);
+                  },
+                ),
+              ]
             : null,
       ),
       body: _file != null
           ? ExtendedImage.file(
-        _file,
-        fit: BoxFit.contain,
-        mode: ExtendedImageMode.editor,
-        enableLoadState: true,
-        extendedImageEditorKey: _editorKey,
-        initEditorConfigHandler: (state) {
-          return EditorConfig(
-            maxScale: 8.0,
-            cropRectPadding: const EdgeInsets.all(30.0),
-            cropAspectRatio: 1.0,
-            hitTestSize: 30.0,
-            cornerColor: Colors.grey,
-            lineColor: Colors.grey,
-          );
-        },
-      )
+              _file,
+              fit: BoxFit.contain,
+              mode: ExtendedImageMode.editor,
+              enableLoadState: true,
+              extendedImageEditorKey: _editorKey,
+              initEditorConfigHandler: (state) {
+                return EditorConfig(
+                  maxScale: 8.0,
+                  cropRectPadding: const EdgeInsets.all(30.0),
+                  cropAspectRatio: 1.0,
+                  hitTestSize: 30.0,
+                  cornerColor: Colors.grey,
+                  lineColor: Colors.grey,
+                );
+              },
+            )
           : Center(
-        child: InkWell(
-          onTap: _openImage,
-          child: Padding(
-            padding: EdgeInsets.all(suSetSp(60.0)),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Icon(
-                  Icons.add,
-                  size: suSetSp(60.0),
-                ),
-                Constants.emptyDivider(height: 20.0),
-                Text(
-                  "选择需要上传的头像",
-                  style: Theme.of(context).textTheme.body1.copyWith(
-                    fontSize: suSetSp(20.0),
+              child: InkWell(
+                onTap: _openImage,
+                child: Padding(
+                  padding: EdgeInsets.all(suSetSp(60.0)),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Icon(
+                        Icons.add,
+                        size: suSetSp(60.0),
+                      ),
+                      Constants.emptyDivider(height: 20.0),
+                      Text(
+                        "选择需要上传的头像",
+                        style: Theme.of(context).textTheme.body1.copyWith(
+                              fontSize: suSetSp(20.0),
+                            ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
+                highlightColor: Colors.red,
+                customBorder: CircleBorder(),
+              ),
             ),
-          ),
-          highlightColor: Colors.red,
-          customBorder: CircleBorder(),
-        ),
-      ),
       bottomNavigationBar: _file != null
           ? BottomAppBar(
-        color: Theme.of(context).primaryColor,
-        elevation: 0.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.image),
-              onPressed: _openImage,
-            ),
-            IconButton(
-              icon: Icon(Icons.refresh),
-              onPressed: resetCrop,
-            ),
-            IconButton(
-              icon: Icon(Icons.rotate_left),
-              onPressed: () {
-                rotateRightCrop(false);
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.rotate_right),
-              onPressed: () {
-                rotateRightCrop(true);
-              },
-            ),
-          ],
-        ),
-      )
+              color: Theme.of(context).primaryColor,
+              elevation: 0.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.image),
+                    onPressed: _openImage,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.refresh),
+                    onPressed: resetCrop,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.rotate_left),
+                    onPressed: () {
+                      rotateRightCrop(false);
+                    },
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.rotate_right),
+                    onPressed: () {
+                      rotateRightCrop(true);
+                    },
+                  ),
+                ],
+              ),
+            )
           : null,
     );
   }

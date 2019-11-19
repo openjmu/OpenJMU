@@ -1,11 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:extended_tabs/extended_tabs.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
+@FFRoute(
+  name: "openjmu://notifications",
+  routeName: "通知页",
+)
 class NotificationPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => NotificationPageState();
@@ -15,8 +20,8 @@ class NotificationPageState extends State<NotificationPage>
     with TickerProviderStateMixin {
   final List<IconData> actionsIcons = [
     Platform.isAndroid
-        ? Ionicons.getIconData("ios-at")
-        : Ionicons.getIconData("md-at"),
+        ? Ionicons.getIconData("md-at")
+        : Ionicons.getIconData("ios-at"),
     Platform.isAndroid ? Icons.comment : Foundation.getIconData("comment"),
     Platform.isAndroid ? Icons.thumb_up : Ionicons.getIconData("ios-thumbs-up")
   ];

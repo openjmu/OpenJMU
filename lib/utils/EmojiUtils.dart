@@ -204,11 +204,11 @@ class EmotionPadState extends State<EmotionPad> {
           crossAxisCount: 8,
         ),
         itemBuilder: (context, index) => Container(
-          margin: EdgeInsets.all(suSetSp(4.0)),
+          margin: EdgeInsets.all(suSetWidth(6.0)),
           child: IconButton(
             icon: Image.asset(
               emoticonPaths[index],
-              fit: BoxFit.fill,
+              fit: BoxFit.contain,
             ),
             onPressed: () {
               insertText(emoticonNames[index]);

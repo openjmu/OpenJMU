@@ -2,22 +2,26 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:like_button/like_button.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
-import 'package:OpenJMU/widgets/dialogs/ForwardPositioned.dart';
-import 'package:OpenJMU/widgets/dialogs/CommentPositioned.dart';
 
+@FFRoute(
+  name: "openjmu://post-detail",
+  routeName: "动态详情页",
+  argumentNames: ["post", "index", "fromPage", "parentContext"],
+)
 class PostDetailPage extends StatefulWidget {
   final Post post;
   final int index;
   final String fromPage;
   final BuildContext parentContext;
 
-  const PostDetailPage(
-    this.post, {
+  const PostDetailPage({
+    @required this.post,
     this.index,
     this.fromPage,
     this.parentContext,
@@ -264,10 +268,9 @@ class PostDetailPageState extends State<PostDetailPage> {
                   color: Theme.of(context).cardColor,
                   child: FlatButton.icon(
                     onPressed: () {
-                      Constants.navigatorKey.currentState.push(
-                        TransparentRoute(
-                          builder: (_) => ForwardPositioned(widget.post),
-                        ),
+                      currentState.pushNamed(
+                        "openjmu://add-forward",
+                        arguments: {"post": widget.post},
                       );
                     },
                     icon: SvgPicture.asset(
@@ -291,12 +294,9 @@ class PostDetailPageState extends State<PostDetailPage> {
                   color: Theme.of(context).cardColor,
                   child: FlatButton.icon(
                     onPressed: () {
-                      Constants.navigatorKey.currentState.push(
-                        TransparentRoute(
-                          builder: (context) => CommentPositioned(
-                            post: widget.post,
-                          ),
-                        ),
+                      currentState.pushNamed(
+                        "openjmu://add-comment",
+                        arguments: {"post": widget.post},
                       );
                     },
                     icon: SvgPicture.asset(

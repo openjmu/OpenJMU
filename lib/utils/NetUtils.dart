@@ -22,14 +22,12 @@ class NetUtils {
       ..clear();
 
     /// Lock and clear dio while requesting new ticket.
-
     if (await DataUtils.getTicket(update: true)) {
       debugPrint(
           "Ticket updated success with new ticket: ${UserAPI.currentUser.sid}");
     } else {
       debugPrint("Ticket updated error: ${UserAPI.currentUser.sid}");
     }
-
     dio.unlock();
 
     /// Release lock.
@@ -38,9 +36,13 @@ class NetUtils {
   static void initConfig() async {
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
-//            client.findProxy = (uri) => "PROXY 192.168.0.101:8888";
-//      client.badCertificateCallback =
-//          (X509Certificate cert, String host, int port) => true;
+//      client.findProxy = (uri) => "PROXY 192.168.1.128:8888";
+//      client.badCertificateCallback = (
+//        X509Certificate cert,
+//        String host,
+//        int port,
+//      ) =>
+//          true;
     };
     dio.interceptors.add(cookieManager);
     dio.interceptors.add(InterceptorsWrapper(
@@ -54,9 +56,13 @@ class NetUtils {
     ));
     (tokenDio.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (HttpClient client) {
-//            client.findProxy = (uri) => "PROXY 192.168.0.101:8888";
-//      client.badCertificateCallback =
-//          (X509Certificate cert, String host, int port) => true;
+//      client.findProxy = (uri) => "PROXY 192.168.1.128:8888";
+//      client.badCertificateCallback = (
+//        X509Certificate cert,
+//        String host,
+//        int port,
+//      ) =>
+//          true;
     };
     tokenDio.interceptors.add(tokenCookieManager);
     tokenDio.interceptors.add(InterceptorsWrapper(
@@ -80,8 +86,11 @@ class NetUtils {
         ),
       );
 
-  static Future<Response> getBytesWithHeader(String url,
-          {data, headers}) async =>
+  static Future<Response> getBytesWithHeader(
+    String url, {
+    data,
+    headers,
+  }) async =>
       await dio.get(
         url,
         queryParameters: data,
@@ -92,7 +101,11 @@ class NetUtils {
         ),
       );
 
-  static Future<Response> getWithHeaderSet(String url, {data, headers}) async =>
+  static Future<Response> getWithHeaderSet(
+    String url, {
+    data,
+    headers,
+  }) async =>
       await dio.get(
         url,
         queryParameters: data,
@@ -102,7 +115,11 @@ class NetUtils {
         ),
       );
 
-  static Future<Response> getWithCookieSet(String url, {data, cookies}) async =>
+  static Future<Response> getWithCookieSet(
+    String url, {
+    data,
+    cookies,
+  }) async =>
       await dio.get(
         url,
         queryParameters: data,
@@ -112,8 +129,12 @@ class NetUtils {
         ),
       );
 
-  static Future<Response> getWithCookieAndHeaderSet(String url,
-          {data, cookies, headers}) async =>
+  static Future<Response> getWithCookieAndHeaderSet(
+    String url, {
+    data,
+    cookies,
+    headers,
+  }) async =>
       await dio.get(
         url,
         queryParameters: data,
@@ -139,8 +160,12 @@ class NetUtils {
         ),
       );
 
-  static Future<Response> postWithCookieAndHeaderSet(String url,
-          {cookies, headers, data}) async =>
+  static Future<Response> postWithCookieAndHeaderSet(
+    String url, {
+    cookies,
+    headers,
+    data,
+  }) async =>
       await dio.post(
         url,
         data: data,
@@ -152,8 +177,10 @@ class NetUtils {
         ),
       );
 
-  static Future<Response> deleteWithCookieAndHeaderSet(String url,
-          {data}) async =>
+  static Future<Response> deleteWithCookieAndHeaderSet(
+    String url, {
+    data,
+  }) async =>
       await dio.delete(
         url,
         data: data,

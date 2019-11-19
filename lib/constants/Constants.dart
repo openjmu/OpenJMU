@@ -36,7 +36,7 @@ class Constants {
   ];
 
   static final endLineTag = "没有更多了~";
-  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static final navigatorKey = GlobalKey<NavigatorState>();
 
   /// Fow news list.
   static final appId = Platform.isIOS ? 274 : 273;
@@ -93,12 +93,37 @@ class Constants {
         "clientinfo": jsonEncode(loginClientInfo),
       };
 
-
   ///
   /// Constant widgets.
   /// This section was declared for widgets that will be reuse in code.
   /// Including [separator], [emptyDivider], [nightModeCover], [badgeIcon], [progressIndicator]
   ///
+
+  /// Developer tag.
+  static Widget developerTag({
+    EdgeInsetsGeometry padding,
+    double fontSize = 16.0,
+  }) =>
+      Container(
+        padding: padding,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: <Color>[Colors.red, Colors.blue],
+          ),
+          borderRadius: BorderRadius.circular(suSetWidth(30.0)),
+        ),
+        child: Text(
+          "# OpenJMU Team #",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: suSetSp(fontSize),
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+      );
 
   /// Common separator. Used in setting separate.
   static DecoratedBox separator(context, {Color color, double height}) =>
@@ -316,3 +341,5 @@ Widget scaledImage({
   }
   return imageWidget;
 }
+
+NavigatorState get currentState => Constants.navigatorKey.currentState;
