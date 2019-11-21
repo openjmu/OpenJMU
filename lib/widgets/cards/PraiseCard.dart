@@ -134,7 +134,7 @@ class PraiseCard extends StatelessWidget {
     Post _post = Post.fromJson(this.praise.post);
     return GestureDetector(
       onTap: () {
-        currentState.pushNamed(
+        navigatorState.pushNamed(
           "openjmu://post-detail",
           arguments: {
             "post": _post,

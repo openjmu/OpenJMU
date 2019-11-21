@@ -6,7 +6,6 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
-import 'package:OpenJMU/pages/news/NewsListPage.dart';
 import 'package:OpenJMU/pages/post/MarketingPage.dart';
 import 'package:OpenJMU/utils/NetUtils.dart';
 import 'package:OpenJMU/widgets/dialogs/ManuallySetSidDialog.dart';
@@ -20,9 +19,9 @@ class PostSquareListPageState extends State<PostSquareListPage>
     with SingleTickerProviderStateMixin {
   static final List<String> tabs = [
     "首页",
-    "关注",
+//    "关注",
     "集市",
-    "新闻",
+//    "新闻",
   ];
   static List<Widget> _post;
 
@@ -40,24 +39,23 @@ class PostSquareListPageState extends State<PostSquareListPage>
         needRefreshIndicator: true,
       );
     },
+//    () {
+//      _post[1] = PostList(
+//        PostController(
+//          postType: "square",
+//          isFollowed: true,
+//          isMore: false,
+//          lastValue: (int id) => id,
+//        ),
+//        needRefreshIndicator: true,
+//      );
+//    },
     () {
-      _post[1] = PostList(
-        PostController(
-          postType: "square",
-          isFollowed: true,
-          isMore: false,
-          lastValue: (int id) => id,
-        ),
-        needRefreshIndicator: true,
-      );
+      _post[1] = MarketingPage();
     },
-    () {
-      _post[2] = MarketingPage();
-    },
-    () {
-      _post[3] = NewsListPage();
+//    () {
 //      _post[2] = NewsListPage();
-    },
+//    },
   ];
   TabController _tabController;
 
@@ -156,7 +154,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
               ]);
               if (permissions[PermissionGroup.camera] ==
                   PermissionStatus.granted) {
-                currentState.pushNamed("openjmu://scan-qrcode");
+                navigatorState.pushNamed("openjmu://scan-qrcode");
               }
             },
           ),
@@ -168,7 +166,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
               height: suSetSp(26.0),
             ),
             onPressed: () {
-              currentState.pushNamed(
+              navigatorState.pushNamed(
                 "openjmu://search",
                 arguments: {"content": null},
               );

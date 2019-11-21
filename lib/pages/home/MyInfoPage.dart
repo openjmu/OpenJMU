@@ -475,24 +475,24 @@ class MyInfoPageState extends State<MyInfoPage> {
   void _handleItemClick(context, String item) {
     switch (item) {
       case "背包":
-        currentState.pushNamed("openjmu://backpack");
+        navigatorState.pushNamed("openjmu://backpack");
         break;
 
       case "夜间模式":
         setDarkMode(!isDark);
         break;
       case "切换主题":
-        currentState.pushNamed("openjmu://theme");
+        navigatorState.pushNamed("openjmu://theme");
         break;
       case "设置":
-        currentState.pushNamed("openjmu://settings");
+        navigatorState.pushNamed("openjmu://settings");
         break;
 
       case "检查更新":
         OTAUtils.checkUpdate();
         break;
       case "关于OpenJMU":
-        currentState.pushNamed("openjmu://about");
+        navigatorState.pushNamed("openjmu://about");
         break;
 
       case "退出登录":
@@ -500,7 +500,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         break;
 
       case "测试页":
-        currentState.pushNamed("openjmu://test-dashboard");
+        navigatorState.pushNamed("openjmu://test-dashboard");
         break;
 
       default:

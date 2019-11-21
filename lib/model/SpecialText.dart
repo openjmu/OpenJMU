@@ -287,7 +287,7 @@ class ImageText extends SpecialText {
             right: suSetSp(4.0),
           ),
           onTap: () {
-            Map<String, dynamic> data = {
+            final data = {
               'content': toString(),
               'image': imageId
             };
@@ -461,7 +461,7 @@ void specialTextTapRecognizer(data) {
   } else if (text.startsWith("|")) {
     final imageId = data['image'];
     final imageUrl = API.commentImageUrl(imageId, "o");
-    currentState.pushNamed(
+    navigatorState.pushNamed(
       "openjmu://image-viewer",
       arguments: {
         "index": 0,

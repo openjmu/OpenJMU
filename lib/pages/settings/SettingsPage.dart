@@ -166,7 +166,7 @@ class _SettingsPageState extends State<SettingsPage> {
       onTap: () {
         if (page['onTap'] != null) page['onTap']();
         if (pageWidget == null && page['route'] != null) {
-          currentState.pushNamed("openjmu://${page['route']}");
+          navigatorState.pushNamed("openjmu://${page['route']}");
         }
         return null;
       },

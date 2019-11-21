@@ -31,7 +31,7 @@ class UserPage extends StatefulWidget {
   State<StatefulWidget> createState() => _UserPageState();
 
   static Future jump(int uid) {
-    return currentState.pushNamed(
+    return navigatorState.pushNamed(
       "openjmu://user",
       arguments: {"uid": uid},
     );
@@ -259,7 +259,7 @@ class _UserPageState extends State<UserPage>
             color: Colors.white,
           ),
           onTap: () {
-            currentState.pushNamed("openjmu://user-qrcode");
+            navigatorState.pushNamed("openjmu://user-qrcode");
           },
         ),
       );
@@ -354,7 +354,7 @@ class _UserPageState extends State<UserPage>
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
-                currentState.pushNamed(
+                navigatorState.pushNamed(
                   "openjmu://userlist",
                   arguments: {"user": _user, "type": 1},
                 );
@@ -382,7 +382,7 @@ class _UserPageState extends State<UserPage>
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
-                currentState.pushNamed(
+                navigatorState.pushNamed(
                   "openjmu://userlist",
                   arguments: {"user": _user, "type": 2},
                 );
@@ -586,7 +586,7 @@ class _UserPageState extends State<UserPage>
                     ),
                     onTap: () {
                       Navigator.of(sheetContext).pop();
-                      currentState.pushNamed(
+                      navigatorState.pushNamed(
                         "openjmu://image-viewer",
                         arguments: {
                           "index": 0,
@@ -617,7 +617,7 @@ class _UserPageState extends State<UserPage>
                     ),
                     onTap: () async {
                       Navigator.of(sheetContext).pop();
-                      currentState
+                      navigatorState
                           .pushNamed("openjmu://image-crop")
                           .then((result) {
                         if (result != null && result) {
@@ -631,7 +631,7 @@ class _UserPageState extends State<UserPage>
               );
             },
           )
-        : currentState.pushNamed(
+        : navigatorState.pushNamed(
             "openjmu://image-viewer",
             arguments: {
               "index": 0,

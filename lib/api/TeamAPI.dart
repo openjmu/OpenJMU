@@ -5,7 +5,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 class TeamPostAPI {
   static Future getPostList({
     bool isMore = false,
-    int lastTimeStamp,
+    String lastTimeStamp,
     additionAttrs,
   }) async {
     String _postUrl;
@@ -70,12 +70,31 @@ class TeamPostAPI {
         },
         headers: Constants.teamHeader,
       );
+
+  static Future deletePost({
+    @required int postId,
+    @required int postType,
+  }) async =>
+      NetUtils.deleteWithCookieAndHeaderSet(
+        API.teamPostDelete(postId: postId, postType: postType),
+        headers: Constants.teamHeader,
+      );
 }
 
 class TeamCommentAPI {
-  static getCommentInPostList({int id, int page}) async =>
+  static getCommentInPostList({
+    int id,
+    int page = 1,
+    bool isComment = false,
+  }) async =>
       NetUtils.getWithCookieAndHeaderSet(
-        "${API.teamPostCommentsList(postId: id, page: (page ?? 1))}",
+        "${API.teamPostCommentsList(
+          postId: id,
+          page: page,
+          regionType: isComment ? 256 : 128,
+          postType: isComment ? 8 : 7,
+          size: isComment ? 50 : 30,
+        )}",
         headers: Constants.teamHeader,
       );
 

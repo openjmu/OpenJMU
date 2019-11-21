@@ -16,24 +16,11 @@ class AddingButtonPage extends StatefulWidget {
 
 class _AddingButtonPageState extends State<AddingButtonPage>
     with TickerProviderStateMixin {
-  final List<String> itemTitles = [
-    "动态",
-    "扫一扫",
-    "集市",
-  ];
-  final List<String> itemIcons = [
-    "subscriptedAccount",
-    "scan",
-    "scan",
-  ];
-  final List<Color> itemColors = [
-    Colors.orange,
-    Colors.teal,
-    Colors.indigoAccent,
-  ];
+  final List<String> itemTitles = ["动态", "集市"];
+  final List<Color> itemColors = [Colors.orange, Colors.indigoAccent];
   final List<Function> itemOnTap = [
     (context) async {
-      currentState.pushNamed("openjmu://publish-post");
+      navigatorState.pushNamed("openjmu://publish-post");
     },
     (context) async {
       Map<PermissionGroup, PermissionStatus> permissions =
@@ -41,11 +28,11 @@ class _AddingButtonPageState extends State<AddingButtonPage>
         PermissionGroup.camera,
       ]);
       if (permissions[PermissionGroup.camera] == PermissionStatus.granted) {
-        currentState.pushNamed("openjmu://scan-qrcode");
+        navigatorState.pushNamed("openjmu://scan-qrcode");
       }
     },
     (context) async {
-      currentState.pushNamed("openjmu://publish-team-post");
+      navigatorState.pushNamed("openjmu://publish-team-post");
     },
   ];
 
@@ -338,7 +325,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                       shape: BoxShape.circle,
                     ),
                     child: SvgPicture.asset(
-                      "assets/icons/${itemIcons[index]}-line.svg",
+                      "assets/icons/addButton/${itemTitles[index]}.svg",
                       color: Colors.white,
                       width: suSetSp(28.0),
                       height: suSetSp(28.0),

@@ -186,54 +186,62 @@ class TeamPostPreviewCard extends StatelessWidget {
               ),
               child: ExtendedText(
                 _post['content'],
-                specialTextSpanBuilder:
-                    StackSpecialTextSpanBuilder(prefixSpans: <InlineSpan>[
-                  TextSpan(
-                    text: "@${_post['user_info']['nickname']}",
-                    style: TextStyle(
-                      color: Colors.blue,
+                specialTextSpanBuilder: StackSpecialTextSpanBuilder(
+                  prefixSpans: <InlineSpan>[
+                    TextSpan(
+                      text: "@${_post['user_info']['nickname']}",
+                      style: TextStyle(
+                        color: Colors.blue,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          UserPage.jump(int.parse(_post['user_info']['uid']));
+                        },
                     ),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        UserPage.jump(int.parse(_post['user_info']['uid']));
-                      },
-                  ),
-                  if (int.parse(_post['user_info']['uid']) == post.uid)
-                    WidgetSpan(
-                      alignment: ui.PlaceholderAlignment.middle,
-                      child: Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: suSetWidth(6.0),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: suSetWidth(6.0),
-                          vertical: suSetHeight(1.0),
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(suSetWidth(5.0)),
-                          color: ThemeUtils.currentThemeColor,
-                        ),
-                        child: Text(
-                          "楼主",
-                          style: TextStyle(
-                            fontSize: suSetSp(15.0),
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                    if (int.parse(_post['user_info']['uid']) == post.uid)
+                      WidgetSpan(
+                        alignment: ui.PlaceholderAlignment.middle,
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                            horizontal: suSetWidth(6.0),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: suSetWidth(6.0),
+                            vertical: suSetHeight(1.0),
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(suSetWidth(5.0)),
+                            color: ThemeUtils.currentThemeColor,
+                          ),
+                          child: Text(
+                            "楼主",
+                            style: TextStyle(
+                              fontSize: suSetSp(15.0),
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
+                    TextSpan(
+                      text: ": ",
+                      style: TextStyle(
+                        color: Colors.blue,
+                      ),
                     ),
-                  TextSpan(
-                    text: "：",
-                    style: TextStyle(
-                      color: Colors.blue,
-                    ),
-                  ),
-                ]),
+                  ],
+                ),
                 style: Theme.of(context).textTheme.body1.copyWith(
                       fontSize: suSetSp(17.0),
                     ),
                 onSpecialTextTap: specialTextTapRecognizer,
+                maxLines: 3,
+                overFlowTextSpan: OverFlowTextSpan(
+                  children: <TextSpan>[
+                    TextSpan(text: " ......"),
+                  ],
+                ),
               ),
             );
           },
@@ -277,7 +285,7 @@ class TeamPostPreviewCard extends StatelessWidget {
       imagesWidget.add(
         GestureDetector(
           onTap: () {
-            currentState.pushNamed(
+            navigatorState.pushNamed(
               "openjmu://image-viewer",
               arguments: {
                 "index": index,
@@ -415,7 +423,7 @@ class TeamPostPreviewCard extends StatelessWidget {
         GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
-            currentState.pushNamed(
+            navigatorState.pushNamed(
               "openjmu://team-post-detail",
               arguments: {"post": post, "type": TeamPostType.post},
             );

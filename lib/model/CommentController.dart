@@ -648,9 +648,27 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                       Container(
                                         height: suSetSp(10.0),
                                       ),
-                                      getCommentNickname(
-                                        context,
-                                        _comments[index],
+                                      Row(
+                                        children: <Widget>[
+                                          getCommentNickname(
+                                            context,
+                                            _comments[index],
+                                          ),
+                                          if (Constants.developerList.contains(
+                                              _comments[index].fromUserUid))
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                left: suSetWidth(14.0),
+                                              ),
+                                              child: Constants.developerTag(
+                                                padding: EdgeInsets.symmetric(
+                                                  horizontal: suSetWidth(8.0),
+                                                  vertical: suSetHeight(4.0),
+                                                ),
+                                                fontSize: suSetSp(14.0),
+                                              ),
+                                            ),
+                                        ],
                                       ),
                                       Container(
                                         height: suSetSp(4.0),
@@ -679,7 +697,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                   onPressed: () {
                                     if (_comments.length >= index &&
                                         _comments[index] != null) {
-                                      currentState.pushNamed(
+                                      navigatorState.pushNamed(
                                         "openjmu://add-comment",
                                         arguments: {
                                           "post": widget.post,

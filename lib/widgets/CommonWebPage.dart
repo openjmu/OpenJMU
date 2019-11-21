@@ -50,7 +50,7 @@ class CommonWebPage extends StatefulWidget {
     WebApp app,
     bool withCookie,
   }) {
-    currentState.pushNamed(
+    navigatorState.pushNamed(
       "openjmu://webpage",
       arguments: {
         "url": url,

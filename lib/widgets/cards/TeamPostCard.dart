@@ -69,7 +69,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                             horizontal: suSetWidth(8.0),
                             vertical: suSetHeight(4.0),
                           ),
-                          fontSize: 13.0,
+                          fontSize: suSetSp(16.0),
                         ),
                       ),
                   ],
@@ -113,19 +113,6 @@ class _TeamPostCardState extends State<TeamPostCard> {
             fontSize: suSetSp(18.0),
           ),
           onSpecialTextTap: specialTextTapRecognizer,
-          maxLines: 8,
-          overFlowTextSpan: OverFlowTextSpan(
-            children: <TextSpan>[
-              TextSpan(text: " ... "),
-              TextSpan(
-                text: "全文",
-                style: TextStyle(
-                  color: ThemeUtils.currentThemeColor,
-                  fontSize: suSetSp(18.0),
-                ),
-              ),
-            ],
-          ),
           specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
         ),
       );
@@ -167,7 +154,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
       imagesWidget.add(
         GestureDetector(
           onTap: () {
-            currentState.pushNamed(
+            navigatorState.pushNamed(
               "openjmu://image-viewer",
               arguments: {
                 "index": index,
@@ -261,7 +248,8 @@ class _TeamPostCardState extends State<TeamPostCard> {
                           .map((userInfo) => userInfo['nickname'])
                           .toList())
                     ].join("、")}"
-                    "${post.praisor.length > 3 ? "等" : ""}觉得很赞",
+                    "${post.praisesCount > 3 ? "等${post.praisesCount}人" : ""}"
+                        "觉得很赞",
                     style: Theme.of(context).textTheme.caption.copyWith(
                           fontSize: suSetSp(14.0),
                         ),

@@ -995,7 +995,7 @@ class CoursesDialog extends StatelessWidget {
                               "coudeTime": courseList[0].time,
                             }).then((response) {
                               if (jsonDecode(response.data)['isOk']) {
-                                currentState
+                                navigatorState
                                     .popUntil(ModalRoute.withName('/home'));
                               }
                               Instances.eventBus
@@ -1187,7 +1187,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                           loading = false;
                           if (mounted) setState(() {});
                           if (jsonDecode(response.data)['isOk']) {
-                            currentState
+                            navigatorState
                                 .popUntil(ModalRoute.withName('/home'));
                           }
                           Instances.eventBus.fire(CourseScheduleRefreshEvent());

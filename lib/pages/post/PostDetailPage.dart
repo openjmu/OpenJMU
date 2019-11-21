@@ -268,7 +268,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                   color: Theme.of(context).cardColor,
                   child: FlatButton.icon(
                     onPressed: () {
-                      currentState.pushNamed(
+                      navigatorState.pushNamed(
                         "openjmu://add-forward",
                         arguments: {"post": widget.post},
                       );
@@ -294,7 +294,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                   color: Theme.of(context).cardColor,
                   child: FlatButton.icon(
                     onPressed: () {
-                      currentState.pushNamed(
+                      navigatorState.pushNamed(
                         "openjmu://add-comment",
                         arguments: {"post": widget.post},
                       );

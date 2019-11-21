@@ -68,7 +68,7 @@ class OpenJMUAppState extends State<OpenJMUApp> {
         if (mounted) setState(() {});
       })
       ..on<LogoutEvent>().listen((event) async {
-        currentState.pushNamedAndRemoveUntil(
+        navigatorState.pushNamedAndRemoveUntil(
           "openjmu://login",
           (_) => false,
           arguments: {"initAction": initAction},

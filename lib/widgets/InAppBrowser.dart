@@ -42,7 +42,7 @@ class InAppBrowserPage extends StatefulWidget {
   _InAppBrowserPageState createState() => _InAppBrowserPageState();
 
   static void open(BuildContext context, String url, String title) {
-    currentState.pushNamed(
+    navigatorState.pushNamed(
       "openjmu://inappbrowser",
       arguments: {
         "url": url,

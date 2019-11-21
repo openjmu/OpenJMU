@@ -114,7 +114,7 @@ class SplashState extends State<SplashPage> {
     Future.delayed(const Duration(seconds: 2), () {
       if (!isUserLogin) {
         try {
-          currentState.pushAndRemoveUntil(
+          navigatorState.pushAndRemoveUntil(
               PageRouteBuilder(
                 transitionDuration: const Duration(milliseconds: 1000),
                 pageBuilder: (_, animation, __) => FadeTransition(
@@ -126,7 +126,7 @@ class SplashState extends State<SplashPage> {
         } catch (e) {}
       } else {
         try {
-          currentState.pushNamedAndRemoveUntil(
+          navigatorState.pushNamedAndRemoveUntil(
             "openjmu://home",
             (Route<dynamic> route) => false,
             arguments: {"initAction": widget.initAction},

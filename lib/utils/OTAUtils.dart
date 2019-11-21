@@ -33,16 +33,21 @@ class OTAUtils {
 
   static void checkUpdate({bool fromHome}) async {
     NetUtils.get(API.checkUpdate).then((response) async {
-      int currentBuild = await getCurrentBuildNumber();
-      String currentVersion = await getCurrentVersion();
-      Map<String, dynamic> _response = jsonDecode(response.data);
+      final currentBuild = await getCurrentBuildNumber();
+      final currentVersion = await getCurrentVersion();
+      final _response = jsonDecode(response.data);
+      final forceUpdate = _response['forceUpdate'];
       debugPrint("Build: $currentVersion+$currentBuild"
           " | "
           "${_response['version']}+${_response['buildNumber']}");
       int remoteBuildNumber = int.parse(_response['buildNumber'].toString());
       if (currentBuild < remoteBuildNumber) {
-        Instances.eventBus
-            .fire(HasUpdateEvent(currentVersion, currentBuild, _response));
+        Instances.eventBus.fire(HasUpdateEvent(
+          forceUpdate: forceUpdate,
+          currentVersion: currentVersion,
+          currentBuild: currentBuild,
+          response: _response,
+        ));
       } else {
         if (!(fromHome ?? false)) showShortToast("已更新为最新版本");
       }

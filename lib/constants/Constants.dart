@@ -3,11 +3,12 @@ import 'dart:io';
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:badges/badges.dart';
 import 'package:crypto/crypto.dart';
+import 'package:extended_image/extended_image.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
@@ -104,25 +105,9 @@ class Constants {
     EdgeInsetsGeometry padding,
     double fontSize = 16.0,
   }) =>
-      Container(
-        padding: padding,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: <Color>[Colors.red, Colors.blue],
-          ),
-          borderRadius: BorderRadius.circular(suSetWidth(30.0)),
-        ),
-        child: Text(
-          "# OpenJMU Team #",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: suSetSp(fontSize),
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.italic,
-          ),
-        ),
+      SvgPicture.asset(
+        "assets/icons/OpenJMU-Team-Badge.svg",
+        height: suSetHeight(fontSize * 2.5),
       );
 
   /// Common separator. Used in setting separate.
@@ -342,4 +327,4 @@ Widget scaledImage({
   return imageWidget;
 }
 
-NavigatorState get currentState => Constants.navigatorKey.currentState;
+NavigatorState get navigatorState => Constants.navigatorKey.currentState;

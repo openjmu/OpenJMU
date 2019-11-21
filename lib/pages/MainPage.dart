@@ -73,7 +73,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     if (widget.initAction != null) {
       _tabIndex = pagesTitle.indexOf(widget.initAction);
     }
-    if (Platform.isAndroid) OTAUtils.checkUpdate(fromHome: true);
+    OTAUtils.checkUpdate(fromHome: true);
 
     initPushService();
     initNotification();
@@ -95,6 +95,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         if (this.mounted)
           showDialog(
             context: context,
+            barrierDismissible: !event.forceUpdate,
             builder: (_) => OTAUtils.updateDialog(context, event),
           );
       })

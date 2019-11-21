@@ -169,7 +169,7 @@ class _PostCardState extends State<PostCard> {
           margin: EdgeInsets.only(top: suSetSp(8.0)),
           child: GestureDetector(
             onTap: () {
-              currentState.pushNamed(
+              navigatorState.pushNamed(
                 "openjmu://post-detail",
                 arguments: {
                   "post": _post,
@@ -260,7 +260,7 @@ class _PostCardState extends State<PostCard> {
         imagesWidget.add(
           GestureDetector(
             onTap: () {
-              currentState.pushNamed(
+              navigatorState.pushNamed(
                 "openjmu://image-viewer",
                 arguments: {
                   "index": index,
@@ -320,7 +320,7 @@ class _PostCardState extends State<PostCard> {
           Expanded(
             child: FlatButton.icon(
               onPressed: () {
-                currentState.pushNamed(
+                navigatorState.pushNamed(
                   "openjmu://add-forward",
                   arguments: {"post": widget.post},
                 );
@@ -685,7 +685,7 @@ class _PostCardState extends State<PostCard> {
                                   PostAPI.reportPost(widget.post);
                                   showShortToast("举报成功");
                                   Navigator.pop(context);
-                                  currentState.pop();
+                                  navigatorState.pop();
                                 },
                               ),
                               PlatformButton(
@@ -740,7 +740,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   void pushToDetail() {
-    currentState.pushNamed(
+    navigatorState.pushNamed(
       "openjmu://post-detail",
       arguments: {
         "post": widget.post,

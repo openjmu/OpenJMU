@@ -75,6 +75,7 @@ class API {
   static String blacklist({int pos = 0, int size = 20}) {
     return "$oa99Host/v2/friend/api/blacklist/list?pos=$pos&size=$size";
   }
+
   static final addToBlacklist = "$oa99Host/v2/friend/api/blacklist/new";
   static final removeFromBlacklist = "$oa99Host/v2/friend/api/blacklist/remove";
 
@@ -119,13 +120,13 @@ class API {
     int size = 30,
     int regionType = 8,
     int postType = 2,
-    int maxTimeStamp,
+    String maxTimeStamp,
   }) {
     return "$middle99Host/mg/api/aid/posts_list"
         "/region_type/$regionType"
         "/post_type/$postType"
         "/region_id/$teamId"
-        "${maxTimeStamp != null ? "/max_ts$maxTimeStamp}" : ""}"
+        "${maxTimeStamp != null ? "/max_ts/$maxTimeStamp" : ""}"
         "/size/$size";
   }
 
@@ -133,7 +134,9 @@ class API {
     @required int postId,
     int postType = 2,
   }) {
-    return "$middle99Host/mg/api/aid/posts_detail/post_type/$postType/post_id/$postId";
+    return "$middle99Host/mg/api/aid/posts_detail"
+        "/post_type/$postType"
+        "/post_id/$postId";
   }
 
   static String teamPostCommentsList({
@@ -156,6 +159,15 @@ class API {
   static final teamPostRequestPraise = "$middle99Host/mg/api/aid/uia_api_posts";
   static final teamPostRequestUnPraise =
       "$middle99Host/mg/api/aid/uia_api_posts_del";
+
+  static String teamPostDelete({
+    @required int postId,
+    @required int postType,
+  }) {
+    return "$middle99Host/mg/api/aid/posts_delete"
+        "/post_type/$postType"
+        "/post_id/$postId";
+  }
 
   static String teamFile({
     @required int fid,

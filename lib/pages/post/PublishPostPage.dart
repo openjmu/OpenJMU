@@ -773,7 +773,7 @@ class PublishPostPageState extends State<PublishPostPage> {
           "动态发布成功",
           duration: const Duration(seconds: 3),
           customPop: () {
-            currentState.popUntil(
+            navigatorState.popUntil(
               ModalRoute.withName("openjmu://home"),
             );
           },

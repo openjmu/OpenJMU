@@ -1,7 +1,7 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.7.0+106
+version: 0.7.0+107
 
 environment:
   sdk: ">=2.5.0 <3.0.0"
@@ -45,7 +45,7 @@ dependencies:
   image_editor: ^0.1.4
   image_downloader: ^0.19.1
   image_gallery_saver: 1.2.2
-  image_picker: ^0.6.1+11
+  image_picker: ^0.6.2
   intl: any
   isolate: 2.0.2
   like_button: ^0.1.9
@@ -79,6 +79,7 @@ flutter:
     - assets/
     - assets/emotionIcons/
     - assets/icons/
+    - assets/icons/addButton/
     - assets/icons/appCenter/
     - assets/icons/bottomNavigation/
     - assets/icons/gender/

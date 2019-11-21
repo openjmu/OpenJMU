@@ -474,7 +474,7 @@ packages:
       name: image_picker
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.1+11"
+    version: "0.6.2"
   intl:
     dependency: "direct main"
     description:

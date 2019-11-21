@@ -22,7 +22,7 @@ class SearchPage extends StatefulWidget {
   State<StatefulWidget> createState() => SearchPageState();
 
   static void search(String content) {
-    currentState.pushNamed(
+    navigatorState.pushNamed(
       "openjmu://search",
       arguments: {"content": content},
     );

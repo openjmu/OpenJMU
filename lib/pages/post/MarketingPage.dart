@@ -15,8 +15,8 @@ class MarketingPage extends StatefulWidget {
 class _MarketingPageState extends State<MarketingPage> {
   final _scrollController = ScrollController();
   final _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
-  bool loaded = false;
-  List<TeamPost> posts = [];
+  bool loaded = false, loading = true, canLoadMore = true;
+  Set<TeamPost> posts = {};
   String lastTimeStamp;
 
   @override
@@ -35,18 +35,23 @@ class _MarketingPageState extends State<MarketingPage> {
     super.initState();
   }
 
-  Future getPostList() async => TeamPostAPI.getPostList().then((response) {
+  Future getPostList({bool more = false}) async => TeamPostAPI.getPostList(
+        isMore: more,
+        lastTimeStamp: lastTimeStamp,
+      ).then((response) {
         final data = response.data;
         lastTimeStamp = data['min_ts'];
-        if (data['data'] != null)
+        if (!more) posts.clear();
+        if (data['data'] != null) {
           data['data'].forEach((postData) {
             final post = TeamPost.fromJson(postData);
             posts.add(post);
           });
+        }
         loaded = true;
         if (mounted) setState(() {});
       }).catchError((e) {
-        print(e);
+        debugPrint("Get market post list failed: $e");
       });
 
   @override
@@ -59,14 +64,52 @@ class _MarketingPageState extends State<MarketingPage> {
         child: loaded
             ? ListView.builder(
                 controller: _scrollController,
-                itemCount: posts.length,
-                itemBuilder: (context, index) => TeamPostPreviewCard(
-                  key: ValueKey("marketPost-${posts[index].tid}"),
-                  post: posts[index],
-                ),
+                itemCount: posts.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == posts.length - 1) {
+                    getPostList(more: true);
+                  }
+                  if (index == posts.length) {
+                    return SizedBox(
+                      height: suSetHeight(60.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Constants.progressIndicator(),
+                          Text(
+                            "正在加载",
+                            style: TextStyle(
+                              fontSize: suSetSp(15.0),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+                  return TeamPostPreviewCard(
+                    key: ValueKey("marketPost-${posts.elementAt(index).tid}"),
+                    post: posts.elementAt(index),
+                  );
+                },
               )
             : Center(child: Constants.progressIndicator()),
       ),
     );
   }
+}
+
+class SliverStrictMemoryChildDelegate extends SliverChildDelegate {
+  @override
+  Widget build(BuildContext context, int index) {
+    return null;
+  }
+
+  @override
+  int get estimatedChildCount => 1;
+
+  @override
+  bool shouldRebuild(SliverChildDelegate oldDelegate) {
+    return true;
+  }
+
 }

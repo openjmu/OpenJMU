@@ -5,25 +5,29 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
-import 'package:OpenJMU/pages/post/TeamPostDetailPage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:intl/intl.dart';
+import 'package:oktoast/oktoast.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
+import 'package:OpenJMU/pages/post/TeamPostDetailPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
 class TeamCommentPreviewCard extends StatelessWidget {
   final TeamPost post;
   final TeamPost topPost;
+  final TeamPostDetailPageState detailPageState;
 
   const TeamCommentPreviewCard({
     Key key,
     @required this.post,
     @required this.topPost,
+    @required this.detailPageState,
   }) : super(key: key);
 
   Widget _header(context) => Container(
@@ -87,7 +91,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
               ],
             ),
             Spacer(),
-            if (post.uid == UserAPI.currentUser.uid)
+            if (topPost.uid == UserAPI.currentUser.uid)
               IconButton(
                 padding: EdgeInsets.zero,
                 icon: Icon(
@@ -96,11 +100,57 @@ class TeamCommentPreviewCard extends StatelessWidget {
                 ),
                 iconSize: suSetWidth(40.0),
                 alignment: Alignment.centerRight,
-                onPressed: () {},
+                onPressed: () {
+                  confirmDelete(context);
+                },
               ),
           ],
         ),
       );
+
+  void confirmDelete(context) async {
+    final result = await showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text(
+          "删除此楼",
+        ),
+        content: Text(
+          "是否删除该楼内容？",
+        ),
+        actions: <Widget>[
+          CupertinoDialogAction(
+            child: Text("确认"),
+            isDefaultAction: false,
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            textStyle: TextStyle(
+              color: ThemeUtils.currentThemeColor,
+            ),
+          ),
+          CupertinoDialogAction(
+            child: Text("取消"),
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+            textStyle: TextStyle(
+              color: ThemeUtils.currentThemeColor,
+            ),
+          ),
+        ],
+      ),
+    );
+    if (result != null && result) delete();
+  }
+
+  void delete() {
+    TeamPostAPI.deletePost(postId: post.tid, postType: 7).then((response) {
+      showToast("删除成功");
+      Instances.eventBus.fire(TeamCommentDeletedEvent(topPost.tid));
+    });
+  }
 
   Widget _postTime(context) {
     final now = DateTime.now();
@@ -131,150 +181,168 @@ class TeamCommentPreviewCard extends StatelessWidget {
     );
   }
 
-  Widget get _content => Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(4.0),
-        ),
-        child: ExtendedText(
-          post.content,
-          style: TextStyle(
-            fontSize: suSetSp(17.0),
+  Widget get _content => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          detailPageState.setReplyToPost(post);
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: suSetHeight(4.0),
           ),
-          onSpecialTextTap: specialTextTapRecognizer,
-          maxLines: 8,
-          overFlowTextSpan: OverFlowTextSpan(
-            children: <TextSpan>[
-              TextSpan(text: " ... "),
-              TextSpan(
-                text: "全文",
-                style: TextStyle(
-                  color: ThemeUtils.currentThemeColor,
-                  fontSize: suSetSp(17.0),
+          child: ExtendedText(
+            post.content,
+            style: TextStyle(
+              fontSize: suSetSp(17.0),
+            ),
+            onSpecialTextTap: specialTextTapRecognizer,
+            maxLines: 8,
+            overFlowTextSpan: OverFlowTextSpan(
+              children: <TextSpan>[
+                TextSpan(text: " ... "),
+                TextSpan(
+                  text: "全文",
+                  style: TextStyle(
+                    color: ThemeUtils.currentThemeColor,
+                    fontSize: suSetSp(17.0),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
+            specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
           ),
-          specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
         ),
       );
 
-  Widget _replyInfo(context) => Container(
-        margin: EdgeInsets.symmetric(
-          vertical: suSetHeight(12.0),
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: suSetWidth(16.0),
-          vertical: suSetHeight(12.0),
-        ),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
-          color: Theme.of(context).canvasColor.withOpacity(0.5),
-        ),
-        child: ListView.builder(
-          padding: EdgeInsets.zero,
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: post.replyInfo.length +
-              (post.replyInfo.length != post.repliesCount ? 1 : 0),
-          itemBuilder: (_, index) {
-            if (index == post.replyInfo.length)
-              return Container(
-                margin: EdgeInsets.only(
-                  top: suSetHeight(12.0),
+  Widget _replyInfo(context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: post.replyInfo != null && post.replyInfo.isNotEmpty
+            ? () {
+                navigatorState.pushNamed(
+                  "openjmu://team-post-detail",
+                  arguments: {"post": post, "type": TeamPostType.comment},
+                );
+              }
+            : null,
+        child: Container(
+          margin: EdgeInsets.symmetric(
+            vertical: suSetHeight(12.0),
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: suSetWidth(16.0),
+            vertical: suSetHeight(12.0),
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+            color: Theme.of(context).canvasColor.withOpacity(0.5),
+          ),
+          child: ListView.builder(
+            padding: EdgeInsets.zero,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: post.replyInfo.length +
+                (post.replyInfo.length != post.repliesCount ? 1 : 0),
+            itemBuilder: (_, index) {
+              if (index == post.replyInfo.length)
+                return Container(
+                  margin: EdgeInsets.only(
+                    top: suSetHeight(12.0),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        "查看更多回复",
+                        style: Theme.of(context).textTheme.caption.copyWith(
+                              fontSize: suSetSp(15.0),
+                            ),
+                      ),
+                      Icon(
+                        Icons.expand_more,
+                        size: suSetWidth(20.0),
+                        color: Theme.of(context).textTheme.caption.color,
+                      ),
+                    ],
+                  ),
+                );
+              final _post = post.replyInfo[index];
+              return Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: suSetHeight(4.0),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      "查看更多回复",
-                      style: Theme.of(context).textTheme.caption.copyWith(
-                            fontSize: suSetSp(15.0),
+                    Expanded(
+                      child: ExtendedText(
+                        _post['content'],
+                        specialTextSpanBuilder:
+                            StackSpecialTextSpanBuilder(prefixSpans: <
+                                InlineSpan>[
+                          TextSpan(
+                            text: "@${_post['user']['nickname']}",
+                            style: TextStyle(
+                              color: Colors.blue,
+                            ),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                UserPage.jump(int.parse(_post['user']['uid']));
+                              },
                           ),
-                    ),
-                    Icon(
-                      Icons.expand_more,
-                      size: suSetWidth(20.0),
-                      color: Theme.of(context).textTheme.caption.color,
-                    ),
-                  ],
-                ),
-              );
-            final _post = post.replyInfo[index];
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: suSetHeight(4.0),
-              ),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: ExtendedText(
-                      _post['content'],
-                      specialTextSpanBuilder:
-                          StackSpecialTextSpanBuilder(prefixSpans: <InlineSpan>[
-                        TextSpan(
-                          text: "@${_post['user']['nickname']}",
-                          style: TextStyle(
-                            color: Colors.blue,
-                          ),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              UserPage.jump(int.parse(_post['user']['uid']));
-                            },
-                        ),
-                        if (int.parse(_post['user']['uid']) == topPost.uid)
-                          WidgetSpan(
-                            alignment: ui.PlaceholderAlignment.middle,
-                            child: Container(
-                              margin: EdgeInsets.symmetric(
-                                horizontal: suSetWidth(6.0),
-                              ),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: suSetWidth(6.0),
-                                vertical: suSetHeight(1.0),
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.circular(suSetWidth(5.0)),
-                                color: ThemeUtils.currentThemeColor,
-                              ),
-                              child: Text(
-                                "楼主",
-                                style: TextStyle(
-                                  fontSize: suSetSp(15.0),
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                          if (int.parse(_post['user']['uid']) == topPost.uid)
+                            WidgetSpan(
+                              alignment: ui.PlaceholderAlignment.middle,
+                              child: Container(
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: suSetWidth(6.0),
+                                ),
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: suSetWidth(6.0),
+                                  vertical: suSetHeight(1.0),
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.circular(suSetWidth(5.0)),
+                                  color: ThemeUtils.currentThemeColor,
+                                ),
+                                child: Text(
+                                  "楼主",
+                                  style: TextStyle(
+                                    fontSize: suSetSp(15.0),
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
+                          TextSpan(
+                            text: ": ",
+                            style: TextStyle(
+                              color: Colors.blue,
+                            ),
                           ),
-                        TextSpan(
-                          text: "：",
-                          style: TextStyle(
-                            color: Colors.blue,
-                          ),
-                        ),
-                      ]),
-                      style: Theme.of(context).textTheme.body1.copyWith(
-                            fontSize: suSetSp(17.0),
-                          ),
-                      onSpecialTextTap: specialTextTapRecognizer,
-                    ),
-                  ),
-                  if (int.parse(_post['user']['uid']) ==
-                      UserAPI.currentUser.uid)
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {},
-                      child: Icon(
-                        Icons.delete_outline,
-                        color: Theme.of(context).dividerColor,
-                        size: suSetWidth(40.0),
+                        ]),
+                        style: Theme.of(context).textTheme.body1.copyWith(
+                              fontSize: suSetSp(17.0),
+                            ),
+                        onSpecialTextTap: specialTextTapRecognizer,
                       ),
                     ),
-                ],
-              ),
-            );
-          },
+                    if (int.parse(_post['user']['uid']) ==
+                        UserAPI.currentUser.uid)
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {},
+                        child: Icon(
+                          Icons.delete_outline,
+                          color: Theme.of(context).dividerColor,
+                          size: suSetWidth(40.0),
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
         ),
       );
 
@@ -315,7 +383,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
       imagesWidget.add(
         GestureDetector(
           onTap: () {
-            currentState.pushNamed(
+            navigatorState.pushNamed(
               "openjmu://image-viewer",
               arguments: {
                 "index": index,
@@ -382,38 +450,29 @@ class TeamCommentPreviewCard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: post.replyInfo != null && post.replyInfo.isNotEmpty ? () {
-            currentState.pushNamed(
-              "openjmu://team-post-detail",
-              arguments: {"post": post, "type": TeamPostType.comment},
-            );
-          } : null,
-          child: Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: suSetWidth(12.0),
-              vertical: suSetHeight(6.0),
-            ),
-            padding: EdgeInsets.symmetric(
-              horizontal: suSetWidth(24.0),
-              vertical: suSetHeight(8.0),
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(suSetWidth(10.0)),
-              color: Theme.of(context).cardColor,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _header(context),
-                _content,
-                if (post.pics != null && post.pics.isNotEmpty) _images(context),
-                if (post.replyInfo != null && post.replyInfo.isNotEmpty)
-                  _replyInfo(context),
-              ],
-            ),
+        Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: suSetWidth(12.0),
+            vertical: suSetHeight(6.0),
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: suSetWidth(24.0),
+            vertical: suSetHeight(8.0),
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+            color: Theme.of(context).cardColor,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              _header(context),
+              _content,
+              if (post.pics != null && post.pics.isNotEmpty) _images(context),
+              if (post.replyInfo != null && post.replyInfo.isNotEmpty)
+                _replyInfo(context),
+            ],
           ),
         ),
       ],

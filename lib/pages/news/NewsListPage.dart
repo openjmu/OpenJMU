@@ -185,7 +185,7 @@ class NewsListPageState extends State<NewsListPage>
       padding: EdgeInsets.all(suSetSp(8.0)),
       child: InkWell(
         onTap: () {
-          currentState.pushNamed(
+          navigatorState.pushNamed(
             "openjmu://news-detail",
             arguments: {"news": news},
           );

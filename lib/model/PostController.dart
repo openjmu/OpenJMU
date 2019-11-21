@@ -198,7 +198,8 @@ class _PostListState extends State<PostList>
         false,
         _lastValue,
         additionAttrs: widget._postController.additionAttrs,
-      )).data;
+      ))
+          .data;
 
       List<Post> postList = [];
       List<int> idList = [];
@@ -569,7 +570,25 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Container(height: suSetSp(10.0)),
-                                    getPostNickname(context, _posts[index]),
+                                    Row(
+                                      children: <Widget>[
+                                        getPostNickname(context, _posts[index]),
+                                        if (Constants.developerList
+                                            .contains(_posts[index].uid))
+                                          Container(
+                                            margin: EdgeInsets.only(
+                                              left: suSetWidth(14.0),
+                                            ),
+                                            child: Constants.developerTag(
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: suSetWidth(8.0),
+                                                vertical: suSetHeight(4.0),
+                                              ),
+                                              fontSize: suSetSp(14.0),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
                                     Container(height: suSetSp(4.0)),
                                     getExtendedText(
                                       context,

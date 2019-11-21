@@ -180,13 +180,15 @@ class NetUtils {
   static Future<Response> deleteWithCookieAndHeaderSet(
     String url, {
     data,
+    headers,
   }) async =>
       await dio.delete(
         url,
         data: data,
         options: Options(
           cookies: DataUtils.buildPHPSESSIDCookies(UserAPI.currentUser.sid),
-          headers: DataUtils.buildPostHeaders(UserAPI.currentUser.sid),
+          headers:
+              headers ?? DataUtils.buildPostHeaders(UserAPI.currentUser.sid),
         ),
       );
 }

@@ -495,7 +495,7 @@ class LoginPageState extends State<LoginPage>
       });
       DataUtils.login(_username, _password).then((result) {
         if (result) {
-          currentState.pushNamedAndRemoveUntil(
+          navigatorState.pushNamedAndRemoveUntil(
             "openjmu://home",
             (_) => false,
             arguments: {"initAction": widget.initAction},

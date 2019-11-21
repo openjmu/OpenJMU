@@ -49,10 +49,10 @@ class MessagePageState extends State<MessagePage>
   void _handleItemClick(context, String item) {
     switch (item) {
       case "评论/留言":
-        currentState.pushNamed("openjmu://notifications");
+        navigatorState.pushNamed("openjmu://notifications");
         break;
       case "粉丝":
-        currentState.pushNamed(
+        navigatorState.pushNamed(
           "openjmu://userlist",
           arguments: {
             "user": UserAPI.currentUser,
