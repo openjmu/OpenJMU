@@ -131,7 +131,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                   vertical: suSetHeight(16.0),
                 ),
                 prefixText: replyHint,
-                hintText: replyHint ?? "给你一个神评的机会...",
+                hintText: replyHint == null ? "给你一个神评的机会..." : null,
               ),
               cursorColor: ThemeUtils.currentThemeColor,
               style: Theme.of(context).textTheme.body1.copyWith(
@@ -156,17 +156,12 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         ),
         minWidth: suSetWidth(120.0),
         color: ThemeUtils.currentThemeColor.withOpacity(canSend ? 1 : 0.3),
-        padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(16.0),
-        ),
         child: Center(
-          child: Text(
-            "发送",
-            style: TextStyle(
-              color: Theme.of(context).primaryColor,
-              fontSize: suSetSp(18.0),
-              fontWeight: FontWeight.bold,
-            ),
+          child:
+          Icon(
+            Icons.send,
+            color: Colors.white,
+            size: suSetWidth(36.0),
           ),
         ),
         onPressed: () {},

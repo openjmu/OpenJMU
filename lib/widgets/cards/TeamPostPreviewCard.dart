@@ -7,6 +7,7 @@ import 'dart:ui' as ui;
 
 import 'package:OpenJMU/pages/post/TeamPostDetailPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
@@ -17,6 +18,7 @@ import 'package:like_button/like_button.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
+import 'package:oktoast/oktoast.dart';
 
 class TeamPostPreviewCard extends StatelessWidget {
   final TeamPost post;
@@ -25,6 +27,50 @@ class TeamPostPreviewCard extends StatelessWidget {
     Key key,
     this.post,
   }) : super(key: key);
+
+  void confirmDelete(context) async {
+    final result = await showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text(
+          "删除动态",
+        ),
+        content: Text(
+          "是否删除该条动态？",
+        ),
+        actions: <Widget>[
+          CupertinoDialogAction(
+            child: Text("确认"),
+            isDefaultAction: false,
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+            textStyle: TextStyle(
+              color: ThemeUtils.currentThemeColor,
+            ),
+          ),
+          CupertinoDialogAction(
+            child: Text("取消"),
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+            textStyle: TextStyle(
+              color: ThemeUtils.currentThemeColor,
+            ),
+          ),
+        ],
+      ),
+    );
+    if (result != null && result) delete();
+  }
+
+  void delete() {
+//    TeamPostAPI.deletePost(postId: post.tid, postType: 7).then((response) {
+//      showToast("删除成功");
+//      Instances.eventBus.fire();
+//    });
+  }
 
   Widget _header(context) => Container(
         height: suSetHeight(80.0),
@@ -73,7 +119,9 @@ class TeamPostPreviewCard extends StatelessWidget {
                 size: suSetWidth(40.0),
                 color: Theme.of(context).dividerColor,
               ),
-              onPressed: post.uid == UserAPI.currentUser.uid ? () {} : () {},
+              onPressed: post.uid == UserAPI.currentUser.uid
+                  ? () => confirmDelete(context)
+                  : () {},
             ),
           ],
         ),
@@ -263,7 +311,7 @@ class TeamPostPreviewCard extends StatelessWidget {
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = Center(child: Constants.progressIndicator());
+              loader = Center(child: CupertinoActivityIndicator());
               break;
             case LoadState.completed:
               final info = state.extendedImageInfo;

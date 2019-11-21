@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_text/extended_text.dart';
@@ -132,7 +133,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = Center(child: Constants.progressIndicator());
+              loader = Center(child: CupertinoActivityIndicator());
               break;
             case LoadState.completed:
               final info = state.extendedImageInfo;

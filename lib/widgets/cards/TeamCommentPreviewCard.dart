@@ -361,7 +361,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = Center(child: Constants.progressIndicator());
+              loader = Center(child: CupertinoActivityIndicator());
               break;
             case LoadState.completed:
               final info = state.extendedImageInfo;
