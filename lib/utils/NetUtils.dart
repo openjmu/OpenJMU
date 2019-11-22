@@ -79,21 +79,6 @@ class NetUtils {
         queryParameters: data,
       );
 
-  static Future<Response> getBytesWithHeader(
-    String url, {
-    data,
-    headers,
-  }) async =>
-      await dio.get(
-        url,
-        queryParameters: data,
-        options: Options(
-          responseType: ResponseType.bytes,
-          headers:
-              headers ?? DataUtils.buildPostHeaders(UserAPI.currentUser.sid),
-        ),
-      );
-
   static Future<Response> getWithHeaderSet(
     String url, {
     data,
