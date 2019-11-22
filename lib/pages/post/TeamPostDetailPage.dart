@@ -3,7 +3,9 @@
 /// [Date] 2019-11-19 10:04
 ///
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
+import 'package:oktoast/oktoast.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/AppBar.dart';
@@ -14,14 +16,14 @@ import 'package:OpenJMU/widgets/cards/TeamPostCommentPreviewCard.dart';
 @FFRoute(
   name: "openjmu://team-post-detail",
   routeName: "小组动态详情页",
-  argumentNames: ["post", "type"],
+  argumentNames: ["provider", "type"],
 )
 class TeamPostDetailPage extends StatefulWidget {
-  final TeamPost post;
+  final TeamPostProvider provider;
   final TeamPostType type;
 
   const TeamPostDetailPage({
-    @required this.post,
+    @required this.provider,
     @required this.type,
     Key key,
   }) : super(key: key);
@@ -36,15 +38,18 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   final comments = <TeamPost>{};
   final postComments = <TeamPostComment>{};
 
+  TeamPostProvider provider;
+
   int commentPage = 1, total;
-  bool loading, canSend = false;
+  bool loading, canSend = false, sending = false;
   String replyHint;
   TeamPost replyToPost;
   TeamPostComment replyToComment;
 
   @override
   void initState() {
-    loading = widget.post.repliesCount != 0;
+    provider = widget.provider;
+    loading = provider.post.repliesCount != 0;
     initialLoad();
     _textEditingController.addListener(() {
       final _canSend = _textEditingController.text.length > 0;
@@ -54,19 +59,26 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         });
     });
 
-    Instances.eventBus.on<TeamCommentDeletedEvent>().listen((event) {
-      if (event.postId == widget.post.tid) {
-        comments.removeWhere((item) => item.tid == event.postId);
-        if (mounted) setState(() {});
-      }
-    });
+    Instances.eventBus
+      ..on<TeamCommentDeletedEvent>().listen((event) {
+        if (event.topPostId == provider.post.tid) {
+          comments.removeWhere((item) => item.tid == event.postId);
+          if (mounted) setState(() {});
+        }
+      })
+      ..on<TeamPostCommentDeletedEvent>().listen((event) {
+        if (event.topPostId == provider.post.tid) {
+          postComments.removeWhere((item) => item.rid == event.commentId);
+          if (mounted) setState(() {});
+        }
+      });
     super.initState();
   }
 
   void initialLoad() {
-    if (loading)
+    if (provider.post.repliesCount != 0)
       TeamCommentAPI.getCommentInPostList(
-        id: widget.post.tid,
+        id: provider.post.tid,
         isComment: widget.type == TeamPostType.comment,
       ).then((response) {
         final data = response.data;
@@ -104,14 +116,20 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     replyToPost = post;
     replyHint = "回复@${post.nickname}:";
     if (mounted) setState(() {});
-    _focusNode.requestFocus();
+    if (!_focusNode.hasFocus) {
+      _focusNode.requestFocus();
+      SystemChannels.textInput.invokeMethod('TextInput.show');
+    }
   }
 
   void setReplyToComment(TeamPostComment comment) {
     replyToComment = comment;
-    replyHint = "回复@${comment.userInfo['nickname']}";
+    replyHint = "回复@${comment.userInfo['nickname']}:";
     if (mounted) setState(() {});
-    _focusNode.requestFocus();
+    if (!_focusNode.hasFocus) {
+      _focusNode.requestFocus();
+      SystemChannels.textInput.invokeMethod('TextInput.show');
+    }
   }
 
   Widget get textField => Expanded(
@@ -124,6 +142,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
             child: TextField(
               controller: _textEditingController,
               focusNode: _focusNode,
+              enabled: !sending,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.symmetric(
@@ -155,18 +174,71 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
           borderRadius: BorderRadius.circular(suSetWidth(50.0)),
         ),
         minWidth: suSetWidth(120.0),
+        disabledColor:
+            ThemeUtils.currentThemeColor.withOpacity(sending ? 1 : 0.3),
         color: ThemeUtils.currentThemeColor.withOpacity(canSend ? 1 : 0.3),
         child: Center(
-          child:
-          Icon(
-            Icons.send,
-            color: Colors.white,
-            size: suSetWidth(36.0),
-          ),
+          child: sending
+              ? Constants.progressIndicator()
+              : Icon(
+                  Icons.send,
+                  color: Colors.white,
+                  size: suSetWidth(36.0),
+                ),
         ),
-        onPressed: () {},
+        onPressed: sending ? null : send,
       ),
     );
+  }
+
+  void send() {
+    setState(() {
+      sending = true;
+    });
+    String prefix;
+    int postId;
+    int postType;
+    int regionType;
+    switch (widget.type) {
+      case TeamPostType.post:
+        if (replyHint == null) {
+          postId = provider.post.tid;
+          postType = 7;
+          regionType = 128;
+        } else {
+          postId = replyToPost.tid;
+          postType = 8;
+          regionType = 256;
+        }
+        break;
+      case TeamPostType.comment:
+        if (replyHint != null) {
+          prefix = replyHint;
+        }
+        postId = replyToComment?.originId ?? provider.post.tid;
+        postType = 8;
+        regionType = 256;
+        break;
+    }
+    TeamPostAPI.publishPost(
+      content: "${prefix ?? ""}${_textEditingController.text}",
+      postType: postType,
+      regionId: postId,
+      regionType: regionType,
+    ).then((response) {
+      provider.replied();
+      _focusNode.unfocus();
+      _textEditingController.clear();
+      replyHint = null;
+      showToast("发送成功");
+      initialLoad();
+    }).catchError((e) {
+      debugPrint("Reply failed: $e");
+      showErrorShortToast("发送失败");
+    }).whenComplete(() {
+      sending = false;
+      if (mounted) setState(() {});
+    });
   }
 
   @override
@@ -185,63 +257,82 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
             centerTitle: true,
           ),
           Expanded(
-            child: CustomScrollView(
-              slivers: <Widget>[
-                SliverToBoxAdapter(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      TeamPostCard(post: widget.post),
-                      Divider(
-                        color: Theme.of(context).canvasColor,
-                        height: suSetHeight(10.0),
-                        thickness: suSetHeight(10.0),
-                      ),
-                    ],
-                  ),
-                ),
-                loading
-                    ? SliverToBoxAdapter(
-                        child: SizedBox(
-                          height: suSetHeight(300.0),
-                          child: Center(
-                            child: Constants.progressIndicator(),
-                          ),
+            child: Listener(
+              onPointerDown: (_) {
+                if (MediaQuery.of(context).viewInsets.bottom > 0.0) {
+                  SystemChannels.textInput.invokeMethod('TextInput.hide');
+                }
+              },
+              child: CustomScrollView(
+                slivers: <Widget>[
+                  SliverToBoxAdapter(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        TeamPostCard(post: provider.post),
+                        Divider(
+                          color: Theme.of(context).canvasColor,
+                          height: suSetHeight(10.0),
+                          thickness: suSetHeight(10.0),
                         ),
-                      )
-                    : list != null
-                        ? SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (
-                                BuildContext context,
-                                int index,
-                              ) {
-                                return Padding(
-                                  padding: EdgeInsets.all(suSetSp(4.0)),
-                                  child: widget.type == TeamPostType.post
-                                      ? TeamCommentPreviewCard(
-                                          post: list.elementAt(index),
-                                          topPost: widget.post,
-                                          detailPageState: this,
-                                        )
-                                      : TeamPostCommentPreviewCard(
-                                          comment: list.elementAt(index),
-                                          topPost: widget.post,
-                                        ),
-                                );
-                              },
-                              childCount: list.length,
+                      ],
+                    ),
+                  ),
+                  loading
+                      ? SliverToBoxAdapter(
+                          child: SizedBox(
+                            height: suSetHeight(300.0),
+                            child: Center(
+                              child: Constants.progressIndicator(),
                             ),
-                          )
-                        : SliverToBoxAdapter(
-                            child: SizedBox(
-                              height: suSetHeight(300.0),
-                              child: Center(
-                                child: Text("Nothing here."),
+                          ),
+                        )
+                      : list != null
+                          ? SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (
+                                  BuildContext context,
+                                  int index,
+                                ) {
+                                  Widget provider;
+                                  switch (widget.type) {
+                                    case TeamPostType.post:
+                                      provider = ChangeNotifierProvider.value(
+                                        value: TeamPostProvider(
+                                          list.elementAt(index),
+                                        ),
+                                        child: TeamCommentPreviewCard(
+                                          topPost: widget.provider.post,
+                                          detailPageState: this,
+                                        ),
+                                      );
+                                      break;
+                                    case TeamPostType.comment:
+                                      provider = TeamPostCommentPreviewCard(
+                                        comment: list.elementAt(index),
+                                        topPost: widget.provider.post,
+                                        detailPageState: this,
+                                      );
+                                      break;
+                                  }
+                                  return Padding(
+                                    padding: EdgeInsets.all(suSetSp(4.0)),
+                                    child: provider,
+                                  );
+                                },
+                                childCount: list.length,
+                              ),
+                            )
+                          : SliverToBoxAdapter(
+                              child: SizedBox(
+                                height: suSetHeight(300.0),
+                                child: Center(
+                                  child: Text("Nothing here."),
+                                ),
                               ),
                             ),
-                          ),
-              ],
+                ],
+              ),
             ),
           ),
           Column(

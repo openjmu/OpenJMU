@@ -16,6 +16,7 @@ class NetUtils {
   static final DefaultCookieJar tokenCookieJar = DefaultCookieJar();
   static final CookieManager tokenCookieManager = CookieManager(tokenCookieJar);
 
+  /// Method to update ticket.
   static void updateTicket() async {
     dio
       ..lock()
@@ -36,13 +37,13 @@ class NetUtils {
   static void initConfig() async {
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
-//      client.findProxy = (uri) => "PROXY 192.168.1.128:8888";
-//      client.badCertificateCallback = (
-//        X509Certificate cert,
-//        String host,
-//        int port,
-//      ) =>
-//          true;
+      client.findProxy = (uri) => "PROXY localhost:8888";
+      client.badCertificateCallback = (
+        X509Certificate cert,
+        String host,
+        int port,
+      ) =>
+          true;
     };
     dio.interceptors.add(cookieManager);
     dio.interceptors.add(InterceptorsWrapper(
@@ -56,13 +57,13 @@ class NetUtils {
     ));
     (tokenDio.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (HttpClient client) {
-//      client.findProxy = (uri) => "PROXY 192.168.1.128:8888";
-//      client.badCertificateCallback = (
-//        X509Certificate cert,
-//        String host,
-//        int port,
-//      ) =>
-//          true;
+      client.findProxy = (uri) => "PROXY localhost:8888";
+      client.badCertificateCallback = (
+        X509Certificate cert,
+        String host,
+        int port,
+      ) =>
+          true;
     };
     tokenDio.interceptors.add(tokenCookieManager);
     tokenDio.interceptors.add(InterceptorsWrapper(

@@ -9,9 +9,9 @@ import 'package:OpenJMU/api/API.dart';
 import 'package:OpenJMU/api/CourseAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 
-export 'package:OpenJMU/model/CommentController.dart';
-export 'package:OpenJMU/model/PostController.dart';
-export 'package:OpenJMU/model/PraiseController.dart';
+export 'package:OpenJMU/controller/CommentController.dart';
+export 'package:OpenJMU/controller/PostController.dart';
+export 'package:OpenJMU/controller/PraiseController.dart';
 export 'package:OpenJMU/model/SpecialText.dart';
 
 ///

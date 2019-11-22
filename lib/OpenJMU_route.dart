@@ -50,7 +50,7 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
     case "openjmu://post-detail":
       return RouteResult(widget: PostDetailPage(post:arguments['post'],index:arguments['index'],fromPage:arguments['fromPage'],parentContext:arguments['parentContext'],),  routeName: "动态详情页",  );
     case "openjmu://team-post-detail":
-      return RouteResult(widget: TeamPostDetailPage(post:arguments['post'],type:arguments['type'],),  routeName: "小组动态详情页",  );
+      return RouteResult(widget: TeamPostDetailPage(provider:arguments['provider'],type:arguments['type'],),  routeName: "小组动态详情页",  );
     case "openjmu://publish-team-post":
       return RouteResult(widget: PublishTeamPostPage(),  routeName: "发布小组动态",  );
     case "openjmu://publish-post":

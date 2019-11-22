@@ -69,7 +69,14 @@ class PostDeletedEvent {
 
 class TeamCommentDeletedEvent {
   int postId;
-  TeamCommentDeletedEvent(this.postId);
+  int topPostId;
+  TeamCommentDeletedEvent({this.postId, this.topPostId});
+}
+
+class TeamPostCommentDeletedEvent {
+  int commentId;
+  int topPostId;
+  TeamPostCommentDeletedEvent({this.commentId, this.topPostId});
 }
 
 class ForwardInPostUpdatedEvent {

@@ -5,8 +5,6 @@
 import 'dart:async';
 import 'dart:ui' as ui;
 
-import 'package:OpenJMU/pages/post/TeamPostDetailPage.dart';
-import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -18,15 +16,11 @@ import 'package:like_button/like_button.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
-import 'package:oktoast/oktoast.dart';
+import 'package:OpenJMU/pages/post/TeamPostDetailPage.dart';
+import 'package:OpenJMU/pages/user/UserPage.dart';
 
 class TeamPostPreviewCard extends StatelessWidget {
-  final TeamPost post;
-
-  const TeamPostPreviewCard({
-    Key key,
-    this.post,
-  }) : super(key: key);
+  const TeamPostPreviewCard({Key key}) : super(key: key);
 
   void confirmDelete(context) async {
     final result = await showCupertinoDialog<bool>(
@@ -72,7 +66,7 @@ class TeamPostPreviewCard extends StatelessWidget {
 //    });
   }
 
-  Widget _header(context) => Container(
+  Widget _header(context, TeamPost post) => Container(
         height: suSetHeight(80.0),
         padding: EdgeInsets.symmetric(
           vertical: suSetHeight(8.0),
@@ -107,7 +101,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                       ),
                   ],
                 ),
-                _postTime(context),
+                _postTime(context, post),
               ],
             ),
             Spacer(),
@@ -127,7 +121,7 @@ class TeamPostPreviewCard extends StatelessWidget {
         ),
       );
 
-  Widget _postTime(context) {
+  Widget _postTime(context, TeamPost post) {
     final now = DateTime.now();
     DateTime _postTime;
     String time = "";
@@ -156,7 +150,7 @@ class TeamPostPreviewCard extends StatelessWidget {
     );
   }
 
-  Widget get _content => Padding(
+  Widget _content(TeamPost post) => Padding(
         padding: EdgeInsets.symmetric(
           vertical: suSetHeight(4.0),
         ),
@@ -183,7 +177,7 @@ class TeamPostPreviewCard extends StatelessWidget {
         ),
       );
 
-  Widget _postInfo(context) => Container(
+  Widget _postInfo(context, TeamPostProvider provider) => Container(
         margin: EdgeInsets.symmetric(
           vertical: suSetHeight(12.0),
         ),
@@ -198,9 +192,10 @@ class TeamPostPreviewCard extends StatelessWidget {
         child: ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: post.postInfo.length + (post.repliesCount > 2 ? 1 : 0),
+          itemCount: provider.post.postInfo.length +
+              (provider.post.repliesCount > 2 ? 1 : 0),
           itemBuilder: (_, index) {
-            if (index == post.postInfo.length)
+            if (index == provider.post.postInfo.length)
               return Container(
                 margin: EdgeInsets.only(
                   top: suSetHeight(12.0),
@@ -227,7 +222,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   ],
                 ),
               );
-            final _post = post.postInfo[index];
+            final _post = provider.post.postInfo[index];
             return Padding(
               padding: EdgeInsets.symmetric(
                 vertical: suSetHeight(4.0),
@@ -246,7 +241,8 @@ class TeamPostPreviewCard extends StatelessWidget {
                           UserPage.jump(int.parse(_post['user_info']['uid']));
                         },
                     ),
-                    if (int.parse(_post['user_info']['uid']) == post.uid)
+                    if (int.parse(_post['user_info']['uid']) ==
+                        provider.post.uid)
                       WidgetSpan(
                         alignment: ui.PlaceholderAlignment.middle,
                         child: Container(
@@ -296,7 +292,7 @@ class TeamPostPreviewCard extends StatelessWidget {
         ),
       );
 
-  Widget _images(context) {
+  Widget _images(context, TeamPost post) {
     List<Widget> imagesWidget = [];
     for (int index = 0; index < post.pics.length; index++) {
       final imageId = int.parse(post.pics[index]['fid']);
@@ -378,7 +374,7 @@ class TeamPostPreviewCard extends StatelessWidget {
     return _image;
   }
 
-  Widget _actions(context) => SizedBox(
+  Widget _actions(context, TeamPostProvider provider) => SizedBox(
         height: suSetSp(44.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -393,7 +389,9 @@ class TeamPostPreviewCard extends StatelessWidget {
                   height: suSetHeight(24.0),
                 ),
                 label: Text(
-                  post.repliesCount == 0 ? "评论" : "${post.repliesCount}",
+                  provider.post.repliesCount == 0
+                      ? "评论"
+                      : "${provider.post.repliesCount}",
                   style: TextStyle(
                     color: Theme.of(context).textTheme.body1.color,
                     fontSize: suSetSp(16.0),
@@ -411,16 +409,6 @@ class TeamPostPreviewCard extends StatelessWidget {
                   start: ThemeUtils.currentThemeColor,
                   end: ThemeUtils.currentThemeColor,
                 ),
-                countBuilder: (int count, bool isLiked, String text) => Text(
-                  count == 0 ? "赞" : text,
-                  style: TextStyle(
-                    color: isLiked
-                        ? ThemeUtils.currentThemeColor
-                        : Theme.of(context).textTheme.body1.color,
-                    fontSize: suSetSp(16.0),
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
                 bubblesColor: BubblesColor(
                   dotPrimaryColor: ThemeUtils.currentThemeColor,
                   dotSecondaryColor: ThemeUtils.currentThemeColor,
@@ -433,28 +421,38 @@ class TeamPostPreviewCard extends StatelessWidget {
                   width: suSetWidth(24.0),
                   height: suSetHeight(24.0),
                 ),
-                likeCount: post.praisesCount,
+                likeCount: provider.post.praisesCount,
                 likeCountAnimationType: LikeCountAnimationType.none,
                 likeCountPadding: EdgeInsets.symmetric(
                   horizontal: suSetWidth(8.0),
                 ),
-                isLiked: post.isLike,
-                onTap: onLikeButtonTap,
+                countBuilder: (count, isLiked, text) => Text(
+                  count == 0 ? "赞" : text,
+                  style: TextStyle(
+                    color: isLiked
+                        ? ThemeUtils.currentThemeColor
+                        : Theme.of(context).textTheme.body1.color,
+                    fontSize: suSetSp(16.0),
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                isLiked: provider.post.isLike,
+                onTap: (bool isLiked) async =>
+                    onLikeButtonTap(isLiked, provider),
               ),
             ),
           ],
         ),
       );
 
-  Future<bool> onLikeButtonTap(bool isLiked) {
+  Future<bool> onLikeButtonTap(bool isLiked, TeamPostProvider provider) {
     final completer = Completer<bool>();
 
-    post.isLike = !post.isLike;
-    !isLiked ? post.praisesCount++ : post.praisesCount--;
+    !isLiked ? provider.praised() : provider.unPraised();
     completer.complete(!isLiked);
 
-    TeamPraiseAPI.requestPraise(post.tid, !isLiked).catchError((e) {
-      isLiked ? post.praisesCount++ : post.praisesCount--;
+    TeamPraiseAPI.requestPraise(provider.post.tid, !isLiked).catchError((e) {
+      isLiked ? provider.praised() : provider.unPraised();
       completer.complete(isLiked);
       return completer.future;
     });
@@ -464,46 +462,53 @@ class TeamPostPreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            navigatorState.pushNamed(
-              "openjmu://team-post-detail",
-              arguments: {"post": post, "type": TeamPostType.post},
-            );
-          },
-          child: Container(
-            margin: EdgeInsets.symmetric(
-              horizontal: suSetWidth(12.0),
-              vertical: suSetHeight(6.0),
+    return Consumer<TeamPostProvider>(
+      builder: (_, provider, __) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                navigatorState.pushNamed(
+                  "openjmu://team-post-detail",
+                  arguments: {"provider": provider, "type": TeamPostType.post},
+                );
+              },
+              child: Container(
+                margin: EdgeInsets.symmetric(
+                  horizontal: suSetWidth(12.0),
+                  vertical: suSetHeight(6.0),
+                ),
+                padding: EdgeInsets.symmetric(
+                  horizontal: suSetWidth(24.0),
+                  vertical: suSetHeight(8.0),
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+                  color: Theme.of(context).cardColor,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _header(context, provider.post),
+                    _content(provider.post),
+                    if (provider.post.pics != null &&
+                        provider.post.pics.isNotEmpty)
+                      _images(context, provider.post),
+                    if (provider.post.postInfo != null &&
+                        provider.post.postInfo.isNotEmpty)
+                      _postInfo(context, provider),
+                    _actions(context, provider),
+                  ],
+                ),
+              ),
             ),
-            padding: EdgeInsets.symmetric(
-              horizontal: suSetWidth(24.0),
-              vertical: suSetHeight(8.0),
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(suSetWidth(10.0)),
-              color: Theme.of(context).cardColor,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _header(context),
-                _content,
-                if (post.pics != null && post.pics.isNotEmpty) _images(context),
-                if (post.postInfo != null && post.postInfo.isNotEmpty)
-                  _postInfo(context),
-                _actions(context),
-              ],
-            ),
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 }

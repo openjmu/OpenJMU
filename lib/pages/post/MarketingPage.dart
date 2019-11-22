@@ -86,9 +86,13 @@ class _MarketingPageState extends State<MarketingPage> {
                       ),
                     );
                   }
-                  return TeamPostPreviewCard(
-                    key: ValueKey("marketPost-${posts.elementAt(index).tid}"),
-                    post: posts.elementAt(index),
+                  return ChangeNotifierProvider.value(
+                    value: TeamPostProvider(
+                      posts.elementAt(index),
+                    ),
+                    child: TeamPostPreviewCard(
+                      key: ValueKey("marketPost-${posts.elementAt(index).tid}"),
+                    ),
                   );
                 },
               )

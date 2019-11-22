@@ -19,25 +19,23 @@ import 'package:OpenJMU/pages/post/TeamPostDetailPage.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
 class TeamCommentPreviewCard extends StatelessWidget {
-  final TeamPost post;
   final TeamPost topPost;
   final TeamPostDetailPageState detailPageState;
 
   const TeamCommentPreviewCard({
     Key key,
-    @required this.post,
     @required this.topPost,
     @required this.detailPageState,
   }) : super(key: key);
 
-  Widget _header(context) => Container(
+  Widget _header(context, TeamPostProvider provider) => Container(
         height: suSetHeight(80.0),
         padding: EdgeInsets.symmetric(
           vertical: suSetHeight(8.0),
         ),
         child: Row(
           children: <Widget>[
-            UserAPI.getAvatar(uid: post.uid, size: 40.0),
+            UserAPI.getAvatar(uid: provider.post.uid, size: 40.0),
             SizedBox(width: suSetWidth(16.0)),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -46,13 +44,13 @@ class TeamCommentPreviewCard extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     Text(
-                      post.nickname ?? post.uid.toString(),
+                      provider.post.nickname ?? provider.post.uid.toString(),
                       style: TextStyle(
                         fontSize: suSetSp(17.0),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    if (post.uid == topPost.uid)
+                    if (provider.post.uid == topPost.uid)
                       Container(
                         margin: EdgeInsets.only(
                           left: suSetWidth(10.0),
@@ -74,9 +72,9 @@ class TeamCommentPreviewCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                    if (Constants.developerList.contains(post.uid))
+                    if (Constants.developerList.contains(provider.post.uid))
                       Container(
-                        margin: EdgeInsets.only(left: suSetWidth(14.0)),
+                        margin: EdgeInsets.only(left: suSetWidth(12.0)),
                         child: Constants.developerTag(
                           padding: EdgeInsets.symmetric(
                             horizontal: suSetWidth(8.0),
@@ -87,28 +85,44 @@ class TeamCommentPreviewCard extends StatelessWidget {
                       ),
                   ],
                 ),
-                _postTime(context),
+                _postTime(context, provider.post),
               ],
             ),
             Spacer(),
-            if (topPost.uid == UserAPI.currentUser.uid)
-              IconButton(
+            SizedBox.fromSize(
+              size: Size.square(suSetWidth(50.0)),
+              child: IconButton(
                 padding: EdgeInsets.zero,
                 icon: Icon(
-                  Icons.delete_outline,
+                  Icons.reply,
                   color: Theme.of(context).dividerColor,
                 ),
                 iconSize: suSetWidth(40.0),
-                alignment: Alignment.centerRight,
                 onPressed: () {
-                  confirmDelete(context);
+                  detailPageState.setReplyToPost(provider.post);
                 },
+              ),
+            ),
+            if (topPost.uid == UserAPI.currentUser.uid)
+              SizedBox.fromSize(
+                size: Size.square(suSetWidth(50.0)),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(
+                    Icons.delete_outline,
+                    color: Theme.of(context).dividerColor,
+                  ),
+                  iconSize: suSetWidth(40.0),
+                  onPressed: () {
+                    confirmDelete(context, provider);
+                  },
+                ),
               ),
           ],
         ),
       );
 
-  void confirmDelete(context) async {
+  void confirmDelete(context, TeamPostProvider provider) async {
     final result = await showCupertinoDialog<bool>(
       context: context,
       builder: (context) => CupertinoAlertDialog(
@@ -142,17 +156,23 @@ class TeamCommentPreviewCard extends StatelessWidget {
         ],
       ),
     );
-    if (result != null && result) delete();
+    if (result != null && result) delete(provider);
   }
 
-  void delete() {
-    TeamPostAPI.deletePost(postId: post.tid, postType: 7).then((response) {
-      showToast("删除成功");
-      Instances.eventBus.fire(TeamCommentDeletedEvent(topPost.tid));
-    });
+  void delete(TeamPostProvider provider) {
+    TeamPostAPI.deletePost(postId: provider.post.tid, postType: 7).then(
+      (response) {
+        showToast("删除成功");
+        provider.commentDeleted();
+        Instances.eventBus.fire(TeamCommentDeletedEvent(
+          postId: provider.post.tid,
+          topPostId: topPost.tid,
+        ));
+      },
+    );
   }
 
-  Widget _postTime(context) {
+  Widget _postTime(context, TeamPost post) {
     final now = DateTime.now();
     DateTime _postTime;
     String time = "";
@@ -181,11 +201,11 @@ class TeamCommentPreviewCard extends StatelessWidget {
     );
   }
 
-  Widget get _content => GestureDetector(
+  Widget _content(TeamPost post) => GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () {
-          detailPageState.setReplyToPost(post);
-        },
+//        onTap: () {
+//          detailPageState.setReplyToPost(post);
+//        },
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: suSetHeight(4.0),
@@ -214,13 +234,14 @@ class TeamCommentPreviewCard extends StatelessWidget {
         ),
       );
 
-  Widget _replyInfo(context) => GestureDetector(
+  Widget _replyInfo(context, TeamPost post) => GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: post.replyInfo != null && post.replyInfo.isNotEmpty
             ? () {
+                final provider = TeamPostProvider(post);
                 navigatorState.pushNamed(
                   "openjmu://team-post-detail",
-                  arguments: {"post": post, "type": TeamPostType.comment},
+                  arguments: {"provider": provider, "type": TeamPostType.comment},
                 );
               }
             : null,
@@ -327,17 +348,6 @@ class TeamCommentPreviewCard extends StatelessWidget {
                         onSpecialTextTap: specialTextTapRecognizer,
                       ),
                     ),
-                    if (int.parse(_post['user']['uid']) ==
-                        UserAPI.currentUser.uid)
-                      GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {},
-                        child: Icon(
-                          Icons.delete_outline,
-                          color: Theme.of(context).dividerColor,
-                          size: suSetWidth(40.0),
-                        ),
-                      ),
                   ],
                 ),
               );
@@ -346,7 +356,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
         ),
       );
 
-  Widget _images(context) {
+  Widget _images(context, TeamPost post) {
     List<Widget> imagesWidget = [];
     for (int index = 0; index < post.pics.length; index++) {
       final imageId = int.parse(post.pics[index]['fid']);
@@ -428,7 +438,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
     return _image;
   }
 
-  Future<bool> onLikeButtonTap(bool isLiked) {
+  Future<bool> onLikeButtonTap(bool isLiked, TeamPost post) {
     final completer = Completer<bool>();
 
     post.isLike = !post.isLike;
@@ -446,36 +456,43 @@ class TeamCommentPreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        Container(
-          margin: EdgeInsets.symmetric(
-            horizontal: suSetWidth(12.0),
-            vertical: suSetHeight(6.0),
-          ),
-          padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(24.0),
-            vertical: suSetHeight(8.0),
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(suSetWidth(10.0)),
-            color: Theme.of(context).cardColor,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              _header(context),
-              _content,
-              if (post.pics != null && post.pics.isNotEmpty) _images(context),
-              if (post.replyInfo != null && post.replyInfo.isNotEmpty)
-                _replyInfo(context),
-            ],
-          ),
-        ),
-      ],
+    return Consumer<TeamPostProvider>(
+      builder: (_, provider, __) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.symmetric(
+                horizontal: suSetWidth(12.0),
+                vertical: suSetHeight(6.0),
+              ),
+              padding: EdgeInsets.symmetric(
+                horizontal: suSetWidth(24.0),
+                vertical: suSetHeight(8.0),
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+                color: Theme.of(context).cardColor,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  _header(context, provider),
+                  _content(provider.post),
+                  if (provider.post.pics != null &&
+                      provider.post.pics.isNotEmpty)
+                    _images(context, provider.post),
+                  if (provider.post.replyInfo != null &&
+                      provider.post.replyInfo.isNotEmpty)
+                    _replyInfo(context, provider.post),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

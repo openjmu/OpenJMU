@@ -59,8 +59,9 @@ class TeamPostAPI {
       NetUtils.postWithCookieAndHeaderSet(
         API.teamPostPublish,
         data: {
-          "article": content,
-          "file": [if (files != null) ...files],
+          if (postType == 7) "article": content,
+          if (postType == 8) "content": content,
+          if (postType == 7) "file": [if (files != null) ...files],
           "latitude": 0,
           "longitude": 0,
           "post_type": postType,
