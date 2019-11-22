@@ -79,14 +79,6 @@ class NetUtils {
         queryParameters: data,
       );
 
-  static Future<Response> getBytes(String url, {data}) async => await dio.get(
-        url,
-        queryParameters: data,
-        options: Options(
-          responseType: ResponseType.bytes,
-        ),
-      );
-
   static Future<Response> getBytesWithHeader(
     String url, {
     data,
