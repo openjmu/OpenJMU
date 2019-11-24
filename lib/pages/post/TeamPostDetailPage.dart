@@ -119,7 +119,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       final data = (await TeamPostAPI.getPostDetail(
         id: widget.postId,
         postType: 7,
-      )).data;
+      ))
+          .data;
       final post = TeamPost.fromJson(data);
       provider = TeamPostProvider(post);
     }
@@ -344,10 +345,27 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       );
 
   void triggerEmoticonPad() {
-    setState(() {
+    if (showEmoticonPad && _focusNode.canRequestFocus) {
+      _focusNode.requestFocus();
+    }
+
+    final change = () {
       showEmoticonPad = !showEmoticonPad;
       if (showEmoticonPad) showExtendedPad = false;
-    });
+      if (mounted) setState(() {});
+    };
+    showEmoticonPad
+        ? change()
+        : MediaQuery.of(context).viewInsets.bottom != 0.0
+            ? SystemChannels.textInput
+                .invokeMethod('TextInput.hide')
+                .whenComplete(
+                () async {
+                  Future.delayed(const Duration(milliseconds: 300), () {})
+                      .whenComplete(change);
+                },
+              )
+            : change();
   }
 
   void triggerExtendedPad() {
@@ -514,22 +532,23 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
               },
               child: CustomScrollView(
                 slivers: <Widget>[
-                  if (provider.post != null) SliverToBoxAdapter(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        TeamPostCard(
-                          post: provider.post,
-                          detailPageState: this,
-                        ),
-                        Divider(
-                          color: Theme.of(context).canvasColor,
-                          height: suSetHeight(10.0),
-                          thickness: suSetHeight(10.0),
-                        ),
-                      ],
+                  if (provider.post != null)
+                    SliverToBoxAdapter(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          TeamPostCard(
+                            post: provider.post,
+                            detailPageState: this,
+                          ),
+                          Divider(
+                            color: Theme.of(context).canvasColor,
+                            height: suSetHeight(10.0),
+                            thickness: suSetHeight(10.0),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
                   loading
                       ? SliverToBoxAdapter(
                           child: SizedBox(

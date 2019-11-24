@@ -291,10 +291,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(
-                  top: suSetSp(signing ? 3.0 : 0.0),
-                  bottom: suSetSp(signing ? 3.0 : 0.0),
-                  left: suSetSp(signing ? 2.0 : 0.0),
-                  right: suSetSp(signing ? 8.0 : 4.0),
+                  right: suSetSp(4.0),
                 ),
                 child: signing
                     ? Container(
