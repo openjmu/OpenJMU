@@ -73,7 +73,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     if (widget.initAction != null) {
       _tabIndex = pagesTitle.indexOf(widget.initAction);
     }
-    OTAUtils.checkUpdate(fromHome: true);
 
     initPushService();
     initNotification();
@@ -90,14 +89,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         } else if (event.type == "action_user") {
           _selectedTab(3);
         }
-      })
-      ..on<HasUpdateEvent>().listen((event) {
-        if (this.mounted)
-          showDialog(
-            context: context,
-            barrierDismissible: !event.forceUpdate,
-            builder: (_) => OTAUtils.updateDialog(context, event),
-          );
       })
       ..on<ChangeThemeEvent>().listen((event) {
         currentThemeColor = event.color;
@@ -144,9 +135,22 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   }
 
   void initNotification() {
-    DataUtils.getNotifications();
-    notificationTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
-      DataUtils.getNotifications();
+    _getNotification(null);
+    notificationTimer =
+        Timer.periodic(const Duration(seconds: 10), _getNotification);
+  }
+
+  void _getNotification(_) {
+    Future.wait([
+      UserAPI.getNotifications(),
+      TeamPostAPI.getNotifications(),
+    ]).then((responses) {
+      final provider =
+          Provider.of<NotificationProvider>(navigatorState.context);
+      provider.updateNotification(
+        Notifications.fromJson(responses[0].data),
+        TeamNotifications.fromJson(responses[1].data),
+      );
     });
   }
 

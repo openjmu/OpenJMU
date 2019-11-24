@@ -335,7 +335,7 @@ class _UserPageState extends State<UserPage>
                   horizontal: suSetSp(8.0),
                   vertical: suSetSp(4.0),
                 ),
-                fontSize: 14.0,
+                height: 30.0,
               ),
           ],
         ),
@@ -567,7 +567,6 @@ class _UserPageState extends State<UserPage>
     widget.uid == UserAPI.currentUser.uid
         ? showModalBottomSheet(
             context: context,
-            isScrollControlled: true,
             builder: (BuildContext sheetContext) {
               return Column(
                 mainAxisSize: MainAxisSize.min,

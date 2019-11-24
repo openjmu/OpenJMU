@@ -314,34 +314,6 @@ class DataUtils {
     await sp?.setBool(spBrightnessPlatform, isFollowPlatform);
   }
 
-  // 获取未读信息数
-  static void getNotifications() {
-    NetUtils.getWithCookieAndHeaderSet(
-      API.postUnread,
-    ).then((response) {
-      Map<String, dynamic> data = response.data;
-      int comment = int.parse(data['cmt']);
-      int postsAt = int.parse(data['t_at']);
-      int commsAt = int.parse(data['cmt_at']);
-      int praises = int.parse(data['t_praised']);
-      int count = comment + postsAt + commsAt + praises;
-//            debugPrint("Count: $count, At: ${postsAt+commsAt}, Comment: $comment, Praise: $praises");
-      Notifications notifications = Notifications(
-        count: count,
-        at: postsAt + commsAt,
-        comment: comment,
-        praise: praises,
-      );
-      if (Instances.notifications != notifications) {
-        Instances.notifications = notifications;
-        Instances.eventBus.fire(NotificationsChangeEvent(notifications));
-      }
-    }).catchError((e) {
-      debugPrint(e.toString());
-      return e;
-    });
-  }
-
   // 获取默认启动页index
   static int getHomeSplashIndex() {
     int index = sp?.getInt(spHomeSplashIndex) ?? Configs.homeSplashIndex;

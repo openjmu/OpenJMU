@@ -80,7 +80,6 @@ class TeamCommentPreviewCard extends StatelessWidget {
                             horizontal: suSetWidth(8.0),
                             vertical: suSetHeight(3.0),
                           ),
-                          fontSize: 11.0,
                         ),
                       ),
                   ],
@@ -97,7 +96,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                   Icons.reply,
                   color: Theme.of(context).dividerColor,
                 ),
-                iconSize: suSetWidth(40.0),
+                iconSize: suSetHeight(36.0),
                 onPressed: () {
                   detailPageState.setReplyToPost(provider.post);
                 },
@@ -112,7 +111,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                     Icons.delete_outline,
                     color: Theme.of(context).dividerColor,
                   ),
-                  iconSize: suSetWidth(40.0),
+                  iconSize: suSetHeight(36.0),
                   onPressed: () {
                     confirmDelete(context, provider);
                   },
@@ -187,7 +186,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
         _postTime.month == now.month &&
         _postTime.year == now.year) {
       time += DateFormat("HH:mm").format(_postTime);
-    } else if (post.postTime.year == now.year) {
+    } else if (_postTime.year == now.year) {
       time += DateFormat("MM-dd HH:mm").format(_postTime);
     } else {
       time += DateFormat("yyyy-MM-dd HH:mm").format(_postTime);
@@ -272,11 +271,16 @@ class TeamCommentPreviewCard extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
+                      Icon(
+                        Icons.expand_more,
+                        size: suSetWidth(20.0),
+                        color: Theme.of(context).textTheme.caption.color,
+                      ),
                       Text(
                         "查看更多回复",
                         style: Theme.of(context).textTheme.caption.copyWith(
-                              fontSize: suSetSp(15.0),
-                            ),
+                          fontSize: suSetSp(15.0),
+                        ),
                       ),
                       Icon(
                         Icons.expand_more,
@@ -318,7 +322,6 @@ class TeamCommentPreviewCard extends StatelessWidget {
                                 ),
                                 padding: EdgeInsets.symmetric(
                                   horizontal: suSetWidth(6.0),
-                                  vertical: suSetHeight(1.0),
                                 ),
                                 decoration: BoxDecoration(
                                   borderRadius:
@@ -328,7 +331,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                                 child: Text(
                                   "楼主",
                                   style: TextStyle(
-                                    fontSize: suSetSp(15.0),
+                                    fontSize: suSetSp(11.0),
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),

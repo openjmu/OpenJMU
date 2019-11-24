@@ -35,10 +35,13 @@ class SplashState extends State<SplashPage> {
 
   @override
   void initState() {
+    OTAUtils.checkUpdate(fromHome: true);
+
     Future.delayed(const Duration(seconds: 5), () {
       showLoading = true;
       if (this.mounted) setState(() {});
     });
+
     checkConnectivity().then((ConnectivityResult result) {
       if (result != ConnectivityResult.none) {
         checkOnline(ConnectivityChangeEvent(result));

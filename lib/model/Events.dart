@@ -67,6 +67,11 @@ class PostDeletedEvent {
   PostDeletedEvent(this.postId, this.page, this.index);
 }
 
+class TeamPostDeletedEvent {
+  int postId;
+  TeamPostDeletedEvent({this.postId});
+}
+
 class TeamCommentDeletedEvent {
   int postId;
   int topPostId;
@@ -133,11 +138,6 @@ class UserInfoGotEvent {
 }
 
 class BlacklistUpdateEvent {}
-
-class NotificationsChangeEvent {
-  Notifications notifications;
-  NotificationsChangeEvent(this.notifications);
-}
 
 class ChangeThemeEvent {
   Color color;

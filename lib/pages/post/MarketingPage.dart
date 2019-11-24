@@ -31,6 +31,10 @@ class _MarketingPageState extends State<MarketingPage> {
             _refreshIndicatorKey.currentState.show();
           });
         }
+      })
+      ..on<TeamPostDeletedEvent>().listen((event) {
+        posts.removeWhere((post) => post.tid == event.postId);
+        if (mounted) setState(() {});
       });
     super.initState();
   }
@@ -100,20 +104,4 @@ class _MarketingPageState extends State<MarketingPage> {
       ),
     );
   }
-}
-
-class SliverStrictMemoryChildDelegate extends SliverChildDelegate {
-  @override
-  Widget build(BuildContext context, int index) {
-    return null;
-  }
-
-  @override
-  int get estimatedChildCount => 1;
-
-  @override
-  bool shouldRebuild(SliverChildDelegate oldDelegate) {
-    return true;
-  }
-
 }

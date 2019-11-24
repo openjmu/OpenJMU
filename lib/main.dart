@@ -87,6 +87,14 @@ class OpenJMUAppState extends State<OpenJMUApp> {
       })
       ..on<ChangeAMOLEDDarkEvent>().listen((event) {
         if (mounted) setState(() {});
+      })
+      ..on<HasUpdateEvent>().listen((event) {
+        showToastWidget(
+          OTAUtils.updateDialog(event),
+          dismissOtherToast: true,
+          handleTouch: true,
+          duration: const Duration(days: 1),
+        );
       });
 
     initSettings();
@@ -121,7 +129,7 @@ class OpenJMUAppState extends State<OpenJMUApp> {
   }
 
   void initQuickActions() {
-    final QuickActions quickActions = QuickActions();
+    final quickActions = QuickActions();
     quickActions.initialize((String shortcutType) {
       debugPrint("QuickActions triggered: $shortcutType");
       Instances.eventBus.fire(ActionsEvent(shortcutType));

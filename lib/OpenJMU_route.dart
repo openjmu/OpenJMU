@@ -4,87 +4,87 @@
 // ************************************************************************** 
 
 import 'package:flutter/widgets.dart';
-import 'pages/settings/SettingsPage.dart'; 
-import 'pages/settings/SwitchStartUpPage.dart'; 
-import 'pages/settings/AboutPage.dart'; 
-import 'pages/settings/FontScalePage.dart'; 
-import 'pages/settings/ChangeThemePage.dart'; 
 import 'pages/home/ScanQrCodePage.dart'; 
-import 'pages/SearchPage.dart'; 
-import 'pages/post/PostDetailPage.dart'; 
-import 'pages/post/TeamPostDetailPage.dart'; 
-import 'pages/post/PublishTeamPostPage.dart'; 
-import 'pages/post/PublishPostPage.dart'; 
-import 'pages/SplashPage.dart'; 
-import 'pages/test/TestDashBoardPage.dart'; 
-import 'pages/notification/NotificationPage.dart'; 
-import 'pages/user/UserQrCodePage.dart'; 
-import 'pages/user/BackpackPage.dart'; 
-import 'pages/user/UserPage.dart'; 
+import 'pages/LoginPage.dart'; 
 import 'pages/MainPage.dart'; 
 import 'pages/news/NewsDetailPage.dart'; 
-import 'pages/LoginPage.dart'; 
-import 'widgets/image/ImageViewer.dart'; 
-import 'widgets/image/ImageCropPage.dart'; 
+import 'pages/notification/NotificationPage.dart'; 
+import 'pages/notification/TeamNotificationPage.dart'; 
+import 'pages/post/PostDetailPage.dart'; 
+import 'pages/post/PublishPostPage.dart'; 
+import 'pages/post/PublishTeamPostPage.dart'; 
+import 'pages/post/TeamPostDetailPage.dart'; 
+import 'pages/SearchPage.dart'; 
+import 'pages/settings/AboutPage.dart'; 
+import 'pages/settings/ChangeThemePage.dart'; 
+import 'pages/settings/FontScalePage.dart'; 
+import 'pages/settings/SettingsPage.dart'; 
+import 'pages/settings/SwitchStartUpPage.dart'; 
+import 'pages/SplashPage.dart'; 
+import 'pages/user/BackpackPage.dart'; 
+import 'pages/user/UserPage.dart'; 
+import 'pages/user/UserQrCodePage.dart'; 
+import 'widgets/CommonWebPage.dart'; 
 import 'widgets/dialogs/CommentPositioned.dart'; 
 import 'widgets/dialogs/ForwardPositioned.dart'; 
-import 'widgets/CommonWebPage.dart'; 
+import 'widgets/image/ImageCropPage.dart'; 
+import 'widgets/image/ImageViewer.dart'; 
 import 'widgets/InAppBrowser.dart'; 
 
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   switch (name) {
+    case "openjmu://scan-qrcode":
+      return RouteResult(widget: ScanQrCodePage(),  routeName: "扫描二维码",  );
+    case "openjmu://login":
+      return RouteResult(widget: LoginPage(initAction:arguments['initAction'],),  routeName: "登录页", pageRouteType: PageRouteType.material, );
+    case "openjmu://home":
+      return RouteResult(widget: MainPage(initAction:arguments['initAction'],),  routeName: "首页",  );
+    case "openjmu://news-detail":
+      return RouteResult(widget: NewsDetailPage(news:arguments['news'],),  routeName: "新闻详情页",  );
+    case "openjmu://notifications":
+      return RouteResult(widget: NotificationPage(),  routeName: "通知页",  );
+    case "openjmu://team-notifications":
+      return RouteResult(widget: TeamNotificationPage(),  routeName: "小组通知页",  );
+    case "openjmu://post-detail":
+      return RouteResult(widget: PostDetailPage(post:arguments['post'],index:arguments['index'],fromPage:arguments['fromPage'],parentContext:arguments['parentContext'],),  routeName: "动态详情页",  );
+    case "openjmu://publish-post":
+      return RouteResult(widget: PublishPostPage(),  routeName: "发布动态",  );
+    case "openjmu://publish-team-post":
+      return RouteResult(widget: PublishTeamPostPage(),  routeName: "发布小组动态",  );
+    case "openjmu://team-post-detail":
+      return RouteResult(widget: TeamPostDetailPage(provider:arguments['provider'],type:arguments['type'],postId:arguments['postId'],),  routeName: "小组动态详情页",  );
+    case "openjmu://search":
+      return RouteResult(widget: SearchPage(content:arguments['content'],),  routeName: "搜索页",  );
+    case "openjmu://about":
+      return RouteResult(widget: AboutPage(),  routeName: "关于页",  );
+    case "openjmu://theme":
+      return RouteResult(widget: ChangeThemePage(),  routeName: "更改主题",  );
+    case "openjmu://font-scale":
+      return RouteResult(widget: FontScalePage(),  routeName: "更改字号页",  );
     case "openjmu://settings":
       return RouteResult(widget: SettingsPage(),  routeName: "设置页",  );
     case "openjmu://switch-startup":
       return RouteResult(widget: SwitchStartUpPage(),  routeName: "切换启动页",  );
-    case "openjmu://about":
-      return RouteResult(widget: AboutPage(),  routeName: "关于页",  );
-    case "openjmu://font-scale":
-      return RouteResult(widget: FontScalePage(),  routeName: "更改字号页",  );
-    case "openjmu://theme":
-      return RouteResult(widget: ChangeThemePage(),  routeName: "更改主题",  );
-    case "openjmu://scan-qrcode":
-      return RouteResult(widget: ScanQrCodePage(),  routeName: "扫描二维码",  );
-    case "openjmu://search":
-      return RouteResult(widget: SearchPage(content:arguments['content'],),  routeName: "搜索页",  );
-    case "openjmu://post-detail":
-      return RouteResult(widget: PostDetailPage(post:arguments['post'],index:arguments['index'],fromPage:arguments['fromPage'],parentContext:arguments['parentContext'],),  routeName: "动态详情页",  );
-    case "openjmu://team-post-detail":
-      return RouteResult(widget: TeamPostDetailPage(provider:arguments['provider'],type:arguments['type'],),  routeName: "小组动态详情页",  );
-    case "openjmu://publish-team-post":
-      return RouteResult(widget: PublishTeamPostPage(),  routeName: "发布小组动态",  );
-    case "openjmu://publish-post":
-      return RouteResult(widget: PublishPostPage(),  routeName: "发布动态",  );
     case "openjmu://splash":
       return RouteResult(widget: SplashPage(initAction:arguments['initAction'],),  routeName: "启动页",  );
-    case "openjmu://test-dashboard":
-      return RouteResult(widget: TestDashBoardPage(),  routeName: "测试首页",  );
-    case "openjmu://notifications":
-      return RouteResult(widget: NotificationPage(),  routeName: "通知页",  );
-    case "openjmu://user-qrcode":
-      return RouteResult(widget: UserQrCodePage(),  routeName: "用户二维码页",  );
     case "openjmu://backpack":
       return RouteResult(widget: BackpackPage(),  routeName: "背包页",  );
     case "openjmu://user":
       return RouteResult(widget: UserPage(uid:arguments['uid'],),  routeName: "用户页",  );
     case "openjmu://userlist":
       return RouteResult(widget: UserListPage(user:arguments['user'],type:arguments['type'],),  routeName: "用户列表页",  );
-    case "openjmu://home":
-      return RouteResult(widget: MainPage(initAction:arguments['initAction'],),  routeName: "首页",  );
-    case "openjmu://news-detail":
-      return RouteResult(widget: NewsDetailPage(news:arguments['news'],),  routeName: "新闻详情页",  );
-    case "openjmu://login":
-      return RouteResult(widget: LoginPage(initAction:arguments['initAction'],),  routeName: "登录页", pageRouteType: PageRouteType.material, );
-    case "openjmu://image-viewer":
-      return RouteResult(widget: ImageViewer(index:arguments['index'],pics:arguments['pics'],needsClear:arguments['needsClear'],),  routeName: "图片浏览",  );
-    case "openjmu://image-crop":
-      return RouteResult(widget: ImageCropPage(),  routeName: "图片裁剪",  );
+    case "openjmu://user-qrcode":
+      return RouteResult(widget: UserQrCodePage(),  routeName: "用户二维码页",  );
+    case "openjmu://webpage":
+      return RouteResult(widget: CommonWebPage(url:arguments['url'],title:arguments['title'],app:arguments['app'],withCookie:arguments['withCookie'],withAppBar:arguments['withAppBar'],withAction:arguments['withAction'],),  routeName: "网页浏览",  );
     case "openjmu://add-comment":
       return RouteResult(widget: CommentPositioned(post:arguments['post'],comment:arguments['comment'],),  routeName: "新增评论", pageRouteType: PageRouteType.transparent, );
     case "openjmu://add-forward":
       return RouteResult(widget: ForwardPositioned(post:arguments['post'],),  routeName: "新增转发", pageRouteType: PageRouteType.transparent, );
-    case "openjmu://webpage":
-      return RouteResult(widget: CommonWebPage(url:arguments['url'],title:arguments['title'],app:arguments['app'],withCookie:arguments['withCookie'],withAppBar:arguments['withAppBar'],withAction:arguments['withAction'],),  routeName: "网页浏览",  );
+    case "openjmu://image-crop":
+      return RouteResult(widget: ImageCropPage(),  routeName: "图片裁剪",  );
+    case "openjmu://image-viewer":
+      return RouteResult(widget: ImageViewer(index:arguments['index'],pics:arguments['pics'],needsClear:arguments['needsClear'],),  routeName: "图片浏览",  );
     case "openjmu://inappbrowser":
       return RouteResult(widget: InAppBrowserPage(url:arguments['url'],title:arguments['title'],withCookie:arguments['withCookie'],withAppBar:arguments['withAppBar'],withAction:arguments['withAction'],withScaffold:arguments['withScaffold'],keepAlive:arguments['keepAlive'],),  routeName: "网页浏览",  );
    default:
@@ -118,4 +118,4 @@ class RouteResult {
 
  enum PageRouteType { material, cupertino, transparent }
 
-List<String> routeNames = ["openjmu://settings","openjmu://switch-startup","openjmu://about","openjmu://font-scale","openjmu://theme","openjmu://scan-qrcode","openjmu://search","openjmu://post-detail","openjmu://team-post-detail","openjmu://publish-team-post","openjmu://publish-post","openjmu://splash","openjmu://test-dashboard","openjmu://notifications","openjmu://user-qrcode","openjmu://backpack","openjmu://user","openjmu://userlist","openjmu://home","openjmu://news-detail","openjmu://login","openjmu://image-viewer","openjmu://image-crop","openjmu://add-comment","openjmu://add-forward","openjmu://webpage","openjmu://inappbrowser"];
+List<String> routeNames = ["openjmu://scan-qrcode","openjmu://login","openjmu://home","openjmu://news-detail","openjmu://notifications","openjmu://team-notifications","openjmu://post-detail","openjmu://publish-post","openjmu://publish-team-post","openjmu://team-post-detail","openjmu://search","openjmu://about","openjmu://theme","openjmu://font-scale","openjmu://settings","openjmu://switch-startup","openjmu://splash","openjmu://backpack","openjmu://user","openjmu://userlist","openjmu://user-qrcode","openjmu://webpage","openjmu://add-comment","openjmu://add-forward","openjmu://image-crop","openjmu://image-viewer","openjmu://inappbrowser"];

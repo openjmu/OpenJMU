@@ -176,6 +176,20 @@ class API {
     return "$file99Host/show/file/fid/$fid/sid/${sid ?? UserAPI.currentUser.sid}";
   }
 
+  static final teamNotification = "$middle99Host/mg/api/aid/notify_counter";
+
+  static String teamMentionedList({int page = 1, int size = 20}) {
+    return "$middle99Host/mg/api/aid/notify_at/page/$page/size/$size";
+  }
+
+  static String teamRepliedList({int page = 1, int size = 20}) {
+    return "$middle99Host/mg/api/aid/notify_comment/page/$page/size/$size";
+  }
+
+  static String teamPraisedList({int page = 1, int size = 20}) {
+    return "$middle99Host/mg/api/aid/notify_praise/page/$page/size/$size";
+  }
+
   /// 通知相关
   static final postListByMention = "$wbHost/topic_api/mentionme";
   static final commentListByReply = "$wbHost/reply_api/replyme";

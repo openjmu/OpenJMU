@@ -72,37 +72,30 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Material(
-        type: MaterialType.transparency,
+        color: Colors.black87,
         child: Center(
-          child: SizedBox(
-            width: suSetSp(120.0),
-            height: suSetSp(120.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-                borderRadius: BorderRadius.circular(suSetSp(8.0)),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  CircularProgressIndicator(
-                    value: progress == 0 ? null : progress / 100,
+          child: Container(
+            width: suSetWidth(180.0),
+            height: suSetHeight(180.0),
+            decoration: BoxDecoration(
+              color: Theme.of(context).canvasColor,
+              borderRadius: BorderRadius.circular(suSetSp(8.0)),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                CircularProgressIndicator(
+                  value: progress == 0 ? null : progress / 100,
+                ),
+                Text(
+                  "正在下载 $progress%",
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.body1.color,
+                    fontSize: suSetSp(16.0),
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                      top: suSetSp(20.0),
-                    ),
-                    child: Text(
-                      "正在下载 $progress%",
-                      style: TextStyle(
-                        color: Theme.of(context).textTheme.body1.color,
-                        fontSize: suSetSp(14.0),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

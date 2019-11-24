@@ -6,7 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/user/UserPage.dart';
+import 'package:OpenJMU/widgets/UserAvatar.dart';
 
 class UserAPI {
   static String lastTicket;
@@ -36,21 +36,7 @@ class UserAPI {
     int uid,
     int t,
   }) {
-    return SizedBox(
-      width: suSetSp(size),
-      height: suSetSp(size),
-      child: GestureDetector(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(suSetSp(size / 2)),
-          child: FadeInImage(
-            fadeInDuration: const Duration(milliseconds: 100),
-            placeholder: AssetImage("assets/avatar_placeholder.png"),
-            image: getAvatarProvider(uid: uid),
-          ),
-        ),
-        onTap: () => UserPage.jump(uid),
-      ),
-    );
+    return UserAvatar(uid: uid, size: size, timestamp: t);
   }
 
   static CachedNetworkImageProvider getAvatarProvider({
@@ -133,6 +119,9 @@ class UserAPI {
     return NetUtils.getWithCookieAndHeaderSet("${API.userFansAndIdols}$uid");
   }
 
+  static Future getNotifications() async =>
+      NetUtils.getWithCookieAndHeaderSet(API.postUnread);
+
   static Future follow(int uid) async {
     NetUtils.postWithCookieAndHeaderSet("${API.userRequestFollow}$uid")
         .then((response) {
@@ -170,7 +159,8 @@ class UserAPI {
     Map<String, dynamic> users = (await NetUtils.getWithCookieSet(
       API.searchUser,
       data: {"keyword": name},
-    )).data;
+    ))
+        .data;
     if (users['total'] == null) {
       users = {
         "total": 1,

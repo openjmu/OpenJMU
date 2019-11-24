@@ -1,7 +1,7 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.7.0+108
+version: 0.7.0+110
 
 environment:
   sdk: ">=2.5.0 <3.0.0"
@@ -51,6 +51,7 @@ dependencies:
   like_button: ^0.1.9
   multi_image_picker: 4.5.9
   oktoast: 2.2.0
+  open_appstore: ^1.0.2
   package_info: ^0.4.0+10
   permission_handler: 3.3.0
   provider: 3.1.0+1

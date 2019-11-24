@@ -103,11 +103,11 @@ class Constants {
   /// Developer tag.
   static Widget developerTag({
     EdgeInsetsGeometry padding,
-    double fontSize = 16.0,
+    double height = 26.0,
   }) =>
       SvgPicture.asset(
         "assets/icons/OpenJMU-Team-Badge.svg",
-        height: suSetHeight(fontSize * 2.5),
+        height: suSetHeight(height),
       );
 
   /// Common separator. Used in setting separate.
@@ -143,6 +143,7 @@ class Constants {
     @required content,
     @required Widget icon,
     EdgeInsets padding,
+    bool showBadge = true,
   }) =>
       Badge(
         padding: padding ?? const EdgeInsets.all(5.0),
@@ -150,6 +151,7 @@ class Constants {
         badgeColor: ThemeUtils.currentThemeColor,
         child: icon,
         elevation: Platform.isAndroid ? 2 : 0,
+        showBadge: showBadge,
       );
 
   /// Progress Indicator. Used in loading data.
@@ -218,6 +220,7 @@ Widget scaledImage({
         fit: BoxFit.contain,
         color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
         colorBlendMode: ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
+        filterQuality: FilterQuality.none,
       );
     } else if (4 / 3 > ratio && ratio > 3 / 4) {
       final maxValue = math.max(image.width, image.height);
@@ -228,6 +231,7 @@ Widget scaledImage({
         fit: BoxFit.contain,
         color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
         colorBlendMode: ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
+        filterQuality: FilterQuality.none,
       );
     } else if (ratio <= 3 / 4) {
       imageWidget = ExtendedRawImage(
@@ -236,6 +240,7 @@ Widget scaledImage({
         fit: BoxFit.contain,
         color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
         colorBlendMode: ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
+        filterQuality: FilterQuality.none,
       );
     }
   } else {
@@ -244,6 +249,7 @@ Widget scaledImage({
       fit: BoxFit.cover,
       color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
       colorBlendMode: ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
+      filterQuality: FilterQuality.none,
     );
   }
   if (ratio >= 4) {

@@ -5,6 +5,7 @@
 import 'dart:async';
 import 'dart:math' as math;
 
+import 'package:OpenJMU/pages/post/TeamPostDetailPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
@@ -16,10 +17,12 @@ import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 
 class TeamPostCard extends StatefulWidget {
   final TeamPost post;
+  final TeamPostDetailPageState detailPageState;
 
   const TeamPostCard({
     Key key,
-    this.post,
+    @required this.post,
+    @required this.detailPageState,
   }) : super(key: key);
 
   @override
@@ -70,14 +73,26 @@ class _TeamPostCardState extends State<TeamPostCard> {
                             horizontal: suSetWidth(8.0),
                             vertical: suSetHeight(4.0),
                           ),
-                          fontSize: suSetSp(16.0),
                         ),
                       ),
                   ],
                 ),
                 _postTime(context),
               ],
-            )
+            ),
+            Spacer(),
+            SizedBox.fromSize(
+              size: Size.square(suSetWidth(50.0)),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                icon: Icon(
+                  Icons.reply,
+                  color: Theme.of(context).dividerColor,
+                ),
+                iconSize: suSetHeight(36.0),
+                onPressed: widget.detailPageState.setReplyToTop,
+              ),
+            ),
           ],
         ),
       );
@@ -90,7 +105,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
         _postTime.month == now.month &&
         _postTime.year == now.year) {
       time += DateFormat("HH:mm").format(_postTime);
-    } else if (post.postTime.year == now.year) {
+    } else if (_postTime.year == now.year) {
       time += DateFormat("MM-dd HH:mm").format(_postTime);
     } else {
       time += DateFormat("yyyy-MM-dd HH:mm").format(_postTime);
@@ -227,7 +242,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                     itemBuilder: (_, index) => UnconstrainedBox(
                       child: UserAPI.getAvatar(
                         uid: post.praisor[index]['uid'],
-                        size: 30.0,
+                        size: 40.0,
                       ),
                     ),
                   ),
@@ -250,7 +265,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                           .toList())
                     ].join("、")}"
                     "${post.praisesCount > 3 ? "等${post.praisesCount}人" : ""}"
-                        "觉得很赞",
+                    "觉得很赞",
                     style: Theme.of(context).textTheme.caption.copyWith(
                           fontSize: suSetSp(14.0),
                         ),

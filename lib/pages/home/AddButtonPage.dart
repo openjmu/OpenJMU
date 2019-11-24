@@ -4,7 +4,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
@@ -21,15 +20,6 @@ class _AddingButtonPageState extends State<AddingButtonPage>
   final List<Function> itemOnTap = [
     (context) async {
       navigatorState.pushNamed("openjmu://publish-post");
-    },
-    (context) async {
-      Map<PermissionGroup, PermissionStatus> permissions =
-          await PermissionHandler().requestPermissions([
-        PermissionGroup.camera,
-      ]);
-      if (permissions[PermissionGroup.camera] == PermissionStatus.granted) {
-        navigatorState.pushNamed("openjmu://scan-qrcode");
-      }
     },
     (context) async {
       navigatorState.pushNamed("openjmu://publish-team-post");

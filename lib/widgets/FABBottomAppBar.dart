@@ -47,7 +47,6 @@ class FABBottomAppBar extends StatefulWidget {
 class FABBottomAppBarState extends State<FABBottomAppBar>
     with AutomaticKeepAliveClientMixin {
   int _selectedIndex = Configs.homeSplashIndex;
-  bool showNotification = false;
 
   @override
   bool get wantKeepAlive => true;
@@ -67,19 +66,6 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
           _selectedIndex = 3;
         }
         if (mounted) setState(() {});
-      })
-      ..on<NotificationsChangeEvent>().listen((event) {
-        if (mounted) {
-          if (event.notifications.count != 0 && !showNotification) {
-            setState(() {
-              showNotification = true;
-            });
-          } else if (event.notifications.count == 0 && showNotification) {
-            setState(() {
-              showNotification = false;
-            });
-          }
-        }
       });
     super.initState();
   }
@@ -181,17 +167,19 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
               ),
             ),
             if (index == 2)
-              Positioned(
-                top: suSetSp(5),
-                right: suSetSp(28),
-                child: Visibility(
-                  visible: showNotification,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(suSetSp(5)),
-                    child: Container(
-                      width: suSetSp(10),
-                      height: suSetSp(10),
-                      color: widget.selectedColor,
+              Consumer<NotificationProvider>(
+                builder: (_, provider, __) => Positioned(
+                  top: suSetSp(5),
+                  right: suSetSp(28),
+                  child: Visibility(
+                    visible: provider.showNotification,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(suSetSp(5)),
+                      child: Container(
+                        width: suSetSp(10),
+                        height: suSetSp(10),
+                        color: widget.selectedColor,
+                      ),
                     ),
                   ),
                 ),

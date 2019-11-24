@@ -196,6 +196,7 @@ class TeamPost {
   });
 
   factory TeamPost.fromJson(Map<String, dynamic> json) {
+    if (json == null) return null;
     json.forEach((k, v) {
       if (json[k] == "") json[k] = null;
     });
@@ -204,28 +205,28 @@ class TeamPost {
       if (_user[k] == "") _user[k] = null;
     });
     TeamPost _post = TeamPost(
-      tid: int.parse(json['tid'].toString()),
-      uid: int.parse(_user['uid'].toString()),
-      rootTid: int.parse(json['root_tid'].toString()),
-      rootUid: int.parse(json['root_uid'].toString()),
+      tid: int.tryParse(json['tid'].toString()),
+      uid: int.tryParse(_user['uid'].toString()),
+      rootTid: int.tryParse(json['root_tid'].toString()),
+      rootUid: int.tryParse(json['root_uid'].toString()),
       nickname: _user['nickname'] ?? _user['uid'].toString(),
       postTime:
-          DateTime.fromMillisecondsSinceEpoch(int.parse(json['post_time'])),
+          DateTime.fromMillisecondsSinceEpoch(int.tryParse(json['post_time'])),
       category: json['category'],
       content: json['content'],
       pics: json['file_info'],
       postInfo: json['post_info'],
       userInfo: _user,
       replyInfo: json['reply_info'],
-      repliesCount: int.parse(json['replys'].toString()),
-      praisesCount: int.parse(json['praises'].toString()),
-      glances: int.parse(json['glances'].toString()),
-      isLike: int.parse(json['praised'].toString()) == 1,
+      repliesCount: int.tryParse(json['replys'].toString()),
+      praisesCount: int.tryParse(json['praises'].toString()),
+      glances: int.tryParse(json['glances'].toString()),
+      isLike: int.tryParse(json['praised'].toString()) == 1,
       praisor: json['praisor'],
-      heat: double.parse(json['heat'].toString()),
-      floor: int.parse(json['floor'].toString()),
-      unitId: int.parse(json['unit_id'].toString()),
-      groupId: int.parse(json['group_id'].toString()),
+      heat: double.tryParse(json['heat'].toString()),
+      floor: int.tryParse(json['floor'].toString()),
+      unitId: int.tryParse(json['unit_id'].toString()),
+      groupId: int.tryParse(json['group_id'].toString()),
     );
     return _post;
   }
@@ -293,6 +294,7 @@ class TeamPostComment {
   });
 
   factory TeamPostComment.fromJson(Map<String, dynamic> json) {
+    if (json == null) return null;
     json.forEach((k, v) {
       if (json[k] == "") json[k] = null;
     });
@@ -738,27 +740,105 @@ class News {
 
 ///
 /// 通知类
-/// [count] 通知计数, [at] @人计数, [comment] 评论, [praise] 点赞
+/// [at] @人计数, [comment] 评论计数, [praise] 点赞计数, [fans] 新粉丝计数
 ///
 class Notifications {
-  int count, at, comment, praise;
+  int at, comment, praise, fans;
 
   Notifications({
-    this.count = 0,
     this.at = 0,
     this.comment = 0,
     this.praise = 0,
+    this.fans = 0,
   });
+
+  int get total => at + comment + praise;
+
+  factory Notifications.fromJson(Map<String, dynamic> json) {
+    return Notifications(
+      at: int.parse(json['t_at'].toString()) +
+          int.parse(json['cmt_at'].toString()),
+      comment: int.parse(json['cmt'].toString()),
+      praise: int.parse(json['t_praised'].toString()),
+      fans: int.parse(json['fans'].toString()),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "at": at,
+      "comment": comment,
+      "praise": praise,
+      "fans": praise,
+    };
+  }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is Notifications &&
           runtimeType == other.runtimeType &&
-          count == other.count;
+          total == other.total;
 
   @override
-  int get hashCode => count.hashCode;
+  int get hashCode => total.hashCode;
+
+  @override
+  String toString() {
+    return JsonEncoder.withIndent("  ").convert(toJson());
+  }
+}
+
+///
+/// 小组通知类
+/// [latestNotify] 最新的通知内容类型,
+/// [mention] @人计数, [reply] 评论计数, [praise] 点赞计数
+///
+class TeamNotifications {
+  String latestNotify;
+  int mention, reply, praise;
+
+  TeamNotifications({
+    this.latestNotify,
+    this.mention = 0,
+    this.reply = 0,
+    this.praise = 0,
+  });
+
+  int get total => mention + reply + praise;
+
+  factory TeamNotifications.fromJson(Map<String, dynamic> json) {
+    return TeamNotifications(
+      latestNotify: json['latest_u'],
+      mention: int.parse(json['mention'].toString()),
+      reply: int.parse(json['reply'].toString()),
+      praise: int.parse(json['praise'].toString()),
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "latest_u": latestNotify,
+      "mention": mention,
+      "reply": reply,
+      "praise": praise,
+    };
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TeamNotifications &&
+          runtimeType == other.runtimeType &&
+          total == other.total;
+
+  @override
+  int get hashCode => total.hashCode;
+
+  @override
+  String toString() {
+    return JsonEncoder.withIndent("  ").convert(toJson());
+  }
 }
 
 ///

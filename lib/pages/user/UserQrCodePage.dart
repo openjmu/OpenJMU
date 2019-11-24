@@ -1,11 +1,8 @@
-import 'dart:async';
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -27,31 +24,35 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isSaving = false;
 
-  Future<Null> saveToGallery() async {
+  void saveToGallery() async {
     if (isSaving) return;
     isSaving = true;
 
-    Map<PermissionGroup, PermissionStatus> permissions =
-        await PermissionHandler().requestPermissions([
-      PermissionGroup.storage,
-    ]);
-    if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
-      return;
-    }
-    RenderRepaintBoundary boundary =
-        previewContainer.currentContext.findRenderObject();
-    ui.Image image = await boundary.toImage(
-      pixelRatio: ui.window.devicePixelRatio,
-    );
-    ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-    final result =
-        await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
-    if (result) {
-      showShortToast("保存成功");
-    } else {
+    try {
+      final permissions = await PermissionHandler().requestPermissions([
+        PermissionGroup.storage,
+      ]);
+      if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
+        showShortToast("未获得存储权限");
+        return;
+      }
+      RenderRepaintBoundary boundary =
+          previewContainer.currentContext.findRenderObject();
+      ui.Image image = await boundary.toImage(
+        pixelRatio: ui.window.devicePixelRatio,
+      );
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      final result =
+          await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
+      if (result != null) {
+        showShortToast("保存成功");
+      } else {
+        showShortToast("保存失败");
+      }
+    } catch (e) {
+      isSaving = false;
       showShortToast("保存失败");
     }
-    isSaving = false;
   }
 
   void showInSnackBar(String value) {

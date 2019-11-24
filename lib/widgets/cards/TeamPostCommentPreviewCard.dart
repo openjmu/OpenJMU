@@ -14,14 +14,12 @@ import 'package:OpenJMU/pages/post/TeamPostDetailPage.dart';
 class TeamPostCommentPreviewCard extends StatelessWidget {
   final TeamPostComment comment;
   final TeamPost topPost;
-//  final TeamPost previousPost;
   final TeamPostDetailPageState detailPageState;
 
   const TeamPostCommentPreviewCard({
     Key key,
     @required this.comment,
     @required this.topPost,
-//    @required this.previousPost,
     @required this.detailPageState,
   }) : super(key: key);
 
@@ -77,7 +75,6 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
                             horizontal: suSetWidth(8.0),
                             vertical: suSetHeight(3.0),
                           ),
-                          fontSize: 11.0,
                         ),
                       ),
                   ],
@@ -174,7 +171,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
         _postTime.month == now.month &&
         _postTime.year == now.year) {
       time += DateFormat("HH:mm").format(_postTime);
-    } else if (comment.postTime.year == now.year) {
+    } else if (_postTime.year == now.year) {
       time += DateFormat("MM-dd HH:mm").format(_postTime);
     } else {
       time += DateFormat("yyyy-MM-dd HH:mm").format(_postTime);

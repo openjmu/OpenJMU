@@ -71,11 +71,13 @@ class _SettingsPageState extends State<SettingsPage> {
         PlatformSwitch(
           activeColor: ThemeUtils.currentThemeColor,
           value: ThemeUtils.isDark,
-          onChanged: !ThemeUtils.isPlatformBrightness ? (bool value) {
-            ThemeUtils.isDark = value;
-            DataUtils.setBrightness(value);
-            Instances.eventBus.fire(ChangeBrightnessEvent(value));
-          } : null,
+          onChanged: !ThemeUtils.isPlatformBrightness
+              ? (bool value) {
+                  ThemeUtils.isDark = value;
+                  DataUtils.setBrightness(value);
+                  Instances.eventBus.fire(ChangeBrightnessEvent(value));
+                }
+              : null,
         ),
         PlatformSwitch(
           activeColor: ThemeUtils.currentThemeColor,
@@ -96,6 +98,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ThemeUtils.isAMOLEDDark = value;
             DataUtils.setAMOLEDDark(value);
             Instances.eventBus.fire(ChangeAMOLEDDarkEvent(value));
+            if (mounted) setState(() {});
           },
         ),
         null,
@@ -206,53 +209,52 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(elevation: 0),
-      body: Padding(
+      body: ListView(
         padding: EdgeInsets.symmetric(
-          horizontal: suSetSp(40.0),
+          horizontal: suSetWidth(40.0),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "设置",
-                  style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: suSetSp(40.0),
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                Text(
-                  "管理该应用的各项设置",
-                  style: Theme.of(context).textTheme.subtitle.copyWith(
-                        fontSize: suSetSp(20.0),
-                      ),
-                ),
-                Constants.emptyDivider(height: 20.0),
-              ],
+        children: <Widget>[
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                "设置",
+                style: Theme.of(context).textTheme.title.copyWith(
+                      fontSize: suSetSp(40.0),
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              Text(
+                "管理该应用的各项设置",
+                style: Theme.of(context).textTheme.subtitle.copyWith(
+                      fontSize: suSetSp(20.0),
+                    ),
+              ),
+              Constants.emptyDivider(height: 20.0),
+            ],
+          ),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            separatorBuilder: (context, index) => Constants.separator(
+              context,
+              color: Colors.transparent,
+              height: 20.0,
             ),
-            ListView.separated(
+            itemCount: pageSection.length,
+            itemBuilder: (context, sectionIndex) => ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              separatorBuilder: (context, index) => Constants.separator(
-                context,
-                color: Colors.transparent,
-                height: 20.0,
-              ),
-              itemCount: pageSection.length,
-              itemBuilder: (context, sectionIndex) => ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: pageSection[sectionIndex].length,
-                itemBuilder: (context, index) => settingItem(
-                  context: context,
-                  index: index,
-                  sectionIndex: sectionIndex,
-                ),
+              itemCount: pageSection[sectionIndex].length,
+              itemBuilder: (context, index) => settingItem(
+                context: context,
+                index: index,
+                sectionIndex: sectionIndex,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

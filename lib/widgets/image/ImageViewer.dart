@@ -325,6 +325,7 @@ class ImageList extends StatelessWidget {
                               imageUrl:
                                   pics[i].imageThumbUrl ?? pics[i].imageUrl,
                               fit: BoxFit.cover,
+                              filterQuality: FilterQuality.none,
                             ),
                           ),
                         ),

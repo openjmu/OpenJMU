@@ -584,7 +584,6 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                                 horizontal: suSetWidth(8.0),
                                                 vertical: suSetHeight(4.0),
                                               ),
-                                              fontSize: suSetSp(14.0),
                                             ),
                                           ),
                                       ],

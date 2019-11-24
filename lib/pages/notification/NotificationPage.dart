@@ -28,26 +28,14 @@ class NotificationPageState extends State<NotificationPage>
 
   TabController _tabController, _mentionTabController;
 
-  Notifications currentNotifications;
-
   PostList _mentionPost;
   CommentList _mentionComment;
   CommentList _replyComment;
   PraiseList _praiseList;
 
-  int testIndex;
-
   @override
   void initState() {
-    currentNotifications = Instances.notifications;
     _tabController = TabController(length: 3, vsync: this);
-    _tabController.animation.addListener(() {
-      if (_tabController.indexIsChanging) {
-        setState(() {
-          testIndex = _tabController.index;
-        });
-      }
-    });
     _mentionTabController = TabController(length: 2, vsync: this);
 
     postByMention();
@@ -55,129 +43,101 @@ class NotificationPageState extends State<NotificationPage>
     commentByReply();
     praiseList();
 
-    Instances.eventBus
-      ..on<NotificationsChangeEvent>().listen((event) {
-        currentNotifications = event.notifications;
-        if (this.mounted) setState(() {});
-      });
     super.initState();
   }
 
   List<Widget> actions() {
-    List<Widget> _tabs = [
-      Tab(
-        child: currentNotifications.at != 0
-            ? IconButton(
-                icon: Constants.badgeIcon(
-                  content: currentNotifications.at == 0
-                      ? ""
-                      : currentNotifications.at,
-                  icon: Icon(
-                    actionsIcons[0],
-                    size: suSetSp(26.0),
-                  ),
-                ),
-                onPressed: () {
-                  _tabController.animateTo(0);
-                  Notifications _notify = currentNotifications;
-                  setState(() {
-                    currentNotifications = Notifications(
-                      count: _notify.count - _notify.at,
-                      at: 0,
-                      comment: _notify.comment,
-                      praise: _notify.praise,
-                    );
-                  });
-                },
-              )
-            : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  actionsIcons[0],
-                  size: suSetSp(26.0),
-                ),
-              ),
-      ),
-      Tab(
-        child: currentNotifications.comment != 0
-            ? IconButton(
-                icon: Constants.badgeIcon(
-                  content: currentNotifications.comment == 0
-                      ? ""
-                      : currentNotifications.comment,
-                  icon: Icon(
-                    actionsIcons[1],
-                    size: suSetSp(26.0),
-                  ),
-                ),
-                onPressed: () {
-                  _tabController.animateTo(1);
-                  Notifications _notify = currentNotifications;
-                  setState(() {
-                    currentNotifications = Notifications(
-                      count: _notify.count - _notify.comment,
-                      at: _notify.at,
-                      comment: 0,
-                      praise: _notify.praise,
-                    );
-                  });
-                },
-              )
-            : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  actionsIcons[1],
-                  size: suSetSp(26.0),
-                ),
-              ),
-      ),
-      Tab(
-        child: currentNotifications.praise != 0
-            ? IconButton(
-                icon: Constants.badgeIcon(
-                  content: currentNotifications.praise == 0
-                      ? ""
-                      : currentNotifications.praise,
-                  icon: Icon(
-                    actionsIcons[2],
-                    size: suSetSp(26.0),
-                  ),
-                ),
-                onPressed: () {
-                  _tabController.animateTo(2);
-                  Notifications _notify = currentNotifications;
-                  setState(() {
-                    currentNotifications = Notifications(
-                      count: _notify.count - _notify.praise,
-                      at: _notify.at,
-                      comment: _notify.comment,
-                      praise: 0,
-                    );
-                  });
-                },
-              )
-            : Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  actionsIcons[2],
-                  size: suSetSp(26.0),
-                ),
-              ),
-      ),
-    ];
     return [
       SizedBox(
-        width: suSetSp(210.0),
-        child: TabBar(
-          indicatorColor: ThemeUtils.currentThemeColor,
-          indicatorPadding: const EdgeInsets.only(bottom: 18.0),
-          indicatorSize: TabBarIndicatorSize.label,
-          indicatorWeight: 6.0,
-          labelPadding: EdgeInsets.symmetric(
-            horizontal: suSetSp(8.0),
+        width: suSetWidth(220.0),
+        child: Consumer<NotificationProvider>(
+          builder: (_, provider, __) => TabBar(
+            indicatorColor: ThemeUtils.currentThemeColor,
+            indicatorPadding: const EdgeInsets.only(bottom: 18.0),
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorWeight: 6.0,
+            labelPadding: EdgeInsets.symmetric(
+              horizontal: suSetWidth(10.0),
+            ),
+            tabs: [
+              Tab(
+                child: provider.notification.at != 0
+                    ? IconButton(
+                        icon: Constants.badgeIcon(
+                          content: provider.notification.at == 0
+                              ? ""
+                              : provider.notification.at,
+                          icon: Icon(
+                            actionsIcons[0],
+                            size: suSetSp(26.0),
+                          ),
+                        ),
+                        onPressed: () {
+                          _tabController.animateTo(0);
+                          provider.readMention();
+                        },
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(
+                          actionsIcons[0],
+                          size: suSetSp(26.0),
+                        ),
+                      ),
+              ),
+              Tab(
+                child: provider.notification.comment != 0
+                    ? IconButton(
+                        icon: Constants.badgeIcon(
+                          content: provider.notification.comment == 0
+                              ? ""
+                              : provider.notification.comment,
+                          icon: Icon(
+                            actionsIcons[1],
+                            size: suSetSp(26.0),
+                          ),
+                        ),
+                        onPressed: () {
+                          _tabController.animateTo(1);
+                          provider.readReply();
+                        },
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(
+                          actionsIcons[1],
+                          size: suSetSp(26.0),
+                        ),
+                      ),
+              ),
+              Tab(
+                child: provider.notification.praise != 0
+                    ? IconButton(
+                        icon: Constants.badgeIcon(
+                          content: provider.notification.praise == 0
+                              ? ""
+                              : provider.notification.praise,
+                          icon: Icon(
+                            actionsIcons[2],
+                            size: suSetSp(26.0),
+                          ),
+                        ),
+                        onPressed: () {
+                          _tabController.animateTo(2);
+                          provider.readPraise();
+                        },
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(
+                          actionsIcons[2],
+                          size: suSetSp(26.0),
+                        ),
+                      ),
+              ),
+            ],
+            controller: _tabController,
           ),
-          tabs: _tabs,
-          controller: _tabController,
         ),
       )
     ];

@@ -19,8 +19,24 @@ class MessagePageState extends State<MessagePage>
 //  static final List<String> tabs = ["消息", "通知"];
   static final List<String> tabs = ["消息"];
 
-  List<String> topItems = ["评论/留言", "粉丝"];
-  List<String> topIcons = ["liuyan", "idols"];
+  final List<Map<String, dynamic>> topItems = [
+    {
+      "name": "评论/留言",
+      "icons": "liuyan",
+      "action": () {
+        navigatorState
+            .pushNamed("openjmu://notifications");
+      },
+    },
+    {
+      "name": "集市消息",
+      "icons": "idols",
+      "action": () {
+        navigatorState
+            .pushNamed("openjmu://team-notifications");
+      },
+    },
+  ];
 
   Notifications notifications = Instances.notifications;
   Color currentThemeColor = ThemeUtils.currentThemeColor;
@@ -35,10 +51,6 @@ class MessagePageState extends State<MessagePage>
     );
 
     Instances.eventBus
-      ..on<NotificationsChangeEvent>().listen((event) {
-        notifications = event.notifications;
-        if (this.mounted) setState(() {});
-      })
       ..on<ChangeThemeEvent>().listen((event) {
         currentThemeColor = event.color;
         if (this.mounted) setState(() {});
@@ -46,28 +58,9 @@ class MessagePageState extends State<MessagePage>
     super.initState();
   }
 
-  void _handleItemClick(context, String item) {
-    switch (item) {
-      case "评论/留言":
-        navigatorState.pushNamed("openjmu://notifications");
-        break;
-      case "粉丝":
-        navigatorState.pushNamed(
-          "openjmu://userlist",
-          arguments: {
-            "user": UserAPI.currentUser,
-            "type": 2,
-          },
-        );
-        break;
-      default:
-        break;
-    }
-  }
-
   Widget _icon(int index) {
     return SvgPicture.asset(
-      "assets/icons/${topIcons[index]}-line.svg",
+      "assets/icons/${topItems[index]['icons']}-line.svg",
       color: Theme.of(context).iconTheme.color,
       width: suSetSp(30.0),
       height: suSetSp(30.0),
@@ -112,69 +105,112 @@ class MessagePageState extends State<MessagePage>
 //        controller: _tabController,
 //        children: <Widget>[
           ListView(
-        shrinkWrap: true,
         children: <Widget>[
-          ListView.separated(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            separatorBuilder: (context, index) => Constants.separator(
-              context,
-              color: Theme.of(context).canvasColor,
-              height: 1.0,
-            ),
-            itemCount: topItems.length,
-            itemBuilder: (context, index) => GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: suSetSp(18.0),
-                  vertical: suSetSp(8.0),
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: suSetSp(16.0),
+          Consumer<NotificationProvider>(
+            builder: (_, provider, __) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: suSetWidth(18.0),
+                        vertical: suSetHeight(12.0),
                       ),
-                      child: index == 0 && notifications.count != 0
-                          ? Padding(
+                      child: Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                              right: suSetSp(16.0),
+                            ),
+                            child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Constants.badgeIcon(
-                                content: notifications.count,
-                                icon: _icon(index),
+                                content: provider.notification.total,
+                                icon: _icon(0),
+                                showBadge: provider.notification.total > 0,
                               ),
-                            )
-                          : IconButton(
-                              icon: _icon(index),
-                              onPressed: null,
                             ),
-                    ),
-                    Expanded(
-                      child: Text(
-                        topItems[index],
-                        style: TextStyle(
-                          fontSize: suSetSp(19.0),
-                        ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              topItems[0]['name'],
+                              style: TextStyle(
+                                fontSize: suSetSp(19.0),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              right: suSetSp(12.0),
+                            ),
+                            child: SvgPicture.asset(
+                              "assets/icons/arrow-right.svg",
+                              color: Colors.grey,
+                              width: suSetSp(24.0),
+                              height: suSetSp(24.0),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        right: suSetSp(12.0),
+                    onTap: topItems[0]['action'],
+                  ),
+                  Constants.separator(
+                    context,
+                    color: Theme.of(context).canvasColor,
+                    height: 1.0,
+                  ),
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: suSetWidth(18.0),
+                        vertical: suSetHeight(12.0),
                       ),
-                      child: SvgPicture.asset(
-                        "assets/icons/arrow-right.svg",
-                        color: Colors.grey,
-                        width: suSetSp(24.0),
-                        height: suSetSp(24.0),
+                      child: Row(
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(
+                              right: suSetSp(16.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Constants.badgeIcon(
+                                content: provider.teamNotification.total,
+                                icon: _icon(1),
+                                showBadge: provider.teamNotification.total > 0,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Text(
+                              topItems[1]['name'],
+                              style: TextStyle(
+                                fontSize: suSetSp(19.0),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              right: suSetSp(12.0),
+                            ),
+                            child: SvgPicture.asset(
+                              "assets/icons/arrow-right.svg",
+                              color: Colors.grey,
+                              width: suSetSp(24.0),
+                              height: suSetSp(24.0),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-              onTap: () {
-                _handleItemClick(context, topItems[index]);
-              },
-            ),
+                    onTap: topItems[1]['action'],
+                  ),
+                ],
+              );
+            },
           ),
           Constants.separator(context),
           if (Configs.debug)

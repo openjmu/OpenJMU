@@ -14,7 +14,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:dio/dio.dart';
-import 'package:draggable_container/draggable_container.dart';
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -38,13 +37,11 @@ class PublishTeamPostPage extends StatefulWidget {
 }
 
 class PublishTeamPostPageState extends State<PublishTeamPostPage> {
-  final _stateKey = GlobalKey<DraggableContainerState>();
   final _textEditingController = TextEditingController();
   final _dialogController = LoadingDialogController();
   final _focusNode = FocusNode();
-  final _iconSize = suSetSp(28.0);
+  final _iconSize = suSetWidth(28.0);
   final gridCount = 5;
-  final size = Size.square(Screen.width / 5);
 
   List<Future> query;
   List<Asset> assets = <Asset>[];
@@ -62,8 +59,6 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
   double _keyboardHeight = EmotionPadState.emoticonPadDefaultHeight;
 
   bool emoticonPadActive = false;
-
-  Widget draggableContainer;
 
   @override
   void initState() {
@@ -155,110 +150,14 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     } else {
       return;
     }
-    if (!mounted) return;
 
-    for (final asset in resultList) {
-      if (assets.where((a) => a.identifier == asset.identifier).isEmpty) {
-        assets.add(asset);
-      }
+    if (resultList != null) {
+      assets
+        ..clear()
+        ..addAll(resultList);
+      imagesLength = assets.length;
     }
-    imagesLength = assets.length;
-    resetDraggableContainer();
-
     if (mounted) setState(() {});
-  }
-
-  void resetDraggableContainer() async {
-    if (_stateKey.currentState != null && _stateKey.currentState.mounted) {
-      draggableContainer = null;
-    }
-    if (imagesLength != 0) {
-      await Future.delayed(const Duration(milliseconds: 100), () {
-        draggableContainer = DraggableContainer(
-          key: _stateKey,
-          autoReorder: true,
-          dragDecoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Theme.of(context).dividerColor,
-                blurRadius: 1.0,
-              ),
-            ],
-          ),
-          slotSize: size,
-          deleteButton: Container(
-            width: suSetSp(20.0),
-            height: suSetSp(20.0),
-            decoration: BoxDecoration(
-              color: Colors.redAccent,
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.delete_forever,
-              color: Colors.white,
-              size: suSetSp(18.0),
-            ),
-          ),
-          // item list
-          items: <DraggableItem>[
-            for (int i = 0; i < imagesLength; i++)
-              imageDraggableItem(context, size, i),
-          ],
-          onBeforeDelete: (int index, item) async {
-            assets.removeWhere(
-              (asset) => asset.identifier == assets.toList()[index].identifier,
-            );
-            failedImages.remove(index);
-            imagesLength--;
-            final item =
-                await _stateKey.currentState.popSlot(triggerEvent: false);
-            _stateKey.currentState
-              ..removeIndex(index, triggerEvent: false)
-              ..reorder()
-              ..addItem(item);
-            if (mounted) setState(() {});
-            return false;
-          },
-        );
-        if (mounted) setState(() {});
-      });
-    }
-  }
-
-  DraggableItem imageDraggableItem(context, Size size, int index) {
-    return DraggableItem(
-      fixed: true,
-      deletable: true,
-      child: Padding(
-        padding: EdgeInsets.all(suSetWidth(8.0)),
-        child: Stack(
-          children: <Widget>[
-            AssetThumb(
-              asset: assets.toList()[index],
-              width: size.width.toInt(),
-              height: size.width.toInt(),
-            ),
-            if (failedImages.contains(index))
-              Positioned(
-                top: 0.0,
-                bottom: 0.0,
-                left: 0.0,
-                right: 0.0,
-                child: Container(
-                  color: Colors.white.withOpacity(0.7),
-                  child: Center(
-                    child: Icon(
-                      Icons.error,
-                      color: Colors.redAccent,
-                      size: suSetSp(36.0),
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
   }
 
   Widget poundIcon(context) => SvgPicture.asset(
@@ -318,6 +217,74 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     );
   }
 
+  Widget assetThumb(int index) => Positioned(
+        top: 0.0,
+        left: 0.0,
+        right: 0.0,
+        bottom: 0.0,
+        child: AssetThumb(
+          asset: assets[index],
+          width: (Screen.width / gridCount).floor(),
+          height: (Screen.width / gridCount).floor(),
+          quality: 50,
+          spinner: const Center(
+            child: SizedBox(
+              width: 50,
+              height: 50,
+              child: CupertinoActivityIndicator(),
+            ),
+          ),
+        ),
+      );
+
+  Widget deleteButton(int index) => Positioned(
+        right: 0.0,
+        top: 0.0,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            setState(() {
+              assets.removeAt(index);
+              imagesLength--;
+              failedImages.removeWhere((i) => i == index);
+            });
+          },
+          child: Container(
+            padding: EdgeInsets.all(suSetWidth(4.0)),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(suSetWidth(10.0)),
+              ),
+              color: Colors.black54,
+            ),
+            child: Center(
+              child: Icon(
+                Icons.delete_forever,
+                size: suSetWidth(20.0),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      );
+
+  Widget get uploadErrorCover => Positioned(
+        top: 0.0,
+        bottom: 0.0,
+        left: 0.0,
+        right: 0.0,
+        child: Container(
+          color: Colors.white.withOpacity(0.7),
+          child: Center(
+            child: Icon(
+              Icons.error,
+              color: Colors.redAccent,
+              size: suSetSp(36.0),
+            ),
+          ),
+        ),
+      );
+
   Widget customGridView(context) {
     return Container(
       margin: EdgeInsets.only(
@@ -326,8 +293,26 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
                 : MediaQuery.of(context).padding.bottom) +
             suSetSp(80.0),
       ),
-      child:
-          draggableContainer != null ? draggableContainer : SizedBox.shrink(),
+      height: Screen.width / gridCount * (assets.length / gridCount).ceil(),
+      child: GridView.builder(
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: gridCount,
+        ),
+        itemCount: assets.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: EdgeInsets.all(suSetSp(4.0)),
+            child: Stack(
+              children: <Widget>[
+                assetThumb(index),
+                deleteButton(index),
+                if (failedImages.contains(index)) uploadErrorCover,
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -661,7 +646,6 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     ).then((response) {
       if (response.statusCode != 200) throw Error();
       _incrementImagesCounter();
-      print(response.data);
       final imageId = int.parse(response.data['fid'].toString());
       _imageIdList[index] = imageId;
       return response;
@@ -680,7 +664,10 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
   void _incrementImagesCounter() {
     uploadedImages++;
     if (mounted) setState(() {});
-    _dialogController.updateText("正在上传图片 ($uploadedImages/${assets.length})");
+    _dialogController.updateText(
+      "正在上传图片"
+      "($uploadedImages/${assets.length})",
+    );
   }
 
   Future _postImagesQuery() async => await Future.wait(

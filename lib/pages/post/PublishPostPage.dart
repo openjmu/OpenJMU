@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:core';
 import 'dart:io';
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,9 +9,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:dio/dio.dart';
-import 'package:dragablegridview_flutter/dragablegridview_flutter.dart';
-import 'package:dragablegridview_flutter/dragablegridviewbin.dart';
-import 'package:draggable_container/draggable_container.dart';
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_icons/flutter_icons.dart';
@@ -35,20 +32,18 @@ class PublishPostPage extends StatefulWidget {
 }
 
 class PublishPostPageState extends State<PublishPostPage> {
-//  final GlobalKey<DraggableContainerState> _stateKey = GlobalKey();
   final _textEditingController = TextEditingController();
-  final _editSwitchController = EditSwitchController();
   final _dialogController = LoadingDialogController();
   final _focusNode = FocusNode();
-  final _iconSize = suSetSp(28.0);
+  final _iconSize = suSetWidth(28.0);
   final gridCount = 5;
 //  final maxLength = 2000;
 
+  final assets = <Asset>[];
+  final failedImages = <int>{};
+  List<int> _imageIdList = [];
+
   List<Future> query;
-  List<Asset> assets = <Asset>[];
-  List<ItemBin> imagesBin = <ItemBin>[];
-  Set<int> failedImages = {};
-  List _imageIdList = [];
 
   int imagesLength = 0, maxImagesLength = 9, uploadedImages = 1;
 
@@ -153,59 +148,14 @@ class PublishPostPageState extends State<PublishPostPage> {
     } else {
       return;
     }
-    if (!mounted) return;
 
-    for (final asset in resultList) {
-      assets.add(asset);
-      imagesBin.add(ItemBin(asset));
-    }
-//    for (int i = 0; i < resultList.length; i++) {
-//      assets.add(resultList[i]);
-//      imagesBin.add(ItemBin(resultList[i]));
-//      if (_stateKey.currentState != null) {
-//        _stateKey.currentState.addItem(imageDraggableItem(context, i));
-//      }
-//    }
-    setState(() {
+    if (resultList != null) {
+      assets
+        ..clear()
+        ..addAll(resultList);
       imagesLength = assets.length;
-    });
-  }
-
-  DraggableItem imageDraggableItem(context, int position) {
-    final size = (MediaQuery.of(context).size.width / gridCount).floor() -
-        (18 - gridCount);
-    return DraggableItem(
-      deletable: true,
-      child: Padding(
-        padding: EdgeInsets.all(suSetSp(4.0)),
-        child: Stack(
-          children: <Widget>[
-            AssetThumb(
-              asset: assets[position],
-              width: size,
-              height: size,
-            ),
-            if (failedImages.contains(position))
-              Positioned(
-                top: 0.0,
-                bottom: 0.0,
-                left: 0.0,
-                right: 0.0,
-                child: Container(
-                  color: Colors.white.withOpacity(0.7),
-                  child: Center(
-                    child: Icon(
-                      Icons.error,
-                      color: Colors.redAccent,
-                      size: suSetSp(36.0),
-                    ),
-                  ),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
+    }
+    if (mounted) setState(() {});
   }
 
   Widget poundIcon(context) => SvgPicture.asset(
@@ -272,9 +222,75 @@ class PublishPostPageState extends State<PublishPostPage> {
     );
   }
 
+  Widget assetThumb(int index) => Positioned(
+        top: 0.0,
+        left: 0.0,
+        right: 0.0,
+        bottom: 0.0,
+        child: AssetThumb(
+          asset: assets[index],
+          width: (Screen.width / gridCount).floor(),
+          height: (Screen.width / gridCount).floor(),
+          quality: 50,
+          spinner: const Center(
+            child: SizedBox(
+              width: 50,
+              height: 50,
+              child: CupertinoActivityIndicator(),
+            ),
+          ),
+        ),
+      );
+
+  Widget deleteButton(int index) => Positioned(
+        right: 0.0,
+        top: 0.0,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            setState(() {
+              assets.removeAt(index);
+              imagesLength--;
+              failedImages.removeWhere((i) => i == index);
+            });
+          },
+          child: Container(
+            padding: EdgeInsets.all(suSetWidth(4.0)),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(suSetWidth(10.0)),
+              ),
+              color: Colors.black54,
+            ),
+            child: Center(
+              child: Icon(
+                Icons.delete_forever,
+                size: suSetWidth(20.0),
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      );
+
+  Widget get uploadErrorCover => Positioned(
+        top: 0.0,
+        bottom: 0.0,
+        left: 0.0,
+        right: 0.0,
+        child: Container(
+          color: Colors.white.withOpacity(0.7),
+          child: Center(
+            child: Icon(
+              Icons.error,
+              color: Colors.redAccent,
+              size: suSetSp(36.0),
+            ),
+          ),
+        ),
+      );
+
   Widget customGridView(context) {
-    final size = (MediaQuery.of(context).size.width / gridCount).floor() -
-        (18 - gridCount);
     return Container(
       margin: EdgeInsets.only(
         bottom: (emoticonPadActive
@@ -282,119 +298,25 @@ class PublishPostPageState extends State<PublishPostPage> {
                 : MediaQuery.of(context).padding.bottom) +
             suSetSp(80.0),
       ),
-//      child: imagesLength != 0 ? DraggableContainer(
-//        key: _stateKey,
-//        autoReorder: true,
-//        dragDecoration: BoxDecoration(
-//          boxShadow: [
-//            BoxShadow(color: Colors.grey[850], blurRadius: 3),
-//          ],
-//        ),
-//        slotSize: Size.square(MediaQuery.of(context).size.width / 5),
-//        deleteButton: Container(
-//          width: suSetSp(20.0),
-//          height: suSetSp(20.0),
-//          decoration: BoxDecoration(
-//            color: Colors.redAccent,
-//            shape: BoxShape.circle,
-//          ),
-//          child: Icon(
-//            Icons.delete_forever,
-//            color: Colors.white,
-//            size: suSetSp(18.0),
-//          ),
-//        ),
-//        // item list
-//        items: <DraggableItem>[
-//          for (int i = 0; i < imagesLength; i++)
-//            imageDraggableItem(context, i),
-//        ],
-//      ) : SizedBox.shrink(),
-      child: DragAbleGridView(
+      height: Screen.width / gridCount * (assets.length / gridCount).ceil(),
+      child: GridView.builder(
         shrinkWrap: true,
-        itemBins: imagesBin,
-        editSwitchController: _editSwitchController,
-        crossAxisCount: gridCount,
-        childAspectRatio: 1,
-        isOpenDragAble: true,
-        animationDuration: 300,
-        longPressDuration: 500,
-        deleteIcon: Container(
-          padding: EdgeInsets.all(suSetSp(3.0)),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.redAccent,
-          ),
-          child: Icon(
-            Icons.delete_forever,
-            color: Colors.white,
-            size: suSetSp(18.0),
-          ),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: gridCount,
         ),
-        deleteIconClickListener: (int index) {
-          assets.remove(index);
-          imagesBin.remove(index);
-          imagesLength--;
-          if (failedImages.isNotEmpty) failedImages.clear();
-          if (mounted) setState(() {});
-        },
-        child: (int position) {
+        itemCount: assets.length,
+        itemBuilder: (context, index) {
           return Padding(
             padding: EdgeInsets.all(suSetSp(4.0)),
             child: Stack(
               children: <Widget>[
-                AssetThumb(
-                  asset: assets[position],
-                  width: size,
-                  height: size,
-                ),
-                if (failedImages.contains(position))
-                  Positioned(
-                    top: 0.0,
-                    bottom: 0.0,
-                    left: 0.0,
-                    right: 0.0,
-                    child: Container(
-                      color: Colors.white.withOpacity(0.7),
-                      child: Center(
-                        child: Icon(
-                          Icons.error,
-                          color: Colors.redAccent,
-                          size: suSetSp(36.0),
-                        ),
-                      ),
-                    ),
-                  ),
+                assetThumb(index),
+                deleteButton(index),
+                if (failedImages.contains(index)) uploadErrorCover,
               ],
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _counter(context) {
-    return Positioned(
-      bottom: (emoticonPadActive
-              ? _keyboardHeight
-              : MediaQuery.of(context).padding.bottom) +
-          suSetSp(60.0),
-      right: 0.0,
-      child: Container(
-        height: suSetSp(20.0),
-        padding: EdgeInsets.only(right: suSetSp(11.0)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Text(
-              "$currentLength",
-//              "$currentLength/$maxLength",
-              style: TextStyle(
-                color: counterTextColor,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -539,47 +461,51 @@ class PublishPostPageState extends State<PublishPostPage> {
         type: MaterialType.transparency,
         child: Container(
           padding: EdgeInsets.all(suSetWidth(20.0)),
-          width: suSetWidth(500.0),
-          height: suSetHeight(360.0),
+          width: Screen.width * 0.9,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(suSetWidth(20.0)),
             color: Theme.of(context).cardColor.withOpacity(0.6),
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Icon(
                 Icons.error_outline,
                 size: suSetWidth(120.0),
               ),
-              Text.rich(
-                TextSpan(children: <InlineSpan>[
-                  TextSpan(
-                    text: "发布动态前，请确认您已阅读并知晓",
-                  ),
-                  TextSpan(
-                      text: "《集大通平台公约》",
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => ConventionDialog(),
-                          );
-                        }),
-                  TextSpan(
-                    text: "，且发布的内容符合公约要求。",
-                  ),
-                ]),
-                style: TextStyle(
-                  fontSize: suSetSp(22.0),
-                  fontWeight: FontWeight.normal,
-                  height: 1.7,
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: suSetHeight(20.0),
                 ),
-                textAlign: TextAlign.center,
+                child: Text.rich(
+                  TextSpan(children: <InlineSpan>[
+                    TextSpan(
+                      text: "发布动态前，请确认您已阅读并知晓",
+                    ),
+                    TextSpan(
+                        text: "《集大通平台公约》",
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            showDialog(
+                              context: context,
+                              builder: (_) => ConventionDialog(),
+                            );
+                          }),
+                    TextSpan(
+                      text: "，且发布的内容符合公约要求。",
+                    ),
+                  ]),
+                  style: TextStyle(
+                    fontSize: suSetSp(22.0),
+                    fontWeight: FontWeight.normal,
+                    height: 1.7,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
               Row(
                 children: <Widget>[
@@ -693,20 +619,20 @@ class PublishPostPageState extends State<PublishPostPage> {
                 data['extra_id'] = extraId.substring(1, extraId.length - 1);
                 _postContent(data);
               } else {
-                query.clear();
+                query = [];
                 _dialogController.changeState("failed", "图片上传失败");
                 isLoading = false;
                 if (mounted) setState(() {});
               }
             }).catchError((e) {
-              query.clear();
+              query = [];
               _dialogController.changeState("failed", "图片上传失败");
               isLoading = false;
               if (mounted) setState(() {});
               debugPrint(e.toString());
             });
           } catch (exception) {
-            query?.clear();
+            query = [];
             debugPrint(exception.toString());
           }
         } else {
@@ -726,11 +652,11 @@ class PublishPostPageState extends State<PublishPostPage> {
     ).then((response) {
       if (response.statusCode != 200) throw Error();
       _incrementImagesCounter();
-      int imageId = int.parse(response.data['image_id'].toString());
+      final imageId = int.parse(response.data['image_id'].toString());
       _imageIdList[index] = imageId;
       return response;
     }).catchError((e) {
-      query.clear();
+      query = [];
       debugPrint(e.toString());
       debugPrint(e.response.toString());
       showErrorShortToast(e.response.data['msg'] as String);
@@ -744,14 +670,17 @@ class PublishPostPageState extends State<PublishPostPage> {
   void _incrementImagesCounter() {
     uploadedImages++;
     if (mounted) setState(() {});
-    _dialogController.updateText("正在上传图片 ($uploadedImages/${assets.length})");
+    _dialogController.updateText(
+      "正在上传图片"
+      "($uploadedImages/${assets.length})",
+    );
   }
 
   Future _postImagesQuery() async => await Future.wait(
         query,
         eagerError: true,
       ).catchError((e) {
-        query.clear();
+        query = [];
         _dialogController.changeState("failed", "图片上传失败");
         isLoading = false;
         if (mounted) setState(() {});
@@ -783,11 +712,11 @@ class PublishPostPageState extends State<PublishPostPage> {
       }
       return response;
     }).catchError((e) {
-      setState(() {
-        isLoading = false;
-      });
       _dialogController.changeState("failed", "动态发布失败");
       debugPrint(e.toString());
+    }).whenComplete(() {
+      isLoading = false;
+      if (mounted) setState(() {});
     });
   }
 
@@ -840,7 +769,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     if (keyboardHeight > 0) {
       emoticonPadActive = false;
     }
-    _keyboardHeight = max(_keyboardHeight, keyboardHeight);
+    _keyboardHeight = math.max(_keyboardHeight, keyboardHeight);
 
     return WillPopScope(
       onWillPop: checkEmptyWhenPop,
@@ -871,7 +800,6 @@ class PublishPostPageState extends State<PublishPostPage> {
                   if (assets.isNotEmpty) customGridView(context),
                 ],
               ),
-              _counter(context),
               _toolbar(context),
               emoticonPad(context),
             ],
@@ -880,20 +808,4 @@ class PublishPostPageState extends State<PublishPostPage> {
       ),
     );
   }
-}
-
-class ItemBin extends DragAbleGridViewBin {
-  Asset data;
-  ItemBin(this.data);
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        other is ItemBin &&
-            runtimeType == other.runtimeType &&
-            data.identifier == other.data.identifier;
-  }
-
-  @override
-  int get hashCode => data.hashCode;
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
@@ -59,9 +60,9 @@ class TeamPostAPI {
       NetUtils.postWithCookieAndHeaderSet(
         API.teamPostPublish,
         data: {
-          if (postType == 7) "article": content,
+          if (postType != 8) "article": content,
           if (postType == 8) "content": content,
-          if (postType == 7) "file": [if (files != null) ...files],
+          if (postType != 8) "file": [if (files != null) ...files],
           "latitude": 0,
           "longitude": 0,
           "post_type": postType,
@@ -78,6 +79,38 @@ class TeamPostAPI {
   }) async =>
       NetUtils.deleteWithCookieAndHeaderSet(
         API.teamPostDelete(postId: postId, postType: postType),
+        headers: Constants.teamHeader,
+      );
+
+  static Future reportPost(TeamPost post) async {
+    final message = "————集市内容举报————\n"
+        "举报时间：${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}\n"
+        "举报对象：${post.nickname}\n"
+        "动态ＩＤ：${post.tid}\n"
+        "发布时间：${post.postTime}\n"
+        "举报理由：违反微博广场公约\n"
+        "———From OpenJMU———";
+    MessageUtils.addPackage(
+      "WY_MSG",
+      M_WY_MSG(
+        type: "MSG_A2A",
+        uid: 145685,
+        message: message,
+      ),
+    );
+  }
+
+  static Future getNotifications() async => NetUtils.getWithCookieAndHeaderSet(
+        API.teamNotification,
+        headers: Constants.teamHeader,
+      );
+
+  static Future getMentionedList({
+    int page = 1,
+    int size = 20,
+  }) async =>
+      NetUtils.getWithCookieAndHeaderSet(
+        API.teamMentionedList(page: page, size: size),
         headers: Constants.teamHeader,
       );
 }
@@ -98,36 +131,6 @@ class TeamCommentAPI {
         )}",
         headers: Constants.teamHeader,
       );
-
-  static Comment createCommentInPost(itemData) {
-    final _avatar = "${API.userAvatar}"
-        "?uid=${itemData['user_info']['uid']}"
-        "&size=f152";
-    String _commentTime =
-        DateTime.fromMillisecondsSinceEpoch(int.parse(itemData['post_time']))
-            .toString()
-            .substring(0, 16);
-    final _comment = Comment(
-      id: int.parse(itemData['tid'].toString()),
-      floor: int.parse(itemData['floor'].toString()),
-      fromUserUid: int.parse(itemData['user_info']['uid'].toString()),
-      fromUserName: itemData['user_info']['nickname'],
-      fromUserAvatar: _avatar,
-      content: itemData['content'],
-      commentTime: _commentTime,
-      from: itemData['from_string'],
-      toReplyExist: null,
-      toReplyUid: null,
-      toReplyUserName: null,
-      toReplyContent: null,
-      toTopicExist: false,
-      toTopicUid: 0,
-      toTopicUserName: null,
-      toTopicContent: null,
-      post: itemData['post'],
-    );
-    return _comment;
-  }
 
   static Future publishComment({
     @required String content,
@@ -150,16 +153,18 @@ class TeamCommentAPI {
         },
         headers: Constants.teamHeader,
       );
+
+  static Future getReplyList({
+    int page = 1,
+    int size = 20,
+  }) async =>
+      NetUtils.getWithCookieAndHeaderSet(
+        API.teamRepliedList(page: page, size: size),
+        headers: Constants.teamHeader,
+      );
 }
 
 class TeamPraiseAPI {
-  static getPraiseList(bool isMore, int lastValue) async =>
-      NetUtils.getWithCookieAndHeaderSet(
-        (isMore ?? false)
-            ? "${API.praiseList}/id_max/$lastValue"
-            : "${API.praiseList}",
-      );
-
   static Future requestPraise(id, isPraise) async {
     if (isPraise) {
       return NetUtils.postWithCookieAndHeaderSet(
@@ -181,49 +186,12 @@ class TeamPraiseAPI {
     }
   }
 
-  static Praise createPraiseInPost(itemData) {
-    final _avatar = "${API.userAvatar}"
-        "?uid=${itemData['user']['uid']}"
-        "&size=f152";
-    final _praiseTime =
-        DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
-            .toString()
-            .substring(0, 16);
-    final _praise = Praise(
-      id: itemData['id'],
-      uid: itemData['user']['uid'],
-      avatar: _avatar,
-      postId: null,
-      praiseTime: _praiseTime,
-      nickname: itemData['user']['nickname'],
-      post: null,
-      topicUid: null,
-      topicNickname: null,
-      pics: null,
-    );
-    return _praise;
-  }
-
-  static Praise createPraise(itemData) {
-    final _avatar = "${API.userAvatar}"
-        "?uid=${itemData['user']['uid']}"
-        "&size=f152";
-    final _praiseTime =
-        DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
-            .toString()
-            .substring(0, 16);
-    final _praise = Praise(
-      id: itemData['id'],
-      uid: itemData['user']['uid'],
-      avatar: _avatar,
-      postId: int.parse(itemData['topic']['tid'].toString()),
-      praiseTime: _praiseTime,
-      nickname: itemData['user']['nickname'],
-      post: itemData['topic'],
-      topicUid: int.parse(itemData['topic']['user']['uid'].toString()),
-      topicNickname: itemData['topic']['user']['nickname'],
-      pics: itemData['topic']['image'],
-    );
-    return _praise;
-  }
+  static Future getPraiseList({
+    int page = 1,
+    int size = 20,
+  }) async =>
+      NetUtils.getWithCookieAndHeaderSet(
+        API.teamPraisedList(page: page, size: size),
+        headers: Constants.teamHeader,
+      );
 }

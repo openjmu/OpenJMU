@@ -105,7 +105,6 @@ class _PostCardState extends State<PostCard> {
                   horizontal: suSetWidth(8.0),
                   vertical: suSetHeight(4.0),
                 ),
-                fontSize: 13.0,
               ),
             ),
         ],
@@ -211,17 +210,24 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget getPostImages(context, post) {
-    return Padding(
+    return Container(
+      alignment: Alignment.centerLeft,
       padding: post.pics != null && post.pics.length > 0
           ? EdgeInsets.symmetric(
               horizontal: suSetSp(16.0), vertical: suSetSp(4.0))
           : EdgeInsets.zero,
-      child: getImages(context, post.pics),
+      child: FractionallySizedBox(
+        widthFactor: 0.75,
+        child: getImages(context, post.pics),
+      ),
     );
   }
 
   Widget getRootPostImages(context, rootTopic) {
-    return getImages(context, rootTopic['image']);
+    return FractionallySizedBox(
+      widthFactor: 0.75,
+      child: getImages(context, rootTopic['image']),
+    );
   }
 
   Widget getImages(context, data) {
@@ -246,8 +252,8 @@ class _PostCardState extends State<PostCard> {
                   loader = scaledImage(
                     image: info.image,
                     length: data.length,
-                    num200: suSetSp(200),
-                    num400: suSetSp(400),
+                    num200: suSetWidth(200),
+                    num400: suSetWidth(300),
                   );
                 }
                 break;
@@ -497,234 +503,9 @@ class _PostCardState extends State<PostCard> {
         icon: Icon(
           Icons.expand_more,
           color: Colors.grey,
-          size: suSetSp(24.0),
+          size: suSetWidth(30.0),
         ),
-        onPressed: () {
-          Widget _listTile({
-            IconData icon,
-            String text,
-            GestureTapCallback onTap,
-          }) {
-            return Padding(
-              padding: EdgeInsets.symmetric(
-                vertical: suSetSp(20.0),
-              ),
-              child: GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                child: Row(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: suSetSp(10.0),
-                      ),
-                      child: Icon(
-                        icon,
-                        color: Theme.of(context).iconTheme.color,
-                        size: suSetSp(30.0),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: suSetSp(10.0),
-                        ),
-                        child: Text(
-                          text,
-                          style: Theme.of(context).textTheme.body1.copyWith(
-                                fontSize: suSetSp(20.0),
-                              ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                onTap: onTap,
-              ),
-            );
-          }
-
-          showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            builder: (context) {
-              return Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: suSetSp(6.0),
-                  horizontal: suSetSp(16.0),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    _listTile(
-                      icon: Icons.visibility_off,
-                      text: "屏蔽此人",
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => PlatformAlertDialog(
-                            title: Text(
-                              "屏蔽此人",
-                              style: TextStyle(
-                                fontSize: suSetSp(22.0),
-                              ),
-                            ),
-                            content: Text(
-                              "确定屏蔽此人吗？",
-                              style: Theme.of(context).textTheme.body1.copyWith(
-                                    fontSize: suSetSp(18.0),
-                                  ),
-                            ),
-                            actions: <Widget>[
-                              PlatformButton(
-                                android: (BuildContext context) =>
-                                    MaterialRaisedButtonData(
-                                  color:
-                                      Theme.of(context).dialogBackgroundColor,
-                                  elevation: 0,
-                                  disabledElevation: 0.0,
-                                  highlightElevation: 0.0,
-                                  child: Text(
-                                    "确认",
-                                    style: TextStyle(
-                                      color: ThemeUtils.currentThemeColor,
-                                    ),
-                                  ),
-                                ),
-                                ios: (BuildContext context) =>
-                                    CupertinoButtonData(
-                                  child: Text(
-                                    "确认",
-                                    style: TextStyle(
-                                      color: ThemeUtils.currentThemeColor,
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  UserAPI.fAddToBlacklist(
-                                    uid: widget.post.uid,
-                                    name: widget.post.nickname,
-                                  );
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              PlatformButton(
-                                android: (BuildContext context) =>
-                                    MaterialRaisedButtonData(
-                                  color: ThemeUtils.currentThemeColor,
-                                  elevation: 0,
-                                  disabledElevation: 0.0,
-                                  highlightElevation: 0.0,
-                                  child: Text(
-                                    '取消',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                ios: (BuildContext context) =>
-                                    CupertinoButtonData(
-                                  child: Text(
-                                    "取消",
-                                    style: TextStyle(
-                                      color: ThemeUtils.currentThemeColor,
-                                    ),
-                                  ),
-                                ),
-                                onPressed: Navigator.of(context).pop,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    _listTile(
-                      icon: Icons.report,
-                      text: "举报动态",
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => PlatformAlertDialog(
-                            title: Text(
-                              "举报动态",
-                              style: TextStyle(
-                                fontSize: suSetSp(22.0),
-                              ),
-                            ),
-                            content: Text(
-                              "确定举报该条动态吗？",
-                              style: Theme.of(context).textTheme.body1.copyWith(
-                                    fontSize: suSetSp(18.0),
-                                  ),
-                            ),
-                            actions: <Widget>[
-                              PlatformButton(
-                                android: (BuildContext context) =>
-                                    MaterialRaisedButtonData(
-                                  color:
-                                      Theme.of(context).dialogBackgroundColor,
-                                  elevation: 0,
-                                  disabledElevation: 0.0,
-                                  highlightElevation: 0.0,
-                                  child: Text(
-                                    "确认",
-                                    style: TextStyle(
-                                      color: ThemeUtils.currentThemeColor,
-                                    ),
-                                  ),
-                                ),
-                                ios: (BuildContext context) =>
-                                    CupertinoButtonData(
-                                  child: Text(
-                                    "确认",
-                                    style: TextStyle(
-                                      color: ThemeUtils.currentThemeColor,
-                                    ),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  PostAPI.reportPost(widget.post);
-                                  showShortToast("举报成功");
-                                  Navigator.pop(context);
-                                  navigatorState.pop();
-                                },
-                              ),
-                              PlatformButton(
-                                android: (BuildContext context) =>
-                                    MaterialRaisedButtonData(
-                                  color: ThemeUtils.currentThemeColor,
-                                  elevation: 0,
-                                  disabledElevation: 0.0,
-                                  highlightElevation: 0.0,
-                                  child: Text(
-                                    '取消',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                                ios: (BuildContext context) =>
-                                    CupertinoButtonData(
-                                  child: Text(
-                                    "取消",
-                                    style: TextStyle(
-                                      color: ThemeUtils.currentThemeColor,
-                                    ),
-                                  ),
-                                ),
-                                onPressed: Navigator.of(context).pop,
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                    SizedBox(height: Screen.bottomSafeHeight),
-                  ],
-                ),
-              );
-            },
-          );
-        },
+        onPressed: postActions,
       );
 
   void confirmDelete() {
@@ -735,6 +516,226 @@ class _PostCardState extends State<PostCard> {
         post: widget.post,
         fromPage: widget.fromPage,
         index: widget.index,
+      ),
+    );
+  }
+
+  Widget _postActionListTile({
+    IconData icon,
+    String text,
+    GestureTapCallback onTap,
+  }) =>
+      Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: suSetSp(20.0),
+        ),
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          child: Row(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: suSetSp(10.0),
+                ),
+                child: Icon(
+                  icon,
+                  color: Theme.of(context).iconTheme.color,
+                  size: suSetSp(30.0),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: suSetSp(10.0),
+                  ),
+                  child: Text(
+                    text,
+                    style: Theme.of(context).textTheme.body1.copyWith(
+                          fontSize: suSetSp(20.0),
+                        ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          onTap: onTap,
+        ),
+      );
+
+  void postActions() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: suSetSp(6.0),
+            horizontal: suSetSp(16.0),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              _postActionListTile(
+                icon: Icons.visibility_off,
+                text: "屏蔽此人",
+                onTap: confirmBlock,
+              ),
+              _postActionListTile(
+                icon: Icons.report,
+                text: "举报动态",
+                onTap: confirmReport,
+              ),
+              SizedBox(height: Screen.bottomSafeHeight),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void confirmBlock() {
+    showDialog(
+      context: context,
+      builder: (context) => PlatformAlertDialog(
+        title: Text(
+          "屏蔽此人",
+          style: TextStyle(
+            fontSize: suSetSp(22.0),
+          ),
+        ),
+        content: Text(
+          "确定屏蔽此人吗？",
+          style: Theme.of(context).textTheme.body1.copyWith(
+                fontSize: suSetSp(18.0),
+              ),
+        ),
+        actions: <Widget>[
+          PlatformButton(
+            android: (BuildContext context) => MaterialRaisedButtonData(
+              color: Theme.of(context).dialogBackgroundColor,
+              elevation: 0,
+              disabledElevation: 0.0,
+              highlightElevation: 0.0,
+              child: Text(
+                "确认",
+                style: TextStyle(
+                  color: ThemeUtils.currentThemeColor,
+                ),
+              ),
+            ),
+            ios: (BuildContext context) => CupertinoButtonData(
+              child: Text(
+                "确认",
+                style: TextStyle(
+                  color: ThemeUtils.currentThemeColor,
+                ),
+              ),
+            ),
+            onPressed: () {
+              UserAPI.fAddToBlacklist(
+                uid: widget.post.uid,
+                name: widget.post.nickname,
+              );
+              Navigator.pop(context);
+            },
+          ),
+          PlatformButton(
+            android: (BuildContext context) => MaterialRaisedButtonData(
+              color: ThemeUtils.currentThemeColor,
+              elevation: 0,
+              disabledElevation: 0.0,
+              highlightElevation: 0.0,
+              child: Text(
+                '取消',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            ios: (BuildContext context) => CupertinoButtonData(
+              child: Text(
+                "取消",
+                style: TextStyle(
+                  color: ThemeUtils.currentThemeColor,
+                ),
+              ),
+            ),
+            onPressed: Navigator.of(context).pop,
+          ),
+        ],
+      ),
+    );
+  }
+
+  void confirmReport() {
+    showDialog(
+      context: context,
+      builder: (context) => PlatformAlertDialog(
+        title: Text(
+          "举报动态",
+          style: TextStyle(
+            fontSize: suSetSp(22.0),
+          ),
+        ),
+        content: Text(
+          "确定举报该条动态吗？",
+          style: Theme.of(context).textTheme.body1.copyWith(
+                fontSize: suSetSp(18.0),
+              ),
+        ),
+        actions: <Widget>[
+          PlatformButton(
+            android: (BuildContext context) => MaterialRaisedButtonData(
+              color: Theme.of(context).dialogBackgroundColor,
+              elevation: 0,
+              disabledElevation: 0.0,
+              highlightElevation: 0.0,
+              child: Text(
+                "确认",
+                style: TextStyle(
+                  color: ThemeUtils.currentThemeColor,
+                ),
+              ),
+            ),
+            ios: (BuildContext context) => CupertinoButtonData(
+              child: Text(
+                "确认",
+                style: TextStyle(
+                  color: ThemeUtils.currentThemeColor,
+                ),
+              ),
+            ),
+            onPressed: () {
+              PostAPI.reportPost(widget.post);
+              showShortToast("举报成功");
+              Navigator.pop(context);
+              navigatorState.pop();
+            },
+          ),
+          PlatformButton(
+            android: (BuildContext context) => MaterialRaisedButtonData(
+              color: ThemeUtils.currentThemeColor,
+              elevation: 0,
+              disabledElevation: 0.0,
+              highlightElevation: 0.0,
+              child: Text(
+                '取消',
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            ios: (BuildContext context) => CupertinoButtonData(
+              child: Text(
+                "取消",
+                style: TextStyle(
+                  color: ThemeUtils.currentThemeColor,
+                ),
+              ),
+            ),
+            onPressed: Navigator.of(context).pop,
+          ),
+        ],
       ),
     );
   }

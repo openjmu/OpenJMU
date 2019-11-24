@@ -18,6 +18,7 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/image/ImageViewer.dart';
 import 'package:OpenJMU/pages/post/TeamPostDetailPage.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
+import 'package:oktoast/oktoast.dart';
 
 class TeamPostPreviewCard extends StatelessWidget {
   const TeamPostPreviewCard({Key key}) : super(key: key);
@@ -56,14 +57,171 @@ class TeamPostPreviewCard extends StatelessWidget {
         ],
       ),
     );
-    if (result != null && result) delete();
+    if (result != null && result) delete(context);
   }
 
-  void delete() {
-//    TeamPostAPI.deletePost(postId: post.tid, postType: 7).then((response) {
-//      showToast("删除成功");
-//      Instances.eventBus.fire();
-//    });
+  void delete(context) {
+    final post = Provider.of<TeamPostProvider>(context).post;
+    TeamPostAPI.deletePost(postId: post.tid, postType: 7).then((response) {
+      showToast("删除成功");
+      Instances.eventBus.fire(TeamPostDeletedEvent(postId: post.tid));
+    });
+  }
+
+  Widget _postActionListTile(
+    context, {
+    IconData icon,
+    String text,
+    GestureTapCallback onTap,
+  }) =>
+      Padding(
+        padding: EdgeInsets.symmetric(
+          vertical: suSetSp(20.0),
+        ),
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          child: Row(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: suSetSp(10.0),
+                ),
+                child: Icon(
+                  icon,
+                  color: Theme.of(context).iconTheme.color,
+                  size: suSetSp(30.0),
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: suSetSp(10.0),
+                  ),
+                  child: Text(
+                    text,
+                    style: Theme.of(context).textTheme.body1.copyWith(
+                          fontSize: suSetSp(20.0),
+                        ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          onTap: onTap,
+        ),
+      );
+
+  void confirmAction(context) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (_) {
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: suSetSp(6.0),
+            horizontal: suSetSp(16.0),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              _postActionListTile(
+                context,
+                icon: Icons.visibility_off,
+                text: "屏蔽此人",
+                onTap: () => confirmBlock(context),
+              ),
+              _postActionListTile(
+                context,
+                icon: Icons.report,
+                text: "举报动态",
+                onTap: () => confirmReport(context),
+              ),
+              SizedBox(height: Screen.bottomSafeHeight),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void confirmBlock(context) {
+    final post = Provider.of<TeamPostProvider>(context).post;
+    showCupertinoDialog<bool>(
+      context: context,
+      builder: (_) => CupertinoAlertDialog(
+        title: Text(
+          "屏蔽此人",
+        ),
+        content: Text(
+          "确定屏蔽此人吗？",
+        ),
+        actions: <Widget>[
+          CupertinoDialogAction(
+            child: Text("确认"),
+            isDefaultAction: false,
+            onPressed: () {
+              UserAPI.fAddToBlacklist(
+                uid: post.uid,
+                name: post.nickname,
+              );
+            },
+            textStyle: TextStyle(
+              color: ThemeUtils.currentThemeColor,
+            ),
+          ),
+          CupertinoDialogAction(
+            child: Text("取消"),
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            textStyle: TextStyle(
+              color: ThemeUtils.currentThemeColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void confirmReport(context) {
+    final post = Provider.of<TeamPostProvider>(context).post;
+    showCupertinoDialog<bool>(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text(
+          "举报动态",
+        ),
+        content: Text(
+          "确定举报该条动态吗？",
+        ),
+        actions: <Widget>[
+          CupertinoDialogAction(
+            child: Text("确认"),
+            isDefaultAction: false,
+            onPressed: () {
+              TeamPostAPI.reportPost(post);
+              showShortToast("举报成功");
+              Navigator.pop(context);
+              navigatorState.pop();
+            },
+            textStyle: TextStyle(
+              color: ThemeUtils.currentThemeColor,
+            ),
+          ),
+          CupertinoDialogAction(
+            child: Text("取消"),
+            isDefaultAction: true,
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            textStyle: TextStyle(
+              color: ThemeUtils.currentThemeColor,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _header(context, TeamPost post) => Container(
@@ -96,7 +254,6 @@ class TeamPostPreviewCard extends StatelessWidget {
                             horizontal: suSetWidth(8.0),
                             vertical: suSetHeight(4.0),
                           ),
-                          fontSize: 13.0,
                         ),
                       ),
                   ],
@@ -110,12 +267,12 @@ class TeamPostPreviewCard extends StatelessWidget {
                 post.uid == UserAPI.currentUser.uid
                     ? Icons.delete_outline
                     : Icons.keyboard_arrow_down,
-                size: suSetWidth(40.0),
+                size: suSetWidth(30.0),
                 color: Theme.of(context).dividerColor,
               ),
               onPressed: post.uid == UserAPI.currentUser.uid
                   ? () => confirmDelete(context)
-                  : () {},
+                  : () => confirmAction(context),
             ),
           ],
         ),
@@ -136,7 +293,7 @@ class TeamPostPreviewCard extends StatelessWidget {
         _postTime.month == now.month &&
         _postTime.year == now.year) {
       time += DateFormat("HH:mm").format(_postTime);
-    } else if (post.postTime.year == now.year) {
+    } else if (_postTime.year == now.year) {
       time += DateFormat("MM-dd HH:mm").format(_postTime);
     } else {
       time += DateFormat("yyyy-MM-dd HH:mm").format(_postTime);
@@ -303,6 +460,8 @@ class TeamPostPreviewCard extends StatelessWidget {
         cache: true,
         color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
         colorBlendMode: ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
+        filterQuality: FilterQuality.none,
+        retries: 0,
         loadStateChanged: (ExtendedImageState state) {
           Widget loader;
           switch (state.extendedImageLoadState) {
@@ -333,9 +492,11 @@ class TeamPostPreviewCard extends StatelessWidget {
               "openjmu://image-viewer",
               arguments: {
                 "index": index,
-                "pics": post.pics.map<ImageBean>((f) {
+                "pics": post.pics.map((pic) {
+                  final id = int.parse(pic['fid']);
+                  final imageUrl = API.teamFile(fid: id);
                   return ImageBean(
-                    id: imageId,
+                    id: id,
                     imageUrl: imageUrl,
                     imageThumbUrl: imageUrl,
                     postId: post.tid,
@@ -365,7 +526,8 @@ class TeamPostPreviewCard extends StatelessWidget {
         children: imagesWidget,
       );
     }
-    _image = Padding(
+    _image = Container(
+      width: Screen.width * 0.7,
       padding: EdgeInsets.only(
         top: suSetHeight(6.0),
       ),
