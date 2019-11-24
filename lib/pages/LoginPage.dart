@@ -340,18 +340,21 @@ class LoginPageState extends State<LoginPage>
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RoundedCheckbox(
-              value: _agreement,
-              inactiveColor: Theme.of(context).iconTheme.color,
-              onChanged: !_login
-                  ? (value) {
-                      setState(() {
-                        _agreement = value;
-                      });
-                      validateForm();
-                    }
-                  : null,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            SizedBox.fromSize(
+              size: Size.square(suSetWidth(42.0)),
+              child: RoundedCheckbox(
+                value: _agreement,
+                inactiveColor: Theme.of(context).iconTheme.color,
+                onChanged: !_login
+                    ? (value) {
+                        setState(() {
+                          _agreement = value;
+                        });
+                        validateForm();
+                      }
+                    : null,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
             ),
             Expanded(
               child: Text.rich(
@@ -394,7 +397,8 @@ class LoginPageState extends State<LoginPage>
               }
             : null,
         child: Container(
-          width: suSetSp(120.0),
+          margin: EdgeInsets.only(left: suSetWidth(4.0)),
+          width: suSetSp(100.0),
           height: suSetSp(50.0),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(suSetSp(6.0)),
@@ -415,18 +419,15 @@ class LoginPageState extends State<LoginPage>
             child: !_login
                 ? Icon(
                     Icons.arrow_forward,
-                    size: suSetSp(24.0),
+                    size: suSetWidth(36.0),
                     color: Colors.white,
                   )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        width: suSetSp(24.0),
-                        height: suSetSp(24.0),
-                        child: Constants.progressIndicator(color: Colors.white),
-                      ),
-                    ],
+                : SizedBox.fromSize(
+                    size: Size.square(suSetWidth(32.0)),
+                    child: Constants.progressIndicator(
+                      strokeWidth: 3.0,
+                      color: Colors.white,
+                    ),
                   ),
           ),
         ),

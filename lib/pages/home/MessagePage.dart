@@ -229,7 +229,7 @@ class MessagePageState extends State<MessagePage>
                         child: Text(
                           "无新消息",
                           style: TextStyle(
-                            fontSize: suSetSp(14.0),
+                            fontSize: suSetSp(15.0),
                           ),
                         ),
                       ),
