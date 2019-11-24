@@ -27,21 +27,24 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
 
   @override
   void initState() {
-    if (_shouldInit) {
-      TeamPraiseAPI.getPraiseList().then((response) {
-        final data = response.data;
-        data['list'].forEach((item) {
-          praiseList.add(TeamPraiseItem.fromJson(item));
-        });
-        total = int.tryParse(data['total'].toString());
-        canLoadMore = int.tryParse(data['count'].toString()) == 0;
-      }).whenComplete(() {
-        loading = false;
-        if (mounted) setState(() {});
-      });
-    }
+    if (_shouldInit) loadList();
     _shouldInit = false;
     super.initState();
+  }
+
+  void loadList({bool loadMore = false}) {
+    if (loadMore) ++page;
+    TeamPraiseAPI.getPraiseList(page: page).then((response) {
+      final data = response.data;
+      data['list'].forEach((item) {
+        praiseList.add(TeamPraiseItem.fromJson(item));
+      });
+      total = int.tryParse(data['total'].toString());
+      canLoadMore = int.tryParse(data['count'].toString()) == 0;
+    }).whenComplete(() {
+      loading = false;
+      if (mounted) setState(() {});
+    });
   }
 
   Widget _header(context, int index, TeamPraiseItem item) {
@@ -173,55 +176,84 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
     return Container(
       color: Theme.of(context).canvasColor,
       child: !loading
-          ? ListView.builder(
-              padding: EdgeInsets.zero,
-              itemCount: praiseList.length,
-              itemBuilder: (_, index) {
-                final item = praiseList.elementAt(index);
-                final provider = TeamPostProvider(item.post);
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        navigatorState.pushNamed(
-                          "openjmu://team-post-detail",
-                          arguments: {
-                            "provider": provider,
-                            "type": TeamPostType.post,
-                          },
-                        );
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: suSetWidth(12.0),
-                          vertical: suSetHeight(6.0),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: suSetWidth(24.0),
-                          vertical: suSetHeight(8.0),
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
-                          color: Theme.of(context).cardColor,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+          ? praiseList.isNotEmpty
+              ? ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: praiseList.length + 1,
+                  itemBuilder: (_, index) {
+                    if (index == praiseList.length - 1 && canLoadMore) {
+                      loadList(loadMore: true);
+                    }
+                    if (index == praiseList.length) {
+                      return SizedBox(
+                        height: suSetHeight(60.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            _header(context, index, item),
-                            _content(item),
-                            _rootContent(item),
+                            if (canLoadMore) Constants.progressIndicator(),
+                            Text(
+                              canLoadMore ? "正在加载" : Constants.endLineTag,
+                              style: TextStyle(fontSize: suSetSp(15.0)),
+                            ),
                           ],
                         ),
-                      ),
+                      );
+                    }
+                    final item = praiseList.elementAt(index);
+                    final provider = TeamPostProvider(item.post);
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            navigatorState.pushNamed(
+                              "openjmu://team-post-detail",
+                              arguments: {
+                                "provider": provider,
+                                "type": TeamPostType.post,
+                              },
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                              horizontal: suSetWidth(12.0),
+                              vertical: suSetHeight(6.0),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: suSetWidth(24.0),
+                              vertical: suSetHeight(8.0),
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(suSetWidth(10.0)),
+                              color: Theme.of(context).cardColor,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                _header(context, index, item),
+                                _content(item),
+                                _rootContent(item),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                )
+              : Center(
+                  child: Text(
+                    "暂无内容",
+                    style: TextStyle(
+                      color: ThemeUtils.currentThemeColor,
+                      fontSize: suSetSp(24.0),
                     ),
-                  ],
-                );
-              },
-            )
+                  ),
+                )
           : Center(
               child: Constants.progressIndicator(),
             ),

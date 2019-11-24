@@ -15,7 +15,7 @@ class AddingButtonPage extends StatefulWidget {
 
 class _AddingButtonPageState extends State<AddingButtonPage>
     with TickerProviderStateMixin {
-  final List<String> itemTitles = ["动态", "集市"];
+  final List<String> itemTitles = ["微博", "集市"];
   final List<Color> itemColors = [Colors.orange, Colors.indigoAccent];
   final List<Function> itemOnTap = [
     (context) async {

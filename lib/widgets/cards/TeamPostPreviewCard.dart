@@ -312,7 +312,7 @@ class TeamPostPreviewCard extends StatelessWidget {
           vertical: suSetHeight(4.0),
         ),
         child: ExtendedText(
-          post.content,
+          post.content ?? "",
           style: TextStyle(
             fontSize: suSetSp(18.0),
           ),
@@ -385,7 +385,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                 vertical: suSetHeight(4.0),
               ),
               child: ExtendedText(
-                _post['content'],
+                _post['content'] ?? "",
                 specialTextSpanBuilder: StackSpecialTextSpanBuilder(
                   prefixSpans: <InlineSpan>[
                     TextSpan(

@@ -124,7 +124,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
           vertical: suSetHeight(4.0),
         ),
         child: ExtendedText(
-          post.content,
+          post.content ?? "",
           style: TextStyle(
             fontSize: suSetSp(18.0),
           ),

@@ -115,7 +115,15 @@ class DataUtils {
     }
   }
 
-  static String recoverWorkId() => sp?.getString(spUserWorkId);
+  static String recoverWorkId() {
+    String workId;
+    try {
+      workId = sp?.getString(spUserWorkId);
+    } catch (e) {
+      workId = sp?.getInt(spUserWorkId).toString();
+    }
+    return workId;
+  }
 
   static Future recoverLoginInfo() async {
     try {
@@ -268,6 +276,9 @@ class DataUtils {
     await setColorTheme(0);
     await setAMOLEDDark(false);
     await setBrightness(false);
+    ThemeUtils.isDark = false;
+    ThemeUtils.isAMOLEDDark = false;
+    ThemeUtils.isPlatformBrightness = false;
     ThemeUtils.currentThemeColor = ThemeUtils.defaultColor;
     Instances.eventBus
       ..fire(ChangeBrightnessEvent(false))

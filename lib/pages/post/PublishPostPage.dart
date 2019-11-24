@@ -35,7 +35,7 @@ class PublishPostPageState extends State<PublishPostPage> {
   final _textEditingController = TextEditingController();
   final _dialogController = LoadingDialogController();
   final _focusNode = FocusNode();
-  final _iconSize = suSetWidth(28.0);
+  final _iconSize = suSetSp(28.0);
   final gridCount = 5;
 //  final maxLength = 2000;
 
@@ -328,7 +328,7 @@ class PublishPostPageState extends State<PublishPostPage> {
           : MediaQuery.of(context).padding.bottom,
       left: 0.0,
       right: 0.0,
-      height: suSetSp(60.0),
+      height: suSetHeight(60.0),
       child: Container(
         child: Row(
           mainAxisSize: MainAxisSize.max,

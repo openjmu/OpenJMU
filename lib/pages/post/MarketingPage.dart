@@ -70,7 +70,7 @@ class _MarketingPageState extends State<MarketingPage> {
                 controller: _scrollController,
                 itemCount: posts.length + 1,
                 itemBuilder: (context, index) {
-                  if (index == posts.length - 1) {
+                  if (index == posts.length - 1 && canLoadMore) {
                     getPostList(more: true);
                   }
                   if (index == posts.length) {
@@ -79,9 +79,9 @@ class _MarketingPageState extends State<MarketingPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Constants.progressIndicator(),
+                          if (canLoadMore) Constants.progressIndicator(),
                           Text(
-                            "正在加载",
+                            canLoadMore ? "正在加载" : Constants.endLineTag,
                             style: TextStyle(
                               fontSize: suSetSp(15.0),
                             ),

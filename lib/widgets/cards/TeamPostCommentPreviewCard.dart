@@ -190,7 +190,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
           vertical: suSetHeight(4.0),
         ),
         child: ExtendedText(
-          comment.content,
+          comment.content ?? "",
           style: TextStyle(
             fontSize: suSetSp(17.0),
           ),

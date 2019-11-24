@@ -49,7 +49,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   TeamPostProvider provider;
 
   int commentPage = 1, total, currentOffset;
-  bool loading, canSend = false, sending = false;
+  bool loading, canLoadMore = true, canSend = false, sending = false;
   bool showExtendedPad = false, showEmoticonPad = false;
   String replyHint;
   double _keyboardHeight = EmotionPadState.emoticonPadDefaultHeight;
@@ -114,24 +114,28 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     super.initState();
   }
 
-  void initialLoad() async {
-    if (provider.post == null) {
-      final data = (await TeamPostAPI.getPostDetail(
-        id: widget.postId,
-        postType: 7,
-      ))
-          .data;
-      final post = TeamPost.fromJson(data);
-      provider = TeamPostProvider(post);
+  void initialLoad({bool loadMore = false}) async {
+    if (!loadMore) {
+      if (provider.post == null) {
+        final data = (await TeamPostAPI.getPostDetail(
+          id: widget.postId,
+          postType: 7,
+        ))
+            .data;
+        final post = TeamPost.fromJson(data);
+        provider = TeamPostProvider(post);
+      }
     }
-
+    if (loadMore) ++commentPage;
     if (provider.post.repliesCount != 0) {
       TeamCommentAPI.getCommentInPostList(
         id: provider.post.tid,
+        page: commentPage,
         isComment: widget.type == TeamPostType.comment,
       ).then((response) {
         final data = response.data;
-        total = data['total'];
+        total = int.parse(data['total'].toString());
+        canLoadMore = int.parse(data['count'].toString()) != 0;
         Set list;
         switch (widget.type) {
           case TeamPostType.post:
@@ -142,7 +146,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
             break;
         }
         if (total != 0) {
-          list.clear();
+          if (!loadMore) list.clear();
           data['data'].forEach((post) {
             var _post;
             switch (widget.type) {
@@ -277,7 +281,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                     ),
             ),
           ),
-          onPressed: sending ? null : send,
+          onPressed: !sending && canSend ? send : null,
         ),
       );
 
@@ -565,6 +569,26 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                                   BuildContext context,
                                   int index,
                                 ) {
+                                  if (index == list.length - 1 && canLoadMore) {
+                                    initialLoad(loadMore: true);
+                                  }
+                                  if (index == list.length) {
+                                    return SizedBox(
+                                      height: suSetHeight(60.0),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          if (canLoadMore) Constants.progressIndicator(),
+                                          Text(
+                                            canLoadMore ? "正在加载" : Constants.endLineTag,
+                                            style: TextStyle(
+                                              fontSize: suSetSp(15.0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
                                   Widget item;
                                   switch (widget.type) {
                                     case TeamPostType.post:
@@ -591,7 +615,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                                     child: item,
                                   );
                                 },
-                                childCount: list.length,
+                                childCount: list.length + 1,
                               ),
                             )
                           : SliverToBoxAdapter(

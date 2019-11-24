@@ -18,7 +18,7 @@ class PostSquareListPage extends StatefulWidget {
 class PostSquareListPageState extends State<PostSquareListPage>
     with SingleTickerProviderStateMixin {
   static final List<String> tabs = [
-    "首页",
+    "微博广场",
 //    "关注",
     "集市",
 //    "新闻",

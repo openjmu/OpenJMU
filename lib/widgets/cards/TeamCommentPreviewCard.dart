@@ -202,15 +202,12 @@ class TeamCommentPreviewCard extends StatelessWidget {
 
   Widget _content(TeamPost post) => GestureDetector(
         behavior: HitTestBehavior.opaque,
-//        onTap: () {
-//          detailPageState.setReplyToPost(post);
-//        },
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: suSetHeight(4.0),
           ),
           child: ExtendedText(
-            post.content,
+            post.content ?? "",
             style: TextStyle(
               fontSize: suSetSp(17.0),
             ),

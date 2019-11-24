@@ -40,7 +40,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
   final _textEditingController = TextEditingController();
   final _dialogController = LoadingDialogController();
   final _focusNode = FocusNode();
-  final _iconSize = suSetWidth(28.0);
+  final _iconSize = suSetSp(28.0);
   final gridCount = 5;
 
   List<Future> query;
@@ -464,47 +464,51 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
         type: MaterialType.transparency,
         child: Container(
           padding: EdgeInsets.all(suSetWidth(20.0)),
-          width: suSetWidth(500.0),
-          height: suSetHeight(360.0),
+          width: Screen.width * 0.9,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(suSetWidth(20.0)),
             color: Theme.of(context).cardColor.withOpacity(0.6),
           ),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Icon(
                 Icons.error_outline,
                 size: suSetWidth(120.0),
               ),
-              Text.rich(
-                TextSpan(children: <InlineSpan>[
-                  TextSpan(
-                    text: "发布动态前，请确认您已阅读并知晓",
-                  ),
-                  TextSpan(
-                      text: "《集大通平台公约》",
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          showDialog(
-                            context: context,
-                            builder: (_) => ConventionDialog(),
-                          );
-                        }),
-                  TextSpan(
-                    text: "，且发布的内容符合公约要求。",
-                  ),
-                ]),
-                style: TextStyle(
-                  fontSize: suSetSp(22.0),
-                  fontWeight: FontWeight.normal,
-                  height: 1.7,
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  vertical: suSetHeight(20.0),
                 ),
-                textAlign: TextAlign.center,
+                child: Text.rich(
+                  TextSpan(children: <InlineSpan>[
+                    TextSpan(
+                      text: "发布动态前，请确认您已阅读并知晓",
+                    ),
+                    TextSpan(
+                        text: "《集大通平台公约》",
+                        style: TextStyle(
+                          decoration: TextDecoration.underline,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            showDialog(
+                              context: context,
+                              builder: (_) => ConventionDialog(),
+                            );
+                          }),
+                    TextSpan(
+                      text: "，且发布的内容符合公约要求。",
+                    ),
+                  ]),
+                  style: TextStyle(
+                    fontSize: suSetSp(22.0),
+                    fontWeight: FontWeight.normal,
+                    height: 1.7,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
               ),
               Row(
                 children: <Widget>[

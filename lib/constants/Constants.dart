@@ -36,7 +36,7 @@ class Constants {
     183824
   ];
 
-  static final endLineTag = "没有更多了~";
+  static final endLineTag = "👀 没有更多了";
   static final navigatorKey = GlobalKey<NavigatorState>();
 
   /// Fow news list.

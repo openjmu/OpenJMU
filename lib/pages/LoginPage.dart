@@ -50,6 +50,8 @@ class LoginPageState extends State<LoginPage>
   bool _usernameCanClear = false;
   bool _keyboardAppeared = false;
 
+  bool get loginButtonEnable => !(_login || _loginDisabled);
+
   Color currentColor = ThemeUtils.currentThemeColor;
   Color _defaultIconColor = Colors.grey;
 
@@ -299,7 +301,7 @@ class LoginPageState extends State<LoginPage>
           child: FlatButton(
             padding: EdgeInsets.all(0.0),
             child: Text(
-              '查询工号',
+              '学工号查询',
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: suSetSp(16.0),
@@ -333,54 +335,64 @@ class LoginPageState extends State<LoginPage>
         ),
       );
 
-  Widget get userAgreementCheckbox => Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          RoundedCheckbox(
-            value: _agreement,
-            inactiveColor: Theme.of(context).iconTheme.color,
-            onChanged: !_login
-                ? (value) {
-                    setState(() {
-                      _agreement = value;
-                    });
-                    validateForm();
-                  }
-                : null,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          RichText(
-            text: TextSpan(
-              children: <TextSpan>[
-                TextSpan(
-                  text: "《用户协议》",
-                  style: TextStyle(
-                    color: ThemeUtils.defaultColor,
-                    decoration: TextDecoration.underline,
-                  ),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () => CommonWebPage.jump(
-                          "${API.homePage}/license.html",
-                          "OpenJMU 用户协议",
-                        ),
-                ),
-              ],
-              style: TextStyle(fontSize: suSetSp(15.0)),
+  Widget get userAgreementCheckbox => Expanded(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            RoundedCheckbox(
+              value: _agreement,
+              inactiveColor: Theme.of(context).iconTheme.color,
+              onChanged: !_login
+                  ? (value) {
+                      setState(() {
+                        _agreement = value;
+                      });
+                      validateForm();
+                    }
+                  : null,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-          ),
-        ],
+            Expanded(
+              child: Text.rich(
+                TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: "登录即代表您同意",
+                    ),
+                    TextSpan(
+                      text: "《用户协议》",
+                      style: TextStyle(
+                        color: ThemeUtils.defaultColor,
+                        decoration: TextDecoration.underline,
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () => CommonWebPage.jump(
+                              "${API.homePage}/license.html",
+                              "OpenJMU 用户协议",
+                            ),
+                    ),
+                  ],
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: suSetSp(15.0),
+                  ),
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+              ),
+            ),
+          ],
+        ),
       );
 
   Widget get loginButton => GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: () {
-          if (_login || _loginDisabled) {
-            return null;
-          } else {
-            loginButtonPressed(context);
-          }
-        },
+        onTap: loginButtonEnable
+            ? () {
+                loginButtonPressed(context);
+              }
+            : null,
         child: Container(
           width: suSetSp(120.0),
           height: suSetSp(50.0),
@@ -389,11 +401,15 @@ class LoginPageState extends State<LoginPage>
             boxShadow: <BoxShadow>[
               BoxShadow(
                 blurRadius: suSetSp(10.0),
-                color: colorGradient[1].withAlpha(50),
+                color: !_loginDisabled
+                    ? colorGradient[1].withAlpha(100)
+                    : Colors.grey[400],
                 offset: Offset(0.0, suSetSp(10.0)),
               ),
             ],
-            gradient: LinearGradient(colors: colorGradient),
+            gradient: !_loginDisabled
+                ? LinearGradient(colors: colorGradient)
+                : LinearGradient(colors: [Colors.grey, Colors.grey]),
           ),
           child: Center(
             child: !_login
@@ -461,7 +477,6 @@ class LoginPageState extends State<LoginPage>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-//                        noAccountButton(context),
                           findWorkId,
                           forgetPasswordButton,
                         ],

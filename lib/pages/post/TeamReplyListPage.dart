@@ -26,21 +26,25 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
 
   @override
   void initState() {
-    if (_shouldInit) {
-      TeamCommentAPI.getReplyList().then((response) {
-        final data = response.data;
-        data['list'].forEach((item) {
-          replyList.add(TeamReplyItem.fromJson(item));
-        });
-        total = int.tryParse(data['total'].toString());
-        canLoadMore = int.tryParse(data['count'].toString()) == 0;
-      }).whenComplete(() {
-        loading = false;
-        if (mounted) setState(() {});
-      });
-    }
+    if (_shouldInit) loadList();
+
     _shouldInit = false;
     super.initState();
+  }
+
+  void loadList({bool loadMore = false}) {
+    if (loadMore) ++page;
+    TeamCommentAPI.getReplyList(page: page).then((response) {
+      final data = response.data;
+      data['list'].forEach((item) {
+        replyList.add(TeamReplyItem.fromJson(item));
+      });
+      total = int.tryParse(data['total'].toString());
+      canLoadMore = int.tryParse(data['count'].toString()) == 0;
+    }).whenComplete(() {
+      loading = false;
+      if (mounted) setState(() {});
+    });
   }
 
   Widget _header(context, int index, TeamReplyItem item) {
@@ -126,7 +130,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
           vertical: suSetHeight(6.0),
         ),
         child: ExtendedText(
-          item.post?.content ?? item.comment?.content,
+          item.post?.content ?? item.comment?.content ?? "",
           style: TextStyle(
             fontSize: suSetSp(18.0),
           ),
@@ -181,60 +185,89 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
     return Container(
       color: Theme.of(context).canvasColor,
       child: !loading
-          ? ListView.builder(
-              padding: EdgeInsets.zero,
-              itemCount: replyList.length,
-              itemBuilder: (_, index) {
-                final item = replyList.elementAt(index);
-                TeamPostProvider provider;
-                if (item.post == null) {
-                  provider = TeamPostProvider(item.toPost);
-                } else if (item.comment == null) {
-                  provider = TeamPostProvider(item.post);
-                }
-                return Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        navigatorState.pushNamed(
-                          "openjmu://team-post-detail",
-                          arguments: {
-                            "provider": provider,
-                            "type": TeamPostType.comment,
-                          },
-                        );
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: suSetWidth(12.0),
-                          vertical: suSetHeight(6.0),
-                        ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: suSetWidth(24.0),
-                          vertical: suSetHeight(8.0),
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
-                          color: Theme.of(context).cardColor,
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
+          ? replyList.isNotEmpty
+              ? ListView.builder(
+                  padding: EdgeInsets.zero,
+                  itemCount: replyList.length + 1,
+                  itemBuilder: (_, index) {
+                    if (index == replyList.length - 1 && canLoadMore) {
+                      loadList(loadMore: true);
+                    }
+                    if (index == replyList.length) {
+                      return SizedBox(
+                        height: suSetHeight(60.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            _header(context, index, item),
-                            _content(item),
-                            _rootContent(item),
+                            if (canLoadMore) Constants.progressIndicator(),
+                            Text(
+                              canLoadMore ? "正在加载" : Constants.endLineTag,
+                              style: TextStyle(fontSize: suSetSp(15.0)),
+                            ),
                           ],
                         ),
-                      ),
+                      );
+                    }
+                    final item = replyList.elementAt(index);
+                    TeamPostProvider provider;
+                    if (item.post == null) {
+                      provider = TeamPostProvider(item.toPost);
+                    } else if (item.comment == null) {
+                      provider = TeamPostProvider(item.post);
+                    }
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        GestureDetector(
+                          behavior: HitTestBehavior.opaque,
+                          onTap: () {
+                            navigatorState.pushNamed(
+                              "openjmu://team-post-detail",
+                              arguments: {
+                                "provider": provider,
+                                "type": TeamPostType.comment,
+                              },
+                            );
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(
+                              horizontal: suSetWidth(12.0),
+                              vertical: suSetHeight(6.0),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: suSetWidth(24.0),
+                              vertical: suSetHeight(8.0),
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(suSetWidth(10.0)),
+                              color: Theme.of(context).cardColor,
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                _header(context, index, item),
+                                _content(item),
+                                _rootContent(item),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                )
+              : Center(
+                  child: Text(
+                    "暂无内容",
+                    style: TextStyle(
+                      color: ThemeUtils.currentThemeColor,
+                      fontSize: suSetSp(24.0),
                     ),
-                  ],
-                );
-              },
-            )
+                  ),
+                )
           : Center(
               child: Constants.progressIndicator(),
             ),
