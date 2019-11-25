@@ -71,7 +71,7 @@ dev_dependencies:
   build_runner: any
   flutter_test:
     sdk: flutter
-  ff_annotation_route: ^1.1.0
+  ff_annotation_route: ^1.1.1
 
 
 flutter:
