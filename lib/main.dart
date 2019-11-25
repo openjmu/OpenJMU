@@ -152,6 +152,8 @@ class OpenJMUAppState extends State<OpenJMUApp> {
     }
     if (ThemeUtils.isPlatformBrightness) {
       ThemeUtils.isDark = brightness == Brightness.dark;
+    } else {
+      ThemeUtils.isDark = DataUtils.getBrightness();
     }
 
     final theme = ThemeUtils.isDark
