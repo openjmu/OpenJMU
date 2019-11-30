@@ -217,7 +217,7 @@ class _PostCardState extends State<PostCard> {
               horizontal: suSetSp(16.0), vertical: suSetSp(4.0))
           : EdgeInsets.zero,
       child: FractionallySizedBox(
-        widthFactor: 0.75,
+        widthFactor: post.pics != null && post.pics.length != 4 ? 0.75 : 1.0,
         child: getImages(context, post.pics),
       ),
     );
@@ -295,6 +295,16 @@ class _PostCardState extends State<PostCard> {
             alignment: Alignment.topLeft,
             child: imagesWidget[0],
           ),
+        );
+      } else if (data.length == 4) {
+        _image = GridView.count(
+          padding: EdgeInsets.zero,
+          shrinkWrap: true,
+          primary: false,
+          mainAxisSpacing: suSetSp(10.0),
+          crossAxisCount: 4,
+          crossAxisSpacing: suSetSp(10.0),
+          children: imagesWidget,
         );
       } else if (data.length > 1) {
         _image = GridView.count(
@@ -422,7 +432,7 @@ class _PostCardState extends State<PostCard> {
     }
     return Container(
       color: Color(ThemeUtils.currentThemeColor.value - 0x88000000),
-      padding: EdgeInsets.all(suSetSp(30.0)),
+      padding: EdgeInsets.all(suSetSp(24.0)),
       child: Center(
         child: Text(
           content,

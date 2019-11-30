@@ -34,7 +34,7 @@ class SearchPageState extends State<SearchPage>
   final FocusNode _focusNode = FocusNode();
   TextEditingController _controller = TextEditingController();
 
-  List<User> userList;
+  List<User> userList = [];
   List<Post> postList;
 
   bool _loaded = false,
@@ -80,12 +80,18 @@ class SearchPageState extends State<SearchPage>
 
   Future getUsers(String searchQuery) async {
     await UserAPI.searchUser(searchQuery).then((response) {
-      List _us = response['data'];
+      final _us = response['data'];
+      userList?.clear();
       _us.forEach((user) {
-        User u = User.fromJson(user);
-        if (userList == null) userList = [];
+        final u = User.fromJson(user);
         userList.add(u);
       });
+      if (userList != null && userList.length == 1) {
+        navigatorState.pushReplacementNamed(
+          'openjmu://user',
+          arguments: {'uid': userList[0].id},
+        );
+      }
     }).catchError((e) {
       debugPrint(e.toString());
     });
@@ -121,12 +127,12 @@ class SearchPageState extends State<SearchPage>
     if (!isMore) {
       _loaded = false;
       _canLoadMore = true;
-      userList = null;
+      userList?.clear();
       postList = null;
       if (mounted) setState(() {});
     }
     Future.wait([
-      if (!_loaded) getUsers(content),
+      getUsers(content),
       getPosts(content),
     ]).then((responses) {
       if (!_loaded) _loaded = true;
@@ -208,73 +214,73 @@ class SearchPageState extends State<SearchPage>
     );
   }
 
-  Widget userListView(context) {
-    if (userList == null || userList.isEmpty) return SizedBox.shrink();
-    return SizedBox(
-      height: suSetSp(140.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              top: suSetSp(16.0),
-              left: 12.0,
-            ),
-            child: Text(
-              "相关用户 (${userList.length})",
-              style: Theme.of(context).textTheme.caption.copyWith(
-                    fontSize: suSetSp(16.0),
-                  ),
-            ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: userList.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        width: suSetSp(48.0),
-                        height: suSetSp(48.0),
-                        child: GestureDetector(
-                          child: ClipRRect(
-                            borderRadius:
-                                BorderRadius.circular(suSetSp(24.0)),
-                            child: FadeInImage(
-                              fadeInDuration: const Duration(milliseconds: 100),
-                              placeholder:
-                                  AssetImage("assets/avatar_placeholder.png"),
-                              image: UserAPI.getAvatarProvider(
-                                uid: userList[index].id,
+  Widget get userListView => (userList != null && userList.isNotEmpty)
+      ? SizedBox(
+          height: suSetSp(140.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(
+                  top: suSetSp(16.0),
+                  left: 12.0,
+                ),
+                child: Text(
+                  "相关用户 (${userList.length})",
+                  style: Theme.of(context).textTheme.caption.copyWith(
+                        fontSize: suSetSp(16.0),
+                      ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: userList.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          SizedBox(
+                            width: suSetSp(48.0),
+                            height: suSetSp(48.0),
+                            child: GestureDetector(
+                              child: ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(suSetSp(24.0)),
+                                child: FadeInImage(
+                                  fadeInDuration:
+                                      const Duration(milliseconds: 100),
+                                  placeholder: AssetImage(
+                                      "assets/avatar_placeholder.png"),
+                                  image: UserAPI.getAvatarProvider(
+                                    uid: userList[index].id,
+                                  ),
+                                ),
                               ),
+                              onTap: () => UserPage.jump(userList[index].id),
                             ),
                           ),
-                          onTap: () => UserPage.jump(userList[index].id),
-                        ),
+                          SizedBox(height: suSetSp(8.0)),
+                          Text(
+                            userList[index].nickname,
+                            style: Theme.of(context).textTheme.body1.copyWith(
+                                  fontSize: suSetSp(16.0),
+                                ),
+                          ),
+                        ],
                       ),
-                      SizedBox(height: suSetSp(8.0)),
-                      Text(
-                        userList[index].nickname,
-                        style: Theme.of(context).textTheme.body1.copyWith(
-                              fontSize: suSetSp(16.0),
-                            ),
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
+              ),
+              Divider(height: 1.0),
+            ],
           ),
-          Divider(height: 1.0),
-        ],
-      ),
-    );
-  }
+        )
+      : SizedBox.shrink();
 
   @mustCallSuper
   Widget build(BuildContext context) {
@@ -312,13 +318,38 @@ class SearchPageState extends State<SearchPage>
       ),
       body: !_loading
           ? _loaded
-              ? postList != null && postList.isNotEmpty
+              ? (postList != null && postList.isNotEmpty) ||
+                      (userList != null && userList.isNotEmpty)
                   ? ListView.builder(
-                      itemCount: postList.length + 3,
+                      itemCount: 1 +
+                          (postList?.length ?? 0) +
+                          ((userList != null && userList.isNotEmpty) ? 1 : 0),
                       itemBuilder: (context, index) {
                         if (index == 0) {
-                          return userListView(context);
-                        } else if (index == 1) {
+                          if (userList != null && userList.isNotEmpty) {
+                            return userListView;
+                          } else {
+                            return Padding(
+                              padding: EdgeInsets.only(
+                                top: suSetSp(16.0),
+                                bottom: suSetSp(8.0),
+                                left: 12.0,
+                              ),
+                              child: Text(
+                                "相关动态",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .caption
+                                    .copyWith(
+                                      fontSize: suSetSp(16.0),
+                                    ),
+                              ),
+                            );
+                          }
+                        }
+                        if (userList != null &&
+                            userList.isNotEmpty &&
+                            index == 1) {
                           return Padding(
                             padding: EdgeInsets.only(
                               top: suSetSp(16.0),
@@ -346,30 +377,12 @@ class SearchPageState extends State<SearchPage>
                             parentContext: context,
                           );
                         } else if (index == postList.length + 2) {
-                          if (_canLoadMore) {
-                            return SizedBox(
-                              height: suSetSp(50.0),
-                              child: Center(
-                                child: SizedBox(
-                                  width: suSetSp(20.0),
-                                  height: suSetSp(20.0),
-                                  child: Constants.progressIndicator(
-                                    strokeWidth: 3.0,
-                                  ),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return SizedBox(
-                              height: suSetSp(50.0),
-                              child: Center(
-                                child: Text(Constants.endLineTag),
-                              ),
-                            );
-                          }
+                          return Constants.loadMoreIndicator(
+                            canLoadMore: _canLoadMore,
+                          );
                         } else {
                           return PostCard(
-                            postList[index - 2],
+                            postList[index - 1],
                             isDetail: false,
                             parentContext: context,
                           );
@@ -382,7 +395,7 @@ class SearchPageState extends State<SearchPage>
                         child: Text(
                           "没有搜索到动态内容~\n🧐",
                           style: TextStyle(
-                            fontSize: suSetSp(24.0),
+                            fontSize: suSetSp(30.0),
                           ),
                           textAlign: TextAlign.center,
                         ),

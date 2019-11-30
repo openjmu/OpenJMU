@@ -1047,7 +1047,6 @@ class _UserListState extends State<UserListPage> {
       body: !isLoading
           ? _users.length != 0
               ? ListView.builder(
-                  shrinkWrap: true,
                   itemCount: (_users.length / 2).ceil(),
                   itemBuilder: (context, i) => renderRow(context, i),
                 )

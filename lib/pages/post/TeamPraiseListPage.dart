@@ -185,18 +185,8 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                       loadList(loadMore: true);
                     }
                     if (index == praiseList.length) {
-                      return SizedBox(
-                        height: suSetHeight(60.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            if (canLoadMore) Constants.progressIndicator(),
-                            Text(
-                              canLoadMore ? "正在加载" : Constants.endLineTag,
-                              style: TextStyle(fontSize: suSetSp(15.0)),
-                            ),
-                          ],
-                        ),
+                      return Constants.loadMoreIndicator(
+                        canLoadMore: canLoadMore,
                       );
                     }
                     final item = praiseList.elementAt(index);

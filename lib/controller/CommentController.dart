@@ -1,13 +1,13 @@
-import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
-import 'package:extended_text/extended_text.dart';
 import 'package:dio/dio.dart';
+import 'package:extended_text/extended_text.dart';
+import 'package:extended_list/extended_list.dart';
+import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
@@ -215,7 +215,7 @@ class _CommentListState extends State<CommentList>
     super.build(context);
     if (!_showLoading) {
       if (_firstLoadComplete) {
-        _itemList = ListView.separated(
+        _itemList = ExtendedListView.separated(
           padding: EdgeInsets.symmetric(
             vertical: suSetSp(4.0),
           ),
@@ -229,44 +229,11 @@ class _CommentListState extends State<CommentList>
           ),
           itemCount: _commentList.length + 1,
           itemBuilder: (context, index) {
+            if (index == _commentList.length - 1) {
+              _loadData();
+            }
             if (index == _commentList.length) {
-              if (this._canLoadMore) {
-                _loadData();
-                return SizedBox(
-                  height: suSetSp(40.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        width: suSetSp(15.0),
-                        height: suSetSp(15.0),
-                        child: Platform.isAndroid
-                            ? CircularProgressIndicator(strokeWidth: 2.0)
-                            : CupertinoActivityIndicator(),
-                      ),
-                      Text(
-                        "　正在加载",
-                        style: TextStyle(
-                          fontSize: suSetSp(14.0),
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              } else {
-                return Container(
-                  height: suSetSp(50.0),
-                  color: Theme.of(context).canvasColor,
-                  child: Center(
-                    child: Text(
-                      Constants.endLineTag,
-                      style: TextStyle(
-                        fontSize: suSetSp(14.0),
-                      ),
-                    ),
-                  ),
-                );
-              }
+              return Constants.loadMoreIndicator(canLoadMore: _canLoadMore);
             } else {
               return CommentCard(_commentList[index]);
             }
@@ -512,7 +479,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
               color: Theme.of(context).cardColor,
               padding: EdgeInsets.zero,
               child: firstLoadComplete
-                  ? ListView.separated(
+                  ? ExtendedListView.separated(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       separatorBuilder: (context, index) => Container(
@@ -521,32 +488,17 @@ class _CommentListInPostState extends State<CommentListInPost> {
                       ),
                       itemCount: _comments.length + 1,
                       itemBuilder: (context, index) {
+                        if (index == _comments.length - 1) {
+                          _loadList();
+                        }
                         if (index == _comments.length) {
-                          if (canLoadMore && !isLoading) {
-                            _loadList();
-                            return Container(
-                              height: suSetSp(40.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  SizedBox(
-                                    width: suSetSp(15.0),
-                                    height: suSetSp(15.0),
-                                    child: Constants.progressIndicator(
-                                        strokeWidth: 2.0),
-                                  ),
-                                  Text("　正在加载",
-                                      style:
-                                          TextStyle(fontSize: suSetSp(14.0))),
-                                ],
-                              ),
-                            );
-                          } else {
-                            return Container();
-                          }
+                          return Constants.loadMoreIndicator(
+                            canLoadMore: canLoadMore && !isLoading,
+                          );
                         } else if (index < _comments.length) {
-                          if (_comments[index] == null)
+                          if (_comments[index] == null) {
                             return SizedBox.shrink();
+                          }
                           return InkWell(
                             onTap: () {
                               showDialog<Null>(
@@ -669,20 +621,14 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                             ),
                                         ],
                                       ),
-                                      Container(
-                                        height: suSetSp(4.0),
-                                      ),
+                                      SizedBox(height: suSetSp(4.0)),
                                       getExtendedText(
                                         context,
                                         _comments[index].content,
                                       ),
-                                      Container(
-                                        height: suSetSp(6.0),
-                                      ),
+                                      SizedBox(height: suSetSp(6.0)),
                                       getCommentTime(context, _comments[index]),
-                                      Container(
-                                        height: suSetSp(10.0),
-                                      ),
+                                      SizedBox(height: suSetSp(10.0)),
                                     ],
                                   ),
                                 ),

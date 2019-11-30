@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -30,9 +29,8 @@ class AppIcon extends StatelessWidget {
       final String imageUrl = "${API.webAppIcons}"
           "appid=${app.id}"
           "&code=${app.code}";
-      return Image(
-        image: CachedNetworkImageProvider(imageUrl,
-            cacheManager: DefaultCacheManager()),
+      return ExtendedImage.network(
+        imageUrl,
         fit: BoxFit.fill,
       );
     }
@@ -58,13 +56,8 @@ class AppIcon extends StatelessWidget {
             width: suSetSp(size),
             height: suSetSp(size),
             child: Center(
-              child: Image(
-                image: CachedNetworkImageProvider(
-                  "${API.webAppIcons}"
-                  "appid=${app.id}"
-                  "&code=${app.code}",
-                  cacheManager: DefaultCacheManager(),
-                ),
+              child: ExtendedImage.network(
+                "${API.webAppIcons}",
                 fit: BoxFit.fill,
               ),
             ),

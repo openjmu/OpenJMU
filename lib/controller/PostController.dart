@@ -3,8 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:dio/dio.dart';
+import 'package:extended_image/extended_image.dart';
+import 'package:extended_list/extended_list.dart';
 import 'package:extended_text/extended_text.dart';
+import 'package:dio/dio.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
@@ -82,7 +84,12 @@ class _PostListState extends State<PostList>
             ((event.tabIndex == 0 &&
                     widget._postController.postType == "square") ||
                 (event.type == "首页"))) {
-          _scrollController.jumpTo(0.0);
+          if (_postList.length > 20) _postList = _postList.sublist(0, 20);
+          _scrollController.animateTo(
+            0.0,
+            curve: Curves.fastOutSlowIn,
+            duration: kTabScrollDuration,
+          );
           Future.delayed(Duration(milliseconds: 50), () {
             refreshIndicatorKey.currentState.show();
           });
@@ -247,52 +254,48 @@ class _PostListState extends State<PostList>
     super.build(context);
     if (!_showLoading) {
       if (_firstLoadComplete) {
-        _itemList = ListView.separated(
+        _itemList = ExtendedListView.separated(
+          padding: EdgeInsets.zero,
+          extendedListDelegate: ExtendedListDelegate(
+            collectGarbage: (List<int> garbage) {
+              garbage.forEach((index) {
+                if (_postList.length >= index + 1) {
+                  final element = _postList.elementAt(index);
+                  final pics = element.pics;
+                  if (pics != null) {
+                    pics.forEach((pic) {
+                      final thumbProvider = ExtendedNetworkImageProvider(
+                        pic['image_thumb'],
+                      );
+                      final middleProvider = ExtendedNetworkImageProvider(
+                        pic['image_middle'],
+                      );
+                      final originalProvider = ExtendedNetworkImageProvider(
+                        pic['image_original'],
+                      );
+                      thumbProvider.evict();
+                      middleProvider.evict();
+                      originalProvider.evict();
+                    });
+                  }
+                }
+              });
+            },
+          ),
           controller: widget._postController.postType == "user"
               ? null
               : _scrollController,
-          padding: EdgeInsets.zero,
           separatorBuilder: (context, index) => Divider(
             thickness: suSetSp(8.0),
             height: suSetSp(8.0),
           ),
           itemCount: _postList.length + 1,
           itemBuilder: (context, index) {
+            if (index == _postList.length - 1 && _canLoadMore) {
+              _loadData();
+            }
             if (index == _postList.length) {
-              if (this._canLoadMore) {
-                _loadData();
-                return Container(
-                  height: suSetSp(40.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        width: suSetSp(15.0),
-                        height: suSetSp(15.0),
-                        child: Constants.progressIndicator(strokeWidth: 2.0),
-                      ),
-                      Text(
-                        "　正在加载",
-                        style: TextStyle(
-                          fontSize: suSetSp(14.0),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return SizedBox(
-                  height: suSetSp(50.0),
-                  child: Center(
-                    child: Text(
-                      Constants.endLineTag,
-                      style: TextStyle(
-                        fontSize: suSetSp(16.0),
-                      ),
-                    ),
-                  ),
-                );
-              }
+              return Constants.loadMoreIndicator(canLoadMore: _canLoadMore);
             } else if (index < _postList.length) {
               return PostCard(
                 _postList[index],
@@ -303,11 +306,10 @@ class _PostListState extends State<PostList>
                 key: ValueKey("post-key-${_postList[index].id}"),
               );
             } else {
-              return Container();
+              return SizedBox.shrink();
             }
           },
         );
-
         _body =
             _postList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList;
 
@@ -447,7 +449,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
     }
   }
 
-  GestureDetector getPostAvatar(context, post) {
+  Widget getPostAvatar(context, post) {
     return GestureDetector(
       child: Container(
         width: suSetSp(40.0),
@@ -524,7 +526,10 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
               color: Theme.of(context).cardColor,
               padding: EdgeInsets.zero,
               child: firstLoadComplete
-                  ? ListView.separated(
+                  ? ExtendedListView.separated(
+                      extendedListDelegate: ExtendedListDelegate(
+                        collectGarbage: (List<int> garbage) {},
+                      ),
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       separatorBuilder: (context, index) => Divider(
@@ -532,33 +537,13 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                       ),
                       itemCount: _posts.length + 1,
                       itemBuilder: (context, index) {
+                        if (index == _posts.length - 1) {
+                          _loadList();
+                        }
                         if (index == _posts.length) {
-                          if (canLoadMore && !isLoading) {
-                            _loadList();
-                            return SizedBox(
-                              height: suSetSp(50.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  SizedBox(
-                                    width: suSetSp(20.0),
-                                    height: suSetSp(20.0),
-                                    child: Constants.progressIndicator(
-                                      strokeWidth: 2.0,
-                                    ),
-                                  ),
-                                  Text(
-                                    "　正在加载",
-                                    style: TextStyle(
-                                      fontSize: suSetSp(16.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          } else {
-                            return Container();
-                          }
+                          return Constants.loadMoreIndicator(
+                            canLoadMore: canLoadMore && !isLoading,
+                          );
                         } else if (index < _posts.length) {
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -569,7 +554,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Container(height: suSetSp(10.0)),
+                                    SizedBox(height: suSetSp(10.0)),
                                     Row(
                                       children: <Widget>[
                                         getPostNickname(context, _posts[index]),
@@ -588,21 +573,19 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                           ),
                                       ],
                                     ),
-                                    Container(height: suSetSp(4.0)),
+                                    SizedBox(height: suSetSp(4.0)),
                                     getExtendedText(
-                                      context,
-                                      _posts[index].content,
-                                    ),
-                                    Container(height: suSetSp(6.0)),
+                                        context, _posts[index].content),
+                                    SizedBox(height: suSetSp(6.0)),
                                     getPostTime(context, _posts[index]),
-                                    Container(height: suSetSp(10.0)),
+                                    SizedBox(height: suSetSp(10.0)),
                                   ],
                                 ),
                               ),
                             ],
                           );
                         } else {
-                          return Container();
+                          return SizedBox.shrink();
                         }
                       },
                     )

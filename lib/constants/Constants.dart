@@ -168,6 +168,34 @@ class Constants {
                   color != null ? AlwaysStoppedAnimation<Color>(color) : null,
               value: value,
             );
+
+  /// Load more indicator.
+  static Widget loadMoreIndicator({bool canLoadMore = true}) {
+    return SizedBox(
+      height: suSetHeight(50.0),
+      child: canLoadMore
+          ? Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  width: suSetSp(20.0),
+                  height: suSetSp(20.0),
+                  child: Constants.progressIndicator(strokeWidth: 2.0),
+                ),
+                Text(
+                  "　正在加载",
+                  style: TextStyle(fontSize: suSetSp(16.0)),
+                ),
+              ],
+            )
+          : Center(
+              child: Text(
+                Constants.endLineTag,
+                style: TextStyle(fontSize: suSetSp(17.0)),
+              ),
+            ),
+    );
+  }
 }
 
 class TransparentRoute extends PageRoute<void> {
@@ -256,41 +284,6 @@ Widget scaledImage({
     imageWidget = Container(
       width: num200,
       height: num400,
-      child: Stack(
-        children: <Widget>[
-          Positioned(
-            top: 0.0,
-            right: 0.0,
-            left: 0.0,
-            bottom: 0.0,
-            child: imageWidget,
-          ),
-          Positioned(
-            bottom: 0.0,
-            right: 0.0,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: suSetSp(6.0),
-                vertical: suSetSp(2.0),
-              ),
-              color: ThemeUtils.currentThemeColor.withOpacity(0.7),
-              child: Text(
-                "长图",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: suSetSp(13.0),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-  if (ratio <= 1 / 4) {
-    imageWidget = SizedBox(
-      width: num400,
-      height: num200,
       child: Stack(
         children: <Widget>[
           Positioned(

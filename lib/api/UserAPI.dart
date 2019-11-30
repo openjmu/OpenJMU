@@ -2,8 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:extended_image/extended_image.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/UserAvatar.dart';
@@ -39,32 +38,33 @@ class UserAPI {
     return UserAvatar(uid: uid, size: size, timestamp: t);
   }
 
-  static CachedNetworkImageProvider getAvatarProvider({
+  static ImageProvider getAvatarProvider({
     int uid,
     int t,
   }) {
-    return CachedNetworkImageProvider(
+    return ExtendedNetworkImageProvider(
       "${API.userAvatar}"
       "?uid=${uid ?? currentUser.uid}"
       "&_t=${t ?? avatarLastModified}"
       "&size=f152",
-      cacheManager: DefaultCacheManager(),
+      cache: true,
+      retries: 1,
     );
   }
 
   static void updateAvatarProvider() {
-    CacheUtils.remove(
+    ExtendedNetworkImageProvider(
       "${API.userAvatar}"
       "?uid=${currentUser.uid}"
       "&size=f152"
       "&_t=$avatarLastModified",
-    );
-    CacheUtils.remove(
+    ).evict();
+    ExtendedNetworkImageProvider(
       "${API.userAvatar}"
       "?uid=${currentUser.uid}"
       "&size=f640"
       "&_t=$avatarLastModified",
-    );
+    ).evict();
     avatarLastModified = DateTime.now().millisecondsSinceEpoch;
   }
 
@@ -144,7 +144,7 @@ class UserAPI {
       );
     }).catchError((e) {
       debugPrint(e.toString());
-      showCenterErrorShortToast("取消关注失败，${jsonDecode(e.response.data)['msg']}");
+      showCenterErrorShortToast("取消关注失败，${e.response.data['msg']}");
     });
   }
 

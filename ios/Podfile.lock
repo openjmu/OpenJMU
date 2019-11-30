@@ -22,9 +22,6 @@ PODS:
     - Flutter
   - fluttertoast (0.0.2):
     - Flutter
-  - FMDB (2.7.5):
-    - FMDB/standard (= 2.7.5)
-  - FMDB/standard (2.7.5)
   - image_downloader (0.0.1):
     - Flutter
   - image_editor (0.0.1):
@@ -49,9 +46,6 @@ PODS:
   - Reachability (3.2)
   - shared_preferences (0.0.1):
     - Flutter
-  - sqflite (0.0.1):
-    - Flutter
-    - FMDB (~> 2.7.2)
   - url_launcher (0.0.1):
     - Flutter
   - webview_flutter (0.0.1):
@@ -78,7 +72,6 @@ DEPENDENCIES:
   - permission_handler (from `.symlinks/plugins/permission_handler/ios`)
   - quick_actions (from `.symlinks/plugins/quick_actions/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
-  - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
@@ -87,7 +80,6 @@ SPEC REPOS:
     - BSGridCollectionViewLayout
     - BSImagePicker
     - BSImageView
-    - FMDB
     - Reachability
 
 EXTERNAL SOURCES:
@@ -131,8 +123,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/quick_actions/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
-  sqflite:
-    :path: ".symlinks/plugins/sqflite/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
   webview_flutter:
@@ -151,7 +141,6 @@ SPEC CHECKSUMS:
   flutter_qr_reader: 254fd9eea45a65ef461e050d6607daf9cfb753e8
   flutter_webview_plugin: ed9e8a6a96baf0c867e90e1bce2673913eeac694
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
-  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   image_downloader: 0cce746db85ab8e068b7bcf8acacbdf71bca185e
   image_editor: d0181032f68c58c9de3c9b8c17291b9a51c9dbb5
   image_gallery_saver: 73b3cd8ad9c950c739878af9c311744d1bf5405d
@@ -164,7 +153,6 @@ SPEC CHECKSUMS:
   quick_actions: 07414f1e5cb71fc4d32a0670b62c460e619366b2
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
-  sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
   url_launcher: a1c0cc845906122c4784c542523d8cacbded5626
   webview_flutter: db3aba222b23e4dc432e0c5882834123dc50ff9f
 

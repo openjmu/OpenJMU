@@ -1002,6 +1002,48 @@ class Score {
 }
 
 ///
+/// 业务包实体
+/// [status] 状态码, [command] 命令,
+/// [sequence] 包序, [length] 包体长度, [content] 内容,
+///
+class Packet {
+  int status;
+  int command;
+  int sequence;
+  int length;
+  List<int> content;
+
+  Packet({
+    this.status,
+    this.command,
+    this.sequence,
+    this.length,
+    this.content,
+  });
+
+  factory Packet.fromBytes(List<int> bytes) {
+    return Packet(
+      status: MessageUtils.getPackageUint(bytes.sublist(4, 6), 16),
+      command: MessageUtils.getPackageUint(bytes.sublist(18, 20), 16),
+      sequence: MessageUtils.getPackageUint(bytes.sublist(20, 24), 32),
+      length: MessageUtils.getPackageUint(bytes.sublist(24, 28), 32),
+      content: bytes.sublist(28),
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Packet {\n'
+        '  status: $status,\n'
+        '  command: $command,\n'
+        '  sequence: $sequence,\n'
+        '  length: $length,\n'
+        '  content: $content\n'
+        '}';
+  }
+}
+
+///
 /// 消息实体
 /// [type] 消息类型 ([Messages.PRPL_91U_MSG_TYPE])
 /// [senderUid] 发送方uid
@@ -1039,6 +1081,14 @@ class Message {
   }
 
   bool get isSelf => this.senderUid == UserAPI.currentUser.uid;
+}
+
+class NoGlowScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
+  }
 }
 
 ///
@@ -1121,12 +1171,4 @@ double _endOffset(
       return _rightOffset(scaffoldGeometry, offset: offset);
   }
   return null;
-}
-
-class NoGlowScrollBehavior extends ScrollBehavior {
-  @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
-    return child;
-  }
 }

@@ -29,9 +29,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   final int maxCoursesPerDay = 12;
   ScrollController weekScrollController;
 
-  bool firstLoaded = false;
-  bool hasCourse = true;
-  bool showWeek = false;
+  bool firstLoaded = false,
+      hasCourse = true,
+      showWeek = false,
+      showError = false;
   int currentWeek;
   DateTime now;
 
@@ -91,9 +92,15 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
           widget.appCenterPageState.setState(() {});
         }
       }
+      if (showError) showError = false;
       updateScrollController();
       if (mounted) setState(() {});
       if (DateAPI.currentWeek != null) scrollToWeek(DateAPI.currentWeek);
+    }).catchError((e) {
+      if (!firstLoaded && currentWeek != null) firstLoaded = true;
+      hasCourse = false;
+      showError = true;
+      if (mounted) setState(() {});
     });
   }
 
@@ -111,7 +118,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   Future getCourses() async {
     return CourseAPI.getCourse().then((response) {
-      Map<String, dynamic> data = jsonDecode(response.data);
+      final data = jsonDecode(response.data);
       List _courseList = data['courses'];
       List _customCourseList = data['othCase'];
       Map<int, Map<int, List<Course>>> _courses;
@@ -137,12 +144,14 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   Future getRemark() async {
     return CourseAPI.getRemark().then((response) {
-      Map<String, dynamic> data = jsonDecode(response.data);
+      final data = jsonDecode(response.data);
       String _remark;
       if (data != null) _remark = data['classScheduleRemark'];
       if (remark != _remark && _remark != "" && _remark != null) {
         remark = _remark;
       }
+    }).catchError((e) {
+      debugPrint('Get remark error: $e');
     });
   }
 
@@ -511,6 +520,21 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         ),
       );
 
+  Widget get errorTips => Expanded(
+        child: Center(
+          child: Text(
+            "成绩看起来还未准备好\n不如到广场放松一下？\n🤒",
+            style: TextStyle(
+              fontSize: suSetSp(30.0),
+            ),
+            strutStyle: StrutStyle(
+              height: 1.8,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
@@ -532,7 +556,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
               weekSelection(context),
               if (firstLoaded && hasCourse) weekDayIndicator(context),
               if (firstLoaded && hasCourse) courseLineGrid(context),
-              if (firstLoaded && !hasCourse) emptyTips,
+              if (firstLoaded && !hasCourse && !showError) emptyTips,
+              if (firstLoaded && !hasCourse && showError) errorTips,
             ],
           ),
         ),

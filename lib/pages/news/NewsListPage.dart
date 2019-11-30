@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:extended_image/extended_image.dart';
+import 'package:extended_list/extended_list.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
@@ -162,11 +161,9 @@ class NewsListPageState extends State<NewsListPage>
   }
 
   Widget coverImg(News news) {
-    String imageUrl = "${API.showFile}"
-        "${news.cover}"
+    final imageUrl = "${API.showFile}${news.cover}"
         "/sid/${UserAPI.currentUser.sid}";
-    ImageProvider coverImg = CachedNetworkImageProvider(imageUrl,
-        cacheManager: DefaultCacheManager());
+    ImageProvider coverImg = ExtendedNetworkImageProvider(imageUrl);
     return SizedBox(
       width: suSetSp(80.0),
       height: suSetSp(80.0),
@@ -239,7 +236,20 @@ class NewsListPageState extends State<NewsListPage>
           },
           child: newsList.isEmpty
               ? SizedBox()
-              : ListView.separated(
+              : ExtendedListView.separated(
+                  extendedListDelegate: ExtendedListDelegate(
+                    collectGarbage: (List<int> garbage) {
+                      garbage.forEach((index) {
+                        if (newsList.length >= index + 1) {
+                          final element = newsList.elementAt(index);
+                          ExtendedNetworkImageProvider(
+                            "${API.showFile}${element.cover}"
+                            "/sid/${UserAPI.currentUser.sid}",
+                          ).evict();
+                        }
+                      });
+                    },
+                  ),
                   shrinkWrap: true,
                   controller: _scrollController,
                   separatorBuilder: (context, index) =>

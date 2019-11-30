@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -9,6 +8,9 @@ import 'package:flutter/foundation.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 
 class MessageUtils {
+  static List<int> bytesBufferZone = [];
+  static Map<int, Packet> packageBufferZone = {};
+
   static Socket messageSocket;
   static int packageSequence = 4;
   static Timer messageKeepAliveTimer;
@@ -25,7 +27,8 @@ class MessageUtils {
       messageSocket.timeout(const Duration(milliseconds: 120000));
       debugPrint("Socket connected.");
       messageSocket.listen(
-        onReceive,
+        bufferedStream,
+//        onReceive,
         onDone: () async {
           debugPrint("Socket pipe close.");
           messageKeepAliveTimer?.cancel();
@@ -50,7 +53,7 @@ class MessageUtils {
       ..add(0, 32)
       ..add(command, 16)
       ..add(packageSequence, 32)
-      ..add(math.min(length, 2048), 32);
+      ..add(length, 32);
     return _uc.asUint8List();
   }
 
@@ -112,23 +115,65 @@ class MessageUtils {
     return result;
   }
 
-  static void onReceive(List<int> event) async {
-//    final header = event.sublist(0, 28);
-    final content = event.sublist(28);
-    final status = getPackageUint(event.sublist(4, 6), 16);
-    final command = int.parse(
-      "0x${getPackageUint(event.sublist(18, 20), 16).toRadixString(16)}",
-    );
-    final sequence = getPackageUint(event.sublist(20, 24), 32);
-    final length = getPackageUint(event.sublist(24, 28), 32);
-    debugPrint(
-//        "header: $header\n"
-        "content: $content\n"
-        "status: $status\n"
-        "command: 0x${command.toRadixString(16)}\n"
-        "sequence: $sequence\n"
-        "length: $length");
-    switch (command) {
+  ///
+  /// Socket buffered method.
+  /// Using this method to buffer bytes from socket, with fixed rules.
+  ///
+  static void bufferedStream(List<int> bytes, {bool addBytes = true}) {
+    // Whether bytes should add to buffer.
+    if (addBytes) bytesBufferZone.addAll(bytes);
+    // Judge if bytes contains a full header.
+    if (bytesBufferZone.length >= 28) {
+      final length = getPackageUint(bytesBufferZone.sublist(24, 28), 32) + 28;
+      // Judge if bytes can be fully decoded.
+      if (bytesBufferZone.length >= length) {
+        // Pull out bytes with specific size.
+        final result = bytesBufferZone.sublist(0, length);
+        // Remove bytes from buffer.
+        bytesBufferZone.removeRange(0, length);
+        // Call packet buffered method with result before another decoding.
+        bufferedPacket(Packet.fromBytes(result));
+        // If buffer contains more bytes, try to decode it again.
+        if (bytesBufferZone.length >= 28) {
+          bufferedStream(bytesBufferZone, addBytes: false);
+        }
+      }
+    }
+  }
+
+  ///
+  /// Packet buffered method.
+  /// Using this method to buffer packet from packets with same command.
+  /// Some packets may provide UNFINISHED(206) status,
+  /// at that time we need to combine those packets to one and decode.
+  ///
+  static void bufferedPacket(Packet packet) {
+    // See if the command have buffered packet.
+    if (packageBufferZone[packet.command] != null) {
+      final _tempPacket = packageBufferZone[packet.command];
+      // Combine two packet to one.
+      _tempPacket
+        ..status = packet.status
+        ..command = packet.command
+        ..sequence = packet.sequence
+        ..length += packet.length
+        ..content.addAll(packet.content);
+      // Send combined packet to buffered zone.
+      packageBufferZone[packet.command] = _tempPacket;
+    } else {
+      packageBufferZone[packet.command] = packet;
+    }
+    // Proceed with SUCCESS(200) status packet.
+    if (packageBufferZone[packet.command].status == 200) {
+      commandHandler(packageBufferZone[packet.command]);
+      // Clear buffer after handle.
+      packageBufferZone[packet.command] = null;
+    }
+  }
+
+  static void commandHandler(Packet packet) {
+    debugPrint('Handling packet: $packet');
+    switch (packet.command) {
       case 0x75:
         addPackage("WY_MULTPOINT_LOGIN");
         break;
@@ -138,9 +183,10 @@ class MessageUtils {
           const Duration(seconds: 30),
           sendKeepAlive,
         );
-        sendGetOfflineMessage();
+        Future.delayed(const Duration(seconds: 3), sendGetOfflineMessage);
         break;
       case 0x1f:
+        final content = packet.content;
         final _type = getPackageUint(content.sublist(0, 1), 8);
         final _senderUid = getPackageUint(content.sublist(1, 9), 64);
         final _senderMultiPortId = getPackageUint(content.sublist(9, 17), 64);
@@ -182,7 +228,7 @@ class MessageUtils {
     );
     debugPrint("\nSending $command"
 //        ": $package"
-        );
+        "...");
     messageSocket.add(package);
   }
 

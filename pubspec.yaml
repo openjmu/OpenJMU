@@ -1,7 +1,7 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.7.0+112
+version: 0.7.1+114
 
 environment:
   sdk: ">=2.5.0 <3.0.0"
@@ -14,21 +14,18 @@ dependencies:
     sdk: flutter
 
   badges: 1.1.0
-  cached_network_image: 1.1.2+1
   connectivity: ^0.4.5+2
   cookie_jar: 1.0.1
   crypto: 2.1.3
   device_info: ^0.4.1+1
   dio: 2.1.16
-  dragablegridview_flutter: ^0.2.5
-  draggable_container: ^0.1.8+4
   event_bus: 1.1.0
   extended_image: ^0.6.5
+  extended_list: ^0.1.2
   extended_tabs: ^0.2.2
   extended_text: ^0.6.6
   extended_text_field: ^0.4.4
   fluttertoast: 3.1.3
-  flutter_cache_manager: 1.1.2
   flutter_downloader: 1.2.2
   flutter_icons: ^0.3.1
   flutter_inappbrowser:

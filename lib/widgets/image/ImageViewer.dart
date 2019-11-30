@@ -5,9 +5,8 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:image_downloader/image_downloader.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -294,6 +293,7 @@ class ImageList extends StatelessWidget {
               children: <Widget>[
                 for (int i = 0; i < pics.length; i++)
                   AnimatedContainer(
+                    curve: Curves.fastOutSlowIn,
                     duration: kTabScrollDuration,
                     child: Transform.scale(
                       scale: i == data.data ? 1.3 : 1.0,
@@ -320,10 +320,8 @@ class ImageList extends StatelessWidget {
                           },
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(suSetSp(6.0)),
-                            child: CachedNetworkImage(
-                              placeholder: (context, text) => Container(),
-                              imageUrl:
-                                  pics[i].imageThumbUrl ?? pics[i].imageUrl,
+                            child: ExtendedImage.network(
+                              pics[i].imageThumbUrl ?? pics[i].imageUrl,
                               fit: BoxFit.cover,
                               filterQuality: FilterQuality.none,
                             ),

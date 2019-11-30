@@ -309,7 +309,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.all(suSetSp(16.0)),
+                    padding: EdgeInsets.all(suSetWidth(24.0)),
                     decoration: BoxDecoration(
                       color: itemColors[index],
                       shape: BoxShape.circle,
@@ -317,8 +317,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                     child: SvgPicture.asset(
                       "assets/icons/addButton/${itemTitles[index]}.svg",
                       color: Colors.white,
-                      width: suSetSp(28.0),
-                      height: suSetSp(28.0),
+                      width: suSetWidth(36.0),
                     ),
                   ),
                   Constants.emptyDivider(height: 10.0),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:extended_image/extended_image.dart';
 import 'package:extended_text_library/extended_text_library.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -277,7 +278,7 @@ class ImageText extends SpecialText {
         break;
       case WidgetType.comment:
         span = ImageSpan(
-          NetworkImage(url),
+          ExtendedNetworkImageProvider(url, cache: true),
           imageWidth: size,
           imageHeight: size,
           fit: BoxFit.cover,
@@ -287,10 +288,7 @@ class ImageText extends SpecialText {
             right: suSetSp(4.0),
           ),
           onTap: () {
-            final data = {
-              'content': toString(),
-              'image': imageId
-            };
+            final data = {'content': toString(), 'image': imageId};
             if (onTap != null) onTap(data);
           },
         );
@@ -459,19 +457,20 @@ void specialTextTapRecognizer(data) {
   } else if (text.startsWith("http://")) {
     CommonWebPage.jump(text, "网页链接");
   } else if (text.startsWith("|")) {
+    print(data);
     final imageId = data['image'];
     final imageUrl = API.commentImageUrl(imageId, "o");
     navigatorState.pushNamed(
       "openjmu://image-viewer",
       arguments: {
         "index": 0,
-        "pics": data.map<ImageBean>((f) {
-          return ImageBean(
+        "pics": [
+          ImageBean(
             id: imageId,
             imageUrl: imageUrl,
             postId: null,
-          );
-        }).toList(),
+          )
+        ],
       },
     );
   }

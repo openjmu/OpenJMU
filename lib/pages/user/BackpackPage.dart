@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:badges/badges.dart';
+import 'package:extended_image/extended_image.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
@@ -196,7 +197,7 @@ class _BackpackPageState extends State<BackpackPage> {
       child: Center(
         child: SizedBox(
           height: suSetSp(150.0),
-          child: Image.network(
+          child: ExtendedImage.network(
             "${API.backPackItemIcon(itemType: myItems[index].type)}",
             headers: {"CLOUDID": "jmu"},
             fit: BoxFit.fitHeight,

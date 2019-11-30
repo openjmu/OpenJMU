@@ -99,13 +99,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "6.7.1"
-  cached_network_image:
-    dependency: "direct main"
-    description:
-      name: cached_network_image
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.1.2+1"
   charcode:
     dependency: transitive
     description:
@@ -190,20 +183,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.1.16"
-  dragablegridview_flutter:
-    dependency: "direct main"
-    description:
-      name: dragablegridview_flutter
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.2.5"
-  draggable_container:
-    dependency: "direct main"
-    description:
-      name: draggable_container
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.1.8+4"
   event_bus:
     dependency: "direct main"
     description:
@@ -225,6 +204,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.1.8"
+  extended_list:
+    dependency: "direct main"
+    description:
+      name: extended_list
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.2"
+  extended_list_library:
+    dependency: transitive
+    description:
+      name: extended_list_library
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.2"
   extended_tabs:
     dependency: "direct main"
     description:
@@ -272,13 +265,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_cache_manager:
-    dependency: "direct main"
-    description:
-      name: flutter_cache_manager
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.1.2"
   flutter_downloader:
     dependency: "direct main"
     description:
@@ -774,13 +760,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.5.5"
-  sqflite:
-    dependency: transitive
-    description:
-      name: sqflite
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.1.7+2"
   stack_trace:
     dependency: transitive
     description:
@@ -809,13 +788,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.5"
-  synchronized:
-    dependency: transitive
-    description:
-      name: synchronized
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "2.1.0+1"
   term_glyph:
     dependency: transitive
     description:

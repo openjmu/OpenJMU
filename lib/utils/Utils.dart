@@ -1,4 +1,3 @@
-export 'CacheUtils.dart';
 export 'ChannelUtils.dart';
 export 'DataUtils.dart';
 export 'DeviceUtils.dart';

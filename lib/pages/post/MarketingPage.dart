@@ -3,6 +3,9 @@
 /// [Date] 2019-11-17 02:55
 ///
 import 'package:flutter/material.dart';
+import 'package:extended_image/extended_image.dart';
+import 'package:extended_list/extended_list.dart';
+
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/cards/TeamPostPreviewCard.dart';
@@ -66,7 +69,30 @@ class _MarketingPageState extends State<MarketingPage> {
         key: _refreshIndicatorKey,
         onRefresh: getPostList,
         child: loaded
-            ? ListView.builder(
+            ? ExtendedListView.builder(
+                extendedListDelegate: ExtendedListDelegate(
+                  collectGarbage: (List<int> garbage) {
+                    garbage.forEach((index) {
+                      if (posts.length >= index + 1) {
+                        final element = posts.elementAt(index);
+                        final pics = element.pics;
+                        if (pics != null) {
+                          pics.forEach((pic) {
+                            final provider = ExtendedNetworkImageProvider(
+                              API.teamFile(
+                                  fid: int.parse(pic['fid'].toString())),
+                            );
+                            provider.evict();
+                          });
+                        }
+                        final avatarProvider = UserAPI.getAvatarProvider(
+                          uid: element.uid,
+                        );
+                        avatarProvider.evict();
+                      }
+                    });
+                  },
+                ),
                 controller: _scrollController,
                 itemCount: posts.length + 1,
                 itemBuilder: (context, index) {

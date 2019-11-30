@@ -94,12 +94,12 @@ class _SettingsPageState extends State<SettingsPage> {
         PlatformSwitch(
           activeColor: ThemeUtils.currentThemeColor,
           value: ThemeUtils.isAMOLEDDark,
-          onChanged: (bool value) {
+          onChanged: ThemeUtils.isDark ? (bool value) {
             ThemeUtils.isAMOLEDDark = value;
             DataUtils.setAMOLEDDark(value);
             Instances.eventBus.fire(ChangeAMOLEDDarkEvent(value));
             if (mounted) setState(() {});
-          },
+          } : null,
         ),
         null,
         null,

@@ -30,8 +30,6 @@ class TeamPostAPI {
         headers: Constants.teamHeader,
       );
 
-  static Future getImage(int fid) async => NetUtils.get(API.teamFile(fid: fid));
-
   static Map<String, dynamic> fileInfo(int fid) {
     return {
       "create_time": 0,
