@@ -31,6 +31,7 @@ class AppIcon extends StatelessWidget {
           "&code=${app.code}";
       return ExtendedImage.network(
         imageUrl,
+        width: suSetWidth(size),
         fit: BoxFit.fill,
       );
     }

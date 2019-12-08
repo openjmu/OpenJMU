@@ -21,10 +21,12 @@ class AppCenterPage extends StatelessWidget {
   Widget categoryListView(context, WebAppsProvider provider) {
     final apps = provider.apps;
     for (final app in apps) {
-      if (webAppWidgetList[app.menuType] == null) {
-        webAppWidgetList[app.menuType] = [];
+      if (app.url?.isNotEmpty ?? false) {
+        if (webAppWidgetList[app.menuType] == null) {
+          webAppWidgetList[app.menuType] = [];
+        }
+        webAppWidgetList[app.menuType].add(getWebAppButton(context, app));
       }
-      webAppWidgetList[app.menuType].add(getWebAppButton(context, app));
     }
     List<Widget> _list = [];
     WebApp.category.forEach((name, value) {

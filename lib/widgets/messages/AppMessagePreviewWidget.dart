@@ -3,6 +3,7 @@
 /// [Date] 2019-12-05 13:56
 ///
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:OpenJMU/widgets/AppIcon.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +41,6 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
   void initState() {
     timeFormat(null);
     timeUpdateTimer = Timer.periodic(const Duration(minutes: 1), timeFormat);
-
     super.initState();
   }
 
@@ -92,12 +92,22 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
       );
 
   void updateApp() {
-    app = Provider.of<WebAppsProvider>(navigatorState.context, listen: false)
-        .apps
-        .where(
-          (app) => app.id == widget.message.appId,
-        )
+    final provider = Provider.of<WebAppsProvider>(
+      navigatorState.context,
+      listen: false,
+    );
+    app = provider.apps
+        .where((app) => app.id == widget.message.appId)
         .elementAt(0);
+  }
+
+  void tryDecodeContent() {
+    try {
+      final content = jsonDecode(widget.message.content);
+      widget.message.content = content['content'];
+      Provider.of<MessagesProvider>(navigatorState.context, listen: false)
+          .saveAppsMessages();
+    } catch (e) {}
   }
 
   @mustCallSuper
@@ -105,6 +115,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     super.build(context);
     updateApp();
     timeFormat(null, fromBuild: true);
+    tryDecodeContent();
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {

@@ -22,9 +22,8 @@ class WebAppsProvider extends ChangeNotifier {
     final _tempSet = Set<WebApp>();
     final data = (await getAppList()).data;
     for (int i = 0; i < data.length; i++) {
-      final url = data[i]['url'];
       final name = data[i]['name'];
-      if ((url != "" && url != null) && (name != "" && name != null)) {
+      if ((name != "" && name != null)) {
         final _app = appWrapper(WebApp.fromJson(data[i]));
         if (!appFiltered(_app)) {
           _tempSet.add(_app);
