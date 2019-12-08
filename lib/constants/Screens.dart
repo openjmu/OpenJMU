@@ -1,5 +1,4 @@
-import 'dart:io';
-import 'dart:ui' as ui show window;
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -34,19 +33,11 @@ class Screen {
   }
 }
 
+///
 /// Screen capability method.
-double suSetSp(double size, {double scale}) {
-  double value = ScreenUtil.getInstance().setSp(size) * 2;
-  if (Platform.isIOS) {
-    if (ScreenUtil.screenWidthDp <= 414.0) {
-      value = size / 1.2;
-    } else if (ScreenUtil.screenWidthDp > 414.0 &&
-        ScreenUtil.screenWidthDp > 750.0) {
-      value = size;
-    }
-  }
-  return value * (scale ?? Configs.fontScale);
-}
+///
+double suSetSp(double size, {double scale}) =>
+    _sizeCapable(ScreenUtil.getInstance().setSp(size) * 2, scale: scale);
 
 double suSetWidth(double size, {double scale}) =>
     _sizeCapable(ScreenUtil.getInstance().setWidth(size) * 2, scale: scale);
@@ -54,15 +45,5 @@ double suSetWidth(double size, {double scale}) =>
 double suSetHeight(double size, {double scale}) =>
     _sizeCapable(ScreenUtil.getInstance().setHeight(size) * 2, scale: scale);
 
-double _sizeCapable(double size, {double scale}) {
-  double _size = size;
-  if (Platform.isIOS) {
-    if (ScreenUtil.screenWidthDp <= 414.0) {
-      _size = size / 1.2;
-    } else if (ScreenUtil.screenWidthDp > 414.0 &&
-        ScreenUtil.screenWidthDp > 750.0) {
-      _size = size;
-    }
-  }
-  return _size * (scale ?? Configs.fontScale);
-}
+double _sizeCapable(double size, {double scale}) =>
+    size * (scale ?? Configs.fontScale);

@@ -9,8 +9,6 @@ import 'package:extended_text/extended_text.dart';
 import 'package:dio/dio.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/user/UserPage.dart';
-import 'package:OpenJMU/api/UserAPI.dart';
 import 'package:OpenJMU/widgets/cards/PostCard.dart';
 
 class PostController {
@@ -286,8 +284,8 @@ class _PostListState extends State<PostList>
               ? null
               : _scrollController,
           separatorBuilder: (context, index) => Divider(
-            thickness: suSetSp(8.0),
-            height: suSetSp(8.0),
+            thickness: suSetHeight(8.0),
+            height: suSetHeight(8.0),
           ),
           itemCount: _postList.length + 1,
           itemBuilder: (context, index) {
@@ -449,30 +447,6 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
     }
   }
 
-  Widget getPostAvatar(context, post) {
-    return GestureDetector(
-      child: Container(
-        width: suSetSp(40.0),
-        height: suSetSp(40.0),
-        margin: EdgeInsets.symmetric(
-          horizontal: suSetSp(16.0),
-          vertical: suSetSp(10.0),
-        ),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: const Color(0xFFECECEC),
-          image: DecorationImage(
-            image: UserAPI.getAvatarProvider(uid: post.uid),
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-      onTap: () {
-        return UserPage.jump(post.uid);
-      },
-    );
-  }
-
   Text getPostNickname(context, post) => Text(
         post.nickname,
         style: TextStyle(
@@ -512,9 +486,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
       color: Theme.of(context).cardColor,
       width: Screen.width,
       padding: isLoading
-          ? EdgeInsets.symmetric(
-              vertical: suSetSp(42),
-            )
+          ? EdgeInsets.symmetric(vertical: suSetHeight(42.0))
           : EdgeInsets.zero,
       child: isLoading
           ? Center(
@@ -533,7 +505,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       separatorBuilder: (context, index) => Divider(
-                        height: suSetSp(1.0),
+                        height: suSetHeight(1.0),
                       ),
                       itemCount: _posts.length + 1,
                       itemBuilder: (context, index) {
@@ -548,13 +520,16 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                           return Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              getPostAvatar(context, _posts[index]),
+                              UserAPI.getAvatar(
+                                size: 40.0,
+                                uid: _posts[index].uid,
+                              ),
                               Expanded(
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    SizedBox(height: suSetSp(10.0)),
+                                    SizedBox(height: suSetHeight(10.0)),
                                     Row(
                                       children: <Widget>[
                                         getPostNickname(context, _posts[index]),
@@ -573,12 +548,12 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                           ),
                                       ],
                                     ),
-                                    SizedBox(height: suSetSp(4.0)),
+                                    SizedBox(height: suSetHeight(4.0)),
                                     getExtendedText(
                                         context, _posts[index].content),
-                                    SizedBox(height: suSetSp(6.0)),
+                                    SizedBox(height: suSetHeight(6.0)),
                                     getPostTime(context, _posts[index]),
-                                    SizedBox(height: suSetSp(10.0)),
+                                    SizedBox(height: suSetHeight(10.0)),
                                   ],
                                 ),
                               ),
@@ -590,7 +565,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                       },
                     )
                   : Container(
-                      height: suSetSp(120.0),
+                      height: suSetHeight(120.0),
                       child: Center(
                         child: Text(
                           "暂无内容",

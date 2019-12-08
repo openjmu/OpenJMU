@@ -17,10 +17,16 @@ export 'package:OpenJMU/constants/Configs.dart';
 export 'package:OpenJMU/constants/Instances.dart';
 export 'package:OpenJMU/constants/Messages.dart';
 export 'package:OpenJMU/constants/Screens.dart';
+export 'package:OpenJMU/model/Beans.dart';
 export 'package:OpenJMU/model/Events.dart';
-export 'package:OpenJMU/model/Bean.dart';
+export 'package:OpenJMU/model/HiveBoxes.dart';
 export 'package:OpenJMU/providers/Providers.dart';
 export 'package:OpenJMU/utils/Utils.dart';
+
+const double kAppBarHeight = 60.0;
+
+NavigatorState get navigatorState => Constants.navigatorKey.currentState;
+ThemeData get currentTheme => Theme.of(navigatorState.context);
 
 class Constants {
   static final developerList = <int>[
@@ -116,13 +122,13 @@ class Constants {
         decoration: BoxDecoration(
           color: color ?? Theme.of(context).canvasColor,
         ),
-        child: SizedBox(height: suSetSp(height ?? 8.0)),
+        child: SizedBox(height: suSetHeight(height ?? 8.0)),
       );
 
   /// Empty divider. Used in widgets need empty placeholder.
   static Widget emptyDivider({double width, double height}) => SizedBox(
-        width: width != null ? suSetSp(width) : null,
-        height: height != null ? suSetSp(height) : null,
+        width: width != null ? suSetWidth(width) : null,
+        height: height != null ? suSetHeight(height) : null,
       );
 
   /// Cover when night mode. Used in covering post thumb images.
@@ -163,7 +169,7 @@ class Constants {
       Platform.isIOS
           ? CupertinoActivityIndicator()
           : CircularProgressIndicator(
-              strokeWidth: suSetSp(strokeWidth),
+              strokeWidth: suSetWidth(strokeWidth),
               valueColor:
                   color != null ? AlwaysStoppedAnimation<Color>(color) : null,
               value: value,
@@ -178,20 +184,20 @@ class Constants {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SizedBox(
-                  width: suSetSp(20.0),
-                  height: suSetSp(20.0),
+                  width: suSetWidth(24.0),
+                  height: suSetHeight(24.0),
                   child: Constants.progressIndicator(strokeWidth: 2.0),
                 ),
                 Text(
                   "　正在加载",
-                  style: TextStyle(fontSize: suSetSp(16.0)),
+                  style: TextStyle(fontSize: suSetSp(18.0)),
                 ),
               ],
             )
           : Center(
               child: Text(
                 Constants.endLineTag,
-                style: TextStyle(fontSize: suSetSp(17.0)),
+                style: TextStyle(fontSize: suSetSp(18.0)),
               ),
             ),
     );
@@ -298,8 +304,8 @@ Widget scaledImage({
             right: 0.0,
             child: Container(
               padding: EdgeInsets.symmetric(
-                horizontal: suSetSp(6.0),
-                vertical: suSetSp(2.0),
+                horizontal: suSetWidth(6.0),
+                vertical: suSetHeight(2.0),
               ),
               color: ThemeUtils.currentThemeColor.withOpacity(0.7),
               child: Text(
@@ -325,5 +331,3 @@ Widget scaledImage({
   }
   return imageWidget;
 }
-
-NavigatorState get navigatorState => Constants.navigatorKey.currentState;

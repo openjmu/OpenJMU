@@ -10,7 +10,6 @@ import 'package:extended_list/extended_list.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/widgets/cards/CommentCard.dart';
 import 'package:OpenJMU/widgets/dialogs/DeleteDialog.dart';
 
@@ -215,18 +214,13 @@ class _CommentListState extends State<CommentList>
     super.build(context);
     if (!_showLoading) {
       if (_firstLoadComplete) {
-        _itemList = ExtendedListView.separated(
+        _itemList = ExtendedListView.builder(
           padding: EdgeInsets.symmetric(
-            vertical: suSetSp(4.0),
+            vertical: suSetHeight(4.0),
           ),
           controller: widget._commentController.commentType == "mention"
               ? null
               : _scrollController,
-          separatorBuilder: (context, index) => Divider(
-            color: Theme.of(context).canvasColor,
-            thickness: suSetSp(8.0),
-            height: suSetSp(8.0),
-          ),
           itemCount: _commentList.length + 1,
           itemBuilder: (context, index) {
             if (index == _commentList.length - 1) {
@@ -256,11 +250,7 @@ class _CommentListState extends State<CommentList>
       }
       return _body;
     } else {
-      return Container(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return Center(child: CircularProgressIndicator());
     }
   }
 }
@@ -397,32 +387,12 @@ class _CommentListInPostState extends State<CommentListInPost> {
     }
   }
 
-  GestureDetector getCommentAvatar(context, comment) {
-    return GestureDetector(
-      child: Container(
-        width: suSetSp(40.0),
-        height: suSetSp(40.0),
-        margin: EdgeInsets.symmetric(
-            horizontal: suSetSp(16.0), vertical: suSetSp(10.0)),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: const Color(0xFFECECEC),
-          image: DecorationImage(
-            image: UserAPI.getAvatarProvider(uid: comment.fromUserUid),
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-      onTap: () => UserPage.jump(comment.fromUserUid),
-    );
-  }
-
   Widget getCommentNickname(context, comment) {
     return Text(
       comment.fromUserName,
       style: TextStyle(
         color: Theme.of(context).textTheme.title.color,
-        fontSize: suSetSp(18.0),
+        fontSize: suSetSp(21.0),
       ),
     );
   }
@@ -440,7 +410,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
     return Text(
       _commentTime,
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(14.0),
+            fontSize: suSetSp(16.0),
           ),
     );
   }
@@ -448,7 +418,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
   Widget getExtendedText(context, content) {
     return ExtendedText(
       content != null ? "$content " : null,
-      style: TextStyle(fontSize: suSetSp(17.0)),
+      style: TextStyle(fontSize: suSetSp(19.0)),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(
         widgetType: WidgetType.comment,
@@ -465,13 +435,93 @@ class _CommentListInPostState extends State<CommentListInPost> {
     return commentText;
   }
 
+  void showActions(int index) {
+    showDialog<Null>(
+      context: context,
+      builder: (BuildContext context) => SimpleDialog(
+        backgroundColor: ThemeUtils.currentThemeColor,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              if (_comments[index].fromUserUid == UserAPI.currentUser.uid ||
+                  widget.post.uid == UserAPI.currentUser.uid)
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    showPlatformDialog(
+                      context: context,
+                      builder: (_) => DeleteDialog(
+                        "评论",
+                        comment: _comments[index],
+                      ),
+                    );
+                  },
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.all(suSetWidth(6.0)),
+                        child: Icon(
+                          Icons.delete,
+                          size: suSetWidth(36.0),
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        "删除评论",
+                        style: TextStyle(
+                          fontSize: suSetSp(16.0),
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  Clipboard.setData(ClipboardData(
+                    text: replaceMentionTag(_comments[index].content),
+                  ));
+                  showShortToast("已复制到剪贴板");
+                  Navigator.of(context).pop();
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(suSetWidth(6.0)),
+                      child: Icon(
+                        Icons.content_copy,
+                        size: suSetWidth(36.0),
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      "复制评论",
+                      style: TextStyle(
+                        fontSize: suSetSp(16.0),
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).cardColor,
-      width: MediaQuery.of(context).size.width,
+      width: Screen.width,
       padding: isLoading
-          ? EdgeInsets.symmetric(vertical: suSetSp(42))
+          ? EdgeInsets.symmetric(vertical: suSetHeight(42))
           : EdgeInsets.zero,
       child: isLoading
           ? Center(child: Constants.progressIndicator())
@@ -500,106 +550,27 @@ class _CommentListInPostState extends State<CommentListInPost> {
                             return SizedBox.shrink();
                           }
                           return InkWell(
-                            onTap: () {
-                              showDialog<Null>(
-                                context: context,
-                                builder: (BuildContext context) => SimpleDialog(
-                                  backgroundColor: ThemeUtils.currentThemeColor,
-                                  children: <Widget>[
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: <Widget>[
-                                        if (_comments[index].fromUserUid ==
-                                                UserAPI.currentUser.uid ||
-                                            widget.post.uid ==
-                                                UserAPI.currentUser.uid)
-                                          GestureDetector(
-                                            behavior: HitTestBehavior.opaque,
-                                            onTap: () {
-                                              showPlatformDialog(
-                                                context: context,
-                                                builder: (_) => DeleteDialog(
-                                                  "评论",
-                                                  comment: _comments[index],
-                                                ),
-                                              );
-                                            },
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: <Widget>[
-                                                Padding(
-                                                  padding: EdgeInsets.all(
-                                                      suSetSp(6.0)),
-                                                  child: Icon(
-                                                    Icons.delete,
-                                                    size: suSetSp(36.0),
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  "删除评论",
-                                                  style: TextStyle(
-                                                    fontSize: suSetSp(16.0),
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        GestureDetector(
-                                          behavior: HitTestBehavior.opaque,
-                                          onTap: () {
-                                            Clipboard.setData(ClipboardData(
-                                              text: replaceMentionTag(
-                                                _comments[index].content,
-                                              ),
-                                            ));
-                                            showShortToast("已复制到剪贴板");
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
-                                              Padding(
-                                                padding: EdgeInsets.all(
-                                                    suSetSp(6.0)),
-                                                child: Icon(
-                                                  Icons.content_copy,
-                                                  size: suSetSp(36.0),
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                              Text(
-                                                "复制评论",
-                                                style: TextStyle(
-                                                  fontSize: suSetSp(16.0),
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
+                            onTap: () => showActions(index),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                getCommentAvatar(context, _comments[index]),
+                                Container(
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: suSetWidth(20.0),
+                                    vertical: suSetHeight(12.0),
+                                  ),
+                                  child: UserAPI.getAvatar(
+                                    uid: _comments[index].fromUserUid,
+                                  ),
+                                ),
                                 Expanded(
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Container(
-                                        height: suSetSp(10.0),
-                                      ),
+                                      SizedBox(height: suSetHeight(10.0)),
                                       Row(
                                         children: <Widget>[
                                           getCommentNickname(
@@ -621,14 +592,14 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                             ),
                                         ],
                                       ),
-                                      SizedBox(height: suSetSp(4.0)),
+                                      SizedBox(height: suSetHeight(4.0)),
                                       getExtendedText(
                                         context,
                                         _comments[index].content,
                                       ),
-                                      SizedBox(height: suSetSp(6.0)),
+                                      SizedBox(height: suSetHeight(6.0)),
                                       getCommentTime(context, _comments[index]),
-                                      SizedBox(height: suSetSp(10.0)),
+                                      SizedBox(height: suSetHeight(10.0)),
                                     ],
                                   ),
                                 ),
@@ -637,7 +608,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                   icon: Icon(
                                     Icons.reply,
                                     color: Colors.grey,
-                                    size: suSetSp(28.0),
+                                    size: suSetWidth(28.0),
                                   ),
                                   onPressed: () {
                                     if (_comments.length >= index &&
@@ -663,7 +634,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                       },
                     )
                   : SizedBox(
-                      height: suSetSp(120.0),
+                      height: suSetHeight(120.0),
                       child: Center(
                         child: Text(
                           "暂无内容",

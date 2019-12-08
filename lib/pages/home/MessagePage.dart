@@ -1,13 +1,13 @@
-import 'dart:async';
-import 'dart:core';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
+import 'package:OpenJMU/widgets/AppBar.dart';
+import 'package:OpenJMU/widgets/SlideMenuItem.dart';
+import 'package:OpenJMU/widgets/messages/AppMessagePreviewWidget.dart';
+import 'package:OpenJMU/widgets/messages/MessagePreviewWidget.dart';
 
 class MessagePage extends StatefulWidget {
   @override
@@ -15,25 +15,21 @@ class MessagePage extends StatefulWidget {
 }
 
 class MessagePageState extends State<MessagePage>
-    with SingleTickerProviderStateMixin {
-//  static final List<String> tabs = ["消息", "通知"];
-  static final List<String> tabs = ["消息"];
-
-  final List<Map<String, dynamic>> topItems = [
+    with TickerProviderStateMixin {
+  final _messageScrollController = ScrollController();
+  final List<Map<String, dynamic>> notificationItems = [
     {
       "name": "评论/留言",
       "icons": "liuyan",
       "action": () {
-        navigatorState
-            .pushNamed("openjmu://notifications");
+        navigatorState.pushNamed("openjmu://notifications");
       },
     },
     {
       "name": "集市消息",
       "icons": "idols",
       "action": () {
-        navigatorState
-            .pushNamed("openjmu://team-notifications");
+        navigatorState.pushNamed("openjmu://team-notifications");
       },
     },
   ];
@@ -46,7 +42,7 @@ class MessagePageState extends State<MessagePage>
   void initState() {
     _tabController = TabController(
       initialIndex: Configs.homeStartUpIndex[2],
-      length: tabs.length,
+      length: 2,
       vsync: this,
     );
 
@@ -60,380 +56,313 @@ class MessagePageState extends State<MessagePage>
 
   Widget _icon(int index) {
     return SvgPicture.asset(
-      "assets/icons/${topItems[index]['icons']}-line.svg",
+      "assets/icons/${notificationItems[index]['icons']}-line.svg",
       color: Theme.of(context).iconTheme.color,
-      width: suSetSp(30.0),
-      height: suSetSp(30.0),
+      width: suSetWidth(32.0),
+      height: suSetWidth(32.0),
+    );
+  }
+
+  Widget get _tabBar => Padding(
+        padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+        child: TabBar(
+          isScrollable: true,
+          indicatorColor: currentThemeColor,
+          indicatorPadding: EdgeInsets.only(
+            bottom: suSetHeight(16.0),
+          ),
+          indicatorSize: TabBarIndicatorSize.label,
+          indicatorWeight: suSetHeight(6.0),
+          labelColor: Theme.of(context).textTheme.body1.color,
+          labelStyle: MainPageState.tabSelectedTextStyle,
+          labelPadding: EdgeInsets.symmetric(
+            horizontal: suSetWidth(20.0),
+          ),
+          unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
+          tabs: <Widget>[
+            Consumer<MessagesProvider>(
+              builder: (_, provider, __) {
+                return Stack(
+                  overflow: Overflow.visible,
+                  children: <Widget>[
+                    Positioned(
+                      top: suSetHeight(kToolbarHeight / 4),
+                      right: -suSetWidth(10.0),
+                      child: Visibility(
+                        visible: provider.unreadCount > 0,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: Container(
+                            width: suSetWidth(12.0),
+                            height: suSetWidth(12.0),
+                            color: currentThemeColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Tab(text: "消息"),
+                  ],
+                );
+              },
+            ),
+            Consumer<NotificationProvider>(
+              builder: (_, provider, __) {
+                return Stack(
+                  overflow: Overflow.visible,
+                  children: <Widget>[
+                    Positioned(
+                      top: suSetHeight(kToolbarHeight / 4),
+                      right: -suSetWidth(10.0),
+                      child: Visibility(
+                        visible: provider.showNotification,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(100),
+                          child: Container(
+                            width: suSetWidth(12.0),
+                            height: suSetWidth(12.0),
+                            color: currentThemeColor,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Tab(text: "通知"),
+                  ],
+                );
+              },
+            ),
+          ],
+          controller: _tabController,
+        ),
+      );
+
+  Widget get _notificationEntries => Consumer<NotificationProvider>(
+        builder: (_, provider, __) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: suSetWidth(18.0),
+                    vertical: suSetHeight(12.0),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: suSetSp(16.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Constants.badgeIcon(
+                            content: provider.notification.total,
+                            icon: _icon(0),
+                            showBadge: provider.notification.total > 0,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          notificationItems[0]['name'],
+                          style: TextStyle(
+                            fontSize: suSetSp(22.0),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: suSetSp(12.0),
+                        ),
+                        child: SvgPicture.asset(
+                          "assets/icons/arrow-right.svg",
+                          color: Colors.grey,
+                          width: suSetWidth(30.0),
+                          height: suSetWidth(30.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: notificationItems[0]['action'],
+              ),
+              Constants.separator(
+                context,
+                color: Theme.of(context).canvasColor,
+                height: 1.0,
+              ),
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: suSetWidth(18.0),
+                    vertical: suSetHeight(12.0),
+                  ),
+                  child: Row(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: suSetSp(16.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Constants.badgeIcon(
+                            content: provider.teamNotification.total,
+                            icon: _icon(1),
+                            showBadge: provider.teamNotification.total > 0,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: Text(
+                          notificationItems[1]['name'],
+                          style: TextStyle(
+                            fontSize: suSetSp(22.0),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: suSetSp(12.0),
+                        ),
+                        child: SvgPicture.asset(
+                          "assets/icons/arrow-right.svg",
+                          color: Colors.grey,
+                          width: suSetWidth(30.0),
+                          height: suSetWidth(30.0),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: notificationItems[1]['action'],
+              ),
+            ],
+          );
+        },
+      );
+
+  Widget get _messageList => Consumer2<MessagesProvider, WebAppsProvider>(
+        builder: (context, messageProvider, webAppsProvider, _) {
+          final shouldDisplayAppsMessages =
+              messageProvider.appsMessages.isNotEmpty &&
+                  webAppsProvider.apps.isNotEmpty;
+//            final shouldDisplayPersonalMessages =
+//                messageProvider.personalMessages[currentUser.uid].isNotEmpty;
+          final shouldDisplayMessages = shouldDisplayAppsMessages
+//                    ||
+//                    shouldDisplayPersonalMessages
+              ;
+
+          if (!shouldDisplayMessages) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SvgPicture.asset(
+                  "images/placeholder/no_message.svg",
+                  width: Screen.width / 3.5,
+                  height: Screen.width / 3.5,
+                ),
+                Padding(
+                  padding: EdgeInsets.only(top: suSetHeight(30.0)),
+                  child: Text(
+                    "无新消息",
+                    style: TextStyle(fontSize: suSetSp(22.0)),
+                  ),
+                )
+              ],
+            );
+          }
+          return CustomScrollView(
+            controller: _messageScrollController,
+            slivers: <Widget>[
+              if (shouldDisplayAppsMessages)
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final _list = messageProvider.appsMessages;
+                      final _index = _list.keys.length - 1 - index;
+                      final appId = _list.keys.elementAt(_index);
+                      final AppMessage message = _list[appId][0];
+                      return SlideItem(
+                        menu: <SlideMenuItem>[
+                          deleteWidget(messageProvider, appId),
+                        ],
+                        child: AppMessagePreviewWidget(message: message),
+                        height: suSetHeight(70.0),
+                      );
+                    },
+                    childCount: messageProvider.appsMessages.keys.length,
+                  ),
+                ),
+//                if (shouldDisplayAppsMessages)
+//                  SliverToBoxAdapter(
+//                    child: Constants.separator(context),
+//                  ),
+//                if (shouldDisplayPersonalMessages)
+//                  SliverList(
+//                    delegate: SliverChildBuilderDelegate(
+//                      (context, index) {
+//                        final mine =
+//                            messageProvider.personalMessages[currentUser.uid];
+//                        final uid = mine.keys.elementAt(index);
+//                        final Message message = mine[uid].first;
+//                        return MessagePreviewWidget(
+//                          uid: uid,
+//                          message: message,
+//                          unreadMessages: mine[uid],
+//                        );
+//                      },
+//                      childCount: messageProvider
+//                          .personalMessages[currentUser.uid].keys.length,
+//                    ),
+//                  ),
+            ],
+          );
+        },
+      );
+
+  Widget deleteWidget(MessagesProvider provider, int appId) {
+    return SlideMenuItem(
+      onTap: () {
+        provider.deleteFromAppsMessages(appId);
+      },
+      child: Center(
+        child: Text(
+          '删除',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: suSetSp(20.0),
+          ),
+        ),
+      ),
+      color: ThemeUtils.currentThemeColor,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Flexible(
-              child: TabBar(
-                isScrollable: true,
-                indicatorColor: currentThemeColor,
-                indicatorPadding: EdgeInsets.only(
-                  bottom: suSetSp(16.0),
-                ),
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorWeight: suSetSp(6.0),
-                labelColor: Theme.of(context).textTheme.body1.color,
-                labelStyle: MainPageState.tabSelectedTextStyle,
-                labelPadding: EdgeInsets.symmetric(
-                  horizontal: suSetSp(16.0),
-                ),
-                unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
-                tabs: <Tab>[
-                  for (int i = 0; i < tabs.length; i++) Tab(text: tabs[i])
-                ],
-                controller: _tabController,
-              ),
-            ),
-          ],
-        ),
-//        centerTitle: false,
-        centerTitle: true,
-      ),
-      body:
-//      TabBarView(
-//        controller: _tabController,
-//        children: <Widget>[
-          ListView(
+      body: Column(
         children: <Widget>[
-          Consumer<NotificationProvider>(
-            builder: (_, provider, __) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: suSetWidth(18.0),
-                        vertical: suSetHeight(12.0),
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                              right: suSetSp(16.0),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Constants.badgeIcon(
-                                content: provider.notification.total,
-                                icon: _icon(0),
-                                showBadge: provider.notification.total > 0,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              topItems[0]['name'],
-                              style: TextStyle(
-                                fontSize: suSetSp(19.0),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              right: suSetSp(12.0),
-                            ),
-                            child: SvgPicture.asset(
-                              "assets/icons/arrow-right.svg",
-                              color: Colors.grey,
-                              width: suSetSp(24.0),
-                              height: suSetSp(24.0),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    onTap: topItems[0]['action'],
-                  ),
-                  Constants.separator(
-                    context,
-                    color: Theme.of(context).canvasColor,
-                    height: 1.0,
-                  ),
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: suSetWidth(18.0),
-                        vertical: suSetHeight(12.0),
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(
-                              right: suSetSp(16.0),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Constants.badgeIcon(
-                                content: provider.teamNotification.total,
-                                icon: _icon(1),
-                                showBadge: provider.teamNotification.total > 0,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              topItems[1]['name'],
-                              style: TextStyle(
-                                fontSize: suSetSp(19.0),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              right: suSetSp(12.0),
-                            ),
-                            child: SvgPicture.asset(
-                              "assets/icons/arrow-right.svg",
-                              color: Colors.grey,
-                              width: suSetSp(24.0),
-                              height: suSetSp(24.0),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    onTap: topItems[1]['action'],
-                  ),
-                ],
-              );
-            },
-          ),
-          Constants.separator(context),
-          if (Configs.debug)
-            Consumer<MessagesProvider>(
-              builder: (context, provider, _) {
-                if (UserAPI.currentUser.uid == null) return SizedBox.shrink();
-                if (provider.personalMessages.entries.isEmpty) {
-                  return Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: suSetSp(12.0),
-                      vertical: suSetSp(30.0),
-                    ),
-                    child: SizedBox(
-                      height: suSetSp(40.0),
-                      child: Center(
-                        child: Text(
-                          "无新消息",
-                          style: TextStyle(
-                            fontSize: suSetSp(15.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                } else {
-                  return ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    reverse: true,
-                    itemCount: provider
-                        .personalMessages[UserAPI.currentUser.uid]
-                        .entries
-                        .length,
-                    itemBuilder: (context, index) {
-                      final mine =
-                          provider.personalMessages[UserAPI.currentUser.uid];
-                      final uid = mine.keys.elementAt(index);
-                      final message = mine[uid][0];
-                      return MessagePreviewWidget(
-                        uid: uid,
-                        message: message,
-                        unreadMessages: mine[uid],
-                      );
-                    },
-                  );
-                }
-              },
-            ),
-          if (!Configs.debug)
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: suSetSp(12.0),
-                vertical: suSetSp(30.0),
-              ),
-              child: SizedBox(
-                height: suSetSp(40.0),
-                child: Center(
-                  child: Text(
-                    "无新消息",
-                    style: TextStyle(
-                      fontSize: suSetSp(14.0),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-//          SizedBox(),
-//        ],
-//      ),
-    );
-  }
-}
-
-class MessagePreviewWidget extends StatefulWidget {
-  final int uid;
-  final WebApp app;
-  final Message message;
-  final List<Message> unreadMessages;
-
-  const MessagePreviewWidget({
-    this.uid,
-    this.app,
-    @required this.message,
-    @required this.unreadMessages,
-    Key key,
-  })  : assert(uid != null || app != null),
-        super(key: key);
-
-  @override
-  _MessagePreviewWidgetState createState() => _MessagePreviewWidgetState();
-}
-
-class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
-    with AutomaticKeepAliveClientMixin {
-  UserInfo user;
-
-  Timer timeUpdateTimer;
-  String formattedTime;
-
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  void initState() {
-    UserAPI.getUserInfo(uid: widget.uid).then((response) {
-      user = UserInfo.fromJson(response.data);
-      if (mounted) setState(() {});
-    }).catchError((e) {
-      debugPrint("$e");
-    });
-
-    timeFormat(null);
-    timeUpdateTimer = Timer.periodic(const Duration(minutes: 1), timeFormat);
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    timeUpdateTimer?.cancel();
-    super.dispose();
-  }
-
-  void timeFormat(_) {
-    final now = DateTime.now();
-    if (widget.message.sendTime.day == now.day &&
-        widget.message.sendTime.month == now.month &&
-        widget.message.sendTime.year == now.year) {
-      formattedTime = DateFormat("HH:mm").format(widget.message.sendTime);
-    } else if (widget.message.sendTime.year == now.year) {
-      formattedTime = DateFormat("MM-dd HH:mm").format(widget.message.sendTime);
-    } else {
-      formattedTime =
-          DateFormat("YY-MM-dd HH:mm").format(widget.message.sendTime);
-    }
-    if (mounted) setState(() {});
-  }
-
-  @mustCallSuper
-  Widget build(BuildContext context) {
-    super.build(context);
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: suSetSp(16.0),
-      ),
-      height: suSetSp(90.0),
-      decoration: BoxDecoration(),
-      child: Row(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              right: suSetSp(16.0),
-            ),
-            child: UserAPI.getAvatar(size: 60.0, uid: widget.uid),
+          FixedAppBar(
+            title: _tabBar,
+            centerTitle: false,
+            automaticallyImplyLeading: false,
           ),
           Expanded(
-            child: SizedBox(
-              height: suSetSp(60.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      SizedBox(
-                        height: suSetSp(30.0),
-                        child: user != null
-                            ? Text(
-                                "${user.name ?? user.uid}",
-                                style:
-                                    Theme.of(context).textTheme.body1.copyWith(
-                                          fontSize: suSetSp(20.0),
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                              )
-                            : SizedBox.shrink(),
-                      ),
-                      Text(
-                        " $formattedTime",
-                        style: Theme.of(context).textTheme.body1.copyWith(
-                              color: Theme.of(context)
-                                  .textTheme
-                                  .body1
-                                  .color
-                                  .withOpacity(0.5),
-                            ),
-                      ),
-                      Spacer(),
-                      Container(
-                        width: suSetSp(20.0),
-                        height: suSetSp(20.0),
-                        decoration: BoxDecoration(
-                          color: ThemeUtils.currentThemeColor.withOpacity(0.5),
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Text(
-                            "${widget.unreadMessages.length}",
-                            style: TextStyle(
-                              fontSize: suSetSp(14),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Text(
-                    "${widget.message.content['content']}",
-                    style: Theme.of(context).textTheme.body1.copyWith(
-                          color: Theme.of(context)
-                              .textTheme
-                              .body1
-                              .color
-                              .withOpacity(0.5),
-                        ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
+            child: TabBarView(
+              controller: _tabController,
+              children: <Widget>[
+                _messageList,
+                ListView(
+                  padding: EdgeInsets.zero,
+                  children: <Widget>[
+                    _notificationEntries,
+                    Constants.separator(context),
+                  ],
+                ),
+              ],
             ),
           ),
         ],

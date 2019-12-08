@@ -146,12 +146,12 @@ class SearchPageState extends State<SearchPage>
       _controller = TextEditingController(text: content);
     }
     return Container(
-      height: kToolbarHeight / 1.3,
+      height: suSetHeight(kAppBarHeight) / 1.3,
       padding: EdgeInsets.only(
-        left: suSetSp(16.0),
+        left: suSetWidth(16.0),
       ),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(kToolbarHeight / 2),
+        borderRadius: BorderRadius.circular(kAppBarHeight),
         color: Theme.of(context).canvasColor,
       ),
       child: Row(
@@ -196,11 +196,11 @@ class SearchPageState extends State<SearchPage>
               behavior: HitTestBehavior.opaque,
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: suSetSp(16.0),
+                  horizontal: suSetWidth(16.0),
                 ),
                 child: Icon(
                   Icons.clear,
-                  size: suSetSp(24.0),
+                  size: suSetWidth(24.0),
                   color: Theme.of(context).iconTheme.color,
                 ),
               ),
@@ -216,15 +216,15 @@ class SearchPageState extends State<SearchPage>
 
   Widget get userListView => (userList != null && userList.isNotEmpty)
       ? SizedBox(
-          height: suSetSp(140.0),
+          height: suSetHeight(140.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(
-                  top: suSetSp(16.0),
-                  left: 12.0,
+                  top: suSetHeight(16.0),
+                  left: suSetWidth(12.0),
                 ),
                 child: Text(
                   "相关用户 (${userList.length})",
@@ -239,22 +239,25 @@ class SearchPageState extends State<SearchPage>
                   itemCount: userList.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: suSetHeight(12.0),
+                      ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           SizedBox(
-                            width: suSetSp(48.0),
-                            height: suSetSp(48.0),
+                            width: suSetWidth(48.0),
+                            height: suSetHeight(48.0),
                             child: GestureDetector(
                               child: ClipRRect(
                                 borderRadius:
-                                    BorderRadius.circular(suSetSp(24.0)),
+                                    BorderRadius.circular(suSetWidth(24.0)),
                                 child: FadeInImage(
                                   fadeInDuration:
                                       const Duration(milliseconds: 100),
                                   placeholder: AssetImage(
-                                      "assets/avatar_placeholder.png"),
+                                    "assets/avatar_placeholder.png",
+                                  ),
                                   image: UserAPI.getAvatarProvider(
                                     uid: userList[index].id,
                                   ),
@@ -263,7 +266,7 @@ class SearchPageState extends State<SearchPage>
                               onTap: () => UserPage.jump(userList[index].id),
                             ),
                           ),
-                          SizedBox(height: suSetSp(8.0)),
+                          SizedBox(height: suSetHeight(8.0)),
                           Text(
                             userList[index].nickname,
                             style: Theme.of(context).textTheme.body1.copyWith(
@@ -287,11 +290,11 @@ class SearchPageState extends State<SearchPage>
     super.build(context);
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
+        preferredSize: Size.fromHeight(kAppBarHeight),
         child: SafeArea(
           top: true,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
               children: <Widget>[
                 IconButton(
@@ -300,11 +303,12 @@ class SearchPageState extends State<SearchPage>
                     Navigator.of(context).pop();
                   },
                 ),
-                Expanded(
-                  child: searchTextField(context),
-                ),
+                Expanded(child: searchTextField(context)),
                 IconButton(
-                  icon: Icon(Icons.search),
+                  icon: Icon(
+                    Icons.search,
+                    size: suSetWidth(30.0),
+                  ),
                   onPressed: () {
                     if (_controller.text != null && _controller.text != "") {
                       search(context, _controller.text);
@@ -331,9 +335,9 @@ class SearchPageState extends State<SearchPage>
                           } else {
                             return Padding(
                               padding: EdgeInsets.only(
-                                top: suSetSp(16.0),
-                                bottom: suSetSp(8.0),
-                                left: 12.0,
+                                top: suSetHeight(16.0),
+                                bottom: suSetHeight(8.0),
+                                left: suSetWidth(12.0),
                               ),
                               child: Text(
                                 "相关动态",
@@ -341,7 +345,7 @@ class SearchPageState extends State<SearchPage>
                                     .textTheme
                                     .caption
                                     .copyWith(
-                                      fontSize: suSetSp(16.0),
+                                      fontSize: suSetSp(19.0),
                                     ),
                               ),
                             );
@@ -352,9 +356,9 @@ class SearchPageState extends State<SearchPage>
                             index == 1) {
                           return Padding(
                             padding: EdgeInsets.only(
-                              top: suSetSp(16.0),
-                              bottom: suSetSp(8.0),
-                              left: 12.0,
+                              top: suSetHeight(16.0),
+                              bottom: suSetHeight(8.0),
+                              left: suSetWidth(12.0),
                             ),
                             child: Text(
                               "相关动态",
@@ -389,16 +393,13 @@ class SearchPageState extends State<SearchPage>
                         }
                       },
                     )
-                  : SizedBox(
-                      height: 300.0,
-                      child: Center(
-                        child: Text(
-                          "没有搜索到动态内容~\n🧐",
-                          style: TextStyle(
-                            fontSize: suSetSp(30.0),
-                          ),
-                          textAlign: TextAlign.center,
+                  : Center(
+                      child: Text(
+                        "没有搜索到动态内容~\n🧐",
+                        style: TextStyle(
+                          fontSize: suSetSp(30.0),
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     )
               : SizedBox.shrink()

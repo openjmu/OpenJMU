@@ -4,7 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
-import 'package:OpenJMU/pages/home/AppCenterPage.dart';
+import 'package:OpenJMU/pages/home/AppsPage.dart';
 import 'package:OpenJMU/pages/home/PostSquareListPage.dart';
 
 @FFRoute(
@@ -19,7 +19,7 @@ class SwitchStartUpPage extends StatefulWidget {
 class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
   static final List<List<String>> pageTab = [
     List.from(PostSquareListPageState.tabs),
-    List.from(AppCenterPageState.tabs()),
+    List.from(AppsPageState.tabs()),
   ];
   List<List<Map<String, dynamic>>> pageSection = [
     [
@@ -57,14 +57,14 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                 Text(
                   "${page["name"]}",
                   style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: suSetSp(24.0),
+                        fontSize: suSetSp(26.0),
                         fontWeight: FontWeight.normal,
                       ),
                 ),
                 Text(
                   "${page["pages"][page["index"]]}",
-                  style: Theme.of(context).textTheme.subtitle.copyWith(
-                        fontSize: suSetSp(16.0),
+                  style: Theme.of(context).textTheme.caption.copyWith(
+                        fontSize: suSetSp(18.0),
                         fontWeight: FontWeight.normal,
                       ),
                 ),
@@ -73,8 +73,8 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
             SvgPicture.asset(
               "assets/icons/arrow-right.svg",
               color: Colors.grey,
-              width: suSetSp(24.0),
-              height: suSetSp(24.0),
+              width: suSetWidth(30.0),
+              height: suSetWidth(30.0),
             ),
           ],
         ),
@@ -194,15 +194,15 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                 Text(
                   "启动页设置",
                   style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: suSetSp(40.0),
-                        fontWeight: FontWeight.bold,
-                      ),
+                    fontSize: suSetSp(40.0),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
                   "设置各个页面的启动页",
-                  style: Theme.of(context).textTheme.subtitle.copyWith(
-                        fontSize: suSetSp(20.0),
-                      ),
+                  style: Theme.of(context).textTheme.caption.copyWith(
+                    fontSize: suSetSp(24.0),
+                  ),
                 ),
                 Constants.emptyDivider(height: 20.0),
               ],

@@ -20,10 +20,14 @@ import 'package:OpenJMU/OpenJMU_route.dart';
 import 'package:OpenJMU/OpenJMU_route_helper.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   if (!kIsWeb) {
     final dir = await getApplicationDocumentsDirectory();
     Hive.init(dir.path);
   }
+
+  await HiveBoxes.openBoxes();
   await DataUtils.initSharedPreferences();
   await DeviceUtils.getModel();
   runApp(OpenJMUApp());
@@ -34,7 +38,7 @@ class OpenJMUApp extends StatefulWidget {
   State<StatefulWidget> createState() => OpenJMUAppState();
 }
 
-class OpenJMUAppState extends State<OpenJMUApp> {
+class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   final _quickActions = [
     ['actions_home', '首页'],
     ['actions_apps', '应用'],
@@ -57,6 +61,8 @@ class OpenJMUAppState extends State<OpenJMUApp> {
 
   @override
   void initState() {
+    WidgetsBinding.instance.addObserver(this);
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -76,6 +82,12 @@ class OpenJMUAppState extends State<OpenJMUApp> {
         DataUtils.logout();
         currentThemeColor = ThemeUtils.defaultColor;
         if (mounted) setState(() {});
+      })
+      ..on<TicketGotEvent>().listen((event) {
+        Provider.of<MessagesProvider>(
+          navigatorState.context,
+          listen: false,
+        ).initMessages();
       })
       ..on<ActionsEvent>().listen((event) {
         initAction = _quickActions.firstWhere((action) {
@@ -100,6 +112,7 @@ class OpenJMUAppState extends State<OpenJMUApp> {
     initSettings();
     NetUtils.initConfig();
     initQuickActions();
+
     debugPrint("Current platform is: ${Platform.operatingSystem}");
 
     super.initState();
@@ -107,9 +120,36 @@ class OpenJMUAppState extends State<OpenJMUApp> {
 
   @override
   void dispose() {
-    connectivitySubscription?.cancel();
     debugPrint("Main dart disposed.");
+    WidgetsBinding.instance.removeObserver(this);
+    connectivitySubscription?.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    debugPrint(state.toString());
+    updateBrightness();
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    updateBrightness(
+      platformBrightness: WidgetsBinding.instance.window.platformBrightness,
+    );
+  }
+
+  void updateBrightness({Brightness platformBrightness}) {
+    if (brightness != null) {
+      brightness = platformBrightness ??
+          MediaQuery.of(Constants.navigatorKey.currentContext)
+              .platformBrightness;
+    }
+    if (ThemeUtils.isPlatformBrightness) {
+      ThemeUtils.isDark = brightness == Brightness.dark;
+    } else {
+      ThemeUtils.isDark = DataUtils.getBrightness();
+    }
   }
 
   void initSettings() async {
@@ -124,6 +164,12 @@ class OpenJMUAppState extends State<OpenJMUApp> {
     Configs.homeStartUpIndex = DataUtils.getHomeStartUpIndex();
     Configs.fontScale = DataUtils.getFontScale();
     Configs.newAppCenterIcon = DataUtils.getEnabledNewAppsIcon();
+
+    if (DataUtils.isLogin()) {
+      DataUtils.recoverLoginInfo();
+    } else {
+      Instances.eventBus.fire(TicketFailedEvent());
+    }
 
     if (mounted) setState(() {});
   }
@@ -146,15 +192,7 @@ class OpenJMUAppState extends State<OpenJMUApp> {
 
   @override
   Widget build(BuildContext context) {
-    if (brightness != null) {
-      brightness = MediaQuery.of(Constants.navigatorKey.currentContext)
-          .platformBrightness;
-    }
-    if (ThemeUtils.isPlatformBrightness) {
-      ThemeUtils.isDark = brightness == Brightness.dark;
-    } else {
-      ThemeUtils.isDark = DataUtils.getBrightness();
-    }
+    updateBrightness();
 
     final theme = ThemeUtils.isDark
         ? ThemeUtils.dark()
@@ -179,7 +217,9 @@ class OpenJMUAppState extends State<OpenJMUApp> {
               brightness = ThemeUtils.isPlatformBrightness
                   ? MediaQuery.of(c).platformBrightness
                   : ThemeUtils.isDark ? Brightness.dark : Brightness.light;
-              ScreenUtil.instance = ScreenUtil.getInstance()..init(c);
+              ScreenUtil.instance = ScreenUtil.getInstance()
+                ..allowFontScaling = true
+                ..init(c);
               return NoScaleTextWidget(child: w);
             },
             title: "OpenJMU",

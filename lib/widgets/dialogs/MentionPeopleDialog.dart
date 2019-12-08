@@ -59,13 +59,11 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                   Container(
                     decoration: BoxDecoration(
                       color: Theme.of(context).canvasColor,
-                      borderRadius:
-                          BorderRadius.circular(suSetSp(12.0)),
+                      borderRadius: BorderRadius.circular(suSetWidth(12.0)),
                     ),
-                    width: MediaQuery.of(context).size.width -
-                        suSetSp(100),
+                    width: Screen.width - suSetWidth(100),
                     padding: EdgeInsets.only(
-                      top: suSetSp(20.0),
+                      top: suSetHeight(16.0),
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -74,12 +72,12 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                           child: Text(
                             "提到用户",
                             style: Theme.of(context).textTheme.title.copyWith(
-                                  fontSize: suSetSp(22.0),
+                                  fontSize: suSetSp(24.0),
                                 ),
                           ),
                         ),
                         Container(
-                          height: suSetSp(40.0),
+                          height: suSetSp(60.0),
                           margin: EdgeInsets.symmetric(
                             horizontal: suSetSp(20.0),
                             vertical: suSetSp(20.0),
@@ -113,7 +111,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                       .textTheme
                                       .body1
                                       .copyWith(
-                                        fontSize: suSetSp(19.0),
+                                        fontSize: suSetSp(20.0),
                                         textBaseline: TextBaseline.alphabetic,
                                       ),
                                   scrollPadding: EdgeInsets.zero,
@@ -132,7 +130,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                       },
                                       child: Icon(
                                         Icons.search,
-                                        size: suSetSp(28.0),
+                                        size: suSetWidth(32.0),
                                         color: Theme.of(context)
                                             .textTheme
                                             .title
@@ -140,8 +138,8 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                       ),
                                     )
                                   : SizedBox(
-                                      width: suSetSp(28.0),
-                                      height: suSetSp(28.0),
+                                      width: suSetWidth(32.0),
+                                      height: suSetWidth(32.0),
                                       child: Constants.progressIndicator(),
                                     ),
                             ],
@@ -178,8 +176,8 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                         Expanded(
                                           child: Center(
                                             child: SizedBox.fromSize(
-                                              size: Size(suSetSp(50),
-                                                  suSetSp(50)),
+                                              size: Size(
+                                                  suSetSp(50), suSetSp(50)),
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   image: DecorationImage(
@@ -200,8 +198,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                             child: Text(
                                               users[index].nickname,
                                               style: TextStyle(
-                                                fontSize:
-                                                    suSetSp(18.0),
+                                                fontSize: suSetSp(18.0),
                                               ),
                                               overflow: TextOverflow.ellipsis,
                                             ),

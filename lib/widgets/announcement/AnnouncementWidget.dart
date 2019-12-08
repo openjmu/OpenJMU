@@ -22,22 +22,22 @@ class AnnouncementWidget extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: suSetSp(gap ?? 15.0),
-          vertical: suSetSp(10.0),
+          horizontal: suSetWidth(gap ?? 15.0),
+          vertical: suSetHeight(10.0),
         ),
         decoration: BoxDecoration(
           borderRadius: radius != null
-              ? BorderRadius.circular(suSetSp(radius))
+              ? BorderRadius.circular(suSetWidth(radius))
               : null,
           color: (color ?? ThemeUtils.defaultColor).withAlpha(0x44),
         ),
         child: Row(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(right: suSetSp(6.0)),
+              padding: EdgeInsets.only(right: suSetWidth(6.0)),
               child: Icon(
                 Icons.error_outline,
-                size: suSetSp(18.0),
+                size: suSetWidth(18.0),
                 color: color ?? ThemeUtils.defaultColor,
               ),
             ),
@@ -52,10 +52,10 @@ class AnnouncementWidget extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(left: suSetSp(6.0)),
+              padding: EdgeInsets.only(left: suSetWidth(6.0)),
               child: Icon(
                 Icons.keyboard_arrow_right,
-                size: suSetSp(18.0),
+                size: suSetWidth(18.0),
                 color: color ?? ThemeUtils.defaultColor,
               ),
             ),

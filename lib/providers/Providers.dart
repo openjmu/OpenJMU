@@ -5,8 +5,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 
-import 'package:OpenJMU/providers/MessagesProvider.dart';
-import 'package:OpenJMU/providers/NotificationProvider.dart';
+import 'package:OpenJMU/constants/Constants.dart';
 
 export 'package:provider/provider.dart';
 export 'package:OpenJMU/providers/MessagesProvider.dart';
@@ -23,4 +22,5 @@ List<SingleChildCloneableWidget> get providers => _providers;
 final _providers = [
   buildProvider<MessagesProvider>(MessagesProvider()..initListener()),
   buildProvider<NotificationProvider>(NotificationProvider()),
+  buildProvider<WebAppsProvider>(WebAppsProvider()),
 ];

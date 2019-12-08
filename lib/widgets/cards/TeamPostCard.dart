@@ -44,9 +44,9 @@ class _TeamPostCardState extends State<TeamPostCard> {
   }
 
   Widget _header(context) => Container(
-        height: suSetHeight(80.0),
+        height: suSetHeight(64.0),
         padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(8.0),
+          vertical: suSetHeight(4.0),
         ),
         child: Row(
           children: <Widget>[
@@ -61,7 +61,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
                     Text(
                       post.nickname ?? post.uid.toString(),
                       style: TextStyle(
-                        fontSize: suSetSp(19.0),
+                        fontSize: suSetSp(22.0),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -113,21 +113,17 @@ class _TeamPostCardState extends State<TeamPostCard> {
     return Text(
       "$time",
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(16.0),
+            fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
           ),
     );
   }
 
   Widget get _content => Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(4.0),
-        ),
+        padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
         child: ExtendedText(
           post.content ?? "",
-          style: TextStyle(
-            fontSize: suSetSp(18.0),
-          ),
+          style: TextStyle(fontSize: suSetSp(21.0)),
           onSpecialTextTap: specialTextTapRecognizer,
           specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
         ),
@@ -175,8 +171,10 @@ class _TeamPostCardState extends State<TeamPostCard> {
               arguments: {
                 "index": index,
                 "pics": post.pics.map<ImageBean>((f) {
+                  final imageId = int.parse(f['fid'].toString());
+                  final imageUrl = API.teamFile(fid: imageId);
                   return ImageBean(
-                    id: imageId,
+                    id: int.parse(f['fid']),
                     imageUrl: imageUrl,
                     imageThumbUrl: imageUrl,
                     postId: post.tid,

@@ -17,48 +17,49 @@ class MyInfoPage extends StatefulWidget {
 
 class MyInfoPageState extends State<MyInfoPage> {
   List<List<Map<String, String>>> settingsSection() => [
-    if (Configs.debug)
-      [
-        {
-          "name": "背包",
-          "icon": "idols",
-        },
-      ],
-    [
-      if (!ThemeUtils.isPlatformBrightness) {
-        "name": "夜间模式",
-        "icon": "nightmode",
-      },
-      {
-        "name": "设置",
-        "icon": "settings",
-      },
-    ],
-    [
-      if (Platform.isAndroid)
-        {
-          "name": "检查更新",
-          "icon": "checkUpdate",
-        },
-      {
-        "name": "关于OpenJMU",
-        "icon": "idols",
-      },
-    ],
-    [
-      {
-        "name": "退出登录",
-        "icon": "exit",
-      },
-    ],
-    if (Configs.debug)
-      [
-        {
-          "name": "测试页",
-          "icon": "idols",
-        },
-      ],
-  ];
+        if (Configs.debug)
+          [
+            {
+              "name": "背包",
+              "icon": "idols",
+            },
+          ],
+        [
+          if (!ThemeUtils.isPlatformBrightness)
+            {
+              "name": "夜间模式",
+              "icon": "nightmode",
+            },
+          {
+            "name": "设置",
+            "icon": "settings",
+          },
+        ],
+        [
+          if (Platform.isAndroid)
+            {
+              "name": "检查更新",
+              "icon": "checkUpdate",
+            },
+          {
+            "name": "关于OpenJMU",
+            "icon": "idols",
+          },
+        ],
+        [
+          {
+            "name": "退出登录",
+            "icon": "exit",
+          },
+        ],
+        if (Configs.debug)
+          [
+            {
+              "name": "测试页",
+              "icon": "idols",
+            },
+          ],
+      ];
 
   Color themeColor = ThemeUtils.currentThemeColor;
 
@@ -184,8 +185,8 @@ class MyInfoPageState extends State<MyInfoPage> {
         content: Text(
           "是否确认退出登录？",
           style: Theme.of(context).textTheme.body1.copyWith(
-            fontSize: suSetSp(18.0),
-          ),
+                fontSize: suSetSp(18.0),
+              ),
         ),
         actions: <Widget>[
           PlatformButton(
@@ -228,18 +229,6 @@ class MyInfoPageState extends State<MyInfoPage> {
   }
 
   Widget userInfo() {
-    Widget avatar = SizedBox(
-      width: suSetSp(100.0),
-      height: suSetSp(100.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(suSetSp(50.0)),
-        child: FadeInImage(
-          fadeInDuration: const Duration(milliseconds: 100),
-          placeholder: AssetImage("assets/avatar_placeholder.png"),
-          image: UserAPI.getAvatarProvider(uid: UserAPI.currentUser.uid),
-        ),
-      ),
-    );
     Widget name = Row(
       children: <Widget>[
         Expanded(
@@ -250,7 +239,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 "${UserAPI.currentUser.name}",
                 style: TextStyle(
                   color: Theme.of(context).textTheme.title.color,
-                  fontSize: suSetSp(24.0),
+                  fontSize: suSetSp(26.0),
                   fontWeight: FontWeight.bold,
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -268,7 +257,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             UserAPI.currentUser.signature ?? "这里空空如也~",
             style: TextStyle(
               color: Theme.of(context).textTheme.caption.color,
-              fontSize: suSetSp(18.0),
+              fontSize: suSetSp(20.0),
             ),
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.start,
@@ -295,25 +284,26 @@ class MyInfoPageState extends State<MyInfoPage> {
                 ),
                 child: signing
                     ? Container(
-                        width: suSetSp(24.0),
-                        height: suSetSp(24.0),
-                        padding: EdgeInsets.all(suSetSp(3.0)),
+                        width: suSetWidth(24.0),
+                        height: suSetWidth(24.0),
+                        padding: EdgeInsets.all(suSetWidth(4.0)),
                         child: CircularProgressIndicator(
-                          strokeWidth: 3.0,
-                          valueColor: AlwaysStoppedAnimation(Colors.white),
-                        )
+                          strokeWidth: suSetWidth(3.0),
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
                       )
                     : Icon(
                         Icons.assignment_turned_in,
                         color: Colors.white,
-                        size: suSetSp(24.0),
+                        size: suSetWidth(26.0),
                       ),
               ),
               Text(
                 signed ? "已签$signedCount天" : "签到",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: suSetSp(18.0),
+                  fontSize: suSetSp(20.0),
                   textBaseline: TextBaseline.alphabetic,
                 ),
               ),
@@ -330,34 +320,30 @@ class MyInfoPageState extends State<MyInfoPage> {
         onTap: () => UserPage.jump(UserAPI.currentUser.uid),
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: suSetSp(24.0),
-            vertical: suSetSp(16.0),
+            horizontal: suSetWidth(24.0),
+            vertical: suSetHeight(16.0),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                padding: EdgeInsets.symmetric(vertical: suSetHeight(10.0)),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    avatar,
+                    UserAPI.getAvatar(size: 100),
                     Expanded(
                       child: Padding(
-                        padding: EdgeInsets.only(left: suSetSp(20.0)),
+                        padding: EdgeInsets.only(left: suSetWidth(20.0)),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             name,
-                            Constants.emptyDivider(
-                              height: suSetSp(10.0),
-                            ),
+                            Constants.emptyDivider(height: suSetHeight(10.0)),
                             signature,
-                            Constants.emptyDivider(
-                              height: suSetSp(3.0),
-                            ),
+                            Constants.emptyDivider(height: suSetHeight(3.0)),
                           ],
                         ),
                       ),
@@ -376,8 +362,8 @@ class MyInfoPageState extends State<MyInfoPage> {
   Widget currentDay(context, DateTime now) => Container(
         color: Theme.of(context).primaryColor,
         padding: EdgeInsets.symmetric(
-          horizontal: suSetSp(30.0),
-          vertical: suSetSp(20.0),
+          horizontal: suSetWidth(36.0),
+          vertical: suSetHeight(20.0),
         ),
         child: Center(
           child: RichText(
@@ -391,7 +377,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 TextSpan(text: "${DateFormat("EEEE", "zh_CN").format(now)}"),
               ],
               style: TextStyle(
-                fontSize: suSetSp(20.0),
+                fontSize: suSetSp(24.0),
                 color: Theme.of(context).textTheme.body1.color,
               ),
             ),
@@ -422,15 +408,15 @@ class MyInfoPageState extends State<MyInfoPage> {
       child: Container(
         color: Theme.of(context).primaryColor,
         padding: EdgeInsets.symmetric(
-          horizontal: suSetSp(18.0),
-          vertical: suSetSp(18.0),
+          horizontal: suSetWidth(18.0),
+          vertical: suSetHeight(18.0),
         ),
         child: Row(
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(
-                left: suSetSp(12.0),
-                right: suSetSp(16.0),
+                left: suSetWidth(12.0),
+                right: suSetWidth(24.0),
               ),
               child: SvgPicture.asset(
                 (item['name'] == "夜间模式")
@@ -439,8 +425,8 @@ class MyInfoPageState extends State<MyInfoPage> {
                         : "assets/icons/${item['icon']}-line.svg"
                     : "assets/icons/${item['icon']}-line.svg",
                 color: Theme.of(context).iconTheme.color,
-                width: suSetSp(30.0),
-                height: suSetSp(30.0),
+                width: suSetWidth(40.0),
+                height: suSetHeight(32.0),
               ),
             ),
             Expanded(
@@ -448,7 +434,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                 (item['name'] == "夜间模式")
                     ? isDark ? "日间模式" : item['name']
                     : item['name'],
-                style: TextStyle(fontSize: suSetSp(19.0)),
+                style: TextStyle(fontSize: suSetSp(23.0)),
               ),
             ),
             Padding(
@@ -456,8 +442,8 @@ class MyInfoPageState extends State<MyInfoPage> {
               child: SvgPicture.asset(
                 "assets/icons/arrow-right.svg",
                 color: Colors.grey,
-                width: suSetSp(24.0),
-                height: suSetSp(24.0),
+                width: suSetWidth(30.0),
+                height: suSetWidth(30.0),
               ),
             ),
           ],

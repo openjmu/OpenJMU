@@ -29,13 +29,13 @@ class TeamCommentPreviewCard extends StatelessWidget {
   }) : super(key: key);
 
   Widget _header(context, TeamPostProvider provider) => Container(
-        height: suSetHeight(80.0),
+        height: suSetHeight(70.0),
         padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(8.0),
+          vertical: suSetHeight(4.0),
         ),
         child: Row(
           children: <Widget>[
-            UserAPI.getAvatar(uid: provider.post.uid, size: 40.0),
+            UserAPI.getAvatar(uid: provider.post.uid, size: 48.0),
             SizedBox(width: suSetWidth(16.0)),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -46,7 +46,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                     Text(
                       provider.post.nickname ?? provider.post.uid.toString(),
                       style: TextStyle(
-                        fontSize: suSetSp(17.0),
+                        fontSize: suSetSp(22.0),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -74,7 +74,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                       ),
                     if (Constants.developerList.contains(provider.post.uid))
                       Container(
-                        margin: EdgeInsets.only(left: suSetWidth(12.0)),
+                        margin: EdgeInsets.only(left: suSetWidth(14.0)),
                         child: Constants.developerTag(
                           padding: EdgeInsets.symmetric(
                             horizontal: suSetWidth(8.0),
@@ -96,7 +96,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                   Icons.reply,
                   color: Theme.of(context).dividerColor,
                 ),
-                iconSize: suSetHeight(36.0),
+                iconSize: suSetWidth(40.0),
                 onPressed: () {
                   detailPageState.setReplyToPost(provider.post);
                 },
@@ -111,7 +111,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                     Icons.delete_outline,
                     color: Theme.of(context).dividerColor,
                   ),
-                  iconSize: suSetHeight(36.0),
+                  iconSize: suSetWidth(40.0),
                   onPressed: () {
                     confirmDelete(context, provider);
                   },
@@ -194,7 +194,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
     return Text(
       "第${post.floor}楼 · $time",
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(15.0),
+            fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
           ),
     );
@@ -209,7 +209,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
           child: ExtendedText(
             post.content ?? "",
             style: TextStyle(
-              fontSize: suSetSp(17.0),
+              fontSize: suSetSp(21.0),
             ),
             onSpecialTextTap: specialTextTapRecognizer,
             maxLines: 8,
@@ -220,7 +220,6 @@ class TeamCommentPreviewCard extends StatelessWidget {
                   text: "全文",
                   style: TextStyle(
                     color: ThemeUtils.currentThemeColor,
-                    fontSize: suSetSp(17.0),
                   ),
                 ),
               ],
@@ -246,8 +245,8 @@ class TeamCommentPreviewCard extends StatelessWidget {
             vertical: suSetHeight(12.0),
           ),
           padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(16.0),
-            vertical: suSetHeight(12.0),
+            horizontal: suSetWidth(24.0),
+            vertical: suSetHeight(8.0),
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(suSetWidth(10.0)),
@@ -319,6 +318,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                                 ),
                                 padding: EdgeInsets.symmetric(
                                   horizontal: suSetWidth(6.0),
+                                  vertical: suSetHeight(1.0),
                                 ),
                                 decoration: BoxDecoration(
                                   borderRadius:
@@ -328,7 +328,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                                 child: Text(
                                   "楼主",
                                   style: TextStyle(
-                                    fontSize: suSetSp(11.0),
+                                    fontSize: suSetSp(17.0),
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -343,7 +343,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                           ),
                         ]),
                         style: Theme.of(context).textTheme.body1.copyWith(
-                              fontSize: suSetSp(17.0),
+                              fontSize: suSetSp(19.0),
                             ),
                         onSpecialTextTap: specialTextTapRecognizer,
                       ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/pages/home/AddButtonPage.dart';
 
 class FABBottomAppBarItem {
   FABBottomAppBarItem({this.iconPath, this.text});
@@ -16,9 +17,9 @@ class FABBottomAppBar extends StatefulWidget {
   FABBottomAppBar({
     this.items,
     this.centerItemText,
-    this.height: 60.0,
-    this.iconSize: 24.0,
-    this.itemFontSize: 16.0,
+    this.height: 64.0,
+    this.iconSize: 28.0,
+    this.itemFontSize: 18.0,
     this.backgroundColor,
     this.color,
     this.selectedColor,
@@ -87,18 +88,29 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
 
   Widget _buildMiddleTabItem() {
     return Expanded(
-      child: SizedBox(
-        height: suSetSp(widget.height),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: suSetSp(widget.iconSize)),
-            Text(
-              widget.centerItemText ?? '',
-              style: TextStyle(color: widget.color),
+      child: UnconstrainedBox(
+        child: SizedBox(
+          width: suSetWidth(68.0),
+          height: suSetWidth(45.0),
+          child: MaterialButton(
+            padding: EdgeInsets.zero,
+            color: widget.selectedColor,
+            elevation: 0.0,
+            highlightElevation: 2.0,
+            child: Icon(
+              Icons.add,
+              color: Colors.white.withOpacity(ThemeUtils.isDark ? 0.7 : 1.0),
+              size: suSetWidth(34.0),
             ),
-          ],
+            onPressed: () {
+              Navigator.of(context).push(TransparentRoute(
+                builder: (context) => AddingButtonPage(),
+              ));
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(suSetWidth(14.0)),
+            ),
+          ),
         ),
       ),
     );
@@ -116,7 +128,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
         child: Stack(
           children: <Widget>[
             SizedBox(
-              height: suSetSp(widget.height),
+              height: suSetHeight(widget.height),
               child: Center(
                 child: AnimatedCrossFade(
                   duration: kTabScrollDuration,
@@ -131,15 +143,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                         "assets/icons/bottomNavigation/"
                         "${item.iconPath}-fill.svg",
                         color: widget.selectedColor,
-                        width: suSetSp(widget.iconSize),
-                        height: suSetSp(widget.iconSize),
-                      ),
-                      Text(
-                        item.text,
-                        style: TextStyle(
-                          color: widget.selectedColor,
-                          fontSize: suSetSp(widget.itemFontSize),
-                        ),
+                        width: suSetWidth(widget.iconSize),
+                        height: suSetHeight(widget.iconSize),
                       ),
                     ],
                   ),
@@ -151,15 +156,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                         "assets/icons/bottomNavigation/"
                         "${item.iconPath}-line.svg",
                         color: widget.color,
-                        width: suSetSp(widget.iconSize),
-                        height: suSetSp(widget.iconSize),
-                      ),
-                      Text(
-                        item.text,
-                        style: TextStyle(
-                          color: widget.color,
-                          fontSize: suSetSp(widget.itemFontSize),
-                        ),
+                        width: suSetWidth(widget.iconSize),
+                        height: suSetHeight(widget.iconSize),
                       ),
                     ],
                   ),
@@ -167,22 +165,24 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
               ),
             ),
             if (index == 2)
-              Consumer<NotificationProvider>(
-                builder: (_, provider, __) => Positioned(
-                  top: suSetSp(5),
-                  right: suSetSp(28),
-                  child: Visibility(
-                    visible: provider.showNotification,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(suSetSp(5)),
-                      child: Container(
-                        width: suSetSp(10),
-                        height: suSetSp(10),
-                        color: widget.selectedColor,
+              Consumer<MessagesProvider>(
+                builder: (_, provider, __) {
+                  return Positioned(
+                    top: widget.height / 6,
+                    right: Screen.width / widget.items.length / 5,
+                    child: Visibility(
+                      visible: provider.unreadCount > 0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Container(
+                          width: suSetWidth(12.0),
+                          height: suSetWidth(12.0),
+                          color: widget.selectedColor,
+                        ),
                       ),
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
           ],
         ),

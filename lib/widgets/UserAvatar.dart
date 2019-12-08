@@ -30,13 +30,16 @@ class UserAvatar extends StatelessWidget {
           child: FadeInImage(
             fadeInDuration: const Duration(milliseconds: 100),
             placeholder: AssetImage("assets/avatar_placeholder.png"),
-            image: UserAPI.getAvatarProvider(uid: uid),
+            image: UserAPI.getAvatarProvider(
+              uid: uid ?? UserAPI.currentUser.uid,
+            ),
           ),
         ),
         onTap: () {
           final settings = ModalRoute.of(context).settings as FFRouteSettings;
           if (settings.name != "openjmu://user" ||
-              settings.arguments.toString() != {"uid": uid}.toString()) {
+              settings.arguments.toString() !=
+                  {"uid": uid ?? UserAPI.currentUser.uid}.toString()) {
             UserPage.jump(uid);
           }
         },

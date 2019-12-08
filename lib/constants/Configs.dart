@@ -16,7 +16,7 @@ class Configs {
   static bool newAppCenterIcon = false;
 
   static double fontScale = 1.0;
-  static final List<double> scaleRange = [0.8, 1.2];
+  static final List<double> fontScaleRange = [0.6, 1.4];
 
   static void reset() {
     homeSplashIndex = 0;

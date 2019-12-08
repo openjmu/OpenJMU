@@ -17,25 +17,12 @@ class Messages {
     "WY_CHANGE_STATUS": 0x10, // 改变状态
     "WY_KEEPALIVE": 0x11, // 心跳
     "WY_GET_OFFLINEMSG": 0x77, // 获取离线消息
+    "WY_OFFLINEMSG_ACK": 0x7531, // 确认某条消息以前的所有离线消息
+    "WY_OFFLINEMSG_ACK_ONE": 0x754E, // 确认某条离线消息
+    "WY_MULTPOINT_MSG_ACK": 0x9005, // 确认某条消息以前的所有消息
+    "WY_MULTPOINT_MSG_ACK_ONE": 0x900D, // 确认某条消息
     "WY_MSG": 0x20, // 发送消息
     "WY_OL_NUM": 0x28, // 获取在线人数
-  };
-
-  static Map<String, Function> messagePacks = {
-    "WY_VERIFY_CHECKCODE": () => [
-          ...MessageUtils.commonString(UserAPI.currentUser.sid), // Session ID
-        ],
-    "WY_MULTPOINT_LOGIN": () => [
-          ...MessageUtils.commonUint(0, 16), // 状态值
-          ...MessageUtils.commonString(ascii.decode([0, 0, 0, 0x24, 0])), // 状态描述
-          ...MessageUtils.commonUint(1, 8), // 是否多点登录 (0/1)
-          ...MessageUtils.commonString(
-            "${Constants.appId}|${DeviceUtils.deviceModel}|||V",
-          ), // 登录点描述
-          ...MessageUtils.commonUint(1, 16), // (可选，默认0) 心跳检测频率 = n * 60
-          ...MessageUtils.commonUint(55, 32), // 单位id (55)
-          ...MessageUtils.commonUint(1, 8), // 是否移动端 (0/1)
-        ],
   };
 
   static const Map<String, int> PRPL_91U_MSG_TYPE = {
@@ -102,10 +89,71 @@ abstract class MessageResponse {
   Map<String, dynamic> responseBody(List<int> response);
 }
 
+/// Requests.
+class M_WY_VERIFY_CHECKCODE implements MessageRequest {
+  @override
+  List<int> requestBody() {
+    final result = MessageUtils.commonString(UserAPI.currentUser.sid);
+    return result;
+  }
+}
+
+class M_WY_MULTPOINT_LOGIN implements MessageRequest {
+  @override
+  List<int> requestBody() {
+    final result = [
+      ...MessageUtils.commonUint(1, 16), // 状态值
+      ...MessageUtils.commonString(ascii.decode([0, 0, 0, 0x24, 0])), // 状态描述
+      ...MessageUtils.commonUint(1, 8), // 是否多点登录 (0/1)
+      ...MessageUtils.commonString(
+        "${Constants.appId}|${DeviceUtils.deviceModel}|||V",
+      ), // 登录点描述
+      ...MessageUtils.commonUint(1, 16), // (可选，默认0) 心跳检测频率 = n * 60
+      ...MessageUtils.commonUint(55, 32), // 单位id (55)
+      ...MessageUtils.commonUint(1, 8), // 是否移动端 (0/1)
+    ];
+    return result;
+  }
+}
+
+class M_WY_OFFLINEMSG_ACK implements MessageRequest {
+  final int messageId;
+
+  M_WY_OFFLINEMSG_ACK({this.messageId});
+
+  @override
+  List<int> requestBody() {
+    final result = MessageUtils.commonUint(messageId, 64);
+    return result;
+  }
+}
+
+class M_WY_MULTPOINT_MSG_ACK implements MessageRequest {
+  final int friendId;
+  final int friendMultiPortId;
+  final int ackId;
+
+  M_WY_MULTPOINT_MSG_ACK({
+    this.friendId = 0,
+    this.friendMultiPortId = 0,
+    @required this.ackId,
+  });
+
+  @override
+  List<int> requestBody() {
+    final result = [
+      ...MessageUtils.commonUint(friendId, 64),
+      ...MessageUtils.commonUint(friendMultiPortId, 64),
+      ...MessageUtils.commonUint(ackId, 64),
+    ];
+    return result;
+  }
+}
+
 class M_WY_MSG implements MessageRequest {
-  String type;
-  int uid;
-  String message;
+  final int uid;
+  final String type;
+  final String message;
 
   M_WY_MSG({
     @required this.type,
@@ -124,6 +172,7 @@ class M_WY_MSG implements MessageRequest {
   }
 }
 
+/// Responses.
 class R_WY_MSG implements MessageResponse {
   @override
   Map<String, dynamic> responseBody(List<int> response) {

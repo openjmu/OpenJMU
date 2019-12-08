@@ -71,6 +71,10 @@ class DataUtils {
       await saveLoginInfo(userInfo);
       UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
       showShortToast("登录成功！");
+      Provider.of<MessagesProvider>(
+        navigatorState.context,
+        listen: false,
+      ).initMessages();
       return true;
     } catch (e) {
       debugPrint(e.toString());
@@ -90,6 +94,10 @@ class DataUtils {
       clearLoginInfo();
       clearSettings();
       showShortToast("退出登录成功");
+      Provider.of<MessagesProvider>(
+        navigatorState.context,
+        listen: false,
+      ).logout();
     });
   }
 
@@ -126,14 +134,17 @@ class DataUtils {
   }
 
   static Future recoverLoginInfo() async {
+    Map<String, String> info = getSpTicket();
+    UserAPI.lastTicket = info['ticket'];
+    UserAPI.currentUser.sid = info['ticket'];
+    UserAPI.currentUser.blowfish = info['blowfish'];
+  }
+
+  static Future reFetchTicket() async {
     try {
-      Map<String, String> info = getSpTicket();
-      UserAPI.lastTicket = info['ticket'];
-      UserAPI.currentUser.sid = info['ticket'];
-      UserAPI.currentUser.blowfish = info['blowfish'];
       await getTicket();
       bool isWizard = true;
-      if (!UserAPI.currentUser.isTeacher) isWizard = await checkWizard();
+//      if (!UserAPI.currentUser.isTeacher) isWizard = await checkWizard();
       UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
       Instances.eventBus.fire(TicketGotEvent(isWizard));
     } catch (e) {

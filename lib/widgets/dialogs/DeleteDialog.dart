@@ -22,8 +22,8 @@ class DeleteDialog extends Dialog {
       content: Text(
         "是否确认删除这条$whatToDelete？",
         style: Theme.of(context).textTheme.body1.copyWith(
-          fontSize: suSetSp(16.0),
-        ),
+              fontSize: suSetSp(20.0),
+            ),
       ),
       actions: <Widget>[
         PlatformButton(

@@ -17,6 +17,7 @@ import 'pages/post/PublishTeamPostPage.dart';
 import 'pages/post/PublishPostPage.dart';
 import 'pages/SplashPage.dart';
 import 'pages/test/TestDashBoardPage.dart';
+import 'pages/chat/ChatAppMessagePage.dart';
 import 'pages/notification/TeamNotificationPage.dart';
 import 'pages/notification/NotificationPage.dart';
 import 'pages/user/UserQrCodePage.dart';
@@ -111,6 +112,13 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       return RouteResult(
         widget: TestDashBoardPage(),
         routeName: "测试首页",
+      );
+    case "openjmu://chat-app-message-page":
+      return RouteResult(
+        widget: ChatAppMessagePage(
+          app: arguments['app'],
+        ),
+        routeName: "应用消息页",
       );
     case "openjmu://team-notifications":
       return RouteResult(
@@ -270,6 +278,7 @@ List<String> routeNames = [
   "openjmu://publish-post",
   "openjmu://splash",
   "openjmu://test-dashboard",
+  "openjmu://chat-app-message-page",
   "openjmu://team-notifications",
   "openjmu://notifications",
   "openjmu://user-qrcode",

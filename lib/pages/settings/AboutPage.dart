@@ -4,6 +4,7 @@ import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/widgets/AppBar.dart';
 import 'package:OpenJMU/widgets/CommonWebPage.dart';
 
 @FFRoute(
@@ -46,13 +47,13 @@ class _AboutPageState extends State<AboutPage> {
                 margin: EdgeInsets.only(bottom: suSetSp(20.0)),
                 child: SvgPicture.asset(
                   "images/splash_page_logo.svg",
-                  width: suSetSp(180.0),
-                  height: suSetSp(180.0),
+                  width: suSetWidth(200.0),
+                  height: suSetWidth(200.0),
                   color: ThemeUtils.defaultColor,
                 ),
               ),
             ),
-            SizedBox(height: suSetSp(30.0)),
+            SizedBox(height: suSetHeight(30.0)),
             Container(
               margin: EdgeInsets.only(bottom: suSetSp(12.0)),
               child: RichText(
@@ -70,7 +71,7 @@ class _AboutPageState extends State<AboutPage> {
                     style: Theme.of(context).textTheme.subtitle),
               ])),
             ),
-            SizedBox(height: suSetSp(20.0)),
+            SizedBox(height: suSetHeight(20.0)),
             RichText(
                 text: TextSpan(
               children: <TextSpan>[
@@ -96,7 +97,7 @@ class _AboutPageState extends State<AboutPage> {
                         color: Theme.of(context).textTheme.body1.color)),
               ],
             )),
-            SizedBox(height: suSetSp(80.0)),
+            SizedBox(height: suSetHeight(80.0)),
           ],
         ),
       ),
@@ -124,25 +125,30 @@ class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "关于OpenJMU",
-          style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: suSetSp(21.0),
+      body: Column(
+        children: <Widget>[
+          FixedAppBar(
+            title: Text(
+              "关于OpenJMU",
+              style: Theme.of(context).textTheme.title.copyWith(
+                fontSize: suSetSp(23.0),
               ),
-        ),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              about(),
-              tries == 10 ? debugInfo() : SizedBox.shrink(),
-            ],
+            ),
           ),
-        ),
+          Expanded(
+            child: Center(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    about(),
+                    tries == 10 ? debugInfo() : SizedBox.shrink(),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

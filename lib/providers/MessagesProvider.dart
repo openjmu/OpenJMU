@@ -7,11 +7,45 @@ import 'package:flutter/material.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 
 class MessagesProvider with ChangeNotifier {
-  Map<int, Map<int, List<Message>>> _appsMessages = {};
-  Map<int, Map<int, List<Message>>> _personalMessages = {};
+  Map<int, List> _appsMessages;
+//  Map<int, List> _personalMessages;
 
-  Map<int, Map<int, List<Message>>> get appsMessages => _appsMessages;
-  Map<int, Map<int, List<Message>>> get personalMessages => _personalMessages;
+  Map<int, List> get appsMessages => _appsMessages;
+//  Map<int, List> get personalMessages => _personalMessages;
+
+  int get unreadCount => appsMessages.values.fold(
+      0,
+      (initialValue, list) =>
+          initialValue +
+          list
+              .cast<AppMessage>()
+              .fold(0, (init, message) => init + (message.read ? 0 : 1)));
+
+  bool get hasMessages => _appsMessages.isNotEmpty
+//          || _personalMessages[currentUser.uid].isNotEmpty
+      ;
+
+  void initMessages() {
+    final appBox = HiveBoxes.appMessagesBox;
+//    final personalBox = HiveBoxes.personalMessagesBox;
+
+    if (!appBox.containsKey(currentUser.uid)) {
+      appBox.put(currentUser.uid, Map<int, List>());
+    }
+//    if (!personalBox.containsKey(currentUser.uid)) {
+//      personalBox.put(currentUser.uid, Map<int, List>());
+//    }
+
+    var _tempAppsMessages = appBox.get(currentUser.uid);
+    _appsMessages = _tempAppsMessages.cast<int, List>();
+//    var _tempPersonalMessages = personalBox.get(currentUser.uid);
+//    _personalMessages = _tempPersonalMessages.cast<int, List>();
+  }
+
+  void logout() {
+    _appsMessages = null;
+//    _personalMessages = null;
+  }
 
   void initListener() {
     MessageUtils.messageListeners.add(incomingMessage);
@@ -26,21 +60,52 @@ class MessagesProvider with ChangeNotifier {
   }
 
   void _incomingAppsMessage(MessageReceivedEvent event) {
-    print(event);
+    final message = AppMessage.fromEvent(event);
+    if (!_appsMessages.containsKey(message.appId)) {
+      _appsMessages[message.appId] = <AppMessage>[];
+    }
+    _appsMessages[message.appId].insert(0, message);
+    final tempMessages = List.from(_appsMessages[message.appId]);
+    _appsMessages.remove(message.appId);
+    _appsMessages[message.appId] = List.from(tempMessages);
+    saveAppsMessages();
+    notifyListeners();
   }
 
   void _incomingPersonalMessage(MessageReceivedEvent event) {
-    if (!_personalMessages.containsKey(UserAPI.currentUser.uid)) {
-      _personalMessages[UserAPI.currentUser.uid] = Map<int, List<Message>>();
-    }
-    final _uMessages = _personalMessages[UserAPI.currentUser.uid];
-    if (!_uMessages.containsKey(event.senderUid)) {
-      _uMessages[event.senderUid] = <Message>[];
-    }
-    final message = Message.fromEvent(event);
-    if (message.content['content'] != Messages.inputting) {
-      _uMessages[event.senderUid].insert(0, Message.fromEvent(event));
-      notifyListeners();
-    }
+//    final message = Message.fromEvent(event);
+//    if (!_personalMessages.containsKey(event.senderUid)) {
+//      _personalMessages[event.senderUid] = <Message>[];
+//    }
+//    if (message.content['content'] != Messages.inputting) {
+//      _personalMessages[event.senderUid].insert(0, message);
+//      HiveBoxes.personalMessagesBox.put(currentUser.uid, _personalMessages);
+//      notifyListeners();
+//    }
   }
+
+//  void reduceUnreadMessageCount(int appId) {
+//    int count = appMessagesUnreadCount[appId];
+//    if (count != null) {
+//      if (count > 0) {
+//        count--;
+//      }
+//    } else {
+//      count = 0;
+//    }
+//  }
+
+  void deleteFromAppsMessages(int appId) {
+    _appsMessages.remove(appId);
+    saveAppsMessages();
+    notifyListeners();
+  }
+
+  void saveAppsMessages() {
+    HiveBoxes.appMessagesBox.put(currentUser.uid, Map.from(_appsMessages));
+  }
+
+//  void savePersonalMessage() {
+//    HiveBoxes.personalMessagesBox.put(currentUser.uid, _personalMessages);
+//  }
 }

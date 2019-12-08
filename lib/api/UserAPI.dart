@@ -7,6 +7,8 @@ import 'package:extended_image/extended_image.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/UserAvatar.dart';
 
+UserInfo get currentUser => UserAPI.currentUser;
+
 class UserAPI {
   static String lastTicket;
   static UserInfo currentUser = UserInfo();
@@ -35,7 +37,7 @@ class UserAPI {
     int uid,
     int t,
   }) {
-    return UserAvatar(uid: uid, size: size, timestamp: t);
+    return UserAvatar(uid: uid ?? currentUser.uid, size: size, timestamp: t);
   }
 
   static ImageProvider getAvatarProvider({

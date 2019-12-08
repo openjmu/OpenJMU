@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/widgets/AppBar.dart';
 
 @FFRoute(
   name: "openjmu://theme",
@@ -36,45 +37,51 @@ class ChangeThemePageState extends State<ChangeThemePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          '切换主题',
-          style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: suSetSp(21.0),
-              ),
-        ),
-        centerTitle: true,
-      ),
-      body: GridView.count(
-        crossAxisCount: 4,
-        children: List.generate(colors.length, (index) {
-          return InkWell(
-            onTap: () {
-              setState(() {
-                selected = index;
-              });
-              DataUtils.setColorTheme(index);
-              changeColorTheme(colors[index]);
-            },
-            child: Stack(
-              children: <Widget>[
-                Container(
-                  color: colors[index],
-                  margin: EdgeInsets.all(suSetSp(10.0)),
-                ),
-                if (selected == index)
-                  Container(
-                    color: const Color(0x66ffffff),
-                    margin: EdgeInsets.all(suSetSp(10.0)),
-                    child: Icon(Icons.check,
-                        color: Colors.white, size: suSetSp(40.0)),
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
+      body: Column(
+        children: <Widget>[
+          FixedAppBar(
+            title: Text(
+              '切换主题',
+              style: Theme.of(context).textTheme.title.copyWith(
+                    fontSize: suSetSp(23.0),
                   ),
-              ],
             ),
-          );
-        }),
+          ),
+          Expanded(
+            child: GridView.count(
+              padding: EdgeInsets.zero,
+              crossAxisCount: 4,
+              children: List.generate(colors.length, (index) {
+                return InkWell(
+                  onTap: () {
+                    setState(() {
+                      selected = index;
+                    });
+                    DataUtils.setColorTheme(index);
+                    changeColorTheme(colors[index]);
+                  },
+                  child: Stack(
+                    children: <Widget>[
+                      Container(
+                        color: colors[index],
+                        margin: EdgeInsets.all(suSetSp(10.0)),
+                      ),
+                      if (selected == index)
+                        Container(
+                          color: const Color(0x66ffffff),
+                          margin: EdgeInsets.all(suSetSp(10.0)),
+                          child: Icon(Icons.check,
+                              color: Colors.white, size: suSetSp(40.0)),
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                        ),
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -39,12 +39,12 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   final textActiveStyle = TextStyle(
     color: Colors.white,
-    fontSize: suSetSp(16.0),
+    fontSize: suSetSp(20.0),
     fontWeight: FontWeight.bold,
   );
   final textInActiveStyle = TextStyle(
     color: Colors.grey,
-    fontSize: suSetSp(16.0),
+    fontSize: suSetSp(18.0),
   );
 
   Widget _forwardsList;
@@ -61,7 +61,7 @@ class PostDetailPageState extends State<PostDetailPage> {
   TextStyle forwardsStyle, commentsStyle, praisesStyle;
 
   double iconSize = 20.0;
-  double actionFontSize = 17.0;
+  double actionFontSize = 18.0;
 
   Color forwardsColor,
       commentsColor = ThemeUtils.currentThemeColor,
@@ -92,7 +92,7 @@ class PostDetailPageState extends State<PostDetailPage> {
     Instances.eventBus
       ..on<PostDeletedEvent>().listen((event) {
         if (this.mounted && event.postId == widget.post.id) {
-          Future.delayed(Duration(milliseconds: 2200), () {
+          Future.delayed(const Duration(milliseconds: 2200), () {
             Navigator.of(context).pop();
           });
         }
@@ -319,7 +319,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                 child: Container(
                   color: Theme.of(context).cardColor,
                   child: LikeButton(
-                    size: suSetSp(iconSize),
+                    size: suSetHeight(iconSize),
                     circleColor: CircleColor(
                       start: ThemeUtils.currentThemeColor,
                       end: ThemeUtils.currentThemeColor,

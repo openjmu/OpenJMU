@@ -9,8 +9,8 @@ class NoScaleTextWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaxScaleTextWidget(
-      max: 1.0,
+    return ScaleTextWidget(
+      scale: 1.0,
       child: child,
     );
   }
@@ -38,7 +38,6 @@ class MaxScaleTextWidget extends StatelessWidget {
 
 class ScaleTextWidget extends StatelessWidget {
   final double scale;
-
   final Widget child;
 
   const ScaleTextWidget({

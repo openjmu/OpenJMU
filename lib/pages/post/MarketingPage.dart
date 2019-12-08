@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_list/extended_list.dart';
 
-
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/cards/TeamPostPreviewCard.dart';
 
@@ -78,17 +77,13 @@ class _MarketingPageState extends State<MarketingPage> {
                         final pics = element.pics;
                         if (pics != null) {
                           pics.forEach((pic) {
-                            final provider = ExtendedNetworkImageProvider(
+                            ExtendedNetworkImageProvider(
                               API.teamFile(
-                                  fid: int.parse(pic['fid'].toString())),
-                            );
-                            provider.evict();
+                                fid: int.parse(pic['fid'].toString()),
+                              ),
+                            ).evict();
                           });
                         }
-                        final avatarProvider = UserAPI.getAvatarProvider(
-                          uid: element.uid,
-                        );
-                        avatarProvider.evict();
                       }
                     });
                   },

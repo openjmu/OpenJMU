@@ -79,7 +79,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
             height: suSetHeight(180.0),
             decoration: BoxDecoration(
               color: Theme.of(context).canvasColor,
-              borderRadius: BorderRadius.circular(suSetSp(8.0)),
+              borderRadius: BorderRadius.circular(suSetWidth(8.0)),
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

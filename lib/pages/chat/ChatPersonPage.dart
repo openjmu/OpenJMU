@@ -12,6 +12,13 @@ import 'package:extended_text_field/extended_text_field.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 
 class ChatPersonPage extends StatefulWidget {
+  final int uid;
+
+  const ChatPersonPage({
+    Key key,
+    this.uid = 164466,
+  }) : super(key: key);
+
   @override
   _ChatPersonPageState createState() => _ChatPersonPageState();
 }
@@ -26,7 +33,6 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   List<Message> messages = [];
   bool shrinkWrap = true;
   bool emoticonPadActive = false;
-  int uid = 164466;
   double _keyboardHeight = EmotionPadState.emoticonPadDefaultHeight;
   String pendingMessage = "";
 
@@ -34,7 +40,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   void initState() {
     Instances.eventBus
       ..on<MessageReceivedEvent>().listen((event) {
-        if (event.senderUid == uid ||
+        if (event.senderUid == widget.uid ||
             event.senderUid == UserAPI.currentUser.uid) {
           final message = Message.fromEvent(event);
           if (message.content['content'] != Messages.inputting) {
@@ -243,9 +249,9 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
             end == -1
                 ? "${(message.content['content'] as String)}"
                 : "${(message.content['content'] as String).substring(
-              0,
-              (message.content['content'] as String).indexOf('&<img>'),
-            )}",
+                    0,
+                    (message.content['content'] as String).indexOf('&<img>'),
+                  )}",
             style: TextStyle(
               fontSize: suSetSp(19.0),
             ),
@@ -279,7 +285,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   }
 
   void sendMessage() {
-    MessageUtils.sendTextMessage(pendingMessage, uid);
+    MessageUtils.sendTextMessage(pendingMessage, widget.uid);
     _textEditingController.clear();
     pendingMessage = "";
     if (mounted) setState(() {});

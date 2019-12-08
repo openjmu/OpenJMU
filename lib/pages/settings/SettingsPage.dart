@@ -4,6 +4,7 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/widgets/AppBar.dart';
 
 @FFRoute(
   name: "openjmu://settings",
@@ -94,12 +95,14 @@ class _SettingsPageState extends State<SettingsPage> {
         PlatformSwitch(
           activeColor: ThemeUtils.currentThemeColor,
           value: ThemeUtils.isAMOLEDDark,
-          onChanged: ThemeUtils.isDark ? (bool value) {
-            ThemeUtils.isAMOLEDDark = value;
-            DataUtils.setAMOLEDDark(value);
-            Instances.eventBus.fire(ChangeAMOLEDDarkEvent(value));
-            if (mounted) setState(() {});
-          } : null,
+          onChanged: ThemeUtils.isDark
+              ? (bool value) {
+                  ThemeUtils.isAMOLEDDark = value;
+                  DataUtils.setAMOLEDDark(value);
+                  Instances.eventBus.fire(ChangeAMOLEDDarkEvent(value));
+                  if (mounted) setState(() {});
+                }
+              : null,
         ),
         null,
         null,
@@ -126,13 +129,13 @@ class _SettingsPageState extends State<SettingsPage> {
           children: <Widget>[
             Container(
               margin: EdgeInsets.only(
-                right: suSetSp(12.0),
+                right: suSetWidth(20.0),
               ),
               child: SvgPicture.asset(
                 "assets/icons/${page['icon']}-line.svg",
                 color: Theme.of(context).iconTheme.color,
-                width: suSetSp(30.0),
-                height: suSetSp(30.0),
+                width: suSetWidth(40.0),
+                height: suSetWidth(40.0),
               ),
             ),
             Expanded(
@@ -143,13 +146,13 @@ class _SettingsPageState extends State<SettingsPage> {
                   Text(
                     "${page["name"]}",
                     style: TextStyle(
-                      fontSize: suSetSp(22.0),
+                      fontSize: suSetSp(26.0),
                     ),
                   ),
                   Text(
                     "${page["description"]}",
                     style: Theme.of(context).textTheme.caption.copyWith(
-                          fontSize: suSetSp(14.0),
+                          fontSize: suSetSp(18.0),
                         ),
                   ),
                 ],
@@ -208,50 +211,58 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(elevation: 0),
-      body: ListView(
-        padding: EdgeInsets.symmetric(
-          horizontal: suSetWidth(40.0),
-        ),
+      body: Column(
         children: <Widget>[
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(
-                "设置",
-                style: Theme.of(context).textTheme.title.copyWith(
-                      fontSize: suSetSp(40.0),
-                      fontWeight: FontWeight.bold,
+          FixedAppBar(),
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.symmetric(
+                horizontal: suSetWidth(40.0),
+              ),
+              children: <Widget>[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "设置",
+                      style: Theme.of(context).textTheme.title.copyWith(
+                            fontSize: suSetSp(40.0),
+                            fontWeight: FontWeight.bold,
+                          ),
                     ),
-              ),
-              Text(
-                "管理该应用的各项设置",
-                style: Theme.of(context).textTheme.subtitle.copyWith(
-                      fontSize: suSetSp(20.0),
+                    Text(
+                      "管理该应用的各项设置",
+                      style: Theme.of(context).textTheme.caption.copyWith(
+                            fontSize: suSetSp(24.0),
+                          ),
                     ),
-              ),
-              Constants.emptyDivider(height: 20.0),
-            ],
-          ),
-          ListView.separated(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            separatorBuilder: (context, index) => Constants.separator(
-              context,
-              color: Colors.transparent,
-              height: 20.0,
-            ),
-            itemCount: pageSection.length,
-            itemBuilder: (context, sectionIndex) => ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: pageSection[sectionIndex].length,
-              itemBuilder: (context, index) => settingItem(
-                context: context,
-                index: index,
-                sectionIndex: sectionIndex,
-              ),
+                    Constants.emptyDivider(height: 20.0),
+                  ],
+                ),
+                ListView.separated(
+                  padding: EdgeInsets.zero,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) => Constants.separator(
+                    context,
+                    color: Colors.transparent,
+                    height: 20.0,
+                  ),
+                  itemCount: pageSection.length,
+                  itemBuilder: (context, sectionIndex) => ListView.builder(
+                    padding: EdgeInsets.zero,
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: pageSection[sectionIndex].length,
+                    itemBuilder: (context, index) => settingItem(
+                      context: context,
+                      index: index,
+                      sectionIndex: sectionIndex,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],

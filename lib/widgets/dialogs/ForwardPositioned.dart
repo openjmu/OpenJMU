@@ -12,7 +12,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/widgets/ToggleButton.dart';
 import 'package:OpenJMU/widgets/RoundedCheckBox.dart';
 import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
 
@@ -82,7 +81,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         focusNode: _focusNode,
         controller: _forwardController,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.all(suSetSp(12.0)),
+          contentPadding: EdgeInsets.all(suSetWidth(16.0)),
           border: OutlineInputBorder(
             borderSide: BorderSide(
               color: ThemeUtils.currentThemeColor,
@@ -94,16 +93,12 @@ class ForwardPositionedState extends State<ForwardPositioned> {
             ),
           ),
           suffixIcon: _image != null
-              ? SizedBox(
-                  width: suSetSp(70.0),
-                  child: Container(
-                    margin: EdgeInsets.only(right: suSetSp(14.0)),
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: FileImage(_image),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
+              ? Container(
+                  margin: EdgeInsets.only(right: suSetWidth(16.0)),
+                  width: suSetWidth(70.0),
+                  child: Image.file(
+                    _image,
+                    fit: BoxFit.cover,
                   ),
                 )
               : null,
@@ -151,7 +146,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
     });
   }
 
-  void updatePadStatus(context, bool active) {
+  void updatePadStatus(bool active) {
     final change = () {
       emoticonPadActive = active;
       if (mounted) setState(() {});
@@ -222,7 +217,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
   }
 
   Widget get toolbar => SizedBox(
-        height: suSetSp(40.0),
+        height: suSetHeight(40.0),
         child: Row(
           children: <Widget>[
             RoundedCheckbox(
@@ -238,7 +233,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
             Text(
               "同时评论到微博",
               style: TextStyle(
-                fontSize: suSetSp(16.0),
+                fontSize: suSetSp(20.0),
               ),
             ),
             Spacer(),
@@ -247,11 +242,11 @@ class ForwardPositionedState extends State<ForwardPositioned> {
               onTap: _addImage,
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                  horizontal: suSetSp(6.0),
+                  horizontal: suSetWidth(6.0),
                 ),
                 child: Icon(
                   Icons.add_photo_alternate,
-                  size: suSetSp(26.0),
+                  size: suSetWidth(32.0),
                 ),
               ),
             ),
@@ -266,63 +261,53 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                 ),
                 child: Icon(
                   Icons.alternate_email,
-                  size: suSetSp(26.0),
+                  size: suSetWidth(32.0),
                 ),
               ),
             ),
-            ToggleButton(
-              activeWidget: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: suSetSp(6.0),
-                ),
-                child: Icon(
-                  Icons.sentiment_very_satisfied,
-                  size: suSetSp(26.0),
-                  color: ThemeUtils.currentThemeColor,
-                ),
-              ),
-              unActiveWidget: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: suSetSp(6.0),
-                ),
-                child: Icon(
-                  Icons.sentiment_very_satisfied,
-                  size: suSetSp(26.0),
-                  color: Theme.of(context).iconTheme.color,
-                ),
-              ),
-              activeChanged: (bool active) {
-                if (active && _focusNode.canRequestFocus) {
+            GestureDetector(
+              onTap: () {
+                emoticonPadActive = !emoticonPadActive;
+                if (emoticonPadActive && _focusNode.canRequestFocus) {
                   _focusNode.requestFocus();
                 }
-                updatePadStatus(context, active);
+                updatePadStatus(emoticonPadActive);
               },
-              active: emoticonPadActive,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: suSetWidth(6.0),
+                ),
+                child: Icon(
+                  Icons.sentiment_very_satisfied,
+                  size: suSetWidth(32.0),
+                  color: emoticonPadActive
+                      ? ThemeUtils.currentThemeColor
+                      : Theme.of(context).iconTheme.color,
+                ),
+              ),
             ),
             !_forwarding
                 ? GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                        horizontal: suSetSp(6.0),
+                        horizontal: suSetWidth(6.0),
                       ),
                       child: Icon(
                         Icons.send,
-                        size: suSetSp(26.0),
+                        size: suSetWidth(32.0),
                         color: ThemeUtils.currentThemeColor,
                       ),
                     ),
-                    onTap: () {
-                      _request(context);
-                    },
+                    onTap: () => _request(context),
                   )
                 : Padding(
                     padding: EdgeInsets.symmetric(
-                      horizontal: suSetSp(14.0),
+                      horizontal: suSetWidth(14.0),
                     ),
                     child: SizedBox(
-                      width: suSetSp(10.0),
-                      height: suSetSp(10.0),
+                      width: suSetWidth(12.0),
+                      height: suSetWidth(12.0),
                       child: Constants.progressIndicator(strokeWidth: 2.0),
                     ),
                   ),
@@ -358,7 +343,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                   : 0.0,
             ),
             child: Padding(
-              padding: EdgeInsets.all(suSetSp(10.0)),
+              padding: EdgeInsets.all(suSetWidth(12.0)),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,

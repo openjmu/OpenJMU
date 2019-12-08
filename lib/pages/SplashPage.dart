@@ -47,6 +47,7 @@ class SplashState extends State<SplashPage> {
         checkOnline(ConnectivityChangeEvent(result));
       }
     });
+
     Instances.eventBus
       ..on<ConnectivityChangeEvent>().listen((event) {
         if (this.mounted && isOnline != null) checkOnline(event);
@@ -73,8 +74,7 @@ class SplashState extends State<SplashPage> {
 
   Future<ConnectivityResult> checkConnectivity() async {
     try {
-      ConnectivityResult connectivityResult =
-          await Connectivity().checkConnectivity();
+      final connectivityResult = await Connectivity().checkConnectivity();
       if (connectivityResult != null &&
           connectivityResult != ConnectivityResult.none) {
         isOnline = true;
@@ -93,11 +93,7 @@ class SplashState extends State<SplashPage> {
       isInLoginProcess = true;
       if (event.type != ConnectivityResult.none) {
         this.isOnline = true;
-        if (DataUtils.isLogin()) {
-          DataUtils.recoverLoginInfo();
-        } else {
-          Instances.eventBus.fire(TicketFailedEvent());
-        }
+        DataUtils.reFetchTicket();
       } else {
         this.isOnline = false;
       }
@@ -142,13 +138,13 @@ class SplashState extends State<SplashPage> {
   }
 
   Widget get logo => Container(
-        margin: EdgeInsets.all(suSetSp(30.0)),
+        margin: EdgeInsets.all(suSetWidth(30.0)),
         child: Hero(
           tag: "Logo",
           child: SvgPicture.asset(
             "images/splash_page_logo.svg",
-            width: suSetSp(150.0),
-            height: suSetSp(150.0),
+            width: suSetWidth(150.0),
+            height: suSetHeight(150.0),
           ),
         ),
       );
@@ -159,13 +155,11 @@ class SplashState extends State<SplashPage> {
             child: Center(
               child: Container(
                 margin: EdgeInsets.only(
-                  bottom: suSetSp(10.0),
+                  bottom: suSetHeight(10.0),
                 ),
-                width: suSetSp(28.0),
-                height: suSetSp(28.0),
-                child: Constants.progressIndicator(
-                  color: Colors.white,
-                ),
+                width: suSetWidth(28.0),
+                height: suSetHeight(28.0),
+                child: Constants.progressIndicator(color: Colors.white),
               ),
             ),
           ),
@@ -190,7 +184,7 @@ class SplashState extends State<SplashPage> {
               child: Icon(
                 Icons.warning,
                 color: Colors.white,
-                size: suSetSp(40.0),
+                size: suSetWidth(40.0),
               ),
             ),
           ),
@@ -222,11 +216,11 @@ class SplashState extends State<SplashPage> {
               AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
                 margin: EdgeInsets.only(
-                  top: suSetSp(
+                  top: suSetWidth(
                     showLoading && isOnline != null ? 20.0 : 0.0,
                   ),
                 ),
-                height: suSetSp(
+                height: suSetHeight(
                   showLoading && isOnline != null ? 80.0 : 0.0,
                 ),
                 child: Center(

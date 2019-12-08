@@ -262,7 +262,7 @@ class _ScorePageState extends State<ScorePage>
                   ],
                 ),
                 style: Theme.of(context).textTheme.caption.copyWith(
-                      fontSize: suSetSp(17.0),
+                      fontSize: suSetSp(19.0),
                     ),
                 textAlign: TextAlign.center,
               ),
@@ -321,7 +321,7 @@ class _ScorePageState extends State<ScorePage>
                     fontWeight: _term == termSelected
                         ? FontWeight.bold
                         : FontWeight.normal,
-                    fontSize: suSetSp(16.0),
+                    fontSize: suSetSp(18.0),
                   ),
                 ),
                 Text(
@@ -333,7 +333,7 @@ class _ScorePageState extends State<ScorePage>
                     fontWeight: _term == termSelected
                         ? FontWeight.bold
                         : FontWeight.normal,
-                    fontSize: suSetSp(18.0),
+                    fontSize: suSetSp(20.0),
                   ),
                 ),
               ],

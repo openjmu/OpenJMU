@@ -122,7 +122,7 @@ class OTAUtils {
                     children: <Widget>[
                       Center(
                         child: Container(
-                          margin: EdgeInsets.only(bottom: suSetSp(12.0)),
+                          margin: EdgeInsets.only(bottom: suSetHeight(12.0)),
                           child: SvgPicture.asset(
                             "images/splash_page_logo.svg",
                             color: Colors.white,
@@ -134,7 +134,7 @@ class OTAUtils {
                       Center(
                         child: Container(
                           margin: EdgeInsets.symmetric(
-                            vertical: suSetSp(12.0),
+                            vertical: suSetHeight(12.0),
                           ),
                           child: RichText(
                             text: TextSpan(
@@ -155,7 +155,7 @@ class OTAUtils {
                       Center(
                         child: Container(
                           margin: EdgeInsets.symmetric(
-                            vertical: suSetSp(6.0),
+                            vertical: suSetHeight(6.0),
                           ),
                           child: RichText(
                             text: TextSpan(

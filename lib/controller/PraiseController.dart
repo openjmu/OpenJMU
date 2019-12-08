@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:dio/dio.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/user/UserPage.dart';
 import 'package:OpenJMU/widgets/cards/PraiseCard.dart';
 
 class PraiseController {
@@ -180,25 +179,20 @@ class _PraiseListState extends State<PraiseList>
     super.build(context);
     if (!_showLoading) {
       if (_firstLoadComplete) {
-        _itemList = ListView.separated(
-          padding: EdgeInsets.symmetric(vertical: suSetSp(4.0)),
-          separatorBuilder: (context, index) => Divider(
-            color: Theme.of(context).canvasColor,
-            height: suSetSp(8.0),
-            thickness: suSetSp(8.0),
-          ),
+        _itemList = ListView.builder(
+          padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
           itemBuilder: (context, index) {
             if (index == _praiseList.length) {
               if (this._canLoadMore) {
                 _loadData();
                 return SizedBox(
-                  height: suSetSp(40.0),
+                  height: suSetHeight(40.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       SizedBox(
-                        width: suSetSp(15.0),
-                        height: suSetSp(15.0),
+                        width: suSetWidth(15.0),
+                        height: suSetHeight(15.0),
                         child: Platform.isAndroid
                             ? CircularProgressIndicator(strokeWidth: 2.0)
                             : CupertinoActivityIndicator(),
@@ -214,7 +208,7 @@ class _PraiseListState extends State<PraiseList>
                 );
               } else {
                 return Container(
-                  height: suSetSp(50.0),
+                  height: suSetHeight(50.0),
                   color: Theme.of(context).canvasColor,
                   child: Center(
                     child: Text(
@@ -377,30 +371,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
     }
   }
 
-  GestureDetector getPostAvatar(context, praise) {
-    return GestureDetector(
-      child: Container(
-        width: suSetSp(44.0),
-        height: suSetSp(44.0),
-        margin: EdgeInsets.symmetric(
-            horizontal: suSetSp(16.0),
-            vertical: suSetSp(10.0)),
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: const Color(0xFFECECEC),
-          image: DecorationImage(
-            image: UserAPI.getAvatarProvider(uid: praise.uid),
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-      onTap: () {
-        UserPage.jump(praise.uid);
-      },
-    );
-  }
-
-  Text getPostNickname(context, praise) {
+  Widget getPostNickname(context, praise) {
     return Text(
       praise.nickname,
       style: TextStyle(
@@ -416,7 +387,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
       color: Theme.of(context).cardColor,
       width: MediaQuery.of(context).size.width,
       padding: isLoading
-          ? EdgeInsets.symmetric(vertical: suSetSp(42))
+          ? EdgeInsets.symmetric(vertical: suSetHeight(42.0))
           : EdgeInsets.zero,
       child: isLoading
           ? Center(child: Constants.progressIndicator())
@@ -429,57 +400,52 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                       shrinkWrap: true,
                       separatorBuilder: (context, index) => Container(
                         color: Theme.of(context).dividerColor,
-                        height: suSetSp(1.0),
+                        height: suSetHeight(1.0),
                       ),
                       itemCount: _praises.length + 1,
                       itemBuilder: (context, index) {
+                        if (index == _praises.length - 1) {
+                          _loadList();
+                        }
                         if (index == _praises.length) {
-                          if (canLoadMore && !isLoading) {
-                            _loadList();
-                            return Container(
-                              height: suSetSp(40.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  SizedBox(
-                                    width: suSetSp(15.0),
-                                    height: suSetSp(15.0),
-                                    child: Constants.progressIndicator(
-                                        strokeWidth: 2.0),
-                                  ),
-                                  Text("　正在加载",
-                                      style: TextStyle(
-                                          fontSize: suSetSp(14.0))),
-                                ],
-                              ),
-                            );
-                          } else {
-                            return Container();
-                          }
-                        } else if (index < _praises.length) {
-                          return Row(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              getPostAvatar(context, _praises[index]),
-                              Expanded(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    getPostNickname(context, _praises[index]),
-                                  ],
-                                ),
-                              ),
-                            ],
+                          return Constants.loadMoreIndicator(
+                            canLoadMore: canLoadMore && !isLoading,
                           );
                         } else {
-                          return Container();
+                          return Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: suSetWidth(24.0),
+                              vertical: suSetHeight(10.0),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.only(right: suSetWidth(10.0)),
+                                  child: UserAPI.getAvatar(
+                                    size: 44.0,
+                                    uid: _praises[index].uid,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      getPostNickname(context, _praises[index]),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
                         }
                       },
                     )
                   : Container(
-                      height: suSetSp(120.0),
+                      height: suSetHeight(120.0),
                       child: Center(
                         child: Text(
                           "暂无内容",

@@ -50,15 +50,12 @@ class CommonWebPage extends StatefulWidget {
     WebApp app,
     bool withCookie,
   }) {
-    navigatorState.pushNamed(
-      "openjmu://webpage",
-      arguments: {
-        "url": url,
-        "title": title,
-        "app": app,
-        "withCookie": withCookie,
-      }
-    );
+    navigatorState.pushNamed("openjmu://webpage", arguments: {
+      "url": url,
+      "title": title,
+      "app": app,
+      "withCookie": withCookie,
+    });
   }
 }
 
@@ -145,17 +142,14 @@ class CommonWebPageState extends State<CommonWebPage> {
     return true;
   }
 
-  PreferredSize progressBar(context) => PreferredSize(
-        child: Container(
-          height: suSetSp(2.0),
-          color: !(currentProgress == 0.0) ? currentThemeColor : null,
-          child: LinearProgressIndicator(
-            backgroundColor: Theme.of(context).primaryColor,
-            value: currentProgress,
-            valueColor: AlwaysStoppedAnimation<Color>(currentThemeColor),
-          ),
+  Widget get progressBar => Container(
+        height: suSetHeight(2.0),
+        color: !(currentProgress == 0.0) ? currentThemeColor : null,
+        child: LinearProgressIndicator(
+          backgroundColor: Theme.of(context).primaryColor,
+          value: currentProgress,
+          valueColor: AlwaysStoppedAnimation<Color>(currentThemeColor),
         ),
-        preferredSize: Size.fromHeight(suSetSp(3.0)),
       );
 
   @override
@@ -179,43 +173,65 @@ class CommonWebPageState extends State<CommonWebPage> {
         withZoom: true,
         resizeToAvoidBottomInset: true,
         appBar: !(widget.withAppBar ?? false)
-            ? AppBar(
-                leading: IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: Navigator.of(context).pop,
-                ),
-                title: GestureDetector(
-                  onLongPress: () {
-                    _launchURL();
-                  },
-                  onDoubleTap: () {
-                    Clipboard.setData(ClipboardData(text: _url));
-                    showShortToast("已复制网址到剪贴板");
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      if (widget.app != null)
-                        AppIcon(app: widget.app, size: 40.0),
-                      Flexible(
-                        child: Text(
-                          _title,
-                          style: TextStyle(
-                            color: Theme.of(context).textTheme.title.color,
-                            fontSize: suSetSp(20.0),
-                          ),
-                          overflow: TextOverflow.fade,
+            ? PreferredSize(
+                preferredSize:
+                    Size.fromHeight(suSetHeight(kAppBarHeight + 10.0)),
+                child: Container(
+                  height:
+                      Screen.topSafeHeight + suSetHeight(kAppBarHeight + 10.0),
+                  child: SafeArea(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            IconButton(
+                              padding: EdgeInsets.zero,
+                              icon: Icon(Icons.close),
+                              onPressed: Navigator.of(context).pop,
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onLongPress: _launchURL,
+                                onDoubleTap: () {
+                                  Clipboard.setData(ClipboardData(text: _url));
+                                  showShortToast("已复制网址到剪贴板");
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: <Widget>[
+                                    if (widget.app != null)
+                                      AppIcon(app: widget.app, size: 60.0),
+                                    Flexible(
+                                      child: Text(
+                                        _title,
+                                        style: TextStyle(
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .title
+                                              .color,
+                                          fontSize: suSetSp(22.0),
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.fade,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            isLoading
+                                ? refreshIndicator()
+                                : SizedBox(width: 56.0),
+                          ],
                         ),
-                      ),
-                    ],
+                        progressBar,
+                      ],
+                    ),
                   ),
                 ),
-                centerTitle: true,
-                actions: <Widget>[
-                  isLoading ? refreshIndicator() : SizedBox(width: 56.0),
-                ],
-                bottom: progressBar(context),
               )
             : null,
         initialChild: Container(
@@ -232,7 +248,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                   margin: EdgeInsets.zero,
                   padding: EdgeInsets.zero,
                   width: MediaQuery.of(context).size.width - 16,
-                  height: suSetSp(24.0),
+                  height: suSetHeight(24.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -242,7 +258,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                         icon: Icon(
                           Icons.keyboard_arrow_left,
                           color: currentThemeColor,
-                          size: suSetSp(24.0),
+                          size: suSetWidth(32.0),
                         ),
                         onPressed: flutterWebViewPlugin.goBack,
                       ),
@@ -251,7 +267,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                         icon: Icon(
                           Icons.keyboard_arrow_right,
                           color: currentThemeColor,
-                          size: suSetSp(24.0),
+                          size: suSetWidth(32.0),
                         ),
                         onPressed: flutterWebViewPlugin.goForward,
                       ),
@@ -260,7 +276,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                         icon: Icon(
                           Icons.refresh,
                           color: currentThemeColor,
-                          size: suSetSp(24.0),
+                          size: suSetWidth(32.0),
                         ),
                         onPressed: flutterWebViewPlugin.reload,
                       ),

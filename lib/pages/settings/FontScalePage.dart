@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
+import 'package:OpenJMU/widgets/AppBar.dart';
 
 @FFRoute(
   name: "openjmu://font-scale",
@@ -13,7 +14,8 @@ class FontScalePage extends StatefulWidget {
 }
 
 class _FontScalePageState extends State<FontScalePage> {
-  final List<double> scaleRange = Configs.scaleRange;
+  final baseFontSize = 24.0;
+  final List<double> scaleRange = Configs.fontScaleRange;
   double scale = Configs.fontScale;
 
   @override
@@ -24,29 +26,29 @@ class _FontScalePageState extends State<FontScalePage> {
         return true;
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "调节字体大小",
-            style: Theme.of(context).textTheme.title.copyWith(
-                  fontSize: suSetSp(21.0),
-                ),
-          ),
-          centerTitle: true,
-        ),
         body: Column(
           children: <Widget>[
+            FixedAppBar(
+              title: Text(
+                "调节字体大小",
+                style: Theme.of(context).textTheme.title.copyWith(
+                      fontSize: suSetSp(23.0),
+                    ),
+              ),
+            ),
             Expanded(
               child: Center(
                 child: Text(
                   "这是一行示例文字\nThis is a sample sentence",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: suSetSp(20.0, scale: scale),
+                    fontSize: suSetSp(baseFontSize, scale: scale),
                   ),
                 ),
               ),
             ),
-            BottomAppBar(
+            Container(
+              padding: EdgeInsets.only(bottom: Screen.bottomSafeHeight),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -56,27 +58,46 @@ class _FontScalePageState extends State<FontScalePage> {
                       horizontal: 20.0,
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Text(
-                          "小",
-                          style: TextStyle(
-                            fontSize:
-                                suSetSp(18, scale: scaleRange[0]),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "小",
+                              style: TextStyle(
+                                fontSize: suSetSp(
+                                  baseFontSize,
+                                  scale: scaleRange[0],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        Text(
-                          "标准",
-                          style: TextStyle(
-                            fontSize: suSetSp(18,
-                                scale: (scaleRange[0] + scaleRange[1]) / 2),
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              "标准",
+                              style: TextStyle(
+                                fontSize: suSetSp(
+                                  baseFontSize,
+                                  scale: (scaleRange[0] + scaleRange[1]) / 2,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        Text(
-                          "大",
-                          style: TextStyle(
-                            fontSize:
-                                suSetSp(18, scale: scaleRange[1]),
+                        Expanded(
+                          child: Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              "大",
+                              style: TextStyle(
+                                fontSize: suSetSp(
+                                  baseFontSize,
+                                  scale: scaleRange[1],
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -85,7 +106,7 @@ class _FontScalePageState extends State<FontScalePage> {
                   Slider(
                     min: scaleRange[0],
                     max: scaleRange[1],
-                    divisions: 6,
+                    divisions: 8,
                     activeColor: ThemeUtils.currentThemeColor,
                     inactiveColor: ThemeUtils.currentThemeColor.withAlpha(50),
                     value: scale,

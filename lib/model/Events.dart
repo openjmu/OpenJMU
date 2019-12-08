@@ -199,18 +199,22 @@ class CoursePageShowWeekEvent {
 
 /// Events for message
 class MessageReceivedEvent {
+  bool isSelf;
   int type;
   int senderUid;
   String senderMultiPortId;
   DateTime sendTime;
-  String ackId;
+  int messageId;
+  int ackId;
   Map<String, dynamic> content;
 
   MessageReceivedEvent({
+    this.isSelf = false,
     this.type,
     this.senderUid,
     this.senderMultiPortId,
     this.sendTime,
+    this.messageId,
     this.ackId,
     this.content,
   });

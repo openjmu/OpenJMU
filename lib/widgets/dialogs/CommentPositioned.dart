@@ -13,7 +13,6 @@ import 'package:path/path.dart' as path;
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/widgets/RoundedCheckBox.dart';
-import 'package:OpenJMU/widgets/ToggleButton.dart';
 import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
 
 @FFRoute(
@@ -102,7 +101,7 @@ class CommentPositionedState extends State<CommentPositioned> {
       focusNode: _focusNode,
       controller: _commentController,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.all(suSetSp(12.0)),
+        contentPadding: EdgeInsets.all(suSetWidth(16.0)),
         border: OutlineInputBorder(
           borderSide: BorderSide(color: ThemeUtils.currentThemeColor),
         ),
@@ -115,16 +114,12 @@ class CommentPositionedState extends State<CommentPositioned> {
           textBaseline: TextBaseline.alphabetic,
         ),
         suffixIcon: _image != null
-            ? SizedBox(
-                width: suSetSp(70.0),
-                child: Container(
-                  margin: EdgeInsets.only(right: suSetSp(14.0)),
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: FileImage(_image),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+            ? Container(
+                margin: EdgeInsets.only(right: suSetWidth(14.0)),
+                width: suSetWidth(70.0),
+                child: Image.file(
+                  _image,
+                  fit: BoxFit.cover,
                 ),
               )
             : null,
@@ -184,7 +179,7 @@ class CommentPositionedState extends State<CommentPositioned> {
     }
   }
 
-  void updatePadStatus(context, bool active) {
+  void updatePadStatus(bool active) {
     final change = () {
       emoticonPadActive = active;
       if (mounted) setState(() {});
@@ -256,116 +251,107 @@ class CommentPositionedState extends State<CommentPositioned> {
     });
   }
 
-  Widget toolbar(context) {
-    return SizedBox(
-      height: suSetSp(40.0),
-      child: Row(
-        children: <Widget>[
-          RoundedCheckbox(
-            activeColor: ThemeUtils.currentThemeColor,
-            value: forwardAtTheMeanTime,
-            onChanged: (value) {
-              setState(() {
-                forwardAtTheMeanTime = value;
-              });
-            },
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          ),
-          Text(
-            "同时转发到微博",
-            style: TextStyle(
-              fontSize: suSetSp(16.0),
+  Widget get toolbar => SizedBox(
+        height: suSetHeight(40.0),
+        child: Row(
+          children: <Widget>[
+            RoundedCheckbox(
+              activeColor: ThemeUtils.currentThemeColor,
+              value: forwardAtTheMeanTime,
+              onChanged: (value) {
+                setState(() {
+                  forwardAtTheMeanTime = value;
+                });
+              },
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
-          ),
-          Spacer(),
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: _addImage,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: suSetSp(6.0),
-              ),
-              child: Icon(
-                Icons.add_photo_alternate,
-                size: suSetSp(26.0),
+            Text(
+              "同时转发到微博",
+              style: TextStyle(
+                fontSize: suSetSp(20.0),
               ),
             ),
-          ),
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              mentionPeople(context);
-            },
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: suSetSp(6.0),
-              ),
-              child: Icon(
-                Icons.alternate_email,
-                size: suSetSp(26.0),
-              ),
-            ),
-          ),
-          ToggleButton(
-            activeWidget: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: suSetSp(6.0),
-              ),
-              child: Icon(
-                Icons.sentiment_very_satisfied,
-                size: suSetSp(26.0),
-                color: ThemeUtils.currentThemeColor,
-              ),
-            ),
-            unActiveWidget: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: suSetSp(6.0),
-              ),
-              child: Icon(
-                Icons.sentiment_very_satisfied,
-                size: suSetSp(26.0),
-                color: Theme.of(context).iconTheme.color,
-              ),
-            ),
-            activeChanged: (bool active) {
-              if (active && _focusNode.canRequestFocus) {
-                _focusNode.requestFocus();
-              }
-              updatePadStatus(context, active);
-            },
-            active: emoticonPadActive,
-          ),
-          !_commenting
-              ? GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: suSetSp(6.0),
-                    ),
-                    child: Icon(
-                      Icons.send,
-                      size: suSetSp(26.0),
-                      color: ThemeUtils.currentThemeColor,
-                    ),
-                  ),
-                  onTap: (_commentController.text.length > 0 || _image != null)
-                      ? () => _request(context)
-                      : null,
-                )
-              : Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: suSetSp(14.0),
-                  ),
-                  child: SizedBox(
-                    width: suSetSp(10.0),
-                    height: suSetSp(10.0),
-                    child: Constants.progressIndicator(strokeWidth: 2.0),
-                  ),
+            Spacer(),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: _addImage,
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: suSetWidth(6.0),
                 ),
-        ],
-      ),
-    );
-  }
+                child: Icon(
+                  Icons.add_photo_alternate,
+                  size: suSetWidth(32.0),
+                ),
+              ),
+            ),
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                mentionPeople(context);
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: suSetWidth(6.0),
+                ),
+                child: Icon(
+                  Icons.alternate_email,
+                  size: suSetWidth(32.0),
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                emoticonPadActive = !emoticonPadActive;
+                if (emoticonPadActive && _focusNode.canRequestFocus) {
+                  _focusNode.requestFocus();
+                }
+                updatePadStatus(emoticonPadActive);
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: suSetWidth(6.0),
+                ),
+                child: Icon(
+                  Icons.sentiment_very_satisfied,
+                  size: suSetWidth(32.0),
+                  color: emoticonPadActive
+                      ? ThemeUtils.currentThemeColor
+                      : Theme.of(context).iconTheme.color,
+                ),
+              ),
+            ),
+            !_commenting
+                ? GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: suSetWidth(6.0),
+                      ),
+                      child: Icon(
+                        Icons.send,
+                        size: suSetWidth(32.0),
+                        color: ThemeUtils.currentThemeColor,
+                      ),
+                    ),
+                    onTap:
+                        (_commentController.text.length > 0 || _image != null)
+                            ? () => _request(context)
+                            : null,
+                  )
+                : Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: suSetWidth(14.0),
+                    ),
+                    child: SizedBox(
+                      width: suSetWidth(12.0),
+                      height: suSetWidth(12.0),
+                      child: Constants.progressIndicator(strokeWidth: 2.0),
+                    ),
+                  ),
+          ],
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -395,14 +381,14 @@ class CommentPositionedState extends State<CommentPositioned> {
                   : 0.0,
             ),
             child: Padding(
-              padding: EdgeInsets.all(suSetSp(10.0)),
+              padding: EdgeInsets.all(suSetWidth(12.0)),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   textField(context),
-                  toolbar(context),
+                  toolbar,
                 ],
               ),
             ),

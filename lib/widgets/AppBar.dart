@@ -33,16 +33,16 @@ class FixedAppBar extends StatelessWidget {
       padding: EdgeInsets.only(
         top: MediaQuery.of(context).padding.top,
       ),
-      height: suSetHeight(kToolbarHeight) + MediaQuery.of(context).padding.top,
+      height: suSetHeight(kAppBarHeight) + MediaQuery.of(context).padding.top,
       child: Row(
         children: <Widget>[
           if (automaticallyImplyLeading && Navigator.of(context).canPop())
             BackButton(),
           Expanded(child: _title),
           if (automaticallyImplyLeading &&
-              Navigator.of(context).canPop() &&
-              actions == null)
+              Navigator.of(context).canPop() && actions == null)
             SizedBox.fromSize(size: Size.square(56.0)),
+          if (actions != null) ...actions,
         ],
       ),
     );
@@ -65,10 +65,10 @@ class SliverFixedAppBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => suSetHeight(kToolbarHeight) + Screen.topSafeHeight;
+  double get maxExtent => suSetHeight(kAppBarHeight) + Screen.topSafeHeight;
 
   @override
-  double get minExtent => suSetHeight(kToolbarHeight) + Screen.topSafeHeight;
+  double get minExtent => suSetHeight(kAppBarHeight) + Screen.topSafeHeight;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {

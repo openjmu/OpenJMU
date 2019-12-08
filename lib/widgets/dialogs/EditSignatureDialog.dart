@@ -52,7 +52,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
       UserAPI.currentUser.signature = _textEditingController.text;
       Instances.eventBus
           .fire(SignatureUpdatedEvent(_textEditingController.text));
-      Future.delayed(Duration(milliseconds: 2300), () {
+      Future.delayed(const Duration(milliseconds: 2300), () {
         Navigator.of(context).pop();
       });
     }).catchError((e) {
@@ -72,10 +72,10 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
             child: Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).canvasColor,
-                borderRadius: BorderRadius.circular(suSetSp(12.0)),
+                borderRadius: BorderRadius.circular(suSetWidth(16.0)),
               ),
-              width: MediaQuery.of(context).size.width - suSetSp(100),
-              padding: EdgeInsets.only(top: suSetSp(20.0)),
+              width: Screen.width - suSetWidth(100),
+              padding: EdgeInsets.only(top: suSetHeight(20.0)),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
@@ -86,11 +86,11 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(suSetSp(20.0)),
+                    padding: EdgeInsets.all(suSetWidth(20.0)),
                     child: TextField(
                       autofocus: true,
                       style: Theme.of(context).textTheme.body1.copyWith(
-                            fontSize: suSetSp(18.0),
+                            fontSize: suSetSp(20.0),
                             textBaseline: TextBaseline.alphabetic,
                           ),
                       controller: _textEditingController,
@@ -98,7 +98,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                       maxLines: null,
                       decoration: InputDecoration(
                         contentPadding: EdgeInsets.symmetric(
-                          vertical: suSetSp(6.0),
+                          vertical: suSetHeight(6.0),
                         ),
                         border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey[700]),
@@ -106,7 +106,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey[850]),
                         ),
-                        hintText: UserAPI.currentUser.signature,
+                        hintText: UserAPI.currentUser.signature ?? "快来填写你的签名吧~",
                         hintStyle: TextStyle(
                           textBaseline: TextBaseline.alphabetic,
                         ),
@@ -122,7 +122,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                           "取消",
                           style: TextStyle(
                             color: Theme.of(context).textTheme.body1.color,
-                            fontSize: suSetSp(18.0),
+                            fontSize: suSetSp(21.0),
                           ),
                         ),
                         onPressed: () => Navigator.of(context).pop(),
@@ -134,7 +134,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                             color: canSave
                                 ? ThemeUtils.currentThemeColor
                                 : Theme.of(context).disabledColor,
-                            fontSize: suSetSp(18.0),
+                            fontSize: suSetSp(21.0),
                           ),
                         ),
                         onPressed: () {

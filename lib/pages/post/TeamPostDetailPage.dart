@@ -59,7 +59,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   @override
   void initState() {
     provider = widget.provider;
-    loading = (provider.post?.repliesCount ?? -1) != 0;
+    canLoadMore = loading = (provider.post?.repliesCount ?? -1) != 0;
     initialLoad();
 
     extendedFeature = [
@@ -215,14 +215,14 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: suSetWidth(20.0),
-                      vertical: suSetHeight(8.0),
+                      vertical: suSetHeight(10.0),
                     ),
                     prefixText: replyHint,
                     hintText: replyHint == null ? "给你一个神评的机会..." : null,
                   ),
                   cursorColor: ThemeUtils.currentThemeColor,
                   style: Theme.of(context).textTheme.body1.copyWith(
-                        fontSize: suSetSp(18.0),
+                        fontSize: suSetSp(20.0),
                         textBaseline: TextBaseline.alphabetic,
                       ),
                   maxLines: null,
@@ -306,8 +306,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      margin: EdgeInsets.only(bottom: suSetHeight(10.0)),
-                      padding: EdgeInsets.all(suSetWidth(10.0)),
+                      margin: EdgeInsets.only(bottom: suSetHeight(12.0)),
+                      padding: EdgeInsets.all(suSetWidth(14.0)),
                       decoration: BoxDecoration(
                         color: extendedFeature[index]['color'],
                         shape: BoxShape.circle,
@@ -320,7 +320,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                     Text(
                       extendedFeature[index]['name'],
                       style: TextStyle(
-                        fontSize: suSetSp(17.0),
+                        fontSize: suSetSp(19.0),
                       ),
                     ),
                   ],
@@ -522,7 +522,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
             title: Text(
               "集市动态",
               style: Theme.of(context).textTheme.title.copyWith(
-                    fontSize: suSetSp(21.0),
+                    fontSize: suSetSp(23.0),
                   ),
             ),
             centerTitle: true,
@@ -573,20 +573,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                                     initialLoad(loadMore: true);
                                   }
                                   if (index == list.length) {
-                                    return SizedBox(
-                                      height: suSetHeight(60.0),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          if (canLoadMore) Constants.progressIndicator(),
-                                          Text(
-                                            canLoadMore ? "正在加载" : Constants.endLineTag,
-                                            style: TextStyle(
-                                              fontSize: suSetSp(15.0),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                    return Constants.loadMoreIndicator(
+                                      canLoadMore: canLoadMore,
                                     );
                                   }
                                   Widget item;

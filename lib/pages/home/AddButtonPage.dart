@@ -217,8 +217,8 @@ class _AddingButtonPageState extends State<AddingButtonPage>
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           child: SizedBox(
-            width: suSetSp(MainPageState.bottomBarHeight),
-            height: suSetSp(MainPageState.bottomBarHeight),
+            width: suSetWidth(MainPageState.bottomBarHeight),
+            height: suSetHeight(MainPageState.bottomBarHeight),
             child: Transform.rotate(
               angle: _popButtonRotateAngle,
               child: Icon(
@@ -263,7 +263,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                   borderRadius: BorderRadius.circular(r * 2),
                   child: BackdropFilter(
                     filter: ui.ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-                    child: Text(" "),
+                    child: Text(" ", style: TextStyle(inherit: false)),
                   ),
                 ),
               ),
@@ -309,22 +309,25 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Container(
-                    padding: EdgeInsets.all(suSetWidth(24.0)),
+                    width: suSetWidth(80.0),
+                    height: suSetWidth(80.0),
                     decoration: BoxDecoration(
                       color: itemColors[index],
                       shape: BoxShape.circle,
                     ),
-                    child: SvgPicture.asset(
-                      "assets/icons/addButton/${itemTitles[index]}.svg",
-                      color: Colors.white,
-                      width: suSetWidth(36.0),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        "assets/icons/addButton/${itemTitles[index]}.svg",
+                        color: Colors.white,
+                        width: suSetWidth(32.0),
+                      ),
                     ),
                   ),
-                  Constants.emptyDivider(height: 10.0),
+                  Constants.emptyDivider(height: suSetHeight(10.0)),
                   Text(
                     itemTitles[index],
                     style: Theme.of(context).textTheme.body1.copyWith(
-                          fontSize: suSetSp(18.0),
+                          fontSize: suSetSp(20.0),
                         ),
                   ),
                 ],

@@ -150,7 +150,7 @@ class EmotionPad extends StatefulWidget {
 }
 
 class EmotionPadState extends State<EmotionPad> {
-  static double emoticonPadDefaultHeight = suSetSp(260);
+  static double emoticonPadDefaultHeight = suSetHeight(260.0);
   static double emoticonPadHeight;
   static List<String> emoticonNames = [];
   static List<String> emoticonPaths = [];

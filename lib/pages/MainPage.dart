@@ -8,8 +8,7 @@ import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:intl/intl.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/home/AddButtonPage.dart';
-import 'package:OpenJMU/pages/home/AppCenterPage.dart';
+import 'package:OpenJMU/pages/home/AppsPage.dart';
 import 'package:OpenJMU/pages/home/MessagePage.dart';
 import 'package:OpenJMU/pages/home/MyInfoPage.dart';
 import 'package:OpenJMU/pages/home/PostSquareListPage.dart';
@@ -38,25 +37,19 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   static final List<String> pagesTitle = ['首页', '应用', '消息', '我的'];
   static final List<String> pagesIcon = ["home", "apps", "message", "mine"];
-  static const double bottomBarHeight = 64.4;
+  static const double bottomBarHeight = 74.0;
 
   static TextStyle tabSelectedTextStyle = TextStyle(
     color: currentThemeColor,
-    fontSize: suSetSp(23.0),
+    fontSize: suSetSp(25.0),
     fontWeight: FontWeight.bold,
     textBaseline: TextBaseline.alphabetic,
   );
   static TextStyle tabUnselectedTextStyle = TextStyle(
     color: currentThemeColor,
-    fontSize: suSetSp(18.0),
+    fontSize: suSetSp(20.0),
     textBaseline: TextBaseline.alphabetic,
   );
-
-  List<List> sections = [
-    PostSquareListPageState.tabs,
-    AppCenterPageState.tabs(),
-    MessagePageState.tabs,
-  ];
 
   Notifications notifications = Instances.notifications;
   Timer notificationTimer;
@@ -74,6 +67,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       _tabIndex = pagesTitle.indexOf(widget.initAction);
     }
 
+    initWebAppList();
     initPushService();
     initNotification();
     MessageUtils.initMessageSocket();
@@ -107,6 +101,14 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   void dispose() {
     notificationTimer?.cancel();
     super.dispose();
+  }
+
+  void initWebAppList() {
+    final provider = Provider.of<WebAppsProvider>(
+      navigatorState.context,
+      listen: false,
+    );
+    provider.initApps();
   }
 
   void initPushService() async {
@@ -178,76 +180,50 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     super.build(context);
     return WillPopScope(
       onWillPop: doubleBackExit,
-      child: Scaffold(
-        body: Column(
-          children: <Widget>[
-            if (Configs.announcementsEnabled)
-              AnnouncementWidget(
-                context,
-                color: ThemeUtils.currentThemeColor,
-                gap: 24.0,
+      child: AnnotatedRegion(
+        value: ThemeUtils.isDark
+            ? SystemUiOverlayStyle.light
+            : SystemUiOverlayStyle.dark,
+        child: Scaffold(
+          body: Column(
+            children: <Widget>[
+              if (Configs.announcementsEnabled)
+                AnnouncementWidget(
+                  context,
+                  color: ThemeUtils.currentThemeColor,
+                  gap: 24.0,
+                ),
+              Expanded(
+                child: IndexedStack(
+                  children: <Widget>[
+                    PostSquareListPage(),
+                    AppsPage(),
+                    MessagePage(),
+                    MyInfoPage(),
+                  ],
+                  index: _tabIndex,
+                ),
               ),
-            Expanded(
-              child: IndexedStack(
-                children: <Widget>[
-                  PostSquareListPage(),
-                  AppCenterPage(),
-                  MessagePage(),
-                  MyInfoPage(),
-                ],
-                index: _tabIndex,
-              ),
-            ),
-          ],
-        ),
-        bottomNavigationBar: FABBottomAppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          color: Colors.grey[600],
-          height: bottomBarHeight,
-          iconSize: 30.0,
-          selectedColor: currentThemeColor,
-          onTabSelected: _selectedTab,
-          initIndex: pagesTitle.indexOf(widget.initAction) == -1
-              ? 0
-              : pagesTitle.indexOf(widget.initAction),
-          items: [
-            for (int i = 0; i < pagesTitle.length; i++)
-              FABBottomAppBarItem(
-                iconPath: pagesIcon[i],
-                text: pagesTitle[i],
-              ),
-          ],
-        ),
-        floatingActionButton: SizedBox(
-          width: suSetSp(56.0),
-          height: suSetSp(40.0),
-          child: FloatingActionButton(
-            child: Icon(
-              Icons.add,
-              size: suSetSp(30.0),
-            ),
-            tooltip: "发布新动态",
-            foregroundColor:
-                Colors.white.withOpacity(ThemeUtils.isDark ? 0.7 : 1.0),
-            backgroundColor: currentThemeColor,
-            elevation: 0,
-            onPressed: () {
-              Navigator.of(context).push(TransparentRoute(
-                builder: (context) => AddingButtonPage(),
-              ));
-            },
-            mini: true,
-            isExtended: false,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(
-                suSetSp(14.0),
-              ),
-            ),
+            ],
           ),
-        ),
-        floatingActionButtonLocation:
-            const CustomCenterDockedFloatingActionButtonLocation(
-          bottomBarHeight / 2,
+          bottomNavigationBar: FABBottomAppBar(
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            color: Colors.grey[600],
+            height: bottomBarHeight,
+            iconSize: 34.0,
+            selectedColor: currentThemeColor,
+            onTabSelected: _selectedTab,
+            initIndex: pagesTitle.indexOf(widget.initAction) == -1
+                ? 0
+                : pagesTitle.indexOf(widget.initAction),
+            items: [
+              for (int i = 0; i < pagesTitle.length; i++)
+                FABBottomAppBarItem(
+                  iconPath: pagesIcon[i],
+                  text: pagesTitle[i],
+                ),
+            ],
+          ),
         ),
       ),
     );

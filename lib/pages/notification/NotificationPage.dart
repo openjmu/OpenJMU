@@ -46,102 +46,98 @@ class NotificationPageState extends State<NotificationPage>
     super.initState();
   }
 
-  List<Widget> actions() {
-    return [
-      SizedBox(
-        width: suSetWidth(220.0),
-        child: Consumer<NotificationProvider>(
-          builder: (_, provider, __) => TabBar(
-            indicatorColor: ThemeUtils.currentThemeColor,
-            indicatorPadding: const EdgeInsets.only(bottom: 18.0),
-            indicatorSize: TabBarIndicatorSize.label,
-            indicatorWeight: 6.0,
-            labelPadding: EdgeInsets.symmetric(
-              horizontal: suSetWidth(10.0),
-            ),
-            tabs: [
-              Tab(
-                child: provider.notification.at != 0
-                    ? IconButton(
-                        icon: Constants.badgeIcon(
-                          content: provider.notification.at == 0
-                              ? ""
-                              : provider.notification.at,
-                          icon: Icon(
+  List<Widget> get actions => [
+        SizedBox(
+          width: suSetWidth(220.0),
+          child: Consumer<NotificationProvider>(
+            builder: (_, provider, __) => TabBar(
+              indicatorColor: ThemeUtils.currentThemeColor,
+              indicatorPadding: EdgeInsets.only(bottom: suSetHeight(18.0)),
+              indicatorSize: TabBarIndicatorSize.label,
+              indicatorWeight: suSetHeight(6.0),
+              labelPadding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
+              tabs: [
+                Tab(
+                  child: provider.notification.at != 0
+                      ? IconButton(
+                          icon: Constants.badgeIcon(
+                            content: provider.notification.at == 0
+                                ? ""
+                                : provider.notification.at,
+                            icon: Icon(
+                              actionsIcons[0],
+                              size: suSetWidth(30.0),
+                            ),
+                          ),
+                          onPressed: () {
+                            _tabController.animateTo(0);
+                            provider.readMention();
+                          },
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
                             actionsIcons[0],
-                            size: suSetSp(26.0),
+                            size: suSetWidth(30.0),
                           ),
                         ),
-                        onPressed: () {
-                          _tabController.animateTo(0);
-                          provider.readMention();
-                        },
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(
-                          actionsIcons[0],
-                          size: suSetSp(26.0),
-                        ),
-                      ),
-              ),
-              Tab(
-                child: provider.notification.comment != 0
-                    ? IconButton(
-                        icon: Constants.badgeIcon(
-                          content: provider.notification.comment == 0
-                              ? ""
-                              : provider.notification.comment,
-                          icon: Icon(
+                ),
+                Tab(
+                  child: provider.notification.comment != 0
+                      ? IconButton(
+                          icon: Constants.badgeIcon(
+                            content: provider.notification.comment == 0
+                                ? ""
+                                : provider.notification.comment,
+                            icon: Icon(
+                              actionsIcons[1],
+                              size: suSetWidth(30.0),
+                            ),
+                          ),
+                          onPressed: () {
+                            _tabController.animateTo(1);
+                            provider.readReply();
+                          },
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
                             actionsIcons[1],
-                            size: suSetSp(26.0),
+                            size: suSetWidth(30.0),
                           ),
                         ),
-                        onPressed: () {
-                          _tabController.animateTo(1);
-                          provider.readReply();
-                        },
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(
-                          actionsIcons[1],
-                          size: suSetSp(26.0),
-                        ),
-                      ),
-              ),
-              Tab(
-                child: provider.notification.praise != 0
-                    ? IconButton(
-                        icon: Constants.badgeIcon(
-                          content: provider.notification.praise == 0
-                              ? ""
-                              : provider.notification.praise,
-                          icon: Icon(
+                ),
+                Tab(
+                  child: provider.notification.praise != 0
+                      ? IconButton(
+                          icon: Constants.badgeIcon(
+                            content: provider.notification.praise == 0
+                                ? ""
+                                : provider.notification.praise,
+                            icon: Icon(
+                              actionsIcons[2],
+                              size: suSetWidth(30.0),
+                            ),
+                          ),
+                          onPressed: () {
+                            _tabController.animateTo(2);
+                            provider.readPraise();
+                          },
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
                             actionsIcons[2],
-                            size: suSetSp(26.0),
+                            size: suSetWidth(30.0),
                           ),
                         ),
-                        onPressed: () {
-                          _tabController.animateTo(2);
-                          provider.readPraise();
-                        },
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Icon(
-                          actionsIcons[2],
-                          size: suSetSp(26.0),
-                        ),
-                      ),
-              ),
-            ],
-            controller: _tabController,
+                ),
+              ],
+              controller: _tabController,
+            ),
           ),
-        ),
-      )
-    ];
-  }
+        )
+      ];
 
   Icon getActionIcon(int curIndex) => Icon(actionsIcons[curIndex]);
 
@@ -192,8 +188,21 @@ class NotificationPageState extends State<NotificationPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: actions(),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(suSetHeight(kAppBarHeight)),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+          height: Screen.topSafeHeight + suSetHeight(kAppBarHeight),
+          child: SafeArea(
+            child: Row(
+              children: <Widget>[
+                BackButton(),
+                Spacer(),
+                ...actions,
+              ],
+            ),
+          ),
+        ),
       ),
       body: ExtendedTabBarView(
         cacheExtent: 2,
@@ -203,16 +212,16 @@ class NotificationPageState extends State<NotificationPage>
             children: <Widget>[
               SizedBox(
                 width: MediaQuery.of(context).size.width,
-                height: suSetSp(42.0),
+                height: suSetHeight(50.0),
                 child: TabBar(
                   indicatorColor: ThemeUtils.currentThemeColor,
                   indicatorPadding: EdgeInsets.only(
-                    bottom: suSetSp(6.0),
+                    bottom: suSetHeight(6.0),
                   ),
                   indicatorSize: TabBarIndicatorSize.label,
-                  indicatorWeight: suSetSp(4.0),
+                  indicatorWeight: suSetHeight(4.0),
                   labelStyle: TextStyle(
-                    fontSize: suSetSp(17.0),
+                    fontSize: suSetSp(20.0),
                   ),
                   tabs: <Tab>[
                     Tab(text: "@我的评论"),

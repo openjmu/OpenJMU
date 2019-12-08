@@ -91,88 +91,100 @@ class PostSquareListPageState extends State<PostSquareListPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            GestureDetector(
-              onLongPress: () {
-                if (Configs.debug) {
-                  showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (_) => ManuallySetSidDialog(),
-                  );
-                } else {
-                  NetUtils.updateTicket();
-                }
-              },
-              child: Padding(
-                padding: EdgeInsets.only(right: suSetSp(4.0)),
-                child: Text(
-                  "Jmu",
-                  style: TextStyle(
-                    color: currentThemeColor,
-                    fontSize: suSetSp(34),
-                    fontFamily: "chocolate",
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(suSetHeight(kAppBarHeight)),
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+          height: Screen.topSafeHeight + suSetHeight(kAppBarHeight),
+          child: SafeArea(
+            child: Row(
+              children: <Widget>[
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onLongPress: () {
+                    if (Configs.debug) {
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (_) => ManuallySetSidDialog(),
+                      );
+                    } else {
+                      NetUtils.updateTicket();
+                    }
+                  },
+                  child: Container(
+                    margin: EdgeInsets.only(right: suSetWidth(8.0)),
+                    child: Text(
+                      "Jmu",
+                      style: TextStyle(
+                        color: currentThemeColor,
+                        fontSize: suSetSp(38.0),
+                        fontFamily: "chocolate",
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                Expanded(
+                  child: TabBar(
+                    isScrollable: true,
+                    indicatorColor: currentThemeColor,
+                    indicatorPadding: EdgeInsets.only(bottom: suSetHeight(16.0)),
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicatorWeight: suSetWidth(6.0),
+                    labelColor: Theme.of(context).textTheme.body1.color,
+                    labelStyle: MainPageState.tabSelectedTextStyle,
+                    labelPadding: EdgeInsets.symmetric(horizontal: suSetSp(16.0)),
+                    unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
+                    tabs: <Tab>[
+                      for (int i = 0; i < tabs.length; i++) Tab(text: tabs[i])
+                    ],
+                    controller: _tabController,
+                  ),
+                ),
+                SizedBox(
+                  width: suSetWidth(60.0),
+                  child: IconButton(
+                    alignment: Alignment.centerRight,
+                    icon: SvgPicture.asset(
+                      "assets/icons/scan-line.svg",
+                      color: Theme.of(context).iconTheme.color,
+                      width: suSetWidth(32.0),
+                      height: suSetWidth(32.0),
+                    ),
+                    onPressed: () async {
+                      Map<PermissionGroup, PermissionStatus> permissions =
+                      await PermissionHandler().requestPermissions([
+                        PermissionGroup.camera,
+                      ]);
+                      if (permissions[PermissionGroup.camera] ==
+                          PermissionStatus.granted) {
+                        navigatorState.pushNamed("openjmu://scan-qrcode");
+                      }
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: suSetWidth(60.0),
+                  child: IconButton(
+                    alignment: Alignment.centerRight,
+                    icon: SvgPicture.asset(
+                      "assets/icons/search-line.svg",
+                      color: Theme.of(context).iconTheme.color,
+                      width: suSetWidth(32.0),
+                      height: suSetWidth(32.0),
+                    ),
+                    onPressed: () {
+                      navigatorState.pushNamed(
+                        "openjmu://search",
+                        arguments: {"content": null},
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-            Flexible(
-              child: TabBar(
-                isScrollable: true,
-                indicatorColor: currentThemeColor,
-                indicatorPadding: EdgeInsets.only(bottom: suSetSp(16.0)),
-                indicatorSize: TabBarIndicatorSize.label,
-                indicatorWeight: suSetSp(6.0),
-                labelColor: Theme.of(context).textTheme.body1.color,
-                labelStyle: MainPageState.tabSelectedTextStyle,
-                labelPadding: EdgeInsets.symmetric(horizontal: suSetSp(16.0)),
-                unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
-                tabs: <Tab>[
-                  for (int i = 0; i < tabs.length; i++) Tab(text: tabs[i])
-                ],
-                controller: _tabController,
-              ),
-            ),
-          ],
+          ),
         ),
-        centerTitle: false,
-        actions: <Widget>[
-          IconButton(
-            icon: SvgPicture.asset(
-              "assets/icons/scan-line.svg",
-              color: Theme.of(context).iconTheme.color,
-              width: suSetSp(26.0),
-              height: suSetSp(26.0),
-            ),
-            onPressed: () async {
-              Map<PermissionGroup, PermissionStatus> permissions =
-                  await PermissionHandler().requestPermissions([
-                PermissionGroup.camera,
-              ]);
-              if (permissions[PermissionGroup.camera] ==
-                  PermissionStatus.granted) {
-                navigatorState.pushNamed("openjmu://scan-qrcode");
-              }
-            },
-          ),
-          IconButton(
-            icon: SvgPicture.asset(
-              "assets/icons/search-line.svg",
-              color: Theme.of(context).iconTheme.color,
-              width: suSetSp(26.0),
-              height: suSetSp(26.0),
-            ),
-            onPressed: () {
-              navigatorState.pushNamed(
-                "openjmu://search",
-                arguments: {"content": null},
-              );
-            },
-          ),
-        ],
       ),
       body: ExtendedTabBarView(
         cacheExtent: pageLoad.length - 1,

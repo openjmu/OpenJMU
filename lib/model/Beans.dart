@@ -1,12 +1,8 @@
 import 'dart:convert';
-import 'dart:math' as math;
 
-import 'package:flutter/material.dart'
-    show ScaffoldPrelayoutGeometry, FloatingActionButtonLocation;
 import 'package:flutter/widgets.dart';
+import 'package:hive/hive.dart';
 
-import 'package:OpenJMU/api/API.dart';
-import 'package:OpenJMU/api/CourseAPI.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 
 export 'package:OpenJMU/controller/CommentController.dart';
@@ -14,11 +10,15 @@ export 'package:OpenJMU/controller/PostController.dart';
 export 'package:OpenJMU/controller/PraiseController.dart';
 export 'package:OpenJMU/model/SpecialText.dart';
 
+part 'Beans.g.dart';
+
 ///
 /// 动态实体
-/// [id] 动态id, [uid] 用户uid, [nickname] 用户名称, [avatar] 用户头像, [postTime] 动态时间, [from] 动态来源
-/// [glances] 被查看次数, [category] 动态类型, [content] 动态内容, [pics] 动态图片
-/// [forwards] 转发次数, [comments] 评论次数, [praises] 点赞次数, [isLike] 当前用户是否已赞, [rootTopic] 原动态
+/// [id] 动态id, [uid] 用户uid, [nickname] 用户名称, [avatar] 用户头像,
+/// [postTime] 动态时间, [from] 动态来源, [glances] 被查看次数,
+/// [category] 动态类型, [content] 动态内容, [pics] 动态图片,
+/// [forwards] 转发次数, [comments] 评论次数, [praises] 点赞次数,
+/// [isLike] 当前用户是否已赞, [rootTopic] 原动态,
 ///
 class Post {
   int id;
@@ -647,6 +647,23 @@ class WebApp {
     };
   }
 
+  String get replacedUrl => replaceParamsInUrl();
+
+  String replaceParamsInUrl() {
+    RegExp sidReg = RegExp(r"{SID}");
+    RegExp uidReg = RegExp(r"{UID}");
+    String result = url;
+    result = result.replaceAllMapped(
+      sidReg,
+      (match) => UserAPI.currentUser.sid.toString(),
+    );
+    result = result.replaceAllMapped(
+      uidReg,
+      (match) => UserAPI.currentUser.uid.toString(),
+    );
+    return result;
+  }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1035,7 +1052,7 @@ class Packet {
   String toString() {
     return 'Packet {\n'
         '  status: $status,\n'
-        '  command: $command,\n'
+        '  command: 0x${command.toRadixString(16)},\n'
         '  sequence: $sequence,\n'
         '  length: $length,\n'
         '  content: $content\n'
@@ -1052,13 +1069,22 @@ class Packet {
 /// [ackId] ACK ID
 /// [content] 内容
 ///
-class Message {
+@HiveType()
+class Message with HiveObject {
+  @HiveField(0)
   int type;
+  @HiveField(1)
   int senderUid;
+  @HiveField(2)
   String senderMultiPortId;
+  @HiveField(3)
   DateTime sendTime;
-  String ackId;
+  @HiveField(4)
+  int ackId;
+  @HiveField(5)
   Map<String, dynamic> content;
+  @HiveField(6)
+  bool read;
 
   Message({
     this.type,
@@ -1067,6 +1093,7 @@ class Message {
     this.sendTime,
     this.ackId,
     this.content,
+    this.read = false,
   });
 
   factory Message.fromEvent(MessageReceivedEvent event) {
@@ -1080,7 +1107,97 @@ class Message {
     );
   }
 
-  bool get isSelf => this.senderUid == UserAPI.currentUser.uid;
+  bool get isSelf => this.senderUid == currentUser.uid;
+}
+
+///
+/// 应用消息实体
+/// [appId] 应用id, [permissionCode] 权限code, [messageId] 消息id,
+/// [messageType] 消息类型, [sendTime] 发送时间, [read] 是否已读,
+///
+@HiveType()
+class AppMessage with HiveObject {
+  @HiveField(0)
+  int appId;
+  @HiveField(1)
+  String permissionCode;
+  @HiveField(2)
+  int messageId;
+  @HiveField(3)
+  int messageType;
+  @HiveField(4)
+  DateTime sendTime;
+  @HiveField(5)
+  int ackId;
+  @HiveField(6)
+  String content;
+  @HiveField(7)
+  bool read;
+
+  AppMessage({
+    this.appId,
+    this.permissionCode,
+    this.messageId,
+    this.messageType,
+    this.sendTime,
+    this.ackId,
+    this.content,
+    this.read = false,
+  });
+
+  factory AppMessage.fromEvent(MessageReceivedEvent event) {
+    String content = event.content['content'] as String;
+    content = content
+        .replaceAll(String.fromCharCode(8), '\\n')
+        .replaceAll(String.fromCharCode(10), '\\n')
+        .replaceAll(String.fromCharCode(13), '\\n');
+    for (int i = 0; i < content.length; i++) {
+      if (content.codeUnitAt(i) < 32) {
+        content = content.replaceRange(i, i + 1, '');
+      }
+    }
+    final body = jsonDecode(content);
+    return AppMessage(
+      appId: body['appid'],
+      permissionCode: body['permcode'],
+      messageId: event.messageId,
+      messageType: body['msgtype'],
+      sendTime: event.sendTime,
+      ackId: event.ackId,
+      content: body['msgbody'],
+    );
+  }
+
+  factory AppMessage.fromJson(Map<String, dynamic> json) {
+    return AppMessage(
+      appId: json['appId'],
+      permissionCode: json['permissionCode'],
+      messageId: json['messageId'],
+      messageType: json['messageType'],
+      sendTime: DateTime.parse(json['sendTime']),
+      ackId: json['ackId'],
+      content: json['content'],
+      read: json['read'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "appId": appId,
+      "permissionCode": permissionCode,
+      "messageId": messageId,
+      "messageType": messageType,
+      "sendTime": sendTime.toString(),
+      "ackId": ackId,
+      "content": content,
+      "read": read,
+    };
+  }
+
+  @override
+  String toString() {
+    return JsonEncoder.withIndent('  ').convert(toJson());
+  }
 }
 
 class NoGlowScrollBehavior extends ScrollBehavior {
@@ -1089,86 +1206,4 @@ class NoGlowScrollBehavior extends ScrollBehavior {
       BuildContext context, Widget child, AxisDirection axisDirection) {
     return child;
   }
-}
-
-///
-/// Inherit from default centerDockedLocation.
-///
-abstract class CustomDockedPosition extends FloatingActionButtonLocation {
-  const CustomDockedPosition();
-
-  @protected
-  double getDockedY(ScaffoldPrelayoutGeometry scaffoldGeometry) {
-    final double contentBottom = scaffoldGeometry.contentBottom;
-    final double bottomSheetHeight = scaffoldGeometry.bottomSheetSize.height;
-    final double fabHeight = scaffoldGeometry.floatingActionButtonSize.height;
-    final double snackBarHeight = scaffoldGeometry.snackBarSize.height;
-
-    double fabY = contentBottom - fabHeight / 2.0;
-    if (snackBarHeight > 0.0)
-      fabY = math.min(fabY, contentBottom - snackBarHeight - fabHeight - 16.0);
-    if (bottomSheetHeight > 0.0)
-      fabY =
-          math.min(fabY, contentBottom - bottomSheetHeight - fabHeight / 2.0);
-
-    final double maxFabY = scaffoldGeometry.scaffoldSize.height - fabHeight;
-    return math.min(maxFabY, fabY);
-  }
-}
-
-class CustomEndDockedFloatingActionButtonLocation extends CustomDockedPosition {
-  final double offsetY;
-  const CustomEndDockedFloatingActionButtonLocation(this.offsetY);
-
-  @override
-  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
-    final double fabX = _endOffset(scaffoldGeometry);
-    return Offset(fabX, getDockedY(scaffoldGeometry) + suSetSp(this.offsetY));
-  }
-}
-
-class CustomCenterDockedFloatingActionButtonLocation
-    extends CustomDockedPosition {
-  final double offsetY;
-  const CustomCenterDockedFloatingActionButtonLocation(this.offsetY);
-
-  @override
-  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
-    final double fabX = (scaffoldGeometry.scaffoldSize.width -
-            scaffoldGeometry.floatingActionButtonSize.width) /
-        2.0;
-    return Offset(fabX, getDockedY(scaffoldGeometry) + suSetSp(this.offsetY));
-  }
-}
-
-double _leftOffset(
-  ScaffoldPrelayoutGeometry scaffoldGeometry, {
-  double offset = 0.0,
-}) {
-  return 16 + scaffoldGeometry.minInsets.left - offset;
-}
-
-double _rightOffset(
-  ScaffoldPrelayoutGeometry scaffoldGeometry, {
-  double offset = 0.0,
-}) {
-  return scaffoldGeometry.scaffoldSize.width -
-      16 -
-      scaffoldGeometry.minInsets.right -
-      scaffoldGeometry.floatingActionButtonSize.width +
-      offset;
-}
-
-double _endOffset(
-  ScaffoldPrelayoutGeometry scaffoldGeometry, {
-  double offset = 0.0,
-}) {
-  assert(scaffoldGeometry.textDirection != null);
-  switch (scaffoldGeometry.textDirection) {
-    case TextDirection.rtl:
-      return _leftOffset(scaffoldGeometry, offset: offset);
-    case TextDirection.ltr:
-      return _rightOffset(scaffoldGeometry, offset: offset);
-  }
-  return null;
 }

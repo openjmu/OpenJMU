@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/services.dart';
@@ -70,6 +69,7 @@ class _ImageViewerState extends State<ImageViewer>
     rebuild?.close();
     _doubleTapAnimationController?.dispose();
     super.dispose();
+    ThemeUtils.setDark(ThemeUtils.isDark);
   }
 
   Future<void> _downloadImage(url, {AndroidDestinationType destination}) async {
@@ -185,7 +185,7 @@ class _ImageViewerState extends State<ImageViewer>
               ListTile(
                 leading: Icon(
                   Icons.save_alt,
-                  size: suSetSp(32.0),
+                  size: suSetWidth(32.0),
                   color: Colors.white,
                 ),
                 title: Text(
@@ -276,63 +276,57 @@ class ImageList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(sigmaX: 1.5, sigmaY: 1.5),
-        child: Container(
-          color: Colors.grey[850].withOpacity(0.3),
-          padding: EdgeInsets.only(
-            top: suSetSp(10.0),
-            bottom: Screen.bottomSafeHeight + suSetSp(10.0),
-          ),
-          child: StreamBuilder<int>(
-            initialData: index,
-            stream: reBuild.stream,
-            builder: (context, data) => Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                for (int i = 0; i < pics.length; i++)
-                  AnimatedContainer(
-                    curve: Curves.fastOutSlowIn,
-                    duration: kTabScrollDuration,
-                    child: Transform.scale(
-                      scale: i == data.data ? 1.3 : 1.0,
-                      child: Container(
-                        margin: EdgeInsets.symmetric(
-                          horizontal: suSetSp(5.0),
-                        ),
-                        width: suSetSp(36.0),
-                        height: suSetSp(36.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(suSetSp(8.0)),
-                          border: Border.all(
-                            color: i == data.data ? Colors.white : Colors.black,
-                            width: suSetSp(i == data.data ? 3.0 : 2.0),
-                          ),
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            controller?.animateToPage(
-                              i,
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.fastOutSlowIn,
-                            );
-                          },
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(suSetSp(6.0)),
-                            child: ExtendedImage.network(
-                              pics[i].imageThumbUrl ?? pics[i].imageUrl,
-                              fit: BoxFit.cover,
-                              filterQuality: FilterQuality.none,
-                            ),
-                          ),
+    return Padding(
+      padding: EdgeInsets.only(
+        top: suSetHeight(10.0),
+        bottom: Screen.bottomSafeHeight + suSetHeight(10.0),
+      ),
+      child: StreamBuilder<int>(
+        initialData: index,
+        stream: reBuild.stream,
+        builder: (context, data) => Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            for (int i = 0; i < pics.length; i++)
+              AnimatedContainer(
+                curve: Curves.fastOutSlowIn,
+                duration: kTabScrollDuration,
+                child: Transform.scale(
+                  scale: i == data.data ? 1.3 : 1.0,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(
+                      horizontal: suSetWidth(5.0),
+                    ),
+                    width: suSetWidth(40.0),
+                    height: suSetWidth(40.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(suSetWidth(8.0)),
+                      border: Border.all(
+                        color: i == data.data ? Colors.white : Colors.black,
+                        width: suSetWidth(i == data.data ? 3.0 : 2.0),
+                      ),
+                    ),
+                    child: GestureDetector(
+                      onTap: () {
+                        controller?.animateToPage(
+                          i,
+                          duration: const Duration(milliseconds: 300),
+                          curve: Curves.fastOutSlowIn,
+                        );
+                      },
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(suSetWidth(6.0)),
+                        child: ExtendedImage.network(
+                          pics[i].imageThumbUrl ?? pics[i].imageUrl,
+                          fit: BoxFit.cover,
+                          filterQuality: FilterQuality.none,
                         ),
                       ),
                     ),
                   ),
-              ],
-            ),
-          ),
+                ),
+              ),
+          ],
         ),
       ),
     );
@@ -352,54 +346,50 @@ class ViewAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRect(
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-        child: Material(
-          color: Colors.grey[850].withOpacity(0.3),
-          child: Padding(
-            padding: EdgeInsets.only(top: Screen.topSafeHeight),
-            child: Row(
-              children: <Widget>[
-                BackButton(color: Colors.white),
-                Expanded(
-                  child: StreamBuilder<int>(
-                    builder: (BuildContext context, data) {
-                      return SizedBox(
-                        height: suSetSp(50.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              "${data.data + 1} / ${pics.length}",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: suSetSp(22.0),
-                                  fontWeight: FontWeight.bold,
-                                  shadows: <Shadow>[
-                                    Shadow(
-                                        color: Colors.black,
-                                        offset: Offset(
-                                          suSetSp(1.0),
-                                          suSetSp(1.0),
-                                        ),
-                                        blurRadius: suSetSp(3.0)),
-                                  ]),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+    return Material(
+      color: Colors.grey[850].withOpacity(0.3),
+      child: Padding(
+        padding: EdgeInsets.only(top: Screen.topSafeHeight),
+        child: Row(
+          children: <Widget>[
+            BackButton(color: Colors.white),
+            Expanded(
+              child: StreamBuilder<int>(
+                builder: (BuildContext context, data) {
+                  return SizedBox(
+                    height: suSetHeight(50.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(
+                          "${data.data + 1} / ${pics.length}",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: suSetSp(22.0),
+                              fontWeight: FontWeight.bold,
+                              shadows: <Shadow>[
+                                Shadow(
+                                  color: Colors.black,
+                                  offset: Offset(
+                                    suSetWidth(1.0),
+                                    suSetHeight(1.0),
+                                  ),
+                                  blurRadius: suSetWidth(3.0),
+                                ),
+                              ]),
+                          textAlign: TextAlign.center,
                         ),
-                      );
-                    },
-                    initialData: index,
-                    stream: reBuild.stream,
-                  ),
-                ),
-                Container(width: 56.0),
-              ],
+                      ],
+                    ),
+                  );
+                },
+                initialData: index,
+                stream: reBuild.stream,
+              ),
             ),
-          ),
+            SizedBox(width: 56.0),
+          ],
         ),
       ),
     );

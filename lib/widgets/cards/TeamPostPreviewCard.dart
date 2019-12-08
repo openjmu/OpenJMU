@@ -75,32 +75,26 @@ class TeamPostPreviewCard extends StatelessWidget {
     GestureTapCallback onTap,
   }) =>
       Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: suSetSp(20.0),
-        ),
+        padding: EdgeInsets.symmetric(vertical: suSetHeight(16.0)),
         child: GestureDetector(
           behavior: HitTestBehavior.translucent,
           child: Row(
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: suSetSp(10.0),
-                ),
+                padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
                 child: Icon(
                   icon,
                   color: Theme.of(context).iconTheme.color,
-                  size: suSetSp(30.0),
+                  size: suSetWidth(36.0),
                 ),
               ),
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: suSetSp(10.0),
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
                   child: Text(
                     text,
                     style: Theme.of(context).textTheme.body1.copyWith(
-                          fontSize: suSetSp(20.0),
+                          fontSize: suSetSp(22.0),
                         ),
                   ),
                 ),
@@ -225,9 +219,9 @@ class TeamPostPreviewCard extends StatelessWidget {
   }
 
   Widget _header(context, TeamPost post) => Container(
-        height: suSetHeight(80.0),
+        height: suSetHeight(70.0),
         padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(8.0),
+          vertical: suSetHeight(6.0),
         ),
         child: Row(
           children: <Widget>[
@@ -242,7 +236,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                     Text(
                       post.nickname ?? post.uid.toString(),
                       style: TextStyle(
-                        fontSize: suSetSp(19.0),
+                        fontSize: suSetSp(22.0),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -252,7 +246,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                         child: Constants.developerTag(
                           padding: EdgeInsets.symmetric(
                             horizontal: suSetWidth(8.0),
-                            vertical: suSetHeight(4.0),
+                            vertical: suSetHeight(2.0),
                           ),
                         ),
                       ),
@@ -301,21 +295,17 @@ class TeamPostPreviewCard extends StatelessWidget {
     return Text(
       "$time",
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(16.0),
+            fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
           ),
     );
   }
 
   Widget _content(TeamPost post) => Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(4.0),
-        ),
+        padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
         child: ExtendedText(
           post.content ?? "",
-          style: TextStyle(
-            fontSize: suSetSp(18.0),
-          ),
+          style: TextStyle(fontSize: suSetSp(21.0)),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
           overFlowTextSpan: OverFlowTextSpan(
@@ -325,7 +315,6 @@ class TeamPostPreviewCard extends StatelessWidget {
                 text: "全文",
                 style: TextStyle(
                   color: ThemeUtils.currentThemeColor,
-                  fontSize: suSetSp(18.0),
                 ),
               ),
             ],
@@ -368,7 +357,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                     Text(
                       "查看更多回复",
                       style: Theme.of(context).textTheme.caption.copyWith(
-                            fontSize: suSetSp(15.0),
+                            fontSize: suSetSp(17.0),
                           ),
                     ),
                     Icon(
@@ -418,7 +407,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                           child: Text(
                             "楼主",
                             style: TextStyle(
-                              fontSize: suSetSp(15.0),
+                              fontSize: suSetSp(17.0),
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
@@ -427,14 +416,12 @@ class TeamPostPreviewCard extends StatelessWidget {
                       ),
                     TextSpan(
                       text: ": ",
-                      style: TextStyle(
-                        color: Colors.blue,
-                      ),
+                      style: TextStyle(color: Colors.blue),
                     ),
                   ],
                 ),
                 style: Theme.of(context).textTheme.body1.copyWith(
-                      fontSize: suSetSp(17.0),
+                      fontSize: suSetSp(19.0),
                     ),
                 onSpecialTextTap: specialTextTapRecognizer,
                 maxLines: 3,
@@ -536,8 +523,9 @@ class TeamPostPreviewCard extends StatelessWidget {
     return _image;
   }
 
-  Widget _actions(context, TeamPostProvider provider) => SizedBox(
-        height: suSetSp(44.0),
+  Widget _actions(context, TeamPostProvider provider) => Container(
+        margin: EdgeInsets.only(top: suSetHeight(8.0)),
+        height: suSetHeight(44.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -556,7 +544,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                       : "${provider.post.repliesCount}",
                   style: TextStyle(
                     color: Theme.of(context).textTheme.body1.color,
-                    fontSize: suSetSp(16.0),
+                    fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),
                 ),
@@ -594,7 +582,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                     color: isLiked
                         ? ThemeUtils.currentThemeColor
                         : Theme.of(context).textTheme.body1.color,
-                    fontSize: suSetSp(16.0),
+                    fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),
                 ),
@@ -644,8 +632,8 @@ class TeamPostPreviewCard extends StatelessWidget {
                   vertical: suSetHeight(6.0),
                 ),
                 padding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(24.0),
-                  vertical: suSetHeight(8.0),
+                  horizontal: suSetWidth(20.0),
+                  vertical: suSetHeight(4.0),
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(suSetWidth(10.0)),

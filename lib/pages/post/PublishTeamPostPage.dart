@@ -22,7 +22,7 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/widgets/ToggleButton.dart';
+import 'package:OpenJMU/widgets/AppBar.dart';
 import 'package:OpenJMU/widgets/dialogs/ConventionDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/LoadingDialog.dart';
 import 'package:OpenJMU/widgets/dialogs/MentionPeopleDialog.dart';
@@ -40,7 +40,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
   final _textEditingController = TextEditingController();
   final _dialogController = LoadingDialogController();
   final _focusNode = FocusNode();
-  final _iconSize = suSetSp(28.0);
+  final _iconSize = suSetHeight(28.0);
   final gridCount = 5;
 
   List<Future> query;
@@ -186,19 +186,17 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
             hintText: "分享你的动态...",
             hintStyle: TextStyle(
               color: Colors.grey,
-              fontSize: suSetSp(19.0),
               textBaseline: TextBaseline.alphabetic,
             ),
             border: InputBorder.none,
             labelStyle: TextStyle(
               color: Colors.white,
-              fontSize: suSetSp(19.0),
               textBaseline: TextBaseline.alphabetic,
             ),
             counterStyle: TextStyle(color: Colors.transparent),
           ),
           style: Theme.of(context).textTheme.body1.copyWith(
-                fontSize: suSetSp(19.0),
+                fontSize: suSetSp(22.0),
                 textBaseline: TextBaseline.alphabetic,
               ),
           maxLines: null,
@@ -295,6 +293,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
       ),
       height: Screen.width / gridCount * (assets.length / gridCount).ceil(),
       child: GridView.builder(
+        padding: EdgeInsets.zero,
         shrinkWrap: true,
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: gridCount,
@@ -330,10 +329,12 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             IconButton(
+              padding: EdgeInsets.zero,
               onPressed: addTopic,
               icon: poundIcon(context),
             ),
             IconButton(
+              padding: EdgeInsets.zero,
               onPressed: mentionPeople,
               icon: Icon(
                 Platform.isAndroid
@@ -344,6 +345,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
               ),
             ),
             IconButton(
+              padding: EdgeInsets.zero,
               onPressed: loadAssets,
               icon: Icon(
                 Icons.add_photo_alternate,
@@ -351,24 +353,22 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
                 size: _iconSize,
               ),
             ),
-            ToggleButton(
-              activeWidget: Icon(
-                Icons.sentiment_very_satisfied,
-                color: ThemeUtils.currentThemeColor,
-                size: _iconSize,
-              ),
-              unActiveWidget: Icon(
-                Icons.sentiment_very_satisfied,
-                color: Theme.of(context).iconTheme.color,
-                size: _iconSize,
-              ),
-              activeChanged: (bool active) {
-                if (active && _focusNode.canRequestFocus) {
+            IconButton(
+              padding: EdgeInsets.zero,
+              onPressed: () {
+                emoticonPadActive = !emoticonPadActive;
+                if (emoticonPadActive && _focusNode.canRequestFocus) {
                   _focusNode.requestFocus();
                 }
-                updatePadStatus(active);
+                updatePadStatus(emoticonPadActive);
               },
-              active: emoticonPadActive,
+              icon: Icon(
+                Icons.sentiment_very_satisfied,
+                color: emoticonPadActive
+                    ? ThemeUtils.currentThemeColor
+                    : Theme.of(context).iconTheme.color,
+                size: _iconSize,
+              ),
             ),
           ],
         ),
@@ -467,7 +467,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
           width: Screen.width * 0.9,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(suSetWidth(20.0)),
-            color: Theme.of(context).cardColor.withOpacity(0.6),
+            color: Theme.of(context).cardColor.withOpacity(0.9),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -516,7 +516,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       child: Container(
-                        height: suSetHeight(56.0),
+                        height: suSetHeight(40.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
                           color: Theme.of(context).canvasColor.withOpacity(0.6),
@@ -540,7 +540,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       child: Container(
-                        height: suSetHeight(56.0),
+                        height: suSetHeight(40.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
                           color: ThemeUtils.currentThemeColor.withOpacity(0.6),
@@ -790,34 +790,38 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     return WillPopScope(
       onWillPop: checkEmptyWhenPop,
       child: Scaffold(
-        appBar: AppBar(
-          title: Center(
-            child: Text(
-              "发布集市动态",
-              style: Theme.of(context).textTheme.title.copyWith(
-                    fontSize: suSetSp(21.0),
-                  ),
-            ),
-          ),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.send),
-              onPressed: () => post(context),
-            ),
-          ],
-        ),
         body: ScrollConfiguration(
           behavior: NoGlowScrollBehavior(),
-          child: Stack(
+          child: Column(
             children: <Widget>[
-              Column(
-                children: <Widget>[
-                  textField(context),
-                  if (assets.isNotEmpty) customGridView(context),
+              FixedAppBar(
+                title: Text(
+                  "发布集市动态",
+                  style: Theme.of(context).textTheme.title.copyWith(
+                        fontSize: suSetSp(23.0),
+                      ),
+                ),
+                actions: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.send),
+                    onPressed: () => post(context),
+                  ),
                 ],
               ),
-              _toolbar(context),
-              emoticonPad(context),
+              Expanded(
+                child: Stack(
+                  children: <Widget>[
+                    Column(
+                      children: <Widget>[
+                        textField(context),
+                        if (assets.isNotEmpty) customGridView(context),
+                      ],
+                    ),
+                    _toolbar(context),
+                    emoticonPad(context),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

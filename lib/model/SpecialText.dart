@@ -212,9 +212,9 @@ class EmoticonText extends SpecialText {
           start: start,
           fit: BoxFit.fill,
           margin: EdgeInsets.only(
-            left: suSetSp(1.0),
-            bottom: suSetSp(2.0),
-            right: suSetSp(1.0),
+            left: suSetWidth(1.0),
+            bottom: suSetHeight(2.0),
+            right: suSetWidth(1.0),
           ),
         );
       } else {
@@ -223,9 +223,9 @@ class EmoticonText extends SpecialText {
           imageWidth: size,
           imageHeight: size,
           margin: EdgeInsets.only(
-            left: suSetSp(1.0),
-            bottom: suSetSp(2.0),
-            right: suSetSp(1.0),
+            left: suSetWidth(1.0),
+            bottom: suSetHeight(2.0),
+            right: suSetWidth(1.0),
           ),
         );
       }
@@ -257,7 +257,7 @@ class ImageText extends SpecialText {
   InlineSpan finishText() {
     final imageText = toString();
     final imageId = getImageIdFromContent(imageText);
-    final size = suSetSp(80.0);
+    final size = suSetHeight(80.0);
     final url = API.commentImageUrl(imageId, "m");
 
     InlineSpan span;
@@ -283,9 +283,9 @@ class ImageText extends SpecialText {
           imageHeight: size,
           fit: BoxFit.cover,
           margin: EdgeInsets.only(
-            top: suSetSp(8.0),
-            bottom: suSetSp(10.0),
-            right: suSetSp(4.0),
+            top: suSetHeight(8.0),
+            bottom: suSetHeight(10.0),
+            right: suSetWidth(4.0),
           ),
           onTap: () {
             final data = {'content': toString(), 'image': imageId};

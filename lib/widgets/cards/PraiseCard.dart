@@ -14,14 +14,14 @@ class PraiseCard extends StatelessWidget {
 
   final TextStyle subtitleStyle = TextStyle(
     color: Colors.grey,
-    fontSize: suSetSp(15.0),
+    fontSize: suSetSp(18.0),
   );
   final TextStyle rootTopicTextStyle = TextStyle(
-    fontSize: suSetSp(15.0),
+    fontSize: suSetSp(18.0),
   );
   final TextStyle rootTopicMentionStyle = TextStyle(
     color: Colors.blue,
-    fontSize: suSetSp(15.0),
+    fontSize: suSetSp(18.0),
   );
   final Color subIconColor = Colors.grey;
 
@@ -29,7 +29,7 @@ class PraiseCard extends StatelessWidget {
         praise.nickname ?? praise.uid,
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
-          fontSize: suSetSp(19.0),
+          fontSize: suSetSp(22.0),
         ),
         textAlign: TextAlign.left,
       );
@@ -49,7 +49,7 @@ class PraiseCard extends StatelessWidget {
         Icon(
           Icons.access_time,
           color: Colors.grey,
-          size: suSetSp(13.0),
+          size: suSetWidth(13.0),
         ),
         Text(" $_praiseTime", style: subtitleStyle),
       ],
@@ -60,26 +60,21 @@ class PraiseCard extends StatelessWidget {
     return Row(
       children: <Widget>[
         Expanded(
-          child: Card(
-            margin: EdgeInsets.zero,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: suSetSp(16.0),
-                  ),
-                  child: Text(
-                    "赞了这条微博",
-                    style: TextStyle(
-                      fontSize: suSetSp(18.0),
-                    ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: suSetWidth(24.0)),
+                child: Text(
+                  "赞了这条微博",
+                  style: TextStyle(
+                    fontSize: suSetSp(21.0),
                   ),
                 ),
-                getRootContent(context, praise)
-              ],
-            ),
+              ),
+              getRootContent(context, praise)
+            ],
           ),
         ),
       ],
@@ -92,18 +87,16 @@ class PraiseCard extends StatelessWidget {
     topic += _post.content;
     return Container(
       width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.only(top: suSetSp(10.0)),
+      margin: EdgeInsets.only(top: suSetHeight(10.0)),
       padding: EdgeInsets.symmetric(
-        horizontal: suSetSp(16.0),
-        vertical: suSetSp(10.0),
+        horizontal: suSetWidth(24.0),
+        vertical: suSetHeight(10.0),
       ),
       decoration: BoxDecoration(color: Theme.of(context).canvasColor),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          getExtendedText(context, topic),
-        ],
+        children: <Widget>[getExtendedText(context, topic)],
       ),
     );
   }
@@ -111,7 +104,7 @@ class PraiseCard extends StatelessWidget {
   Widget getExtendedText(context, content) {
     return ExtendedText(
       content != null ? "$content " : null,
-      style: TextStyle(fontSize: suSetSp(18.0)),
+      style: TextStyle(fontSize: suSetSp(21.0)),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       maxLines: 8,
@@ -149,24 +142,24 @@ class PraiseCard extends StatelessWidget {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.symmetric(
-                horizontal: suSetSp(16.0),
-                vertical: suSetSp(12.0),
+                horizontal: suSetWidth(24.0),
+                vertical: suSetHeight(12.0),
               ),
               child: Row(
                 children: <Widget>[
-                  UserAPI.getAvatar(uid: praise.uid),
+                  UserAPI.getAvatar(size: 48.0, uid: praise.uid),
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
-                        horizontal: suSetSp(16.0),
+                        horizontal: suSetWidth(16.0),
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          getPraiseNickname(context, this.praise),
+                          getPraiseNickname(context, praise),
                           Constants.separator(context, height: 4.0),
-                          getPraiseInfo(this.praise),
+                          getPraiseInfo(praise),
                         ],
                       ),
                     ),
@@ -174,7 +167,7 @@ class PraiseCard extends StatelessWidget {
                 ],
               ),
             ),
-            getPraiseContent(context, this.praise),
+            getPraiseContent(context, praise),
           ],
         ),
         elevation: 0,
