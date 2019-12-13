@@ -30,16 +30,13 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final ScrollController _formScrollController = ScrollController();
-  final TextEditingController _usernameController = TextEditingController(
+  final _formKey = GlobalKey<FormState>();
+  final _formScrollController = ScrollController();
+  final _usernameController = TextEditingController(
     text: DataUtils.recoverWorkId(),
   );
-  final TextEditingController _passwordController = TextEditingController();
-  final List<Color> colorGradient = const <Color>[
-    Color(0xffff8976),
-    Color(0xffff3c33)
-  ];
+  final _passwordController = TextEditingController();
+  final colorGradient = const <Color>[Color(0xffff8976), Color(0xffff3c33)];
 
   String _username = DataUtils.recoverWorkId() ?? "", _password = "";
 
@@ -82,11 +79,6 @@ class LoginPageState extends State<LoginPage>
         _password = _passwordController.text;
       });
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
   }
 
   @override
@@ -250,7 +242,7 @@ class LoginPageState extends State<LoginPage>
           ),
           suffixIcon: IconButton(
             icon: Icon(
-              _isObscure ? Icons.visibility : Icons.visibility_off,
+              _isObscure ? Icons.visibility_off : Icons.visibility,
               color: _defaultIconColor,
               size: suSetWidth(28.0),
             ),
@@ -423,7 +415,7 @@ class LoginPageState extends State<LoginPage>
                   )
                 : SizedBox.fromSize(
                     size: Size.square(suSetWidth(32.0)),
-                    child: Constants.progressIndicator(
+                    child: PlatformProgressIndicator(
                       strokeWidth: 3.0,
                       color: Colors.white,
                     ),
@@ -446,7 +438,7 @@ class LoginPageState extends State<LoginPage>
                   NeverScrollableScrollPhysics(parent: ClampingScrollPhysics()),
               children: <Widget>[
                 logoTitle,
-                Constants.emptyDivider(height: suSetHeight(40.0)),
+                emptyDivider(height: suSetHeight(40.0)),
                 Container(
                   padding: EdgeInsets.symmetric(
                     horizontal: suSetWidth(10.0),
@@ -468,9 +460,9 @@ class LoginPageState extends State<LoginPage>
                       if (Configs.announcementsEnabled)
                         AnnouncementWidget(context, radius: 6.0),
                       usernameTextField,
-                      Constants.emptyDivider(height: suSetHeight(10.0)),
+                      emptyDivider(height: suSetHeight(10.0)),
                       passwordTextField,
-                      Constants.emptyDivider(height: suSetHeight(10.0)),
+                      emptyDivider(height: suSetHeight(10.0)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -491,7 +483,7 @@ class LoginPageState extends State<LoginPage>
                     ],
                   ),
                 ),
-                Constants.emptyDivider(height: suSetHeight(30.0)),
+                emptyDivider(height: suSetHeight(30.0)),
               ],
             ),
           ),

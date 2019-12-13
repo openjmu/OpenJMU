@@ -1,7 +1,7 @@
 name: OpenJMU
 description: A JMU Flutter application.
 
-version: 0.7.1+118
+version: 0.7.1+119
 
 environment:
   sdk: ">=2.5.0 <3.0.0"
@@ -30,6 +30,7 @@ dependencies:
   flutter_icons: ^0.3.1
   flutter_inappbrowser:
     git: https://github.com/AlexVincent525/flutter_inappbrowser.git
+  flutter_local_notifications: ^0.8.4+3
   flutter_native_image:
     git: https://github.com/btastic/flutter_native_image.git
   flutter_platform_widgets: ^0.20.2

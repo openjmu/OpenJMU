@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:event_bus/event_bus.dart';
 
-import 'package:OpenJMU/constants/Constants.dart';
+NavigatorState get navigatorState => Instances.navigatorKey.currentState;
+ThemeData get currentTheme => Theme.of(navigatorState.context);
 
 class Instances {
   static final EventBus eventBus = EventBus();
-  static Notifications notifications = Notifications();
+  static final navigatorKey = GlobalKey<NavigatorState>();
+  static AppLifecycleState appLifeCycleState = AppLifecycleState.resumed;
 }

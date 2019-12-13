@@ -169,7 +169,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
                         Icons.add,
                         size: suSetSp(60.0),
                       ),
-                      Constants.emptyDivider(height: 20.0),
+                      emptyDivider(height: 20.0),
                       Text(
                         "选择需要上传的头像",
                         style: Theme.of(context).textTheme.body1.copyWith(

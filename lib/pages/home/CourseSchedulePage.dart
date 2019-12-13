@@ -467,11 +467,21 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                 for (int i = 0; i < _maxCoursesPerDay; i++)
                   Expanded(
                     child: Center(
-                      child: Text(
-                        (i + 1).toString(),
-                        style: TextStyle(
-                          fontSize: suSetSp(16),
-                        ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            (i + 1).toString(),
+                            style: TextStyle(
+                              fontSize: suSetSp(17.0),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Text(
+                            CourseAPI.getCourseTime(i + 1),
+                            style: TextStyle(fontSize: suSetSp(12.0)),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -542,7 +552,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
           crossFadeState: !firstLoaded
               ? CrossFadeState.showFirst
               : CrossFadeState.showSecond,
-          firstChild: Center(child: Constants.progressIndicator()),
+          firstChild: Center(child: PlatformProgressIndicator()),
           secondChild: Column(
             children: <Widget>[
               if (remark != null) remarkWidget,
@@ -1181,7 +1191,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                         child: SizedBox(
                           width: suSetWidth(30.0),
                           height: suSetHeight(30.0),
-                          child: Constants.progressIndicator(),
+                          child: PlatformProgressIndicator(),
                         ),
                       )
                     : Icon(

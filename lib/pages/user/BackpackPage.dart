@@ -173,7 +173,7 @@ class _BackpackPageState extends State<BackpackPage> {
               ),
           overflow: TextOverflow.ellipsis,
         ),
-        Constants.emptyDivider(height: 10.0),
+        emptyDivider(height: 10.0),
         SizedBox(
           height: suSetSp(54.0),
           child: Text(
@@ -239,7 +239,7 @@ class _BackpackPageState extends State<BackpackPage> {
                 ],
               ),
             ),
-            Constants.emptyDivider(height: 50.0),
+            emptyDivider(height: 50.0),
             FlatButton(
               shape: RoundedRectangleBorder(
                 side: BorderSide(
@@ -301,7 +301,7 @@ class _BackpackPageState extends State<BackpackPage> {
           isLoading
               ? SizedBox(
                   height: suSetSp(500.0),
-                  child: Center(child: Constants.progressIndicator()),
+                  child: Center(child: PlatformProgressIndicator()),
                 )
               : Expanded(
                   child: PageView.builder(

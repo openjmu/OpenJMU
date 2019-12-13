@@ -21,6 +21,13 @@ class CourseAPI {
         data: {"sid": UserAPI.currentUser.sid},
       );
 
+  static String getCourseTime(int courseIndex) {
+    final time = courseTime[courseIndex][0];
+    final hour = time.hour.toString();
+    final minute = '${time.minute < 10 ? '0' : ''}${time.minute}';
+    return '$hour:$minute';
+  }
+
   static Future setCustomCourse(Map<String, dynamic> course) async =>
       NetUtils.post(
         "${API.courseScheduleCustom}?sid=${UserAPI.currentUser.sid}",
@@ -48,14 +55,19 @@ class CourseAPI {
     return result;
   }
 
-  static Map<String, List<TimeOfDay>> courseTime = {
-    "12": [_time(08, 00), _time(09, 35)],
-    "34": [_time(10, 05), _time(11, 40)],
-    "56": [_time(14, 00), _time(15, 35)],
-    "78": [_time(15, 55), _time(17, 30)],
-    "90": [_time(19, 00), _time(20, 45)],
-    "11": [_time(20, 50), _time(21, 25)],
-    "911": [_time(19, 00), _time(21, 25)],
+  static Map<int, List<TimeOfDay>> courseTime = {
+    1: [_time(08, 00), _time(08, 45)],
+    2: [_time(08, 50), _time(09, 35)],
+    3: [_time(10, 05), _time(10, 50)],
+    4: [_time(10, 55), _time(11, 40)],
+    5: [_time(14, 00), _time(14, 45)],
+    6: [_time(14, 50), _time(15, 35)],
+    7: [_time(15, 55), _time(16, 40)],
+    8: [_time(16, 45), _time(17, 30)],
+    9: [_time(19, 00), _time(19, 45)],
+    10: [_time(19, 50), _time(20, 35)],
+    11: [_time(20, 40), _time(21, 25)],
+    12: [_time(21, 30), _time(22, 15)],
   };
 
   static Map<String, String> courseTimeChinese = {

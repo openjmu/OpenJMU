@@ -6,3 +6,6 @@
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
 -dontwarn io.flutter.embedding.**
+
+## Packages wrapper
+-keep class com.dexterous.** { *; }

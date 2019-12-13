@@ -323,7 +323,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                       ),
                     ),
                   ),
-                  Constants.emptyDivider(height: suSetHeight(10.0)),
+                  emptyDivider(height: suSetHeight(10.0)),
                   Text(
                     itemTitles[index],
                     style: Theme.of(context).textTheme.body1.copyWith(

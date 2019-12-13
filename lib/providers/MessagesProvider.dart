@@ -36,10 +36,8 @@ class MessagesProvider with ChangeNotifier {
 //      personalBox.put(currentUser.uid, Map<int, List>());
 //    }
 
-    var _tempAppsMessages = appBox.get(currentUser.uid);
-    _appsMessages = _tempAppsMessages.cast<int, List>();
-//    var _tempPersonalMessages = personalBox.get(currentUser.uid);
-//    _personalMessages = _tempPersonalMessages.cast<int, List>();
+    _appsMessages = appBox.get(currentUser.uid).cast<int, List>();
+//    _personalMessages = personalBox.get(currentUser.uid).cast<int, List>();
   }
 
   void logout() {
@@ -61,6 +59,14 @@ class MessagesProvider with ChangeNotifier {
 
   void _incomingAppsMessage(MessageReceivedEvent event) {
     final message = AppMessage.fromEvent(event);
+
+    final provider = Provider.of<WebAppsProvider>(
+      navigatorState.context,
+      listen: false,
+    );
+    final app =
+        provider.apps.where((app) => app.id == message.appId).elementAt(0);
+
     if (!_appsMessages.containsKey(message.appId)) {
       _appsMessages[message.appId] = <AppMessage>[];
     }
@@ -69,6 +75,12 @@ class MessagesProvider with ChangeNotifier {
     _appsMessages.remove(message.appId);
     _appsMessages[message.appId] = List.from(tempMessages);
     saveAppsMessages();
+    if (Instances.appLifeCycleState != AppLifecycleState.resumed) {
+      NotificationUtils.show(app.name, message.content);
+    }
+    if (message.messageId != null && message.messageId != 0) {
+      MessageUtils.sendConfirmOfflineMessage(message.messageId);
+    }
     notifyListeners();
   }
 
@@ -80,6 +92,9 @@ class MessagesProvider with ChangeNotifier {
 //    if (message.content['content'] != Messages.inputting) {
 //      _personalMessages[event.senderUid].insert(0, message);
 //      HiveBoxes.personalMessagesBox.put(currentUser.uid, _personalMessages);
+//      if (message.messageId != null && message.messageId != 0) {
+//        MessageUtils.sendConfirmOfflineMessage(message.messageId);
+//      }
 //      notifyListeners();
 //    }
   }

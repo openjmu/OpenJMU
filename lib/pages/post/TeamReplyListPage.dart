@@ -74,7 +74,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                     if (Constants.developerList.contains(item.fromUserId))
                       Container(
                         margin: EdgeInsets.only(left: suSetWidth(14.0)),
-                        child: Constants.developerTag(
+                        child: DeveloperTag(
                           padding: EdgeInsets.symmetric(
                             horizontal: suSetWidth(8.0),
                             vertical: suSetHeight(4.0),
@@ -194,7 +194,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                       loadList(loadMore: true);
                     }
                     if (index == replyList.length) {
-                      return Constants.loadMoreIndicator(
+                      return LoadMoreIndicator(
                         canLoadMore: canLoadMore,
                       );
                     }
@@ -258,9 +258,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                     ),
                   ),
                 )
-          : Center(
-              child: Constants.progressIndicator(),
-            ),
+          : Center(child: PlatformProgressIndicator()),
     );
   }
 }

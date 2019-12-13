@@ -72,7 +72,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                       if (Constants.developerList.contains(item.fromUserId))
                         Container(
                           margin: EdgeInsets.only(left: suSetWidth(14.0)),
-                          child: Constants.developerTag(
+                          child: DeveloperTag(
                             padding: EdgeInsets.symmetric(
                               horizontal: suSetWidth(8.0),
                               vertical: suSetHeight(4.0),
@@ -163,9 +163,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                       loadList(loadMore: true);
                     }
                     if (index == mentionedList.length) {
-                      return Constants.loadMoreIndicator(
-                        canLoadMore: canLoadMore,
-                      );
+                      return LoadMoreIndicator(canLoadMore: canLoadMore);
                     }
                     final item = mentionedList.elementAt(index);
                     final provider = TeamPostProvider(item.post);
@@ -224,9 +222,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                     ),
                   ),
                 )
-          : Center(
-              child: Constants.progressIndicator(),
-            ),
+          : Center(child: PlatformProgressIndicator()),
     );
   }
 }

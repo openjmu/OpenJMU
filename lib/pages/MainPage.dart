@@ -51,7 +51,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     textBaseline: TextBaseline.alphabetic,
   );
 
-  Notifications notifications = Instances.notifications;
   Timer notificationTimer;
 
   int _tabIndex = Configs.homeSplashIndex;

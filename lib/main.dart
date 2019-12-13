@@ -128,7 +128,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    debugPrint(state.toString());
+    debugPrint("AppLifecycleState change to: ${state.toString()}");
+    Instances.appLifeCycleState = state;
     updateBrightness();
   }
 
@@ -141,9 +142,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   void updateBrightness({Brightness platformBrightness}) {
     if (brightness != null) {
-      brightness = platformBrightness ??
-          MediaQuery.of(Constants.navigatorKey.currentContext)
-              .platformBrightness;
+      brightness = platformBrightness ?? Screen.mediaQuery.platformBrightness;
     }
     if (ThemeUtils.isPlatformBrightness) {
       ThemeUtils.isDark = brightness == Brightness.dark;
@@ -212,7 +211,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         data: theme,
         child: OKToast(
           child: MaterialApp(
-            navigatorKey: Constants.navigatorKey,
+            navigatorKey: Instances.navigatorKey,
             builder: (c, w) {
               brightness = ThemeUtils.isPlatformBrightness
                   ? MediaQuery.of(c).platformBrightness
@@ -226,15 +225,17 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
             theme: theme,
             home: SplashPage(initAction: initAction),
             navigatorObservers: [
-              FFNavigatorObserver(showStatusBarChange: (bool showStatusBar) {
-                if (showStatusBar) {
-                  SystemChrome.setEnabledSystemUIOverlays(
-                    SystemUiOverlay.values,
-                  );
-                } else {
-                  SystemChrome.setEnabledSystemUIOverlays([]);
-                }
-              })
+              FFNavigatorObserver(
+                showStatusBarChange: (bool showStatusBar) {
+                  if (showStatusBar) {
+                    SystemChrome.setEnabledSystemUIOverlays(
+                      SystemUiOverlay.values,
+                    );
+                  } else {
+                    SystemChrome.setEnabledSystemUIOverlays([]);
+                  }
+                },
+              ),
             ],
             onGenerateRoute: (RouteSettings settings) {
               final routeResult = getRouteResult(

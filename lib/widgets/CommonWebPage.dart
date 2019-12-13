@@ -132,7 +132,7 @@ class CommonWebPageState extends State<CommonWebPage> {
           child: SizedBox(
             width: 24.0,
             height: 24.0,
-            child: Constants.progressIndicator(strokeWidth: 3.0),
+            child: PlatformProgressIndicator(strokeWidth: 3.0),
           ),
         ),
       );
@@ -239,7 +239,7 @@ class CommonWebPageState extends State<CommonWebPage> {
           height: MediaQuery.of(context).size.height,
           color: Theme.of(context).canvasColor,
           child: isLoading
-              ? Center(child: Constants.progressIndicator())
+              ? Center(child: PlatformProgressIndicator())
               : SizedBox.shrink(),
         ),
         persistentFooterButtons: !(widget.withAction ?? false)

@@ -222,9 +222,6 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
       }
       if (unreadMessages.isNotEmpty) {
         final message = unreadMessages[0];
-        if (message.messageId != null && message.messageId != 0) {
-          MessageUtils.sendConfirmOfflineMessage(message.messageId);
-        }
         if (message.ackId != null && message.ackId != 0) {
           MessageUtils.sendConfirmMessage(ackId: message.ackId);
         }

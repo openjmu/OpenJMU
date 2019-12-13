@@ -63,9 +63,7 @@ class _PostListState extends State<PostList>
   Widget _errorChild;
   bool error = false;
 
-  Widget _body = Center(
-    child: Constants.progressIndicator(),
-  );
+  Widget _body = Center(child: PlatformProgressIndicator());
 
   List<int> _idList = [];
   List<Post> _postList = [];
@@ -293,7 +291,7 @@ class _PostListState extends State<PostList>
               _loadData();
             }
             if (index == _postList.length) {
-              return Constants.loadMoreIndicator(canLoadMore: _canLoadMore);
+              return LoadMoreIndicator(canLoadMore: _canLoadMore);
             } else if (index < _postList.length) {
               return PostCard(
                 _postList[index],
@@ -322,11 +320,7 @@ class _PostListState extends State<PostList>
       }
       return _body;
     } else {
-      return Container(
-        child: Center(
-          child: Constants.progressIndicator(),
-        ),
-      );
+      return Container(child: Center(child: PlatformProgressIndicator()));
     }
   }
 }
@@ -489,11 +483,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
           ? EdgeInsets.symmetric(vertical: suSetHeight(42.0))
           : EdgeInsets.zero,
       child: isLoading
-          ? Center(
-              child: SizedBox(
-                child: Constants.progressIndicator(),
-              ),
-            )
+          ? Center(child: PlatformProgressIndicator())
           : Container(
               color: Theme.of(context).cardColor,
               padding: EdgeInsets.zero,
@@ -513,7 +503,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                           _loadList();
                         }
                         if (index == _posts.length) {
-                          return Constants.loadMoreIndicator(
+                          return LoadMoreIndicator(
                             canLoadMore: canLoadMore && !isLoading,
                           );
                         } else if (index < _posts.length) {
@@ -539,7 +529,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
                                             margin: EdgeInsets.only(
                                               left: suSetWidth(14.0),
                                             ),
-                                            child: Constants.developerTag(
+                                            child: DeveloperTag(
                                               padding: EdgeInsets.symmetric(
                                                 horizontal: suSetWidth(8.0),
                                                 vertical: suSetHeight(4.0),

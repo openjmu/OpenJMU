@@ -308,7 +308,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                     child: SizedBox(
                       width: suSetWidth(12.0),
                       height: suSetWidth(12.0),
-                      child: Constants.progressIndicator(strokeWidth: 2.0),
+                      child: PlatformProgressIndicator(strokeWidth: 2.0),
                     ),
                   ),
           ],

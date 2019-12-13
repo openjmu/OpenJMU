@@ -34,7 +34,6 @@ class MessagePageState extends State<MessagePage>
     },
   ];
 
-  Notifications notifications = Instances.notifications;
   Color currentThemeColor = ThemeUtils.currentThemeColor;
   TabController _tabController;
 
@@ -155,7 +154,7 @@ class MessagePageState extends State<MessagePage>
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Constants.badgeIcon(
+                          child: badgeIcon(
                             content: provider.notification.total,
                             icon: _icon(0),
                             showBadge: provider.notification.total > 0,
@@ -186,7 +185,7 @@ class MessagePageState extends State<MessagePage>
                 ),
                 onTap: notificationItems[0]['action'],
               ),
-              Constants.separator(
+              separator(
                 context,
                 color: Theme.of(context).canvasColor,
                 height: 1.0,
@@ -206,7 +205,7 @@ class MessagePageState extends State<MessagePage>
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Constants.badgeIcon(
+                          child: badgeIcon(
                             content: provider.teamNotification.total,
                             icon: _icon(1),
                             showBadge: provider.teamNotification.total > 0,
@@ -359,7 +358,7 @@ class MessagePageState extends State<MessagePage>
                   padding: EdgeInsets.zero,
                   children: <Widget>[
                     _notificationEntries,
-                    Constants.separator(context),
+                    separator(context),
                   ],
                 ),
               ],

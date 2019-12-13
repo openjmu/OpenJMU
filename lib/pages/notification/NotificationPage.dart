@@ -60,7 +60,7 @@ class NotificationPageState extends State<NotificationPage>
                 Tab(
                   child: provider.notification.at != 0
                       ? IconButton(
-                          icon: Constants.badgeIcon(
+                          icon: badgeIcon(
                             content: provider.notification.at == 0
                                 ? ""
                                 : provider.notification.at,
@@ -85,7 +85,7 @@ class NotificationPageState extends State<NotificationPage>
                 Tab(
                   child: provider.notification.comment != 0
                       ? IconButton(
-                          icon: Constants.badgeIcon(
+                          icon: badgeIcon(
                             content: provider.notification.comment == 0
                                 ? ""
                                 : provider.notification.comment,
@@ -110,7 +110,7 @@ class NotificationPageState extends State<NotificationPage>
                 Tab(
                   child: provider.notification.praise != 0
                       ? IconButton(
-                          icon: Constants.badgeIcon(
+                          icon: badgeIcon(
                             content: provider.notification.praise == 0
                                 ? ""
                                 : provider.notification.praise,

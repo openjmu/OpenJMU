@@ -159,7 +159,7 @@ class SplashState extends State<SplashPage> {
                 ),
                 width: suSetWidth(28.0),
                 height: suSetHeight(28.0),
-                child: Constants.progressIndicator(color: Colors.white),
+                child: PlatformProgressIndicator(color: Colors.white),
               ),
             ),
           ),

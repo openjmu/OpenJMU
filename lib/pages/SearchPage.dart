@@ -381,9 +381,7 @@ class SearchPageState extends State<SearchPage>
                             parentContext: context,
                           );
                         } else if (index == postList.length + 2) {
-                          return Constants.loadMoreIndicator(
-                            canLoadMore: _canLoadMore,
-                          );
+                          return LoadMoreIndicator(canLoadMore: _canLoadMore);
                         } else {
                           return PostCard(
                             postList[index - 1],
@@ -403,7 +401,7 @@ class SearchPageState extends State<SearchPage>
                       ),
                     )
               : SizedBox.shrink()
-          : Center(child: Constants.progressIndicator()),
+          : Center(child: PlatformProgressIndicator()),
     );
   }
 }

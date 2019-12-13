@@ -1,5 +1,5 @@
-import 'dart:convert';
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -66,9 +66,7 @@ class _CommentListState extends State<CommentList>
   Widget _errorChild;
   bool error = false;
 
-  Widget _body = Center(
-    child: Constants.progressIndicator(),
-  );
+  Widget _body = Center(child: PlatformProgressIndicator());
 
   List<Comment> _commentList = [];
   List<int> _idList = [];
@@ -227,7 +225,7 @@ class _CommentListState extends State<CommentList>
               _loadData();
             }
             if (index == _commentList.length) {
-              return Constants.loadMoreIndicator(canLoadMore: _canLoadMore);
+              return LoadMoreIndicator(canLoadMore: _canLoadMore);
             } else {
               return CommentCard(_commentList[index]);
             }
@@ -524,7 +522,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
           ? EdgeInsets.symmetric(vertical: suSetHeight(42))
           : EdgeInsets.zero,
       child: isLoading
-          ? Center(child: Constants.progressIndicator())
+          ? Center(child: PlatformProgressIndicator())
           : Container(
               color: Theme.of(context).cardColor,
               padding: EdgeInsets.zero,
@@ -542,7 +540,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                           _loadList();
                         }
                         if (index == _comments.length) {
-                          return Constants.loadMoreIndicator(
+                          return LoadMoreIndicator(
                             canLoadMore: canLoadMore && !isLoading,
                           );
                         } else if (index < _comments.length) {
@@ -583,7 +581,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
                                               margin: EdgeInsets.only(
                                                 left: suSetWidth(14.0),
                                               ),
-                                              child: Constants.developerTag(
+                                              child: DeveloperTag(
                                                 padding: EdgeInsets.symmetric(
                                                   horizontal: suSetWidth(8.0),
                                                   vertical: suSetHeight(4.0),

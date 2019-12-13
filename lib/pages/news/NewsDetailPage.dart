@@ -80,7 +80,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
               withLocalStorage: true,
               resizeToAvoidBottomInset: true,
             )
-          : Center(child: Constants.progressIndicator()),
+          : Center(child: PlatformProgressIndicator()),
     );
   }
 }

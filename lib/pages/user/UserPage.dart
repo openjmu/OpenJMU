@@ -288,7 +288,7 @@ class _UserPageState extends State<UserPage>
               ),
               overflow: TextOverflow.ellipsis,
             ),
-            Constants.emptyDivider(width: suSetWidth(8.0)),
+            emptyDivider(width: suSetWidth(8.0)),
             DecoratedBox(
               decoration: BoxDecoration(
                 color:
@@ -305,7 +305,7 @@ class _UserPageState extends State<UserPage>
                 ),
               ),
             ),
-            Constants.emptyDivider(width: 8.0),
+            emptyDivider(width: 8.0),
             Container(
               padding: EdgeInsets.symmetric(
                 horizontal: suSetWidth(8.0),
@@ -326,9 +326,9 @@ class _UserPageState extends State<UserPage>
               ),
             ),
             if (Constants.developerList.contains(_user.uid))
-              Constants.emptyDivider(width: 8.0),
+              emptyDivider(width: 8.0),
             if (Constants.developerList.contains(_user.uid))
-              Constants.developerTag(
+              DeveloperTag(
                 padding: EdgeInsets.symmetric(
                   horizontal: suSetWidth(8.0),
                   vertical: suSetHeight(4.0),
@@ -379,7 +379,7 @@ class _UserPageState extends State<UserPage>
                 ),
               ),
             ),
-            Constants.emptyDivider(width: 12.0),
+            emptyDivider(width: 12.0),
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onTap: () {
@@ -653,7 +653,7 @@ class _UserPageState extends State<UserPage>
     super.build(context);
     return Scaffold(
       body: isLoading
-          ? Center(child: Constants.progressIndicator())
+          ? Center(child: PlatformProgressIndicator())
           : NestedScrollView(
               controller: _scrollController,
               headerSliverBuilder:
@@ -673,7 +673,7 @@ class _UserPageState extends State<UserPage>
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               UserAPI.getAvatar(size: 52.0, uid: widget.uid),
-                              Constants.emptyDivider(width: suSetWidth(8.0)),
+                              emptyDivider(width: suSetWidth(8.0)),
                               Text(
                                 _user.name,
                                 style:
@@ -689,7 +689,7 @@ class _UserPageState extends State<UserPage>
                     SizedBox(
                       width: 56.0,
                       child: refreshing
-                          ? Constants.progressIndicator(
+                          ? PlatformProgressIndicator(
                               strokeWidth: suSetWidth(3.0),
                               color: Colors.white,
                             )
@@ -737,9 +737,7 @@ class _UserPageState extends State<UserPage>
                             ),
                             child: Column(
                               children: <Widget>[
-                                Constants.emptyDivider(
-                                  height: kToolbarHeight + 4.0,
-                                ),
+                                emptyDivider(height: kToolbarHeight + 4.0),
                                 ListView.builder(
                                   physics: NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
@@ -1057,9 +1055,7 @@ class _UserListState extends State<UserListPage> {
                           style: TextStyle(fontSize: suSetSp(20.0)),
                         ),
                       )
-                : Center(
-                    child: Constants.progressIndicator(),
-                  ),
+                : Center(child: PlatformProgressIndicator()),
           ),
         ],
       ),

@@ -147,9 +147,7 @@ class _ImageViewerState extends State<ImageViewer>
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
               loader = Center(
-                child: Constants.progressIndicator(
-                  color: Colors.grey,
-                ),
+                child: PlatformProgressIndicator(color: Colors.grey),
               );
               break;
             case LoadState.completed:

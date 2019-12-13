@@ -101,7 +101,7 @@ class _PostCardState extends State<PostCard> {
           if (Constants.developerList.contains(post.uid))
             Container(
               margin: EdgeInsets.only(left: suSetWidth(14.0)),
-              child: Constants.developerTag(
+              child: DeveloperTag(
                 padding: EdgeInsets.symmetric(
                   horizontal: suSetWidth(8.0),
                   vertical: suSetHeight(4.0),
@@ -276,7 +276,7 @@ class _PostCardState extends State<PostCard> {
               case LoadState.completed:
                 final info = state.extendedImageInfo;
                 if (info != null) {
-                  loader = scaledImage(
+                  loader = ScaledImage(
                     image: info.image,
                     length: data.length,
                     num200: suSetWidth(200),
@@ -817,7 +817,7 @@ class _PostCardState extends State<PostCard> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   getPostNickname(context, post),
-                                  Constants.separator(context, height: 4.0),
+                                  separator(context, height: 4.0),
                                   getPostInfo(post),
                                 ],
                               ),

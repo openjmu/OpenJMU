@@ -83,7 +83,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage>
             Tab(
               child: notification.mention != 0
                   ? IconButton(
-                      icon: Constants.badgeIcon(
+                      icon: badgeIcon(
                         showBadge: notification.mention != 0,
                         content: notification.mention,
                         icon: Icon(
@@ -107,7 +107,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage>
             Tab(
               child: notification.reply != 0
                   ? IconButton(
-                      icon: Constants.badgeIcon(
+                      icon: badgeIcon(
                         showBadge: notification.reply != 0,
                         content: notification.reply,
                         icon: Icon(
@@ -131,7 +131,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage>
             Tab(
               child: notification.praise != 0
                   ? IconButton(
-                      icon: Constants.badgeIcon(
+                      icon: badgeIcon(
                         showBadge: notification.praise != 0,
                         content: notification.praise,
                         icon: Icon(

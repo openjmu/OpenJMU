@@ -204,12 +204,12 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                     fontSize: suSetSp(24.0),
                   ),
                 ),
-                Constants.emptyDivider(height: 20.0),
+                emptyDivider(height: 20.0),
               ],
             ),
             ListView.separated(
               shrinkWrap: true,
-              separatorBuilder: (context, index) => Constants.separator(
+              separatorBuilder: (context, index) => separator(
                 context,
                 color: Colors.transparent,
                 height: 20.0,

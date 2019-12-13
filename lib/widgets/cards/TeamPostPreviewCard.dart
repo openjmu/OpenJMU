@@ -243,7 +243,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                     if (Constants.developerList.contains(post.uid))
                       Container(
                         margin: EdgeInsets.only(left: suSetWidth(14.0)),
-                        child: Constants.developerTag(
+                        child: DeveloperTag(
                           padding: EdgeInsets.symmetric(
                             horizontal: suSetWidth(8.0),
                             vertical: suSetHeight(2.0),
@@ -458,7 +458,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             case LoadState.completed:
               final info = state.extendedImageInfo;
               if (info != null) {
-                loader = scaledImage(
+                loader = ScaledImage(
                   image: info.image,
                   length: post.pics.length,
                   num200: suSetSp(200),

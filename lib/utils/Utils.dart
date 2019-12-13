@@ -4,6 +4,7 @@ export 'DeviceUtils.dart';
 export 'EmojiUtils.dart';
 export 'MessageUtils.dart';
 export 'NetUtils.dart';
+export 'NotificationUtils.dart';
 export 'OTAUtils.dart';
 export 'SocketUtils.dart';
 export 'ThemeUtils.dart';

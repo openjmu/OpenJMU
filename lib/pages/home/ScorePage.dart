@@ -15,26 +15,11 @@ class ScorePage extends StatefulWidget {
 class _ScorePageState extends State<ScorePage>
     with AutomaticKeepAliveClientMixin {
   final Map<String, Map<String, double>> fiveBandScale = {
-    "优秀": {
-      "score": 95.0,
-      "point": 4.625,
-    },
-    "良好": {
-      "score": 85.0,
-      "point": 3.875,
-    },
-    "中等": {
-      "score": 75.0,
-      "point": 3.125,
-    },
-    "及格": {
-      "score": 65.0,
-      "point": 2.375,
-    },
-    "不及格": {
-      "score": 55.0,
-      "point": 0.0,
-    },
+    "优秀": {"score": 95.0, "point": 4.625},
+    "良好": {"score": 85.0, "point": 3.875},
+    "中等": {"score": 75.0, "point": 3.125},
+    "及格": {"score": 65.0, "point": 2.375},
+    "不及格": {"score": 55.0, "point": 0.0},
   };
   final Map<String, Map<String, double>> twoBandScale = {
     "合格": {
@@ -55,7 +40,11 @@ class _ScorePageState extends State<ScorePage>
   String termSelected;
   String _scoreData = "";
   Widget errorWidget = SizedBox();
+
   StreamSubscription scoresSubscription;
+
+  DateTime startTime;
+  DateTime endTime;
 
   @override
   bool get wantKeepAlive => true;
@@ -80,6 +69,7 @@ class _ScorePageState extends State<ScorePage>
   }
 
   void sendRequest() {
+    startTime = DateTime.now();
     SocketUtils.mSocket?.add(utf8.encode(jsonEncode({
       "uid": "${UserAPI.currentUser.uid}",
       "sid": "${UserAPI.currentUser.sid}",
@@ -147,6 +137,7 @@ class _ScorePageState extends State<ScorePage>
       } catch (e) {
         debugPrint("$e");
       }
+      endTime = DateTime.now();
     }
   }
 
@@ -416,7 +407,7 @@ class _ScorePageState extends State<ScorePage>
   Widget build(BuildContext context) {
     super.build(context);
     return loading
-        ? Center(child: Constants.progressIndicator())
+        ? Center(child: PlatformProgressIndicator())
         : Column(
             children: <Widget>[
               Expanded(

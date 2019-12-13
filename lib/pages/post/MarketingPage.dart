@@ -100,7 +100,7 @@ class _MarketingPageState extends State<MarketingPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          if (canLoadMore) Constants.progressIndicator(),
+                          if (canLoadMore) PlatformProgressIndicator(),
                           Text(
                             canLoadMore ? "正在加载" : Constants.endLineTag,
                             style: TextStyle(
@@ -121,7 +121,7 @@ class _MarketingPageState extends State<MarketingPage> {
                   );
                 },
               )
-            : Center(child: Constants.progressIndicator()),
+            : Center(child: PlatformProgressIndicator()),
       ),
     );
   }

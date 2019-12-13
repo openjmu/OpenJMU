@@ -144,9 +144,7 @@ class AppCenterPage extends StatelessWidget {
     return Consumer<WebAppsProvider>(
       builder: (_, provider, __) {
         return provider.fetching
-            ? Center(
-                child: Constants.progressIndicator(),
-              )
+            ? Center(child: PlatformProgressIndicator())
             : RefreshIndicator(
                 key: refreshIndicatorKey,
                 child: categoryListView(context, provider),

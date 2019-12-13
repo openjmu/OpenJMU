@@ -356,11 +356,10 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
             IconButton(
               padding: EdgeInsets.zero,
               onPressed: () {
-                emoticonPadActive = !emoticonPadActive;
                 if (emoticonPadActive && _focusNode.canRequestFocus) {
                   _focusNode.requestFocus();
                 }
-                updatePadStatus(emoticonPadActive);
+                updatePadStatus(!emoticonPadActive);
               },
               icon: Icon(
                 Icons.sentiment_very_satisfied,

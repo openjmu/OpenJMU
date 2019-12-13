@@ -140,7 +140,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                   : SizedBox(
                                       width: suSetWidth(32.0),
                                       height: suSetWidth(32.0),
-                                      child: Constants.progressIndicator(),
+                                      child: PlatformProgressIndicator(),
                                     ),
                             ],
                           ),

@@ -50,9 +50,7 @@ class _PraiseListState extends State<PraiseList>
   Widget _errorChild;
   bool error = false;
 
-  Widget _body = Center(
-    child: Constants.progressIndicator(),
-  );
+  Widget _body = Center(child: PlatformProgressIndicator());
 
   List<Praise> _praiseList = [];
 
@@ -390,7 +388,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
           ? EdgeInsets.symmetric(vertical: suSetHeight(42.0))
           : EdgeInsets.zero,
       child: isLoading
-          ? Center(child: Constants.progressIndicator())
+          ? Center(child: PlatformProgressIndicator())
           : Container(
               color: Theme.of(context).cardColor,
               padding: EdgeInsets.zero,
@@ -408,7 +406,7 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                           _loadList();
                         }
                         if (index == _praises.length) {
-                          return Constants.loadMoreIndicator(
+                          return LoadMoreIndicator(
                             canLoadMore: canLoadMore && !isLoading,
                           );
                         } else {
@@ -422,7 +420,8 @@ class _PraiseListInPostState extends State<PraiseListInPost> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
                                 Container(
-                                  margin: EdgeInsets.only(right: suSetWidth(10.0)),
+                                  margin:
+                                      EdgeInsets.only(right: suSetWidth(10.0)),
                                   child: UserAPI.getAvatar(
                                     size: 44.0,
                                     uid: _praises[index].uid,

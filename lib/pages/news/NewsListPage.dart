@@ -253,7 +253,7 @@ class NewsListPageState extends State<NewsListPage>
                   shrinkWrap: true,
                   controller: _scrollController,
                   separatorBuilder: (context, index) =>
-                      Constants.separator(context, height: 1.0),
+                      separator(context, height: 1.0),
                   itemCount: newsList.length + 1,
                   itemBuilder: (context, index) {
                     if (index == newsList.length) {
@@ -267,9 +267,8 @@ class NewsListPageState extends State<NewsListPage>
                               SizedBox(
                                 width: suSetSp(15.0),
                                 height: suSetSp(15.0),
-                                child: Constants.progressIndicator(
-                                  strokeWidth: 2.0,
-                                ),
+                                child:
+                                    PlatformProgressIndicator(strokeWidth: 2.0),
                               ),
                               Text(
                                 "　正在加载",
@@ -303,11 +302,11 @@ class NewsListPageState extends State<NewsListPage>
                 ),
         );
       } else {
-        return Center(child: Constants.progressIndicator());
+        return Center(child: PlatformProgressIndicator());
       }
     } else {
       return Container(
-        child: Center(child: Constants.progressIndicator()),
+        child: Center(child: PlatformProgressIndicator()),
       );
     }
   }

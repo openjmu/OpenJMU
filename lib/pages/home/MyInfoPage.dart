@@ -341,9 +341,9 @@ class MyInfoPageState extends State<MyInfoPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             name,
-                            Constants.emptyDivider(height: suSetHeight(10.0)),
+                            emptyDivider(height: suSetHeight(10.0)),
                             signature,
-                            Constants.emptyDivider(height: suSetHeight(3.0)),
+                            emptyDivider(height: suSetHeight(3.0)),
                           ],
                         ),
                       ),
@@ -390,7 +390,7 @@ class MyInfoPageState extends State<MyInfoPage> {
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      separatorBuilder: (context, i) => Constants.separator(
+      separatorBuilder: (context, i) => separator(
         context,
         color: Theme.of(context).canvasColor,
         height: 1.0,
@@ -499,14 +499,14 @@ class MyInfoPageState extends State<MyInfoPage> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           userInfo(),
-          Constants.separator(context),
+          separator(context),
           currentDay(context, now),
-          Constants.separator(context),
+          separator(context),
           ListView.separated(
             padding: EdgeInsets.zero,
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            separatorBuilder: (context, index) => Constants.separator(context),
+            separatorBuilder: (context, index) => separator(context),
             itemCount: settingsSection().length,
             itemBuilder: (context, index) =>
                 settingSectionListView(context, index),

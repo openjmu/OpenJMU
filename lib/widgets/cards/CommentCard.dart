@@ -338,7 +338,7 @@ class CommentCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           getCommentNickname(context, comment),
-                          Constants.separator(context, height: 4.0),
+                          separator(context, height: 4.0),
                           getCommentInfo(comment),
                         ],
                       ),

@@ -273,7 +273,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
             child: SizedBox.fromSize(
               size: Size.square(suSetWidth(28.0)),
               child: sending
-                  ? Constants.progressIndicator()
+                  ? PlatformProgressIndicator()
                   : Icon(
                       Icons.send,
                       color: Colors.white,
@@ -557,9 +557,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                       ? SliverToBoxAdapter(
                           child: SizedBox(
                             height: suSetHeight(300.0),
-                            child: Center(
-                              child: Constants.progressIndicator(),
-                            ),
+                            child: Center(child: PlatformProgressIndicator()),
                           ),
                         )
                       : list != null
@@ -573,9 +571,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                                     initialLoad(loadMore: true);
                                   }
                                   if (index == list.length) {
-                                    return Constants.loadMoreIndicator(
-                                      canLoadMore: canLoadMore,
-                                    );
+                                    return LoadMoreIndicator(
+                                        canLoadMore: canLoadMore);
                                   }
                                   Widget item;
                                   switch (widget.type) {
