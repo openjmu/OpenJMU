@@ -15,25 +15,26 @@ class AppIcon extends StatelessWidget {
     this.size = 60.0,
   }) : super(key: key);
 
-  final basePath = "assets/icons/appCenter";
-
   Future<Widget> loadAsset() async {
-    final assetPath = "$basePath/${app.code}-${app.name}.svg";
     try {
-      final _ = await rootBundle.load(assetPath);
+      final _ = await rootBundle.load(iconPath);
       return SvgPicture.asset(
-        assetPath,
+        iconPath,
         width: suSetWidth(size),
-        height: suSetHeight(size),
+        height: suSetWidth(size),
       );
     } catch (e) {
+      debugPrint("$e");
       return ExtendedImage.network(
         oldIconUrl,
         width: suSetWidth(size),
+        height: suSetWidth(size),
         fit: BoxFit.fill,
       );
     }
   }
+
+  String get iconPath => "assets/icons/appCenter/${app.code}-${app.name}.svg";
 
   String get oldIconUrl => "${API.webAppIcons}appid=${app.id}&code=${app.code}";
 
