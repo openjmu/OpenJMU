@@ -243,7 +243,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
         children: <Widget>[
           topBar,
           messageList,
-          bottomBar,
+          if (widget.app.url != null) bottomBar,
         ],
       ),
     );

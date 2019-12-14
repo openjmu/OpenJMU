@@ -16,6 +16,8 @@ Rebuild from [JiDaTong](http://99.jmu.edu.cn/) client using [Flutter](https://fl
 normally after you clone/build/download if you are not a member of JMU
 (JiMei University).**
 
+[更新日志](CHANGELOG.md)
+
 # 为什么用Flutter？ Why flutter ?
 
 Flutter是一套跨平台开发框架，能很好地在接口完备的情况下快速构建所需功能，只需负责UI逻辑层。

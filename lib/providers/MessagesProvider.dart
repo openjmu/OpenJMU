@@ -79,7 +79,13 @@ class MessagesProvider with ChangeNotifier {
       NotificationUtils.show(app.name, message.content);
     }
     if (message.messageId != null && message.messageId != 0) {
-      MessageUtils.sendConfirmOfflineMessage(message.messageId);
+      MessageUtils.sendConfirmOfflineMessageOne(message.messageId);
+    }
+    if (message.ackId != null && message.ackId != 0) {
+      MessageUtils.sendACKedMessageToOtherMultiPort(
+        senderUid: 0,
+        ackId: message.ackId,
+      );
     }
     notifyListeners();
   }
@@ -93,7 +99,7 @@ class MessagesProvider with ChangeNotifier {
 //      _personalMessages[event.senderUid].insert(0, message);
 //      HiveBoxes.personalMessagesBox.put(currentUser.uid, _personalMessages);
 //      if (message.messageId != null && message.messageId != 0) {
-//        MessageUtils.sendConfirmOfflineMessage(message.messageId);
+//        MessageUtils.sendConfirmOfflineMessageOne(message.messageId);
 //      }
 //      notifyListeners();
 //    }

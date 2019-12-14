@@ -302,6 +302,21 @@ class MessageUtils {
     );
   }
 
+  static void sendConfirmMessageOne({
+    int friendId = 0,
+    int friendMultiPortId = 0,
+    int ackId,
+  }) {
+    addPackage(
+      "WY_MULTPOINT_MSG_ACK_ONE",
+      M_WY_MULTPOINT_MSG_ACK_ONE(
+        friendId: friendId,
+        friendMultiPortId: friendMultiPortId,
+        ackId: ackId,
+      ),
+    );
+  }
+
   static void sendConfirmOfflineMessage(int messageId) {
     addPackage(
       "WY_OFFLINEMSG_ACK",
@@ -309,6 +324,26 @@ class MessageUtils {
     );
   }
 
+  static void sendConfirmOfflineMessageOne(int messageId) {
+    addPackage(
+      "WY_OFFLINEMSG_ACK_ONE",
+      M_WY_OFFLINEMSG_ACK_ONE(messageId: messageId),
+    );
+  }
+
+  static void sendACKedMessageToOtherMultiPort({
+    int senderUid,
+    int ackId,
+  }) {
+    addPackage(
+      "WY_MULTPOINT_NOTIFYSELF_MSG_ACKED",
+      M_WY_MULTPOINT_NOTIFYSELF_MSG_ACKED(senderUid: senderUid, ackId: ackId),
+    );
+  }
+
+  ///
+  /// Message decode methods.
+  ///
   static MessageReceivedEvent decodeMessageEvent(
     List<int> content, {
     int messageId,

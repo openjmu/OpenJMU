@@ -21,6 +21,7 @@ class Messages {
     "WY_OFFLINEMSG_ACK_ONE": 0x754E, // 确认某条离线消息
     "WY_MULTPOINT_MSG_ACK": 0x9005, // 确认某条消息以前的所有消息
     "WY_MULTPOINT_MSG_ACK_ONE": 0x900D, // 确认某条消息
+    "WY_MULTPOINT_NOTIFYSELF_MSG_ACKED": 0x990A, // 消息确认后通知其他登陆点
     "WY_MSG": 0x20, // 发送消息
     "WY_OL_NUM": 0x28, // 获取在线人数
   };
@@ -128,6 +129,18 @@ class M_WY_OFFLINEMSG_ACK implements MessageRequest {
   }
 }
 
+class M_WY_OFFLINEMSG_ACK_ONE implements MessageRequest {
+  final int messageId;
+
+  M_WY_OFFLINEMSG_ACK_ONE({this.messageId});
+
+  @override
+  List<int> requestBody() {
+    final result = MessageUtils.commonUint(messageId, 64);
+    return result;
+  }
+}
+
 class M_WY_MULTPOINT_MSG_ACK implements MessageRequest {
   final int friendId;
   final int friendMultiPortId;
@@ -144,6 +157,47 @@ class M_WY_MULTPOINT_MSG_ACK implements MessageRequest {
     final result = [
       ...MessageUtils.commonUint(friendId, 64),
       ...MessageUtils.commonUint(friendMultiPortId, 64),
+      ...MessageUtils.commonUint(ackId, 64),
+    ];
+    return result;
+  }
+}
+
+class M_WY_MULTPOINT_MSG_ACK_ONE implements MessageRequest {
+  final int friendId;
+  final int friendMultiPortId;
+  final int ackId;
+
+  M_WY_MULTPOINT_MSG_ACK_ONE({
+    this.friendId = 0,
+    this.friendMultiPortId = 0,
+    @required this.ackId,
+  });
+
+  @override
+  List<int> requestBody() {
+    final result = [
+      ...MessageUtils.commonUint(friendId, 64),
+      ...MessageUtils.commonUint(friendMultiPortId, 64),
+      ...MessageUtils.commonUint(ackId, 64),
+    ];
+    return result;
+  }
+}
+
+class M_WY_MULTPOINT_NOTIFYSELF_MSG_ACKED implements MessageRequest {
+  final int senderUid;
+  final int ackId;
+
+  M_WY_MULTPOINT_NOTIFYSELF_MSG_ACKED({
+    this.senderUid = 0,
+    @required this.ackId,
+  });
+
+  @override
+  List<int> requestBody() {
+    final result = [
+      ...MessageUtils.commonUint(senderUid, 64),
       ...MessageUtils.commonUint(ackId, 64),
     ];
     return result;

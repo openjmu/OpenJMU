@@ -30,6 +30,8 @@ void main() async {
   await HiveBoxes.openBoxes();
   await DataUtils.initSharedPreferences();
   await DeviceUtils.getModel();
+  NotificationUtils.initSettings();
+
   runApp(OpenJMUApp());
 }
 
@@ -179,14 +181,14 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       debugPrint("QuickActions triggered: $shortcutType");
       Instances.eventBus.fire(ActionsEvent(shortcutType));
     });
-    quickActions.setShortcutItems(<ShortcutItem>[
-      for (final action in _quickActions)
-        ShortcutItem(
-          type: action[0],
-          icon: action[0],
-          localizedTitle: action[1],
-        ),
-    ]);
+    quickActions.setShortcutItems(List<ShortcutItem>.generate(
+      _quickActions.length,
+      (index) => ShortcutItem(
+        type: _quickActions[index][0],
+        icon: _quickActions[index][0],
+        localizedTitle: _quickActions[index][1],
+      ),
+    ));
   }
 
   @override
