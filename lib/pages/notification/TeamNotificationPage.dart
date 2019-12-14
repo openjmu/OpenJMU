@@ -27,10 +27,10 @@ class _TeamNotificationPageState extends State<TeamNotificationPage>
     with TickerProviderStateMixin {
   final List<IconData> actionsIcons = [
     Platform.isAndroid
-        ? Ionicons.getIconData("md-at")
-        : Ionicons.getIconData("ios-at"),
-    Platform.isAndroid ? Icons.comment : Foundation.getIconData("comment"),
-    Platform.isAndroid ? Icons.thumb_up : Ionicons.getIconData("ios-thumbs-up"),
+        ? Ionicons.md_at
+        : Ionicons.ios_at,
+    Platform.isAndroid ? Icons.comment : Foundation.comment,
+    Platform.isAndroid ? Icons.thumb_up : Ionicons.ios_thumbs_up,
   ];
 
   NotificationProvider provider;

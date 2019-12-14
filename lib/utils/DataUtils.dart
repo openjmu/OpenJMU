@@ -174,7 +174,7 @@ class DataUtils {
         'isCY': checkCY(data['workid']),
         'unitId': data['unitid'],
         'workId': data['workid'],
-//                'userClassId': user['class_id'],
+//        'userClassId': user['class_id'],
         'gender': int.parse(data['gender'].toString()),
       };
       setUserInfo(userInfo);
@@ -185,7 +185,7 @@ class DataUtils {
 
   static void setUserInfo(Map<String, dynamic> data) {
     UserAPI.currentUser = UserInfo.fromJson(data);
-    if (!data['isTeacher'] && sp.getBool(spSettingNewIcons) == null) {
+    if (!data['isTeacher']) {
       setEnabledNewAppsIcon(true);
       Instances.eventBus.fire(AppCenterSettingsUpdateEvent());
     }

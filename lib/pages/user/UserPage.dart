@@ -252,7 +252,7 @@ class _UserPageState extends State<UserPage>
         child: GestureDetector(
           behavior: HitTestBehavior.translucent,
           child: Icon(
-            AntDesign.getIconData("qrcode"),
+            AntDesign.qrcode,
             size: suSetWidth(26.0),
             color: Colors.white,
           ),

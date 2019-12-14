@@ -338,8 +338,8 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
               onPressed: mentionPeople,
               icon: Icon(
                 Platform.isAndroid
-                    ? Ionicons.getIconData("ios-at")
-                    : Ionicons.getIconData("md-at"),
+                    ? Ionicons.ios_at
+                    : Ionicons.md_at,
                 color: Theme.of(context).iconTheme.color,
                 size: _iconSize,
               ),

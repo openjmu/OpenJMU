@@ -15,52 +15,45 @@ class AppIcon extends StatelessWidget {
     this.size = 60.0,
   }) : super(key: key);
 
-  Future<Widget> loadAsset(WebApp app) async {
-    final String basePath = "assets/icons/appCenter";
-    final String assetPath = "$basePath/${app.code}-${app.name}.svg";
+  final basePath = "assets/icons/appCenter";
+
+  Future<Widget> loadAsset() async {
+    final assetPath = "$basePath/${app.code}-${app.name}.svg";
     try {
-      ByteData _ = await rootBundle.load(assetPath);
+      final _ = await rootBundle.load(assetPath);
       return SvgPicture.asset(
         assetPath,
         width: suSetWidth(size),
         height: suSetHeight(size),
       );
     } catch (e) {
-      final String imageUrl = "${API.webAppIcons}"
-          "appid=${app.id}"
-          "&code=${app.code}";
       return ExtendedImage.network(
-        imageUrl,
+        oldIconUrl,
         width: suSetWidth(size),
         fit: BoxFit.fill,
       );
     }
   }
 
+  String get oldIconUrl => "${API.webAppIcons}appid=${app.id}&code=${app.code}";
+
   @override
   Widget build(BuildContext context) {
-    return Configs.newAppCenterIcon
+    return !currentUser.isTeacher || Configs.newAppCenterIcon
         ? FutureBuilder(
             initialData: SizedBox(),
-            future: loadAsset(app),
-            builder: (context, snapshot) {
-              return SizedBox(
-                width: suSetWidth(size),
-                height: suSetHeight(size),
-                child: Center(
-                  child: snapshot.data,
-                ),
-              );
-            },
+            future: loadAsset(),
+            builder: (_, snapshot) => SizedBox(
+              width: suSetWidth(size),
+              height: suSetHeight(size),
+              child: Center(child: snapshot.data),
+            ),
           )
         : SizedBox(
-            width: suSetWidth(size),
-            height: suSetHeight(size),
+            width: suSetWidth(size / 1.2),
+            height: suSetHeight(size / 1.2),
             child: Center(
-              child: ExtendedImage.network(
-                "${API.webAppIcons}",
-                fit: BoxFit.fill,
-              ),
+              child: ExtendedImage.network(oldIconUrl, fit: BoxFit.fill),
             ),
           );
   }

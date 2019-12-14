@@ -50,11 +50,12 @@ class _SettingsPageState extends State<SettingsPage> {
         "description": "设置各个页面的启动页",
         "route": "switch-startup",
       },
-      {
-        "icon": "apps",
-        "name": "应用中心新图标",
-        "description": "全新图标设计，简洁直达",
-      },
+      if (currentUser.isTeacher)
+        {
+          "icon": "apps",
+          "name": "应用中心新图标",
+          "description": "全新图标设计，简洁直达",
+        },
       {
         "icon": "fontScale",
         "name": "调节字体大小",
@@ -106,15 +107,16 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         null,
         null,
-        PlatformSwitch(
-          activeColor: ThemeUtils.currentThemeColor,
-          value: Configs.newAppCenterIcon,
-          onChanged: (bool value) {
-            DataUtils.setEnabledNewAppsIcon(value);
-            Instances.eventBus.fire(AppCenterSettingsUpdateEvent());
-            if (mounted) setState(() {});
-          },
-        ),
+        if (currentUser.isTeacher)
+          PlatformSwitch(
+            activeColor: ThemeUtils.currentThemeColor,
+            value: Configs.newAppCenterIcon,
+            onChanged: (bool value) {
+              DataUtils.setEnabledNewAppsIcon(value);
+              Instances.eventBus.fire(AppCenterSettingsUpdateEvent());
+              if (mounted) setState(() {});
+            },
+          ),
         null,
       ],
     ];
