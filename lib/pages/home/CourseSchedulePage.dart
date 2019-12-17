@@ -265,12 +265,12 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             border: (DateAPI.currentWeek == index + 1 &&
                     currentWeek != DateAPI.currentWeek)
                 ? Border.all(
-                    color: ThemeUtils.currentThemeColor.withAlpha(100),
+                    color: currentThemeColor.withAlpha(100),
                     width: 2.0,
                   )
                 : null,
             color: currentWeek == index + 1
-                ? ThemeUtils.currentThemeColor.withAlpha(100)
+                ? currentThemeColor.withAlpha(100)
                 : null,
           ),
           child: Center(
@@ -321,9 +321,6 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
           padding: EdgeInsets.symmetric(
             horizontal: suSetWidth(30.0),
           ),
-          color: showWeek
-              ? Theme.of(context).primaryColor
-              : Theme.of(context).canvasColor,
           child: Center(
             child: RichText(
               text: TextSpan(
@@ -337,7 +334,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                   TextSpan(text: "$remark"),
                 ],
                 style: Theme.of(context).textTheme.body1.copyWith(
-                      fontSize: suSetSp(19.0),
+                      fontSize: suSetSp(20.0),
                     ),
               ),
               textAlign: TextAlign.center,
@@ -405,7 +402,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                             now.subtract(Duration(days: now.weekday - 1 - i)),
                           ) ==
                           DateFormat("MM/dd").format(DateTime.now())
-                      ? ThemeUtils.currentThemeColor.withAlpha(100)
+                      ? currentThemeColor.withAlpha(100)
                       : null,
                 ),
                 child: Center(
@@ -456,54 +453,57 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     if (mounted) setState(() {});
 
     return Expanded(
-      child: Row(
-        children: <Widget>[
-          Container(
-            color: Theme.of(context).canvasColor,
-            width: monthWidth,
-            height: totalHeight,
-            child: Column(
-              children: <Widget>[
-                for (int i = 0; i < _maxCoursesPerDay; i++)
-                  Expanded(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            (i + 1).toString(),
-                            style: TextStyle(
-                              fontSize: suSetSp(17.0),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Text(
-                            CourseAPI.getCourseTime(i + 1),
-                            style: TextStyle(fontSize: suSetSp(12.0)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          for (int day = 1; day < maxWeekDay() + 1; day++)
-            Expanded(
+      child: Container(
+        color: Theme.of(context).primaryColor,
+        child: Row(
+          children: <Widget>[
+            Container(
+              color: Theme.of(context).canvasColor,
+              width: monthWidth,
+              height: totalHeight,
               child: Column(
                 children: <Widget>[
-                  for (int count = 1; count < _maxCoursesPerDay + 1; count++)
-                    if (count.isEven)
-                      CourseWidget(
-                        courseList: courses[day][count - 1],
-                        hasEleven: hasEleven && count == 10,
-                        currentWeek: currentWeek,
-                        coordinate: [day, count],
+                  for (int i = 0; i < _maxCoursesPerDay; i++)
+                    Expanded(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              (i + 1).toString(),
+                              style: TextStyle(
+                                fontSize: suSetSp(17.0),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              CourseAPI.getCourseTime(i + 1),
+                              style: TextStyle(fontSize: suSetSp(12.0)),
+                            ),
+                          ],
+                        ),
                       ),
+                    ),
                 ],
               ),
             ),
-        ],
+            for (int day = 1; day < maxWeekDay() + 1; day++)
+              Expanded(
+                child: Column(
+                  children: <Widget>[
+                    for (int count = 1; count < _maxCoursesPerDay + 1; count++)
+                      if (count.isEven)
+                        CourseWidget(
+                          courseList: courses[day][count - 1],
+                          hasEleven: hasEleven && count == 10,
+                          currentWeek: currentWeek,
+                          coordinate: [day, count],
+                        ),
+                  ],
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -526,13 +526,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   Widget get errorTips => Expanded(
         child: Center(
           child: Text(
-            "成绩看起来还未准备好\n不如到广场放松一下？\n🤒",
-            style: TextStyle(
-              fontSize: suSetSp(30.0),
-            ),
-            strutStyle: StrutStyle(
-              height: 1.8,
-            ),
+            "课表看起来还未准备好\n不如到广场放松一下？\n🤒",
+            style: TextStyle(fontSize: suSetSp(30.0)),
+            strutStyle: StrutStyle(height: 1.8),
             textAlign: TextAlign.center,
           ),
         ),
@@ -546,7 +542,6 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       child: Container(
         width: Screen.width,
         constraints: BoxConstraints(maxWidth: Screen.width),
-        color: Theme.of(context).primaryColor,
         child: AnimatedCrossFade(
           duration: const Duration(milliseconds: 300),
           crossFadeState: !firstLoaded
@@ -609,7 +604,7 @@ class CourseWidget extends StatelessWidget {
               topRight: Radius.circular(suSetWidth(10.0)),
               bottomLeft: Radius.circular(suSetWidth(5.0)),
             ),
-            color: ThemeUtils.currentThemeColor.withAlpha(100),
+            color: currentThemeColor.withAlpha(100),
           ),
           child: Center(
             child: Text(
@@ -640,7 +635,7 @@ class CourseWidget extends StatelessWidget {
               topLeft: Radius.circular(suSetWidth(10.0)),
               bottomRight: Radius.circular(suSetWidth(5.0)),
             ),
-            color: ThemeUtils.currentThemeColor.withAlpha(100),
+            color: currentThemeColor.withAlpha(100),
           ),
           child: Center(
             child: Text(
@@ -706,7 +701,7 @@ class CourseWidget extends StatelessWidget {
                               ? CourseAPI.inCurrentWeek(course,
                                       currentWeek: currentWeek)
                                   ? course.color.withAlpha(200)
-                                  : Theme.of(context).dividerColor
+                                  : currentTheme.dividerColor
                               : null,
                         ),
                         child: SizedBox.expand(
@@ -819,69 +814,72 @@ class CoursesDialog extends StatelessWidget {
               },
               child: Stack(
                 children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.all(20.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15.0),
-                      color: courseList.isNotEmpty
-                          ? CourseAPI.inCurrentWeek(
-                              courseList[index],
-                              currentWeek: currentWeek,
-                            )
-                              ? ThemeUtils.isDark
-                                  ? courseList[index]
-                                      .color
-                                      .withAlpha(darkModeAlpha)
-                                  : courseList[index].color
-                              : Colors.grey
-                          : null,
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          if (courseList[index].isCustom)
-                            Text(
-                              "[自定义]",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: suSetSp(24.0),
-                                height: 1.5,
+                  Selector<ThemesProvider, bool>(
+                    selector: (_, provider) => provider.dark,
+                    builder: (_, dark, __) {
+                      return Container(
+                        padding: const EdgeInsets.all(20.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15.0),
+                          color: courseList.isNotEmpty
+                              ? CourseAPI.inCurrentWeek(
+                                  courseList[index],
+                                  currentWeek: currentWeek,
+                                )
+                                  ? courseList[index].color.withAlpha(
+                                        dark ? darkModeAlpha : 1.0,
+                                      )
+                                  : Colors.grey
+                              : null,
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              if (courseList[index].isCustom)
+                                Text(
+                                  "[自定义]",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: suSetSp(24.0),
+                                    height: 1.5,
+                                  ),
+                                ),
+                              if (!CourseAPI.inCurrentWeek(
+                                courseList[index],
+                                currentWeek: currentWeek,
+                              ))
+                                Text(
+                                  "[非本周]",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: suSetSp(24.0),
+                                    height: 1.5,
+                                  ),
+                                ),
+                              Text(
+                                courseList[index].name,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: suSetSp(24.0),
+                                  fontWeight: FontWeight.bold,
+                                  height: 1.5,
+                                ),
                               ),
-                            ),
-                          if (!CourseAPI.inCurrentWeek(
-                            courseList[index],
-                            currentWeek: currentWeek,
-                          ))
-                            Text(
-                              "[非本周]",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: suSetSp(24.0),
-                                height: 1.5,
-                              ),
-                            ),
-                          Text(
-                            courseList[index].name,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: suSetSp(24.0),
-                              fontWeight: FontWeight.bold,
-                              height: 1.5,
-                            ),
+                              if (courseList[index].location != null)
+                                Text(
+                                  "📍${courseList[index].location}",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: suSetSp(24.0),
+                                    height: 1.5,
+                                  ),
+                                ),
+                            ],
                           ),
-                          if (courseList[index].location != null)
-                            Text(
-                              "📍${courseList[index].location}",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: suSetSp(24.0),
-                                height: 1.5,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -896,72 +894,76 @@ class CoursesDialog extends StatelessWidget {
       fontSize: suSetSp(24.0),
       height: 1.8,
     );
-    return Container(
-      width: double.maxFinite,
-      height: double.maxFinite,
-      padding: EdgeInsets.all(suSetWidth(12.0)),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(suSetWidth(15.0)),
-        color: courseList.isNotEmpty
-            ? CourseAPI.inCurrentWeek(course, currentWeek: currentWeek)
-                ? ThemeUtils.isDark
-                    ? course.color.withAlpha(darkModeAlpha)
-                    : course.color
-                : Colors.grey
-            : null,
-      ),
-      child: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            if (course.isCustom)
-              Text(
-                "[自定义]",
-                style: style,
-              ),
-            if (!CourseAPI.inCurrentWeek(
-              course,
-              currentWeek: currentWeek,
-            ))
-              Text(
-                "[非本周]",
-                style: style,
-              ),
-            Text(
-              "${courseList[0].name}",
-              style: style.copyWith(
-                fontSize: suSetSp(28.0),
-                fontWeight: FontWeight.bold,
+    return Selector<ThemesProvider, bool>(
+        selector: (_, provider) => provider.dark,
+        builder: (_, dark, __) {
+          return Container(
+            width: double.maxFinite,
+            height: double.maxFinite,
+            padding: EdgeInsets.all(suSetWidth(12.0)),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(suSetWidth(15.0)),
+              color: courseList.isNotEmpty
+                  ? CourseAPI.inCurrentWeek(course, currentWeek: currentWeek)
+                      ? dark
+                          ? course.color.withAlpha(darkModeAlpha)
+                          : course.color
+                      : Colors.grey
+                  : null,
+            ),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  if (course.isCustom)
+                    Text(
+                      "[自定义]",
+                      style: style,
+                    ),
+                  if (!CourseAPI.inCurrentWeek(
+                    course,
+                    currentWeek: currentWeek,
+                  ))
+                    Text(
+                      "[非本周]",
+                      style: style,
+                    ),
+                  Text(
+                    "${courseList[0].name}",
+                    style: style.copyWith(
+                      fontSize: suSetSp(28.0),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  if (course.location != null)
+                    Text(
+                      "📍 ${course.location}",
+                      style: style,
+                    ),
+                  if (course.startWeek != null && course.endWeek != null)
+                    Text(
+                      "📅 ${course.startWeek}"
+                      "-"
+                      "${course.endWeek}"
+                      "${course.oddEven == 1 ? "单" : course.oddEven == 2 ? "双" : ""}周",
+                      style: style,
+                    ),
+                  Text(
+                    "⏰ ${DateAPI.shortWeekdays[course.day - 1]} "
+                    "${CourseAPI.courseTimeChinese[course.time]}",
+                    style: style,
+                  ),
+                  if (course.teacher != null)
+                    Text(
+                      "🎓 ${course.teacher}",
+                      style: style,
+                    ),
+                  SizedBox(height: 12.0),
+                ],
               ),
             ),
-            if (course.location != null)
-              Text(
-                "📍 ${course.location}",
-                style: style,
-              ),
-            if (course.startWeek != null && course.endWeek != null)
-              Text(
-                "📅 ${course.startWeek}"
-                "-"
-                "${course.endWeek}"
-                "${course.oddEven == 1 ? "单" : course.oddEven == 2 ? "双" : ""}周",
-                style: style,
-              ),
-            Text(
-              "⏰ ${DateAPI.shortWeekdays[course.day - 1]} "
-              "${CourseAPI.courseTimeChinese[course.time]}",
-              style: style,
-            ),
-            if (course.teacher != null)
-              Text(
-                "🎓 ${course.teacher}",
-                style: style,
-              ),
-            SizedBox(height: 12.0),
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 
   Widget closeButton(context) => Positioned(
@@ -1097,65 +1099,68 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
     super.initState();
   }
 
-  Widget get courseEditField {
-    return Container(
-      padding: EdgeInsets.all(suSetWidth(12.0)),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(suSetWidth(18.0)),
-        color: widget.course != null
-            ? ThemeUtils.isDark
-                ? widget.course.color.withAlpha(darkModeAlpha)
-                : widget.course.color
-            : Theme.of(context).dividerColor,
-      ),
-      child: Padding(
-        padding: EdgeInsets.only(
-          top: suSetHeight(30.0),
-          bottom: suSetHeight(30.0),
-        ),
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: Screen.width / 2,
+  Widget get courseEditField => Selector<ThemesProvider, bool>(
+        selector: (_, provider) => provider.dark,
+        builder: (_, dark, __) {
+          return Container(
+            padding: EdgeInsets.all(suSetWidth(12.0)),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(suSetWidth(18.0)),
+              color: widget.course != null
+                  ? dark
+                      ? widget.course.color.withAlpha(darkModeAlpha)
+                      : widget.course.color
+                  : Theme.of(context).dividerColor,
             ),
-            child: ScrollConfiguration(
-              behavior: NoGlowScrollBehavior(),
-              child: TextField(
-                controller: _controller,
-                autofocus: true,
-                enabled: !loading,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: suSetSp(26.0),
-                  height: 1.5,
-                  textBaseline: TextBaseline.alphabetic,
-                ),
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: "自定义内容",
-                  hintStyle: TextStyle(
-                    color: Colors.grey,
-                    fontSize: suSetSp(24.0),
-                    height: 1.5,
-                    textBaseline: TextBaseline.alphabetic,
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: suSetHeight(30.0),
+                bottom: suSetHeight(30.0),
+              ),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: Screen.width / 2,
+                  ),
+                  child: ScrollConfiguration(
+                    behavior: NoGlowScrollBehavior(),
+                    child: TextField(
+                      controller: _controller,
+                      autofocus: true,
+                      enabled: !loading,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: suSetSp(26.0),
+                        height: 1.5,
+                        textBaseline: TextBaseline.alphabetic,
+                      ),
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: "自定义内容",
+                        hintStyle: TextStyle(
+                          color: Colors.grey,
+                          fontSize: suSetSp(24.0),
+                          height: 1.5,
+                          textBaseline: TextBaseline.alphabetic,
+                        ),
+                      ),
+                      maxLines: null,
+                      maxLength: 30,
+                      buildCounter:
+                          (_, {currentLength, maxLength, isFocused}) => null,
+                      onChanged: (String value) {
+                        content = value;
+                        if (mounted) setState(() {});
+                      },
+                    ),
                   ),
                 ),
-                maxLines: null,
-                maxLength: 30,
-                buildCounter: (_, {currentLength, maxLength, isFocused}) =>
-                    null,
-                onChanged: (String value) {
-                  content = value;
-                  if (mounted) setState(() {});
-                },
               ),
             ),
-          ),
-        ),
-      ),
-    );
-  }
+          );
+        },
+      );
 
   Widget closeButton(context) => Positioned(
         top: 0.0,

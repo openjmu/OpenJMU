@@ -137,7 +137,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                 child: Icon(
                   Icons.thumb_up,
                   size: suSetWidth(18.0),
-                  color: ThemeUtils.currentThemeColor,
+                  color: currentThemeColor,
                 ),
               ),
             ],
@@ -237,7 +237,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                   child: Text(
                     "暂无内容",
                     style: TextStyle(
-                      color: ThemeUtils.currentThemeColor,
+                      color: currentThemeColor,
                       fontSize: suSetSp(24.0),
                     ),
                   ),

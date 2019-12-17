@@ -52,7 +52,6 @@ class CommentList extends StatefulWidget {
 class _CommentListState extends State<CommentList>
     with AutomaticKeepAliveClientMixin {
   final ScrollController _scrollController = ScrollController();
-  Color currentColorTheme = ThemeUtils.currentThemeColor;
 
   num _lastValue = 0;
   bool _isLoading = false;
@@ -92,8 +91,10 @@ class _CommentListState extends State<CommentList>
       onTap: () {},
       child: Container(
         child: Center(
-          child: Text('这里空空如也~',
-              style: TextStyle(color: ThemeUtils.currentThemeColor)),
+          child: Text(
+            '这里空空如也~',
+            style: TextStyle(color: currentThemeColor),
+          ),
         ),
       ),
     );
@@ -108,8 +109,10 @@ class _CommentListState extends State<CommentList>
       },
       child: Container(
         child: Center(
-          child: Text('加载失败，轻触重试',
-              style: TextStyle(color: ThemeUtils.currentThemeColor)),
+          child: Text(
+            '加载失败，轻触重试',
+            style: TextStyle(color: currentThemeColor),
+          ),
         ),
       ),
     );
@@ -234,7 +237,7 @@ class _CommentListState extends State<CommentList>
 
         if (widget.needRefreshIndicator) {
           _body = RefreshIndicator(
-            color: currentColorTheme,
+            color: currentThemeColor,
             onRefresh: _refreshData,
             child: _commentList.isEmpty
                 ? (error ? _errorChild : _emptyChild)
@@ -254,7 +257,7 @@ class _CommentListState extends State<CommentList>
 }
 
 class CommentListInPostController {
-  _CommentListInPostState _commentListInPostState;
+  CommentListInPostState _commentListInPostState;
 
   void reload() {
     _commentListInPostState?._refreshData();
@@ -265,15 +268,19 @@ class CommentListInPost extends StatefulWidget {
   final Post post;
   final CommentListInPostController commentInPostController;
 
-  CommentListInPost(this.post, this.commentInPostController, {Key key})
-      : super(key: key);
+  CommentListInPost(
+    this.post,
+    this.commentInPostController, {
+    Key key,
+  }) : super(key: key);
 
   @override
-  State createState() => _CommentListInPostState();
+  State createState() => CommentListInPostState();
 }
 
-class _CommentListInPostState extends State<CommentListInPost> {
-  List<Comment> _comments = [];
+class CommentListInPostState extends State<CommentListInPost>
+    with AutomaticKeepAliveClientMixin {
+  final _comments = <Comment>[];
 
   bool isLoading = true;
   bool canLoadMore = false;
@@ -282,16 +289,19 @@ class _CommentListInPostState extends State<CommentListInPost> {
   int lastValue;
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   void initState() {
-    super.initState();
     widget.commentInPostController._commentListInPostState = this;
     _refreshList();
+    super.initState();
   }
 
   void _refreshData() {
     setState(() {
       isLoading = true;
-      _comments = [];
+      _comments.clear();
     });
     _refreshList();
   }
@@ -299,38 +309,33 @@ class _CommentListInPostState extends State<CommentListInPost> {
   Future<Null> _loadList() async {
     isLoading = true;
     try {
-      Map<String, dynamic> response = (await CommentAPI.getCommentInPostList(
+      final response = (await CommentAPI.getCommentInPostList(
         widget.post.id,
         isMore: true,
         lastValue: lastValue,
       ))
           ?.data;
-      List<dynamic> list = response['replylist'];
-      int total = response['total'] as int;
+      final list = response['replylist'];
+      final total = response['total'] as int;
       if (_comments.length + response['count'] as int < total) {
         canLoadMore = true;
       } else {
         canLoadMore = false;
       }
 
-      List<Comment> comments = [];
       list.forEach((comment) {
         if (!UserAPI.blacklist.contains(jsonEncode({
           "uid": comment['reply']['user']['uid'].toString(),
           "username": comment['reply']['user']['nickname']
         }))) {
           comment['reply']['post'] = widget.post;
-          comments.add(CommentAPI.createCommentInPost(comment['reply']));
+          _comments.add(CommentAPI.createCommentInPost(comment['reply']));
         }
       });
 
-      if (this.mounted) {
-        setState(() {
-          _comments.addAll(comments);
-        });
-        isLoading = false;
-        lastValue = _comments.isEmpty ? 0 : _comments.last.id;
-      }
+      isLoading = false;
+      lastValue = _comments.isEmpty ? 0 : _comments.last.id;
+      if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
         debugPrint("${e.response.data}");
@@ -346,34 +351,29 @@ class _CommentListInPostState extends State<CommentListInPost> {
     setState(() {
       isLoading = true;
     });
+    _comments.clear();
     try {
-      Map<String, dynamic> response =
+      final response =
           (await CommentAPI.getCommentInPostList(widget.post.id))?.data;
-      List<dynamic> list = response['replylist'];
-      int total = response['total'] as int;
+      final list = response['replylist'];
+      final total = response['total'] as int;
       if (response['count'] as int < total) canLoadMore = true;
 
-      List<Comment> comments = [];
       list.forEach((comment) {
         if (!UserAPI.blacklist.contains(jsonEncode({
           "uid": comment['reply']['user']['uid'].toString(),
           "username": comment['reply']['user']['nickname']
         }))) {
           comment['reply']['post'] = widget.post;
-          comments.add(CommentAPI.createCommentInPost(comment['reply']));
+          _comments.add(CommentAPI.createCommentInPost(comment['reply']));
         }
       });
 
-      if (this.mounted) {
-        setState(() {
-          Instances.eventBus
-              .fire(CommentInPostUpdatedEvent(widget.post.id, total));
-          _comments = comments;
-          isLoading = false;
-          firstLoadComplete = true;
-        });
-        lastValue = _comments.isEmpty ? 0 : _comments.last.id;
-      }
+      isLoading = false;
+      firstLoadComplete = true;
+      lastValue = _comments.isEmpty ? 0 : _comments.last.id;
+
+      if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
         debugPrint("${e.response.data}");
@@ -437,7 +437,7 @@ class _CommentListInPostState extends State<CommentListInPost> {
     showDialog<Null>(
       context: context,
       builder: (BuildContext context) => SimpleDialog(
-        backgroundColor: ThemeUtils.currentThemeColor,
+        backgroundColor: currentThemeColor,
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -513,136 +513,113 @@ class _CommentListInPostState extends State<CommentListInPost> {
     );
   }
 
-  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).cardColor,
-      width: Screen.width,
-      padding: isLoading
-          ? EdgeInsets.symmetric(vertical: suSetHeight(42))
-          : EdgeInsets.zero,
-      child: isLoading
-          ? Center(child: PlatformProgressIndicator())
-          : Container(
-              color: Theme.of(context).cardColor,
-              padding: EdgeInsets.zero,
-              child: firstLoadComplete
-                  ? ExtendedListView.separated(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      separatorBuilder: (context, index) => Container(
-                        color: Theme.of(context).dividerColor,
-                        height: 1.0,
-                      ),
-                      itemCount: _comments.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index == _comments.length - 1) {
-                          _loadList();
-                        }
-                        if (index == _comments.length) {
-                          return LoadMoreIndicator(
-                            canLoadMore: canLoadMore && !isLoading,
-                          );
-                        } else if (index < _comments.length) {
-                          if (_comments[index] == null) {
-                            return SizedBox.shrink();
-                          }
-                          return InkWell(
-                            onTap: () => showActions(index),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
+    super.build(context);
+    return isLoading
+        ? Center(child: PlatformProgressIndicator())
+        : firstLoadComplete
+            ? ExtendedListView.separated(
+                padding: EdgeInsets.zero,
+                physics: const NeverScrollableScrollPhysics(),
+                separatorBuilder: (context, index) => Container(
+                  color: Theme.of(context).dividerColor,
+                  height: 1.0,
+                ),
+                itemCount: _comments.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == _comments.length - 1 && canLoadMore) {
+                    _loadList();
+                  }
+                  if (index == _comments.length) {
+                    return LoadMoreIndicator(
+                      canLoadMore: canLoadMore && !isLoading,
+                    );
+                  } else if (index < _comments.length) {
+                    if (_comments[index] == null) {
+                      return SizedBox.shrink();
+                    }
+                    return InkWell(
+                      onTap: () => showActions(index),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.symmetric(
+                              horizontal: suSetWidth(20.0),
+                              vertical: suSetHeight(12.0),
+                            ),
+                            child: UserAPI.getAvatar(
+                              uid: _comments[index].fromUserUid,
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
-                                Container(
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: suSetWidth(20.0),
-                                    vertical: suSetHeight(12.0),
-                                  ),
-                                  child: UserAPI.getAvatar(
-                                    uid: _comments[index].fromUserUid,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: <Widget>[
-                                      SizedBox(height: suSetHeight(10.0)),
-                                      Row(
-                                        children: <Widget>[
-                                          getCommentNickname(
-                                            context,
-                                            _comments[index],
+                                SizedBox(height: suSetHeight(10.0)),
+                                Row(
+                                  children: <Widget>[
+                                    getCommentNickname(
+                                      context,
+                                      _comments[index],
+                                    ),
+                                    if (Constants.developerList
+                                        .contains(_comments[index].fromUserUid))
+                                      Container(
+                                        margin: EdgeInsets.only(
+                                          left: suSetWidth(14.0),
+                                        ),
+                                        child: DeveloperTag(
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: suSetWidth(8.0),
+                                            vertical: suSetHeight(4.0),
                                           ),
-                                          if (Constants.developerList.contains(
-                                              _comments[index].fromUserUid))
-                                            Container(
-                                              margin: EdgeInsets.only(
-                                                left: suSetWidth(14.0),
-                                              ),
-                                              child: DeveloperTag(
-                                                padding: EdgeInsets.symmetric(
-                                                  horizontal: suSetWidth(8.0),
-                                                  vertical: suSetHeight(4.0),
-                                                ),
-                                              ),
-                                            ),
-                                        ],
+                                        ),
                                       ),
-                                      SizedBox(height: suSetHeight(4.0)),
-                                      getExtendedText(
-                                        context,
-                                        _comments[index].content,
-                                      ),
-                                      SizedBox(height: suSetHeight(6.0)),
-                                      getCommentTime(context, _comments[index]),
-                                      SizedBox(height: suSetHeight(10.0)),
-                                    ],
-                                  ),
+                                  ],
                                 ),
-                                IconButton(
-                                  padding: EdgeInsets.zero,
-                                  icon: Icon(
-                                    Icons.reply,
-                                    color: Colors.grey,
-                                    size: suSetWidth(28.0),
-                                  ),
-                                  onPressed: () {
-                                    if (_comments.length >= index &&
-                                        _comments[index] != null) {
-                                      navigatorState.pushNamed(
-                                        "openjmu://add-comment",
-                                        arguments: {
-                                          "post": widget.post,
-                                          "comment":
-                                              _comments?.elementAt(index) ??
-                                                  null,
-                                        },
-                                      );
-                                    }
-                                  },
+                                SizedBox(height: suSetHeight(4.0)),
+                                getExtendedText(
+                                  context,
+                                  _comments[index].content,
                                 ),
+                                SizedBox(height: suSetHeight(6.0)),
+                                getCommentTime(context, _comments[index]),
+                                SizedBox(height: suSetHeight(10.0)),
                               ],
                             ),
-                          );
-                        } else {
-                          return SizedBox.shrink();
-                        }
-                      },
-                    )
-                  : SizedBox(
-                      height: suSetHeight(120.0),
-                      child: Center(
-                        child: Text(
-                          "暂无内容",
-                          style: TextStyle(
-                            fontSize: suSetSp(18.0),
                           ),
-                        ),
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: Icon(
+                              Icons.reply,
+                              color: Colors.grey,
+                              size: suSetWidth(28.0),
+                            ),
+                            onPressed: () {
+                              if (_comments.length >= index &&
+                                  _comments[index] != null) {
+                                navigatorState.pushNamed(
+                                  "openjmu://add-comment",
+                                  arguments: {
+                                    "post": widget.post,
+                                    "comment":
+                                        _comments?.elementAt(index) ?? null,
+                                  },
+                                );
+                              }
+                            },
+                          ),
+                        ],
                       ),
-                    ),
-            ),
-    );
+                    );
+                  } else {
+                    return SizedBox.shrink();
+                  }
+                },
+              )
+            : LoadMoreIndicator(canLoadMore: false);
   }
 }

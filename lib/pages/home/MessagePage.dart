@@ -7,7 +7,7 @@ import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/widgets/AppBar.dart';
 import 'package:OpenJMU/widgets/SlideMenuItem.dart';
 import 'package:OpenJMU/widgets/messages/AppMessagePreviewWidget.dart';
-import 'package:OpenJMU/widgets/messages/MessagePreviewWidget.dart';
+//import 'package:OpenJMU/widgets/messages/MessagePreviewWidget.dart';
 
 class MessagePage extends StatefulWidget {
   @override
@@ -17,61 +17,31 @@ class MessagePage extends StatefulWidget {
 class MessagePageState extends State<MessagePage>
     with TickerProviderStateMixin {
   final _messageScrollController = ScrollController();
-  final List<Map<String, dynamic>> notificationItems = [
-    {
-      "name": "评论/留言",
-      "icons": "liuyan",
-      "action": () {
-        navigatorState.pushNamed("openjmu://notifications");
-      },
-    },
-    {
-      "name": "集市消息",
-      "icons": "idols",
-      "action": () {
-        navigatorState.pushNamed("openjmu://team-notifications");
-      },
-    },
-  ];
-
-  Color currentThemeColor = ThemeUtils.currentThemeColor;
   TabController _tabController;
 
   @override
   void initState() {
     _tabController = TabController(
       initialIndex: Configs.homeStartUpIndex[2],
-      length: 2,
+      length: 1,
       vsync: this,
     );
 
-    Instances.eventBus
-      ..on<ChangeThemeEvent>().listen((event) {
-        currentThemeColor = event.color;
-        if (this.mounted) setState(() {});
-      });
     super.initState();
   }
 
-  Widget _icon(int index) {
-    return SvgPicture.asset(
-      "assets/icons/${notificationItems[index]['icons']}-line.svg",
-      color: Theme.of(context).iconTheme.color,
-      width: suSetWidth(32.0),
-      height: suSetWidth(32.0),
-    );
-  }
-
   Widget get _tabBar => Padding(
-        padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+        padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
         child: TabBar(
           isScrollable: true,
-          indicatorColor: currentThemeColor,
-          indicatorPadding: EdgeInsets.only(
-            bottom: suSetHeight(16.0),
+          indicator: RoundedUnderlineTabIndicator(
+            borderSide: BorderSide(
+              color: currentThemeColor,
+              width: suSetHeight(3.0),
+            ),
+            width: suSetWidth(40.0),
+            insets: EdgeInsets.only(bottom: suSetHeight(2.0)),
           ),
-          indicatorSize: TabBarIndicatorSize.label,
-          indicatorWeight: suSetHeight(6.0),
           labelColor: Theme.of(context).textTheme.body1.color,
           labelStyle: MainPageState.tabSelectedTextStyle,
           labelPadding: EdgeInsets.symmetric(
@@ -99,31 +69,6 @@ class MessagePageState extends State<MessagePage>
                         ),
                       ),
                     ),
-                    Tab(text: "消息"),
-                  ],
-                );
-              },
-            ),
-            Consumer<NotificationProvider>(
-              builder: (_, provider, __) {
-                return Stack(
-                  overflow: Overflow.visible,
-                  children: <Widget>[
-                    Positioned(
-                      top: suSetHeight(kToolbarHeight / 4),
-                      right: -suSetWidth(10.0),
-                      child: Visibility(
-                        visible: provider.showNotification,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: Container(
-                            width: suSetWidth(12.0),
-                            height: suSetWidth(12.0),
-                            color: currentThemeColor,
-                          ),
-                        ),
-                      ),
-                    ),
                     Tab(text: "通知"),
                   ],
                 );
@@ -132,113 +77,6 @@ class MessagePageState extends State<MessagePage>
           ],
           controller: _tabController,
         ),
-      );
-
-  Widget get _notificationEntries => Consumer<NotificationProvider>(
-        builder: (_, provider, __) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: suSetWidth(18.0),
-                    vertical: suSetHeight(12.0),
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                          right: suSetSp(16.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: badgeIcon(
-                            content: provider.notification.total,
-                            icon: _icon(0),
-                            showBadge: provider.notification.total > 0,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          notificationItems[0]['name'],
-                          style: TextStyle(
-                            fontSize: suSetSp(22.0),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          right: suSetSp(12.0),
-                        ),
-                        child: SvgPicture.asset(
-                          "assets/icons/arrow-right.svg",
-                          color: Colors.grey,
-                          width: suSetWidth(30.0),
-                          height: suSetWidth(30.0),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                onTap: notificationItems[0]['action'],
-              ),
-              separator(
-                context,
-                color: Theme.of(context).canvasColor,
-                height: 1.0,
-              ),
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: suSetWidth(18.0),
-                    vertical: suSetHeight(12.0),
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                          right: suSetSp(16.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: badgeIcon(
-                            content: provider.teamNotification.total,
-                            icon: _icon(1),
-                            showBadge: provider.teamNotification.total > 0,
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Text(
-                          notificationItems[1]['name'],
-                          style: TextStyle(
-                            fontSize: suSetSp(22.0),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          right: suSetSp(12.0),
-                        ),
-                        child: SvgPicture.asset(
-                          "assets/icons/arrow-right.svg",
-                          color: Colors.grey,
-                          width: suSetWidth(30.0),
-                          height: suSetWidth(30.0),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                onTap: notificationItems[1]['action'],
-              ),
-            ],
-          );
-        },
       );
 
   Widget get _messageList => Consumer2<MessagesProvider, WebAppsProvider>(
@@ -288,7 +126,7 @@ class MessagePageState extends State<MessagePage>
                           deleteWidget(messageProvider, appId),
                         ],
                         child: AppMessagePreviewWidget(message: message),
-                        height: suSetHeight(70.0),
+                        height: suSetHeight(88.0),
                       );
                     },
                     childCount: messageProvider.appsMessages.keys.length,
@@ -335,7 +173,7 @@ class MessagePageState extends State<MessagePage>
           ),
         ),
       ),
-      color: ThemeUtils.currentThemeColor,
+      color: currentThemeColor,
     );
   }
 
@@ -354,13 +192,6 @@ class MessagePageState extends State<MessagePage>
               controller: _tabController,
               children: <Widget>[
                 _messageList,
-                ListView(
-                  padding: EdgeInsets.zero,
-                  children: <Widget>[
-                    _notificationEntries,
-                    separator(context),
-                  ],
-                ),
               ],
             ),
           ),

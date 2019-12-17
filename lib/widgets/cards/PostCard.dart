@@ -24,7 +24,7 @@ class PostCard extends StatefulWidget {
 
   const PostCard(
     this.post, {
-    this.isDetail,
+    this.isDetail = false,
     this.isRootContent,
     this.fromPage,
     this.index,
@@ -48,23 +48,13 @@ class _PostCardState extends State<PostCard> {
   Color _forwardColor = Colors.grey;
   Color _repliesColor = Colors.grey;
 
-  bool isDetail, isShield, isDark = ThemeUtils.isDark;
+  bool isShield;
 
   @override
   void initState() {
     isShield = widget.post.content != "此微博已经被屏蔽" ? false : true;
-    if (widget.isDetail != null && widget.isDetail == true) {
-      isDetail = true;
-    } else {
-      isDetail = false;
-    }
-    if (mounted) setState(() {});
 
     Instances.eventBus
-      ..on<ChangeBrightnessEvent>().listen((event) {
-        isDark = event.isDarkState;
-        if (mounted) setState(() {});
-      })
       ..on<ForwardInPostUpdatedEvent>().listen((event) {
         if (event.postId == widget.post.id) widget.post.forwards = event.count;
         if (mounted) setState(() {});
@@ -93,7 +83,7 @@ class _PostCardState extends State<PostCard> {
           Text(
             post.nickname ?? post.uid,
             style: TextStyle(
-              color: Theme.of(context).textTheme.title.color,
+              color: currentTheme.textTheme.title.color,
               fontSize: suSetSp(22.0),
             ),
             textAlign: TextAlign.left,
@@ -207,7 +197,7 @@ class _PostCardState extends State<PostCard> {
                 horizontal: suSetWidth(contentPadding),
                 vertical: suSetHeight(10.0),
               ),
-              decoration: BoxDecoration(color: Theme.of(context).canvasColor),
+              decoration: BoxDecoration(color: currentTheme.canvasColor),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -380,8 +370,8 @@ class _PostCardState extends State<PostCard> {
                   fontWeight: FontWeight.normal,
                 ),
               ),
-              splashColor: Theme.of(context).cardColor,
-              highlightColor: Theme.of(context).cardColor,
+              splashColor: currentTheme.cardColor,
+              highlightColor: currentTheme.cardColor,
             ),
           ),
           Expanded(
@@ -401,32 +391,32 @@ class _PostCardState extends State<PostCard> {
                   fontWeight: FontWeight.normal,
                 ),
               ),
-              splashColor: Theme.of(context).cardColor,
-              highlightColor: Theme.of(context).cardColor,
+              splashColor: currentTheme.cardColor,
+              highlightColor: currentTheme.cardColor,
             ),
           ),
           Expanded(
             child: LikeButton(
               size: suSetHeight(18.0),
               circleColor: CircleColor(
-                start: ThemeUtils.currentThemeColor,
-                end: ThemeUtils.currentThemeColor,
+                start: currentThemeColor,
+                end: currentThemeColor,
               ),
               countBuilder: (int count, bool isLiked, String text) => Text(
                 count == 0 ? "赞" : text,
                 style: TextStyle(
-                  color: isLiked ? ThemeUtils.currentThemeColor : Colors.grey,
+                  color: isLiked ? currentThemeColor : Colors.grey,
                   fontSize: suSetSp(18.0),
                   fontWeight: FontWeight.normal,
                 ),
               ),
               bubblesColor: BubblesColor(
-                dotPrimaryColor: ThemeUtils.currentThemeColor,
-                dotSecondaryColor: ThemeUtils.currentThemeColor,
+                dotPrimaryColor: currentThemeColor,
+                dotSecondaryColor: currentThemeColor,
               ),
               likeBuilder: (bool isLiked) => SvgPicture.asset(
                 "assets/icons/postActions/thumbUp-${isLiked ? "fill" : "line"}.svg",
-                color: isLiked ? ThemeUtils.currentThemeColor : Colors.grey,
+                color: isLiked ? currentThemeColor : Colors.grey,
                 width: suSetWidth(18.0),
                 height: suSetHeight(18.0),
               ),
@@ -455,18 +445,23 @@ class _PostCardState extends State<PostCard> {
         content += "删除";
         break;
     }
-    return Container(
-      color: ThemeUtils.currentThemeColor.withOpacity(0.4),
-      padding: EdgeInsets.all(suSetWidth(30.0)),
-      child: Center(
-        child: Text(
-          content,
-          style: TextStyle(
-            color: isDark ? Colors.grey[350] : Colors.white,
-            fontSize: suSetSp(22.0),
+    return Selector<ThemesProvider, bool>(
+      selector: (_, provider) => provider.dark,
+      builder: (_, dark, __) {
+        return Container(
+          color: dark ? Colors.grey[600] : Colors.grey[400],
+          padding: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+          child: Center(
+            child: Text(
+              content,
+              style: TextStyle(
+                color: Colors.grey[dark ? 350 : 50],
+                fontSize: suSetSp(22.0),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -484,25 +479,28 @@ class _PostCardState extends State<PostCard> {
             : EdgeInsets.symmetric(
                 horizontal: suSetWidth(contentPadding),
               ),
-        child: ExtendedText(
-          content != null ? "$content " : null,
-          style: TextStyle(fontSize: suSetSp(21.0)),
-          onSpecialTextTap: specialTextTapRecognizer,
-          maxLines: widget.isDetail ?? false ? null : 8,
-          overFlowTextSpan: widget.isDetail ?? false
-              ? null
-              : OverFlowTextSpan(
-                  children: <TextSpan>[
-                    TextSpan(text: " ... "),
-                    TextSpan(
-                      text: "全文",
-                      style: TextStyle(
-                        color: ThemeUtils.currentThemeColor,
-                      ),
+        child: Selector<ThemesProvider, bool>(
+          selector: (_, provider) => provider.dark,
+          builder: (_, dark, __) {
+            return ExtendedText(
+              content != null ? "$content " : null,
+              style: TextStyle(fontSize: suSetSp(21.0)),
+              onSpecialTextTap: specialTextTapRecognizer,
+              maxLines: widget.isDetail ?? false ? null : 8,
+              overFlowTextSpan: widget.isDetail ?? false
+                  ? null
+                  : OverFlowTextSpan(
+                      children: <TextSpan>[
+                        TextSpan(text: " ... "),
+                        TextSpan(
+                          text: "全文",
+                          style: TextStyle(color: currentThemeColor),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-          specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+              specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+            );
+          },
         ),
       ),
     );
@@ -570,7 +568,7 @@ class _PostCardState extends State<PostCard> {
                 padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
                 child: Icon(
                   icon,
-                  color: Theme.of(context).iconTheme.color,
+                  color: currentTheme.iconTheme.color,
                   size: suSetWidth(36.0),
                 ),
               ),
@@ -579,9 +577,9 @@ class _PostCardState extends State<PostCard> {
                   padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
                   child: Text(
                     text,
-                    style: Theme.of(context).textTheme.body1.copyWith(
-                          fontSize: suSetSp(22.0),
-                        ),
+                    style: currentTheme.textTheme.body1.copyWith(
+                      fontSize: suSetSp(22.0),
+                    ),
                   ),
                 ),
               ),
@@ -634,30 +632,26 @@ class _PostCardState extends State<PostCard> {
         ),
         content: Text(
           "确定屏蔽此人吗？",
-          style: Theme.of(context).textTheme.body1.copyWith(
-                fontSize: suSetSp(20.0),
-              ),
+          style: currentTheme.textTheme.body1.copyWith(
+            fontSize: suSetSp(20.0),
+          ),
         ),
         actions: <Widget>[
           PlatformButton(
             android: (BuildContext context) => MaterialRaisedButtonData(
-              color: Theme.of(context).dialogBackgroundColor,
+              color: currentTheme.dialogBackgroundColor,
               elevation: 0,
               disabledElevation: 0.0,
               highlightElevation: 0.0,
               child: Text(
                 "确认",
-                style: TextStyle(
-                  color: ThemeUtils.currentThemeColor,
-                ),
+                style: TextStyle(color: currentThemeColor),
               ),
             ),
             ios: (BuildContext context) => CupertinoButtonData(
               child: Text(
                 "确认",
-                style: TextStyle(
-                  color: ThemeUtils.currentThemeColor,
-                ),
+                style: TextStyle(color: currentThemeColor),
               ),
             ),
             onPressed: () {
@@ -670,7 +664,7 @@ class _PostCardState extends State<PostCard> {
           ),
           PlatformButton(
             android: (BuildContext context) => MaterialRaisedButtonData(
-              color: ThemeUtils.currentThemeColor,
+              color: currentThemeColor,
               elevation: 0,
               disabledElevation: 0.0,
               highlightElevation: 0.0,
@@ -684,9 +678,7 @@ class _PostCardState extends State<PostCard> {
             ios: (BuildContext context) => CupertinoButtonData(
               child: Text(
                 "取消",
-                style: TextStyle(
-                  color: ThemeUtils.currentThemeColor,
-                ),
+                style: TextStyle(color: currentThemeColor),
               ),
             ),
             onPressed: Navigator.of(context).pop,
@@ -702,36 +694,30 @@ class _PostCardState extends State<PostCard> {
       builder: (context) => PlatformAlertDialog(
         title: Text(
           "举报动态",
-          style: TextStyle(
-            fontSize: suSetSp(26.0),
-          ),
+          style: TextStyle(fontSize: suSetSp(26.0)),
         ),
         content: Text(
           "确定举报该条动态吗？",
-          style: Theme.of(context).textTheme.body1.copyWith(
-                fontSize: suSetSp(20.0),
-              ),
+          style: currentTheme.textTheme.body1.copyWith(
+            fontSize: suSetSp(20.0),
+          ),
         ),
         actions: <Widget>[
           PlatformButton(
             android: (BuildContext context) => MaterialRaisedButtonData(
-              color: Theme.of(context).dialogBackgroundColor,
+              color: currentTheme.dialogBackgroundColor,
               elevation: 0,
               disabledElevation: 0.0,
               highlightElevation: 0.0,
               child: Text(
                 "确认",
-                style: TextStyle(
-                  color: ThemeUtils.currentThemeColor,
-                ),
+                style: TextStyle(color: currentThemeColor),
               ),
             ),
             ios: (BuildContext context) => CupertinoButtonData(
               child: Text(
                 "确认",
-                style: TextStyle(
-                  color: ThemeUtils.currentThemeColor,
-                ),
+                style: TextStyle(color: currentThemeColor),
               ),
             ),
             onPressed: () {
@@ -743,7 +729,7 @@ class _PostCardState extends State<PostCard> {
           ),
           PlatformButton(
             android: (BuildContext context) => MaterialRaisedButtonData(
-              color: ThemeUtils.currentThemeColor,
+              color: currentThemeColor,
               elevation: 0,
               disabledElevation: 0.0,
               highlightElevation: 0.0,
@@ -757,9 +743,7 @@ class _PostCardState extends State<PostCard> {
             ios: (BuildContext context) => CupertinoButtonData(
               child: Text(
                 "取消",
-                style: TextStyle(
-                  color: ThemeUtils.currentThemeColor,
-                ),
+                style: TextStyle(color: currentThemeColor),
               ),
             ),
             onPressed: Navigator.of(context).pop,
@@ -787,7 +771,7 @@ class _PostCardState extends State<PostCard> {
     return Hero(
       tag: "postcard-id-${post.id}",
       child: GestureDetector(
-        onTap: isDetail || isShield ? null : pushToDetail,
+        onTap: widget.isDetail || isShield ? null : pushToDetail,
         onLongPress: isShield ? pushToDetail : null,
         child: Card(
           margin: isShield
@@ -831,7 +815,7 @@ class _PostCardState extends State<PostCard> {
                     ),
                     getPostContent(context, post),
                     getPostImages(context, post),
-                    isDetail
+                    widget.isDetail
                         ? SizedBox(height: suSetWidth(16.0))
                         : getPostActions(context),
                   ]

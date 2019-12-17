@@ -51,7 +51,7 @@ class NotificationPageState extends State<NotificationPage>
           width: suSetWidth(220.0),
           child: Consumer<NotificationProvider>(
             builder: (_, provider, __) => TabBar(
-              indicatorColor: ThemeUtils.currentThemeColor,
+              indicatorColor: currentThemeColor,
               indicatorPadding: EdgeInsets.only(bottom: suSetHeight(18.0)),
               indicatorSize: TabBarIndicatorSize.label,
               indicatorWeight: suSetHeight(6.0),
@@ -214,7 +214,7 @@ class NotificationPageState extends State<NotificationPage>
                 width: MediaQuery.of(context).size.width,
                 height: suSetHeight(50.0),
                 child: TabBar(
-                  indicatorColor: ThemeUtils.currentThemeColor,
+                  indicatorColor: currentThemeColor,
                   indicatorPadding: EdgeInsets.only(
                     bottom: suSetHeight(6.0),
                   ),

@@ -33,21 +33,17 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
-  static Color currentThemeColor = ThemeUtils.currentThemeColor;
-
   static final List<String> pagesTitle = ['首页', '应用', '消息', '我的'];
   static final List<String> pagesIcon = ["home", "apps", "message", "mine"];
   static const double bottomBarHeight = 74.0;
 
-  static TextStyle tabSelectedTextStyle = TextStyle(
-    color: currentThemeColor,
-    fontSize: suSetSp(25.0),
+  static final tabSelectedTextStyle = TextStyle(
+    fontSize: suSetSp(23.0),
     fontWeight: FontWeight.bold,
     textBaseline: TextBaseline.alphabetic,
   );
-  static TextStyle tabUnselectedTextStyle = TextStyle(
-    color: currentThemeColor,
-    fontSize: suSetSp(20.0),
+  static final tabUnselectedTextStyle = TextStyle(
+    fontSize: suSetSp(23.0),
     textBaseline: TextBaseline.alphabetic,
   );
 
@@ -82,17 +78,14 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         } else if (event.type == "action_user") {
           _selectedTab(3);
         }
-      })
-      ..on<ChangeThemeEvent>().listen((event) {
-        currentThemeColor = event.color;
-        if (this.mounted) setState(() {});
       });
     super.initState();
   }
 
   @override
   void didChangeDependencies() {
-    ThemeUtils.setDark(ThemeUtils.isDark);
+    final provider = Provider.of<ThemesProvider>(currentContext, listen: false);
+    provider.setSystemUIDark(provider.dark);
     super.didChangeDependencies();
   }
 
@@ -103,11 +96,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   }
 
   void initWebAppList() {
-    final provider = Provider.of<WebAppsProvider>(
-      navigatorState.context,
-      listen: false,
-    );
-    provider.initApps();
+    Provider.of<WebAppsProvider>(currentContext, listen: false).initApps();
   }
 
   void initPushService() async {
@@ -147,7 +136,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       TeamPostAPI.getNotifications(),
     ]).then((responses) {
       final provider =
-          Provider.of<NotificationProvider>(navigatorState.context);
+          Provider.of<NotificationProvider>(currentContext, listen: false);
       provider.updateNotification(
         Notifications.fromJson(responses[0].data),
         TeamNotifications.fromJson(responses[1].data),
@@ -179,51 +168,55 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     super.build(context);
     return WillPopScope(
       onWillPop: doubleBackExit,
-      child: AnnotatedRegion(
-        value: ThemeUtils.isDark
-            ? SystemUiOverlayStyle.light
-            : SystemUiOverlayStyle.dark,
-        child: Scaffold(
-          body: Column(
-            children: <Widget>[
-              if (Configs.announcementsEnabled)
-                AnnouncementWidget(
-                  context,
-                  color: ThemeUtils.currentThemeColor,
-                  gap: 24.0,
-                ),
-              Expanded(
-                child: IndexedStack(
-                  children: <Widget>[
-                    PostSquareListPage(),
-                    AppsPage(),
-                    MessagePage(),
-                    MyInfoPage(),
-                  ],
-                  index: _tabIndex,
-                ),
+      child: Selector<ThemesProvider, bool>(
+        selector: (_, provider) => provider.dark,
+        builder: (_, dark, __) {
+          return AnnotatedRegion(
+            value:
+                dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+            child: Scaffold(
+              body: Column(
+                children: <Widget>[
+                  if (Configs.announcementsEnabled)
+                    AnnouncementWidget(
+                      context,
+                      color: currentTheme.accentColor,
+                      gap: 24.0,
+                    ),
+                  Expanded(
+                    child: IndexedStack(
+                      children: <Widget>[
+                        PostSquareListPage(),
+                        AppsPage(),
+                        MessagePage(),
+                        MyInfoPage(),
+                      ],
+                      index: _tabIndex,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          bottomNavigationBar: FABBottomAppBar(
-            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            color: Colors.grey[600],
-            height: bottomBarHeight,
-            iconSize: 34.0,
-            selectedColor: currentThemeColor,
-            onTabSelected: _selectedTab,
-            initIndex: pagesTitle.indexOf(widget.initAction) == -1
-                ? 0
-                : pagesTitle.indexOf(widget.initAction),
-            items: [
-              for (int i = 0; i < pagesTitle.length; i++)
-                FABBottomAppBarItem(
-                  iconPath: pagesIcon[i],
-                  text: pagesTitle[i],
-                ),
-            ],
-          ),
-        ),
+              bottomNavigationBar: FABBottomAppBar(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                color: Colors.grey[600],
+                height: bottomBarHeight,
+                iconSize: 34.0,
+                selectedColor: currentTheme.accentColor,
+                onTabSelected: _selectedTab,
+                initIndex: pagesTitle.indexOf(widget.initAction) == -1
+                    ? 0
+                    : pagesTitle.indexOf(widget.initAction),
+                items: [
+                  for (int i = 0; i < pagesTitle.length; i++)
+                    FABBottomAppBarItem(
+                      iconPath: pagesIcon[i],
+                      text: pagesTitle[i],
+                    ),
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

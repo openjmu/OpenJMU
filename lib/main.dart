@@ -58,7 +58,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   bool isUserLogin = false;
   String initAction;
 
-  Color currentThemeColor = ThemeUtils.currentThemeColor;
   Brightness brightness;
 
   @override
@@ -71,10 +70,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     ]);
 
     Instances.eventBus
-      ..on<ChangeThemeEvent>().listen((event) {
-        currentThemeColor = event.color;
-        if (mounted) setState(() {});
-      })
       ..on<LogoutEvent>().listen((event) async {
         navigatorState.pushNamedAndRemoveUntil(
           "openjmu://login",
@@ -82,12 +77,11 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
           arguments: {"initAction": initAction},
         );
         DataUtils.logout();
-        currentThemeColor = ThemeUtils.defaultColor;
         if (mounted) setState(() {});
       })
       ..on<TicketGotEvent>().listen((event) {
         Provider.of<MessagesProvider>(
-          navigatorState.context,
+          currentContext,
           listen: false,
         ).initMessages();
       })
@@ -142,25 +136,23 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     );
   }
 
-  void updateBrightness({Brightness platformBrightness}) {
+  void updateBrightness({
+    Brightness platformBrightness,
+    ThemesProvider provider,
+  }) {
     if (brightness != null) {
       brightness = platformBrightness ?? Screen.mediaQuery.platformBrightness;
     }
-    if (ThemeUtils.isPlatformBrightness) {
-      ThemeUtils.isDark = brightness == Brightness.dark;
+    if (provider.platformBrightness) {
+      final result = brightness == Brightness.dark;
+      if (result != provider.dark) provider.dark = result;
     } else {
-      ThemeUtils.isDark = DataUtils.getBrightness();
+      final result = DataUtils.getBrightness();
+      if (result != provider.dark) provider.dark = result;
     }
   }
 
   void initSettings() async {
-    final color = ThemeUtils.supportColors[DataUtils.getColorThemeIndex()];
-    currentThemeColor = ThemeUtils.currentThemeColor = color;
-    Instances.eventBus.fire(ChangeThemeEvent(color));
-    ThemeUtils.isDark = DataUtils.getBrightness();
-    ThemeUtils.isAMOLEDDark = DataUtils.getAMOLEDDark();
-    ThemeUtils.isPlatformBrightness = DataUtils.getBrightnessPlatform();
-
     Configs.homeSplashIndex = DataUtils.getHomeSplashIndex();
     Configs.homeStartUpIndex = DataUtils.getHomeStartUpIndex();
     Configs.fontScale = DataUtils.getFontScale();
@@ -193,141 +185,145 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    updateBrightness();
+    return MultiProvider(
+      providers: providers,
+      child: Consumer<ThemesProvider>(
+        builder: (_, provider, __) {
+          updateBrightness(provider: provider);
 
-    final theme = ThemeUtils.isDark
-        ? ThemeUtils.dark()
-        : ThemeUtils.light().copyWith(
-            textTheme: (ThemeUtils.isDark
+          final theme =
+              (provider.dark ? provider.darkTheme : provider.lightTheme)
+                  .copyWith(
+            textTheme: (provider.dark
                     ? Theme.of(context).typography.white
                     : Theme.of(context).typography.black)
                 .copyWith(
-            subhead: TextStyle(
-              textBaseline: TextBaseline.alphabetic,
+              subhead: TextStyle(
+                textBaseline: TextBaseline.alphabetic,
+              ),
             ),
-          ));
-
-    return MultiProvider(
-      providers: providers,
-      child: Theme(
-        data: theme,
-        child: OKToast(
-          child: MaterialApp(
-            navigatorKey: Instances.navigatorKey,
-            builder: (c, w) {
-              brightness = ThemeUtils.isPlatformBrightness
-                  ? MediaQuery.of(c).platformBrightness
-                  : ThemeUtils.isDark ? Brightness.dark : Brightness.light;
-              ScreenUtil.instance = ScreenUtil.getInstance()
-                ..allowFontScaling = true
-                ..init(c);
-              return NoScaleTextWidget(child: w);
-            },
-            title: "OpenJMU",
-            theme: theme,
-            home: SplashPage(initAction: initAction),
-            navigatorObservers: [
-              FFNavigatorObserver(
-                showStatusBarChange: (bool showStatusBar) {
-                  if (showStatusBar) {
-                    SystemChrome.setEnabledSystemUIOverlays(
-                      SystemUiOverlay.values,
+          );
+          return Theme(
+            data: theme,
+            child: OKToast(
+              child: MaterialApp(
+                navigatorKey: Instances.navigatorKey,
+                builder: (c, w) {
+                  brightness = provider.platformBrightness
+                      ? MediaQuery.of(c).platformBrightness
+                      : provider.dark ? Brightness.dark : Brightness.light;
+                  ScreenUtil.instance = ScreenUtil.getInstance()
+                    ..allowFontScaling = true
+                    ..init(c);
+                  return NoScaleTextWidget(child: w);
+                },
+                title: "OpenJMU",
+                theme: theme,
+                home: SplashPage(initAction: initAction),
+                navigatorObservers: [
+                  FFNavigatorObserver(
+                    showStatusBarChange: (bool showStatusBar) {
+                      if (showStatusBar) {
+                        SystemChrome.setEnabledSystemUIOverlays(
+                          SystemUiOverlay.values,
+                        );
+                      } else {
+                        SystemChrome.setEnabledSystemUIOverlays([]);
+                      }
+                    },
+                  ),
+                ],
+                onGenerateRoute: (RouteSettings settings) {
+                  final routeResult = getRouteResult(
+                    name: settings.name,
+                    arguments: settings.arguments,
+                  );
+                  if (routeResult.showStatusBar != null ||
+                      routeResult.routeName != null) {
+                    settings = FFRouteSettings(
+                      name: settings.name,
+                      isInitialRoute: settings.isInitialRoute,
+                      routeName: routeResult.routeName,
+                      arguments: settings.arguments,
+                      showStatusBar: routeResult.showStatusBar,
                     );
-                  } else {
-                    SystemChrome.setEnabledSystemUIOverlays([]);
+                  }
+                  final page =
+                      routeResult.widget ?? SplashPage(initAction: initAction);
+
+                  if (settings.arguments != null &&
+                      settings.arguments is Map<String, dynamic>) {
+                    RouteBuilder builder = (settings.arguments
+                        as Map<String, dynamic>)['routeBuilder'];
+                    if (builder != null) return builder(page);
+                  }
+
+                  switch (routeResult.pageRouteType) {
+                    case PageRouteType.material:
+                      return MaterialPageRoute(
+                        settings: settings,
+                        builder: (c) => page,
+                      );
+                    case PageRouteType.cupertino:
+                      return CupertinoPageRoute(
+                        settings: settings,
+                        builder: (c) => page,
+                      );
+                    case PageRouteType.transparent:
+                      return FFTransparentPageRoute(
+                        settings: settings,
+                        pageBuilder: (_, __, ___) => page,
+                      );
+                    default:
+                      return Platform.isIOS
+                          ? CupertinoPageRoute(
+                              settings: settings,
+                              builder: (c) => page,
+                            )
+                          : MaterialPageRoute(
+                              settings: settings,
+                              builder: (c) => page,
+                            );
                   }
                 },
+                localizationsDelegates: [
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: [
+                  const Locale.fromSubtags(
+                    languageCode: 'zh',
+                  ),
+                  const Locale.fromSubtags(
+                    languageCode: 'zh',
+                    scriptCode: 'Hans',
+                  ),
+                  const Locale.fromSubtags(
+                    languageCode: 'zh',
+                    scriptCode: 'Hant',
+                  ),
+                  const Locale.fromSubtags(
+                    languageCode: 'zh',
+                    scriptCode: 'Hans',
+                    countryCode: 'CN',
+                  ),
+                  const Locale.fromSubtags(
+                    languageCode: 'zh',
+                    scriptCode: 'Hant',
+                    countryCode: 'TW',
+                  ),
+                  const Locale.fromSubtags(
+                    languageCode: 'zh',
+                    scriptCode: 'Hant',
+                    countryCode: 'HK',
+                  ),
+                  const Locale('en'),
+                ],
               ),
-            ],
-            onGenerateRoute: (RouteSettings settings) {
-              final routeResult = getRouteResult(
-                name: settings.name,
-                arguments: settings.arguments,
-              );
-              if (routeResult.showStatusBar != null ||
-                  routeResult.routeName != null) {
-                settings = FFRouteSettings(
-                  name: settings.name,
-                  isInitialRoute: settings.isInitialRoute,
-                  routeName: routeResult.routeName,
-                  arguments: settings.arguments,
-                  showStatusBar: routeResult.showStatusBar,
-                );
-              }
-              final page =
-                  routeResult.widget ?? SplashPage(initAction: initAction);
-
-              if (settings.arguments != null &&
-                  settings.arguments is Map<String, dynamic>) {
-                RouteBuilder builder = (settings.arguments
-                    as Map<String, dynamic>)['routeBuilder'];
-                if (builder != null) return builder(page);
-              }
-
-              switch (routeResult.pageRouteType) {
-                case PageRouteType.material:
-                  return MaterialPageRoute(
-                    settings: settings,
-                    builder: (c) => page,
-                  );
-                case PageRouteType.cupertino:
-                  return CupertinoPageRoute(
-                    settings: settings,
-                    builder: (c) => page,
-                  );
-                case PageRouteType.transparent:
-                  return FFTransparentPageRoute(
-                    settings: settings,
-                    pageBuilder: (_, __, ___) => page,
-                  );
-                default:
-                  return Platform.isIOS
-                      ? CupertinoPageRoute(
-                          settings: settings,
-                          builder: (c) => page,
-                        )
-                      : MaterialPageRoute(
-                          settings: settings,
-                          builder: (c) => page,
-                        );
-              }
-            },
-            localizationsDelegates: [
-              GlobalWidgetsLocalizations.delegate,
-              GlobalMaterialLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale.fromSubtags(
-                languageCode: 'zh',
-              ),
-              const Locale.fromSubtags(
-                languageCode: 'zh',
-                scriptCode: 'Hans',
-              ),
-              const Locale.fromSubtags(
-                languageCode: 'zh',
-                scriptCode: 'Hant',
-              ),
-              const Locale.fromSubtags(
-                languageCode: 'zh',
-                scriptCode: 'Hans',
-                countryCode: 'CN',
-              ),
-              const Locale.fromSubtags(
-                languageCode: 'zh',
-                scriptCode: 'Hant',
-                countryCode: 'TW',
-              ),
-              const Locale.fromSubtags(
-                languageCode: 'zh',
-                scriptCode: 'Hant',
-                countryCode: 'HK',
-              ),
-              const Locale('en'),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

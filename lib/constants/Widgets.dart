@@ -14,6 +14,51 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
+export 'package:OpenJMU/widgets/AppBar.dart';
+export 'package:OpenJMU/widgets/AppIcon.dart';
+export 'package:OpenJMU/widgets/CommonWebPage.dart';
+export 'package:OpenJMU/widgets/FABBottomAppBar.dart';
+export 'package:OpenJMU/widgets/InAppBrowser.dart';
+export 'package:OpenJMU/widgets/NoScaleTextWidget.dart';
+export 'package:OpenJMU/widgets/RoundedCheckBox.dart';
+export 'package:OpenJMU/widgets/RoundedTabIndicator.dart';
+export 'package:OpenJMU/widgets/SlideMenuItem.dart';
+export 'package:OpenJMU/widgets/UserAvatar.dart';
+
+class TransparentRoute extends PageRoute<void> {
+  TransparentRoute({
+    @required this.builder,
+    this.duration,
+    RouteSettings settings,
+  })  : assert(builder != null),
+        super(settings: settings, fullscreenDialog: false);
+
+  final WidgetBuilder builder;
+  final Duration duration;
+
+  @override
+  bool get opaque => false;
+  @override
+  Color get barrierColor => null;
+  @override
+  String get barrierLabel => null;
+  @override
+  bool get maintainState => true;
+  @override
+  Duration get transitionDuration => duration ?? Duration.zero;
+
+  @override
+  Widget buildPage(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation) {
+    final result = builder(context);
+    return Semantics(
+      scopesRoute: true,
+      explicitChildNodes: true,
+      child: result,
+    );
+  }
+}
+
 ///
 /// Constant widgets.
 /// This section was declared for widgets that will be reuse in code.
@@ -77,7 +122,7 @@ Widget badgeIcon({
     Badge(
       padding: padding ?? const EdgeInsets.all(5.0),
       badgeContent: Text("$content", style: TextStyle(color: Colors.white)),
-      badgeColor: ThemeUtils.currentThemeColor,
+      badgeColor: currentThemeColor,
       child: icon,
       elevation: Platform.isAndroid ? 2 : 0,
       showBadge: showBadge,
@@ -162,7 +207,11 @@ class ScaledImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = Provider.of<ThemesProvider>(currentContext, listen: false);
     final ratio = image.height / image.width;
+    final color = provider.dark ? Colors.black.withAlpha(50) : null;
+    final colorBlendMode = provider.dark ? BlendMode.darken : BlendMode.srcIn;
+
     Widget imageWidget;
     if (length == 1) {
       if (ratio >= 4 / 3) {
@@ -170,9 +219,8 @@ class ScaledImage extends StatelessWidget {
           image: image,
           height: num400,
           fit: BoxFit.contain,
-          color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
-          colorBlendMode:
-          ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
+          color: color,
+          colorBlendMode: colorBlendMode,
           filterQuality: FilterQuality.none,
         );
       } else if (4 / 3 > ratio && ratio > 3 / 4) {
@@ -182,9 +230,8 @@ class ScaledImage extends StatelessWidget {
           width: math.min(width / 2, image.width.toDouble()),
           image: image,
           fit: BoxFit.contain,
-          color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
-          colorBlendMode:
-          ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
+          color: color,
+          colorBlendMode: colorBlendMode,
           filterQuality: FilterQuality.none,
         );
       } else if (ratio <= 3 / 4) {
@@ -192,9 +239,8 @@ class ScaledImage extends StatelessWidget {
           image: image,
           width: math.min(num400, image.width.toDouble()),
           fit: BoxFit.contain,
-          color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
-          colorBlendMode:
-          ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
+          color: color,
+          colorBlendMode: colorBlendMode,
           filterQuality: FilterQuality.none,
         );
       }
@@ -202,8 +248,8 @@ class ScaledImage extends StatelessWidget {
       imageWidget = ExtendedRawImage(
         image: image,
         fit: BoxFit.cover,
-        color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
-        colorBlendMode: ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
+        color: color,
+        colorBlendMode: colorBlendMode,
         filterQuality: FilterQuality.none,
       );
     }
@@ -228,11 +274,11 @@ class ScaledImage extends StatelessWidget {
                   horizontal: suSetWidth(6.0),
                   vertical: suSetHeight(2.0),
                 ),
-                color: ThemeUtils.currentThemeColor.withOpacity(0.7),
+                color: provider.currentColor.withOpacity(0.7),
                 child: Text(
                   "长图",
                   style:
-                  TextStyle(color: Colors.white, fontSize: suSetSp(13.0)),
+                      TextStyle(color: Colors.white, fontSize: suSetSp(13.0)),
                 ),
               ),
             ),
@@ -250,4 +296,48 @@ class ScaledImage extends StatelessWidget {
     }
     return imageWidget;
   }
+}
+
+class NoSplashFactory extends InteractiveInkFeatureFactory {
+  const NoSplashFactory();
+
+  InteractiveInkFeature create({
+    @required MaterialInkController controller,
+    @required RenderBox referenceBox,
+    @required Offset position,
+    @required Color color,
+    TextDirection textDirection,
+    bool containedInkWell: false,
+    RectCallback rectCallback,
+    BorderRadius borderRadius,
+    ShapeBorder customBorder,
+    double radius,
+    VoidCallback onRemoved,
+  }) {
+    return NoSplash(
+      controller: controller,
+      referenceBox: referenceBox,
+      color: color,
+      onRemoved: onRemoved,
+    );
+  }
+}
+
+class NoSplash extends InteractiveInkFeature {
+  NoSplash({
+    @required MaterialInkController controller,
+    @required RenderBox referenceBox,
+    Color color,
+    VoidCallback onRemoved,
+  })  : assert(controller != null),
+        assert(referenceBox != null),
+        super(
+        controller: controller,
+        referenceBox: referenceBox,
+        onRemoved: onRemoved,
+      ) {
+    controller.addInkFeature(this);
+  }
+  @override
+  void paintFeature(Canvas canvas, Matrix4 transform) {}
 }

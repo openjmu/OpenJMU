@@ -293,7 +293,7 @@ class _ScorePageState extends State<ScorePage>
               ),
             ],
             color: _term == termSelected
-                ? ThemeUtils.currentThemeColor
+                ? currentThemeColor
                 : Theme.of(context).canvasColor,
           ),
           child: Padding(

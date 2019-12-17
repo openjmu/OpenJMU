@@ -49,15 +49,10 @@ class LoginPageState extends State<LoginPage>
 
   bool get loginButtonEnable => !(_login || _loginDisabled);
 
-  Color currentColor = ThemeUtils.currentThemeColor;
   Color _defaultIconColor = Colors.grey;
 
   @override
   void initState() {
-    Instances.eventBus.on<ChangeThemeEvent>().listen((event) {
-      currentColor = event.color;
-      if (mounted) setState(() {});
-    });
     _usernameController
       ..addListener(() {
         _username = _usernameController.text;
@@ -186,9 +181,7 @@ class LoginPageState extends State<LoginPage>
               : null,
           border: InputBorder.none,
           focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: ThemeUtils.defaultColor,
-            ),
+            borderSide: BorderSide(color: defaultColor),
           ),
           contentPadding: EdgeInsets.all(suSetWidth(12.0)),
           labelText: '工号/学号',
@@ -205,7 +198,7 @@ class LoginPageState extends State<LoginPage>
           height: 1.7,
           forceStrutHeight: true,
         ),
-        cursorColor: ThemeUtils.defaultColor,
+        cursorColor: defaultColor,
         onSaved: (String value) => _username = value,
         validator: (String value) {
           if (value.isEmpty) return '请输入账户';
@@ -227,7 +220,7 @@ class LoginPageState extends State<LoginPage>
           border: InputBorder.none,
           focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(
-              color: ThemeUtils.defaultColor,
+              color: defaultColor,
             ),
           ),
           contentPadding: EdgeInsets.all(suSetWidth(12.0)),
@@ -250,7 +243,7 @@ class LoginPageState extends State<LoginPage>
               setState(() {
                 _isObscure = !_isObscure;
                 _defaultIconColor =
-                    _isObscure ? Colors.grey : ThemeUtils.defaultColor;
+                    _isObscure ? Colors.grey : defaultColor;
               });
             },
           ),
@@ -263,7 +256,7 @@ class LoginPageState extends State<LoginPage>
           height: 1.7,
           forceStrutHeight: true,
         ),
-        cursorColor: ThemeUtils.defaultColor,
+        cursorColor: defaultColor,
         enabled: !_login,
       );
 
@@ -357,7 +350,7 @@ class LoginPageState extends State<LoginPage>
                     TextSpan(
                       text: "《用户协议》",
                       style: TextStyle(
-                        color: ThemeUtils.defaultColor,
+                        color: defaultColor,
                         decoration: TextDecoration.underline,
                       ),
                       recognizer: TapGestureRecognizer()

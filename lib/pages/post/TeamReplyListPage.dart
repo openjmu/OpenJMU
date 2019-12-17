@@ -142,7 +142,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
               TextSpan(
                 text: "全文",
                 style: TextStyle(
-                  color: ThemeUtils.currentThemeColor,
+                  color: currentThemeColor,
                   fontSize: suSetSp(18.0),
                 ),
               ),
@@ -253,7 +253,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                   child: Text(
                     "暂无内容",
                     style: TextStyle(
-                      color: ThemeUtils.currentThemeColor,
+                      color: currentThemeColor,
                       fontSize: suSetSp(24.0),
                     ),
                   ),

@@ -114,7 +114,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     if (imagesLength == maxImagesLength) return;
     _focusNode.unfocus();
     final currentColorValue =
-        "#${ThemeUtils.currentThemeColor.value.toRadixString(16).substring(2, 8)}";
+        "#${currentThemeColor.value.toRadixString(16).substring(2, 8)}";
     List<Asset> resultList = List<Asset>();
     Map<PermissionGroup, PermissionStatus> permissions =
         await PermissionHandler().requestPermissions([
@@ -337,9 +337,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
               padding: EdgeInsets.zero,
               onPressed: mentionPeople,
               icon: Icon(
-                Platform.isAndroid
-                    ? Ionicons.ios_at
-                    : Ionicons.md_at,
+                Platform.isAndroid ? Ionicons.ios_at : Ionicons.md_at,
                 color: Theme.of(context).iconTheme.color,
                 size: _iconSize,
               ),
@@ -364,7 +362,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
               icon: Icon(
                 Icons.sentiment_very_satisfied,
                 color: emoticonPadActive
-                    ? ThemeUtils.currentThemeColor
+                    ? currentThemeColor
                     : Theme.of(context).iconTheme.color,
                 size: _iconSize,
               ),
@@ -542,7 +540,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
                         height: suSetHeight(40.0),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
-                          color: ThemeUtils.currentThemeColor.withOpacity(0.6),
+                          color: currentThemeColor.withOpacity(0.6),
                         ),
                         child: Center(
                           child: Text(
@@ -753,9 +751,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              textStyle: TextStyle(
-                color: ThemeUtils.currentThemeColor,
-              ),
+              textStyle: TextStyle(color: currentThemeColor),
             ),
             CupertinoDialogAction(
               child: Text("取消"),
@@ -763,9 +759,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
-              textStyle: TextStyle(
-                color: ThemeUtils.currentThemeColor,
-              ),
+              textStyle: TextStyle(color: currentThemeColor),
             ),
           ],
         ),

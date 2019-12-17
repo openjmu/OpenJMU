@@ -24,7 +24,6 @@ class AppsPageState extends State<AppsPage>
 
   AppsPageState _appCenterPageState;
   TabController _tabController;
-  Color currentThemeColor = ThemeUtils.currentThemeColor;
   int listTotalSize = 0;
   bool enableNewIcon = Configs.newAppCenterIcon;
 
@@ -48,10 +47,6 @@ class AppsPageState extends State<AppsPage>
               duration: Duration(milliseconds: 500), curve: Curves.ease);
         }
       })
-      ..on<ChangeThemeEvent>().listen((event) {
-        currentThemeColor = event.color;
-        if (mounted) setState(() {});
-      })
       ..on<AppCenterRefreshEvent>().listen((event) {
         switch (tabs()[event.currentIndex]) {
           case "课程表":
@@ -64,7 +59,7 @@ class AppsPageState extends State<AppsPage>
             if (_scrollController.hasClients) _scrollController.jumpTo(0.0);
             refreshIndicatorKey.currentState.show();
             Provider.of<WebAppsProvider>(
-              navigatorState.context,
+              currentContext,
               listen: false,
             ).updateApps();
             break;
@@ -73,10 +68,6 @@ class AppsPageState extends State<AppsPage>
       })
       ..on<AppCenterSettingsUpdateEvent>().listen((event) {
         enableNewIcon = Configs.newAppCenterIcon;
-        if (mounted) setState(() {});
-      })
-      ..on<ChangeThemeEvent>().listen((event) {
-        currentThemeColor = event.color;
         if (mounted) setState(() {});
       });
 
@@ -150,82 +141,92 @@ class AppsPageState extends State<AppsPage>
     );
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(suSetHeight(kAppBarHeight)),
-        child: Container(
-          color: Theme.of(context).primaryColor,
-          padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
-          height: Screen.topSafeHeight + suSetHeight(kAppBarHeight),
-          child: SafeArea(
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: TabBar(
-                    isScrollable: true,
-                    indicatorColor: currentThemeColor,
-                    indicatorPadding: EdgeInsets.only(
-                      bottom: suSetHeight(16.0),
+      body: Column(
+        children: <Widget>[
+          FixedAppBar(
+            title: Padding(
+              padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TabBar(
+                      isScrollable: true,
+                      indicator: RoundedUnderlineTabIndicator(
+                        borderSide: BorderSide(
+                          color: currentThemeColor,
+                          width: suSetHeight(3.0),
+                        ),
+                        width: suSetWidth(40.0),
+                        insets: EdgeInsets.only(bottom: suSetHeight(2.0)),
+                      ),
+                      labelColor: Theme.of(context).textTheme.body1.color,
+                      labelStyle: MainPageState.tabSelectedTextStyle,
+                      labelPadding: EdgeInsets.symmetric(
+                        horizontal: suSetWidth(16.0),
+                      ),
+                      unselectedLabelStyle:
+                          MainPageState.tabUnselectedTextStyle,
+                      tabs: <Tab>[
+                        for (int i = 0; i < List.from(tabs()).length; i++)
+                          _tab(tabs()[i])
+                      ],
+                      controller: _tabController,
                     ),
-                    indicatorSize: TabBarIndicatorSize.label,
-                    indicatorWeight: suSetHeight(6.0),
-                    labelColor: Theme.of(context).textTheme.body1.color,
-                    labelStyle: MainPageState.tabSelectedTextStyle,
-                    labelPadding: EdgeInsets.symmetric(
-                      horizontal: suSetWidth(16.0),
-                    ),
-                    unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
-                    tabs: <Tab>[
-                      for (int i = 0; i < List.from(tabs()).length; i++)
-                        _tab(tabs()[i])
-                    ],
-                    controller: _tabController,
                   ),
-                ),
-                SizedBox(
-                  width: suSetWidth(60.0),
-                  child: IconButton(
-                    alignment: Alignment.centerRight,
-                    icon: Icon(
-                      Icons.refresh,
-                      size: suSetWidth(32.0),
+                  SizedBox(
+                    width: suSetWidth(60.0),
+                    child: IconButton(
+                      alignment: Alignment.centerRight,
+                      icon: Icon(
+                        Icons.refresh,
+                        size: suSetWidth(32.0),
+                      ),
+                      onPressed: () {
+                        Instances.eventBus
+                            .fire(AppCenterRefreshEvent(_tabController.index));
+                      },
                     ),
-                    onPressed: () {
-                      Instances.eventBus
-                          .fire(AppCenterRefreshEvent(_tabController.index));
-                    },
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ),
-      body: ExtendedTabBarView(
-        physics: tabs().contains("成绩")
-            ? const ScrollPhysics()
-            : const NeverScrollableScrollPhysics(),
-        controller: _tabController,
-        children: <Widget>[
-          UserAPI.currentUser.isTeacher != null
-              ? UserAPI.currentUser.isTeacher
-                  ? InAppBrowserPage(
+          Expanded(
+            child: Selector<ThemesProvider, bool>(
+              selector: (_, provider) => provider.dark,
+              builder: (_, dark, __) {
+                return ExtendedTabBarView(
+                  physics: tabs().contains("成绩")
+                      ? const ScrollPhysics()
+                      : const NeverScrollableScrollPhysics(),
+                  cacheExtent: 3,
+                  controller: _tabController,
+                  children: <Widget>[
+                    UserAPI.currentUser.isTeacher != null
+                        ? UserAPI.currentUser.isTeacher
+                        ? InAppBrowserPage(
                       url: "${API.courseScheduleTeacher}"
                           "?sid=${UserAPI.currentUser.sid}"
-                          "&night=${ThemeUtils.isDark ? 1 : 0}",
+                          "&night=${dark ? 1 : 0}",
                       title: "课程表",
                       withAppBar: false,
                       withAction: false,
                       keepAlive: true,
                     )
-                  : CourseSchedulePage(
+                        : CourseSchedulePage(
                       key: coursePageKey,
                       appCenterPageState: _appCenterPageState,
                     )
-              : SizedBox(),
-          if (tabs().contains("成绩")) ScorePage(),
-          AppCenterPage(
-            refreshIndicatorKey: refreshIndicatorKey,
-            scrollController: _scrollController,
+                        : SizedBox(),
+                    if (tabs().contains("成绩")) ScorePage(),
+                    AppCenterPage(
+                      refreshIndicatorKey: refreshIndicatorKey,
+                      scrollController: _scrollController,
+                    ),
+                  ],
+                );
+              },
+            ),
           ),
         ],
       ),

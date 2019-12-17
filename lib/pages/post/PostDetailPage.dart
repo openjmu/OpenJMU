@@ -46,13 +46,11 @@ class PostDetailPageState extends State<PostDetailPage> {
     color: Colors.grey,
     fontSize: suSetSp(18.0),
   );
-
-  Widget _forwardsList;
-  Widget _commentsList;
-  Widget _praisesList;
+  final iconSize = 20.0;
+  final actionFontSize = 20.0;
+  final activeColor = currentThemeColor;
 
   int _tabIndex = 1;
-  Widget _post;
   bool isLike;
   int forwards, comments, praises;
   bool forwardAtTheMeanTime = false;
@@ -60,34 +58,29 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   TextStyle forwardsStyle, commentsStyle, praisesStyle;
 
-  double iconSize = 20.0;
-  double actionFontSize = 18.0;
-
   Color forwardsColor,
-      commentsColor = ThemeUtils.currentThemeColor,
+      commentsColor = currentThemeColor,
       praisesColor;
-  Color activeColor = ThemeUtils.currentThemeColor;
+
+  Widget _post;
+  Widget _forwardsList;
+  Widget _commentsList;
+  Widget _praisesList;
 
   @override
   void initState() {
-    super.initState();
-    setState(() {
-      forwards = widget.post.forwards;
-      comments = widget.post.comments;
-      praises = widget.post.praises;
-      isLike = widget.post.isLike;
-    });
-    _requestData();
+    _post = postCard;
+    forwards = widget.post.forwards;
+    comments = widget.post.comments;
+    praises = widget.post.praises;
+    isLike = widget.post.isLike;
+
+    _forwardsList = ForwardListInPost(widget.post, forwardListInPostController);
+    _commentsList = CommentListInPost(widget.post, commentListInPostController);
+    _praisesList = PraiseListInPost(widget.post);
+
     setCurrentTabActive(widget.parentContext, 1, "comments");
     PostAPI.glancePost(widget.post.id);
-    _post = PostCard(
-      widget.post,
-      index: widget.index,
-      fromPage: widget.fromPage,
-      isDetail: true,
-      parentContext: widget.parentContext,
-      key: ValueKey("post-key-${widget.post.id}"),
-    );
 
     Instances.eventBus
       ..on<PostDeletedEvent>().listen((event) {
@@ -138,6 +131,7 @@ class PostDetailPageState extends State<PostDetailPage> {
         }
       })
       ..on<ForwardInPostUpdatedEvent>().listen((event) {
+        print("ForwardInPostUpdatedEvent");
         if (this.mounted &&
             event.postId == widget.post.id &&
             this.forwards != null) {
@@ -151,6 +145,7 @@ class PostDetailPageState extends State<PostDetailPage> {
         }
       })
       ..on<CommentInPostUpdatedEvent>().listen((event) {
+        print("CommentInPostUpdatedEvent");
         if (this.mounted &&
             event.postId == widget.post.id &&
             this.comments != null) {
@@ -160,6 +155,7 @@ class PostDetailPageState extends State<PostDetailPage> {
         }
       })
       ..on<PraiseInPostUpdatedEvent>().listen((event) {
+        print("PraiseInPostUpdatedEvent");
         if (this.mounted &&
             event.postId == widget.post.id &&
             this.praises != null) {
@@ -168,27 +164,13 @@ class PostDetailPageState extends State<PostDetailPage> {
           });
         }
       });
-  }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _post = null;
-  }
-
-  void _requestData() {
-    setState(() {
-      _forwardsList =
-          ForwardListInPost(widget.post, forwardListInPostController);
-      _commentsList =
-          CommentListInPost(widget.post, commentListInPostController);
-      _praisesList = PraiseListInPost(widget.post);
-    });
+    super.initState();
   }
 
   void setTabIndex(index) {
     setState(() {
-      this._tabIndex = index;
+      _tabIndex = index;
     });
   }
 
@@ -209,165 +191,156 @@ class PostDetailPageState extends State<PostDetailPage> {
     });
   }
 
-  Widget actionLists(context) {
-    return Container(
-      color: Theme.of(context).cardColor,
-      margin: EdgeInsets.only(top: suSetSp(4.0)),
-      padding: EdgeInsets.symmetric(horizontal: suSetSp(16.0)),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Row(
-            children: <Widget>[
-              MaterialButton(
-                color: forwardsColor,
-                minWidth: suSetSp(10.0),
-                elevation: 0,
-                child: Text("转发 $forwards", style: forwardsStyle),
-                onPressed: () {
-                  setCurrentTabActive(context, 0, "forwards");
-                },
-              ),
-              MaterialButton(
-                color: commentsColor,
-                minWidth: suSetSp(10.0),
-                elevation: 0,
-                child: Text("评论 $comments", style: commentsStyle),
-                onPressed: () {
-                  setCurrentTabActive(context, 1, "comments");
-                },
-              ),
-              Expanded(child: Container()),
-              MaterialButton(
-                color: praisesColor,
-                minWidth: suSetSp(10.0),
-                elevation: 0,
-                child: Text("赞 $praises", style: praisesStyle),
-                onPressed: () {
-                  setCurrentTabActive(context, 2, "praises");
-                },
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
+  Widget get postCard => PostCard(
+        widget.post,
+        index: widget.index,
+        fromPage: widget.fromPage,
+        isDetail: true,
+        parentContext: widget.parentContext,
+        key: ValueKey("post-key-${widget.post.id}"),
+      );
 
-  Widget toolbar(context) {
-    return Container(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  color: Theme.of(context).cardColor,
-                  child: FlatButton.icon(
-                    onPressed: () {
-                      navigatorState.pushNamed(
-                        "openjmu://add-forward",
-                        arguments: {"post": widget.post},
-                      );
-                    },
-                    icon: SvgPicture.asset(
-                      "assets/icons/postActions/forward-line.svg",
-                      color: Theme.of(context).textTheme.body1.color,
-                      width: suSetSp(iconSize),
-                      height: suSetSp(iconSize),
-                    ),
-                    label: Text(
-                      "转发",
-                      style: Theme.of(context).textTheme.body1.copyWith(
-                            fontSize: suSetSp(actionFontSize),
-                          ),
-                    ),
-                    splashColor: Colors.grey,
+  Widget get actionLists => Container(
+        color: Theme.of(context).cardColor,
+        padding: EdgeInsets.symmetric(horizontal: suSetSp(16.0)),
+        child: Row(
+          children: <Widget>[
+            MaterialButton(
+              color: forwardsColor,
+              minWidth: suSetSp(10.0),
+              elevation: 0,
+              child: Text("转发 $forwards", style: forwardsStyle),
+              onPressed: () {
+                setCurrentTabActive(context, 0, "forwards");
+              },
+            ),
+            MaterialButton(
+              color: commentsColor,
+              minWidth: suSetSp(10.0),
+              elevation: 0,
+              child: Text("评论 $comments", style: commentsStyle),
+              onPressed: () {
+                setCurrentTabActive(context, 1, "comments");
+              },
+            ),
+            Expanded(child: Container()),
+            MaterialButton(
+              color: praisesColor,
+              minWidth: suSetSp(10.0),
+              elevation: 0,
+              child: Text("赞 $praises", style: praisesStyle),
+              onPressed: () {
+                setCurrentTabActive(context, 2, "praises");
+              },
+            ),
+          ],
+        ),
+      );
+
+  Widget get toolbar => Container(
+        height: Screen.bottomSafeHeight + suSetHeight(70.0),
+        padding: EdgeInsets.only(bottom: Screen.bottomSafeHeight),
+        color: Theme.of(context).cardColor,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                color: Theme.of(context).cardColor,
+                child: FlatButton.icon(
+                  onPressed: () {
+                    navigatorState.pushNamed(
+                      "openjmu://add-forward",
+                      arguments: {"post": widget.post},
+                    );
+                  },
+                  icon: SvgPicture.asset(
+                    "assets/icons/postActions/forward-line.svg",
+                    color: Theme.of(context).textTheme.body1.color,
+                    width: suSetSp(iconSize),
+                    height: suSetSp(iconSize),
                   ),
+                  label: Text(
+                    "转发",
+                    style: Theme.of(context).textTheme.body1.copyWith(
+                          fontSize: suSetSp(actionFontSize),
+                        ),
+                  ),
+                  splashColor: Colors.grey,
                 ),
               ),
-              Expanded(
-                child: Container(
-                  color: Theme.of(context).cardColor,
-                  child: FlatButton.icon(
-                    onPressed: () {
-                      navigatorState.pushNamed(
-                        "openjmu://add-comment",
-                        arguments: {"post": widget.post},
-                      );
-                    },
-                    icon: SvgPicture.asset(
-                      "assets/icons/postActions/comment-line.svg",
-                      color: Theme.of(context).textTheme.body1.color,
-                      width: suSetSp(iconSize),
-                      height: suSetSp(iconSize),
-                    ),
-                    label: Text(
-                      "评论",
-                      style: Theme.of(context).textTheme.body1.copyWith(
-                            fontSize: suSetSp(actionFontSize),
-                          ),
-                    ),
-                    splashColor: Colors.grey,
+            ),
+            Expanded(
+              child: Container(
+                color: Theme.of(context).cardColor,
+                child: FlatButton.icon(
+                  onPressed: () {
+                    navigatorState.pushNamed(
+                      "openjmu://add-comment",
+                      arguments: {"post": widget.post},
+                    );
+                  },
+                  icon: SvgPicture.asset(
+                    "assets/icons/postActions/comment-line.svg",
+                    color: Theme.of(context).textTheme.body1.color,
+                    width: suSetSp(iconSize),
+                    height: suSetSp(iconSize),
                   ),
+                  label: Text(
+                    "评论",
+                    style: Theme.of(context).textTheme.body1.copyWith(
+                          fontSize: suSetSp(actionFontSize),
+                        ),
+                  ),
+                  splashColor: Colors.grey,
                 ),
               ),
-              Expanded(
-                child: Container(
-                  color: Theme.of(context).cardColor,
-                  child: LikeButton(
-                    size: suSetHeight(iconSize),
-                    circleColor: CircleColor(
-                      start: ThemeUtils.currentThemeColor,
-                      end: ThemeUtils.currentThemeColor,
-                    ),
-                    countBuilder: (int count, bool isLiked, String text) =>
-                        Text(
-                      count == 0 ? "赞" : text,
-                      style: Theme.of(context).textTheme.body1.copyWith(
-                            color: isLiked
-                                ? ThemeUtils.currentThemeColor
-                                : Theme.of(context).textTheme.body1.color,
-                            fontSize: suSetSp(actionFontSize),
-                          ),
-                    ),
-                    bubblesColor: BubblesColor(
-                      dotPrimaryColor: ThemeUtils.currentThemeColor,
-                      dotSecondaryColor: ThemeUtils.currentThemeColor,
-                    ),
-                    likeBuilder: (bool isLiked) => SvgPicture.asset(
-                      "assets/icons/postActions/thumbUp-${isLiked ? "fill" : "line"}.svg",
-                      color: isLiked
-                          ? ThemeUtils.currentThemeColor
-                          : Theme.of(context).textTheme.body1.color,
-                      width: suSetSp(iconSize),
-                      height: suSetSp(iconSize),
-                    ),
-                    likeCount: praises,
-                    likeCountAnimationType: LikeCountAnimationType.none,
-                    likeCountPadding: EdgeInsets.symmetric(
-                      horizontal: suSetSp(4.0),
-                      vertical: suSetSp(12.0),
-                    ),
-                    isLiked: widget.post.isLike,
-                    onTap: onLikeButtonTap,
+            ),
+            Expanded(
+              child: Container(
+                color: Theme.of(context).cardColor,
+                child: LikeButton(
+                  size: suSetHeight(iconSize),
+                  circleColor: CircleColor(
+                    start: currentThemeColor,
+                    end: currentThemeColor,
                   ),
+                  countBuilder: (int count, bool isLiked, String text) => Text(
+                    count == 0 ? "赞" : text,
+                    style: Theme.of(context).textTheme.body1.copyWith(
+                          color: isLiked
+                              ? currentThemeColor
+                              : Theme.of(context).textTheme.body1.color,
+                          fontSize: suSetSp(actionFontSize),
+                        ),
+                  ),
+                  bubblesColor: BubblesColor(
+                    dotPrimaryColor: currentThemeColor,
+                    dotSecondaryColor: currentThemeColor,
+                  ),
+                  likeBuilder: (bool isLiked) => SvgPicture.asset(
+                    "assets/icons/postActions/thumbUp-${isLiked ? "fill" : "line"}.svg",
+                    color: isLiked
+                        ? currentThemeColor
+                        : Theme.of(context).textTheme.body1.color,
+                    width: suSetSp(iconSize),
+                    height: suSetSp(iconSize),
+                  ),
+                  likeCount: praises,
+                  likeCountAnimationType: LikeCountAnimationType.none,
+                  likeCountPadding: EdgeInsets.symmetric(
+                    horizontal: suSetSp(4.0),
+                    vertical: suSetSp(12.0),
+                  ),
+                  isLiked: widget.post.isLike,
+                  onTap: onLikeButtonTap,
                 ),
               ),
-            ],
-          ),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).padding.bottom ?? 0,
-            color: Theme.of(context).cardColor,
-          ),
-        ],
-      ),
-    );
-  }
+            ),
+          ],
+        ),
+      );
 
   Future<bool> onLikeButtonTap(bool isLiked) {
     final Completer<bool> completer = Completer<bool>();
@@ -396,36 +369,70 @@ class PostDetailPageState extends State<PostDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "动态正文",
-          style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: suSetSp(21.0),
-              ),
-        ),
-        centerTitle: true,
-      ),
       body: Column(
         children: <Widget>[
-          Expanded(
-            child: ListView(
-              children: <Widget>[
-                _post,
-                actionLists(context),
-                IndexedStack(
-                  children: <Widget>[
-                    _forwardsList,
-                    _commentsList,
-                    _praisesList,
-                  ],
-                  index: _tabIndex,
-                ),
-              ],
+          FixedAppBar(
+            centerTitle: true,
+            title: Text(
+              "动态正文",
+              style: Theme.of(context).textTheme.title.copyWith(
+                    fontSize: suSetSp(23.0),
+                  ),
             ),
           ),
-          toolbar(context),
+          Expanded(
+            child: NestedScrollView(
+              headerSliverBuilder: (_, __) => [
+                SliverToBoxAdapter(child: _post),
+                SliverPersistentHeader(
+                  delegate: CommonSliverPersistentHeaderDelegate(
+                    child: actionLists,
+                    height: suSetHeight(74.0),
+                  ),
+                  pinned: true,
+                ),
+              ],
+              body: IndexedStack(
+                index: _tabIndex,
+                children: <Widget>[
+                  _forwardsList,
+                  _commentsList,
+                  _praisesList,
+                ],
+              ),
+            ),
+          ),
+          toolbar,
         ],
       ),
     );
+  }
+}
+
+class CommonSliverPersistentHeaderDelegate
+    extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  final double height;
+
+  CommonSliverPersistentHeaderDelegate({
+    @required this.child,
+    @required this.height,
+  });
+
+  @override
+  double get minExtent => height;
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return child;
+  }
+
+  @override
+  bool shouldRebuild(CommonSliverPersistentHeaderDelegate oldDelegate) {
+    return oldDelegate != this;
   }
 }

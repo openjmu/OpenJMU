@@ -70,53 +70,58 @@ class _SettingsPageState extends State<SettingsPage> {
     final Map<String, dynamic> page = pageSection[sectionIndex][index];
     settingsWidget = [
       [
-        PlatformSwitch(
-          activeColor: ThemeUtils.currentThemeColor,
-          value: ThemeUtils.isDark,
-          onChanged: !ThemeUtils.isPlatformBrightness
-              ? (bool value) {
-                  ThemeUtils.isDark = value;
-                  DataUtils.setBrightness(value);
-                  Instances.eventBus.fire(ChangeBrightnessEvent(value));
-                }
-              : null,
-        ),
-        PlatformSwitch(
-          activeColor: ThemeUtils.currentThemeColor,
-          value: ThemeUtils.isPlatformBrightness,
-          onChanged: (bool value) {
-            ThemeUtils.isPlatformBrightness = value;
-            DataUtils.setBrightnessPlatform(value);
-            Instances.eventBus.fire(ChangeBrightnessEvent(
-              MediaQuery.of(context).platformBrightness == Brightness.dark,
-            ));
-            if (mounted) setState(() {});
+        Consumer<ThemesProvider>(
+          builder: (_, provider, __) {
+            return PlatformSwitch(
+              activeColor: currentThemeColor,
+              value: provider.dark,
+              onChanged: !provider.platformBrightness
+                  ? (bool value) {
+                      provider.dark = value;
+                    }
+                  : null,
+            );
           },
         ),
-        PlatformSwitch(
-          activeColor: ThemeUtils.currentThemeColor,
-          value: ThemeUtils.isAMOLEDDark,
-          onChanged: ThemeUtils.isDark
-              ? (bool value) {
-                  ThemeUtils.isAMOLEDDark = value;
-                  DataUtils.setAMOLEDDark(value);
-                  Instances.eventBus.fire(ChangeAMOLEDDarkEvent(value));
-                  if (mounted) setState(() {});
-                }
-              : null,
+        Consumer<ThemesProvider>(
+          builder: (_, provider, __) {
+            return PlatformSwitch(
+              activeColor: currentThemeColor,
+              value: provider.platformBrightness,
+              onChanged: (bool value) {
+                provider.platformBrightness = value;
+              },
+            );
+          },
+        ),
+        Consumer<ThemesProvider>(
+          builder: (_, provider, __) {
+            return PlatformSwitch(
+              activeColor: currentThemeColor,
+              value: provider.AMOLEDDark,
+              onChanged: provider.dark
+                  ? (bool value) {
+                      provider.AMOLEDDark = value;
+                      if (mounted) setState(() {});
+                    }
+                  : null,
+            );
+          },
         ),
         null,
         null,
         if (currentUser.isTeacher)
-          PlatformSwitch(
-            activeColor: ThemeUtils.currentThemeColor,
-            value: Configs.newAppCenterIcon,
-            onChanged: (bool value) {
-              DataUtils.setEnabledNewAppsIcon(value);
-              Instances.eventBus.fire(AppCenterSettingsUpdateEvent());
-              if (mounted) setState(() {});
-            },
-          ),
+          Consumer<ThemesProvider>(builder: (_, provider, __) {
+            return PlatformSwitch(
+              activeColor: currentThemeColor,
+              value: Configs.newAppCenterIcon,
+              onChanged: (bool value) {
+                DataUtils.setEnabledNewAppsIcon(value);
+                Instances.eventBus.fire(AppCenterSettingsUpdateEvent());
+                if (mounted) setState(() {});
+              },
+            );
+          }),
         null,
       ],
     ];
@@ -212,63 +217,67 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          FixedAppBar(),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.symmetric(
-                horizontal: suSetWidth(40.0),
-              ),
-              children: <Widget>[
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+    return Consumer<ThemesProvider>(
+      builder: (_, provider, __) {
+        return Scaffold(
+          body: Column(
+            children: <Widget>[
+              FixedAppBar(elevation: 0.0),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: suSetWidth(40.0),
+                  ),
                   children: <Widget>[
-                    Text(
-                      "设置",
-                      style: Theme.of(context).textTheme.title.copyWith(
-                            fontSize: suSetSp(40.0),
-                            fontWeight: FontWeight.bold,
-                          ),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          "设置",
+                          style: Theme.of(context).textTheme.title.copyWith(
+                                fontSize: suSetSp(40.0),
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
+                        Text(
+                          "管理该应用的各项设置",
+                          style: Theme.of(context).textTheme.caption.copyWith(
+                                fontSize: suSetSp(24.0),
+                              ),
+                        ),
+                        emptyDivider(height: 20.0),
+                      ],
                     ),
-                    Text(
-                      "管理该应用的各项设置",
-                      style: Theme.of(context).textTheme.caption.copyWith(
-                            fontSize: suSetSp(24.0),
-                          ),
+                    ListView.separated(
+                      padding: EdgeInsets.zero,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) => separator(
+                        context,
+                        color: Colors.transparent,
+                        height: 20.0,
+                      ),
+                      itemCount: pageSection.length,
+                      itemBuilder: (context, sectionIndex) => ListView.builder(
+                        padding: EdgeInsets.zero,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: pageSection[sectionIndex].length,
+                        itemBuilder: (context, index) => settingItem(
+                          context: context,
+                          index: index,
+                          sectionIndex: sectionIndex,
+                        ),
+                      ),
                     ),
-                    emptyDivider(height: 20.0),
                   ],
                 ),
-                ListView.separated(
-                  padding: EdgeInsets.zero,
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  separatorBuilder: (context, index) => separator(
-                    context,
-                    color: Colors.transparent,
-                    height: 20.0,
-                  ),
-                  itemCount: pageSection.length,
-                  itemBuilder: (context, sectionIndex) => ListView.builder(
-                    padding: EdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: pageSection[sectionIndex].length,
-                    itemBuilder: (context, index) => settingItem(
-                      context: context,
-                      index: index,
-                      sectionIndex: sectionIndex,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

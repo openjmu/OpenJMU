@@ -220,7 +220,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                     prefixText: replyHint,
                     hintText: replyHint == null ? "给你一个神评的机会..." : null,
                   ),
-                  cursorColor: ThemeUtils.currentThemeColor,
+                  cursorColor: currentThemeColor,
                   style: Theme.of(context).textTheme.body1.copyWith(
                         fontSize: suSetSp(20.0),
                         textBaseline: TextBaseline.alphabetic,
@@ -244,7 +244,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
             borderRadius: BorderRadius.circular(suSetWidth(50.0)),
           ),
           minWidth: suSetWidth(60.0),
-          color: ThemeUtils.currentThemeColor,
+          color: currentThemeColor,
           child: Center(
             child: Icon(
               Icons.add_circle_outline,
@@ -266,9 +266,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
             borderRadius: BorderRadius.circular(suSetWidth(50.0)),
           ),
           minWidth: suSetWidth(60.0),
-          disabledColor:
-              ThemeUtils.currentThemeColor.withOpacity(sending ? 1 : 0.3),
-          color: ThemeUtils.currentThemeColor.withOpacity(canSend ? 1 : 0.3),
+          disabledColor: currentThemeColor.withOpacity(sending ? 1 : 0.3),
+          color: currentThemeColor.withOpacity(canSend ? 1 : 0.3),
           child: Center(
             child: SizedBox.fromSize(
               size: Size.square(suSetWidth(28.0)),
@@ -341,7 +340,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
           child: Center(
             child: Icon(
               Icons.insert_emoticon,
-              color: showEmoticonPad ? ThemeUtils.currentThemeColor : null,
+              color: showEmoticonPad ? currentThemeColor : null,
               size: suSetWidth(30.0),
             ),
           ),

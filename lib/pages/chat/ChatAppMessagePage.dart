@@ -31,7 +31,6 @@ class ChatAppMessagePage extends StatefulWidget {
 
 class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
   final _scrollController = ScrollController();
-  final color = ThemeUtils.currentThemeColor;
 
   bool shrinkWrap = true;
 
@@ -87,7 +86,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
               ),
               padding: EdgeInsets.all(suSetHeight(10.0)),
               highlightElevation: 4.0,
-              color: color,
+              color: currentThemeColor,
               child: Center(
                 child: Text(
                   "前往应用",

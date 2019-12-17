@@ -64,7 +64,6 @@ class CommonWebPageState extends State<CommonWebPage> {
 
   bool isLoading = true;
   String _url, _title;
-  Color currentThemeColor = ThemeUtils.currentThemeColor;
   double currentProgress = 0.0;
 
   @override

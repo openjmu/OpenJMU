@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:crypto/crypto.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -19,7 +17,7 @@ export 'package:OpenJMU/model/HiveBoxes.dart';
 export 'package:OpenJMU/providers/Providers.dart';
 export 'package:OpenJMU/utils/Utils.dart';
 
-const double kAppBarHeight = 60.0;
+const double kAppBarHeight = 75.0;
 
 class Constants {
   static final developerList = <int>[
@@ -91,38 +89,4 @@ class Constants {
         if (username != null) "unitcode": "jmu",
         "clientinfo": jsonEncode(loginClientInfo),
       };
-}
-
-class TransparentRoute extends PageRoute<void> {
-  TransparentRoute({
-    @required this.builder,
-    this.duration,
-    RouteSettings settings,
-  })  : assert(builder != null),
-        super(settings: settings, fullscreenDialog: false);
-
-  final WidgetBuilder builder;
-  final Duration duration;
-
-  @override
-  bool get opaque => false;
-  @override
-  Color get barrierColor => null;
-  @override
-  String get barrierLabel => null;
-  @override
-  bool get maintainState => true;
-  @override
-  Duration get transitionDuration => duration ?? Duration.zero;
-
-  @override
-  Widget buildPage(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation) {
-    final result = builder(context);
-    return Semantics(
-      scopesRoute: true,
-      explicitChildNodes: true,
-      child: result,
-    );
-  }
 }

@@ -66,10 +66,11 @@ class _ImageViewerState extends State<ImageViewer>
 
   @override
   void dispose() {
+    final provider = Provider.of<ThemesProvider>(currentContext, listen: false);
+    provider.setSystemUIDark(provider.dark);
     rebuild?.close();
     _doubleTapAnimationController?.dispose();
     super.dispose();
-    ThemeUtils.setDark(ThemeUtils.isDark);
   }
 
   Future<void> _downloadImage(url, {AndroidDestinationType destination}) async {

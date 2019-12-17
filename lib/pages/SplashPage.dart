@@ -207,7 +207,7 @@ class SplashState extends State<SplashPage> {
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        backgroundColor: ThemeUtils.currentThemeColor,
+        backgroundColor: currentThemeColor,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

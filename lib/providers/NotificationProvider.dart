@@ -17,6 +17,8 @@ class NotificationProvider extends ChangeNotifier {
     Notifications notification,
     TeamNotifications teamNotification,
   ) {
+    final shouldNotifyListeners = this.notification != notification &&
+        this.teamNotification != teamNotification;
     this.notification
       ..at = notification.at
       ..comment = notification.comment
@@ -27,7 +29,7 @@ class NotificationProvider extends ChangeNotifier {
       ..mention = teamNotification.mention
       ..reply = teamNotification.reply
       ..praise = teamNotification.praise;
-    notifyListeners();
+    if (shouldNotifyListeners) notifyListeners();
   }
 
   void readMention() {

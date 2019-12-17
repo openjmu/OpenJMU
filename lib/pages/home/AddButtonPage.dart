@@ -326,7 +326,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                   emptyDivider(height: suSetHeight(10.0)),
                   Text(
                     itemTitles[index],
-                    style: Theme.of(context).textTheme.body1.copyWith(
+                    style: currentTheme.textTheme.body1.copyWith(
                           fontSize: suSetSp(20.0),
                         ),
                   ),

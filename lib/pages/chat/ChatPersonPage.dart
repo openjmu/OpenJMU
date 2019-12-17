@@ -28,7 +28,6 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   final _scrollController = ScrollController();
   final _focusNode = FocusNode();
   final topBarHeight = suSetSp(100.0);
-  final color = ThemeUtils.currentThemeColor;
 
   List<Message> messages = [];
   bool shrinkWrap = true;
@@ -99,7 +98,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
         highlightElevation: 2.0,
         minWidth: suSetSp(68.0),
         height: suSetSp(52.0),
-        color: emoticonPadActive ? color : Colors.grey[400],
+        color: emoticonPadActive ? currentThemeColor : Colors.grey[400],
         child: Center(
           child: Image.asset(
             "assets/emotionIcons/憨笑.png",
@@ -119,7 +118,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
         highlightElevation: 2.0,
         minWidth: suSetSp(68.0),
         height: suSetSp(52.0),
-        color: color,
+        color: currentThemeColor,
         disabledColor: Colors.grey[400],
         child: Center(
           child: Icon(
@@ -242,7 +241,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.0),
             color: message.isSelf
-                ? color.withOpacity(0.5)
+                ? currentThemeColor.withOpacity(0.5)
                 : Theme.of(context).canvasColor,
           ),
           child: ExtendedText(

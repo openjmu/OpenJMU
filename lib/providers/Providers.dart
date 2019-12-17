@@ -11,6 +11,7 @@ export 'package:provider/provider.dart';
 export 'package:OpenJMU/providers/MessagesProvider.dart';
 export 'package:OpenJMU/providers/WebAppsProvider.dart';
 export 'package:OpenJMU/providers/TeamPostProvider.dart';
+export 'package:OpenJMU/providers/ThemesProvider.dart';
 export 'package:OpenJMU/providers/NotificationProvider.dart';
 
 ChangeNotifierProvider<T> buildProvider<T extends ChangeNotifier>(T value) {
@@ -22,5 +23,6 @@ List<SingleChildCloneableWidget> get providers => _providers;
 final _providers = [
   buildProvider<MessagesProvider>(MessagesProvider()..initListener()),
   buildProvider<NotificationProvider>(NotificationProvider()),
+  buildProvider<ThemesProvider>(ThemesProvider()..initTheme()),
   buildProvider<WebAppsProvider>(WebAppsProvider()),
 ];

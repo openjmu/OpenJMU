@@ -139,7 +139,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
               TextSpan(
                 text: "全文",
                 style: TextStyle(
-                  color: ThemeUtils.currentThemeColor,
+                  color: currentThemeColor,
                   fontSize: suSetSp(18.0),
                 ),
               ),
@@ -217,7 +217,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                   child: Text(
                     "暂无内容",
                     style: TextStyle(
-                      color: ThemeUtils.currentThemeColor,
+                      color: currentThemeColor,
                       fontSize: suSetSp(24.0),
                     ),
                   ),

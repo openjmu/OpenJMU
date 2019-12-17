@@ -88,7 +88,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                           decoration: BoxDecoration(
                             border: Border(
                               bottom: BorderSide(
-                                color: ThemeUtils.currentThemeColor,
+                                color: currentThemeColor,
                               ),
                             ),
                           ),
@@ -98,7 +98,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                 child: TextField(
                                   autofocus: true,
                                   controller: _textEditingController,
-                                  cursorColor: ThemeUtils.currentThemeColor,
+                                  cursorColor: currentThemeColor,
                                   decoration: InputDecoration(
                                     border: InputBorder.none,
                                     contentPadding: EdgeInsets.zero,

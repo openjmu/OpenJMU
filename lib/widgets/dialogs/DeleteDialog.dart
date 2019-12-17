@@ -35,7 +35,7 @@ class DeleteDialog extends Dialog {
             child: Text(
               '确认',
               style: TextStyle(
-                color: ThemeUtils.currentThemeColor,
+                color: currentThemeColor,
               ),
             ),
           ),
@@ -43,7 +43,7 @@ class DeleteDialog extends Dialog {
             child: Text(
               '确认',
               style: TextStyle(
-                color: ThemeUtils.currentThemeColor,
+                color: currentThemeColor,
               ),
             ),
           ),
@@ -103,7 +103,7 @@ class DeleteDialog extends Dialog {
         ),
         PlatformButton(
           android: (BuildContext context) => MaterialRaisedButtonData(
-            color: ThemeUtils.currentThemeColor,
+            color: currentThemeColor,
             elevation: 0,
             disabledElevation: 0.0,
             highlightElevation: 0.0,
@@ -118,7 +118,7 @@ class DeleteDialog extends Dialog {
             child: Text(
               '取消',
               style: TextStyle(
-                color: ThemeUtils.currentThemeColor,
+                color: currentThemeColor,
               ),
             ),
           ),

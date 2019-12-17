@@ -49,7 +49,7 @@ class _AboutPageState extends State<AboutPage> {
                   "images/splash_page_logo.svg",
                   width: suSetWidth(200.0),
                   height: suSetWidth(200.0),
-                  color: ThemeUtils.defaultColor,
+                  color: defaultColor,
                 ),
               ),
             ),
@@ -62,7 +62,7 @@ class _AboutPageState extends State<AboutPage> {
                   text: "OpenJmu",
                   style: TextStyle(
                     fontFamily: 'chocolate',
-                    color: ThemeUtils.currentThemeColor,
+                    color: currentThemeColor,
                     fontSize: suSetSp(50.0),
                   ),
                 ),
@@ -131,9 +131,10 @@ class _AboutPageState extends State<AboutPage> {
             title: Text(
               "关于OpenJMU",
               style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: suSetSp(23.0),
-              ),
+                    fontSize: suSetSp(23.0),
+                  ),
             ),
+            elevation: 0.0,
           ),
           Expanded(
             child: Center(

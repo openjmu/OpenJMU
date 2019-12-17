@@ -111,7 +111,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                           textBaseline: TextBaseline.alphabetic,
                         ),
                       ),
-                      cursorColor: ThemeUtils.currentThemeColor,
+                      cursorColor: currentThemeColor,
                     ),
                   ),
                   Row(
@@ -132,7 +132,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                           "保存",
                           style: TextStyle(
                             color: canSave
-                                ? ThemeUtils.currentThemeColor
+                                ? currentThemeColor
                                 : Theme.of(context).disabledColor,
                             fontSize: suSetSp(21.0),
                           ),

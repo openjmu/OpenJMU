@@ -26,9 +26,7 @@ class TeamNotificationPage extends StatefulWidget {
 class _TeamNotificationPageState extends State<TeamNotificationPage>
     with TickerProviderStateMixin {
   final List<IconData> actionsIcons = [
-    Platform.isAndroid
-        ? Ionicons.md_at
-        : Ionicons.ios_at,
+    Platform.isAndroid ? Ionicons.md_at : Ionicons.ios_at,
     Platform.isAndroid ? Icons.comment : Foundation.comment,
     Platform.isAndroid ? Icons.thumb_up : Ionicons.ios_thumbs_up,
   ];
@@ -38,13 +36,14 @@ class _TeamNotificationPageState extends State<TeamNotificationPage>
 
   @override
   void initState() {
-    provider = Provider.of<NotificationProvider>(navigatorState.context);
+    provider = Provider.of<NotificationProvider>(currentContext, listen: false);
 
     _tabController = TabController(
       initialIndex: initialIndex(),
       length: 3,
       vsync: this,
     );
+
     super.initState();
   }
 
@@ -72,7 +71,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage>
       child: Consumer<NotificationProvider>(
         builder: (_, provider, __) => TabBar(
           controller: _tabController,
-          indicatorColor: ThemeUtils.currentThemeColor,
+          indicatorColor: currentThemeColor,
           indicatorPadding: EdgeInsets.only(bottom: 16.0),
           indicatorSize: TabBarIndicatorSize.label,
           indicatorWeight: suSetHeight(7.0),

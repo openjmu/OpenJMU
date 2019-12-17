@@ -134,33 +134,38 @@ class _TeamPostCardState extends State<TeamPostCard> {
     for (int index = 0; index < post.pics.length; index++) {
       final imageId = int.parse(post.pics[index]['fid']);
       final imageUrl = API.teamFile(fid: imageId);
-      Widget _exImage = ExtendedImage.network(
-        imageUrl,
-        fit: BoxFit.cover,
-        cache: true,
-        color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
-        colorBlendMode: ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
-        loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = Center(child: CupertinoActivityIndicator());
-              break;
-            case LoadState.completed:
-              final info = state.extendedImageInfo;
-              if (info != null) {
-                loader = ScaledImage(
-                  image: info.image,
-                  length: post.pics.length,
-                  num200: suSetSp(200),
-                  num400: suSetSp(400),
-                );
+      Widget _exImage = Selector<ThemesProvider, bool>(
+        selector: (_, provider) => provider.dark,
+        builder: (_, dark, __) {
+          return ExtendedImage.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            cache: true,
+            color: dark ? Colors.black.withAlpha(50) : null,
+            colorBlendMode: dark ? BlendMode.darken : BlendMode.srcIn,
+            loadStateChanged: (ExtendedImageState state) {
+              Widget loader;
+              switch (state.extendedImageLoadState) {
+                case LoadState.loading:
+                  loader = Center(child: CupertinoActivityIndicator());
+                  break;
+                case LoadState.completed:
+                  final info = state.extendedImageInfo;
+                  if (info != null) {
+                    loader = ScaledImage(
+                      image: info.image,
+                      length: post.pics.length,
+                      num200: suSetSp(200),
+                      num400: suSetSp(400),
+                    );
+                  }
+                  break;
+                case LoadState.failed:
+                  break;
               }
-              break;
-            case LoadState.failed:
-              break;
-          }
-          return loader;
+              return loader;
+            },
+          );
         },
       );
       imagesWidget.add(

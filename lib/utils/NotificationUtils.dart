@@ -25,13 +25,15 @@ class NotificationUtils {
   }
 
   static Future show(String title, String body) async {
+    final color =
+        Provider.of<ThemesProvider>(currentContext, listen: false).currentColor;
     final androidDetails = AndroidNotificationDetails(
       'openjmu_message_channel',
       '推送消息',
       '通知接收到的消息',
       importance: Importance.High,
       priority: Priority.High,
-      color: ThemeUtils.defaultColor,
+      color: color,
       style: AndroidNotificationStyle.Default,
       ticker: 'ticker',
     );

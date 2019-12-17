@@ -24,7 +24,7 @@ class DataUtils {
   static final String spUserWorkId = "userWorkId";
 //  static final String spUserClassId = "userClassId";
 
-  static final String spBrightness = "theme_brightness";
+  static final String spBrightnessDark = "theme_brightness";
   static final String spAMOLEDDark = "theme_AMOLEDDark";
   static final String spColorThemeIndex = "theme_colorThemeIndex";
   static final String spBrightnessPlatform = "theme_brightness_platform";
@@ -72,7 +72,7 @@ class DataUtils {
       UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
       showShortToast("登录成功！");
       Provider.of<MessagesProvider>(
-        navigatorState.context,
+        currentContext,
         listen: false,
       ).initMessages();
       return true;
@@ -93,11 +93,11 @@ class DataUtils {
       resetTheme();
       clearLoginInfo();
       clearSettings();
-      showShortToast("退出登录成功");
       Provider.of<MessagesProvider>(
-        navigatorState.context,
+        currentContext,
         listen: false,
       ).logout();
+      showShortToast("退出登录成功");
     });
   }
 
@@ -227,7 +227,7 @@ class DataUtils {
   static Future clearSettings() async {
     CourseAPI.coursesColor.clear();
     Configs.reset();
-    await sp?.remove(spBrightness);
+    await sp?.remove(spBrightnessDark);
     await sp?.remove(spBrightnessPlatform);
     await sp?.remove(spAMOLEDDark);
     await sp?.remove(spColorThemeIndex);
@@ -286,14 +286,9 @@ class DataUtils {
   static Future resetTheme() async {
     await setColorTheme(0);
     await setAMOLEDDark(false);
-    await setBrightness(false);
-    ThemeUtils.isDark = false;
-    ThemeUtils.isAMOLEDDark = false;
-    ThemeUtils.isPlatformBrightness = false;
-    ThemeUtils.currentThemeColor = ThemeUtils.defaultColor;
-    Instances.eventBus
-      ..fire(ChangeBrightnessEvent(false))
-      ..fire(ChangeThemeEvent(ThemeUtils.defaultColor));
+    await setBrightnessDark(false);
+    await setBrightnessPlatform(false);
+    Provider.of<ThemesProvider>(currentContext, listen: false).resetTheme();
   }
 
   // 获取设置的主题色
@@ -303,7 +298,7 @@ class DataUtils {
 
   // 获取设置的夜间模式
   static bool getBrightness() {
-    return sp?.getBool(spBrightness) ?? false;
+    return sp?.getBool(spBrightnessDark) ?? false;
   }
 
   // 获取设置的AMOLED夜间模式
@@ -322,8 +317,8 @@ class DataUtils {
   }
 
   // 设置选择的夜间模式
-  static Future setBrightness(bool isDark) async {
-    await sp?.setBool(spBrightness, isDark);
+  static Future setBrightnessDark(bool isDark) async {
+    await sp?.setBool(spBrightnessDark, isDark);
   }
 
   // 设置AMOLED夜间模式

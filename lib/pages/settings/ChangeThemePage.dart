@@ -8,30 +8,41 @@ import 'package:OpenJMU/widgets/AppBar.dart';
   name: "openjmu://theme",
   routeName: "更改主题",
 )
-class ChangeThemePage extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => ChangeThemePageState();
-}
-
-class ChangeThemePageState extends State<ChangeThemePage> {
-  List<Color> colors = ThemeUtils.supportColors;
-  Color currentColor = ThemeUtils.currentThemeColor;
-  int selected;
-
-  @override
-  void initState() {
-    selected = DataUtils.getColorThemeIndex();
-    Instances.eventBus
-      ..on<ChangeThemeEvent>().listen((event) {
-        ThemeUtils.currentThemeColor = event.color;
-        currentColor = event.color;
-        if (this.mounted) setState(() {});
-      });
-    super.initState();
-  }
-
-  void changeColorTheme(Color color) {
-    Instances.eventBus.fire(ChangeThemeEvent(color));
+class ChangeThemePage extends StatelessWidget {
+  Widget colorItem(context, int index) {
+    return Consumer<ThemesProvider>(
+      builder: (_, provider, __) {
+        return InkWell(
+          onTap: () {
+            provider.updateThemeColor(index);
+          },
+          child: Stack(
+            children: <Widget>[
+              Container(
+                margin: EdgeInsets.all(suSetWidth(12.0)),
+                color: supportColors[index],
+              ),
+              AnimatedOpacity(
+                duration: kTabScrollDuration,
+                opacity:
+                    provider.currentColor == supportColors[index] ? 1.0 : 0.0,
+                child: Container(
+                  margin: EdgeInsets.all(suSetWidth(12.0)),
+                  color: const Color(0x66ffffff),
+                  child: SizedBox.expand(
+                    child: Icon(
+                      Icons.check,
+                      color: Colors.white,
+                      size: suSetSp(40.0),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -46,39 +57,16 @@ class ChangeThemePageState extends State<ChangeThemePage> {
                     fontSize: suSetSp(23.0),
                   ),
             ),
+            elevation: 0.0,
           ),
           Expanded(
-            child: GridView.count(
-              padding: EdgeInsets.zero,
-              crossAxisCount: 4,
-              children: List.generate(colors.length, (index) {
-                return InkWell(
-                  onTap: () {
-                    setState(() {
-                      selected = index;
-                    });
-                    DataUtils.setColorTheme(index);
-                    changeColorTheme(colors[index]);
-                  },
-                  child: Stack(
-                    children: <Widget>[
-                      Container(
-                        color: colors[index],
-                        margin: EdgeInsets.all(suSetSp(10.0)),
-                      ),
-                      if (selected == index)
-                        Container(
-                          color: const Color(0x66ffffff),
-                          margin: EdgeInsets.all(suSetSp(10.0)),
-                          child: Icon(Icons.check,
-                              color: Colors.white, size: suSetSp(40.0)),
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                        ),
-                    ],
-                  ),
-                );
-              }),
+            child: GridView.builder(
+              padding: EdgeInsets.only(bottom: Screen.bottomSafeHeight),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 4,
+              ),
+              itemCount: supportColors.length,
+              itemBuilder: colorItem,
             ),
           ),
         ],

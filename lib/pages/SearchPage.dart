@@ -161,7 +161,7 @@ class SearchPageState extends State<SearchPage>
               child: TextField(
                 autofocus: _autoFocus && !_loaded,
                 controller: _controller,
-                cursorColor: ThemeUtils.currentThemeColor,
+                cursorColor: currentThemeColor,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.zero,

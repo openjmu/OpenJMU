@@ -86,35 +86,38 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
     });
   }
 
-  Widget _buildMiddleTabItem() {
-    return Expanded(
-      child: UnconstrainedBox(
-        child: SizedBox(
-          width: suSetWidth(68.0),
-          height: suSetWidth(45.0),
-          child: MaterialButton(
-            padding: EdgeInsets.zero,
-            color: widget.selectedColor,
-            elevation: 0.0,
-            highlightElevation: 2.0,
-            child: Icon(
-              Icons.add,
-              color: Colors.white.withOpacity(ThemeUtils.isDark ? 0.7 : 1.0),
-              size: suSetWidth(34.0),
-            ),
-            onPressed: () {
-              Navigator.of(context).push(TransparentRoute(
-                builder: (context) => AddingButtonPage(),
-              ));
-            },
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(suSetWidth(14.0)),
-            ),
-          ),
+  Widget get _middleItem => Expanded(
+        child: Selector<ThemesProvider, bool>(
+          selector: (_, provider) => provider.dark,
+          builder: (_, dark, __) {
+            return UnconstrainedBox(
+              child: SizedBox(
+                width: suSetWidth(68.0),
+                height: suSetWidth(45.0),
+                child: MaterialButton(
+                  padding: EdgeInsets.zero,
+                  color: widget.selectedColor,
+                  elevation: 0.0,
+                  highlightElevation: 2.0,
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.white.withOpacity(dark ? 0.7 : 1.0),
+                    size: suSetWidth(34.0),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).push(TransparentRoute(
+                      builder: (context) => AddingButtonPage(),
+                    ));
+                  },
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(suSetWidth(14.0)),
+                  ),
+                ),
+              ),
+            );
+          },
         ),
-      ),
-    );
-  }
+      );
 
   Widget _buildTabItem({
     FABBottomAppBarItem item,
@@ -164,6 +167,26 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                 ),
               ),
             ),
+            if (index == 0)
+              Consumer<NotificationProvider>(
+                builder: (_, provider, __) {
+                  return Positioned(
+                    top: widget.height / 6,
+                    right: Screen.width / widget.items.length / 5,
+                    child: Visibility(
+                      visible: provider.showNotification,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100),
+                        child: Container(
+                          width: suSetWidth(12.0),
+                          height: suSetWidth(12.0),
+                          color: widget.selectedColor,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
             if (index == 2)
               Consumer<MessagesProvider>(
                 builder: (_, provider, __) {
@@ -200,7 +223,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
         onPressed: _updateIndex,
       );
     });
-    items.insert(items.length >> 1, _buildMiddleTabItem());
+    items.insert(items.length >> 1, _middleItem);
 
     Widget appBar = Row(
       mainAxisSize: MainAxisSize.max,

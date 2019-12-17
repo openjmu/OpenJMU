@@ -224,7 +224,7 @@ class _UserPageState extends State<UserPage>
               ? Color(0x44ffffff)
               : _user.isFollowing
                   ? Color(0x44ffffff)
-                  : Color(ThemeUtils.currentThemeColor.value - 0x33000000),
+                  : currentThemeColor.withOpacity(0.6),
           child: Text(
             isSelf
                 ? "编辑签名"
@@ -312,7 +312,7 @@ class _UserPageState extends State<UserPage>
                 vertical: suSetHeight(4.0),
               ),
               decoration: BoxDecoration(
-                color: ThemeUtils.defaultColor,
+                color: Colors.redAccent,
                 borderRadius: BorderRadius.circular(suSetWidth(20.0)),
               ),
               child: Text(
@@ -504,14 +504,15 @@ class _UserPageState extends State<UserPage>
                         elevation: 0,
                         disabledElevation: 0.0,
                         highlightElevation: 0.0,
-                        child: Text("确认",
-                            style:
-                                TextStyle(color: ThemeUtils.currentThemeColor)),
+                        child: Text(
+                          "确认",
+                          style: TextStyle(color: currentThemeColor),
+                        ),
                       ),
                       ios: (BuildContext context) => CupertinoButtonData(
                         child: Text(
                           "确认",
-                          style: TextStyle(color: ThemeUtils.currentThemeColor),
+                          style: TextStyle(color: currentThemeColor),
                         ),
                       ),
                       onPressed: () {
@@ -525,7 +526,7 @@ class _UserPageState extends State<UserPage>
                     PlatformButton(
                       android: (BuildContext context) =>
                           MaterialRaisedButtonData(
-                        color: ThemeUtils.currentThemeColor,
+                        color: currentThemeColor,
                         elevation: 0,
                         disabledElevation: 0.0,
                         highlightElevation: 0.0,
@@ -537,7 +538,7 @@ class _UserPageState extends State<UserPage>
                       ios: (BuildContext context) => CupertinoButtonData(
                         child: Text(
                           "取消",
-                          style: TextStyle(color: ThemeUtils.currentThemeColor),
+                          style: TextStyle(color: currentThemeColor),
                         ),
                       ),
                       onPressed: Navigator.of(context).pop,
@@ -553,7 +554,7 @@ class _UserPageState extends State<UserPage>
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(suSetWidth(10.0)),
-                color: ThemeUtils.currentThemeColor.withAlpha(0x88),
+                color: currentThemeColor.withAlpha(0x88),
               ),
               child: Text(
                 "移出黑名单",

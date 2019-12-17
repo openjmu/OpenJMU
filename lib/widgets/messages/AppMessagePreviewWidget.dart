@@ -75,7 +75,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
             width: suSetWidth(28.0),
             height: suSetWidth(28.0),
             decoration: BoxDecoration(
-              color: ThemeUtils.currentThemeColor.withOpacity(0.5),
+              color: currentThemeColor.withOpacity(0.5),
               shape: BoxShape.circle,
             ),
             child: Center(
@@ -93,7 +93,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
 
   void updateApp() {
     final provider = Provider.of<WebAppsProvider>(
-      navigatorState.context,
+      currentContext,
       listen: false,
     );
     app = provider.apps
@@ -105,7 +105,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     try {
       final content = jsonDecode(widget.message.content);
       widget.message.content = content['content'];
-      Provider.of<MessagesProvider>(navigatorState.context, listen: false)
+      Provider.of<MessagesProvider>(currentContext, listen: false)
           .saveAppsMessages();
     } catch (e) {}
   }

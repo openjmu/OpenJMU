@@ -128,7 +128,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                         width: suSetWidth(28.0),
                         height: suSetWidth(28.0),
                         decoration: BoxDecoration(
-                          color: ThemeUtils.currentThemeColor.withOpacity(0.5),
+                          color: currentThemeColor.withOpacity(0.5),
                           shape: BoxShape.circle,
                         ),
                         child: Center(

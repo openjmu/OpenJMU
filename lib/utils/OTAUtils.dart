@@ -109,7 +109,7 @@ class OTAUtils {
       child: Container(
         margin: EdgeInsets.all(suSetWidth(50.0)),
         padding: EdgeInsets.all(suSetWidth(30.0)),
-        color: ThemeUtils.currentThemeColor.withOpacity(0.8),
+        color: currentThemeColor.withOpacity(0.8),
         child: BackdropFilter(
           filter: ui.ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
           child: Column(
@@ -207,7 +207,7 @@ class OTAUtils {
                       child: Text(
                         Platform.isIOS ? "前往 App Store 更新" : "更新",
                         style: TextStyle(
-                          color: ThemeUtils.currentThemeColor,
+                          color: currentThemeColor,
                           fontWeight: FontWeight.bold,
                           fontSize: suSetSp(18.0),
                         ),

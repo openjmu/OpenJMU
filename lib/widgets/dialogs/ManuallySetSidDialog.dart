@@ -92,7 +92,7 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                           textBaseline: TextBaseline.alphabetic,
                         ),
                       ),
-                      cursorColor: ThemeUtils.currentThemeColor,
+                      cursorColor: currentThemeColor,
                     ),
                   ),
                   SizedBox(
@@ -118,8 +118,8 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                               "保存",
                               style: TextStyle(
                                 color: canSave
-                                    ? ThemeUtils.currentThemeColor
-                                    : Theme.of(context).disabledColor,
+                                    ? currentThemeColor
+                                    : currentTheme.disabledColor,
                                 fontSize: suSetSp(18.0),
                               ),
                             ),

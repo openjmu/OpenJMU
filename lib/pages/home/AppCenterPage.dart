@@ -28,11 +28,12 @@ class AppCenterPage extends StatelessWidget {
         webAppWidgetList[app.menuType].add(getWebAppButton(context, app));
       }
     }
-    List<Widget> _list = [];
+    final _list = <Widget>[];
     WebApp.category.forEach((name, value) {
       _list.add(getSectionColumn(context, name));
     });
     return ListView.builder(
+      padding: EdgeInsets.zero,
       controller: scrollController,
       itemCount: _list.length,
       itemBuilder: (BuildContext context, index) => _list[index],

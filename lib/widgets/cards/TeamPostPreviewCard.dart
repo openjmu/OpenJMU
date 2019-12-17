@@ -40,9 +40,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop(true);
             },
-            textStyle: TextStyle(
-              color: ThemeUtils.currentThemeColor,
-            ),
+            textStyle: TextStyle(color: currentThemeColor),
           ),
           CupertinoDialogAction(
             child: Text("取消"),
@@ -50,9 +48,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop(false);
             },
-            textStyle: TextStyle(
-              color: ThemeUtils.currentThemeColor,
-            ),
+            textStyle: TextStyle(color: currentThemeColor),
           ),
         ],
       ),
@@ -159,9 +155,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                 name: post.nickname,
               );
             },
-            textStyle: TextStyle(
-              color: ThemeUtils.currentThemeColor,
-            ),
+            textStyle: TextStyle(color: currentThemeColor),
           ),
           CupertinoDialogAction(
             child: Text("取消"),
@@ -169,9 +163,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            textStyle: TextStyle(
-              color: ThemeUtils.currentThemeColor,
-            ),
+            textStyle: TextStyle(color: currentThemeColor),
           ),
         ],
       ),
@@ -199,9 +191,7 @@ class TeamPostPreviewCard extends StatelessWidget {
               Navigator.pop(context);
               navigatorState.pop();
             },
-            textStyle: TextStyle(
-              color: ThemeUtils.currentThemeColor,
-            ),
+            textStyle: TextStyle(color: currentThemeColor),
           ),
           CupertinoDialogAction(
             child: Text("取消"),
@@ -209,9 +199,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            textStyle: TextStyle(
-              color: ThemeUtils.currentThemeColor,
-            ),
+            textStyle: TextStyle(color: currentThemeColor),
           ),
         ],
       ),
@@ -313,9 +301,7 @@ class TeamPostPreviewCard extends StatelessWidget {
               TextSpan(text: " ... "),
               TextSpan(
                 text: "全文",
-                style: TextStyle(
-                  color: ThemeUtils.currentThemeColor,
-                ),
+                style: TextStyle(color: currentThemeColor),
               ),
             ],
           ),
@@ -336,6 +322,7 @@ class TeamPostPreviewCard extends StatelessWidget {
           color: Theme.of(context).canvasColor.withOpacity(0.5),
         ),
         child: ListView.builder(
+          padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           itemCount: provider.post.postInfo.length +
@@ -402,7 +389,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                           decoration: BoxDecoration(
                             borderRadius:
                                 BorderRadius.circular(suSetWidth(5.0)),
-                            color: ThemeUtils.currentThemeColor,
+                            color: currentThemeColor,
                           ),
                           child: Text(
                             "楼主",
@@ -437,39 +424,44 @@ class TeamPostPreviewCard extends StatelessWidget {
       );
 
   Widget _images(context, TeamPost post) {
-    List<Widget> imagesWidget = [];
-    for (int index = 0; index < post.pics.length; index++) {
-      final imageId = int.parse(post.pics[index]['fid']);
+    final imagesWidget = <Widget>[];
+    for (int i = 0; i < post.pics.length; i++) {
+      final imageId = int.parse(post.pics[i]['fid']);
       final imageUrl = API.teamFile(fid: imageId);
-      Widget _exImage = ExtendedImage.network(
-        imageUrl,
-        fit: BoxFit.cover,
-        cache: true,
-        color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
-        colorBlendMode: ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
-        filterQuality: FilterQuality.none,
-        retries: 0,
-        loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = Center(child: CupertinoActivityIndicator());
-              break;
-            case LoadState.completed:
-              final info = state.extendedImageInfo;
-              if (info != null) {
-                loader = ScaledImage(
-                  image: info.image,
-                  length: post.pics.length,
-                  num200: suSetSp(200),
-                  num400: suSetSp(400),
-                );
+      Widget _exImage = Selector<ThemesProvider, bool>(
+        selector: (_, provider) => provider.dark,
+        builder: (_, dark, __) {
+          return ExtendedImage.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            cache: true,
+            color: dark ? Colors.black.withAlpha(50) : null,
+            colorBlendMode: dark ? BlendMode.darken : BlendMode.srcIn,
+            filterQuality: FilterQuality.none,
+            retries: 0,
+            loadStateChanged: (ExtendedImageState state) {
+              Widget loader;
+              switch (state.extendedImageLoadState) {
+                case LoadState.loading:
+                  loader = Center(child: CupertinoActivityIndicator());
+                  break;
+                case LoadState.completed:
+                  final info = state.extendedImageInfo;
+                  if (info != null) {
+                    loader = ScaledImage(
+                      image: info.image,
+                      length: post.pics.length,
+                      num200: suSetSp(200),
+                      num400: suSetSp(400),
+                    );
+                  }
+                  break;
+                case LoadState.failed:
+                  break;
               }
-              break;
-            case LoadState.failed:
-              break;
-          }
-          return loader;
+              return loader;
+            },
+          );
         },
       );
       imagesWidget.add(
@@ -478,7 +470,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             navigatorState.pushNamed(
               "openjmu://image-viewer",
               arguments: {
-                "index": index,
+                "index": i,
                 "pics": post.pics.map((pic) {
                   final id = int.parse(pic['fid']);
                   final imageUrl = API.teamFile(fid: id);
@@ -556,18 +548,18 @@ class TeamPostPreviewCard extends StatelessWidget {
               child: LikeButton(
                 size: suSetWidth(30.0),
                 circleColor: CircleColor(
-                  start: ThemeUtils.currentThemeColor,
-                  end: ThemeUtils.currentThemeColor,
+                  start: currentThemeColor,
+                  end: currentThemeColor,
                 ),
                 bubblesColor: BubblesColor(
-                  dotPrimaryColor: ThemeUtils.currentThemeColor,
-                  dotSecondaryColor: ThemeUtils.currentThemeColor,
+                  dotPrimaryColor: currentThemeColor,
+                  dotSecondaryColor: currentThemeColor,
                 ),
                 likeBuilder: (bool isLiked) => SvgPicture.asset(
                   "assets/icons/postActions/thumbUp-${isLiked ? "fill" : "line"}.svg",
                   color: isLiked
-                      ? ThemeUtils.currentThemeColor
-                      : Theme.of(context).textTheme.body1.color,
+                      ? currentThemeColor
+                      : currentTheme.textTheme.body1.color,
                   width: suSetWidth(24.0),
                   height: suSetHeight(24.0),
                 ),
@@ -580,8 +572,8 @@ class TeamPostPreviewCard extends StatelessWidget {
                   count == 0 ? "赞" : text,
                   style: TextStyle(
                     color: isLiked
-                        ? ThemeUtils.currentThemeColor
-                        : Theme.of(context).textTheme.body1.color,
+                        ? currentThemeColor
+                        : currentTheme.textTheme.body1.color,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),

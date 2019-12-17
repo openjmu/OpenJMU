@@ -35,6 +35,7 @@ class _FontScalePageState extends State<FontScalePage> {
                       fontSize: suSetSp(23.0),
                     ),
               ),
+              elevation: 0.0,
             ),
             Expanded(
               child: Center(
@@ -107,8 +108,8 @@ class _FontScalePageState extends State<FontScalePage> {
                     min: scaleRange[0],
                     max: scaleRange[1],
                     divisions: 8,
-                    activeColor: ThemeUtils.currentThemeColor,
-                    inactiveColor: ThemeUtils.currentThemeColor.withAlpha(50),
+                    activeColor: currentThemeColor,
+                    inactiveColor: currentThemeColor.withAlpha(50),
                     value: scale,
                     onChanged: (double value) {
                       setState(() {

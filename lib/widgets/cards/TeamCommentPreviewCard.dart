@@ -61,7 +61,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(suSetWidth(5.0)),
-                          color: ThemeUtils.currentThemeColor,
+                          color: currentThemeColor,
                         ),
                         child: Text(
                           "楼主",
@@ -138,9 +138,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop(true);
             },
-            textStyle: TextStyle(
-              color: ThemeUtils.currentThemeColor,
-            ),
+            textStyle: TextStyle(color: currentThemeColor),
           ),
           CupertinoDialogAction(
             child: Text("取消"),
@@ -148,9 +146,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop(false);
             },
-            textStyle: TextStyle(
-              color: ThemeUtils.currentThemeColor,
-            ),
+            textStyle: TextStyle(color: currentThemeColor),
           ),
         ],
       ),
@@ -218,9 +214,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                 TextSpan(text: " ... "),
                 TextSpan(
                   text: "全文",
-                  style: TextStyle(
-                    color: ThemeUtils.currentThemeColor,
-                  ),
+                  style: TextStyle(color: currentThemeColor),
                 ),
               ],
             ),
@@ -236,7 +230,10 @@ class TeamCommentPreviewCard extends StatelessWidget {
                 final provider = TeamPostProvider(post);
                 navigatorState.pushNamed(
                   "openjmu://team-post-detail",
-                  arguments: {"provider": provider, "type": TeamPostType.comment},
+                  arguments: {
+                    "provider": provider,
+                    "type": TeamPostType.comment
+                  },
                 );
               }
             : null,
@@ -275,8 +272,8 @@ class TeamCommentPreviewCard extends StatelessWidget {
                       Text(
                         "查看更多回复",
                         style: Theme.of(context).textTheme.caption.copyWith(
-                          fontSize: suSetSp(15.0),
-                        ),
+                              fontSize: suSetSp(15.0),
+                            ),
                       ),
                       Icon(
                         Icons.expand_more,
@@ -323,7 +320,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   borderRadius:
                                       BorderRadius.circular(suSetWidth(5.0)),
-                                  color: ThemeUtils.currentThemeColor,
+                                  color: currentThemeColor,
                                 ),
                                 child: Text(
                                   "楼主",
@@ -361,33 +358,38 @@ class TeamCommentPreviewCard extends StatelessWidget {
     for (int index = 0; index < post.pics.length; index++) {
       final imageId = int.parse(post.pics[index]['fid']);
       final imageUrl = API.teamFile(fid: imageId);
-      Widget _exImage = ExtendedImage.network(
-        imageUrl,
-        fit: BoxFit.cover,
-        cache: true,
-        color: ThemeUtils.isDark ? Colors.black.withAlpha(50) : null,
-        colorBlendMode: ThemeUtils.isDark ? BlendMode.darken : BlendMode.srcIn,
-        loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = Center(child: CupertinoActivityIndicator());
-              break;
-            case LoadState.completed:
-              final info = state.extendedImageInfo;
-              if (info != null) {
-                loader = ScaledImage(
-                  image: info.image,
-                  length: post.pics.length,
-                  num200: suSetSp(200),
-                  num400: suSetSp(400),
-                );
+      Widget _exImage = Selector<ThemesProvider, bool>(
+        selector: (_, provider) => provider.dark,
+        builder: (_, dark, __) {
+          return ExtendedImage.network(
+            imageUrl,
+            fit: BoxFit.cover,
+            cache: true,
+            color: dark ? Colors.black.withAlpha(50) : null,
+            colorBlendMode: dark ? BlendMode.darken : BlendMode.srcIn,
+            loadStateChanged: (ExtendedImageState state) {
+              Widget loader;
+              switch (state.extendedImageLoadState) {
+                case LoadState.loading:
+                  loader = Center(child: CupertinoActivityIndicator());
+                  break;
+                case LoadState.completed:
+                  final info = state.extendedImageInfo;
+                  if (info != null) {
+                    loader = ScaledImage(
+                      image: info.image,
+                      length: post.pics.length,
+                      num200: suSetSp(200),
+                      num400: suSetSp(400),
+                    );
+                  }
+                  break;
+                case LoadState.failed:
+                  break;
               }
-              break;
-            case LoadState.failed:
-              break;
-          }
-          return loader;
+              return loader;
+            },
+          );
         },
       );
       imagesWidget.add(

@@ -29,7 +29,7 @@ class AnnouncementWidget extends StatelessWidget {
           borderRadius: radius != null
               ? BorderRadius.circular(suSetWidth(radius))
               : null,
-          color: (color ?? ThemeUtils.defaultColor).withAlpha(0x44),
+          color: (color ?? defaultColor).withAlpha(0x44),
         ),
         child: Row(
           children: <Widget>[
@@ -38,14 +38,14 @@ class AnnouncementWidget extends StatelessWidget {
               child: Icon(
                 Icons.error_outline,
                 size: suSetWidth(18.0),
-                color: color ?? ThemeUtils.defaultColor,
+                color: color ?? defaultColor,
               ),
             ),
             Expanded(
               child: Text(
                 "${Configs.announcements[0]['title']}",
                 style: TextStyle(
-                  color: color ?? ThemeUtils.defaultColor,
+                  color: color ?? defaultColor,
                   fontSize: suSetSp(18.0),
                 ),
                 overflow: TextOverflow.ellipsis,
@@ -56,7 +56,7 @@ class AnnouncementWidget extends StatelessWidget {
               child: Icon(
                 Icons.keyboard_arrow_right,
                 size: suSetWidth(18.0),
-                color: color ?? ThemeUtils.defaultColor,
+                color: color ?? defaultColor,
               ),
             ),
           ],

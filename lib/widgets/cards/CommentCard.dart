@@ -133,7 +133,7 @@ class CommentCard extends StatelessWidget {
 
   Widget getPostBanned() {
     return Container(
-      color: ThemeUtils.currentThemeColor.withOpacity(0.4),
+      color: currentThemeColor.withOpacity(0.4),
       margin: EdgeInsets.only(top: suSetHeight(10.0)),
       padding: EdgeInsets.all(suSetWidth(30.0)),
       child: Center(
@@ -163,9 +163,7 @@ class CommentCard extends StatelessWidget {
             TextSpan(text: " ..."),
             TextSpan(
               text: "全文",
-              style: TextStyle(
-                color: ThemeUtils.currentThemeColor,
-              ),
+              style: TextStyle(color: currentThemeColor),
             ),
           ],
         ),
@@ -177,7 +175,7 @@ class CommentCard extends StatelessWidget {
   Widget dialog(context) {
     if (comment.post != null) {
       return SimpleDialog(
-        backgroundColor: ThemeUtils.currentThemeColor,
+        backgroundColor: currentThemeColor,
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

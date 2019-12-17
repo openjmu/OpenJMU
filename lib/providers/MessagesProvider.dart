@@ -60,10 +60,8 @@ class MessagesProvider with ChangeNotifier {
   void _incomingAppsMessage(MessageReceivedEvent event) {
     final message = AppMessage.fromEvent(event);
 
-    final provider = Provider.of<WebAppsProvider>(
-      navigatorState.context,
-      listen: false,
-    );
+    final provider =
+        Provider.of<WebAppsProvider>(currentContext, listen: false);
     final app =
         provider.apps.where((app) => app.id == message.appId).elementAt(0);
 
@@ -76,7 +74,10 @@ class MessagesProvider with ChangeNotifier {
     _appsMessages[message.appId] = List.from(tempMessages);
     saveAppsMessages();
     if (Instances.appLifeCycleState != AppLifecycleState.resumed) {
-      NotificationUtils.show(app.name, message.content);
+      NotificationUtils.show(
+        app.name,
+        message.content.trim().replaceAll("\n", "").replaceAll("\r", ""),
+      );
     }
     if (message.messageId != null && message.messageId != 0) {
       MessageUtils.sendConfirmOfflineMessageOne(message.messageId);

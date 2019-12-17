@@ -22,8 +22,8 @@ class ConventionDialog extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(suSetWidth(20.0)),
             color: Color.lerp(
-              Theme.of(context).cardColor,
-              ThemeUtils.currentThemeColor,
+              currentTheme.cardColor,
+              currentThemeColor,
               0.2,
             ),
           ),

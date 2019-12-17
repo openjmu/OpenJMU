@@ -69,6 +69,7 @@ class _MarketingPageState extends State<MarketingPage> {
         onRefresh: getPostList,
         child: loaded
             ? ExtendedListView.builder(
+                padding: EdgeInsets.zero,
                 extendedListDelegate: ExtendedListDelegate(
                   collectGarbage: (List<int> garbage) {
                     garbage.forEach((index) {

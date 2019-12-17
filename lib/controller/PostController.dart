@@ -49,7 +49,6 @@ class _PostListState extends State<PostList>
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   final ScrollController _scrollController = ScrollController();
-  Color currentColorTheme = ThemeUtils.currentThemeColor;
 
   int _lastValue = 0;
   bool _isLoading = false;
@@ -103,10 +102,6 @@ class _PostListState extends State<PostList>
         }
         if (mounted) setState(() {});
       })
-      ..on<ChangeThemeEvent>().listen((event) {
-        currentColorTheme = event.color;
-        if (mounted) setState(() {});
-      })
       ..on<PostDeletedEvent>().listen((event) {
         debugPrint(
             "PostDeleted: ${event.postId} / ${event.page} / ${event.index}");
@@ -122,7 +117,10 @@ class _PostListState extends State<PostList>
       onTap: () {},
       child: Container(
         child: Center(
-          child: Text('这里空空如也~', style: TextStyle(color: currentColorTheme)),
+          child: Text(
+            '这里空空如也~',
+            style: TextStyle(color: currentThemeColor),
+          ),
         ),
       ),
     );
@@ -137,7 +135,10 @@ class _PostListState extends State<PostList>
       },
       child: Container(
         child: Center(
-          child: Text('加载失败，轻触重试', style: TextStyle(color: currentColorTheme)),
+          child: Text(
+            '加载失败，轻触重试',
+            style: TextStyle(color: currentThemeColor),
+          ),
         ),
       ),
     );
@@ -312,7 +313,7 @@ class _PostListState extends State<PostList>
         if (widget.needRefreshIndicator) {
           _body = RefreshIndicator(
             key: refreshIndicatorKey,
-            color: currentColorTheme,
+            color: currentThemeColor,
             onRefresh: _refreshData,
             child: _body,
           );
@@ -326,7 +327,7 @@ class _PostListState extends State<PostList>
 }
 
 class ForwardListInPostController {
-  _ForwardListInPostState _forwardInPostListState;
+  ForwardListInPostState _forwardInPostListState;
 
   void reload() {
     _forwardInPostListState?._refreshData();
@@ -337,14 +338,18 @@ class ForwardListInPost extends StatefulWidget {
   final Post post;
   final ForwardListInPostController forwardInPostController;
 
-  ForwardListInPost(this.post, this.forwardInPostController, {Key key})
-      : super(key: key);
+  ForwardListInPost(
+    this.post,
+    this.forwardInPostController, {
+    Key key,
+  }) : super(key: key);
 
   @override
-  State createState() => _ForwardListInPostState();
+  State createState() => ForwardListInPostState();
 }
 
-class _ForwardListInPostState extends State<ForwardListInPost> {
+class ForwardListInPostState extends State<ForwardListInPost>
+    with AutomaticKeepAliveClientMixin {
   List<Post> _posts = [];
 
   bool isLoading = true;
@@ -352,6 +357,9 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
   bool firstLoadComplete = false;
 
   int lastValue;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   void initState() {
@@ -382,16 +390,14 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
       } else {
         canLoadMore = false;
       }
-      List<Post> posts = [];
       list.forEach((post) {
         if (!UserAPI.blacklist.contains(jsonEncode({
           "uid": post['topic']['user']['uid'].toString(),
           "username": post['topic']['user']['nickname'],
         }))) {
-          posts.add(Post.fromJson(post['topic']));
+          _posts.add(Post.fromJson(post['topic']));
         }
       });
-      _posts.addAll(posts);
       isLoading = false;
       lastValue = _posts.isEmpty ? 0 : _posts.last.id;
       if (this.mounted) setState(() {});
@@ -408,28 +414,27 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
 
   Future<Null> _refreshList() async {
     isLoading = true;
+    _posts.clear();
     if (mounted) setState(() {});
     try {
-      Map<String, dynamic> response =
+      final response =
           (await PostAPI.getForwardListInPost(widget.post.id))?.data;
-      List<dynamic> list = response['topics'];
-      int total = response['total'] as int;
+      final list = response['topics'];
+      final total = response['total'] as int;
       if (response['count'] as int < total) canLoadMore = true;
-      List<Post> posts = [];
       list.forEach((post) {
         if (!UserAPI.blacklist.contains(jsonEncode({
           "uid": post['topic']['user']['uid'].toString(),
           "username": post['topic']['user']['nickname'],
         }))) {
-          posts.add(Post.fromJson(post['topic']));
+          _posts.add(Post.fromJson(post['topic']));
         }
       });
-      Instances.eventBus.fire(ForwardInPostUpdatedEvent(widget.post.id, total));
-      _posts = posts;
       isLoading = false;
       firstLoadComplete = true;
       lastValue = _posts.isEmpty ? 0 : _posts.last.id;
       if (this.mounted) setState(() {});
+      print(_posts.length);
     } on DioError catch (e) {
       if (e.response != null) {
         debugPrint("${e.response.data}");
@@ -445,7 +450,7 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
         post.nickname,
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
-          fontSize: suSetSp(18.0),
+          fontSize: suSetSp(20.0),
         ),
       );
 
@@ -462,111 +467,92 @@ class _ForwardListInPostState extends State<ForwardListInPost> {
     return Text(
       _postTime,
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(14.0),
+            fontSize: suSetSp(16.0),
           ),
     );
   }
 
   Widget getExtendedText(context, content) => ExtendedText(
         content != null ? "$content " : null,
-        style: TextStyle(fontSize: suSetSp(17.0)),
+        style: TextStyle(fontSize: suSetSp(19.0)),
         onSpecialTextTap: specialTextTapRecognizer,
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       );
 
-  @override
+  @mustCallSuper
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).cardColor,
-      width: Screen.width,
-      padding: isLoading
-          ? EdgeInsets.symmetric(vertical: suSetHeight(42.0))
-          : EdgeInsets.zero,
-      child: isLoading
-          ? Center(child: PlatformProgressIndicator())
-          : Container(
-              color: Theme.of(context).cardColor,
-              padding: EdgeInsets.zero,
-              child: firstLoadComplete
-                  ? ExtendedListView.separated(
-                      extendedListDelegate: ExtendedListDelegate(
-                        collectGarbage: (List<int> garbage) {},
-                      ),
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      separatorBuilder: (context, index) => Divider(
-                        height: suSetHeight(1.0),
-                      ),
-                      itemCount: _posts.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index == _posts.length - 1) {
-                          _loadList();
-                        }
-                        if (index == _posts.length) {
-                          return LoadMoreIndicator(
-                            canLoadMore: canLoadMore && !isLoading,
-                          );
-                        } else if (index < _posts.length) {
-                          return Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              UserAPI.getAvatar(
-                                size: 40.0,
-                                uid: _posts[index].uid,
-                              ),
-                              Expanded(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    SizedBox(height: suSetHeight(10.0)),
-                                    Row(
-                                      children: <Widget>[
-                                        getPostNickname(context, _posts[index]),
-                                        if (Constants.developerList
-                                            .contains(_posts[index].uid))
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                              left: suSetWidth(14.0),
-                                            ),
-                                            child: DeveloperTag(
-                                              padding: EdgeInsets.symmetric(
-                                                horizontal: suSetWidth(8.0),
-                                                vertical: suSetHeight(4.0),
-                                              ),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
-                                    SizedBox(height: suSetHeight(4.0)),
-                                    getExtendedText(
-                                        context, _posts[index].content),
-                                    SizedBox(height: suSetHeight(6.0)),
-                                    getPostTime(context, _posts[index]),
-                                    SizedBox(height: suSetHeight(10.0)),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          );
-                        } else {
-                          return SizedBox.shrink();
-                        }
-                      },
-                    )
-                  : Container(
-                      height: suSetHeight(120.0),
-                      child: Center(
-                        child: Text(
-                          "暂无内容",
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: suSetSp(18.0),
+    super.build(context);
+    return isLoading
+        ? Center(child: PlatformProgressIndicator())
+        : firstLoadComplete
+            ? ExtendedListView.separated(
+                padding: EdgeInsets.zero,
+                physics: const NeverScrollableScrollPhysics(),
+                separatorBuilder: (context, index) => Container(
+                  color: Theme.of(context).dividerColor,
+                  height: 1.0,
+                ),
+                itemCount: _posts.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == _posts.length - 1 && canLoadMore) {
+                    _loadList();
+                  }
+                  if (index == _posts.length) {
+                    return LoadMoreIndicator(
+                      canLoadMore: canLoadMore && !isLoading,
+                    );
+                  } else if (index < _posts.length) {
+                    return Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: suSetWidth(20.0),
+                            vertical: suSetHeight(12.0),
+                          ),
+                          child: UserAPI.getAvatar(
+                            uid: _posts[index].uid,
                           ),
                         ),
-                      ),
-                    ),
-            ),
-    );
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              SizedBox(height: suSetHeight(10.0)),
+                              Row(
+                                children: <Widget>[
+                                  getPostNickname(context, _posts[index]),
+                                  if (Constants.developerList
+                                      .contains(_posts[index].uid))
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                        left: suSetWidth(14.0),
+                                      ),
+                                      child: DeveloperTag(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: suSetWidth(8.0),
+                                          vertical: suSetHeight(4.0),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              SizedBox(height: suSetHeight(4.0)),
+                              getExtendedText(context, _posts[index].content),
+                              SizedBox(height: suSetHeight(6.0)),
+                              getPostTime(context, _posts[index]),
+                              SizedBox(height: suSetHeight(10.0)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return SizedBox.shrink();
+                  }
+                },
+              )
+            : LoadMoreIndicator(canLoadMore: false);
   }
 }

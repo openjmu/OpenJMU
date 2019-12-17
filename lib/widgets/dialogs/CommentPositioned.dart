@@ -103,10 +103,10 @@ class CommentPositionedState extends State<CommentPositioned> {
       decoration: InputDecoration(
         contentPadding: EdgeInsets.all(suSetWidth(16.0)),
         border: OutlineInputBorder(
-          borderSide: BorderSide(color: ThemeUtils.currentThemeColor),
+          borderSide: BorderSide(color: currentThemeColor),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: ThemeUtils.currentThemeColor),
+          borderSide: BorderSide(color: currentThemeColor),
         ),
         hintText: _hintText,
         hintStyle: TextStyle(
@@ -129,7 +129,7 @@ class CommentPositionedState extends State<CommentPositioned> {
             fontSize: suSetSp(20.0),
             textBaseline: TextBaseline.alphabetic,
           ),
-      cursorColor: ThemeUtils.currentThemeColor,
+      cursorColor: currentThemeColor,
       autofocus: true,
       maxLines: 3,
       maxLength: 233,
@@ -256,7 +256,7 @@ class CommentPositionedState extends State<CommentPositioned> {
         child: Row(
           children: <Widget>[
             RoundedCheckbox(
-              activeColor: ThemeUtils.currentThemeColor,
+              activeColor: currentThemeColor,
               value: forwardAtTheMeanTime,
               onChanged: (value) {
                 setState(() {
@@ -316,7 +316,7 @@ class CommentPositionedState extends State<CommentPositioned> {
                   Icons.sentiment_very_satisfied,
                   size: suSetWidth(32.0),
                   color: emoticonPadActive
-                      ? ThemeUtils.currentThemeColor
+                      ? currentThemeColor
                       : Theme.of(context).iconTheme.color,
                 ),
               ),
@@ -331,7 +331,7 @@ class CommentPositionedState extends State<CommentPositioned> {
                       child: Icon(
                         Icons.send,
                         size: suSetWidth(32.0),
-                        color: ThemeUtils.currentThemeColor,
+                        color: currentThemeColor,
                       ),
                     ),
                     onTap:

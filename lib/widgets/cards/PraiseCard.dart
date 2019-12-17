@@ -113,9 +113,7 @@ class PraiseCard extends StatelessWidget {
           TextSpan(text: " ... "),
           TextSpan(
             text: "全文",
-            style: TextStyle(
-              color: ThemeUtils.currentThemeColor,
-            ),
+            style: TextStyle(color: currentThemeColor),
           ),
         ],
       ),

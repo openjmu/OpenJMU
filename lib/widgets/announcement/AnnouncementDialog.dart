@@ -63,7 +63,7 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
       );
     } else {
       return AlertDialog(
-        backgroundColor: ThemeUtils.currentThemeColor,
+        backgroundColor: currentThemeColor,
         title: Text(
           "${widget.announcement['title']}",
           style: TextStyle(

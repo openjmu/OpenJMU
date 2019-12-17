@@ -902,4 +902,4 @@ packages:
     version: "2.2.0"
 sdks:
   dart: ">=2.5.0 <3.0.0"
-  flutter: ">=1.9.1+hotfix.6 <2.0.0"
+  flutter: "1.9.1+hotfix.6"

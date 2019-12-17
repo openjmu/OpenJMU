@@ -25,7 +25,8 @@ class MyInfoPageState extends State<MyInfoPage> {
             },
           ],
         [
-          if (!ThemeUtils.isPlatformBrightness)
+          if (!Provider.of<ThemesProvider>(currentContext, listen: false)
+              .platformBrightness)
             {
               "name": "夜间模式",
               "icon": "nightmode",
@@ -61,9 +62,7 @@ class MyInfoPageState extends State<MyInfoPage> {
           ],
       ];
 
-  Color themeColor = ThemeUtils.currentThemeColor;
-
-  bool isLogin = false, isDark = false;
+  bool isLogin = false;
   bool signing = false, signed = false;
 
   int signedCount = 0, currentWeek;
@@ -75,8 +74,6 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   @override
   void initState() {
-    isDark = DataUtils.getBrightness();
-
     getSignStatus();
     getCurrentWeek();
     updateHello();
@@ -87,15 +84,6 @@ class MyInfoPageState extends State<MyInfoPage> {
         getSignStatus();
         getCurrentWeek();
         updateHello();
-      });
-    Instances.eventBus
-      ..on<ChangeThemeEvent>().listen((event) {
-        themeColor = event.color;
-        if (mounted) setState(() {});
-      })
-      ..on<ChangeBrightnessEvent>().listen((event) {
-        isDark = event.isDarkState;
-        if (mounted) setState(() {});
       });
     super.initState();
   }
@@ -171,12 +159,6 @@ class MyInfoPageState extends State<MyInfoPage> {
     }
   }
 
-  static void setDarkMode(isDark) {
-    ThemeUtils.isDark = isDark;
-    DataUtils.setBrightness(isDark);
-    Instances.eventBus.fire(ChangeBrightnessEvent(isDark));
-  }
-
   void showLogoutDialog(BuildContext context) {
     showPlatformDialog(
       context: context,
@@ -195,13 +177,15 @@ class MyInfoPageState extends State<MyInfoPage> {
               elevation: 0,
               disabledElevation: 0.0,
               highlightElevation: 0.0,
-              child: Text("确认",
-                  style: TextStyle(color: ThemeUtils.currentThemeColor)),
+              child: Text(
+                "确认",
+                style: TextStyle(color: currentThemeColor),
+              ),
             ),
             ios: (BuildContext context) => CupertinoButtonData(
               child: Text(
                 "确认",
-                style: TextStyle(color: ThemeUtils.currentThemeColor),
+                style: TextStyle(color: currentThemeColor),
               ),
             ),
             onPressed: () {
@@ -211,15 +195,17 @@ class MyInfoPageState extends State<MyInfoPage> {
           ),
           PlatformButton(
             android: (BuildContext context) => MaterialRaisedButtonData(
-              color: ThemeUtils.currentThemeColor,
+              color: currentThemeColor,
               elevation: 0,
               disabledElevation: 0.0,
               highlightElevation: 0.0,
               child: Text('取消', style: TextStyle(color: Colors.white)),
             ),
             ios: (BuildContext context) => CupertinoButtonData(
-              child: Text("取消",
-                  style: TextStyle(color: ThemeUtils.currentThemeColor)),
+              child: Text(
+                "取消",
+                style: TextStyle(color: currentThemeColor),
+              ),
             ),
             onPressed: Navigator.of(_).pop,
           ),
@@ -270,7 +256,7 @@ class MyInfoPageState extends State<MyInfoPage> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(suSetSp(20.0)),
         child: Container(
-          color: ThemeUtils.currentThemeColor,
+          color: currentThemeColor,
           padding: EdgeInsets.symmetric(
             horizontal: suSetSp(8.0),
             vertical: suSetSp(6.0),
@@ -405,49 +391,54 @@ class MyInfoPageState extends State<MyInfoPage> {
     final Map<String, String> item = settingsSection()[sectionIndex][itemIndex];
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      child: Container(
-        color: Theme.of(context).primaryColor,
-        padding: EdgeInsets.symmetric(
-          horizontal: suSetWidth(18.0),
-          vertical: suSetHeight(18.0),
-        ),
-        child: Row(
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(
-                left: suSetWidth(12.0),
-                right: suSetWidth(24.0),
-              ),
-              child: SvgPicture.asset(
-                (item['name'] == "夜间模式")
-                    ? isDark
-                        ? "assets/icons/daymode-line.svg"
-                        : "assets/icons/${item['icon']}-line.svg"
-                    : "assets/icons/${item['icon']}-line.svg",
-                color: Theme.of(context).iconTheme.color,
-                width: suSetWidth(40.0),
-                height: suSetHeight(32.0),
-              ),
+      child: Selector<ThemesProvider, bool>(
+        selector: (_, provider) => provider.dark,
+        builder: (_, dark, __) {
+          return Container(
+            color: Theme.of(context).primaryColor,
+            padding: EdgeInsets.symmetric(
+              horizontal: suSetWidth(20.0),
+              vertical: suSetHeight(18.0),
             ),
-            Expanded(
-              child: Text(
-                (item['name'] == "夜间模式")
-                    ? isDark ? "日间模式" : item['name']
-                    : item['name'],
-                style: TextStyle(fontSize: suSetSp(23.0)),
-              ),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: suSetWidth(12.0),
+                    right: suSetWidth(24.0),
+                  ),
+                  child: SvgPicture.asset(
+                    (item['name'] == "夜间模式")
+                        ? dark
+                            ? "assets/icons/daymode-line.svg"
+                            : "assets/icons/${item['icon']}-line.svg"
+                        : "assets/icons/${item['icon']}-line.svg",
+                    color: Theme.of(context).iconTheme.color,
+                    width: suSetWidth(40.0),
+                    height: suSetHeight(32.0),
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    (item['name'] == "夜间模式")
+                        ? dark ? "日间模式" : item['name']
+                        : item['name'],
+                    style: TextStyle(fontSize: suSetSp(23.0)),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: suSetSp(12.0)),
+                  child: SvgPicture.asset(
+                    "assets/icons/arrow-right.svg",
+                    color: Colors.grey,
+                    width: suSetWidth(30.0),
+                    height: suSetWidth(30.0),
+                  ),
+                ),
+              ],
             ),
-            Padding(
-              padding: EdgeInsets.only(right: suSetSp(12.0)),
-              child: SvgPicture.asset(
-                "assets/icons/arrow-right.svg",
-                color: Colors.grey,
-                width: suSetWidth(30.0),
-                height: suSetWidth(30.0),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
       onTap: () {
         _handleItemClick(context, item['name']);
@@ -462,7 +453,11 @@ class MyInfoPageState extends State<MyInfoPage> {
         break;
 
       case "夜间模式":
-        setDarkMode(!isDark);
+        final provider = Provider.of<ThemesProvider>(
+          currentContext,
+          listen: false,
+        );
+        provider.dark = !provider.dark;
         break;
       case "切换主题":
         navigatorState.pushNamed("openjmu://theme");

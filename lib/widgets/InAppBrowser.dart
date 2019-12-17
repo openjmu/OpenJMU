@@ -103,12 +103,12 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
                   children: <Widget>[
                     Text(
                       title,
-                      style: TextStyle(color: ThemeUtils.currentThemeColor),
+                      style: TextStyle(color: currentThemeColor),
                     ),
                     Text(
                       url,
                       style: TextStyle(
-                          color: ThemeUtils.currentThemeColor,
+                          color: currentThemeColor,
                           fontSize: suSetSp(14.0)),
                     ),
                   ],
@@ -132,7 +132,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
                     children: <Widget>[
                       IconButton(
                         icon: Icon(Icons.arrow_back,
-                            color: ThemeUtils.currentThemeColor),
+                            color: currentThemeColor,),
                         onPressed: () {
                           if (_webViewController != null) {
                             _webViewController.goBack();
@@ -141,7 +141,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
                       ),
                       IconButton(
                         icon: Icon(Icons.arrow_forward,
-                            color: ThemeUtils.currentThemeColor),
+                            color: currentThemeColor,),
                         onPressed: () {
                           if (_webViewController != null) {
                             _webViewController.goForward();
@@ -150,7 +150,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
                       ),
                       IconButton(
                         icon: Icon(Icons.refresh,
-                            color: ThemeUtils.currentThemeColor),
+                            color: currentThemeColor,),
                         onPressed: () {
                           if (_webViewController != null) {
                             _webViewController.reload();
@@ -167,13 +167,13 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
     }
     Instances.eventBus
       ..on<ChangeBrightnessEvent>().listen((event) {
-        Iterable<Match> matches = API.courseSchedule.allMatches(url);
+        final matches = API.courseSchedule.allMatches(url);
         String result;
-        for (Match m in matches) result = m.group(0);
-        if (this.mounted && result != null) loadCourseSchedule();
+        for (final m in matches) result = m.group(0);
+        if (mounted && result != null) loadCourseSchedule();
       })
       ..on<CourseScheduleRefreshEvent>().listen((event) {
-        if (this.mounted) loadCourseSchedule();
+        if (mounted) loadCourseSchedule();
       });
     super.initState();
   }
@@ -184,11 +184,12 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
   }
 
   void loadCourseSchedule() {
+    final provider = Provider.of<ThemesProvider>(currentContext, listen: false);
     try {
       _webViewController.loadUrl(
         "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
         "?sid=${UserAPI.currentUser.sid}"
-        "&night=${ThemeUtils.isDark ? 1 : 0}",
+        "&night=${provider.dark ? 1 : 0}",
       );
     } catch (e) {
       debugPrint("$e");

@@ -145,7 +145,7 @@ class _BackpackPageState extends State<BackpackPage> {
       top: suSetSp(20.0),
       child: Badge(
         padding: EdgeInsets.all(suSetSp(10.0)),
-        badgeColor: ThemeUtils.currentThemeColor,
+        badgeColor: currentThemeColor,
         badgeContent: Text(
           "${myItems[index].count > 99 ? "99+" : myItems[index].count}",
           style: TextStyle(
@@ -220,7 +220,7 @@ class _BackpackPageState extends State<BackpackPage> {
             DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(suSetSp(40.0)),
-                color: ThemeUtils.currentThemeColor.withAlpha(30),
+                color: currentThemeColor.withAlpha(30),
               ),
               child: Stack(
                 children: <Widget>[
@@ -242,9 +242,7 @@ class _BackpackPageState extends State<BackpackPage> {
             emptyDivider(height: 50.0),
             FlatButton(
               shape: RoundedRectangleBorder(
-                side: BorderSide(
-                  color: ThemeUtils.currentThemeColor,
-                ),
+                side: BorderSide(color: currentThemeColor),
                 borderRadius: BorderRadius.circular(50.0),
               ),
               padding: EdgeInsets.symmetric(
@@ -257,7 +255,7 @@ class _BackpackPageState extends State<BackpackPage> {
                 "打开礼包",
                 style: Theme.of(context).textTheme.title.copyWith(
                       fontSize: suSetSp(20.0),
-                      color: ThemeUtils.currentThemeColor,
+                      color: currentThemeColor,
                     ),
               ),
             ),

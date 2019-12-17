@@ -92,7 +92,7 @@ class NewsListPageState extends State<NewsListPage>
             margin: EdgeInsets.only(left: suSetSp(6.0)),
             padding: EdgeInsets.symmetric(horizontal: suSetSp(6.0)),
             decoration: BoxDecoration(
-              color: ThemeUtils.currentThemeColor,
+              color: currentThemeColor,
               borderRadius: BorderRadius.circular(suSetSp(20.0)),
             ),
             child: Text(

@@ -56,7 +56,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
                         ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(suSetWidth(5.0)),
-                          color: ThemeUtils.currentThemeColor,
+                          color: currentThemeColor,
                         ),
                         child: Text(
                           "楼主",
@@ -131,9 +131,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop(true);
             },
-            textStyle: TextStyle(
-              color: ThemeUtils.currentThemeColor,
-            ),
+            textStyle: TextStyle(color: currentThemeColor),
           ),
           CupertinoDialogAction(
             child: Text("取消"),
@@ -141,9 +139,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
             onPressed: () {
               Navigator.of(context).pop(false);
             },
-            textStyle: TextStyle(
-              color: ThemeUtils.currentThemeColor,
-            ),
+            textStyle: TextStyle(color: currentThemeColor),
           ),
         ],
       ),
@@ -201,9 +197,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
               TextSpan(text: " ... "),
               TextSpan(
                 text: "全文",
-                style: TextStyle(
-                  color: ThemeUtils.currentThemeColor,
-                ),
+                style: TextStyle(color: currentThemeColor),
               ),
             ],
           ),

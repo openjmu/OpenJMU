@@ -84,12 +84,12 @@ class ForwardPositionedState extends State<ForwardPositioned> {
           contentPadding: EdgeInsets.all(suSetWidth(16.0)),
           border: OutlineInputBorder(
             borderSide: BorderSide(
-              color: ThemeUtils.currentThemeColor,
+              color: currentThemeColor,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: ThemeUtils.currentThemeColor,
+              color: currentThemeColor,
             ),
           ),
           suffixIcon: _image != null
@@ -108,7 +108,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
               fontSize: suSetSp(20.0),
               textBaseline: TextBaseline.alphabetic,
             ),
-        cursorColor: ThemeUtils.currentThemeColor,
+        cursorColor: currentThemeColor,
         autofocus: true,
         maxLines: 3,
       );
@@ -221,7 +221,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         child: Row(
           children: <Widget>[
             RoundedCheckbox(
-              activeColor: ThemeUtils.currentThemeColor,
+              activeColor: currentThemeColor,
               value: commentAtTheMeanTime,
               onChanged: (value) {
                 setState(() {
@@ -281,7 +281,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                   Icons.sentiment_very_satisfied,
                   size: suSetWidth(32.0),
                   color: emoticonPadActive
-                      ? ThemeUtils.currentThemeColor
+                      ? currentThemeColor
                       : Theme.of(context).iconTheme.color,
                 ),
               ),
@@ -296,7 +296,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                       child: Icon(
                         Icons.send,
                         size: suSetWidth(32.0),
-                        color: ThemeUtils.currentThemeColor,
+                        color: currentThemeColor,
                       ),
                     ),
                     onTap: () => _request(context),

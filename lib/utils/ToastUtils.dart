@@ -1,6 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import 'package:OpenJMU/constants/Constants.dart';
 
 void showLongToast(String text) {
   Fluttertoast.showToast(
@@ -27,7 +26,7 @@ void showCenterShortToast(String text) {
 void showErrorShortToast(String text) {
   Fluttertoast.showToast(
     msg: text,
-    backgroundColor: ThemeUtils.defaultColor,
+    backgroundColor: Color(0xFFE5322D),
     toastLength: Toast.LENGTH_SHORT,
   );
 }
@@ -35,7 +34,7 @@ void showErrorShortToast(String text) {
 void showCenterErrorShortToast(String text) {
   Fluttertoast.showToast(
     msg: text,
-    backgroundColor: ThemeUtils.defaultColor,
+    backgroundColor: Color(0xFFE5322D),
     toastLength: Toast.LENGTH_SHORT,
     gravity: ToastGravity.CENTER,
   );

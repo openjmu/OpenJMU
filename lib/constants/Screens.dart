@@ -24,6 +24,8 @@ class Screen {
 
   static double get bottomSafeHeight => mediaQuery.padding.bottom;
 
+  static double get safeHeight => height - topSafeHeight - bottomSafeHeight;
+
   static updateStatusBarStyle(SystemUiOverlayStyle style) {
     SystemChrome.setSystemUIOverlayStyle(style);
   }
