@@ -93,6 +93,7 @@ class AppCenterPage extends StatelessWidget {
                   WebApp.category[name],
                   style: Theme.of(context).textTheme.body1.copyWith(
                         fontSize: suSetSp(22.0),
+                        fontWeight: FontWeight.bold,
                       ),
                 ),
               ),

@@ -28,6 +28,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   final double indicatorHeight = 60.0;
   final int maxCoursesPerDay = 12;
   ScrollController weekScrollController;
+  DateProvider dateProvider;
 
   bool firstLoaded = false,
       hasCourse = true,
@@ -44,6 +45,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   @override
   void initState() {
+    dateProvider = Provider.of<DateProvider>(currentContext, listen: false);
     if (!firstLoaded) initSchedule();
 
     Instances.eventBus
@@ -55,7 +57,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       ..on<CurrentWeekUpdatedEvent>().listen((event) {
         if (currentWeek == null) {
           if (now != null) firstLoaded = true;
-          currentWeek = DateAPI.currentWeek;
+          currentWeek = dateProvider.currentWeek;
           updateScrollController();
           if (mounted) setState(() {});
           if (weekScrollController.hasClients) scrollToWeek(currentWeek);
@@ -63,7 +65,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             widget.appCenterPageState.setState(() {});
           }
         }
-      });
+      })
+    ;
     super.initState();
   }
 
@@ -84,7 +87,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       getCourses(),
       getRemark(),
     ]).then((responses) {
-      currentWeek = DateAPI.currentWeek;
+      currentWeek = dateProvider.currentWeek;
       now = DateTime.now();
       if (!firstLoaded) {
         if (currentWeek != null) firstLoaded = true;
@@ -95,7 +98,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       if (showError) showError = false;
       updateScrollController();
       if (mounted) setState(() {});
-      if (DateAPI.currentWeek != null) scrollToWeek(DateAPI.currentWeek);
+
+      if (dateProvider.currentWeek != null) {
+        scrollToWeek(dateProvider.currentWeek);
+      }
     }).catchError((e) {
       if (!firstLoaded && currentWeek != null) firstLoaded = true;
       hasCourse = false;
@@ -156,11 +162,12 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   }
 
   void updateScrollController() {
+    final provider = Provider.of<DateProvider>(currentContext, listen: false);
     weekScrollController ??= ScrollController(
-      initialScrollOffset: DateAPI.currentWeek != null
+      initialScrollOffset: provider.currentWeek != null
           ? math.max(
               0,
-              (DateAPI.currentWeek - 0.5) * suSetWidth(weekSize) -
+              (provider.currentWeek - 0.5) * suSetWidth(weekSize) -
                   Screen.width / 2,
             )
           : 0.0,
@@ -259,51 +266,55 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       child: Container(
         width: suSetWidth(weekSize),
         padding: EdgeInsets.all(suSetWidth(10.0)),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(suSetWidth(20.0)),
-            border: (DateAPI.currentWeek == index + 1 &&
-                    currentWeek != DateAPI.currentWeek)
-                ? Border.all(
-                    color: currentThemeColor.withAlpha(100),
-                    width: 2.0,
-                  )
-                : null,
-            color: currentWeek == index + 1
-                ? currentThemeColor.withAlpha(100)
-                : null,
-          ),
-          child: Center(
-            child: Stack(
-              children: <Widget>[
-                SizedBox.expand(
-                  child: Center(
-                    child: RichText(
-                      text: TextSpan(
-                        children: <InlineSpan>[
-                          TextSpan(
-                            text: "第",
+        child: Selector<DateProvider, int>(
+          selector: (_, provider) => provider.currentWeek,
+          builder: (_, currentWeek, __) {
+            return DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(suSetWidth(20.0)),
+                border: (currentWeek == index + 1 && currentWeek != currentWeek)
+                    ? Border.all(
+                        color: currentThemeColor.withAlpha(100),
+                        width: 2.0,
+                      )
+                    : null,
+                color: currentWeek == index + 1
+                    ? currentThemeColor.withAlpha(100)
+                    : null,
+              ),
+              child: Center(
+                child: Stack(
+                  children: <Widget>[
+                    SizedBox.expand(
+                      child: Center(
+                        child: RichText(
+                          text: TextSpan(
+                            children: <InlineSpan>[
+                              TextSpan(
+                                text: "第",
+                              ),
+                              TextSpan(
+                                text: "${index + 1}",
+                                style: TextStyle(
+                                  fontSize: suSetSp(30.0),
+                                ),
+                              ),
+                              TextSpan(
+                                text: "周",
+                              ),
+                            ],
+                            style: Theme.of(context).textTheme.body1.copyWith(
+                                  fontSize: suSetSp(18.0),
+                                ),
                           ),
-                          TextSpan(
-                            text: "${index + 1}",
-                            style: TextStyle(
-                              fontSize: suSetSp(30.0),
-                            ),
-                          ),
-                          TextSpan(
-                            text: "周",
-                          ),
-                        ],
-                        style: Theme.of(context).textTheme.body1.copyWith(
-                              fontSize: suSetSp(18.0),
-                            ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
       ),
     );
@@ -949,7 +960,7 @@ class CoursesDialog extends StatelessWidget {
                       style: style,
                     ),
                   Text(
-                    "⏰ ${DateAPI.shortWeekdays[course.day - 1]} "
+                    "⏰ ${shortWeekdays[course.day - 1]} "
                     "${CourseAPI.courseTimeChinese[course.time]}",
                     style: style,
                   ),

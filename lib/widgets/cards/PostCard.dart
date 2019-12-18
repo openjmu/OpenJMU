@@ -106,6 +106,8 @@ class _PostCardState extends State<PostCard> {
     DateTime now = DateTime.now();
     if (int.parse(_postTime.substring(0, 4)) == now.year) {
       _postTime = _postTime.substring(5, 16);
+    } else {
+      _postTime = _postTime.substring(2, 16);
     }
     if (int.parse(_postTime.substring(0, 2)) == now.month &&
         int.parse(_postTime.substring(3, 5)) == now.day) {
@@ -359,7 +361,6 @@ class _PostCardState extends State<PostCard> {
               icon: SvgPicture.asset(
                 "assets/icons/postActions/forward-line.svg",
                 color: _forwardColor,
-                width: suSetWidth(18.0),
                 height: suSetHeight(18.0),
               ),
               label: Text(
@@ -380,7 +381,6 @@ class _PostCardState extends State<PostCard> {
               icon: SvgPicture.asset(
                 "assets/icons/postActions/comment-line.svg",
                 color: _repliesColor,
-                width: suSetWidth(18.0),
                 height: suSetHeight(18.0),
               ),
               label: Text(

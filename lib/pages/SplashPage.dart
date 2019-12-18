@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
@@ -35,11 +36,18 @@ class SplashState extends State<SplashPage> {
 
   @override
   void initState() {
-    OTAUtils.checkUpdate(fromHome: true);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      OTAUtils.checkUpdate(fromHome: true);
 
-    Future.delayed(const Duration(seconds: 5), () {
-      showLoading = true;
-      if (this.mounted) setState(() {});
+      Future.delayed(const Duration(seconds: 5), () {
+        if (this.mounted) {
+          setState(() {
+            showLoading = true;
+          });
+        }
+      });
+
+      Provider.of<DateProvider>(currentContext, listen: false).getCurrentWeek();
     });
 
     checkConnectivity().then((ConnectivityResult result) {

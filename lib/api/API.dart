@@ -6,7 +6,6 @@ import 'package:OpenJMU/api/UserAPI.dart';
 
 export 'package:OpenJMU/api/CommentAPI.dart';
 export 'package:OpenJMU/api/CourseAPI.dart';
-export 'package:OpenJMU/api/DateAPI.dart';
 export 'package:OpenJMU/api/NewsAPI.dart';
 export 'package:OpenJMU/api/PostAPI.dart';
 export 'package:OpenJMU/api/PraiseAPI.dart';

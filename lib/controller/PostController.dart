@@ -256,7 +256,7 @@ class _PostListState extends State<PostList>
           extendedListDelegate: ExtendedListDelegate(
             collectGarbage: (List<int> garbage) {
               garbage.forEach((index) {
-                if (_postList.length >= index + 1) {
+                if (_postList.length >= index + 1 && index < 4) {
                   final element = _postList.elementAt(index);
                   final pics = element.pics;
                   if (pics != null) {

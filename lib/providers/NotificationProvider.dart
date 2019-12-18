@@ -7,19 +7,29 @@ import 'package:flutter/material.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 
 class NotificationProvider extends ChangeNotifier {
-  Notifications notification = Notifications();
+  Notifications _notifications = Notifications();
+  Notifications get notifications => _notifications;
+  set notifications(Notifications notifications) {
+    final shouldNotifyListeners = this.notifications != notifications;
+    this.notifications
+      ..at = notifications.at
+      ..comment = notifications.comment
+      ..praise = notifications.praise
+      ..fans = notifications.fans;
+    if (shouldNotifyListeners) notifyListeners();
+  }
   TeamNotifications teamNotification = TeamNotifications();
 
   bool get showNotification =>
-      notification.total > 0 || teamNotification.total > 0;
+      notifications.total > 0 || teamNotification.total > 0;
 
   void updateNotification(
     Notifications notification,
     TeamNotifications teamNotification,
   ) {
-    final shouldNotifyListeners = this.notification != notification &&
+    final shouldNotifyListeners = this.notifications != notification &&
         this.teamNotification != teamNotification;
-    this.notification
+    this.notifications
       ..at = notification.at
       ..comment = notification.comment
       ..praise = notification.praise
@@ -33,22 +43,22 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   void readMention() {
-    notification.at = 0;
+    notifications.at = 0;
     notifyListeners();
   }
 
   void readReply() {
-    notification.comment = 0;
+    notifications.comment = 0;
     notifyListeners();
   }
 
   void readPraise() {
-    notification.praise = 0;
+    notifications.praise = 0;
     notifyListeners();
   }
 
   void readFans() {
-    notification.fans = 0;
+    notifications.fans = 0;
     notifyListeners();
   }
 

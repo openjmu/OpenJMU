@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 
 export 'package:provider/provider.dart';
+export 'package:OpenJMU/providers/DateProvider.dart';
 export 'package:OpenJMU/providers/MessagesProvider.dart';
 export 'package:OpenJMU/providers/WebAppsProvider.dart';
 export 'package:OpenJMU/providers/TeamPostProvider.dart';
@@ -21,6 +22,7 @@ ChangeNotifierProvider<T> buildProvider<T extends ChangeNotifier>(T value) {
 List<SingleChildCloneableWidget> get providers => _providers;
 
 final _providers = [
+  buildProvider<DateProvider>(DateProvider()..initCurrentWeek()),
   buildProvider<MessagesProvider>(MessagesProvider()..initListener()),
   buildProvider<NotificationProvider>(NotificationProvider()),
   buildProvider<ThemesProvider>(ThemesProvider()..initTheme()),

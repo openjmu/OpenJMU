@@ -39,7 +39,8 @@ class CourseAPI {
 
   static bool inCurrentWeek(Course course, {int currentWeek}) {
     if (course.isCustom) return true;
-    final int week = currentWeek ?? DateAPI.currentWeek;
+    final provider = Provider.of<DateProvider>(currentContext, listen: false);
+    final int week = currentWeek ?? provider.currentWeek;
     bool result;
     bool inRange = week >= course.startWeek && week <= course.endWeek;
     bool isOddEven = course.oddEven != 0;

@@ -1,5 +1,3 @@
-import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -65,78 +63,44 @@ class MyInfoPageState extends State<MyInfoPage> {
   bool isLogin = false;
   bool signing = false, signed = false;
 
-  int signedCount = 0, currentWeek;
+  int signedCount = 0;
 
   DateTime now = DateTime.now();
   String hello = "你好";
 
-  Timer _timer;
-
   @override
   void initState() {
     getSignStatus();
-    getCurrentWeek();
     updateHello();
 
-    if (_timer == null)
-      _timer = Timer.periodic(Duration(minutes: 1), (timer) {
-        now = DateTime.now();
-        getSignStatus();
-        getCurrentWeek();
-        updateHello();
-      });
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
   }
 
   void getSignStatus() async {
     int _signed = (await SignAPI.getTodayStatus()).data['status'];
     int _signedCount = (await SignAPI.getSignList()).data['signdata']?.length;
-    if (mounted)
-      setState(() {
-        this.signedCount = _signedCount;
-        this.signed = _signed == 1 ? true : false;
-      });
-  }
-
-  void getCurrentWeek() async {
-    if (DateAPI.startDate == null) {
-      String _day = jsonDecode((await DateAPI.getCurrentWeek()).data)['start'];
-      DateAPI.startDate = DateTime.parse(_day);
-    }
-    DateAPI.difference = DateAPI.startDate.difference(now).inDays - 1;
-    DateAPI.currentWeek = -(DateAPI.difference / 7).floor();
-    if (DateAPI.currentWeek <= 20) {
-      currentWeek = DateAPI.currentWeek;
-    } else {
-      currentWeek = null;
-    }
+    signedCount = _signedCount;
+    signed = _signed == 1 ? true : false;
     if (mounted) setState(() {});
-    Instances.eventBus.fire(CurrentWeekUpdatedEvent());
   }
 
   void updateHello() {
     int hour = DateTime.now().hour;
 
     if (hour >= 0 && hour < 6) {
-      this.hello = "深夜了，注意休息";
+      hello = "深夜了，注意休息";
     } else if (hour >= 6 && hour < 8) {
-      this.hello = "早上好";
+      hello = "早上好";
     } else if (hour >= 8 && hour < 11) {
-      this.hello = "上午好";
+      hello = "上午好";
     } else if (hour >= 11 && hour < 14) {
-      this.hello = "中午好";
+      hello = "中午好";
     } else if (hour >= 14 && hour < 18) {
-      this.hello = "下午好";
+      hello = "下午好";
     } else if (hour >= 18 && hour < 20) {
-      this.hello = "傍晚好";
+      hello = "傍晚好";
     } else if (hour >= 20 && hour <= 24) {
-      this.hello = "晚上好";
+      hello = "晚上好";
     }
     if (mounted) setState(() {});
   }
@@ -214,136 +178,137 @@ class MyInfoPageState extends State<MyInfoPage> {
     );
   }
 
-  Widget userInfo() {
-    Widget name = Row(
-      children: <Widget>[
-        Expanded(
-          child: Wrap(
-            crossAxisAlignment: WrapCrossAlignment.end,
-            children: <Widget>[
-              Text(
-                "${UserAPI.currentUser.name}",
-                style: TextStyle(
-                  color: Theme.of(context).textTheme.title.color,
-                  fontSize: suSetSp(26.0),
-                  fontWeight: FontWeight.bold,
+  Widget get _name => Row(
+        children: <Widget>[
+          Expanded(
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.end,
+              children: <Widget>[
+                Text(
+                  "${UserAPI.currentUser.name}",
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.title.color,
+                    fontSize: suSetSp(26.0),
+                    fontWeight: FontWeight.bold,
+                  ),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-    Widget signature = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[
-        Expanded(
-          child: Text(
-            UserAPI.currentUser.signature ?? "这里空空如也~",
-            style: TextStyle(
-              color: Theme.of(context).textTheme.caption.color,
-              fontSize: suSetSp(20.0),
+              ],
             ),
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.start,
           ),
-        ),
-      ],
-    );
-    Widget sign = InkWell(
-      onTap: signed ? () {} : requestSign,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(suSetSp(20.0)),
-        child: Container(
-          color: currentThemeColor,
-          padding: EdgeInsets.symmetric(
-            horizontal: suSetSp(8.0),
-            vertical: suSetSp(6.0),
+        ],
+      );
+
+  Widget get _signature => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Expanded(
+            child: Text(
+              UserAPI.currentUser.signature ?? "这里空空如也~",
+              style: TextStyle(
+                color: Theme.of(context).textTheme.caption.color,
+                fontSize: suSetSp(20.0),
+              ),
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.start,
+            ),
           ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(
-                  right: suSetSp(4.0),
-                ),
-                child: signing
-                    ? Container(
-                        width: suSetWidth(24.0),
-                        height: suSetWidth(24.0),
-                        padding: EdgeInsets.all(suSetWidth(4.0)),
-                        child: CircularProgressIndicator(
-                          strokeWidth: suSetWidth(3.0),
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+        ],
+      );
+
+  Widget get _sign => InkWell(
+        onTap: signed ? () {} : requestSign,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(suSetSp(20.0)),
+          child: Container(
+            color: currentThemeColor,
+            padding: EdgeInsets.symmetric(
+              horizontal: suSetSp(8.0),
+              vertical: suSetSp(6.0),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: suSetSp(4.0),
+                  ),
+                  child: signing
+                      ? Container(
+                          width: suSetWidth(24.0),
+                          height: suSetWidth(24.0),
+                          padding: EdgeInsets.all(suSetWidth(4.0)),
+                          child: CircularProgressIndicator(
+                            strokeWidth: suSetWidth(3.0),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        )
+                      : Icon(
+                          Icons.assignment_turned_in,
+                          color: Colors.white,
+                          size: suSetWidth(26.0),
                         ),
-                      )
-                    : Icon(
-                        Icons.assignment_turned_in,
-                        color: Colors.white,
-                        size: suSetWidth(26.0),
-                      ),
-              ),
-              Text(
-                signed ? "已签$signedCount天" : "签到",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: suSetSp(20.0),
-                  textBaseline: TextBaseline.alphabetic,
                 ),
-              ),
-            ],
+                Text(
+                  signed ? "已签$signedCount天" : "签到",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: suSetSp(20.0),
+                    textBaseline: TextBaseline.alphabetic,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-    return Container(
-      color: Theme.of(context).primaryColor,
-      padding: EdgeInsets.only(top: Screen.topSafeHeight),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => UserPage.jump(UserAPI.currentUser.uid),
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(24.0),
-            vertical: suSetHeight(16.0),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: suSetHeight(10.0)),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    UserAPI.getAvatar(size: 100),
-                    Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(left: suSetWidth(20.0)),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            name,
-                            emptyDivider(height: suSetHeight(10.0)),
-                            signature,
-                            emptyDivider(height: suSetHeight(3.0)),
-                          ],
+      );
+
+  Widget get userInfo => Container(
+        color: Theme.of(context).primaryColor,
+        padding: EdgeInsets.only(top: Screen.topSafeHeight),
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => UserPage.jump(UserAPI.currentUser.uid),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: suSetWidth(24.0),
+              vertical: suSetHeight(16.0),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: suSetHeight(10.0)),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      UserAPI.getAvatar(size: 100),
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: suSetWidth(20.0)),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              _name,
+                              emptyDivider(height: suSetHeight(10.0)),
+                              _signature,
+                              emptyDivider(height: suSetHeight(3.0)),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    sign,
-                  ],
+                      _sign,
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 
   Widget currentDay(context, DateTime now) => Container(
         color: Theme.of(context).primaryColor,
@@ -352,21 +317,28 @@ class MyInfoPageState extends State<MyInfoPage> {
           vertical: suSetHeight(20.0),
         ),
         child: Center(
-          child: RichText(
-            textAlign: TextAlign.center,
-            text: TextSpan(
-              children: <TextSpan>[
-                TextSpan(text: "${UserAPI.currentUser.name}，$hello~\n"),
-                TextSpan(text: "今天是"),
-                if (currentWeek != null) TextSpan(text: "第$currentWeek周，"),
-                TextSpan(text: "${DateFormat("MMMdd日，", "zh_CN").format(now)}"),
-                TextSpan(text: "${DateFormat("EEEE", "zh_CN").format(now)}"),
-              ],
-              style: TextStyle(
-                fontSize: suSetSp(24.0),
-                color: Theme.of(context).textTheme.body1.color,
-              ),
-            ),
+          child: Selector<DateProvider, int>(
+            selector: (_, provider) => provider.currentWeek,
+            builder: (_, currentWeek, __) {
+              return RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(text: "${UserAPI.currentUser.name}，$hello~\n"),
+                    TextSpan(text: "今天是"),
+                    if (currentWeek != null) TextSpan(text: "第$currentWeek周，"),
+                    TextSpan(
+                        text: "${DateFormat("MMMdd日，", "zh_CN").format(now)}"),
+                    TextSpan(
+                        text: "${DateFormat("EEEE", "zh_CN").format(now)}"),
+                  ],
+                  style: TextStyle(
+                    fontSize: suSetSp(24.0),
+                    color: Theme.of(context).textTheme.body1.color,
+                  ),
+                ),
+              );
+            },
           ),
         ),
       );
@@ -493,7 +465,7 @@ class MyInfoPageState extends State<MyInfoPage> {
       body: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          userInfo(),
+          userInfo,
           separator(context),
           currentDay(context, now),
           separator(context),

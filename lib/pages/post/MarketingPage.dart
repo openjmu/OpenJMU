@@ -73,7 +73,7 @@ class _MarketingPageState extends State<MarketingPage> {
                 extendedListDelegate: ExtendedListDelegate(
                   collectGarbage: (List<int> garbage) {
                     garbage.forEach((index) {
-                      if (posts.length >= index + 1) {
+                      if (posts.length >= index + 1 && index < 4) {
                         final element = posts.elementAt(index);
                         final pics = element.pics;
                         if (pics != null) {

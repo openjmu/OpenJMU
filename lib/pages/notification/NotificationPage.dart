@@ -58,12 +58,12 @@ class NotificationPageState extends State<NotificationPage>
               labelPadding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
               tabs: [
                 Tab(
-                  child: provider.notification.at != 0
+                  child: provider.notifications.at != 0
                       ? IconButton(
                           icon: badgeIcon(
-                            content: provider.notification.at == 0
+                            content: provider.notifications.at == 0
                                 ? ""
-                                : provider.notification.at,
+                                : provider.notifications.at,
                             icon: Icon(
                               actionsIcons[0],
                               size: suSetWidth(30.0),
@@ -83,12 +83,12 @@ class NotificationPageState extends State<NotificationPage>
                         ),
                 ),
                 Tab(
-                  child: provider.notification.comment != 0
+                  child: provider.notifications.comment != 0
                       ? IconButton(
                           icon: badgeIcon(
-                            content: provider.notification.comment == 0
+                            content: provider.notifications.comment == 0
                                 ? ""
-                                : provider.notification.comment,
+                                : provider.notifications.comment,
                             icon: Icon(
                               actionsIcons[1],
                               size: suSetWidth(30.0),
@@ -108,12 +108,12 @@ class NotificationPageState extends State<NotificationPage>
                         ),
                 ),
                 Tab(
-                  child: provider.notification.praise != 0
+                  child: provider.notifications.praise != 0
                       ? IconButton(
                           icon: badgeIcon(
-                            content: provider.notification.praise == 0
+                            content: provider.notifications.praise == 0
                                 ? ""
-                                : provider.notification.praise,
+                                : provider.notifications.praise,
                             icon: Icon(
                               actionsIcons[2],
                               size: suSetWidth(30.0),

@@ -1,6 +1,11 @@
+///
+/// [Author] Alex (https://github.com/AlexVincent525)
+/// [Date] 2019-12-18 11:43
+///
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -8,30 +13,40 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 
-class AddingButtonPage extends StatefulWidget {
+class NotificationEntryPage extends StatefulWidget {
   @override
-  _AddingButtonPageState createState() => _AddingButtonPageState();
+  _NotificationEntryPageState createState() => _NotificationEntryPageState();
 }
 
-class _AddingButtonPageState extends State<AddingButtonPage>
+class _NotificationEntryPageState extends State<NotificationEntryPage>
     with TickerProviderStateMixin {
-  final List<String> itemTitles = ["广场", "集市"];
-  final List<Color> itemColors = [Colors.orange, Colors.indigoAccent];
-  final List<Function> itemOnTap = [
-    (context) async {
-      navigatorState.pushNamed("openjmu://publish-post");
+  final List<Map<String, dynamic>> items = [
+    {
+      "name": "广场",
+      "color": Colors.orange,
+      "notifications": Provider.of<NotificationProvider>(
+        currentContext,
+        listen: false,
+      ).notifications,
+      "onTap": (context) async {
+        navigatorState.pushNamed("openjmu://notifications");
+      },
     },
-    (context) async {
-      navigatorState.pushNamed("openjmu://publish-team-post");
+    {
+      "name": "集市",
+      "color": Colors.indigoAccent,
+      "notifications": Provider.of<NotificationProvider>(
+        currentContext,
+        listen: false,
+      ).teamNotification,
+      "onTap": (context) async {
+        navigatorState.pushNamed("openjmu://team-notifications");
+      },
     },
   ];
+
   final int _animateDuration = 300;
-  double get backdropRadius =>
-      pythagoreanTheorem(
-        Screen.width,
-        Screen.height * 2 + Screen.topSafeHeight + Screen.bottomSafeHeight,
-      ) /
-      3;
+  final double backdropRadius = Screen.width / 2;
 
   /// Animation.
   /// Boolean to prevent duplicate pop.
@@ -67,6 +82,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
 
   @override
   void dispose() {
+    _backgroundOpacityController?.dispose();
     _backDropFilterController?.dispose();
     _popButtonController?.dispose();
     _itemAnimateControllers?.forEach((controller) {
@@ -79,16 +95,16 @@ class _AddingButtonPageState extends State<AddingButtonPage>
   }
 
   void initItemsAnimation() {
-    _itemOffset = <double>[for (int i = 0; i < itemTitles.length; i++) 0.0];
-    _itemAnimations = List(itemTitles.length);
-    _itemCurveAnimations = List(itemTitles.length);
-    _itemAnimateControllers = List(itemTitles.length);
-    _itemOpacity = <double>[for (int i = 0; i < itemTitles.length; i++) 0.01];
-    _itemOpacityAnimations = List(itemTitles.length);
-    _itemOpacityCurveAnimations = List(itemTitles.length);
-    _itemOpacityAnimateControllers = List(itemTitles.length);
+    _itemOffset = <double>[for (int i = 0; i < items.length; i++) 0.0];
+    _itemAnimations = List(items.length);
+    _itemCurveAnimations = List(items.length);
+    _itemAnimateControllers = List(items.length);
+    _itemOpacity = <double>[for (int i = 0; i < items.length; i++) 0.01];
+    _itemOpacityAnimations = List(items.length);
+    _itemOpacityCurveAnimations = List(items.length);
+    _itemOpacityAnimateControllers = List(items.length);
 
-    for (int i = 0; i < itemTitles.length; i++) {
+    for (int i = 0; i < items.length; i++) {
       _itemAnimateControllers[i] = AnimationController(
         duration: Duration(milliseconds: _animateDuration),
         vsync: this,
@@ -152,7 +168,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
       duration: Duration(milliseconds: _animateDuration),
       vsync: this,
     );
-    Animation _popButtonCurve = CurvedAnimation(
+    final _popButtonCurve = CurvedAnimation(
       parent: _popButtonController,
       curve: Curves.easeInOut,
     );
@@ -179,9 +195,6 @@ class _AddingButtonPageState extends State<AddingButtonPage>
   }
 
   Future backDropFilterAnimate(BuildContext context, bool forward) async {
-    final double r = pythagoreanTheorem(
-            Screen.width, Screen.height * 2 + Screen.topSafeHeight) /
-        2;
     if (!forward) _backDropFilterController?.stop();
     popButtonAnimate(context, forward);
 
@@ -206,18 +219,17 @@ class _AddingButtonPageState extends State<AddingButtonPage>
       duration: Duration(milliseconds: _animateDuration),
       vsync: this,
     );
-    Animation _backDropFilterCurve = CurvedAnimation(
+    final _backDropFilterCurve = CurvedAnimation(
       parent: _backDropFilterController,
       curve: forward ? Curves.easeInOut : Curves.easeIn,
     );
     _backDropFilterAnimation = Tween(
       begin: forward ? 0.0 : _backdropFilterSize,
-      end: forward ? r : 0.0,
+      end: forward ? backdropRadius * 2 : 0.0,
     ).animate(_backDropFilterCurve)
       ..addListener(() {
-        setState(() {
-          _backdropFilterSize = _backDropFilterAnimation.value;
-        });
+        _backdropFilterSize = _backDropFilterAnimation.value;
+        if (mounted) setState(() {});
       });
     if (forward) {
       Future.delayed(
@@ -238,34 +250,29 @@ class _AddingButtonPageState extends State<AddingButtonPage>
     return math.sqrt(math.pow(short, 2) + math.pow(long, 2));
   }
 
-  Widget popButton() {
-    return Opacity(
-      opacity: _popButtonOpacity,
-      child: Center(
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          child: SizedBox(
-            width: suSetWidth(MainPageState.bottomBarHeight),
-            height: suSetHeight(MainPageState.bottomBarHeight),
-            child: Transform.rotate(
-              angle: _popButtonRotateAngle,
-              child: Icon(
-                Icons.add,
-                color: Colors.black,
-                size: suSetWidth(48.0),
+  Widget get popButton => Opacity(
+        opacity: _popButtonOpacity,
+        child: Center(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: SizedBox(
+              width: suSetWidth(MainPageState.bottomBarHeight),
+              height: suSetHeight(MainPageState.bottomBarHeight),
+              child: Transform.rotate(
+                angle: _popButtonRotateAngle,
+                child: Icon(
+                  Icons.add,
+                  color: Colors.black,
+                  size: suSetWidth(48.0),
+                ),
               ),
             ),
+            onTap: willPop,
           ),
-          onTap: willPop,
         ),
-      ),
-    );
-  }
+      );
 
   Widget wrapper(context, {Widget child}) {
-    final double topOverflow = backdropRadius - Screen.height;
-    final double horizontalOverflow = backdropRadius - Screen.width;
-
     return Stack(
       overflow: Overflow.visible,
       children: <Widget>[
@@ -286,27 +293,23 @@ class _AddingButtonPageState extends State<AddingButtonPage>
           ),
         ),
         Positioned(
-          left: -horizontalOverflow,
-          right: -horizontalOverflow,
-          top: -topOverflow,
-          bottom: -backdropRadius,
-          child: Center(
-            child: Container(
-              width: _backdropFilterSize,
-              height: _backdropFilterSize,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.4),
-              ),
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: willPop,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(backdropRadius * 2),
-                  child: BackdropFilter(
-                    filter: ui.ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-                    child: Text(" ", style: TextStyle(inherit: false)),
-                  ),
+          right: suSetWidth(10.0) - backdropRadius,
+          top: Screen.topSafeHeight - backdropRadius,
+          child: Container(
+            width: _backdropFilterSize,
+            height: _backdropFilterSize,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.white.withOpacity(0.3),
+            ),
+            child: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: willPop,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(backdropRadius * 2),
+                child: BackdropFilter(
+                  filter: ui.ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
+                  child: Text(" ", style: TextStyle(inherit: false)),
                 ),
               ),
             ),
@@ -321,65 +324,74 @@ class _AddingButtonPageState extends State<AddingButtonPage>
               maxWidth: Screen.width,
               maxHeight: Screen.height,
             ),
-            child: child ?? SizedBox(),
+            child: child ?? SizedBox.shrink(),
           ),
         ),
         Positioned(
-          left: 0.0,
-          right: 0.0,
-          bottom: Screen.bottomSafeHeight,
-          child: popButton(),
+          top: Screen.topSafeHeight,
+          right: suSetWidth(10.0),
+          child: popButton,
         ),
       ],
     );
   }
 
   Widget item(BuildContext context, int index) {
-    return Stack(
-      overflow: Overflow.visible,
-      children: <Widget>[
-        Positioned(
-          left: 0.0,
-          right: 0.0,
-          top: _itemOffset[index],
-          child: Opacity(
-            opacity: _itemOpacity[index],
-            child: GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Container(
-                    width: suSetWidth(80.0),
-                    height: suSetWidth(80.0),
-                    decoration: BoxDecoration(
-                      color: itemColors[index],
-                      shape: BoxShape.circle,
-                    ),
-                    child: Center(
-                      child: SvgPicture.asset(
-                        "assets/icons/addButton/${itemTitles[index]}.svg",
-                        color: Colors.white,
-                        width: suSetWidth(32.0),
+    final stepRadius = 90 / (items.length * 2);
+    final itemRadius = stepRadius * (index + 1);
+    final itemRadians = itemRadius * math.pi / 180;
+    final right = math.cos(itemRadians) * backdropRadius / 2.1;
+    final top = math.sin(itemRadians) * backdropRadius / 2.1;
+    final itemIndex = index ~/ 2;
+    return Positioned(
+      right: right + _itemOffset[itemIndex],
+      top: Screen.topSafeHeight + top + _itemOffset[itemIndex],
+      child: index.isEven
+          ? Opacity(
+              opacity: _itemOpacity[itemIndex],
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                child: Container(
+                  width: suSetWidth(70.0),
+                  height: suSetWidth(70.0),
+                  decoration: BoxDecoration(
+                    color: items[itemIndex]['color'],
+                    shape: BoxShape.circle,
+                  ),
+                  child: Stack(
+                    overflow: Overflow.visible,
+                    children: <Widget>[
+                      Center(
+                        child: SvgPicture.asset(
+                          "assets/icons/addButton/${items[itemIndex]['name']}.svg",
+                          color: Colors.white,
+                          width: suSetWidth(28.0),
+                        ),
                       ),
-                    ),
+                      if (items[itemIndex]['notifications'].total > 0)
+                        Positioned(
+                          top: 0.0,
+                          right: 0.0,
+                          child: Badge(
+                            badgeContent: Text(
+                              items[itemIndex]['notifications']
+                                  .total
+                                  .toString(),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: suSetSp(20.0),
+                              ),
+                            ),
+                            badgeColor: currentThemeColor,
+                          ),
+                        ),
+                    ],
                   ),
-                  emptyDivider(height: suSetHeight(10.0)),
-                  Text(
-                    itemTitles[index],
-                    style: currentTheme.textTheme.body1.copyWith(
-                      fontSize: suSetSp(20.0),
-                    ),
-                  ),
-                ],
+                ),
+                onTap: () => items[itemIndex]['onTap'](context),
               ),
-              onTap: () {
-                itemOnTap[index](context);
-              },
-            ),
-          ),
-        ),
-      ],
+            )
+          : SizedBox.shrink(),
     );
   }
 
@@ -388,7 +400,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
     if (!popping) {
       popping = true;
       await Future.delayed(Duration(milliseconds: _animateDuration), () {
-        Navigator.of(context).pop();
+        navigatorState.pop();
       });
     }
     return null;
@@ -400,19 +412,14 @@ class _AddingButtonPageState extends State<AddingButtonPage>
       onWillPop: willPop,
       child: wrapper(
         context,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 4,
-              children: <Widget>[
-                for (int i = 0; i < itemTitles.length; i++) item(context, i),
-              ],
+        child: SizedBox.fromSize(
+          size: Size.square(Screen.width / 3 * 2),
+          child: Stack(
+            children: List<Widget>.generate(
+              items.length * 2 - 1,
+              (i) => item(context, i),
             ),
-            SizedBox(height: suSetHeight(120.0)),
-          ],
+          ),
         ),
       ),
     );
