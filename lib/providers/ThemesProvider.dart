@@ -11,33 +11,36 @@ class ThemesProvider with ChangeNotifier {
   Color _currentColor = defaultColor;
   Color get currentColor => _currentColor;
   set currentColor(Color value) {
+    if (_currentColor == value) return;
     _currentColor = value;
     notifyListeners();
   }
 
   bool _dark = false;
-  // ignore: non_constant_identifier_names
-  bool _AMOLEDDark = false;
-  bool _platformBrightness = false;
-
   bool get dark => _dark;
   set dark(bool value) {
+    if (_dark == value) return;
     DataUtils.setBrightnessDark(value);
     _dark = value;
     notifyListeners();
   }
 
   // ignore: non_constant_identifier_names
+  bool _AMOLEDDark = false;
+  // ignore: non_constant_identifier_names
   bool get AMOLEDDark => _AMOLEDDark;
   // ignore: non_constant_identifier_names
   set AMOLEDDark(bool value) {
+    if (_AMOLEDDark == value) return;
     DataUtils.setAMOLEDDark(value);
     _AMOLEDDark = value;
     notifyListeners();
   }
 
+  bool _platformBrightness = false;
   bool get platformBrightness => _platformBrightness;
   set platformBrightness(bool value) {
+    if (_platformBrightness == value) return;
     DataUtils.setBrightnessPlatform(value);
     _platformBrightness = value;
     notifyListeners();
@@ -45,7 +48,7 @@ class ThemesProvider with ChangeNotifier {
 
   void initTheme() {
     _currentColor = supportColors[DataUtils.getColorThemeIndex()];
-    _dark = DataUtils.getBrightness();
+    _dark = DataUtils.getBrightnessDark();
     _AMOLEDDark = DataUtils.getAMOLEDDark();
     _platformBrightness = DataUtils.getBrightnessPlatform();
   }
@@ -182,6 +185,16 @@ class ThemesProvider with ChangeNotifier {
         buttonColor: currentColor,
       );
 }
+
+/// Getter for screen's brightness.
+Brightness get _defaultBrightness =>
+    Screen.mediaQuery.platformBrightness ?? Brightness.light;
+Brightness get _configuredBrightness =>
+    DataUtils.getBrightnessDark() ? Brightness.dark : Brightness.light;
+Brightness get brightness => DataUtils.getBrightnessPlatform()
+    ? _defaultBrightness
+    : _configuredBrightness;
+bool get isDark => brightness == Brightness.dark;
 
 const defaultColor = Color(0xFFE5322D);
 

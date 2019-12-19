@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
@@ -89,4 +91,41 @@ class Constants {
         if (username != null) "unitcode": "jmu",
         "clientinfo": jsonEncode(loginClientInfo),
       };
+
+  static Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
+      [
+        GlobalWidgetsLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ];
+
+  static Iterable<Locale> get supportedLocales => [
+        const Locale.fromSubtags(
+          languageCode: 'zh',
+        ),
+        const Locale.fromSubtags(
+          languageCode: 'zh',
+          scriptCode: 'Hans',
+        ),
+        const Locale.fromSubtags(
+          languageCode: 'zh',
+          scriptCode: 'Hant',
+        ),
+        const Locale.fromSubtags(
+          languageCode: 'zh',
+          scriptCode: 'Hans',
+          countryCode: 'CN',
+        ),
+        const Locale.fromSubtags(
+          languageCode: 'zh',
+          scriptCode: 'Hant',
+          countryCode: 'TW',
+        ),
+        const Locale.fromSubtags(
+          languageCode: 'zh',
+          scriptCode: 'Hant',
+          countryCode: 'HK',
+        ),
+        const Locale('en'),
+      ];
 }

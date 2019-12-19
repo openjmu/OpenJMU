@@ -23,7 +23,7 @@ class ChangeThemePage extends StatelessWidget {
                 color: supportColors[index],
               ),
               AnimatedOpacity(
-                duration: kTabScrollDuration,
+                duration: const Duration(milliseconds: 100),
                 opacity:
                     provider.currentColor == supportColors[index] ? 1.0 : 0.0,
                 child: Container(

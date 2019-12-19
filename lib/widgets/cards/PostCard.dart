@@ -85,6 +85,7 @@ class _PostCardState extends State<PostCard> {
             style: TextStyle(
               color: currentTheme.textTheme.title.color,
               fontSize: suSetSp(22.0),
+              fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.left,
           ),

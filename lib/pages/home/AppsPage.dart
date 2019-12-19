@@ -154,7 +154,7 @@ class AppsPageState extends State<AppsPage>
                       indicator: RoundedUnderlineTabIndicator(
                         borderSide: BorderSide(
                           color: currentThemeColor,
-                          width: suSetHeight(3.0),
+                          width: suSetHeight(2.5),
                         ),
                         width: suSetWidth(40.0),
                         insets: EdgeInsets.only(bottom: suSetHeight(2.0)),

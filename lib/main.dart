@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:oktoast/oktoast.dart';
@@ -57,8 +56,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   bool isUserLogin = false;
   String initAction;
-
-  Brightness brightness;
 
   @override
   void initState() {
@@ -126,30 +123,11 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     debugPrint("AppLifecycleState change to: ${state.toString()}");
     Instances.appLifeCycleState = state;
-    updateBrightness();
   }
 
   @override
   void didChangePlatformBrightness() {
-    updateBrightness(
-      platformBrightness: WidgetsBinding.instance.window.platformBrightness,
-    );
-  }
-
-  void updateBrightness({
-    Brightness platformBrightness,
-    ThemesProvider provider,
-  }) {
-    if (brightness != null) {
-      brightness = platformBrightness ?? Screen.mediaQuery.platformBrightness;
-    }
-    if (provider.platformBrightness) {
-      final result = brightness == Brightness.dark;
-      if (result != provider.dark) provider.dark = result;
-    } else {
-      final result = DataUtils.getBrightness();
-      if (result != provider.dark) provider.dark = result;
-    }
+    if (mounted) setState(() {});
   }
 
   void initSettings() async {
@@ -189,137 +167,101 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       providers: providers,
       child: Consumer<ThemesProvider>(
         builder: (_, provider, __) {
-          updateBrightness(provider: provider);
-
           final theme =
-              (provider.dark ? provider.darkTheme : provider.lightTheme)
-                  .copyWith(
-            textTheme: (provider.dark
+              (isDark ? provider.darkTheme : provider.lightTheme).copyWith(
+            textTheme: (isDark
                     ? Theme.of(context).typography.white
                     : Theme.of(context).typography.black)
                 .copyWith(
-              subhead: TextStyle(
-                textBaseline: TextBaseline.alphabetic,
-              ),
+              subhead: TextStyle(textBaseline: TextBaseline.alphabetic),
             ),
           );
-          return Theme(
-            data: theme,
-            child: OKToast(
-              child: MaterialApp(
-                navigatorKey: Instances.navigatorKey,
-                builder: (c, w) {
-                  brightness = provider.platformBrightness
-                      ? MediaQuery.of(c).platformBrightness
-                      : provider.dark ? Brightness.dark : Brightness.light;
-                  ScreenUtil.instance = ScreenUtil.getInstance()
-                    ..allowFontScaling = true
-                    ..init(c);
-                  return NoScaleTextWidget(child: w);
-                },
-                title: "OpenJMU",
-                theme: theme,
-                home: SplashPage(initAction: initAction),
-                navigatorObservers: [
-                  FFNavigatorObserver(
-                    showStatusBarChange: (bool showStatusBar) {
-                      if (showStatusBar) {
-                        SystemChrome.setEnabledSystemUIOverlays(
-                          SystemUiOverlay.values,
-                        );
-                      } else {
-                        SystemChrome.setEnabledSystemUIOverlays([]);
-                      }
-                    },
-                  ),
-                ],
-                onGenerateRoute: (RouteSettings settings) {
-                  final routeResult = getRouteResult(
-                    name: settings.name,
-                    arguments: settings.arguments,
-                  );
-                  if (routeResult.showStatusBar != null ||
-                      routeResult.routeName != null) {
-                    settings = FFRouteSettings(
+          return AnnotatedRegion(
+            value:
+                isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+            child: Theme(
+              data: theme,
+              child: OKToast(
+                child: MaterialApp(
+                  navigatorKey: Instances.navigatorKey,
+                  builder: (c, w) {
+                    ScreenUtil.instance = ScreenUtil.getInstance()
+                      ..allowFontScaling = true
+                      ..init(c);
+                    return NoScaleTextWidget(child: w);
+                  },
+                  title: "OpenJMU",
+                  theme: theme,
+                  home: SplashPage(initAction: initAction),
+                  navigatorObservers: [
+                    FFNavigatorObserver(
+                      showStatusBarChange: (bool showStatusBar) {
+                        if (showStatusBar) {
+                          SystemChrome.setEnabledSystemUIOverlays(
+                            SystemUiOverlay.values,
+                          );
+                        } else {
+                          SystemChrome.setEnabledSystemUIOverlays([]);
+                        }
+                      },
+                    ),
+                  ],
+                  onGenerateRoute: (RouteSettings settings) {
+                    final routeResult = getRouteResult(
                       name: settings.name,
-                      isInitialRoute: settings.isInitialRoute,
-                      routeName: routeResult.routeName,
                       arguments: settings.arguments,
-                      showStatusBar: routeResult.showStatusBar,
                     );
-                  }
-                  final page =
-                      routeResult.widget ?? SplashPage(initAction: initAction);
+                    if (routeResult.showStatusBar != null ||
+                        routeResult.routeName != null) {
+                      settings = FFRouteSettings(
+                        name: settings.name,
+                        isInitialRoute: settings.isInitialRoute,
+                        routeName: routeResult.routeName,
+                        arguments: settings.arguments,
+                        showStatusBar: routeResult.showStatusBar,
+                      );
+                    }
+                    final page = routeResult.widget ??
+                        SplashPage(initAction: initAction);
 
-                  if (settings.arguments != null &&
-                      settings.arguments is Map<String, dynamic>) {
-                    RouteBuilder builder = (settings.arguments
-                        as Map<String, dynamic>)['routeBuilder'];
-                    if (builder != null) return builder(page);
-                  }
+                    if (settings.arguments != null &&
+                        settings.arguments is Map<String, dynamic>) {
+                      RouteBuilder builder = (settings.arguments
+                          as Map<String, dynamic>)['routeBuilder'];
+                      if (builder != null) return builder(page);
+                    }
 
-                  switch (routeResult.pageRouteType) {
-                    case PageRouteType.material:
-                      return MaterialPageRoute(
-                        settings: settings,
-                        builder: (c) => page,
-                      );
-                    case PageRouteType.cupertino:
-                      return CupertinoPageRoute(
-                        settings: settings,
-                        builder: (c) => page,
-                      );
-                    case PageRouteType.transparent:
-                      return FFTransparentPageRoute(
-                        settings: settings,
-                        pageBuilder: (_, __, ___) => page,
-                      );
-                    default:
-                      return Platform.isIOS
-                          ? CupertinoPageRoute(
-                              settings: settings,
-                              builder: (c) => page,
-                            )
-                          : MaterialPageRoute(
-                              settings: settings,
-                              builder: (c) => page,
-                            );
-                  }
-                },
-                localizationsDelegates: [
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: [
-                  const Locale.fromSubtags(
-                    languageCode: 'zh',
-                  ),
-                  const Locale.fromSubtags(
-                    languageCode: 'zh',
-                    scriptCode: 'Hans',
-                  ),
-                  const Locale.fromSubtags(
-                    languageCode: 'zh',
-                    scriptCode: 'Hant',
-                  ),
-                  const Locale.fromSubtags(
-                    languageCode: 'zh',
-                    scriptCode: 'Hans',
-                    countryCode: 'CN',
-                  ),
-                  const Locale.fromSubtags(
-                    languageCode: 'zh',
-                    scriptCode: 'Hant',
-                    countryCode: 'TW',
-                  ),
-                  const Locale.fromSubtags(
-                    languageCode: 'zh',
-                    scriptCode: 'Hant',
-                    countryCode: 'HK',
-                  ),
-                  const Locale('en'),
-                ],
+                    switch (routeResult.pageRouteType) {
+                      case PageRouteType.material:
+                        return MaterialPageRoute(
+                          settings: settings,
+                          builder: (c) => page,
+                        );
+                      case PageRouteType.cupertino:
+                        return CupertinoPageRoute(
+                          settings: settings,
+                          builder: (c) => page,
+                        );
+                      case PageRouteType.transparent:
+                        return FFTransparentPageRoute(
+                          settings: settings,
+                          pageBuilder: (_, __, ___) => page,
+                        );
+                      default:
+                        return Platform.isIOS
+                            ? CupertinoPageRoute(
+                                settings: settings,
+                                builder: (c) => page,
+                              )
+                            : MaterialPageRoute(
+                                settings: settings,
+                                builder: (c) => page,
+                              );
+                    }
+                  },
+                  localizationsDelegates: Constants.localizationsDelegates,
+                  supportedLocales: Constants.supportedLocales,
+                ),
               ),
             ),
           );

@@ -65,8 +65,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             widget.appCenterPageState.setState(() {});
           }
         }
-      })
-    ;
+      });
     super.initState();
   }
 
@@ -268,11 +267,11 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         padding: EdgeInsets.all(suSetWidth(10.0)),
         child: Selector<DateProvider, int>(
           selector: (_, provider) => provider.currentWeek,
-          builder: (_, currentWeek, __) {
+          builder: (_, week, __) {
             return DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(suSetWidth(20.0)),
-                border: (currentWeek == index + 1 && currentWeek != currentWeek)
+                border: (week == index + 1 && currentWeek != week)
                     ? Border.all(
                         color: currentThemeColor.withAlpha(100),
                         width: 2.0,
@@ -283,34 +282,22 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                     : null,
               ),
               child: Center(
-                child: Stack(
-                  children: <Widget>[
-                    SizedBox.expand(
-                      child: Center(
-                        child: RichText(
-                          text: TextSpan(
-                            children: <InlineSpan>[
-                              TextSpan(
-                                text: "第",
-                              ),
-                              TextSpan(
-                                text: "${index + 1}",
-                                style: TextStyle(
-                                  fontSize: suSetSp(30.0),
-                                ),
-                              ),
-                              TextSpan(
-                                text: "周",
-                              ),
-                            ],
-                            style: Theme.of(context).textTheme.body1.copyWith(
-                                  fontSize: suSetSp(18.0),
-                                ),
-                          ),
+                child: RichText(
+                  text: TextSpan(
+                    children: <InlineSpan>[
+                      TextSpan(text: "第"),
+                      TextSpan(
+                        text: "${index + 1}",
+                        style: TextStyle(
+                          fontSize: suSetSp(30.0),
                         ),
                       ),
-                    ),
-                  ],
+                      TextSpan(text: "周"),
+                    ],
+                    style: Theme.of(context).textTheme.body1.copyWith(
+                          fontSize: suSetSp(18.0),
+                        ),
+                  ),
                 ),
               ),
             );
@@ -323,35 +310,48 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   Widget get remarkWidget => GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: showRemarkDetail,
-        child: AnimatedContainer(
-          duration: showWeekDuration,
+        child: Container(
           width: Screen.width,
           constraints: BoxConstraints(
             maxHeight: suSetHeight(54.0),
           ),
-          padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(30.0),
-          ),
-          child: Center(
-            child: RichText(
-              text: TextSpan(
-                children: <InlineSpan>[
-                  TextSpan(
-                    text: "班级备注: ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  TextSpan(text: "$remark"),
-                ],
-                style: Theme.of(context).textTheme.body1.copyWith(
-                      fontSize: suSetSp(20.0),
-                    ),
+          child: Stack(
+            children: <Widget>[
+              AnimatedOpacity(
+                duration: showWeekDuration,
+                opacity: showWeek ? 1.0 : 0.0,
+                child: SizedBox.expand(
+                  child: Container(color: currentTheme.primaryColor),
+                ),
               ),
-              textAlign: TextAlign.center,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+              AnimatedContainer(
+                duration: showWeekDuration,
+                padding: EdgeInsets.symmetric(
+                  horizontal: suSetWidth(30.0),
+                ),
+                child: Center(
+                  child: RichText(
+                    text: TextSpan(
+                      children: <InlineSpan>[
+                        TextSpan(
+                          text: "班级备注: ",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        TextSpan(text: "$remark"),
+                      ],
+                      style: Theme.of(context).textTheme.body1.copyWith(
+                            fontSize: suSetSp(20.0),
+                          ),
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       );
@@ -361,6 +361,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         duration: const Duration(milliseconds: 300),
         width: Screen.width,
         height: showWeek ? suSetHeight(weekSize / 1.5) : 0.0,
+        color: currentTheme.primaryColor,
         child: ListView.builder(
           controller: weekScrollController,
           physics: const ClampingScrollPhysics(),
@@ -370,76 +371,74 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         ),
       );
 
-  Widget weekDayIndicator(context) {
-    String _month() => DateFormat("MMM", "zh_CN").format(
-          now.subtract(Duration(days: now.weekday - 1)),
-        );
-    String _weekday(int i) => DateFormat("EEE", "zh_CN").format(
-          now.subtract(Duration(days: now.weekday - 1 - i)),
-        );
-    String _date(int i) => DateFormat("MM/dd").format(
-          now.subtract(Duration(days: now.weekday - 1 - i)),
-        );
+  String _month() => DateFormat("MMM", "zh_CN").format(
+        now.subtract(Duration(days: now.weekday - 1)),
+      );
+  String _weekday(int i) => DateFormat("EEE", "zh_CN").format(
+        now.subtract(Duration(days: now.weekday - 1 - i)),
+      );
+  String _date(int i) => DateFormat("MM/dd").format(
+        now.subtract(Duration(days: now.weekday - 1 - i)),
+      );
 
-    return Container(
-      color: Theme.of(context).canvasColor,
-      height: suSetHeight(indicatorHeight),
-      child: Row(
-        children: <Widget>[
-          SizedBox(
-            width: monthWidth,
-            child: Center(
-              child: Text(
-                "${_month().substring(0, _month().length - 1)}"
-                "\n"
-                "${_month().substring(
-                  _month().length - 1,
-                  _month().length,
-                )}",
-                style: TextStyle(
-                  fontSize: suSetSp(18.0),
+  Widget get weekDayIndicator => Container(
+        color: Theme.of(context).canvasColor,
+        height: suSetHeight(indicatorHeight),
+        child: Row(
+          children: <Widget>[
+            SizedBox(
+              width: monthWidth,
+              child: Center(
+                child: Text(
+                  "${_month().substring(0, _month().length - 1)}"
+                  "\n"
+                  "${_month().substring(
+                    _month().length - 1,
+                    _month().length,
+                  )}",
+                  style: TextStyle(
+                    fontSize: suSetSp(18.0),
+                  ),
+                  textAlign: TextAlign.center,
                 ),
-                textAlign: TextAlign.center,
               ),
             ),
-          ),
-          for (int i = 0; i < maxWeekDay(); i++)
-            Expanded(
-              child: Container(
-                margin: EdgeInsets.symmetric(horizontal: 1.5),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(suSetWidth(5.0)),
-                  color: DateFormat("MM/dd").format(
-                            now.subtract(Duration(days: now.weekday - 1 - i)),
-                          ) ==
-                          DateFormat("MM/dd").format(DateTime.now())
-                      ? currentThemeColor.withAlpha(100)
-                      : null,
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(
-                        _weekday(i),
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: suSetSp(18.0),
+            for (int i = 0; i < maxWeekDay(); i++)
+              Expanded(
+                child: Container(
+                  margin: EdgeInsets.symmetric(horizontal: 1.5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+                    color: DateFormat("MM/dd").format(
+                              now.subtract(Duration(days: now.weekday - 1 - i)),
+                            ) ==
+                            DateFormat("MM/dd").format(DateTime.now())
+                        ? currentThemeColor.withAlpha(100)
+                        : null,
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          _weekday(i),
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: suSetSp(18.0),
+                          ),
                         ),
-                      ),
-                      Text(
-                        _date(i),
-                        style: TextStyle(fontSize: suSetSp(14.0)),
-                      ),
-                    ],
+                        Text(
+                          _date(i),
+                          style: TextStyle(fontSize: suSetSp(14.0)),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 
   Widget courseLineGrid(context) {
     final double totalHeight = Screen.height -
@@ -563,7 +562,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
             children: <Widget>[
               if (remark != null) remarkWidget,
               weekSelection(context),
-              if (firstLoaded && hasCourse) weekDayIndicator(context),
+              if (firstLoaded && hasCourse) weekDayIndicator,
               if (firstLoaded && hasCourse) courseLineGrid(context),
               if (firstLoaded && !hasCourse && !showError) emptyTips,
               if (firstLoaded && !hasCourse && showError) errorTips,

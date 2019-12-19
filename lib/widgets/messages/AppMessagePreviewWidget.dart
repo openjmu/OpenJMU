@@ -82,6 +82,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
               child: Text(
                 "${unreadMessages.length}",
                 style: TextStyle(
+                  color: isDark ? Colors.grey[300] : Colors.white,
                   fontSize: suSetSp(18.0),
                   fontWeight: FontWeight.normal,
                 ),

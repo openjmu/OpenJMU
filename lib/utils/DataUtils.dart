@@ -297,7 +297,7 @@ class DataUtils {
   }
 
   // 获取设置的夜间模式
-  static bool getBrightness() {
+  static bool getBrightnessDark() {
     return sp?.getBool(spBrightnessDark) ?? false;
   }
 

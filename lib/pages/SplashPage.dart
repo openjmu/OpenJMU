@@ -33,6 +33,7 @@ class SplashState extends State<SplashPage> {
   bool isUserLogin = false;
   bool showLoading = false;
   bool isInLoginProcess = false;
+  Timer _forceToLoginTimer;
 
   @override
   void initState() {
@@ -40,14 +41,23 @@ class SplashState extends State<SplashPage> {
       OTAUtils.checkUpdate(fromHome: true);
 
       Future.delayed(const Duration(seconds: 5), () {
-        if (this.mounted) {
+        if (mounted) {
           setState(() {
             showLoading = true;
           });
         }
       });
 
-      Provider.of<DateProvider>(currentContext, listen: false).getCurrentWeek();
+      Provider.of<DateProvider>(
+        currentContext,
+        listen: false,
+      ).getCurrentWeek();
+
+      _forceToLoginTimer = Timer(const Duration(seconds: 30), () {
+        if (!isUserLogin) {
+          navigate(forceToLogin: true);
+        }
+      });
     });
 
     checkConnectivity().then((ConnectivityResult result) {
@@ -58,26 +68,32 @@ class SplashState extends State<SplashPage> {
 
     Instances.eventBus
       ..on<ConnectivityChangeEvent>().listen((event) {
-        if (this.mounted && isOnline != null) checkOnline(event);
+        if (mounted && isOnline != null) checkOnline(event);
       })
       ..on<TicketGotEvent>().listen((event) async {
         debugPrint("Ticket Got.");
         if (!event.isWizard) {}
-        this.isUserLogin = true;
-        if (this.mounted) {
+        isUserLogin = true;
+        if (mounted) {
           setState(() {});
           await navigate();
         }
       })
       ..on<TicketFailedEvent>().listen((event) async {
         debugPrint("Ticket Failed.");
-        this.isUserLogin = false;
-        if (this.mounted) {
+        isUserLogin = false;
+        if (mounted) {
           setState(() {});
           await navigate();
         }
       });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _forceToLoginTimer?.cancel();
+    super.dispose();
   }
 
   Future<ConnectivityResult> checkConnectivity() async {
@@ -100,10 +116,10 @@ class SplashState extends State<SplashPage> {
     if (!isInLoginProcess) {
       isInLoginProcess = true;
       if (event.type != ConnectivityResult.none) {
-        this.isOnline = true;
+        isOnline = true;
         DataUtils.reFetchTicket();
       } else {
-        this.isOnline = false;
+        isOnline = false;
       }
     }
     if (mounted) setState(() {});
@@ -116,10 +132,10 @@ class SplashState extends State<SplashPage> {
     Configs.announcements = data['announcements'];
   }
 
-  Future navigate() async {
+  Future navigate({bool forceToLogin = false}) async {
     await getAnnouncement();
     Future.delayed(const Duration(seconds: 2), () {
-      if (!isUserLogin) {
+      if (!isUserLogin || forceToLogin) {
         try {
           navigatorState.pushAndRemoveUntil(
               PageRouteBuilder(
@@ -130,7 +146,9 @@ class SplashState extends State<SplashPage> {
                 ),
               ),
               (Route<dynamic> route) => false);
-        } catch (e) {}
+        } catch (e) {
+          debugPrint("$e");
+        }
       } else {
         try {
           navigatorState.pushNamedAndRemoveUntil(
@@ -160,53 +178,64 @@ class SplashState extends State<SplashPage> {
   Widget get loginWidget => Column(
         children: <Widget>[
           Expanded(
-            child: Center(
-              child: Container(
-                margin: EdgeInsets.only(
-                  bottom: suSetHeight(10.0),
+            child: Container(
+              margin: EdgeInsets.only(
+                bottom: suSetHeight(10.0),
+              ),
+              child: Center(
+                child: SizedBox.fromSize(
+                  size: Size.square(suSetWidth(36.0)),
+                  child: PlatformProgressIndicator(
+                    radius: suSetWidth(20.0),
+                    color: Colors.white,
+                  ),
                 ),
-                width: suSetWidth(28.0),
-                height: suSetHeight(28.0),
-                child: PlatformProgressIndicator(color: Colors.white),
               ),
             ),
           ),
-          Expanded(
+          SizedBox(
+            height: suSetHeight(26.0),
             child: Center(
               child: Text(
                 "正在登录",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: suSetSp(20.0),
+                  fontSize: suSetSp(24.0),
                 ),
               ),
             ),
-          )
+          ),
         ],
       );
 
   Widget get warningWidget => Column(
         children: <Widget>[
           Expanded(
-            child: Center(
-              child: Icon(
-                Icons.warning,
-                color: Colors.white,
-                size: suSetWidth(40.0),
+            child: Container(
+              margin: EdgeInsets.only(
+                bottom: suSetHeight(10.0),
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.warning,
+                  color: Colors.white,
+                  size: suSetWidth(36.0),
+                ),
               ),
             ),
           ),
-          Expanded(
+          SizedBox(
+            height: suSetHeight(26.0),
             child: Center(
               child: Text(
                 "请检查联网状态",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: suSetSp(20.0),
+                  fontSize: suSetSp(24.0),
                 ),
               ),
             ),
-          )
+          ),
         ],
       );
 
@@ -216,36 +245,34 @@ class SplashState extends State<SplashPage> {
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
         backgroundColor: currentThemeColor,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              logo,
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                margin: EdgeInsets.only(
-                  top: suSetWidth(
-                    showLoading && isOnline != null ? 20.0 : 0.0,
-                  ),
-                ),
-                height: suSetHeight(
-                  showLoading && isOnline != null ? 80.0 : 0.0,
-                ),
-                child: Center(
-                  child: showLoading && isOnline != null
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Expanded(
-                              child: isOnline ? loginWidget : warningWidget,
-                            ),
-                          ],
-                        )
-                      : null,
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            logo,
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              margin: EdgeInsets.only(
+                top: suSetHeight(
+                  showLoading && isOnline != null ? 20.0 : 0.0,
                 ),
               ),
-            ],
-          ),
+              width: Screen.width,
+              height: suSetHeight(
+                showLoading && isOnline != null ? 80.0 : 0.0,
+              ),
+              child: SingleChildScrollView(
+                physics: const NeverScrollableScrollPhysics(),
+                child: SizedBox(
+                  height: suSetHeight(
+                    showLoading && isOnline != null ? 80.0 : 0.0,
+                  ),
+                  child: showLoading && isOnline != null
+                      ? isOnline ? loginWidget : warningWidget
+                      : SizedBox.shrink(),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

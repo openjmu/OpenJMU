@@ -131,12 +131,14 @@ Widget badgeIcon({
 /// Progress Indicator. Used in loading data.
 class PlatformProgressIndicator extends StatelessWidget {
   final double strokeWidth;
+  final double radius;
   final Color color;
   final double value;
 
   const PlatformProgressIndicator({
     Key key,
     this.strokeWidth = 4.0,
+    this.radius = 10.0,
     this.color,
     this.value,
   }) : super(key: key);
@@ -144,7 +146,7 @@ class PlatformProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Platform.isIOS
-        ? CupertinoActivityIndicator()
+        ? CupertinoActivityIndicator(radius: radius)
         : CircularProgressIndicator(
             strokeWidth: suSetWidth(strokeWidth),
             valueColor:
@@ -332,10 +334,10 @@ class NoSplash extends InteractiveInkFeature {
   })  : assert(controller != null),
         assert(referenceBox != null),
         super(
-        controller: controller,
-        referenceBox: referenceBox,
-        onRemoved: onRemoved,
-      ) {
+          controller: controller,
+          referenceBox: referenceBox,
+          onRemoved: onRemoved,
+        ) {
     controller.addInkFeature(this);
   }
   @override

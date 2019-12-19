@@ -44,6 +44,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   );
   static final tabUnselectedTextStyle = TextStyle(
     fontSize: suSetSp(23.0),
+    fontWeight: FontWeight.w300,
     textBaseline: TextBaseline.alphabetic,
   );
 
@@ -168,55 +169,46 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     super.build(context);
     return WillPopScope(
       onWillPop: doubleBackExit,
-      child: Selector<ThemesProvider, bool>(
-        selector: (_, provider) => provider.dark,
-        builder: (_, dark, __) {
-          return AnnotatedRegion(
-            value:
-                dark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
-            child: Scaffold(
-              body: Column(
-                children: <Widget>[
-                  if (Configs.announcementsEnabled)
-                    AnnouncementWidget(
-                      context,
-                      color: currentTheme.accentColor,
-                      gap: 24.0,
-                    ),
-                  Expanded(
-                    child: IndexedStack(
-                      children: <Widget>[
-                        PostSquareListPage(),
-                        AppsPage(),
-                        MessagePage(),
-                        MyInfoPage(),
-                      ],
-                      index: _tabIndex,
-                    ),
-                  ),
-                ],
+      child: Scaffold(
+        body: Column(
+          children: <Widget>[
+            if (Configs.announcementsEnabled)
+              AnnouncementWidget(
+                context,
+                color: currentTheme.accentColor,
+                gap: 24.0,
               ),
-              bottomNavigationBar: FABBottomAppBar(
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                color: Colors.grey[600],
-                height: bottomBarHeight,
-                iconSize: 34.0,
-                selectedColor: currentTheme.accentColor,
-                onTabSelected: _selectedTab,
-                initIndex: pagesTitle.indexOf(widget.initAction) == -1
-                    ? 0
-                    : pagesTitle.indexOf(widget.initAction),
-                items: [
-                  for (int i = 0; i < pagesTitle.length; i++)
-                    FABBottomAppBarItem(
-                      iconPath: pagesIcon[i],
-                      text: pagesTitle[i],
-                    ),
+            Expanded(
+              child: IndexedStack(
+                children: <Widget>[
+                  PostSquareListPage(),
+                  AppsPage(),
+                  MessagePage(),
+                  MyInfoPage(),
                 ],
+                index: _tabIndex,
               ),
             ),
-          );
-        },
+          ],
+        ),
+        bottomNavigationBar: FABBottomAppBar(
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          color: Colors.grey[600],
+          height: bottomBarHeight,
+          iconSize: 34.0,
+          selectedColor: currentTheme.accentColor,
+          onTabSelected: _selectedTab,
+          initIndex: pagesTitle.indexOf(widget.initAction) == -1
+              ? 0
+              : pagesTitle.indexOf(widget.initAction),
+          items: [
+            for (int i = 0; i < pagesTitle.length; i++)
+              FABBottomAppBarItem(
+                iconPath: pagesIcon[i],
+                text: pagesTitle[i],
+              ),
+          ],
+        ),
       ),
     );
   }

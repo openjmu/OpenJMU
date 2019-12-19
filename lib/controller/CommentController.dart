@@ -462,14 +462,14 @@ class CommentListInPostState extends State<CommentListInPost>
                         padding: EdgeInsets.all(suSetWidth(6.0)),
                         child: Icon(
                           Icons.delete,
-                          size: suSetWidth(36.0),
+                          size: suSetWidth(44.0),
                           color: Colors.white,
                         ),
                       ),
                       Text(
                         "删除评论",
                         style: TextStyle(
-                          fontSize: suSetSp(16.0),
+                          fontSize: suSetSp(19.0),
                           color: Colors.white,
                         ),
                       ),
@@ -492,14 +492,14 @@ class CommentListInPostState extends State<CommentListInPost>
                       padding: EdgeInsets.all(suSetWidth(6.0)),
                       child: Icon(
                         Icons.content_copy,
-                        size: suSetWidth(36.0),
+                        size: suSetWidth(44.0),
                         color: Colors.white,
                       ),
                     ),
                     Text(
                       "复制评论",
                       style: TextStyle(
-                        fontSize: suSetSp(16.0),
+                        fontSize: suSetSp(19.0),
                         color: Colors.white,
                       ),
                     ),
