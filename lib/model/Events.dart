@@ -144,29 +144,6 @@ class ChangeThemeEvent {
   ChangeThemeEvent(this.color);
 }
 
-class ChangeBrightnessEvent {
-  bool isDarkState;
-  Brightness brightness;
-  Color primaryColor;
-
-  ChangeBrightnessEvent(bool isDark) {
-    if (isDark) {
-      this.isDarkState = true;
-      this.brightness = Brightness.dark;
-      this.primaryColor = Colors.grey[850];
-    } else {
-      this.isDarkState = false;
-      this.brightness = Brightness.light;
-      this.primaryColor = Colors.white;
-    }
-  }
-}
-
-class ChangeAMOLEDDarkEvent {
-  bool isAMOLEDDark;
-  ChangeAMOLEDDarkEvent(this.isAMOLEDDark);
-}
-
 class ScrollToTopEvent {
   int tabIndex;
   String type;

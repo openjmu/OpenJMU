@@ -252,8 +252,10 @@ class NewsListPageState extends State<NewsListPage>
                   ),
                   shrinkWrap: true,
                   controller: _scrollController,
-                  separatorBuilder: (context, index) =>
-                      separator(context, height: 1.0),
+                  separatorBuilder: (context, index) => separator(
+                    context,
+                    height: 1.0,
+                  ),
                   itemCount: newsList.length + 1,
                   itemBuilder: (context, index) {
                     if (index == newsList.length) {

@@ -14,7 +14,6 @@ import 'package:quick_actions/quick_actions.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/SplashPage.dart';
-import 'package:OpenJMU/widgets/NoScaleTextWidget.dart';
 import 'package:OpenJMU/OpenJMU_route.dart';
 import 'package:OpenJMU/OpenJMU_route_helper.dart';
 
@@ -30,6 +29,10 @@ void main() async {
   await DataUtils.initSharedPreferences();
   await DeviceUtils.getModel();
   NotificationUtils.initSettings();
+
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+    statusBarColor: Colors.transparent,
+  ));
 
   runApp(OpenJMUApp());
 }
@@ -56,6 +59,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   bool isUserLogin = false;
   String initAction;
+  Brightness get _platformBrightness =>
+      Screen.mediaQuery.platformBrightness ?? Brightness.light;
 
   @override
   void initState() {
@@ -86,12 +91,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         initAction = _quickActions.firstWhere((action) {
           return action[0] == event.type;
         })[1];
-      })
-      ..on<ChangeBrightnessEvent>().listen((event) {
-        if (mounted) setState(() {});
-      })
-      ..on<ChangeAMOLEDDarkEvent>().listen((event) {
-        if (mounted) setState(() {});
       })
       ..on<HasUpdateEvent>().listen((event) {
         showToastWidget(
@@ -167,6 +166,9 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       providers: providers,
       child: Consumer<ThemesProvider>(
         builder: (_, provider, __) {
+          final isDark = provider.platformBrightness
+              ? _platformBrightness == Brightness.dark
+              : provider.dark;
           final theme =
               (isDark ? provider.darkTheme : provider.lightTheme).copyWith(
             textTheme: (isDark

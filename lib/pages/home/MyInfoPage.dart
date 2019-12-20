@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/user/UserPage.dart';
+import 'package:OpenJMU/widgets/dialogs/ManuallySetSidDialog.dart';
 
 class MyInfoPage extends StatefulWidget {
   @override
@@ -310,35 +311,50 @@ class MyInfoPageState extends State<MyInfoPage> {
         ),
       );
 
-  Widget currentDay(context, DateTime now) => Container(
-        color: Theme.of(context).primaryColor,
-        padding: EdgeInsets.symmetric(
-          horizontal: suSetWidth(36.0),
-          vertical: suSetHeight(20.0),
-        ),
-        child: Center(
-          child: Selector<DateProvider, int>(
-            selector: (_, provider) => provider.currentWeek,
-            builder: (_, currentWeek, __) {
-              return RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(text: "${UserAPI.currentUser.name}，$hello~\n"),
-                    TextSpan(text: "今天是"),
-                    if (currentWeek != null) TextSpan(text: "第$currentWeek周，"),
-                    TextSpan(
-                        text: "${DateFormat("MMMdd日，", "zh_CN").format(now)}"),
-                    TextSpan(
-                        text: "${DateFormat("EEEE", "zh_CN").format(now)}"),
-                  ],
-                  style: TextStyle(
-                    fontSize: suSetSp(24.0),
-                    color: Theme.of(context).textTheme.body1.color,
+  Widget get currentDay => GestureDetector(
+        onLongPress: () {
+          if (Configs.debug) {
+            showDialog(
+              context: context,
+              barrierDismissible: true,
+              builder: (_) => ManuallySetSidDialog(),
+            );
+          } else {
+            NetUtils.updateTicket();
+          }
+        },
+        child: Container(
+          color: Theme.of(context).primaryColor,
+          padding: EdgeInsets.symmetric(
+            horizontal: suSetWidth(36.0),
+            vertical: suSetHeight(20.0),
+          ),
+          child: Center(
+            child: Selector<DateProvider, int>(
+              selector: (_, provider) => provider.currentWeek,
+              builder: (_, currentWeek, __) {
+                return RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(text: "${currentUser.name}，$hello~\n"),
+                      TextSpan(text: "今天是"),
+                      if (currentWeek != null)
+                        TextSpan(text: "第$currentWeek周，"),
+                      TextSpan(
+                        text: "${DateFormat("MMMdd日，", "zh_CN").format(now)}",
+                      ),
+                      TextSpan(
+                        text: "${DateFormat("EEEE", "zh_CN").format(now)}",
+                      ),
+                    ],
+                    style: Theme.of(context).textTheme.body1.copyWith(
+                          fontSize: suSetSp(24.0),
+                        ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       );
@@ -361,12 +377,12 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   Widget settingItem(context, int sectionIndex, int itemIndex) {
     final Map<String, String> item = settingsSection()[sectionIndex][itemIndex];
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      child: Selector<ThemesProvider, bool>(
-        selector: (_, provider) => provider.dark,
-        builder: (_, dark, __) {
-          return Container(
+    return Selector<ThemesProvider, bool>(
+      selector: (_, provider) => provider.dark,
+      builder: (_, dark, __) {
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          child: Container(
             color: Theme.of(context).primaryColor,
             padding: EdgeInsets.symmetric(
               horizontal: suSetWidth(20.0),
@@ -409,11 +425,11 @@ class MyInfoPageState extends State<MyInfoPage> {
                 ),
               ],
             ),
-          );
-        },
-      ),
-      onTap: () {
-        _handleItemClick(context, item['name']);
+          ),
+          onTap: () {
+            _handleItemClick(context, item['name']);
+          },
+        );
       },
     );
   }
@@ -467,7 +483,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         children: <Widget>[
           userInfo,
           separator(context),
-          currentDay(context, now),
+          currentDay,
           separator(context),
           ListView.separated(
             padding: EdgeInsets.zero,

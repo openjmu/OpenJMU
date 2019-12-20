@@ -3,6 +3,7 @@
 /// [Date] 2019-11-01 14:12
 ///
 import 'dart:math' as math;
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
@@ -123,7 +124,10 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
                     shrinkWrap: shrinkWrap,
                     reverse: true,
                     itemCount: messages.length,
-                    itemBuilder: (_, i) => messageWidget(messages[i]),
+                    itemBuilder: (_, i) {
+                      tryDecodeContent(messages[i]);
+                      return messageWidget(messages[i]);
+                    },
                   );
                 },
               ),
@@ -170,7 +174,11 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
               child: Text(
                 "${timeHandler(message.sendTime)}",
                 style: TextStyle(
-                  color: currentTheme.textTheme.caption.color.withOpacity(0.25),
+                  color: Theme.of(context)
+                      .textTheme
+                      .caption
+                      .color
+                      .withOpacity(0.25),
                   fontSize: suSetSp(14.0),
                 ),
               ),
@@ -233,16 +241,25 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
     messagesProvider.saveAppsMessages();
   }
 
+  void tryDecodeContent(AppMessage message) {
+    try {
+      final content = jsonDecode(message.content);
+      message.content = content['content'];
+      if (mounted) setState(() {});
+    } catch (e) {}
+  }
+
   @override
   Widget build(BuildContext context) {
     judgeShrink(context);
     judgeMessageConfirm();
+
     return Scaffold(
       body: Column(
         children: <Widget>[
           topBar,
           messageList,
-          if (widget.app.url != null) bottomBar,
+          if (widget.app.url != null && widget.app.url.isNotEmpty) bottomBar,
         ],
       ),
     );

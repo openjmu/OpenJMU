@@ -166,12 +166,6 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
       );
     }
     Instances.eventBus
-      ..on<ChangeBrightnessEvent>().listen((event) {
-        final matches = API.courseSchedule.allMatches(url);
-        String result;
-        for (final m in matches) result = m.group(0);
-        if (mounted && result != null) loadCourseSchedule();
-      })
       ..on<CourseScheduleRefreshEvent>().listen((event) {
         if (mounted) loadCourseSchedule();
       });

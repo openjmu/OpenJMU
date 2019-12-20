@@ -79,13 +79,18 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
               shape: BoxShape.circle,
             ),
             child: Center(
-              child: Text(
-                "${unreadMessages.length}",
-                style: TextStyle(
-                  color: isDark ? Colors.grey[300] : Colors.white,
-                  fontSize: suSetSp(18.0),
-                  fontWeight: FontWeight.normal,
-                ),
+              child: Selector<ThemesProvider, bool>(
+                selector: (_, provider) => provider.dark,
+                builder: (_, dark, __) {
+                  return Text(
+                    "${unreadMessages.length}",
+                    style: TextStyle(
+                      color: dark ? Colors.grey[300] : Colors.white,
+                      fontSize: suSetSp(18.0),
+                      fontWeight: FontWeight.normal,
+                    ),
+                  );
+                },
               ),
             ),
           );
@@ -108,6 +113,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
       widget.message.content = content['content'];
       Provider.of<MessagesProvider>(currentContext, listen: false)
           .saveAppsMessages();
+      if (mounted) setState(() {});
     } catch (e) {}
   }
 

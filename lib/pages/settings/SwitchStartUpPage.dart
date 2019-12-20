@@ -194,15 +194,15 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                 Text(
                   "启动页设置",
                   style: Theme.of(context).textTheme.title.copyWith(
-                    fontSize: suSetSp(40.0),
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontSize: suSetSp(40.0),
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 Text(
                   "设置各个页面的启动页",
                   style: Theme.of(context).textTheme.caption.copyWith(
-                    fontSize: suSetSp(24.0),
-                  ),
+                        fontSize: suSetSp(24.0),
+                      ),
                 ),
                 emptyDivider(height: 20.0),
               ],

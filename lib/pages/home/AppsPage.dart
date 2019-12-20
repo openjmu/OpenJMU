@@ -204,19 +204,19 @@ class AppsPageState extends State<AppsPage>
                   children: <Widget>[
                     UserAPI.currentUser.isTeacher != null
                         ? UserAPI.currentUser.isTeacher
-                        ? InAppBrowserPage(
-                      url: "${API.courseScheduleTeacher}"
-                          "?sid=${UserAPI.currentUser.sid}"
-                          "&night=${dark ? 1 : 0}",
-                      title: "课程表",
-                      withAppBar: false,
-                      withAction: false,
-                      keepAlive: true,
-                    )
-                        : CourseSchedulePage(
-                      key: coursePageKey,
-                      appCenterPageState: _appCenterPageState,
-                    )
+                            ? InAppBrowserPage(
+                                url: "${API.courseScheduleTeacher}"
+                                    "?sid=${UserAPI.currentUser.sid}"
+                                    "&night=${dark ? 1 : 0}",
+                                title: "课程表",
+                                withAppBar: false,
+                                withAction: false,
+                                keepAlive: true,
+                              )
+                            : CourseSchedulePage(
+                                key: coursePageKey,
+                                appCenterPageState: _appCenterPageState,
+                              )
                         : SizedBox(),
                     if (tabs().contains("成绩")) ScorePage(),
                     AppCenterPage(

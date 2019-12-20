@@ -74,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
           builder: (_, provider, __) {
             return PlatformSwitch(
               activeColor: currentThemeColor,
-              value: isDark,
+              value: provider.dark,
               onChanged: !provider.platformBrightness
                   ? (bool value) {
                       provider.dark = value;

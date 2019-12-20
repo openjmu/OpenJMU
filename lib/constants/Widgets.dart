@@ -100,7 +100,7 @@ Widget emptyDivider({double width, double height}) => SizedBox(
     );
 
 /// Cover when night mode. Used in covering post thumb images.
-Widget nightModeCover() => Positioned(
+Widget get nightModeCover => Positioned(
       top: 0.0,
       left: 0.0,
       right: 0.0,
@@ -276,7 +276,7 @@ class ScaledImage extends StatelessWidget {
                   horizontal: suSetWidth(6.0),
                   vertical: suSetHeight(2.0),
                 ),
-                color: provider.currentColor.withOpacity(0.7),
+                color: currentThemeColor.withOpacity(0.7),
                 child: Text(
                   "长图",
                   style:

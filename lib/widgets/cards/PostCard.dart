@@ -83,9 +83,8 @@ class _PostCardState extends State<PostCard> {
           Text(
             post.nickname ?? post.uid,
             style: TextStyle(
-              color: currentTheme.textTheme.title.color,
+              color: Theme.of(context).textTheme.title.color,
               fontSize: suSetSp(22.0),
-              fontWeight: FontWeight.bold,
             ),
             textAlign: TextAlign.left,
           ),
@@ -200,7 +199,7 @@ class _PostCardState extends State<PostCard> {
                 horizontal: suSetWidth(contentPadding),
                 vertical: suSetHeight(10.0),
               ),
-              decoration: BoxDecoration(color: currentTheme.canvasColor),
+              decoration: BoxDecoration(color: Theme.of(context).canvasColor),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -372,8 +371,8 @@ class _PostCardState extends State<PostCard> {
                   fontWeight: FontWeight.normal,
                 ),
               ),
-              splashColor: currentTheme.cardColor,
-              highlightColor: currentTheme.cardColor,
+              splashColor: Theme.of(context).cardColor,
+              highlightColor: Theme.of(context).cardColor,
             ),
           ),
           Expanded(
@@ -392,8 +391,8 @@ class _PostCardState extends State<PostCard> {
                   fontWeight: FontWeight.normal,
                 ),
               ),
-              splashColor: currentTheme.cardColor,
-              highlightColor: currentTheme.cardColor,
+              splashColor: Theme.of(context).cardColor,
+              highlightColor: Theme.of(context).cardColor,
             ),
           ),
           Expanded(
@@ -480,28 +479,23 @@ class _PostCardState extends State<PostCard> {
             : EdgeInsets.symmetric(
                 horizontal: suSetWidth(contentPadding),
               ),
-        child: Selector<ThemesProvider, bool>(
-          selector: (_, provider) => provider.dark,
-          builder: (_, dark, __) {
-            return ExtendedText(
-              content != null ? "$content " : null,
-              style: TextStyle(fontSize: suSetSp(21.0)),
-              onSpecialTextTap: specialTextTapRecognizer,
-              maxLines: widget.isDetail ?? false ? null : 8,
-              overFlowTextSpan: widget.isDetail ?? false
-                  ? null
-                  : OverFlowTextSpan(
-                      children: <TextSpan>[
-                        TextSpan(text: " ... "),
-                        TextSpan(
-                          text: "全文",
-                          style: TextStyle(color: currentThemeColor),
-                        ),
-                      ],
+        child: ExtendedText(
+          content != null ? "$content " : null,
+          style: TextStyle(fontSize: suSetSp(21.0)),
+          onSpecialTextTap: specialTextTapRecognizer,
+          maxLines: widget.isDetail ?? false ? null : 8,
+          overFlowTextSpan: widget.isDetail ?? false
+              ? null
+              : OverFlowTextSpan(
+                  children: <TextSpan>[
+                    TextSpan(text: " ... "),
+                    TextSpan(
+                      text: "全文",
+                      style: TextStyle(color: currentThemeColor),
                     ),
-              specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
-            );
-          },
+                  ],
+                ),
+          specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
         ),
       ),
     );
@@ -569,7 +563,7 @@ class _PostCardState extends State<PostCard> {
                 padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
                 child: Icon(
                   icon,
-                  color: currentTheme.iconTheme.color,
+                  color: Theme.of(context).iconTheme.color,
                   size: suSetWidth(36.0),
                 ),
               ),
@@ -578,9 +572,9 @@ class _PostCardState extends State<PostCard> {
                   padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
                   child: Text(
                     text,
-                    style: currentTheme.textTheme.body1.copyWith(
-                      fontSize: suSetSp(22.0),
-                    ),
+                    style: Theme.of(context).textTheme.body1.copyWith(
+                          fontSize: suSetSp(22.0),
+                        ),
                   ),
                 ),
               ),
@@ -633,14 +627,14 @@ class _PostCardState extends State<PostCard> {
         ),
         content: Text(
           "确定屏蔽此人吗？",
-          style: currentTheme.textTheme.body1.copyWith(
-            fontSize: suSetSp(20.0),
-          ),
+          style: Theme.of(context).textTheme.body1.copyWith(
+                fontSize: suSetSp(20.0),
+              ),
         ),
         actions: <Widget>[
           PlatformButton(
             android: (BuildContext context) => MaterialRaisedButtonData(
-              color: currentTheme.dialogBackgroundColor,
+              color: Theme.of(context).dialogBackgroundColor,
               elevation: 0,
               disabledElevation: 0.0,
               highlightElevation: 0.0,
@@ -699,14 +693,14 @@ class _PostCardState extends State<PostCard> {
         ),
         content: Text(
           "确定举报该条动态吗？",
-          style: currentTheme.textTheme.body1.copyWith(
-            fontSize: suSetSp(20.0),
-          ),
+          style: Theme.of(context).textTheme.body1.copyWith(
+                fontSize: suSetSp(20.0),
+              ),
         ),
         actions: <Widget>[
           PlatformButton(
             android: (BuildContext context) => MaterialRaisedButtonData(
-              color: currentTheme.dialogBackgroundColor,
+              color: Theme.of(context).dialogBackgroundColor,
               elevation: 0,
               disabledElevation: 0.0,
               highlightElevation: 0.0,

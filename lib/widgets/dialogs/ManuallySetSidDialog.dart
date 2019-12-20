@@ -119,7 +119,7 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                               style: TextStyle(
                                 color: canSave
                                     ? currentThemeColor
-                                    : currentTheme.disabledColor,
+                                    : Theme.of(context).disabledColor,
                                 fontSize: suSetSp(18.0),
                               ),
                             ),

@@ -186,16 +186,6 @@ class ThemesProvider with ChangeNotifier {
       );
 }
 
-/// Getter for screen's brightness.
-Brightness get _defaultBrightness =>
-    Screen.mediaQuery.platformBrightness ?? Brightness.light;
-Brightness get _configuredBrightness =>
-    DataUtils.getBrightnessDark() ? Brightness.dark : Brightness.light;
-Brightness get brightness => DataUtils.getBrightnessPlatform()
-    ? _defaultBrightness
-    : _configuredBrightness;
-bool get isDark => brightness == Brightness.dark;
-
 const defaultColor = Color(0xFFE5322D);
 
 final supportColors = <Color>[

@@ -626,6 +626,9 @@ class WebApp {
   });
 
   factory WebApp.fromJson(Map<String, dynamic> json) {
+    json.forEach((k, v) {
+      if (json[k] == "") json[k] = null;
+    });
     return WebApp(
       id: json['appid'],
       sequence: json['sequence'],

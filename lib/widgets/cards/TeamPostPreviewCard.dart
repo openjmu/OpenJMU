@@ -27,12 +27,8 @@ class TeamPostPreviewCard extends StatelessWidget {
     final result = await showCupertinoDialog<bool>(
       context: context,
       builder: (context) => CupertinoAlertDialog(
-        title: Text(
-          "删除动态",
-        ),
-        content: Text(
-          "是否删除该条动态？",
-        ),
+        title: Text("删除动态"),
+        content: Text("是否删除该条动态？"),
         actions: <Widget>[
           CupertinoDialogAction(
             child: Text("确认"),
@@ -225,7 +221,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                       post.nickname ?? post.uid.toString(),
                       style: TextStyle(
                         fontSize: suSetSp(22.0),
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.normal,
                       ),
                     ),
                     if (Constants.developerList.contains(post.uid))
@@ -559,7 +555,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   "assets/icons/postActions/thumbUp-${isLiked ? "fill" : "line"}.svg",
                   color: isLiked
                       ? currentThemeColor
-                      : currentTheme.textTheme.body1.color,
+                      : Theme.of(context).textTheme.body1.color,
                   width: suSetWidth(24.0),
                   height: suSetHeight(24.0),
                 ),
@@ -573,7 +569,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   style: TextStyle(
                     color: isLiked
                         ? currentThemeColor
-                        : currentTheme.textTheme.body1.color,
+                        : Theme.of(context).textTheme.body1.color,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),

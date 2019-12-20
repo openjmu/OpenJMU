@@ -84,13 +84,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   }
 
   @override
-  void didChangeDependencies() {
-    final provider = Provider.of<ThemesProvider>(currentContext, listen: false);
-    provider.setSystemUIDark(provider.dark);
-    super.didChangeDependencies();
-  }
-
-  @override
   void dispose() {
     notificationTimer?.cancel();
     super.dispose();
@@ -173,11 +166,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         body: Column(
           children: <Widget>[
             if (Configs.announcementsEnabled)
-              AnnouncementWidget(
-                context,
-                color: currentTheme.accentColor,
-                gap: 24.0,
-              ),
+              AnnouncementWidget(context, color: currentThemeColor, gap: 24.0),
             Expanded(
               child: IndexedStack(
                 children: <Widget>[
@@ -196,7 +185,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           color: Colors.grey[600],
           height: bottomBarHeight,
           iconSize: 34.0,
-          selectedColor: currentTheme.accentColor,
+          selectedColor: currentThemeColor,
           onTabSelected: _selectedTab,
           initIndex: pagesTitle.indexOf(widget.initAction) == -1
               ? 0

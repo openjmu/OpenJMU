@@ -31,10 +31,11 @@ class _AddingButtonPageState extends State<AddingButtonPage>
         Screen.width,
         Screen.height * 2 + Screen.topSafeHeight + Screen.bottomSafeHeight,
       ) /
-      3;
+      2;
 
   /// Animation.
   /// Boolean to prevent duplicate pop.
+  bool entering = true;
   bool popping = false;
   double _backgroundOpacity = 0.0;
   double _backdropFilterSize = 0.0;
@@ -179,9 +180,6 @@ class _AddingButtonPageState extends State<AddingButtonPage>
   }
 
   Future backDropFilterAnimate(BuildContext context, bool forward) async {
-    final double r = pythagoreanTheorem(
-            Screen.width, Screen.height * 2 + Screen.topSafeHeight) /
-        2;
     if (!forward) _backDropFilterController?.stop();
     popButtonAnimate(context, forward);
 
@@ -212,7 +210,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
     );
     _backDropFilterAnimation = Tween(
       begin: forward ? 0.0 : _backdropFilterSize,
-      end: forward ? r : 0.0,
+      end: forward ? backdropRadius : 0.0,
     ).animate(_backDropFilterCurve)
       ..addListener(() {
         setState(() {
@@ -232,35 +230,34 @@ class _AddingButtonPageState extends State<AddingButtonPage>
 
     _backgroundOpacityController.forward();
     await _backDropFilterController.forward();
+    if (forward) entering = false;
   }
 
   double pythagoreanTheorem(double short, double long) {
     return math.sqrt(math.pow(short, 2) + math.pow(long, 2));
   }
 
-  Widget popButton() {
-    return Opacity(
-      opacity: _popButtonOpacity,
-      child: Center(
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          child: SizedBox(
-            width: suSetWidth(MainPageState.bottomBarHeight),
-            height: suSetHeight(MainPageState.bottomBarHeight),
-            child: Transform.rotate(
-              angle: _popButtonRotateAngle,
-              child: Icon(
-                Icons.add,
-                color: Colors.black,
-                size: suSetWidth(48.0),
+  Widget get popButton => Opacity(
+        opacity: _popButtonOpacity,
+        child: Center(
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            child: SizedBox(
+              width: suSetWidth(MainPageState.bottomBarHeight),
+              height: suSetHeight(MainPageState.bottomBarHeight),
+              child: Transform.rotate(
+                angle: _popButtonRotateAngle,
+                child: Icon(
+                  Icons.add,
+                  color: Colors.black,
+                  size: suSetWidth(48.0),
+                ),
               ),
             ),
+            onTap: () async => await willPop(context),
           ),
-          onTap: willPop,
         ),
-      ),
-    );
-  }
+      );
 
   Widget wrapper(context, {Widget child}) {
     final double topOverflow = backdropRadius - Screen.height;
@@ -274,14 +271,18 @@ class _AddingButtonPageState extends State<AddingButtonPage>
           top: 0.0,
           right: 0.0,
           bottom: 0.0,
-          child: Container(
-            color: Colors.black.withOpacity(0.3 * _backgroundOpacity),
-            child: BackdropFilter(
-              filter: ui.ImageFilter.blur(
-                sigmaX: 3.0 * _backgroundOpacity,
-                sigmaY: 3.0 * _backgroundOpacity,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () async => await willPop(context),
+            child: Container(
+              color: Colors.black.withOpacity(0.3 * _backgroundOpacity),
+              child: BackdropFilter(
+                filter: ui.ImageFilter.blur(
+                  sigmaX: 3.0 * _backgroundOpacity,
+                  sigmaY: 3.0 * _backgroundOpacity,
+                ),
+                child: Text(" ", style: TextStyle(inherit: false)),
               ),
-              child: Text(" ", style: TextStyle(inherit: false)),
             ),
           ),
         ),
@@ -300,7 +301,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
               ),
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: willPop,
+                onTap: () async => await willPop(context),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(backdropRadius * 2),
                   child: BackdropFilter(
@@ -328,7 +329,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
           left: 0.0,
           right: 0.0,
           bottom: Screen.bottomSafeHeight,
-          child: popButton(),
+          child: popButton,
         ),
       ],
     );
@@ -367,9 +368,9 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                   emptyDivider(height: suSetHeight(10.0)),
                   Text(
                     itemTitles[index],
-                    style: currentTheme.textTheme.body1.copyWith(
-                      fontSize: suSetSp(20.0),
-                    ),
+                    style: Theme.of(context).textTheme.body1.copyWith(
+                          fontSize: suSetSp(20.0),
+                        ),
                   ),
                 ],
               ),
@@ -383,21 +384,22 @@ class _AddingButtonPageState extends State<AddingButtonPage>
     );
   }
 
-  Future<bool> willPop() async {
+  Future<bool> willPop(context, {bool fromScope = false}) async {
+    if (entering || popping) return false;
+
+    popping = true;
     await backDropFilterAnimate(context, false);
-    if (!popping) {
-      popping = true;
+    if (!fromScope)
       await Future.delayed(Duration(milliseconds: _animateDuration), () {
         Navigator.of(context).pop();
       });
-    }
-    return null;
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: willPop,
+      onWillPop: () async => await willPop(context, fromScope: true),
       child: wrapper(
         context,
         child: Column(

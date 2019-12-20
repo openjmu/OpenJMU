@@ -321,7 +321,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                 duration: showWeekDuration,
                 opacity: showWeek ? 1.0 : 0.0,
                 child: SizedBox.expand(
-                  child: Container(color: currentTheme.primaryColor),
+                  child: Container(color: Theme.of(context).primaryColor),
                 ),
               ),
               AnimatedContainer(
@@ -361,7 +361,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         duration: const Duration(milliseconds: 300),
         width: Screen.width,
         height: showWeek ? suSetHeight(weekSize / 1.5) : 0.0,
-        color: currentTheme.primaryColor,
+        color: Theme.of(context).primaryColor,
         child: ListView.builder(
           controller: weekScrollController,
           physics: const ClampingScrollPhysics(),
@@ -711,7 +711,7 @@ class CourseWidget extends StatelessWidget {
                               ? CourseAPI.inCurrentWeek(course,
                                       currentWeek: currentWeek)
                                   ? course.color.withAlpha(200)
-                                  : currentTheme.dividerColor
+                                  : Theme.of(context).dividerColor
                               : null,
                         ),
                         child: SizedBox.expand(

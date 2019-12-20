@@ -46,10 +46,11 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
   ];
 
   final int _animateDuration = 300;
-  final double backdropRadius = Screen.width / 2;
+  double get backdropRadius => Screen.width / 2;
 
   /// Animation.
   /// Boolean to prevent duplicate pop.
+  bool entering = true;
   bool popping = false;
   double _backgroundOpacity = 0.0;
   double _backdropFilterSize = 0.0;
@@ -244,6 +245,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
 
     _backgroundOpacityController.forward();
     await _backDropFilterController.forward();
+    if (forward) entering = false;
   }
 
   double pythagoreanTheorem(double short, double long) {
@@ -267,7 +269,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
                 ),
               ),
             ),
-            onTap: willPop,
+            onTap: () async => await willPop(context),
           ),
         ),
       );
@@ -281,14 +283,18 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
           top: 0.0,
           right: 0.0,
           bottom: 0.0,
-          child: Container(
-            color: Colors.black.withOpacity(0.3 * _backgroundOpacity),
-            child: BackdropFilter(
-              filter: ui.ImageFilter.blur(
-                sigmaX: 3.0 * _backgroundOpacity,
-                sigmaY: 3.0 * _backgroundOpacity,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () async => await willPop(context),
+            child: Container(
+              color: Colors.black.withOpacity(0.3 * _backgroundOpacity),
+              child: BackdropFilter(
+                filter: ui.ImageFilter.blur(
+                  sigmaX: 3.0 * _backgroundOpacity,
+                  sigmaY: 3.0 * _backgroundOpacity,
+                ),
+                child: Text(" ", style: TextStyle(inherit: false)),
               ),
-              child: Text(" ", style: TextStyle(inherit: false)),
             ),
           ),
         ),
@@ -304,7 +310,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
             ),
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: willPop,
+              onTap: () async => await willPop(context),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(backdropRadius * 2),
                 child: BackdropFilter(
@@ -395,21 +401,22 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
     );
   }
 
-  Future<bool> willPop() async {
+  Future<bool> willPop(context, {bool fromScope = false}) async {
+    if (entering || popping) return false;
+
+    popping = true;
     await backDropFilterAnimate(context, false);
-    if (!popping) {
-      popping = true;
+    if (!fromScope)
       await Future.delayed(Duration(milliseconds: _animateDuration), () {
-        navigatorState.pop();
+        Navigator.of(context).pop();
       });
-    }
-    return null;
+    return true;
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: willPop,
+      onWillPop: () async => await willPop(context, fromScope: true),
       child: wrapper(
         context,
         child: SizedBox.fromSize(

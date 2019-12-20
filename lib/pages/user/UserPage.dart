@@ -690,9 +690,14 @@ class _UserPageState extends State<UserPage>
                     SizedBox(
                       width: 56.0,
                       child: refreshing
-                          ? PlatformProgressIndicator(
-                              strokeWidth: suSetWidth(3.0),
-                              color: Colors.white,
+                          ? Center(
+                              child: SizedBox.fromSize(
+                                size: Size.square(suSetWidth(36.0)),
+                                child: PlatformProgressIndicator(
+                                  strokeWidth: suSetWidth(6.0),
+                                  color: Colors.white,
+                                ),
+                              ),
                             )
                           : IconButton(
                               icon: Icon(Icons.refresh),

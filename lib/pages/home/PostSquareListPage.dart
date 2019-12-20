@@ -8,8 +8,6 @@ import 'package:OpenJMU/constants/Constants.dart';
 import 'package:OpenJMU/pages/MainPage.dart';
 import 'package:OpenJMU/pages/notification/NotificationEntryPage.dart';
 import 'package:OpenJMU/pages/post/MarketingPage.dart';
-//import 'package:OpenJMU/utils/NetUtils.dart';
-//import 'package:OpenJMU/widgets/dialogs/ManuallySetSidDialog.dart';
 
 class PostSquareListPage extends StatefulWidget {
   @override
@@ -167,17 +165,9 @@ class PostSquareListPageState extends State<PostSquareListPage>
                     height: suSetWidth(32.0),
                   ),
                   onPressed: () {
-                    if (provider.notifications.total > 0 &&
-                        provider.teamNotification.total == 0) {
-                      navigatorState.pushNamed("openjmu://notifications");
-                    } else if (provider.teamNotification.total > 0 &&
-                        provider.notifications.total == 0) {
-                      navigatorState.pushNamed("openjmu://team-notifications");
-                    } else {
-                      navigatorState.push(TransparentRoute(
-                        builder: (_) => NotificationEntryPage(),
-                      ));
-                    }
+                    navigatorState.push(TransparentRoute(
+                      builder: (_) => NotificationEntryPage(),
+                    ));
                   },
                 ),
               ],
@@ -197,31 +187,6 @@ class PostSquareListPageState extends State<PostSquareListPage>
               padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
               child: Row(
                 children: <Widget>[
-//                GestureDetector(
-//                  behavior: HitTestBehavior.opaque,
-//                  onLongPress: () {
-//                    if (Configs.debug) {
-//                      showDialog(
-//                        context: context,
-//                        barrierDismissible: true,
-//                        builder: (_) => ManuallySetSidDialog(),
-//                      );
-//                    } else {
-//                      NetUtils.updateTicket();
-//                    }
-//                  },
-//                  child: Container(
-//                    margin: EdgeInsets.only(right: suSetWidth(8.0)),
-//                    child: Text(
-//                      "Jmu",
-//                      style: TextStyle(
-//                        color: currentThemeColor,
-//                        fontSize: suSetSp(38.0),
-//                        fontFamily: "chocolate",
-//                      ),
-//                    ),
-//                  ),
-//                ),
                   tabBar,
                   Expanded(
                     child: GestureDetector(
