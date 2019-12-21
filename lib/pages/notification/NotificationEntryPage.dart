@@ -269,7 +269,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
                 ),
               ),
             ),
-            onTap: () async => await willPop(context),
+            onTap: willPop,
           ),
         ),
       );
@@ -285,7 +285,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
           bottom: 0.0,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: () async => await willPop(context),
+            onTap: willPop,
             child: Container(
               color: Colors.black.withOpacity(0.3 * _backgroundOpacity),
               child: BackdropFilter(
@@ -310,7 +310,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
             ),
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () async => await willPop(context),
+              onTap: willPop,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(backdropRadius * 2),
                 child: BackdropFilter(
@@ -401,22 +401,21 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
     );
   }
 
-  Future<bool> willPop(context, {bool fromScope = false}) async {
+  Future<bool> willPop() async {
     if (entering || popping) return false;
 
     popping = true;
     await backDropFilterAnimate(context, false);
-    if (!fromScope)
-      await Future.delayed(Duration(milliseconds: _animateDuration), () {
-        Navigator.of(context).pop();
-      });
-    return true;
+    await Future.delayed(Duration(milliseconds: _animateDuration), () {
+      navigatorState.pop();
+    });
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => await willPop(context, fromScope: true),
+      onWillPop: willPop,
       child: wrapper(
         context,
         child: SizedBox.fromSize(

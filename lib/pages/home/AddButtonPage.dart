@@ -254,7 +254,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                 ),
               ),
             ),
-            onTap: () async => await willPop(context),
+            onTap: willPop,
           ),
         ),
       );
@@ -273,7 +273,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
           bottom: 0.0,
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            onTap: () async => await willPop(context),
+            onTap: willPop,
             child: Container(
               color: Colors.black.withOpacity(0.3 * _backgroundOpacity),
               child: BackdropFilter(
@@ -301,7 +301,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
               ),
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () async => await willPop(context),
+                onTap: willPop,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(backdropRadius * 2),
                   child: BackdropFilter(
@@ -384,22 +384,21 @@ class _AddingButtonPageState extends State<AddingButtonPage>
     );
   }
 
-  Future<bool> willPop(context, {bool fromScope = false}) async {
+  Future<bool> willPop() async {
     if (entering || popping) return false;
 
     popping = true;
     await backDropFilterAnimate(context, false);
-    if (!fromScope)
-      await Future.delayed(Duration(milliseconds: _animateDuration), () {
-        Navigator.of(context).pop();
-      });
-    return true;
+    await Future.delayed(Duration(milliseconds: _animateDuration), () {
+      navigatorState.pop();
+    });
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () async => await willPop(context, fromScope: true),
+      onWillPop: willPop,
       child: wrapper(
         context,
         child: Column(

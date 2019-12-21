@@ -99,7 +99,7 @@ class _SettingsPageState extends State<SettingsPage> {
             return PlatformSwitch(
               activeColor: currentThemeColor,
               value: provider.AMOLEDDark,
-              onChanged: provider.dark
+              onChanged: Theme.of(context).brightness == Brightness.dark
                   ? (bool value) {
                       provider.AMOLEDDark = value;
                       if (mounted) setState(() {});

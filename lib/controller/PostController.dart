@@ -434,7 +434,6 @@ class ForwardListInPostState extends State<ForwardListInPost>
       firstLoadComplete = true;
       lastValue = _posts.isEmpty ? 0 : _posts.last.id;
       if (this.mounted) setState(() {});
-      print(_posts.length);
     } on DioError catch (e) {
       if (e.response != null) {
         debugPrint("${e.response.data}");

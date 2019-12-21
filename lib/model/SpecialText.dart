@@ -457,7 +457,6 @@ void specialTextTapRecognizer(data) {
   } else if (text.startsWith("http://")) {
     CommonWebPage.jump(text, "网页链接");
   } else if (text.startsWith("|")) {
-    print(data);
     final imageId = data['image'];
     final imageUrl = API.commentImageUrl(imageId, "o");
     navigatorState.pushNamed(
