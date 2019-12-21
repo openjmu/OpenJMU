@@ -284,13 +284,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
       );
 
   Widget customGridView(context) {
-    return Container(
-      margin: EdgeInsets.only(
-        bottom: (emoticonPadActive
-                ? _keyboardHeight
-                : MediaQuery.of(context).padding.bottom) +
-            suSetSp(80.0),
-      ),
+    return SizedBox(
       height: Screen.width / gridCount * (assets.length / gridCount).ceil(),
       child: GridView.builder(
         padding: EdgeInsets.zero,
@@ -316,59 +310,55 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
   }
 
   Widget _toolbar(context) {
-    return Positioned(
-      bottom: emoticonPadActive
-          ? _keyboardHeight
-          : MediaQuery.of(context).padding.bottom,
-      left: 0.0,
-      right: 0.0,
-      height: suSetSp(60.0),
-      child: Container(
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: <Widget>[
-            IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: addTopic,
-              icon: poundIcon(context),
+    return Container(
+      margin: EdgeInsets.only(
+        bottom:
+            !emoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
+      ),
+      height: suSetHeight(60.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: <Widget>[
+          IconButton(
+            padding: EdgeInsets.zero,
+            onPressed: addTopic,
+            icon: poundIcon(context),
+          ),
+          IconButton(
+            padding: EdgeInsets.zero,
+            onPressed: mentionPeople,
+            icon: Icon(
+              Platform.isAndroid ? Ionicons.ios_at : Ionicons.md_at,
+              color: Theme.of(context).iconTheme.color,
+              size: _iconSize,
             ),
-            IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: mentionPeople,
-              icon: Icon(
-                Platform.isAndroid ? Ionicons.ios_at : Ionicons.md_at,
-                color: Theme.of(context).iconTheme.color,
-                size: _iconSize,
-              ),
+          ),
+          IconButton(
+            padding: EdgeInsets.zero,
+            onPressed: loadAssets,
+            icon: Icon(
+              Icons.add_photo_alternate,
+              color: Theme.of(context).iconTheme.color,
+              size: _iconSize,
             ),
-            IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: loadAssets,
-              icon: Icon(
-                Icons.add_photo_alternate,
-                color: Theme.of(context).iconTheme.color,
-                size: _iconSize,
-              ),
+          ),
+          IconButton(
+            padding: EdgeInsets.zero,
+            onPressed: () {
+              if (emoticonPadActive && _focusNode.canRequestFocus) {
+                _focusNode.requestFocus();
+              }
+              updatePadStatus(!emoticonPadActive);
+            },
+            icon: Icon(
+              Icons.sentiment_very_satisfied,
+              color: emoticonPadActive
+                  ? currentThemeColor
+                  : Theme.of(context).iconTheme.color,
+              size: _iconSize,
             ),
-            IconButton(
-              padding: EdgeInsets.zero,
-              onPressed: () {
-                if (emoticonPadActive && _focusNode.canRequestFocus) {
-                  _focusNode.requestFocus();
-                }
-                updatePadStatus(!emoticonPadActive);
-              },
-              icon: Icon(
-                Icons.sentiment_very_satisfied,
-                color: emoticonPadActive
-                    ? currentThemeColor
-                    : Theme.of(context).iconTheme.color,
-                size: _iconSize,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -393,17 +383,12 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
   }
 
   Widget emoticonPad(context) {
-    return Positioned(
-      bottom: 0.0,
-      left: 0.0,
-      right: 0.0,
-      child: Visibility(
-        visible: emoticonPadActive,
-        child: EmotionPad(
-          route: "publish",
-          height: _keyboardHeight,
-          controller: _textEditingController,
-        ),
+    return Visibility(
+      visible: emoticonPadActive,
+      child: EmotionPad(
+        route: "publish",
+        height: _keyboardHeight,
+        controller: _textEditingController,
       ),
     );
   }
@@ -802,13 +787,15 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
                 ],
               ),
               Expanded(
-                child: Stack(
+                child: Column(
                   children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        textField(context),
-                        if (assets.isNotEmpty) customGridView(context),
-                      ],
+                    Expanded(
+                      child: Column(
+                        children: <Widget>[
+                          textField(context),
+                          if (assets.isNotEmpty) customGridView(context),
+                        ],
+                      ),
                     ),
                     _toolbar(context),
                     emoticonPad(context),

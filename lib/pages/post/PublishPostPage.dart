@@ -289,13 +289,7 @@ class PublishPostPageState extends State<PublishPostPage> {
       );
 
   Widget customGridView(context) {
-    return Container(
-      margin: EdgeInsets.only(
-        bottom: (emoticonPadActive
-                ? _keyboardHeight
-                : MediaQuery.of(context).padding.bottom) +
-            suSetSp(80.0),
-      ),
+    return SizedBox(
       height: Screen.width / gridCount * (assets.length / gridCount).ceil(),
       child: GridView.builder(
         padding: EdgeInsets.zero,

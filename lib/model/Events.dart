@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -138,11 +137,6 @@ class UserInfoGotEvent {
 }
 
 class BlacklistUpdateEvent {}
-
-class ChangeThemeEvent {
-  Color color;
-  ChangeThemeEvent(this.color);
-}
 
 class ScrollToTopEvent {
   int tabIndex;

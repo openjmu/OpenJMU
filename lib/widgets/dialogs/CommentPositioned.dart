@@ -302,11 +302,10 @@ class CommentPositionedState extends State<CommentPositioned> {
             ),
             GestureDetector(
               onTap: () {
-                emoticonPadActive = !emoticonPadActive;
                 if (emoticonPadActive && _focusNode.canRequestFocus) {
                   _focusNode.requestFocus();
                 }
-                updatePadStatus(emoticonPadActive);
+                updatePadStatus(!emoticonPadActive);
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(

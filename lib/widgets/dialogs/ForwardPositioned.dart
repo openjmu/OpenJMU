@@ -267,11 +267,10 @@ class ForwardPositionedState extends State<ForwardPositioned> {
             ),
             GestureDetector(
               onTap: () {
-                emoticonPadActive = !emoticonPadActive;
                 if (emoticonPadActive && _focusNode.canRequestFocus) {
                   _focusNode.requestFocus();
                 }
-                updatePadStatus(emoticonPadActive);
+                updatePadStatus(!emoticonPadActive);
               },
               child: Padding(
                 padding: EdgeInsets.symmetric(
