@@ -18,22 +18,18 @@ class CourseSchedulePage extends StatefulWidget {
   CourseSchedulePageState createState() => CourseSchedulePageState();
 }
 
-class CourseSchedulePageState extends State<CourseSchedulePage>
-    with AutomaticKeepAliveClientMixin {
-  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey();
-  final Duration showWeekDuration = const Duration(milliseconds: 300);
-  final Curve showWeekCurve = Curves.fastOutSlowIn;
-  final double weekSize = 100.0;
-  final double monthWidth = 36.0;
-  final double indicatorHeight = 60.0;
-  final int maxCoursesPerDay = 12;
+class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKeepAliveClientMixin {
+  final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
+  final showWeekDuration = const Duration(milliseconds: 300);
+  final showWeekCurve = Curves.fastOutSlowIn;
+  final weekSize = 100.0;
+  final monthWidth = 36.0;
+  final indicatorHeight = 60.0;
+  final maxCoursesPerDay = 12;
   ScrollController weekScrollController;
   DateProvider dateProvider;
 
-  bool firstLoaded = false,
-      hasCourse = true,
-      showWeek = false,
-      showError = false;
+  bool firstLoaded = false, hasCourse = true, showWeek = false, showError = false;
   int currentWeek;
   DateTime now;
 
@@ -109,11 +105,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     });
   }
 
-  Map<int, Map<int, List<Course>>> resetCourse(
-      Map<int, Map<int, List<Course>>> courses) {
+  Map<int, Map<int, List<Course>>> resetCourse(Map<int, Map<int, List<Course>>> courses) {
     courses = {
-      for (int i = 1; i < 7 + 1; i++)
-        i: {for (int i = 1; i < maxCoursesPerDay + 1; i++) i: []},
+      for (int i = 1; i < 7 + 1; i++) i: {for (int i = 1; i < maxCoursesPerDay + 1; i++) i: []},
     };
     for (int key in courses.keys) {
       courses[key] = {for (int i = 1; i < maxCoursesPerDay + 1; i++) i: []};
@@ -166,8 +160,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       initialScrollOffset: provider.currentWeek != null
           ? math.max(
               0,
-              (provider.currentWeek - 0.5) * suSetWidth(weekSize) -
-                  Screen.width / 2,
+              (provider.currentWeek - 0.5) * suSetWidth(weekSize) - Screen.width / 2,
             )
           : 0.0,
     );
@@ -277,9 +270,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                         width: 2.0,
                       )
                     : null,
-                color: currentWeek == index + 1
-                    ? currentThemeColor.withAlpha(100)
-                    : null,
+                color: currentWeek == index + 1 ? currentThemeColor.withAlpha(100) : null,
               ),
               child: Center(
                 child: RichText(
@@ -441,9 +432,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       );
 
   Widget courseLineGrid(context) {
-    final double totalHeight = Screen.height -
-        Screen.topSafeHeight -
-        suSetHeight(kAppBarHeight + indicatorHeight);
+    final double totalHeight =
+        Screen.height - Screen.topSafeHeight - suSetHeight(kAppBarHeight + indicatorHeight);
 
     bool hasEleven = false;
     int _maxCoursesPerDay = 8;
@@ -554,9 +544,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         constraints: BoxConstraints(maxWidth: Screen.width),
         child: AnimatedCrossFade(
           duration: const Duration(milliseconds: 300),
-          crossFadeState: !firstLoaded
-              ? CrossFadeState.showFirst
-              : CrossFadeState.showSecond,
+          crossFadeState: !firstLoaded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
           firstChild: Center(child: PlatformProgressIndicator()),
           secondChild: Column(
             children: <Widget>[
@@ -708,8 +696,7 @@ class CourseWidget extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(suSetWidth(5.0)),
                           color: courseList.isNotEmpty
-                              ? CourseAPI.inCurrentWeek(course,
-                                      currentWeek: currentWeek)
+                              ? CourseAPI.inCurrentWeek(course, currentWeek: currentWeek)
                                   ? course.color.withAlpha(200)
                                   : Theme.of(context).dividerColor
                               : null,
@@ -733,17 +720,13 @@ class CourseWidget extends StatelessWidget {
                                           fontWeight: FontWeight.w600,
                                         ),
                                       ),
-                                      if (course.name.length > 10)
-                                        TextSpan(text: "..."),
+                                      if (course.name.length > 10) TextSpan(text: "..."),
                                       if (course.location != null)
                                         TextSpan(
                                           text: "\n📍${course.location}",
                                         ),
                                     ],
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .body1
-                                        .copyWith(
+                                    style: Theme.of(context).textTheme.body1.copyWith(
                                           color: !CourseAPI.inCurrentWeek(
                                             course,
                                             currentWeek: currentWeek,
@@ -836,7 +819,7 @@ class CoursesDialog extends StatelessWidget {
                                   courseList[index],
                                   currentWeek: currentWeek,
                                 )
-                                  ? courseList[index].color.withAlpha(
+                                  ? courseList[index].color.withOpacity(
                                         dark ? darkModeAlpha : 1.0,
                                       )
                                   : Colors.grey
@@ -915,9 +898,7 @@ class CoursesDialog extends StatelessWidget {
               borderRadius: BorderRadius.circular(suSetWidth(15.0)),
               color: courseList.isNotEmpty
                   ? CourseAPI.inCurrentWeek(course, currentWeek: currentWeek)
-                      ? dark
-                          ? course.color.withAlpha(darkModeAlpha)
-                          : course.color
+                      ? dark ? course.color.withAlpha(darkModeAlpha) : course.color
                       : Colors.grey
                   : null,
             ),
@@ -1021,8 +1002,7 @@ class CoursesDialog extends StatelessWidget {
                           minWidth: suSetWidth(60.0),
                           height: suSetWidth(60.0),
                           shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(Screen.width / 2),
+                            borderRadius: BorderRadius.circular(Screen.width / 2),
                           ),
                           child: Icon(
                             Icons.delete,
@@ -1036,11 +1016,9 @@ class CoursesDialog extends StatelessWidget {
                               "coudeTime": courseList[0].time,
                             }).then((response) {
                               if (jsonDecode(response.data)['isOk']) {
-                                navigatorState.popUntil(
-                                    ModalRoute.withName('openjmu://home'));
+                                navigatorState.popUntil(ModalRoute.withName('openjmu://home'));
                               }
-                              Instances.eventBus
-                                  .fire(CourseScheduleRefreshEvent());
+                              Instances.eventBus.fire(CourseScheduleRefreshEvent());
                             });
                             courseList.removeAt(0);
                           },
@@ -1050,8 +1028,7 @@ class CoursesDialog extends StatelessWidget {
                           minWidth: suSetWidth(60.0),
                           height: suSetWidth(60.0),
                           shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.circular(Screen.width / 2),
+                            borderRadius: BorderRadius.circular(Screen.width / 2),
                           ),
                           child: Icon(
                             Icons.edit,
@@ -1117,9 +1094,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(suSetWidth(18.0)),
               color: widget.course != null
-                  ? dark
-                      ? widget.course.color.withAlpha(darkModeAlpha)
-                      : widget.course.color
+                  ? dark ? widget.course.color.withAlpha(darkModeAlpha) : widget.course.color
                   : Theme.of(context).dividerColor,
             ),
             child: Padding(
@@ -1157,8 +1132,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                       ),
                       maxLines: null,
                       maxLength: 30,
-                      buildCounter:
-                          (_, {currentLength, maxLength, isFocused}) => null,
+                      buildCounter: (_, {currentLength, maxLength, isFocused}) => null,
                       onChanged: (String value) {
                         content = value;
                         if (mounted) setState(() {});
@@ -1222,9 +1196,8 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                         if (mounted) setState(() {});
                         CourseAPI.setCustomCourse({
                           "content": Uri.encodeComponent(content),
-                          "couDayTime": widget.course != null
-                              ? widget.course.time
-                              : widget.coordinate[0],
+                          "couDayTime":
+                              widget.course != null ? widget.course.time : widget.coordinate[0],
                           "coudeTime": widget.course != null
                               ? widget.course.time
                               : "${widget.coordinate[1] - 1}${widget.coordinate[1]}",
@@ -1232,8 +1205,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                           loading = false;
                           if (mounted) setState(() {});
                           if (jsonDecode(response.data)['isOk']) {
-                            navigatorState.popUntil(
-                                ModalRoute.withName('openjmu://home'));
+                            navigatorState.popUntil(ModalRoute.withName('openjmu://home'));
                           }
                           Instances.eventBus.fire(CourseScheduleRefreshEvent());
                         });

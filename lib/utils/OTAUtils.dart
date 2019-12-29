@@ -69,31 +69,27 @@ class OTAUtils {
         iOSAppId: "1459832676",
       );
     } else {
-      final permission = await PermissionHandler()
-          .checkPermissionStatus(PermissionGroup.storage);
+      final permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
       if (permission != PermissionStatus.granted) {
-        Map<PermissionGroup, PermissionStatus> permissions =
-            await PermissionHandler()
-                .requestPermissions([PermissionGroup.storage]);
+        final permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
         if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
-          dismissAllToast();
-          showToastWidget(
-            UpdatingDialog(),
-            dismissOtherToast: true,
-            duration: const Duration(days: 1),
-          );
+          showUpdateDialog();
         } else {
           _tryUpdate();
         }
       } else {
-        dismissAllToast();
-        showToastWidget(
-          UpdatingDialog(),
-          dismissOtherToast: true,
-          duration: const Duration(days: 1),
-        );
+        showUpdateDialog();
       }
     }
+  }
+
+  static void showUpdateDialog() {
+    showToastWidget(
+      UpdatingDialog(),
+      dismissOtherToast: true,
+      duration: 1.days,
+      handleTouch: true,
+    );
   }
 
   static Widget updateDialog(HasUpdateEvent event) {

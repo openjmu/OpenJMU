@@ -2,6 +2,8 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2019-11-08 10:52
 ///
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
@@ -17,9 +19,7 @@ class MessagesProvider with ChangeNotifier {
       0,
       (initialValue, list) =>
           initialValue +
-          list
-              .cast<AppMessage>()
-              .fold(0, (init, message) => init + (message.read ? 0 : 1)));
+          list.cast<AppMessage>().fold(0, (init, message) => init + (message.read ? 0 : 1)));
 
   bool get hasMessages => _appsMessages.isNotEmpty
 //          || _personalMessages[currentUser.uid].isNotEmpty
@@ -59,36 +59,39 @@ class MessagesProvider with ChangeNotifier {
 
   void _incomingAppsMessage(MessageReceivedEvent event) {
     final message = AppMessage.fromEvent(event);
+    String content = message.content;
+    try {
+      content = jsonDecode(content)['content'];
+    } catch (e) {}
+    if (content.trim().replaceAll("\n", "").replaceAll("\r", "").isNotEmpty && content != null) {
+      final provider = Provider.of<WebAppsProvider>(currentContext);
+      final app = provider.apps.where((app) => app.id == message.appId).elementAt(0);
 
-    final provider =
-        Provider.of<WebAppsProvider>(currentContext, listen: false);
-    final app =
-        provider.apps.where((app) => app.id == message.appId).elementAt(0);
-
-    if (!_appsMessages.containsKey(message.appId)) {
-      _appsMessages[message.appId] = <AppMessage>[];
+      if (!_appsMessages.containsKey(message.appId)) {
+        _appsMessages[message.appId] = <AppMessage>[];
+      }
+      _appsMessages[message.appId].insert(0, message);
+      final tempMessages = List.from(_appsMessages[message.appId]);
+      _appsMessages.remove(message.appId);
+      _appsMessages[message.appId] = List.from(tempMessages);
+      saveAppsMessages();
+      if (Instances.appLifeCycleState != AppLifecycleState.resumed) {
+        NotificationUtils.show(
+          app.name,
+          content.trim().replaceAll("\n", "").replaceAll("\r", ""),
+        );
+      }
+      if (message.messageId != null && message.messageId != 0) {
+        MessageUtils.sendConfirmOfflineMessageOne(message.messageId);
+      }
+      if (message.ackId != null && message.ackId != 0) {
+        MessageUtils.sendACKedMessageToOtherMultiPort(
+          senderUid: 0,
+          ackId: message.ackId,
+        );
+      }
+      notifyListeners();
     }
-    _appsMessages[message.appId].insert(0, message);
-    final tempMessages = List.from(_appsMessages[message.appId]);
-    _appsMessages.remove(message.appId);
-    _appsMessages[message.appId] = List.from(tempMessages);
-    saveAppsMessages();
-    if (Instances.appLifeCycleState != AppLifecycleState.resumed) {
-      NotificationUtils.show(
-        app.name,
-        message.content.trim().replaceAll("\n", "").replaceAll("\r", ""),
-      );
-    }
-    if (message.messageId != null && message.messageId != 0) {
-      MessageUtils.sendConfirmOfflineMessageOne(message.messageId);
-    }
-    if (message.ackId != null && message.ackId != 0) {
-      MessageUtils.sendACKedMessageToOtherMultiPort(
-        senderUid: 0,
-        ackId: message.ackId,
-      );
-    }
-    notifyListeners();
   }
 
   void _incomingPersonalMessage(MessageReceivedEvent event) {

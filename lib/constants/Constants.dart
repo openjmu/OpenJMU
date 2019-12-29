@@ -7,6 +7,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
+export 'package:dartx/dartx.dart';
+
 export 'package:OpenJMU/api/API.dart';
 export 'package:OpenJMU/constants/Configs.dart';
 export 'package:OpenJMU/constants/Instances.dart';

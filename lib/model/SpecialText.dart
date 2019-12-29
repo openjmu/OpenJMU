@@ -101,8 +101,7 @@ class MentionText extends SpecialText {
   final int start;
   final BuilderType type;
 
-  MentionText(TextStyle textStyle, SpecialTextGestureTapCallback onTap,
-      {this.start, this.type})
+  MentionText(TextStyle textStyle, SpecialTextGestureTapCallback onTap, {this.start, this.type})
       : super(startKey, endKey, textStyle, onTap: onTap);
 
   @override
@@ -159,8 +158,7 @@ class PoundText extends SpecialText {
   static const String flag = "#";
   final int start;
   final BuilderType type;
-  PoundText(TextStyle textStyle, SpecialTextGestureTapCallback onTap,
-      {this.start, this.type})
+  PoundText(TextStyle textStyle, SpecialTextGestureTapCallback onTap, {this.start, this.type})
       : super(flag, flag, textStyle, onTap: onTap);
 
   @override
@@ -200,8 +198,7 @@ class EmoticonText extends SpecialText {
   InlineSpan finishText() {
     var key = toString();
     if (EmoticonUtils.instance.emoticonMap.containsKey(key)) {
-      final double size =
-          30.0 / 27.0 * ((textStyle != null) ? textStyle.fontSize : 17);
+      final double size = 30.0 / 27.0 * ((textStyle != null) ? textStyle.fontSize : 17);
 
       if (type == BuilderType.extendedTextField) {
         return ImageSpan(
@@ -268,10 +265,7 @@ class ImageText extends SpecialText {
           style: textStyle?.copyWith(color: Colors.blueAccent),
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              Map<String, dynamic> data = {
-                'content': toString(),
-                'image': imageId
-              };
+              Map<String, dynamic> data = {'content': toString(), 'image': imageId};
               if (onTap != null) onTap(data);
             },
         );
@@ -351,8 +345,7 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
           );
           if (specialText != null) {
             if (textStack.length - specialText.startFlag.length >= 0) {
-              textStack = textStack.substring(
-                  0, textStack.length - specialText.startFlag.length);
+              textStack = textStack.substring(0, textStack.length - specialText.startFlag.length);
               if (textStack.length > 0) {
                 inlineList.add(TextSpan(text: textStack, style: textStyle));
               }
@@ -400,7 +393,7 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       return ForumLinkText(textStyle, onTap);
     } else if (isStart(flag, ForumLinkOlderText.startKey)) {
       return ForumLinkOlderText(textStyle, onTap);
-    } else if (isStart(flag, ImageText.startKey)) {
+    } else if (isStart(flag, ImageText.startKey) && widgetType == WidgetType.comment) {
       return ImageText(textStyle, onTap, widgetType: widgetType);
     }
     return null;
@@ -420,9 +413,7 @@ class StackSpecialTextFieldSpanBuilder extends SpecialTextSpanBuilder {
     if (isStart(flag, MentionText.startKey)) {
       return MentionText(
         textStyle, onTap,
-        start: index -
-            (MentionText.startKey.length -
-                1), // Using minus to keep position correct.
+        start: index - (MentionText.startKey.length - 1), // Using minus to keep position correct.
         type: BuilderType.extendedTextField,
       );
     } else if (isStart(flag, PoundText.flag)) {

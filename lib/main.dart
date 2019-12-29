@@ -97,7 +97,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
           OTAUtils.updateDialog(event),
           dismissOtherToast: true,
           handleTouch: true,
-          duration: const Duration(days: 1),
+          duration: 1.days,
         );
       });
 

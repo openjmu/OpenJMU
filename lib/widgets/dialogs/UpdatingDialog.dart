@@ -1,9 +1,6 @@
-import 'dart:io';
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:oktoast/oktoast.dart';
+import 'package:ota_update/ota_update.dart';
 
 import 'package:OpenJMU/constants/Constants.dart';
 
@@ -18,48 +15,30 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
 
   @override
   void initState() {
-    FlutterDownloader.registerCallback((id, status, progress) {
-      if (status.value == 3) {
-        Navigator.pop(context);
-        FlutterDownloader.open(taskId: taskId);
-      }
-      updateProgress(progress);
-    });
-    tryOtaUpdate();
-    super.initState();
-  }
-
-  Future<void> _update(path) async {
-    taskId = await FlutterDownloader.enqueue(
-      url: API.latestAndroid,
-      savedDir: path,
-      showNotification: true,
-      openFileFromNotification: true,
-    );
-  }
-
-  Future<void> tryOtaUpdate() async {
     try {
-      String path = await _getPath();
-      if (Platform.isAndroid) _update(path);
+      OtaUpdate().execute(API.latestAndroid).listen(
+        (OtaEvent event) {
+          print(event.status);
+          switch (event.status) {
+            case OtaStatus.DOWNLOADING:
+              updateProgress(double.parse(event.value).toInt());
+              break;
+            case OtaStatus.INSTALLING:
+              dismissAllToast();
+              showShortToast("下载完成");
+              break;
+            default:
+              dismissAllToast();
+              break;
+          }
+        },
+      );
     } catch (e) {
-      return debugPrint('Failed to make OTA update. Details: $e');
+      dismissAllToast();
+      showShortToast("更新失败: $e");
+      debugPrint('Failed to make OTA update. Details: $e');
     }
-  }
-
-  Future<String> _getPath() async {
-    final _localPath = (await _findLocalPath()) + '/Download';
-    final savedDir = Directory(_localPath);
-    bool hasExisted = await savedDir.exists();
-    if (!hasExisted) {
-      savedDir.create();
-    }
-    return _localPath;
-  }
-
-  Future<String> _findLocalPath() async {
-    final directory = await getExternalStorageDirectory();
-    return directory.path;
+    super.initState();
   }
 
   void updateProgress(int progress) {
