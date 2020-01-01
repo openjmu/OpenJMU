@@ -199,7 +199,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
     } else if (dateTime.year == now.year) {
       time += DateFormat("MM-dd HH:mm").format(dateTime);
     } else {
-      time += DateFormat("yyyy-MM-dd HH:mm").format(dateTime);
+      time += DateFormat("yy-MM-dd HH:mm").format(dateTime);
     }
     return time;
   }

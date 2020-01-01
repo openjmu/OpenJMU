@@ -60,7 +60,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
       formattedTime = DateFormat("MM-dd HH:mm").format(widget.message.sendTime);
     } else {
       formattedTime =
-          DateFormat("YY-MM-dd HH:mm").format(widget.message.sendTime);
+          DateFormat("yy-MM-dd HH:mm").format(widget.message.sendTime);
     }
     if (mounted && !fromBuild) setState(() {});
   }
