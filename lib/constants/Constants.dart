@@ -5,21 +5,23 @@ import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'package:OpenJMU/constants/Constants.dart';
+import 'package:openjmu/constants/constants.dart';
 
 export 'package:dartx/dartx.dart';
+export 'package:intl/intl.dart';
+export 'package:oktoast/oktoast.dart';
 
-export 'package:OpenJMU/api/API.dart';
-export 'package:OpenJMU/constants/Configs.dart';
-export 'package:OpenJMU/constants/Instances.dart';
-export 'package:OpenJMU/constants/Messages.dart';
-export 'package:OpenJMU/constants/Screens.dart';
-export 'package:OpenJMU/constants/Widgets.dart';
-export 'package:OpenJMU/model/Beans.dart';
-export 'package:OpenJMU/model/Events.dart';
-export 'package:OpenJMU/model/HiveBoxes.dart';
-export 'package:OpenJMU/providers/Providers.dart';
-export 'package:OpenJMU/utils/Utils.dart';
+export 'package:openjmu/api/api.dart';
+export 'package:openjmu/constants/configs.dart';
+export 'package:openjmu/constants/instances.dart';
+export 'package:openjmu/constants/messages.dart';
+export 'package:openjmu/constants/screens.dart';
+export 'package:openjmu/constants/widgets.dart';
+export 'package:openjmu/model/beans.dart';
+export 'package:openjmu/constants/events.dart';
+export 'package:openjmu/constants/hive_boxes.dart';
+export 'package:openjmu/providers/providers.dart';
+export 'package:openjmu/utils/utils.dart';
 
 const double kAppBarHeight = 75.0;
 
@@ -86,16 +88,14 @@ class Constants {
         "blowfish": "$blowfish",
         if (ticket != null) "ticket": "$ticket",
         if (username != null) "account": "$username",
-        if (password != null)
-          "password": "${sha1.convert(utf8.encode(password))}",
+        if (password != null) "password": "${sha1.convert(utf8.encode(password))}",
         if (password != null) "encrypt": 1,
         if (username != null) "unitid": unitId,
         if (username != null) "unitcode": "jmu",
         "clientinfo": jsonEncode(loginClientInfo),
       };
 
-  static Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
-      [
+  static Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates => [
         GlobalWidgetsLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,

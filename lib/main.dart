@@ -12,10 +12,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:quick_actions/quick_actions.dart';
 
-import 'package:OpenJMU/constants/Constants.dart';
-import 'package:OpenJMU/pages/SplashPage.dart';
-import 'package:OpenJMU/OpenJMU_route.dart';
-import 'package:OpenJMU/OpenJMU_route_helper.dart';
+import 'package:openjmu/constants/constants.dart';
+import 'package:openjmu/pages/splash_page.dart';
+import 'package:openjmu/openjmu_route.dart';
+import 'package:openjmu/openjmu_route_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -59,8 +59,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   bool isUserLogin = false;
   String initAction;
-  Brightness get _platformBrightness =>
-      Screen.mediaQuery.platformBrightness ?? Brightness.light;
+  Brightness get _platformBrightness => Screen.mediaQuery.platformBrightness ?? Brightness.light;
 
   @override
   void initState() {
@@ -166,21 +165,17 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       providers: providers,
       child: Consumer<ThemesProvider>(
         builder: (_, provider, __) {
-          final isDark = provider.platformBrightness
-              ? _platformBrightness == Brightness.dark
-              : provider.dark;
-          final theme =
-              (isDark ? provider.darkTheme : provider.lightTheme).copyWith(
-            textTheme: (isDark
-                    ? Theme.of(context).typography.white
-                    : Theme.of(context).typography.black)
-                .copyWith(
+          final isDark =
+              provider.platformBrightness ? _platformBrightness == Brightness.dark : provider.dark;
+          final theme = (isDark ? provider.darkTheme : provider.lightTheme).copyWith(
+            textTheme:
+                (isDark ? Theme.of(context).typography.white : Theme.of(context).typography.black)
+                    .copyWith(
               subhead: TextStyle(textBaseline: TextBaseline.alphabetic),
             ),
           );
           return AnnotatedRegion(
-            value:
-                isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+            value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
             child: Theme(
               data: theme,
               child: OKToast(
@@ -213,8 +208,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                       name: settings.name,
                       arguments: settings.arguments,
                     );
-                    if (routeResult.showStatusBar != null ||
-                        routeResult.routeName != null) {
+                    if (routeResult.showStatusBar != null || routeResult.routeName != null) {
                       settings = FFRouteSettings(
                         name: settings.name,
                         isInitialRoute: settings.isInitialRoute,
@@ -223,13 +217,11 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                         showStatusBar: routeResult.showStatusBar,
                       );
                     }
-                    final page = routeResult.widget ??
-                        SplashPage(initAction: initAction);
+                    final page = routeResult.widget ?? SplashPage(initAction: initAction);
 
-                    if (settings.arguments != null &&
-                        settings.arguments is Map<String, dynamic>) {
-                      RouteBuilder builder = (settings.arguments
-                          as Map<String, dynamic>)['routeBuilder'];
+                    if (settings.arguments != null && settings.arguments is Map<String, dynamic>) {
+                      RouteBuilder builder =
+                          (settings.arguments as Map<String, dynamic>)['routeBuilder'];
                       if (builder != null) return builder(page);
                     }
 

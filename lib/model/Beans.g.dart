@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'Beans.dart';
+part of 'beans.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator

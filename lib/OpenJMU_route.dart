@@ -5,51 +5,48 @@
 
 import 'package:flutter/widgets.dart';
 
-import 'pages/settings/SettingsPage.dart';
-import 'pages/settings/SwitchStartUpPage.dart';
-import 'pages/settings/AboutPage.dart';
-import 'pages/settings/FontScalePage.dart';
-import 'pages/settings/ChangeThemePage.dart';
-import 'pages/home/ScanQrCodePage.dart';
-import 'pages/SearchPage.dart';
-import 'pages/post/PostDetailPage.dart';
-import 'pages/post/TeamPostDetailPage.dart';
-import 'pages/post/PublishTeamPostPage.dart';
-import 'pages/post/PublishPostPage.dart';
-import 'pages/SplashPage.dart';
-import 'pages/test/TestDashBoardPage.dart';
-import 'pages/chat/ChatAppMessagePage.dart';
-import 'pages/notification/TeamNotificationPage.dart';
-import 'pages/notification/NotificationPage.dart';
-import 'pages/user/UserQrCodePage.dart';
-import 'pages/user/BackpackPage.dart';
-import 'pages/user/UserPage.dart';
-import 'pages/MainPage.dart';
-import 'pages/news/NewsDetailPage.dart';
-import 'pages/LoginPage.dart';
-import 'widgets/image/ImageViewer.dart';
-import 'widgets/image/ImageCropPage.dart';
-import 'widgets/dialogs/CommentPositioned.dart';
-import 'widgets/dialogs/ForwardPositioned.dart';
-import 'widgets/CommonWebPage.dart';
-import 'widgets/InAppBrowser.dart';
+import 'pages/main_page.dart';
+import 'pages/settings/switch_start_up_page.dart';
+import 'pages/settings/font_scale_page.dart';
+import 'pages/settings/change_theme_page.dart';
+import 'pages/settings/about_page.dart';
+import 'pages/settings/settings_page.dart';
+import 'pages/home/scan_qrcode_page.dart';
+import 'pages/post/publish_team_post_page.dart';
+import 'pages/post/team_post_detail_page.dart';
+import 'pages/post/post_detail_page.dart';
+import 'pages/post/publish_post_page.dart';
+import 'pages/test/test_dashboard_page.dart';
+import 'pages/chat/chat_app_message_page.dart';
+import 'pages/notification/notification_page.dart';
+import 'pages/notification/team_notification_page.dart';
+import 'pages/splash_page.dart';
+import 'pages/user/backpack_page.dart';
+import 'pages/user/user_page.dart';
+import 'pages/user/user_qrcode_page.dart';
+import 'pages/login_page.dart';
+import 'pages/news/news_detail_page.dart';
+import 'pages/search_page.dart';
+import 'widgets/in_app_browser.dart';
+import 'widgets/image/image_crop_page.dart';
+import 'widgets/image/image_viewer.dart';
+import 'widgets/common_web_page.dart';
+import 'widgets/dialogs/forward_positioned.dart';
+import 'widgets/dialogs/comment_positioned.dart';
 
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   switch (name) {
-    case "openjmu://settings":
+    case "openjmu://home":
       return RouteResult(
-        widget: SettingsPage(),
-        routeName: "设置页",
+        widget: MainPage(
+          initAction: arguments['initAction'],
+        ),
+        routeName: "首页",
       );
     case "openjmu://switch-startup":
       return RouteResult(
         widget: SwitchStartUpPage(),
         routeName: "切换启动页",
-      );
-    case "openjmu://about":
-      return RouteResult(
-        widget: AboutPage(),
-        routeName: "关于页",
       );
     case "openjmu://font-scale":
       return RouteResult(
@@ -61,17 +58,34 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         widget: ChangeThemePage(),
         routeName: "更改主题",
       );
+    case "openjmu://about":
+      return RouteResult(
+        widget: AboutPage(),
+        routeName: "关于页",
+      );
+    case "openjmu://settings":
+      return RouteResult(
+        widget: SettingsPage(),
+        routeName: "设置页",
+      );
     case "openjmu://scan-qrcode":
       return RouteResult(
         widget: ScanQrCodePage(),
         routeName: "扫描二维码",
       );
-    case "openjmu://search":
+    case "openjmu://publish-team-post":
       return RouteResult(
-        widget: SearchPage(
-          content: arguments['content'],
+        widget: PublishTeamPostPage(),
+        routeName: "发布小组动态",
+      );
+    case "openjmu://team-post-detail":
+      return RouteResult(
+        widget: TeamPostDetailPage(
+          provider: arguments['provider'],
+          type: arguments['type'],
+          postId: arguments['postId'],
         ),
-        routeName: "搜索页",
+        routeName: "小组动态详情页",
       );
     case "openjmu://post-detail":
       return RouteResult(
@@ -83,31 +97,10 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         ),
         routeName: "动态详情页",
       );
-    case "openjmu://team-post-detail":
-      return RouteResult(
-        widget: TeamPostDetailPage(
-          provider: arguments['provider'],
-          type: arguments['type'],
-          postId: arguments['postId'],
-        ),
-        routeName: "小组动态详情页",
-      );
-    case "openjmu://publish-team-post":
-      return RouteResult(
-        widget: PublishTeamPostPage(),
-        routeName: "发布小组动态",
-      );
     case "openjmu://publish-post":
       return RouteResult(
         widget: PublishPostPage(),
         routeName: "发布动态",
-      );
-    case "openjmu://splash":
-      return RouteResult(
-        widget: SplashPage(
-          initAction: arguments['initAction'],
-        ),
-        routeName: "启动页",
       );
     case "openjmu://test-dashboard":
       return RouteResult(
@@ -121,20 +114,22 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         ),
         routeName: "应用消息页",
       );
-    case "openjmu://team-notifications":
-      return RouteResult(
-        widget: TeamNotificationPage(),
-        routeName: "小组通知页",
-      );
     case "openjmu://notifications":
       return RouteResult(
         widget: NotificationPage(),
         routeName: "通知页",
       );
-    case "openjmu://user-qrcode":
+    case "openjmu://team-notifications":
       return RouteResult(
-        widget: UserQrCodePage(),
-        routeName: "用户二维码页",
+        widget: TeamNotificationPage(),
+        routeName: "小组通知页",
+      );
+    case "openjmu://splash":
+      return RouteResult(
+        widget: SplashPage(
+          initAction: arguments['initAction'],
+        ),
+        routeName: "启动页",
       );
     case "openjmu://backpack":
       return RouteResult(
@@ -156,19 +151,10 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         ),
         routeName: "用户列表页",
       );
-    case "openjmu://home":
+    case "openjmu://user-qrcode":
       return RouteResult(
-        widget: MainPage(
-          initAction: arguments['initAction'],
-        ),
-        routeName: "首页",
-      );
-    case "openjmu://news-detail":
-      return RouteResult(
-        widget: NewsDetailPage(
-          news: arguments['news'],
-        ),
-        routeName: "新闻详情页",
+        widget: UserQrCodePage(),
+        routeName: "用户二维码页",
       );
     case "openjmu://login":
       return RouteResult(
@@ -178,48 +164,19 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         routeName: "登录页",
         pageRouteType: PageRouteType.material,
       );
-    case "openjmu://image-viewer":
+    case "openjmu://news-detail":
       return RouteResult(
-        widget: ImageViewer(
-          index: arguments['index'],
-          pics: arguments['pics'],
-          needsClear: arguments['needsClear'],
+        widget: NewsDetailPage(
+          news: arguments['news'],
         ),
-        routeName: "图片浏览",
+        routeName: "新闻详情页",
       );
-    case "openjmu://image-crop":
+    case "openjmu://search":
       return RouteResult(
-        widget: ImageCropPage(),
-        routeName: "图片裁剪",
-      );
-    case "openjmu://add-comment":
-      return RouteResult(
-        widget: CommentPositioned(
-          post: arguments['post'],
-          comment: arguments['comment'],
+        widget: SearchPage(
+          content: arguments['content'],
         ),
-        routeName: "新增评论",
-        pageRouteType: PageRouteType.transparent,
-      );
-    case "openjmu://add-forward":
-      return RouteResult(
-        widget: ForwardPositioned(
-          post: arguments['post'],
-        ),
-        routeName: "新增转发",
-        pageRouteType: PageRouteType.transparent,
-      );
-    case "openjmu://webpage":
-      return RouteResult(
-        widget: CommonWebPage(
-          url: arguments['url'],
-          title: arguments['title'],
-          app: arguments['app'],
-          withCookie: arguments['withCookie'],
-          withAppBar: arguments['withAppBar'],
-          withAction: arguments['withAction'],
-        ),
-        routeName: "网页浏览",
+        routeName: "搜索页",
       );
     case "openjmu://inappbrowser":
       return RouteResult(
@@ -233,6 +190,49 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           keepAlive: arguments['keepAlive'],
         ),
         routeName: "网页浏览",
+      );
+    case "openjmu://image-crop":
+      return RouteResult(
+        widget: ImageCropPage(),
+        routeName: "图片裁剪",
+      );
+    case "openjmu://image-viewer":
+      return RouteResult(
+        widget: ImageViewer(
+          index: arguments['index'],
+          pics: arguments['pics'],
+          needsClear: arguments['needsClear'],
+        ),
+        routeName: "图片浏览",
+      );
+    case "openjmu://webpage":
+      return RouteResult(
+        widget: CommonWebPage(
+          url: arguments['url'],
+          title: arguments['title'],
+          app: arguments['app'],
+          withCookie: arguments['withCookie'],
+          withAppBar: arguments['withAppBar'],
+          withAction: arguments['withAction'],
+        ),
+        routeName: "网页浏览",
+      );
+    case "openjmu://add-forward":
+      return RouteResult(
+        widget: ForwardPositioned(
+          post: arguments['post'],
+        ),
+        routeName: "新增转发",
+        pageRouteType: PageRouteType.transparent,
+      );
+    case "openjmu://add-comment":
+      return RouteResult(
+        widget: CommentPositioned(
+          post: arguments['post'],
+          comment: arguments['comment'],
+        ),
+        routeName: "新增评论",
+        pageRouteType: PageRouteType.transparent,
       );
     default:
       return RouteResult();
@@ -266,55 +266,50 @@ class RouteResult {
 enum PageRouteType { material, cupertino, transparent }
 
 List<String> routeNames = [
-  "openjmu://settings",
+  "openjmu://home",
   "openjmu://switch-startup",
-  "openjmu://about",
   "openjmu://font-scale",
   "openjmu://theme",
+  "openjmu://about",
+  "openjmu://settings",
   "openjmu://scan-qrcode",
-  "openjmu://search",
-  "openjmu://post-detail",
-  "openjmu://team-post-detail",
   "openjmu://publish-team-post",
+  "openjmu://team-post-detail",
+  "openjmu://post-detail",
   "openjmu://publish-post",
-  "openjmu://splash",
   "openjmu://test-dashboard",
   "openjmu://chat-app-message-page",
-  "openjmu://team-notifications",
   "openjmu://notifications",
-  "openjmu://user-qrcode",
+  "openjmu://team-notifications",
+  "openjmu://splash",
   "openjmu://backpack",
   "openjmu://user",
   "openjmu://userlist",
-  "openjmu://home",
-  "openjmu://news-detail",
+  "openjmu://user-qrcode",
   "openjmu://login",
-  "openjmu://image-viewer",
+  "openjmu://news-detail",
+  "openjmu://search",
+  "openjmu://inappbrowser",
   "openjmu://image-crop",
-  "openjmu://add-comment",
-  "openjmu://add-forward",
+  "openjmu://image-viewer",
   "openjmu://webpage",
-  "openjmu://inappbrowser"
+  "openjmu://add-forward",
+  "openjmu://add-comment"
 ];
 
 class Routes {
-  /// 设置页
+  /// 首页
   ///
-  /// [name] : openjmu://settings
-  /// [routeName] : 设置页
-  static const String OPENJMU_SETTINGS = "openjmu://settings";
+  /// [name] : openjmu://home
+  /// [routeName] : 首页
+  /// [arguments] : [initAction]
+  static const String OPENJMU_HOME = "openjmu://home";
 
   /// 切换启动页
   ///
   /// [name] : openjmu://switch-startup
   /// [routeName] : 切换启动页
   static const String OPENJMU_SWITCH_STARTUP = "openjmu://switch-startup";
-
-  /// 关于页
-  ///
-  /// [name] : openjmu://about
-  /// [routeName] : 关于页
-  static const String OPENJMU_ABOUT = "openjmu://about";
 
   /// 更改字号页
   ///
@@ -328,25 +323,29 @@ class Routes {
   /// [routeName] : 更改主题
   static const String OPENJMU_THEME = "openjmu://theme";
 
+  /// 关于页
+  ///
+  /// [name] : openjmu://about
+  /// [routeName] : 关于页
+  static const String OPENJMU_ABOUT = "openjmu://about";
+
+  /// 设置页
+  ///
+  /// [name] : openjmu://settings
+  /// [routeName] : 设置页
+  static const String OPENJMU_SETTINGS = "openjmu://settings";
+
   /// 扫描二维码
   ///
   /// [name] : openjmu://scan-qrcode
   /// [routeName] : 扫描二维码
   static const String OPENJMU_SCAN_QRCODE = "openjmu://scan-qrcode";
 
-  /// 搜索页
+  /// 发布小组动态
   ///
-  /// [name] : openjmu://search
-  /// [routeName] : 搜索页
-  /// [arguments] : [content]
-  static const String OPENJMU_SEARCH = "openjmu://search";
-
-  /// 动态详情页
-  ///
-  /// [name] : openjmu://post-detail
-  /// [routeName] : 动态详情页
-  /// [arguments] : [post, index, fromPage, parentContext]
-  static const String OPENJMU_POST_DETAIL = "openjmu://post-detail";
+  /// [name] : openjmu://publish-team-post
+  /// [routeName] : 发布小组动态
+  static const String OPENJMU_PUBLISH_TEAM_POST = "openjmu://publish-team-post";
 
   /// 小组动态详情页
   ///
@@ -355,24 +354,18 @@ class Routes {
   /// [arguments] : [provider, type, postId]
   static const String OPENJMU_TEAM_POST_DETAIL = "openjmu://team-post-detail";
 
-  /// 发布小组动态
+  /// 动态详情页
   ///
-  /// [name] : openjmu://publish-team-post
-  /// [routeName] : 发布小组动态
-  static const String OPENJMU_PUBLISH_TEAM_POST = "openjmu://publish-team-post";
+  /// [name] : openjmu://post-detail
+  /// [routeName] : 动态详情页
+  /// [arguments] : [post, index, fromPage, parentContext]
+  static const String OPENJMU_POST_DETAIL = "openjmu://post-detail";
 
   /// 发布动态
   ///
   /// [name] : openjmu://publish-post
   /// [routeName] : 发布动态
   static const String OPENJMU_PUBLISH_POST = "openjmu://publish-post";
-
-  /// 启动页
-  ///
-  /// [name] : openjmu://splash
-  /// [routeName] : 启动页
-  /// [arguments] : [initAction]
-  static const String OPENJMU_SPLASH = "openjmu://splash";
 
   /// 测试首页
   ///
@@ -388,6 +381,12 @@ class Routes {
   static const String OPENJMU_CHAT_APP_MESSAGE_PAGE =
       "openjmu://chat-app-message-page";
 
+  /// 通知页
+  ///
+  /// [name] : openjmu://notifications
+  /// [routeName] : 通知页
+  static const String OPENJMU_NOTIFICATIONS = "openjmu://notifications";
+
   /// 小组通知页
   ///
   /// [name] : openjmu://team-notifications
@@ -395,17 +394,12 @@ class Routes {
   static const String OPENJMU_TEAM_NOTIFICATIONS =
       "openjmu://team-notifications";
 
-  /// 通知页
+  /// 启动页
   ///
-  /// [name] : openjmu://notifications
-  /// [routeName] : 通知页
-  static const String OPENJMU_NOTIFICATIONS = "openjmu://notifications";
-
-  /// 用户二维码页
-  ///
-  /// [name] : openjmu://user-qrcode
-  /// [routeName] : 用户二维码页
-  static const String OPENJMU_USER_QRCODE = "openjmu://user-qrcode";
+  /// [name] : openjmu://splash
+  /// [routeName] : 启动页
+  /// [arguments] : [initAction]
+  static const String OPENJMU_SPLASH = "openjmu://splash";
 
   /// 背包页
   ///
@@ -427,19 +421,11 @@ class Routes {
   /// [arguments] : [user, type]
   static const String OPENJMU_USERLIST = "openjmu://userlist";
 
-  /// 首页
+  /// 用户二维码页
   ///
-  /// [name] : openjmu://home
-  /// [routeName] : 首页
-  /// [arguments] : [initAction]
-  static const String OPENJMU_HOME = "openjmu://home";
-
-  /// 新闻详情页
-  ///
-  /// [name] : openjmu://news-detail
-  /// [routeName] : 新闻详情页
-  /// [arguments] : [news]
-  static const String OPENJMU_NEWS_DETAIL = "openjmu://news-detail";
+  /// [name] : openjmu://user-qrcode
+  /// [routeName] : 用户二维码页
+  static const String OPENJMU_USER_QRCODE = "openjmu://user-qrcode";
 
   /// 登录页
   ///
@@ -449,12 +435,26 @@ class Routes {
   /// [pageRouteType] : PageRouteType.material
   static const String OPENJMU_LOGIN = "openjmu://login";
 
-  /// 图片浏览
+  /// 新闻详情页
   ///
-  /// [name] : openjmu://image-viewer
-  /// [routeName] : 图片浏览
-  /// [arguments] : [index, pics, needsClear]
-  static const String OPENJMU_IMAGE_VIEWER = "openjmu://image-viewer";
+  /// [name] : openjmu://news-detail
+  /// [routeName] : 新闻详情页
+  /// [arguments] : [news]
+  static const String OPENJMU_NEWS_DETAIL = "openjmu://news-detail";
+
+  /// 搜索页
+  ///
+  /// [name] : openjmu://search
+  /// [routeName] : 搜索页
+  /// [arguments] : [content]
+  static const String OPENJMU_SEARCH = "openjmu://search";
+
+  /// 网页浏览
+  ///
+  /// [name] : openjmu://inappbrowser
+  /// [routeName] : 网页浏览
+  /// [arguments] : [url, title, withCookie, withAppBar, withAction, withScaffold, keepAlive]
+  static const String OPENJMU_INAPPBROWSER = "openjmu://inappbrowser";
 
   /// 图片裁剪
   ///
@@ -462,13 +462,19 @@ class Routes {
   /// [routeName] : 图片裁剪
   static const String OPENJMU_IMAGE_CROP = "openjmu://image-crop";
 
-  /// 新增评论
+  /// 图片浏览
   ///
-  /// [name] : openjmu://add-comment
-  /// [routeName] : 新增评论
-  /// [arguments] : [post, comment]
-  /// [pageRouteType] : PageRouteType.transparent
-  static const String OPENJMU_ADD_COMMENT = "openjmu://add-comment";
+  /// [name] : openjmu://image-viewer
+  /// [routeName] : 图片浏览
+  /// [arguments] : [index, pics, needsClear]
+  static const String OPENJMU_IMAGE_VIEWER = "openjmu://image-viewer";
+
+  /// 网页浏览
+  ///
+  /// [name] : openjmu://webpage
+  /// [routeName] : 网页浏览
+  /// [arguments] : [url, title, app, withCookie, withAppBar, withAction]
+  static const String OPENJMU_WEBPAGE = "openjmu://webpage";
 
   /// 新增转发
   ///
@@ -478,17 +484,11 @@ class Routes {
   /// [pageRouteType] : PageRouteType.transparent
   static const String OPENJMU_ADD_FORWARD = "openjmu://add-forward";
 
-  /// 网页浏览
+  /// 新增评论
   ///
-  /// [name] : openjmu://webpage
-  /// [routeName] : 网页浏览
-  /// [arguments] : [url, title, app, withCookie, withAppBar, withAction]
-  static const String OPENJMU_WEBPAGE = "openjmu://webpage";
-
-  /// 网页浏览
-  ///
-  /// [name] : openjmu://inappbrowser
-  /// [routeName] : 网页浏览
-  /// [arguments] : [url, title, withCookie, withAppBar, withAction, withScaffold, keepAlive]
-  static const String OPENJMU_INAPPBROWSER = "openjmu://inappbrowser";
+  /// [name] : openjmu://add-comment
+  /// [routeName] : 新增评论
+  /// [arguments] : [post, comment]
+  /// [pageRouteType] : PageRouteType.transparent
+  static const String OPENJMU_ADD_COMMENT = "openjmu://add-comment";
 }
