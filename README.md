@@ -32,7 +32,36 @@ Flutter is a framework which can cross platform, it can create features when the
 
 The older app is developed by other team, which has been stop maintained due to school's network construction policy. It occurs various of problem on each platform, makes users hard to use the app.
 
-By rebuild this app, users can get better experience in using this app, and new feature can be extended.
+By rebuild this app, users can get better experience when using this app, and new feature can be extended.
+
+# 项目主要使用的依赖 Dependencies used
+
+**[EventBus](https://pub.dev/packages/event_bus)** (Thanks to *Marco Jakob*)
+
+**[dartx](https://pub.dev/packages/dartx)** ,
+**[Hive](https://pub.dev/packages/hive)** (Thanks to *@leisim*)
+
+**[Provider](https://pub.dev/packages/provider)** (Thanks to *Remi Rousselet*)
+
+**[Extended Image](https://pub.dev/packages/extended_image)** ,
+**[Extended List](https://pub.dev/packages/extended_list)** ,
+**[Extended Tab](https://pub.dev/packages/extended_tab)** ,
+**[Extended Text](https://pub.dev/packages/extended_text)** ,
+**[Extended Text Field](https://pub.dev/packages/extended_text_field)** , 
+**[FF Annotation Route](https://pub.dev/packages/ff_annotation_route)** , 
+**[Like Button](https://pub.dev/packages/like_button)** , 
+**[Pull To Refresh Notification](https://pub.dev/packages/pull_to_refresh_notification)** 
+(Thanks to *@zmtzawqlp*)
+
+**[Image Editor](https://pub.dev/packages/image_editor)** ,
+**[OKToast](https://pub.dev/packages/oktoast)** 
+(Thanks to *@CaiJingLong*)
+
+# 项目无法登录，有什么参考价值？ What kinds of value while the app cannot login?
+
+目前阶段我们无法提供体验账号。如果你对其中的某个实现或组件或依赖使用感兴趣，可在QQ群FlutterCandies(181398081)找到我，咨询相关问题。
+
+We cannot provide any account for test due to policy reason at present stage. If you're interested in some feature/widget/dependencies usage, you can find me at `FlutterCandies`(181398081) QQ group and ask some related questions.
 
 # 8多说，上图！ Let's see some screenshots !
 ## 截图 ScreenShots
