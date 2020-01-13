@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
-import 'package:flutter_inappbrowser/flutter_inappbrowser.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -67,7 +67,9 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     title = widget.title;
     _webView = InAppWebView(
       initialUrl: url,
-      initialOptions: {'safeBrowsingEnabled': false},
+      initialOptions: InAppWebViewWidgetOptions(
+        androidInAppWebViewOptions: AndroidInAppWebViewOptions(safeBrowsingEnabled: false),
+      ),
       onWebViewCreated: (InAppWebViewController controller) {
         _webViewController = controller;
       },
@@ -184,9 +186,9 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     final provider = Provider.of<ThemesProvider>(currentContext, listen: false);
     try {
       _webViewController.loadUrl(
-        "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
-        "?sid=${UserAPI.currentUser.sid}"
-        "&night=${provider.dark ? 1 : 0}",
+        url: "${UserAPI.currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
+            "?sid=${UserAPI.currentUser.sid}"
+            "&night=${provider.dark ? 1 : 0}",
       );
     } catch (e) {
       debugPrint("$e");

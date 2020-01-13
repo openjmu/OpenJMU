@@ -466,7 +466,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
                   Clipboard.setData(ClipboardData(
                     text: replaceMentionTag(_comments[index].content),
                   ));
-                  showShortToast("已复制到剪贴板");
+                  showToast("已复制到剪贴板");
                   Navigator.of(context).pop();
                 },
                 child: Column(

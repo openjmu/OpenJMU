@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
-import 'package:oktoast/oktoast.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/appbar.dart';
@@ -287,8 +286,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   Widget get extendedPad => AnimatedContainer(
         duration: const Duration(milliseconds: 100),
         curve: Curves.fastOutSlowIn,
-        width: Screen.width,
-        height: showExtendedPad ? Screen.width / 5 : 0.0,
+        width: Screens.width,
+        height: showExtendedPad ? Screens.width / 5 : 0.0,
         child: Center(
           child: GridView.builder(
             physics: const NeverScrollableScrollPhysics(),
@@ -484,7 +483,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       initialLoad();
     }).catchError((e) {
       debugPrint("Reply failed: $e");
-      showErrorShortToast("发送失败");
+      showErrorToast("发送失败");
     }).whenComplete(() {
       sending = false;
       if (mounted) setState(() {});

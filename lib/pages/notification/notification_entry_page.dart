@@ -46,7 +46,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
   ];
 
   final int _animateDuration = 300;
-  double get backdropRadius => Screen.width / 2;
+  double get backdropRadius => Screens.width / 2;
 
   /// Animation.
   /// Boolean to prevent duplicate pop.
@@ -299,7 +299,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
         ),
         Positioned(
           right: suSetWidth(10.0) - backdropRadius,
-          top: Screen.topSafeHeight - backdropRadius,
+          top: Screens.topSafeHeight - backdropRadius,
           child: Container(
             width: _backdropFilterSize,
             height: _backdropFilterSize,
@@ -323,17 +323,17 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
         Align(
           alignment: Alignment.topCenter,
           child: Container(
-            width: Screen.width,
-            height: Screen.height,
+            width: Screens.width,
+            height: Screens.height,
             constraints: BoxConstraints(
-              maxWidth: Screen.width,
-              maxHeight: Screen.height,
+              maxWidth: Screens.width,
+              maxHeight: Screens.height,
             ),
             child: child ?? SizedBox.shrink(),
           ),
         ),
         Positioned(
-          top: Screen.topSafeHeight,
+          top: Screens.topSafeHeight,
           right: suSetWidth(10.0),
           child: popButton,
         ),
@@ -350,7 +350,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
     final itemIndex = index ~/ 2;
     return Positioned(
       right: right + _itemOffset[itemIndex],
-      top: Screen.topSafeHeight + top + _itemOffset[itemIndex],
+      top: Screens.topSafeHeight + top + _itemOffset[itemIndex],
       child: index.isEven
           ? Opacity(
               opacity: _itemOpacity[itemIndex],
@@ -416,7 +416,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
       child: wrapper(
         context,
         child: SizedBox.fromSize(
-          size: Size.square(Screen.width / 3 * 2),
+          size: Size.square(Screens.width / 3 * 2),
           child: Stack(
             children: List<Widget>.generate(
               items.length * 2 - 1,

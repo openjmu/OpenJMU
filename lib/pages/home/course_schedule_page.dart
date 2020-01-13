@@ -9,6 +9,7 @@ import 'package:openjmu/pages/home/apps_page.dart';
 
 class CourseSchedulePage extends StatefulWidget {
   final AppsPageState appCenterPageState;
+
   const CourseSchedulePage({
     @required Key key,
     @required this.appCenterPageState,
@@ -53,10 +54,12 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
       ..on<CurrentWeekUpdatedEvent>().listen((event) {
         if (currentWeek == null) {
           if (now != null) firstLoaded = true;
-          currentWeek = dateProvider.currentWeek;
+          currentWeek = dateProvider.currentWeek ?? 0;
           updateScrollController();
           if (mounted) setState(() {});
-          if (weekScrollController.hasClients) scrollToWeek(currentWeek);
+          if (weekScrollController.hasClients && hasCourse && currentWeek > 0) {
+            scrollToWeek(currentWeek);
+          }
           if (widget.appCenterPageState.mounted) {
             widget.appCenterPageState.setState(() {});
           }
@@ -126,12 +129,12 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
         hasCourse = false;
       }
       _courseList.forEach((course) {
-        Course _c = Course.fromJson(course);
+        final _c = Course.fromJson(course);
         addCourse(_c, _courses);
       });
       _customCourseList.forEach((course) {
         if (course['content'].trim().isNotEmpty) {
-          Course _c = Course.fromJson(course, isCustom: true);
+          final _c = Course.fromJson(course, isCustom: true);
           addCourse(_c, _courses);
         }
       });
@@ -160,7 +163,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
       initialScrollOffset: provider.currentWeek != null
           ? math.max(
               0,
-              (provider.currentWeek - 0.5) * suSetWidth(weekSize) - Screen.width / 2,
+              (provider.currentWeek - 0.5) * suSetWidth(weekSize) - Screens.width / 2,
             )
           : 0.0,
     );
@@ -169,18 +172,19 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
   void scrollToWeek(int week) {
     if (weekScrollController.hasClients)
       weekScrollController.animateTo(
-        math.max(0, (week - 0.5) * suSetWidth(weekSize) - Screen.width / 2),
+        math.max(0, (week - 0.5) * suSetWidth(weekSize) - Screens.width / 2),
         duration: const Duration(milliseconds: 300),
         curve: Curves.ease,
       );
   }
 
   void addCourse(Course course, Map<int, Map<int, List<Course>>> courses) {
+    final courseDay = int.parse(course.day.toString().substring(0, 1));
     if (course.time == "11") {
-      courses[course.day][11].add(course);
+      courses[courseDay][11].add(course);
     } else {
-      if (courses.keys.contains(course.day)) {
-        courses[course.day][int.parse(course.time.substring(0, 1))].add(course);
+      if (courses.keys.contains(courseDay)) {
+        courses[courseDay][int.parse(course.time.substring(0, 1))].add(course);
       }
     }
   }
@@ -232,13 +236,13 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
 
   int maxWeekDay() {
     int _maxWeekday = 5;
-    for (int count in courses[6].keys) {
+    for (final count in courses[6].keys) {
       if (courses[6][count].isNotEmpty) {
         if (_maxWeekday != 7) _maxWeekday = 6;
         break;
       }
     }
-    for (int count in courses[7].keys) {
+    for (final count in courses[7].keys) {
       if (courses[7][count].isNotEmpty) {
         _maxWeekday = 7;
         break;
@@ -302,7 +306,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
         behavior: HitTestBehavior.opaque,
         onTap: showRemarkDetail,
         child: Container(
-          width: Screen.width,
+          width: Screens.width,
           constraints: BoxConstraints(
             maxHeight: suSetHeight(54.0),
           ),
@@ -350,7 +354,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
   Widget weekSelection(context) => AnimatedContainer(
         curve: showWeekCurve,
         duration: const Duration(milliseconds: 300),
-        width: Screen.width,
+        width: Screens.width,
         height: showWeek ? suSetHeight(weekSize / 1.5) : 0.0,
         color: Theme.of(context).primaryColor,
         child: ListView.builder(
@@ -433,7 +437,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
 
   Widget courseLineGrid(context) {
     final double totalHeight =
-        Screen.height - Screen.topSafeHeight - suSetHeight(kAppBarHeight + indicatorHeight);
+        Screens.height - Screens.topSafeHeight - suSetHeight(kAppBarHeight + indicatorHeight);
 
     bool hasEleven = false;
     int _maxCoursesPerDay = 8;
@@ -540,8 +544,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
     return RefreshIndicator(
       key: refreshIndicatorKey,
       child: Container(
-        width: Screen.width,
-        constraints: BoxConstraints(maxWidth: Screen.width),
+        width: Screens.width,
+        constraints: BoxConstraints(maxWidth: Screens.width),
         child: AnimatedCrossFade(
           duration: const Duration(milliseconds: 300),
           crossFadeState: !firstLoaded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
@@ -799,7 +803,7 @@ class CoursesDialog extends StatelessWidget {
           return Padding(
             padding: EdgeInsets.symmetric(
               horizontal: 10.0,
-              vertical: 0.2 * 0.7 * Screen.height / 3 + 10.0,
+              vertical: 0.2 * 0.7 * Screens.height / 3 + 10.0,
             ),
             child: GestureDetector(
               onTap: () {
@@ -858,6 +862,7 @@ class CoursesDialog extends StatelessWidget {
                                   fontWeight: FontWeight.bold,
                                   height: 1.5,
                                 ),
+                                textAlign: TextAlign.center,
                               ),
                               if (courseList[index].location != null)
                                 Text(
@@ -979,8 +984,8 @@ class CoursesDialog extends StatelessWidget {
       contentPadding: EdgeInsets.zero,
       children: <Widget>[
         SizedBox(
-          width: Screen.width / 2,
-          height: suSetHeight(370.0),
+          width: Screens.width / 2,
+          height: suSetHeight(350.0),
           child: Stack(
             children: <Widget>[
               !isDetail ? coursesPage : courseDetail(firstCourse),
@@ -992,8 +997,8 @@ class CoursesDialog extends StatelessWidget {
                   ),
                   child: Positioned(
                     bottom: suSetHeight(10.0),
-                    left: Screen.width / 7,
-                    right: Screen.width / 7,
+                    left: Screens.width / 7,
+                    right: Screens.width / 7,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
@@ -1002,7 +1007,7 @@ class CoursesDialog extends StatelessWidget {
                           minWidth: suSetWidth(60.0),
                           height: suSetWidth(60.0),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(Screen.width / 2),
+                            borderRadius: BorderRadius.circular(Screens.width / 2),
                           ),
                           child: Icon(
                             Icons.delete,
@@ -1028,7 +1033,7 @@ class CoursesDialog extends StatelessWidget {
                           minWidth: suSetWidth(60.0),
                           height: suSetWidth(60.0),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(Screen.width / 2),
+                            borderRadius: BorderRadius.circular(Screens.width / 2),
                           ),
                           child: Icon(
                             Icons.edit,
@@ -1104,9 +1109,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
               ),
               child: Center(
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: Screen.width / 2,
-                  ),
+                  constraints: BoxConstraints(maxWidth: Screens.width / 2),
                   child: ScrollConfiguration(
                     behavior: NoGlowScrollBehavior(),
                     child: TextField(
@@ -1120,6 +1123,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                         textBaseline: TextBaseline.alphabetic,
                       ),
                       textAlign: TextAlign.center,
+                      cursorColor: currentThemeColor,
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: "自定义内容",
@@ -1158,13 +1162,11 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
       );
 
   Widget updateButton(context) => Theme(
-        data: Theme.of(context).copyWith(
-          splashFactory: InkSplash.splashFactory,
-        ),
+        data: Theme.of(context).copyWith(splashFactory: InkSplash.splashFactory),
         child: Positioned(
           bottom: suSetHeight(8.0),
-          left: Screen.width / 7,
-          right: Screen.width / 7,
+          left: Screens.width / 7,
+          right: Screens.width / 7,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: <Widget>[
@@ -1173,7 +1175,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                 minWidth: suSetWidth(48.0),
                 height: suSetHeight(48.0),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(Screen.width / 2),
+                  borderRadius: BorderRadius.circular(Screens.width / 2),
                 ),
                 child: loading
                     ? Center(
@@ -1225,7 +1227,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
       contentPadding: EdgeInsets.zero,
       children: <Widget>[
         SizedBox(
-          width: Screen.width / 2,
+          width: Screens.width / 2,
           height: suSetHeight(370.0),
           child: Stack(
             children: <Widget>[

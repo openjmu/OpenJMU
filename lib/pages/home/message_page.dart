@@ -21,7 +21,10 @@ class MessagePageState extends State<MessagePage> with TickerProviderStateMixin 
   @override
   void initState() {
     _tabController = TabController(
-      initialIndex: Configs.homeStartUpIndex[2],
+      initialIndex: Provider.of<SettingsProvider>(
+        currentContext,
+        listen: false,
+      ).homeStartUpIndex[2],
       length: 1,
       vsync: this,
     );
@@ -95,8 +98,8 @@ class MessagePageState extends State<MessagePage> with TickerProviderStateMixin 
               children: <Widget>[
                 SvgPicture.asset(
                   "images/placeholder/no_message.svg",
-                  width: Screen.width / 3.5,
-                  height: Screen.width / 3.5,
+                  width: Screens.width / 3.5,
+                  height: Screens.width / 3.5,
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: suSetHeight(30.0)),

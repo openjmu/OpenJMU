@@ -21,23 +21,31 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
     List.from(PostSquareListPageState.tabs),
     List.from(AppsPageState.tabs()),
   ];
-  List<List<Map<String, dynamic>>> pageSection = [
-    [
-      {
-        "name": "启动页",
-        "pages": List.from(MainPageState.pagesTitle),
-        "index": Configs.homeSplashIndex,
-      },
-    ],
-    [
-      for (int i = 0; i < pageTab.length; i++)
+  SettingsProvider settingsProvider;
+  List<List<Map<String, dynamic>>> pageSection;
+
+  @override
+  void initState() {
+    settingsProvider = Provider.of<SettingsProvider>(currentContext, listen: false);
+    pageSection = [
+      [
         {
-          "name": MainPageState.pagesTitle[i],
-          "pages": pageTab[i],
-          "index": Configs.homeStartUpIndex[i],
-        }
-    ],
-  ];
+          "name": "启动页",
+          "pages": List.from(MainPageState.pagesTitle),
+          "index": settingsProvider.homeSplashIndex,
+        },
+      ],
+      [
+        for (int i = 0; i < pageTab.length; i++)
+          {
+            "name": MainPageState.pagesTitle[i],
+            "pages": pageTab[i],
+            "index": settingsProvider.homeStartUpIndex[i],
+          }
+      ],
+    ];
+    super.initState();
+  }
 
   Widget settingItem(context, index, sectionIndex) {
     final Map<String, dynamic> page = pageSection[sectionIndex][index];
@@ -90,31 +98,34 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
     );
   }
 
-  Widget pageSelectionItem(context, sectionIndex, page, pageIndex, index, selectedIndex) {
+  Widget pageSelectionItem(
+    context, {
+    int sectionIndex,
+    Map<String, dynamic> page,
+    int pageIndex,
+    int index,
+    int selectedIndex,
+  }) {
     return GestureDetector(
       child: DecoratedBox(
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Theme.of(context).dividerColor,
-          ),
+          border: Border.all(color: Theme.of(context).dividerColor),
           borderRadius: BorderRadius.circular(suSetSp(10.0)),
         ),
         child: Center(
           child: Text(
             "${page['pages'][index]}",
-            style: TextStyle(
-              fontSize: suSetSp(20.0),
-            ),
+            style: TextStyle(fontSize: suSetSp(20.0)),
           ),
         ),
       ),
       onTap: () {
         if (page["name"] == "启动页") {
-          DataUtils.setHomeSplashIndex(index);
+          SettingUtils.setHomeSplashIndex(index);
         } else {
-          List _list = List.from(Configs.homeStartUpIndex);
+          final _list = List.from(settingsProvider.homeStartUpIndex);
           _list[pageIndex] = index;
-          DataUtils.setHomeStartUpIndex(_list);
+          SettingUtils.setHomeStartUpIndex(_list);
         }
         Navigator.pop(context, newPageSection(sectionIndex, pageIndex, index));
       },
@@ -134,9 +145,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.only(
-                    bottom: suSetSp(12.0),
-                  ),
+                  padding: EdgeInsets.only(bottom: suSetSp(12.0)),
                   child: Text(
                     "选择页面",
                     style: TextStyle(
@@ -151,17 +160,16 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                   mainAxisSpacing: suSetSp(6.0),
                   crossAxisSpacing: suSetSp(12.0),
                   childAspectRatio: 2.1,
-                  children: <Widget>[
-                    for (int i = 0; i < page['pages'].length; i++)
-                      pageSelectionItem(
-                        context,
-                        sectionIndex,
-                        page,
-                        pageIndex,
-                        i,
-                        page["index"],
-                      ),
-                  ],
+                  children: List<Widget>.generate(page['pages'].length, (i) {
+                    return pageSelectionItem(
+                      context,
+                      sectionIndex: sectionIndex,
+                      page: page,
+                      pageIndex: pageIndex,
+                      index: i,
+                      selectedIndex: page["index"],
+                    );
+                  }),
                 ),
               ],
             ),

@@ -200,7 +200,7 @@ class EmotionPadState extends State<EmotionPad> {
       color: Theme.of(context).canvasColor,
       height: height,
       child: GridView.builder(
-        padding: EdgeInsets.only(bottom: Screen.bottomSafeHeight),
+        padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 8,
         ),

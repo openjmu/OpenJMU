@@ -121,7 +121,7 @@ class CommonWebPageState extends State<CommonWebPage> {
     if (await canLaunch(_url)) {
       await launch(_url);
     } else {
-      showCenterErrorShortToast('无法打开$_url');
+      showCenterErrorToast('无法打开$_url');
     }
   }
 
@@ -175,7 +175,7 @@ class CommonWebPageState extends State<CommonWebPage> {
             ? PreferredSize(
                 preferredSize: Size.fromHeight(suSetHeight(kAppBarHeight + 10.0)),
                 child: Container(
-                  height: Screen.topSafeHeight + suSetHeight(kAppBarHeight + 10.0),
+                  height: Screens.topSafeHeight + suSetHeight(kAppBarHeight + 10.0),
                   child: SafeArea(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -193,7 +193,7 @@ class CommonWebPageState extends State<CommonWebPage> {
                                 onLongPress: _launchURL,
                                 onDoubleTap: () {
                                   Clipboard.setData(ClipboardData(text: _url));
-                                  showShortToast("已复制网址到剪贴板");
+                                  showToast("已复制网址到剪贴板");
                                 },
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,

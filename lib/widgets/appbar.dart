@@ -74,10 +74,10 @@ class SliverFixedAppBarDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => suSetHeight(kAppBarHeight) + Screen.topSafeHeight;
+  double get maxExtent => suSetHeight(kAppBarHeight) + Screens.topSafeHeight;
 
   @override
-  double get minExtent => suSetHeight(kAppBarHeight) + Screen.topSafeHeight;
+  double get minExtent => suSetHeight(kAppBarHeight) + Screens.topSafeHeight;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {

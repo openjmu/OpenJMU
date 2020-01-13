@@ -20,7 +20,7 @@ class ThemesProvider with ChangeNotifier {
   bool get dark => _dark;
   set dark(bool value) {
     if (_dark == value) return;
-    DataUtils.setBrightnessDark(value);
+    SettingUtils.setBrightnessDark(value);
     _dark = value;
     notifyListeners();
   }
@@ -32,7 +32,7 @@ class ThemesProvider with ChangeNotifier {
   // ignore: non_constant_identifier_names
   set AMOLEDDark(bool value) {
     if (_AMOLEDDark == value) return;
-    DataUtils.setAMOLEDDark(value);
+    SettingUtils.setAMOLEDDark(value);
     _AMOLEDDark = value;
     notifyListeners();
   }
@@ -41,16 +41,16 @@ class ThemesProvider with ChangeNotifier {
   bool get platformBrightness => _platformBrightness;
   set platformBrightness(bool value) {
     if (_platformBrightness == value) return;
-    DataUtils.setBrightnessPlatform(value);
+    SettingUtils.setBrightnessPlatform(value);
     _platformBrightness = value;
     notifyListeners();
   }
 
   void initTheme() {
-    _currentColor = supportColors[DataUtils.getColorThemeIndex()];
-    _dark = DataUtils.getBrightnessDark();
-    _AMOLEDDark = DataUtils.getAMOLEDDark();
-    _platformBrightness = DataUtils.getBrightnessPlatform();
+    _currentColor = supportColors[SettingUtils.getColorThemeIndex()];
+    _dark = SettingUtils.getBrightnessDark();
+    _AMOLEDDark = SettingUtils.getAMOLEDDark();
+    _platformBrightness = SettingUtils.getBrightnessPlatform();
   }
 
   void resetTheme() {
@@ -62,7 +62,7 @@ class ThemesProvider with ChangeNotifier {
   }
 
   void updateThemeColor(int themeIndex) {
-    DataUtils.setColorTheme(themeIndex);
+    SettingUtils.setColorTheme(themeIndex);
     currentColor = supportColors[themeIndex];
     notifyListeners();
   }
@@ -92,16 +92,9 @@ class ThemesProvider with ChangeNotifier {
         textSelectionColor: currentColor.withAlpha(100),
         textSelectionHandleColor: currentColor,
         indicatorColor: currentColor,
-        appBarTheme: AppBarTheme(
-          brightness: Brightness.light,
-          elevation: 1,
-        ),
-        iconTheme: IconThemeData(
-          color: Colors.black,
-        ),
-        primaryIconTheme: IconThemeData(
-          color: Colors.black,
-        ),
+        appBarTheme: AppBarTheme(brightness: Brightness.light, elevation: 1),
+        iconTheme: IconThemeData(color: Colors.black),
+        primaryIconTheme: IconThemeData(color: Colors.black),
         tabBarTheme: TabBarTheme(
           indicatorSize: TabBarIndicatorSize.tab,
           labelColor: Colors.black,
@@ -129,58 +122,27 @@ class ThemesProvider with ChangeNotifier {
         textSelectionColor: currentColor.withAlpha(100),
         textSelectionHandleColor: currentColor,
         indicatorColor: currentColor,
-        appBarTheme: AppBarTheme(
-          brightness: Brightness.dark,
-          elevation: 0,
-        ),
-        iconTheme: IconThemeData(
-          color: Colors.grey[350],
-        ),
-        primaryIconTheme: IconThemeData(
-          color: Colors.grey[350],
-        ),
+        appBarTheme: AppBarTheme(brightness: Brightness.dark, elevation: 0),
+        iconTheme: IconThemeData(color: Colors.grey[350]),
+        primaryIconTheme: IconThemeData(color: Colors.grey[350]),
         tabBarTheme: TabBarTheme(
           indicatorSize: TabBarIndicatorSize.tab,
           labelColor: Colors.grey[200],
           unselectedLabelColor: Colors.grey[200],
         ),
         textTheme: TextTheme(
-          title: TextStyle(
-            color: Colors.grey[350],
-          ),
-          body1: TextStyle(
-            color: Colors.grey[350],
-          ),
-          body2: TextStyle(
-            color: Colors.grey[500],
-          ),
-          button: TextStyle(
-            color: Colors.grey[350],
-          ),
-          caption: TextStyle(
-            color: Colors.grey[500],
-          ),
-          subhead: TextStyle(
-            color: Colors.grey[500],
-          ),
-          display4: TextStyle(
-            color: Colors.grey[500],
-          ),
-          display3: TextStyle(
-            color: Colors.grey[500],
-          ),
-          display2: TextStyle(
-            color: Colors.grey[500],
-          ),
-          display1: TextStyle(
-            color: Colors.grey[500],
-          ),
-          headline: TextStyle(
-            color: Colors.grey[350],
-          ),
-          overline: TextStyle(
-            color: Colors.grey[350],
-          ),
+          title: TextStyle(color: Colors.grey[350]),
+          body1: TextStyle(color: Colors.grey[350]),
+          body2: TextStyle(color: Colors.grey[500]),
+          button: TextStyle(color: Colors.grey[350]),
+          caption: TextStyle(color: Colors.grey[500]),
+          subhead: TextStyle(color: Colors.grey[500]),
+          display4: TextStyle(color: Colors.grey[500]),
+          display3: TextStyle(color: Colors.grey[500]),
+          display2: TextStyle(color: Colors.grey[500]),
+          display1: TextStyle(color: Colors.grey[500]),
+          headline: TextStyle(color: Colors.grey[350]),
+          overline: TextStyle(color: Colors.grey[350]),
         ),
         buttonColor: currentColor,
       );

@@ -26,7 +26,6 @@ void main() async {
   }
 
   await HiveBoxes.openBoxes();
-  await DataUtils.initSharedPreferences();
   await DeviceUtils.getModel();
   NotificationUtils.initSettings();
 
@@ -57,9 +56,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     },
   );
 
-  bool isUserLogin = false;
   String initAction;
-  Brightness get _platformBrightness => Screen.mediaQuery.platformBrightness ?? Brightness.light;
+  Brightness get _platformBrightness => Screens.mediaQuery.platformBrightness ?? Brightness.light;
 
   @override
   void initState() {
@@ -129,11 +127,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   }
 
   void initSettings() async {
-    Configs.homeSplashIndex = DataUtils.getHomeSplashIndex();
-    Configs.homeStartUpIndex = DataUtils.getHomeStartUpIndex();
-    Configs.fontScale = DataUtils.getFontScale();
-    Configs.newAppCenterIcon = DataUtils.getEnabledNewAppsIcon();
-
     if (DataUtils.isLogin()) {
       DataUtils.recoverLoginInfo();
     } else {
@@ -163,11 +156,12 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: providers,
-      child: Consumer<ThemesProvider>(
-        builder: (_, provider, __) {
-          final isDark =
-              provider.platformBrightness ? _platformBrightness == Brightness.dark : provider.dark;
-          final theme = (isDark ? provider.darkTheme : provider.lightTheme).copyWith(
+      child: Consumer2<ThemesProvider, SettingsProvider>(
+        builder: (_, themesProvider, settingsProvider, __) {
+          final isDark = themesProvider.platformBrightness
+              ? _platformBrightness == Brightness.dark
+              : themesProvider.dark;
+          final theme = (isDark ? themesProvider.darkTheme : themesProvider.lightTheme).copyWith(
             textTheme:
                 (isDark ? Theme.of(context).typography.white : Theme.of(context).typography.black)
                     .copyWith(
@@ -193,13 +187,9 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   navigatorObservers: [
                     FFNavigatorObserver(
                       showStatusBarChange: (bool showStatusBar) {
-                        if (showStatusBar) {
-                          SystemChrome.setEnabledSystemUIOverlays(
-                            SystemUiOverlay.values,
-                          );
-                        } else {
-                          SystemChrome.setEnabledSystemUIOverlays([]);
-                        }
+                        SystemChrome.setEnabledSystemUIOverlays(
+                          showStatusBar ? SystemUiOverlay.values : [],
+                        );
                       },
                     ),
                   ],
@@ -227,15 +217,9 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
                     switch (routeResult.pageRouteType) {
                       case PageRouteType.material:
-                        return MaterialPageRoute(
-                          settings: settings,
-                          builder: (c) => page,
-                        );
+                        return MaterialPageRoute(settings: settings, builder: (c) => page);
                       case PageRouteType.cupertino:
-                        return CupertinoPageRoute(
-                          settings: settings,
-                          builder: (c) => page,
-                        );
+                        return CupertinoPageRoute(settings: settings, builder: (c) => page);
                       case PageRouteType.transparent:
                         return FFTransparentPageRoute(
                           settings: settings,
@@ -243,14 +227,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                         );
                       default:
                         return Platform.isIOS
-                            ? CupertinoPageRoute(
-                                settings: settings,
-                                builder: (c) => page,
-                              )
-                            : MaterialPageRoute(
-                                settings: settings,
-                                builder: (c) => page,
-                              );
+                            ? CupertinoPageRoute(settings: settings, builder: (c) => page)
+                            : MaterialPageRoute(settings: settings, builder: (c) => page);
                     }
                   },
                   localizationsDelegates: Constants.localizationsDelegates,

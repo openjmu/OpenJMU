@@ -1,10 +1,10 @@
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-final _random = Random();
+final _random = math.Random();
 
 int next(int min, int max) => min + _random.nextInt(max - min);
 
@@ -38,7 +38,7 @@ class CourseAPI {
   static bool inCurrentWeek(Course course, {int currentWeek}) {
     if (course.isCustom) return true;
     final provider = Provider.of<DateProvider>(currentContext, listen: false);
-    final int week = currentWeek ?? provider.currentWeek;
+    final int week = currentWeek ?? provider.currentWeek ?? 0;
     bool result;
     bool inRange = week >= course.startWeek && week <= course.endWeek;
     bool isOddEven = course.oddEven != 0;

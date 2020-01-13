@@ -144,7 +144,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
         top: 8.0,
         bottom: 8.0,
       ),
-      width: Screen.width,
+      width: Screens.width,
       child: Align(
         alignment: Alignment.centerLeft,
         child: Row(

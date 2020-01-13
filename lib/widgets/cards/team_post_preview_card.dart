@@ -121,7 +121,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                 text: "举报动态",
                 onTap: () => confirmReport(context),
               ),
-              SizedBox(height: Screen.bottomSafeHeight),
+              SizedBox(height: Screens.bottomSafeHeight),
             ],
           ),
         );
@@ -182,7 +182,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             isDefaultAction: false,
             onPressed: () {
               TeamPostAPI.reportPost(post);
-              showShortToast("举报成功");
+              showToast("举报成功");
               Navigator.pop(context);
               navigatorState.pop();
             },
@@ -495,7 +495,7 @@ class TeamPostPreviewCard extends StatelessWidget {
       );
     }
     _image = Container(
-      width: Screen.width * 0.7,
+      width: Screens.width * 0.7,
       padding: EdgeInsets.only(
         top: suSetHeight(6.0),
       ),
@@ -514,7 +514,7 @@ class TeamPostPreviewCard extends StatelessWidget {
               child: FlatButton.icon(
                 onPressed: null,
                 icon: SvgPicture.asset(
-                  "assets/icons/postActions/comment-line.svg",
+                  "assets/icons/postActions/comment-fill.svg",
                   color: Theme.of(context).textTheme.body1.color,
                   width: suSetWidth(24.0),
                   height: suSetHeight(24.0),
@@ -543,7 +543,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   dotSecondaryColor: currentThemeColor,
                 ),
                 likeBuilder: (bool isLiked) => SvgPicture.asset(
-                  "assets/icons/postActions/thumbUp-${isLiked ? "fill" : "line"}.svg",
+                  "assets/icons/postActions/praise-fill.svg",
                   color: isLiked ? currentThemeColor : Theme.of(context).textTheme.body1.color,
                   width: suSetWidth(24.0),
                   height: suSetHeight(24.0),

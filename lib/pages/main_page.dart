@@ -50,7 +50,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   Timer notificationTimer;
 
-  int _tabIndex = Configs.homeSplashIndex;
+  int _tabIndex;
 
   @override
   bool get wantKeepAlive => true;
@@ -59,6 +59,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   void initState() {
     debugPrint("CurrentUser's ${UserAPI.currentUser}");
 
+    _tabIndex = Provider.of<SettingsProvider>(currentContext, listen: false).homeSplashIndex;
     if (widget.initAction != null) {
       _tabIndex = pagesTitle.indexOf(widget.initAction);
     }
@@ -145,10 +146,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   Future<bool> doubleBackExit() {
     int now = DateTime.now().millisecondsSinceEpoch;
     if (now - lastBack > 800) {
-      showShortToast("再按一次退出应用");
+      showToast("再按一次退出应用");
       lastBack = DateTime.now().millisecondsSinceEpoch;
     } else {
-      cancelToast();
       SystemNavigator.pop();
     }
     return Future.value(false);
@@ -162,8 +162,16 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       child: Scaffold(
         body: Column(
           children: <Widget>[
-            if (Configs.announcementsEnabled)
-              AnnouncementWidget(context, color: currentThemeColor, gap: 24.0),
+            Selector<SettingsProvider, bool>(
+              selector: (_, provider) => provider.announcementsEnabled,
+              builder: (_, announcementEnabled, __) {
+                if (announcementEnabled) {
+                  return AnnouncementWidget(context, color: currentThemeColor, gap: 24.0);
+                } else {
+                  return SizedBox.shrink();
+                }
+              },
+            ),
             Expanded(
               child: IndexedStack(
                 children: <Widget>[

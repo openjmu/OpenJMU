@@ -27,7 +27,7 @@ import 'pages/user/user_qrcode_page.dart';
 import 'pages/login_page.dart';
 import 'pages/news/news_detail_page.dart';
 import 'pages/search_page.dart';
-import 'widgets/in_app_browser.dart';
+import 'widgets/in_app_webview.dart';
 import 'widgets/image/image_crop_page.dart';
 import 'widgets/image/image_viewer.dart';
 import 'widgets/common_web_page.dart';
@@ -378,8 +378,7 @@ class Routes {
   /// [name] : openjmu://chat-app-message-page
   /// [routeName] : 应用消息页
   /// [arguments] : [app]
-  static const String OPENJMU_CHAT_APP_MESSAGE_PAGE =
-      "openjmu://chat-app-message-page";
+  static const String OPENJMU_CHAT_APP_MESSAGE_PAGE = "openjmu://chat-app-message-page";
 
   /// 通知页
   ///
@@ -391,8 +390,7 @@ class Routes {
   ///
   /// [name] : openjmu://team-notifications
   /// [routeName] : 小组通知页
-  static const String OPENJMU_TEAM_NOTIFICATIONS =
-      "openjmu://team-notifications";
+  static const String OPENJMU_TEAM_NOTIFICATIONS = "openjmu://team-notifications";
 
   /// 启动页
   ///

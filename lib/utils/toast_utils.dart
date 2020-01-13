@@ -1,53 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:oktoast/oktoast.dart' as OKToast;
 
-void showLongToast(String text) {
-  Fluttertoast.showToast(
-    msg: text,
-    toastLength: Toast.LENGTH_LONG,
+void showToast(String text) {
+  OKToast.showToast(text, position: OKToast.ToastPosition.bottom);
+}
+
+void showCenterToast(String text) {
+  OKToast.showToast(text, position: OKToast.ToastPosition.center);
+}
+
+void showErrorToast(String text) {
+  OKToast.showToast(
+    text,
+    position: OKToast.ToastPosition.bottom,
+    backgroundColor: Colors.redAccent,
   );
 }
 
-void showShortToast(String text) {
-  Fluttertoast.showToast(
-    msg: text,
-    toastLength: Toast.LENGTH_SHORT,
-  );
-}
-
-void showCenterShortToast(String text) {
-  Fluttertoast.showToast(
-    msg: text,
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.CENTER,
-  );
-}
-
-void showErrorShortToast(String text) {
-  Fluttertoast.showToast(
-    msg: text,
-    backgroundColor: Color(0xFFE5322D),
-    toastLength: Toast.LENGTH_SHORT,
-  );
-}
-
-void showCenterErrorShortToast(String text) {
-  Fluttertoast.showToast(
-    msg: text,
-    backgroundColor: Color(0xFFE5322D),
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.CENTER,
+void showCenterErrorToast(String text) {
+  OKToast.showToast(
+    text,
+    position: OKToast.ToastPosition.center,
+    backgroundColor: Colors.redAccent,
   );
 }
 
 void showTopShortToast(String text) {
-  Fluttertoast.showToast(
-    msg: text,
-    toastLength: Toast.LENGTH_SHORT,
-    gravity: ToastGravity.TOP,
+  OKToast.showToast(
+    text,
+    position: OKToast.ToastPosition.top,
   );
-}
-
-void cancelToast() {
-  Fluttertoast.cancel();
 }

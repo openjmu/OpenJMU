@@ -60,7 +60,7 @@ class ChangeThemePage extends StatelessWidget {
           ),
           Expanded(
             child: GridView.builder(
-              padding: EdgeInsets.only(bottom: Screen.bottomSafeHeight),
+              padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 4,
               ),

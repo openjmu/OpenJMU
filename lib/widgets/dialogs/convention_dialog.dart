@@ -17,8 +17,8 @@ class ConventionDialog extends StatelessWidget {
         type: MaterialType.transparency,
         child: Container(
           padding: EdgeInsets.all(suSetWidth(20.0)),
-          width: Screen.width * 0.8,
-          height: Screen.height * 0.6,
+          width: Screens.width * 0.8,
+          height: Screens.height * 0.6,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(suSetWidth(20.0)),
             color: Color.lerp(

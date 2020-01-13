@@ -18,7 +18,7 @@ export 'package:openjmu/widgets/appbar.dart';
 export 'package:openjmu/widgets/app_icon.dart';
 export 'package:openjmu/widgets/common_web_page.dart';
 export 'package:openjmu/widgets/fab_bottom_appbar.dart';
-export 'package:openjmu/widgets/in_app_browser.dart';
+export 'package:openjmu/widgets/in_app_webview.dart';
 export 'package:openjmu/widgets/no_scale_text_widget.dart';
 export 'package:openjmu/widgets/rounded_check_box.dart';
 export 'package:openjmu/widgets/rounded_tab_indicator.dart';
@@ -79,7 +79,7 @@ class DeveloperTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      "assets/icons/openjmu-Team-Badge.svg",
+      "assets/icons/openjmu-team-badge.svg",
       height: suSetHeight(height),
     );
   }
@@ -100,15 +100,9 @@ Widget emptyDivider({double width, double height}) => SizedBox(
     );
 
 /// Cover when night mode. Used in covering post thumb images.
-Widget get nightModeCover => Positioned(
-      top: 0.0,
-      left: 0.0,
-      right: 0.0,
-      bottom: 0.0,
+Widget get nightModeCover => Positioned.fill(
       child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: const Color(0x44000000),
-        ),
+        decoration: BoxDecoration(color: const Color(0x44000000)),
       ),
     );
 
@@ -209,9 +203,12 @@ class ScaledImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<ThemesProvider>(currentContext, listen: false);
+    final isDark = provider.platformBrightness
+        ? Screens.mediaQuery.platformBrightness ?? Brightness.light == Brightness.dark
+        : provider.dark;
     final ratio = image.height / image.width;
-    final color = provider.dark ? Colors.black.withAlpha(50) : null;
-    final colorBlendMode = provider.dark ? BlendMode.darken : BlendMode.srcIn;
+    final color = isDark ? Colors.black.withAlpha(50) : null;
+    final colorBlendMode = isDark ? BlendMode.darken : BlendMode.srcIn;
 
     Widget imageWidget;
     if (length == 1) {

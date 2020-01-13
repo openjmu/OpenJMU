@@ -26,7 +26,7 @@ class SlideMenuItem extends StatelessWidget {
     return Container(
       child: child,
       color: color,
-      width: Screen.width / 5,
+      width: Screens.width / 5,
       height: height,
     );
   }
@@ -59,7 +59,7 @@ class SlideItem extends StatelessWidget {
               }
             : null,
         child: SizedBox(
-          width: Screen.width,
+          width: Screens.width,
           child: child,
         ),
       ))
@@ -86,7 +86,7 @@ class SlideItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Listener(
       onPointerUp: (d) {
-        if (_controller.offset < (Screen.width / 5) * menu.length / 4) {
+        if (_controller.offset < (Screens.width / 5) * menu.length / 4) {
           _controller.animateTo(
             0,
             duration: const Duration(milliseconds: 100),
@@ -94,7 +94,7 @@ class SlideItem extends StatelessWidget {
           );
         } else {
           _controller.animateTo(
-            menu.length * (Screen.width / 5),
+            menu.length * (Screens.width / 5),
             duration: const Duration(milliseconds: 100),
             curve: Curves.linear,
           );

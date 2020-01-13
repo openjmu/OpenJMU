@@ -56,7 +56,17 @@ class _SettingsPageState extends State<SettingsPage> {
           "name": "应用中心新图标",
           "description": "全新图标设计，简洁直达",
         },
-      {"icon": "fontScale", "name": "调节字体大小", "description": "选择最适合你的字体大小", "route": "font-scale"},
+      {
+        "icon": "fontScale",
+        "name": "调节字体大小",
+        "description": "选择最适合你的字体大小",
+        "route": "font-scale",
+      },
+      {
+        "icon": "fontScale",
+        "name": "隐藏屏蔽的动态",
+        "description": "微博广场中被屏蔽的动态将不显示",
+      },
     ],
   ];
   List<List<Widget>> settingsWidget;
@@ -106,18 +116,31 @@ class _SettingsPageState extends State<SettingsPage> {
         null,
         null,
         if (currentUser.isTeacher)
-          Consumer<ThemesProvider>(builder: (_, provider, __) {
+          Selector<SettingsProvider, bool>(
+            selector: (_, provider) => provider.newAppCenterIcon,
+            builder: (_, newAppCenterIcon, __) {
+              return PlatformSwitch(
+                activeColor: currentThemeColor,
+                value: newAppCenterIcon,
+                onChanged: (bool value) async {
+                  await SettingUtils.setEnabledNewAppsIcon(value);
+                },
+              );
+            },
+          ),
+        null,
+        Selector<SettingsProvider, bool>(
+          selector: (_, provider) => provider.hideShieldPost,
+          builder: (_, hideShieldPost, __) {
             return PlatformSwitch(
               activeColor: currentThemeColor,
-              value: Configs.newAppCenterIcon,
-              onChanged: (bool value) {
-                DataUtils.setEnabledNewAppsIcon(value);
-                Instances.eventBus.fire(AppCenterSettingsUpdateEvent());
-                if (mounted) setState(() {});
+              value: hideShieldPost,
+              onChanged: (bool value) async {
+                await SettingUtils.setEnabledHideShieldPost(value);
               },
             );
-          }),
-        null,
+          },
+        ),
       ],
     ];
     final Widget pageWidget = settingsWidget[sectionIndex][index];

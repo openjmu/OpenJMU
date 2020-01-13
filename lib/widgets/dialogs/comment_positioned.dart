@@ -135,7 +135,7 @@ class CommentPositionedState extends State<CommentPositioned> {
 
   Future _request(context) async {
     if (commentContent.length <= 0 && _image == null) {
-      showCenterErrorShortToast("内容不能为空！");
+      showCenterErrorToast("内容不能为空！");
     } else {
       setState(() {
         _commenting = true;
@@ -165,7 +165,7 @@ class CommentPositionedState extends State<CommentPositioned> {
         forwardAtTheMeanTime,
         replyToId: _cid,
       ).then((response) {
-        showShortToast("评论成功");
+        showToast("评论成功");
         setState(() {
           _commenting = false;
         });

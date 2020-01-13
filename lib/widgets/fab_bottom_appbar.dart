@@ -46,13 +46,14 @@ class FABBottomAppBar extends StatefulWidget {
 }
 
 class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliveClientMixin {
-  int _selectedIndex = Configs.homeSplashIndex;
+  int _selectedIndex;
 
   @override
   bool get wantKeepAlive => true;
 
   @override
   void initState() {
+    _selectedIndex = Provider.of<SettingsProvider>(currentContext, listen: false).homeSplashIndex;
     if (widget.initIndex != null) _selectedIndex = widget.initIndex;
     Instances.eventBus
       ..on<ActionsEvent>().listen((event) {
@@ -171,7 +172,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
                 builder: (_, provider, __) {
                   return Positioned(
                     top: widget.height / 6,
-                    right: Screen.width / widget.items.length / 5,
+                    right: Screens.width / widget.items.length / 5,
                     child: Visibility(
                       visible: provider.showNotification,
                       child: ClipRRect(
@@ -191,7 +192,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
                 builder: (_, provider, __) {
                   return Positioned(
                     top: widget.height / 6,
-                    right: Screen.width / widget.items.length / 5,
+                    right: Screens.width / widget.items.length / 5,
                     child: Visibility(
                       visible: provider.unreadCount > 0,
                       child: ClipRRect(

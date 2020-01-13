@@ -47,6 +47,8 @@ class Post {
     this.isLike = false,
   });
 
+  bool get isShield => content == "此微博已经被屏蔽";
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) || other is Post && runtimeType == other.runtimeType && id == other.id;

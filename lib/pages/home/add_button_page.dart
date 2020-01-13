@@ -27,8 +27,8 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
   final int _animateDuration = 300;
   double get backdropRadius =>
       pythagoreanTheorem(
-        Screen.width,
-        Screen.height * 2 + Screen.topSafeHeight + Screen.bottomSafeHeight,
+        Screens.width,
+        Screens.height * 2 + Screens.topSafeHeight + Screens.bottomSafeHeight,
       ) /
       2;
 
@@ -258,8 +258,8 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
       );
 
   Widget wrapper(context, {Widget child}) {
-    final double topOverflow = backdropRadius - Screen.height;
-    final double horizontalOverflow = backdropRadius - Screen.width;
+    final double topOverflow = backdropRadius - Screens.height;
+    final double horizontalOverflow = backdropRadius - Screens.width;
 
     return Stack(
       overflow: Overflow.visible,
@@ -314,11 +314,11 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
         Align(
           alignment: Alignment.topCenter,
           child: Container(
-            width: Screen.width,
-            height: Screen.height,
+            width: Screens.width,
+            height: Screens.height,
             constraints: BoxConstraints(
-              maxWidth: Screen.width,
-              maxHeight: Screen.height,
+              maxWidth: Screens.width,
+              maxHeight: Screens.height,
             ),
             child: child ?? SizedBox(),
           ),
@@ -326,7 +326,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
         Positioned(
           left: 0.0,
           right: 0.0,
-          bottom: Screen.bottomSafeHeight,
+          bottom: Screens.bottomSafeHeight,
           child: popButton,
         ),
       ],

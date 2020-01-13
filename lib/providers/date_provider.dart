@@ -19,7 +19,7 @@ class DateProvider extends ChangeNotifier {
 
   Timer _updateCurrentWeekTimer;
 
-  int _currentWeek;
+  int _currentWeek = 0;
   int get currentWeek => _currentWeek;
   set currentWeek(int value) {
     _currentWeek = value;
@@ -80,22 +80,11 @@ class DateProvider extends ChangeNotifier {
 
   void initCurrentWeekTimer() {
     if (_updateCurrentWeekTimer == null) {
-      _updateCurrentWeekTimer = Timer.periodic(
-        const Duration(minutes: 1),
-        (timer) {
-          getCurrentWeek();
-        },
-      );
+      _updateCurrentWeekTimer = Timer.periodic(1.minutes, (timer) {
+        getCurrentWeek();
+      });
     }
   }
 }
 
-const List<String> shortWeekdays = <String>[
-  '周一',
-  '周二',
-  '周三',
-  '周四',
-  '周五',
-  '周六',
-  '周日',
-];
+const List<String> shortWeekdays = <String>['周一', '周二', '周三', '周四', '周五', '周六', '周日'];

@@ -166,6 +166,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                     fontStyle: FontStyle.italic,
                     textBaseline: TextBaseline.alphabetic,
                   ),
+                  isDense: true,
                 ),
                 focusNode: _focusNode,
                 keyboardType: TextInputType.text,

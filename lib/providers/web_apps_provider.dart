@@ -7,19 +7,22 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class WebAppsProvider extends ChangeNotifier {
-  Set<WebApp> _webApps = <WebApp>{};
-  Set<WebApp> get apps => _webApps;
+  Set<WebApp> _displayedWebApps = <WebApp>{};
+  Set<WebApp> _allWebApps = <WebApp>{};
+  Set<WebApp> get apps => _displayedWebApps;
+  Set<WebApp> get allApps => _allWebApps;
   bool fetching = true;
 
   Future getAppList() async => NetUtils.getWithCookieSet(API.webAppLists);
 
   Future initApps() async {
-    if (_webApps.isNotEmpty) _webApps.clear();
+    if (_displayedWebApps.isNotEmpty) _displayedWebApps.clear();
     await updateApps();
   }
 
   Future updateApps() async {
     final _tempSet = Set<WebApp>();
+    final _tempAllSet = Set<WebApp>();
     final data = (await getAppList()).data;
     for (int i = 0; i < data.length; i++) {
       final name = data[i]['name'];
@@ -28,9 +31,11 @@ class WebAppsProvider extends ChangeNotifier {
         if (!appFiltered(_app)) {
           _tempSet.add(_app);
         }
+        _tempAllSet.add(_app);
       }
     }
-    _webApps = Set.from(_tempSet);
+    _displayedWebApps = Set.from(_tempSet);
+    _allWebApps = Set.from(_tempAllSet);
     fetching = false;
     notifyListeners();
   }

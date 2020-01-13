@@ -39,7 +39,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
   @override
   void initState() {
     timeFormat(null);
-    timeUpdateTimer = Timer.periodic(const Duration(minutes: 1), timeFormat);
+    timeUpdateTimer = Timer.periodic(1.minutes, timeFormat);
     super.initState();
   }
 
@@ -95,11 +95,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
       );
 
   void updateApp() {
-    final provider = Provider.of<WebAppsProvider>(
-      currentContext,
-      listen: false,
-    );
-    app = provider.apps.where((app) => app.id == widget.message.appId).elementAt(0);
+    final provider = Provider.of<WebAppsProvider>(currentContext, listen: false);
+    app = provider.allApps.where((app) => app.id == widget.message.appId).elementAt(0);
   }
 
   void tryDecodeContent() {
@@ -127,17 +124,13 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
         );
       },
       child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: suSetSp(16.0),
-        ),
+        padding: EdgeInsets.symmetric(horizontal: suSetSp(16.0)),
         height: suSetHeight(widget.height),
         decoration: BoxDecoration(),
         child: Row(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(
-                right: suSetSp(16.0),
-              ),
+              padding: EdgeInsets.only(right: suSetSp(16.0)),
               child: AppIcon(app: app),
             ),
             Expanded(

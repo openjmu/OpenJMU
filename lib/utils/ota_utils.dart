@@ -7,13 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:oktoast/oktoast.dart';
-import 'package:open_appstore/open_appstore.dart';
 import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/updating_dialog.dart';
+import 'package:store_redirect/store_redirect.dart';
 
 class OTAUtils {
   static Future<String> getCurrentVersion() async {
@@ -54,20 +53,17 @@ class OTAUtils {
           response: _response,
         ));
       } else {
-        if (!(fromHome ?? false)) showShortToast("已更新为最新版本");
+        if (!(fromHome ?? false)) showToast("已更新为最新版本");
       }
     }).catchError((e) {
       debugPrint(e.toString());
-      showCenterErrorShortToast("检查更新失败\n${e.toString()}");
+      showCenterErrorToast("检查更新失败\n${e.toString()}");
     });
   }
 
   static void _tryUpdate() async {
     if (Platform.isIOS) {
-      OpenAppstore.launch(
-        androidAppId: "cn.edu.jmu.openjmu",
-        iOSAppId: "1459832676",
-      );
+      StoreRedirect.redirect(iOSAppId: "1459832676");
     } else {
       final permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
       if (permission != PermissionStatus.granted) {

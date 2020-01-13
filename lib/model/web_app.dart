@@ -50,6 +50,11 @@ class WebApp {
     };
   }
 
+  @override
+  String toString() {
+    return 'WebApp ${JsonEncoder.withIndent('  ').convert(toJson())}';
+  }
+
   String get replacedUrl => replaceParamsInUrl();
 
   String replaceParamsInUrl() {

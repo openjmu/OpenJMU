@@ -131,7 +131,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       widget.post.id,
       commentAtTheMeanTime,
     ).then((response) {
-      showShortToast("转发成功");
+      showToast("转发成功");
       _forwarding = false;
       if (mounted) setState(() {});
       Navigator.of(context).pop();

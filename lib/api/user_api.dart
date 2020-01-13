@@ -130,7 +130,7 @@ class UserAPI {
       );
     }).catchError((e) {
       debugPrint(e.toString());
-      showCenterErrorShortToast("关注失败，${jsonDecode(e.response.data)['msg']}");
+      showCenterErrorToast("关注失败，${jsonDecode(e.response.data)['msg']}");
     });
   }
 
@@ -142,7 +142,7 @@ class UserAPI {
       );
     }).catchError((e) {
       debugPrint(e.toString());
-      showCenterErrorShortToast("取消关注失败，${e.response.data['msg']}");
+      showCenterErrorToast("取消关注失败，${e.response.data['msg']}");
     });
   }
 
@@ -185,13 +185,13 @@ class UserAPI {
       data: {"fid": uid},
     ).then((response) {
       addToBlacklist(uid: uid, name: name);
-      showShortToast("屏蔽成功");
+      showToast("屏蔽成功");
       Instances.eventBus.fire(BlacklistUpdateEvent());
       UserAPI.unFollow(uid).catchError((e) {
         debugPrint("${e.toString()}");
       });
     }).catchError((e) {
-      showShortToast("屏蔽失败");
+      showToast("屏蔽失败");
       debugPrint("Add $name $uid to blacklist failed : $e");
     });
   }
@@ -202,10 +202,10 @@ class UserAPI {
       data: {"fid": uid},
     ).then((response) {
       removeFromBlackList(uid: uid, name: name);
-      showShortToast("取消屏蔽成功");
+      showToast("取消屏蔽成功");
       Instances.eventBus.fire(BlacklistUpdateEvent());
     }).catchError((e) {
-      showShortToast("取消屏蔽失败");
+      showToast("取消屏蔽失败");
       debugPrint("Remove $name $uid from blacklist failed: $e");
       debugPrint("${e.response}");
     });

@@ -61,7 +61,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                       color: Theme.of(context).canvasColor,
                       borderRadius: BorderRadius.circular(suSetWidth(12.0)),
                     ),
-                    width: Screen.width - suSetWidth(100),
+                    width: Screens.width - suSetWidth(100),
                     padding: EdgeInsets.only(
                       top: suSetHeight(16.0),
                     ),

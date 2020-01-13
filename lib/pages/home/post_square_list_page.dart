@@ -60,7 +60,10 @@ class PostSquareListPageState extends State<PostSquareListPage>
   @override
   void initState() {
     _tabController = TabController(
-      initialIndex: Configs.homeStartUpIndex[0],
+      initialIndex: Provider.of<SettingsProvider>(
+        currentContext,
+        listen: false,
+      ).homeStartUpIndex[0],
       length: tabs.length,
       vsync: this,
     );
@@ -133,6 +136,37 @@ class PostSquareListPageState extends State<PostSquareListPage>
         ),
       );
 
+  Widget get searchBar => Expanded(
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            navigatorState.pushNamed("openjmu://search", arguments: {"content": null});
+          },
+          child: Container(
+            height: suSetHeight(48.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+              color: Theme.of(context).canvasColor,
+            ),
+            child: Row(
+              children: <Widget>[
+                searchButton,
+                Expanded(
+                  child: Text(
+                    "搜索",
+                    style: TextStyle(
+                      color: Theme.of(context).iconTheme.color.withOpacity(0.3),
+                      fontSize: suSetSp(20.0),
+                    ),
+                  ),
+                ),
+                scanQrCodeButton,
+              ],
+            ),
+          ),
+        ),
+      );
+
   Widget get notificationButton => Consumer<NotificationProvider>(
         builder: (_, provider, __) {
           return SizedBox(
@@ -187,41 +221,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
               child: Row(
                 children: <Widget>[
                   tabBar,
-                  Expanded(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      onTap: () {
-                        navigatorState.pushNamed(
-                          "openjmu://search",
-                          arguments: {"content": null},
-                        );
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(
-                          vertical: suSetHeight(10.0),
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
-                          color: Theme.of(context).canvasColor,
-                        ),
-                        child: Row(
-                          children: <Widget>[
-                            searchButton,
-                            Expanded(
-                              child: Text(
-                                "搜索",
-                                style: TextStyle(
-                                  color: Theme.of(context).iconTheme.color.withOpacity(0.3),
-                                  fontSize: suSetSp(20.0),
-                                ),
-                              ),
-                            ),
-                            scanQrCodeButton,
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+                  searchBar,
                   notificationButton,
                 ],
               ),

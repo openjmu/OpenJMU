@@ -141,7 +141,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         if (results != null) resultList = results;
         if (_focusNode.canRequestFocus) _focusNode.requestFocus();
       } on PlatformException catch (e) {
-        showCenterErrorShortToast(e.message);
+        showCenterErrorToast(e.message);
       }
     } else {
       return;
@@ -225,8 +225,8 @@ class PublishPostPageState extends State<PublishPostPage> {
         bottom: 0.0,
         child: AssetThumb(
           asset: assets[index],
-          width: (Screen.width / gridCount).floor(),
-          height: (Screen.width / gridCount).floor(),
+          width: (Screens.width / gridCount).floor(),
+          height: (Screens.width / gridCount).floor(),
           quality: 50,
           spinner: const Center(
             child: SizedBox(
@@ -288,7 +288,7 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   Widget customGridView(context) {
     return SizedBox(
-      height: Screen.width / gridCount * (assets.length / gridCount).ceil(),
+      height: Screens.width / gridCount * (assets.length / gridCount).ceil(),
       child: GridView.builder(
         padding: EdgeInsets.zero,
         shrinkWrap: true,
@@ -433,7 +433,7 @@ class PublishPostPageState extends State<PublishPostPage> {
         type: MaterialType.transparency,
         child: Container(
           padding: EdgeInsets.all(suSetWidth(20.0)),
-          width: Screen.width * 0.9,
+          width: Screens.width * 0.9,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(suSetWidth(20.0)),
             color: Theme.of(context).cardColor.withOpacity(0.8),
@@ -541,7 +541,7 @@ class PublishPostPageState extends State<PublishPostPage> {
   void post(context) async {
     final content = _textEditingController.text;
     if (content.length == 0 || content.trim().length == 0) {
-      showCenterShortToast("内容不能为空");
+      showCenterToast("内容不能为空");
     } else {
       final result = await showDialog(
         context: context,
@@ -629,7 +629,7 @@ class PublishPostPageState extends State<PublishPostPage> {
       query = [];
       debugPrint(e.toString());
       debugPrint(e.response.toString());
-      showErrorShortToast(e.response.data['msg'] as String);
+      showErrorToast(e.response.data['msg'] as String);
       failedImages.add(uploadedImages - 1);
       _dialogController.changeState("failed", "图片上传失败");
       isLoading = false;

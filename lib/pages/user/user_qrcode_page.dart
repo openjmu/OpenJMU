@@ -33,7 +33,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         PermissionGroup.storage,
       ]);
       if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
-        showShortToast("未获得存储权限");
+        showToast("未获得存储权限");
         return;
       }
       RenderRepaintBoundary boundary = previewContainer.currentContext.findRenderObject();
@@ -43,13 +43,13 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final result = await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
       if (result != null) {
-        showShortToast("保存成功");
+        showToast("保存成功");
       } else {
-        showShortToast("保存失败");
+        showToast("保存失败");
       }
     } catch (e) {
       isSaving = false;
-      showShortToast("保存失败");
+      showToast("保存失败");
     }
   }
 

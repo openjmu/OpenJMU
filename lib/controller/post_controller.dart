@@ -268,10 +268,13 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             },
           ),
           controller: widget._postController.postType == "user" ? null : _scrollController,
-          separatorBuilder: (context, index) => Divider(
-            thickness: suSetHeight(8.0),
-            height: suSetHeight(8.0),
-          ),
+          separatorBuilder: (context, index) =>
+              _postList[index].isShield && SettingUtils.getEnabledHideShieldPost()
+                  ? SizedBox.shrink()
+                  : Divider(
+                      thickness: suSetHeight(8.0),
+                      height: suSetHeight(8.0),
+                    ),
           itemCount: _postList.length + 1,
           itemBuilder: (context, index) {
             if (index == _postList.length - 1 && _canLoadMore) {

@@ -21,14 +21,8 @@ class _ScorePageState extends State<ScorePage> with AutomaticKeepAliveClientMixi
     "不及格": {"score": 55.0, "point": 0.0},
   };
   final Map<String, Map<String, double>> twoBandScale = {
-    "合格": {
-      "score": 80.0,
-      "point": 3.5,
-    },
-    "不合格": {
-      "score": 50.0,
-      "point": 0.0,
-    },
+    "合格": {"score": 80.0, "point": 3.5},
+    "不合格": {"score": 50.0, "point": 0.0},
   };
   bool loading = true, socketInitialized = false, noScore = false, loadError = false;
   List<String> terms;
@@ -189,10 +183,7 @@ class _ScorePageState extends State<ScorePage> with AutomaticKeepAliveClientMixi
     errorWidget = Center(
       child: Text(
         result,
-        style: TextStyle(
-          fontSize: suSetSp(23.0),
-          fontWeight: FontWeight.normal,
-        ),
+        style: TextStyle(fontSize: suSetSp(23.0), fontWeight: FontWeight.normal),
         textAlign: TextAlign.center,
       ),
     );
@@ -216,9 +207,7 @@ class _ScorePageState extends State<ScorePage> with AutomaticKeepAliveClientMixi
         child: Row(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.symmetric(
-                horizontal: suSetWidth(30.0),
-              ),
+              margin: EdgeInsets.symmetric(horizontal: suSetWidth(30.0)),
               width: suSetWidth(14.0),
               height: suSetHeight(14.0),
               decoration: BoxDecoration(
@@ -230,31 +219,24 @@ class _ScorePageState extends State<ScorePage> with AutomaticKeepAliveClientMixi
               child: Text.rich(
                 TextSpan(
                   children: <InlineSpan>[
-                    TextSpan(
-                      text: "请及时完成",
-                    ),
+                    TextSpan(text: "请及时完成 "),
                     TextSpan(
                       text: "教学评测",
                       style: TextStyle(
                         decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.bold,
                       ),
                       recognizer: TapGestureRecognizer()..onTap = evaluate,
                     ),
-                    TextSpan(
-                      text: "\n未教学评测的科目成绩将不予显示",
-                    ),
+                    TextSpan(text: " (校园内网)\n未教学评测的科目成绩将不予显示"),
                   ],
                 ),
-                style: Theme.of(context).textTheme.caption.copyWith(
-                      fontSize: suSetSp(19.0),
-                    ),
+                style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(19.0)),
                 textAlign: TextAlign.center,
               ),
             ),
             Container(
-              margin: EdgeInsets.symmetric(
-                horizontal: suSetWidth(30.0),
-              ),
+              margin: EdgeInsets.symmetric(horizontal: suSetWidth(30.0)),
               width: suSetWidth(14.0),
               height: suSetHeight(14.0),
               decoration: BoxDecoration(
@@ -280,17 +262,12 @@ class _ScorePageState extends State<ScorePage> with AutomaticKeepAliveClientMixi
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(suSetSp(10.0)),
             boxShadow: <BoxShadow>[
-              BoxShadow(
-                blurRadius: 5.0,
-                color: Theme.of(context).canvasColor,
-              ),
+              BoxShadow(blurRadius: 5.0, color: Theme.of(context).canvasColor),
             ],
             color: _term == termSelected ? currentThemeColor : Theme.of(context).canvasColor,
           ),
           child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: suSetSp(8.0),
-            ),
+            padding: EdgeInsets.symmetric(horizontal: suSetSp(8.0)),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -325,9 +302,7 @@ class _ScorePageState extends State<ScorePage> with AutomaticKeepAliveClientMixi
   Widget _name(Score score) {
     return Text(
       "${score.courseName}",
-      style: Theme.of(context).textTheme.title.copyWith(
-            fontSize: suSetSp(24.0),
-          ),
+      style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(24.0)),
       overflow: TextOverflow.ellipsis,
     );
   }
@@ -417,7 +392,7 @@ class _ScorePageState extends State<ScorePage> with AutomaticKeepAliveClientMixi
                                     child: ListView.builder(
                                       padding: EdgeInsets.zero,
                                       scrollDirection: Axis.horizontal,
-                                      physics: BouncingScrollPhysics(),
+                                      physics: const BouncingScrollPhysics(),
                                       shrinkWrap: true,
                                       itemCount: terms.length + 2,
                                       itemBuilder: (context, index) {

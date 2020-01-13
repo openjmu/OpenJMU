@@ -40,18 +40,14 @@ class _PostCardState extends State<PostCard> {
   final TextStyle subtitleStyle = TextStyle(color: Colors.grey, fontSize: suSetSp(18.0));
   final TextStyle rootTopicTextStyle = TextStyle(fontSize: suSetSp(18.0));
   final TextStyle rootTopicMentionStyle = TextStyle(color: Colors.blue, fontSize: suSetSp(18.0));
-  final Color subIconColor = Colors.grey;
+  final Color actionIconColorDark = Color(0xff757575);
+  final Color actionIconColorLight = Color(0xffE0E0E0);
+  final Color actionTextColorDark = Color(0xff9E9E9E);
+  final Color actionTextColorLight = Color(0xffBDBDBD);
   final double contentPadding = 22.0;
-
-  Color _forwardColor = Colors.grey;
-  Color _repliesColor = Colors.grey;
-
-  bool isShield;
 
   @override
   void initState() {
-    isShield = widget.post.content != "此微博已经被屏蔽" ? false : true;
-
     Instances.eventBus
       ..on<ForwardInPostUpdatedEvent>().listen((event) {
         if (event.postId == widget.post.id) widget.post.forwards = event.count;
@@ -132,15 +128,6 @@ class _PostCardState extends State<PostCard> {
             ),
           ),
           TextSpan(text: " ${post.from}　"),
-          WidgetSpan(
-            alignment: ui.PlaceholderAlignment.middle,
-            child: Icon(
-              Icons.remove_red_eye,
-              color: Colors.grey,
-              size: suSetWidth(16.0),
-            ),
-          ),
-          TextSpan(text: " ${post.glances}　"),
         ],
       ),
       style: subtitleStyle,
@@ -148,10 +135,8 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget getPostContent(context, post) => Container(
-        width: Screen.width,
-        margin: EdgeInsets.symmetric(
-          vertical: suSetHeight(4.0),
-        ),
+        width: Screens.width,
+        margin: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -191,7 +176,7 @@ class _PostCardState extends State<PostCard> {
               );
             },
             child: Container(
-              width: Screen.width,
+              width: Screens.width,
               padding: EdgeInsets.symmetric(
                 horizontal: suSetWidth(contentPadding),
                 vertical: suSetHeight(10.0),
@@ -335,74 +320,33 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  Widget getPostActions(context) {
+  Widget postActions(context) {
     int forwards = widget.post.forwards;
     int comments = widget.post.comments;
     int praises = widget.post.praises;
 
     return SizedBox(
-      height: suSetHeight(44.0),
+      width: Screens.width * 0.5,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Expanded(
-            child: FlatButton.icon(
-              onPressed: () {
-                navigatorState.pushNamed(
-                  "openjmu://add-forward",
-                  arguments: {"post": widget.post},
-                );
-              },
-              icon: SvgPicture.asset(
-                "assets/icons/postActions/forward-line.svg",
-                color: _forwardColor,
-                height: suSetHeight(18.0),
-              ),
-              label: Text(
-                forwards == 0 ? "转发" : "$forwards",
-                style: TextStyle(
-                  color: _forwardColor,
-                  fontSize: suSetSp(18.0),
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              splashColor: Theme.of(context).cardColor,
-              highlightColor: Theme.of(context).cardColor,
-            ),
-          ),
-          Expanded(
-            child: FlatButton.icon(
-              onPressed: null,
-              icon: SvgPicture.asset(
-                "assets/icons/postActions/comment-line.svg",
-                color: _repliesColor,
-                height: suSetHeight(18.0),
-              ),
-              label: Text(
-                comments == 0 ? "评论" : "$comments",
-                style: TextStyle(
-                  color: _repliesColor,
-                  fontSize: suSetSp(18.0),
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              splashColor: Theme.of(context).cardColor,
-              highlightColor: Theme.of(context).cardColor,
-            ),
-          ),
-          Expanded(
             child: LikeButton(
-              size: suSetHeight(18.0),
-              circleColor: CircleColor(
-                start: currentThemeColor,
-                end: currentThemeColor,
-              ),
-              countBuilder: (int count, bool isLiked, String text) => Text(
-                count == 0 ? "赞" : text,
-                style: TextStyle(
-                  color: isLiked ? currentThemeColor : Colors.grey,
-                  fontSize: suSetSp(18.0),
-                  fontWeight: FontWeight.normal,
+              padding: EdgeInsets.zero,
+              size: suSetWidth(26.0),
+              circleColor: CircleColor(start: currentThemeColor, end: currentThemeColor),
+              countBuilder: (int count, bool isLiked, String text) => SizedBox(
+                width: suSetWidth(40.0),
+                child: Text(
+                  count == 0 ? "" : text,
+                  style: TextStyle(
+                    color: isLiked
+                        ? currentThemeColor
+                        : currentBrightness == Brightness.dark
+                            ? actionTextColorDark
+                            : actionTextColorLight,
+                    fontSize: suSetSp(18.0),
+                    fontWeight: FontWeight.normal,
+                  ),
                 ),
               ),
               bubblesColor: BubblesColor(
@@ -410,19 +354,85 @@ class _PostCardState extends State<PostCard> {
                 dotSecondaryColor: currentThemeColor,
               ),
               likeBuilder: (bool isLiked) => SvgPicture.asset(
-                "assets/icons/postActions/thumbUp-${isLiked ? "fill" : "line"}.svg",
-                color: isLiked ? currentThemeColor : Colors.grey,
-                width: suSetWidth(18.0),
-                height: suSetHeight(18.0),
+                "assets/icons/postActions/praise-fill.svg",
+                color: isLiked
+                    ? currentThemeColor
+                    : currentBrightness == Brightness.dark
+                        ? actionIconColorDark
+                        : actionIconColorLight,
+                width: suSetWidth(26.0),
               ),
               likeCount: praises,
               likeCountAnimationType: LikeCountAnimationType.none,
               likeCountPadding: EdgeInsets.symmetric(
-                horizontal: suSetWidth(4.0),
+                horizontal: suSetWidth(10.0),
                 vertical: suSetHeight(12.0),
               ),
               isLiked: widget.post.isLike,
               onTap: onLikeButtonTap,
+            ),
+          ),
+          Expanded(
+            child: FlatButton.icon(
+              padding: EdgeInsets.zero,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              onPressed: null,
+              icon: SvgPicture.asset(
+                "assets/icons/postActions/comment-fill.svg",
+                color: currentBrightness == Brightness.dark
+                    ? actionIconColorDark
+                    : actionIconColorLight,
+                width: suSetWidth(26.0),
+              ),
+              label: SizedBox(
+                width: suSetWidth(40.0),
+                child: Text(
+                  comments == 0 ? "" : "$comments",
+                  style: TextStyle(
+                    color: currentBrightness == Brightness.dark
+                        ? actionTextColorDark
+                        : actionTextColorLight,
+                    fontSize: suSetSp(18.0),
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ),
+              highlightColor: Theme.of(context).cardColor,
+              splashColor: Theme.of(context).cardColor,
+            ),
+          ),
+          Expanded(
+            child: FlatButton.icon(
+              padding: EdgeInsets.zero,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              onPressed: () {
+                navigatorState.pushNamed(
+                  "openjmu://add-forward",
+                  arguments: {"post": widget.post},
+                );
+              },
+              icon: SvgPicture.asset(
+                "assets/icons/postActions/forward-fill.svg",
+                color: currentBrightness == Brightness.dark
+                    ? actionIconColorDark
+                    : actionIconColorLight,
+                width: suSetWidth(26.0),
+              ),
+              label: SizedBox(
+                width: suSetWidth(40.0),
+                child: Text(
+                  forwards == 0 ? "" : "$forwards",
+                  style: TextStyle(
+                    color: currentBrightness == Brightness.dark
+                        ? actionTextColorDark
+                        : actionTextColorLight,
+                    fontSize: suSetSp(18.0),
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+              ),
+              splashColor: Theme.of(context).cardColor,
+              highlightColor: Theme.of(context).cardColor,
             ),
           ),
         ],
@@ -465,7 +475,7 @@ class _PostCardState extends State<PostCard> {
       onLongPress: widget.isDetail
           ? () {
               Clipboard.setData(ClipboardData(text: content));
-              showShortToast("已复制到剪贴板");
+              showToast("已复制到剪贴板");
             }
           : null,
       child: Padding(
@@ -514,21 +524,13 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget get deleteButton => IconButton(
-        icon: Icon(
-          Icons.delete_outline,
-          color: Colors.grey,
-          size: suSetWidth(24.0),
-        ),
+        icon: Icon(Icons.delete_outline, color: Colors.grey, size: suSetWidth(24.0)),
         onPressed: confirmDelete,
       );
 
   Widget get postActionButton => IconButton(
-        icon: Icon(
-          Icons.expand_more,
-          color: Colors.grey,
-          size: suSetWidth(30.0),
-        ),
-        onPressed: postActions,
+        icon: Icon(Icons.expand_more, color: Colors.grey, size: suSetWidth(30.0)),
+        onPressed: postExtraActions,
       );
 
   void confirmDelete() {
@@ -579,7 +581,7 @@ class _PostCardState extends State<PostCard> {
         ),
       );
 
-  void postActions() {
+  void postExtraActions() {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -602,7 +604,7 @@ class _PostCardState extends State<PostCard> {
                 text: "举报动态",
                 onTap: confirmReport,
               ),
-              SizedBox(height: Screen.bottomSafeHeight),
+              SizedBox(height: Screens.bottomSafeHeight),
             ],
           ),
         );
@@ -616,15 +618,11 @@ class _PostCardState extends State<PostCard> {
       builder: (context) => PlatformAlertDialog(
         title: Text(
           "屏蔽此人",
-          style: TextStyle(
-            fontSize: suSetSp(26.0),
-          ),
+          style: TextStyle(fontSize: suSetSp(26.0)),
         ),
         content: Text(
           "确定屏蔽此人吗？",
-          style: Theme.of(context).textTheme.body1.copyWith(
-                fontSize: suSetSp(20.0),
-              ),
+          style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
         ),
         actions: <Widget>[
           PlatformButton(
@@ -660,9 +658,7 @@ class _PostCardState extends State<PostCard> {
               highlightElevation: 0.0,
               child: Text(
                 '取消',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+                style: TextStyle(color: Colors.white),
               ),
             ),
             ios: (BuildContext context) => CupertinoButtonData(
@@ -688,9 +684,7 @@ class _PostCardState extends State<PostCard> {
         ),
         content: Text(
           "确定举报该条动态吗？",
-          style: Theme.of(context).textTheme.body1.copyWith(
-                fontSize: suSetSp(20.0),
-              ),
+          style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
         ),
         actions: <Widget>[
           PlatformButton(
@@ -712,7 +706,7 @@ class _PostCardState extends State<PostCard> {
             ),
             onPressed: () {
               PostAPI.reportPost(widget.post);
-              showShortToast("举报成功");
+              showToast("举报成功");
               Navigator.pop(context);
               navigatorState.pop();
             },
@@ -725,9 +719,7 @@ class _PostCardState extends State<PostCard> {
               highlightElevation: 0.0,
               child: Text(
                 '取消',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+                style: TextStyle(color: Colors.white),
               ),
             ),
             ios: (BuildContext context) => CupertinoButtonData(
@@ -758,56 +750,80 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
-    return Hero(
-      tag: "postcard-id-${post.id}",
-      child: GestureDetector(
-        onTap: widget.isDetail || isShield ? null : pushToDetail,
-        onLongPress: isShield ? pushToDetail : null,
-        child: Card(
-          margin: isShield ? EdgeInsets.zero : EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
-          child: ListView(
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            children: !isShield
-                ? <Widget>[
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: suSetWidth(contentPadding),
-                        vertical: suSetHeight(10.0),
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          UserAPI.getAvatar(uid: widget.post.uid),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: suSetWidth(contentPadding),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+    return post.isShield && SettingUtils.getEnabledHideShieldPost()
+        ? SizedBox.shrink()
+        : Hero(
+            tag: "postcard-id-${post.id}",
+            child: GestureDetector(
+              onTap: widget.isDetail || post.isShield ? null : pushToDetail,
+              onLongPress: post.isShield ? pushToDetail : null,
+              child: Card(
+                margin: post.isShield
+                    ? EdgeInsets.zero
+                    : EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: !post.isShield
+                      ? <Widget>[
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: suSetWidth(contentPadding),
+                              vertical: suSetHeight(10.0),
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                UserAPI.getAvatar(uid: widget.post.uid),
+                                Expanded(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: suSetWidth(contentPadding),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        getPostNickname(context, post),
+                                        separator(context, height: 4.0),
+                                        getPostInfo(post),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                post.uid == UserAPI.currentUser.uid
+                                    ? deleteButton
+                                    : postActionButton,
+                              ],
+                            ),
+                          ),
+                          getPostContent(context, post),
+                          getPostImages(context, post),
+                          Container(
+                            height: suSetHeight(44.0),
+                            padding: EdgeInsets.only(left: suSetWidth(20.0)),
+                            child: OverflowBox(
+                              child: Row(
                                 children: <Widget>[
-                                  getPostNickname(context, post),
-                                  separator(context, height: 4.0),
-                                  getPostInfo(post),
+                                  Text(
+                                    "浏览${post.glances}次　",
+                                    style: Theme.of(context).textTheme.caption.copyWith(
+                                          fontSize: suSetSp(18.0),
+                                        ),
+                                  ),
+                                  Spacer(),
+                                  widget.isDetail
+                                      ? SizedBox(height: suSetWidth(16.0))
+                                      : postActions(context),
                                 ],
                               ),
                             ),
                           ),
-                          post.uid == UserAPI.currentUser.uid ? deleteButton : postActionButton,
-                        ],
-                      ),
-                    ),
-                    getPostContent(context, post),
-                    getPostImages(context, post),
-                    widget.isDetail ? SizedBox(height: suSetWidth(16.0)) : getPostActions(context),
-                  ]
-                : <Widget>[getPostBanned("shield")],
-          ),
-          elevation: 0,
-        ),
-      ),
-    );
+                        ]
+                      : <Widget>[getPostBanned("shield")],
+                ),
+                elevation: 0,
+              ),
+            ),
+          );
   }
 }

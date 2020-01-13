@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-class Screen {
+class Screens {
   static MediaQueryData mediaQuery = MediaQueryData.fromWindow(ui.window);
 
   static double get width => mediaQuery.size.width;
@@ -25,13 +25,11 @@ class Screen {
 
   static double get safeHeight => height - topSafeHeight - bottomSafeHeight;
 
-  static updateStatusBarStyle(SystemUiOverlayStyle style) {
+  static void updateStatusBarStyle(SystemUiOverlayStyle style) {
     SystemChrome.setSystemUIOverlayStyle(style);
   }
 
-  static double fixedFontSize(double fontSize) {
-    return fontSize / textScaleFactor;
-  }
+  static double fixedFontSize(double fontSize) => fontSize / textScaleFactor;
 }
 
 ///
@@ -46,4 +44,10 @@ double suSetWidth(double size, {double scale}) =>
 double suSetHeight(double size, {double scale}) =>
     _sizeCapable(ScreenUtil.getInstance().setHeight(size) * 2, scale: scale);
 
-double _sizeCapable(double size, {double scale}) => size * (scale ?? Configs.fontScale);
+double _sizeCapable(double size, {double scale}) =>
+    size *
+    (scale ??
+        Provider.of<SettingsProvider>(
+          currentContext,
+          listen: false,
+        ).fontScale);

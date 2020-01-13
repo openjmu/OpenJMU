@@ -16,7 +16,7 @@ class MyInfoPage extends StatefulWidget {
 
 class MyInfoPageState extends State<MyInfoPage> {
   List<List<Map<String, String>>> settingsSection() => [
-        if (Configs.debug)
+        if (Provider.of<SettingsProvider>(currentContext, listen: false).debug)
           [
             {
               "name": "背包",
@@ -51,7 +51,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             "icon": "exit",
           },
         ],
-        if (Configs.debug)
+        if (Provider.of<SettingsProvider>(currentContext, listen: false).debug)
           [
             {
               "name": "测试页",
@@ -265,7 +265,7 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   Widget get userInfo => Container(
         color: Theme.of(context).primaryColor,
-        padding: EdgeInsets.only(top: Screen.topSafeHeight),
+        padding: EdgeInsets.only(top: Screens.topSafeHeight),
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => UserPage.jump(UserAPI.currentUser.uid),
@@ -309,51 +309,54 @@ class MyInfoPageState extends State<MyInfoPage> {
         ),
       );
 
-  Widget get currentDay => GestureDetector(
-        onLongPress: () {
-          if (Configs.debug) {
-            showDialog(
-              context: context,
-              barrierDismissible: true,
-              builder: (_) => ManuallySetSidDialog(),
-            );
-          } else {
-            NetUtils.updateTicket();
-          }
-        },
-        child: Container(
-          color: Theme.of(context).primaryColor,
-          padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(36.0),
-            vertical: suSetHeight(20.0),
-          ),
-          child: Center(
-            child: Selector<DateProvider, int>(
-              selector: (_, provider) => provider.currentWeek,
-              builder: (_, currentWeek, __) {
-                return RichText(
-                  textAlign: TextAlign.center,
-                  text: TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(text: "${currentUser.name}，$hello~\n"),
-                      TextSpan(text: "今天是"),
-                      if (currentWeek != null) TextSpan(text: "第$currentWeek周，"),
-                      TextSpan(
-                        text: "${DateFormat("MMMdd日，", "zh_CN").format(now)}",
-                      ),
-                      TextSpan(
-                        text: "${DateFormat("EEEE", "zh_CN").format(now)}",
-                      ),
-                    ],
-                    style: Theme.of(context).textTheme.body1.copyWith(
-                          fontSize: suSetSp(24.0),
-                        ),
-                  ),
+  Widget get currentDay => Selector<SettingsProvider, bool>(
+        selector: (_, provider) => provider.debug,
+        builder: (_, debug, __) {
+          return GestureDetector(
+            onLongPress: () {
+              if (debug) {
+                showDialog(
+                  context: context,
+                  barrierDismissible: true,
+                  builder: (_) => ManuallySetSidDialog(),
                 );
-              },
+              } else {
+                NetUtils.updateTicket();
+              }
+            },
+            child: Container(
+              color: Theme.of(context).primaryColor,
+              padding: EdgeInsets.symmetric(
+                horizontal: suSetWidth(36.0),
+                vertical: suSetHeight(20.0),
+              ),
+              child: Center(
+                child: Selector<DateProvider, int>(
+                  selector: (_, provider) => provider.currentWeek,
+                  builder: (_, currentWeek, __) {
+                    return RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        children: <TextSpan>[
+                          TextSpan(text: "${currentUser.name}，$hello~\n"),
+                          if (currentWeek != null)
+                            if (currentWeek > 0)
+                              TextSpan(text: "今天是第$currentWeek")
+                            else
+                              TextSpan(text: "距开学还剩${currentWeek.abs()}"),
+                          TextSpan(text: "周，"),
+                          TextSpan(text: "${DateFormat("MMMdd日，", "zh_CN").format(now)}"),
+                          TextSpan(text: "${DateFormat("EEEE", "zh_CN").format(now)}"),
+                        ],
+                        style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(24.0)),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       );
 
   Widget settingSectionListView(context, int sectionIndex) {

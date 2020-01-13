@@ -74,7 +74,9 @@ class Course {
       location: json['couRoom'],
       className: json['className'],
       teacher: json['couTeaName'],
-      day: !isCustom ? json['couDayTime'] : json['courseDaytime'],
+      day: int.parse(
+        (!isCustom ? json['couDayTime'] : json['courseDaytime']).toString().substring(0, 1),
+      ),
       startWeek: !isCustom ? int.parse(weeks[0]) : null,
       endWeek: !isCustom ? int.parse(weeks[1]) : null,
       classesName: !isCustom ? json['comboClassName'].split(',') : null,

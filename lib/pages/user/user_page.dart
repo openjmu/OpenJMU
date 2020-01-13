@@ -614,7 +614,7 @@ class _UserPageState extends State<UserPage>
                       });
                     },
                   ),
-                  SizedBox(height: Screen.bottomSafeHeight),
+                  SizedBox(height: Screens.bottomSafeHeight),
                 ],
               );
             },

@@ -11,10 +11,11 @@ import 'package:openjmu/constants/constants.dart';
 export 'package:provider/provider.dart';
 export 'package:openjmu/providers/date_provider.dart';
 export 'package:openjmu/providers/messages_provider.dart';
-export 'package:openjmu/providers/web_apps_provider.dart';
+export 'package:openjmu/providers/notification_provider.dart';
+export 'package:openjmu/providers/settings_provider.dart';
 export 'package:openjmu/providers/team_post_provider.dart';
 export 'package:openjmu/providers/themes_provider.dart';
-export 'package:openjmu/providers/notification_provider.dart';
+export 'package:openjmu/providers/web_apps_provider.dart';
 
 ChangeNotifierProvider<T> buildProvider<T extends ChangeNotifier>(T value) {
   return ChangeNotifierProvider<T>.value(value: value);
@@ -26,6 +27,7 @@ final _providers = [
   buildProvider<DateProvider>(DateProvider()..initCurrentWeek()),
   buildProvider<MessagesProvider>(MessagesProvider()..initListener()),
   buildProvider<NotificationProvider>(NotificationProvider()),
+  buildProvider<SettingsProvider>(SettingsProvider()..init()),
   buildProvider<ThemesProvider>(ThemesProvider()..initTheme()),
   buildProvider<WebAppsProvider>(WebAppsProvider()),
 ];

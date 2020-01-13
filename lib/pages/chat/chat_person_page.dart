@@ -55,9 +55,9 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   }
 
   Widget get topBar => Container(
-        height: Screen.topSafeHeight + topBarHeight,
+        height: Screens.topSafeHeight + topBarHeight,
         padding: EdgeInsets.only(
-          top: Screen.topSafeHeight + suSetSp(4.0),
+          top: Screens.topSafeHeight + suSetSp(4.0),
           bottom: suSetSp(4.0),
         ),
         decoration: BoxDecoration(
@@ -223,7 +223,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
         top: 8.0,
         bottom: 8.0,
       ),
-      width: Screen.width,
+      width: Screens.width,
       child: Align(
         alignment: message.isSelf ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(

@@ -64,8 +64,10 @@ class MessagesProvider with ChangeNotifier {
       content = jsonDecode(content)['content'];
     } catch (e) {}
     if (content.trim().replaceAll("\n", "").replaceAll("\r", "").isNotEmpty && content != null) {
-      final provider = Provider.of<WebAppsProvider>(currentContext);
-      final app = provider.apps.where((app) => app.id == message.appId).elementAt(0);
+      final provider = Provider.of<WebAppsProvider>(currentContext, listen: false);
+      debugPrint(provider.allApps.toString());
+      debugPrint(message.toString());
+      final app = provider.allApps.where((app) => app.id == message.appId).elementAt(0);
 
       if (!_appsMessages.containsKey(message.appId)) {
         _appsMessages[message.appId] = <AppMessage>[];

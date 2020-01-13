@@ -85,11 +85,11 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   Future<bool> doubleBackExit() {
     int now = DateTime.now().millisecondsSinceEpoch;
     if (now - last > 800) {
-      showShortToast("再按一次退出应用");
+      showToast("再按一次退出应用");
       last = DateTime.now().millisecondsSinceEpoch;
       return Future.value(false);
     } else {
-      cancelToast();
+      dismissAllToast();
       return Future.value(true);
     }
   }
@@ -99,7 +99,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         top: 0.0,
         child: Image.asset(
           "images/login_top.png",
-          width: Screen.width - suSetWidth(60.0),
+          width: Screens.width - suSetWidth(60.0),
           fit: BoxFit.fitWidth,
         ),
       );
@@ -112,7 +112,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
           child: Image.asset(
             "images/login_bottom.png",
             color: Colors.grey.withAlpha(50),
-            width: Screen.width - suSetWidth(150.0),
+            width: Screens.width - suSetWidth(150.0),
             fit: BoxFit.fitWidth,
           ),
         ),
@@ -443,7 +443,16 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      if (Configs.announcementsEnabled) AnnouncementWidget(context, radius: 6.0),
+                      Selector<SettingsProvider, bool>(
+                        selector: (_, provider) => provider.announcementsEnabled,
+                        builder: (_, announcementEnabled, __) {
+                          if (announcementEnabled) {
+                            return AnnouncementWidget(context, radius: 6.0);
+                          } else {
+                            return SizedBox.shrink();
+                          }
+                        },
+                      ),
                       usernameTextField,
                       emptyDivider(height: suSetHeight(10.0)),
                       passwordTextField,

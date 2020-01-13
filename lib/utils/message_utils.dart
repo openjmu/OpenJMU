@@ -228,7 +228,7 @@ class MessageUtils {
           const Duration(seconds: 30),
           sendKeepAlive,
         );
-        Future.delayed(const Duration(seconds: 2), sendGetOfflineMessage);
+        Future.delayed(5.seconds, sendGetOfflineMessage);
         break;
       case 0x1f:
         decodeMessage(decodeMessageEvent(packet.content));

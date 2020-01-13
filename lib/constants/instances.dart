@@ -3,6 +3,7 @@ import 'package:event_bus/event_bus.dart';
 
 NavigatorState get navigatorState => Instances.navigatorKey.currentState;
 BuildContext get currentContext => navigatorState.context;
+Brightness get currentBrightness => Theme.of(currentContext).brightness;
 Color get currentThemeColor => Theme.of(currentContext).accentColor;
 
 class Instances {

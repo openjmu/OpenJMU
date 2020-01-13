@@ -24,7 +24,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
               break;
             case OtaStatus.INSTALLING:
               dismissAllToast();
-              showShortToast("下载完成");
+              showToast("下载完成");
               break;
             default:
               dismissAllToast();
@@ -34,7 +34,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
       );
     } catch (e) {
       dismissAllToast();
-      showShortToast("更新失败: $e");
+      showToast("更新失败: $e");
       debugPrint('Failed to make OTA update. Details: $e');
     }
     super.initState();

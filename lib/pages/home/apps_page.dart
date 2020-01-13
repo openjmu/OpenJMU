@@ -6,7 +6,7 @@ import 'package:openjmu/pages/main_page.dart';
 import 'package:openjmu/pages/home/app_center_page.dart';
 import 'package:openjmu/pages/home/course_schedule_page.dart';
 import 'package:openjmu/pages/home/score_page.dart';
-import 'package:openjmu/widgets/in_app_browser.dart';
+import 'package:openjmu/widgets/in_app_webview.dart';
 
 class AppsPage extends StatefulWidget {
   @override
@@ -24,7 +24,6 @@ class AppsPageState extends State<AppsPage>
   AppsPageState _appCenterPageState;
   TabController _tabController;
   int listTotalSize = 0;
-  bool enableNewIcon = Configs.newAppCenterIcon;
 
   @override
   bool get wantKeepAlive => true;
@@ -34,7 +33,10 @@ class AppsPageState extends State<AppsPage>
     _appCenterPageState = this;
 
     _tabController = TabController(
-      initialIndex: Configs.homeStartUpIndex[1],
+      initialIndex: Provider.of<SettingsProvider>(
+        currentContext,
+        listen: false,
+      ).homeStartUpIndex[1],
       length: tabs().length,
       vsync: this,
     );
@@ -62,10 +64,6 @@ class AppsPageState extends State<AppsPage>
             ).updateApps();
             break;
         }
-        if (mounted) setState(() {});
-      })
-      ..on<AppCenterSettingsUpdateEvent>().listen((event) {
-        enableNewIcon = Configs.newAppCenterIcon;
         if (mounted) setState(() {});
       });
 
@@ -141,6 +139,7 @@ class AppsPageState extends State<AppsPage>
       body: Column(
         children: <Widget>[
           FixedAppBar(
+            automaticallyImplyLeading: false,
             title: Padding(
               padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
               child: Row(

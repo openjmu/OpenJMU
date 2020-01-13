@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class HiveBoxes {
+  static Box<dynamic> settingsBox;
   static Box<Map> appMessagesBox;
   static Box<DateTime> startWeekBox;
 //  static Box<Map> personalMessagesBox;
@@ -15,12 +16,14 @@ class HiveBoxes {
     Hive.registerAdapter(AppMessageAdapter());
 //    Hive.registerAdapter(MessageAdapter());
 
+    settingsBox = await Hive.openBox<dynamic>('openjmu_app_settings');
     appMessagesBox = await Hive.openBox<Map>('openjmu_app_messages');
     startWeekBox = await Hive.openBox<DateTime>('openjmu_start_week');
 //    personalMessagesBox = await Hive.openBox<Map>('openjmu_personal_messages');
   }
 
   static Future clearBoxes() async {
+    await settingsBox?.clear();
     await appMessagesBox?.clear();
     await startWeekBox?.clear();
 //    await personalMessagesBox?.clear();

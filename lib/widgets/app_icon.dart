@@ -40,22 +40,27 @@ class AppIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return !currentUser.isTeacher || Configs.newAppCenterIcon
-        ? FutureBuilder(
-            initialData: SizedBox(),
-            future: loadAsset(),
-            builder: (_, snapshot) => SizedBox(
-              width: suSetWidth(size),
-              height: suSetHeight(size),
-              child: Center(child: snapshot.data),
-            ),
-          )
-        : SizedBox(
-            width: suSetWidth(size / 1.2),
-            height: suSetHeight(size / 1.2),
-            child: Center(
-              child: ExtendedImage.network(oldIconUrl, fit: BoxFit.fill),
-            ),
-          );
+    return Selector<SettingsProvider, bool>(
+      selector: (_, provider) => provider.newAppCenterIcon,
+      builder: (_, newAppCenterIcon, __) {
+        return !currentUser.isTeacher || newAppCenterIcon
+            ? FutureBuilder(
+                initialData: SizedBox(),
+                future: loadAsset(),
+                builder: (_, snapshot) => SizedBox(
+                  width: suSetWidth(size),
+                  height: suSetHeight(size),
+                  child: Center(child: snapshot.data),
+                ),
+              )
+            : SizedBox(
+                width: suSetWidth(size / 1.2),
+                height: suSetHeight(size / 1.2),
+                child: Center(
+                  child: ExtendedImage.network(oldIconUrl, fit: BoxFit.fill),
+                ),
+              );
+      },
+    );
   }
 }

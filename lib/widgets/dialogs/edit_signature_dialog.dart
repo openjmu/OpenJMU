@@ -73,7 +73,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                 color: Theme.of(context).canvasColor,
                 borderRadius: BorderRadius.circular(suSetWidth(16.0)),
               ),
-              width: Screen.width - suSetWidth(100),
+              width: Screens.width - suSetWidth(100),
               padding: EdgeInsets.only(top: suSetHeight(20.0)),
               child: Column(
                 mainAxisSize: MainAxisSize.min,

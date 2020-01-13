@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -23,21 +22,6 @@ class DataUtils {
   static final String spUserUnitId = "userUnitId";
   static final String spUserWorkId = "userWorkId";
 //  static final String spUserClassId = "userClassId";
-
-  static final String spBrightnessDark = "theme_brightness";
-  static final String spAMOLEDDark = "theme_AMOLEDDark";
-  static final String spColorThemeIndex = "theme_colorThemeIndex";
-  static final String spBrightnessPlatform = "theme_brightness_platform";
-  static final String spHomeSplashIndex = "home_splash_index";
-  static final String spHomeStartUpIndex = "home_startup_index";
-
-  static final String spSettingFontScale = "setting_font_scale";
-  static final String spSettingNewIcons = "setting_new_icons";
-
-  static SharedPreferences sp;
-  static Future initSharedPreferences() async {
-    sp = await SharedPreferences.getInstance();
-  }
 
   static Future<bool> login(String username, String password) async {
     final String blowfish = Uuid().v4();
@@ -62,14 +46,14 @@ class DataUtils {
         'isCY': checkCY(user['workid']),
         'unitId': loginData['unitid'],
         'workId': user['workid'],
-//                'userClassId': user['class_id'],
+//        'classId': user['cclass_id'],
         'gender': int.parse(user['gender'].toString()),
       };
-      bool isWizard = true;
-      if (!userInfo["isTeacher"]) isWizard = await checkWizard();
+//      bool isWizard = true;
+//      if (!userInfo["isTeacher"]) isWizard = await checkWizard();
       await saveLoginInfo(userInfo);
       UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
-      showShortToast("登录成功！");
+      showToast("登录成功！");
       Provider.of<MessagesProvider>(
         currentContext,
         listen: false,
@@ -78,9 +62,7 @@ class DataUtils {
     } catch (e) {
       debugPrint(e.toString());
       if (e.response != null)
-        showLongToast(
-          "登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}",
-        );
+        showToast("登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}");
       return false;
     }
   }
@@ -91,12 +73,11 @@ class DataUtils {
     Future.delayed(const Duration(milliseconds: 300), () {
       resetTheme();
       clearLoginInfo();
-      clearSettings();
       Provider.of<MessagesProvider>(
         currentContext,
         listen: false,
       ).logout();
-      showShortToast("退出登录成功");
+      showToast("退出登录成功");
     });
   }
 
@@ -123,13 +104,8 @@ class DataUtils {
   }
 
   static String recoverWorkId() {
-    String workId;
-    try {
-      workId = sp?.getString(spUserWorkId);
-    } catch (e) {
-      workId = sp?.getInt(spUserWorkId).toString();
-    }
-    return workId;
+    final _box = HiveBoxes.settingsBox;
+    return _box.get(spUserWorkId);
   }
 
   static Future recoverLoginInfo() async {
@@ -141,10 +117,13 @@ class DataUtils {
 
   static Future reFetchTicket() async {
     try {
-      await getTicket();
+      final result = await getTicket();
+      if (!result) throw Error.safeToString("Re-fetch ticket failed.");
       bool isWizard = true;
 //      if (!UserAPI.currentUser.isTeacher) isWizard = await checkWizard();
-      UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
+      if (currentUser.sid != null) {
+        UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
+      }
       Instances.eventBus.fire(TicketGotEvent(isWizard));
     } catch (e) {
       debugPrint("Error in recover login info: $e");
@@ -161,8 +140,8 @@ class DataUtils {
       ),
     )
         .then((response) {
-      Map<String, dynamic> data = response.data;
-      Map<String, dynamic> userInfo = {
+      final data = response.data;
+      final userInfo = <String, dynamic>{
         'sid': UserAPI.currentUser.sid,
         'uid': UserAPI.currentUser.uid,
         'username': data['username'],
@@ -173,89 +152,67 @@ class DataUtils {
         'isCY': checkCY(data['workid']),
         'unitId': data['unitid'],
         'workId': data['workid'],
-//        'userClassId': user['class_id'],
+//        'classId': user['class_id'],
         'gender': int.parse(data['gender'].toString()),
       };
       setUserInfo(userInfo);
     }).catchError((e) {
-      print("Get user info error: ${e.request.cookies}");
+      debugPrint("Get user info error: ${e.request.cookies}");
     });
   }
 
   static void setUserInfo(Map<String, dynamic> data) {
     UserAPI.currentUser = UserInfo.fromJson(data);
     if (!data['isTeacher']) {
-      setEnabledNewAppsIcon(true);
+      SettingUtils.setEnabledNewAppsIcon(true);
       Instances.eventBus.fire(AppCenterSettingsUpdateEvent());
     }
   }
 
   static Future<Null> saveLoginInfo(Map<String, dynamic> data) async {
     if (data != null) {
+      final _box = HiveBoxes.settingsBox;
       setUserInfo(data);
-      await sp?.setBool(spIsLogin, true);
-      await sp?.setBool(spIsTeacher, data['isTeacher']);
-      await sp?.setBool(spIsCY, data['isCY']);
-      await sp?.setString(spUserSid, data['sid']);
-      await sp?.setString(spTicket, data['ticket']);
-      await sp?.setString(spBlowfish, data['blowfish']);
-      await sp?.setString(spUserName, data['name']);
-      await sp?.setInt(spUserUid, data['uid']);
-      await sp?.setInt(spUserUnitId, data['unitId']);
-      await sp?.setString(spUserWorkId, data['workId']);
-//            await sp?.setInt(spUserClassId, data['userClassId']);
+      await _box.put(spIsLogin, true);
+      await _box.put(spIsTeacher, data['isTeacher']);
+      await _box.put(spIsCY, data['isCY']);
+      await _box.put(spUserSid, data['sid']);
+      await _box.put(spTicket, data['ticket']);
+      await _box.put(spBlowfish, data['blowfish']);
+      await _box.put(spUserName, data['name']);
+      await _box.put(spUserUid, data['uid']);
+      await _box.put(spUserUnitId, data['unitId']);
+      await _box.put(spUserWorkId, data['workId']);
+//      await _box.put(spUserClassId, data['classId']);
     }
   }
 
   /// 清除登录信息
   static Future clearLoginInfo() async {
+    final _box = HiveBoxes.settingsBox;
+    final _userWorkId = _box.get(spUserWorkId);
     UserAPI.currentUser = UserInfo();
-    await sp?.remove(spIsLogin);
-    await sp?.remove(spIsTeacher);
-    await sp?.remove(spIsCY);
-    await sp?.remove(spUserSid);
-    await sp?.remove(spTicket);
-    await sp?.remove(spBlowfish);
-    await sp?.remove(spUserName);
-    await sp?.remove(spUserUid);
-    await sp?.remove(spUserUnitId);
-//        await sp?.remove(spUserClassId);
-  }
-
-  /// 清除设置信息
-  static Future clearSettings() async {
-    CourseAPI.coursesColor.clear();
-    Configs.reset();
-    await sp?.remove(spBrightnessDark);
-    await sp?.remove(spBrightnessPlatform);
-    await sp?.remove(spAMOLEDDark);
-    await sp?.remove(spColorThemeIndex);
-    await sp?.remove(spHomeSplashIndex);
-    await sp?.remove(spHomeStartUpIndex);
-    await sp?.remove(spSettingFontScale);
-    await sp?.remove(spSettingNewIcons);
+    await _box.clear();
+    await _box.put(spUserWorkId, _userWorkId);
   }
 
   static Map getSpTicket() {
-    Map<String, String> tickets = {
-      'ticket': sp?.getString(spTicket),
-      'blowfish': sp?.getString(spBlowfish),
+    final _box = HiveBoxes.settingsBox;
+    final tickets = <String, String>{
+      'ticket': _box.get(spTicket),
+      'blowfish': _box.get(spBlowfish),
     };
     return tickets;
   }
 
   static Future<bool> getTicket({bool update = false}) async {
     try {
-      Map<String, dynamic> params = Constants.loginParams(
+      final params = Constants.loginParams(
         ticket: update ? UserAPI.lastTicket : UserAPI.currentUser.sid,
         blowfish: UserAPI.currentUser.blowfish,
       );
       NetUtils.tokenCookieJar.deleteAll();
-      Map<String, dynamic> response = (await NetUtils.tokenDio.post(
-        API.loginTicket,
-        data: params,
-      ))
-          .data;
+      final response = (await NetUtils.tokenDio.post(API.loginTicket, data: params)).data;
       await updateSid(response);
       await getUserInfo();
       return true;
@@ -270,112 +227,30 @@ class DataUtils {
   }
 
   static Future updateSid(response, {bool update = false}) async {
-    await sp?.setString(spUserSid, response['sid']);
+    final _box = HiveBoxes.settingsBox;
+    await _box.put(spUserSid, response['sid']);
     UserAPI.currentUser.sid = response['sid'];
     UserAPI.currentUser.ticket = response['sid'];
-    UserAPI.currentUser.uid = sp?.getInt(spUserUid);
+    UserAPI.currentUser.uid = _box.get(spUserUid);
   }
 
   // 是否登录
   static bool isLogin() {
-    return sp?.getBool(spIsLogin) ?? false;
+    final _box = HiveBoxes.settingsBox;
+    return _box.get(spIsLogin) ?? false;
   }
 
   // 重置主题配置
   static Future resetTheme() async {
-    await setColorTheme(0);
-    await setAMOLEDDark(false);
-    await setBrightnessDark(false);
-    await setBrightnessPlatform(false);
+    await SettingUtils.setColorTheme(0);
+    await SettingUtils.setAMOLEDDark(false);
+    await SettingUtils.setBrightnessDark(false);
+    await SettingUtils.setBrightnessPlatform(false);
     Provider.of<ThemesProvider>(currentContext, listen: false).resetTheme();
   }
 
-  // 获取设置的主题色
-  static int getColorThemeIndex() {
-    return sp?.getInt(spColorThemeIndex) ?? 0;
-  }
-
-  // 获取设置的夜间模式
-  static bool getBrightnessDark() {
-    return sp?.getBool(spBrightnessDark) ?? false;
-  }
-
-  // 获取设置的AMOLED夜间模式
-  static bool getAMOLEDDark() {
-    return sp?.getBool(spAMOLEDDark) ?? false;
-  }
-
-  // 获取设置的跟随系统夜间模式
-  static bool getBrightnessPlatform() {
-    return sp?.getBool(spBrightnessPlatform) ?? false;
-  }
-
-  // 设置选择的主题色
-  static Future setColorTheme(int colorThemeIndex) async {
-    await sp?.setInt(spColorThemeIndex, colorThemeIndex);
-  }
-
-  // 设置选择的夜间模式
-  static Future setBrightnessDark(bool isDark) async {
-    await sp?.setBool(spBrightnessDark, isDark);
-  }
-
-  // 设置AMOLED夜间模式
-  static Future setAMOLEDDark(bool isAMOLEDDark) async {
-    await sp?.setBool(spAMOLEDDark, isAMOLEDDark);
-  }
-
-  // 设置跟随系统的夜间模式
-  static Future setBrightnessPlatform(bool isFollowPlatform) async {
-    await sp?.setBool(spBrightnessPlatform, isFollowPlatform);
-  }
-
-  // 获取默认启动页index
-  static int getHomeSplashIndex() {
-    int index = sp?.getInt(spHomeSplashIndex) ?? Configs.homeSplashIndex;
-    return index;
-  }
-
-  // 获取默认各页启动index
-  static List getHomeStartUpIndex() {
-    List index = jsonDecode(sp?.getString(spHomeStartUpIndex) ?? "${Configs.homeStartUpIndex}");
-    return index;
-  }
-
-  // 获取字体缩放设置
-  static double getFontScale() {
-    double scale = sp?.getDouble(spSettingFontScale) ?? Configs.fontScale;
-    return scale;
-  }
-
-  // 获取新图标是否开启
-  static bool getEnabledNewAppsIcon() {
-    bool enabled = sp?.getBool(spSettingNewIcons) ?? Configs.newAppCenterIcon;
-    return enabled;
-  }
-
-  static Future<Null> setHomeSplashIndex(int index) async {
-    Configs.homeSplashIndex = index;
-    await sp?.setInt(spHomeSplashIndex, index);
-  }
-
-  static Future<Null> setHomeStartUpIndex(List indexList) async {
-    Configs.homeStartUpIndex = indexList;
-    await sp?.setString(spHomeStartUpIndex, jsonEncode(indexList));
-  }
-
-  static Future<Null> setFontScale(double scale) async {
-    Configs.fontScale = scale;
-    await sp?.setDouble(spSettingFontScale, scale);
-  }
-
-  static Future<Null> setEnabledNewAppsIcon(bool enable) async {
-    Configs.newAppCenterIcon = enable;
-    await sp?.setBool(spSettingNewIcons, enable);
-  }
-
   static Map<String, dynamic> buildPostHeaders(sid) {
-    Map<String, String> headers = {
+    final headers = <String, String>{
       "CLOUDID": "jmu",
       "CLOUD-ID": "jmu",
       "UAP-SID": sid,

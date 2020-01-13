@@ -46,6 +46,7 @@ class NetUtils {
     dio.interceptors.add(cookieManager);
     dio.interceptors.add(InterceptorsWrapper(
       onError: (DioError e) async {
+        debugPrint("DioError with request: ${e.request.uri}");
         debugPrint("DioError: ${e.message}");
         if (e?.response?.statusCode == 401) {
           updateTicket();

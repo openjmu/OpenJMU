@@ -15,14 +15,25 @@ class FontScalePage extends StatefulWidget {
 
 class _FontScalePageState extends State<FontScalePage> {
   final baseFontSize = 24.0;
-  final List<double> scaleRange = Configs.fontScaleRange;
-  double scale = Configs.fontScale;
+  SettingsProvider settingsProvider;
+
+  List<double> scaleRange;
+  double scale;
+
+  @override
+  void initState() {
+    settingsProvider = Provider.of<SettingsProvider>(currentContext, listen: false);
+    scaleRange = settingsProvider.fontScaleRange;
+    scale = settingsProvider.fontScale;
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await DataUtils.setFontScale(scale);
+        await SettingUtils.setFontScale(scale);
         return true;
       },
       child: Scaffold(
@@ -31,9 +42,7 @@ class _FontScalePageState extends State<FontScalePage> {
             FixedAppBar(
               title: Text(
                 "调节字体大小",
-                style: Theme.of(context).textTheme.title.copyWith(
-                      fontSize: suSetSp(23.0),
-                    ),
+                style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
               ),
               elevation: 0.0,
             ),
@@ -42,22 +51,17 @@ class _FontScalePageState extends State<FontScalePage> {
                 child: Text(
                   "这是一行示例文字\nThis is a sample sentence",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: suSetSp(baseFontSize, scale: scale),
-                  ),
+                  style: TextStyle(fontSize: suSetSp(baseFontSize, scale: scale)),
                 ),
               ),
             ),
             Container(
-              padding: EdgeInsets.only(bottom: Screen.bottomSafeHeight),
+              padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                      vertical: 8.0,
-                      horizontal: 20.0,
-                    ),
+                    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
                     child: Row(
                       children: <Widget>[
                         Expanded(
@@ -66,10 +70,7 @@ class _FontScalePageState extends State<FontScalePage> {
                             child: Text(
                               "小",
                               style: TextStyle(
-                                fontSize: suSetSp(
-                                  baseFontSize,
-                                  scale: scaleRange[0],
-                                ),
+                                fontSize: suSetSp(baseFontSize, scale: scaleRange[0]),
                               ),
                             ),
                           ),
@@ -93,10 +94,7 @@ class _FontScalePageState extends State<FontScalePage> {
                             child: Text(
                               "大",
                               style: TextStyle(
-                                fontSize: suSetSp(
-                                  baseFontSize,
-                                  scale: scaleRange[1],
-                                ),
+                                fontSize: suSetSp(baseFontSize, scale: scaleRange[1]),
                               ),
                             ),
                           ),

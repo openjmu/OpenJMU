@@ -8,7 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:openjmu/constants/constants.dart';
 
 export 'package:dartx/dartx.dart';
-export 'package:oktoast/oktoast.dart';
+export 'package:oktoast/oktoast.dart' hide showToast;
 
 export 'package:openjmu/api/api.dart';
 export 'package:openjmu/constants/configs.dart';

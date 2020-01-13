@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -124,14 +123,7 @@ class SplashState extends State<SplashPage> {
     if (mounted) setState(() {});
   }
 
-  Future getAnnouncement() async {
-    Map<String, dynamic> data = jsonDecode((await NetUtils.get(API.announcement)).data);
-    Configs.announcementsEnabled = data['enabled'];
-    Configs.announcements = data['announcements'];
-  }
-
   Future navigate({bool forceToLogin = false}) async {
-    await getAnnouncement();
     Future.delayed(const Duration(seconds: 2), () {
       if (!isUserLogin || forceToLogin) {
         try {
@@ -254,7 +246,7 @@ class SplashState extends State<SplashPage> {
                   showLoading && isOnline != null ? 20.0 : 0.0,
                 ),
               ),
-              width: Screen.width,
+              width: Screens.width,
               height: suSetHeight(
                 showLoading && isOnline != null ? 80.0 : 0.0,
               ),

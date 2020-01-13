@@ -188,7 +188,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
         preferredSize: Size.fromHeight(suSetHeight(kAppBarHeight)),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
-          height: Screen.topSafeHeight + suSetHeight(kAppBarHeight),
+          height: Screens.topSafeHeight + suSetHeight(kAppBarHeight),
           child: SafeArea(
             child: Row(
               children: <Widget>[

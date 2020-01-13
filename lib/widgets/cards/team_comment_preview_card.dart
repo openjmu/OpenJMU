@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:intl/intl.dart';
-import 'package:oktoast/oktoast.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/user/user_page.dart';

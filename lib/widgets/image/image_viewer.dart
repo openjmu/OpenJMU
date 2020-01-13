@@ -85,11 +85,11 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
       if (imageId == null) return;
       path = await ImageDownloader.findPath(imageId);
     } on PlatformException catch (error) {
-      showCenterShortToast(error.message);
+      showCenterToast(error.message);
       return;
     }
     if (!mounted) return;
-    showCenterShortToast("图片保存至：$path");
+    showCenterToast("图片保存至：$path");
     return;
   }
 
@@ -198,7 +198,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                   Navigator.of(context).pop();
                 },
               ),
-              SizedBox(height: Screen.bottomSafeHeight),
+              SizedBox(height: Screens.bottomSafeHeight),
             ],
           ),
         );
@@ -277,7 +277,7 @@ class ImageList extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(
         top: suSetHeight(10.0),
-        bottom: Screen.bottomSafeHeight + suSetHeight(10.0),
+        bottom: Screens.bottomSafeHeight + suSetHeight(10.0),
       ),
       child: StreamBuilder<int>(
         initialData: index,
@@ -347,7 +347,7 @@ class ViewAppBar extends StatelessWidget {
     return Material(
       color: Colors.grey[850].withOpacity(0.3),
       child: Padding(
-        padding: EdgeInsets.only(top: Screen.topSafeHeight),
+        padding: EdgeInsets.only(top: Screens.topSafeHeight),
         child: Row(
           children: <Widget>[
             BackButton(color: Colors.white),
