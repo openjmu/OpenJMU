@@ -1,13 +1,13 @@
+///
+/// [Author] Alex (https://github.com/AlexVincent525)
+/// [Date] 2020-01-13 16:52
+///
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
-///
-/// [Author] Alex (https://github.com/AlexVincent525)
-/// [Date] 2020-01-13 16:52
-///
 class SettingsProvider extends ChangeNotifier {
   /// For test page.
   /// TODO: Set this to false before release.
