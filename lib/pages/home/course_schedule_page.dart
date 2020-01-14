@@ -1015,15 +1015,29 @@ class CoursesDialog extends StatelessWidget {
                             size: suSetWidth(32.0),
                           ),
                           onPressed: () {
-                            CourseAPI.setCustomCourse({
-                              "content": Uri.encodeComponent(""),
-                              "couDayTime": courseList[0].day,
-                              "coudeTime": courseList[0].time,
-                            }).then((response) {
-                              if (jsonDecode(response.data)['isOk']) {
-                                navigatorState.popUntil(ModalRoute.withName('openjmu://home'));
+                            Future.wait(<Future>[
+                              CourseAPI.setCustomCourse({
+                                "content": Uri.encodeComponent(""),
+                                "couDayTime": courseList[0].day,
+                                "coudeTime": courseList[0].time,
+                              }),
+                              CourseAPI.setCustomCourse({
+                                "content": Uri.encodeComponent(""),
+                                "couDayTime": "${courseList[0].day}${courseList[0].day + 1}",
+                                "coudeTime": courseList[0].time,
+                              })
+                            ]).then((responses) {
+                              bool isOk = true;
+                              for (final response in responses) {
+                                if (!jsonDecode(response.data)['isOk']) {
+                                  isOk = false;
+                                  break;
+                                }
                               }
-                              Instances.eventBus.fire(CourseScheduleRefreshEvent());
+                              if (isOk) {
+                                navigatorState.popUntil(ModalRoute.withName('openjmu://home'));
+                                Instances.eventBus.fire(CourseScheduleRefreshEvent());
+                              }
                             });
                             courseList.removeAt(0);
                           },

@@ -51,6 +51,63 @@ class AppMessageAdapter extends TypeAdapter<AppMessage> {
   }
 }
 
+class CourseAdapter extends TypeAdapter<Course> {
+  @override
+  final typeId = 2;
+
+  @override
+  Course read(BinaryReader reader) {
+    var numOfFields = reader.readByte();
+    var fields = <int, dynamic>{
+      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Course(
+      isCustom: fields[0] as bool,
+      name: fields[1] as String,
+      time: fields[2] as String,
+      location: fields[3] as String,
+      className: fields[4] as String,
+      teacher: fields[5] as String,
+      day: fields[6] as int,
+      startWeek: fields[7] as int,
+      endWeek: fields[8] as int,
+      classesName: (fields[10] as List)?.cast<String>(),
+      isEleven: fields[11] as bool,
+      oddEven: fields[9] as int,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Course obj) {
+    writer
+      ..writeByte(12)
+      ..writeByte(0)
+      ..write(obj.isCustom)
+      ..writeByte(1)
+      ..write(obj.name)
+      ..writeByte(2)
+      ..write(obj.time)
+      ..writeByte(3)
+      ..write(obj.location)
+      ..writeByte(4)
+      ..write(obj.className)
+      ..writeByte(5)
+      ..write(obj.teacher)
+      ..writeByte(6)
+      ..write(obj.day)
+      ..writeByte(7)
+      ..write(obj.startWeek)
+      ..writeByte(8)
+      ..write(obj.endWeek)
+      ..writeByte(9)
+      ..write(obj.oddEven)
+      ..writeByte(10)
+      ..write(obj.classesName)
+      ..writeByte(11)
+      ..write(obj.isEleven);
+  }
+}
+
 class MessageAdapter extends TypeAdapter<Message> {
   @override
   final typeId = 1;

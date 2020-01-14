@@ -50,12 +50,10 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
   Widget _header(context, int index, TeamReplyItem item) {
     return Container(
       height: suSetHeight(80.0),
-      padding: EdgeInsets.symmetric(
-        vertical: suSetHeight(8.0),
-      ),
+      padding: EdgeInsets.symmetric(vertical: suSetHeight(8.0)),
       child: Row(
         children: <Widget>[
-          UserAPI.getAvatar(uid: item.fromUserId),
+          UserAPI.getAvatar(size: 54.0, uid: item.fromUserId),
           SizedBox(width: suSetWidth(16.0)),
           Expanded(
             child: Column(
@@ -67,7 +65,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                     Text(
                       item.fromUsername ?? item.fromUserId.toString(),
                       style: TextStyle(
-                        fontSize: suSetSp(19.0),
+                        fontSize: suSetSp(22.0),
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -82,18 +80,12 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                         ),
                       ),
                     Spacer(),
-                    _postTime(
-                      context,
-                      item.post?.postTime ?? item.comment?.postTime,
-                    ),
+                    _postTime(context, item.post?.postTime ?? item.comment?.postTime),
                   ],
                 ),
                 Text(
                   replyList[index].scope['name'],
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: suSetSp(15.0),
-                  ),
+                  style: TextStyle(color: Colors.blue, fontSize: suSetSp(17.0)),
                 ),
               ],
             ),
@@ -117,7 +109,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
     return Text(
       "$time",
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(16.0),
+            fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
           ),
     );
@@ -129,9 +121,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
         ),
         child: ExtendedText(
           item.post?.content ?? item.comment?.content ?? "",
-          style: TextStyle(
-            fontSize: suSetSp(18.0),
-          ),
+          style: TextStyle(fontSize: suSetSp(21.0)),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
           overFlowTextSpan: OverFlowTextSpan(
@@ -139,10 +129,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
               TextSpan(text: " ... "),
               TextSpan(
                 text: "全文",
-                style: TextStyle(
-                  color: currentThemeColor,
-                  fontSize: suSetSp(18.0),
-                ),
+                style: TextStyle(color: currentThemeColor, fontSize: suSetSp(18.0)),
               ),
             ],
           ),
@@ -152,9 +139,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
 
   Widget _rootContent(TeamReplyItem item) => Container(
         width: double.maxFinite,
-        margin: EdgeInsets.symmetric(
-          vertical: suSetHeight(6.0),
-        ),
+        margin: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
         padding: EdgeInsets.all(suSetWidth(8.0)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(suSetWidth(10.0)),
@@ -162,9 +147,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
         ),
         child: ExtendedText(
           item.toPost.content,
-          style: TextStyle(
-            fontSize: suSetSp(18.0),
-          ),
+          style: TextStyle(fontSize: suSetSp(20.0)),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -172,6 +155,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
             prefixSpans: <InlineSpan>[
               TextSpan(
                 text: item.type == TeamReplyType.post ? "回复我的帖子：" : "评论我的回帖：",
+                style: TextStyle(color: Theme.of(context).iconTheme.color.withOpacity(0.5)),
               ),
             ],
           ),
@@ -212,10 +196,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                           onTap: () {
                             navigatorState.pushNamed(
                               "openjmu://team-post-detail",
-                              arguments: {
-                                "provider": provider,
-                                "type": TeamPostType.comment,
-                              },
+                              arguments: {"provider": provider, "type": TeamPostType.comment},
                             );
                           },
                           child: Container(
@@ -249,10 +230,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
               : Center(
                   child: Text(
                     "暂无内容",
-                    style: TextStyle(
-                      color: currentThemeColor,
-                      fontSize: suSetSp(24.0),
-                    ),
+                    style: TextStyle(color: currentThemeColor, fontSize: suSetSp(24.0)),
                   ),
                 )
           : Center(child: PlatformProgressIndicator()),

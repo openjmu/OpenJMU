@@ -12,16 +12,19 @@ class UserAvatar extends StatelessWidget {
   final double size;
   final int uid;
   final int timestamp;
+  final bool canJump;
 
   const UserAvatar({
     Key key,
-    @required this.uid,
+    this.uid,
     this.size = 48.0,
     this.timestamp,
+    this.canJump = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final _uid = uid ?? UserAPI.currentUser.uid;
     return SizedBox(
       width: suSetWidth(size),
       child: GestureDetector(
@@ -30,18 +33,23 @@ class UserAvatar extends StatelessWidget {
           child: FadeInImage(
             fadeInDuration: const Duration(milliseconds: 100),
             placeholder: AssetImage("assets/avatar_placeholder.png"),
-            image: UserAPI.getAvatarProvider(
-              uid: uid ?? UserAPI.currentUser.uid,
-            ),
+            image: UserAPI.getAvatarProvider(uid: _uid),
           ),
         ),
-        onTap: () {
-          final settings = ModalRoute.of(context).settings as FFRouteSettings;
-          if (settings.name != "openjmu://user" ||
-              settings.arguments.toString() != {"uid": uid ?? UserAPI.currentUser.uid}.toString()) {
-            UserPage.jump(uid);
-          }
-        },
+        onTap: canJump
+            ? () {
+                final _routeSettings = ModalRoute.of(context).settings;
+                if (_routeSettings is FFRouteSettings) {
+                  final settings = ModalRoute.of(context).settings as FFRouteSettings;
+                  if (settings.name != "openjmu://user" ||
+                      settings.arguments.toString() != {"uid": _uid}.toString()) {
+                    UserPage.jump(_uid);
+                  }
+                } else {
+                  UserPage.jump(_uid);
+                }
+              }
+            : null,
       ),
     );
   }

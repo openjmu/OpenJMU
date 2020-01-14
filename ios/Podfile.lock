@@ -28,6 +28,8 @@ PODS:
     - Flutter
   - image_picker (0.0.1):
     - Flutter
+  - launch_review (0.0.1):
+    - Flutter
   - multi_image_picker (4.6.0):
     - BSImagePicker (~> 2.10.3)
     - Flutter
@@ -48,15 +50,11 @@ PODS:
     - Flutter
   - shared_preferences_web (0.0.1):
     - Flutter
-  - store_redirect (0.0.1):
-    - Flutter
   - url_launcher (0.0.1):
     - Flutter
   - url_launcher_macos (0.0.1):
     - Flutter
   - url_launcher_web (0.0.1):
-    - Flutter
-  - webview_flutter (0.0.1):
     - Flutter
 
 DEPENDENCIES:
@@ -72,6 +70,7 @@ DEPENDENCIES:
   - image_editor (from `.symlinks/plugins/image_editor/ios`)
   - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
+  - launch_review (from `.symlinks/plugins/launch_review/ios`)
   - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
   - ota_update (from `.symlinks/plugins/ota_update/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
@@ -81,11 +80,9 @@ DEPENDENCIES:
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
   - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
-  - store_redirect (from `.symlinks/plugins/store_redirect/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - url_launcher_macos (from `.symlinks/plugins/url_launcher_macos/ios`)
   - url_launcher_web (from `.symlinks/plugins/url_launcher_web/ios`)
-  - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -119,6 +116,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_gallery_saver/ios"
   image_picker:
     :path: ".symlinks/plugins/image_picker/ios"
+  launch_review:
+    :path: ".symlinks/plugins/launch_review/ios"
   multi_image_picker:
     :path: ".symlinks/plugins/multi_image_picker/ios"
   ota_update:
@@ -137,16 +136,12 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_macos/ios"
   shared_preferences_web:
     :path: ".symlinks/plugins/shared_preferences_web/ios"
-  store_redirect:
-    :path: ".symlinks/plugins/store_redirect/ios"
   url_launcher:
     :path: ".symlinks/plugins/url_launcher/ios"
   url_launcher_macos:
     :path: ".symlinks/plugins/url_launcher_macos/ios"
   url_launcher_web:
     :path: ".symlinks/plugins/url_launcher_web/ios"
-  webview_flutter:
-    :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
   BSGridCollectionViewLayout: 333dcb457a5a3bdd9212607ab5756553dcfe06cb
@@ -164,6 +159,7 @@ SPEC CHECKSUMS:
   image_editor: d0181032f68c58c9de3c9b8c17291b9a51c9dbb5
   image_gallery_saver: 73b3cd8ad9c950c739878af9c311744d1bf5405d
   image_picker: e3eacd46b94694dde7cf2705955cece853aa1a8f
+  launch_review: 75d5a956ba8eaa493e9c9d4bf4c05e505e8d5ed0
   multi_image_picker: 20b39637c5728e44c69d7b3742bb555cd09a9970
   ota_update: 025311773f7e5d8a36cf0d4fc1d1694f7bc75958
   package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
@@ -174,11 +170,9 @@ SPEC CHECKSUMS:
   shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
-  store_redirect: 2977747cf81689a39bd62c248c2deacb7a0d131e
   url_launcher: a1c0cc845906122c4784c542523d8cacbded5626
   url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
   url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
-  webview_flutter: db3aba222b23e4dc432e0c5882834123dc50ff9f
 
 PODFILE CHECKSUM: e45c292f618eeca3034958d33b444b6e1249b55f
 

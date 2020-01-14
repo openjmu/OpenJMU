@@ -5,6 +5,7 @@ NavigatorState get navigatorState => Instances.navigatorKey.currentState;
 BuildContext get currentContext => navigatorState.context;
 Brightness get currentBrightness => Theme.of(currentContext).brightness;
 Color get currentThemeColor => Theme.of(currentContext).accentColor;
+bool get currentIsDark => currentBrightness == Brightness.dark;
 
 class Instances {
   static final EventBus eventBus = EventBus();

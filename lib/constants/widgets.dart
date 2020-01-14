@@ -202,13 +202,9 @@ class ScaledImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<ThemesProvider>(currentContext, listen: false);
-    final isDark = provider.platformBrightness
-        ? Screens.mediaQuery.platformBrightness ?? Brightness.light == Brightness.dark
-        : provider.dark;
     final ratio = image.height / image.width;
-    final color = isDark ? Colors.black.withAlpha(50) : null;
-    final colorBlendMode = isDark ? BlendMode.darken : BlendMode.srcIn;
+    final color = currentIsDark ? Colors.black.withAlpha(50) : null;
+    final colorBlendMode = currentIsDark ? BlendMode.darken : BlendMode.srcIn;
 
     Widget imageWidget;
     if (length == 1) {

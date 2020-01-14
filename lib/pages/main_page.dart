@@ -33,7 +33,7 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
-  static final List<String> pagesTitle = ['首页', '应用', '消息', '我的'];
+  static final List<String> pagesTitle = ['首页', '应用', '消息'];
   static final List<String> pagesIcon = ["home", "apps", "message", "mine"];
   static const double bottomBarHeight = 74.0;
 
@@ -201,6 +201,21 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 iconPath: pagesIcon[i],
                 text: pagesTitle[i],
               ),
+            FABBottomAppBarItem(
+              child: Center(
+                child: AnimatedContainer(
+                  duration: 200.milliseconds,
+                  padding: EdgeInsets.all(suSetWidth(3)),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: _tabIndex == 3
+                        ? Border.all(color: currentThemeColor, width: suSetWidth(3.0))
+                        : null,
+                  ),
+                  child: UserAvatar(size: 40.0, canJump: false),
+                ),
+              ),
+            ),
           ],
         ),
       ),

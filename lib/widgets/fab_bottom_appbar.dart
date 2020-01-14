@@ -8,9 +8,18 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/home/add_button_page.dart';
 
 class FABBottomAppBarItem {
-  FABBottomAppBarItem({this.iconPath, this.text});
   String iconPath;
   String text;
+  Widget child;
+
+  FABBottomAppBarItem({
+    this.iconPath,
+    this.text,
+    this.child,
+  }) : assert(
+          iconPath == null && child != null || iconPath != null && child == null,
+          "cannot set icon and child at the same time.",
+        );
 }
 
 class FABBottomAppBar extends StatefulWidget {
@@ -105,7 +114,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
                     size: suSetWidth(34.0),
                   ),
                   onPressed: () {
-                    Navigator.of(context).push(TransparentRoute(
+                    navigatorState.push(TransparentRoute(
                       builder: (context) => AddingButtonPage(),
                     ));
                   },
@@ -133,38 +142,40 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
             SizedBox(
               height: suSetHeight(widget.height),
               child: Center(
-                child: AnimatedCrossFade(
-                  duration: kTabScrollDuration,
-                  crossFadeState: _selectedIndex == index
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-                  firstChild: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SvgPicture.asset(
-                        "assets/icons/bottomNavigation/"
-                        "${item.iconPath}-fill.svg",
-                        color: widget.selectedColor,
-                        width: suSetWidth(widget.iconSize),
-                        height: suSetHeight(widget.iconSize),
-                      ),
-                    ],
-                  ),
-                  secondChild: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SvgPicture.asset(
-                        "assets/icons/bottomNavigation/"
-                        "${item.iconPath}-line.svg",
-                        color: widget.color,
-                        width: suSetWidth(widget.iconSize),
-                        height: suSetHeight(widget.iconSize),
-                      ),
-                    ],
-                  ),
-                ),
+                child: item.child == null
+                    ? AnimatedCrossFade(
+                        duration: 200.milliseconds,
+                        crossFadeState: _selectedIndex == index
+                            ? CrossFadeState.showFirst
+                            : CrossFadeState.showSecond,
+                        firstChild: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SvgPicture.asset(
+                              "assets/icons/bottomNavigation/"
+                              "${item.iconPath}-fill.svg",
+                              color: widget.selectedColor,
+                              width: suSetWidth(widget.iconSize),
+                              height: suSetHeight(widget.iconSize),
+                            ),
+                          ],
+                        ),
+                        secondChild: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            SvgPicture.asset(
+                              "assets/icons/bottomNavigation/"
+                              "${item.iconPath}-line.svg",
+                              color: widget.color,
+                              width: suSetWidth(widget.iconSize),
+                              height: suSetHeight(widget.iconSize),
+                            ),
+                          ],
+                        ),
+                      )
+                    : item.child,
               ),
             ),
             if (index == 0)

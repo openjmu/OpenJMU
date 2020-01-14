@@ -25,16 +25,30 @@ class PraiseCard extends StatelessWidget {
   );
   final Color subIconColor = Colors.grey;
 
-  Text getPraiseNickname(context, praise) => Text(
-        praise.nickname ?? praise.uid,
-        style: TextStyle(
-          color: Theme.of(context).textTheme.title.color,
-          fontSize: suSetSp(22.0),
-        ),
-        textAlign: TextAlign.left,
+  Widget getPraiseNickname(context, Praise praise) => Row(
+        children: <Widget>[
+          Text(
+            praise.nickname ?? praise.uid,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.title.color,
+              fontSize: suSetSp(22.0),
+            ),
+            textAlign: TextAlign.left,
+          ),
+          if (Constants.developerList.contains(praise.uid))
+            Container(
+              margin: EdgeInsets.only(left: suSetWidth(14.0)),
+              child: DeveloperTag(
+                padding: EdgeInsets.symmetric(
+                  horizontal: suSetWidth(8.0),
+                  vertical: suSetHeight(4.0),
+                ),
+              ),
+            ),
+        ],
       );
 
-  Row getPraiseInfo(praise) {
+  Row getPraiseInfo(Praise praise) {
     String _praiseTime = praise.praiseTime;
     DateTime now = DateTime.now();
     if (int.parse(_praiseTime.substring(0, 4)) == now.year) {
@@ -56,7 +70,7 @@ class PraiseCard extends StatelessWidget {
     );
   }
 
-  Widget getPraiseContent(context, praise) {
+  Widget getPraiseContent(context, Praise praise) {
     return Row(
       children: <Widget>[
         Expanded(
@@ -81,7 +95,7 @@ class PraiseCard extends StatelessWidget {
     );
   }
 
-  Widget getRootContent(context, praise) {
+  Widget getRootContent(context, Praise praise) {
     Post _post = Post.fromJson(praise.post);
     String topic = "<M ${_post.uid}>@${_post.nickname}<\/M>: ";
     topic += _post.content;

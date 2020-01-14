@@ -11,7 +11,6 @@ export 'package:dartx/dartx.dart';
 export 'package:oktoast/oktoast.dart' hide showToast;
 
 export 'package:openjmu/api/api.dart';
-export 'package:openjmu/constants/configs.dart';
 export 'package:openjmu/constants/instances.dart';
 export 'package:openjmu/constants/messages.dart';
 export 'package:openjmu/constants/screens.dart';
@@ -101,32 +100,12 @@ class Constants {
       ];
 
   static Iterable<Locale> get supportedLocales => [
-        const Locale.fromSubtags(
-          languageCode: 'zh',
-        ),
-        const Locale.fromSubtags(
-          languageCode: 'zh',
-          scriptCode: 'Hans',
-        ),
-        const Locale.fromSubtags(
-          languageCode: 'zh',
-          scriptCode: 'Hant',
-        ),
-        const Locale.fromSubtags(
-          languageCode: 'zh',
-          scriptCode: 'Hans',
-          countryCode: 'CN',
-        ),
-        const Locale.fromSubtags(
-          languageCode: 'zh',
-          scriptCode: 'Hant',
-          countryCode: 'TW',
-        ),
-        const Locale.fromSubtags(
-          languageCode: 'zh',
-          scriptCode: 'Hant',
-          countryCode: 'HK',
-        ),
+        const Locale.fromSubtags(languageCode: 'zh'),
+        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
+        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
+        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'TW'),
+        const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant', countryCode: 'HK'),
         const Locale('en'),
       ];
 }

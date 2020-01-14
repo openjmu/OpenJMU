@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/login_page.dart';
+import 'package:openjmu/pages/main_page.dart';
 
 @FFRoute(
   name: "openjmu://splash",
@@ -28,33 +29,37 @@ class SplashPage extends StatefulWidget {
 }
 
 class SplashState extends State<SplashPage> {
+  bool firstFramed = false;
   bool isOnline;
+  bool isInLoginProcess = false;
   bool isUserLogin = false;
   bool showLoading = false;
-  bool isInLoginProcess = false;
   Timer _forceToLoginTimer;
+  Timer _showLoginIndicatorTimer;
 
   @override
   void initState() {
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      OTAUtils.checkUpdate(fromHome: true);
-
-      Future.delayed(const Duration(seconds: 5), () {
-        if (mounted) {
-          setState(() {
-            showLoading = true;
-          });
-        }
+      setState(() {
+        firstFramed = true;
       });
 
+      OTAUtils.checkUpdate(fromHome: true);
       Provider.of<DateProvider>(
         currentContext,
         listen: false,
       ).getCurrentWeek();
 
-      _forceToLoginTimer = Timer(const Duration(seconds: 30), () {
+      _forceToLoginTimer = Timer(30.seconds, () {
         if (!isUserLogin) {
           navigate(forceToLogin: true);
+        }
+      });
+      _showLoginIndicatorTimer = Timer(5.seconds, () {
+        if (mounted) {
+          setState(() {
+            showLoading = true;
+          });
         }
       });
     });
@@ -92,6 +97,7 @@ class SplashState extends State<SplashPage> {
   @override
   void dispose() {
     _forceToLoginTimer?.cancel();
+    _showLoginIndicatorTimer?.cancel();
     super.dispose();
   }
 
@@ -124,33 +130,24 @@ class SplashState extends State<SplashPage> {
   }
 
   Future navigate({bool forceToLogin = false}) async {
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!isUserLogin || forceToLogin) {
-        try {
-          navigatorState.pushAndRemoveUntil(
-              PageRouteBuilder(
-                transitionDuration: const Duration(milliseconds: 1000),
-                pageBuilder: (_, animation, __) => FadeTransition(
-                  opacity: animation,
-                  child: LoginPage(initAction: widget.initAction),
-                ),
-              ),
-              (Route<dynamic> route) => false);
-        } catch (e) {
-          debugPrint("$e");
-        }
-      } else {
-        try {
-          navigatorState.pushNamedAndRemoveUntil(
-            "openjmu://home",
-            (Route<dynamic> route) => false,
-            arguments: {"initAction": widget.initAction},
-          );
-        } catch (e) {
-          debugPrint("$e");
-        }
-      }
-    });
+    _forceToLoginTimer?.cancel();
+    _showLoginIndicatorTimer?.cancel();
+    try {
+      navigatorState.pushAndRemoveUntil(
+        PageRouteBuilder(
+          transitionDuration: !isUserLogin || forceToLogin ? 1.seconds : 500.milliseconds,
+          pageBuilder: (_, animation, __) => FadeTransition(
+            opacity: animation,
+            child: !isUserLogin || forceToLogin
+                ? LoginPage(initAction: widget.initAction)
+                : MainPage(initAction: widget.initAction),
+          ),
+        ),
+        (_) => false,
+      );
+    } catch (e) {
+      debugPrint("$e");
+    }
   }
 
   Widget get logo => Container(
@@ -161,6 +158,7 @@ class SplashState extends State<SplashPage> {
             "images/splash_page_logo.svg",
             width: suSetWidth(150.0),
             height: suSetHeight(150.0),
+            color: currentIsDark ? currentThemeColor : Colors.white,
           ),
         ),
       );
@@ -188,10 +186,7 @@ class SplashState extends State<SplashPage> {
             child: Center(
               child: Text(
                 "正在登录",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: suSetSp(24.0),
-                ),
+                style: TextStyle(color: Colors.white, fontSize: suSetSp(24.0)),
               ),
             ),
           ),
@@ -206,11 +201,7 @@ class SplashState extends State<SplashPage> {
                 bottom: suSetHeight(10.0),
               ),
               child: Center(
-                child: Icon(
-                  Icons.warning,
-                  color: Colors.white,
-                  size: suSetWidth(36.0),
-                ),
+                child: Icon(Icons.warning, color: Colors.white, size: suSetWidth(36.0)),
               ),
             ),
           ),
@@ -219,10 +210,7 @@ class SplashState extends State<SplashPage> {
             child: Center(
               child: Text(
                 "请检查联网状态",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: suSetSp(24.0),
-                ),
+                style: TextStyle(color: Colors.white, fontSize: suSetSp(24.0)),
               ),
             ),
           ),
@@ -233,36 +221,35 @@ class SplashState extends State<SplashPage> {
   Widget build(BuildContext context) {
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.light,
-      child: Scaffold(
-        backgroundColor: currentThemeColor,
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            logo,
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              margin: EdgeInsets.only(
-                top: suSetHeight(
-                  showLoading && isOnline != null ? 20.0 : 0.0,
+      child: AnimatedOpacity(
+        duration: 1.seconds,
+        opacity: firstFramed ? 1.0 : 0.0,
+        child: Scaffold(
+          backgroundColor:
+              currentIsDark ? Theme.of(context).scaffoldBackgroundColor : currentThemeColor,
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              logo,
+              AnimatedContainer(
+                duration: 200.milliseconds,
+                margin: EdgeInsets.only(
+                  top: suSetHeight(showLoading && isOnline != null ? 20.0 : 0.0),
                 ),
-              ),
-              width: Screens.width,
-              height: suSetHeight(
-                showLoading && isOnline != null ? 80.0 : 0.0,
-              ),
-              child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: SizedBox(
-                  height: suSetHeight(
-                    showLoading && isOnline != null ? 80.0 : 0.0,
+                width: Screens.width,
+                height: suSetHeight(showLoading && isOnline != null ? 80.0 : 0.0),
+                child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  child: SizedBox(
+                    height: suSetHeight(showLoading && isOnline != null ? 80.0 : 0.0),
+                    child: showLoading && isOnline != null
+                        ? isOnline ? loginWidget : warningWidget
+                        : SizedBox.shrink(),
                   ),
-                  child: showLoading && isOnline != null
-                      ? isOnline ? loginWidget : warningWidget
-                      : SizedBox.shrink(),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

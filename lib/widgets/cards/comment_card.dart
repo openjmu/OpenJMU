@@ -29,18 +29,32 @@ class CommentCard extends StatelessWidget {
   );
   final Color subIconColor = Colors.grey;
 
-  Widget getCommentNickname(context, comment) {
-    return Text(
-      comment.fromUserName ?? comment.fromUid,
-      style: TextStyle(
-        color: Theme.of(context).textTheme.title.color,
-        fontSize: suSetSp(22.0),
-      ),
-      textAlign: TextAlign.left,
+  Widget getCommentNickname(context, Comment comment) {
+    return Row(
+      children: <Widget>[
+        Text(
+          comment.fromUserName ?? comment.fromUserUid,
+          style: TextStyle(
+            color: Theme.of(context).textTheme.title.color,
+            fontSize: suSetSp(22.0),
+          ),
+          textAlign: TextAlign.left,
+        ),
+        if (Constants.developerList.contains(comment.fromUserUid))
+          Container(
+            margin: EdgeInsets.only(left: suSetWidth(14.0)),
+            child: DeveloperTag(
+              padding: EdgeInsets.symmetric(
+                horizontal: suSetWidth(8.0),
+                vertical: suSetHeight(4.0),
+              ),
+            ),
+          ),
+      ],
     );
   }
 
-  Widget getCommentInfo(comment) {
+  Widget getCommentInfo(Comment comment) {
     String _commentTime = comment.commentTime;
     DateTime now = DateTime.now();
     if (int.parse(_commentTime.substring(0, 4)) == now.year) {
@@ -97,7 +111,7 @@ class CommentCard extends StatelessWidget {
     );
   }
 
-  Widget getRootContent(context, comment) {
+  Widget getRootContent(context, Comment comment) {
     var content = comment.toReplyContent ?? comment.toTopicContent;
     if (content != null && content.length > 0) {
       String topic;
@@ -187,10 +201,7 @@ class CommentCard extends StatelessWidget {
                         comment.post.uid == UserAPI.currentUser.uid) {
                       showPlatformDialog(
                         context: context,
-                        builder: (_) => DeleteDialog(
-                          "评论",
-                          comment: comment,
-                        ),
+                        builder: (_) => DeleteDialog("评论", comment: comment),
                       );
                     }
                   },
@@ -207,10 +218,7 @@ class CommentCard extends StatelessWidget {
                       ),
                       Text(
                         "删除评论",
-                        style: TextStyle(
-                          fontSize: suSetSp(20.0),
-                          color: Colors.white,
-                        ),
+                        style: TextStyle(fontSize: suSetSp(20.0), color: Colors.white),
                       ),
                     ],
                   ),
@@ -221,10 +229,7 @@ class CommentCard extends StatelessWidget {
                   Navigator.pop(context);
                   navigatorState.pushNamed(
                     "openjmu://add-comment",
-                    arguments: {
-                      "post": comment.post,
-                      "comment": comment,
-                    },
+                    arguments: {"post": comment.post, "comment": comment},
                   );
                 },
                 child: Column(
@@ -232,18 +237,11 @@ class CommentCard extends StatelessWidget {
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.all(suSetWidth(6.0)),
-                      child: Icon(
-                        Icons.reply,
-                        size: suSetWidth(36.0),
-                        color: Colors.white,
-                      ),
+                      child: Icon(Icons.reply, size: suSetWidth(36.0), color: Colors.white),
                     ),
                     Text(
                       "回复评论",
-                      style: TextStyle(
-                        fontSize: suSetSp(20.0),
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(fontSize: suSetSp(20.0), color: Colors.white),
                     ),
                   ],
                 ),
@@ -262,18 +260,11 @@ class CommentCard extends StatelessWidget {
                   children: <Widget>[
                     Padding(
                       padding: EdgeInsets.all(suSetWidth(6.0)),
-                      child: Icon(
-                        Icons.pageview,
-                        size: suSetWidth(36.0),
-                        color: Colors.white,
-                      ),
+                      child: Icon(Icons.pageview, size: suSetWidth(36.0), color: Colors.white),
                     ),
                     Text(
                       "查看动态",
-                      style: TextStyle(
-                        fontSize: suSetSp(20.0),
-                        color: Colors.white,
-                      ),
+                      style: TextStyle(fontSize: suSetSp(20.0), color: Colors.white),
                     ),
                   ],
                 ),
@@ -292,10 +283,7 @@ class CommentCard extends StatelessWidget {
           Center(
             child: Text(
               "该动态已被屏蔽或删除",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: suSetSp(22.0),
-              ),
+              style: TextStyle(color: Colors.white, fontSize: suSetSp(22.0)),
             ),
           )
         ],

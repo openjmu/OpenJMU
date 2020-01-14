@@ -7,12 +7,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:launch_review/launch_review.dart';
 import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/updating_dialog.dart';
-import 'package:store_redirect/store_redirect.dart';
 
 class OTAUtils {
   static Future<String> getCurrentVersion() async {
@@ -63,7 +63,7 @@ class OTAUtils {
 
   static void _tryUpdate() async {
     if (Platform.isIOS) {
-      StoreRedirect.redirect(iOSAppId: "1459832676");
+      LaunchReview.launch(iOSAppId: "1459832676");
     } else {
       final permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
       if (permission != PermissionStatus.granted) {

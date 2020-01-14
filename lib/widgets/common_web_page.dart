@@ -173,50 +173,51 @@ class CommonWebPageState extends State<CommonWebPage> {
         resizeToAvoidBottomInset: true,
         appBar: !(widget.withAppBar ?? false)
             ? PreferredSize(
-                preferredSize: Size.fromHeight(suSetHeight(kAppBarHeight + 10.0)),
+                preferredSize: Size.fromHeight(suSetHeight(kAppBarHeight)),
                 child: Container(
-                  height: Screens.topSafeHeight + suSetHeight(kAppBarHeight + 10.0),
+                  height: Screens.topSafeHeight + suSetHeight(kAppBarHeight),
                   child: SafeArea(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            IconButton(
-                              padding: EdgeInsets.zero,
-                              icon: Icon(Icons.close),
-                              onPressed: Navigator.of(context).pop,
-                            ),
-                            Expanded(
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onLongPress: _launchURL,
-                                onDoubleTap: () {
-                                  Clipboard.setData(ClipboardData(text: _url));
-                                  showToast("已复制网址到剪贴板");
-                                },
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    if (widget.app != null) AppIcon(app: widget.app, size: 60.0),
-                                    Flexible(
-                                      child: Text(
-                                        _title,
-                                        style: TextStyle(
-                                          color: Theme.of(context).textTheme.title.color,
-                                          fontSize: suSetSp(22.0),
+                        Expanded(
+                          child: Row(
+                            children: <Widget>[
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                icon: Icon(Icons.close),
+                                onPressed: Navigator.of(context).pop,
+                              ),
+                              Expanded(
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.opaque,
+                                  onLongPress: _launchURL,
+                                  onDoubleTap: () {
+                                    Clipboard.setData(ClipboardData(text: _url));
+                                    showToast("已复制网址到剪贴板");
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      if (widget.app != null) AppIcon(app: widget.app, size: 60.0),
+                                      Flexible(
+                                        child: Text(
+                                          _title,
+                                          style: TextStyle(
+                                            color: Theme.of(context).textTheme.title.color,
+                                            fontSize: suSetSp(22.0),
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.fade,
                                         ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.fade,
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            isLoading ? refreshIndicator() : SizedBox(width: 56.0),
-                          ],
+                              isLoading ? refreshIndicator() : SizedBox(width: 56.0),
+                            ],
+                          ),
                         ),
                         progressBar,
                       ],

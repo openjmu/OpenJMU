@@ -13,11 +13,31 @@ part of 'beans.dart';
 /// [isEleven] 是否第十一节,
 /// [oddEven] 是否为单双周, 0为普通, 1为单周, 2为双周
 ///
+@HiveType(typeId: HiveAdapterTypeIds.course)
 class Course {
+  @HiveField(0)
   bool isCustom;
-  String name, time, location, className, teacher;
-  int day, startWeek, endWeek, oddEven;
+  @HiveField(1)
+  String name;
+  @HiveField(2)
+  String time;
+  @HiveField(3)
+  String location;
+  @HiveField(4)
+  String className;
+  @HiveField(5)
+  String teacher;
+  @HiveField(6)
+  int day;
+  @HiveField(7)
+  int startWeek;
+  @HiveField(8)
+  int endWeek;
+  @HiveField(9)
+  int oddEven;
+  @HiveField(10)
   List<String> classesName;
+  @HiveField(11)
   bool isEleven;
   Color color;
 

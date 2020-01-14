@@ -16,7 +16,7 @@ public class SecureFlagPlugin implements FlutterPlugin,
     private static final String channelName = "cn.edu.jmu.openjmu/setFlagSecure";
     private Activity activity;
 
-    public SecureFlagPlugin(Activity activity) {
+    private SecureFlagPlugin(Activity activity) {
         this.activity = activity;
     }
 
