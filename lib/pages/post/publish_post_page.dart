@@ -670,11 +670,9 @@ class PublishPostPageState extends State<PublishPostPage> {
         _dialogController.changeState(
           "success",
           "动态发布成功",
-          duration: const Duration(seconds: 3),
+          duration: 3.seconds,
           customPop: () {
-            navigatorState.popUntil(
-              ModalRoute.withName("openjmu://home"),
-            );
+            navigatorState.popUntil((_) => _.isFirst);
           },
         );
       } else {

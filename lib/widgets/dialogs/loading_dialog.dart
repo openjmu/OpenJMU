@@ -79,18 +79,22 @@ class LoadingDialogState extends State<LoadingDialog> {
     if (!(widget.isGlobal ?? false)) {
       if (this.type != null && this.type != "loading") {
         Future.delayed(duration, () {
+          try {
+            if (customPop != null) {
+              customPop();
+            } else {
+              Navigator.pop(context);
+            }
+          } catch (e) {}
+        });
+      } else if (this.type == "dismiss") {
+        try {
           if (customPop != null) {
             customPop();
           } else {
             Navigator.pop(context);
           }
-        });
-      } else if (this.type == "dismiss") {
-        if (customPop != null) {
-          customPop();
-        } else {
-          Navigator.pop(context);
-        }
+        } catch (e) {}
       }
     }
     Widget child = Center(

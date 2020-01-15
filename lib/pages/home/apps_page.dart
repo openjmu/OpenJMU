@@ -9,6 +9,8 @@ import 'package:openjmu/pages/home/score_page.dart';
 import 'package:openjmu/widgets/in_app_webview.dart';
 
 class AppsPage extends StatefulWidget {
+  const AppsPage({@required Key key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => AppsPageState();
 }
@@ -16,12 +18,10 @@ class AppsPage extends StatefulWidget {
 class AppsPageState extends State<AppsPage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   static List<String> tabs() => ["课程表", if (!(UserAPI.currentUser?.isTeacher ?? false)) "成绩", "应用"];
-  final coursePageKey = GlobalKey<CourseSchedulePageState>();
   final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
   final _scrollController = ScrollController();
 
-  AppsPageState _appCenterPageState;
   TabController _tabController;
   int listTotalSize = 0;
 
@@ -30,8 +30,6 @@ class AppsPageState extends State<AppsPage>
 
   @override
   void initState() {
-    _appCenterPageState = this;
-
     _tabController = TabController(
       initialIndex: Provider.of<SettingsProvider>(
         currentContext,
@@ -87,12 +85,13 @@ class AppsPageState extends State<AppsPage>
       case "课程表":
         tab = Tab(
           child: GestureDetector(
-            onTap: (coursePageKey.currentState != null && coursePageKey.currentState.hasCourse)
+            onTap: (Instances.courseSchedulePageStateKey.currentState != null &&
+                    Instances.courseSchedulePageStateKey.currentState.hasCourse)
                 ? () {
                     if (_tabController.index != 0) {
                       _tabController.animateTo(0);
                     } else {
-                      coursePageKey.currentState.showWeekWidget();
+                      Instances.courseSchedulePageStateKey.currentState.showWeekWidget();
                     }
                   }
                 : null,
@@ -100,9 +99,9 @@ class AppsPageState extends State<AppsPage>
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(name),
-                if (coursePageKey.currentState != null &&
-                    coursePageKey.currentState.firstLoaded &&
-                    coursePageKey.currentState.hasCourse)
+                if (Instances.courseSchedulePageStateKey.currentState != null &&
+                    Instances.courseSchedulePageStateKey.currentState.firstLoaded &&
+                    Instances.courseSchedulePageStateKey.currentState.hasCourse)
                   AnimatedCrossFade(
                     firstChild: Icon(
                       Icons.keyboard_arrow_down,
@@ -112,10 +111,10 @@ class AppsPageState extends State<AppsPage>
                       Icons.keyboard_arrow_up,
                       size: suSetWidth(28.0),
                     ),
-                    crossFadeState: coursePageKey.currentState.showWeek
+                    crossFadeState: Instances.courseSchedulePageStateKey.currentState.showWeek
                         ? CrossFadeState.showSecond
                         : CrossFadeState.showFirst,
-                    duration: coursePageKey.currentState.showWeekDuration,
+                    duration: Instances.courseSchedulePageStateKey.currentState.showWeekDuration,
                   ),
               ],
             ),
@@ -128,7 +127,6 @@ class AppsPageState extends State<AppsPage>
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
-    _appCenterPageState = this;
     _tabController = TabController(
       initialIndex: _tabController.index,
       length: tabs().length,
@@ -206,10 +204,7 @@ class AppsPageState extends State<AppsPage>
                                 withAction: false,
                                 keepAlive: true,
                               )
-                            : CourseSchedulePage(
-                                key: coursePageKey,
-                                appCenterPageState: _appCenterPageState,
-                              )
+                            : CourseSchedulePage(key: Instances.courseSchedulePageStateKey)
                         : SizedBox(),
                     if (tabs().contains("成绩")) ScorePage(),
                     AppCenterPage(

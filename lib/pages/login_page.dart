@@ -325,6 +325,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               size: Size.square(suSetWidth(42.0)),
               child: RoundedCheckbox(
                 value: _agreement,
+                activeColor: defaultColor,
                 inactiveColor: Theme.of(context).iconTheme.color,
                 onChanged: !_login
                     ? (value) {
@@ -341,9 +342,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               child: Text.rich(
                 TextSpan(
                   children: <TextSpan>[
-                    TextSpan(
-                      text: "登录即代表您同意",
-                    ),
+                    TextSpan(text: "登录即代表您同意"),
                     TextSpan(
                       text: "《用户协议》",
                       style: TextStyle(
@@ -357,10 +356,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                             ),
                     ),
                   ],
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: suSetSp(18.0),
-                  ),
+                  style: TextStyle(color: Colors.black, fontSize: suSetSp(18.0)),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.fade,
@@ -382,31 +378,23 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
           width: suSetWidth(100.0),
           height: suSetHeight(50.0),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(suSetWidth(6.0)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                blurRadius: suSetWidth(10.0),
-                color: !_loginDisabled ? colorGradient[1].withAlpha(100) : Colors.grey[400],
-                offset: Offset(0.0, suSetHeight(10.0)),
-              ),
-            ],
-            gradient: !_loginDisabled
-                ? LinearGradient(colors: colorGradient)
-                : LinearGradient(colors: [Colors.grey, Colors.grey]),
-          ),
+              borderRadius: BorderRadius.circular(suSetWidth(6.0)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  blurRadius: suSetWidth(10.0),
+                  color: !_loginDisabled ? colorGradient[1].withAlpha(100) : Colors.grey[400],
+                  offset: Offset(0.0, suSetHeight(10.0)),
+                ),
+              ],
+              gradient: LinearGradient(
+                colors: !_loginDisabled ? colorGradient : [Colors.grey, Colors.grey],
+              )),
           child: Center(
             child: !_login
-                ? Icon(
-                    Icons.arrow_forward,
-                    size: suSetWidth(36.0),
-                    color: Colors.white,
-                  )
+                ? Icon(Icons.arrow_forward, size: suSetWidth(36.0), color: Colors.white)
                 : SizedBox.fromSize(
                     size: Size.square(suSetWidth(32.0)),
-                    child: PlatformProgressIndicator(
-                      strokeWidth: 3.0,
-                      color: Colors.white,
-                    ),
+                    child: PlatformProgressIndicator(strokeWidth: 3.0, color: Colors.white),
                   ),
           ),
         ),
@@ -459,10 +447,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                       emptyDivider(height: suSetHeight(10.0)),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          findWorkId,
-                          forgetPasswordButton,
-                        ],
+                        children: <Widget>[findWorkId, forgetPasswordButton],
                       ),
                     ],
                   ),
@@ -471,10 +456,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                   padding: EdgeInsets.only(top: suSetHeight(20.0)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      userAgreementCheckbox,
-                      loginButton,
-                    ],
+                    children: <Widget>[userAgreementCheckbox, loginButton],
                   ),
                 ),
                 emptyDivider(height: suSetHeight(30.0)),

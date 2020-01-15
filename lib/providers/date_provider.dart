@@ -26,6 +26,8 @@ class DateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool get isOutOfTerm => _currentWeek < 1 || _currentWeek > 20;
+
   int _difference;
   int get difference => _difference;
   set difference(int value) {

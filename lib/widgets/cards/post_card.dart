@@ -569,9 +569,7 @@ class _PostCardState extends State<PostCard> {
                   padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
                   child: Text(
                     text,
-                    style: Theme.of(context).textTheme.body1.copyWith(
-                          fontSize: suSetSp(22.0),
-                        ),
+                    style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
                   ),
                 ),
               ),
@@ -678,38 +676,36 @@ class _PostCardState extends State<PostCard> {
     showDialog(
       context: context,
       builder: (context) => PlatformAlertDialog(
-        title: Text(
-          "举报动态",
-          style: TextStyle(fontSize: suSetSp(26.0)),
-        ),
+        title: Text("举报动态", style: TextStyle(fontSize: suSetSp(26.0))),
         content: Text(
           "确定举报该条动态吗？",
           style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
         ),
         actions: <Widget>[
-          PlatformButton(
-            android: (BuildContext context) => MaterialRaisedButtonData(
-              color: Theme.of(context).dialogBackgroundColor,
-              elevation: 0,
-              disabledElevation: 0.0,
-              highlightElevation: 0.0,
-              child: Text(
-                "确认",
-                style: TextStyle(color: currentThemeColor),
+          Consumer<ReportRecordsProvider>(
+            builder: (_, provider, __) => PlatformButton(
+              android: (BuildContext context) => MaterialRaisedButtonData(
+                color: Theme.of(context).dialogBackgroundColor,
+                elevation: 0,
+                disabledElevation: 0.0,
+                highlightElevation: 0.0,
+                child: Text("确认", style: TextStyle(color: currentThemeColor)),
               ),
-            ),
-            ios: (BuildContext context) => CupertinoButtonData(
-              child: Text(
-                "确认",
-                style: TextStyle(color: currentThemeColor),
+              ios: (BuildContext context) => CupertinoButtonData(
+                child: Text("确认", style: TextStyle(color: currentThemeColor)),
               ),
+              onPressed: () async {
+                final canReport = await provider.addRecord(widget.post.id);
+                if (canReport) {
+                  PostAPI.reportPost(widget.post);
+                  showToast("举报成功");
+                  Navigator.pop(context);
+                  navigatorState.pop();
+                } else {
+                  Navigator.pop(context);
+                }
+              },
             ),
-            onPressed: () {
-              PostAPI.reportPost(widget.post);
-              showToast("举报成功");
-              Navigator.pop(context);
-              navigatorState.pop();
-            },
           ),
           PlatformButton(
             android: (BuildContext context) => MaterialRaisedButtonData(

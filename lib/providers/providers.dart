@@ -9,9 +9,11 @@ import 'package:provider/single_child_widget.dart';
 import 'package:openjmu/constants/constants.dart';
 
 export 'package:provider/provider.dart';
+export 'package:openjmu/providers/courses_provider.dart';
 export 'package:openjmu/providers/date_provider.dart';
 export 'package:openjmu/providers/messages_provider.dart';
 export 'package:openjmu/providers/notification_provider.dart';
+export 'package:openjmu/providers/report_records_provider.dart';
 export 'package:openjmu/providers/settings_provider.dart';
 export 'package:openjmu/providers/team_post_provider.dart';
 export 'package:openjmu/providers/themes_provider.dart';
@@ -24,9 +26,11 @@ ChangeNotifierProvider<T> buildProvider<T extends ChangeNotifier>(T value) {
 List<SingleChildWidget> get providers => _providers;
 
 final _providers = [
+  buildProvider<CoursesProvider>(CoursesProvider()),
   buildProvider<DateProvider>(DateProvider()..initCurrentWeek()),
   buildProvider<MessagesProvider>(MessagesProvider()..initListener()),
   buildProvider<NotificationProvider>(NotificationProvider()),
+  buildProvider<ReportRecordsProvider>(ReportRecordsProvider()),
   buildProvider<SettingsProvider>(SettingsProvider()..init()),
   buildProvider<ThemesProvider>(ThemesProvider()..initTheme()),
   buildProvider<WebAppsProvider>(WebAppsProvider()),

@@ -222,7 +222,7 @@ class SplashState extends State<SplashPage> {
     return AnnotatedRegion(
       value: SystemUiOverlayStyle.light,
       child: AnimatedOpacity(
-        duration: 1.seconds,
+        duration: 500.milliseconds,
         opacity: firstFramed ? 1.0 : 0.0,
         child: Scaffold(
           backgroundColor:

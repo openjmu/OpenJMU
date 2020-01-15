@@ -49,20 +49,18 @@ class DataUtils {
 //        'classId': user['cclass_id'],
         'gender': int.parse(user['gender'].toString()),
       };
-//      bool isWizard = true;
-//      if (!userInfo["isTeacher"]) isWizard = await checkWizard();
+      bool isWizard = true;
+      if (!userInfo["isTeacher"]) isWizard = await checkWizard();
       await saveLoginInfo(userInfo);
       UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
       showToast("登录成功！");
-      Provider.of<MessagesProvider>(
-        currentContext,
-        listen: false,
-      ).initMessages();
+      Instances.eventBus.fire(TicketGotEvent(isWizard));
       return true;
     } catch (e) {
       debugPrint(e.toString());
-      if (e.response != null)
+      if (e.response != null) {
         showToast("登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}");
+      }
       return false;
     }
   }
@@ -73,10 +71,6 @@ class DataUtils {
     Future.delayed(const Duration(milliseconds: 300), () {
       resetTheme();
       clearLoginInfo();
-      Provider.of<MessagesProvider>(
-        currentContext,
-        listen: false,
-      ).logout();
       showToast("退出登录成功");
     });
   }

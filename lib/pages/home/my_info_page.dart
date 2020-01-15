@@ -475,26 +475,62 @@ class MyInfoPageState extends State<MyInfoPage> {
     }
   }
 
+  Widget get clearBoxesButton => UnconstrainedBox(
+        child: Container(
+          margin: EdgeInsets.all(suSetWidth(24.0)),
+          width: MediaQuery.of(context).size.width / 2.5,
+          height: suSetHeight(66.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(30.0),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                color: Colors.grey[100],
+                blurRadius: suSetHeight(6.0),
+                offset: Offset(0, suSetHeight(6.0)),
+              ),
+            ],
+            color: Colors.white,
+          ),
+          child: FlatButton(
+            onPressed: HiveBoxes.clearBoxes,
+            child: Text(
+              "Clear ALL Hive Data",
+              style: TextStyle(
+                color: Colors.redAccent,
+                fontSize: suSetSp(20.0),
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+          ),
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
-      body: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          userInfo,
-          separator(context),
-          currentDay,
-          separator(context),
-          ListView.separated(
-            padding: EdgeInsets.zero,
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            separatorBuilder: (context, index) => separator(context),
-            itemCount: settingsSection().length,
-            itemBuilder: (context, index) => settingSectionListView(context, index),
-          ),
-        ],
+      body: Consumer<SettingsProvider>(
+        builder: (_, provider, __) => ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            userInfo,
+            separator(context),
+            currentDay,
+            separator(context),
+            ListView.separated(
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              separatorBuilder: (context, index) => separator(context),
+              itemCount: settingsSection().length,
+              itemBuilder: (context, index) => settingSectionListView(context, index),
+            ),
+            if (provider.debug) clearBoxesButton,
+          ],
+        ),
       ),
     );
   }

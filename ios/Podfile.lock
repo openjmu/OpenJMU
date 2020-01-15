@@ -39,7 +39,7 @@ PODS:
     - Flutter
   - path_provider (0.0.1):
     - Flutter
-  - permission_handler (4.0.0):
+  - permission_handler (4.1.0):
     - Flutter
   - quick_actions (0.0.1):
     - Flutter
@@ -164,7 +164,7 @@ SPEC CHECKSUMS:
   ota_update: 025311773f7e5d8a36cf0d4fc1d1694f7bc75958
   package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
   path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
-  permission_handler: 0fb88b8a3c23e31e5de45b8f1bb8b7de28cf8941
+  permission_handler: b41310bab60fffbf8b5732cd9b4f565671d14762
   quick_actions: 5eaa421abc932a71d9804fb86186d173020da63d
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01

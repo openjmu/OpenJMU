@@ -8,10 +8,14 @@ import 'package:openjmu/constants/constants.dart';
 
 class HiveBoxes {
   static Box<Map> appMessagesBox;
-  static Box<Map> coursesBox;
-  static Box<dynamic> settingsBox;
-  static Box<DateTime> startWeekBox;
 //  static Box<Map> personalMessagesBox;
+
+  static Box<Map> coursesBox;
+  static Box<String> courseRemarkBox;
+  static Box<DateTime> startWeekBox;
+
+  static Box<List> reportRecordBox;
+  static Box<dynamic> settingsBox;
 
   static Future openBoxes() async {
     Hive.registerAdapter(AppMessageAdapter());
@@ -19,17 +23,25 @@ class HiveBoxes {
 //    Hive.registerAdapter(MessageAdapter());
 
     appMessagesBox = await Hive.openBox<Map>('openjmu_app_messages');
-    settingsBox = await Hive.openBox<dynamic>('openjmu_app_settings');
-    startWeekBox = await Hive.openBox<DateTime>('openjmu_start_week');
 //    personalMessagesBox = await Hive.openBox<Map>('openjmu_personal_messages');
+
+    coursesBox = await Hive.openBox<Map>('openjmu_user_courses');
+    courseRemarkBox = await Hive.openBox<String>('openjmu_user_course_remark');
+    startWeekBox = await Hive.openBox<DateTime>('openjmu_start_week');
+
+    reportRecordBox = await Hive.openBox<List>('openjmu_report_record');
+    settingsBox = await Hive.openBox<dynamic>('openjmu_app_settings');
   }
 
   static Future clearBoxes() async {
     await appMessagesBox?.clear();
     await coursesBox?.clear();
+    await courseRemarkBox?.clear();
+    await reportRecordBox?.clear();
     await settingsBox?.clear();
     await startWeekBox?.clear();
 //    await personalMessagesBox?.clear();
+    showCenterToast("Boxes all cleared.");
   }
 }
 

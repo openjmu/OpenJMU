@@ -33,9 +33,9 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
-  static final List<String> pagesTitle = ['首页', '应用', '消息'];
-  static final List<String> pagesIcon = ["home", "apps", "message", "mine"];
-  static const double bottomBarHeight = 74.0;
+  static final List<String> pagesTitle = ['广场', '应用', '消息'];
+  static final List<String> pagesIcon = ["square", "apps", "messages"];
+  static const double bottomBarHeight = 64.0;
 
   static final tabSelectedTextStyle = TextStyle(
     fontSize: suSetSp(23.0),
@@ -176,7 +176,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
               child: IndexedStack(
                 children: <Widget>[
                   PostSquareListPage(),
-                  AppsPage(),
+                  AppsPage(key: Instances.appsPageStateKey),
                   MessagePage(),
                   MyInfoPage(),
                 ],
@@ -187,9 +187,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         ),
         bottomNavigationBar: FABBottomAppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          color: Colors.grey[600],
+          color: Colors.grey[600].withOpacity(currentIsDark ? 0.8 : 0.4),
           height: bottomBarHeight,
-          iconSize: 34.0,
+          iconSize: 32.0,
           selectedColor: currentThemeColor,
           onTabSelected: _selectedTab,
           initIndex: pagesTitle.indexOf(widget.initAction) == -1
@@ -202,17 +202,22 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 text: pagesTitle[i],
               ),
             FABBottomAppBarItem(
+              text: "我的",
               child: Center(
-                child: AnimatedContainer(
-                  duration: 200.milliseconds,
-                  padding: EdgeInsets.all(suSetWidth(3)),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: _tabIndex == 3
-                        ? Border.all(color: currentThemeColor, width: suSetWidth(3.0))
-                        : null,
+                child: SizedBox.fromSize(
+                  size: Size.square(suSetWidth(48.0)),
+                  child: AnimatedContainer(
+                    duration: 200.milliseconds,
+                    curve: Curves.easeInOut,
+                    padding: EdgeInsets.all(suSetWidth(3.0)),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: _tabIndex == 3
+                          ? Border.all(color: currentThemeColor, width: suSetWidth(2.5))
+                          : null,
+                    ),
+                    child: UserAvatar(canJump: false),
                   ),
-                  child: UserAvatar(size: 40.0, canJump: false),
                 ),
               ),
             ),

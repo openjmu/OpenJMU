@@ -102,12 +102,12 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
             return UnconstrainedBox(
               child: SizedBox(
                 width: suSetWidth(68.0),
-                height: suSetWidth(45.0),
+                height: suSetWidth(52.0),
                 child: MaterialButton(
                   padding: EdgeInsets.zero,
                   color: widget.selectedColor,
-                  elevation: 0.0,
-                  highlightElevation: 2.0,
+                  elevation: 2.0,
+                  highlightElevation: 6.0,
                   child: Icon(
                     Icons.add,
                     color: Colors.white.withOpacity(dark ? 0.7 : 1.0),
@@ -119,7 +119,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
                     ));
                   },
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(suSetWidth(14.0)),
+                    borderRadius: BorderRadius.circular(suSetWidth(30.0)),
                   ),
                 ),
               ),
@@ -154,11 +154,11 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
                           children: <Widget>[
                             SvgPicture.asset(
                               "assets/icons/bottomNavigation/"
-                              "${item.iconPath}-fill.svg",
+                              "${item.iconPath}.svg",
                               color: widget.selectedColor,
                               width: suSetWidth(widget.iconSize),
-                              height: suSetHeight(widget.iconSize),
-                            ),
+                              height: suSetWidth(widget.iconSize),
+                            )
                           ],
                         ),
                         secondChild: Column(
@@ -167,10 +167,10 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
                           children: <Widget>[
                             SvgPicture.asset(
                               "assets/icons/bottomNavigation/"
-                              "${item.iconPath}-line.svg",
+                              "${item.iconPath}.svg",
                               color: widget.color,
                               width: suSetWidth(widget.iconSize),
-                              height: suSetHeight(widget.iconSize),
+                              height: suSetWidth(widget.iconSize),
                             ),
                           ],
                         ),
