@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/common_web_page.dart';
 
 class ConventionDialog extends StatelessWidget {
   @override
@@ -179,9 +178,9 @@ class ConventionDialog extends StatelessWidget {
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              CommonWebPage.jump(
-                                "http://net.jmu.edu.cn/info/1309/2518.htm",
-                                "",
+                              navigatorState.pushNamed(
+                                Routes.OPENJMU_INAPPBROWSER,
+                                arguments: {"url": "http://net.jmu.edu.cn/info/1309/2518.htm"},
                               );
                             },
                         ),

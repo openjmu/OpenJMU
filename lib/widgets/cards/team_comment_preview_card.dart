@@ -13,7 +13,6 @@ import 'package:extended_text/extended_text.dart';
 import 'package:intl/intl.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/pages/user/user_page.dart';
 import 'package:openjmu/pages/post/team_post_detail_page.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
 
@@ -225,7 +224,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
             ? () {
                 final provider = TeamPostProvider(post);
                 navigatorState.pushNamed(
-                  "openjmu://team-post-detail",
+                  Routes.OPENJMU_TEAM_POST_DETAIL,
                   arguments: {"provider": provider, "type": TeamPostType.comment},
                 );
               }
@@ -294,7 +293,10 @@ class TeamCommentPreviewCard extends StatelessWidget {
                             ),
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                UserPage.jump(int.parse(_post['user']['uid']));
+                                navigatorState.pushNamed(
+                                  Routes.OPENJMU_USER,
+                                  arguments: {"uid": int.parse(_post['user']['uid'])},
+                                );
                               },
                           ),
                           if (int.parse(_post['user']['uid']) == topPost.uid)
@@ -386,7 +388,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
         GestureDetector(
           onTap: () {
             navigatorState.pushNamed(
-              "openjmu://image-viewer",
+              Routes.OPENJMU_IMAGE_VIEWER,
               arguments: {
                 "index": index,
                 "pics": post.pics.map<ImageBean>((f) {

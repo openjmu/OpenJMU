@@ -16,9 +16,8 @@ import 'package:openjmu/constants/constants.dart';
 
 export 'package:openjmu/widgets/appbar.dart';
 export 'package:openjmu/widgets/app_icon.dart';
-export 'package:openjmu/widgets/common_web_page.dart';
 export 'package:openjmu/widgets/fab_bottom_appbar.dart';
-export 'package:openjmu/widgets/in_app_webview.dart';
+export 'package:openjmu/widgets/webview/in_app_webview.dart';
 export 'package:openjmu/widgets/no_scale_text_widget.dart';
 export 'package:openjmu/widgets/rounded_check_box.dart';
 export 'package:openjmu/widgets/rounded_tab_indicator.dart';

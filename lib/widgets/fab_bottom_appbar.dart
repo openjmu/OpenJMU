@@ -20,6 +20,11 @@ class FABBottomAppBarItem {
           iconPath == null && child != null || iconPath != null && child == null,
           "cannot set icon and child at the same time.",
         );
+
+  @override
+  String toString() {
+    return 'FABBottomAppBarItem {iconPath: $iconPath, text: $text, child: $child}';
+  }
 }
 
 class FABBottomAppBar extends StatefulWidget {
@@ -101,8 +106,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
           builder: (_, dark, __) {
             return UnconstrainedBox(
               child: SizedBox(
-                width: suSetWidth(68.0),
-                height: suSetWidth(52.0),
+                width: suSetWidth(76.0),
+                height: suSetWidth(60.0),
                 child: MaterialButton(
                   padding: EdgeInsets.zero,
                   color: widget.selectedColor,
@@ -111,12 +116,10 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
                   child: Icon(
                     Icons.add,
                     color: Colors.white.withOpacity(dark ? 0.7 : 1.0),
-                    size: suSetWidth(34.0),
+                    size: suSetWidth(36.0),
                   ),
                   onPressed: () {
-                    navigatorState.push(TransparentRoute(
-                      builder: (context) => AddingButtonPage(),
-                    ));
+                    navigatorState.push(TransparentRoute(builder: (context) => AddingButtonPage()));
                   },
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(suSetWidth(30.0)),
@@ -142,47 +145,62 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
             SizedBox(
               height: suSetHeight(widget.height),
               child: Center(
-                child: item.child == null
-                    ? AnimatedCrossFade(
-                        duration: 200.milliseconds,
-                        crossFadeState: _selectedIndex == index
-                            ? CrossFadeState.showFirst
-                            : CrossFadeState.showSecond,
-                        firstChild: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SvgPicture.asset(
-                              "assets/icons/bottomNavigation/"
-                              "${item.iconPath}.svg",
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    item.child == null
+                        ? AnimatedCrossFade(
+                            duration: 200.milliseconds,
+                            crossFadeState: _selectedIndex == index
+                                ? CrossFadeState.showFirst
+                                : CrossFadeState.showSecond,
+                            firstChild: SvgPicture.asset(
+                              "assets/icons/bottomNavigation/${item.iconPath}.svg",
                               color: widget.selectedColor,
                               width: suSetWidth(widget.iconSize),
                               height: suSetWidth(widget.iconSize),
-                            )
-                          ],
-                        ),
-                        secondChild: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SvgPicture.asset(
-                              "assets/icons/bottomNavigation/"
-                              "${item.iconPath}.svg",
+                            ),
+                            secondChild: SvgPicture.asset(
+                              "assets/icons/bottomNavigation/${item.iconPath}.svg",
                               color: widget.color,
                               width: suSetWidth(widget.iconSize),
                               height: suSetWidth(widget.iconSize),
                             ),
-                          ],
+                          )
+                        : item.child,
+                    SizedBox(height: suSetWidth(widget.iconSize / 8)),
+                    AnimatedCrossFade(
+                      duration: 200.milliseconds,
+                      crossFadeState: _selectedIndex == index
+                          ? CrossFadeState.showFirst
+                          : CrossFadeState.showSecond,
+                      firstChild: Text(
+                        item.text,
+                        style: TextStyle(
+                          color: widget.selectedColor,
+                          fontSize: suSetSp(widget.itemFontSize),
+                          fontWeight: FontWeight.normal,
                         ),
-                      )
-                    : item.child,
+                      ),
+                      secondChild: Text(
+                        item.text,
+                        style: TextStyle(
+                          color: widget.color,
+                          fontSize: suSetSp(widget.itemFontSize),
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             if (index == 0)
               Consumer<NotificationProvider>(
                 builder: (_, provider, __) {
                   return Positioned(
-                    top: widget.height / 6,
+                    top: widget.height / 8,
                     right: Screens.width / widget.items.length / 5,
                     child: Visibility(
                       visible: provider.showNotification,
@@ -246,19 +264,12 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
     if (Platform.isIOS) {
       appBar = ClipRect(
         child: BackdropFilter(
-          filter: ui.ImageFilter.blur(
-            sigmaX: suSetSp(20.0),
-            sigmaY: suSetSp(20.0),
-          ),
+          filter: ui.ImageFilter.blur(sigmaX: suSetSp(20.0), sigmaY: suSetSp(20.0)),
           child: appBar,
         ),
       );
     }
 
-    return BottomAppBar(
-      color: widget.backgroundColor,
-      shape: widget.notchedShape,
-      child: appBar,
-    );
+    return BottomAppBar(color: widget.backgroundColor, shape: widget.notchedShape, child: appBar);
   }
 }

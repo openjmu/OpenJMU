@@ -166,7 +166,7 @@ class _PostCardState extends State<PostCard> {
           child: GestureDetector(
             onTap: () {
               navigatorState.pushNamed(
-                "openjmu://post-detail",
+                Routes.OPENJMU_POST_DETAIL,
                 arguments: {
                   "post": _post,
                   "index": widget.index,
@@ -266,7 +266,7 @@ class _PostCardState extends State<PostCard> {
           GestureDetector(
             onTap: () {
               navigatorState.pushNamed(
-                "openjmu://image-viewer",
+                Routes.OPENJMU_IMAGE_VIEWER,
                 arguments: {
                   "index": index,
                   "pics": data.map<ImageBean>((f) {
@@ -407,7 +407,7 @@ class _PostCardState extends State<PostCard> {
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               onPressed: () {
                 navigatorState.pushNamed(
-                  "openjmu://add-forward",
+                  Routes.OPENJMU_ADD_FORWARD,
                   arguments: {"post": widget.post},
                 );
               },
@@ -733,7 +733,7 @@ class _PostCardState extends State<PostCard> {
 
   void pushToDetail() {
     navigatorState.pushNamed(
-      "openjmu://post-detail",
+      Routes.OPENJMU_POST_DETAIL,
       arguments: {
         "post": widget.post,
         "index": widget.index,
@@ -795,6 +795,7 @@ class _PostCardState extends State<PostCard> {
                           getPostContent(context, post),
                           getPostImages(context, post),
                           Container(
+                            margin: EdgeInsets.only(top: suSetHeight(6.0)),
                             height: suSetHeight(44.0),
                             padding: EdgeInsets.only(left: suSetWidth(20.0)),
                             child: OverflowBox(

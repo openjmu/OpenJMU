@@ -195,7 +195,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
                             navigatorState.pushNamed(
-                              "openjmu://team-post-detail",
+                              Routes.OPENJMU_TEAM_POST_DETAIL,
                               arguments: {
                                 "provider": provider,
                                 "type": TeamPostType.post,

@@ -228,7 +228,7 @@ class CommentCard extends StatelessWidget {
                 onTap: () {
                   Navigator.pop(context);
                   navigatorState.pushNamed(
-                    "openjmu://add-comment",
+                    Routes.OPENJMU_ADD_COMMENT,
                     arguments: {"post": comment.post, "comment": comment},
                   );
                 },
@@ -250,10 +250,13 @@ class CommentCard extends StatelessWidget {
                 behavior: HitTestBehavior.opaque,
                 onTap: () {
                   Navigator.of(context).pop();
-                  navigatorState.pushNamed("openjmu://post-detail", arguments: {
-                    "post": comment.post,
-                    "parentContext": context,
-                  });
+                  navigatorState.pushNamed(
+                    Routes.OPENJMU_POST_DETAIL,
+                    arguments: {
+                      "post": comment.post,
+                      "parentContext": context,
+                    },
+                  );
                 },
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

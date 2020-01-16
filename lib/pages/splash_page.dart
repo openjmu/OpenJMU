@@ -223,6 +223,7 @@ class SplashState extends State<SplashPage> {
       value: SystemUiOverlayStyle.light,
       child: AnimatedOpacity(
         duration: 500.milliseconds,
+        curve: Curves.easeInOut,
         opacity: firstFramed ? 1.0 : 0.0,
         child: Scaffold(
           backgroundColor:

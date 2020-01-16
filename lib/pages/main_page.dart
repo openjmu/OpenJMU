@@ -24,8 +24,8 @@ class MainPage extends StatefulWidget {
   final String initAction;
 
   const MainPage({
-    this.initAction,
     Key key,
+    this.initAction,
   }) : super(key: key);
 
   @override
@@ -35,7 +35,8 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   static final List<String> pagesTitle = ['广场', '应用', '消息'];
   static final List<String> pagesIcon = ["square", "apps", "messages"];
-  static const double bottomBarHeight = 64.0;
+  static const double bottomBarHeight = 72.0;
+  double get bottomBarIconSize => bottomBarHeight / 2.25;
 
   static final tabSelectedTextStyle = TextStyle(
     fontSize: suSetSp(23.0),
@@ -64,7 +65,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       _tabIndex = pagesTitle.indexOf(widget.initAction);
     }
 
-    initWebAppList();
     initPushService();
     initNotification();
     MessageUtils.initMessageSocket();
@@ -90,16 +90,12 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     super.dispose();
   }
 
-  void initWebAppList() {
-    Provider.of<WebAppsProvider>(currentContext, listen: false).initApps();
-  }
-
   void initPushService() async {
     try {
-      final UserInfo user = UserAPI.currentUser;
-      final DateTime now = DateTime.now();
-      String token = Platform.isIOS ? await ChannelUtils.iosGetPushToken() : "null";
-      final Map<String, dynamic> data = {
+      final user = UserAPI.currentUser;
+      final now = DateTime.now();
+      final token = Platform.isIOS ? await ChannelUtils.iosGetPushToken() : "null";
+      final data = <String, dynamic>{
         "token": token,
         "date": DateFormat("yyyy/MM/dd/HH:mm:ss", "en").format(now),
         "uid": user.uid.toString(),
@@ -120,7 +116,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   void initNotification() {
     _getNotification(null);
-    notificationTimer = Timer.periodic(const Duration(seconds: 10), _getNotification);
+    notificationTimer = Timer.periodic(10.seconds, _getNotification);
   }
 
   void _getNotification(_) {
@@ -189,34 +185,50 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           color: Colors.grey[600].withOpacity(currentIsDark ? 0.8 : 0.4),
           height: bottomBarHeight,
-          iconSize: 32.0,
+          iconSize: bottomBarIconSize,
           selectedColor: currentThemeColor,
           onTabSelected: _selectedTab,
           initIndex: pagesTitle.indexOf(widget.initAction) == -1
               ? 0
               : pagesTitle.indexOf(widget.initAction),
           items: [
-            for (int i = 0; i < pagesTitle.length; i++)
-              FABBottomAppBarItem(
-                iconPath: pagesIcon[i],
-                text: pagesTitle[i],
-              ),
+            ...List<FABBottomAppBarItem>.generate(
+              pagesTitle.length,
+              (i) => FABBottomAppBarItem(iconPath: pagesIcon[i], text: pagesTitle[i]),
+            ),
             FABBottomAppBarItem(
               text: "我的",
               child: Center(
                 child: SizedBox.fromSize(
-                  size: Size.square(suSetWidth(48.0)),
-                  child: AnimatedContainer(
-                    duration: 200.milliseconds,
-                    curve: Curves.easeInOut,
-                    padding: EdgeInsets.all(suSetWidth(3.0)),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: _tabIndex == 3
-                          ? Border.all(color: currentThemeColor, width: suSetWidth(2.5))
-                          : null,
-                    ),
-                    child: UserAvatar(canJump: false),
+                  size: Size.square(suSetWidth(bottomBarIconSize)),
+                  child: Stack(
+                    overflow: Overflow.visible,
+                    children: <Widget>[
+                      Positioned.fromRect(
+                        rect: Rect.fromCenter(
+                          center: Offset(
+                            suSetWidth(bottomBarIconSize / 2),
+                            suSetWidth(bottomBarIconSize / 2),
+                          ),
+                          width: suSetWidth(bottomBarHeight * 0.55),
+                          height: suSetWidth(bottomBarHeight * 0.55),
+                        ),
+                        child: AnimatedContainer(
+                          duration: 200.milliseconds,
+                          curve: Curves.easeInOut,
+                          width: suSetWidth(bottomBarHeight * 0.55),
+                          height: suSetWidth(bottomBarHeight * 0.55),
+                          padding: EdgeInsets.all(suSetWidth(3.0)),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: _tabIndex == 3
+                                ? Border.all(color: currentThemeColor, width: suSetWidth(2.5))
+                                : null,
+                          ),
+                          child: UserAvatar(canJump: false),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

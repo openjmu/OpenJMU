@@ -5,7 +5,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/common_web_page.dart';
 
 class ScorePage extends StatefulWidget {
   @override
@@ -197,7 +196,10 @@ class _ScorePageState extends State<ScorePage> with AutomaticKeepAliveClientMixi
     } else {
       url = "http://sso.jmu.edu.cn/imapps/1070?sid=${UserAPI.currentUser.sid}";
     }
-    CommonWebPage.jump(url, "教学评测");
+    navigatorState.pushNamed(
+      Routes.OPENJMU_INAPPBROWSER,
+      arguments: {"url": url, "title": "教学评测"},
+    );
   }
 
   Widget get evaluateTips => Container(

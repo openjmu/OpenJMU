@@ -6,7 +6,7 @@ import 'package:openjmu/pages/main_page.dart';
 import 'package:openjmu/pages/home/app_center_page.dart';
 import 'package:openjmu/pages/home/course_schedule_page.dart';
 import 'package:openjmu/pages/home/score_page.dart';
-import 'package:openjmu/widgets/in_app_webview.dart';
+import 'package:openjmu/widgets/webview/in_app_webview.dart';
 
 class AppsPage extends StatefulWidget {
   const AppsPage({@required Key key}) : super(key: key);
@@ -134,55 +134,13 @@ class AppsPageState extends State<AppsPage>
     );
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
-      body: Column(
+      body: Stack(
         children: <Widget>[
-          FixedAppBar(
-            automaticallyImplyLeading: false,
-            title: Padding(
-              padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: TabBar(
-                      isScrollable: true,
-                      indicator: RoundedUnderlineTabIndicator(
-                        borderSide: BorderSide(
-                          color: currentThemeColor,
-                          width: suSetHeight(2.5),
-                        ),
-                        width: suSetWidth(40.0),
-                        insets: EdgeInsets.only(bottom: suSetHeight(2.0)),
-                      ),
-                      labelColor: Theme.of(context).textTheme.body1.color,
-                      labelStyle: MainPageState.tabSelectedTextStyle,
-                      labelPadding: EdgeInsets.symmetric(
-                        horizontal: suSetWidth(16.0),
-                      ),
-                      unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
-                      tabs: <Tab>[
-                        for (int i = 0; i < List.from(tabs()).length; i++) _tab(tabs()[i])
-                      ],
-                      controller: _tabController,
-                    ),
-                  ),
-                  SizedBox(
-                    width: suSetWidth(60.0),
-                    child: IconButton(
-                      alignment: Alignment.centerRight,
-                      icon: Icon(
-                        Icons.refresh,
-                        size: suSetWidth(32.0),
-                      ),
-                      onPressed: () {
-                        Instances.eventBus.fire(AppCenterRefreshEvent(_tabController.index));
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Expanded(
+          Positioned(
+            top: suSetHeight(kAppBarHeight) + MediaQuery.of(context).padding.top,
+            left: 0.0,
+            right: 0.0,
+            bottom: 0.0,
             child: Selector<ThemesProvider, bool>(
               selector: (_, provider) => provider.dark,
               builder: (_, dark, __) {
@@ -214,6 +172,57 @@ class AppsPageState extends State<AppsPage>
                   ],
                 );
               },
+            ),
+          ),
+          Positioned(
+            top: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: FixedAppBar(
+              automaticallyImplyLeading: false,
+              title: Padding(
+                padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: TabBar(
+                        isScrollable: true,
+                        indicator: RoundedUnderlineTabIndicator(
+                          borderSide: BorderSide(
+                            color: currentThemeColor,
+                            width: suSetHeight(2.5),
+                          ),
+                          width: suSetWidth(40.0),
+                          insets: EdgeInsets.only(bottom: suSetHeight(2.0)),
+                        ),
+                        labelColor: Theme.of(context).textTheme.body1.color,
+                        labelStyle: MainPageState.tabSelectedTextStyle,
+                        labelPadding: EdgeInsets.symmetric(
+                          horizontal: suSetWidth(16.0),
+                        ),
+                        unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
+                        tabs: <Tab>[
+                          for (int i = 0; i < List.from(tabs()).length; i++) _tab(tabs()[i])
+                        ],
+                        controller: _tabController,
+                      ),
+                    ),
+                    SizedBox(
+                      width: suSetWidth(60.0),
+                      child: IconButton(
+                        alignment: Alignment.centerRight,
+                        icon: Icon(
+                          Icons.refresh,
+                          size: suSetWidth(32.0),
+                        ),
+                        onPressed: () {
+                          Instances.eventBus.fire(AppCenterRefreshEvent(_tabController.index));
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ),
         ],

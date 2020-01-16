@@ -18,10 +18,10 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
   final List<Color> itemColors = [Colors.orange, Colors.indigoAccent];
   final List<Function> itemOnTap = [
     (context) async {
-      navigatorState.pushNamed("openjmu://publish-post");
+      navigatorState.pushNamed(Routes.OPENJMU_PUBLISH_POST);
     },
     (context) async {
-      navigatorState.pushNamed("openjmu://publish-team-post");
+      navigatorState.pushNamed(Routes.OPENJMU_PUBLISH_TEAM_POST);
     },
   ];
   final int _animateDuration = 300;

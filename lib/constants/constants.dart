@@ -21,6 +21,8 @@ export 'package:openjmu/constants/hive_boxes.dart';
 export 'package:openjmu/providers/providers.dart';
 export 'package:openjmu/utils/utils.dart';
 
+export 'package:openjmu/openjmu_route.dart' show Routes;
+
 const double kAppBarHeight = 75.0;
 
 class Constants {

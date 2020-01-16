@@ -30,13 +30,6 @@ class UserPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _UserPageState();
-
-  static Future jump(int uid) {
-    return navigatorState.pushNamed(
-      "openjmu://user",
-      arguments: {"uid": uid},
-    );
-  }
 }
 
 class _UserPageState extends State<UserPage>
@@ -249,7 +242,7 @@ class _UserPageState extends State<UserPage>
             color: Colors.white,
           ),
           onTap: () {
-            navigatorState.pushNamed("openjmu://user-qrcode");
+            navigatorState.pushNamed(Routes.OPENJMU_USER_QRCODE);
           },
         ),
       );
@@ -343,7 +336,7 @@ class _UserPageState extends State<UserPage>
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 navigatorState.pushNamed(
-                  "openjmu://userlist",
+                  Routes.OPENJMU_USERLIST,
                   arguments: {"user": _user, "type": 1},
                 );
               },
@@ -374,7 +367,7 @@ class _UserPageState extends State<UserPage>
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 navigatorState.pushNamed(
-                  "openjmu://userlist",
+                  Routes.OPENJMU_USERLIST,
                   arguments: {"user": _user, "type": 2},
                 );
               },
@@ -577,15 +570,13 @@ class _UserPageState extends State<UserPage>
                     onTap: () {
                       Navigator.of(sheetContext).pop();
                       navigatorState.pushNamed(
-                        "openjmu://image-viewer",
+                        Routes.OPENJMU_IMAGE_VIEWER,
                         arguments: {
                           "index": 0,
                           "pics": [
                             ImageBean(
                               id: widget.uid,
-                              imageUrl: "${API.userAvatar}"
-                                  "?uid=${widget.uid}"
-                                  "&size=f640",
+                              imageUrl: "${API.userAvatar}?uid=${widget.uid}&size=f640",
                             ),
                           ],
                           "needsClear": true,
@@ -607,7 +598,7 @@ class _UserPageState extends State<UserPage>
                     ),
                     onTap: () async {
                       Navigator.of(sheetContext).pop();
-                      navigatorState.pushNamed("openjmu://image-crop").then((result) {
+                      navigatorState.pushNamed(Routes.OPENJMU_IMAGE_CROP).then((result) {
                         if (result != null && result) {
                           Instances.eventBus.fire(AvatarUpdatedEvent());
                         }
@@ -620,14 +611,14 @@ class _UserPageState extends State<UserPage>
             },
           )
         : navigatorState.pushNamed(
-            "openjmu://image-viewer",
+            Routes.OPENJMU_IMAGE_VIEWER,
             arguments: {
               "index": 0,
               "pics": [
                 ImageBean(
                   id: widget.uid,
                   imageUrl: API.userAvatar + "?uid=${widget.uid}&size=f640",
-                )
+                ),
               ],
               "needsClear": true,
             },
@@ -925,7 +916,12 @@ class _UserListState extends State<UserListPage> {
     if (name.length > 3) name = "${name.substring(0, 3)}...";
     TextStyle _textStyle = TextStyle(fontSize: suSetSp(16.0));
     return GestureDetector(
-      onTap: () => UserPage.jump(int.parse(_user['uid'].toString())),
+      onTap: () {
+        navigatorState.pushNamed(
+          Routes.OPENJMU_USER,
+          arguments: {"uid": int.parse(_user['uid'].toString())},
+        );
+      },
       child: Container(
         margin: EdgeInsets.fromLTRB(
           suSetWidth(12.0),

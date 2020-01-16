@@ -4,9 +4,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:extended_text_library/extended_text_library.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/pages/search_page.dart';
-import 'package:openjmu/pages/user/user_page.dart';
-import 'package:openjmu/widgets/common_web_page.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
 
 class LinkText extends SpecialText {
@@ -440,27 +437,30 @@ enum WidgetType { post, comment }
 void specialTextTapRecognizer(data) {
   final text = data['content'];
   if (text.startsWith("#")) {
-    SearchPage.search(text.substring(1, text.length - 1));
+    navigatorState.pushNamed(
+      Routes.OPENJMU_SEARCH,
+      arguments: {"content": text.substring(1, text.length - 1)},
+    );
   } else if (text.startsWith("@")) {
-    UserPage.jump(data['uid']);
+    navigatorState.pushNamed(Routes.OPENJMU_USER, arguments: {"uid": data['uid']});
   } else if (text.startsWith("https://")) {
-    CommonWebPage.jump(text, "网页链接");
+    navigatorState.pushNamed(
+      Routes.OPENJMU_INAPPBROWSER,
+      arguments: {"url": text, "title": "网页链接"},
+    );
   } else if (text.startsWith("http://")) {
-    CommonWebPage.jump(text, "网页链接");
+    navigatorState.pushNamed(
+      Routes.OPENJMU_INAPPBROWSER,
+      arguments: {"url": text, "title": "网页链接"},
+    );
   } else if (text.startsWith("|")) {
     final imageId = data['image'];
     final imageUrl = API.commentImageUrl(imageId, "o");
     navigatorState.pushNamed(
-      "openjmu://image-viewer",
+      Routes.OPENJMU_IMAGE_VIEWER,
       arguments: {
         "index": 0,
-        "pics": [
-          ImageBean(
-            id: imageId,
-            imageUrl: imageUrl,
-            postId: null,
-          )
-        ],
+        "pics": [ImageBean(id: imageId, imageUrl: imageUrl, postId: null)],
       },
     );
   }

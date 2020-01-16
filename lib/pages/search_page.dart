@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:ff_annotation_route/ff_annotation_route.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/pages/user/user_page.dart';
 import 'package:openjmu/widgets/cards/post_card.dart';
 
 @FFRoute(
@@ -20,13 +19,6 @@ class SearchPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => SearchPageState();
-
-  static void search(String content) {
-    navigatorState.pushNamed(
-      "openjmu://search",
-      arguments: {"content": content},
-    );
-  }
 }
 
 class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin {
@@ -83,7 +75,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
       });
       if (userList != null && userList.length == 1) {
         navigatorState.pushReplacementNamed(
-          'openjmu://user',
+          Routes.OPENJMU_USER,
           arguments: {'uid': userList[0].id},
         );
       }
@@ -257,7 +249,10 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                                   ),
                                 ),
                               ),
-                              onTap: () => UserPage.jump(userList[index].id),
+                              onTap: () => navigatorState.pushNamed(
+                                Routes.OPENJMU_USER,
+                                arguments: {"uid": userList[index].id},
+                              ),
                             ),
                           ),
                           SizedBox(height: suSetHeight(8.0)),

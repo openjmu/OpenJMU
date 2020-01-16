@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 import 'package:openjmu/openjmu_route_helper.dart';
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/pages/user/user_page.dart';
 
 class UserAvatar extends StatelessWidget {
   final double size;
@@ -43,10 +42,10 @@ class UserAvatar extends StatelessWidget {
                   final settings = ModalRoute.of(context).settings as FFRouteSettings;
                   if (settings.name != "openjmu://user" ||
                       settings.arguments.toString() != {"uid": _uid}.toString()) {
-                    UserPage.jump(_uid);
+                    navigatorState.pushNamed(Routes.OPENJMU_USER, arguments: {"uid": _uid});
                   }
                 } else {
-                  UserPage.jump(_uid);
+                  navigatorState.pushNamed(Routes.OPENJMU_USER, arguments: {"uid": _uid});
                 }
               }
             : null,

@@ -140,11 +140,8 @@ class PraiseCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         navigatorState.pushNamed(
-          "openjmu://post-detail",
-          arguments: {
-            "post": _post,
-            "parentContext": context,
-          },
+          Routes.OPENJMU_POST_DETAIL,
+          arguments: {"post": _post, "parentContext": context},
         );
       },
       child: Card(

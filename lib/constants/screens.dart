@@ -45,9 +45,4 @@ double suSetHeight(double size, {double scale}) =>
     _sizeCapable(ScreenUtil.getInstance().setHeight(size) * 2, scale: scale);
 
 double _sizeCapable(double size, {double scale}) =>
-    size *
-    (scale ??
-        Provider.of<SettingsProvider>(
-          currentContext,
-          listen: false,
-        ).fontScale);
+    size * (scale ?? Provider.of<SettingsProvider>(currentContext, listen: false).fontScale);

@@ -29,7 +29,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
         listen: false,
       ).notifications,
       "onTap": (context) async {
-        navigatorState.pushNamed("openjmu://notifications");
+        navigatorState.pushNamed(Routes.OPENJMU_NOTIFICATIONS);
       },
     },
     {
@@ -40,7 +40,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
         listen: false,
       ).teamNotification,
       "onTap": (context) async {
-        navigatorState.pushNamed("openjmu://team-notifications");
+        navigatorState.pushNamed(Routes.OPENJMU_TEAM_NOTIFICATIONS);
       },
     },
   ];

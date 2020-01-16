@@ -57,11 +57,10 @@ class AppCenterPage extends StatelessWidget {
         ],
       ),
       onPressed: () {
-        navigatorState.pushNamed("openjmu://webpage", arguments: {
-          "url": webApp.replacedUrl,
-          "title": webApp.name,
-          "app": webApp,
-        });
+        navigatorState.pushNamed(
+          Routes.OPENJMU_INAPPBROWSER,
+          arguments: {"url": webApp.replacedUrl, "title": webApp.name, "app": webApp},
+        );
       },
     );
   }
@@ -78,14 +77,10 @@ class AppCenterPage extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Container(
-              padding: EdgeInsets.symmetric(
-                vertical: suSetHeight(12.0),
-              ),
+              padding: EdgeInsets.symmetric(vertical: suSetHeight(12.0)),
               decoration: BoxDecoration(
                 border: Border(
-                  bottom: BorderSide(
-                    color: Theme.of(context).canvasColor,
-                  ),
+                  bottom: BorderSide(color: Theme.of(context).canvasColor),
                 ),
               ),
               child: Center(
@@ -116,14 +111,10 @@ class AppCenterPage extends StatelessWidget {
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: showBottom
-                          ? BorderSide(
-                              color: Theme.of(context).canvasColor,
-                            )
+                          ? BorderSide(color: Theme.of(context).canvasColor)
                           : BorderSide.none,
                       right: showRight
-                          ? BorderSide(
-                              color: Theme.of(context).canvasColor,
-                            )
+                          ? BorderSide(color: Theme.of(context).canvasColor)
                           : BorderSide.none,
                     ),
                   ),

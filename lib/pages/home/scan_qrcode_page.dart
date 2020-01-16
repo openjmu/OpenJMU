@@ -6,7 +6,6 @@ import 'package:flutter_qr_reader/qrcode_reader_view.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/user/user_page.dart';
-import 'package:openjmu/widgets/common_web_page.dart';
 
 @FFRoute(
   name: "openjmu://scan-qrcode",
@@ -31,7 +30,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
     if (API.urlReg.stringMatch(data) != null) {
       Navigator.of(context).pushReplacement(platformPageRoute(
         context: context,
-        builder: (_) => CommonWebPage(url: data, title: ""),
+        builder: (_) => InAppBrowserPage(url: data),
       ));
     } else if (API.schemeUserPage.stringMatch(data) != null) {
       Navigator.of(context).pushReplacement(platformPageRoute(

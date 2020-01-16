@@ -585,7 +585,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
                             onPressed: () {
                               if (_comments.length >= index && _comments[index] != null) {
                                 navigatorState.pushNamed(
-                                  "openjmu://add-comment",
+                                  Routes.OPENJMU_ADD_COMMENT,
                                   arguments: {
                                     "post": widget.post,
                                     "comment": _comments?.elementAt(index) ?? null,

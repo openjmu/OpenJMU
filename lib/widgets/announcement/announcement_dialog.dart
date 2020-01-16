@@ -7,7 +7,6 @@ import 'package:extended_text/extended_text.dart';
 import 'package:extended_text_library/extended_text_library.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/common_web_page.dart';
 
 class AnnouncementDialog extends StatefulWidget {
   final Map<String, dynamic> announcement;
@@ -40,8 +39,11 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
               ),
               specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
               onSpecialTextTap: (dynamic data) {
-                String text = data['content'];
-                CommonWebPage.jump(text, "网页链接");
+                final text = data['content'];
+                navigatorState.pushNamed(
+                  Routes.OPENJMU_INAPPBROWSER,
+                  arguments: {"url": text, "title": "网页链接"},
+                );
               },
               textAlign: TextAlign.left,
             )
@@ -81,8 +83,11 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
               ),
               specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
               onSpecialTextTap: (dynamic data) {
-                String text = data['content'];
-                CommonWebPage.jump(text, "网页链接");
+                final text = data['content'];
+                navigatorState.pushNamed(
+                  Routes.OPENJMU_INAPPBROWSER,
+                  arguments: {"url": text, "title": "网页链接"},
+                );
               },
             ),
           ],

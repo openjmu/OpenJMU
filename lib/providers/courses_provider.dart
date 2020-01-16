@@ -126,6 +126,7 @@ class CoursesProvider extends ChangeNotifier {
       if (dateProvider.currentWeek != null) {
         Instances.courseSchedulePageStateKey.currentState.scrollToWeek(dateProvider.currentWeek);
       }
+      Instances.courseSchedulePageStateKey.currentState.setState(() {});
     } catch (e) {
       debugPrint("Error when updating course: $e");
       if (!firstLoaded && dateProvider.currentWeek != null) _firstLoaded = true;
@@ -136,8 +137,8 @@ class CoursesProvider extends ChangeNotifier {
 
   Future courseResponseHandler(response) async {
     final data = jsonDecode(response.data);
-    List _courseList = data['courses'];
-    List _customCourseList = data['othCase'];
+    final _courseList = data['courses'];
+    final _customCourseList = data['othCase'];
     Map<int, Map> _s;
     _s = resetCourses(_s);
     if (_courseList.length == 0) {

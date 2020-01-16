@@ -74,10 +74,11 @@ class PostSquareListPageState extends State<PostSquareListPage>
     pageLoad[_tabController.index]();
 
     _tabController.addListener(() {
-      if (!hasLoaded[_tabController.index])
+      if (!hasLoaded[_tabController.index]) {
         setState(() {
           hasLoaded[_tabController.index] = true;
         });
+      }
       pageLoad[_tabController.index]();
     });
 
@@ -99,10 +100,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
         labelStyle: MainPageState.tabSelectedTextStyle,
         labelPadding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
         unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
-        tabs: List<Tab>.generate(
-          tabs.length,
-          (index) => Tab(text: tabs[index]),
-        ),
+        tabs: List<Tab>.generate(tabs.length, (index) => Tab(text: tabs[index])),
       );
 
   Widget get scanQrCodeButton => SizedBox(
@@ -120,7 +118,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
               [PermissionGroup.camera],
             );
             if (permissions[PermissionGroup.camera] == PermissionStatus.granted) {
-              navigatorState.pushNamed("openjmu://scan-qrcode");
+              navigatorState.pushNamed(Routes.OPENJMU_SCAN_QRCODE);
             }
           },
         ),
@@ -140,7 +138,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
-            navigatorState.pushNamed("openjmu://search", arguments: {"content": null});
+            navigatorState.pushNamed(Routes.OPENJMU_SEARCH, arguments: {"content": null});
           },
           child: Container(
             height: suSetHeight(48.0),
@@ -212,28 +210,37 @@ class PostSquareListPageState extends State<PostSquareListPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Stack(
         children: <Widget>[
-          FixedAppBar(
-            automaticallyImplyLeading: false,
-            title: Padding(
-              padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
-              child: Row(
-                children: <Widget>[
-                  tabBar,
-                  searchBar,
-                  notificationButton,
-                ],
-              ),
-            ),
-          ),
-          Expanded(
+          Positioned(
+            top: suSetHeight(kAppBarHeight) + MediaQuery.of(context).padding.top,
+            left: 0.0,
+            right: 0.0,
+            bottom: 0.0,
             child: ExtendedTabBarView(
               cacheExtent: pageLoad.length - 1,
               controller: _tabController,
               children: List<Widget>.generate(
                 _tabController.length,
                 (i) => hasLoaded[i] ? _post[i] : SizedBox.shrink(),
+              ),
+            ),
+          ),
+          Positioned(
+            top: 0.0,
+            left: 0.0,
+            right: 0.0,
+            child: FixedAppBar(
+              automaticallyImplyLeading: false,
+              title: Padding(
+                padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
+                child: Row(
+                  children: <Widget>[
+                    tabBar,
+                    searchBar,
+                    notificationButton,
+                  ],
+                ),
               ),
             ),
           ),

@@ -170,7 +170,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
         GestureDetector(
           onTap: () {
             navigatorState.pushNamed(
-              "openjmu://image-viewer",
+              Routes.OPENJMU_IMAGE_VIEWER,
               arguments: {
                 "index": index,
                 "pics": post.pics.map<ImageBean>((f) {

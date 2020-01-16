@@ -118,10 +118,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        navigatorState.pushNamed(
-          "openjmu://chat-app-message-page",
-          arguments: {"app": app},
-        );
+        navigatorState.pushNamed(Routes.OPENJMU_CHAT_APP_MESSAGE_PAGE, arguments: {"app": app});
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: suSetSp(16.0)),

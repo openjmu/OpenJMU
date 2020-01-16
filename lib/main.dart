@@ -75,7 +75,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         Provider.of<MessagesProvider>(currentContext, listen: false).logout();
 
         navigatorState.pushNamedAndRemoveUntil(
-          "openjmu://login",
+          Routes.OPENJMU_LOGIN,
           (_) => false,
           arguments: {"initAction": initAction},
         );
@@ -84,9 +84,12 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         if (mounted) setState(() {});
       })
       ..on<TicketGotEvent>().listen((event) {
-        Provider.of<CoursesProvider>(currentContext, listen: false).initCourses();
-        Provider.of<ReportRecordsProvider>(currentContext, listen: false).initRecords();
+        if (!currentUser.isTeacher) {
+          Provider.of<CoursesProvider>(currentContext, listen: false).initCourses();
+        }
         Provider.of<MessagesProvider>(currentContext, listen: false).initMessages();
+        Provider.of<ReportRecordsProvider>(currentContext, listen: false).initRecords();
+        Provider.of<WebAppsProvider>(currentContext, listen: false).initApps();
       })
       ..on<ActionsEvent>().listen((event) {
         initAction = _quickActions.firstWhere((action) {

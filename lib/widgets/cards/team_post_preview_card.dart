@@ -17,10 +17,14 @@ import 'package:like_button/like_button.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
 import 'package:openjmu/pages/post/team_post_detail_page.dart';
-import 'package:openjmu/pages/user/user_page.dart';
 
 class TeamPostPreviewCard extends StatelessWidget {
-  const TeamPostPreviewCard({Key key}) : super(key: key);
+  const TeamPostPreviewCard({@required Key key}) : super(key: key);
+
+  final actionIconColorDark = const Color(0xff757575);
+  final actionIconColorLight = const Color(0xffE0E0E0);
+  final actionTextColorDark = const Color(0xff9E9E9E);
+  final actionTextColorLight = const Color(0xffBDBDBD);
 
   void confirmDelete(context) async {
     final result = await showCupertinoDialog<bool>(
@@ -362,7 +366,10 @@ class TeamPostPreviewCard extends StatelessWidget {
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          UserPage.jump(int.parse(_post['user_info']['uid']));
+                          navigatorState.pushNamed(
+                            Routes.OPENJMU_USER,
+                            arguments: {"uid": int.parse(_post['user_info']['uid'])},
+                          );
                         },
                     ),
                     if (int.parse(_post['user_info']['uid']) == provider.post.uid)
@@ -457,7 +464,7 @@ class TeamPostPreviewCard extends StatelessWidget {
         GestureDetector(
           onTap: () {
             navigatorState.pushNamed(
-              "openjmu://image-viewer",
+              Routes.OPENJMU_IMAGE_VIEWER,
               arguments: {
                 "index": i,
                 "pics": post.pics.map((pic) {
@@ -515,14 +522,18 @@ class TeamPostPreviewCard extends StatelessWidget {
                 onPressed: null,
                 icon: SvgPicture.asset(
                   "assets/icons/postActions/comment-fill.svg",
-                  color: Theme.of(context).textTheme.body1.color,
+                  color: currentBrightness == Brightness.dark
+                      ? actionIconColorDark
+                      : actionIconColorLight,
                   width: suSetWidth(24.0),
                   height: suSetHeight(24.0),
                 ),
                 label: Text(
                   provider.post.repliesCount == 0 ? "评论" : "${provider.post.repliesCount}",
                   style: TextStyle(
-                    color: Theme.of(context).textTheme.body1.color,
+                    color: currentBrightness == Brightness.dark
+                        ? actionTextColorDark
+                        : actionTextColorLight,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),
@@ -544,7 +555,11 @@ class TeamPostPreviewCard extends StatelessWidget {
                 ),
                 likeBuilder: (bool isLiked) => SvgPicture.asset(
                   "assets/icons/postActions/praise-fill.svg",
-                  color: isLiked ? currentThemeColor : Theme.of(context).textTheme.body1.color,
+                  color: isLiked
+                      ? currentThemeColor
+                      : currentBrightness == Brightness.dark
+                          ? actionIconColorDark
+                          : actionIconColorLight,
                   width: suSetWidth(24.0),
                   height: suSetHeight(24.0),
                 ),
@@ -556,7 +571,11 @@ class TeamPostPreviewCard extends StatelessWidget {
                 countBuilder: (count, isLiked, text) => Text(
                   count == 0 ? "赞" : text,
                   style: TextStyle(
-                    color: isLiked ? currentThemeColor : Theme.of(context).textTheme.body1.color,
+                    color: isLiked
+                        ? currentThemeColor
+                        : currentBrightness == Brightness.dark
+                            ? actionTextColorDark
+                            : actionTextColorLight,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),
@@ -596,7 +615,7 @@ class TeamPostPreviewCard extends StatelessWidget {
               behavior: HitTestBehavior.opaque,
               onTap: () {
                 navigatorState.pushNamed(
-                  "openjmu://team-post-detail",
+                  Routes.OPENJMU_TEAM_POST_DETAIL,
                   arguments: {"provider": provider, "type": TeamPostType.post},
                 );
               },

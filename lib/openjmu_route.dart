@@ -27,10 +27,10 @@ import 'pages/user/user_qrcode_page.dart';
 import 'pages/login_page.dart';
 import 'pages/news/news_detail_page.dart';
 import 'pages/search_page.dart';
-import 'widgets/in_app_webview.dart';
+import 'widgets/webview/webview.dart';
+import 'widgets/webview/in_app_webview.dart';
 import 'widgets/image/image_crop_page.dart';
 import 'widgets/image/image_viewer.dart';
-import 'widgets/common_web_page.dart';
 import 'widgets/dialogs/forward_positioned.dart';
 import 'widgets/dialogs/comment_positioned.dart';
 
@@ -162,7 +162,6 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           initAction: arguments['initAction'],
         ),
         routeName: "登录页",
-        pageRouteType: PageRouteType.material,
       );
     case "openjmu://news-detail":
       return RouteResult(
@@ -178,11 +177,26 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         ),
         routeName: "搜索页",
       );
+    case "openjmu://common-webview":
+      return RouteResult(
+        widget: CommonWebView(
+          url: arguments['url'],
+          title: arguments['title'],
+          app: arguments['app'],
+          withCookie: arguments['withCookie'],
+          withAppBar: arguments['withAppBar'],
+          withAction: arguments['withAction'],
+          withScaffold: arguments['withScaffold'],
+          keepAlive: arguments['keepAlive'],
+        ),
+        routeName: "网页浏览",
+      );
     case "openjmu://inappbrowser":
       return RouteResult(
         widget: InAppBrowserPage(
           url: arguments['url'],
           title: arguments['title'],
+          app: arguments['app'],
           withCookie: arguments['withCookie'],
           withAppBar: arguments['withAppBar'],
           withAction: arguments['withAction'],
@@ -204,18 +218,6 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           needsClear: arguments['needsClear'],
         ),
         routeName: "图片浏览",
-      );
-    case "openjmu://webpage":
-      return RouteResult(
-        widget: CommonWebPage(
-          url: arguments['url'],
-          title: arguments['title'],
-          app: arguments['app'],
-          withCookie: arguments['withCookie'],
-          withAppBar: arguments['withAppBar'],
-          withAction: arguments['withAction'],
-        ),
-        routeName: "网页浏览",
       );
     case "openjmu://add-forward":
       return RouteResult(
@@ -289,10 +291,10 @@ List<String> routeNames = [
   "openjmu://login",
   "openjmu://news-detail",
   "openjmu://search",
+  "openjmu://common-webview",
   "openjmu://inappbrowser",
   "openjmu://image-crop",
   "openjmu://image-viewer",
-  "openjmu://webpage",
   "openjmu://add-forward",
   "openjmu://add-comment"
 ];
@@ -378,7 +380,8 @@ class Routes {
   /// [name] : openjmu://chat-app-message-page
   /// [routeName] : 应用消息页
   /// [arguments] : [app]
-  static const String OPENJMU_CHAT_APP_MESSAGE_PAGE = "openjmu://chat-app-message-page";
+  static const String OPENJMU_CHAT_APP_MESSAGE_PAGE =
+      "openjmu://chat-app-message-page";
 
   /// 通知页
   ///
@@ -390,7 +393,8 @@ class Routes {
   ///
   /// [name] : openjmu://team-notifications
   /// [routeName] : 小组通知页
-  static const String OPENJMU_TEAM_NOTIFICATIONS = "openjmu://team-notifications";
+  static const String OPENJMU_TEAM_NOTIFICATIONS =
+      "openjmu://team-notifications";
 
   /// 启动页
   ///
@@ -430,7 +434,6 @@ class Routes {
   /// [name] : openjmu://login
   /// [routeName] : 登录页
   /// [arguments] : [initAction]
-  /// [pageRouteType] : PageRouteType.material
   static const String OPENJMU_LOGIN = "openjmu://login";
 
   /// 新闻详情页
@@ -449,9 +452,16 @@ class Routes {
 
   /// 网页浏览
   ///
+  /// [name] : openjmu://common-webview
+  /// [routeName] : 网页浏览
+  /// [arguments] : [url, title, app, withCookie, withAppBar, withAction, withScaffold, keepAlive]
+  static const String OPENJMU_COMMON_WEBVIEW = "openjmu://common-webview";
+
+  /// 网页浏览
+  ///
   /// [name] : openjmu://inappbrowser
   /// [routeName] : 网页浏览
-  /// [arguments] : [url, title, withCookie, withAppBar, withAction, withScaffold, keepAlive]
+  /// [arguments] : [url, title, app, withCookie, withAppBar, withAction, withScaffold, keepAlive]
   static const String OPENJMU_INAPPBROWSER = "openjmu://inappbrowser";
 
   /// 图片裁剪
@@ -466,13 +476,6 @@ class Routes {
   /// [routeName] : 图片浏览
   /// [arguments] : [index, pics, needsClear]
   static const String OPENJMU_IMAGE_VIEWER = "openjmu://image-viewer";
-
-  /// 网页浏览
-  ///
-  /// [name] : openjmu://webpage
-  /// [routeName] : 网页浏览
-  /// [arguments] : [url, title, app, withCookie, withAppBar, withAction]
-  static const String OPENJMU_WEBPAGE = "openjmu://webpage";
 
   /// 新增转发
   ///

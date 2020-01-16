@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/appbar.dart';
-import 'package:openjmu/widgets/common_web_page.dart';
 
 @FFRoute(
   name: "openjmu://about",
@@ -58,7 +57,12 @@ class _AboutPageState extends State<AboutPage> {
                     text: TextSpan(children: <TextSpan>[
                   TextSpan(
                     recognizer: TapGestureRecognizer()
-                      ..onTap = () => CommonWebPage.jump(API.homePage, "openjmu"),
+                      ..onTap = () {
+                        navigatorState.pushNamed(
+                          Routes.OPENJMU_INAPPBROWSER,
+                          arguments: {"url": API.homePage, "title": "OpenJMU"},
+                        );
+                      },
                     text: "OpenJmu",
                     style: TextStyle(
                       fontFamily: 'chocolate',

@@ -6,7 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/pages/user/user_page.dart';
 import 'package:openjmu/widgets/dialogs/manually_set_sid_dialog.dart';
 
 class MyInfoPage extends StatefulWidget {
@@ -268,7 +267,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         padding: EdgeInsets.only(top: Screens.topSafeHeight),
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => UserPage.jump(UserAPI.currentUser.uid),
+          onTap: () => navigatorState.pushNamed(Routes.OPENJMU_USER),
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: suSetWidth(24.0),
@@ -438,7 +437,7 @@ class MyInfoPageState extends State<MyInfoPage> {
   void _handleItemClick(context, String item) {
     switch (item) {
       case "背包":
-        navigatorState.pushNamed("openjmu://backpack");
+        navigatorState.pushNamed(Routes.OPENJMU_BACKPACK);
         break;
 
       case "夜间模式":
@@ -449,17 +448,17 @@ class MyInfoPageState extends State<MyInfoPage> {
         provider.dark = !provider.dark;
         break;
       case "切换主题":
-        navigatorState.pushNamed("openjmu://theme");
+        navigatorState.pushNamed(Routes.OPENJMU_THEME);
         break;
       case "设置":
-        navigatorState.pushNamed("openjmu://settings");
+        navigatorState.pushNamed(Routes.OPENJMU_SETTINGS);
         break;
 
       case "检查更新":
         OTAUtils.checkUpdate();
         break;
       case "关于OpenJMU":
-        navigatorState.pushNamed("openjmu://about");
+        navigatorState.pushNamed(Routes.OPENJMU_ABOUT);
         break;
 
       case "退出登录":
@@ -467,7 +466,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         break;
 
       case "测试页":
-        navigatorState.pushNamed("openjmu://test-dashboard");
+        navigatorState.pushNamed(Routes.OPENJMU_TEST_DASHBOARD);
         break;
 
       default:

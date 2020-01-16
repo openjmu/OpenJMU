@@ -173,7 +173,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                           behavior: HitTestBehavior.opaque,
                           onTap: () {
                             navigatorState.pushNamed(
-                              "openjmu://team-post-detail",
+                              Routes.OPENJMU_TEAM_POST_DETAIL,
                               arguments: {
                                 "provider": provider,
                                 "type": item.type == TeamMentionType.post

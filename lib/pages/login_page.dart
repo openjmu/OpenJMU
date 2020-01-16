@@ -6,7 +6,6 @@ import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/common_web_page.dart';
 import 'package:openjmu/widgets/rounded_check_box.dart';
 import 'package:openjmu/widgets/announcement/announcement_widget.dart';
 
@@ -14,7 +13,6 @@ import 'package:openjmu/widgets/announcement/announcement_widget.dart';
   name: "openjmu://login",
   routeName: "登录页",
   argumentNames: ["initAction"],
-  pageRouteType: PageRouteType.material,
 )
 class LoginPage extends StatefulWidget {
   final String initAction;
@@ -289,9 +287,12 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               ),
             ),
             onPressed: () {
-              CommonWebPage.jump(
-                "http://myid.jmu.edu.cn/ids/EmployeeNoQuery.aspx",
-                "集大通行证 - 工号查询",
+              navigatorState.pushNamed(
+                Routes.OPENJMU_INAPPBROWSER,
+                arguments: {
+                  "url": "http://myid.jmu.edu.cn/ids/EmployeeNoQuery.aspx",
+                  "title": "集大通行证 - 工号查询",
+                },
               );
             },
           ),
@@ -350,10 +351,15 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         decoration: TextDecoration.underline,
                       ),
                       recognizer: TapGestureRecognizer()
-                        ..onTap = () => CommonWebPage.jump(
-                              "${API.homePage}/license.html",
-                              "OpenJMU 用户协议",
-                            ),
+                        ..onTap = () {
+                          navigatorState.pushNamed(
+                            Routes.OPENJMU_INAPPBROWSER,
+                            arguments: {
+                              "url": "${API.homePage}/license.html",
+                              "title": "OpenJMU 用户协议",
+                            },
+                          );
+                        },
                     ),
                   ],
                   style: TextStyle(color: Colors.black, fontSize: suSetSp(18.0)),
@@ -476,7 +482,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
       DataUtils.login(_username, _password).then((result) {
         if (result) {
           navigatorState.pushNamedAndRemoveUntil(
-            "openjmu://home",
+            Routes.OPENJMU_HOME,
             (_) => false,
             arguments: {"initAction": widget.initAction},
           );
@@ -516,10 +522,13 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               child: Text('查看'),
               onPressed: () {
                 Navigator.of(dialogContext).pop();
-                return CommonWebPage.jump(
-                  "https://net.jmu.edu.cn/info/1309/2476.htm",
-                  "集大通行证登录说明",
-                  withCookie: false,
+                navigatorState.pushNamed(
+                  Routes.OPENJMU_INAPPBROWSER,
+                  arguments: {
+                    "url": "https://net.jmu.edu.cn/info/1309/2476.htm",
+                    "title": "集大通行证登录说明",
+                    "withCookie": false,
+                  },
                 );
               },
             ),

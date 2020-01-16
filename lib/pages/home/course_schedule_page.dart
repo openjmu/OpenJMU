@@ -339,20 +339,21 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
 
     bool hasEleven = false;
     int _maxCoursesPerDay = 8;
-    for (int day in courses.keys) {
-      if (courses[day][9].isNotEmpty && _maxCoursesPerDay < 10) {
+    for (final day in courses.keys) {
+      final list9 = (courses[day][9] as List).cast<Course>();
+      final list11 = (courses[day][11] as List).cast<Course>();
+      if (list9.isNotEmpty && _maxCoursesPerDay < 10) {
         _maxCoursesPerDay = 10;
       } else if (courses[day][9].isNotEmpty &&
-          courses[day][9].where((course) => course.isEleven).isNotEmpty &&
+          list9.where((course) => course.isEleven).isNotEmpty &&
           _maxCoursesPerDay < 11) {
         hasEleven = true;
         _maxCoursesPerDay = 11;
-      } else if (courses[day][11].isNotEmpty && _maxCoursesPerDay < 12) {
+      } else if (list11.isNotEmpty && _maxCoursesPerDay < 12) {
         _maxCoursesPerDay = 12;
         break;
       }
     }
-
     return Expanded(
       child: Container(
         color: Theme.of(context).primaryColor,
@@ -363,29 +364,26 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
               width: monthWidth,
               height: totalHeight,
               child: Column(
-                children: <Widget>[
-                  for (int i = 0; i < _maxCoursesPerDay; i++)
-                    Expanded(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              (i + 1).toString(),
-                              style: TextStyle(
-                                fontSize: suSetSp(17.0),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Text(
-                              CourseAPI.getCourseTime(i + 1),
-                              style: TextStyle(fontSize: suSetSp(12.0)),
-                            ),
-                          ],
-                        ),
+                children: List<Widget>.generate(
+                  _maxCoursesPerDay,
+                  (i) => Expanded(
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            (i + 1).toString(),
+                            style: TextStyle(fontSize: suSetSp(17.0), fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            CourseAPI.getCourseTime(i + 1),
+                            style: TextStyle(fontSize: suSetSp(12.0)),
+                          ),
+                        ],
                       ),
                     ),
-                ],
+                  ),
+                ),
               ),
             ),
             for (int day = 1; day < maxWeekDay() + 1; day++)
@@ -556,8 +554,8 @@ class CourseWidget extends StatelessWidget {
 
   Widget courseContent(context, Course course) => SizedBox.expand(
         child: course != null
-            ? RichText(
-                text: TextSpan(
+            ? Text.rich(
+                TextSpan(
                   children: <InlineSpan>[
                     if (!CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) && !isOutOfTerm)
                       TextSpan(text: "[非本周]\n"),
@@ -817,6 +815,7 @@ class CoursesDialog extends StatelessWidget {
                       fontSize: suSetSp(28.0),
                       fontWeight: FontWeight.bold,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   if (course.location != null)
                     Text(
@@ -908,9 +907,14 @@ class CoursesDialog extends StatelessWidget {
                               }),
                               CourseAPI.setCustomCourse({
                                 "content": Uri.encodeComponent(""),
-                                "couDayTime": "${courseList[0].day}${courseList[0].day + 1}",
-                                "coudeTime": courseList[0].time,
-                              })
+                                "couDayTime": courseList[0].day,
+                                "coudeTime": courseList[0].time.toString().substring(0, 1),
+                              }),
+                              CourseAPI.setCustomCourse({
+                                "content": Uri.encodeComponent(""),
+                                "couDayTime": courseList[0].day,
+                                "coudeTime": courseList[0].time.toString().substring(1, 2),
+                              }),
                             ]).then((responses) {
                               bool isOk = true;
                               for (final response in responses) {

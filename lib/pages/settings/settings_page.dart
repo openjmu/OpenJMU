@@ -42,13 +42,13 @@ class _SettingsPageState extends State<SettingsPage> {
         "icon": "theme",
         "name": "切换主题",
         "description": "多彩颜色，丰富你的界面",
-        "route": "theme",
+        "route": Routes.OPENJMU_THEME,
       },
       {
         "icon": "homeSplash",
         "name": "启动页设置",
         "description": "设置各个页面的启动页",
-        "route": "switch-startup",
+        "route": Routes.OPENJMU_SWITCH_STARTUP,
       },
       if (currentUser.isTeacher)
         {
@@ -60,7 +60,7 @@ class _SettingsPageState extends State<SettingsPage> {
         "icon": "fontScale",
         "name": "调节字体大小",
         "description": "选择最适合你的字体大小",
-        "route": "font-scale",
+        "route": Routes.OPENJMU_FONT_SCALE,
       },
       {
         "icon": "fontScale",
@@ -197,7 +197,7 @@ class _SettingsPageState extends State<SettingsPage> {
       onTap: () {
         if (page['onTap'] != null) page['onTap']();
         if (pageWidget == null && page['route'] != null) {
-          navigatorState.pushNamed("openjmu://${page['route']}");
+          navigatorState.pushNamed(page['route']);
         }
         return null;
       },

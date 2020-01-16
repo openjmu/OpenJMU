@@ -181,10 +181,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
       padding: EdgeInsets.all(suSetSp(8.0)),
       child: InkWell(
         onTap: () {
-          navigatorState.pushNamed(
-            "openjmu://news-detail",
-            arguments: {"news": news},
-          );
+          navigatorState.pushNamed(Routes.OPENJMU_NEWS_DETAIL, arguments: {"news": news});
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
