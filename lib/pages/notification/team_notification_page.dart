@@ -38,7 +38,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
     provider = Provider.of<NotificationProvider>(currentContext, listen: false);
 
     _tabController = TabController(
-      initialIndex: initialIndex(),
+      initialIndex: getInitialIndex(),
       length: 3,
       vsync: this,
     );
@@ -46,8 +46,8 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
     super.initState();
   }
 
-  int initialIndex() {
-    final latestNotify = provider.teamNotification.latestNotify;
+  int getInitialIndex() {
+    final latestNotify = provider.teamNotifications.latestNotify;
     int index = 0;
     switch (latestNotify) {
       case "mention":
@@ -64,7 +64,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
   }
 
   Widget actions() {
-    final notification = provider.teamNotification;
+    final notification = provider.teamNotifications;
     return SizedBox(
       width: suSetWidth(220.0),
       child: Consumer<NotificationProvider>(

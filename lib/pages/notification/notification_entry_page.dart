@@ -20,7 +20,7 @@ class NotificationEntryPage extends StatefulWidget {
 
 class _NotificationEntryPageState extends State<NotificationEntryPage>
     with TickerProviderStateMixin {
-  final List<Map<String, dynamic>> items = [
+  final items = <Map<String, dynamic>>[
     {
       "name": "广场",
       "color": Colors.orange,
@@ -38,7 +38,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
       "notifications": Provider.of<NotificationProvider>(
         currentContext,
         listen: false,
-      ).teamNotification,
+      ).teamNotifications,
       "onTap": (context) async {
         navigatorState.pushNamed(Routes.OPENJMU_TEAM_NOTIFICATIONS);
       },

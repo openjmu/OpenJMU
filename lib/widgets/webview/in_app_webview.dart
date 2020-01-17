@@ -34,7 +34,7 @@ class InAppBrowserPage extends StatefulWidget {
   const InAppBrowserPage({
     Key key,
     @required this.url,
-    this.title = '',
+    this.title,
     this.app,
     this.withCookie = true,
     this.withAppBar = true,
@@ -49,18 +49,18 @@ class InAppBrowserPage extends StatefulWidget {
 
 class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepAliveClientMixin {
   InAppWebViewController _webViewController;
-  String title, url;
+  String title = '', url = 'about:blank';
   double progress = 0;
 
-  String get urlDomain => url.split('//')[1].split('/')[0];
+  String get urlDomain => url?.split('//')[1]?.split('/')[0];
 
   @override
   bool get wantKeepAlive => widget.keepAlive ?? false;
 
   @override
   void initState() {
-    url = widget.url;
-    title = widget.title ?? '';
+    url = (widget.url ?? url).trim();
+    title = (widget.title ?? title).trim();
 
     Instances.eventBus
       ..on<CourseScheduleRefreshEvent>().listen((event) {
@@ -137,13 +137,14 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(top: suSetHeight(20.0)),
-              child: Text(
-                "网页由 $urlDomain 提供",
-                style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(18.0)),
+            if (urlDomain != null)
+              Padding(
+                padding: EdgeInsets.only(top: suSetHeight(20.0)),
+                child: Text(
+                  "网页由 $urlDomain 提供",
+                  style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(18.0)),
+                ),
               ),
-            ),
             Container(
               margin: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
               child: Row(
@@ -299,8 +300,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
 
   List<Widget> get persistentFooterButtons => <Widget>[
         SizedBox(
-          width: MediaQuery.of(context).size.width - 16,
-          height: suSetHeight(24.0),
+          width: Screens.width,
+          height: suSetHeight(32.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -365,14 +366,23 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
         ),
         onJsPrompt: jsPromptHandler,
         onLoadStart: (InAppWebViewController controller, String url) {
-          this.url = url;
-          if (this.mounted) setState(() {});
+          debugPrint("Webview onLoadStart: $url");
         },
-        onLoadStop: (InAppWebViewController controller, String url) {
-          controller.getTitle().then((title) {
-            this.title = title;
-            if (this.mounted) setState(() {});
-          });
+        onLoadStop: (InAppWebViewController controller, String url) async {
+          this.url = url;
+          final _title = (await controller.getTitle())?.trim();
+          if (_title != null && _title.isNotEmpty && _title != this.url) {
+            title = _title;
+          } else {
+            final ogTitle = await controller.evaluateJavascript(
+              source: 'var ogTitle = document.querySelector(\'[property="og:title"]\');\n'
+                  'if (ogTitle != undefined) ogTitle.content;',
+            );
+            if (ogTitle != null) {
+              title = ogTitle;
+            }
+          }
+          if (this.mounted) setState(() {});
           Future.delayed(500.milliseconds, () {
             this.progress = 0.0;
             if (this.mounted) setState(() {});

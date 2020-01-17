@@ -188,8 +188,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           iconSize: bottomBarIconSize,
           selectedColor: currentThemeColor,
           onTabSelected: _selectedTab,
+          showText: false,
           initIndex: pagesTitle.indexOf(widget.initAction) == -1
-              ? 0
+              ? _tabIndex
               : pagesTitle.indexOf(widget.initAction),
           items: [
             ...List<FABBottomAppBarItem>.generate(
@@ -200,35 +201,20 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
               text: "我的",
               child: Center(
                 child: SizedBox.fromSize(
-                  size: Size.square(suSetWidth(bottomBarIconSize)),
-                  child: Stack(
-                    overflow: Overflow.visible,
-                    children: <Widget>[
-                      Positioned.fromRect(
-                        rect: Rect.fromCenter(
-                          center: Offset(
-                            suSetWidth(bottomBarIconSize / 2),
-                            suSetWidth(bottomBarIconSize / 2),
-                          ),
-                          width: suSetWidth(bottomBarHeight * 0.55),
-                          height: suSetWidth(bottomBarHeight * 0.55),
-                        ),
-                        child: AnimatedContainer(
-                          duration: 200.milliseconds,
-                          curve: Curves.easeInOut,
-                          width: suSetWidth(bottomBarHeight * 0.55),
-                          height: suSetWidth(bottomBarHeight * 0.55),
-                          padding: EdgeInsets.all(suSetWidth(3.0)),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: _tabIndex == 3
-                                ? Border.all(color: currentThemeColor, width: suSetWidth(2.5))
-                                : null,
-                          ),
-                          child: UserAvatar(canJump: false),
-                        ),
-                      ),
-                    ],
+                  size: Size.square(suSetWidth(bottomBarIconSize * 1.5)),
+                  child: AnimatedContainer(
+                    duration: 200.milliseconds,
+                    curve: Curves.easeInOut,
+                    width: suSetWidth(bottomBarHeight * 0.55),
+                    height: suSetWidth(bottomBarHeight * 0.55),
+                    padding: EdgeInsets.all(suSetWidth(3.0)),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: _tabIndex == 3
+                          ? Border.all(color: currentThemeColor, width: suSetWidth(2.5))
+                          : null,
+                    ),
+                    child: UserAvatar(canJump: false),
                   ),
                 ),
               ),

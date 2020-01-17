@@ -23,6 +23,8 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
     Platform.isAndroid ? Icons.thumb_up : Ionicons.ios_thumbs_up
   ];
 
+  NotificationProvider provider;
+
   TabController _tabController, _mentionTabController;
 
   PostList _mentionPost;
@@ -32,8 +34,16 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
 
   @override
   void initState() {
-    _tabController = TabController(length: 3, vsync: this);
-    _mentionTabController = TabController(length: 2, vsync: this);
+    provider = Provider.of<NotificationProvider>(currentContext, listen: false);
+    _tabController = TabController(
+      length: 3,
+      vsync: this,
+      initialIndex: provider.initialIndex,
+    );
+    _mentionTabController = TabController(
+      length: 2,
+      vsync: this,
+    );
 
     postByMention();
     commentByMention();

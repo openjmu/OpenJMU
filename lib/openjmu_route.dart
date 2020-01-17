@@ -27,7 +27,6 @@ import 'pages/user/user_qrcode_page.dart';
 import 'pages/login_page.dart';
 import 'pages/news/news_detail_page.dart';
 import 'pages/search_page.dart';
-import 'widgets/webview/webview.dart';
 import 'widgets/webview/in_app_webview.dart';
 import 'widgets/image/image_crop_page.dart';
 import 'widgets/image/image_viewer.dart';
@@ -177,20 +176,6 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         ),
         routeName: "搜索页",
       );
-    case "openjmu://common-webview":
-      return RouteResult(
-        widget: CommonWebView(
-          url: arguments['url'],
-          title: arguments['title'],
-          app: arguments['app'],
-          withCookie: arguments['withCookie'],
-          withAppBar: arguments['withAppBar'],
-          withAction: arguments['withAction'],
-          withScaffold: arguments['withScaffold'],
-          keepAlive: arguments['keepAlive'],
-        ),
-        routeName: "网页浏览",
-      );
     case "openjmu://inappbrowser":
       return RouteResult(
         widget: InAppBrowserPage(
@@ -291,7 +276,6 @@ List<String> routeNames = [
   "openjmu://login",
   "openjmu://news-detail",
   "openjmu://search",
-  "openjmu://common-webview",
   "openjmu://inappbrowser",
   "openjmu://image-crop",
   "openjmu://image-viewer",
@@ -449,13 +433,6 @@ class Routes {
   /// [routeName] : 搜索页
   /// [arguments] : [content]
   static const String OPENJMU_SEARCH = "openjmu://search";
-
-  /// 网页浏览
-  ///
-  /// [name] : openjmu://common-webview
-  /// [routeName] : 网页浏览
-  /// [arguments] : [url, title, app, withCookie, withAppBar, withAction, withScaffold, keepAlive]
-  static const String OPENJMU_COMMON_WEBVIEW = "openjmu://common-webview";
 
   /// 网页浏览
   ///

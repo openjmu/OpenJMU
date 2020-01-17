@@ -414,18 +414,9 @@ class StackSpecialTextFieldSpanBuilder extends SpecialTextSpanBuilder {
         type: BuilderType.extendedTextField,
       );
     } else if (isStart(flag, PoundText.flag)) {
-      return PoundText(
-        textStyle,
-        onTap,
-        start: index,
-        type: BuilderType.extendedTextField,
-      );
+      return PoundText(textStyle, onTap, start: index, type: BuilderType.extendedTextField);
     } else if (isStart(flag, EmoticonText.flag)) {
-      return EmoticonText(
-        textStyle,
-        start: index,
-        type: BuilderType.extendedTextField,
-      );
+      return EmoticonText(textStyle, start: index, type: BuilderType.extendedTextField);
     }
     return null;
   }
@@ -435,7 +426,7 @@ enum BuilderType { extendedText, extendedTextField }
 enum WidgetType { post, comment }
 
 void specialTextTapRecognizer(data) {
-  final text = data['content'];
+  final text = data['content'] as String;
   if (text.startsWith("#")) {
     navigatorState.pushNamed(
       Routes.OPENJMU_SEARCH,
@@ -446,15 +437,15 @@ void specialTextTapRecognizer(data) {
   } else if (text.startsWith("https://")) {
     navigatorState.pushNamed(
       Routes.OPENJMU_INAPPBROWSER,
-      arguments: {"url": text, "title": "网页链接"},
+      arguments: {"url": text.trim(), "title": "网页链接"},
     );
   } else if (text.startsWith("http://")) {
     navigatorState.pushNamed(
       Routes.OPENJMU_INAPPBROWSER,
-      arguments: {"url": text, "title": "网页链接"},
+      arguments: {"url": text.trim(), "title": "网页链接"},
     );
   } else if (text.startsWith("|")) {
-    final imageId = data['image'];
+    final imageId = data['image'] as int;
     final imageUrl = API.commentImageUrl(imageId, "o");
     navigatorState.pushNamed(
       Routes.OPENJMU_IMAGE_VIEWER,

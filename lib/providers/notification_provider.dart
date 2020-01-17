@@ -19,22 +19,29 @@ class NotificationProvider extends ChangeNotifier {
     if (shouldNotifyListeners) notifyListeners();
   }
 
-  TeamNotifications teamNotification = TeamNotifications();
+  TeamNotifications _teamNotifications = TeamNotifications();
+  TeamNotifications get teamNotifications => _teamNotifications;
+  set teamNotifications(TeamNotifications value) {
+    _teamNotifications = value;
+    notifyListeners();
+  }
 
-  bool get showNotification => notifications.total > 0 || teamNotification.total > 0;
+  bool get showNotification => notifications.total > 0 || teamNotifications.total > 0;
+
+  int get initialIndex => _notifications.comment > 0 ? 1 : (_notifications.praise > 0 ? 2 : 0);
 
   void updateNotification(
     Notifications notification,
     TeamNotifications teamNotification,
   ) {
     final shouldNotifyListeners =
-        this.notifications != notification && this.teamNotification != teamNotification;
+        this.notifications != notification && this.teamNotifications != teamNotification;
     this.notifications
       ..at = notification.at
       ..comment = notification.comment
       ..praise = notification.praise
       ..fans = notification.fans;
-    this.teamNotification
+    this.teamNotifications
       ..latestNotify = teamNotification.latestNotify
       ..mention = teamNotification.mention
       ..reply = teamNotification.reply
@@ -63,20 +70,20 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   void readTeamMention() {
-    teamNotification.mention = 0;
-    teamNotification.latestNotify = "mention";
+    teamNotifications.mention = 0;
+    teamNotifications.latestNotify = "mention";
     notifyListeners();
   }
 
   void readTeamReply() {
-    teamNotification.reply = 0;
-    teamNotification.latestNotify = "reply";
+    teamNotifications.reply = 0;
+    teamNotifications.latestNotify = "reply";
     notifyListeners();
   }
 
   void readTeamPraise() {
-    teamNotification.praise = 0;
-    teamNotification.latestNotify = "praise";
+    teamNotifications.praise = 0;
+    teamNotifications.latestNotify = "praise";
     notifyListeners();
   }
 }

@@ -50,16 +50,12 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   int _lastValue = 0;
   bool _isLoading = false;
   bool _canLoadMore = true;
-  bool _firstLoadComplete = false;
-  bool _showLoading = true;
 
   Widget _itemList;
 
   Widget _emptyChild;
   Widget _errorChild;
   bool error = false;
-
-  Widget _body = Center(child: PlatformProgressIndicator());
 
   List<int> _idList = [];
   List<Post> _postList = [];
@@ -81,10 +77,10 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             curve: Curves.fastOutSlowIn,
             duration: kTabScrollDuration,
           );
-          Future.delayed(Duration(milliseconds: 50), () {
+          Future.delayed(50.milliseconds, () {
             refreshIndicatorKey.currentState.show();
           });
-          Future.delayed(Duration(milliseconds: 500), () {
+          Future.delayed(500.milliseconds, () {
             _refreshData(needLoader: true);
           });
         }
@@ -123,7 +119,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       onTap: () {
         setState(() {
           _isLoading = false;
-          _showLoading = true;
           _refreshData();
         });
       },
@@ -142,175 +137,170 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   }
 
   Future<Null> _loadData() async {
-    _firstLoadComplete = true;
     if (!_isLoading && _canLoadMore) {
       _isLoading = true;
-
-      Map result = (await PostAPI.getPostList(
-        widget._postController.postType,
-        widget._postController.isFollowed,
-        true,
-        _lastValue,
-        additionAttrs: widget._postController.additionAttrs,
-      ))
-          .data;
-
-      List<Post> postList = [];
-      List _topics = result['topics'];
-      int _total = int.parse(result['total'].toString());
-      int _count = int.parse(result['count'].toString());
-
-      for (var postData in _topics) {
-        if (!UserAPI.blacklist.contains(jsonEncode({
-          "uid": postData['topic']['user']['uid'].toString(),
-          "username": postData['topic']['user']['nickname'],
-        }))) {
-          postList.add(Post.fromJson(postData['topic']));
-          _idList.add(
-            postData['id'] is String ? int.parse(postData['id']) : postData['id'],
-          );
-        }
-      }
-      _postList.addAll(postList);
-
-      _showLoading = false;
-      _firstLoadComplete = true;
-      _isLoading = false;
-      _canLoadMore = _idList.length < _total && _count != 0;
-      _lastValue = _idList.isEmpty ? 0 : widget._postController.lastValue(_idList.last);
-      if (mounted) setState(() {});
     }
+    final result = (await PostAPI.getPostList(
+      widget._postController.postType,
+      widget._postController.isFollowed,
+      true,
+      _lastValue,
+      additionAttrs: widget._postController.additionAttrs,
+    ))
+        .data;
+
+    List<Post> postList = [];
+    List _topics = result['topics'];
+    int _total = int.parse(result['total'].toString());
+    int _count = int.parse(result['count'].toString());
+
+    for (var postData in _topics) {
+      if (!UserAPI.blacklist.contains(jsonEncode({
+        "uid": postData['topic']['user']['uid'].toString(),
+        "username": postData['topic']['user']['nickname'],
+      }))) {
+        postList.add(Post.fromJson(postData['topic']));
+        _idList.add(
+          postData['id'] is String ? int.parse(postData['id']) : postData['id'],
+        );
+      }
+    }
+    _postList.addAll(postList);
+
+    _isLoading = false;
+    _canLoadMore = _idList.length < _total && _count != 0;
+    _lastValue = _idList.isEmpty ? 0 : widget._postController.lastValue(_idList.last);
+    if (mounted) setState(() {});
   }
 
   Future<Null> _refreshData({bool needLoader = false}) async {
     if (!_isLoading) {
       _isLoading = true;
-      _lastValue = 0;
+    } else {
+      return;
+    }
+    _lastValue = 0;
 
-      Map result = (await PostAPI.getPostList(
-        widget._postController.postType,
-        widget._postController.isFollowed,
-        false,
-        _lastValue,
-        additionAttrs: widget._postController.additionAttrs,
-      ))
-          .data;
+    final result = (await PostAPI.getPostList(
+      widget._postController.postType,
+      widget._postController.isFollowed,
+      false,
+      _lastValue,
+      additionAttrs: widget._postController.additionAttrs,
+    ))
+        .data;
 
-      List<Post> postList = [];
-      List<int> idList = [];
-      List _topics = result['topics'] ?? result['data'];
-      int _total = int.parse(result['total'].toString());
-      int _count = int.parse(result['count'].toString());
+    List<Post> postList = [];
+    List<int> idList = [];
+    List _topics = result['topics'] ?? result['data'];
+    int _total = int.parse(result['total'].toString());
+    int _count = int.parse(result['count'].toString());
 
-      for (var postData in _topics) {
-        if (postData['topic'] != null && postData != "") {
-          if (!UserAPI.blacklist.contains(jsonEncode({
-            "uid": postData['topic']['user']['uid'].toString(),
-            "username": postData['topic']['user']['nickname'],
-          }))) {
-            postList.add(Post.fromJson(postData['topic']));
-            idList.add(
-              postData['id'] is String ? int.parse(postData['id']) : postData['id'],
-            );
-          }
+    for (var postData in _topics) {
+      if (postData['topic'] != null && postData != "") {
+        if (!UserAPI.blacklist.contains(jsonEncode({
+          "uid": postData['topic']['user']['uid'].toString(),
+          "username": postData['topic']['user']['nickname'],
+        }))) {
+          postList.add(Post.fromJson(postData['topic']));
+          idList.add(
+            postData['id'] is String ? int.parse(postData['id']) : postData['id'],
+          );
         }
       }
-      _postList = postList;
+    }
+    _postList = postList;
 
-      if (needLoader) {
-        if (idList.toString() != _idList.toString()) {
-          _idList = idList;
-        }
-      } else {
+    if (needLoader) {
+      if (idList.toString() != _idList.toString()) {
         _idList = idList;
       }
-
-      _showLoading = false;
-      _firstLoadComplete = true;
-      _isLoading = false;
-      _canLoadMore = _idList.length < _total && _count != 0;
-      _lastValue = _idList.isEmpty ? 0 : widget._postController.lastValue(_idList.last);
-      if (mounted) setState(() {});
+    } else {
+      _idList = idList;
     }
+
+    _isLoading = false;
+    _canLoadMore = _idList.length < _total && _count != 0;
+    _lastValue = _idList.isEmpty ? 0 : widget._postController.lastValue(_idList.last);
+    if (mounted) setState(() {});
   }
 
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
-    if (!_showLoading) {
-      if (_firstLoadComplete) {
-        _itemList = ExtendedListView.separated(
-          padding: EdgeInsets.zero,
-          extendedListDelegate: ExtendedListDelegate(
-            collectGarbage: (List<int> garbage) {
-              garbage.forEach((index) {
-                if (_postList.length >= index + 1 && index < 4) {
-                  final element = _postList.elementAt(index);
-                  final pics = element.pics;
-                  if (pics != null) {
-                    pics.forEach((pic) {
-                      final thumbProvider = ExtendedNetworkImageProvider(
-                        pic['image_thumb'],
-                      );
-                      final middleProvider = ExtendedNetworkImageProvider(
-                        pic['image_middle'],
-                      );
-                      final originalProvider = ExtendedNetworkImageProvider(
-                        pic['image_original'],
-                      );
-                      thumbProvider.evict();
-                      middleProvider.evict();
-                      originalProvider.evict();
-                    });
-                  }
-                }
-              });
-            },
-          ),
-          controller: widget._postController.postType == "user" ? null : _scrollController,
-          separatorBuilder: (context, index) =>
-              _postList[index].isShield && SettingUtils.getEnabledHideShieldPost()
-                  ? SizedBox.shrink()
-                  : Divider(
-                      thickness: suSetHeight(8.0),
-                      height: suSetHeight(8.0),
-                    ),
-          itemCount: _postList.length + 1,
-          itemBuilder: (context, index) {
-            if (index == _postList.length - 1 && _canLoadMore) {
-              _loadData();
-            }
-            if (index == _postList.length) {
-              return LoadMoreIndicator(canLoadMore: _canLoadMore);
-            } else if (index < _postList.length) {
-              return PostCard(
-                _postList[index],
-                fromPage: widget._postController.postType,
-                index: index,
-                isDetail: false,
-                parentContext: context,
-                key: ValueKey("post-key-${_postList[index].id}"),
-              );
-            } else {
-              return SizedBox.shrink();
-            }
-          },
-        );
-        _body = _postList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList;
+    Widget _body;
 
-        if (widget.needRefreshIndicator) {
-          _body = RefreshIndicator(
-            key: refreshIndicatorKey,
-            color: currentThemeColor,
-            onRefresh: _refreshData,
-            child: _body,
-          );
-        }
+    if (!_isLoading) {
+      _itemList = ExtendedListView.separated(
+        padding: EdgeInsets.zero,
+        extendedListDelegate: ExtendedListDelegate(
+          collectGarbage: (List<int> garbage) {
+            garbage.forEach((index) {
+              if (_postList.length >= index + 1 && index < 4) {
+                final element = _postList.elementAt(index);
+                final pics = element.pics;
+                if (pics != null) {
+                  pics.forEach((pic) {
+                    final thumbProvider = ExtendedNetworkImageProvider(
+                      pic['image_thumb'],
+                    );
+                    final middleProvider = ExtendedNetworkImageProvider(
+                      pic['image_middle'],
+                    );
+                    final originalProvider = ExtendedNetworkImageProvider(
+                      pic['image_original'],
+                    );
+                    thumbProvider.evict();
+                    middleProvider.evict();
+                    originalProvider.evict();
+                  });
+                }
+              }
+            });
+          },
+        ),
+        controller: widget._postController.postType == "user" ? null : _scrollController,
+        separatorBuilder: (context, index) =>
+            _postList[index].isShield && SettingUtils.getEnabledHideShieldPost()
+                ? SizedBox.shrink()
+                : Divider(
+                    thickness: suSetHeight(8.0),
+                    height: suSetHeight(8.0),
+                  ),
+        itemCount: _postList.length + 1,
+        itemBuilder: (context, index) {
+          if (index == _postList.length - 1 && _canLoadMore) _loadData();
+          if (index == _postList.length) {
+            return LoadMoreIndicator(canLoadMore: _canLoadMore);
+          } else if (index < _postList.length) {
+            return PostCard(
+              _postList[index],
+              fromPage: widget._postController.postType,
+              index: index,
+              isDetail: false,
+              parentContext: context,
+              key: ValueKey("post-key-${_postList[index].id}"),
+            );
+          } else {
+            return SizedBox.shrink();
+          }
+        },
+      );
+      _body = _postList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList;
+
+      if (widget.needRefreshIndicator) {
+        _body = RefreshIndicator(
+          key: refreshIndicatorKey,
+          color: currentThemeColor,
+          onRefresh: _refreshData,
+          child: _body,
+        );
       }
-      return _body;
     } else {
-      return Container(child: Center(child: PlatformProgressIndicator()));
+      _body = Container(child: Center(child: PlatformProgressIndicator()));
     }
+
+    return AnimatedSwitcher(duration: 200.milliseconds, child: _body);
   }
 }
 

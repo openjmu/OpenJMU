@@ -40,6 +40,7 @@ class FABBottomAppBar extends StatefulWidget {
     this.notchedShape,
     this.onTabSelected,
     this.initIndex,
+    this.showText = true,
   }) {
     assert(this.items.length == 2 || this.items.length == 4);
   }
@@ -54,6 +55,7 @@ class FABBottomAppBar extends StatefulWidget {
   final NotchedShape notchedShape;
   final ValueChanged<int> onTabSelected;
   final int initIndex;
+  final bool showText;
 
   @override
   State<StatefulWidget> createState() => FABBottomAppBarState();
@@ -106,8 +108,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
           builder: (_, dark, __) {
             return UnconstrainedBox(
               child: SizedBox(
-                width: suSetWidth(76.0),
-                height: suSetWidth(60.0),
+                width: suSetWidth(68.0),
+                height: suSetWidth(52.0),
                 child: MaterialButton(
                   padding: EdgeInsets.zero,
                   color: widget.selectedColor,
@@ -169,29 +171,30 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
                             ),
                           )
                         : item.child,
-                    SizedBox(height: suSetWidth(widget.iconSize / 8)),
-                    AnimatedCrossFade(
-                      duration: 200.milliseconds,
-                      crossFadeState: _selectedIndex == index
-                          ? CrossFadeState.showFirst
-                          : CrossFadeState.showSecond,
-                      firstChild: Text(
-                        item.text,
-                        style: TextStyle(
-                          color: widget.selectedColor,
-                          fontSize: suSetSp(widget.itemFontSize),
-                          fontWeight: FontWeight.normal,
+                    if (widget.showText) SizedBox(height: suSetWidth(widget.iconSize / 8)),
+                    if (widget.showText)
+                      AnimatedCrossFade(
+                        duration: 200.milliseconds,
+                        crossFadeState: _selectedIndex == index
+                            ? CrossFadeState.showFirst
+                            : CrossFadeState.showSecond,
+                        firstChild: Text(
+                          item.text,
+                          style: TextStyle(
+                            color: widget.selectedColor,
+                            fontSize: suSetSp(widget.itemFontSize),
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
+                        secondChild: Text(
+                          item.text,
+                          style: TextStyle(
+                            color: widget.color,
+                            fontSize: suSetSp(widget.itemFontSize),
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
                       ),
-                      secondChild: Text(
-                        item.text,
-                        style: TextStyle(
-                          color: widget.color,
-                          fontSize: suSetSp(widget.itemFontSize),
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),
