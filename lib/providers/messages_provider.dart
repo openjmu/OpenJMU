@@ -40,7 +40,7 @@ class MessagesProvider with ChangeNotifier {
 //    _personalMessages = personalBox.get(currentUser.uid).cast<int, List>();
   }
 
-  void logout() {
+  void unloadMessages() {
     _appsMessages = null;
 //    _personalMessages = null;
   }

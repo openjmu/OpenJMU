@@ -217,7 +217,7 @@ packages:
       name: extended_image
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.8"
+    version: "0.6.9"
   extended_image_library:
     dependency: transitive
     description:
@@ -252,14 +252,14 @@ packages:
       name: extended_text
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.6.9"
+    version: "0.7.0"
   extended_text_field:
     dependency: "direct main"
     description:
       name: extended_text_field
       url: "https://pub.flutter-io.cn"
     source: hosted
-    version: "0.4.7"
+    version: "0.4.8"
   extended_text_library:
     dependency: transitive
     description:

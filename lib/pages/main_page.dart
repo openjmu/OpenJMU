@@ -36,7 +36,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   static final List<String> pagesTitle = ['广场', '应用', '消息'];
   static final List<String> pagesIcon = ["square", "apps", "messages"];
   static const double bottomBarHeight = 72.0;
-  double get bottomBarIconSize => bottomBarHeight / 2.25;
+  double get bottomBarIconSize => bottomBarHeight / 2.15;
 
   static final tabSelectedTextStyle = TextStyle(
     fontSize: suSetSp(23.0),

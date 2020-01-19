@@ -1,7 +1,7 @@
 name: openjmu
 description: A JMU Flutter application.
 
-version: 0.8.1+135
+version: 0.8.1+136
 
 environment:
   sdk: ">=2.6.0 <3.0.0"
@@ -21,11 +21,11 @@ dependencies:
   device_info: ^0.4.1+4
   dio: 2.1.16
   event_bus: 1.1.0
-  extended_image: ^0.6.8
+  extended_image: ^0.6.9
   extended_list: ^0.1.3
   extended_tabs: ^0.2.2
-  extended_text: ^0.6.9
-  extended_text_field: ^0.4.7
+  extended_text: ^0.7.0
+  extended_text_field: ^0.4.8
   flutter_icons: ^1.0.0+1
   flutter_inappwebview:
     git:
@@ -83,6 +83,7 @@ flutter:
     - assets/icons/bottomNavigation/
     - assets/icons/gender/
     - assets/icons/postActions/
+    - assets/icons/settings/
     - images/
     - images/placeholder/
   fonts:

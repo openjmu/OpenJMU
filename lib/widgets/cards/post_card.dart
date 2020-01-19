@@ -11,6 +11,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:like_button/like_button.dart';
 
 import 'package:openjmu/constants/constants.dart';
+import 'package:openjmu/controller/extended_network_image_provider.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
 import 'package:openjmu/widgets/dialogs/delete_dialog.dart';
 
@@ -235,10 +236,10 @@ class _PostCardState extends State<PostCard> {
       for (int index = 0; index < data.length; index++) {
         final imageID = int.parse(data[index]['id'].toString());
         final imageUrl = data[index]['image_middle'];
-        Widget _exImage = ExtendedImage.network(
-          imageUrl,
+        final provider = ExtendedTypedNetworkImageProvider(imageUrl);
+        Widget _exImage = ExtendedImage(
+          image: provider,
           fit: BoxFit.cover,
-          cache: true,
           loadStateChanged: (ExtendedImageState state) {
             Widget loader;
             switch (state.extendedImageLoadState) {
@@ -253,6 +254,7 @@ class _PostCardState extends State<PostCard> {
                     length: data.length,
                     num200: suSetWidth(200),
                     num400: suSetWidth(300),
+                    provider: provider,
                   );
                 }
                 break;
@@ -288,10 +290,7 @@ class _PostCardState extends State<PostCard> {
       if (data.length == 1) {
         _image = Container(
           padding: EdgeInsets.only(top: suSetHeight(4.0)),
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: imagesWidget[0],
-          ),
+          child: Align(alignment: Alignment.topLeft, child: imagesWidget[0]),
         );
       } else if (data.length == 4) {
         _image = GridView.count(
@@ -592,16 +591,8 @@ class _PostCardState extends State<PostCard> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              _postActionListTile(
-                icon: Icons.visibility_off,
-                text: "屏蔽此人",
-                onTap: confirmBlock,
-              ),
-              _postActionListTile(
-                icon: Icons.report,
-                text: "举报动态",
-                onTap: confirmReport,
-              ),
+              _postActionListTile(icon: Icons.visibility_off, text: "屏蔽此人", onTap: confirmBlock),
+              _postActionListTile(icon: Icons.report, text: "举报动态", onTap: confirmReport),
               SizedBox(height: Screens.bottomSafeHeight),
             ],
           ),
@@ -624,46 +615,31 @@ class _PostCardState extends State<PostCard> {
         ),
         actions: <Widget>[
           PlatformButton(
-            android: (BuildContext context) => MaterialRaisedButtonData(
+            android: (_) => MaterialRaisedButtonData(
               color: Theme.of(context).dialogBackgroundColor,
               elevation: 0,
               disabledElevation: 0.0,
               highlightElevation: 0.0,
-              child: Text(
-                "确认",
-                style: TextStyle(color: currentThemeColor),
-              ),
+              child: Text("确认", style: TextStyle(color: currentThemeColor)),
             ),
-            ios: (BuildContext context) => CupertinoButtonData(
-              child: Text(
-                "确认",
-                style: TextStyle(color: currentThemeColor),
-              ),
+            ios: (_) => CupertinoButtonData(
+              child: Text("确认", style: TextStyle(color: currentThemeColor)),
             ),
             onPressed: () {
-              UserAPI.fAddToBlacklist(
-                uid: widget.post.uid,
-                name: widget.post.nickname,
-              );
+              UserAPI.fAddToBlacklist(uid: widget.post.uid, name: widget.post.nickname);
               Navigator.pop(context);
             },
           ),
           PlatformButton(
-            android: (BuildContext context) => MaterialRaisedButtonData(
+            android: (_) => MaterialRaisedButtonData(
               color: currentThemeColor,
               elevation: 0,
               disabledElevation: 0.0,
               highlightElevation: 0.0,
-              child: Text(
-                '取消',
-                style: TextStyle(color: Colors.white),
-              ),
+              child: Text('取消', style: TextStyle(color: Colors.white)),
             ),
-            ios: (BuildContext context) => CupertinoButtonData(
-              child: Text(
-                "取消",
-                style: TextStyle(color: currentThemeColor),
-              ),
+            ios: (_) => CupertinoButtonData(
+              child: Text("取消", style: TextStyle(color: currentThemeColor)),
             ),
             onPressed: Navigator.of(context).pop,
           ),
@@ -684,14 +660,14 @@ class _PostCardState extends State<PostCard> {
         actions: <Widget>[
           Consumer<ReportRecordsProvider>(
             builder: (_, provider, __) => PlatformButton(
-              android: (BuildContext context) => MaterialRaisedButtonData(
+              android: (_) => MaterialRaisedButtonData(
                 color: Theme.of(context).dialogBackgroundColor,
                 elevation: 0,
                 disabledElevation: 0.0,
                 highlightElevation: 0.0,
                 child: Text("确认", style: TextStyle(color: currentThemeColor)),
               ),
-              ios: (BuildContext context) => CupertinoButtonData(
+              ios: (_) => CupertinoButtonData(
                 child: Text("确认", style: TextStyle(color: currentThemeColor)),
               ),
               onPressed: () async {
@@ -708,21 +684,15 @@ class _PostCardState extends State<PostCard> {
             ),
           ),
           PlatformButton(
-            android: (BuildContext context) => MaterialRaisedButtonData(
+            android: (_) => MaterialRaisedButtonData(
               color: currentThemeColor,
               elevation: 0,
               disabledElevation: 0.0,
               highlightElevation: 0.0,
-              child: Text(
-                '取消',
-                style: TextStyle(color: Colors.white),
-              ),
+              child: Text('取消', style: TextStyle(color: Colors.white)),
             ),
-            ios: (BuildContext context) => CupertinoButtonData(
-              child: Text(
-                "取消",
-                style: TextStyle(color: currentThemeColor),
-              ),
+            ios: (_) => CupertinoButtonData(
+              child: Text("取消", style: TextStyle(color: currentThemeColor)),
             ),
             onPressed: Navigator.of(context).pop,
           ),

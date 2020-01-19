@@ -72,7 +72,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       ..on<LogoutEvent>().listen((event) async {
         Provider.of<CoursesProvider>(currentContext, listen: false).unloadCourses();
         Provider.of<ReportRecordsProvider>(currentContext, listen: false).unloadRecords();
-        Provider.of<MessagesProvider>(currentContext, listen: false).logout();
+        Provider.of<MessagesProvider>(currentContext, listen: false).unloadMessages();
 
         navigatorState.pushNamedAndRemoveUntil(
           Routes.OPENJMU_LOGIN,

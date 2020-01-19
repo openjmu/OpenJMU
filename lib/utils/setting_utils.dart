@@ -39,7 +39,7 @@ class SettingUtils {
   /// 获取设置的跟随系统夜间模式
   static bool getBrightnessPlatform() {
     final _box = HiveBoxes.settingsBox;
-    return _box?.get(spBrightnessPlatform) ?? false;
+    return _box?.get(spBrightnessPlatform) ?? true;
   }
 
   /// 设置选择的主题色

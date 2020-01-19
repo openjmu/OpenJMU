@@ -37,7 +37,7 @@ class ThemesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool _platformBrightness = false;
+  bool _platformBrightness = true;
   bool get platformBrightness => _platformBrightness;
   set platformBrightness(bool value) {
     if (_platformBrightness == value) return;

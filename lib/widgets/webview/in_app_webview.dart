@@ -62,6 +62,10 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     url = (widget.url ?? url).trim();
     title = (widget.title ?? title).trim();
 
+    if (url.startsWith(API.labsHost) && currentIsDark) {
+      url += "&night=1";
+    }
+
     Instances.eventBus
       ..on<CourseScheduleRefreshEvent>().listen((event) {
         if (mounted) loadCourseSchedule();
@@ -91,6 +95,14 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     }
   }
 
+  Widget get _domainProvider => Padding(
+        padding: EdgeInsets.only(bottom: suSetHeight(10.0)),
+        child: Text(
+          "网页由 $urlDomain 提供",
+          style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(18.0)),
+        ),
+      );
+
   Widget _moreAction({
     @required BuildContext context,
     @required IconData icon,
@@ -98,7 +110,11 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     VoidCallback onTap,
   }) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: suSetWidth(16.0), vertical: suSetHeight(10.0)),
+      margin: EdgeInsets.only(
+        left: suSetWidth(30.0),
+        top: suSetHeight(10.0),
+        bottom: suSetHeight(10.0),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -131,22 +147,26 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
 
   Future showMore(context) async {
     return await showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(suSetWidth(20.0)),
+      ),
       backgroundColor: Theme.of(context).primaryColor,
       context: context,
       builder: (_) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            if (urlDomain != null)
-              Padding(
-                padding: EdgeInsets.only(top: suSetHeight(20.0)),
-                child: Text(
-                  "网页由 $urlDomain 提供",
-                  style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(18.0)),
-                ),
-              ),
             Container(
-              margin: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+              margin: EdgeInsets.only(top: suSetHeight(16.0)),
+              width: suSetWidth(40.0),
+              height: suSetHeight(8.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(100.0),
+                color: Theme.of(context).iconTheme.color.withOpacity(0.7),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: suSetHeight(10.0)),
               child: Row(
                 children: <Widget>[
                   _moreAction(
@@ -167,19 +187,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
                 ],
               ),
             ),
-            MaterialButton(
-              padding: EdgeInsets.zero,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              minWidth: Screens.width,
-              height: suSetHeight(64.0),
-              color: Theme.of(context).canvasColor.withOpacity(0.7),
-              onPressed: Navigator.of(_).pop,
-              child: Text("取消", style: TextStyle(fontSize: suSetSp(22.0))),
-              elevation: 0.0,
-              focusElevation: 0.0,
-              highlightElevation: 0.0,
-              hoverElevation: 0.0,
-            ),
+            if (urlDomain != null) _domainProvider,
+            SizedBox(height: Screens.bottomSafeHeight),
           ],
         );
       },

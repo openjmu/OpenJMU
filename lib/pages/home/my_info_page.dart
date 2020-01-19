@@ -17,45 +17,28 @@ class MyInfoPageState extends State<MyInfoPage> {
   List<List<Map<String, String>>> settingsSection() => [
         if (Provider.of<SettingsProvider>(currentContext, listen: false).debug)
           [
-            {
-              "name": "背包",
-              "icon": "idols",
-            },
+            {"name": "背包", "icon": "idols"},
           ],
         [
-          if (!Provider.of<ThemesProvider>(currentContext, listen: false).platformBrightness)
-            {
-              "name": "夜间模式",
-              "icon": "nightmode",
-            },
           {
-            "name": "设置",
-            "icon": "settings",
+            "name": "夜间模式${Provider.of<ThemesProvider>(
+              currentContext,
+              listen: false,
+            ).platformBrightness ? " (已跟随系统)" : ""}",
+            "icon": "nightmode",
           },
+          {"name": "个性化", "icon": "settings"},
         ],
         [
-          if (Platform.isAndroid)
-            {
-              "name": "检查更新",
-              "icon": "checkUpdate",
-            },
-          {
-            "name": "关于OpenJMU",
-            "icon": "idols",
-          },
+          if (Platform.isAndroid) {"name": "检查更新", "icon": "checkUpdate"},
+          {"name": "关于OpenJMU", "icon": "idols"},
         ],
         [
-          {
-            "name": "退出登录",
-            "icon": "exit",
-          },
+          {"name": "退出登录", "icon": "exit"},
         ],
         if (Provider.of<SettingsProvider>(currentContext, listen: false).debug)
           [
-            {
-              "name": "测试页",
-              "icon": "idols",
-            },
+            {"name": "测试页", "icon": "idols"},
           ],
       ];
 
@@ -379,57 +362,52 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   Widget settingItem(context, int sectionIndex, int itemIndex) {
     final Map<String, String> item = settingsSection()[sectionIndex][itemIndex];
-    return Selector<ThemesProvider, bool>(
-      selector: (_, provider) => provider.dark,
-      builder: (_, dark, __) {
-        return GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          child: Container(
-            color: Theme.of(context).primaryColor,
-            padding: EdgeInsets.symmetric(
-              horizontal: suSetWidth(20.0),
-              vertical: suSetHeight(18.0),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        color: Theme.of(context).primaryColor,
+        padding: EdgeInsets.symmetric(
+          horizontal: suSetWidth(20.0),
+          vertical: suSetHeight(18.0),
+        ),
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(
+                left: suSetWidth(12.0),
+                right: suSetWidth(24.0),
+              ),
+              child: SvgPicture.asset(
+                (item['name'] == "夜间模式")
+                    ? currentIsDark
+                        ? "assets/icons/daymode-line.svg"
+                        : "assets/icons/${item['icon']}-line.svg"
+                    : "assets/icons/${item['icon']}-line.svg",
+                color: Theme.of(context).iconTheme.color,
+                width: suSetWidth(40.0),
+                height: suSetHeight(32.0),
+              ),
             ),
-            child: Row(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(
-                    left: suSetWidth(12.0),
-                    right: suSetWidth(24.0),
-                  ),
-                  child: SvgPicture.asset(
-                    (item['name'] == "夜间模式")
-                        ? dark
-                            ? "assets/icons/daymode-line.svg"
-                            : "assets/icons/${item['icon']}-line.svg"
-                        : "assets/icons/${item['icon']}-line.svg",
-                    color: Theme.of(context).iconTheme.color,
-                    width: suSetWidth(40.0),
-                    height: suSetHeight(32.0),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    (item['name'] == "夜间模式") ? dark ? "日间模式" : item['name'] : item['name'],
-                    style: TextStyle(fontSize: suSetSp(23.0)),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: suSetSp(12.0)),
-                  child: SvgPicture.asset(
-                    "assets/icons/arrow-right.svg",
-                    color: Colors.grey,
-                    width: suSetWidth(30.0),
-                    height: suSetWidth(30.0),
-                  ),
-                ),
-              ],
+            Expanded(
+              child: Text(
+                (item['name'] == "夜间模式") ? currentIsDark ? "日间模式" : item['name'] : item['name'],
+                style: TextStyle(fontSize: suSetSp(23.0)),
+              ),
             ),
-          ),
-          onTap: () {
-            _handleItemClick(context, item['name']);
-          },
-        );
+            Padding(
+              padding: EdgeInsets.only(right: suSetSp(12.0)),
+              child: SvgPicture.asset(
+                "assets/icons/arrow-right.svg",
+                color: Colors.grey,
+                width: suSetWidth(30.0),
+                height: suSetWidth(30.0),
+              ),
+            ),
+          ],
+        ),
+      ),
+      onTap: () {
+        _handleItemClick(context, item['name']);
       },
     );
   }
@@ -441,16 +419,13 @@ class MyInfoPageState extends State<MyInfoPage> {
         break;
 
       case "夜间模式":
-        final provider = Provider.of<ThemesProvider>(
-          currentContext,
-          listen: false,
-        );
+        final provider = Provider.of<ThemesProvider>(currentContext, listen: false);
         provider.dark = !provider.dark;
         break;
       case "切换主题":
         navigatorState.pushNamed(Routes.OPENJMU_THEME);
         break;
-      case "设置":
+      case "个性化":
         navigatorState.pushNamed(Routes.OPENJMU_SETTINGS);
         break;
 

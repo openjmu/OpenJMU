@@ -13,6 +13,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
+import 'package:openjmu/controller/extended_network_image_provider.dart';
 
 export 'package:openjmu/widgets/appbar.dart';
 export 'package:openjmu/widgets/app_icon.dart';
@@ -58,11 +59,11 @@ class TransparentRoute extends PageRoute<void> {
   }
 }
 
-///
 /// Constant widgets.
-/// This section was declared for widgets that will be reuse in code.
-/// Including [separator], [emptyDivider], [nightModeCover], [badgeIcon], [progressIndicator]
 ///
+/// This section was declared for widgets that will be reuse in code.
+/// Including [separator], [emptyDivider], [nightModeCover], [badgeIcon], [progressIndicator],
+/// [ScaledImage]
 
 /// Developer tag.
 class DeveloperTag extends StatelessWidget {
@@ -186,18 +187,83 @@ class LoadMoreIndicator extends StatelessWidget {
   }
 }
 
+/// Scaled image.
+///
+/// This Widget is for extended image only.
+/// By using this widget to build image widget, it will calculate image size after load complete,
+/// and set the image (when there's only one image) to a size that seems more suitable.
+///
+/// When the image matches the condition of long image and gif image, an indicator will be shown.
 class ScaledImage extends StatelessWidget {
   final ui.Image image;
   final int length;
   final double num200;
   final double num400;
+  final ExtendedTypedNetworkImageProvider provider;
 
   ScaledImage({
     @required this.image,
     @required this.length,
     @required this.num200,
     @required this.num400,
+    this.provider,
   });
+
+  Widget longImageIndicator(context) => Positioned(
+        right: suSetWidth(5.0),
+        bottom: suSetWidth(5.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: suSetWidth(8.0),
+                vertical: suSetHeight(4.0),
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+                color: Theme.of(context).primaryColor.withOpacity(0.7),
+              ),
+              child: Text(
+                "长图",
+                style: TextStyle(
+                  color: Theme.of(context).iconTheme.color.withOpacity(0.8),
+                  fontSize: suSetSp(16.0),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+
+  Widget gifImageIndicator(context) => Positioned(
+        right: suSetWidth(5.0),
+        bottom: suSetWidth(5.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 3.0, sigmaY: 3.0),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: suSetWidth(8.0),
+                vertical: suSetHeight(4.0),
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+                color: Theme.of(context).primaryColor.withOpacity(0.7),
+              ),
+              child: Text(
+                "动图",
+                style: TextStyle(
+                  color: Theme.of(context).iconTheme.color.withOpacity(0.9),
+                  fontSize: suSetSp(16.0),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -246,34 +312,14 @@ class ScaledImage extends StatelessWidget {
         filterQuality: FilterQuality.none,
       );
     }
-    if (ratio >= 4) {
-      imageWidget = Container(
+    if (ratio >= 3) {
+      imageWidget = SizedBox(
         width: num200,
         height: num400,
         child: Stack(
           children: <Widget>[
-            Positioned(
-              top: 0.0,
-              right: 0.0,
-              left: 0.0,
-              bottom: 0.0,
-              child: imageWidget,
-            ),
-            Positioned(
-              bottom: 0.0,
-              right: 0.0,
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(6.0),
-                  vertical: suSetHeight(2.0),
-                ),
-                color: currentThemeColor.withOpacity(0.7),
-                child: Text(
-                  "长图",
-                  style: TextStyle(color: Colors.white, fontSize: suSetSp(13.0)),
-                ),
-              ),
-            ),
+            Positioned.fill(child: imageWidget),
+            longImageIndicator(context),
           ],
         ),
       );
@@ -285,6 +331,12 @@ class ScaledImage extends StatelessWidget {
       );
     } else {
       imageWidget = SizedBox.shrink();
+    }
+
+    if (provider.type == NetworkImageType.gif) {
+      imageWidget = Stack(
+        children: <Widget>[imageWidget, gifImageIndicator(context)],
+      );
     }
     return imageWidget;
   }

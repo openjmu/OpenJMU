@@ -24,57 +24,70 @@ class _SettingsPageState extends State<SettingsPage> {
 //        "onTap": action(),
 //      },
       {
-        "icon": "nightmode",
+        "icon": "follow_system",
+        "name": "跟随系统夜间模式",
+        "description": "夜间模式将跟随系统主题切换",
+      },
+      {
+        "icon": "night_mode",
         "name": "夜间模式",
         "description": "减轻眩光，提升夜间使用体验",
       },
       {
-        "icon": "nightmode",
-        "name": "跟随系统夜间模式",
-        "description": "夜间模式跟随系统主题切换",
-      },
-      {
-        "icon": "nightmode",
+        "icon": "amoled_black",
         "name": "A屏黑",
-        "description": "使用AMOLED黑主题作为夜间模式",
+        "description": "更深的背景颜色，节省电量",
       },
       {
-        "icon": "theme",
+        "icon": "theme_color",
         "name": "切换主题",
         "description": "多彩颜色，丰富你的界面",
         "route": Routes.OPENJMU_THEME,
       },
       {
-        "icon": "homeSplash",
+        "icon": "launch_page",
         "name": "启动页设置",
-        "description": "设置各个页面的启动页",
+        "description": "选择您偏好的启动页面",
         "route": Routes.OPENJMU_SWITCH_STARTUP,
       },
       if (currentUser.isTeacher)
         {
-          "icon": "apps",
+          "icon": "new_icons",
           "name": "应用中心新图标",
           "description": "全新图标设计，简洁直达",
         },
       {
-        "icon": "fontScale",
-        "name": "调节字体大小",
-        "description": "选择最适合你的字体大小",
+        "icon": "font_size",
+        "name": "字体大小调节",
+        "description": "调整字体大小以获得最佳阅读体验",
         "route": Routes.OPENJMU_FONT_SCALE,
       },
       {
-        "icon": "fontScale",
+        "icon": "hide_blocked",
         "name": "隐藏屏蔽的动态",
-        "description": "微博广场中被屏蔽的动态将不显示",
+        "description": "广场中被屏蔽的动态将被隐藏",
       },
     ],
   ];
   List<List<Widget>> settingsWidget;
 
+  double get iconSize => 36.0;
+
   Widget settingItem({context, int index, int sectionIndex}) {
     final Map<String, dynamic> page = pageSection[sectionIndex][index];
     settingsWidget = [
       [
+        Consumer<ThemesProvider>(
+          builder: (_, provider, __) {
+            return PlatformSwitch(
+              activeColor: currentThemeColor,
+              value: provider.platformBrightness,
+              onChanged: (bool value) {
+                provider.platformBrightness = value;
+              },
+            );
+          },
+        ),
         Consumer<ThemesProvider>(
           builder: (_, provider, __) {
             return PlatformSwitch(
@@ -85,17 +98,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       provider.dark = value;
                     }
                   : null,
-            );
-          },
-        ),
-        Consumer<ThemesProvider>(
-          builder: (_, provider, __) {
-            return PlatformSwitch(
-              activeColor: currentThemeColor,
-              value: provider.platformBrightness,
-              onChanged: (bool value) {
-                provider.platformBrightness = value;
-              },
             );
           },
         ),
@@ -147,20 +149,15 @@ class _SettingsPageState extends State<SettingsPage> {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: suSetSp(18.0),
-        ),
+        padding: EdgeInsets.symmetric(vertical: suSetSp(18.0)),
         child: Row(
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(
-                right: suSetWidth(20.0),
-              ),
+              margin: EdgeInsets.only(right: suSetWidth(iconSize / 2)),
               child: SvgPicture.asset(
-                "assets/icons/${page['icon']}-line.svg",
-                color: Theme.of(context).iconTheme.color,
-                width: suSetWidth(40.0),
-                height: suSetWidth(40.0),
+                "assets/icons/settings/${page['icon']}.svg",
+                width: suSetWidth(iconSize),
+                height: suSetWidth(iconSize),
               ),
             ),
             Expanded(
@@ -170,9 +167,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: <Widget>[
                   Text(
                     "${page["name"]}",
-                    style: TextStyle(
-                      fontSize: suSetSp(26.0),
-                    ),
+                    style: TextStyle(fontSize: suSetSp(26.0)),
                   ),
                   Text(
                     "${page["description"]}",
@@ -188,8 +183,8 @@ class _SettingsPageState extends State<SettingsPage> {
               SvgPicture.asset(
                 "assets/icons/arrow-right.svg",
                 color: Colors.grey,
-                width: suSetSp(24.0),
-                height: suSetSp(24.0),
+                width: suSetSp(iconSize / 1.25),
+                height: suSetSp(iconSize / 1.25),
               ),
           ],
         ),
@@ -252,14 +247,14 @@ class _SettingsPageState extends State<SettingsPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          "设置",
+                          "个性化",
                           style: Theme.of(context).textTheme.title.copyWith(
                                 fontSize: suSetSp(40.0),
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
                         Text(
-                          "管理该应用的各项设置",
+                          "管理您的应用偏好设置",
                           style: Theme.of(context).textTheme.caption.copyWith(
                                 fontSize: suSetSp(24.0),
                               ),

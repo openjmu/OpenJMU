@@ -25,25 +25,16 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     },
   ];
   final int _animateDuration = 300;
-  double get backdropRadius =>
-      pythagoreanTheorem(
-        Screens.width,
-        Screens.height * 2 + Screens.topSafeHeight + Screens.bottomSafeHeight,
-      ) /
-      2;
 
   /// Animation.
   /// Boolean to prevent duplicate pop.
   bool entering = true;
   bool popping = false;
   double _backgroundOpacity = 0.0;
-  double _backdropFilterSize = 0.0;
   double _popButtonOpacity = 0.01;
   double _popButtonRotateAngle = 0.0;
   Animation<double> _backgroundOpacityAnimation;
   AnimationController _backgroundOpacityController;
-  Animation<double> _backDropFilterAnimation;
-  AnimationController _backDropFilterController;
   Animation<double> _popButtonAnimation;
   AnimationController _popButtonController;
   Animation<double> _popButtonOpacityAnimation;
@@ -66,7 +57,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
 
   @override
   void dispose() {
-    _backDropFilterController?.dispose();
+//    _backDropFilterController?.dispose();
     _popButtonController?.dispose();
     _itemAnimateControllers?.forEach((controller) {
       controller?.dispose();
@@ -178,7 +169,6 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
   }
 
   Future backDropFilterAnimate(BuildContext context, bool forward) async {
-    if (!forward) _backDropFilterController?.stop();
     popButtonAnimate(context, forward);
 
     _backgroundOpacityController = AnimationController(
@@ -198,23 +188,6 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
         if (mounted) setState(() {});
       });
 
-    _backDropFilterController = AnimationController(
-      duration: Duration(milliseconds: _animateDuration),
-      vsync: this,
-    );
-    Animation _backDropFilterCurve = CurvedAnimation(
-      parent: _backDropFilterController,
-      curve: forward ? Curves.easeInOut : Curves.easeIn,
-    );
-    _backDropFilterAnimation = Tween(
-      begin: forward ? 0.0 : _backdropFilterSize,
-      end: forward ? backdropRadius : 0.0,
-    ).animate(_backDropFilterCurve)
-      ..addListener(() {
-        setState(() {
-          _backdropFilterSize = _backDropFilterAnimation.value;
-        });
-      });
     if (forward) {
       Future.delayed(
         Duration(milliseconds: _animateDuration ~/ 2),
@@ -227,12 +200,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     }
 
     _backgroundOpacityController.forward();
-    await _backDropFilterController.forward();
     if (forward) entering = false;
-  }
-
-  double pythagoreanTheorem(double short, double long) {
-    return math.sqrt(math.pow(short, 2) + math.pow(long, 2));
   }
 
   Widget get popButton => Opacity(
@@ -258,9 +226,6 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
       );
 
   Widget wrapper(context, {Widget child}) {
-    final double topOverflow = backdropRadius - Screens.height;
-    final double horizontalOverflow = backdropRadius - Screens.width;
-
     return Stack(
       overflow: Overflow.visible,
       children: <Widget>[
@@ -273,40 +238,13 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
             behavior: HitTestBehavior.opaque,
             onTap: willPop,
             child: Container(
-              color: Colors.black.withOpacity(0.3 * _backgroundOpacity),
+              color: Theme.of(context).primaryColor.withOpacity(0.6 * _backgroundOpacity),
               child: BackdropFilter(
                 filter: ui.ImageFilter.blur(
                   sigmaX: 3.0 * _backgroundOpacity,
                   sigmaY: 3.0 * _backgroundOpacity,
                 ),
                 child: Text(" ", style: TextStyle(inherit: false)),
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          left: -horizontalOverflow,
-          right: -horizontalOverflow,
-          top: -topOverflow,
-          bottom: -backdropRadius,
-          child: Center(
-            child: Container(
-              width: _backdropFilterSize,
-              height: _backdropFilterSize,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withOpacity(0.4),
-              ),
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: willPop,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(backdropRadius * 2),
-                  child: BackdropFilter(
-                    filter: ui.ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-                    child: Text(" ", style: TextStyle(inherit: false)),
-                  ),
-                ),
               ),
             ),
           ),
