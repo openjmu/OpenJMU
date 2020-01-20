@@ -263,7 +263,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
                 angle: _popButtonRotateAngle,
                 child: Icon(
                   Icons.add,
-                  color: Colors.black,
+                  color: Colors.white.withOpacity(currentIsDark ? 0.7 : 1.0),
                   size: suSetWidth(48.0),
                 ),
               ),
@@ -277,11 +277,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
     return Stack(
       overflow: Overflow.visible,
       children: <Widget>[
-        Positioned(
-          left: 0.0,
-          top: 0.0,
-          right: 0.0,
-          bottom: 0.0,
+        Positioned.fill(
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: willPop,

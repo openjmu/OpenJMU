@@ -17,49 +17,48 @@ class SwitchStartUpPage extends StatefulWidget {
 }
 
 class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
-  static final List<List<String>> pageTab = [
-    List.from(PostSquareListPageState.tabs),
-    List.from(AppsPageState.tabs()),
-  ];
+  List<List<String>> get pageTab => [
+        List.from(PostSquareListPageState.tabs),
+        List.from(AppsPageState.tabs()),
+      ];
+  List<List<Map<String, dynamic>>> get pageSection => [
+        [
+          {
+            "name": "启动页",
+            "pages": List.from(MainPageState.pagesTitle),
+            "index": settingsProvider.homeSplashIndex,
+          },
+        ],
+        [
+          for (int i = 0; i < pageTab.length; i++)
+            {
+              "name": MainPageState.pagesTitle[i],
+              "pages": pageTab[i],
+              "index": settingsProvider.homeStartUpIndex[i],
+            }
+        ],
+      ];
   SettingsProvider settingsProvider;
-  List<List<Map<String, dynamic>>> pageSection;
 
   @override
   void initState() {
     settingsProvider = Provider.of<SettingsProvider>(currentContext, listen: false);
-    pageSection = [
-      [
-        {
-          "name": "启动页",
-          "pages": List.from(MainPageState.pagesTitle),
-          "index": settingsProvider.homeSplashIndex,
-        },
-      ],
-      [
-        for (int i = 0; i < pageTab.length; i++)
-          {
-            "name": MainPageState.pagesTitle[i],
-            "pages": pageTab[i],
-            "index": settingsProvider.homeStartUpIndex[i],
-          }
-      ],
-    ];
     super.initState();
   }
 
   Widget settingItem(context, index, sectionIndex) {
-    final Map<String, dynamic> page = pageSection[sectionIndex][index];
+    final page = pageSection[sectionIndex][index];
     return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: suSetSp(18.0),
-        ),
+      behavior: HitTestBehavior.opaque,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: suSetHeight(16.0)),
+        height: suSetHeight(54.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
@@ -87,12 +86,10 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
           ],
         ),
       ),
-      onTap: () {
-        showSelection(context, sectionIndex, page, index).then((list) {
-          if (list != null)
-            setState(() {
-              pageSection = list;
-            });
+      onTap: () async {
+        await showSelection(context, sectionIndex, page, index);
+        Future.delayed(1.seconds, () {
+          if (mounted) setState(() {});
         });
       },
     );
@@ -127,54 +124,56 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
           _list[pageIndex] = index;
           SettingUtils.setHomeStartUpIndex(_list);
         }
-        Navigator.pop(context, newPageSection(sectionIndex, pageIndex, index));
+        Navigator.of(context).pop();
       },
     );
   }
 
-  Future<List<List<Map<String, dynamic>>>> showSelection(context, sectionIndex, page, pageIndex) {
+  Future showSelection(context, sectionIndex, page, pageIndex) async {
     return showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: suSetSp(20.0),
-              horizontal: suSetSp(16.0),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(bottom: suSetSp(12.0)),
-                  child: Text(
-                    "选择页面",
-                    style: TextStyle(
-                      fontSize: suSetSp(24.0),
-                      fontWeight: FontWeight.bold,
-                    ),
+      context: context,
+      builder: (context) {
+        return Padding(
+          padding: EdgeInsets.symmetric(
+            vertical: suSetSp(20.0),
+            horizontal: suSetSp(16.0),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(bottom: suSetSp(12.0)),
+                child: Text(
+                  "选择页面",
+                  style: TextStyle(
+                    fontSize: suSetSp(24.0),
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 4,
-                  mainAxisSpacing: suSetSp(6.0),
-                  crossAxisSpacing: suSetSp(12.0),
-                  childAspectRatio: 2.1,
-                  children: List<Widget>.generate(page['pages'].length, (i) {
-                    return pageSelectionItem(
-                      context,
-                      sectionIndex: sectionIndex,
-                      page: page,
-                      pageIndex: pageIndex,
-                      index: i,
-                      selectedIndex: page["index"],
-                    );
-                  }),
+              ),
+              GridView.count(
+                shrinkWrap: true,
+                crossAxisCount: 4,
+                mainAxisSpacing: suSetSp(6.0),
+                crossAxisSpacing: suSetSp(12.0),
+                childAspectRatio: 2.1,
+                children: List<Widget>.generate(
+                  page['pages'].length,
+                  (i) => pageSelectionItem(
+                    context,
+                    sectionIndex: sectionIndex,
+                    page: page,
+                    pageIndex: pageIndex,
+                    index: i,
+                    selectedIndex: page["index"],
+                  ),
                 ),
-              ],
-            ),
-          );
-        });
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   List newPageSection(sectionIndex, pageIndex, index) {
@@ -186,35 +185,33 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(elevation: 0),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: suSetSp(40.0),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          FixedAppBar(
+            title: Column(
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
                   "启动页设置",
                   style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: suSetSp(40.0),
+                        fontSize: suSetSp(26.0),
                         fontWeight: FontWeight.bold,
                       ),
                 ),
                 Text(
-                  "设置各个页面的启动页",
+                  "选择您偏好的启动页面",
                   style: Theme.of(context).textTheme.caption.copyWith(
-                        fontSize: suSetSp(24.0),
+                        fontSize: suSetSp(18.0),
                       ),
                 ),
-                emptyDivider(height: 20.0),
               ],
             ),
-            ListView.separated(
-              shrinkWrap: true,
+            elevation: 0.0,
+          ),
+          Expanded(
+            child: ListView.separated(
+              padding: EdgeInsets.symmetric(horizontal: suSetSp(40.0)),
               separatorBuilder: (context, index) => separator(
                 context,
                 color: Colors.transparent,
@@ -222,6 +219,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
               ),
               itemCount: pageSection.length,
               itemBuilder: (context, sectionIndex) => ListView.builder(
+                padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: pageSection[sectionIndex].length,
@@ -232,8 +230,8 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -215,7 +215,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                 angle: _popButtonRotateAngle,
                 child: Icon(
                   Icons.add,
-                  color: Colors.black,
+                  color: Colors.white.withOpacity(currentIsDark ? 0.7 : 1.0),
                   size: suSetWidth(48.0),
                 ),
               ),
@@ -229,11 +229,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     return Stack(
       overflow: Overflow.visible,
       children: <Widget>[
-        Positioned(
-          left: 0.0,
-          top: 0.0,
-          right: 0.0,
-          bottom: 0.0,
+        Positioned.fill(
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: willPop,
@@ -344,9 +340,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
             GridView.count(
               shrinkWrap: true,
               crossAxisCount: 4,
-              children: <Widget>[
-                for (int i = 0; i < itemTitles.length; i++) item(context, i),
-              ],
+              children: List<Widget>.generate(itemTitles.length, (i) => item(context, i)),
             ),
             SizedBox(height: suSetHeight(120.0)),
           ],

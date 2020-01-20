@@ -27,7 +27,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             ).platformBrightness ? " (已跟随系统)" : ""}",
             "icon": "nightmode",
           },
-          {"name": "个性化", "icon": "settings"},
+          {"name": "偏好设置", "icon": "settings"},
         ],
         [
           if (Platform.isAndroid) {"name": "检查更新", "icon": "checkUpdate"},
@@ -250,7 +250,10 @@ class MyInfoPageState extends State<MyInfoPage> {
         padding: EdgeInsets.only(top: Screens.topSafeHeight),
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => navigatorState.pushNamed(Routes.OPENJMU_USER),
+          onTap: () => navigatorState.pushNamed(
+            Routes.OPENJMU_USER,
+            arguments: {'uid': currentUser.uid},
+          ),
           child: Padding(
             padding: EdgeInsets.symmetric(
               horizontal: suSetWidth(24.0),
@@ -323,10 +326,9 @@ class MyInfoPageState extends State<MyInfoPage> {
                           children: <TextSpan>[
                             TextSpan(text: "${currentUser.name}，$hello~\n"),
                             if (currentWeek > 0)
-                              TextSpan(text: "今天是第$currentWeek")
+                              TextSpan(text: "今天是第$currentWeek周，")
                             else
-                              TextSpan(text: "距开学还剩${currentWeek.abs()}"),
-                            TextSpan(text: "周，"),
+                              TextSpan(text: "距开学还剩${currentWeek.abs()}周，"),
                             TextSpan(text: "${DateFormat("MMMdd日，", "zh_CN").format(now)}"),
                             TextSpan(text: "${DateFormat("EEEE", "zh_CN").format(now)}"),
                           ],
@@ -425,7 +427,7 @@ class MyInfoPageState extends State<MyInfoPage> {
       case "切换主题":
         navigatorState.pushNamed(Routes.OPENJMU_THEME);
         break;
-      case "个性化":
+      case "偏好设置":
         navigatorState.pushNamed(Routes.OPENJMU_SETTINGS);
         break;
 

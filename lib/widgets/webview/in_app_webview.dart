@@ -148,7 +148,10 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
   Future showMore(context) async {
     return await showModalBottomSheet(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(suSetWidth(20.0)),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(suSetWidth(20.0)),
+          topRight: Radius.circular(suSetWidth(20.0)),
+        ),
       ),
       backgroundColor: Theme.of(context).primaryColor,
       context: context,

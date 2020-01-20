@@ -17,6 +17,7 @@ import 'package:openjmu/controller/extended_network_image_provider.dart';
 
 export 'package:openjmu/widgets/appbar.dart';
 export 'package:openjmu/widgets/app_icon.dart';
+export 'package:openjmu/widgets/custom_switch.dart';
 export 'package:openjmu/widgets/fab_bottom_appbar.dart';
 export 'package:openjmu/widgets/webview/in_app_webview.dart';
 export 'package:openjmu/widgets/no_scale_text_widget.dart';

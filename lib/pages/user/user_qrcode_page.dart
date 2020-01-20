@@ -67,18 +67,9 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
       appBar: AppBar(
         title: Text(
           "二维码名片",
-          style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: suSetSp(21.0),
-              ),
+          style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
         ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () {
-              saveToGallery();
-            },
-          )
-        ],
+        actions: <Widget>[IconButton(icon: Icon(Icons.save), onPressed: saveToGallery)],
         centerTitle: true,
       ),
       body: Center(
@@ -98,9 +89,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                       height: suSetSp(avatarSize),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(15.0),
-                        image: DecorationImage(
-                          image: UserAPI.getAvatarProvider(),
-                        ),
+                        image: DecorationImage(image: UserAPI.getAvatarProvider()),
                       ),
                     ),
                     Expanded(
@@ -141,21 +130,14 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                       padding: EdgeInsets.zero,
                       foregroundColor: Theme.of(context).iconTheme.color,
                     ),
-                    Positioned(
-                      left: 0,
-                      top: 0,
-                      right: 0,
-                      bottom: 0,
+                    Positioned.fill(
                       child: Center(
                         child: Container(
                           width: suSetSp(avatarSize),
                           height: suSetSp(avatarSize),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 3.0,
-                            ),
+                            border: Border.all(color: Colors.white, width: 3.0),
                             borderRadius: BorderRadius.circular(10.0),
                             boxShadow: <BoxShadow>[
                               BoxShadow(

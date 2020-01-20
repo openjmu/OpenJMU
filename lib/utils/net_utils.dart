@@ -8,13 +8,13 @@ import 'package:dio/dio.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class NetUtils {
-  static final Dio dio = Dio();
-  static final Dio tokenDio = Dio();
+  static final dio = Dio();
+  static final tokenDio = Dio();
 
-  static final DefaultCookieJar cookieJar = DefaultCookieJar();
-  static final CookieManager cookieManager = CookieManager(cookieJar);
-  static final DefaultCookieJar tokenCookieJar = DefaultCookieJar();
-  static final CookieManager tokenCookieManager = CookieManager(tokenCookieJar);
+  static final cookieJar = DefaultCookieJar();
+  static final cookieManager = CookieManager(cookieJar);
+  static final tokenCookieJar = DefaultCookieJar();
+  static final tokenCookieManager = CookieManager(tokenCookieJar);
 
   /// Method to update ticket.
   static void updateTicket() async {
@@ -48,9 +48,7 @@ class NetUtils {
       onError: (DioError e) async {
         debugPrint("DioError with request: ${e.request.uri}");
         debugPrint("DioError: ${e.message}");
-        if (e?.response?.statusCode == 401) {
-          updateTicket();
-        }
+        if (e?.response?.statusCode == 401) updateTicket();
         return e;
       },
     ));
@@ -119,10 +117,7 @@ class NetUtils {
         ),
       );
 
-  static Future<Response> post(String url, {data}) async => await dio.post(
-        url,
-        data: data,
-      );
+  static Future<Response> post(String url, {data}) async => await dio.post(url, data: data);
 
   static Future<Response> postWithCookieSet(String url, {data}) async => await dio.post(
         url,

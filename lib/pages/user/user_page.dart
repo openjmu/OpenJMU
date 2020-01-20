@@ -57,7 +57,7 @@ class _UserPageState extends State<UserPage>
 
   @override
   void initState() {
-    if (widget.uid == UserAPI.currentUser.uid) isSelf = true;
+    if (widget.uid == currentUser.uid) isSelf = true;
 
     if (isSelf) expandedHeight += tabBarHeight;
 

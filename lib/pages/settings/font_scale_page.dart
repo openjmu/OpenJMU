@@ -40,9 +40,23 @@ class _FontScalePageState extends State<FontScalePage> {
         body: Column(
           children: <Widget>[
             FixedAppBar(
-              title: Text(
-                "调节字体大小",
-                style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
+              title: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    "字体大小调节",
+                    style: Theme.of(context).textTheme.title.copyWith(
+                          fontSize: suSetSp(26.0),
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                  Text(
+                    "调整字体大小以获得最佳阅读体验",
+                    style: Theme.of(context).textTheme.caption.copyWith(
+                          fontSize: suSetSp(18.0),
+                        ),
+                  ),
+                ],
               ),
               elevation: 0.0,
             ),

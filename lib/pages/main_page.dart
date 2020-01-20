@@ -211,7 +211,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: _tabIndex == 3
-                          ? Border.all(color: currentThemeColor, width: suSetWidth(2.5))
+                          ? Border.all(color: currentThemeColor, width: suSetWidth(3.0))
                           : null,
                     ),
                     child: UserAvatar(canJump: false),
