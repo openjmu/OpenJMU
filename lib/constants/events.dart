@@ -159,8 +159,6 @@ class AppCenterRefreshEvent {
 
 class AppCenterSettingsUpdateEvent {}
 
-class ScoreRefreshEvent {}
-
 class CourseScheduleRefreshEvent {}
 
 class CoursePageShowWeekEvent {

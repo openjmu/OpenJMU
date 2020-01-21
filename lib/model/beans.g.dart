@@ -149,3 +149,42 @@ class MessageAdapter extends TypeAdapter<Message> {
       ..write(obj.read);
   }
 }
+
+class ScoreAdapter extends TypeAdapter<Score> {
+  @override
+  final typeId = 3;
+
+  @override
+  Score read(BinaryReader reader) {
+    var numOfFields = reader.readByte();
+    var fields = <int, dynamic>{
+      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Score(
+      code: fields[0] as String,
+      courseName: fields[1] as String,
+      score: fields[2] as String,
+      termId: fields[3] as String,
+      credit: fields[4] as double,
+      creditHour: fields[5] as double,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Score obj) {
+    writer
+      ..writeByte(6)
+      ..writeByte(0)
+      ..write(obj.code)
+      ..writeByte(1)
+      ..write(obj.courseName)
+      ..writeByte(2)
+      ..write(obj.score)
+      ..writeByte(3)
+      ..write(obj.termId)
+      ..writeByte(4)
+      ..write(obj.credit)
+      ..writeByte(5)
+      ..write(obj.creditHour);
+  }
+}

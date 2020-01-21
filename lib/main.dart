@@ -70,7 +70,10 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
     Instances.eventBus
       ..on<LogoutEvent>().listen((event) async {
-        Provider.of<CoursesProvider>(currentContext, listen: false).unloadCourses();
+        if (!currentUser.isTeacher) {
+          Provider.of<CoursesProvider>(currentContext, listen: false).unloadCourses();
+          Provider.of<ScoresProvider>(currentContext, listen: false).unloadScore();
+        }
         Provider.of<ReportRecordsProvider>(currentContext, listen: false).unloadRecords();
         Provider.of<MessagesProvider>(currentContext, listen: false).unloadMessages();
 
@@ -86,6 +89,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       ..on<TicketGotEvent>().listen((event) {
         if (!currentUser.isTeacher) {
           Provider.of<CoursesProvider>(currentContext, listen: false).initCourses();
+          Provider.of<ScoresProvider>(currentContext, listen: false).initScore();
         }
         Provider.of<MessagesProvider>(currentContext, listen: false).initMessages();
         Provider.of<ReportRecordsProvider>(currentContext, listen: false).initRecords();

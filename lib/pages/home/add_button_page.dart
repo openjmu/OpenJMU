@@ -208,9 +208,19 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
         child: Center(
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            child: SizedBox(
+            child: Container(
               width: suSetWidth(MainPageState.bottomBarHeight),
               height: suSetHeight(MainPageState.bottomBarHeight),
+              decoration: BoxDecoration(
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    blurRadius: suSetWidth(20.0),
+                    color: Theme.of(context).dividerColor.withOpacity(0.2),
+                    spreadRadius: 0.0,
+                  ),
+                ],
+                shape: BoxShape.circle,
+              ),
               child: Transform.rotate(
                 angle: _popButtonRotateAngle,
                 child: Icon(

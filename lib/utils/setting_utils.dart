@@ -2,8 +2,6 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020-01-13 10:59
 ///
-import 'dart:convert';
-
 import 'package:openjmu/constants/constants.dart';
 
 class SettingUtils {
@@ -78,10 +76,7 @@ class SettingUtils {
   static List getHomeStartUpIndex() {
     final _box = HiveBoxes.settingsBox;
     final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
-    final response = jsonDecode(
-      _box.get(spHomeStartUpIndex) ?? "${_provider.homeStartUpIndex}",
-    ) as List;
-    final index = response.cast<int>();
+    final index = _box?.get(spHomeStartUpIndex)?.cast<int>() ?? _provider.homeStartUpIndex;
     return index;
   }
 
@@ -118,11 +113,11 @@ class SettingUtils {
   }
 
   /// 设置首页各子页的初始页
-  static Future<Null> setHomeStartUpIndex(List indexList) async {
+  static Future<Null> setHomeStartUpIndex(List<int> indexList) async {
     final _box = HiveBoxes.settingsBox;
     final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
     _provider.homeStartUpIndex = indexList;
-    await _box.put(spHomeStartUpIndex, jsonEncode(indexList));
+    await _box.put(spHomeStartUpIndex, indexList);
   }
 
   /// 设置字体缩放

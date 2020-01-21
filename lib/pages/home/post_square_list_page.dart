@@ -94,7 +94,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
             width: suSetHeight(2.5),
           ),
           width: suSetWidth(40.0),
-          insets: EdgeInsets.only(bottom: suSetHeight(2.0)),
+          insets: EdgeInsets.only(bottom: suSetHeight(5.0)),
         ),
         labelColor: Theme.of(context).textTheme.body1.color,
         labelStyle: MainPageState.tabSelectedTextStyle,

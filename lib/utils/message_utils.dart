@@ -46,7 +46,7 @@ class MessageUtils {
 
       messageSocket = socket;
       messageSocket.setOption(SocketOption.tcpNoDelay, true);
-      messageSocket.timeout(const Duration(milliseconds: 120000));
+      messageSocket.timeout(2.minutes);
       messageSocket.listen(bufferedStream, onDone: destroySocket);
 
       sendCheckCodeVerify();

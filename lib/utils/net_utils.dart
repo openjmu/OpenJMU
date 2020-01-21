@@ -4,6 +4,9 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -24,9 +27,9 @@ class NetUtils {
 
     /// Lock and clear dio while requesting new ticket.
     if (await DataUtils.getTicket(update: true)) {
-      debugPrint("Ticket updated success with new ticket: ${UserAPI.currentUser.sid}");
+      debugPrint("Ticket updated success with new ticket: ${currentUser.sid}");
     } else {
-      debugPrint("Ticket updated error: ${UserAPI.currentUser.sid}");
+      debugPrint("Ticket updated error: ${currentUser.sid}");
     }
     dio.unlock();
 
@@ -85,7 +88,7 @@ class NetUtils {
         url,
         queryParameters: data,
         options: Options(
-          headers: headers ?? DataUtils.buildPostHeaders(UserAPI.currentUser.sid),
+          headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
         ),
       );
 
@@ -98,7 +101,7 @@ class NetUtils {
         url,
         queryParameters: data,
         options: Options(
-          cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(UserAPI.currentUser.sid),
+          cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(currentUser.sid),
         ),
       );
 
@@ -112,8 +115,8 @@ class NetUtils {
         url,
         queryParameters: data,
         options: Options(
-          cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(UserAPI.currentUser.sid),
-          headers: headers ?? DataUtils.buildPostHeaders(UserAPI.currentUser.sid),
+          cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(currentUser.sid),
+          headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
         ),
       );
 
@@ -123,7 +126,7 @@ class NetUtils {
         url,
         data: data,
         options: Options(
-          cookies: DataUtils.buildPHPSESSIDCookies(UserAPI.currentUser.sid),
+          cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid),
         ),
       );
 
@@ -137,8 +140,8 @@ class NetUtils {
         url,
         data: data,
         options: Options(
-          cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(UserAPI.currentUser.sid),
-          headers: headers ?? DataUtils.buildPostHeaders(UserAPI.currentUser.sid),
+          cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(currentUser.sid),
+          headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
         ),
       );
 
@@ -151,8 +154,42 @@ class NetUtils {
         url,
         data: data,
         options: Options(
-          cookies: DataUtils.buildPHPSESSIDCookies(UserAPI.currentUser.sid),
-          headers: headers ?? DataUtils.buildPostHeaders(UserAPI.currentUser.sid),
+          cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid),
+          headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
         ),
       );
+
+  static Future<Response> download(String url, {data, Map<String, dynamic> headers}) async {
+    Response response;
+    String path;
+    final permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+    if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
+      showToast('开始下载...');
+      debugPrint('File start download: $url');
+      path = (await getExternalStorageDirectory()).path;
+      path += '/' + url.split('/').last.split('?').first;
+      try {
+        response = await dio.download(
+          url,
+          path,
+          data: data,
+          options: Options(
+            headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
+          ),
+        );
+        debugPrint('File downloaded: $path');
+        showToast('下载完成 $path');
+        final openFileResult = await OpenFile.open(path);
+        debugPrint('File open result: ${openFileResult.type}');
+        return response;
+      } catch (e) {
+        debugPrint('File download failed: $e');
+        return null;
+      }
+    } else {
+      debugPrint('No permission to download file: $url');
+      showToast('未获得存储权限');
+      return null;
+    }
+  }
 }

@@ -146,15 +146,13 @@ class _SettingsPageState extends State<SettingsPage> {
       behavior: HitTestBehavior.translucent,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: suSetSp(page['level'] == null || page['level'] == 1 ? 18.0 : 10.0),
+          vertical: suSetHeight(page['level'] == null || page['level'] == 1 ? 16.0 : 0.0),
         ),
         child: Row(
           children: <Widget>[
             Container(
               margin: EdgeInsets.only(
-                left: page['level'] != null && page['level'] > 1
-                    ? suSetWidth(iconSize / 2) * page['level']
-                    : 0.0,
+                left: suSetWidth(((page['level'] ?? 1) - 1) * iconSize / 4),
                 right: suSetWidth(iconSize / 2),
               ),
               child: page['level'] == null || page['level'] == 1
@@ -189,7 +187,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 ],
               ),
             ),
-            if (page['widget'] != null) page['widget'],
+            if (page['widget'] != null)
+              Transform.scale(
+                scale: 1 - (page['level'] ?? 0) * 0.1,
+                child: page['widget'],
+              ),
             if (page['route'] != null)
               Container(
                 margin: EdgeInsets.only(left: suSetWidth(16.0)),

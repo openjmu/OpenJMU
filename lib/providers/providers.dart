@@ -14,6 +14,7 @@ export 'package:openjmu/providers/date_provider.dart';
 export 'package:openjmu/providers/messages_provider.dart';
 export 'package:openjmu/providers/notification_provider.dart';
 export 'package:openjmu/providers/report_records_provider.dart';
+export 'package:openjmu/providers/scores_provider.dart';
 export 'package:openjmu/providers/settings_provider.dart';
 export 'package:openjmu/providers/team_post_provider.dart';
 export 'package:openjmu/providers/themes_provider.dart';
@@ -31,6 +32,7 @@ final _providers = [
   buildProvider<MessagesProvider>(MessagesProvider()..initListener()),
   buildProvider<NotificationProvider>(NotificationProvider()),
   buildProvider<ReportRecordsProvider>(ReportRecordsProvider()),
+  buildProvider<ScoresProvider>(ScoresProvider()),
   buildProvider<SettingsProvider>(SettingsProvider()..init()),
   buildProvider<ThemesProvider>(ThemesProvider()..initTheme()),
   buildProvider<WebAppsProvider>(WebAppsProvider()),

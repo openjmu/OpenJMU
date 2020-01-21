@@ -245,9 +245,10 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         ),
         style: TextStyle(
           color: Theme.of(context).textTheme.title.color,
+          fontSize: suSetSp(22.0),
         ),
         strutStyle: StrutStyle(
-          fontSize: suSetSp(18.0),
+          fontSize: suSetSp(22.0),
           height: 1.7,
           forceStrutHeight: true,
         ),
@@ -362,7 +363,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         },
                     ),
                   ],
-                  style: TextStyle(color: Colors.black, fontSize: suSetSp(18.0)),
+                  style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(18.0)),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.fade,
@@ -374,11 +375,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 
   Widget get loginButton => GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: loginButtonEnable
-            ? () {
-                loginButtonPressed(context);
-              }
-            : null,
+        onTap: loginButtonEnable ? () => loginButtonPressed(context) : null,
         child: Container(
           margin: EdgeInsets.only(left: suSetWidth(4.0)),
           width: suSetWidth(100.0),

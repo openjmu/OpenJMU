@@ -1,11 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter/services.dart';
+import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 @FFRoute(
   name: "openjmu://inappbrowser",
@@ -63,7 +65,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     title = (widget.title ?? title).trim();
 
     if (url.startsWith(API.labsHost) && currentIsDark) {
-      url += "&night=1";
+      url += '&night=1';
     }
 
     Instances.eventBus
@@ -75,30 +77,36 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
 
   @override
   void dispose() {
-//    try {
-//      _webViewController.stopLoading();
-//    } catch (e) {
-//      debugPrint("$e");
-//    }
+    _webViewController?.stopLoading()?.catchError((e) => debugPrint("$e"));
     super.dispose();
   }
 
   void loadCourseSchedule() {
     try {
       _webViewController.loadUrl(
-        url: "${currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}"
-            "?sid=${UserAPI.currentUser.sid}"
-            "&night=${currentIsDark ? 1 : 0}",
+        url: '${currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}'
+            '?sid=${UserAPI.currentUser.sid}'
+            '&night=${currentIsDark ? 1 : 0}',
       );
     } catch (e) {
       debugPrint("$e");
     }
   }
 
+  void checkSchemeLoad(InAppWebViewController controller, String url) async {
+    final protocolRegExp = RegExp(r'(http|https):\/\/([\w.]+\/?)\S*');
+    if (!url.startsWith(protocolRegExp) && url.contains('://')) {
+      debugPrint('Fount scheme when load: $url');
+      controller.stopLoading();
+      debugPrint('Try to launch intent...');
+      _launchURL(url: url);
+    }
+  }
+
   Widget get _domainProvider => Padding(
         padding: EdgeInsets.only(bottom: suSetHeight(10.0)),
         child: Text(
-          "网页由 $urlDomain 提供",
+          '网页由 $urlDomain 提供',
           style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(18.0)),
         ),
       );
@@ -175,16 +183,16 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
                   _moreAction(
                     context: context,
                     icon: Icons.content_copy,
-                    text: "复制链接",
+                    text: '复制链接',
                     onTap: () {
                       Clipboard.setData(ClipboardData(text: url));
-                      showToast("已复制网址到剪贴板");
+                      showToast('已复制网址到剪贴板');
                     },
                   ),
                   _moreAction(
                     context: context,
                     icon: Icons.open_in_browser,
-                    text: "浏览器打开",
+                    text: '浏览器打开',
                     onTap: _launchURL,
                   ),
                 ],
@@ -212,7 +220,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
           actions: <Widget>[
             CupertinoDialogAction(
               isDefaultAction: true,
-              child: Text("确定"),
+              child: Text('确定'),
               textStyle: TextStyle(
                 color: currentThemeColor,
                 fontSize: suSetSp(18.0),
@@ -227,11 +235,12 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     return JsPromptResponse(handledByClient: true);
   }
 
-  Future<Null> _launchURL() async {
-    if (await canLaunch(url)) {
-      await launch(url);
+  Future<Null> _launchURL({String url}) async {
+    final uri = Uri.encodeFull(url ?? this.url);
+    if (await canLaunch(uri)) {
+      await launch(uri);
     } else {
-      showCenterErrorToast('无法打开$url');
+      showCenterErrorToast('Cannot launch: $uri');
     }
   }
 
@@ -366,21 +375,38 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             transparentBackground: true,
             useOnDownloadStart: true,
           ),
+          // TODO: Currently zoom control in android was broken, need to find the root cause.
           android: AndroidInAppWebViewOptions(
+            allowContentAccess: true,
+            allowFileAccess: true,
+            allowFileAccessFromFileURLs: true,
             allowUniversalAccessFromFileURLs: true,
+            builtInZoomControls: true,
+            displayZoomControls: true,
+            supportZoom: true,
             safeBrowsingEnabled: false,
-            supportMultipleWindows: true,
           ),
           ios: IOSInAppWebViewOptions(
+            allowsAirPlayForMediaPlayback: true,
+            allowsBackForwardNavigationGestures: true,
+            allowsLinkPreview: true,
+            allowsPictureInPictureMediaPlayback: true,
             isFraudulentWebsiteWarningEnabled: false,
             sharedCookiesEnabled: true,
           ),
         ),
         onJsPrompt: jsPromptHandler,
         onLoadStart: (InAppWebViewController controller, String url) {
-          debugPrint("Webview onLoadStart: $url");
+          _webViewController = controller;
+
+          debugPrint('Webview onLoadStart: $url');
+          if (Platform.isAndroid) {
+            checkSchemeLoad(controller, url);
+          }
         },
         onLoadStop: (InAppWebViewController controller, String url) async {
+          _webViewController = controller;
+
           this.url = url;
           final _title = (await controller.getTitle())?.trim();
           if (_title != null && _title.isNotEmpty && _title != this.url) {
@@ -401,15 +427,22 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
           });
         },
         onConsoleMessage: (InAppWebViewController controller, ConsoleMessage consoleMessage) {
-          debugPrint("Console message: "
-              "${consoleMessage.messageLevel.toString()}"
-              " - "
-              "${consoleMessage.message}");
+          _webViewController = controller;
+
+          debugPrint('Console message: '
+              '${consoleMessage.messageLevel.toString()}'
+              ' - '
+              '${consoleMessage.message}');
         },
         onDownloadStart: (InAppWebViewController controller, String url) {
+          _webViewController = controller;
+
           debugPrint("WebView started download from: $url");
+          NetUtils.download(url);
         },
         onProgressChanged: (InAppWebViewController controller, int progress) {
+          _webViewController = controller;
+
           this.progress = progress / 100;
           if (this.mounted) setState(() {});
         },

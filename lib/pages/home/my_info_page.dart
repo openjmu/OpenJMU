@@ -455,30 +455,31 @@ class MyInfoPageState extends State<MyInfoPage> {
         child: Container(
           margin: EdgeInsets.all(suSetWidth(24.0)),
           width: MediaQuery.of(context).size.width / 2.5,
-          height: suSetHeight(66.0),
+          height: suSetHeight(80.0),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(30.0),
+            borderRadius: BorderRadius.circular(60.0),
             boxShadow: <BoxShadow>[
               BoxShadow(
-                color: Colors.grey[100],
+                color: Colors.grey[currentIsDark ? 800 : 100],
                 blurRadius: suSetHeight(6.0),
                 offset: Offset(0, suSetHeight(6.0)),
               ),
             ],
-            color: Colors.white,
+            color: Theme.of(context).primaryColor,
           ),
           child: FlatButton(
             onPressed: HiveBoxes.clearBoxes,
             child: Text(
-              "Clear ALL Hive Data",
+              "(DANGER)\nClear ALL Hive Data",
               style: TextStyle(
                 color: Colors.redAccent,
                 fontSize: suSetSp(20.0),
-                fontWeight: FontWeight.normal,
+                fontWeight: FontWeight.bold,
               ),
+              textAlign: TextAlign.center,
             ),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0),
+              borderRadius: BorderRadius.circular(60.0),
             ),
           ),
         ),

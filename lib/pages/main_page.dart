@@ -129,6 +129,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         Notifications.fromJson(responses[0].data),
         TeamNotifications.fromJson(responses[1].data),
       );
+    }).catchError((e) {
+      debugPrint('Error when getting notification: $e');
     });
   }
 

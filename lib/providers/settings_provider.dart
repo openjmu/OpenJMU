@@ -55,7 +55,7 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool _hideShieldPost = false;
+  bool _hideShieldPost = true;
   bool get hideShieldPost => _hideShieldPost;
   set hideShieldPost(bool value) {
     _hideShieldPost = value;
@@ -77,6 +77,7 @@ class SettingsProvider extends ChangeNotifier {
     _homeSplashIndex = _box?.get(SettingUtils.spHomeSplashIndex) ?? _homeSplashIndex;
     _homeStartUpIndex = _box?.get(SettingUtils.spHomeStartUpIndex) ?? _homeStartUpIndex;
     _newAppCenterIcon = _box?.get(SettingUtils.spSettingNewIcons) ?? _newAppCenterIcon;
+    _hideShieldPost = _box?.get(SettingUtils.spSettingHideShieldPost) ?? _hideShieldPost;
   }
 
   void reset() {
@@ -84,6 +85,7 @@ class SettingsProvider extends ChangeNotifier {
     _homeSplashIndex = 0;
     _homeStartUpIndex = [0, 0, 0];
     _newAppCenterIcon = false;
+    _hideShieldPost = true;
   }
 
   Future<Null> getAnnouncement() async {

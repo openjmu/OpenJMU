@@ -17,12 +17,17 @@ class CustomSwitch extends StatefulWidget {
   final Color activeColor;
   final DragStartBehavior dragStartBehavior;
 
+  final double trackWidth;
+  final double trackHeight;
+
   const CustomSwitch({
     Key key,
     @required this.value,
     @required this.onChanged,
     this.activeColor,
     this.dragStartBehavior = DragStartBehavior.start,
+    this.trackWidth = 50.0,
+    this.trackHeight = 28.0,
   })  : assert(value != null),
         assert(dragStartBehavior != null),
         super(key: key);
@@ -62,6 +67,8 @@ class _CustomSwitchState extends State<CustomSwitch> with TickerProviderStateMix
         onChanged: widget.onChanged,
         vsync: this,
         dragStartBehavior: widget.dragStartBehavior,
+        trackWidth: widget.trackWidth,
+        trackHeight: widget.trackHeight,
       ),
     );
   }
@@ -75,6 +82,8 @@ class _CustomSwitchRenderObjectWidget extends LeafRenderObjectWidget {
     this.onChanged,
     this.vsync,
     this.dragStartBehavior = DragStartBehavior.start,
+    this.trackWidth,
+    this.trackHeight,
   }) : super(key: key);
 
   final bool value;
@@ -82,6 +91,9 @@ class _CustomSwitchRenderObjectWidget extends LeafRenderObjectWidget {
   final ValueChanged<bool> onChanged;
   final TickerProvider vsync;
   final DragStartBehavior dragStartBehavior;
+
+  final double trackWidth;
+  final double trackHeight;
 
   @override
   _RenderCustomSwitch createRenderObject(BuildContext context) {
@@ -93,6 +105,8 @@ class _CustomSwitchRenderObjectWidget extends LeafRenderObjectWidget {
       textDirection: Directionality.of(context),
       vsync: vsync,
       dragStartBehavior: dragStartBehavior,
+      trackWidth: trackWidth,
+      trackHeight: trackHeight,
     );
   }
 
@@ -105,18 +119,12 @@ class _CustomSwitchRenderObjectWidget extends LeafRenderObjectWidget {
       ..onChanged = onChanged
       ..textDirection = Directionality.of(context)
       ..vsync = vsync
-      ..dragStartBehavior = dragStartBehavior;
+      ..dragStartBehavior = dragStartBehavior
+      ..trackWidth = trackWidth
+      ..trackHeight = trackHeight;
   }
 }
 
-const double _kTrackWidth = 50.0;
-const double _kTrackHeight = 28.0;
-const double _kTrackRadius = _kTrackHeight / 2.0;
-const double _kTrackInnerStart = _kTrackHeight / 1.4;
-const double _kTrackInnerEnd = _kTrackWidth - _kTrackInnerStart;
-const double _kTrackInnerLength = _kTrackInnerEnd - _kTrackInnerStart;
-const double _kSwitchWidth = _kTrackWidth;
-const double _kSwitchHeight = _kTrackHeight;
 const double _kCupertinoSwitchDisabledOpacity = 0.5;
 
 const Duration _kReactionDuration = Duration(milliseconds: 300);
@@ -131,6 +139,8 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
     @required TextDirection textDirection,
     @required TickerProvider vsync,
     DragStartBehavior dragStartBehavior = DragStartBehavior.start,
+    double trackWidth,
+    double trackHeight,
   })  : assert(value != null),
         assert(activeColor != null),
         assert(vsync != null),
@@ -140,9 +150,14 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
         _onChanged = onChanged,
         _textDirection = textDirection,
         _vsync = vsync,
+        _trackWidth = trackWidth,
+        _trackHeight = trackHeight,
         super(
-            additionalConstraints:
-                const BoxConstraints.tightFor(width: _kSwitchWidth, height: _kSwitchHeight)) {
+          additionalConstraints: BoxConstraints.tightFor(
+            width: trackWidth,
+            height: trackWidth,
+          ),
+        ) {
     _tap = TapGestureRecognizer()
       ..onTapDown = _handleTapDown
       ..onTap = _handleTap
@@ -173,6 +188,31 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
       curve: Curves.ease,
     )..addListener(markNeedsPaint);
   }
+
+  double _trackWidth;
+  double get trackWidth => _trackWidth;
+  set trackWidth(double value) {
+    assert(value != null);
+    if (value == _trackWidth) return;
+    _trackWidth = value;
+    markNeedsPaint();
+  }
+
+  double _trackHeight;
+  double get trackHeight => _trackHeight;
+  set trackHeight(double value) {
+    assert(value != null);
+    if (value == _trackHeight) return;
+    _trackHeight = value;
+    markNeedsPaint();
+  }
+
+  double get _kTrackWidth => trackWidth;
+  double get _kTrackHeight => trackHeight;
+  double get _kTrackRadius => trackHeight / 2.0;
+  double get _kTrackInnerStart => _kTrackHeight / 1.4;
+  double get _kTrackInnerEnd => _kTrackWidth - _kTrackInnerStart;
+  double get _kTrackInnerLength => _kTrackInnerEnd - _kTrackInnerStart;
 
   AnimationController _positionController;
   CurvedAnimation _position;
@@ -399,14 +439,14 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
     final Paint paint = Paint()..color = Color.lerp(trackColor, activeColor, currentValue);
 
     final Rect trackRect = Rect.fromLTWH(
-      offset.dx + (size.width - _kTrackWidth) / 2.0,
-      offset.dy + (size.height - _kTrackHeight) / 2.0,
-      _kTrackWidth,
-      _kTrackHeight,
+      offset.dx + (size.width - trackWidth) / 2.0,
+      offset.dy + (size.height - trackHeight) / 2.0,
+      trackWidth,
+      trackHeight,
     );
     final RRect trackRRect = RRect.fromRectAndRadius(
       trackRect,
-      const Radius.circular(_kTrackRadius),
+      Radius.circular(_kTrackRadius),
     );
     canvas.drawRRect(trackRRect, paint);
 

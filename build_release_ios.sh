@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 flutter build ios --release
 cd build/ios/iphoneos/Runner.app/Frameworks
 cd App.framework
@@ -6,5 +7,4 @@ cd ..
 cd Flutter.framework
 xcrun bitcode_strip -r Flutter -o Flutter
 cd ../../../../../../
-flutter clean
 exit 0

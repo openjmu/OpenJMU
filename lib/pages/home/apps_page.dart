@@ -17,7 +17,7 @@ class AppsPage extends StatefulWidget {
 
 class AppsPageState extends State<AppsPage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  static List<String> tabs() => ["课程表", if (!(UserAPI.currentUser?.isTeacher ?? false)) "成绩", "应用"];
+  static List<String> get tabs => ["课程表", if (!(currentUser?.isTeacher ?? false)) "成绩", "应用"];
   final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
   final _scrollController = ScrollController();
@@ -35,7 +35,7 @@ class AppsPageState extends State<AppsPage>
         currentContext,
         listen: false,
       ).homeStartUpIndex[1],
-      length: tabs().length,
+      length: tabs.length,
       vsync: this,
     );
 
@@ -46,12 +46,15 @@ class AppsPageState extends State<AppsPage>
         }
       })
       ..on<AppCenterRefreshEvent>().listen((event) {
-        switch (tabs()[event.currentIndex]) {
+        switch (tabs[event.currentIndex]) {
           case "课程表":
             Instances.eventBus.fire(CourseScheduleRefreshEvent());
             break;
           case "成绩":
-            Instances.eventBus.fire(ScoreRefreshEvent());
+            Provider.of<ScoresProvider>(
+              currentContext,
+              listen: false,
+            ).requestScore();
             break;
           case "应用":
             if (_scrollController.hasClients) _scrollController.jumpTo(0.0);
@@ -129,7 +132,7 @@ class AppsPageState extends State<AppsPage>
     super.build(context);
     _tabController = TabController(
       initialIndex: _tabController.index,
-      length: tabs().length,
+      length: tabs.length,
       vsync: this,
     );
     return Scaffold(
@@ -145,7 +148,7 @@ class AppsPageState extends State<AppsPage>
               selector: (_, provider) => provider.dark,
               builder: (_, dark, __) {
                 return ExtendedTabBarView(
-                  physics: tabs().contains("成绩")
+                  physics: tabs.contains("成绩")
                       ? const ScrollPhysics()
                       : const NeverScrollableScrollPhysics(),
                   cacheExtent: 3,
@@ -164,7 +167,7 @@ class AppsPageState extends State<AppsPage>
                               )
                             : CourseSchedulePage(key: Instances.courseSchedulePageStateKey)
                         : SizedBox(),
-                    if (tabs().contains("成绩")) ScorePage(),
+                    if (tabs.contains("成绩")) ScorePage(),
                     AppCenterPage(
                       refreshIndicatorKey: refreshIndicatorKey,
                       scrollController: _scrollController,
@@ -201,9 +204,7 @@ class AppsPageState extends State<AppsPage>
                           horizontal: suSetWidth(16.0),
                         ),
                         unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
-                        tabs: <Tab>[
-                          for (int i = 0; i < List.from(tabs()).length; i++) _tab(tabs()[i])
-                        ],
+                        tabs: List<Tab>.generate(tabs.length, (i) => _tab(tabs[i])),
                         controller: _tabController,
                       ),
                     ),
@@ -211,10 +212,7 @@ class AppsPageState extends State<AppsPage>
                       width: suSetWidth(60.0),
                       child: IconButton(
                         alignment: Alignment.centerRight,
-                        icon: Icon(
-                          Icons.refresh,
-                          size: suSetWidth(32.0),
-                        ),
+                        icon: Icon(Icons.refresh, size: suSetWidth(32.0)),
                         onPressed: () {
                           Instances.eventBus.fire(AppCenterRefreshEvent(_tabController.index));
                         },

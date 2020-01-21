@@ -6,10 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/appbar.dart';
 
-@FFRoute(
-  name: "openjmu://about",
-  routeName: "关于页",
-)
+@FFRoute(name: "openjmu://about", routeName: "关于页")
 class AboutPage extends StatefulWidget {
   @override
   _AboutPageState createState() => _AboutPageState();

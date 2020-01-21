@@ -129,6 +129,7 @@ class PlatformProgressIndicator extends StatelessWidget {
   final double radius;
   final Color color;
   final double value;
+  final Brightness brightness;
 
   const PlatformProgressIndicator({
     Key key,
@@ -136,12 +137,16 @@ class PlatformProgressIndicator extends StatelessWidget {
     this.radius = 10.0,
     this.color,
     this.value,
+    this.brightness,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Platform.isIOS
-        ? CupertinoActivityIndicator(radius: radius)
+        ? CupertinoTheme(
+            data: CupertinoThemeData(brightness: brightness ?? currentBrightness),
+            child: CupertinoActivityIndicator(radius: radius),
+          )
         : CircularProgressIndicator(
             strokeWidth: suSetWidth(strokeWidth),
             valueColor: color != null ? AlwaysStoppedAnimation<Color>(color) : null,
@@ -278,7 +283,6 @@ class ScaledImage extends StatelessWidget {
         imageWidget = ExtendedRawImage(
           image: image,
           height: num400,
-          fit: BoxFit.contain,
           color: color,
           colorBlendMode: colorBlendMode,
           filterQuality: FilterQuality.none,
@@ -289,7 +293,6 @@ class ScaledImage extends StatelessWidget {
         imageWidget = ExtendedRawImage(
           width: math.min(width / 2, image.width.toDouble()),
           image: image,
-          fit: BoxFit.contain,
           color: color,
           colorBlendMode: colorBlendMode,
           filterQuality: FilterQuality.none,
@@ -298,7 +301,6 @@ class ScaledImage extends StatelessWidget {
         imageWidget = ExtendedRawImage(
           image: image,
           width: math.min(num400, image.width.toDouble()),
-          fit: BoxFit.contain,
           color: color,
           colorBlendMode: colorBlendMode,
           filterQuality: FilterQuality.none,
@@ -307,22 +309,17 @@ class ScaledImage extends StatelessWidget {
     } else {
       imageWidget = ExtendedRawImage(
         image: image,
-        fit: BoxFit.cover,
         color: color,
         colorBlendMode: colorBlendMode,
         filterQuality: FilterQuality.none,
       );
     }
     if (ratio >= 3) {
-      imageWidget = SizedBox(
-        width: num200,
-        height: num400,
-        child: Stack(
-          children: <Widget>[
-            Positioned.fill(child: imageWidget),
-            longImageIndicator(context),
-          ],
-        ),
+      imageWidget = Stack(
+        children: <Widget>[
+          imageWidget,
+          longImageIndicator(context),
+        ],
       );
     }
     if (imageWidget != null) {
@@ -334,7 +331,7 @@ class ScaledImage extends StatelessWidget {
       imageWidget = SizedBox.shrink();
     }
 
-    if (provider.type == NetworkImageType.gif) {
+    if (provider?.type == NetworkImageType.gif) {
       imageWidget = Stack(
         children: <Widget>[imageWidget, gifImageIndicator(context)],
       );

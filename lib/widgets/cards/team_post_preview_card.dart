@@ -15,6 +15,7 @@ import 'package:intl/intl.dart';
 import 'package:like_button/like_button.dart';
 
 import 'package:openjmu/constants/constants.dart';
+import 'package:openjmu/controller/extended_network_image_provider.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
 import 'package:openjmu/pages/post/team_post_detail_page.dart';
 
@@ -424,40 +425,32 @@ class TeamPostPreviewCard extends StatelessWidget {
     for (int i = 0; i < post.pics.length; i++) {
       final imageId = int.parse(post.pics[i]['fid']);
       final imageUrl = API.teamFile(fid: imageId);
-      Widget _exImage = Selector<ThemesProvider, bool>(
-        selector: (_, provider) => provider.dark,
-        builder: (_, dark, __) {
-          return ExtendedImage.network(
-            imageUrl,
-            fit: BoxFit.cover,
-            cache: true,
-            color: dark ? Colors.black.withAlpha(50) : null,
-            colorBlendMode: dark ? BlendMode.darken : BlendMode.srcIn,
-            filterQuality: FilterQuality.none,
-            retries: 0,
-            loadStateChanged: (ExtendedImageState state) {
-              Widget loader;
-              switch (state.extendedImageLoadState) {
-                case LoadState.loading:
-                  loader = Center(child: CupertinoActivityIndicator());
-                  break;
-                case LoadState.completed:
-                  final info = state.extendedImageInfo;
-                  if (info != null) {
-                    loader = ScaledImage(
-                      image: info.image,
-                      length: post.pics.length,
-                      num200: suSetSp(200),
-                      num400: suSetSp(400),
-                    );
-                  }
-                  break;
-                case LoadState.failed:
-                  break;
+      final provider = ExtendedTypedNetworkImageProvider(imageUrl);
+      Widget _exImage = ExtendedImage(
+        image: provider,
+        fit: BoxFit.cover,
+        loadStateChanged: (ExtendedImageState state) {
+          Widget loader;
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              loader = Center(child: CupertinoActivityIndicator());
+              break;
+            case LoadState.completed:
+              final info = state.extendedImageInfo;
+              if (info != null) {
+                loader = ScaledImage(
+                  image: info.image,
+                  length: post.pics.length,
+                  num200: suSetSp(200),
+                  num400: suSetSp(400),
+                  provider: provider,
+                );
               }
-              return loader;
-            },
-          );
+              break;
+            case LoadState.failed:
+              break;
+          }
+          return loader;
         },
       );
       imagesWidget.add(

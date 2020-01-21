@@ -19,7 +19,7 @@ class SwitchStartUpPage extends StatefulWidget {
 class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
   List<List<String>> get pageTab => [
         List.from(PostSquareListPageState.tabs),
-        List.from(AppsPageState.tabs()),
+        List.from(AppsPageState.tabs),
       ];
   List<List<Map<String, dynamic>>> get pageSection => [
         [
@@ -52,13 +52,11 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
       behavior: HitTestBehavior.opaque,
       child: Container(
         margin: EdgeInsets.symmetric(vertical: suSetHeight(16.0)),
-        height: suSetHeight(54.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
@@ -120,7 +118,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
         if (page["name"] == "启动页") {
           SettingUtils.setHomeSplashIndex(index);
         } else {
-          final _list = List.from(settingsProvider.homeStartUpIndex);
+          final _list = List<int>.from(settingsProvider.homeStartUpIndex);
           _list[pageIndex] = index;
           SettingUtils.setHomeStartUpIndex(_list);
         }
