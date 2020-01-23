@@ -10,6 +10,8 @@ import 'package:openjmu/widgets/user_avatar.dart';
 UserInfo get currentUser => UserAPI.currentUser;
 
 class UserAPI {
+  const UserAPI._();
+
   static String lastTicket;
   static UserInfo currentUser = UserInfo();
 

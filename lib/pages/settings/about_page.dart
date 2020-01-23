@@ -106,7 +106,9 @@ class _AboutPageState extends State<AboutPage> {
             "uid: ${currentUser.uid}\n"
             "sid: ${currentUser.sid}\n"
             "workId: ${currentUser.workId}\n"
-            "blowfish: ${currentUser.blowfish}\n"
+            "uuid: ${DeviceUtils.deviceUuid}\n"
+            "${DeviceUtils.devicePushToken != null ? "pushToken: ${DeviceUtils.devicePushToken}\n" : ""}"
+            "model: ${DeviceUtils.deviceModel}\n"
             "————— END DEBUG INFO —————\n",
             textAlign: TextAlign.center,
           ),
@@ -134,7 +136,7 @@ class _AboutPageState extends State<AboutPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     about,
-                    tries == 10 ? debugInfo : SizedBox.shrink(),
+                    if (tries == 10) debugInfo,
                   ],
                 ),
               ),

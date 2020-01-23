@@ -6,5 +6,5 @@ export 'message_utils.dart';
 export 'net_utils.dart';
 export 'notification_utils.dart';
 export 'ota_utils.dart';
-export 'setting_utils.dart';
+export 'hive_field_utils.dart';
 export 'toast_utils.dart';

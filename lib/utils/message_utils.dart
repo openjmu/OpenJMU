@@ -8,6 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class MessageUtils {
+  const MessageUtils._();
+
   ///
   /// Buffer zone for bytes.
   ///

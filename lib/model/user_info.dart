@@ -14,7 +14,6 @@ class UserInfo {
   /// For Login Process
   String sid;
   String ticket;
-  String blowfish;
   bool isTeacher;
   bool isCY;
 
@@ -34,7 +33,6 @@ class UserInfo {
     this.name,
     this.signature,
     this.ticket,
-    this.blowfish,
     this.isTeacher,
     this.isCY,
     this.unitId,
@@ -60,12 +58,11 @@ class UserInfo {
       'name': name,
       'signature': signature,
       'ticket': ticket,
-      'blowfish': blowfish,
       'isTeacher': isTeacher,
       'isCY': isCY,
       'unitId': unitId,
       'workId': workId,
-//            'classId': classId,
+//      'classId': classId,
       'gender': gender,
       'isFollowing': isFollowing,
     })}";
@@ -81,7 +78,6 @@ class UserInfo {
       name: json['username'] ?? json['uid'].toString(),
       signature: json['signature'],
       ticket: json['sid'],
-      blowfish: json['blowfish'],
       isTeacher: json['isTeacher'] ?? int.parse(json['type'].toString()) == 1,
       isCY: json['isCY'],
       unitId: json['unitId'] ?? json['unitid'],

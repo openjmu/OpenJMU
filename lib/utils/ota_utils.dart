@@ -15,6 +15,8 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/updating_dialog.dart';
 
 class OTAUtils {
+  const OTAUtils._();
+
   static Future<String> getCurrentVersion() async {
     try {
       final packageInfo = await PackageInfo.fromPlatform();

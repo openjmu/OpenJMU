@@ -494,11 +494,8 @@ class TeamPostPreviewCard extends StatelessWidget {
         children: imagesWidget,
       );
     }
-    _image = Container(
-      width: Screens.width * 0.7,
-      padding: EdgeInsets.only(
-        top: suSetHeight(6.0),
-      ),
+    _image = Padding(
+      padding: EdgeInsets.only(top: suSetHeight(6.0)),
       child: _image,
     );
     return _image;

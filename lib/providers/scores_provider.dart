@@ -69,8 +69,8 @@ class ScoresProvider extends ChangeNotifier {
   List get filteredScores => _scores?.filter((score) => score.termId == _selectedTerm)?.toList();
 
   void initScore() async {
-    final data = _scoreBox.get(currentUser.uid);
-    if (data != null) {
+    final data = _scoreBox.get(currentUser.uid)?.cast<String, dynamic>();
+    if (data != null && data['terms'] != null && data['scores'] != null) {
       _terms = (data['terms'] as List).cast<String>();
       _scores = (data['scores'] as List).cast<Score>();
       _loaded = true;
@@ -129,7 +129,7 @@ class ScoresProvider extends ChangeNotifier {
       if (!_loaded) _loaded = true;
       _loading = false;
       notifyListeners();
-      debugPrint('Scores decoded successfully with ${_scores?.length} scores.');
+      debugPrint('Scores decoded successfully with ${_scores?.length ?? 0} scores.');
     } catch (e) {
       debugPrint('Decode scores response error: $e');
     }
@@ -158,7 +158,7 @@ class ScoresProvider extends ChangeNotifier {
     _loadError = false;
     _terms = null;
     _selectedTerm = null;
-    _scores.clear();
+    _scores = null;
     _scoreData = '';
   }
 

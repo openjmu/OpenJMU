@@ -26,6 +26,8 @@ export 'package:openjmu/openjmu_route.dart' show Routes;
 const double kAppBarHeight = 75.0;
 
 class Constants {
+  const Constants._();
+
   static final developerList = <int>[
     136172,
     182999,
@@ -78,14 +80,13 @@ class Constants {
   };
 
   static Map<String, dynamic> loginParams({
-    String blowfish,
     String username,
     String password,
     String ticket,
   }) =>
       {
         "appid": appId,
-        "blowfish": "$blowfish",
+        "blowfish": DeviceUtils.deviceUuid,
         if (ticket != null) "ticket": "$ticket",
         if (username != null) "account": "$username",
         if (password != null) "password": "${sha1.convert(utf8.encode(password))}",

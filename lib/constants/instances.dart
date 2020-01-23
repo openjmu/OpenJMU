@@ -11,6 +11,8 @@ Color get currentThemeColor => Theme.of(currentContext).accentColor;
 bool get currentIsDark => currentBrightness == Brightness.dark;
 
 class Instances {
+  const Instances._();
+
   static final EventBus eventBus = EventBus();
   static final navigatorKey = GlobalKey<NavigatorState>();
   static AppLifecycleState appLifeCycleState = AppLifecycleState.resumed;

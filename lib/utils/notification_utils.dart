@@ -10,6 +10,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class NotificationUtils {
+  const NotificationUtils._();
+
   static final plugin = FlutterLocalNotificationsPlugin();
 
   static void initSettings() {

@@ -11,6 +11,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class NetUtils {
+  const NetUtils._();
+
   static final dio = Dio();
   static final tokenDio = Dio();
 
@@ -49,8 +51,9 @@ class NetUtils {
     dio.interceptors.add(cookieManager);
     dio.interceptors.add(InterceptorsWrapper(
       onError: (DioError e) async {
-        debugPrint("DioError with request: ${e.request.uri}");
-        debugPrint("DioError: ${e.message}");
+        debugPrint("Dio error with request: ${e.request.uri}");
+        debugPrint("Request data: ${e.request.data}");
+        debugPrint("Dio error: ${e.message}");
         if (e?.response?.statusCode == 401) updateTicket();
         return e;
       },
@@ -68,7 +71,10 @@ class NetUtils {
     tokenDio.interceptors.add(tokenCookieManager);
     tokenDio.interceptors.add(InterceptorsWrapper(
       onError: (DioError e) async {
-        debugPrint("Token DioError: ${e.message}");
+        debugPrint("TokenDio error with request: ${e.request.uri}");
+        debugPrint("Request data: ${e.request.data}");
+        debugPrint("TokenDio error: ${e.message}");
+        if (e?.response?.statusCode == 401) updateTicket();
         return e;
       },
     ));

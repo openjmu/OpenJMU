@@ -4,23 +4,27 @@
 #import <Flutter/Flutter.h>
 static NSString *SendTime;
 static NSString *token;
-static NSString *isAddToPushSucess;
+static NSString *isAddToPushSuccess;
 @implementation AppDelegate
+
 -(NSString*) PushToken{
     return token;
 }
+
 -(NSString*) PushTime {
     return SendTime;
 }
--(NSString*) PushSucess{
-    return isAddToPushSucess;
+
+-(NSString*) PushSuccess{
+    return isAddToPushSuccess;
 }
+
 - (BOOL)application:(UIApplication *)application
 didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [GeneratedPluginRegistrant registerWithRegistry:self];
     FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
-    FlutterMethodChannel *iosTokenChannel = [FlutterMethodChannel methodChannelWithName:@"cn.edu.jmu.openjmu/iosPushToken" binaryMessenger:controller];
-    [iosTokenChannel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
+    FlutterMethodChannel *iOSTokenChannel = [FlutterMethodChannel methodChannelWithName:@"cn.edu.jmu.openjmu/iOSPushToken" binaryMessenger:controller];
+    [iOSTokenChannel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
         
         if ([@"getPushToken" isEqualToString:call.method]) {
             if (token != nil) {
@@ -37,8 +41,8 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
             }
             else {
                 if ([@"getPushSuccess" isEqualToString:call.method]) {
-                    if (isAddToPushSucess != nil) {
-                        result([self PushSucess]);
+                    if (isAddToPushSuccess != nil) {
+                        result([self PushSuccess]);
                     } else {
                         result([FlutterError errorWithCode:@"03" message:[NSString stringWithFormat:@"异常"] details:@"进入tryCatchError"]); }
                 } else {
@@ -93,14 +97,14 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     }
     return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
-- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray *))restorationHandler
-{
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void(^)(NSArray<id<UIUserActivityRestoring>> * __nullable restorableObjects))restorationHandler {
     if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb]) {
         NSURL *webpageURL = userActivity.webpageURL;
         NSString *host = webpageURL.host;
         if ([host isEqualToString:@"××××.openjmu.xyz"]) {
             //判断域名是自己的网站，进行我们需要的处理
-        }else{
+        } else {
             [[UIApplication sharedApplication]openURL:webpageURL];
         }
     }
@@ -111,7 +115,6 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler{
     NSLog(@"%s", __func__);
     completionHandler(UNNotificationPresentationOptionBadge | UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert);
-    //在前台的时候显示通知
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler{
@@ -125,44 +128,38 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
     }];
 }
-- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)pToken {
-    //保存deviceToken并上传token
-    //NSLog(@"Register success:%@", pToken);//log当前的token
-    NSDate *now = [NSDate date];//获取现在的时间
+
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *) deviceToken {
+    NSDate *now = [NSDate date];
     NSDateFormatter *forMatter = [[NSDateFormatter alloc] init];
-    [forMatter setDateFormat:@"yyyy/MM/dd/HH:mm:ss"];
-    SendTime = [forMatter stringFromDate:now];//转换系统现在的时间
-    token = [[[[pToken description]
-                stringByReplacingOccurrencesOfString:@"<" withString:@""]
-               stringByReplacingOccurrencesOfString:@">" withString:@""]
-              stringByReplacingOccurrencesOfString:@" " withString:@""];//把空格和<>去掉
-    /**NSURL *url = [NSURL URLWithString:@"http://dns.135792468.xyz:8787/push"];//创建请求IP
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-    request.HTTPMethod = @"POST";
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    NSDictionary *json = @{
-                           @"token": token1,
-                           @"date": SendTime,
-                           };
-    isAddToPushSucess = @"Success";
-    NSData *data = [NSJSONSerialization dataWithJSONObject:json options:NSJSONWritingPrettyPrinted error:nil];
-    request.HTTPBody = data;
-    [NSURLConnection sendAsynchronousRequest:request queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-    }];**/
-}
-- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSData *) error{
-    isAddToPushSucess = @"Fail";
+    [forMatter setDateFormat:@"yyyy/MM/dd HH:mm:ss"];
+    SendTime = [forMatter stringFromDate:now]; //转换系统现在的时间
+    
+    if (@available(iOS 13.0, *)) {
+        NSUInteger length = deviceToken.length;
+        if (length != 0) {
+            const unsigned char *buffer = deviceToken.bytes;
+            NSMutableString *hexString  = [NSMutableString stringWithCapacity:(length * 2)];
+            for (int i = 0; i < length; ++i) {
+                [hexString appendFormat:@"%02x", buffer[i]];
+            }
+            token = [hexString copy];
+        }
+    } else {
+        token = [[[[deviceToken description]
+                   stringByReplacingOccurrencesOfString:@"<" withString:@""]
+                  stringByReplacingOccurrencesOfString:@">" withString:@""]
+                 stringByReplacingOccurrencesOfString:@" " withString:@""];
+    }
 }
 
-/// Temporary migration with `quick_actions` package's event not triggered. See https://github.com/flutter/flutter/issues/13634#issuecomment-392303964
-- (void)application:(UIApplication *)application performActionForShortcutItem:(UIApplicationShortcutItem *)shortcutItem completionHandler:(void (^)(BOOL succeeded))completionHandler {
-    FlutterViewController* controller = (FlutterViewController*)self.window.rootViewController;
-    
-    FlutterMethodChannel* channel = [FlutterMethodChannel methodChannelWithName:@"plugins.flutter.io/quick_actions" binaryMessenger:controller];
-    [channel invokeMethod:@"launch" arguments:shortcutItem.type];
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSData *) error{
+    isAddToPushSuccess = @"Fail";
 }
+
 -(BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options{
     NSLog(@"Wait Open Url = %@",url);
     return YES;
 }
+
 @end

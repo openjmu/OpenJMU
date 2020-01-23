@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class TeamPostAPI {
+  const TeamPostAPI._();
+
   static Future getPostList({
     bool isMore = false,
     String lastTimeStamp,

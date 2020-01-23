@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class PraiseAPI {
+  const PraiseAPI._();
+
   static getPraiseList(bool isMore, int lastValue) async => NetUtils.getWithCookieAndHeaderSet(
         (isMore ?? false) ? "${API.praiseList}/id_max/$lastValue" : "${API.praiseList}",
       );

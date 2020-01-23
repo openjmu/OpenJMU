@@ -7,9 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
-import 'package:oktoast/oktoast.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:quick_actions/quick_actions.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -28,6 +26,11 @@ void main() async {
   await HiveBoxes.openBoxes();
   await DeviceUtils.getModel();
   NotificationUtils.initSettings();
+
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
     statusBarColor: Colors.transparent,
@@ -62,11 +65,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   @override
   void initState() {
     WidgetsBinding.instance.addObserver(this);
-
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
 
     Instances.eventBus
       ..on<LogoutEvent>().listen((event) async {
@@ -129,12 +127,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     debugPrint("AppLifecycleState change to: ${state.toString()}");
+    Screens.updateMediaQuery();
     Instances.appLifeCycleState = state;
-  }
-
-  @override
-  void didChangePlatformBrightness() {
-    if (mounted) setState(() {});
   }
 
   void initSettings() async {

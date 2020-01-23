@@ -309,39 +309,36 @@ class MyInfoPageState extends State<MyInfoPage> {
                 NetUtils.updateTicket();
               }
             },
-            child: Container(
-              color: Theme.of(context).primaryColor,
-              padding: EdgeInsets.symmetric(
-                horizontal: suSetWidth(36.0),
-                vertical: suSetHeight(20.0),
-              ),
-              child: Center(
-                child: Selector<DateProvider, int>(
-                  selector: (_, provider) => provider.currentWeek,
-                  builder: (_, currentWeek, __) {
-                    if (currentWeek != null && currentWeek <= 20) {
-                      return RichText(
-                        textAlign: TextAlign.center,
-                        text: TextSpan(
-                          children: <TextSpan>[
-                            TextSpan(text: "${currentUser.name}，$hello~\n"),
-                            if (currentWeek > 0)
-                              TextSpan(text: "今天是第$currentWeek周，")
-                            else
-                              TextSpan(text: "距开学还剩${currentWeek.abs()}周，"),
-                            TextSpan(text: "${DateFormat("MMMdd日，", "zh_CN").format(now)}"),
-                            TextSpan(text: "${DateFormat("EEEE", "zh_CN").format(now)}"),
-                          ],
-                          style:
-                              Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(24.0)),
+            child: Selector<DateProvider, int>(
+              selector: (_, provider) => provider.currentWeek,
+              builder: (_, currentWeek, __) => currentWeek != null && currentWeek <= 20
+                  ? Container(
+                      color: Theme.of(context).primaryColor,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: suSetWidth(36.0),
+                        vertical: suSetHeight(20.0),
+                      ),
+                      child: Center(
+                        child: RichText(
+                          textAlign: TextAlign.center,
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(text: "${currentUser.name}，$hello~\n"),
+                              if (currentWeek > 0)
+                                TextSpan(text: "今天是第$currentWeek周，")
+                              else
+                                TextSpan(text: "距开学还剩${currentWeek.abs()}周，"),
+                              TextSpan(text: "${DateFormat("MMMdd日，", "zh_CN").format(now)}"),
+                              TextSpan(text: "${DateFormat("EEEE", "zh_CN").format(now)}"),
+                            ],
+                            style: Theme.of(context).textTheme.body1.copyWith(
+                                  fontSize: suSetSp(24.0),
+                                ),
+                          ),
                         ),
-                      );
-                    } else {
-                      return SizedBox.shrink();
-                    }
-                  },
-                ),
-              ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
             ),
           );
         },

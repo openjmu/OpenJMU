@@ -25,6 +25,7 @@ export 'package:openjmu/widgets/rounded_check_box.dart';
 export 'package:openjmu/widgets/rounded_tab_indicator.dart';
 export 'package:openjmu/widgets/slide_menu_item.dart';
 export 'package:openjmu/widgets/user_avatar.dart';
+export 'package:openjmu/widgets/dialogs/confirmation_dialog.dart';
 
 class TransparentRoute extends PageRoute<void> {
   TransparentRoute({
@@ -283,6 +284,7 @@ class ScaledImage extends StatelessWidget {
         imageWidget = ExtendedRawImage(
           image: image,
           height: num400,
+          fit: BoxFit.cover,
           color: color,
           colorBlendMode: colorBlendMode,
           filterQuality: FilterQuality.none,
@@ -291,8 +293,9 @@ class ScaledImage extends StatelessWidget {
         final maxValue = math.max(image.width, image.height);
         final width = num400 * image.width / maxValue;
         imageWidget = ExtendedRawImage(
-          width: math.min(width / 2, image.width.toDouble()),
           image: image,
+          width: math.min(width / 2, image.width.toDouble()),
+          fit: BoxFit.cover,
           color: color,
           colorBlendMode: colorBlendMode,
           filterQuality: FilterQuality.none,
@@ -300,6 +303,7 @@ class ScaledImage extends StatelessWidget {
       } else if (ratio <= 3 / 4) {
         imageWidget = ExtendedRawImage(
           image: image,
+          fit: BoxFit.cover,
           width: math.min(num400, image.width.toDouble()),
           color: color,
           colorBlendMode: colorBlendMode,
@@ -309,6 +313,7 @@ class ScaledImage extends StatelessWidget {
     } else {
       imageWidget = ExtendedRawImage(
         image: image,
+        fit: BoxFit.cover,
         color: color,
         colorBlendMode: colorBlendMode,
         filterQuality: FilterQuality.none,

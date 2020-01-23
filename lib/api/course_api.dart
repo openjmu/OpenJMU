@@ -9,6 +9,8 @@ final _random = math.Random();
 int next(int min, int max) => min + _random.nextInt(max - min);
 
 class CourseAPI {
+  const CourseAPI._();
+
   static Set<Map<String, Color>> coursesColor = {};
 
   static Future getCourse() async => NetUtils.get(

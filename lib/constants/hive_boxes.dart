@@ -2,11 +2,14 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2019-12-01 19:34
 ///
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
 class HiveBoxes {
+  const HiveBoxes._();
+
   static Box<Map> appMessagesBox;
   static Box<Map> personalMessagesBox;
 
@@ -40,6 +43,7 @@ class HiveBoxes {
   }
 
   static Future clearBoxes() async {
+    debugPrint('Clearing Hive Boxes...');
     await appMessagesBox?.clear();
     await coursesBox?.clear();
     await courseRemarkBox?.clear();
@@ -53,6 +57,8 @@ class HiveBoxes {
 }
 
 class HiveAdapterTypeIds {
+  const HiveAdapterTypeIds._();
+
   static const int appMessage = 0;
   static const int message = 1;
   static const int course = 2;

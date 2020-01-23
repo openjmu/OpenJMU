@@ -7,7 +7,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class Screens {
+  const Screens._();
+
   static MediaQueryData mediaQuery = MediaQueryData.fromWindow(ui.window);
+
+  static double fixedFontSize(double fontSize) => fontSize / textScaleFactor;
 
   static double get width => mediaQuery.size.width;
 
@@ -29,7 +33,9 @@ class Screens {
     SystemChrome.setSystemUIOverlayStyle(style);
   }
 
-  static double fixedFontSize(double fontSize) => fontSize / textScaleFactor;
+  static void updateMediaQuery() {
+    mediaQuery = MediaQueryData.fromWindow(ui.window);
+  }
 }
 
 ///

@@ -55,7 +55,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
           currentWeek = dateProvider.currentWeek ?? 0;
           updateScrollController();
           if (mounted) setState(() {});
-          if (weekScrollController.hasClients && hasCourse && currentWeek > 0) {
+          if ((weekScrollController?.hasClients ?? false) && hasCourse && currentWeek > 0) {
             scrollToWeek(currentWeek);
           }
           if (Instances.appsPageStateKey.currentState.mounted) {

@@ -33,7 +33,7 @@ class _FontScalePageState extends State<FontScalePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        await SettingUtils.setFontScale(scale);
+        await HiveFieldUtils.setFontScale(scale);
         return true;
       },
       child: Scaffold(

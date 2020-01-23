@@ -85,7 +85,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     try {
       _webViewController.loadUrl(
         url: '${currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}'
-            '?sid=${UserAPI.currentUser.sid}'
+            '?sid=${currentUser.sid}'
             '&night=${currentIsDark ? 1 : 0}',
       );
     } catch (e) {
@@ -96,11 +96,42 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
   void checkSchemeLoad(InAppWebViewController controller, String url) async {
     final protocolRegExp = RegExp(r'(http|https):\/\/([\w.]+\/?)\S*');
     if (!url.startsWith(protocolRegExp) && url.contains('://')) {
-      debugPrint('Fount scheme when load: $url');
-      controller.stopLoading();
-      debugPrint('Try to launch intent...');
-      _launchURL(url: url);
+      debugPrint('Found scheme when load: $url');
+      if (Platform.isAndroid) {
+        controller.stopLoading();
+        debugPrint('Try to launch intent...');
+        final appName = await ChannelUtils.getSchemeLaunchAppName(url);
+        if (appName != null) {
+          final shouldLaunch = await waitForConfirmation(appName);
+          if (shouldLaunch) _launchURL(url: url);
+        }
+      }
     }
+  }
+
+  Future<bool> waitForConfirmation(String applicationLabel) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (_) => ConfirmationDialog(
+        title: '跳转外部应用',
+        content: Text.rich(
+          TextSpan(
+            children: <InlineSpan>[
+              TextSpan(text: '即将打开应用\n'),
+              TextSpan(
+                text: '$applicationLabel',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          style: TextStyle(fontWeight: FontWeight.normal),
+          textAlign: TextAlign.center,
+        ),
+        showConfirm: true,
+        confirmLabel: '允许',
+      ),
+      barrierDismissible: false,
+    );
   }
 
   Widget get _domainProvider => Padding(
@@ -193,7 +224,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
                     context: context,
                     icon: Icons.open_in_browser,
                     text: '浏览器打开',
-                    onTap: _launchURL,
+                    onTap: () => _launchURL(forceSafariVC: false),
                   ),
                 ],
               ),
@@ -235,10 +266,10 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     return JsPromptResponse(handledByClient: true);
   }
 
-  Future<Null> _launchURL({String url}) async {
+  Future<Null> _launchURL({String url, bool forceSafariVC = true}) async {
     final uri = Uri.encodeFull(url ?? this.url);
     if (await canLaunch(uri)) {
-      await launch(uri);
+      await launch(uri, forceSafariVC: forceSafariVC);
     } else {
       showCenterErrorToast('Cannot launch: $uri');
     }

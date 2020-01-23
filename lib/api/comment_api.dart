@@ -1,6 +1,8 @@
 import 'package:openjmu/constants/constants.dart';
 
 class CommentAPI {
+  const CommentAPI._();
+
   static getCommentList(
     String commentType,
     bool isMore,

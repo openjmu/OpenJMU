@@ -116,11 +116,11 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
       ),
       onTap: () {
         if (page["name"] == "启动页") {
-          SettingUtils.setHomeSplashIndex(index);
+          HiveFieldUtils.setHomeSplashIndex(index);
         } else {
           final _list = List<int>.from(settingsProvider.homeStartUpIndex);
           _list[pageIndex] = index;
-          SettingUtils.setHomeStartUpIndex(_list);
+          HiveFieldUtils.setHomeStartUpIndex(_list);
         }
         Navigator.of(context).pop();
       },

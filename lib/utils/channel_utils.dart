@@ -2,10 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class ChannelUtils {
-  static const _pmc_flagSecure =
-      const MethodChannel("cn.edu.jmu.openjmu/setFlagSecure");
-  static const _pmc_iosPushToken =
-      const MethodChannel("cn.edu.jmu.openjmu/iosPushToken");
+  const ChannelUtils._();
+
+  static const _pmc_flagSecure = const MethodChannel("cn.edu.jmu.openjmu/setFlagSecure");
+  static const _pmc_schemeLauncher = const MethodChannel("cn.edu.jmu.openjmu/schemeLauncher");
+  static const _pmc_iosPushToken = const MethodChannel("cn.edu.jmu.openjmu/iOSPushToken");
 
   static Future<Null> setFlagSecure(bool secure) async {
     try {
@@ -21,7 +22,21 @@ class ChannelUtils {
     }
   }
 
-  static Future iosGetPushToken() async {
+  static Future<String> getSchemeLaunchAppName(String uri) async {
+    try {
+      String result = await _pmc_schemeLauncher.invokeMethod(
+        "launchAppName",
+        <String, Object>{'url': uri},
+      );
+      return result;
+    } on PlatformException catch (e) {
+      debugPrint('Error when invoke method `launchAppName`: $e');
+      return null;
+    }
+  }
+
+  static Future<String> iosGetPushToken() async {
+    debugPrint('Getting iOS push token from native...');
     try {
       String result = await _pmc_iosPushToken.invokeMethod("getPushToken");
       return result;

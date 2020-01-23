@@ -4,49 +4,39 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
-import 'package:uuid/uuid.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
 class DataUtils {
-  static final String spIsLogin = "isLogin";
-  static final String spIsTeacher = "isTeacher";
-  static final String spIsCY = "isCY";
+  const DataUtils._();
 
-  static final String spUserSid = "sid";
+  static final String spIsLogin = "isLogin";
   static final String spTicket = "ticket";
-  static final String spBlowfish = "blowfish";
 
   static final String spUserUid = "userUid";
-  static final String spUserName = "userName";
-  static final String spUserUnitId = "userUnitId";
   static final String spUserWorkId = "userWorkId";
-//  static final String spUserClassId = "userClassId";
 
   static Future<bool> login(String username, String password) async {
-    final String blowfish = Uuid().v4();
     Map<String, dynamic> params = Constants.loginParams(
-      blowfish: blowfish,
       username: "$username",
       password: password,
     );
     try {
-      Map<String, dynamic> loginData = (await UserAPI.login(params)).data;
+      final loginData = (await UserAPI.login(params)).data;
       UserAPI.currentUser.sid = loginData['sid'];
       UserAPI.currentUser.ticket = loginData['ticket'];
-      Map<String, dynamic> user = (await UserAPI.getUserInfo(uid: loginData['uid'])).data;
-      Map<String, dynamic> userInfo = {
+      final user = (await UserAPI.getUserInfo(uid: loginData['uid'])).data;
+      final userInfo = {
         'sid': loginData['sid'],
         'uid': loginData['uid'],
         'username': user['username'],
         'signature': user['signature'],
         'ticket': loginData['ticket'],
-        'blowfish': blowfish,
         'isTeacher': int.parse(user['type'].toString()) == 1,
         'isCY': checkCY(user['workid']),
         'unitId': loginData['unitid'],
         'workId': user['workid'],
-//        'classId': user['cclass_id'],
+//        'classId': user['class_id'],
         'gender': int.parse(user['gender'].toString()),
       };
       bool isWizard = true;
@@ -67,9 +57,10 @@ class DataUtils {
 
   static Future logout() async {
     NetUtils.dio.clear();
+    NetUtils.tokenDio.clear();
     MessageUtils.sendLogout();
-    Future.delayed(const Duration(milliseconds: 300), () {
-      resetTheme();
+    Future.delayed(300.milliseconds, () {
+      Provider.of<ThemesProvider>(currentContext, listen: false).resetTheme();
       clearLoginInfo();
       showToast("退出登录成功");
     });
@@ -103,10 +94,9 @@ class DataUtils {
   }
 
   static Future recoverLoginInfo() async {
-    Map<String, String> info = getSpTicket();
+    final info = getSpTicket();
     UserAPI.lastTicket = info['ticket'];
     UserAPI.currentUser.sid = info['ticket'];
-    UserAPI.currentUser.blowfish = info['blowfish'];
   }
 
   static Future reFetchTicket() async {
@@ -136,12 +126,11 @@ class DataUtils {
         .then((response) {
       final data = response.data;
       final userInfo = <String, dynamic>{
-        'sid': UserAPI.currentUser.sid,
-        'uid': UserAPI.currentUser.uid,
+        'sid': currentUser.sid,
+        'uid': currentUser.uid,
         'username': data['username'],
         'signature': data['signature'],
         'ticket': UserAPI.currentUser.sid,
-        'blowfish': UserAPI.currentUser.blowfish,
         'isTeacher': int.parse(data['type'].toString()) == 1,
         'isCY': checkCY(data['workid']),
         'unitId': data['unitid'],
@@ -158,7 +147,7 @@ class DataUtils {
   static void setUserInfo(Map<String, dynamic> data) {
     UserAPI.currentUser = UserInfo.fromJson(data);
     if (!data['isTeacher']) {
-      SettingUtils.setEnabledNewAppsIcon(true);
+      HiveFieldUtils.setEnabledNewAppsIcon(true);
       Instances.eventBus.fire(AppCenterSettingsUpdateEvent());
     }
   }
@@ -168,16 +157,9 @@ class DataUtils {
       final _box = HiveBoxes.settingsBox;
       setUserInfo(data);
       await _box.put(spIsLogin, true);
-      await _box.put(spIsTeacher, data['isTeacher']);
-      await _box.put(spIsCY, data['isCY']);
-      await _box.put(spUserSid, data['sid']);
       await _box.put(spTicket, data['ticket']);
-      await _box.put(spBlowfish, data['blowfish']);
-      await _box.put(spUserName, data['name']);
       await _box.put(spUserUid, data['uid']);
-      await _box.put(spUserUnitId, data['unitId']);
       await _box.put(spUserWorkId, data['workId']);
-//      await _box.put(spUserClassId, data['classId']);
     }
   }
 
@@ -190,11 +172,10 @@ class DataUtils {
     await _box.put(spUserWorkId, _userWorkId);
   }
 
-  static Map getSpTicket() {
+  static Map<String, dynamic> getSpTicket() {
     final _box = HiveBoxes.settingsBox;
-    final tickets = <String, String>{
+    final tickets = <String, dynamic>{
       'ticket': _box.get(spTicket),
-      'blowfish': _box.get(spBlowfish),
     };
     return tickets;
   }
@@ -203,7 +184,6 @@ class DataUtils {
     try {
       final params = Constants.loginParams(
         ticket: update ? UserAPI.lastTicket : UserAPI.currentUser.sid,
-        blowfish: UserAPI.currentUser.blowfish,
       );
       NetUtils.tokenCookieJar.deleteAll();
       final response = (await NetUtils.tokenDio.post(API.loginTicket, data: params)).data;
@@ -220,9 +200,8 @@ class DataUtils {
     }
   }
 
-  static Future updateSid(response, {bool update = false}) async {
+  static Future updateSid(response) async {
     final _box = HiveBoxes.settingsBox;
-    await _box.put(spUserSid, response['sid']);
     UserAPI.currentUser.sid = response['sid'];
     UserAPI.currentUser.ticket = response['sid'];
     UserAPI.currentUser.uid = _box.get(spUserUid);
@@ -232,15 +211,6 @@ class DataUtils {
   static bool isLogin() {
     final _box = HiveBoxes.settingsBox;
     return _box.get(spIsLogin) ?? false;
-  }
-
-  // 重置主题配置
-  static Future resetTheme() async {
-    await SettingUtils.setColorTheme(0);
-    await SettingUtils.setAMOLEDDark(false);
-    await SettingUtils.setBrightnessDark(false);
-    await SettingUtils.setBrightnessPlatform(false);
-    Provider.of<ThemesProvider>(currentContext, listen: false).resetTheme();
   }
 
   static Map<String, dynamic> buildPostHeaders(sid) {

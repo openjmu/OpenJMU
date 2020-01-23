@@ -193,13 +193,13 @@ class EmoticonText extends SpecialText {
 
   @override
   InlineSpan finishText() {
-    var key = toString();
-    if (EmoticonUtils.instance.emoticonMap.containsKey(key)) {
+    final key = toString();
+    if (EmoticonUtils.emoticonMap.containsKey(key)) {
       final double size = 30.0 / 27.0 * ((textStyle != null) ? textStyle.fontSize : 17);
 
       if (type == BuilderType.extendedTextField) {
         return ImageSpan(
-          AssetImage(EmoticonUtils.instance.emoticonMap[key]),
+          AssetImage(EmoticonUtils.emoticonMap[key]),
           actualText: key,
           imageWidth: size,
           imageHeight: size,
@@ -213,7 +213,7 @@ class EmoticonText extends SpecialText {
         );
       } else {
         return ImageSpan(
-          AssetImage(EmoticonUtils.instance.emoticonMap[key]),
+          AssetImage(EmoticonUtils.emoticonMap[key]),
           imageWidth: size,
           imageHeight: size,
           margin: EdgeInsets.only(

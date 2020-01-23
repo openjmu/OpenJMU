@@ -158,7 +158,7 @@ class _PostCardState extends State<PostCard> {
           child: getPostBanned("shield"),
         );
       } else {
-        Post _post = Post.fromJson(content);
+        final _post = Post.fromJson(content);
         String topic =
             "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ";
         topic += content['article'] ?? content['content'];
@@ -190,7 +190,7 @@ class _PostCardState extends State<PostCard> {
                   getExtendedText(topic, isRoot: true),
                   if (rootTopic['topic']['image'] != null)
                     Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
+                      padding: EdgeInsets.only(top: suSetHeight(8.0)),
                       child: getRootPostImages(context, rootTopic['topic']),
                     ),
                 ],
@@ -208,26 +208,19 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget getPostImages(context, Post post) {
-    return Container(
-      alignment: Alignment.centerLeft,
-      padding: post.pics != null && post.pics.length > 0
+    return Padding(
+      padding: (post.pics?.length ?? 0) > 0
           ? EdgeInsets.symmetric(
               horizontal: suSetWidth(16.0),
               vertical: suSetHeight(4.0),
             )
           : EdgeInsets.zero,
-      child: FractionallySizedBox(
-        widthFactor: post.pics != null && post.pics.length != 4 ? 0.75 : 1.0,
-        child: getImages(context, post.pics),
-      ),
+      child: getImages(context, post.pics),
     );
   }
 
   Widget getRootPostImages(context, rootTopic) {
-    return FractionallySizedBox(
-      widthFactor: rootTopic['image'] != null && rootTopic['image'].length != 4 ? 0.75 : 1,
-      child: getImages(context, rootTopic['image']),
-    );
+    return getImages(context, rootTopic['image']);
   }
 
   Widget getImages(context, data) {
@@ -716,7 +709,7 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
-    return post.isShield && SettingUtils.getEnabledHideShieldPost()
+    return post.isShield && HiveFieldUtils.getEnabledHideShieldPost()
         ? SizedBox.shrink()
         : Hero(
             tag: "postcard-id-${post.id}",

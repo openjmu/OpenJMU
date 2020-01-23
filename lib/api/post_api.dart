@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class PostAPI {
+  const PostAPI._();
+
   static Future getPostList(
     String postType,
     bool isFollowed,

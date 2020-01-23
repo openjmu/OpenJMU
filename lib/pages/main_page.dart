@@ -33,9 +33,9 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
-  static final List<String> pagesTitle = ['广场', '应用', '消息'];
-  static final List<String> pagesIcon = ["square", "apps", "messages"];
-  static const double bottomBarHeight = 72.0;
+  static final pagesTitle = <String>['广场', '应用', '消息'];
+  static final pagesIcon = <String>["square", "apps", "messages"];
+  static const bottomBarHeight = 72.0;
   double get bottomBarIconSize => bottomBarHeight / 2.15;
 
   static final tabSelectedTextStyle = TextStyle(
@@ -94,14 +94,15 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     try {
       final user = UserAPI.currentUser;
       final now = DateTime.now();
-      final token = Platform.isIOS ? await ChannelUtils.iosGetPushToken() : "null";
+      final token = Platform.isIOS ? await ChannelUtils.iosGetPushToken().catchError((_) {}) : null;
       final data = <String, dynamic>{
         "token": token,
-        "date": DateFormat("yyyy/MM/dd/HH:mm:ss", "en").format(now),
+        "date": DateFormat("yyyy/MM/dd HH:mm:ss", "en").format(now),
         "uid": user.uid.toString(),
         "name": user.name.toString(),
         "workid": user.workId.toString(),
-        "appversion": await OTAUtils.getCurrentVersion(),
+        "buildnumber": await OTAUtils.getCurrentBuildNumber(),
+        "uuid": DeviceUtils.deviceUuid,
         "platform": Platform.isIOS ? "ios" : "android",
       };
       NetUtils.post(API.pushUpload, data: data).then((response) {

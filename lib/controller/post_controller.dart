@@ -261,7 +261,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
         ),
         controller: widget._postController.postType == "user" ? null : _scrollController,
         separatorBuilder: (context, index) =>
-            _postList[index].isShield && SettingUtils.getEnabledHideShieldPost()
+            _postList[index].isShield && HiveFieldUtils.getEnabledHideShieldPost()
                 ? SizedBox.shrink()
                 : Divider(
                     thickness: suSetHeight(8.0),

@@ -61,10 +61,10 @@ class _SettingsPageState extends State<SettingsPage> {
               builder: (_, provider, __) {
                 return CustomSwitch(
                   activeColor: currentThemeColor,
-                  value: provider.AMOLEDDark,
+                  value: provider.amoledDark,
                   onChanged: Theme.of(context).brightness == Brightness.dark
                       ? (bool value) {
-                          provider.AMOLEDDark = value;
+                          provider.amoledDark = value;
                           if (mounted) setState(() {});
                         }
                       : null,
@@ -106,7 +106,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     activeColor: currentThemeColor,
                     value: newAppCenterIcon,
                     onChanged: (bool value) async {
-                      await SettingUtils.setEnabledNewAppsIcon(value);
+                      await HiveFieldUtils.setEnabledNewAppsIcon(value);
                     },
                   );
                 },
@@ -129,7 +129,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   activeColor: currentThemeColor,
                   value: hideShieldPost,
                   onChanged: (bool value) async {
-                    await SettingUtils.setEnabledHideShieldPost(value);
+                    await HiveFieldUtils.setEnabledHideShieldPost(value);
                   },
                 );
               },

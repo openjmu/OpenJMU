@@ -4,143 +4,150 @@
 ///
 import 'package:openjmu/constants/constants.dart';
 
-class SettingUtils {
-  static final String spBrightnessDark = "theme_brightness";
-  static final String spAMOLEDDark = "theme_AMOLEDDark";
-  static final String spColorThemeIndex = "theme_colorThemeIndex";
-  static final String spBrightnessPlatform = "theme_brightness_platform";
-  static final String spHomeSplashIndex = "home_splash_index";
-  static final String spHomeStartUpIndex = "home_startup_index";
+class HiveFieldUtils {
+  const HiveFieldUtils._();
 
-  static final String spSettingFontScale = "setting_font_scale";
-  static final String spSettingNewIcons = "setting_new_icons";
-  static final String spSettingHideShieldPost = "setting_hide_shield_post";
+  static final _box = HiveBoxes.settingsBox;
+
+  static final String brightnessDark = "theme_brightness";
+  static final String amoledDark = "theme_AMOLEDDark";
+  static final String colorThemeIndex = "theme_colorThemeIndex";
+  static final String brightnessPlatform = "theme_brightness_platform";
+  static final String settingHomeSplashIndex = "setting_home_splash_index";
+  static final String settingHomeStartUpIndex = "setting_home_startup_index";
+
+  static final String settingFontScale = "setting_font_scale";
+  static final String settingNewIcons = "setting_new_icons";
+  static final String settingHideShieldPost = "setting_hide_shield_post";
+
+  static final String deviceUuid = "device_uuid";
+  static final String devicePushToken = "device_push_token";
 
   /// 获取设置的主题色
   static int getColorThemeIndex() {
-    final _box = HiveBoxes.settingsBox;
-    return _box.get(spColorThemeIndex) ?? 0;
+    return _box.get(colorThemeIndex) ?? 0;
   }
 
   /// 获取设置的夜间模式
   static bool getBrightnessDark() {
-    final _box = HiveBoxes.settingsBox;
-    return _box.get(spBrightnessDark) ?? false;
+    return _box.get(brightnessDark) ?? false;
   }
 
   /// 获取设置的AMOLED夜间模式
   static bool getAMOLEDDark() {
-    final _box = HiveBoxes.settingsBox;
-    return _box.get(spAMOLEDDark) ?? false;
+    return _box.get(amoledDark) ?? false;
   }
 
   /// 获取设置的跟随系统夜间模式
   static bool getBrightnessPlatform() {
-    final _box = HiveBoxes.settingsBox;
-    return _box?.get(spBrightnessPlatform) ?? true;
+    return _box?.get(brightnessPlatform) ?? true;
   }
 
   /// 设置选择的主题色
   static Future setColorTheme(int colorThemeIndex) async {
-    final _box = HiveBoxes.settingsBox;
-    await _box.put(spColorThemeIndex, colorThemeIndex);
+    await _box.put(colorThemeIndex, colorThemeIndex);
   }
 
   /// 设置选择的夜间模式
   static Future setBrightnessDark(bool isDark) async {
-    final _box = HiveBoxes.settingsBox;
-    await _box.put(spBrightnessDark, isDark);
+    await _box.put(brightnessDark, isDark);
   }
 
   /// 设置AMOLED夜间模式
   static Future setAMOLEDDark(bool isAMOLEDDark) async {
-    final _box = HiveBoxes.settingsBox;
-    await _box.put(spAMOLEDDark, isAMOLEDDark);
+    await _box.put(amoledDark, isAMOLEDDark);
   }
 
   /// 设置跟随系统的夜间模式
   static Future setBrightnessPlatform(bool isFollowPlatform) async {
-    final _box = HiveBoxes.settingsBox;
-    await _box.put(spBrightnessPlatform, isFollowPlatform);
+    await _box.put(brightnessPlatform, isFollowPlatform);
   }
 
   /// 获取默认启动页index
   static int getHomeSplashIndex() {
-    final _box = HiveBoxes.settingsBox;
     final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
-    final index = _box.get(spHomeSplashIndex) ?? _provider.homeSplashIndex;
+    final index = _box.get(settingHomeSplashIndex) ?? _provider.homeSplashIndex;
     return index;
   }
 
   /// 获取默认各页启动index
   static List getHomeStartUpIndex() {
-    final _box = HiveBoxes.settingsBox;
     final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
-    final index = _box?.get(spHomeStartUpIndex)?.cast<int>() ?? _provider.homeStartUpIndex;
+    final index = _box?.get(settingHomeStartUpIndex)?.cast<int>() ?? _provider.homeStartUpIndex;
     return index;
   }
 
   /// 获取字体缩放设置
   static double getFontScale() {
-    final _box = HiveBoxes.settingsBox;
     final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
-    final scale = _box?.get(spSettingFontScale) ?? _provider.fontScale;
+    final scale = _box?.get(settingFontScale) ?? _provider.fontScale;
     return scale;
   }
 
   /// 获取新图标是否开启
   static bool getEnabledNewAppsIcon() {
-    final _box = HiveBoxes.settingsBox;
     final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
-    bool enabled = _box.get(spSettingNewIcons) ?? _provider.newAppCenterIcon;
+    bool enabled = _box.get(settingNewIcons) ?? _provider.newAppCenterIcon;
     return enabled;
   }
 
   /// 获取是否隐藏被屏蔽的动态
   static bool getEnabledHideShieldPost() {
-    final _box = HiveBoxes.settingsBox;
     final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
-    bool enabled = _box.get(spSettingHideShieldPost) ?? _provider.hideShieldPost;
+    bool enabled = _box.get(settingHideShieldPost) ?? _provider.hideShieldPost;
     return enabled;
   }
 
   /// 设置首页的初始页
   static Future<Null> setHomeSplashIndex(int index) async {
-    final _box = HiveBoxes.settingsBox;
     final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
     _provider.homeSplashIndex = index;
-    await _box.put(spHomeSplashIndex, index);
+    await _box.put(settingHomeSplashIndex, index);
   }
 
   /// 设置首页各子页的初始页
   static Future<Null> setHomeStartUpIndex(List<int> indexList) async {
-    final _box = HiveBoxes.settingsBox;
     final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
     _provider.homeStartUpIndex = indexList;
-    await _box.put(spHomeStartUpIndex, indexList);
+    await _box.put(settingHomeStartUpIndex, indexList);
   }
 
   /// 设置字体缩放
   static Future<Null> setFontScale(double scale) async {
-    final _box = HiveBoxes.settingsBox;
     final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
     _provider.fontScale = scale;
-    await _box.put(spSettingFontScale, scale);
+    await _box.put(settingFontScale, scale);
   }
 
   /// 设置是否启用新应用图标
   static Future<Null> setEnabledNewAppsIcon(bool enable) async {
-    final _box = HiveBoxes.settingsBox;
     final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
     _provider.newAppCenterIcon = enable;
-    await _box.put(spSettingNewIcons, enable);
+    await _box.put(settingNewIcons, enable);
   }
 
   /// 设置是否隐藏被屏蔽的动态
   static Future<Null> setEnabledHideShieldPost(bool enable) async {
-    final _box = HiveBoxes.settingsBox;
     final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
     _provider.hideShieldPost = enable;
-    await _box.put(spSettingHideShieldPost, enable);
+    await _box.put(settingHideShieldPost, enable);
+  }
+
+  /// 获取设备PushToken
+  static String getDevicePushToken() => _box.get(devicePushToken);
+
+  /// 获取设备Uuid
+  static String getDeviceUuid() => _box.get(deviceUuid);
+
+  /// 写入PushToken
+  static Future<Null> setDevicePushToken(String value) async {
+    DeviceUtils.devicePushToken = value;
+    await _box.put(devicePushToken, value);
+  }
+
+  /// 写入uuid
+  static Future<Null> setDeviceUuid(String value) async {
+    DeviceUtils.deviceUuid = value;
+    await _box.put(deviceUuid, value);
   }
 }

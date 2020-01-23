@@ -33,6 +33,8 @@ PODS:
   - multi_image_picker (4.6.0):
     - BSImagePicker (~> 2.10.3)
     - Flutter
+  - open_file (0.0.1):
+    - Flutter
   - ota_update (0.0.1):
     - Flutter
   - package_info (0.0.1):
@@ -72,6 +74,7 @@ DEPENDENCIES:
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - launch_review (from `.symlinks/plugins/launch_review/ios`)
   - multi_image_picker (from `.symlinks/plugins/multi_image_picker/ios`)
+  - open_file (from `.symlinks/plugins/open_file/ios`)
   - ota_update (from `.symlinks/plugins/ota_update/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -120,6 +123,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/launch_review/ios"
   multi_image_picker:
     :path: ".symlinks/plugins/multi_image_picker/ios"
+  open_file:
+    :path: ".symlinks/plugins/open_file/ios"
   ota_update:
     :path: ".symlinks/plugins/ota_update/ios"
   package_info:
@@ -161,9 +166,10 @@ SPEC CHECKSUMS:
   image_picker: e3eacd46b94694dde7cf2705955cece853aa1a8f
   launch_review: 75d5a956ba8eaa493e9c9d4bf4c05e505e8d5ed0
   multi_image_picker: 20b39637c5728e44c69d7b3742bb555cd09a9970
+  open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   ota_update: 025311773f7e5d8a36cf0d4fc1d1694f7bc75958
   package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
-  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
+  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
   permission_handler: b41310bab60fffbf8b5732cd9b4f565671d14762
   quick_actions: 5eaa421abc932a71d9804fb86186d173020da63d
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96

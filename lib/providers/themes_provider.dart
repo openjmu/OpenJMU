@@ -20,20 +20,17 @@ class ThemesProvider with ChangeNotifier {
   bool get dark => _dark;
   set dark(bool value) {
     if (_dark == value) return;
-    SettingUtils.setBrightnessDark(value);
+    HiveFieldUtils.setBrightnessDark(value);
     _dark = value;
     notifyListeners();
   }
 
-  // ignore: non_constant_identifier_names
-  bool _AMOLEDDark = false;
-  // ignore: non_constant_identifier_names
-  bool get AMOLEDDark => _AMOLEDDark;
-  // ignore: non_constant_identifier_names
-  set AMOLEDDark(bool value) {
-    if (_AMOLEDDark == value) return;
-    SettingUtils.setAMOLEDDark(value);
-    _AMOLEDDark = value;
+  bool _amoledDark = false;
+  bool get amoledDark => _amoledDark;
+  set amoledDark(bool value) {
+    if (_amoledDark == value) return;
+    HiveFieldUtils.setAMOLEDDark(value);
+    _amoledDark = value;
     notifyListeners();
   }
 
@@ -41,28 +38,32 @@ class ThemesProvider with ChangeNotifier {
   bool get platformBrightness => _platformBrightness;
   set platformBrightness(bool value) {
     if (_platformBrightness == value) return;
-    SettingUtils.setBrightnessPlatform(value);
+    HiveFieldUtils.setBrightnessPlatform(value);
     _platformBrightness = value;
     notifyListeners();
   }
 
   void initTheme() {
-    _currentColor = supportColors[SettingUtils.getColorThemeIndex()];
-    _dark = SettingUtils.getBrightnessDark();
-    _AMOLEDDark = SettingUtils.getAMOLEDDark();
-    _platformBrightness = SettingUtils.getBrightnessPlatform();
+    _currentColor = supportColors[HiveFieldUtils.getColorThemeIndex()];
+    _dark = HiveFieldUtils.getBrightnessDark();
+    _amoledDark = HiveFieldUtils.getAMOLEDDark();
+    _platformBrightness = HiveFieldUtils.getBrightnessPlatform();
   }
 
-  void resetTheme() {
+  Future resetTheme() async {
+    HiveFieldUtils.setColorTheme(0);
+    HiveFieldUtils.setAMOLEDDark(false);
+    HiveFieldUtils.setBrightnessDark(false);
+    HiveFieldUtils.setBrightnessPlatform(true);
     _currentColor = defaultColor;
     _dark = false;
-    _AMOLEDDark = false;
+    _amoledDark = false;
     _platformBrightness = false;
     notifyListeners();
   }
 
   void updateThemeColor(int themeIndex) {
-    SettingUtils.setColorTheme(themeIndex);
+    HiveFieldUtils.setColorTheme(themeIndex);
     currentColor = supportColors[themeIndex];
     notifyListeners();
   }
@@ -105,16 +106,16 @@ class ThemesProvider with ChangeNotifier {
 
   ThemeData get darkTheme => ThemeData.dark().copyWith(
         brightness: Brightness.dark,
-        primaryColor: AMOLEDDark ? Colors.black : Colors.grey[900],
+        primaryColor: amoledDark ? Colors.black : Colors.grey[900],
         primaryColorBrightness: Brightness.dark,
-        primaryColorLight: AMOLEDDark ? Colors.black : Colors.grey[900],
-        primaryColorDark: AMOLEDDark ? Colors.black : Colors.grey[900],
+        primaryColorLight: amoledDark ? Colors.black : Colors.grey[900],
+        primaryColorDark: amoledDark ? Colors.black : Colors.grey[900],
         accentColor: currentColor,
         accentColorBrightness: Brightness.dark,
-        canvasColor: AMOLEDDark ? Color(0xFF111111) : Colors.grey[850],
-        scaffoldBackgroundColor: AMOLEDDark ? Colors.black : Colors.grey[900],
-        bottomAppBarColor: AMOLEDDark ? Colors.black : Colors.grey[900],
-        cardColor: AMOLEDDark ? Colors.black : Colors.grey[900],
+        canvasColor: amoledDark ? Color(0xFF111111) : Colors.grey[850],
+        scaffoldBackgroundColor: amoledDark ? Colors.black : Colors.grey[900],
+        bottomAppBarColor: amoledDark ? Colors.black : Colors.grey[900],
+        cardColor: amoledDark ? Colors.black : Colors.grey[900],
         highlightColor: Colors.transparent,
         splashFactory: const NoSplashFactory(),
         toggleableActiveColor: currentColor,
