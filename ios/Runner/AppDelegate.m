@@ -54,7 +54,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
         
     }];
     {
-        //TODO:暂时还未实现的功能
+        // TODO:暂时还未实现的功能
         if (@available(iOS 10.0, *)) {
             
             [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:(UNAuthorizationOptionBadge|UNAuthorizationOptionSound|UNAuthorizationOptionAlert) completionHandler:^(BOOL granted, NSError * _Nullable error) {
@@ -103,7 +103,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
         NSURL *webpageURL = userActivity.webpageURL;
         NSString *host = webpageURL.host;
         if ([host isEqualToString:@"××××.openjmu.xyz"]) {
-            //判断域名是自己的网站，进行我们需要的处理
+            // 判断域名是自己的网站，进行我们需要的处理
         } else {
             [[UIApplication sharedApplication]openURL:webpageURL];
         }
@@ -133,24 +133,10 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     NSDate *now = [NSDate date];
     NSDateFormatter *forMatter = [[NSDateFormatter alloc] init];
     [forMatter setDateFormat:@"yyyy/MM/dd HH:mm:ss"];
-    SendTime = [forMatter stringFromDate:now]; //转换系统现在的时间
-    
-    if (@available(iOS 13.0, *)) {
-        NSUInteger length = deviceToken.length;
-        if (length != 0) {
-            const unsigned char *buffer = deviceToken.bytes;
-            NSMutableString *hexString  = [NSMutableString stringWithCapacity:(length * 2)];
-            for (int i = 0; i < length; ++i) {
-                [hexString appendFormat:@"%02x", buffer[i]];
-            }
-            token = [hexString copy];
-        }
-    } else {
-        token = [[[[deviceToken description]
-                   stringByReplacingOccurrencesOfString:@"<" withString:@""]
-                  stringByReplacingOccurrencesOfString:@">" withString:@""]
-                 stringByReplacingOccurrencesOfString:@" " withString:@""];
-    }
+    SendTime = [forMatter stringFromDate:now]; // 转换系统现在的时间
+    NSString *tokenString = [[NSString alloc] initWithData:deviceToken encoding:NSSymbolStringEncoding];
+    token = tokenString;
+    NSLog(@"Device Token: %@", tokenString);
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSData *) error{

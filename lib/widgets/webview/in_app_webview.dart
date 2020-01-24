@@ -93,19 +93,24 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     }
   }
 
-  void checkSchemeLoad(InAppWebViewController controller, String url) async {
+  bool checkSchemeLoad(InAppWebViewController controller, String url) {
     final protocolRegExp = RegExp(r'(http|https):\/\/([\w.]+\/?)\S*');
     if (!url.startsWith(protocolRegExp) && url.contains('://')) {
       debugPrint('Found scheme when load: $url');
       if (Platform.isAndroid) {
-        controller.stopLoading();
-        debugPrint('Try to launch intent...');
-        final appName = await ChannelUtils.getSchemeLaunchAppName(url);
-        if (appName != null) {
-          final shouldLaunch = await waitForConfirmation(appName);
-          if (shouldLaunch) _launchURL(url: url);
-        }
+        Future.delayed(1.microseconds, () async {
+          controller.stopLoading();
+          debugPrint('Try to launch intent...');
+          final appName = await ChannelUtils.getSchemeLaunchAppName(url);
+          if (appName != null) {
+            final shouldLaunch = await waitForConfirmation(appName);
+            if (shouldLaunch) _launchURL(url: url);
+          }
+        });
       }
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -269,7 +274,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
   Future<Null> _launchURL({String url, bool forceSafariVC = true}) async {
     final uri = Uri.encodeFull(url ?? this.url);
     if (await canLaunch(uri)) {
-      await launch(uri, forceSafariVC: forceSafariVC);
+      await launch(uri, forceSafariVC: Platform.isIOS ? forceSafariVC : false);
     } else {
       showCenterErrorToast('Cannot launch: $uri');
     }
@@ -405,17 +410,17 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             javaScriptCanOpenWindowsAutomatically: true,
             transparentBackground: true,
             useOnDownloadStart: true,
+            useShouldOverrideUrlLoading: true,
           ),
           // TODO: Currently zoom control in android was broken, need to find the root cause.
           android: AndroidInAppWebViewOptions(
-            allowContentAccess: true,
-            allowFileAccess: true,
             allowFileAccessFromFileURLs: true,
             allowUniversalAccessFromFileURLs: true,
-            builtInZoomControls: true,
-            displayZoomControls: true,
-            supportZoom: true,
+            mixedContentMode: AndroidInAppWebViewMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
             safeBrowsingEnabled: false,
+            forceDark: currentIsDark
+                ? AndroidInAppWebViewForceDark.FORCE_DARK_ON
+                : AndroidInAppWebViewForceDark.FORCE_DARK_OFF,
           ),
           ios: IOSInAppWebViewOptions(
             allowsAirPlayForMediaPlayback: true,
@@ -431,9 +436,6 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
           _webViewController = controller;
 
           debugPrint('Webview onLoadStart: $url');
-          if (Platform.isAndroid) {
-            checkSchemeLoad(controller, url);
-          }
         },
         onLoadStop: (InAppWebViewController controller, String url) async {
           _webViewController = controller;
@@ -479,6 +481,16 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
         },
         onWebViewCreated: (InAppWebViewController controller) {
           _webViewController = controller;
+        },
+        shouldOverrideUrlLoading: (
+          InAppWebViewController controller,
+          ShouldOverrideUrlLoadingRequest request,
+        ) async {
+          if (checkSchemeLoad(controller, request.url)) {
+            return ShouldOverrideUrlLoadingAction.CANCEL;
+          } else {
+            return ShouldOverrideUrlLoadingAction.ALLOW;
+          }
         },
       ),
       persistentFooterButtons: (widget.withAction ?? true) ? persistentFooterButtons : null,

@@ -11,6 +11,7 @@ class ThemesProvider with ChangeNotifier {
   Color _currentColor = defaultColor;
   Color get currentColor => _currentColor;
   set currentColor(Color value) {
+    assert(value != null);
     if (_currentColor == value) return;
     _currentColor = value;
     notifyListeners();
@@ -19,6 +20,7 @@ class ThemesProvider with ChangeNotifier {
   bool _dark = false;
   bool get dark => _dark;
   set dark(bool value) {
+    assert(value != null);
     if (_dark == value) return;
     HiveFieldUtils.setBrightnessDark(value);
     _dark = value;
@@ -28,6 +30,7 @@ class ThemesProvider with ChangeNotifier {
   bool _amoledDark = false;
   bool get amoledDark => _amoledDark;
   set amoledDark(bool value) {
+    assert(value != null);
     if (_amoledDark == value) return;
     HiveFieldUtils.setAMOLEDDark(value);
     _amoledDark = value;
@@ -37,6 +40,7 @@ class ThemesProvider with ChangeNotifier {
   bool _platformBrightness = true;
   bool get platformBrightness => _platformBrightness;
   set platformBrightness(bool value) {
+    assert(value != null);
     if (_platformBrightness == value) return;
     HiveFieldUtils.setBrightnessPlatform(value);
     _platformBrightness = value;
@@ -58,7 +62,7 @@ class ThemesProvider with ChangeNotifier {
     _currentColor = defaultColor;
     _dark = false;
     _amoledDark = false;
-    _platformBrightness = false;
+    _platformBrightness = true;
     notifyListeners();
   }
 
@@ -152,7 +156,7 @@ class ThemesProvider with ChangeNotifier {
 const defaultColor = Color(0xFFE5322D);
 
 final supportColors = <Color>[
-  Color(0xFFE5322D),
+  defaultColor,
   Colors.red[900],
   Colors.red[500],
   Colors.red[300],

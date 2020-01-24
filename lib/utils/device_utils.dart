@@ -9,28 +9,39 @@ import 'package:openjmu/constants/constants.dart';
 class DeviceUtils {
   const DeviceUtils._();
 
-  static final _deviceInfo = DeviceInfoPlugin();
+  static final _deviceInfoPlugin = DeviceInfoPlugin();
+  static var deviceInfo;
 
   static String deviceModel = "OpenJMU Device";
   static String devicePushToken;
   static String deviceUuid;
 
-  static Future getModel() async {
-    var deviceInfo;
+  static Future<Null> initDeviceInfo() async {
+    await getModel();
+    await getDevicePushToken();
+    await getDeviceUuid();
+  }
 
+  static Future<Null> getModel() async {
     if (Platform.isAndroid) {
-      deviceInfo = await _deviceInfo.androidInfo;
+      deviceInfo = await _deviceInfoPlugin.androidInfo;
       final androidInfo = deviceInfo as AndroidDeviceInfo;
 
       final model = '${androidInfo.brand} ${androidInfo.product}';
       deviceModel = model;
     } else if (Platform.isIOS) {
-      deviceInfo = await _deviceInfo.iosInfo;
+      deviceInfo = await _deviceInfoPlugin.iosInfo;
       final iosInfo = deviceInfo as IosDeviceInfo;
 
       final model = '${iosInfo.model} ${iosInfo.utsname.machine} ${iosInfo.systemVersion}';
       deviceModel = model;
+    }
 
+    debugPrint('deviceModel: $deviceModel');
+  }
+
+  static Future<Null> getDevicePushToken() async {
+    if (Platform.isIOS) {
       final _savedToken = HiveFieldUtils.getDevicePushToken();
       final _tempToken = await ChannelUtils.iosGetPushToken();
       if (_savedToken != null) {
@@ -42,20 +53,20 @@ class DeviceUtils {
       } else {
         await HiveFieldUtils.setDevicePushToken(_tempToken);
       }
+      debugPrint('devicePushToken: $devicePushToken');
     }
+  }
 
+  static Future<Null> getDeviceUuid() async {
     if (HiveFieldUtils.getDeviceUuid() != null) {
       deviceUuid = HiveFieldUtils.getDeviceUuid();
     } else {
       if (Platform.isIOS) {
         deviceUuid = (deviceInfo as IosDeviceInfo).identifierForVendor;
       } else {
-        await HiveFieldUtils.setDeviceUuid(Uuid().v5(Uuid.NAMESPACE_URL, 'openjmu.jmu.edu.cn'));
+        await HiveFieldUtils.setDeviceUuid(Uuid().v4());
       }
     }
-
-    debugPrint('deviceModel: $deviceModel');
-    debugPrint('devicePushToken: $devicePushToken');
     debugPrint('deviceUuid: $deviceUuid');
   }
 }

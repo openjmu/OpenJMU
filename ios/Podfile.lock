@@ -170,7 +170,7 @@ SPEC CHECKSUMS:
   ota_update: 025311773f7e5d8a36cf0d4fc1d1694f7bc75958
   package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
-  permission_handler: b41310bab60fffbf8b5732cd9b4f565671d14762
+  permission_handler: 0c060e887ac04a7a700993319b38e99a2dd13ec1
   quick_actions: 5eaa421abc932a71d9804fb86186d173020da63d
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01

@@ -8,6 +8,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:openjmu/constants/constants.dart';
 
 export 'package:dartx/dartx.dart';
+export 'package:ff_annotation_route/ff_annotation_route.dart' show FFRoute;
 export 'package:oktoast/oktoast.dart' hide showToast;
 
 export 'package:openjmu/api/api.dart';

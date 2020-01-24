@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:intl/intl.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -38,16 +37,16 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   static const bottomBarHeight = 72.0;
   double get bottomBarIconSize => bottomBarHeight / 2.15;
 
-  static final tabSelectedTextStyle = TextStyle(
-    fontSize: suSetSp(23.0),
-    fontWeight: FontWeight.bold,
-    textBaseline: TextBaseline.alphabetic,
-  );
-  static final tabUnselectedTextStyle = TextStyle(
-    fontSize: suSetSp(23.0),
-    fontWeight: FontWeight.w300,
-    textBaseline: TextBaseline.alphabetic,
-  );
+  static TextStyle get tabSelectedTextStyle => TextStyle(
+        fontSize: suSetSp(23.0),
+        fontWeight: FontWeight.bold,
+        textBaseline: TextBaseline.alphabetic,
+      );
+  static TextStyle get tabUnselectedTextStyle => TextStyle(
+        fontSize: suSetSp(23.0),
+        fontWeight: FontWeight.w300,
+        textBaseline: TextBaseline.alphabetic,
+      );
 
   Timer notificationTimer;
 

@@ -12,7 +12,6 @@ UserInfo get currentUser => UserAPI.currentUser;
 class UserAPI {
   const UserAPI._();
 
-  static String lastTicket;
   static UserInfo currentUser = UserInfo();
 
   static List<Cookie> cookiesForJWGL;
@@ -92,10 +91,7 @@ class UserAPI {
   }
 
   static Future getTags(int uid) {
-    return NetUtils.getWithCookieAndHeaderSet(
-      API.userTags,
-      data: {"uid": uid},
-    );
+    return NetUtils.getWithCookieAndHeaderSet(API.userTags, data: {"uid": uid});
   }
 
   static Future getFans(int uid) {

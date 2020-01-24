@@ -10,17 +10,16 @@ import 'package:openjmu/constants/constants.dart';
 class DataUtils {
   const DataUtils._();
 
-  static final String spIsLogin = "isLogin";
-  static final String spTicket = "ticket";
+  static final settingsBox = HiveBoxes.settingsBox;
 
-  static final String spUserUid = "userUid";
-  static final String spUserWorkId = "userWorkId";
+  static final spIsLogin = "isLogin";
+  static final spTicket = "ticket";
+
+  static final spUserUid = "userUid";
+  static final spUserWorkId = "userWorkId";
 
   static Future<bool> login(String username, String password) async {
-    Map<String, dynamic> params = Constants.loginParams(
-      username: "$username",
-      password: password,
-    );
+    final params = Constants.loginParams(username: username, password: password);
     try {
       final loginData = (await UserAPI.login(params)).data;
       UserAPI.currentUser.sid = loginData['sid'];
@@ -67,7 +66,7 @@ class DataUtils {
   }
 
   static Future<bool> checkWizard() async {
-    Map<String, dynamic> info = (await UserAPI.getStudentInfo()).data;
+    final info = (await UserAPI.getStudentInfo()).data;
     if (info["wizard"].toString() == "1") {
       return true;
     } else {
@@ -88,14 +87,10 @@ class DataUtils {
     }
   }
 
-  static String recoverWorkId() {
-    final _box = HiveBoxes.settingsBox;
-    return _box.get(spUserWorkId);
-  }
+  static String recoverWorkId() => settingsBox.get(spUserWorkId);
 
   static Future recoverLoginInfo() async {
     final info = getSpTicket();
-    UserAPI.lastTicket = info['ticket'];
     UserAPI.currentUser.sid = info['ticket'];
   }
 
@@ -154,36 +149,31 @@ class DataUtils {
 
   static Future<Null> saveLoginInfo(Map<String, dynamic> data) async {
     if (data != null) {
-      final _box = HiveBoxes.settingsBox;
       setUserInfo(data);
-      await _box.put(spIsLogin, true);
-      await _box.put(spTicket, data['ticket']);
-      await _box.put(spUserUid, data['uid']);
-      await _box.put(spUserWorkId, data['workId']);
+      await settingsBox.put(spIsLogin, true);
+      await settingsBox.put(spTicket, data['ticket']);
+      await settingsBox.put(spUserUid, data['uid']);
+      await settingsBox.put(spUserWorkId, data['workId']);
     }
   }
 
   /// 清除登录信息
   static Future clearLoginInfo() async {
-    final _box = HiveBoxes.settingsBox;
-    final _userWorkId = _box.get(spUserWorkId);
+    final _userWorkId = settingsBox.get(spUserWorkId);
     UserAPI.currentUser = UserInfo();
-    await _box.clear();
-    await _box.put(spUserWorkId, _userWorkId);
+    await settingsBox.clear();
+    await settingsBox.put(spUserWorkId, _userWorkId);
   }
 
   static Map<String, dynamic> getSpTicket() {
-    final _box = HiveBoxes.settingsBox;
-    final tickets = <String, dynamic>{
-      'ticket': _box.get(spTicket),
-    };
+    final tickets = <String, dynamic>{'ticket': settingsBox.get(spTicket)};
     return tickets;
   }
 
   static Future<bool> getTicket({bool update = false}) async {
     try {
       final params = Constants.loginParams(
-        ticket: update ? UserAPI.lastTicket : UserAPI.currentUser.sid,
+        ticket: update ? settingsBox.get(spTicket) : UserAPI.currentUser.sid,
       );
       NetUtils.tokenCookieJar.deleteAll();
       final response = (await NetUtils.tokenDio.post(API.loginTicket, data: params)).data;
@@ -201,19 +191,15 @@ class DataUtils {
   }
 
   static Future updateSid(response) async {
-    final _box = HiveBoxes.settingsBox;
     UserAPI.currentUser.sid = response['sid'];
     UserAPI.currentUser.ticket = response['sid'];
-    UserAPI.currentUser.uid = _box.get(spUserUid);
+    UserAPI.currentUser.uid = settingsBox.get(spUserUid);
   }
 
-  // 是否登录
-  static bool isLogin() {
-    final _box = HiveBoxes.settingsBox;
-    return _box.get(spIsLogin) ?? false;
-  }
+  /// 是否登录
+  static bool isLogin() => settingsBox.get(spIsLogin) ?? false;
 
-  static Map<String, dynamic> buildPostHeaders(sid) {
+  static Map<String, dynamic> buildPostHeaders(String sid) {
     final headers = <String, String>{
       "CLOUDID": "jmu",
       "CLOUD-ID": "jmu",
@@ -225,7 +211,7 @@ class DataUtils {
     return headers;
   }
 
-  static List<Cookie> buildPHPSESSIDCookies(sid) => [
+  static List<Cookie> buildPHPSESSIDCookies(String sid) => [
         if (sid != null) Cookie("PHPSESSID", sid),
         if (sid != null) Cookie("OAPSID", sid),
       ];

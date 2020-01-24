@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+flutter clean
+flutter build apk --release
 flutter build ios --release
 cd build/ios/iphoneos/Runner.app/Frameworks
 cd App.framework

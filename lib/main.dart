@@ -24,7 +24,7 @@ void main() async {
   }
 
   await HiveBoxes.openBoxes();
-  await DeviceUtils.getModel();
+  await DeviceUtils.initDeviceInfo();
   NotificationUtils.initSettings();
 
   await SystemChrome.setPreferredOrientations([
