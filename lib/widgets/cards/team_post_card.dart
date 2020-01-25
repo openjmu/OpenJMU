@@ -166,29 +166,33 @@ class _TeamPostCardState extends State<TeamPostCard> {
           );
         },
       );
-      imagesWidget.add(
-        GestureDetector(
-          onTap: () {
-            navigatorState.pushNamed(
-              Routes.OPENJMU_IMAGE_VIEWER,
-              arguments: {
-                "index": index,
-                "pics": post.pics.map<ImageBean>((f) {
-                  final imageId = int.parse(f['fid'].toString());
-                  final imageUrl = API.teamFile(fid: imageId);
-                  return ImageBean(
-                    id: int.parse(f['fid']),
-                    imageUrl: imageUrl,
-                    imageThumbUrl: imageUrl,
-                    postId: post.tid,
-                  );
-                }).toList(),
-              },
-            );
-          },
-          child: _exImage,
-        ),
+      _exImage = GestureDetector(
+        onTap: () {
+          navigatorState.pushNamed(
+            Routes.OPENJMU_IMAGE_VIEWER,
+            arguments: {
+              "index": index,
+              "pics": post.pics.map<ImageBean>((f) {
+                final imageId = int.parse(f['fid'].toString());
+                final imageUrl = API.teamFile(fid: imageId);
+                return ImageBean(
+                  id: int.parse(f['fid']),
+                  imageUrl: imageUrl,
+                  imageThumbUrl: imageUrl,
+                  postId: post.tid,
+                );
+              }).toList(),
+              "heroPrefix": "team-post-image-",
+            },
+          );
+        },
+        child: _exImage,
       );
+      _exImage = Hero(
+        tag: "team-post-image-${post.tid}-$imageId",
+        child: _exImage,
+      );
+      imagesWidget.add(_exImage);
     }
     Widget _image;
     if (post.pics.length == 1) {

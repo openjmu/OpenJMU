@@ -5,7 +5,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:extended_tabs/extended_tabs.dart';
 
@@ -14,10 +13,7 @@ import 'package:openjmu/pages/post/team_mention_list_page.dart';
 import 'package:openjmu/pages/post/team_reply_list_page.dart';
 import 'package:openjmu/pages/post/team_praise_list_page.dart';
 
-@FFRoute(
-  name: "openjmu://team-notifications",
-  routeName: "小组通知页",
-)
+@FFRoute(name: "openjmu://team-notifications", routeName: "小组通知页")
 class TeamNotificationPage extends StatefulWidget {
   @override
   _TeamNotificationPageState createState() => _TeamNotificationPageState();

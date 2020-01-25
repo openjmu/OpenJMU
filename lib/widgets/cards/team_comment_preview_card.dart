@@ -384,27 +384,30 @@ class TeamCommentPreviewCard extends StatelessWidget {
           );
         },
       );
-      imagesWidget.add(
-        GestureDetector(
-          onTap: () {
-            navigatorState.pushNamed(
-              Routes.OPENJMU_IMAGE_VIEWER,
-              arguments: {
-                "index": index,
-                "pics": post.pics.map<ImageBean>((f) {
-                  return ImageBean(
-                    id: imageId,
-                    imageUrl: imageUrl,
-                    imageThumbUrl: imageUrl,
-                    postId: post.tid,
-                  );
-                }).toList(),
-              },
-            );
-          },
-          child: _exImage,
-        ),
+      _exImage = GestureDetector(
+        onTap: () {
+          navigatorState.pushNamed(
+            Routes.OPENJMU_IMAGE_VIEWER,
+            arguments: {
+              "index": index,
+              "pics": post.pics.map<ImageBean>((f) {
+                return ImageBean(
+                  id: imageId,
+                  imageUrl: imageUrl,
+                  imageThumbUrl: imageUrl,
+                  postId: post.tid,
+                );
+              }).toList(),
+            },
+          );
+        },
+        child: _exImage,
       );
+      _exImage = Hero(
+        tag: "team-comment-preview-image-${post.tid}-$imageId",
+        child: _exImage,
+      );
+      imagesWidget.add(_exImage);
     }
     Widget _image;
     if (post.pics.length == 1) {

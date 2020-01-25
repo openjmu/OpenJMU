@@ -1,11 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:image_downloader/image_downloader.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -14,17 +15,22 @@ import 'package:openjmu/widgets/image/image_gesture_detector.dart';
 @FFRoute(
   name: "openjmu://image-viewer",
   routeName: "图片浏览",
-  argumentNames: ["index", "pics", "needsClear"],
+  argumentNames: ["index", "pics", "needsClear", "post", "heroPrefix"],
+  pageRouteType: PageRouteType.transparent,
 )
 class ImageViewer extends StatefulWidget {
   final int index;
   final List<ImageBean> pics;
   final bool needsClear;
+  final Post post;
+  final String heroPrefix;
 
   const ImageViewer({
     @required this.index,
     @required this.pics,
-    this.needsClear,
+    @required this.heroPrefix,
+    this.needsClear = false,
+    this.post,
   });
 
   @override
@@ -41,6 +47,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   Function _doubleTapListener;
 
   PageController _controller;
+
+  double backgroundOpacity = 1.0;
 
   @override
   void initState() {
@@ -122,21 +130,81 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     _doubleTapAnimationController.forward();
   }
 
+  void onLongPress() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.grey[850],
+      builder: (_) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+            leading: Icon(
+              Icons.save_alt,
+              size: suSetWidth(32.0),
+              color: Colors.white,
+            ),
+            title: Text(
+              "保存图片",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: suSetSp(20.0),
+              ),
+            ),
+            onTap: () {
+              _downloadImage(widget.pics[currentIndex].imageUrl);
+              Navigator.of(context).pop();
+            },
+          ),
+          SizedBox(height: Screens.bottomSafeHeight),
+        ],
+      ),
+    );
+  }
+
   Widget pageBuilder(context, index) {
-    final item = widget.pics[index].imageUrl;
-    Widget image = Container(
+    return ImageGestureDetector(
+      context: context,
+      enableTapPop: true,
+      enablePullDownPop: false,
+      onLongPress: onLongPress,
       child: ExtendedImage.network(
-        item,
+        widget.pics[index].imageUrl,
         fit: BoxFit.contain,
-        cache: true,
         mode: ExtendedImageMode.gesture,
         onDoubleTap: updateAnimation,
+        enableSlideOutPage: true,
+        heroBuilderForSlidingPage: (Widget result) {
+          if (index < widget.pics.length) {
+            String tag = "";
+            if (widget.heroPrefix != null) {
+              tag += widget.heroPrefix;
+            }
+            if (widget.pics[index].postId != null) {
+              tag += "${widget.pics[index].postId}-";
+            }
+            tag += "${widget.pics[index].id}";
+            return Hero(
+              tag: tag,
+              child: result,
+              flightShuttleBuilder: (_, __, HeroFlightDirection flightDirection,
+                  BuildContext fromHeroContext, BuildContext toHeroContext) {
+                final Hero hero = flightDirection == HeroFlightDirection.pop
+                    ? fromHeroContext.widget
+                    : toHeroContext.widget;
+                return hero.child;
+              },
+            );
+          } else {
+            return result;
+          }
+        },
         initGestureConfigHandler: (ExtendedImageState state) {
           return GestureConfig(
             initialScale: 1.0,
-            minScale: 0.9,
+            minScale: 1.0,
             maxScale: 3.0,
-            animationMinScale: 0.5,
+            animationMinScale: 0.6,
             animationMaxScale: 4.0,
             cacheGesture: false,
             inPageView: true,
@@ -157,98 +225,58 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
           return loader;
         },
       ),
-      padding: EdgeInsets.all(5.0),
-    );
-    if (index == currentIndex) {
-      image = Hero(
-        tag: "${widget.pics[index].id}"
-            "${index.toString()}"
-            "${widget.pics[index].postId.toString()}",
-        child: image,
-      );
-    }
-    return ImageGestureDetector(
-      child: image,
-      context: context,
-      enableTapPop: true,
-      enablePullDownPop: false,
-      onLongPress: () {
-        showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.grey[850],
-          builder: (_) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              ListTile(
-                leading: Icon(
-                  Icons.save_alt,
-                  size: suSetWidth(32.0),
-                  color: Colors.white,
-                ),
-                title: Text(
-                  "保存图片",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: suSetSp(20.0),
-                  ),
-                ),
-                onTap: () {
-                  _downloadImage(widget.pics[currentIndex].imageUrl);
-                  Navigator.of(context).pop();
-                },
-              ),
-              SizedBox(height: Screens.bottomSafeHeight),
-            ],
-          ),
-        );
-      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black,
+    return ExtendedImageSlidePage(
+      slideAxis: SlideAxis.both,
+      slideType: SlideType.onlyImage,
+      onSlidingPage: (ExtendedImageSlidePageState state) {
+        setState(() {
+          final offset = math.min(Screens.height / 2, math.max(0.0, state.offset.dy));
+          backgroundOpacity = 1.0 - math.min(1.0, (offset / (Screens.height / 2)));
+        });
+      },
       child: AnnotatedRegion(
         value: SystemUiOverlayStyle.light,
         child: WillPopScope(
           onWillPop: () => _pop(context, false),
           child: Stack(
             children: <Widget>[
-              ExtendedImageGesturePageView.builder(
-                physics: const BouncingScrollPhysics(),
-                controller: _controller,
-                itemCount: widget.pics.length,
-                itemBuilder: pageBuilder,
-                onPageChanged: (int index) {
-                  currentIndex = index;
-                  rebuild.add(index);
-                },
-                scrollDirection: Axis.horizontal,
+              Positioned.fill(child: Container(color: Colors.black.withOpacity(backgroundOpacity))),
+              Positioned.fill(
+                child: ExtendedImageGesturePageView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  controller: _controller,
+                  itemCount: widget.pics.length,
+                  itemBuilder: pageBuilder,
+                  onPageChanged: (int index) {
+                    currentIndex = index;
+                    rebuild.add(index);
+                  },
+                  scrollDirection: Axis.horizontal,
+                ),
               ),
               Positioned(
                 top: 0.0,
                 left: 0.0,
                 right: 0.0,
-                child: ViewAppBar(
-                  widget.pics,
-                  currentIndex,
-                  rebuild,
-                ),
+                child: ViewAppBar(post: widget.post, onMoreClicked: onLongPress),
               ),
-              Positioned(
-                left: 0.0,
-                right: 0.0,
-                bottom: 0.0,
-                child: ImageList(
-                  context: context,
-                  controller: _controller,
-                  reBuild: rebuild,
-                  index: currentIndex,
-                  pics: widget.pics,
+              if (widget.pics.length > 1)
+                Positioned(
+                  left: 0.0,
+                  right: 0.0,
+                  bottom: 0.0,
+                  child: ImageList(
+                    controller: _controller,
+                    reBuild: rebuild,
+                    index: currentIndex,
+                    pics: widget.pics,
+                  ),
                 ),
-              ),
             ],
           ),
         ),
@@ -258,14 +286,12 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 }
 
 class ImageList extends StatelessWidget {
-  final BuildContext context;
   final PageController controller;
   final StreamController<int> reBuild;
   final int index;
   final List<ImageBean> pics;
 
   ImageList({
-    this.context,
     this.controller,
     this.reBuild,
     this.index,
@@ -274,57 +300,64 @@ class ImageList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
       padding: EdgeInsets.only(
-        top: suSetHeight(10.0),
-        bottom: Screens.bottomSafeHeight + suSetHeight(10.0),
+        top: suSetHeight(16.0),
+        bottom: Screens.bottomSafeHeight + suSetHeight(16.0),
+      ),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+          colors: <Color>[Colors.black26, Colors.transparent],
+        ),
       ),
       child: StreamBuilder<int>(
         initialData: index,
         stream: reBuild.stream,
-        builder: (context, data) => Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            for (int i = 0; i < pics.length; i++)
-              AnimatedContainer(
-                curve: Curves.fastOutSlowIn,
-                duration: kTabScrollDuration,
-                child: Transform.scale(
-                  scale: i == data.data ? 1.3 : 1.0,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(
-                      horizontal: suSetWidth(5.0),
+        builder: (context, data) => SizedBox(
+          height: suSetHeight(52.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: List<Widget>.generate(
+              pics.length,
+              (i) => Container(
+                margin: EdgeInsets.symmetric(horizontal: suSetWidth(2.0)),
+                width: suSetWidth(52.0),
+                height: suSetWidth(52.0),
+                child: AnimatedContainer(
+                  curve: Curves.fastOutSlowIn,
+                  duration: kTabScrollDuration,
+                  margin: EdgeInsets.all(suSetWidth(i == data.data ? 0.0 : 6.0)),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(suSetWidth(8.0)),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: suSetWidth(i == data.data ? 3.0 : 1.5),
                     ),
-                    width: suSetWidth(40.0),
-                    height: suSetWidth(40.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(suSetWidth(8.0)),
-                      border: Border.all(
-                        color: i == data.data ? Colors.white : Colors.black,
-                        width: suSetWidth(i == data.data ? 3.0 : 2.0),
-                      ),
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        controller?.animateToPage(
-                          i,
-                          duration: const Duration(milliseconds: 300),
-                          curve: Curves.fastOutSlowIn,
-                        );
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(suSetWidth(6.0)),
-                        child: ExtendedImage.network(
-                          pics[i].imageThumbUrl ?? pics[i].imageUrl,
-                          fit: BoxFit.cover,
-                          filterQuality: FilterQuality.none,
-                        ),
+                  ),
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: () {
+                      controller?.animateToPage(
+                        i,
+                        duration: 300.milliseconds,
+                        curve: Curves.fastOutSlowIn,
+                      );
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(suSetWidth(6.0)),
+                      child: ExtendedImage.network(
+                        pics[i].imageThumbUrl ?? pics[i].imageUrl,
+                        fit: BoxFit.cover,
+                        filterQuality: FilterQuality.none,
                       ),
                     ),
                   ),
                 ),
               ),
-          ],
+            ),
+          ),
         ),
       ),
     );
@@ -332,61 +365,61 @@ class ImageList extends StatelessWidget {
 }
 
 class ViewAppBar extends StatelessWidget {
-  final List<ImageBean> pics;
-  final int index;
-  final StreamController<int> reBuild;
+  final Post post;
+  final VoidCallback onMoreClicked;
 
-  const ViewAppBar(
-    this.pics,
-    this.index,
-    this.reBuild,
-  );
+  const ViewAppBar({
+    Key key,
+    this.post,
+    this.onMoreClicked,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.grey[850].withOpacity(0.3),
-      child: Padding(
+      type: MaterialType.transparency,
+      child: Container(
+        height: Screens.topSafeHeight + suSetHeight(kAppBarHeight),
         padding: EdgeInsets.only(top: Screens.topSafeHeight),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: <Color>[Colors.black54, Colors.transparent],
+          ),
+        ),
         child: Row(
           children: <Widget>[
-            BackButton(color: Colors.white),
+            IconButton(
+              color: Colors.white,
+              icon: Icon(Icons.arrow_back),
+              onPressed: Navigator.of(context).pop,
+            ),
             Expanded(
-              child: StreamBuilder<int>(
-                builder: (BuildContext context, data) {
-                  return SizedBox(
-                    height: suSetHeight(50.0),
-                    child: Row(
+              child: post != null
+                  ? Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
+                        UserAvatar(uid: post.uid),
+                        SizedBox(width: suSetWidth(10.0)),
                         Text(
-                          "${data.data + 1} / ${pics.length}",
+                          post.nickname,
                           style: TextStyle(
-                              color: Colors.white,
-                              fontSize: suSetSp(22.0),
-                              fontWeight: FontWeight.bold,
-                              shadows: <Shadow>[
-                                Shadow(
-                                  color: Colors.black,
-                                  offset: Offset(
-                                    suSetWidth(1.0),
-                                    suSetHeight(1.0),
-                                  ),
-                                  blurRadius: suSetWidth(3.0),
-                                ),
-                              ]),
-                          textAlign: TextAlign.center,
+                            color: Colors.white,
+                            fontSize: suSetSp(20.0),
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
                       ],
-                    ),
-                  );
-                },
-                initialData: index,
-                stream: reBuild.stream,
-              ),
+                    )
+                  : SizedBox.shrink(),
             ),
-            SizedBox(width: 56.0),
+            if (onMoreClicked != null)
+              IconButton(
+                color: Colors.white,
+                icon: Icon(Icons.more_vert),
+                onPressed: onMoreClicked,
+              ),
           ],
         ),
       ),
@@ -401,4 +434,13 @@ class ImageBean {
   int postId;
 
   ImageBean({this.id, this.imageUrl, this.imageThumbUrl, this.postId});
+
+  Map<String, dynamic> toJson() {
+    return {'id': id, 'imageUrl': imageUrl, 'imageThumbUrl': imageThumbUrl, 'postId': postId};
+  }
+
+  @override
+  String toString() {
+    return 'ImageBean ${JsonEncoder.withIndent('  ').convert(toJson())}';
+  }
 }

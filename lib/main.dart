@@ -10,7 +10,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:quick_actions/quick_actions.dart';
 
-import 'package:openjmu/constants/constants.dart';
+import 'package:openjmu/constants/constants.dart' hide PageRouteType;
 import 'package:openjmu/pages/splash_page.dart';
 import 'package:openjmu/openjmu_route.dart';
 import 'package:openjmu/openjmu_route_helper.dart';

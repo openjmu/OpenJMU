@@ -90,7 +90,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
           _postList.removeWhere((post) => event.post.id == post.id);
         } else {
           int index = _postList.indexOf(event.post);
-          _postList.replaceRange(index, index + 1, [event.post.copy()]);
+          _postList.replaceRange(index, index + 1, [event.post]);
         }
         if (mounted) setState(() {});
       })

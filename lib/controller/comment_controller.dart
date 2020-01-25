@@ -374,7 +374,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
       comment.fromUserName,
       style: TextStyle(
         color: Theme.of(context).textTheme.title.color,
-        fontSize: suSetSp(21.0),
+        fontSize: suSetSp(20.0),
       ),
     );
   }

@@ -41,10 +41,7 @@ class UserAPI {
     return UserAvatar(uid: uid ?? currentUser.uid, size: size, timestamp: t);
   }
 
-  static ImageProvider getAvatarProvider({
-    int uid,
-    int t,
-  }) {
+  static ImageProvider getAvatarProvider({int uid, int t}) {
     return ExtendedNetworkImageProvider(
       "${API.userAvatar}"
       "?uid=${uid ?? currentUser.uid}"

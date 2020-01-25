@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 
 import 'package:openjmu/constants/constants.dart';
 

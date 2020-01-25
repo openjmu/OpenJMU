@@ -6,7 +6,7 @@ class ChannelUtils {
 
   static const _pmc_flagSecure = const MethodChannel("cn.edu.jmu.openjmu/setFlagSecure");
   static const _pmc_schemeLauncher = const MethodChannel("cn.edu.jmu.openjmu/schemeLauncher");
-  static const _pmc_iosPushToken = const MethodChannel("cn.edu.jmu.openjmu/iOSPushToken");
+  static const _pmc_iOSPushToken = const MethodChannel("cn.edu.jmu.openjmu/iOSPushToken");
 
   static Future<Null> setFlagSecure(bool secure) async {
     try {
@@ -35,10 +35,10 @@ class ChannelUtils {
     }
   }
 
-  static Future<String> iosGetPushToken() async {
+  static Future<String> iOSGetPushToken() async {
     debugPrint('Getting iOS push token from native...');
     try {
-      String result = await _pmc_iosPushToken.invokeMethod("getPushToken");
+      String result = await _pmc_iOSPushToken.invokeMethod("getPushToken");
       return result;
     } on PlatformException catch (e) {
       debugPrint("iosPushGetter failed: ${e.message}.");
@@ -48,7 +48,7 @@ class ChannelUtils {
 
   static Future iosGetPushDate() async {
     try {
-      String result = await _pmc_iosPushToken.invokeMethod("getPushDate");
+      String result = await _pmc_iOSPushToken.invokeMethod("getPushDate");
       return result;
     } on PlatformException catch (e) {
       debugPrint("iosPushDate failed: ${e.message}.");

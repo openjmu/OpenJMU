@@ -201,8 +201,11 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           index: arguments['index'],
           pics: arguments['pics'],
           needsClear: arguments['needsClear'],
+          post: arguments['post'],
+          heroPrefix: arguments['heroPrefix'],
         ),
         routeName: "图片浏览",
+        pageRouteType: PageRouteType.transparent,
       );
     case "openjmu://add-forward":
       return RouteResult(
@@ -451,7 +454,8 @@ class Routes {
   ///
   /// [name] : openjmu://image-viewer
   /// [routeName] : 图片浏览
-  /// [arguments] : [index, pics, needsClear]
+  /// [arguments] : [index, pics, needsClear, post, heroPrefix]
+  /// [pageRouteType] : PageRouteType.transparent
   static const String OPENJMU_IMAGE_VIEWER = "openjmu://image-viewer";
 
   /// 新增转发

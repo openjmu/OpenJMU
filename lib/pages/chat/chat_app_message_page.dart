@@ -6,7 +6,6 @@ import 'dart:math' as math;
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:intl/intl.dart';
 
 import 'package:openjmu/constants/constants.dart';

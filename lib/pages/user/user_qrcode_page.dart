@@ -3,17 +3,13 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(
-  name: "openjmu://user-qrcode",
-  routeName: "用户二维码页",
-)
+@FFRoute(name: "openjmu://user-qrcode", routeName: "用户二维码页")
 class UserQrCodePage extends StatefulWidget {
   @override
   _UserQrCodePageState createState() => _UserQrCodePageState();

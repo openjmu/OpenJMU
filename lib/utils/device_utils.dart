@@ -43,7 +43,7 @@ class DeviceUtils {
   static Future<Null> getDevicePushToken() async {
     if (Platform.isIOS) {
       final _savedToken = HiveFieldUtils.getDevicePushToken();
-      final _tempToken = await ChannelUtils.iosGetPushToken();
+      final _tempToken = await ChannelUtils.iOSGetPushToken();
       if (_savedToken != null) {
         if (_savedToken != _tempToken) {
           await HiveFieldUtils.setDevicePushToken(_tempToken);

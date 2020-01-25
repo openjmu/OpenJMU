@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/cards/post_card.dart';

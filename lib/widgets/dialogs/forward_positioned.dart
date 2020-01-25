@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_text_field/extended_text_field.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
@@ -132,13 +131,21 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       commentAtTheMeanTime,
     ).then((response) {
       showToast("转发成功");
-      _forwarding = false;
-      if (mounted) setState(() {});
       Navigator.of(context).pop();
       Instances.eventBus.fire(PostForwardedEvent(
         widget.post.id,
         widget.post.forwards,
       ));
+    }).catchError((e) {
+      _forwarding = false;
+      debugPrint('Forward post failed: $e');
+      if (e is DioError && e.response.statusCode == 404) {
+        showToast("原动态已被删除");
+        Navigator.of(context).pop();
+      } else {
+        showToast("转发失败");
+      }
+      if (mounted) setState(() {});
     });
   }
 

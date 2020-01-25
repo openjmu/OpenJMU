@@ -5,7 +5,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -172,10 +171,13 @@ class _UserPageState extends State<UserPage>
         height: suSetWidth(width),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(width / 2),
-          child: FadeInImage(
-            fadeInDuration: const Duration(milliseconds: 100),
-            placeholder: AssetImage("assets/avatar_placeholder.png"),
-            image: UserAPI.getAvatarProvider(uid: widget.uid),
+          child: Hero(
+            tag: "user-page-avatar-${widget.uid}",
+            child: FadeInImage(
+              fadeInDuration: const Duration(milliseconds: 100),
+              placeholder: AssetImage("assets/avatar_placeholder.png"),
+              image: UserAPI.getAvatarProvider(uid: widget.uid),
+            ),
           ),
         ),
       ),
@@ -579,7 +581,7 @@ class _UserPageState extends State<UserPage>
                               imageUrl: "${API.userAvatar}?uid=${widget.uid}&size=f640",
                             ),
                           ],
-                          "needsClear": true,
+                          "heroPrefix": "user-page-avatar-",
                         },
                       );
                     },

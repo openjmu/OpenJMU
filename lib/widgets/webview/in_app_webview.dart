@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -242,41 +241,12 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     );
   }
 
-  Future<JsPromptResponse> jsPromptHandler(
-    InAppWebViewController controller,
-    String message,
-    String defaultValue,
-  ) async {
-    showCupertinoDialog(
-      context: context,
-      builder: (_) {
-        return CupertinoAlertDialog(
-          title: Text("$message"),
-          content: SelectableText("$defaultValue"),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              child: Text('确定'),
-              textStyle: TextStyle(
-                color: currentThemeColor,
-                fontSize: suSetSp(18.0),
-                fontWeight: FontWeight.normal,
-              ),
-              onPressed: Navigator.of(_).pop,
-            ),
-          ],
-        );
-      },
-    );
-    return JsPromptResponse(handledByClient: true);
-  }
-
   Future<Null> _launchURL({String url, bool forceSafariVC = true}) async {
     final uri = Uri.encodeFull(url ?? this.url);
     if (await canLaunch(uri)) {
       await launch(uri, forceSafariVC: Platform.isIOS ? forceSafariVC : false);
     } else {
-      showCenterErrorToast('Cannot launch: $uri');
+      showCenterErrorToast('无法打开网址: $uri');
     }
   }
 
@@ -296,26 +266,23 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
                         onPressed: Navigator.of(context).pop,
                       ),
                       Expanded(
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              if (widget.app != null) AppIcon(app: widget.app, size: 60.0),
-                              Flexible(
-                                child: Text(
-                                  title,
-                                  style: TextStyle(
-                                    color: Theme.of(context).textTheme.title.color,
-                                    fontSize: suSetSp(22.0),
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            if (widget.app != null) AppIcon(app: widget.app, size: 60.0),
+                            Flexible(
+                              child: Text(
+                                title,
+                                style: TextStyle(
+                                  color: Theme.of(context).textTheme.title.color,
+                                  fontSize: suSetSp(22.0),
                                 ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                       IconButton(
@@ -344,15 +311,12 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
         ),
       );
 
-  Widget get progressBar => PreferredSize(
-        child: SizedBox(
-          height: suSetHeight(2.0),
-          child: LinearProgressIndicator(
-            backgroundColor: Theme.of(context).primaryColor,
-            value: progress,
-          ),
+  Widget get progressBar => SizedBox(
+        height: suSetHeight(2.0),
+        child: LinearProgressIndicator(
+          backgroundColor: Theme.of(context).primaryColor,
+          value: progress,
         ),
-        preferredSize: null,
       );
 
   List<Widget> get persistentFooterButtons => <Widget>[
@@ -416,11 +380,13 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
           android: AndroidInAppWebViewOptions(
             allowFileAccessFromFileURLs: true,
             allowUniversalAccessFromFileURLs: true,
-            mixedContentMode: AndroidInAppWebViewMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
-            safeBrowsingEnabled: false,
+            builtInZoomControls: true,
+            displayZoomControls: true,
             forceDark: currentIsDark
                 ? AndroidInAppWebViewForceDark.FORCE_DARK_ON
                 : AndroidInAppWebViewForceDark.FORCE_DARK_OFF,
+            mixedContentMode: AndroidInAppWebViewMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
+            safeBrowsingEnabled: false,
           ),
           ios: IOSInAppWebViewOptions(
             allowsAirPlayForMediaPlayback: true,
@@ -431,7 +397,6 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             sharedCookiesEnabled: true,
           ),
         ),
-        onJsPrompt: jsPromptHandler,
         onLoadStart: (InAppWebViewController controller, String url) {
           _webViewController = controller;
 

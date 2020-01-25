@@ -453,29 +453,33 @@ class TeamPostPreviewCard extends StatelessWidget {
           return loader;
         },
       );
-      imagesWidget.add(
-        GestureDetector(
-          onTap: () {
-            navigatorState.pushNamed(
-              Routes.OPENJMU_IMAGE_VIEWER,
-              arguments: {
-                "index": i,
-                "pics": post.pics.map((pic) {
-                  final id = int.parse(pic['fid']);
-                  final imageUrl = API.teamFile(fid: id);
-                  return ImageBean(
-                    id: id,
-                    imageUrl: imageUrl,
-                    imageThumbUrl: imageUrl,
-                    postId: post.tid,
-                  );
-                }).toList(),
-              },
-            );
-          },
-          child: _exImage,
-        ),
+      _exImage = GestureDetector(
+        onTap: () {
+          navigatorState.pushNamed(
+            Routes.OPENJMU_IMAGE_VIEWER,
+            arguments: {
+              "index": i,
+              "pics": post.pics.map((pic) {
+                final id = int.parse(pic['fid']);
+                final imageUrl = API.teamFile(fid: id);
+                return ImageBean(
+                  id: id,
+                  imageUrl: imageUrl,
+                  imageThumbUrl: imageUrl,
+                  postId: post.tid,
+                );
+              }).toList(),
+              "heroPrefix": "team-post-preview-image-",
+            },
+          );
+        },
+        child: _exImage,
       );
+      _exImage = Hero(
+        tag: "team-post-preview-image-${post.tid}-$imageId",
+        child: _exImage,
+      );
+      imagesWidget.add(_exImage);
     }
     Widget _image;
     if (post.pics.length == 1) {

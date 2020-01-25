@@ -91,15 +91,12 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   void initPushService() async {
     try {
-      final user = UserAPI.currentUser;
-      final now = DateTime.now();
-      final token = Platform.isIOS ? await ChannelUtils.iosGetPushToken().catchError((_) {}) : null;
       final data = <String, dynamic>{
-        "token": token,
-        "date": DateFormat("yyyy/MM/dd HH:mm:ss", "en").format(now),
-        "uid": user.uid.toString(),
-        "name": user.name.toString(),
-        "workid": user.workId.toString(),
+        "token": DeviceUtils.devicePushToken,
+        "date": DateFormat("yyyy/MM/dd HH:mm:ss", "en").format(DateTime.now()),
+        "uid": "${currentUser.uid}",
+        "name": "${currentUser.name ?? currentUser.uid}",
+        "workid": "${currentUser.workId ?? currentUser.uid}",
         "buildnumber": await OTAUtils.getCurrentBuildNumber(),
         "uuid": DeviceUtils.deviceUuid,
         "platform": Platform.isIOS ? "ios" : "android",

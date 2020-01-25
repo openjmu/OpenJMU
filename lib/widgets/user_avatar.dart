@@ -40,7 +40,7 @@ class UserAvatar extends StatelessWidget {
                 final _routeSettings = ModalRoute.of(context).settings;
                 if (_routeSettings is FFRouteSettings) {
                   final settings = ModalRoute.of(context).settings as FFRouteSettings;
-                  if (settings.name != "openjmu://user" ||
+                  if (settings.name != Routes.OPENJMU_USER ||
                       settings.arguments.toString() != {"uid": _uid}.toString()) {
                     navigatorState.pushNamed(Routes.OPENJMU_USER, arguments: {"uid": _uid});
                   }

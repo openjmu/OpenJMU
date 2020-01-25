@@ -29,7 +29,6 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
         if ([@"getPushToken" isEqualToString:call.method]) {
             if (token != nil) {
                 result([self PushToken]);
-                printf("Write success!");
             } else {
                 result([FlutterError errorWithCode:@"01" message:[NSString stringWithFormat:@"异常"] details:@"进入tryCatchError"]);}
         } else {
@@ -61,33 +60,32 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
                 NSLog(@"%@", error);
             }];
             UNNotificationCategory* generalCategory = [UNNotificationCategory
-                                                       categoryWithIdentifier:@"GENERAL"
-                                                       actions:@[]
-                                                       intentIdentifiers:@[]
-                                                       options:UNNotificationCategoryOptionCustomDismissAction];
+                                                    categoryWithIdentifier:@"GENERAL"
+                                                    actions:@[]
+                                                    intentIdentifiers:@[]
+                                                    options:UNNotificationCategoryOptionCustomDismissAction];
             
             // Create the custom actions for expired timer notifications.
             UNNotificationAction* stopAction = [UNNotificationAction
-                                                actionWithIdentifier:@"SNOOZE_ACTION"
-                                                title:@"取消"
-                                                options:UNNotificationActionOptionAuthenticationRequired];
+                                            actionWithIdentifier:@"SNOOZE_ACTION"
+                                            title:@"取消"
+                                            options:UNNotificationActionOptionAuthenticationRequired];
             UNNotificationAction* forAction = [UNNotificationAction
-                                               actionWithIdentifier:@"FOR_ACTION"
-                                               title:@"进入OpenJMU"
-                                               options:UNNotificationActionOptionForeground];
+                                            actionWithIdentifier:@"FOR_ACTION"
+                                            title:@"进入OpenJMU"
+                                            options:UNNotificationActionOptionForeground];
             
             // Create the category with the custom actions.
             UNNotificationCategory* expiredCategory = [UNNotificationCategory
-                                                       categoryWithIdentifier:@"TIMER_EXPIRED"
-                                                       actions:@[stopAction,forAction]
-                                                       intentIdentifiers:@[]
-                                                       options:UNNotificationCategoryOptionNone];
+                                                    categoryWithIdentifier:@"TIMER_EXPIRED"
+                                                    actions:@[stopAction,forAction]
+                                                    intentIdentifiers:@[]
+                                                    options:UNNotificationCategoryOptionNone];
             
             // Register the notification categories.
             UNUserNotificationCenter* center = [UNUserNotificationCenter currentNotificationCenter];
             [center setDelegate:self];
-            [center setNotificationCategories:[NSSet setWithObjects:generalCategory, expiredCategory,
-                                               nil]];
+            [center setNotificationCategories:[NSSet setWithObjects:generalCategory, expiredCategory, nil]];
             
             [[UIApplication sharedApplication] registerForRemoteNotifications];
         } else {
@@ -113,12 +111,12 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 #pragma mark - UNUserNotificationCenterDelegate
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler{
-    NSLog(@"%s", __func__);
+//    NSLog(@"%s", __func__);
     completionHandler(UNNotificationPresentationOptionBadge | UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert);
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler{
-    NSLog(@"%s", __func__);
+//    NSLog(@"%s", __func__);
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
@@ -136,7 +134,6 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     SendTime = [forMatter stringFromDate:now]; // 转换系统现在的时间
     NSString *tokenString = [[NSString alloc] initWithData:deviceToken encoding:NSSymbolStringEncoding];
     token = tokenString;
-    NSLog(@"Device Token: %@", tokenString);
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSData *) error{
@@ -144,7 +141,7 @@ didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 }
 
 -(BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options{
-    NSLog(@"Wait Open Url = %@",url);
+//    NSLog(@"Wait Open Url = %@",url);
     return YES;
 }
 

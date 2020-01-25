@@ -320,6 +320,9 @@ class ScaledImage extends StatelessWidget {
       );
     }
     if (ratio >= 3) {
+      if (length > 1) {
+        imageWidget = Positioned.fill(child: imageWidget);
+      }
       imageWidget = Stack(
         children: <Widget>[
           imageWidget,

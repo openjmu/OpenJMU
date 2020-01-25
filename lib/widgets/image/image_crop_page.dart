@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;

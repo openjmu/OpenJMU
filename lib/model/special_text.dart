@@ -1,6 +1,7 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:extended_image/extended_image.dart';
 import 'package:extended_text_library/extended_text_library.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -251,40 +252,29 @@ class ImageText extends SpecialText {
   InlineSpan finishText() {
     final imageText = toString();
     final imageId = getImageIdFromContent(imageText);
-    final size = suSetHeight(80.0);
-    final url = API.commentImageUrl(imageId, "m");
 
-    InlineSpan span;
-    switch (widgetType) {
-      case WidgetType.post:
-        span = TextSpan(
-          text: "查看图片",
-          style: textStyle?.copyWith(color: Colors.blueAccent),
+    InlineSpan span = TextSpan(
+      children: <InlineSpan>[
+        WidgetSpan(
+          alignment: ui.PlaceholderAlignment.middle,
+          child: Icon(
+            Icons.image,
+            size: textStyle.fontSize,
+            color: currentThemeColor,
+          ),
+        ),
+        TextSpan(
+          text: " 查看图片",
           recognizer: TapGestureRecognizer()
             ..onTap = () {
               Map<String, dynamic> data = {'content': toString(), 'image': imageId};
               if (onTap != null) onTap(data);
             },
-        );
-        break;
-      case WidgetType.comment:
-        span = ImageSpan(
-          ExtendedNetworkImageProvider(url, cache: true),
-          imageWidth: size,
-          imageHeight: size,
-          fit: BoxFit.cover,
-          margin: EdgeInsets.only(
-            top: suSetHeight(8.0),
-            bottom: suSetHeight(10.0),
-            right: suSetWidth(4.0),
-          ),
-          onTap: () {
-            final data = {'content': toString(), 'image': imageId};
-            if (onTap != null) onTap(data);
-          },
-        );
-        break;
-    }
+        ),
+      ],
+      style: textStyle?.copyWith(color: currentThemeColor.withOpacity(0.7)),
+    );
+
     return span;
   }
 }

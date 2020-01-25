@@ -7,7 +7,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:extended_text_field/extended_text_field.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/appbar.dart';

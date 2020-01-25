@@ -27,9 +27,10 @@ class Post {
   int comments;
   int praises;
   bool isLike;
-  Object rootTopic;
+  bool isDefaultAvatar;
+  Map<String, dynamic> rootTopic;
 
-  Post({
+  Post._({
     this.id,
     this.uid,
     this.nickname,
@@ -45,6 +46,7 @@ class Post {
     this.praises,
     this.rootTopic,
     this.isLike = false,
+    this.isDefaultAvatar,
   });
 
   bool get isShield => content == "此微博已经被屏蔽";
@@ -58,7 +60,11 @@ class Post {
 
   @override
   String toString() {
-    return "Post ${JsonEncoder.withIndent("  ").convert({
+    return "Post ${JsonEncoder.withIndent("  ").convert(toJson())}";
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
       "id": id,
       "uid": uid,
       "nickname": nickname,
@@ -74,10 +80,11 @@ class Post {
       "praises": praises,
       "rootTopic": rootTopic,
       "isLike": isLike,
-    })}";
+      "isDefaultAvatar": isDefaultAvatar,
+    };
   }
 
-  factory Post.fromJson(Map<String, dynamic> json) {
+  Post.fromJson(Map<String, dynamic> json) {
     json.forEach((k, v) {
       if (json[k] == "") json[k] = null;
     });
@@ -85,48 +92,29 @@ class Post {
     _user.forEach((k, v) {
       if (_user[k] == "") _user[k] = null;
     });
-    String _avatar =
-        "${API.userAvatar}?uid=${_user['uid']}&size=f152&_t=${DateTime.now().millisecondsSinceEpoch}";
-    String _postTime = DateTime.fromMillisecondsSinceEpoch(
+
+    final _avatar = "${API.userAvatar}"
+        "?uid=${_user['uid']}"
+        "&size=f152"
+        "&_t=${DateTime.now().millisecondsSinceEpoch}";
+    final _postTime = DateTime.fromMillisecondsSinceEpoch(
       int.parse(json['post_time']) * 1000,
     ).toString().substring(0, 16);
-    Post _post = Post(
-      id: int.parse(json['tid'].toString()),
-      uid: int.parse(json['uid'].toString()),
-      nickname: _user['nickname'] ?? _user['uid'].toString(),
-      avatar: _avatar,
-      postTime: _postTime,
-      from: json['from_string'],
-      glances: int.parse(json['glances'].toString()),
-      category: json['category'],
-      content: json['article'] ?? json['content'],
-      pics: json['image'],
-      forwards: int.parse(json['forwards'].toString()),
-      comments: int.parse(json['replys'].toString()),
-      praises: int.parse(json['praises']),
-      rootTopic: json['root_topic'],
-      isLike: int.parse(json['praised'].toString()) == 1,
-    );
-    return _post;
-  }
-
-  Post copy() {
-    return Post(
-      id: id,
-      uid: uid,
-      nickname: nickname,
-      avatar: avatar,
-      postTime: postTime,
-      from: from,
-      glances: glances,
-      category: category,
-      content: content,
-      pics: pics.sublist(0),
-      forwards: forwards,
-      comments: comments,
-      praises: praises,
-      rootTopic: rootTopic,
-      isLike: isLike,
-    );
+    id = int.parse(json['tid'].toString());
+    uid = int.parse(json['uid'].toString());
+    nickname = _user['nickname'] ?? _user['uid'].toString();
+    avatar = _avatar;
+    postTime = _postTime;
+    from = json['from_string'];
+    glances = int.parse(json['glances'].toString());
+    category = json['category'];
+    content = json['article'] ?? json['content'];
+    pics = json['image'];
+    forwards = int.parse(json['forwards'].toString());
+    comments = int.parse(json['replys'].toString());
+    praises = int.parse(json['praises']);
+    rootTopic = json['root_topic'];
+    isLike = int.parse(json['praised'].toString()) == 1;
+    isDefaultAvatar = _user['sysavatar'] == 1;
   }
 }

@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_text_field/extended_text_field.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
@@ -166,11 +165,18 @@ class CommentPositionedState extends State<CommentPositioned> {
         replyToId: _cid,
       ).then((response) {
         showToast("评论成功");
-        setState(() {
-          _commenting = false;
-        });
         Navigator.of(context).pop();
         Instances.eventBus.fire(PostCommentedEvent(widget.post.id));
+      }).catchError((e) {
+        _commenting = false;
+        debugPrint('Comment post failed: $e');
+        if (e is DioError && e.response.statusCode == 404) {
+          showToast("动态已被删除");
+          Navigator.of(context).pop();
+        } else {
+          showToast("评论失败");
+        }
+        if (mounted) setState(() {});
       });
     }
   }

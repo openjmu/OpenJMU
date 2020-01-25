@@ -15,7 +15,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_text_field/extended_text_field.dart';
-import 'package:ff_annotation_route/ff_annotation_route.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -27,10 +26,7 @@ import 'package:openjmu/widgets/dialogs/convention_dialog.dart';
 import 'package:openjmu/widgets/dialogs/loading_dialog.dart';
 import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 
-@FFRoute(
-  name: "openjmu://publish-team-post",
-  routeName: "发布小组动态",
-)
+@FFRoute(name: "openjmu://publish-team-post", routeName: "发布小组动态")
 class PublishTeamPostPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => PublishTeamPostPageState();

@@ -227,7 +227,7 @@ class _PostCardState extends State<PostCard> {
     if (data != null) {
       List<Widget> imagesWidget = [];
       for (int index = 0; index < data.length; index++) {
-        final imageID = int.parse(data[index]['id'].toString());
+        final imageId = int.parse(data[index]['id'].toString());
         final imageUrl = data[index]['image_middle'];
         final provider = ExtendedTypedNetworkImageProvider(imageUrl);
         Widget _exImage = ExtendedImage(
@@ -257,27 +257,35 @@ class _PostCardState extends State<PostCard> {
             return loader;
           },
         );
-        imagesWidget.add(
-          GestureDetector(
-            onTap: () {
-              navigatorState.pushNamed(
-                Routes.OPENJMU_IMAGE_VIEWER,
-                arguments: {
-                  "index": index,
-                  "pics": data.map<ImageBean>((f) {
-                    return ImageBean(
-                      id: imageID,
-                      imageUrl: f['image_original'],
-                      imageThumbUrl: f['image_thumb'],
-                      postId: widget.post.id,
-                    );
-                  }).toList(),
-                },
-              );
-            },
-            child: _exImage,
-          ),
+        _exImage = GestureDetector(
+          onTap: () {
+            navigatorState.pushNamed(
+              Routes.OPENJMU_IMAGE_VIEWER,
+              arguments: {
+                "index": index,
+                "pics": data.map<ImageBean>((f) {
+                  return ImageBean(
+                    id: imageId,
+                    imageUrl: f['image_original'],
+                    imageThumbUrl: f['image_thumb'],
+                    postId: widget.post.id,
+                  );
+                }).toList(),
+                "post": widget.post,
+                "heroPrefix": "square-post-image-hero-"
+                    "${widget.isDetail ? "isDetail-" : ""}",
+              },
+            );
+          },
+          child: _exImage,
         );
+        _exImage = Hero(
+          tag: "square-post-image-hero-"
+              "${widget.isDetail ? "isDetail-" : ""}"
+              "${widget.post.id}-$imageId",
+          child: _exImage,
+        );
+        imagesWidget.add(_exImage);
       }
       Widget _image;
       if (data.length == 1) {
@@ -711,78 +719,73 @@ class _PostCardState extends State<PostCard> {
     final post = widget.post;
     return post.isShield && HiveFieldUtils.getEnabledHideShieldPost()
         ? SizedBox.shrink()
-        : Hero(
-            tag: "postcard-id-${post.id}",
-            child: GestureDetector(
-              onTap: widget.isDetail || post.isShield ? null : pushToDetail,
-              onLongPress: post.isShield ? pushToDetail : null,
-              child: Card(
-                margin: post.isShield
-                    ? EdgeInsets.zero
-                    : EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: !post.isShield
-                      ? <Widget>[
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: suSetWidth(contentPadding),
-                              vertical: suSetHeight(10.0),
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                UserAPI.getAvatar(uid: widget.post.uid),
-                                Expanded(
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: suSetWidth(contentPadding),
-                                    ),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        getPostNickname(context, post),
-                                        separator(context, height: 4.0),
-                                        getPostInfo(post),
-                                      ],
-                                    ),
+        : GestureDetector(
+            onTap: widget.isDetail || post.isShield ? null : pushToDetail,
+            onLongPress: post.isShield ? pushToDetail : null,
+            child: Card(
+              margin: post.isShield
+                  ? EdgeInsets.zero
+                  : EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: !post.isShield
+                    ? <Widget>[
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: suSetWidth(contentPadding),
+                            vertical: suSetHeight(10.0),
+                          ),
+                          child: Row(
+                            children: <Widget>[
+                              UserAPI.getAvatar(uid: widget.post.uid),
+                              Expanded(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: suSetWidth(contentPadding),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      getPostNickname(context, post),
+                                      separator(context, height: 4.0),
+                                      getPostInfo(post),
+                                    ],
                                   ),
                                 ),
-                                post.uid == UserAPI.currentUser.uid
-                                    ? deleteButton
-                                    : postActionButton,
+                              ),
+                              post.uid == UserAPI.currentUser.uid ? deleteButton : postActionButton,
+                            ],
+                          ),
+                        ),
+                        getPostContent(context, post),
+                        getPostImages(context, post),
+                        Container(
+                          margin: EdgeInsets.only(top: suSetHeight(6.0)),
+                          height: suSetHeight(44.0),
+                          padding: EdgeInsets.only(left: suSetWidth(20.0)),
+                          child: OverflowBox(
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                  "浏览${post.glances}次　",
+                                  style: Theme.of(context).textTheme.caption.copyWith(
+                                        fontSize: suSetSp(18.0),
+                                      ),
+                                ),
+                                Spacer(),
+                                widget.isDetail
+                                    ? SizedBox(height: suSetWidth(16.0))
+                                    : postActions(context),
                               ],
                             ),
                           ),
-                          getPostContent(context, post),
-                          getPostImages(context, post),
-                          Container(
-                            margin: EdgeInsets.only(top: suSetHeight(6.0)),
-                            height: suSetHeight(44.0),
-                            padding: EdgeInsets.only(left: suSetWidth(20.0)),
-                            child: OverflowBox(
-                              child: Row(
-                                children: <Widget>[
-                                  Text(
-                                    "浏览${post.glances}次　",
-                                    style: Theme.of(context).textTheme.caption.copyWith(
-                                          fontSize: suSetSp(18.0),
-                                        ),
-                                  ),
-                                  Spacer(),
-                                  widget.isDetail
-                                      ? SizedBox(height: suSetWidth(16.0))
-                                      : postActions(context),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ]
-                      : <Widget>[getPostBanned("shield")],
-                ),
-                elevation: 0,
+                        ),
+                      ]
+                    : <Widget>[getPostBanned("shield")],
               ),
+              elevation: 0,
             ),
           );
   }
