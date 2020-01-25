@@ -26,10 +26,10 @@
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
-.pubspec.lock
 .pub-cache/
 .pub/
 /build/
+pubspec.lock
 
 # Android related
 **/android/**/gradle-wrapper.jar
