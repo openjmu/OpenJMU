@@ -1,7 +1,7 @@
 name: openjmu
 description: A JMU Flutter application.
 
-version: 0.9.0+142
+version: 0.9.0+143
 
 environment:
   sdk: ">=2.6.0 <3.0.0"

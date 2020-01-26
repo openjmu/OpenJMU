@@ -98,12 +98,24 @@ class ScoresProvider extends ChangeNotifier {
     }
   }
 
-  void requestScore() {
-    _socket?.add(utf8.encode(jsonEncode({
-      'uid': '${currentUser.uid}',
-      'sid': '${currentUser.sid}',
-      'workid': '${currentUser.workId}',
-    })));
+  void requestScore() async {
+    if (!loading) loading = true;
+    try {
+      _socket?.add(utf8.encode(jsonEncode({
+        'uid': '${currentUser.uid}',
+        'sid': '${currentUser.sid}',
+        'workid': '${currentUser.workId}',
+      })));
+    } catch (e) {
+      if (e.toString().contains('StreamSink is closed')) {
+        if (await initSocket()) {
+          requestScore();
+        }
+      } else {
+        loading = false;
+        debugPrint('Error when request score: $e');
+      }
+    }
   }
 
   void onReceive(data) async {
@@ -130,6 +142,7 @@ class ScoresProvider extends ChangeNotifier {
       _loading = false;
       notifyListeners();
       debugPrint('Scores decoded successfully with ${_scores?.length ?? 0} scores.');
+      _scoreData = '';
     } catch (e) {
       debugPrint('Decode scores response error: $e');
     }

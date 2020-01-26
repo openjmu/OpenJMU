@@ -100,6 +100,7 @@ class Post {
     final _postTime = DateTime.fromMillisecondsSinceEpoch(
       int.parse(json['post_time']) * 1000,
     ).toString().substring(0, 16);
+
     id = int.parse(json['tid'].toString());
     uid = int.parse(json['uid'].toString());
     nickname = _user['nickname'] ?? _user['uid'].toString();

@@ -110,13 +110,17 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     _focusNode.unfocus();
     final currentColorValue = "#${currentThemeColor.value.toRadixString(16).substring(2, 8)}";
     List<Asset> resultList = List<Asset>();
-    Map<PermissionGroup, PermissionStatus> permissions =
-        await PermissionHandler().requestPermissions([
+    final permissions = await PermissionHandler().requestPermissions([
       PermissionGroup.camera,
-      PermissionGroup.photos,
+      PermissionGroup.storage,
+      if (Platform.isIOS) PermissionGroup.photos,
     ]);
-    if (permissions[PermissionGroup.camera] == PermissionStatus.granted &&
-        permissions[PermissionGroup.photos] == PermissionStatus.granted) {
+    bool granted = permissions[PermissionGroup.camera] == PermissionStatus.granted &&
+        permissions[PermissionGroup.storage] == PermissionStatus.granted;
+    if (Platform.isIOS) {
+      granted = granted && permissions[PermissionGroup.photos] == PermissionStatus.granted;
+    }
+    if (granted) {
       try {
         final results = await MultiImagePicker.pickImages(
           maxImages: maxImagesLength,
@@ -142,6 +146,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
         showCenterErrorToast(e.message);
       }
     } else {
+      showToast("权限不足");
       return;
     }
 

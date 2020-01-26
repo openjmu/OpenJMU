@@ -467,7 +467,7 @@ class MyInfoPageState extends State<MyInfoPage> {
           child: FlatButton(
             onPressed: HiveBoxes.clearBoxes,
             child: Text(
-              "(DANGER)\nClear ALL Hive Data",
+              "(DANGER)\n清除数据",
               style: TextStyle(
                 color: Colors.redAccent,
                 fontSize: suSetSp(20.0),
@@ -502,7 +502,7 @@ class MyInfoPageState extends State<MyInfoPage> {
               itemCount: settingsSection().length,
               itemBuilder: (context, index) => settingSectionListView(context, index),
             ),
-            if (provider.debug) clearBoxesButton,
+            clearBoxesButton,
           ],
         ),
       ),

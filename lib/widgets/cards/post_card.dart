@@ -11,7 +11,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:like_button/like_button.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/controller/extended_network_image_provider.dart';
+import 'package:openjmu/controller/extended_typed_network_image_provider.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
 import 'package:openjmu/widgets/dialogs/delete_dialog.dart';
 

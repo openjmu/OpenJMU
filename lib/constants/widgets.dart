@@ -13,7 +13,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/controller/extended_network_image_provider.dart';
+import 'package:openjmu/controller/extended_typed_network_image_provider.dart';
 
 export 'package:openjmu/widgets/appbar.dart';
 export 'package:openjmu/widgets/app_icon.dart';

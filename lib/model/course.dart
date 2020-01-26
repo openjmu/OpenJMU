@@ -58,7 +58,7 @@ class Course {
 
   static int judgeOddEven(Map<String, dynamic> json) {
     int _oddEven = 0;
-    List _split = json['allWeek'].split(' ');
+    final _split = json['allWeek'].split(' ');
     if (_split.length > 1) {
       if (_split[1] == "单周") {
         _oddEven = 1;
@@ -73,8 +73,8 @@ class Course {
     json.forEach((k, v) {
       if (json[k] == "") json[k] = null;
     });
-    final int _oddEven = !isCustom ? judgeOddEven(json) : null;
-    final List weeks = !isCustom ? json['allWeek'].split(' ')[0].split('-') : null;
+    final _oddEven = !isCustom ? judgeOddEven(json) : null;
+    final weeks = !isCustom ? json['allWeek'].split(' ')[0].split('-') : null;
 
     String name;
     if (isCustom) {
