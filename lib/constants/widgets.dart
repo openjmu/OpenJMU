@@ -25,7 +25,10 @@ export 'package:openjmu/widgets/rounded_check_box.dart';
 export 'package:openjmu/widgets/rounded_tab_indicator.dart';
 export 'package:openjmu/widgets/slide_menu_item.dart';
 export 'package:openjmu/widgets/user_avatar.dart';
+
+export 'package:openjmu/widgets/dialogs/confirmation_bottom_sheet.dart';
 export 'package:openjmu/widgets/dialogs/confirmation_dialog.dart';
+export 'package:openjmu/widgets/dialogs/loading_dialog.dart';
 
 class TransparentRoute extends PageRoute<void> {
   TransparentRoute({

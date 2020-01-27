@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 
@@ -103,61 +102,6 @@ class MyInfoPageState extends State<MyInfoPage> {
         debugPrint(e.toString());
       });
     }
-  }
-
-  void showLogoutDialog(BuildContext context) {
-    showPlatformDialog(
-      context: context,
-      builder: (_) => PlatformAlertDialog(
-        title: Text("退出登录"),
-        content: Text(
-          "是否确认退出登录？",
-          style: Theme.of(context).textTheme.body1.copyWith(
-                fontSize: suSetSp(18.0),
-              ),
-        ),
-        actions: <Widget>[
-          PlatformButton(
-            android: (BuildContext context) => MaterialRaisedButtonData(
-              color: Theme.of(context).dialogBackgroundColor,
-              elevation: 0,
-              disabledElevation: 0.0,
-              highlightElevation: 0.0,
-              child: Text(
-                "确认",
-                style: TextStyle(color: currentThemeColor),
-              ),
-            ),
-            ios: (BuildContext context) => CupertinoButtonData(
-              child: Text(
-                "确认",
-                style: TextStyle(color: currentThemeColor),
-              ),
-            ),
-            onPressed: () {
-              Navigator.of(_).pop();
-              UserAPI.logout();
-            },
-          ),
-          PlatformButton(
-            android: (BuildContext context) => MaterialRaisedButtonData(
-              color: currentThemeColor,
-              elevation: 0,
-              disabledElevation: 0.0,
-              highlightElevation: 0.0,
-              child: Text('取消', style: TextStyle(color: Colors.white)),
-            ),
-            ios: (BuildContext context) => CupertinoButtonData(
-              child: Text(
-                "取消",
-                style: TextStyle(color: currentThemeColor),
-              ),
-            ),
-            onPressed: Navigator.of(_).pop,
-          ),
-        ],
-      ),
-    );
   }
 
   Widget get _name => Row(
@@ -436,7 +380,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         break;
 
       case "退出登录":
-        showLogoutDialog(context);
+        UserAPI.logout(context);
         break;
 
       case "测试页":
@@ -465,11 +409,11 @@ class MyInfoPageState extends State<MyInfoPage> {
             color: Theme.of(context).primaryColor,
           ),
           child: FlatButton(
-            onPressed: HiveBoxes.clearBoxes,
+            onPressed: () => HiveBoxes.clearBoxes(context),
             child: Text(
               "(DANGER)\n清除数据",
               style: TextStyle(
-                color: Colors.redAccent,
+                color: currentThemeColor,
                 fontSize: suSetSp(20.0),
                 fontWeight: FontWeight.bold,
               ),

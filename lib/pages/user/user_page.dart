@@ -549,69 +549,110 @@ class _UserPageState extends State<UserPage>
     );
   }
 
+  Widget _listTile({
+    @required IconData icon,
+    @required String text,
+    @required GestureTapCallback onTap,
+  }) =>
+      GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: suSetHeight(24.0)),
+          child: Row(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
+                child: Icon(icon, size: suSetWidth(36.0)),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
+                  child: Text(
+                    text,
+                    style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+  List<Widget> listTileBuilder({
+    @required List<IconData> icons,
+    @required List<String> texts,
+    @required List<GestureTapCallback> onTaps,
+  }) {
+    assert(
+      icons?.length == texts?.length &&
+          icons?.length == onTaps?.length &&
+          texts?.length == onTaps?.length,
+      'items length must be equal.',
+    );
+    return List<Widget>.generate(
+      texts.length * 2 - 1,
+      (i) {
+        if (i.isEven) {
+          final index = i ~/ 2;
+          return _listTile(
+            icon: icons.elementAt(index),
+            text: texts.elementAt(index),
+            onTap: onTaps.elementAt(index),
+          );
+        } else {
+          return Container(
+            margin: EdgeInsets.only(left: suSetWidth(64.0)),
+            child: Divider(
+              color: Theme.of(context).canvasColor,
+              height: suSetHeight(1.0),
+              thickness: suSetHeight(1.0),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  void avatarExtraActions(context) async {
+    ConfirmationBottomSheet.show(
+      context,
+      children: listTileBuilder(
+        icons: <IconData>[Icons.account_circle, Icons.photo_library],
+        texts: <String>['查看大头像', '更换头像'],
+        onTaps: <GestureTapCallback>[
+          () {
+            Navigator.of(context).pop();
+            navigatorState.pushNamed(
+              Routes.OPENJMU_IMAGE_VIEWER,
+              arguments: {
+                "index": 0,
+                "pics": [
+                  ImageBean(
+                    id: widget.uid,
+                    imageUrl: "${API.userAvatar}?uid=${widget.uid}&size=f640",
+                  ),
+                ],
+                "heroPrefix": "user-page-avatar-",
+              },
+            );
+          },
+          () async {
+            Navigator.of(context).pop();
+            navigatorState.pushNamed(Routes.OPENJMU_IMAGE_CROP).then((result) {
+              if (result != null && result) {
+                Instances.eventBus.fire(AvatarUpdatedEvent());
+              }
+            });
+          },
+        ],
+      ),
+    );
+  }
+
   void avatarTap(context) {
     widget.uid == UserAPI.currentUser.uid
-        ? showModalBottomSheet(
-            context: context,
-            builder: (BuildContext sheetContext) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  ListTile(
-                    leading: Icon(
-                      Icons.account_circle,
-                      color: Theme.of(context).iconTheme.color,
-                      size: suSetWidth(36.0),
-                    ),
-                    title: Text(
-                      "查看大头像",
-                      style: Theme.of(context).textTheme.body1.copyWith(
-                            fontSize: suSetSp(22.0),
-                          ),
-                    ),
-                    onTap: () {
-                      Navigator.of(sheetContext).pop();
-                      navigatorState.pushNamed(
-                        Routes.OPENJMU_IMAGE_VIEWER,
-                        arguments: {
-                          "index": 0,
-                          "pics": [
-                            ImageBean(
-                              id: widget.uid,
-                              imageUrl: "${API.userAvatar}?uid=${widget.uid}&size=f640",
-                            ),
-                          ],
-                          "heroPrefix": "user-page-avatar-",
-                        },
-                      );
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(
-                      Icons.photo_library,
-                      color: Theme.of(context).iconTheme.color,
-                      size: suSetWidth(36.0),
-                    ),
-                    title: Text(
-                      "更换头像",
-                      style: Theme.of(context).textTheme.body1.copyWith(
-                            fontSize: suSetSp(22.0),
-                          ),
-                    ),
-                    onTap: () async {
-                      Navigator.of(sheetContext).pop();
-                      navigatorState.pushNamed(Routes.OPENJMU_IMAGE_CROP).then((result) {
-                        if (result != null && result) {
-                          Instances.eventBus.fire(AvatarUpdatedEvent());
-                        }
-                      });
-                    },
-                  ),
-                  SizedBox(height: Screens.bottomSafeHeight),
-                ],
-              );
-            },
-          )
+        ? avatarExtraActions(context)
         : navigatorState.pushNamed(
             Routes.OPENJMU_IMAGE_VIEWER,
             arguments: {

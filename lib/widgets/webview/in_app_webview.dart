@@ -51,7 +51,6 @@ class InAppBrowserPage extends StatefulWidget {
 class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepAliveClientMixin {
   InAppWebViewController _webViewController;
   String title = '', url = 'about:blank';
-  double progress = 0;
 
   String get urlDomain => url?.split('//')[1]?.split('/')[0];
 
@@ -118,13 +117,13 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
       context: context,
       builder: (_) => ConfirmationDialog(
         title: '跳转外部应用',
-        content: Text.rich(
+        child: Text.rich(
           TextSpan(
             children: <InlineSpan>[
               TextSpan(text: '即将打开应用\n'),
               TextSpan(
                 text: '$applicationLabel',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -255,45 +254,38 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
         child: Container(
           height: Screens.topSafeHeight + suSetHeight(kAppBarHeight),
           child: SafeArea(
-            child: Column(
+            child: Row(
               children: <Widget>[
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(Icons.close),
+                  onPressed: Navigator.of(context).pop,
+                ),
                 Expanded(
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        icon: Icon(Icons.close),
-                        onPressed: Navigator.of(context).pop,
-                      ),
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            if (widget.app != null) AppIcon(app: widget.app, size: 60.0),
-                            Flexible(
-                              child: Text(
-                                title,
-                                style: TextStyle(
-                                  color: Theme.of(context).textTheme.title.color,
-                                  fontSize: suSetSp(22.0),
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ],
+                      if (widget.app != null) AppIcon(app: widget.app, size: 60.0),
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            color: Theme.of(context).textTheme.title.color,
+                            fontSize: suSetSp(22.0),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        icon: Icon(Icons.more_horiz),
-                        onPressed: () => showMore(context),
                       ),
                     ],
                   ),
                 ),
-                progressBar,
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(Icons.more_horiz),
+                  onPressed: () => showMore(context),
+                ),
               ],
             ),
           ),
@@ -308,14 +300,6 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             height: 24.0,
             child: PlatformProgressIndicator(strokeWidth: 3.0),
           ),
-        ),
-      );
-
-  Widget get progressBar => SizedBox(
-        height: suSetHeight(2.0),
-        child: LinearProgressIndicator(
-          backgroundColor: Theme.of(context).primaryColor,
-          value: progress,
         ),
       );
 
@@ -419,10 +403,6 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             }
           }
           if (this.mounted) setState(() {});
-          Future.delayed(500.milliseconds, () {
-            this.progress = 0.0;
-            if (this.mounted) setState(() {});
-          });
         },
         onConsoleMessage: (InAppWebViewController controller, ConsoleMessage consoleMessage) {
           _webViewController = controller;
@@ -437,12 +417,6 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
 
           debugPrint("WebView started download from: $url");
           NetUtils.download(url);
-        },
-        onProgressChanged: (InAppWebViewController controller, int progress) {
-          _webViewController = controller;
-
-          this.progress = progress / 100;
-          if (this.mounted) setState(() {});
         },
         onWebViewCreated: (InAppWebViewController controller) {
           _webViewController = controller;

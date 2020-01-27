@@ -20,10 +20,18 @@ class UserAPI {
     return NetUtils.post(API.login, data: params);
   }
 
-  static Future logout() async {
-    NetUtils.postWithCookieSet(API.logout).then((response) {
-      Instances.eventBus.fire(LogoutEvent());
-    });
+  static void logout(context) async {
+    final confirm = await ConfirmationBottomSheet.show(
+      context,
+      title: '退出登录',
+      showConfirm: true,
+      content: '是否确认退出登录?',
+    );
+    if (confirm) {
+      NetUtils.postWithCookieSet(API.logout).then((response) {
+        Instances.eventBus.fire(LogoutEvent());
+      });
+    }
   }
 
   static UserTag createUserTag(tagData) => UserTag(

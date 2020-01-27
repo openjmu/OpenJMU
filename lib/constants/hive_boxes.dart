@@ -2,7 +2,7 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2019-12-01 19:34
 ///
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -42,17 +42,25 @@ class HiveBoxes {
     settingsBox = await Hive.openBox<dynamic>('openjmu_app_settings');
   }
 
-  static Future clearBoxes() async {
-    debugPrint('Clearing Hive Boxes...');
-    await appMessagesBox?.clear();
-    await coursesBox?.clear();
-    await courseRemarkBox?.clear();
-    await personalMessagesBox?.clear();
-    await reportRecordBox?.clear();
-    await scoresBox?.clear();
-    await settingsBox?.clear();
-    await startWeekBox?.clear();
-    showCenterToast("Boxes all cleared.");
+  static void clearBoxes(context) async {
+    final confirm = await ConfirmationBottomSheet.show(
+      context,
+      title: '清除数据',
+      showConfirm: true,
+      content: '清除数据会将您的所有应用信息及设置清除。\n确定继续吗？',
+    );
+    if (confirm) {
+      debugPrint('Clearing Hive Boxes...');
+      await appMessagesBox?.clear();
+      await coursesBox?.clear();
+      await courseRemarkBox?.clear();
+      await personalMessagesBox?.clear();
+      await reportRecordBox?.clear();
+      await scoresBox?.clear();
+      await settingsBox?.clear();
+      await startWeekBox?.clear();
+      showCenterToast("Boxes all cleared.");
+    }
   }
 }
 

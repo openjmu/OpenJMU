@@ -187,8 +187,13 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
             return Hero(
               tag: tag,
               child: result,
-              flightShuttleBuilder: (_, __, HeroFlightDirection flightDirection,
-                  BuildContext fromHeroContext, BuildContext toHeroContext) {
+              flightShuttleBuilder: (
+                _,
+                __,
+                HeroFlightDirection flightDirection,
+                BuildContext fromHeroContext,
+                BuildContext toHeroContext,
+              ) {
                 final Hero hero = flightDirection == HeroFlightDirection.pop
                     ? fromHeroContext.widget
                     : toHeroContext.widget;

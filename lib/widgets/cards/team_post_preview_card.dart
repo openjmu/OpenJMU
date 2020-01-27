@@ -66,151 +66,117 @@ class TeamPostPreviewCard extends StatelessWidget {
 
   Widget _postActionListTile(
     context, {
-    IconData icon,
-    String text,
-    GestureTapCallback onTap,
+    @required IconData icon,
+    @required String text,
+    @required GestureTapCallback onTap,
   }) =>
-      Padding(
-        padding: EdgeInsets.symmetric(vertical: suSetHeight(16.0)),
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
+      GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: suSetHeight(24.0)),
           child: Row(
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
-                child: Icon(
-                  icon,
-                  color: Theme.of(context).iconTheme.color,
-                  size: suSetWidth(36.0),
-                ),
+                child: Icon(icon, size: suSetWidth(36.0)),
               ),
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
                   child: Text(
                     text,
-                    style: Theme.of(context).textTheme.body1.copyWith(
-                          fontSize: suSetSp(22.0),
-                        ),
+                    style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
                   ),
                 ),
               ),
             ],
           ),
-          onTap: onTap,
         ),
       );
 
-  void confirmAction(context) {
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      builder: (_) {
-        return Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: suSetSp(6.0),
-            horizontal: suSetSp(16.0),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              _postActionListTile(
-                context,
-                icon: Icons.visibility_off,
-                text: "屏蔽此人",
-                onTap: () => confirmBlock(context),
-              ),
-              _postActionListTile(
-                context,
-                icon: Icons.report,
-                text: "举报动态",
-                onTap: () => confirmReport(context),
-              ),
-              SizedBox(height: Screens.bottomSafeHeight),
-            ],
-          ),
-        );
+  List<Widget> postExtraActionsBuilder(
+    context, {
+    @required List<IconData> icons,
+    @required List<String> texts,
+    @required List<GestureTapCallback> onTaps,
+  }) {
+    assert(
+      icons?.length == texts?.length &&
+          icons?.length == onTaps?.length &&
+          texts?.length == onTaps?.length,
+      'items length must be equal.',
+    );
+    return List<Widget>.generate(
+      texts.length * 2 - 1,
+      (i) {
+        if (i.isEven) {
+          final index = i ~/ 2;
+          return _postActionListTile(
+            context,
+            icon: icons.elementAt(index),
+            text: texts.elementAt(index),
+            onTap: onTaps.elementAt(index),
+          );
+        } else {
+          return Container(
+            margin: EdgeInsets.only(left: suSetWidth(64.0)),
+            child: Divider(
+              color: Theme.of(context).canvasColor,
+              height: suSetHeight(1.0),
+              thickness: suSetHeight(1.0),
+            ),
+          );
+        }
       },
     );
   }
 
-  void confirmBlock(context) {
-    final post = Provider.of<TeamPostProvider>(context).post;
-    showCupertinoDialog<bool>(
-      context: context,
-      builder: (_) => CupertinoAlertDialog(
-        title: Text(
-          "屏蔽此人",
-        ),
-        content: Text(
-          "确定屏蔽此人吗？",
-        ),
-        actions: <Widget>[
-          CupertinoDialogAction(
-            child: Text("确认"),
-            isDefaultAction: false,
-            onPressed: () {
-              UserAPI.fAddToBlacklist(
-                uid: post.uid,
-                name: post.nickname,
-              );
-            },
-            textStyle: TextStyle(color: currentThemeColor),
-          ),
-          CupertinoDialogAction(
-            child: Text("取消"),
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            textStyle: TextStyle(color: currentThemeColor),
-          ),
-        ],
+  void confirmAction(context) {
+    ConfirmationBottomSheet.show(
+      context,
+      children: postExtraActionsBuilder(
+        context,
+        icons: <IconData>[Icons.visibility_off, Icons.report],
+        texts: <String>['屏蔽此人', '举报动态'],
+        onTaps: <GestureTapCallback>[() => confirmBlock(context), () => confirmReport(context)],
       ),
     );
   }
 
-  void confirmReport(context) {
-    final post = Provider.of<TeamPostProvider>(context).post;
-    showCupertinoDialog<bool>(
-      context: context,
-      builder: (context) => CupertinoAlertDialog(
-        title: Text(
-          "举报动态",
-        ),
-        content: Text(
-          "确定举报该条动态吗？",
-        ),
-        actions: <Widget>[
-          CupertinoDialogAction(
-            child: Text("确认"),
-            isDefaultAction: false,
-            onPressed: () {
-              TeamPostAPI.reportPost(post);
-              showToast("举报成功");
-              Navigator.pop(context);
-              navigatorState.pop();
-            },
-            textStyle: TextStyle(color: currentThemeColor),
-          ),
-          CupertinoDialogAction(
-            child: Text("取消"),
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            textStyle: TextStyle(color: currentThemeColor),
-          ),
-        ],
-      ),
+  void confirmBlock(context) async {
+    final provider = Provider.of<TeamPostProvider>(context, listen: false);
+    final post = provider.post;
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '屏蔽此人',
+      content: '确定屏蔽此人吗?',
+      showConfirm: true,
     );
+    if (confirm) {
+      UserAPI.fAddToBlacklist(uid: post.uid, name: post.nickname);
+    }
+  }
+
+  void confirmReport(context) async {
+    final provider = Provider.of<TeamPostProvider>(context, listen: false);
+    final post = provider.post;
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '举报动态',
+      content: '确定举报该条动态吗?',
+      showConfirm: true,
+    );
+    if (confirm) {
+      TeamPostAPI.reportPost(post);
+      showToast("举报成功");
+      navigatorState.pop();
+    }
   }
 
   Widget _header(context, TeamPost post) => Container(
         height: suSetHeight(70.0),
-        padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(6.0),
-        ),
+        padding: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
         child: Row(
           children: <Widget>[
             UserAPI.getAvatar(uid: post.uid),

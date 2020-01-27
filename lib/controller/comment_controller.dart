@@ -7,11 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:extended_list/extended_list.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/cards/comment_card.dart';
-import 'package:openjmu/widgets/dialogs/delete_dialog.dart';
 
 class CommentController {
   final String commentType;
@@ -417,6 +415,32 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
     return commentText;
   }
 
+  void confirmDelete(context, Comment comment) async {
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '删除评论',
+      content: '是否确认删除这条评论?',
+    );
+    if (confirm) {
+      final _loadingDialogController = LoadingDialogController();
+      showDialog(
+        context: context,
+        builder: (BuildContext dialogContext) => LoadingDialog(
+          text: '正在删除评论',
+          controller: _loadingDialogController,
+          isGlobal: false,
+        ),
+      );
+      CommentAPI.deleteComment(comment.post.id, comment.id).then((response) {
+        _loadingDialogController.changeState('success', '评论删除成功');
+        Instances.eventBus.fire(PostCommentDeletedEvent(comment.post.id));
+      }).catchError((e) {
+        debugPrint(e.toString());
+        _loadingDialogController.changeState('failed', '评论删除失败');
+      });
+    }
+  }
+
   void showActions(int index) {
     showDialog<Null>(
       context: context,
@@ -430,15 +454,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
                   widget.post.uid == UserAPI.currentUser.uid)
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    showPlatformDialog(
-                      context: context,
-                      builder: (_) => DeleteDialog(
-                        "评论",
-                        comment: _comments[index],
-                      ),
-                    );
-                  },
+                  onTap: () => confirmDelete(context, _comments[index]),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
@@ -452,10 +468,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
                       ),
                       Text(
                         "删除评论",
-                        style: TextStyle(
-                          fontSize: suSetSp(19.0),
-                          color: Colors.white,
-                        ),
+                        style: TextStyle(fontSize: suSetSp(19.0), color: Colors.white),
                       ),
                     ],
                   ),

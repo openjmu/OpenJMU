@@ -2,11 +2,9 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:extended_text/extended_text.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/dialogs/delete_dialog.dart';
 
 class CommentCard extends StatelessWidget {
   final Comment comment;
@@ -184,6 +182,33 @@ class CommentCard extends StatelessWidget {
     );
   }
 
+  void confirmDelete(context) async {
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '删除评论',
+      content: '是否确认删除这条评论?',
+      showConfirm: true,
+    );
+    if (confirm) {
+      final _loadingDialogController = LoadingDialogController();
+      showDialog(
+        context: context,
+        builder: (BuildContext dialogContext) => LoadingDialog(
+          text: '正在删除评论',
+          controller: _loadingDialogController,
+          isGlobal: false,
+        ),
+      );
+      CommentAPI.deleteComment(comment.post.id, comment.id).then((response) {
+        _loadingDialogController.changeState('success', '评论删除成功');
+        Instances.eventBus.fire(PostCommentDeletedEvent(comment.post.id));
+      }).catchError((e) {
+        debugPrint(e.toString());
+        _loadingDialogController.changeState('failed', '评论删除失败');
+      });
+    }
+  }
+
   Widget dialog(context) {
     if (comment.post != null) {
       return SimpleDialog(
@@ -196,15 +221,7 @@ class CommentCard extends StatelessWidget {
                   comment.post.uid == UserAPI.currentUser.uid)
                 GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  onTap: () {
-                    if (comment.fromUserUid == UserAPI.currentUser.uid ||
-                        comment.post.uid == UserAPI.currentUser.uid) {
-                      showPlatformDialog(
-                        context: context,
-                        builder: (_) => DeleteDialog("评论", comment: comment),
-                      );
-                    }
-                  },
+                  onTap: () => confirmDelete(context),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[

@@ -73,7 +73,7 @@ class PostAPI {
     return NetUtils.postWithCookieAndHeaderSet(
       API.postGlance,
       data: {
-        "tids": [postId]
+        'tids': [postId]
       },
     ).catchError((e) {
       debugPrint("${e.toString()}");

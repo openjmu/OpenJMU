@@ -4,7 +4,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:extended_image/extended_image.dart';
@@ -13,7 +12,6 @@ import 'package:like_button/like_button.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/controller/extended_typed_network_image_provider.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
-import 'package:openjmu/widgets/dialogs/delete_dialog.dart';
 
 class PostCard extends StatefulWidget {
   final Post post;
@@ -38,14 +36,15 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
-  final TextStyle subtitleStyle = TextStyle(color: Colors.grey, fontSize: suSetSp(18.0));
-  final TextStyle rootTopicTextStyle = TextStyle(fontSize: suSetSp(18.0));
-  final TextStyle rootTopicMentionStyle = TextStyle(color: Colors.blue, fontSize: suSetSp(18.0));
   final Color actionIconColorDark = Color(0xff757575);
   final Color actionIconColorLight = Color(0xffE0E0E0);
   final Color actionTextColorDark = Color(0xff9E9E9E);
   final Color actionTextColorLight = Color(0xffBDBDBD);
   final double contentPadding = 22.0;
+
+  TextStyle get subtitleStyle => TextStyle(color: Colors.grey, fontSize: suSetSp(18.0));
+  TextStyle get rootTopicTextStyle => TextStyle(fontSize: suSetSp(18.0));
+  TextStyle get rootTopicMentionStyle => TextStyle(color: Colors.blue, fontSize: suSetSp(18.0));
 
   @override
   void initState() {
@@ -66,11 +65,6 @@ class _PostCardState extends State<PostCard> {
         if (this.mounted) setState(() {});
       });
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   Widget getPostNickname(context, post) => Row(
@@ -525,44 +519,57 @@ class _PostCardState extends State<PostCard> {
 
   Widget get deleteButton => IconButton(
         icon: Icon(Icons.delete_outline, color: Colors.grey, size: suSetWidth(24.0)),
-        onPressed: confirmDelete,
+        onPressed: () => confirmDelete(context),
       );
 
   Widget get postActionButton => IconButton(
         icon: Icon(Icons.expand_more, color: Colors.grey, size: suSetWidth(30.0)),
-        onPressed: postExtraActions,
+        onPressed: () => postExtraActions(context),
       );
 
-  void confirmDelete() {
-    showPlatformDialog(
-      context: context,
-      builder: (_) => DeleteDialog(
-        "动态",
-        post: widget.post,
-        fromPage: widget.fromPage,
-        index: widget.index,
-      ),
+  void confirmDelete(context) async {
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '删除动态',
+      content: '是否确认删除这条动态?',
+      showConfirm: true,
     );
+    if (confirm) {
+      final _loadingDialogController = LoadingDialogController();
+      showDialog(
+        context: context,
+        builder: (BuildContext dialogContext) => LoadingDialog(
+          text: '正在删除动态',
+          controller: _loadingDialogController,
+          isGlobal: false,
+        ),
+      );
+      PostAPI.deletePost(widget.post.id).then((response) {
+        _loadingDialogController.changeState('success', '动态删除成功');
+        Instances.eventBus.fire(PostDeletedEvent(widget.post.id, widget.fromPage, widget.index));
+      }).catchError((e) {
+        debugPrint(e.toString());
+        debugPrint(e.response?.toString());
+        _loadingDialogController.changeState('failed', '动态删除失败');
+      });
+    }
   }
 
   Widget _postActionListTile({
-    IconData icon,
-    String text,
-    GestureTapCallback onTap,
+    @required IconData icon,
+    @required String text,
+    @required GestureTapCallback onTap,
   }) =>
-      Padding(
-        padding: EdgeInsets.symmetric(vertical: suSetHeight(16.0)),
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
+      GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: suSetHeight(24.0)),
           child: Row(
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
-                child: Icon(
-                  icon,
-                  color: Theme.of(context).iconTheme.color,
-                  size: suSetWidth(36.0),
-                ),
+                child: Icon(icon, size: suSetWidth(36.0)),
               ),
               Expanded(
                 child: Padding(
@@ -575,131 +582,83 @@ class _PostCardState extends State<PostCard> {
               ),
             ],
           ),
-          onTap: onTap,
         ),
       );
 
-  void postExtraActions() {
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(16.0),
-            vertical: suSetHeight(6.0),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              _postActionListTile(icon: Icons.visibility_off, text: "屏蔽此人", onTap: confirmBlock),
-              _postActionListTile(icon: Icons.report, text: "举报动态", onTap: confirmReport),
-              SizedBox(height: Screens.bottomSafeHeight),
-            ],
-          ),
-        );
+  List<Widget> postExtraActionsBuilder({
+    @required List<IconData> icons,
+    @required List<String> texts,
+    @required List<GestureTapCallback> onTaps,
+  }) {
+    assert(
+      icons?.length == texts?.length &&
+          icons?.length == onTaps?.length &&
+          texts?.length == onTaps?.length,
+      'items length must be equal.',
+    );
+    return List<Widget>.generate(
+      texts.length * 2 - 1,
+      (i) {
+        if (i.isEven) {
+          final index = i ~/ 2;
+          return _postActionListTile(
+            icon: icons.elementAt(index),
+            text: texts.elementAt(index),
+            onTap: onTaps.elementAt(index),
+          );
+        } else {
+          return Container(
+            margin: EdgeInsets.only(left: suSetWidth(64.0)),
+            child: Divider(
+              color: Theme.of(context).canvasColor,
+              height: suSetHeight(1.0),
+              thickness: suSetHeight(1.0),
+            ),
+          );
+        }
       },
     );
   }
 
-  void confirmBlock() {
-    showDialog(
-      context: context,
-      builder: (context) => PlatformAlertDialog(
-        title: Text(
-          "屏蔽此人",
-          style: TextStyle(fontSize: suSetSp(26.0)),
-        ),
-        content: Text(
-          "确定屏蔽此人吗？",
-          style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
-        ),
-        actions: <Widget>[
-          PlatformButton(
-            android: (_) => MaterialRaisedButtonData(
-              color: Theme.of(context).dialogBackgroundColor,
-              elevation: 0,
-              disabledElevation: 0.0,
-              highlightElevation: 0.0,
-              child: Text("确认", style: TextStyle(color: currentThemeColor)),
-            ),
-            ios: (_) => CupertinoButtonData(
-              child: Text("确认", style: TextStyle(color: currentThemeColor)),
-            ),
-            onPressed: () {
-              UserAPI.fAddToBlacklist(uid: widget.post.uid, name: widget.post.nickname);
-              Navigator.pop(context);
-            },
-          ),
-          PlatformButton(
-            android: (_) => MaterialRaisedButtonData(
-              color: currentThemeColor,
-              elevation: 0,
-              disabledElevation: 0.0,
-              highlightElevation: 0.0,
-              child: Text('取消', style: TextStyle(color: Colors.white)),
-            ),
-            ios: (_) => CupertinoButtonData(
-              child: Text("取消", style: TextStyle(color: currentThemeColor)),
-            ),
-            onPressed: Navigator.of(context).pop,
-          ),
-        ],
+  void postExtraActions(context) {
+    ConfirmationBottomSheet.show(
+      context,
+      children: postExtraActionsBuilder(
+        icons: <IconData>[Icons.visibility_off, Icons.report],
+        texts: <String>['屏蔽此人', '举报动态'],
+        onTaps: <GestureTapCallback>[() => confirmBlock(context), () => confirmReport(context)],
       ),
     );
   }
 
-  void confirmReport() {
-    showDialog(
-      context: context,
-      builder: (context) => PlatformAlertDialog(
-        title: Text("举报动态", style: TextStyle(fontSize: suSetSp(26.0))),
-        content: Text(
-          "确定举报该条动态吗？",
-          style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
-        ),
-        actions: <Widget>[
-          Consumer<ReportRecordsProvider>(
-            builder: (_, provider, __) => PlatformButton(
-              android: (_) => MaterialRaisedButtonData(
-                color: Theme.of(context).dialogBackgroundColor,
-                elevation: 0,
-                disabledElevation: 0.0,
-                highlightElevation: 0.0,
-                child: Text("确认", style: TextStyle(color: currentThemeColor)),
-              ),
-              ios: (_) => CupertinoButtonData(
-                child: Text("确认", style: TextStyle(color: currentThemeColor)),
-              ),
-              onPressed: () async {
-                final canReport = await provider.addRecord(widget.post.id);
-                if (canReport) {
-                  PostAPI.reportPost(widget.post);
-                  showToast("举报成功");
-                  Navigator.pop(context);
-                  navigatorState.pop();
-                } else {
-                  Navigator.pop(context);
-                }
-              },
-            ),
-          ),
-          PlatformButton(
-            android: (_) => MaterialRaisedButtonData(
-              color: currentThemeColor,
-              elevation: 0,
-              disabledElevation: 0.0,
-              highlightElevation: 0.0,
-              child: Text('取消', style: TextStyle(color: Colors.white)),
-            ),
-            ios: (_) => CupertinoButtonData(
-              child: Text("取消", style: TextStyle(color: currentThemeColor)),
-            ),
-            onPressed: Navigator.of(context).pop,
-          ),
-        ],
-      ),
+  void confirmBlock(context) async {
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '屏蔽此人',
+      content: '确定屏蔽此人吗',
+      showConfirm: true,
     );
+    if (confirm) {
+      UserAPI.fAddToBlacklist(uid: widget.post.uid, name: widget.post.nickname);
+    }
+  }
+
+  void confirmReport(context) async {
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '举报动态',
+      content: '确定举报该条动态吗?',
+      showConfirm: true,
+    );
+    if (confirm) {
+      final provider = Provider.of<ReportRecordsProvider>(context, listen: false);
+      final canReport = await provider.addRecord(widget.post.id);
+      if (canReport) {
+        PostAPI.reportPost(widget.post);
+        showToast("举报成功");
+        navigatorState.pop();
+      }
+    }
   }
 
   void pushToDetail() {
