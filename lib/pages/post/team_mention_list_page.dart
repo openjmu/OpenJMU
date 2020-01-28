@@ -53,7 +53,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
         ),
         child: Row(
           children: <Widget>[
-            UserAPI.getAvatar(uid: item.fromUserId),
+            UserAPI.getAvatar(size: 54.0, uid: item.fromUserId),
             SizedBox(width: suSetWidth(16.0)),
             Expanded(
               child: Column(
@@ -64,10 +64,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                     children: <Widget>[
                       Text(
                         item.fromUsername ?? item.fromUserId.toString(),
-                        style: TextStyle(
-                          fontSize: suSetSp(19.0),
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(fontSize: suSetSp(22.0)),
                       ),
                       if (Constants.developerList.contains(item.fromUserId))
                         Container(
@@ -88,10 +85,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                   ),
                   Text(
                     mentionedList[index].scope['name'],
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontSize: suSetSp(15.0),
-                    ),
+                    style: TextStyle(color: Colors.blue, fontSize: suSetSp(17.0)),
                   ),
                 ],
               ),
@@ -114,21 +108,17 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
     return Text(
       "$time",
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(16.0),
+            fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
           ),
     );
   }
 
   Widget _content(TeamMentionItem item) => Padding(
-        padding: EdgeInsets.only(
-          bottom: suSetHeight(10.0),
-        ),
+        padding: EdgeInsets.only(bottom: suSetHeight(10.0)),
         child: ExtendedText(
           item.post?.content ?? item.comment?.content ?? "",
-          style: TextStyle(
-            fontSize: suSetSp(18.0),
-          ),
+          style: TextStyle(fontSize: suSetSp(21.0)),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
           overFlowTextSpan: OverFlowTextSpan(
@@ -138,7 +128,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                 text: "全文",
                 style: TextStyle(
                   color: currentThemeColor,
-                  fontSize: suSetSp(18.0),
+                  fontSize: suSetSp(21.0),
                 ),
               ),
             ],

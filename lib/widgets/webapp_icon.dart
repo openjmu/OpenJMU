@@ -5,11 +5,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-class AppIcon extends StatelessWidget {
+class WebAppIcon extends StatelessWidget {
   final WebApp app;
   final double size;
 
-  const AppIcon({
+  const WebAppIcon({
     Key key,
     @required this.app,
     this.size = 60.0,
@@ -18,13 +18,9 @@ class AppIcon extends StatelessWidget {
   Future<Widget> loadAsset() async {
     try {
       final _ = await rootBundle.load(iconPath);
-      return SvgPicture.asset(
-        iconPath,
-        width: suSetWidth(size),
-        height: suSetWidth(size),
-      );
+      return SvgPicture.asset(iconPath, width: suSetWidth(size), height: suSetWidth(size));
     } catch (e) {
-      debugPrint("$e");
+      debugPrint('Error when load webapp icon: $e.\nLoading fallback icon...');
       return ExtendedImage.network(
         oldIconUrl,
         width: suSetWidth(size),
@@ -34,9 +30,9 @@ class AppIcon extends StatelessWidget {
     }
   }
 
-  String get iconPath => "assets/icons/appCenter/${app.code}-${app.name}.svg";
+  String get iconPath => 'assets/icons/appCenter/${app.code}-${app.name}.svg';
 
-  String get oldIconUrl => "${API.webAppIcons}appid=${app.id}&code=${app.code}";
+  String get oldIconUrl => '${API.webAppIcons}appid=${app.appId}&code=${app.code}';
 
   @override
   Widget build(BuildContext context) {
@@ -56,9 +52,7 @@ class AppIcon extends StatelessWidget {
             : SizedBox(
                 width: suSetWidth(size / 1.2),
                 height: suSetHeight(size / 1.2),
-                child: Center(
-                  child: ExtendedImage.network(oldIconUrl, fit: BoxFit.fill),
-                ),
+                child: Center(child: ExtendedImage.network(oldIconUrl, fit: BoxFit.fill)),
               );
       },
     );

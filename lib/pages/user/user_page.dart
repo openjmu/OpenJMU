@@ -630,7 +630,7 @@ class _UserPageState extends State<UserPage>
                 "pics": [
                   ImageBean(
                     id: widget.uid,
-                    imageUrl: "${API.userAvatar}?uid=${widget.uid}&size=f640",
+                    imageUrl: '${API.userAvatar}?uid=${widget.uid}&size=f640',
                   ),
                 ],
                 "heroPrefix": "user-page-avatar-",
@@ -660,7 +660,7 @@ class _UserPageState extends State<UserPage>
               "pics": [
                 ImageBean(
                   id: widget.uid,
-                  imageUrl: API.userAvatar + "?uid=${widget.uid}&size=f640",
+                  imageUrl: '${API.userAvatar}?uid=${widget.uid}&size=f640',
                 ),
               ],
               "needsClear": true,
@@ -725,9 +725,8 @@ class _UserPageState extends State<UserPage>
                                   curve: Curves.ease,
                                 );
                                 Future.delayed(Duration(milliseconds: 300), () {
-                                  setState(() {
-                                    refreshing = true;
-                                  });
+                                  refreshing = true;
+                                  if (mounted) setState(() {});
                                   postController.reload();
                                   _fetchUserInformation(widget.uid);
                                 });
@@ -742,22 +741,18 @@ class _UserPageState extends State<UserPage>
                           width: double.infinity,
                           child: Image(
                             image: UserAPI.getAvatarProvider(uid: widget.uid),
-                            fit: BoxFit.fitWidth,
                             width: MediaQuery.of(context).size.width,
+                            fit: BoxFit.fitWidth,
                           ),
                         ),
                         BackdropFilter(
                           filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                          child: Container(
-                            color: Color.fromARGB(120, 50, 50, 50),
-                          ),
+                          child: Container(color: Color.fromARGB(120, 50, 50, 50)),
                         ),
                         SafeArea(
                           top: true,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: suSetWidth(20.0),
-                            ),
+                            padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
                             child: Column(
                               children: <Widget>[
                                 emptyDivider(height: kToolbarHeight + 4.0),
@@ -767,9 +762,7 @@ class _UserPageState extends State<UserPage>
                                   itemCount: flexSpaceWidgets(context).length,
                                   itemBuilder: (BuildContext context, int index) {
                                     return Padding(
-                                      padding: EdgeInsets.only(
-                                        bottom: suSetHeight(12.0),
-                                      ),
+                                      padding: EdgeInsets.only(bottom: suSetHeight(12.0)),
                                       child: flexSpaceWidgets(context)[index],
                                     );
                                   },
@@ -809,9 +802,10 @@ class _UserPageState extends State<UserPage>
                                       fontSize: suSetSp(20.0),
                                       fontWeight: FontWeight.normal,
                                     ),
-                                    tabs: <Widget>[
-                                      for (String _tabLabel in _tabList) Tab(text: _tabLabel)
-                                    ],
+                                    tabs: List<Tab>.generate(
+                                      _tabList.length,
+                                      (i) => Tab(text: _tabList.elementAt(i)),
+                                    ),
                                   ),
                                 )
                               ],
@@ -822,9 +816,7 @@ class _UserPageState extends State<UserPage>
                       : null,
                   expandedHeight: kToolbarHeight + expandedHeight,
                   iconTheme: !showTitle
-                      ? Theme.of(context).iconTheme.copyWith(
-                            color: Colors.white,
-                          )
+                      ? Theme.of(context).iconTheme.copyWith(color: Colors.white)
                       : Theme.of(context).iconTheme,
                   primary: true,
                   centerTitle: true,
@@ -836,20 +828,18 @@ class _UserPageState extends State<UserPage>
                       controller: _tabController,
                       children: <Widget>[
                         _post,
-                        UserAPI.blacklist.length > 0
+                        UserAPI.blacklist.isNotEmpty
                             ? GridView.count(
                                 crossAxisCount: 3,
-                                children: <Widget>[
-                                  for (int i = 0; i < UserAPI.blacklist.length; i++)
-                                    blacklistUser(UserAPI.blacklist[i]),
-                                ],
+                                children: List<Widget>.generate(
+                                  UserAPI.blacklist.length,
+                                  (i) => blacklistUser(UserAPI.blacklist[i]),
+                                ),
                               )
                             : Center(
                                 child: Text(
                                   "黑名单为空",
-                                  style: TextStyle(
-                                    fontSize: suSetSp(20.0),
-                                  ),
+                                  style: TextStyle(fontSize: suSetSp(20.0)),
                                 ),
                               ),
                       ],
@@ -1058,9 +1048,7 @@ class _UserListState extends State<UserListPage> {
           FixedAppBar(
             title: Text(
               "$_type列表",
-              style: Theme.of(context).textTheme.title.copyWith(
-                    fontSize: suSetSp(23.0),
-                  ),
+              style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
             ),
           ),
           Expanded(

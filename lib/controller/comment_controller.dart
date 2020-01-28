@@ -206,9 +206,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
     if (!_showLoading) {
       if (_firstLoadComplete) {
         _itemList = ExtendedListView.builder(
-          padding: EdgeInsets.symmetric(
-            vertical: suSetHeight(4.0),
-          ),
+          padding: EdgeInsets.zero,
           controller: widget._commentController.commentType == "mention" ? null : _scrollController,
           itemCount: _commentList.length + 1,
           itemBuilder: (context, index) {

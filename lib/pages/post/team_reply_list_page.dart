@@ -64,10 +64,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                   children: <Widget>[
                     Text(
                       item.fromUsername ?? item.fromUserId.toString(),
-                      style: TextStyle(
-                        fontSize: suSetSp(22.0),
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontSize: suSetSp(22.0)),
                     ),
                     if (Constants.developerList.contains(item.fromUserId))
                       Container(

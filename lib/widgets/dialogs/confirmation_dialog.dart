@@ -104,9 +104,7 @@ class ConfirmationDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(suSetWidth(10.0)),
         ),
         color: currentThemeColor.withOpacity(0.8),
-        onPressed: () {
-          Navigator.of(context).pop(false);
-        },
+        onPressed: () => Navigator.of(context).pop(false),
         child: Text(
           cancelLabel,
           style: TextStyle(
@@ -128,39 +126,42 @@ class ConfirmationDialog extends StatelessWidget {
         return false;
       },
       child: Center(
-        child: Container(
-          constraints: BoxConstraints(
-            minWidth: Screens.width / 5,
-            maxWidth: Screens.width / 1.5,
-            maxHeight: Screens.height / 2,
-          ),
-          padding: EdgeInsets.all(suSetWidth(30.0)),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(suSetWidth(24.0)),
-            color: Theme.of(context).primaryColor,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              if (title != null) titleWidget(context),
-              Padding(
-                padding: contentPadding ?? EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
-                child: child != null
-                    ? child
-                    : Text(
-                        '$content',
-                        style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.normal),
-                        textAlign: TextAlign.center,
-                      ),
-              ),
-              Row(
-                children: <Widget>[
-                  if (showConfirm) confirmButton(context),
-                  if (showConfirm) Spacer(flex: 1),
-                  cancelButton(context),
-                ],
-              ),
-            ],
+        child: Material(
+          type: MaterialType.transparency,
+          child: Container(
+            constraints: BoxConstraints(
+              minWidth: Screens.width / 5,
+              maxWidth: Screens.width / 1.5,
+              maxHeight: Screens.height / 2,
+            ),
+            padding: EdgeInsets.all(suSetWidth(30.0)),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(suSetWidth(24.0)),
+              color: Theme.of(context).primaryColor,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                if (title != null) titleWidget(context),
+                Padding(
+                  padding: contentPadding ?? EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+                  child: child != null
+                      ? child
+                      : Text(
+                          '$content',
+                          style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.normal),
+                          textAlign: TextAlign.center,
+                        ),
+                ),
+                Row(
+                  children: <Widget>[
+                    if (showConfirm) confirmButton(context),
+                    if (showConfirm) Spacer(flex: 1),
+                    cancelButton(context),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

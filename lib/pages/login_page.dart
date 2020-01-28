@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -28,13 +27,11 @@ class LoginPage extends StatefulWidget {
 class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _formScrollController = ScrollController();
-  final _usernameController = TextEditingController(
-    text: DataUtils.recoverWorkId(),
-  );
+  final _usernameController = TextEditingController(text: DataUtils.recoverWorkId());
   final _passwordController = TextEditingController();
-  final colorGradient = const <Color>[Color(0xffff8976), Color(0xffff3c33)];
+  final colorGradient = <Color>[Color(0xffff8976), Color(0xffff3c33)];
 
-  String _username = DataUtils.recoverWorkId() ?? "", _password = "";
+  String _username = DataUtils.recoverWorkId() ?? '', _password = '';
 
   bool _agreement = false;
   bool _login = false;
@@ -45,50 +42,52 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 
   bool get loginButtonEnable => !(_login || _loginDisabled);
 
-  Color _defaultIconColor = Colors.grey;
-
   @override
   void initState() {
-    _usernameController
-      ..addListener(() {
-        _username = _usernameController.text;
-        if (this.mounted) {
-          if (_usernameController.text.length > 0 && !_usernameCanClear) {
-            setState(() {
-              _usernameCanClear = true;
-            });
-          } else if (_usernameController.text.length == 0 && _usernameCanClear) {
-            setState(() {
-              _usernameCanClear = false;
-            });
-          }
-        }
-      });
-    _passwordController
-      ..addListener(() {
-        _password = _passwordController.text;
-      });
     super.initState();
+
+    _usernameController..addListener(usernameListener);
+    _passwordController..addListener(passwordListener);
   }
 
   @override
   void dispose() {
     _usernameController?.dispose();
     _passwordController?.dispose();
+
     super.dispose();
   }
 
   int last = 0;
-  Future<bool> doubleBackExit() {
+  Future<bool> doubleBackExit() async {
     int now = DateTime.now().millisecondsSinceEpoch;
     if (now - last > 800) {
       showToast("再按一次退出应用");
       last = DateTime.now().millisecondsSinceEpoch;
-      return Future.value(false);
+      return false;
     } else {
       dismissAllToast();
-      return Future.value(true);
+      return true;
     }
+  }
+
+  void usernameListener() {
+    _username = _usernameController.text;
+    if (this.mounted) {
+      if (_usernameController.text.length > 0 && !_usernameCanClear) {
+        setState(() {
+          _usernameCanClear = true;
+        });
+      } else if (_usernameController.text.length == 0 && _usernameCanClear) {
+        setState(() {
+          _usernameCanClear = false;
+        });
+      }
+    }
+  }
+
+  void passwordListener() {
+    _password = _passwordController.text;
   }
 
   Widget get topBackground => Positioned(
@@ -181,13 +180,10 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
           contentPadding: EdgeInsets.all(suSetWidth(12.0)),
           labelText: '工号/学号',
           labelStyle: TextStyle(
-            color: Theme.of(context).textTheme.title.color,
+            color: Theme.of(context).textTheme.body1.color,
           ),
         ),
-        style: TextStyle(
-          color: Theme.of(context).textTheme.title.color,
-          fontSize: suSetSp(22.0),
-        ),
+        style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
         strutStyle: StrutStyle(
           fontSize: suSetSp(22.0),
           height: 1.7,
@@ -214,9 +210,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         decoration: InputDecoration(
           border: InputBorder.none,
           focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(
-              color: defaultColor,
-            ),
+            borderSide: BorderSide(color: defaultColor),
           ),
           contentPadding: EdgeInsets.all(suSetWidth(12.0)),
           prefixIcon: Icon(
@@ -226,26 +220,22 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
           ),
           labelText: '密码',
           labelStyle: TextStyle(
-            color: Theme.of(context).textTheme.title.color,
+            color: Theme.of(context).textTheme.body1.color,
           ),
           suffixIcon: IconButton(
             icon: Icon(
               _isObscure ? Icons.visibility_off : Icons.visibility,
-              color: _defaultIconColor,
+              color: _isObscure ? Colors.grey : defaultColor,
               size: suSetWidth(28.0),
             ),
             onPressed: () {
               setState(() {
                 _isObscure = !_isObscure;
-                _defaultIconColor = _isObscure ? Colors.grey : defaultColor;
               });
             },
           ),
         ),
-        style: TextStyle(
-          color: Theme.of(context).textTheme.title.color,
-          fontSize: suSetSp(22.0),
-        ),
+        style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
         strutStyle: StrutStyle(
           fontSize: suSetSp(22.0),
           height: 1.7,
@@ -263,10 +253,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             padding: EdgeInsets.zero,
             child: Text(
               '没有账号',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: suSetSp(16.0),
-              ),
+              style: TextStyle(color: Colors.grey, fontSize: suSetSp(16.0)),
             ),
             onPressed: () {},
           ),
@@ -384,7 +371,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               boxShadow: <BoxShadow>[
                 BoxShadow(
                   blurRadius: suSetWidth(10.0),
-                  color: !_loginDisabled ? colorGradient[1].withAlpha(100) : Colors.grey[400],
+                  color: !_loginDisabled
+                      ? colorGradient[1].withAlpha(100)
+                      : Theme.of(context).dividerColor,
                   offset: Offset(0.0, suSetHeight(10.0)),
                 ),
               ],
@@ -494,52 +483,32 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   }
 
   void resetPassword() async {
-    return showPlatformDialog<Null>(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        return PlatformAlertDialog(
-          title: Text('忘记密码'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('找回密码详见'),
-                Text('网络中心主页 -> 集大通行证'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            FlatButton(
-              child: Text('返回'),
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-              },
-            ),
-            FlatButton(
-              child: Text('查看'),
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-                navigatorState.pushNamed(
-                  Routes.OPENJMU_INAPPBROWSER,
-                  arguments: {
-                    "url": "https://net.jmu.edu.cn/info/1309/2476.htm",
-                    "title": "集大通行证登录说明",
-                    "withCookie": false,
-                  },
-                );
-              },
-            ),
-          ],
-        );
-      },
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '忘记密码',
+      content: '找回密码详见\n网络中心主页 -> 集大通行证',
+      confirmLabel: '查看',
+      cancelLabel: '返回',
+      showConfirm: true,
     );
+    if (confirm) {
+      navigatorState.pushNamed(
+        Routes.OPENJMU_INAPPBROWSER,
+        arguments: {
+          "url": "https://net.jmu.edu.cn/info/1309/2476.htm",
+          "title": "集大通行证登录说明",
+          "withCookie": false,
+        },
+      );
+    }
   }
 
   void validateForm() {
-    if (_username != "" && _password != "" && _agreement && _loginDisabled) {
+    if (_username.isNotEmpty && _password.isNotEmpty && _agreement && _loginDisabled) {
       setState(() {
         _loginDisabled = false;
       });
-    } else if (_username == "" || _password == "" || !_agreement) {
+    } else if (_username.isEmpty || _password.isEmpty || !_agreement) {
       setState(() {
         _loginDisabled = true;
       });
@@ -547,7 +516,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   }
 
   void setAlignment(context) {
-    final double inputMethodHeight = MediaQuery.of(context).viewInsets.bottom;
+    final inputMethodHeight = MediaQuery.of(context).viewInsets.bottom;
     if (inputMethodHeight > 1.0 && !_keyboardAppeared) {
       setState(() {
         _keyboardAppeared = true;
@@ -563,7 +532,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   Widget build(BuildContext context) {
     setAlignment(context);
     return AnnotatedRegion(
-      value: SystemUiOverlayStyle.dark,
+      value: currentIsDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       child: WillPopScope(
         onWillPop: doubleBackExit,
         child: Scaffold(
@@ -576,7 +545,6 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               loginForm,
             ],
           ),
-          resizeToAvoidBottomInset: true,
         ),
       ),
     );

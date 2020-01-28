@@ -266,7 +266,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      if (widget.app != null) AppIcon(app: widget.app, size: 60.0),
+                      if (widget.app != null) WebAppIcon(app: widget.app, size: 60.0),
                       Flexible(
                         child: Text(
                           title,

@@ -231,7 +231,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     Widget _body;
 
     if (!_isLoading) {
-      _itemList = ExtendedListView.separated(
+      _itemList = ExtendedListView.builder(
         padding: EdgeInsets.zero,
         extendedListDelegate: ExtendedListDelegate(
           collectGarbage: (List<int> garbage) {
@@ -241,18 +241,9 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
                 final pics = element.pics;
                 if (pics != null) {
                   pics.forEach((pic) {
-                    final thumbProvider = ExtendedNetworkImageProvider(
-                      pic['image_thumb'],
-                    );
-                    final middleProvider = ExtendedNetworkImageProvider(
-                      pic['image_middle'],
-                    );
-                    final originalProvider = ExtendedNetworkImageProvider(
-                      pic['image_original'],
-                    );
-                    thumbProvider.evict();
-                    middleProvider.evict();
-                    originalProvider.evict();
+                    ExtendedNetworkImageProvider(pic['image_thumb']).evict();
+                    ExtendedNetworkImageProvider(pic['image_middle']).evict();
+                    ExtendedNetworkImageProvider(pic['image_original']).evict();
                   });
                 }
               }
@@ -260,13 +251,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
           },
         ),
         controller: widget._postController.postType == "user" ? null : _scrollController,
-        separatorBuilder: (context, index) =>
-            _postList[index].isShield && HiveFieldUtils.getEnabledHideShieldPost()
-                ? SizedBox.shrink()
-                : Divider(
-                    thickness: suSetHeight(8.0),
-                    height: suSetHeight(8.0),
-                  ),
         itemCount: _postList.length + 1,
         itemBuilder: (context, index) {
           if (index == _postList.length - 1 && _canLoadMore) _loadData();

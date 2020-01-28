@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/app_icon.dart';
+import 'package:openjmu/widgets/webapp_icon.dart';
 
 class AppCenterPage extends StatelessWidget {
   final GlobalKey refreshIndicatorKey;
@@ -16,21 +16,10 @@ class AppCenterPage extends StatelessWidget {
     this.scrollController,
   });
 
-  final webAppWidgetList = Map<String, List<Widget>>();
-
   Widget categoryListView(context, WebAppsProvider provider) {
-    final apps = provider.apps;
-    for (final app in apps) {
-      if (app.url?.isNotEmpty ?? false) {
-        if (webAppWidgetList[app.menuType] == null) {
-          webAppWidgetList[app.menuType] = [];
-        }
-        webAppWidgetList[app.menuType].add(getWebAppButton(context, app));
-      }
-    }
     final _list = <Widget>[];
     WebApp.category.forEach((name, value) {
-      _list.add(getSectionColumn(context, name));
+      _list.add(getSectionColumn(context, provider, name));
     });
     return ListView.builder(
       padding: EdgeInsets.zero,
@@ -46,7 +35,7 @@ class AppCenterPage extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          AppIcon(app: webApp, size: 90.0),
+          WebAppIcon(app: webApp, size: 90.0),
           Text(
             webApp.name,
             style: Theme.of(context).textTheme.body1.copyWith(
@@ -65,10 +54,11 @@ class AppCenterPage extends StatelessWidget {
     );
   }
 
-  Widget getSectionColumn(context, name) {
-    if (webAppWidgetList[name] != null) {
+  Widget getSectionColumn(context, WebAppsProvider provider, String name) {
+    final list = provider.appCategoriesList[name];
+    if (list.isNotEmpty) {
       return Container(
-        margin: const EdgeInsets.all(8.0),
+        margin: EdgeInsets.all(suSetWidth(12.0)),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
           color: Theme.of(context).primaryColor,
@@ -101,13 +91,12 @@ class AppCenterPage extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               padding: EdgeInsets.zero,
-              itemCount: webAppWidgetList[name].length,
+              itemCount: list.length,
               itemBuilder: (context, index) {
-                final int _rows = (webAppWidgetList[name].length / 3).ceil();
-                final bool showBottom = ((index + 1) / 3).ceil() != _rows;
-                final bool showRight = ((index + 1) / 3).ceil() != (index + 1) ~/ 3;
-                Widget _w = webAppWidgetList[name][index];
-                _w = DecoratedBox(
+                final _rows = (list.length / 3).ceil();
+                final showBottom = ((index + 1) / 3).ceil() != _rows;
+                final showRight = ((index + 1) / 3).ceil() != (index + 1) ~/ 3;
+                Widget _w = DecoratedBox(
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: showBottom
@@ -118,7 +107,7 @@ class AppCenterPage extends StatelessWidget {
                           : BorderSide.none,
                     ),
                   ),
-                  child: _w,
+                  child: getWebAppButton(context, list.elementAt(index)),
                 );
                 return _w;
               },
@@ -140,10 +129,7 @@ class AppCenterPage extends StatelessWidget {
             : RefreshIndicator(
                 key: refreshIndicatorKey,
                 child: categoryListView(context, provider),
-                onRefresh: () async {
-                  webAppWidgetList.clear();
-                  await provider.updateApps();
-                },
+                onRefresh: provider.updateApps,
               );
       },
     );

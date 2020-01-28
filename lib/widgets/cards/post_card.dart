@@ -172,11 +172,15 @@ class _PostCardState extends State<PostCard> {
             },
             child: Container(
               width: Screens.width,
+              margin: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
               padding: EdgeInsets.symmetric(
-                horizontal: suSetWidth(contentPadding),
+                horizontal: suSetWidth(contentPadding - 6.0),
                 vertical: suSetHeight(10.0),
               ),
-              decoration: BoxDecoration(color: Theme.of(context).canvasColor),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+                color: Theme.of(context).canvasColor,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -518,12 +522,20 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget get deleteButton => IconButton(
-        icon: Icon(Icons.delete_outline, color: Colors.grey, size: suSetWidth(24.0)),
+        icon: Icon(
+          Icons.delete_outline,
+          color: Theme.of(context).dividerColor,
+          size: suSetWidth(24.0),
+        ),
         onPressed: () => confirmDelete(context),
       );
 
   Widget get postActionButton => IconButton(
-        icon: Icon(Icons.expand_more, color: Colors.grey, size: suSetWidth(30.0)),
+        icon: Icon(
+          Icons.expand_more,
+          color: Theme.of(context).dividerColor,
+          size: suSetWidth(30.0),
+        ),
         onPressed: () => postExtraActions(context),
       );
 
@@ -681,10 +693,17 @@ class _PostCardState extends State<PostCard> {
         : GestureDetector(
             onTap: widget.isDetail || post.isShield ? null : pushToDetail,
             onLongPress: post.isShield ? pushToDetail : null,
-            child: Card(
-              margin: post.isShield
+            child: Container(
+              margin: post.isShield || widget.isDetail
                   ? EdgeInsets.zero
-                  : EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
+                  : EdgeInsets.symmetric(
+                      horizontal: suSetWidth(12.0),
+                      vertical: suSetHeight(6.0),
+                    ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+                color: Theme.of(context).cardColor,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -708,7 +727,6 @@ class _PostCardState extends State<PostCard> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
                                       getPostNickname(context, post),
-                                      separator(context, height: 4.0),
                                       getPostInfo(post),
                                     ],
                                   ),
@@ -744,7 +762,6 @@ class _PostCardState extends State<PostCard> {
                       ]
                     : <Widget>[getPostBanned("shield")],
               ),
-              elevation: 0,
             ),
           );
   }

@@ -62,68 +62,65 @@ class _MarketingPageState extends State<MarketingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).canvasColor,
-      body: RefreshIndicator(
-        key: _refreshIndicatorKey,
-        onRefresh: getPostList,
-        child: loaded
-            ? ExtendedListView.builder(
-                padding: EdgeInsets.zero,
-                extendedListDelegate: ExtendedListDelegate(
-                  collectGarbage: (List<int> garbage) {
-                    garbage.forEach((index) {
-                      if (posts.length >= index + 1 && index < 4) {
-                        final element = posts.elementAt(index);
-                        final pics = element.pics;
-                        if (pics != null) {
-                          pics.forEach((pic) {
-                            ExtendedNetworkImageProvider(
-                              API.teamFile(
-                                fid: int.parse(pic['fid'].toString()),
-                              ),
-                            ).evict();
-                          });
-                        }
-                      }
-                    });
-                  },
-                ),
-                controller: _scrollController,
-                itemCount: posts.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == posts.length - 1 && canLoadMore) {
-                    getPostList(more: true);
-                  }
-                  if (index == posts.length) {
-                    return SizedBox(
-                      height: suSetHeight(60.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          if (canLoadMore) PlatformProgressIndicator(),
-                          Text(
-                            canLoadMore ? "正在加载" : Constants.endLineTag,
-                            style: TextStyle(
-                              fontSize: suSetSp(15.0),
+    return RefreshIndicator(
+      key: _refreshIndicatorKey,
+      onRefresh: getPostList,
+      child: loaded
+          ? ExtendedListView.builder(
+              padding: EdgeInsets.zero,
+              extendedListDelegate: ExtendedListDelegate(
+                collectGarbage: (List<int> garbage) {
+                  garbage.forEach((index) {
+                    if (posts.length >= index + 1 && index < 4) {
+                      final element = posts.elementAt(index);
+                      final pics = element.pics;
+                      if (pics != null) {
+                        pics.forEach((pic) {
+                          ExtendedNetworkImageProvider(
+                            API.teamFile(
+                              fid: int.parse(pic['fid'].toString()),
                             ),
+                          ).evict();
+                        });
+                      }
+                    }
+                  });
+                },
+              ),
+              controller: _scrollController,
+              itemCount: posts.length + 1,
+              itemBuilder: (context, index) {
+                if (index == posts.length - 1 && canLoadMore) {
+                  getPostList(more: true);
+                }
+                if (index == posts.length) {
+                  return SizedBox(
+                    height: suSetHeight(60.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        if (canLoadMore) PlatformProgressIndicator(),
+                        Text(
+                          canLoadMore ? "正在加载" : Constants.endLineTag,
+                          style: TextStyle(
+                            fontSize: suSetSp(15.0),
                           ),
-                        ],
-                      ),
-                    );
-                  }
-                  return ChangeNotifierProvider.value(
-                    value: TeamPostProvider(
-                      posts.elementAt(index),
-                    ),
-                    child: TeamPostPreviewCard(
-                      key: ValueKey("marketPost-${posts.elementAt(index).tid}"),
+                        ),
+                      ],
                     ),
                   );
-                },
-              )
-            : Center(child: PlatformProgressIndicator()),
-      ),
+                }
+                return ChangeNotifierProvider.value(
+                  value: TeamPostProvider(
+                    posts.elementAt(index),
+                  ),
+                  child: TeamPostPreviewCard(
+                    key: ValueKey("marketPost-${posts.elementAt(index).tid}"),
+                  ),
+                );
+              },
+            )
+          : Center(child: PlatformProgressIndicator()),
     );
   }
 }

@@ -18,7 +18,7 @@ export 'package:openjmu/providers/scores_provider.dart';
 export 'package:openjmu/providers/settings_provider.dart';
 export 'package:openjmu/providers/team_post_provider.dart';
 export 'package:openjmu/providers/themes_provider.dart';
-export 'package:openjmu/providers/web_apps_provider.dart';
+export 'package:openjmu/providers/webapps_provider.dart';
 
 ChangeNotifierProvider<T> buildProvider<T extends ChangeNotifier>(T value) {
   return ChangeNotifierProvider<T>.value(value: value);

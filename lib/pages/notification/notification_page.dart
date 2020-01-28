@@ -57,10 +57,14 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
           width: suSetWidth(220.0),
           child: Consumer<NotificationProvider>(
             builder: (_, provider, __) => TabBar(
-              indicatorColor: currentThemeColor,
-              indicatorPadding: EdgeInsets.only(bottom: suSetHeight(18.0)),
-              indicatorSize: TabBarIndicatorSize.label,
-              indicatorWeight: suSetHeight(6.0),
+              indicator: RoundedUnderlineTabIndicator(
+                borderSide: BorderSide(
+                  color: currentThemeColor,
+                  width: suSetHeight(3.5),
+                ),
+                width: suSetWidth(50.0),
+                insets: EdgeInsets.only(bottom: suSetHeight(16.0)),
+              ),
               labelPadding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
               tabs: [
                 Tab(
@@ -193,11 +197,13 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).canvasColor,
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(suSetHeight(kAppBarHeight)),
         child: Container(
           padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
           height: Screens.topSafeHeight + suSetHeight(kAppBarHeight),
+          color: Theme.of(context).primaryColor,
           child: SafeArea(
             child: Row(
               children: <Widget>[
@@ -215,19 +221,20 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
         children: <Widget>[
           Column(
             children: <Widget>[
-              SizedBox(
+              Container(
                 width: MediaQuery.of(context).size.width,
-                height: suSetHeight(50.0),
+                height: suSetHeight(60.0),
+                color: Theme.of(context).primaryColor,
                 child: TabBar(
-                  indicatorColor: currentThemeColor,
-                  indicatorPadding: EdgeInsets.only(
-                    bottom: suSetHeight(6.0),
+                  indicator: RoundedUnderlineTabIndicator(
+                    borderSide: BorderSide(
+                      color: currentThemeColor,
+                      width: suSetHeight(2.5),
+                    ),
+                    width: suSetWidth(40.0),
+                    insets: EdgeInsets.only(bottom: suSetHeight(8.0)),
                   ),
-                  indicatorSize: TabBarIndicatorSize.label,
-                  indicatorWeight: suSetHeight(4.0),
-                  labelStyle: TextStyle(
-                    fontSize: suSetSp(20.0),
-                  ),
+                  labelStyle: TextStyle(fontSize: suSetSp(20.0)),
                   tabs: <Tab>[
                     Tab(text: "@我的评论"),
                     Tab(text: "@我的动态"),

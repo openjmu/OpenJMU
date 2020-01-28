@@ -55,7 +55,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
       ),
       child: Row(
         children: <Widget>[
-          UserAPI.getAvatar(uid: item.fromUserId),
+          UserAPI.getAvatar(size: 54.0, uid: item.fromUserId),
           SizedBox(width: suSetWidth(16.0)),
           Expanded(
             child: Column(
@@ -66,10 +66,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                   children: <Widget>[
                     Text(
                       item.fromUsername ?? item.fromUserId.toString(),
-                      style: TextStyle(
-                        fontSize: suSetSp(19.0),
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontSize: suSetSp(22.0)),
                     ),
                     if (Constants.developerList.contains(item.fromUserId))
                       Container(
@@ -87,10 +84,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                 ),
                 Text(
                   praiseList[index].scope['name'],
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: suSetSp(15.0),
-                  ),
+                  style: TextStyle(color: Colors.blue, fontSize: suSetSp(17.0)),
                 ),
               ],
             ),
@@ -114,34 +108,30 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
     return Text(
       "$time",
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(16.0),
+            fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
           ),
     );
   }
 
   Widget _content(TeamPraiseItem item) => Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(6.0),
-        ),
+        padding: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
         child: Text.rich(
           TextSpan(
             children: <InlineSpan>[
-              TextSpan(
-                text: "赞了我的帖子 ",
-              ),
+              TextSpan(text: "赞了我的帖子 "),
               WidgetSpan(
                 alignment: ui.PlaceholderAlignment.middle,
                 child: Icon(
                   Icons.thumb_up,
-                  size: suSetWidth(18.0),
+                  size: suSetWidth(21.0),
                   color: currentThemeColor,
                 ),
               ),
             ],
           ),
           style: TextStyle(
-            fontSize: suSetSp(18.0),
+            fontSize: suSetSp(21.0),
           ),
         ),
       );

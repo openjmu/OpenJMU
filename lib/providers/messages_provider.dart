@@ -67,7 +67,7 @@ class MessagesProvider with ChangeNotifier {
       final provider = Provider.of<WebAppsProvider>(currentContext, listen: false);
       debugPrint(provider.allApps.toString());
       debugPrint(message.toString());
-      final app = provider.allApps.where((app) => app.id == message.appId).elementAt(0);
+      final app = provider.allApps.where((app) => app.appId == message.appId).elementAt(0);
 
       if (!_appsMessages.containsKey(message.appId)) {
         _appsMessages[message.appId] = <AppMessage>[];

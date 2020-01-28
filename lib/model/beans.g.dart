@@ -188,3 +188,42 @@ class ScoreAdapter extends TypeAdapter<Score> {
       ..write(obj.creditHour);
   }
 }
+
+class WebAppAdapter extends TypeAdapter<WebApp> {
+  @override
+  final typeId = 4;
+
+  @override
+  WebApp read(BinaryReader reader) {
+    var numOfFields = reader.readByte();
+    var fields = <int, dynamic>{
+      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return WebApp(
+      appId: fields[0] as int,
+      sequence: fields[1] as int,
+      code: fields[2] as String,
+      name: fields[3] as String,
+      url: fields[4] as String,
+      menuType: fields[5] as String,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, WebApp obj) {
+    writer
+      ..writeByte(6)
+      ..writeByte(0)
+      ..write(obj.appId)
+      ..writeByte(1)
+      ..write(obj.sequence)
+      ..writeByte(2)
+      ..write(obj.code)
+      ..writeByte(3)
+      ..write(obj.name)
+      ..writeByte(4)
+      ..write(obj.url)
+      ..writeByte(5)
+      ..write(obj.menuType);
+  }
+}

@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/app_icon.dart';
+import 'package:openjmu/widgets/webapp_icon.dart';
 
 class AppMessagePreviewWidget extends StatefulWidget {
   final AppMessage message;
@@ -96,7 +96,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
 
   void updateApp() {
     final provider = Provider.of<WebAppsProvider>(currentContext, listen: false);
-    app = provider.allApps.where((app) => app.id == widget.message.appId).elementAt(0);
+    app = provider.allApps.where((app) => app.appId == widget.message.appId).elementAt(0);
   }
 
   void tryDecodeContent() {
@@ -128,7 +128,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(right: suSetSp(16.0)),
-              child: AppIcon(app: app),
+              child: WebAppIcon(app: app),
             ),
             Expanded(
               child: SizedBox(
@@ -143,7 +143,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                           height: suSetSp(30.0),
                           child: app != null
                               ? Text(
-                                  "${app.name ?? app.id}",
+                                  "${app.name ?? app.appId}",
                                   style: Theme.of(context).textTheme.body1.copyWith(
                                         fontSize: suSetSp(22.0),
                                         fontWeight: FontWeight.w500,

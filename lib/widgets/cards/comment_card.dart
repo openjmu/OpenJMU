@@ -9,25 +9,17 @@ import 'package:openjmu/constants/constants.dart';
 class CommentCard extends StatelessWidget {
   final Comment comment;
 
-  CommentCard(
+  const CommentCard(
     this.comment, {
     Key key,
   }) : super(key: key);
 
-  final TextStyle subtitleStyle = TextStyle(
-    color: Colors.grey,
-    fontSize: suSetSp(18.0),
-  );
-  final TextStyle rootTopicTextStyle = TextStyle(
-    fontSize: suSetSp(18.0),
-  );
-  final TextStyle rootTopicMentionStyle = TextStyle(
-    color: Colors.blue,
-    fontSize: suSetSp(18.0),
-  );
-  final Color subIconColor = Colors.grey;
+  TextStyle get subtitleStyle => TextStyle(color: Colors.grey, fontSize: suSetSp(18.0));
+  TextStyle get rootTopicTextStyle => TextStyle(fontSize: suSetSp(18.0));
+  TextStyle get rootTopicMentionStyle => TextStyle(color: Colors.blue, fontSize: suSetSp(18.0));
+  Color get subIconColor => Colors.grey;
 
-  Widget getCommentNickname(context, Comment comment) {
+  Widget getCommentNickname(context) {
     return Row(
       children: <Widget>[
         Text(
@@ -52,7 +44,7 @@ class CommentCard extends StatelessWidget {
     );
   }
 
-  Widget getCommentInfo(Comment comment) {
+  Widget get getCommentInfo {
     String _commentTime = comment.commentTime;
     DateTime now = DateTime.now();
     if (int.parse(_commentTime.substring(0, 4)) == now.year) {
@@ -121,12 +113,10 @@ class CommentCard extends StatelessWidget {
       topic += content;
       return Container(
         width: MediaQuery.of(context).size.width,
-        margin: EdgeInsets.only(top: suSetHeight(10.0)),
-        padding: EdgeInsets.symmetric(
-          horizontal: suSetWidth(24.0),
-          vertical: suSetHeight(10.0),
-        ),
+        margin: EdgeInsets.all(suSetWidth(16.0)),
+        padding: EdgeInsets.all(suSetWidth(10.0)),
         decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
           color: Theme.of(context).canvasColor,
         ),
         child: Column(
@@ -318,9 +308,15 @@ class CommentCard extends StatelessWidget {
         context: context,
         builder: (BuildContext context) => dialog(context),
       ),
-      child: Card(
-        margin: EdgeInsets.zero,
-        elevation: 0,
+      child: Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: suSetWidth(12.0),
+          vertical: suSetHeight(6.0),
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+          color: Theme.of(context).cardColor,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -341,9 +337,9 @@ class CommentCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          getCommentNickname(context, comment),
+                          getCommentNickname(context),
                           separator(context, height: 4.0),
-                          getCommentInfo(comment),
+                          getCommentInfo,
                         ],
                       ),
                     ),

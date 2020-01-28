@@ -100,13 +100,13 @@ class PraiseCard extends StatelessWidget {
     String topic = "<M ${_post.uid}>@${_post.nickname}<\/M>: ";
     topic += _post.content;
     return Container(
-      width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.only(top: suSetHeight(10.0)),
-      padding: EdgeInsets.symmetric(
-        horizontal: suSetWidth(24.0),
-        vertical: suSetHeight(10.0),
+      width: Screens.width,
+      margin: EdgeInsets.all(suSetWidth(16.0)),
+      padding: EdgeInsets.all(suSetWidth(10.0)),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+        color: Theme.of(context).canvasColor,
       ),
-      decoration: BoxDecoration(color: Theme.of(context).canvasColor),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -144,8 +144,15 @@ class PraiseCard extends StatelessWidget {
           arguments: {"post": _post, "parentContext": context},
         );
       },
-      child: Card(
-        margin: EdgeInsets.zero,
+      child: Container(
+        margin: EdgeInsets.symmetric(
+          horizontal: suSetWidth(12.0),
+          vertical: suSetHeight(6.0),
+        ),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+          color: Theme.of(context).cardColor,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -179,7 +186,6 @@ class PraiseCard extends StatelessWidget {
             getPraiseContent(context, praise),
           ],
         ),
-        elevation: 0,
       ),
     );
   }

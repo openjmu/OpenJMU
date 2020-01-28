@@ -32,7 +32,5 @@ part 'web_app.dart';
 
 class NoGlowScrollBehavior extends ScrollBehavior {
   @override
-  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
-    return child;
-  }
+  Widget buildViewportChrome(_, Widget child, __) => child;
 }

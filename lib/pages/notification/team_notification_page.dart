@@ -66,13 +66,15 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
       child: Consumer<NotificationProvider>(
         builder: (_, provider, __) => TabBar(
           controller: _tabController,
-          indicatorColor: currentThemeColor,
-          indicatorPadding: EdgeInsets.only(bottom: 16.0),
-          indicatorSize: TabBarIndicatorSize.label,
-          indicatorWeight: suSetHeight(7.0),
-          labelPadding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(10.0),
+          indicator: RoundedUnderlineTabIndicator(
+            borderSide: BorderSide(
+              color: currentThemeColor,
+              width: suSetHeight(3.5),
+            ),
+            width: suSetWidth(50.0),
+            insets: EdgeInsets.only(bottom: suSetHeight(16.0)),
           ),
+          labelPadding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
           tabs: [
             Tab(
               child: notification.mention != 0
@@ -80,10 +82,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
                       icon: badgeIcon(
                         showBadge: notification.mention != 0,
                         content: notification.mention,
-                        icon: Icon(
-                          actionsIcons[0],
-                          size: suSetSp(26.0),
-                        ),
+                        icon: Icon(actionsIcons[0], size: suSetSp(26.0)),
                       ),
                       onPressed: () {
                         _tabController.animateTo(0);
@@ -92,10 +91,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
                     )
                   : Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        actionsIcons[0],
-                        size: suSetSp(26.0),
-                      ),
+                      child: Icon(actionsIcons[0], size: suSetSp(26.0)),
                     ),
             ),
             Tab(
@@ -104,10 +100,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
                       icon: badgeIcon(
                         showBadge: notification.reply != 0,
                         content: notification.reply,
-                        icon: Icon(
-                          actionsIcons[1],
-                          size: suSetSp(26.0),
-                        ),
+                        icon: Icon(actionsIcons[1], size: suSetSp(26.0)),
                       ),
                       onPressed: () {
                         _tabController.animateTo(1);
@@ -116,10 +109,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
                     )
                   : Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        actionsIcons[1],
-                        size: suSetSp(26.0),
-                      ),
+                      child: Icon(actionsIcons[1], size: suSetSp(26.0)),
                     ),
             ),
             Tab(
@@ -128,10 +118,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
                       icon: badgeIcon(
                         showBadge: notification.praise != 0,
                         content: notification.praise,
-                        icon: Icon(
-                          actionsIcons[2],
-                          size: suSetSp(26.0),
-                        ),
+                        icon: Icon(actionsIcons[2], size: suSetSp(26.0)),
                       ),
                       onPressed: () {
                         _tabController.animateTo(2);
@@ -140,10 +127,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
                     )
                   : Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Icon(
-                        actionsIcons[2],
-                        size: suSetSp(26.0),
-                      ),
+                      child: Icon(actionsIcons[2], size: suSetSp(26.0)),
                     ),
             ),
           ],

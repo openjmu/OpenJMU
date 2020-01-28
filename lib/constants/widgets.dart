@@ -16,7 +16,7 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/controller/extended_typed_network_image_provider.dart';
 
 export 'package:openjmu/widgets/appbar.dart';
-export 'package:openjmu/widgets/app_icon.dart';
+export 'package:openjmu/widgets/webapp_icon.dart';
 export 'package:openjmu/widgets/custom_switch.dart';
 export 'package:openjmu/widgets/fab_bottom_appbar.dart';
 export 'package:openjmu/widgets/webview/in_app_webview.dart';

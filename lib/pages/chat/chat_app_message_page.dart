@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/appbar.dart';
-import 'package:openjmu/widgets/app_icon.dart';
+import 'package:openjmu/widgets/webapp_icon.dart';
 
 @FFRoute(
   name: "openjmu://chat-app-message-page",
@@ -55,7 +55,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    AppIcon(size: 60.0, app: widget.app),
+                    WebAppIcon(size: 60.0, app: widget.app),
                     Text(
                       widget.app.name,
                       style: Theme.of(context).textTheme.body1.copyWith(
@@ -119,7 +119,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
             Flexible(
               child: Consumer<MessagesProvider>(
                 builder: (_, provider, __) {
-                  final messages = provider.appsMessages[widget.app.id];
+                  final messages = provider.appsMessages[widget.app.appId];
                   return ListView.builder(
                     padding: EdgeInsets.zero,
                     controller: _scrollController,
@@ -213,7 +213,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
   }
 
   void judgeMessageConfirm() {
-    final messages = messagesProvider.appsMessages[widget.app.id];
+    final messages = messagesProvider.appsMessages[widget.app.appId];
     final unreadMessages = messages.where((appMessage) {
       return !appMessage.read;
     })?.toList();
