@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_qr_reader/qrcode_reader_view.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/pages/user/user_page.dart';
 
 @FFRoute(
   name: "openjmu://scan-qrcode",
@@ -27,17 +25,15 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
 
   Future onScan(context, String data) async {
     if (API.urlReg.stringMatch(data) != null) {
-      Navigator.of(context).pushReplacement(platformPageRoute(
-        context: context,
-        builder: (_) => InAppBrowserPage(url: data),
-      ));
+      Navigator.of(context).pushReplacementNamed(
+        Routes.OPENJMU_INAPPBROWSER,
+        arguments: {"url": data},
+      );
     } else if (API.schemeUserPage.stringMatch(data) != null) {
-      Navigator.of(context).pushReplacement(platformPageRoute(
-        context: context,
-        builder: (_) => UserPage(
-          uid: int.parse(data.substring(API.schemeUserPage.pattern.length - 2)),
-        ),
-      ));
+      Navigator.of(context).pushReplacementNamed(
+        Routes.OPENJMU_USER,
+        arguments: {"uid": int.parse(data.substring(API.schemeUserPage.pattern.length - 2))},
+      );
     } else {
       await showCupertinoDialog(
         context: context,
@@ -64,17 +60,13 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
         backgroundColor: Colors.transparent,
         title: Text(
           "扫描二维码",
-          style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: suSetSp(21.0),
-              ),
+          style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
         ),
         centerTitle: true,
       ),
       body: QrcodeReaderView(
         key: _key,
-        onScan: (String data) {
-          return onScan(context, data);
-        },
+        onScan: (String data) => onScan(context, data),
       ),
     );
   }

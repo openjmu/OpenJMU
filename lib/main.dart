@@ -182,9 +182,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                 child: MaterialApp(
                   navigatorKey: Instances.navigatorKey,
                   builder: (c, w) {
-                    ScreenUtil.instance = ScreenUtil.getInstance()
-                      ..allowFontScaling = true
-                      ..init(c);
+                    ScreenUtil.init(c, allowFontScaling: true);
                     return NoScaleTextWidget(child: w);
                   },
                   title: "OpenJMU",

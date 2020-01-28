@@ -38,7 +38,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
       newsId: widget.news.id,
     ))
         .data;
-    pageContent = """<!DOCTYPE html>
+    pageContent = '''<!DOCTYPE html>
                 <html>
                     <head>
                         <meta charset="UTF-8" />
@@ -47,7 +47,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                     </head>
                     <body>${data['content']}</body>
                 </html>
-            """;
+            ''';
     pageContent = Uri.dataFromString(
       pageContent,
       mimeType: 'text/html',

@@ -6,11 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_platform_widgets/flutter_platform_widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/appbar.dart';
 import 'package:openjmu/widgets/dialogs/edit_signature_dialog.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
 
@@ -51,7 +49,7 @@ class _UserPageState extends State<UserPage>
   TabController _tabController;
   PostController postController;
   ScrollController _scrollController = ScrollController();
-  double tabBarHeight = suSetHeight(46.0);
+  double get tabBarHeight => suSetHeight(54.0);
   double expandedHeight = kAppBarHeight + suSetHeight(212.0);
 
   @override
@@ -417,10 +415,7 @@ class _UserPageState extends State<UserPage>
                             ),
                             child: Text(
                               _tags[i].name,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: suSetSp(18.0),
-                              ),
+                              style: TextStyle(color: Colors.white, fontSize: suSetSp(18.0)),
                             ),
                           ),
                         ),
@@ -430,15 +425,24 @@ class _UserPageState extends State<UserPage>
               )
             : Text(
                 "${_user.gender == 2 ? "她" : "他"}还没有设置个性标签",
-                style: TextStyle(
-                  color: Colors.grey[350],
-                  fontSize: suSetSp(19.0),
-                ),
+                style: TextStyle(color: Colors.grey[350], fontSize: suSetSp(19.0)),
               ),
       ];
 
+  void removeFromBlacklist(context, Map<String, dynamic> user) async {
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '移出黑名单',
+      content: '确定不再屏蔽此人吗?',
+      showConfirm: true,
+    );
+    if (confirm) {
+      UserAPI.fRemoveFromBlacklist(uid: int.parse(user['uid']), name: user['username']);
+    }
+  }
+
   Widget blacklistUser(String user) {
-    Map<String, dynamic> _user = jsonDecode(user);
+    final _user = jsonDecode(user);
     return Padding(
       padding: EdgeInsets.all(suSetWidth(8.0)),
       child: Column(
@@ -458,77 +462,11 @@ class _UserPageState extends State<UserPage>
           ),
           Text(
             _user['username'],
-            style: TextStyle(
-              fontSize: suSetSp(18.0),
-            ),
+            style: TextStyle(fontSize: suSetSp(18.0)),
             overflow: TextOverflow.ellipsis,
           ),
           GestureDetector(
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) => PlatformAlertDialog(
-                  title: Text(
-                    "移出黑名单",
-                    style: TextStyle(
-                      fontSize: suSetSp(22.0),
-                    ),
-                  ),
-                  content: Text(
-                    "确定不再屏蔽此人吗？",
-                    style: TextStyle(
-                      fontSize: suSetSp(18.0),
-                    ),
-                  ),
-                  actions: <Widget>[
-                    PlatformButton(
-                      android: (BuildContext context) => MaterialRaisedButtonData(
-                        color: Theme.of(context).dialogBackgroundColor,
-                        elevation: 0,
-                        disabledElevation: 0.0,
-                        highlightElevation: 0.0,
-                        child: Text(
-                          "确认",
-                          style: TextStyle(color: currentThemeColor),
-                        ),
-                      ),
-                      ios: (BuildContext context) => CupertinoButtonData(
-                        child: Text(
-                          "确认",
-                          style: TextStyle(color: currentThemeColor),
-                        ),
-                      ),
-                      onPressed: () {
-                        UserAPI.fRemoveFromBlacklist(
-                          uid: int.parse(_user['uid']),
-                          name: _user['username'],
-                        );
-                        Navigator.pop(context);
-                      },
-                    ),
-                    PlatformButton(
-                      android: (BuildContext context) => MaterialRaisedButtonData(
-                        color: currentThemeColor,
-                        elevation: 0,
-                        disabledElevation: 0.0,
-                        highlightElevation: 0.0,
-                        child: Text(
-                          '取消',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                      ios: (BuildContext context) => CupertinoButtonData(
-                        child: Text(
-                          "取消",
-                          style: TextStyle(color: currentThemeColor),
-                        ),
-                      ),
-                      onPressed: Navigator.of(context).pop,
-                    ),
-                  ],
-                ),
-              );
-            },
+            onTap: () => removeFromBlacklist(context, _user),
             child: Container(
               padding: EdgeInsets.symmetric(
                 horizontal: suSetWidth(10.0),
@@ -792,8 +730,14 @@ class _UserPageState extends State<UserPage>
                                   child: TabBar(
                                     controller: _tabController,
                                     isScrollable: true,
-                                    indicatorSize: TabBarIndicatorSize.label,
-                                    indicatorWeight: suSetWidth(3.0),
+                                    indicator: RoundedUnderlineTabIndicator(
+                                      borderSide: BorderSide(
+                                        color: currentThemeColor,
+                                        width: suSetHeight(2.5),
+                                      ),
+                                      width: suSetWidth(40.0),
+                                      insets: EdgeInsets.only(bottom: suSetHeight(2.0)),
+                                    ),
                                     labelStyle: TextStyle(
                                       fontSize: suSetSp(20.0),
                                       fontWeight: FontWeight.bold,
