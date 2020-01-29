@@ -49,47 +49,49 @@ class _AboutPageState extends State<AboutPage> {
               Container(
                 margin: EdgeInsets.only(bottom: suSetSp(12.0)),
                 child: RichText(
-                    text: TextSpan(children: <TextSpan>[
-                  TextSpan(
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        navigatorState.pushNamed(
-                          Routes.OPENJMU_INAPPBROWSER,
-                          arguments: {"url": API.homePage, "title": "OpenJMU"},
-                        );
-                      },
-                    text: "OpenJmu",
-                    style: TextStyle(
-                      fontFamily: 'chocolate',
-                      color: currentThemeColor,
-                      fontSize: suSetSp(50.0),
-                    ),
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      TextSpan(
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            navigatorState.pushNamed(
+                              Routes.OPENJMU_INAPPBROWSER,
+                              arguments: {"url": API.homePage, "title": "OpenJMU"},
+                            );
+                          },
+                        text: "OpenJmu",
+                        style: TextStyle(
+                          fontFamily: 'chocolate',
+                          color: currentThemeColor,
+                          fontSize: suSetSp(50.0),
+                        ),
+                      ),
+                      TextSpan(
+                        text: "　v$currentVersion",
+                        style: Theme.of(context).textTheme.subtitle,
+                      ),
+                    ],
                   ),
-                  TextSpan(text: "　v$currentVersion", style: Theme.of(context).textTheme.subtitle),
-                ])),
+                ),
               ),
               SizedBox(height: suSetHeight(20.0)),
-              RichText(
-                  text: TextSpan(
-                children: <TextSpan>[
-                  TextSpan(
-                    text: "Developed By ",
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.body1.color,
+              Text.rich(
+                TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(text: "Developed By "),
+                    TextSpan(
+                      text: "openjmu Team",
+                      style: TextStyle(
+                        color: Colors.lightBlue,
+                        fontFamily: 'chocolate',
+                        fontSize: suSetSp(24.0),
+                      ),
                     ),
-                  ),
-                  TextSpan(
-                    text: "openjmu Team",
-                    style: TextStyle(
-                      color: Colors.lightBlue,
-                      fontFamily: 'chocolate',
-                      fontSize: suSetSp(24.0),
-                    ),
-                  ),
-                  TextSpan(
-                      text: " .", style: TextStyle(color: Theme.of(context).textTheme.body1.color)),
-                ],
-              )),
+                    TextSpan(text: " ."),
+                  ],
+                ),
+                style: TextStyle(color: Theme.of(context).textTheme.body1.color),
+              ),
               SizedBox(height: suSetHeight(80.0)),
             ],
           ),
@@ -121,9 +123,7 @@ class _AboutPageState extends State<AboutPage> {
           FixedAppBar(
             title: Text(
               "关于OpenJMU",
-              style: Theme.of(context).textTheme.title.copyWith(
-                    fontSize: suSetSp(23.0),
-                  ),
+              style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
             ),
             elevation: 0.0,
           ),

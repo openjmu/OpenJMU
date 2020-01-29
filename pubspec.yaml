@@ -1,7 +1,7 @@
 name: openjmu
 description: A JMU Flutter application.
 
-version: 0.9.0+147
+version: 0.9.0+148
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -30,7 +30,7 @@ dependencies:
   flutter_inappwebview:
     git:
       url: https://github.com/AlexVincent525/flutter_inappwebview.git
-      ref: "c7477881a63abef0d453f2330ef5e33f7b800bd3"
+      ref: "f520b822fc1c5d3c12616b8bbd6aff4c22bffc6a"
   flutter_local_notifications: 1.1.1
   flutter_native_image:
     git: https://github.com/btastic/flutter_native_image.git

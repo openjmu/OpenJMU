@@ -52,7 +52,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
   InAppWebViewController _webViewController;
   String title = '', url = 'about:blank';
 
-  String get urlDomain => url?.split('//')[1]?.split('/')[0];
+  String get urlDomain => Uri.parse(url).host;
 
   @override
   bool get wantKeepAlive => widget.keepAlive ?? false;
