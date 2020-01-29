@@ -9,7 +9,7 @@ import 'package:openjmu/constants/constants.dart';
 class Screens {
   const Screens._();
 
-  static MediaQueryData mediaQuery = MediaQueryData.fromWindow(ui.window);
+  static MediaQueryData get mediaQuery => MediaQueryData.fromWindow(ui.window);
 
   static double fixedFontSize(double fontSize) => fontSize / textScaleFactor;
 
@@ -31,10 +31,6 @@ class Screens {
 
   static void updateStatusBarStyle(SystemUiOverlayStyle style) {
     SystemChrome.setSystemUIOverlayStyle(style);
-  }
-
-  static void updateMediaQuery() {
-    mediaQuery = MediaQueryData.fromWindow(ui.window);
   }
 }
 

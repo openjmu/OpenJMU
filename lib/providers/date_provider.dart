@@ -26,8 +26,6 @@ class DateProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get isOutOfTerm => _currentWeek < 1 || _currentWeek > 20;
-
   int _difference;
   int get difference => _difference;
   set difference(int value) {
@@ -68,12 +66,8 @@ class DateProvider extends ChangeNotifier {
       if (_difference != _d) _difference = _d;
 
       final _w = -(_difference / 7).floor();
-      if (_currentWeek != _w) {
-        if (_w <= 20) {
-          _currentWeek = _w;
-        } else {
-          _currentWeek = null;
-        }
+      if (_currentWeek != _w && _w <= 20) {
+        _currentWeek = _w;
         notifyListeners();
         Instances.eventBus.fire(CurrentWeekUpdatedEvent());
       }

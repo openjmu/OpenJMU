@@ -55,7 +55,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   final connectivitySubscription = Connectivity().onConnectivityChanged.listen(
     (ConnectivityResult result) {
       Instances.eventBus.fire(ConnectivityChangeEvent(result));
-      debugPrint("Current connectivity: $result");
+      debugPrint('Current connectivity: $result');
     },
   );
 
@@ -79,7 +79,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         navigatorState.pushNamedAndRemoveUntil(
           Routes.OPENJMU_LOGIN,
           (_) => false,
-          arguments: {"initAction": initAction},
+          arguments: {'initAction': initAction},
         );
 
         DataUtils.logout();
@@ -112,14 +112,14 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     NetUtils.initConfig();
     initQuickActions();
 
-    debugPrint("Current platform is: ${Platform.operatingSystem}");
+    debugPrint('Current platform is: ${Platform.operatingSystem}');
 
     super.initState();
   }
 
   @override
   void dispose() {
-    debugPrint("Main dart disposed.");
+    debugPrint('Main dart disposed.');
     WidgetsBinding.instance.removeObserver(this);
     connectivitySubscription?.cancel();
     super.dispose();
@@ -127,9 +127,16 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    debugPrint("AppLifecycleState change to: ${state.toString()}");
-    Screens.updateMediaQuery();
+    debugPrint('——— didChangeAppLifecycleState ———');
+    debugPrint('AppLifecycleState change to: ${state.toString()}');
     Instances.appLifeCycleState = state;
+  }
+
+  @override
+  void didChangePlatformBrightness() {
+    debugPrint('——— didChangePlatformBrightness ———');
+    debugPrint('Platform brightness changed.\n');
+    if (mounted) setState(() {});
   }
 
   void initSettings() async {
@@ -145,7 +152,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   void initQuickActions() {
     final quickActions = QuickActions();
     quickActions.initialize((String shortcutType) {
-      debugPrint("QuickActions triggered: $shortcutType");
+      debugPrint('QuickActions triggered: $shortcutType');
       Instances.eventBus.fire(ActionsEvent(shortcutType));
     });
     quickActions.setShortcutItems(List<ShortcutItem>.generate(
@@ -185,7 +192,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                     ScreenUtil.init(c, allowFontScaling: true);
                     return NoScaleTextWidget(child: w);
                   },
-                  title: "OpenJMU",
+                  title: 'OpenJMU',
                   theme: theme,
                   home: SplashPage(initAction: initAction),
                   navigatorObservers: [

@@ -5,10 +5,11 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-class ConfirmationBottomSheet extends StatelessWidget {
+class ConfirmationBottomSheet extends StatefulWidget {
   final AlignmentGeometry alignment;
   final String title;
   final bool centerTitle;
@@ -20,7 +21,7 @@ class ConfirmationBottomSheet extends StatelessWidget {
   final String cancelLabel;
   final Color backgroundColor;
 
-  const ConfirmationBottomSheet({
+  ConfirmationBottomSheet({
     Key key,
     this.alignment = Alignment.bottomCenter,
     this.contentPadding = EdgeInsets.zero,
@@ -53,7 +54,7 @@ class ConfirmationBottomSheet extends StatelessWidget {
   }) async {
     return await showGeneralDialog<bool>(
           context: context,
-          barrierDismissible: true,
+          barrierDismissible: false,
           pageBuilder: (_, __, ___) => ConfirmationBottomSheet(
             alignment: alignment,
             title: title,
@@ -66,12 +67,19 @@ class ConfirmationBottomSheet extends StatelessWidget {
             cancelLabel: cancelLabel,
             backgroundColor: backgroundColor,
           ),
-          barrierColor: Colors.black38,
           barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-          transitionDuration: 150.milliseconds,
+          transitionDuration: 100.milliseconds,
         ) ??
         false;
   }
+
+  @override
+  _ConfirmationBottomSheetState createState() => _ConfirmationBottomSheetState();
+}
+
+class _ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
+  final _dismissWrapperKey = GlobalKey<_DismissWrapperState>();
+  bool animating = false;
 
   Widget dragIndicator(context) => Container(
         margin: EdgeInsets.symmetric(vertical: suSetHeight(16.0)),
@@ -90,10 +98,11 @@ class ConfirmationBottomSheet extends StatelessWidget {
           bottom: suSetHeight(10.0),
         ),
         child: Row(
-          mainAxisAlignment: centerTitle ? MainAxisAlignment.center : MainAxisAlignment.start,
+          mainAxisAlignment:
+              widget.centerTitle ? MainAxisAlignment.center : MainAxisAlignment.start,
           children: <Widget>[
             Text(
-              title,
+              widget.title,
               style: Theme.of(context).textTheme.title.copyWith(
                     fontSize: suSetSp(28.0),
                     fontWeight: FontWeight.bold,
@@ -109,8 +118,8 @@ class ConfirmationBottomSheet extends StatelessWidget {
       highlightElevation: 2.0,
       minWidth: Screens.width,
       padding: EdgeInsets.zero,
-      color: backgroundColor ?? Theme.of(context).primaryColor,
-      onPressed: () => Navigator.of(context).pop(true),
+      color: widget.backgroundColor ?? Theme.of(context).primaryColor,
+      onPressed: () => Navigator.of(context).maybePop(true),
       child: Container(
         width: Screens.width,
         height: suSetWidth(60.0),
@@ -121,7 +130,7 @@ class ConfirmationBottomSheet extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            confirmLabel ?? '确定',
+            widget.confirmLabel ?? '确定',
             style: TextStyle(color: Colors.white, fontSize: suSetSp(23.0)),
           ),
         ),
@@ -136,8 +145,8 @@ class ConfirmationBottomSheet extends StatelessWidget {
       highlightElevation: 2.0,
       minWidth: Screens.width,
       padding: EdgeInsets.all(suSetWidth(20.0)),
-      color: backgroundColor ?? Theme.of(context).primaryColor,
-      onPressed: () => Navigator.of(context).pop(false),
+      color: widget.backgroundColor ?? Theme.of(context).primaryColor,
+      onPressed: () => Navigator.of(context).maybePop(false),
       child: Container(
         width: Screens.width,
         height: suSetWidth(60.0),
@@ -147,7 +156,7 @@ class ConfirmationBottomSheet extends StatelessWidget {
         ),
         child: Center(
           child: Text(
-            cancelLabel ?? '取消',
+            widget.cancelLabel ?? '取消',
             style: TextStyle(fontSize: suSetSp(23.0)),
           ),
         ),
@@ -158,37 +167,50 @@ class ConfirmationBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: alignment,
+    return WillPopScope(
+      onWillPop: () async {
+        if (animating) return false;
+        animating = true;
+        await _dismissWrapperKey.currentState.animateWrapper(forward: false);
+        return true;
+      },
       child: Material(
-        type: MaterialType.transparency,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            _DismissWrapper(
+        color: Colors.black38,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () => Navigator.of(context).maybePop(false),
+          child: Align(
+            alignment: widget.alignment,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                dragIndicator(context),
-                if (title != null) titleWidget(context),
-                Padding(
-                  padding: contentPadding,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: content != null
-                        ? [
-                            Text(
-                              '$content',
-                              style: TextStyle(fontSize: suSetSp(20.0)),
-                              textAlign: TextAlign.center,
-                            ),
-                          ]
-                        : children,
-                  ),
+                _DismissWrapper(
+                  key: _dismissWrapperKey,
+                  children: <Widget>[
+                    dragIndicator(context),
+                    if (widget.title != null) titleWidget(context),
+                    Padding(
+                      padding: widget.contentPadding,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: widget.content != null
+                            ? [
+                                Text(
+                                  '${widget.content}',
+                                  style: TextStyle(fontSize: suSetSp(20.0)),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ]
+                            : widget.children,
+                      ),
+                    ),
+                    if (widget.showConfirm) confirmButton(context),
+                  ],
                 ),
-                if (showConfirm) confirmButton(context),
+                cancelButton(context),
               ],
             ),
-            cancelButton(context),
-          ],
+          ),
         ),
       ),
     );
@@ -214,11 +236,20 @@ class _DismissWrapperState extends State<_DismissWrapper> with TickerProviderSta
   final duration = 500.milliseconds;
 
   AnimationController animationController;
+  Offset downPosition;
+  double columnHeight;
 
   @override
   void initState() {
     super.initState();
-    animationController = AnimationController.unbounded(vsync: this, duration: duration, value: 0);
+    animationController = AnimationController.unbounded(
+      vsync: this,
+      duration: duration,
+      value: -Screens.height,
+    );
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      animateWrapper(forward: true);
+    });
   }
 
   @override
@@ -227,8 +258,17 @@ class _DismissWrapperState extends State<_DismissWrapper> with TickerProviderSta
     super.dispose();
   }
 
-  Offset downPosition;
-  double columnHeight;
+  Future animateWrapper({@required bool forward}) async {
+    final RenderBox renderBox = columnKey.currentContext.findRenderObject();
+    final height = renderBox.size.height;
+    if (forward) animationController.value = height;
+
+    return animationController.animateTo(
+      forward ? 0 : height,
+      duration: 200.milliseconds,
+      curve: Curves.ease,
+    );
+  }
 
   void _onDown(PointerDownEvent event) {
     downPosition = event.localPosition;
