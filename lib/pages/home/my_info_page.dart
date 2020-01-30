@@ -373,7 +373,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         break;
 
       case "检查更新":
-        OTAUtils.checkUpdate();
+        OTAUtils.checkUpdate(fromHome: true);
         break;
       case "关于OpenJMU":
         navigatorState.pushNamed(Routes.OPENJMU_ABOUT);

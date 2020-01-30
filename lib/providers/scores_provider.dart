@@ -57,6 +57,7 @@ class ScoresProvider extends ChangeNotifier {
   }
 
   bool get hasScore => _scores?.isNotEmpty ?? false;
+
   List<Score> _scores;
   List<Score> get scores => _scores;
   set scores(List<Score> value) {

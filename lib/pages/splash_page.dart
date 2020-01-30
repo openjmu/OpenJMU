@@ -43,7 +43,7 @@ class SplashState extends State<SplashPage> {
         firstFramed = true;
       });
 
-      OTAUtils.checkUpdate(fromHome: true);
+      OTAUtils.checkUpdate();
       Provider.of<DateProvider>(
         currentContext,
         listen: false,

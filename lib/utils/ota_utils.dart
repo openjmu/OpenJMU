@@ -37,16 +37,16 @@ class OTAUtils {
     }
   }
 
-  static void checkUpdate({bool fromHome}) async {
+  static Future<void> checkUpdate({bool fromHome = false}) async {
     NetUtils.get(API.checkUpdate).then((response) async {
       final currentBuild = await getCurrentBuildNumber();
       final currentVersion = await getCurrentVersion();
       final _response = jsonDecode(response.data);
       final forceUpdate = _response['forceUpdate'];
       final remoteBuildNumber = int.parse(_response['buildNumber'].toString());
-      debugPrint("Build: $currentVersion+$currentBuild"
-          " | "
-          "${_response['version']}+${_response['buildNumber']}");
+      debugPrint('Build: $currentVersion+$currentBuild'
+          ' | '
+          '${_response['version']}+${_response['buildNumber']}');
       if (currentBuild < remoteBuildNumber) {
         Instances.eventBus.fire(HasUpdateEvent(
           forceUpdate: forceUpdate,
@@ -55,17 +55,17 @@ class OTAUtils {
           response: _response,
         ));
       } else {
-        if (!(fromHome ?? false)) showToast("已更新为最新版本");
+        if (fromHome) showToast("已更新为最新版本");
       }
     }).catchError((e) {
-      debugPrint(e.toString());
-      showCenterErrorToast("检查更新失败\n${e.toString()}");
+      debugPrint('Failed when checking update: $e');
+      if (!fromHome) Future.delayed(30.seconds, checkUpdate);
     });
   }
 
-  static void _tryUpdate() async {
+  static Future<void> _tryUpdate() async {
     if (Platform.isIOS) {
-      LaunchReview.launch(iOSAppId: "1459832676");
+      LaunchReview.launch(iOSAppId: '1459832676');
     } else {
       final permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
       if (permission != PermissionStatus.granted) {
@@ -85,7 +85,7 @@ class OTAUtils {
     showToastWidget(
       UpdatingDialog(),
       dismissOtherToast: true,
-      duration: 1.days,
+      duration: 1.weeks,
       handleTouch: true,
     );
   }

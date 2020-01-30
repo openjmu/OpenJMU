@@ -232,7 +232,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
 
     if (!_isLoading) {
       _itemList = ExtendedListView.builder(
-        padding: EdgeInsets.zero,
+        padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
         extendedListDelegate: ExtendedListDelegate(
           collectGarbage: (List<int> garbage) {
             garbage.forEach((index) {

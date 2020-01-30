@@ -831,7 +831,7 @@ class CoursesDialog extends StatelessWidget {
                       style: style,
                     ),
                   Text(
-                    "⏰ ${shortWeekdays[course.day - 1]} "
+                    "⏰ ${shortWeekdays[course.day]} "
                     "${CourseAPI.courseTimeChinese[course.time]}",
                     style: style,
                   ),

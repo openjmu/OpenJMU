@@ -83,7 +83,7 @@ class CoursesProvider extends ChangeNotifier {
     _courses = null;
     _remark = null;
     _firstLoaded = false;
-    _hasCourses = false;
+    _hasCourses = true;
     _showWeek = false;
     _showError = false;
     now = null;

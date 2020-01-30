@@ -72,12 +72,11 @@ class SettingsProvider extends ChangeNotifier {
 
   void init() {
     getAnnouncement();
-    final _box = HiveBoxes.settingsBox;
-    _fontScale = _box?.get(HiveFieldUtils.settingFontScale) ?? _fontScale;
-    _homeSplashIndex = _box?.get(HiveFieldUtils.settingHomeSplashIndex) ?? _homeSplashIndex;
-    _homeStartUpIndex = _box?.get(HiveFieldUtils.settingHomeStartUpIndex) ?? _homeStartUpIndex;
-    _newAppCenterIcon = _box?.get(HiveFieldUtils.settingNewIcons) ?? _newAppCenterIcon;
-    _hideShieldPost = _box?.get(HiveFieldUtils.settingHideShieldPost) ?? _hideShieldPost;
+    _fontScale = HiveFieldUtils.getFontScale() ?? _fontScale;
+    _homeSplashIndex = HiveFieldUtils.getHomeSplashIndex() ?? _homeSplashIndex;
+    _homeStartUpIndex = HiveFieldUtils.getHomeStartUpIndex() ?? _homeStartUpIndex;
+    _newAppCenterIcon = HiveFieldUtils.getEnabledNewAppsIcon() ?? _newAppCenterIcon;
+    _hideShieldPost = HiveFieldUtils.getEnabledHideShieldPost() ?? _hideShieldPost;
   }
 
   void reset() {
@@ -88,13 +87,14 @@ class SettingsProvider extends ChangeNotifier {
     _hideShieldPost = true;
   }
 
-  Future<Null> getAnnouncement() async {
+  Future<void> getAnnouncement() async {
     try {
       final data = jsonDecode((await NetUtils.get(API.announcement)).data);
       _announcementsEnabled = data['enabled'];
       _announcements = data['announcements'];
     } catch (e) {
       debugPrint('Get announcement error: $e');
+      Future.delayed(30.seconds, getAnnouncement);
     }
   }
 }

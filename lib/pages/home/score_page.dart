@@ -246,14 +246,16 @@ class ScorePage extends StatelessWidget {
 
   Widget refreshIndicator(context) {
     return Positioned.fill(
-      child: BackdropFilter(
-        filter: ui.ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-        child: Center(
-          child: SizedBox.fromSize(
-            size: Size.square(suSetWidth(80.0)),
-            child: PlatformProgressIndicator(
-              radius: suSetWidth(40.0),
-              strokeWidth: suSetWidth(10.0),
+      child: ClipRect(
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+          child: Center(
+            child: SizedBox.fromSize(
+              size: Size.square(suSetWidth(80.0)),
+              child: PlatformProgressIndicator(
+                radius: suSetWidth(40.0),
+                strokeWidth: suSetWidth(10.0),
+              ),
             ),
           ),
         ),

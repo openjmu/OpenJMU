@@ -688,7 +688,9 @@ class _PostCardState extends State<PostCard> {
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
-    return post.isShield && HiveFieldUtils.getEnabledHideShieldPost()
+    final hideShield = post.isShield &&
+        Provider.of<SettingsProvider>(currentContext, listen: false).hideShieldPost;
+    return hideShield
         ? SizedBox.shrink()
         : GestureDetector(
             onTap: widget.isDetail || post.isShield ? null : pushToDetail,

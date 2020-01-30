@@ -67,7 +67,7 @@ class _MarketingPageState extends State<MarketingPage> {
       onRefresh: getPostList,
       child: loaded
           ? ExtendedListView.builder(
-              padding: EdgeInsets.zero,
+              padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
               extendedListDelegate: ExtendedListDelegate(
                 collectGarbage: (List<int> garbage) {
                   garbage.forEach((index) {
@@ -94,28 +94,12 @@ class _MarketingPageState extends State<MarketingPage> {
                   getPostList(more: true);
                 }
                 if (index == posts.length) {
-                  return SizedBox(
-                    height: suSetHeight(60.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        if (canLoadMore) PlatformProgressIndicator(),
-                        Text(
-                          canLoadMore ? "正在加载" : Constants.endLineTag,
-                          style: TextStyle(
-                            fontSize: suSetSp(15.0),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                  return LoadMoreIndicator(canLoadMore: canLoadMore);
                 }
                 return ChangeNotifierProvider.value(
-                  value: TeamPostProvider(
-                    posts.elementAt(index),
-                  ),
+                  value: TeamPostProvider(posts.elementAt(index)),
                   child: TeamPostPreviewCard(
-                    key: ValueKey("marketPost-${posts.elementAt(index).tid}"),
+                    key: ValueKey('marketPost-${posts.elementAt(index).tid}'),
                   ),
                 );
               },
