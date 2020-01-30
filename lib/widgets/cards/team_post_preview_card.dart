@@ -485,8 +485,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   color: currentBrightness == Brightness.dark
                       ? actionIconColorDark
                       : actionIconColorLight,
-                  width: suSetWidth(24.0),
-                  height: suSetHeight(24.0),
+                  width: suSetWidth(26.0),
                 ),
                 label: Text(
                   provider.post.repliesCount == 0 ? "评论" : "${provider.post.repliesCount}",
@@ -504,7 +503,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             ),
             Expanded(
               child: LikeButton(
-                size: suSetWidth(30.0),
+                size: suSetWidth(26.0),
                 circleColor: CircleColor(
                   start: currentThemeColor,
                   end: currentThemeColor,
@@ -520,8 +519,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                       : currentBrightness == Brightness.dark
                           ? actionIconColorDark
                           : actionIconColorLight,
-                  width: suSetWidth(24.0),
-                  height: suSetHeight(24.0),
+                  width: suSetWidth(26.0),
                 ),
                 likeCount: provider.post.praisesCount,
                 likeCountAnimationType: LikeCountAnimationType.none,
