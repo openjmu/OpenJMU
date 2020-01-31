@@ -16,13 +16,13 @@ class DeviceUtils {
   static String devicePushToken;
   static String deviceUuid;
 
-  static Future<Null> initDeviceInfo() async {
+  static Future<void> initDeviceInfo() async {
     await getModel();
     await getDevicePushToken();
     await getDeviceUuid();
   }
 
-  static Future<Null> getModel() async {
+  static Future<void> getModel() async {
     if (Platform.isAndroid) {
       deviceInfo = await _deviceInfoPlugin.androidInfo;
       final androidInfo = deviceInfo as AndroidDeviceInfo;
@@ -40,7 +40,7 @@ class DeviceUtils {
     debugPrint('deviceModel: $deviceModel');
   }
 
-  static Future<Null> getDevicePushToken() async {
+  static Future<void> getDevicePushToken() async {
     if (Platform.isIOS) {
       final _savedToken = HiveFieldUtils.getDevicePushToken();
       final _tempToken = await ChannelUtils.iOSGetPushToken();
@@ -57,7 +57,7 @@ class DeviceUtils {
     }
   }
 
-  static Future<Null> getDeviceUuid() async {
+  static Future<void> getDeviceUuid() async {
     if (HiveFieldUtils.getDeviceUuid() != null) {
       deviceUuid = HiveFieldUtils.getDeviceUuid();
     } else {

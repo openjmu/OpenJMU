@@ -1,7 +1,7 @@
 name: openjmu
 description: A JMU Flutter application.
 
-version: 0.9.0+150
+version: 0.9.0+151
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -88,6 +88,9 @@ flutter:
     - images/
     - images/placeholder/
   fonts:
-    - family: chocolate
+    - family: "chocolate"
       fonts:
         - asset: assets/fonts/chocolate.ttf
+    - family: "JetBrains Mono"
+      fonts:
+        - asset: assets/fonts/JetBrainsMono-Regular.ttf

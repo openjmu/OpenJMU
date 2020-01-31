@@ -1,146 +1,226 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/services.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
 @FFRoute(name: "openjmu://about", routeName: "关于页")
-class AboutPage extends StatefulWidget {
-  @override
-  _AboutPageState createState() => _AboutPageState();
-}
+class AboutPage extends StatelessWidget {
+  List<Map<String, dynamic>> get actions => [
+        {
+          'name': '版本履历',
+          'onTap': () {
+            navigatorState.pushNamed(Routes.OPENJMU_CHANGELOG_PAGE);
+          },
+        },
+        {
+          'name': '官方网站',
+          'onTap': () {
+            navigatorState.pushNamed(
+              Routes.OPENJMU_INAPPBROWSER,
+              arguments: {'url': API.homePage, 'title': 'OpenJMU'},
+            );
+          },
+        },
+        {
+          'name': '吐个槽',
+          'onTap': () {
+            navigatorState.pushNamed(
+              Routes.OPENJMU_INAPPBROWSER,
+              arguments: {'url': API.complaints, 'title': '吐个槽'},
+            );
+          },
+        },
+        if (Platform.isAndroid)
+          {
+            'name': '检查新版本',
+            'onTap': () {
+              OTAUtils.checkUpdate(fromHome: true);
+            },
+          }
+      ];
 
-class _AboutPageState extends State<AboutPage> {
-  int tries = 0;
-  String currentVersion;
-
-  @override
-  void initState() {
-    OTAUtils.getCurrentVersion().then((version) {
-      currentVersion = version;
-      if (mounted) setState(() {});
-    });
-    super.initState();
+  Future<void> showDebugInfoDialog(context) async {
+    final info = '[uid      ] ${currentUser.uid}\n'
+        '[sid      ] ${currentUser.sid}\n'
+        '[workId   ] ${currentUser.workId}\n'
+        '[uuid     ] ${DeviceUtils.deviceUuid}\n'
+        '${DeviceUtils.devicePushToken != null ? '[pushToken] ${DeviceUtils.devicePushToken}\n' : ''}'
+        '[model    ] ${DeviceUtils.deviceModel}';
+    final list = info.split('\n');
+    final copy = await ConfirmationDialog.show(
+      context,
+      title: '调试信息',
+      showConfirm: true,
+      confirmLabel: '复制',
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: List<Widget>.generate(list.length, (i) {
+          return Text.rich(
+            TextSpan(
+              children: List<InlineSpan>.generate(list[i].length, (j) {
+                return WidgetSpan(
+                  alignment: ui.PlaceholderAlignment.middle,
+                  child: Text(
+                    list[i].substring(j, j + 1),
+                    style: TextStyle(fontFamily: 'JetBrains Mono'),
+                  ),
+                );
+              }),
+            ),
+            textAlign: TextAlign.left,
+          );
+        }),
+      ),
+    );
+    if (copy) Clipboard.setData(ClipboardData(text: info));
   }
 
-  void tryDisplayDebugInfo() {
-    tries++;
-    if (tries == 10) setState(() {});
-  }
-
-  Widget get about => Container(
-        padding: EdgeInsets.all(suSetSp(20.0)),
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              GestureDetector(
-                onTap: tries < 10 ? tryDisplayDebugInfo : null,
-                child: Container(
-                  margin: EdgeInsets.only(bottom: suSetSp(20.0)),
-                  child: SvgPicture.asset(
-                    "images/splash_page_logo.svg",
-                    width: suSetWidth(200.0),
-                    height: suSetWidth(200.0),
-                    color: defaultColor,
-                  ),
-                ),
-              ),
-              SizedBox(height: suSetHeight(30.0)),
-              Container(
-                margin: EdgeInsets.only(bottom: suSetSp(12.0)),
-                child: RichText(
-                  text: TextSpan(
-                    children: <TextSpan>[
-                      TextSpan(
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            navigatorState.pushNamed(
-                              Routes.OPENJMU_INAPPBROWSER,
-                              arguments: {"url": API.homePage, "title": "OpenJMU"},
-                            );
-                          },
-                        text: "OpenJmu",
-                        style: TextStyle(
-                          fontFamily: 'chocolate',
-                          color: currentThemeColor,
-                          fontSize: suSetSp(50.0),
-                        ),
-                      ),
-                      TextSpan(
-                        text: "　v$currentVersion",
-                        style: Theme.of(context).textTheme.subtitle,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: suSetHeight(20.0)),
-              Text.rich(
-                TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(text: "Developed By "),
-                    TextSpan(
-                      text: "openjmu Team",
-                      style: TextStyle(
-                        color: Colors.lightBlue,
-                        fontFamily: 'chocolate',
-                        fontSize: suSetSp(24.0),
-                      ),
-                    ),
-                    TextSpan(text: " ."),
-                  ],
-                ),
-                style: TextStyle(color: Theme.of(context).textTheme.body1.color),
-              ),
-              SizedBox(height: suSetHeight(80.0)),
-            ],
+  Widget logo(context) => GestureDetector(
+        onDoubleTap: () => showDebugInfoDialog(context),
+        child: Container(
+          margin: EdgeInsets.only(bottom: suSetHeight(40.0)),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(suSetWidth(20.0)),
+            child: Image.asset(
+              'images/logo_1024.png',
+              width: suSetWidth(100.0),
+              height: suSetWidth(100.0),
+            ),
           ),
         ),
       );
 
-  Widget get debugInfo => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          SelectableText(
-            "———— START DEBUG INFO ————\n"
-            "uid: ${currentUser.uid}\n"
-            "sid: ${currentUser.sid}\n"
-            "workId: ${currentUser.workId}\n"
-            "uuid: ${DeviceUtils.deviceUuid}\n"
-            "${DeviceUtils.devicePushToken != null ? "pushToken: ${DeviceUtils.devicePushToken}\n" : ""}"
-            "model: ${DeviceUtils.deviceModel}\n"
-            "————— END DEBUG INFO —————\n",
-            textAlign: TextAlign.center,
+  Widget get appName => Container(
+        margin: EdgeInsets.only(bottom: suSetHeight(10.0)),
+        child: Text(
+          'OpenJmu',
+          style: TextStyle(
+            fontFamily: 'chocolate',
+            color: currentThemeColor,
+            fontSize: suSetSp(50.0),
           ),
-        ],
+        ),
+      );
+
+  Widget get versionInfo => Container(
+        margin: EdgeInsets.only(bottom: suSetHeight(10.0)),
+        child: Text(
+          'Version ${OTAUtils.version} (${OTAUtils.buildNumber})',
+          style: TextStyle(fontSize: suSetSp(22.0)),
+        ),
+      );
+
+  Widget actionList(context) => Container(
+        decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: Theme.of(context).canvasColor,
+              width: suSetHeight(1.0),
+            ),
+          ),
+        ),
+        margin: EdgeInsets.symmetric(
+          horizontal: suSetWidth(20.0),
+          vertical: suSetHeight(40.0),
+        ),
+        padding: EdgeInsets.symmetric(horizontal: suSetWidth(30.0)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: List<Widget>.generate(actions.length * 2, (i) {
+            if (i.isOdd) {
+              return Divider(
+                color: Theme.of(context).canvasColor,
+                height: suSetHeight(1.0),
+                thickness: suSetHeight(1.0),
+              );
+            } else {
+              final index = i ~/ 2;
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: actions[index]['onTap'],
+                child: SizedBox(
+                  height: suSetHeight(70.0),
+                  child: Row(
+                    children: <Widget>[
+                      Text(
+                        '${actions[index]['name']}',
+                        style: TextStyle(fontSize: suSetSp(22.0)),
+                      ),
+                      Spacer(),
+                      Icon(
+                        Icons.chevron_right,
+                        color: Theme.of(context).dividerColor,
+                        size: suSetWidth(30.0),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }
+          }),
+        ),
+      );
+
+  Widget agreement(context) => GestureDetector(
+        onTap: () {
+          navigatorState.pushNamed(
+            Routes.OPENJMU_INAPPBROWSER,
+            arguments: {'url': '${API.homePage}/license.html', 'title': 'OpenJMU 用户协议'},
+          );
+        },
+        child: Container(
+          margin: EdgeInsets.only(bottom: suSetHeight(10.0)),
+          child: Text(
+            '《用户协议》',
+            style: TextStyle(color: defaultColor, fontSize: suSetSp(18.0)),
+          ),
+        ),
+      );
+
+  Widget developedBy(context) => Text.rich(
+        TextSpan(
+          children: <TextSpan>[
+            TextSpan(text: 'Developed By '),
+            TextSpan(
+              text: 'OpenJmu Team',
+              style: TextStyle(
+                color: defaultColor,
+                fontFamily: 'chocolate',
+                fontSize: suSetSp(24.0),
+              ),
+            ),
+          ],
+        ),
+        style: TextStyle(color: Theme.of(context).textTheme.body1.color),
       );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          FixedAppBar(
-            title: Text(
-              "关于OpenJMU",
-              style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
-            ),
-            elevation: 0.0,
-          ),
-          Expanded(
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    about,
-                    if (tries == 10) debugInfo,
-                  ],
-                ),
+      body: Padding(
+        padding: EdgeInsets.only(bottom: suSetHeight(30.0)),
+        child: Column(
+          children: <Widget>[
+            FixedAppBar(elevation: 0.0),
+            Expanded(
+              child: Column(
+                children: <Widget>[
+                  logo(context),
+                  appName,
+                  versionInfo,
+                  actionList(context),
+                  Spacer(),
+                  agreement(context),
+                  developedBy(context),
+                ],
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

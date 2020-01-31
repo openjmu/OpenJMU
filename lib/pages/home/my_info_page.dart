@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
@@ -29,7 +27,6 @@ class MyInfoPageState extends State<MyInfoPage> {
           {"name": "偏好设置", "icon": "settings"},
         ],
         [
-          if (Platform.isAndroid) {"name": "检查更新", "icon": "checkUpdate"},
           {"name": "关于OpenJMU", "icon": "idols"},
         ],
         [
@@ -372,9 +369,6 @@ class MyInfoPageState extends State<MyInfoPage> {
         navigatorState.pushNamed(Routes.OPENJMU_SETTINGS);
         break;
 
-      case "检查更新":
-        OTAUtils.checkUpdate(fromHome: true);
-        break;
       case "关于OpenJMU":
         navigatorState.pushNamed(Routes.OPENJMU_ABOUT);
         break;
@@ -394,10 +388,10 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   Widget get clearBoxesButton => UnconstrainedBox(
         child: Container(
-          margin: EdgeInsets.all(suSetWidth(24.0)),
+          margin: EdgeInsets.only(top: suSetHeight(40.0)),
           padding: EdgeInsets.symmetric(
             horizontal: suSetWidth(20.0),
-            vertical: suSetHeight(8.0),
+            vertical: suSetHeight(10.0),
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(60.0),

@@ -6,6 +6,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'pages/main_page.dart';
+import 'pages/settings/changelog_page.dart';
 import 'pages/settings/switch_start_up_page.dart';
 import 'pages/settings/font_scale_page.dart';
 import 'pages/settings/change_theme_page.dart';
@@ -41,6 +42,11 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           initAction: arguments['initAction'],
         ),
         routeName: "首页",
+      );
+    case "openjmu://changelog-page":
+      return RouteResult(
+        widget: ChangeLogPage(),
+        routeName: "版本履历",
       );
     case "openjmu://switch-startup":
       return RouteResult(
@@ -257,6 +263,7 @@ enum PageRouteType { material, cupertino, transparent }
 
 List<String> routeNames = [
   "openjmu://home",
+  "openjmu://changelog-page",
   "openjmu://switch-startup",
   "openjmu://font-scale",
   "openjmu://theme",
@@ -287,12 +294,20 @@ List<String> routeNames = [
 ];
 
 class Routes {
+  const Routes._();
+
   /// 首页
   ///
   /// [name] : openjmu://home
   /// [routeName] : 首页
   /// [arguments] : [initAction]
   static const String OPENJMU_HOME = "openjmu://home";
+
+  /// 版本履历
+  ///
+  /// [name] : openjmu://changelog-page
+  /// [routeName] : 版本履历
+  static const String OPENJMU_CHANGELOG_PAGE = "openjmu://changelog-page";
 
   /// 切换启动页
   ///

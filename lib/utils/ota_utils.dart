@@ -5,7 +5,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:package_info/package_info.dart';
@@ -17,46 +16,43 @@ import 'package:openjmu/widgets/dialogs/updating_dialog.dart';
 class OTAUtils {
   const OTAUtils._();
 
-  static Future<String> getCurrentVersion() async {
-    try {
-      final packageInfo = await PackageInfo.fromPlatform();
-      final version = packageInfo.version;
-      return version;
-    } on PlatformException {
-      return 'Failed to get project version.';
-    }
-  }
+  static PackageInfo _packageInfo;
+  static PackageInfo get packageInfo => _packageInfo;
+  static String get version => _packageInfo.version;
+  static int get buildNumber => _packageInfo.buildNumber.toIntOrNull();
+  static String get appName => _packageInfo.appName;
+  static String get packageName => _packageInfo.packageName;
 
-  static Future<int> getCurrentBuildNumber() async {
-    try {
-      final packageInfo = await PackageInfo.fromPlatform();
-      final buildNumber = int.parse(packageInfo.buildNumber.toString());
-      return buildNumber;
-    } on PlatformException {
-      return 0;
-    }
+  static String remoteVersion = version;
+  static int remoteBuildNumber = buildNumber;
+
+  static Future<void> initPackageInfo() async {
+    _packageInfo = await PackageInfo.fromPlatform();
   }
 
   static Future<void> checkUpdate({bool fromHome = false}) async {
     NetUtils.get(API.checkUpdate).then((response) async {
-      final currentBuild = await getCurrentBuildNumber();
-      final currentVersion = await getCurrentVersion();
-      final _response = jsonDecode(response.data);
-      final forceUpdate = _response['forceUpdate'];
-      final remoteBuildNumber = int.parse(_response['buildNumber'].toString());
-      debugPrint('Build: $currentVersion+$currentBuild'
+      final _currentBuild = buildNumber;
+      final _currentVersion = version;
+      final data = jsonDecode(response.data);
+      final _forceUpdate = data['forceUpdate'];
+      final _remoteVersion = data['version'];
+      final _remoteBuildNumber = int.parse(data['buildNumber'].toString());
+      debugPrint('Build: $_currentVersion+$_currentBuild'
           ' | '
-          '${_response['version']}+${_response['buildNumber']}');
-      if (currentBuild < remoteBuildNumber) {
+          '$_remoteVersion+$_remoteBuildNumber');
+      if (_currentBuild < _remoteBuildNumber) {
         Instances.eventBus.fire(HasUpdateEvent(
-          forceUpdate: forceUpdate,
-          currentVersion: currentVersion,
-          currentBuild: currentBuild,
-          response: _response,
+          forceUpdate: _forceUpdate,
+          currentVersion: _currentVersion,
+          currentBuild: _currentBuild,
+          response: data,
         ));
       } else {
         if (fromHome) showToast("已更新为最新版本");
       }
+      remoteVersion = _remoteVersion;
+      remoteBuildNumber = _remoteBuildNumber;
     }).catchError((e) {
       debugPrint('Failed when checking update: $e');
       if (!fromHome) Future.delayed(30.seconds, checkUpdate);

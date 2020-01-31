@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
+import 'package:openjmu/pages/no_route_page.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:quick_actions/quick_actions.dart';
 
@@ -25,6 +26,7 @@ void main() async {
 
   await HiveBoxes.openBoxes();
   await DeviceUtils.initDeviceInfo();
+  await OTAUtils.initPackageInfo();
   NotificationUtils.initSettings();
 
   await SystemChrome.setPreferredOrientations([
@@ -205,7 +207,10 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                       },
                     ),
                   ],
-                  onGenerateRoute: onGenerateRouteHelper,
+                  onGenerateRoute: (RouteSettings settings) => onGenerateRouteHelper(
+                    settings,
+                    NoRoutePage(route: settings.name),
+                  ),
                   localizationsDelegates: Constants.localizationsDelegates,
                   supportedLocales: Constants.supportedLocales,
                 ),
