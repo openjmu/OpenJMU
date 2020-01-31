@@ -64,83 +64,21 @@ class TeamPostPreviewCard extends StatelessWidget {
     });
   }
 
-  Widget _postActionListTile(
-    context, {
-    @required IconData icon,
-    @required String text,
-    @required GestureTapCallback onTap,
-  }) =>
-      GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: suSetHeight(24.0)),
-          child: Row(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
-                child: Icon(icon, size: suSetWidth(36.0)),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
-                  child: Text(
-                    text,
-                    style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
-  List<Widget> postExtraActionsBuilder(
-    context, {
-    @required List<IconData> icons,
-    @required List<String> texts,
-    @required List<GestureTapCallback> onTaps,
-  }) {
-    assert(
-      icons?.length == texts?.length &&
-          icons?.length == onTaps?.length &&
-          texts?.length == onTaps?.length,
-      'items length must be equal.',
-    );
-    return List<Widget>.generate(
-      texts.length * 2 - 1,
-      (i) {
-        if (i.isEven) {
-          final index = i ~/ 2;
-          return _postActionListTile(
-            context,
-            icon: icons.elementAt(index),
-            text: texts.elementAt(index),
-            onTap: onTaps.elementAt(index),
-          );
-        } else {
-          return Container(
-            margin: EdgeInsets.only(left: suSetWidth(64.0)),
-            child: Divider(
-              color: Theme.of(context).canvasColor,
-              height: suSetHeight(1.0),
-              thickness: suSetHeight(1.0),
-            ),
-          );
-        }
-      },
-    );
-  }
-
   void confirmAction(context) {
     ConfirmationBottomSheet.show(
       context,
-      children: postExtraActionsBuilder(
-        context,
-        icons: <IconData>[Icons.visibility_off, Icons.report],
-        texts: <String>['屏蔽此人', '举报动态'],
-        onTaps: <GestureTapCallback>[() => confirmBlock(context), () => confirmReport(context)],
-      ),
+      children: <Widget>[
+        ConfirmationBottomSheetAction(
+          icon: Icon(Icons.visibility_off),
+          text: '屏蔽此人',
+          onTap: () => confirmBlock(context),
+        ),
+        ConfirmationBottomSheetAction(
+          icon: Icon(Icons.report),
+          text: '举报动态',
+          onTap: () => confirmReport(context),
+        ),
+      ],
     );
   }
 

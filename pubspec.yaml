@@ -1,7 +1,7 @@
 name: openjmu
 description: A JMU Flutter application.
 
-version: 0.9.0+149
+version: 0.9.0+150
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -16,8 +16,6 @@ dependencies:
   badges: 1.1.0
   connectivity: ^0.4.6+2
   cookie_jar: 1.0.1
-  crypto: any
-  dartx: ^0.2.0
   device_info: ^0.4.1+4
   dio: 2.1.16
   event_bus: 1.1.0
@@ -41,12 +39,10 @@ dependencies:
   hive: 1.3.0
   hive_flutter: ^0.3.0+1
   html: ^0.14.0+3
-  image: any
   image_editor: ^0.1.6
   image_downloader: ^0.19.1
   image_gallery_saver: 1.2.2
   image_picker: 0.6.3+1
-  intl: any
   isolate: ^2.0.2
   launch_review: 2.0.0
   like_button: ^0.2.0
@@ -71,6 +67,11 @@ dev_dependencies:
   ff_annotation_route: ^1.1.5
   hive_generator: ^0.7.0
 
+dependency_overrides:
+  crypto: 2.1.4
+  dartx: ^0.3.0
+  image: 2.1.12
+  intl: ^0.16.1
 
 flutter:
   uses-material-design: true

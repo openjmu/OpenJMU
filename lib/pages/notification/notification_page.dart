@@ -62,8 +62,8 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                   color: currentThemeColor,
                   width: suSetHeight(3.5),
                 ),
-                width: suSetWidth(50.0),
-                insets: EdgeInsets.only(bottom: suSetHeight(16.0)),
+                width: suSetWidth(30.0),
+                insets: EdgeInsets.only(bottom: suSetHeight(4.0)),
               ),
               labelPadding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
               tabs: [
@@ -73,10 +73,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                           icon: badgeIcon(
                             content:
                                 provider.notifications.at == 0 ? "" : provider.notifications.at,
-                            icon: Icon(
-                              actionsIcons[0],
-                              size: suSetWidth(30.0),
-                            ),
+                            icon: Icon(actionsIcons[0], size: suSetWidth(30.0)),
                           ),
                           onPressed: () {
                             _tabController.animateTo(0);
@@ -85,10 +82,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                         )
                       : Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Icon(
-                            actionsIcons[0],
-                            size: suSetWidth(30.0),
-                          ),
+                          child: Icon(actionsIcons[0], size: suSetWidth(30.0)),
                         ),
                 ),
                 Tab(
@@ -229,12 +223,12 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                   indicator: RoundedUnderlineTabIndicator(
                     borderSide: BorderSide(
                       color: currentThemeColor,
-                      width: suSetHeight(2.5),
+                      width: suSetHeight(3.0),
                     ),
-                    width: suSetWidth(40.0),
-                    insets: EdgeInsets.only(bottom: suSetHeight(8.0)),
+                    width: suSetWidth(28.0),
+                    insets: EdgeInsets.only(bottom: suSetHeight(6.0)),
                   ),
-                  labelStyle: TextStyle(fontSize: suSetSp(20.0)),
+                  labelStyle: TextStyle(fontSize: suSetSp(22.0)),
                   tabs: <Tab>[
                     Tab(text: "@我的评论"),
                     Tab(text: "@我的动态"),

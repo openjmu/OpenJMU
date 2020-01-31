@@ -91,10 +91,10 @@ class PostSquareListPageState extends State<PostSquareListPage>
         indicator: RoundedUnderlineTabIndicator(
           borderSide: BorderSide(
             color: currentThemeColor,
-            width: suSetHeight(2.5),
+            width: suSetHeight(3.0),
           ),
-          width: suSetWidth(40.0),
-          insets: EdgeInsets.only(bottom: suSetHeight(5.0)),
+          width: suSetWidth(26.0),
+          insets: EdgeInsets.only(bottom: suSetHeight(4.0)),
         ),
         labelColor: Theme.of(context).textTheme.body1.color,
         labelStyle: MainPageState.tabSelectedTextStyle,
@@ -154,7 +154,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
                     "搜索",
                     style: TextStyle(
                       color: Theme.of(context).iconTheme.color.withOpacity(0.3),
-                      fontSize: suSetSp(20.0),
+                      fontSize: MainPageState.tabUnselectedTextStyle.fontSize,
                     ),
                   ),
                 ),

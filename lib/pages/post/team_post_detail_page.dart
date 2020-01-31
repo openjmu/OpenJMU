@@ -210,6 +210,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                   specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
                   enabled: !sending,
                   decoration: InputDecoration(
+                    isDense: true,
                     border: InputBorder.none,
                     contentPadding: EdgeInsets.symmetric(
                       horizontal: suSetWidth(20.0),
@@ -234,7 +235,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
 
   Widget get extendedPadButton => Container(
         padding: EdgeInsets.only(left: suSetWidth(12.0)),
-        height: suSetHeight(42.0),
+        height: suSetHeight(46.0),
         child: MaterialButton(
           elevation: 0.0,
           highlightElevation: canSend ? 2.0 : 0.0,
@@ -256,7 +257,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
 
   Widget get sendButton => Container(
         padding: EdgeInsets.only(left: suSetWidth(12.0)),
-        height: suSetHeight(42.0),
+        height: suSetHeight(46.0),
         child: MaterialButton(
           elevation: 0.0,
           highlightElevation: canSend ? 2.0 : 0.0,
@@ -316,9 +317,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                     ),
                     Text(
                       extendedFeature[index]['name'],
-                      style: TextStyle(
-                        fontSize: suSetSp(19.0),
-                      ),
+                      style: TextStyle(fontSize: suSetSp(19.0)),
                     ),
                   ],
                 ),
@@ -332,9 +331,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         behavior: HitTestBehavior.opaque,
         onTap: triggerEmoticonPad,
         child: Container(
-          margin: EdgeInsets.only(
-            right: suSetWidth(12.0),
-          ),
+          margin: EdgeInsets.only(right: suSetWidth(12.0)),
           child: Center(
             child: Icon(
               Icons.insert_emoticon,
@@ -359,8 +356,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         ? change()
         : MediaQuery.of(context).viewInsets.bottom != 0.0
             ? SystemChannels.textInput.invokeMethod('TextInput.hide').whenComplete(
-                () async {
-                  Future.delayed(const Duration(milliseconds: 300), () {}).whenComplete(change);
+                () {
+                  Future.delayed(300.milliseconds, change);
                 },
               )
             : change();

@@ -175,9 +175,10 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
               ? _platformBrightness == Brightness.dark
               : themesProvider.dark;
           final theme = (isDark ? themesProvider.darkTheme : themesProvider.lightTheme).copyWith(
-            textTheme:
-                (isDark ? Theme.of(context).typography.white : Theme.of(context).typography.black)
-                    .copyWith(
+            pageTransitionsTheme: PageTransitionsTheme(builders: {
+              TargetPlatform.android: ZoomPageTransitionsBuilder(),
+            }),
+            textTheme: (isDark ? Typography().white : Typography().black).copyWith(
               subhead: TextStyle(textBaseline: TextBaseline.alphabetic),
             ),
           );
@@ -204,44 +205,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                       },
                     ),
                   ],
-                  onGenerateRoute: (RouteSettings settings) {
-                    final routeResult = getRouteResult(
-                      name: settings.name,
-                      arguments: settings.arguments,
-                    );
-                    if (routeResult.showStatusBar != null || routeResult.routeName != null) {
-                      settings = FFRouteSettings(
-                        name: settings.name,
-                        isInitialRoute: settings.isInitialRoute,
-                        routeName: routeResult.routeName,
-                        arguments: settings.arguments,
-                        showStatusBar: routeResult.showStatusBar,
-                      );
-                    }
-                    final page = routeResult.widget ?? SplashPage(initAction: initAction);
-
-                    if (settings.arguments != null && settings.arguments is Map<String, dynamic>) {
-                      RouteBuilder builder =
-                          (settings.arguments as Map<String, dynamic>)['routeBuilder'];
-                      if (builder != null) return builder(page);
-                    }
-
-                    switch (routeResult.pageRouteType) {
-                      case PageRouteType.material:
-                        return MaterialPageRoute(settings: settings, builder: (c) => page);
-                      case PageRouteType.cupertino:
-                        return CupertinoPageRoute(settings: settings, builder: (c) => page);
-                      case PageRouteType.transparent:
-                        return FFTransparentPageRoute(
-                          settings: settings,
-                          pageBuilder: (_, __, ___) => page,
-                        );
-                      default:
-                        return Platform.isIOS
-                            ? CupertinoPageRoute(settings: settings, builder: (c) => page)
-                            : MaterialPageRoute(settings: settings, builder: (c) => page);
-                    }
-                  },
+                  onGenerateRoute: onGenerateRouteHelper,
                   localizationsDelegates: Constants.localizationsDelegates,
                   supportedLocales: Constants.supportedLocales,
                 ),
@@ -253,5 +217,3 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     );
   }
 }
-
-typedef RouteBuilder = PageRoute Function(Widget page);

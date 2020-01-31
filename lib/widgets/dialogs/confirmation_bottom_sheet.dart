@@ -327,3 +327,48 @@ class _DismissWrapperState extends State<_DismissWrapper> with TickerProviderSta
     );
   }
 }
+
+class ConfirmationBottomSheetAction extends StatelessWidget {
+  final Widget icon;
+  final String text;
+  final GestureTapCallback onTap;
+
+  const ConfirmationBottomSheetAction({
+    Key key,
+    @required this.icon,
+    @required this.text,
+    @required this.onTap,
+  })  : assert(icon != null && text != null && onTap != null),
+        super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onTap,
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: suSetHeight(24.0)),
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
+              child: IconTheme(
+                data: Theme.of(context).iconTheme.copyWith(size: suSetWidth(36.0)),
+                child: icon,
+              ),
+            ),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
+                child: Text(
+                  text,
+                  style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -39,19 +39,20 @@ class ImageViewer extends StatefulWidget {
 
 class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin {
   final rebuild = StreamController<int>.broadcast();
+  final slidePageKey = GlobalKey<ExtendedImageSlidePageState>();
   int currentIndex;
 
   AnimationController _doubleTapAnimationController;
   Animation _doubleTapCurveAnimation;
   Animation<double> _doubleTapAnimation;
-  Function _doubleTapListener;
+  VoidCallback _doubleTapListener;
 
   PageController _controller;
 
-  double backgroundOpacity = 1.0;
-
   @override
   void initState() {
+    super.initState();
+
     if (widget.needsClear ?? false) {
       clearMemoryImageCache();
       clearDiskCachedImages();
@@ -68,7 +69,6 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
       parent: _doubleTapAnimationController,
       curve: Curves.linear,
     );
-    super.initState();
   }
 
   @override
@@ -77,6 +77,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     provider.setSystemUIDark(provider.dark);
     rebuild?.close();
     _doubleTapAnimationController?.dispose();
+
     super.dispose();
   }
 
@@ -99,11 +100,6 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     if (!mounted) return;
     showCenterToast("图片保存至：$path");
     return;
-  }
-
-  Future<bool> _pop(context, bool fromImageTap) {
-    if (fromImageTap) Navigator.of(context).pop();
-    return Future.value(true);
   }
 
   void updateAnimation(ExtendedImageGestureState state) {
@@ -130,44 +126,37 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     _doubleTapAnimationController.forward();
   }
 
-  void onLongPress() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.grey[850],
-      builder: (_) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ListTile(
-            leading: Icon(
-              Icons.save_alt,
-              size: suSetWidth(32.0),
-              color: Colors.white,
-            ),
-            title: Text(
-              "保存图片",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: suSetSp(20.0),
-              ),
-            ),
-            onTap: () {
-              _downloadImage(widget.pics[currentIndex].imageUrl);
-              Navigator.of(context).pop();
-            },
-          ),
-          SizedBox(height: Screens.bottomSafeHeight),
-        ],
-      ),
+  void onLongPress(context) {
+    ConfirmationBottomSheet.show(
+      context,
+      children: <Widget>[
+        ConfirmationBottomSheetAction(
+          icon: Icon(Icons.save_alt),
+          text: '保存图片',
+          onTap: () {
+            _downloadImage(widget.pics[currentIndex].imageUrl);
+          },
+        ),
+      ],
     );
+  }
+
+  Color slidePageBackgroundHandler(Offset offset, Size pageSize) {
+    double opacity = 0.0;
+    opacity = offset.distance / (Offset(pageSize.width, pageSize.height).distance / 2.0);
+    return Colors.black.withOpacity(math.min(1.0, math.max(1.0 - opacity, 0.0)));
+  }
+
+  bool slideEndHandler(Offset offset) {
+    return offset.distance > Offset(Screens.width, Screens.height).distance / 7;
   }
 
   Widget pageBuilder(context, index) {
     return ImageGestureDetector(
       context: context,
       enableTapPop: true,
-      enablePullDownPop: false,
-      onLongPress: onLongPress,
+      onLongPress: () => onLongPress(context),
+      slidePageKey: slidePageKey,
       child: ExtendedImage.network(
         widget.pics[index].imageUrl,
         fit: BoxFit.contain,
@@ -176,14 +165,11 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
         enableSlideOutPage: true,
         heroBuilderForSlidingPage: (Widget result) {
           if (index < widget.pics.length) {
-            String tag = "";
-            if (widget.heroPrefix != null) {
-              tag += widget.heroPrefix;
-            }
-            if (widget.pics[index].postId != null) {
-              tag += "${widget.pics[index].postId}-";
-            }
-            tag += "${widget.pics[index].id}";
+            String tag = '';
+            if (widget.heroPrefix != null) tag += widget.heroPrefix;
+            if (widget.pics[index].postId != null) tag += '${widget.pics[index].postId}-';
+            tag += '${widget.pics[index].id}';
+
             return Hero(
               tag: tag,
               child: result,
@@ -219,9 +205,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = Center(
-                child: PlatformProgressIndicator(color: Colors.grey),
-              );
+              loader = Center(child: PlatformProgressIndicator(color: Colors.grey));
               break;
             case LoadState.completed:
             case LoadState.failed:
@@ -236,39 +220,34 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     return ExtendedImageSlidePage(
+      key: slidePageKey,
       slideAxis: SlideAxis.both,
       slideType: SlideType.onlyImage,
-      onSlidingPage: (ExtendedImageSlidePageState state) {
-        setState(() {
-          final offset = math.min(Screens.height / 2, math.max(0.0, state.offset.dy));
-          backgroundOpacity = 1.0 - math.min(1.0, (offset / (Screens.height / 2)));
-        });
-      },
+      slidePageBackgroundHandler: slidePageBackgroundHandler,
+      slideEndHandler: slideEndHandler,
+      resetPageDuration: 300.milliseconds,
       child: AnnotatedRegion(
         value: SystemUiOverlayStyle.light,
-        child: WillPopScope(
-          onWillPop: () => _pop(context, false),
+        child: Material(
+          type: MaterialType.transparency,
           child: Stack(
             children: <Widget>[
-              Positioned.fill(child: Container(color: Colors.black.withOpacity(backgroundOpacity))),
-              Positioned.fill(
-                child: ExtendedImageGesturePageView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  controller: _controller,
-                  itemCount: widget.pics.length,
-                  itemBuilder: pageBuilder,
-                  onPageChanged: (int index) {
-                    currentIndex = index;
-                    rebuild.add(index);
-                  },
-                  scrollDirection: Axis.horizontal,
-                ),
+              ExtendedImageGesturePageView.builder(
+                physics: const BouncingScrollPhysics(),
+                controller: _controller,
+                itemCount: widget.pics.length,
+                itemBuilder: pageBuilder,
+                onPageChanged: (int index) {
+                  currentIndex = index;
+                  rebuild.add(index);
+                },
+                scrollDirection: Axis.horizontal,
               ),
               Positioned(
                 top: 0.0,
                 left: 0.0,
                 right: 0.0,
-                child: ViewAppBar(post: widget.post, onMoreClicked: onLongPress),
+                child: ViewAppBar(post: widget.post, onMoreClicked: () => onLongPress(context)),
               ),
               if (widget.pics.length > 1)
                 Positioned(

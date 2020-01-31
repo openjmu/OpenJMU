@@ -38,6 +38,7 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   final iconSize = 26.0;
   final actionFontSize = 20.0;
+  final sectionButtonWidth = 92.0;
   final activeColor = currentThemeColor;
 
   TextStyle get textActiveStyle => TextStyle(
@@ -48,6 +49,9 @@ class PostDetailPageState extends State<PostDetailPage> {
   TextStyle get textInActiveStyle => TextStyle(
         color: Colors.grey,
         fontSize: suSetSp(18.0),
+      );
+  ShapeBorder get sectionButtonShape => RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(suSetWidth(10.0)),
       );
 
   int _tabIndex = 1;
@@ -177,38 +181,134 @@ class PostDetailPageState extends State<PostDetailPage> {
         key: ValueKey("post-key-${widget.post.id}"),
       );
 
+  Widget get deleteButton => IconButton(
+        icon: Icon(Icons.delete_outline, size: suSetWidth(30.0)),
+        onPressed: () => confirmDelete(context),
+      );
+
+  Widget get postActionButton => IconButton(
+        icon: Icon(Icons.more_horiz, size: suSetWidth(30.0)),
+        onPressed: () => postExtraActions(context),
+      );
+
+  void confirmDelete(context) async {
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '删除动态',
+      content: '是否确认删除这条动态?',
+      showConfirm: true,
+    );
+    if (confirm) {
+      final _loadingDialogController = LoadingDialogController();
+      showDialog(
+        context: context,
+        builder: (BuildContext dialogContext) => LoadingDialog(
+          text: '正在删除动态',
+          controller: _loadingDialogController,
+          isGlobal: false,
+        ),
+      );
+      PostAPI.deletePost(widget.post.id).then((response) {
+        _loadingDialogController.changeState('success', '动态删除成功');
+        Instances.eventBus.fire(PostDeletedEvent(widget.post.id, widget.fromPage, widget.index));
+      }).catchError((e) {
+        debugPrint(e.toString());
+        debugPrint(e.response?.toString());
+        _loadingDialogController.changeState('failed', '动态删除失败');
+      });
+    }
+  }
+
+  void postExtraActions(context) {
+    ConfirmationBottomSheet.show(
+      context,
+      children: <Widget>[
+        ConfirmationBottomSheetAction(
+          icon: Icon(Icons.visibility_off),
+          text: '屏蔽此人',
+          onTap: () => confirmBlock(context),
+        ),
+        ConfirmationBottomSheetAction(
+          icon: Icon(Icons.report),
+          text: '举报动态',
+          onTap: () => confirmReport(context),
+        ),
+      ],
+    );
+  }
+
+  void confirmBlock(context) async {
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '屏蔽此人',
+      content: '确定屏蔽此人吗',
+      showConfirm: true,
+    );
+    if (confirm) {
+      UserAPI.fAddToBlacklist(uid: widget.post.uid, name: widget.post.nickname);
+    }
+  }
+
+  void confirmReport(context) async {
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '举报动态',
+      content: '确定举报该条动态吗?',
+      showConfirm: true,
+    );
+    if (confirm) {
+      final provider = Provider.of<ReportRecordsProvider>(context, listen: false);
+      final canReport = await provider.addRecord(widget.post.id);
+      if (canReport) {
+        PostAPI.reportPost(widget.post);
+        showToast("举报成功");
+        navigatorState.pop();
+      }
+    }
+  }
+
   Widget get actionLists => Container(
+        width: Screens.width,
         color: Theme.of(context).cardColor,
         padding: EdgeInsets.symmetric(horizontal: suSetSp(16.0)),
         child: Row(
           children: <Widget>[
             MaterialButton(
               color: forwardsColor,
-              minWidth: suSetSp(10.0),
               elevation: 0,
+              padding: EdgeInsets.zero,
+              minWidth: suSetWidth(sectionButtonWidth),
+              shape: sectionButtonShape,
               child: Text("转发 $forwards", style: forwardsStyle),
               onPressed: () {
                 setCurrentTabActive(context, 0, "forwards");
               },
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             MaterialButton(
               color: commentsColor,
-              minWidth: suSetSp(10.0),
               elevation: 0,
+              padding: EdgeInsets.zero,
+              minWidth: suSetWidth(sectionButtonWidth),
+              shape: sectionButtonShape,
               child: Text("评论 $comments", style: commentsStyle),
               onPressed: () {
                 setCurrentTabActive(context, 1, "comments");
               },
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             Expanded(child: Container()),
             MaterialButton(
               color: praisesColor,
-              minWidth: suSetSp(10.0),
               elevation: 0,
+              padding: EdgeInsets.zero,
+              minWidth: suSetWidth(sectionButtonWidth),
+              shape: sectionButtonShape,
               child: Text("赞 $praises", style: praisesStyle),
               onPressed: () {
                 setCurrentTabActive(context, 2, "praises");
               },
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
           ],
         ),
@@ -341,26 +441,29 @@ class PostDetailPageState extends State<PostDetailPage> {
                     fontSize: suSetSp(23.0),
                   ),
             ),
+            actions: <Widget>[
+              widget.post.uid == currentUser.uid ? deleteButton : postActionButton,
+            ],
           ),
           Expanded(
-            child: NestedScrollView(
-              headerSliverBuilder: (_, __) => [
-                SliverToBoxAdapter(child: _post),
-                SliverPersistentHeader(
-                  delegate: CommonSliverPersistentHeaderDelegate(
-                    child: actionLists,
-                    height: suSetHeight(74.0),
+            child: ScrollConfiguration(
+              behavior: NoGlowScrollBehavior(),
+              child: NestedScrollView(
+                physics: const ClampingScrollPhysics(),
+                headerSliverBuilder: (_, __) => [
+                  SliverToBoxAdapter(child: _post),
+                  SliverPersistentHeader(
+                    delegate: CommonSliverPersistentHeaderDelegate(
+                      child: actionLists,
+                      height: suSetHeight(74.0),
+                    ),
+                    pinned: true,
                   ),
-                  pinned: true,
-                ),
-              ],
-              body: IndexedStack(
-                index: _tabIndex,
-                children: <Widget>[
-                  _forwardsList,
-                  _commentsList,
-                  _praisesList,
                 ],
+                body: IndexedStack(
+                  index: _tabIndex,
+                  children: <Widget>[_forwardsList, _commentsList, _praisesList],
+                ),
               ),
             ),
           ),

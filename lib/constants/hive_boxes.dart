@@ -48,9 +48,9 @@ class HiveBoxes {
   static void clearBoxes(context) async {
     final confirm = await ConfirmationBottomSheet.show(
       context,
-      title: '清除数据',
+      title: '清除应用数据',
       showConfirm: true,
-      content: '清除数据会将您的所有应用信息及设置清除。\n确定继续吗？',
+      content: '清除数据会将您的所有应用内容（包括设置、应用消息）清除。\n确定继续吗？',
     );
     if (confirm) {
       debugPrint('Clearing Hive Boxes...');
@@ -63,7 +63,6 @@ class HiveBoxes {
       await webAppsBox?.clear();
       await settingsBox?.clear();
       await startWeekBox?.clear();
-      showCenterToast("Boxes all cleared.");
       if (kReleaseMode) SystemNavigator.pop();
     }
   }

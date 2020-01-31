@@ -395,8 +395,10 @@ class MyInfoPageState extends State<MyInfoPage> {
   Widget get clearBoxesButton => UnconstrainedBox(
         child: Container(
           margin: EdgeInsets.all(suSetWidth(24.0)),
-          width: MediaQuery.of(context).size.width / 2.5,
-          height: suSetHeight(80.0),
+          padding: EdgeInsets.symmetric(
+            horizontal: suSetWidth(20.0),
+            vertical: suSetHeight(8.0),
+          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(60.0),
             boxShadow: <BoxShadow>[
@@ -411,7 +413,7 @@ class MyInfoPageState extends State<MyInfoPage> {
           child: FlatButton(
             onPressed: () => HiveBoxes.clearBoxes(context),
             child: Text(
-              "(DANGER)\n清除数据",
+              "(DANGER)\n清除应用数据",
               style: TextStyle(
                 color: currentThemeColor,
                 fontSize: suSetSp(20.0),

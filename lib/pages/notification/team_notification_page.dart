@@ -69,10 +69,10 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
           indicator: RoundedUnderlineTabIndicator(
             borderSide: BorderSide(
               color: currentThemeColor,
-              width: suSetHeight(3.5),
+              width: suSetHeight(3.0),
             ),
-            width: suSetWidth(50.0),
-            insets: EdgeInsets.only(bottom: suSetHeight(16.0)),
+            width: suSetWidth(28.0),
+            insets: EdgeInsets.only(bottom: suSetHeight(6.0)),
           ),
           labelPadding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
           tabs: [
@@ -91,7 +91,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
                     )
                   : Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Icon(actionsIcons[0], size: suSetSp(26.0)),
+                      child: Icon(actionsIcons[0], size: suSetWidth(30.0)),
                     ),
             ),
             Tab(
@@ -100,7 +100,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
                       icon: badgeIcon(
                         showBadge: notification.reply != 0,
                         content: notification.reply,
-                        icon: Icon(actionsIcons[1], size: suSetSp(26.0)),
+                        icon: Icon(actionsIcons[1], size: suSetWidth(30.0)),
                       ),
                       onPressed: () {
                         _tabController.animateTo(1);
@@ -109,7 +109,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
                     )
                   : Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Icon(actionsIcons[1], size: suSetSp(26.0)),
+                      child: Icon(actionsIcons[1], size: suSetWidth(30.0)),
                     ),
             ),
             Tab(
@@ -118,7 +118,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
                       icon: badgeIcon(
                         showBadge: notification.praise != 0,
                         content: notification.praise,
-                        icon: Icon(actionsIcons[2], size: suSetSp(26.0)),
+                        icon: Icon(actionsIcons[2], size: suSetWidth(30.0)),
                       ),
                       onPressed: () {
                         _tabController.animateTo(2);
@@ -127,7 +127,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
                     )
                   : Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Icon(actionsIcons[2], size: suSetSp(26.0)),
+                      child: Icon(actionsIcons[2], size: suSetWidth(30.0)),
                     ),
             ),
           ],

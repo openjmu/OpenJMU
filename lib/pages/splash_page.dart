@@ -181,7 +181,7 @@ class SplashState extends State<SplashPage> {
             ),
           ),
           SizedBox(
-            height: suSetHeight(26.0),
+            height: suSetHeight(30.0),
             child: Center(
               child: Text(
                 "正在登录",
@@ -196,16 +196,14 @@ class SplashState extends State<SplashPage> {
         children: <Widget>[
           Expanded(
             child: Container(
-              margin: EdgeInsets.only(
-                bottom: suSetHeight(10.0),
-              ),
+              margin: EdgeInsets.only(bottom: suSetHeight(10.0)),
               child: Center(
                 child: Icon(Icons.warning, color: Colors.white, size: suSetWidth(36.0)),
               ),
             ),
           ),
           SizedBox(
-            height: suSetHeight(26.0),
+            height: suSetHeight(30.0),
             child: Center(
               child: Text(
                 "请检查联网状态",
