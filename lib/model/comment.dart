@@ -4,11 +4,10 @@
 ///
 part of 'beans.dart';
 
-///
 /// 评论实体
+///
 /// [id] 评论id, [fromUserUid] 评论uid, [fromUserName] 评论用户名, [fromUserAvatar] 评论用户头像
 /// [content] 评论内容, [commentTime] 评论时间, [from] 来源
-///
 class Comment {
   int id, fromUserUid, floor;
   String fromUserName;

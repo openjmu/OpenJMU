@@ -46,11 +46,6 @@ class ForwardPositionedState extends State<ForwardPositioned> {
   double _keyboardHeight;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     _forwardController?.dispose();
     super.dispose();
@@ -65,8 +60,8 @@ class ForwardPositionedState extends State<ForwardPositioned> {
   }
 
   FormData createForm(File file) => FormData.from({
-        "image": UploadFileInfo(file, path.basename(file.path)),
-        "image_type": 0,
+        'image': UploadFileInfo(file, path.basename(file.path)),
+        'image_type': 0,
       });
 
   Future getImageRequest(FormData formData) async => NetUtils.postWithCookieAndHeaderSet(
@@ -116,13 +111,13 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       _forwarding = true;
     });
     String content;
-    _forwardController.text.length == 0 ? content = "转发" : content = _forwardController.text;
+    _forwardController.text.length == 0 ? content = '转发' : content = _forwardController.text;
 
     /// Sending image if it exist.
     if (_image != null) {
       Map<String, dynamic> data = (await getImageRequest(createForm(_image))).data;
       _imageID = int.parse(data['image_id']);
-      content += " |$_imageID| ";
+      content += ' |$_imageID| ';
     }
 
     PostAPI.postForward(
@@ -130,7 +125,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       widget.post.id,
       commentAtTheMeanTime,
     ).then((response) {
-      showToast("转发成功");
+      showToast('转发成功');
       Navigator.of(context).pop();
       Instances.eventBus.fire(PostForwardedEvent(
         widget.post.id,
@@ -140,10 +135,10 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       _forwarding = false;
       debugPrint('Forward post failed: $e');
       if (e is DioError && e.response.statusCode == 404) {
-        showToast("原动态已被删除");
+        showToast('原动态已被删除');
         Navigator.of(context).pop();
       } else {
-        showToast("转发失败");
+        showToast('转发失败');
       }
       if (mounted) setState(() {});
     });
@@ -170,7 +165,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
     final start = value.selection.baseOffset;
     final end = value.selection.extentOffset;
     if (value.selection.isValid) {
-      String newText = "";
+      String newText = '';
       if (value.selection.isCollapsed) {
         if (end > 0) {
           newText += value.text.substring(0, end);
@@ -196,7 +191,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
   Widget get emoticonPad => Visibility(
         visible: emoticonPadActive,
         child: EmotionPad(
-          route: "comment",
+          route: 'comment',
           height: _keyboardHeight,
           controller: _forwardController,
         ),
@@ -210,7 +205,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       if (_focusNode.canRequestFocus) _focusNode.requestFocus();
       if (user != null) {
         Future.delayed(const Duration(milliseconds: 250), () {
-          insertText("<M ${user.id}>@${user.nickname}<\/M>");
+          insertText('<M ${user.id}>@${user.nickname}<\/M>');
         });
       }
     });
@@ -231,7 +226,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             Text(
-              "同时评论到微博",
+              '同时评论到微博',
               style: TextStyle(
                 fontSize: suSetSp(20.0),
               ),

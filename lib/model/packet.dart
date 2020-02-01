@@ -4,11 +4,10 @@
 ///
 part of 'beans.dart';
 
-///
 /// 业务包实体
+///
 /// [status] 状态码, [command] 命令,
 /// [sequence] 包序, [length] 包体长度, [content] 内容,
-///
 class Packet {
   int status;
   int command;
@@ -34,14 +33,18 @@ class Packet {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status,
+      'command': '0x${command.toRadixString(16)}',
+      'sequence': sequence,
+      'length': length,
+      'content': content,
+    };
+  }
+
   @override
   String toString() {
-    return 'Packet {\n'
-        '  status: $status,\n'
-        '  command: 0x${command.toRadixString(16)},\n'
-        '  sequence: $sequence,\n'
-        '  length: $length,\n'
-        '  content: $content\n'
-        '}';
+    return 'Packet ${JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 }

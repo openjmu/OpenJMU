@@ -49,7 +49,7 @@ class OTAUtils {
           response: data,
         ));
       } else {
-        if (fromHome) showToast("已更新为最新版本");
+        if (fromHome) showToast('已更新为最新版本');
       }
       remoteVersion = _remoteVersion;
       remoteBuildNumber = _remoteBuildNumber;
@@ -89,10 +89,10 @@ class OTAUtils {
   static Widget updateDialog(HasUpdateEvent event) {
     String text;
     if (event.currentVersion == event.response['version']) {
-      text = "${event.currentVersion}(${event.currentBuild}) ->"
-          "${event.response['version']}(${event.response['buildNumber']})";
+      text = '${event.currentVersion}(${event.currentBuild}) ->'
+          '${event.response['version']}(${event.response['buildNumber']})';
     } else {
-      text = "${event.currentVersion} -> ${event.response['version']}";
+      text = '${event.currentVersion} -> ${event.response['version']}';
     }
     return Material(
       color: Colors.black38,
@@ -114,7 +114,7 @@ class OTAUtils {
                         child: Container(
                           margin: EdgeInsets.only(bottom: suSetHeight(12.0)),
                           child: SvgPicture.asset(
-                            "images/splash_page_logo.svg",
+                            'images/splash_page_logo.svg',
                             color: Colors.white,
                             width: suSetWidth(120.0),
                           ),
@@ -130,7 +130,7 @@ class OTAUtils {
                             text: TextSpan(
                               children: <TextSpan>[
                                 TextSpan(
-                                  text: "OpenJmu has new version",
+                                  text: 'OpenJmu has new version',
                                   style: TextStyle(
                                     fontFamily: 'chocolate',
                                     color: Colors.white,
@@ -182,7 +182,7 @@ class OTAUtils {
                           dismissAllToast();
                         },
                         child: Text(
-                          "取消",
+                          '取消',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: suSetSp(18.0),
@@ -195,7 +195,7 @@ class OTAUtils {
                       color: Colors.white,
                       onPressed: _tryUpdate,
                       child: Text(
-                        Platform.isIOS ? "前往 App Store 更新" : "更新",
+                        Platform.isIOS ? '前往 App Store 更新' : '更新',
                         style: TextStyle(
                           color: currentThemeColor,
                           fontWeight: FontWeight.bold,

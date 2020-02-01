@@ -31,11 +31,11 @@ class TeamPostPreviewCard extends StatelessWidget {
     final result = await showCupertinoDialog<bool>(
       context: context,
       builder: (context) => CupertinoAlertDialog(
-        title: Text("删除动态"),
-        content: Text("是否删除该条动态？"),
+        title: Text('删除动态'),
+        content: Text('是否删除该条动态？'),
         actions: <Widget>[
           CupertinoDialogAction(
-            child: Text("确认"),
+            child: Text('确认'),
             isDefaultAction: false,
             onPressed: () {
               Navigator.of(context).pop(true);
@@ -43,7 +43,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             textStyle: TextStyle(color: currentThemeColor),
           ),
           CupertinoDialogAction(
-            child: Text("取消"),
+            child: Text('取消'),
             isDefaultAction: true,
             onPressed: () {
               Navigator.of(context).pop(false);
@@ -59,7 +59,7 @@ class TeamPostPreviewCard extends StatelessWidget {
   void delete(context) {
     final post = Provider.of<TeamPostProvider>(context).post;
     TeamPostAPI.deletePost(postId: post.tid, postType: 7).then((response) {
-      showToast("删除成功");
+      showToast('删除成功');
       Instances.eventBus.fire(TeamPostDeletedEvent(postId: post.tid));
     });
   }
@@ -107,7 +107,7 @@ class TeamPostPreviewCard extends StatelessWidget {
     );
     if (confirm) {
       TeamPostAPI.reportPost(post);
-      showToast("举报成功");
+      showToast('举报成功');
       navigatorState.pop();
     }
   }
@@ -168,22 +168,22 @@ class TeamPostPreviewCard extends StatelessWidget {
   Widget _postTime(context, TeamPost post) {
     final now = DateTime.now();
     DateTime _postTime;
-    String time = "";
+    String time = '';
     if (post.postInfo != null && post.postInfo.isNotEmpty) {
       _postTime = DateTime.fromMillisecondsSinceEpoch(int.parse(post.postInfo[0]['post_time']));
-      time += "回复于";
+      time += '回复于';
     } else {
       _postTime = post.postTime;
     }
     if (_postTime.day == now.day && _postTime.month == now.month && _postTime.year == now.year) {
-      time += DateFormat("HH:mm").format(_postTime);
+      time += DateFormat('HH:mm').format(_postTime);
     } else if (_postTime.year == now.year) {
-      time += DateFormat("MM-dd HH:mm").format(_postTime);
+      time += DateFormat('MM-dd HH:mm').format(_postTime);
     } else {
-      time += DateFormat("yyyy-MM-dd HH:mm").format(_postTime);
+      time += DateFormat('yyyy-MM-dd HH:mm').format(_postTime);
     }
     return Text(
-      "$time",
+      '$time',
       style: Theme.of(context).textTheme.caption.copyWith(
             fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
@@ -194,15 +194,15 @@ class TeamPostPreviewCard extends StatelessWidget {
   Widget _content(TeamPost post) => Padding(
         padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
         child: ExtendedText(
-          post.content ?? "",
+          post.content ?? '',
           style: TextStyle(fontSize: suSetSp(21.0)),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
           overFlowTextSpan: OverFlowTextSpan(
             children: <TextSpan>[
-              TextSpan(text: " ... "),
+              TextSpan(text: ' ... '),
               TextSpan(
-                text: "全文",
+                text: '全文',
                 style: TextStyle(color: currentThemeColor),
               ),
             ],
@@ -243,7 +243,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                       color: Theme.of(context).textTheme.caption.color,
                     ),
                     Text(
-                      "查看更多回复",
+                      '查看更多回复',
                       style: Theme.of(context).textTheme.caption.copyWith(
                             fontSize: suSetSp(17.0),
                           ),
@@ -262,11 +262,11 @@ class TeamPostPreviewCard extends StatelessWidget {
                 vertical: suSetHeight(4.0),
               ),
               child: ExtendedText(
-                _post['content'] ?? "",
+                _post['content'] ?? '',
                 specialTextSpanBuilder: StackSpecialTextSpanBuilder(
                   prefixSpans: <InlineSpan>[
                     TextSpan(
-                      text: "@${_post['user_info']['nickname']}",
+                      text: '@${_post['user_info']['nickname']}',
                       style: TextStyle(
                         color: Colors.blue,
                       ),
@@ -274,7 +274,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                         ..onTap = () {
                           navigatorState.pushNamed(
                             Routes.OPENJMU_USER,
-                            arguments: {"uid": int.parse(_post['user_info']['uid'])},
+                            arguments: {'uid': int.parse(_post['user_info']['uid'])},
                           );
                         },
                     ),
@@ -294,7 +294,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                             color: currentThemeColor,
                           ),
                           child: Text(
-                            "楼主",
+                            '楼主',
                             style: TextStyle(
                               fontSize: suSetSp(17.0),
                               color: Colors.white,
@@ -304,7 +304,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                         ),
                       ),
                     TextSpan(
-                      text: ": ",
+                      text: ': ',
                       style: TextStyle(color: Colors.blue),
                     ),
                   ],
@@ -316,7 +316,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                 maxLines: 3,
                 overFlowTextSpan: OverFlowTextSpan(
                   children: <TextSpan>[
-                    TextSpan(text: " ......"),
+                    TextSpan(text: ' ......'),
                   ],
                 ),
               ),
@@ -363,8 +363,8 @@ class TeamPostPreviewCard extends StatelessWidget {
           navigatorState.pushNamed(
             Routes.OPENJMU_IMAGE_VIEWER,
             arguments: {
-              "index": i,
-              "pics": post.pics.map((pic) {
+              'index': i,
+              'pics': post.pics.map((pic) {
                 final id = int.parse(pic['fid']);
                 final imageUrl = API.teamFile(fid: id);
                 return ImageBean(
@@ -374,14 +374,14 @@ class TeamPostPreviewCard extends StatelessWidget {
                   postId: post.tid,
                 );
               }).toList(),
-              "heroPrefix": "team-post-preview-image-",
+              'heroPrefix': 'team-post-preview-image-',
             },
           );
         },
         child: _exImage,
       );
       _exImage = Hero(
-        tag: "team-post-preview-image-${post.tid}-$imageId",
+        tag: 'team-post-preview-image-${post.tid}-$imageId',
         child: _exImage,
       );
       imagesWidget.add(_exImage);
@@ -420,14 +420,14 @@ class TeamPostPreviewCard extends StatelessWidget {
               child: FlatButton.icon(
                 onPressed: null,
                 icon: SvgPicture.asset(
-                  "assets/icons/postActions/comment-fill.svg",
+                  'assets/icons/postActions/comment-fill.svg',
                   color: currentBrightness == Brightness.dark
                       ? actionIconColorDark
                       : actionIconColorLight,
                   width: suSetWidth(26.0),
                 ),
                 label: Text(
-                  provider.post.repliesCount == 0 ? "评论" : "${provider.post.repliesCount}",
+                  provider.post.repliesCount == 0 ? '评论' : '${provider.post.repliesCount}',
                   style: TextStyle(
                     color: currentBrightness == Brightness.dark
                         ? actionTextColorDark
@@ -452,7 +452,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   dotSecondaryColor: currentThemeColor,
                 ),
                 likeBuilder: (bool isLiked) => SvgPicture.asset(
-                  "assets/icons/postActions/praise-fill.svg",
+                  'assets/icons/postActions/praise-fill.svg',
                   color: isLiked
                       ? currentThemeColor
                       : currentBrightness == Brightness.dark
@@ -466,7 +466,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   horizontal: suSetWidth(8.0),
                 ),
                 countBuilder: (count, isLiked, text) => Text(
-                  count == 0 ? "赞" : text,
+                  count == 0 ? '赞' : text,
                   style: TextStyle(
                     color: isLiked
                         ? currentThemeColor
@@ -513,7 +513,7 @@ class TeamPostPreviewCard extends StatelessWidget {
               onTap: () {
                 navigatorState.pushNamed(
                   Routes.OPENJMU_TEAM_POST_DETAIL,
-                  arguments: {"provider": provider, "type": TeamPostType.post},
+                  arguments: {'provider': provider, 'type': TeamPostType.post},
                 );
               },
               child: Container(

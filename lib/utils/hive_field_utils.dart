@@ -9,19 +9,19 @@ class HiveFieldUtils {
 
   static final _box = HiveBoxes.settingsBox;
 
-  static final String brightnessDark = "theme_brightness";
-  static final String amoledDark = "theme_AMOLEDDark";
-  static final String colorThemeIndex = "theme_colorThemeIndex";
-  static final String brightnessPlatform = "theme_brightness_platform";
-  static final String settingHomeSplashIndex = "setting_home_splash_index";
-  static final String settingHomeStartUpIndex = "setting_home_startup_index";
+  static final String brightnessDark = 'theme_brightness';
+  static final String amoledDark = 'theme_AMOLEDDark';
+  static final String colorThemeIndex = 'theme_colorThemeIndex';
+  static final String brightnessPlatform = 'theme_brightness_platform';
+  static final String settingHomeSplashIndex = 'setting_home_splash_index';
+  static final String settingHomeStartUpIndex = 'setting_home_startup_index';
 
-  static final String settingFontScale = "setting_font_scale";
-  static final String settingNewIcons = "setting_new_icons";
-  static final String settingHideShieldPost = "setting_hide_shield_post";
+  static final String settingFontScale = 'setting_font_scale';
+  static final String settingNewIcons = 'setting_new_icons';
+  static final String settingHideShieldPost = 'setting_hide_shield_post';
 
-  static final String deviceUuid = "device_uuid";
-  static final String devicePushToken = "device_push_token";
+  static final String deviceUuid = 'device_uuid';
+  static final String devicePushToken = 'device_push_token';
 
   /// 获取设置的主题色
   static int getColorThemeIndex() => _box?.get(colorThemeIndex) ?? 0;

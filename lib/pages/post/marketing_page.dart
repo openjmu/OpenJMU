@@ -23,6 +23,7 @@ class _MarketingPageState extends State<MarketingPage> {
 
   @override
   void initState() {
+    super.initState();
     getPostList();
 
     Instances.eventBus
@@ -38,7 +39,6 @@ class _MarketingPageState extends State<MarketingPage> {
         posts.removeWhere((post) => post.tid == event.postId);
         if (mounted) setState(() {});
       });
-    super.initState();
   }
 
   Future getPostList({bool more = false}) async => TeamPostAPI.getPostList(

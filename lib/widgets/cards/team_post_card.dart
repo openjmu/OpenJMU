@@ -100,16 +100,16 @@ class _TeamPostCardState extends State<TeamPostCard> {
   Widget _postTime(context) {
     final now = DateTime.now();
     DateTime _postTime = post.postTime;
-    String time = "";
+    String time = '';
     if (_postTime.day == now.day && _postTime.month == now.month && _postTime.year == now.year) {
-      time += DateFormat("HH:mm").format(_postTime);
+      time += DateFormat('HH:mm').format(_postTime);
     } else if (_postTime.year == now.year) {
-      time += DateFormat("MM-dd HH:mm").format(_postTime);
+      time += DateFormat('MM-dd HH:mm').format(_postTime);
     } else {
-      time += DateFormat("yyyy-MM-dd HH:mm").format(_postTime);
+      time += DateFormat('yyyy-MM-dd HH:mm').format(_postTime);
     }
     return Text(
-      "$time",
+      '$time',
       style: Theme.of(context).textTheme.caption.copyWith(
             fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
@@ -120,7 +120,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
   Widget get _content => Padding(
         padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
         child: ExtendedText(
-          post.content ?? "",
+          post.content ?? '',
           style: TextStyle(fontSize: suSetSp(21.0)),
           onSpecialTextTap: specialTextTapRecognizer,
           specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
@@ -171,8 +171,8 @@ class _TeamPostCardState extends State<TeamPostCard> {
           navigatorState.pushNamed(
             Routes.OPENJMU_IMAGE_VIEWER,
             arguments: {
-              "index": index,
-              "pics": post.pics.map<ImageBean>((f) {
+              'index': index,
+              'pics': post.pics.map<ImageBean>((f) {
                 final imageId = int.parse(f['fid'].toString());
                 final imageUrl = API.teamFile(fid: imageId);
                 return ImageBean(
@@ -182,14 +182,14 @@ class _TeamPostCardState extends State<TeamPostCard> {
                   postId: post.tid,
                 );
               }).toList(),
-              "heroPrefix": "team-post-image-",
+              'heroPrefix': 'team-post-image-',
             },
           );
         },
         child: _exImage,
       );
       _exImage = Hero(
-        tag: "team-post-image-${post.tid}-$imageId",
+        tag: 'team-post-image-${post.tid}-$imageId',
         child: _exImage,
       );
       imagesWidget.add(_exImage);
@@ -253,24 +253,16 @@ class _TeamPostCardState extends State<TeamPostCard> {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(
-                    top: suSetHeight(10.0),
-                  ),
+                  padding: EdgeInsets.only(top: suSetHeight(10.0)),
                   child: Text(
-                    "${[
+                    '${[
                       ...(post.praisor
-                          .sublist(
-                            0,
-                            math.min(
-                              post.praisor.length,
-                              3,
-                            ),
-                          )
+                          .sublist(0, math.min(post.praisor.length, 3))
                           .map((userInfo) => userInfo['nickname'])
                           .toList())
-                    ].join("、")}"
-                    "${post.praisesCount > 3 ? "等${post.praisesCount}人" : ""}"
-                    "觉得很赞",
+                    ].join('、')}'
+                    '${post.praisesCount > 3 ? '等${post.praisesCount}人' : ''}'
+                    '觉得很赞',
                     style: Theme.of(context).textTheme.caption.copyWith(
                           fontSize: suSetSp(14.0),
                         ),

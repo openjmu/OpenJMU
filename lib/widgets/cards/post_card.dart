@@ -48,6 +48,7 @@ class _PostCardState extends State<PostCard> {
 
   @override
   void initState() {
+    super.initState();
     Instances.eventBus
       ..on<ForwardInPostUpdatedEvent>().listen((event) {
         if (event.postId == widget.post.id) widget.post.forwards = event.count;
@@ -64,7 +65,6 @@ class _PostCardState extends State<PostCard> {
         }
         if (this.mounted) setState(() {});
       });
-    super.initState();
   }
 
   Widget getPostNickname(context, post) => Row(
@@ -100,7 +100,7 @@ class _PostCardState extends State<PostCard> {
     }
     if (int.parse(_postTime.substring(0, 2)) == now.month &&
         int.parse(_postTime.substring(3, 5)) == now.day) {
-      _postTime = "${_postTime.substring(5, 11)}";
+      _postTime = '${_postTime.substring(5, 11)}';
     }
     return Text.rich(
       TextSpan(
@@ -113,7 +113,7 @@ class _PostCardState extends State<PostCard> {
               size: suSetWidth(16.0),
             ),
           ),
-          TextSpan(text: " $_postTime　"),
+          TextSpan(text: ' $_postTime　'),
           WidgetSpan(
             alignment: ui.PlaceholderAlignment.middle,
             child: Icon(
@@ -122,7 +122,7 @@ class _PostCardState extends State<PostCard> {
               size: suSetWidth(16.0),
             ),
           ),
-          TextSpan(text: " ${post.from}　"),
+          TextSpan(text: ' ${post.from}　'),
         ],
       ),
       style: subtitleStyle,
@@ -146,15 +146,15 @@ class _PostCardState extends State<PostCard> {
   Widget getRootPost(context, rootTopic) {
     var content = rootTopic['topic'];
     if (rootTopic['exists'] == 1) {
-      if (content['article'] == "此微博已经被屏蔽" || content['content'] == "此微博已经被屏蔽") {
+      if (content['article'] == '此微博已经被屏蔽' || content['content'] == '此微博已经被屏蔽') {
         return Container(
           margin: EdgeInsets.only(top: suSetHeight(10.0)),
-          child: getPostBanned("shield"),
+          child: getPostBanned('shield'),
         );
       } else {
         final _post = Post.fromJson(content);
         String topic =
-            "<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ";
+            '<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ';
         topic += content['article'] ?? content['content'];
         return Container(
           margin: EdgeInsets.only(top: suSetHeight(8.0)),
@@ -163,10 +163,10 @@ class _PostCardState extends State<PostCard> {
               navigatorState.pushNamed(
                 Routes.OPENJMU_POST_DETAIL,
                 arguments: {
-                  "post": _post,
-                  "index": widget.index,
-                  "fromPage": widget.fromPage,
-                  "parentContext": context,
+                  'post': _post,
+                  'index': widget.index,
+                  'fromPage': widget.fromPage,
+                  'parentContext': context,
                 },
               );
             },
@@ -200,7 +200,7 @@ class _PostCardState extends State<PostCard> {
     } else {
       return Container(
         margin: EdgeInsets.only(top: suSetWidth(10.0)),
-        child: getPostBanned("delete"),
+        child: getPostBanned('delete'),
       );
     }
   }
@@ -260,8 +260,8 @@ class _PostCardState extends State<PostCard> {
             navigatorState.pushNamed(
               Routes.OPENJMU_IMAGE_VIEWER,
               arguments: {
-                "index": index,
-                "pics": data.map<ImageBean>((f) {
+                'index': index,
+                'pics': data.map<ImageBean>((f) {
                   return ImageBean(
                     id: imageId,
                     imageUrl: f['image_original'],
@@ -269,18 +269,18 @@ class _PostCardState extends State<PostCard> {
                     postId: widget.post.id,
                   );
                 }).toList(),
-                "post": widget.post,
-                "heroPrefix": "square-post-image-hero-"
-                    "${widget.isDetail ? "isDetail-" : ""}",
+                'post': widget.post,
+                'heroPrefix': 'square-post-image-hero-'
+                    '${widget.isDetail ? 'isDetail-' : ''}',
               },
             );
           },
           child: _exImage,
         );
         _exImage = Hero(
-          tag: "square-post-image-hero-"
-              "${widget.isDetail ? "isDetail-" : ""}"
-              "${widget.post.id}-$imageId",
+          tag: 'square-post-image-hero-'
+              '${widget.isDetail ? 'isDetail-' : ''}'
+              '${widget.post.id}-$imageId',
           child: _exImage,
         );
         imagesWidget.add(_exImage);
@@ -335,7 +335,7 @@ class _PostCardState extends State<PostCard> {
               countBuilder: (int count, bool isLiked, String text) => SizedBox(
                 width: suSetWidth(40.0),
                 child: Text(
-                  count == 0 ? "" : text,
+                  count == 0 ? '' : text,
                   style: TextStyle(
                     color: isLiked
                         ? currentThemeColor
@@ -352,7 +352,7 @@ class _PostCardState extends State<PostCard> {
                 dotSecondaryColor: currentThemeColor,
               ),
               likeBuilder: (bool isLiked) => SvgPicture.asset(
-                "assets/icons/postActions/praise-fill.svg",
+                'assets/icons/postActions/praise-fill.svg',
                 color: isLiked
                     ? currentThemeColor
                     : currentBrightness == Brightness.dark
@@ -376,7 +376,7 @@ class _PostCardState extends State<PostCard> {
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               onPressed: null,
               icon: SvgPicture.asset(
-                "assets/icons/postActions/comment-fill.svg",
+                'assets/icons/postActions/comment-fill.svg',
                 color: currentBrightness == Brightness.dark
                     ? actionIconColorDark
                     : actionIconColorLight,
@@ -385,7 +385,7 @@ class _PostCardState extends State<PostCard> {
               label: SizedBox(
                 width: suSetWidth(40.0),
                 child: Text(
-                  comments == 0 ? "" : "$comments",
+                  comments == 0 ? '' : '$comments',
                   style: TextStyle(
                     color: currentBrightness == Brightness.dark
                         ? actionTextColorDark
@@ -406,11 +406,11 @@ class _PostCardState extends State<PostCard> {
               onPressed: () {
                 navigatorState.pushNamed(
                   Routes.OPENJMU_ADD_FORWARD,
-                  arguments: {"post": widget.post},
+                  arguments: {'post': widget.post},
                 );
               },
               icon: SvgPicture.asset(
-                "assets/icons/postActions/forward-fill.svg",
+                'assets/icons/postActions/forward-fill.svg',
                 color: currentBrightness == Brightness.dark
                     ? actionIconColorDark
                     : actionIconColorLight,
@@ -419,7 +419,7 @@ class _PostCardState extends State<PostCard> {
               label: SizedBox(
                 width: suSetWidth(40.0),
                 child: Text(
-                  forwards == 0 ? "" : "$forwards",
+                  forwards == 0 ? '' : '$forwards',
                   style: TextStyle(
                     color: currentBrightness == Brightness.dark
                         ? actionTextColorDark
@@ -439,13 +439,13 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget getPostBanned(String type) {
-    String content = "该条微博已被";
+    String content = '该条微博已被';
     switch (type) {
-      case "shield":
-        content += "屏蔽";
+      case 'shield':
+        content += '屏蔽';
         break;
-      case "delete":
-        content += "删除";
+      case 'delete':
+        content += '删除';
         break;
     }
     return Selector<ThemesProvider, bool>(
@@ -473,7 +473,7 @@ class _PostCardState extends State<PostCard> {
       onLongPress: widget.isDetail
           ? () {
               Clipboard.setData(ClipboardData(text: content));
-              showToast("已复制到剪贴板");
+              showToast('已复制到剪贴板');
             }
           : null,
       child: Padding(
@@ -483,7 +483,7 @@ class _PostCardState extends State<PostCard> {
                 horizontal: suSetWidth(contentPadding),
               ),
         child: ExtendedText(
-          content != null ? "$content " : null,
+          content != null ? '$content ' : null,
           style: TextStyle(fontSize: suSetSp(21.0)),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: widget.isDetail ?? false ? null : 8,
@@ -491,9 +491,9 @@ class _PostCardState extends State<PostCard> {
               ? null
               : OverFlowTextSpan(
                   children: <TextSpan>[
-                    TextSpan(text: " ... "),
+                    TextSpan(text: ' ... '),
                     TextSpan(
-                      text: "全文",
+                      text: '全文',
                       style: TextStyle(color: currentThemeColor),
                     ),
                   ],
@@ -611,7 +611,7 @@ class _PostCardState extends State<PostCard> {
       final canReport = await provider.addRecord(widget.post.id);
       if (canReport) {
         PostAPI.reportPost(widget.post);
-        showToast("举报成功");
+        showToast('举报成功');
         navigatorState.pop();
       }
     }
@@ -621,10 +621,10 @@ class _PostCardState extends State<PostCard> {
     navigatorState.pushNamed(
       Routes.OPENJMU_POST_DETAIL,
       arguments: {
-        "post": widget.post,
-        "index": widget.index,
-        "fromPage": widget.fromPage,
-        "parentContext": context,
+        'post': widget.post,
+        'index': widget.index,
+        'fromPage': widget.fromPage,
+        'parentContext': context,
       },
     );
   }
@@ -695,7 +695,7 @@ class _PostCardState extends State<PostCard> {
                             child: Row(
                               children: <Widget>[
                                 Text(
-                                  "浏览${post.glances}次　",
+                                  '浏览${post.glances}次　',
                                   style: Theme.of(context).textTheme.caption.copyWith(
                                         fontSize: suSetSp(18.0),
                                       ),
@@ -709,7 +709,7 @@ class _PostCardState extends State<PostCard> {
                           ),
                         ),
                       ]
-                    : <Widget>[getPostBanned("shield")],
+                    : <Widget>[getPostBanned('shield')],
               ),
             ),
           );

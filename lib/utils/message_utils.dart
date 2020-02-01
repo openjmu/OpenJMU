@@ -39,12 +39,12 @@ class MessageUtils {
   static ObserverList<Function> messageListeners = ObserverList<Function>();
 
   static void initMessageSocket() {
-    debugPrint("Connecting socket...");
+    debugPrint('Connecting socket...');
     Socket.connect(
       Messages.socketConfig['host'],
       Messages.socketConfig['port'],
     ).then((Socket socket) {
-      debugPrint("Socket connected.");
+      debugPrint('Socket connected.');
 
       messageSocket = socket;
       messageSocket.setOption(SocketOption.tcpNoDelay, true);
@@ -58,7 +58,7 @@ class MessageUtils {
   }
 
   static void destroySocket() async {
-    debugPrint("Socket pipe close.");
+    debugPrint('Socket pipe close.');
     messageKeepAliveTimer?.cancel();
     messageKeepAliveTimer = null;
     await messageSocket?.close();
@@ -141,7 +141,7 @@ class MessageUtils {
   /// Return a map which included a string and length of the string.
   ///
   /// Structure like:
-  /// {"length": 233, "content": "some words..."}
+  /// {'length': 233, 'content': 'some words...'}
   ///
   static Map<String, dynamic> getPackageString(List<int> data) {
     final byteData = ByteData.view(Uint8List.fromList(data.sublist(0, 2)).buffer);
@@ -254,8 +254,7 @@ class MessageUtils {
       content?.requestBody() ?? null,
     );
     messageSocket.add(package);
-    debugPrint("\nSending $command"
-        ": $package");
+    debugPrint('\nSending $command: $package');
   }
 
   ///
@@ -264,20 +263,20 @@ class MessageUtils {
   /// These methods included semantic void to call package add.
   ///
   static void sendCheckCodeVerify() => addPackage(
-        "WY_VERIFY_CHECKCODE",
+        'WY_VERIFY_CHECKCODE',
         M_WY_VERIFY_CHECKCODE(),
       );
   static void sendMultiPortLogin() => addPackage(
-        "WY_MULTPOINT_LOGIN",
+        'WY_MULTPOINT_LOGIN',
         M_WY_MULTPOINT_LOGIN(),
       );
-  static void sendLogout() => addPackage("WY_LOGOUT");
-  static void sendKeepAlive(_) => addPackage("WY_KEEPALIVE");
-  static void sendGetOfflineMessage() => addPackage("WY_GET_OFFLINEMSG");
+  static void sendLogout() => addPackage('WY_LOGOUT');
+  static void sendKeepAlive(_) => addPackage('WY_KEEPALIVE');
+  static void sendGetOfflineMessage() => addPackage('WY_GET_OFFLINEMSG');
   static void sendTextMessage(String message, int uid) {
     addPackage(
-      "WY_MSG",
-      M_WY_MSG(type: "MSG_A2A", uid: uid, message: message),
+      'WY_MSG',
+      M_WY_MSG(type: 'MSG_A2A', uid: uid, message: message),
     );
     Instances.eventBus.fire(MessageReceivedEvent(
       isSelf: true,
@@ -294,7 +293,7 @@ class MessageUtils {
     int ackId,
   }) {
     addPackage(
-      "WY_MULTPOINT_MSG_ACK",
+      'WY_MULTPOINT_MSG_ACK',
       M_WY_MULTPOINT_MSG_ACK(
         friendId: friendId,
         friendMultiPortId: friendMultiPortId,
@@ -309,7 +308,7 @@ class MessageUtils {
     int ackId,
   }) {
     addPackage(
-      "WY_MULTPOINT_MSG_ACK_ONE",
+      'WY_MULTPOINT_MSG_ACK_ONE',
       M_WY_MULTPOINT_MSG_ACK_ONE(
         friendId: friendId,
         friendMultiPortId: friendMultiPortId,
@@ -320,14 +319,14 @@ class MessageUtils {
 
   static void sendConfirmOfflineMessage(int messageId) {
     addPackage(
-      "WY_OFFLINEMSG_ACK",
+      'WY_OFFLINEMSG_ACK',
       M_WY_OFFLINEMSG_ACK(messageId: messageId),
     );
   }
 
   static void sendConfirmOfflineMessageOne(int messageId) {
     addPackage(
-      "WY_OFFLINEMSG_ACK_ONE",
+      'WY_OFFLINEMSG_ACK_ONE',
       M_WY_OFFLINEMSG_ACK_ONE(messageId: messageId),
     );
   }
@@ -337,7 +336,7 @@ class MessageUtils {
     int ackId,
   }) {
     addPackage(
-      "WY_MULTPOINT_NOTIFYSELF_MSG_ACKED",
+      'WY_MULTPOINT_NOTIFYSELF_MSG_ACKED',
       M_WY_MULTPOINT_NOTIFYSELF_MSG_ACKED(senderUid: senderUid, ackId: ackId),
     );
   }

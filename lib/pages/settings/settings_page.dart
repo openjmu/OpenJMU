@@ -3,69 +3,51 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(
-  name: "openjmu://settings",
-  routeName: "设置页",
-)
-class SettingsPage extends StatefulWidget {
-  @override
-  _SettingsPageState createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
+@FFRoute(name: "openjmu://settings", routeName: "设置页")
+class SettingsPage extends StatelessWidget {
   List<List<Map<String, dynamic>>> get pageSection => [
         [
           {
-            "icon": "night_mode",
-            "name": "夜间模式",
-            "description": "减轻眩光，提升夜间使用体验",
-            "widget": Consumer<ThemesProvider>(
+            'icon': 'night_mode',
+            'name': '夜间模式',
+            'description': '减轻眩光，提升夜间使用体验',
+            'widget': Consumer<ThemesProvider>(
               builder: (_, provider, __) {
                 return CustomSwitch(
                   activeColor: currentThemeColor,
                   value: provider.dark,
-                  onChanged: !provider.platformBrightness
-                      ? (bool value) {
-                          provider.dark = value;
-                        }
-                      : null,
+                  onChanged:
+                      !provider.platformBrightness ? (bool value) => provider.dark = value : null,
                 );
               },
             ),
           },
           {
-            "icon": "follow_system",
-            "name": "跟随系统夜间模式",
-            "description": "夜间模式将跟随系统主题切换",
-            "level": 2,
-            "widget": Consumer<ThemesProvider>(
+            'icon': 'follow_system',
+            'name': '跟随系统夜间模式',
+            'description': '夜间模式将跟随系统主题切换',
+            'level': 2,
+            'widget': Consumer<ThemesProvider>(
               builder: (_, provider, __) {
                 return CustomSwitch(
                   activeColor: currentThemeColor,
                   value: provider.platformBrightness,
-                  onChanged: (bool value) {
-                    provider.platformBrightness = value;
-                  },
+                  onChanged: (bool value) => provider.platformBrightness = value,
                 );
               },
             ),
           },
           {
-            "icon": "amoled_black",
-            "name": "AMOLED 黑",
-            "description": "更深的背景颜色，节省电量",
-            "level": 2,
-            "widget": Consumer<ThemesProvider>(
+            'icon': 'amoled_black',
+            'name': 'AMOLED 黑',
+            'description': '更深的背景颜色，节省电量',
+            'level': 2,
+            'widget': Consumer<ThemesProvider>(
               builder: (_, provider, __) {
                 return CustomSwitch(
                   activeColor: currentThemeColor,
                   value: provider.amoledDark,
-                  onChanged: Theme.of(context).brightness == Brightness.dark
-                      ? (bool value) {
-                          provider.amoledDark = value;
-                          if (mounted) setState(() {});
-                        }
-                      : null,
+                  onChanged: currentIsDark ? (bool value) => provider.amoledDark = value : null,
                 );
               },
             ),
@@ -73,10 +55,10 @@ class _SettingsPageState extends State<SettingsPage> {
         ],
         [
           {
-            "icon": "theme_color",
-            "name": "切换主题",
-            "description": "多彩颜色，丰富你的界面",
-            "widget": Container(
+            'icon': 'theme_color',
+            'name': '切换主题',
+            'description': '多彩颜色，丰富你的界面',
+            'widget': Container(
               decoration: BoxDecoration(
                 color: currentThemeColor,
                 shape: BoxShape.circle,
@@ -84,20 +66,20 @@ class _SettingsPageState extends State<SettingsPage> {
               width: suSetWidth(iconSize),
               height: suSetWidth(iconSize),
             ),
-            "route": Routes.OPENJMU_THEME,
+            'route': Routes.OPENJMU_THEME,
           },
           {
-            "icon": "launch_page",
-            "name": "启动页设置",
-            "description": "选择您偏好的启动页面",
-            "route": Routes.OPENJMU_SWITCH_STARTUP,
+            'icon': 'launch_page',
+            'name': '启动页设置',
+            'description': '选择您偏好的启动页面',
+            'route': Routes.OPENJMU_SWITCH_STARTUP,
           },
           if (currentUser.isTeacher)
             {
-              "icon": "new_icons",
-              "name": "应用中心新图标",
-              "description": "全新图标设计，简洁直达",
-              "widget": Selector<SettingsProvider, bool>(
+              'icon': 'new_icons',
+              'name': '应用中心新图标',
+              'description': '全新图标设计，简洁直达',
+              'widget': Selector<SettingsProvider, bool>(
                 selector: (_, provider) => provider.newAppCenterIcon,
                 builder: (_, newAppCenterIcon, __) {
                   return CustomSwitch(
@@ -111,16 +93,16 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
             },
           {
-            "icon": "font_size",
-            "name": "字体大小调节",
-            "description": "调整字体大小以获得最佳阅读体验",
-            "route": Routes.OPENJMU_FONT_SCALE,
+            'icon': 'font_size',
+            'name': '字体大小调节',
+            'description': '调整字体大小以获得最佳阅读体验',
+            'route': Routes.OPENJMU_FONT_SCALE,
           },
           {
-            "icon": "hide_blocked",
-            "name": "隐藏屏蔽的动态",
-            "description": "广场中被屏蔽的动态将被隐藏",
-            "widget": Selector<SettingsProvider, bool>(
+            'icon': 'hide_blocked',
+            'name': '隐藏屏蔽的动态',
+            'description': '广场中被屏蔽的动态将被隐藏',
+            'widget': Selector<SettingsProvider, bool>(
               selector: (_, provider) => provider.hideShieldPost,
               builder: (_, hideShieldPost, __) {
                 return CustomSwitch(
@@ -155,7 +137,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               child: page['level'] == null || page['level'] == 1
                   ? SvgPicture.asset(
-                      "assets/icons/settings/${page['icon']}.svg",
+                      'assets/icons/settings/${page['icon']}.svg',
                       width: suSetWidth(iconSize),
                       height: suSetWidth(iconSize),
                     )
@@ -167,7 +149,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text(
-                    "${page["name"]}",
+                    '${page['name']}',
                     style: TextStyle(
                       fontSize: suSetSp(
                         page['level'] == null || page['level'] == 1 ? 25.0 : 21.0,
@@ -175,7 +157,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                   Text(
-                    "${page["description"]}",
+                    '${page['description']}',
                     style: Theme.of(context).textTheme.caption.copyWith(
                           fontSize: suSetSp(
                             page['level'] == null || page['level'] == 1 ? 18.0 : 16.0,
@@ -200,7 +182,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   color: Theme.of(context).dividerColor,
                 ),
                 child: SvgPicture.asset(
-                  "assets/icons/arrow-right.svg",
+                  'assets/icons/arrow-right.svg',
                   color: Colors.white.withOpacity(0.9),
                   width: suSetSp(iconSize / 1.25),
                   height: suSetSp(iconSize / 1.25),
@@ -235,7 +217,7 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
         child: Center(
           child: Text(
-            "${page['pages'][index]}",
+            '${page['pages'][index]}',
             style: TextStyle(fontSize: suSetSp(20.0)),
           ),
         ),
@@ -256,14 +238,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Text(
-                      "偏好设置",
+                      '偏好设置',
                       style: Theme.of(context).textTheme.title.copyWith(
                             fontSize: suSetSp(26.0),
                             fontWeight: FontWeight.bold,
                           ),
                     ),
                     Text(
-                      "管理您的应用偏好设置",
+                      '管理您的应用偏好设置',
                       style: Theme.of(context).textTheme.caption.copyWith(
                             fontSize: suSetSp(18.0),
                           ),

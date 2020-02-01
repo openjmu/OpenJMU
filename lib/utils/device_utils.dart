@@ -12,7 +12,7 @@ class DeviceUtils {
   static final _deviceInfoPlugin = DeviceInfoPlugin();
   static var deviceInfo;
 
-  static String deviceModel = "OpenJMU Device";
+  static String deviceModel = 'OpenJMU Device';
   static String devicePushToken;
   static String deviceUuid;
 

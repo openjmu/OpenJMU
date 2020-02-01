@@ -73,8 +73,8 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
     widget._commentController._commentListState = this;
     Instances.eventBus.on<ScrollToTopEvent>().listen((event) {
       if (this.mounted &&
-          ((event.tabIndex == 0 && widget._commentController.commentType == "square") ||
-              (event.type == "Post"))) {
+          ((event.tabIndex == 0 && widget._commentController.commentType == 'square') ||
+              (event.type == 'Post'))) {
         _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
       }
     });
@@ -132,8 +132,8 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
 
       for (var commentData in _topics) {
         if (!UserAPI.blacklist.contains(jsonEncode({
-          "uid": commentData['reply']['user']['uid'].toString(),
-          "username": commentData['reply']['user']['nickname'],
+          'uid': commentData['reply']['user']['uid'].toString(),
+          'username': commentData['reply']['user']['nickname'],
         }))) {
           commentList.add(CommentAPI.createComment(commentData['reply']));
           _idList.add(commentData['id']);
@@ -176,8 +176,8 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
 
       for (var commentData in _topics) {
         if (!UserAPI.blacklist.contains(jsonEncode({
-          "uid": commentData['reply']['user']['uid'].toString(),
-          "username": commentData['reply']['user']['nickname'],
+          'uid': commentData['reply']['user']['uid'].toString(),
+          'username': commentData['reply']['user']['nickname'],
         }))) {
           commentList.add(CommentAPI.createComment(commentData['reply']));
           idList.add(commentData['id']);
@@ -206,7 +206,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
       if (_firstLoadComplete) {
         _itemList = ExtendedListView.builder(
           padding: EdgeInsets.zero,
-          controller: widget._commentController.commentType == "mention" ? null : _scrollController,
+          controller: widget._commentController.commentType == 'mention' ? null : _scrollController,
           itemCount: _commentList.length + 1,
           itemBuilder: (context, index) {
             if (index == _commentList.length - 1) {
@@ -273,9 +273,9 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
 
   @override
   void initState() {
+    super.initState();
     widget.commentInPostController._commentListInPostState = this;
     _refreshList();
-    super.initState();
   }
 
   void _refreshData() {
@@ -305,8 +305,8 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
 
       list.forEach((comment) {
         if (!UserAPI.blacklist.contains(jsonEncode({
-          "uid": comment['reply']['user']['uid'].toString(),
-          "username": comment['reply']['user']['nickname']
+          'uid': comment['reply']['user']['uid'].toString(),
+          'username': comment['reply']['user']['nickname']
         }))) {
           comment['reply']['post'] = widget.post;
           _comments.add(CommentAPI.createCommentInPost(comment['reply']));
@@ -318,10 +318,10 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
       if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint("${e.response.data}");
+        debugPrint('${e.response.data}');
       } else {
-        debugPrint("${e.request}");
-        debugPrint("${e.message}");
+        debugPrint('${e.request}');
+        debugPrint('${e.message}');
       }
       return;
     }
@@ -340,8 +340,8 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
 
       list.forEach((comment) {
         if (!UserAPI.blacklist.contains(jsonEncode({
-          "uid": comment['reply']['user']['uid'].toString(),
-          "username": comment['reply']['user']['nickname']
+          'uid': comment['reply']['user']['uid'].toString(),
+          'username': comment['reply']['user']['nickname']
         }))) {
           comment['reply']['post'] = widget.post;
           _comments.add(CommentAPI.createCommentInPost(comment['reply']));
@@ -355,10 +355,10 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
       if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint("${e.response.data}");
+        debugPrint('${e.response.data}');
       } else {
-        debugPrint("${e.request}");
-        debugPrint("${e.message}");
+        debugPrint('${e.request}');
+        debugPrint('${e.message}');
       }
       return;
     }
@@ -382,7 +382,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
     }
     if (int.parse(_commentTime.substring(0, 2)) == now.month &&
         int.parse(_commentTime.substring(3, 5)) == now.day) {
-      _commentTime = "${_commentTime.substring(5, 11)}";
+      _commentTime = '${_commentTime.substring(5, 11)}';
     }
     return Text(
       _commentTime,
@@ -394,7 +394,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
 
   Widget getExtendedText(context, content) {
     return ExtendedText(
-      content != null ? "$content " : null,
+      content != null ? '$content ' : null,
       style: TextStyle(fontSize: suSetSp(19.0)),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(
@@ -405,10 +405,10 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
 
   String replaceMentionTag(text) {
     String commentText = text;
-    final RegExp mTagStartReg = RegExp(r"<M?\w+.*?\/?>");
-    final RegExp mTagEndReg = RegExp(r"<\/M?\w+.*?\/?>");
-    commentText = commentText.replaceAllMapped(mTagStartReg, (match) => "");
-    commentText = commentText.replaceAllMapped(mTagEndReg, (match) => "");
+    final RegExp mTagStartReg = RegExp(r'<M?\w+.*?\/?>');
+    final RegExp mTagEndReg = RegExp(r'<\/M?\w+.*?\/?>');
+    commentText = commentText.replaceAllMapped(mTagStartReg, (_) => '');
+    commentText = commentText.replaceAllMapped(mTagEndReg, (_) => '');
     return commentText;
   }
 
@@ -464,7 +464,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
                         ),
                       ),
                       Text(
-                        "删除评论",
+                        '删除评论',
                         style: TextStyle(fontSize: suSetSp(19.0), color: Colors.white),
                       ),
                     ],
@@ -476,7 +476,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
                   Clipboard.setData(ClipboardData(
                     text: replaceMentionTag(_comments[index].content),
                   ));
-                  showToast("已复制到剪贴板");
+                  showToast('已复制到剪贴板');
                   Navigator.of(context).pop();
                 },
                 child: Column(
@@ -491,7 +491,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
                       ),
                     ),
                     Text(
-                      "复制评论",
+                      '复制评论',
                       style: TextStyle(
                         fontSize: suSetSp(19.0),
                         color: Colors.white,
@@ -597,8 +597,8 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
                                 navigatorState.pushNamed(
                                   Routes.OPENJMU_ADD_COMMENT,
                                   arguments: {
-                                    "post": widget.post,
-                                    "comment": _comments?.elementAt(index) ?? null,
+                                    'post': widget.post,
+                                    'comment': _comments?.elementAt(index) ?? null,
                                   },
                                 );
                               }

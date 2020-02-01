@@ -5,17 +5,14 @@ import 'package:flutter_qr_reader/qrcode_reader_view.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(
-  name: "openjmu://scan-qrcode",
-  routeName: "扫描二维码",
-)
+@FFRoute(name: "openjmu://scan-qrcode", routeName: "扫描二维码")
 class ScanQrCodePage extends StatefulWidget {
   @override
   _ScanQrCodePageState createState() => _ScanQrCodePageState();
 }
 
 class _ScanQrCodePageState extends State<ScanQrCodePage> {
-  final GlobalKey<QrcodeReaderViewState> _key = GlobalKey();
+  final _key = GlobalKey<QrcodeReaderViewState>();
 
   Future<void> onScan(context, String data) async {
     if (data == null) {

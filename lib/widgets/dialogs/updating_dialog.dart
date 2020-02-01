@@ -24,7 +24,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
               break;
             case OtaStatus.INSTALLING:
               dismissAllToast();
-              showToast("下载完成");
+              showToast('下载完成');
               break;
             default:
               dismissAllToast();
@@ -34,7 +34,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
       );
     } catch (e) {
       dismissAllToast();
-      showToast("更新失败: $e");
+      showToast('更新失败: $e');
       debugPrint('Failed to make OTA update. Details: $e');
     }
     super.initState();
@@ -67,7 +67,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
                   value: progress == 0 ? null : progress / 100,
                 ),
                 Text(
-                  "正在下载 $progress%",
+                  '正在下载 $progress%',
                   style: TextStyle(
                     color: Theme.of(context).textTheme.body1.color,
                     fontSize: suSetSp(16.0),

@@ -12,11 +12,11 @@ class DataUtils {
 
   static final settingsBox = HiveBoxes.settingsBox;
 
-  static final spIsLogin = "isLogin";
-  static final spTicket = "ticket";
+  static final spIsLogin = 'isLogin';
+  static final spTicket = 'ticket';
 
-  static final spUserUid = "userUid";
-  static final spUserWorkId = "userWorkId";
+  static final spUserUid = 'userUid';
+  static final spUserWorkId = 'userWorkId';
 
   static Future<bool> login(String username, String password) async {
     final params = Constants.loginParams(username: username, password: password);
@@ -39,16 +39,16 @@ class DataUtils {
         'gender': int.parse(user['gender'].toString()),
       };
       bool isWizard = true;
-      if (!userInfo["isTeacher"]) isWizard = await checkWizard();
+      if (!userInfo['isTeacher']) isWizard = await checkWizard();
       await saveLoginInfo(userInfo);
-      UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
-      showToast("登录成功！");
+      UserAPI.setBlacklist((await UserAPI.getBlacklist()).data['users']);
+      showToast('登录成功！');
       Instances.eventBus.fire(TicketGotEvent(isWizard));
       return true;
     } catch (e) {
       debugPrint(e.toString());
       if (e.response != null) {
-        showToast("登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}");
+        showToast('登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}');
       }
       return false;
     }
@@ -61,13 +61,13 @@ class DataUtils {
     Future.delayed(300.milliseconds, () {
       Provider.of<ThemesProvider>(currentContext, listen: false).resetTheme();
       clearLoginInfo();
-      showToast("退出登录成功");
+      showToast('退出登录成功');
     });
   }
 
   static Future<bool> checkWizard() async {
     final info = (await UserAPI.getStudentInfo()).data;
-    if (info["wizard"].toString() == "1") {
+    if (info['wizard'].toString() == '1') {
       return true;
     } else {
       return false;
@@ -97,26 +97,24 @@ class DataUtils {
   static Future reFetchTicket() async {
     try {
       final result = await getTicket();
-      if (!result) throw Error.safeToString("Re-fetch ticket failed.");
+      if (!result) throw Error.safeToString('Re-fetch ticket failed.');
       bool isWizard = true;
 //      if (!UserAPI.currentUser.isTeacher) isWizard = await checkWizard();
       if (currentUser.sid != null) {
-        UserAPI.setBlacklist((await UserAPI.getBlacklist()).data["users"]);
+        UserAPI.setBlacklist((await UserAPI.getBlacklist()).data['users']);
       }
       Instances.eventBus.fire(TicketGotEvent(isWizard));
     } catch (e) {
-      debugPrint("Error in recover login info: $e");
+      debugPrint('Error in recover login info: $e');
       Instances.eventBus.fire(TicketFailedEvent());
     }
   }
 
-  static Future getUserInfo([uid]) async {
-    await NetUtils.tokenDio
+  static Future<void> getUserInfo([uid]) async {
+    return await NetUtils.tokenDio
         .get(
-      "${API.userInfo}?uid=${uid ?? UserAPI.currentUser.uid}",
-      options: Options(
-        cookies: buildPHPSESSIDCookies(UserAPI.currentUser.sid),
-      ),
+      '${API.userInfo}?uid=${uid ?? UserAPI.currentUser.uid}',
+      options: Options(cookies: buildPHPSESSIDCookies(UserAPI.currentUser.sid)),
     )
         .then((response) {
       final data = response.data;
@@ -135,7 +133,7 @@ class DataUtils {
       };
       setUserInfo(userInfo);
     }).catchError((e) {
-      debugPrint("Get user info error: ${e.request.cookies}");
+      debugPrint('Get user info error: ${e.request.cookies}');
     });
   }
 
@@ -182,7 +180,7 @@ class DataUtils {
       return true;
     } catch (e) {
       if (e.response != null) {
-        debugPrint("Error response.");
+        debugPrint('Error response.');
         debugPrint(e.response.data.toString());
       }
       Instances.eventBus.fire(TicketFailedEvent());
@@ -201,18 +199,18 @@ class DataUtils {
 
   static Map<String, dynamic> buildPostHeaders(String sid) {
     final headers = <String, String>{
-      "CLOUDID": "jmu",
-      "CLOUD-ID": "jmu",
-      "UAP-SID": sid,
-      "WEIBO-API-KEY": Platform.isIOS ? Constants.postApiKeyIOS : Constants.postApiKeyAndroid,
-      "WEIBO-API-SECRET":
+      'CLOUDID': 'jmu',
+      'CLOUD-ID': 'jmu',
+      'UAP-SID': sid,
+      'WEIBO-API-KEY': Platform.isIOS ? Constants.postApiKeyIOS : Constants.postApiKeyAndroid,
+      'WEIBO-API-SECRET':
           Platform.isIOS ? Constants.postApiSecretIOS : Constants.postApiSecretAndroid,
     };
     return headers;
   }
 
   static List<Cookie> buildPHPSESSIDCookies(String sid) => [
-        if (sid != null) Cookie("PHPSESSID", sid),
-        if (sid != null) Cookie("OAPSID", sid),
+        if (sid != null) Cookie('PHPSESSID', sid),
+        if (sid != null) Cookie('OAPSID', sid),
       ];
 }

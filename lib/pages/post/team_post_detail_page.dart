@@ -42,7 +42,26 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   final comments = <TeamPost>{};
   final postComments = <TeamPostComment>{};
 
-  List<Map<String, dynamic>> extendedFeature;
+  List<Map<String, dynamic>> get extendedFeature => [
+//        {
+//          "name": "添加图片",
+//          "icon": Icons.add_photo_alternate,
+//          "color": Colors.blueAccent,
+//          "action": () {},
+//        },
+        {
+          "name": "提到某人",
+          "icon": Icons.alternate_email,
+          "color": Colors.teal,
+          "action": mentionPeople,
+        },
+        {
+          "name": "插入话题",
+          "icon": Icons.create,
+          "color": Colors.deepOrangeAccent,
+          "action": addTopic,
+        },
+      ];
 
   TeamPostProvider provider;
 
@@ -56,30 +75,10 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
 
   @override
   void initState() {
+    super.initState();
     provider = widget.provider;
     canLoadMore = loading = (provider.post?.repliesCount ?? -1) != 0;
     initialLoad();
-
-    extendedFeature = [
-//      {
-//        "name": "添加图片",
-//        "icon": Icons.add_photo_alternate,
-//        "color": Colors.blueAccent,
-//        "action": () {},
-//      },
-      {
-        "name": "提到某人",
-        "icon": Icons.alternate_email,
-        "color": Colors.teal,
-        "action": mentionPeople,
-      },
-      {
-        "name": "插入话题",
-        "icon": Icons.create,
-        "color": Colors.deepOrangeAccent,
-        "action": addTopic,
-      },
-    ];
 
     _textEditingController.addListener(() {
       final _canSend = _textEditingController.text.length > 0;
@@ -109,7 +108,6 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
           if (mounted) setState(() {});
         }
       });
-    super.initState();
   }
 
   void initialLoad({bool loadMore = false}) async {

@@ -48,10 +48,9 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   @override
   void initState() {
+    super.initState();
     getSignStatus();
     updateHello();
-
-    super.initState();
   }
 
   void getSignStatus() async {

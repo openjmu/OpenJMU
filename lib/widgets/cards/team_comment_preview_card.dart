@@ -62,7 +62,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                           color: currentThemeColor,
                         ),
                         child: Text(
-                          "楼主",
+                          '楼主',
                           style: TextStyle(
                             fontSize: suSetSp(12.0),
                             color: Colors.white,
@@ -124,14 +124,14 @@ class TeamCommentPreviewCard extends StatelessWidget {
       context: context,
       builder: (context) => CupertinoAlertDialog(
         title: Text(
-          "删除此楼",
+          '删除此楼',
         ),
         content: Text(
-          "是否删除该楼内容？",
+          '是否删除该楼内容？',
         ),
         actions: <Widget>[
           CupertinoDialogAction(
-            child: Text("确认"),
+            child: Text('确认'),
             isDefaultAction: false,
             onPressed: () {
               Navigator.of(context).pop(true);
@@ -139,7 +139,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
             textStyle: TextStyle(color: currentThemeColor),
           ),
           CupertinoDialogAction(
-            child: Text("取消"),
+            child: Text('取消'),
             isDefaultAction: true,
             onPressed: () {
               Navigator.of(context).pop(false);
@@ -155,7 +155,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
   void delete(TeamPostProvider provider) {
     TeamPostAPI.deletePost(postId: provider.post.tid, postType: 7).then(
       (response) {
-        showToast("删除成功");
+        showToast('删除成功');
         provider.commentDeleted();
         Instances.eventBus.fire(TeamCommentDeletedEvent(
           postId: provider.post.tid,
@@ -168,22 +168,22 @@ class TeamCommentPreviewCard extends StatelessWidget {
   Widget _postTime(context, TeamPost post) {
     final now = DateTime.now();
     DateTime _postTime;
-    String time = "";
+    String time = '';
     if (post.postInfo != null && post.postInfo.isNotEmpty) {
       _postTime = DateTime.fromMillisecondsSinceEpoch(int.parse(post.postInfo[0]['post_time']));
-      time += "回复于";
+      time += '回复于';
     } else {
       _postTime = post.postTime;
     }
     if (_postTime.day == now.day && _postTime.month == now.month && _postTime.year == now.year) {
-      time += DateFormat("HH:mm").format(_postTime);
+      time += DateFormat('HH:mm').format(_postTime);
     } else if (_postTime.year == now.year) {
-      time += DateFormat("MM-dd HH:mm").format(_postTime);
+      time += DateFormat('MM-dd HH:mm').format(_postTime);
     } else {
-      time += DateFormat("yyyy-MM-dd HH:mm").format(_postTime);
+      time += DateFormat('yyyy-MM-dd HH:mm').format(_postTime);
     }
     return Text(
-      "第${post.floor}楼 · $time",
+      '第${post.floor}楼 · $time',
       style: Theme.of(context).textTheme.caption.copyWith(
             fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
@@ -198,7 +198,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
             vertical: suSetHeight(4.0),
           ),
           child: ExtendedText(
-            post.content ?? "",
+            post.content ?? '',
             style: TextStyle(
               fontSize: suSetSp(21.0),
             ),
@@ -206,9 +206,9 @@ class TeamCommentPreviewCard extends StatelessWidget {
             maxLines: 8,
             overFlowTextSpan: OverFlowTextSpan(
               children: <TextSpan>[
-                TextSpan(text: " ... "),
+                TextSpan(text: ' ... '),
                 TextSpan(
-                  text: "全文",
+                  text: '全文',
                   style: TextStyle(color: currentThemeColor),
                 ),
               ],
@@ -225,7 +225,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                 final provider = TeamPostProvider(post);
                 navigatorState.pushNamed(
                   Routes.OPENJMU_TEAM_POST_DETAIL,
-                  arguments: {"provider": provider, "type": TeamPostType.comment},
+                  arguments: {'provider': provider, 'type': TeamPostType.comment},
                 );
               }
             : null,
@@ -261,7 +261,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                         color: Theme.of(context).textTheme.caption.color,
                       ),
                       Text(
-                        "查看更多回复",
+                        '查看更多回复',
                         style: Theme.of(context).textTheme.caption.copyWith(
                               fontSize: suSetSp(15.0),
                             ),
@@ -287,7 +287,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                         specialTextSpanBuilder:
                             StackSpecialTextSpanBuilder(prefixSpans: <InlineSpan>[
                           TextSpan(
-                            text: "@${_post['user']['nickname']}",
+                            text: '@${_post['user']['nickname']}',
                             style: TextStyle(
                               color: Colors.blue,
                             ),
@@ -295,7 +295,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                               ..onTap = () {
                                 navigatorState.pushNamed(
                                   Routes.OPENJMU_USER,
-                                  arguments: {"uid": int.parse(_post['user']['uid'])},
+                                  arguments: {'uid': int.parse(_post['user']['uid'])},
                                 );
                               },
                           ),
@@ -315,7 +315,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                                   color: currentThemeColor,
                                 ),
                                 child: Text(
-                                  "楼主",
+                                  '楼主',
                                   style: TextStyle(
                                     fontSize: suSetSp(17.0),
                                     color: Colors.white,
@@ -325,7 +325,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                               ),
                             ),
                           TextSpan(
-                            text: ": ",
+                            text: ': ',
                             style: TextStyle(
                               color: Colors.blue,
                             ),
@@ -389,8 +389,8 @@ class TeamCommentPreviewCard extends StatelessWidget {
           navigatorState.pushNamed(
             Routes.OPENJMU_IMAGE_VIEWER,
             arguments: {
-              "index": index,
-              "pics": post.pics.map<ImageBean>((f) {
+              'index': index,
+              'pics': post.pics.map<ImageBean>((f) {
                 return ImageBean(
                   id: imageId,
                   imageUrl: imageUrl,
@@ -404,7 +404,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
         child: _exImage,
       );
       _exImage = Hero(
-        tag: "team-comment-preview-image-${post.tid}-$imageId",
+        tag: 'team-comment-preview-image-${post.tid}-$imageId',
         child: _exImage,
       );
       imagesWidget.add(_exImage);

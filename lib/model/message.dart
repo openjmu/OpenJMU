@@ -4,15 +4,14 @@
 ///
 part of 'beans.dart';
 
-///
 /// 消息实体
+///
 /// [type] 消息类型 ([Messages.PRPL_91U_MSG_TYPE])
 /// [senderUid] 发送方uid
 /// [senderMultiPortId] 发送方多点ID
 /// [sendTime] 发送时间
 /// [ackId] ACK ID
 /// [content] 内容
-///
 @HiveType(typeId: HiveAdapterTypeIds.message)
 class Message with HiveObject {
   @HiveField(0)

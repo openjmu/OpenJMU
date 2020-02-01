@@ -45,7 +45,7 @@ class CommentPositionedState extends State<CommentPositioned> {
   bool _commenting = false;
   bool forwardAtTheMeanTime = false;
 
-  String commentContent = "";
+  String commentContent = '';
   bool emoticonPadActive = false;
 
   double _keyboardHeight;
@@ -80,8 +80,8 @@ class CommentPositionedState extends State<CommentPositioned> {
   }
 
   FormData createForm(File file) => FormData.from({
-        "image": UploadFileInfo(file, path.basename(file.path)),
-        "image_type": 0,
+        'image': UploadFileInfo(file, path.basename(file.path)),
+        'image_type': 0,
       });
 
   Future getImageRequest(FormData formData) async => NetUtils.postWithCookieAndHeaderSet(
@@ -91,7 +91,7 @@ class CommentPositionedState extends State<CommentPositioned> {
 
   Widget textField(context) {
     String _hintText;
-    toComment != null ? _hintText = "回复:@${toComment.fromUserName} " : _hintText = null;
+    toComment != null ? _hintText = '回复:@${toComment.fromUserName} ' : _hintText = null;
     return ExtendedTextField(
       specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
       focusNode: _focusNode,
@@ -134,28 +134,28 @@ class CommentPositionedState extends State<CommentPositioned> {
 
   Future _request(context) async {
     if (commentContent.length <= 0 && _image == null) {
-      showCenterErrorToast("内容不能为空！");
+      showCenterErrorToast('内容不能为空！');
     } else {
       setState(() {
         _commenting = true;
       });
-      String content = "";
+      String content = '';
 
       Comment _c = widget.comment;
       int _cid;
       if (toComment != null) {
         content =
-            "回复:<M ${_c.fromUserUid}>@${_c.fromUserName}</M> $content${_commentController.text}";
+            '回复:<M ${_c.fromUserUid}>@${_c.fromUserName}</M> $content${_commentController.text}';
         _cid = _c.id;
       } else {
-        content = "$content${_commentController.text}";
+        content = '$content${_commentController.text}';
       }
 
       /// Sending image if it exist.
       if (_image != null) {
         Map<String, dynamic> data = (await getImageRequest(createForm(_image))).data;
         _imageID = int.parse(data['image_id']);
-        content += " |$_imageID| ";
+        content += ' |$_imageID| ';
       }
 
       CommentAPI.postComment(
@@ -164,17 +164,17 @@ class CommentPositionedState extends State<CommentPositioned> {
         forwardAtTheMeanTime,
         replyToId: _cid,
       ).then((response) {
-        showToast("评论成功");
+        showToast('评论成功');
         Navigator.of(context).pop();
         Instances.eventBus.fire(PostCommentedEvent(widget.post.id));
       }).catchError((e) {
         _commenting = false;
         debugPrint('Comment post failed: $e');
         if (e is DioError && e.response.statusCode == 404) {
-          showToast("动态已被删除");
+          showToast('动态已被删除');
           Navigator.of(context).pop();
         } else {
-          showToast("评论失败");
+          showToast('评论失败');
         }
         if (mounted) setState(() {});
       });
@@ -202,7 +202,7 @@ class CommentPositionedState extends State<CommentPositioned> {
     int start = value.selection.baseOffset;
     int end = value.selection.extentOffset;
     if (value.selection.isValid) {
-      String newText = "";
+      String newText = '';
       if (value.selection.isCollapsed) {
         if (end > 0) {
           newText += value.text.substring(0, end);
@@ -230,7 +230,7 @@ class CommentPositionedState extends State<CommentPositioned> {
     return Visibility(
       visible: emoticonPadActive,
       child: EmotionPad(
-        route: "comment",
+        route: 'comment',
         height: _keyboardHeight,
         controller: _commentController,
       ),
@@ -245,7 +245,7 @@ class CommentPositionedState extends State<CommentPositioned> {
       FocusScope.of(context).requestFocus(_focusNode);
       if (user != null)
         Future.delayed(Duration(milliseconds: 250), () {
-          insertText("<M ${user.id}>@${user.nickname}<\/M>");
+          insertText('<M ${user.id}>@${user.nickname}<\/M>');
         });
     });
   }
@@ -265,7 +265,7 @@ class CommentPositionedState extends State<CommentPositioned> {
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             Text(
-              "同时转发到微博",
+              '同时转发到微博',
               style: TextStyle(
                 fontSize: suSetSp(20.0),
               ),

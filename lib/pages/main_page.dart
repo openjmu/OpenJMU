@@ -33,7 +33,7 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   static final pagesTitle = <String>['广场', '应用', '消息'];
-  static final pagesIcon = <String>["square", "apps", "messages"];
+  static final pagesIcon = <String>['square', 'apps', 'messages'];
   static const bottomBarHeight = 72.0;
   double get bottomBarIconSize => bottomBarHeight / 2.15;
 
@@ -57,7 +57,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   @override
   void initState() {
-    debugPrint("CurrentUser's ${UserAPI.currentUser}");
+    super.initState();
+    debugPrint('CurrentUser ${UserAPI.currentUser}');
 
     _tabIndex = Provider.of<SettingsProvider>(currentContext, listen: false).homeSplashIndex;
     if (widget.initAction != null) {
@@ -70,17 +71,16 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
     Instances.eventBus
       ..on<ActionsEvent>().listen((event) {
-        if (event.type == "action_home") {
+        if (event.type == 'action_home') {
           _selectedTab(0);
-        } else if (event.type == "action_apps") {
+        } else if (event.type == 'action_apps') {
           _selectedTab(1);
-        } else if (event.type == "action_message") {
+        } else if (event.type == 'action_message') {
           _selectedTab(2);
-        } else if (event.type == "action_user") {
+        } else if (event.type == 'action_user') {
           _selectedTab(3);
         }
       });
-    super.initState();
   }
 
   @override
@@ -92,22 +92,22 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   void initPushService() async {
     try {
       final data = <String, dynamic>{
-        "token": DeviceUtils.devicePushToken,
-        "date": DateFormat("yyyy/MM/dd HH:mm:ss", "en").format(DateTime.now()),
-        "uid": "${currentUser.uid}",
-        "name": "${currentUser.name ?? currentUser.uid}",
-        "workid": "${currentUser.workId ?? currentUser.uid}",
-        "buildnumber": OTAUtils.buildNumber,
-        "uuid": DeviceUtils.deviceUuid,
-        "platform": Platform.isIOS ? "ios" : "android",
+        'token': DeviceUtils.devicePushToken,
+        'date': DateFormat('yyyy/MM/dd HH:mm:ss', 'en').format(DateTime.now()),
+        'uid': '${currentUser.uid}',
+        'name': '${currentUser.name ?? currentUser.uid}',
+        'workid': '${currentUser.workId ?? currentUser.uid}',
+        'buildnumber': OTAUtils.buildNumber,
+        'uuid': DeviceUtils.deviceUuid,
+        'platform': Platform.isIOS ? 'ios' : 'android',
       };
       NetUtils.post(API.pushUpload, data: data).then((response) {
-        debugPrint("Push service info upload success.");
+        debugPrint('Push service info upload success.');
       }).catchError((e) {
-        debugPrint("Push service upload error: $e");
+        debugPrint('Push service upload error: $e');
       });
     } catch (e) {
-      debugPrint("Push service init error: $e");
+      debugPrint('Push service init error: $e');
     }
   }
 
@@ -141,7 +141,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   Future<bool> doubleBackExit() {
     int now = DateTime.now().millisecondsSinceEpoch;
     if (now - lastBack > 800) {
-      showToast("再按一次退出应用");
+      showToast('再按一次退出应用');
       lastBack = DateTime.now().millisecondsSinceEpoch;
     } else {
       SystemNavigator.pop();
@@ -197,7 +197,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
               (i) => FABBottomAppBarItem(iconPath: pagesIcon[i], text: pagesTitle[i]),
             ),
             FABBottomAppBarItem(
-              text: "我的",
+              text: '我的',
               child: Center(
                 child: SizedBox.fromSize(
                   size: Size.square(suSetWidth(bottomBarIconSize * 1.5)),

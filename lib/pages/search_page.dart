@@ -6,11 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/cards/post_card.dart';
 
-@FFRoute(
-  name: "openjmu://search",
-  routeName: "搜索页",
-  argumentNames: ["content"],
-)
+@FFRoute(name: "openjmu://search", routeName: "搜索页", argumentNames: ["content"])
 class SearchPage extends StatefulWidget {
   final String content;
 
@@ -31,8 +27,8 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
 
   @override
   void initState() {
-    _controller.addListener(canClearListener);
     super.initState();
+    _controller.addListener(canClearListener);
   }
 
   @override

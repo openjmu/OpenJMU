@@ -58,19 +58,18 @@ class SlideItem extends StatelessWidget {
                 }
               }
             : null,
-        child: SizedBox(
-          width: Screens.width,
-          child: child,
-        ),
+        child: SizedBox(width: Screens.width, child: child),
       ))
       ..addAll(menu
-          .map((w) => GestureDetector(
-                child: w,
-                onTap: () {
-                  w.onTap();
-                  dismiss();
-                },
-              ))
+          .map(
+            (w) => GestureDetector(
+              child: w,
+              onTap: () {
+                w.onTap();
+                dismiss();
+              },
+            ),
+          )
           .toList());
   }
 

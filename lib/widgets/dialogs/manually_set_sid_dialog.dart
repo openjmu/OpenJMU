@@ -14,14 +14,14 @@ class ManuallySetSidDialog extends StatefulWidget {
 
 class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
   TextEditingController _textEditingController;
-  String sid = "";
+  String sid = '';
   bool canSave = false;
 
   @override
   void initState() {
     super.initState();
     _textEditingController = TextEditingController(
-      text: UserAPI.currentUser.sid ?? "",
+      text: UserAPI.currentUser.sid ?? '',
     )..addListener(() {
         setState(() {
           sid = _textEditingController.text;

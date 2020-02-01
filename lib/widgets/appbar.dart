@@ -58,29 +58,3 @@ class FixedAppBar extends StatelessWidget {
     );
   }
 }
-
-class SliverFixedAppBarDelegate extends SliverPersistentHeaderDelegate {
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return FixedAppBar(
-      title: Text(
-        "集市动态",
-        style: Theme.of(context).textTheme.title.copyWith(
-              fontSize: suSetSp(21.0),
-            ),
-      ),
-      centerTitle: true,
-    );
-  }
-
-  @override
-  double get maxExtent => suSetHeight(kAppBarHeight) + Screens.topSafeHeight;
-
-  @override
-  double get minExtent => suSetHeight(kAppBarHeight) + Screens.topSafeHeight;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {
-    return false;
-  }
-}

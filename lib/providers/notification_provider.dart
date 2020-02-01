@@ -71,19 +71,19 @@ class NotificationProvider extends ChangeNotifier {
 
   void readTeamMention() {
     teamNotifications.mention = 0;
-    teamNotifications.latestNotify = "mention";
+    teamNotifications.latestNotify = 'mention';
     notifyListeners();
   }
 
   void readTeamReply() {
     teamNotifications.reply = 0;
-    teamNotifications.latestNotify = "reply";
+    teamNotifications.latestNotify = 'reply';
     notifyListeners();
   }
 
   void readTeamPraise() {
     teamNotifications.praise = 0;
-    teamNotifications.latestNotify = "praise";
+    teamNotifications.latestNotify = 'praise';
     notifyListeners();
   }
 }

@@ -20,7 +20,7 @@ class ReportRecordsProvider extends ChangeNotifier {
 
   Future<bool> addRecord(int postId) async {
     if (_records.contains(postId)) {
-      showToast("不能重复举报噢~");
+      showToast('不能重复举报噢~');
       return false;
     } else {
       _records.add(postId);

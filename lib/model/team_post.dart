@@ -4,8 +4,8 @@
 ///
 part of 'beans.dart';
 
-///
 /// 小组动态实体
+///
 /// [tid] 动态id, [uid] 用户uid, [nickname] 用户名称,
 /// [rootTid] 源动态id, [rootUid] 源动态用户id,
 /// [postTime] 动态时间, [category] 动态类型,
@@ -14,7 +14,6 @@ part of 'beans.dart';
 /// [repliesCount] 评论次数, [praisesCount] 点赞次数, [glances] 被查看次数,
 /// [isLike] 当前用户是否已赞, [praisor] 赞了的人, [heat] 热度, [floor] 楼层,
 /// [unitId] 机构id, [groupId] 组别id,
-///
 class TeamPost {
   int tid, uid, rootTid, rootUid;
   String nickname;
@@ -64,11 +63,11 @@ class TeamPost {
   factory TeamPost.fromJson(Map<String, dynamic> json) {
     if (json == null) return null;
     json.forEach((k, v) {
-      if (json[k] == "") json[k] = null;
+      if (json[k] == '') json[k] = null;
     });
     Map<String, dynamic> _user = json['user_info'];
     _user.forEach((k, v) {
-      if (_user[k] == "") _user[k] = null;
+      if (_user[k] == '') _user[k] = null;
     });
     TeamPost _post = TeamPost(
       tid: int.tryParse(json['tid'].toString()),
@@ -104,31 +103,35 @@ class TeamPost {
   @override
   int get hashCode => tid.hashCode;
 
+  Map<String, dynamic> toJson() {
+    return {
+      'tid': tid,
+      'uid': uid,
+      'rootTid': rootTid,
+      'rootUid': rootUid,
+      'nickname': nickname,
+      'postTime': postTime.toString(),
+      'category': category,
+      'title': title,
+      'content': content,
+      'pics': pics,
+      'postInfo': postInfo,
+      'userInfo': userInfo,
+      'replyInfo': replyInfo,
+      'repliesCount': repliesCount,
+      'praisesCount': praisesCount,
+      'glances': glances,
+      'isLike': isLike,
+      'praisor': praisor,
+      'heat': heat,
+      'floor': floor,
+      'unitId': unitId,
+      'groupId': groupId,
+    };
+  }
+
   @override
   String toString() {
-    return "TeamPost ${JsonEncoder.withIndent("  ").convert({
-      "tid": tid,
-      "uid": uid,
-      "rootTid": rootTid,
-      "rootUid": rootUid,
-      "nickname": nickname,
-      "postTime": postTime.toString(),
-      "category": category,
-      "title": title,
-      "content": content,
-      "pics": pics,
-      "postInfo": postInfo,
-      "userInfo": userInfo,
-      "replyInfo": replyInfo,
-      "repliesCount": repliesCount,
-      "praisesCount": praisesCount,
-      "glances": glances,
-      "isLike": isLike,
-      "praisor": praisor,
-      "heat": heat,
-      "floor": floor,
-      "unitId": unitId,
-      "groupId": groupId,
-    })}";
+    return 'TeamPost ${JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 }

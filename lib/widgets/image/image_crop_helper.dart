@@ -45,8 +45,7 @@ void _isolateEncodeImage(SendPort port) {
   });
 }
 
-Future<List<int>> cropImage(
-    {ExtendedImageEditorState state}) async {
+Future<List<int>> cropImage({ExtendedImageEditorState state}) async {
   final cropRect = state.getCropRect();
   final action = state.editAction;
 
@@ -60,8 +59,7 @@ Future<List<int>> cropImage(
   if (action.needCrop) option.addOption(ClipOption.fromRect(cropRect));
 
   if (action.needFlip)
-    option.addOption(
-        FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
+    option.addOption(FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
 
   if (action.hasRotateAngle) option.addOption(RotateOption(rotateAngle));
 

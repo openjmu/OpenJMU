@@ -33,6 +33,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
 
   @override
   void initState() {
+    super.initState();
     provider = Provider.of<NotificationProvider>(currentContext, listen: false);
     _tabController = TabController(
       length: 3,
@@ -48,8 +49,6 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
     commentByMention();
     commentByReply();
     praiseList();
-
-    super.initState();
   }
 
   List<Widget> get actions => [

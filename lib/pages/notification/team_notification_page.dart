@@ -31,6 +31,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
 
   @override
   void initState() {
+    super.initState();
     provider = Provider.of<NotificationProvider>(currentContext, listen: false);
 
     _tabController = TabController(
@@ -38,8 +39,6 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
       length: 3,
       vsync: this,
     );
-
-    super.initState();
   }
 
   int getInitialIndex() {

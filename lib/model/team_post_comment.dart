@@ -4,12 +4,11 @@
 ///
 part of 'beans.dart';
 
-///
 /// 小组动态评论实体
+///
 /// [rid] 评论id, [originId] 原动态id, [uid] 用户uid, [originType] 原动态类型,
 /// [postTime] 发布时间, [content] 评论内容, [floor] 楼层,
-/// [userInfo] 用户信息,
-///
+/// [userInfo] 用户信息
 class TeamPostComment {
   int rid, originId, uid;
   String originType;
@@ -32,11 +31,11 @@ class TeamPostComment {
   factory TeamPostComment.fromJson(Map<String, dynamic> json) {
     if (json == null) return null;
     json.forEach((k, v) {
-      if (json[k] == "") json[k] = null;
+      if (json[k] == '') json[k] = null;
     });
     final _user = json['user'];
     _user.forEach((k, v) {
-      if (_user[k] == "") _user[k] = null;
+      if (_user[k] == '') _user[k] = null;
     });
     return TeamPostComment(
       rid: int.parse(json['rid'].toString()),
@@ -60,17 +59,21 @@ class TeamPostComment {
   @override
   int get hashCode => rid.hashCode;
 
+  Map<String, dynamic> toJson() {
+    return {
+      'rid': rid,
+      'originId': originId,
+      'uid': uid,
+      'originType': originType,
+      'postTime': postTime.toString(),
+      'content': content,
+      'floor': floor,
+      'userInfo': userInfo,
+    };
+  }
+
   @override
   String toString() {
-    return 'TeamPostComment ${JsonEncoder.withIndent("  ").convert({
-      "rid": rid,
-      "originId": originId,
-      "uid": uid,
-      "originType": originType,
-      "postTime": postTime.toString(),
-      "content": content,
-      "floor": floor,
-      "userInfo": userInfo,
-    })}';
+    return 'TeamPostComment ${JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 }

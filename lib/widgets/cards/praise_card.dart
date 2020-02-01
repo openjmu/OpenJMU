@@ -56,7 +56,7 @@ class PraiseCard extends StatelessWidget {
     }
     if (int.parse(_praiseTime.substring(0, 2)) == now.month &&
         int.parse(_praiseTime.substring(3, 5)) == now.day) {
-      _praiseTime = "${_praiseTime.substring(5, 11)}";
+      _praiseTime = '${_praiseTime.substring(5, 11)}';
     }
     return Row(
       children: <Widget>[
@@ -65,7 +65,7 @@ class PraiseCard extends StatelessWidget {
           color: Colors.grey,
           size: suSetWidth(13.0),
         ),
-        Text(" $_praiseTime", style: subtitleStyle),
+        Text(' $_praiseTime', style: subtitleStyle),
       ],
     );
   }
@@ -81,7 +81,7 @@ class PraiseCard extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: suSetWidth(24.0)),
                 child: Text(
-                  "赞了这条微博",
+                  '赞了这条微博',
                   style: TextStyle(
                     fontSize: suSetSp(21.0),
                   ),
@@ -97,7 +97,7 @@ class PraiseCard extends StatelessWidget {
 
   Widget getRootContent(context, Praise praise) {
     Post _post = Post.fromJson(praise.post);
-    String topic = "<M ${_post.uid}>@${_post.nickname}<\/M>: ";
+    String topic = '<M ${_post.uid}>@${_post.nickname}<\/M>: ';
     topic += _post.content;
     return Container(
       width: Screens.width,
@@ -117,16 +117,16 @@ class PraiseCard extends StatelessWidget {
 
   Widget getExtendedText(context, content) {
     return ExtendedText(
-      content != null ? "$content " : null,
+      content != null ? '$content ' : null,
       style: TextStyle(fontSize: suSetSp(21.0)),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       maxLines: 8,
       overFlowTextSpan: OverFlowTextSpan(
         children: <TextSpan>[
-          TextSpan(text: " ... "),
+          TextSpan(text: ' ... '),
           TextSpan(
-            text: "全文",
+            text: '全文',
             style: TextStyle(color: currentThemeColor),
           ),
         ],
@@ -141,7 +141,7 @@ class PraiseCard extends StatelessWidget {
       onTap: () {
         navigatorState.pushNamed(
           Routes.OPENJMU_POST_DETAIL,
-          arguments: {"post": _post, "parentContext": context},
+          arguments: {'post': _post, 'parentContext': context},
         );
       },
       child: Container(

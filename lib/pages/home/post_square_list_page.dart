@@ -59,6 +59,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
 
   @override
   void initState() {
+    super.initState();
     _tabController = TabController(
       initialIndex: Provider.of<SettingsProvider>(
         currentContext,
@@ -81,8 +82,6 @@ class PostSquareListPageState extends State<PostSquareListPage>
       }
       pageLoad[_tabController.index]();
     });
-
-    super.initState();
   }
 
   Widget get tabBar => TabBar(

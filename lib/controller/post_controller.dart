@@ -65,12 +65,13 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
 
   @override
   void initState() {
+    super.initState();
     widget._postController._postListState = this;
     Instances.eventBus
       ..on<ScrollToTopEvent>().listen((event) {
         if (this.mounted &&
-            ((event.tabIndex == 0 && widget._postController.postType == "square") ||
-                (event.type == "首页"))) {
+            ((event.tabIndex == 0 && widget._postController.postType == 'square') ||
+                (event.type == '首页'))) {
           if (_postList.length > 20) _postList = _postList.sublist(0, 20);
           _scrollController.animateTo(
             0.0,
@@ -95,7 +96,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
         if (mounted) setState(() {});
       })
       ..on<PostDeletedEvent>().listen((event) {
-        debugPrint("PostDeleted: ${event.postId} / ${event.page} / ${event.index}");
+        debugPrint('PostDeleted: ${event.postId} / ${event.page} / ${event.index}');
         if ((event.page == widget._postController.postType) && event.index != null) {
           _idList.removeAt(event.index);
           _postList.removeAt(event.index);
@@ -133,7 +134,6 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     );
 
     _refreshData();
-    super.initState();
   }
 
   Future<Null> _loadData() async {
@@ -156,8 +156,8 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
 
     for (var postData in _topics) {
       if (!UserAPI.blacklist.contains(jsonEncode({
-        "uid": postData['topic']['user']['uid'].toString(),
-        "username": postData['topic']['user']['nickname'],
+        'uid': postData['topic']['user']['uid'].toString(),
+        'username': postData['topic']['user']['nickname'],
       }))) {
         postList.add(Post.fromJson(postData['topic']));
         _idList.add(
@@ -197,10 +197,10 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     int _count = int.parse(result['count'].toString());
 
     for (var postData in _topics) {
-      if (postData['topic'] != null && postData != "") {
+      if (postData['topic'] != null && postData != '') {
         if (!UserAPI.blacklist.contains(jsonEncode({
-          "uid": postData['topic']['user']['uid'].toString(),
-          "username": postData['topic']['user']['nickname'],
+          'uid': postData['topic']['user']['uid'].toString(),
+          'username': postData['topic']['user']['nickname'],
         }))) {
           postList.add(Post.fromJson(postData['topic']));
           idList.add(
@@ -250,7 +250,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             });
           },
         ),
-        controller: widget._postController.postType == "user" ? null : _scrollController,
+        controller: widget._postController.postType == 'user' ? null : _scrollController,
         itemCount: _postList.length + 1,
         itemBuilder: (context, index) {
           if (index == _postList.length - 1 && _canLoadMore) _loadData();
@@ -263,7 +263,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
               index: index,
               isDetail: false,
               parentContext: context,
-              key: ValueKey("post-key-${_postList[index].id}"),
+              key: ValueKey('post-key-${_postList[index].id}'),
             );
           } else {
             return SizedBox.shrink();
@@ -324,8 +324,8 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
 
   @override
   void initState() {
-    _refreshList();
     super.initState();
+    _refreshList();
   }
 
   void _refreshData() {
@@ -353,8 +353,8 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
       }
       list.forEach((post) {
         if (!UserAPI.blacklist.contains(jsonEncode({
-          "uid": post['topic']['user']['uid'].toString(),
-          "username": post['topic']['user']['nickname'],
+          'uid': post['topic']['user']['uid'].toString(),
+          'username': post['topic']['user']['nickname'],
         }))) {
           _posts.add(Post.fromJson(post['topic']));
         }
@@ -364,10 +364,10 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
       if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint("${e.response.data}");
+        debugPrint('${e.response.data}');
       } else {
-        debugPrint("${e.request}");
-        debugPrint("${e.message}");
+        debugPrint('${e.request}');
+        debugPrint('${e.message}');
       }
       return;
     }
@@ -384,8 +384,8 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
       if (response['count'] as int < total) canLoadMore = true;
       list.forEach((post) {
         if (!UserAPI.blacklist.contains(jsonEncode({
-          "uid": post['topic']['user']['uid'].toString(),
-          "username": post['topic']['user']['nickname'],
+          'uid': post['topic']['user']['uid'].toString(),
+          'username': post['topic']['user']['nickname'],
         }))) {
           _posts.add(Post.fromJson(post['topic']));
         }
@@ -396,10 +396,10 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
       if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint("${e.response.data}");
+        debugPrint('${e.response.data}');
       } else {
-        debugPrint("${e.request}");
-        debugPrint("${e.message}");
+        debugPrint('${e.request}');
+        debugPrint('${e.message}');
       }
       return;
     }
@@ -421,7 +421,7 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
     }
     if (int.parse(_postTime.substring(0, 2)) == now.month &&
         int.parse(_postTime.substring(3, 5)) == now.day) {
-      _postTime = "${_postTime.substring(5, 11)}";
+      _postTime = '${_postTime.substring(5, 11)}';
     }
     return Text(
       _postTime,
@@ -432,7 +432,7 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
   }
 
   Widget getExtendedText(context, content) => ExtendedText(
-        content != null ? "$content " : null,
+        content != null ? '$content ' : null,
         style: TextStyle(fontSize: suSetSp(19.0)),
         onSpecialTextTap: specialTextTapRecognizer,
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),

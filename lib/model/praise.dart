@@ -4,11 +4,10 @@
 ///
 part of 'beans.dart';
 
-///
 /// 点赞实体
+///
 /// [id] 点赞id， [uid] 用户uid, [postId] 被赞动态id, [avatar] 用户头像, [praiseTime] 点赞时间, [nickname] 用户昵称
 /// [post] 被赞动态数据, [topicUid] 动态用户uid, [topicNickname] 动态用户名称, [pics] 动态图片
-///
 class Praise {
   int id, uid, postId;
   String avatar;
@@ -40,5 +39,3 @@ class Praise {
   @override
   int get hashCode => id.hashCode;
 }
-
-///

@@ -71,6 +71,7 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   @override
   void initState() {
+    super.initState();
     _post = postCard;
     forwards = widget.post.forwards;
     comments = widget.post.comments;
@@ -148,8 +149,6 @@ class PostDetailPageState extends State<PostDetailPage> {
           });
         }
       });
-
-    super.initState();
   }
 
   void setTabIndex(index) {

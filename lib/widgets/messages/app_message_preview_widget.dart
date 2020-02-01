@@ -54,11 +54,11 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     if (widget.message.sendTime.day == now.day &&
         widget.message.sendTime.month == now.month &&
         widget.message.sendTime.year == now.year) {
-      formattedTime = DateFormat("HH:mm").format(widget.message.sendTime);
+      formattedTime = DateFormat('HH:mm').format(widget.message.sendTime);
     } else if (widget.message.sendTime.year == now.year) {
-      formattedTime = DateFormat("MM-dd HH:mm").format(widget.message.sendTime);
+      formattedTime = DateFormat('MM-dd HH:mm').format(widget.message.sendTime);
     } else {
-      formattedTime = DateFormat("yy-MM-dd HH:mm").format(widget.message.sendTime);
+      formattedTime = DateFormat('yy-MM-dd HH:mm').format(widget.message.sendTime);
     }
     if (mounted && !fromBuild) setState(() {});
   }
@@ -80,7 +80,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                 selector: (_, provider) => provider.dark,
                 builder: (_, dark, __) {
                   return Text(
-                    "${unreadMessages.length}",
+                    '${unreadMessages.length}',
                     style: TextStyle(
                       color: dark ? Colors.grey[300] : Colors.white,
                       fontSize: suSetSp(18.0),
@@ -118,7 +118,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        navigatorState.pushNamed(Routes.OPENJMU_CHAT_APP_MESSAGE_PAGE, arguments: {"app": app});
+        navigatorState.pushNamed(Routes.OPENJMU_CHAT_APP_MESSAGE_PAGE, arguments: {'app': app});
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: suSetSp(16.0)),
@@ -143,7 +143,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                           height: suSetSp(30.0),
                           child: app != null
                               ? Text(
-                                  "${app.name ?? app.appId}",
+                                  '${app.name ?? app.appId}',
                                   style: Theme.of(context).textTheme.body1.copyWith(
                                         fontSize: suSetSp(22.0),
                                         fontWeight: FontWeight.w500,
@@ -152,7 +152,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                               : SizedBox.shrink(),
                         ),
                         Text(
-                          " $formattedTime",
+                          ' $formattedTime',
                           style: Theme.of(context).textTheme.body1.copyWith(
                                 color: Theme.of(context).textTheme.body1.color.withOpacity(0.5),
                               ),
@@ -162,7 +162,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                       ],
                     ),
                     Text(
-                      "${widget.message.content}",
+                      '${widget.message.content}',
                       style: Theme.of(context).textTheme.body1.copyWith(
                             color: Theme.of(context).textTheme.body1.color.withOpacity(0.5),
                             fontSize: suSetSp(19.0),

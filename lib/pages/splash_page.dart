@@ -10,11 +10,7 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/login_page.dart';
 import 'package:openjmu/pages/main_page.dart';
 
-@FFRoute(
-  name: "openjmu://splash",
-  routeName: "启动页",
-  argumentNames: ["initAction"],
-)
+@FFRoute(name: "openjmu://splash", routeName: "启动页", argumentNames: ["initAction"])
 class SplashPage extends StatefulWidget {
   final String initAction;
 
@@ -38,6 +34,7 @@ class SplashState extends State<SplashPage> {
 
   @override
   void initState() {
+    super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) {
       setState(() {
         firstFramed = true;
@@ -74,7 +71,7 @@ class SplashState extends State<SplashPage> {
         if (mounted && isOnline != null) checkOnline(event);
       })
       ..on<TicketGotEvent>().listen((event) async {
-        debugPrint("Ticket Got.");
+        debugPrint('Ticket Got.');
         if (!event.isWizard) {}
         isUserLogin = true;
         if (mounted) {
@@ -83,14 +80,13 @@ class SplashState extends State<SplashPage> {
         }
       })
       ..on<TicketFailedEvent>().listen((event) async {
-        debugPrint("Ticket Failed.");
+        debugPrint('Ticket Failed.');
         isUserLogin = false;
         if (mounted) {
           setState(() {});
           await navigate();
         }
       });
-    super.initState();
   }
 
   @override
@@ -110,7 +106,7 @@ class SplashState extends State<SplashPage> {
       }
       return connectivityResult;
     } catch (e) {
-      debugPrint("Checking connectivity error: $e");
+      debugPrint('Checking connectivity error: $e');
       return ConnectivityResult.none;
     }
   }
@@ -129,8 +125,6 @@ class SplashState extends State<SplashPage> {
   }
 
   Future navigate({bool forceToLogin = false}) async {
-    _forceToLoginTimer?.cancel();
-    _showLoginIndicatorTimer?.cancel();
     try {
       navigatorState.pushAndRemoveUntil(
         PageRouteBuilder(
@@ -144,17 +138,19 @@ class SplashState extends State<SplashPage> {
         ),
         (_) => false,
       );
+      _forceToLoginTimer?.cancel();
+      _showLoginIndicatorTimer?.cancel();
     } catch (e) {
-      debugPrint("$e");
+      debugPrint('Error when navigating: $e');
     }
   }
 
   Widget get logo => Container(
         margin: EdgeInsets.all(suSetWidth(30.0)),
         child: Hero(
-          tag: "Logo",
+          tag: 'Logo',
           child: SvgPicture.asset(
-            "images/splash_page_logo.svg",
+            'images/splash_page_logo.svg',
             width: suSetWidth(150.0),
             height: suSetHeight(150.0),
             color: currentIsDark ? currentThemeColor : Colors.white,
@@ -197,7 +193,7 @@ class SplashState extends State<SplashPage> {
             height: suSetHeight(30.0),
             child: Center(
               child: Text(
-                "请检查联网状态",
+                '请检查联网状态',
                 style: TextStyle(
                   color: currentIsDark ? currentThemeColor : Colors.white,
                   fontSize: suSetSp(24.0),

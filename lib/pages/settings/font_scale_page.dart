@@ -20,11 +20,10 @@ class _FontScalePageState extends State<FontScalePage> {
 
   @override
   void initState() {
+    super.initState();
     settingsProvider = Provider.of<SettingsProvider>(currentContext, listen: false);
     scaleRange = settingsProvider.fontScaleRange;
     scale = settingsProvider.fontScale;
-
-    super.initState();
   }
 
   @override

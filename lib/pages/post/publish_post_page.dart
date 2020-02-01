@@ -57,11 +57,6 @@ class PublishPostPageState extends State<PublishPostPage> {
   bool emoticonPadActive = false;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void dispose() {
     _textEditingController?.dispose();
     _focusNode?.unfocus();

@@ -14,10 +14,7 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/loading_dialog.dart';
 import 'package:openjmu/widgets/image/image_crop_helper.dart';
 
-@FFRoute(
-  name: "openjmu://image-crop",
-  routeName: "图片裁剪",
-)
+@FFRoute(name: "openjmu://image-crop", routeName: "图片裁剪")
 class ImageCropPage extends StatefulWidget {
   @override
   _ImageCropPageState createState() => _ImageCropPageState();
@@ -66,14 +63,14 @@ class _ImageCropPageState extends State<ImageCropPage> {
     showDialog<Null>(
       context: context,
       builder: (BuildContext ctx) => LoadingDialog(
-        text: "正在更新头像",
+        text: '正在更新头像',
         controller: _controller,
       ),
     );
     _cropping = true;
     try {
       final path = (await getApplicationDocumentsDirectory()).path;
-      final file = File("$path/_temp_avatar.jpg");
+      final file = File('$path/_temp_avatar.jpg');
       file.writeAsBytesSync(await cropImage(state: _editorKey.currentState));
       final compressedFile = await FlutterNativeImage.compressImage(
         file.path,
@@ -83,8 +80,8 @@ class _ImageCropPageState extends State<ImageCropPage> {
       );
       uploadImage(context, compressedFile);
     } catch (e) {
-      debugPrint("Crop image faild: $e");
-      _controller.changeState("failed", "头像更新失败");
+      debugPrint('Crop image faild: $e');
+      _controller.changeState('failed', '头像更新失败');
     }
   }
 
@@ -94,25 +91,25 @@ class _ImageCropPageState extends State<ImageCropPage> {
       API.userAvatarUpload,
       data: formData,
     ).then((response) {
-      _controller.changeState("success", "头像更新成功");
+      _controller.changeState('success', '头像更新成功');
       _cropping = false;
       Future.delayed(Duration(milliseconds: 2200), () {
         Navigator.of(context).pop(true);
       });
     }).catchError((e) {
       debugPrint(e.toString());
-      _controller.changeState("failed", "头像更新失败");
+      _controller.changeState('failed', '头像更新失败');
       _cropping = false;
     });
   }
 
   Future createForm(File file) async {
     return FormData.from({
-      "offset": 0,
-      "md5": md5.convert(await file.readAsBytes()),
-      "photo": UploadFileInfo(file, path.basename(file.path)),
-      "filesize": await file.length(),
-      "wizard": 1
+      'offset': 0,
+      'md5': md5.convert(await file.readAsBytes()),
+      'photo': UploadFileInfo(file, path.basename(file.path)),
+      'filesize': await file.length(),
+      'wizard': 1
     });
   }
 
@@ -121,7 +118,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _file == null ? "上传头像" : "裁剪头像",
+          _file == null ? '上传头像' : '裁剪头像',
           style: Theme.of(context).textTheme.title.copyWith(
                 fontSize: suSetSp(21.0),
               ),
@@ -170,7 +167,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
                       ),
                       emptyDivider(height: 20.0),
                       Text(
-                        "选择需要上传的头像",
+                        '选择需要上传的头像',
                         style: Theme.of(context).textTheme.body1.copyWith(
                               fontSize: suSetSp(20.0),
                             ),

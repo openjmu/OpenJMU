@@ -35,7 +35,7 @@ class DateProvider extends ChangeNotifier {
   }
 
   Future<void> initCurrentWeek() async {
-    final _dateInCache = HiveBoxes.startWeekBox.get("startDate");
+    final _dateInCache = HiveBoxes.startWeekBox.get('startDate');
     if (_dateInCache != null) _startDate = _dateInCache;
     await getCurrentWeek(init: _dateInCache == null);
     initCurrentWeekTimer();
@@ -43,7 +43,7 @@ class DateProvider extends ChangeNotifier {
 
   Future<void> updateStartDate(DateTime date) async {
     _startDate = date;
-    await HiveBoxes.startWeekBox.put("startDate", date);
+    await HiveBoxes.startWeekBox.put('startDate', date);
   }
 
   Future<void> getCurrentWeek({bool init = false}) async {
@@ -55,7 +55,7 @@ class DateProvider extends ChangeNotifier {
         final result = (await NetUtils.get(API.firstDayOfTerm)).data;
         _day = DateTime.parse(jsonDecode(result)['start']);
       } else {
-        _day = box.get("startDate");
+        _day = box.get('startDate');
       }
       if (_startDate == null) {
         updateStartDate(_day);

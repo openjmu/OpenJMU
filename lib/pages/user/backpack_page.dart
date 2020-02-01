@@ -30,12 +30,12 @@ class BackpackItem {
 
   @override
   String toString() {
-    return "BackpackItem ${JsonEncoder.withIndent("  ").convert({
+    return 'BackpackItem ${JsonEncoder.withIndent('' '').convert({
       'id': id,
       'type': type,
       'count': count,
       'name': name,
-    })}";
+    })}';
   }
 }
 
@@ -62,19 +62,16 @@ class BackpackItemType {
 
   @override
   String toString() {
-    return "BackpackItemType ${JsonEncoder.withIndent("  ").convert({
+    return 'BackpackItemType ${JsonEncoder.withIndent('' '').convert({
       'title': name,
       'desc': description,
       'itemtype': type,
       'thankmsg': thankMessage,
-    })}";
+    })}';
   }
 }
 
-@FFRoute(
-  name: "openjmu://backpack",
-  routeName: "背包页",
-)
+@FFRoute(name: 'openjmu://backpack', routeName: '背包页')
 class BackpackPage extends StatefulWidget {
   @override
   _BackpackPageState createState() => _BackpackPageState();
@@ -82,7 +79,7 @@ class BackpackPage extends StatefulWidget {
 
 class _BackpackPageState extends State<BackpackPage> {
   final PageController _myItemListController = PageController(viewportFraction: 0.8);
-  final _header = {"CLOUDID": "jmu"};
+  final _header = {'CLOUDID': 'jmu'};
   bool isLoading = true;
 
   Map<String, BackpackItemType> _itemTypes = {};
@@ -90,8 +87,8 @@ class _BackpackPageState extends State<BackpackPage> {
 
   @override
   void initState() {
-    getBackpackItem();
     super.initState();
+    getBackpackItem();
   }
 
   Future getBackpackItem() async {
@@ -104,7 +101,7 @@ class _BackpackPageState extends State<BackpackPage> {
       List<dynamic> items = types['data'];
       for (int i = 0; i < items.length; i++) {
         BackpackItemType item = BackpackItemType.fromJson(items[i]);
-        _itemTypes["${item.type}"] = item;
+        _itemTypes['${item.type}'] = item;
       }
 
       Future.wait(<Future>[
@@ -114,8 +111,8 @@ class _BackpackPageState extends State<BackpackPage> {
         ).then((response) {
           List<dynamic> items = response.data['data'] ?? [];
           for (int i = 0; i < items.length; i++) {
-            items[i]['name'] = _itemTypes['${items[i]["itemtype"]}'].name;
-            items[i]['desc'] = _itemTypes['${items[i]["itemtype"]}'].description;
+            items[i]['name'] = _itemTypes['${items[i]['itemtype']}'].name;
+            items[i]['desc'] = _itemTypes['${items[i]['itemtype']}'].description;
             BackpackItem item = BackpackItem.fromJson(items[i]);
             myItems.add(item);
           }
@@ -132,7 +129,7 @@ class _BackpackPageState extends State<BackpackPage> {
         });
       });
     } catch (e) {
-      debugPrint("Get backpack item error: $e");
+      debugPrint('Get backpack item error: $e');
     }
   }
 
@@ -144,7 +141,7 @@ class _BackpackPageState extends State<BackpackPage> {
         padding: EdgeInsets.all(suSetSp(10.0)),
         badgeColor: currentThemeColor,
         badgeContent: Text(
-          "${myItems[index].count > 99 ? "99+" : myItems[index].count}",
+          '${myItems[index].count > 99 ? '99+' : myItems[index].count}',
           style: TextStyle(
             fontSize: suSetSp(18.0),
             color: Colors.white,
@@ -195,8 +192,8 @@ class _BackpackPageState extends State<BackpackPage> {
         child: SizedBox(
           height: suSetSp(150.0),
           child: ExtendedImage.network(
-            "${API.backPackItemIcon(itemType: myItems[index].type)}",
-            headers: {"CLOUDID": "jmu"},
+            '${API.backPackItemIcon(itemType: myItems[index].type)}',
+            headers: {'CLOUDID': 'jmu'},
             fit: BoxFit.fitHeight,
           ),
         ),
@@ -249,7 +246,7 @@ class _BackpackPageState extends State<BackpackPage> {
               color: Colors.transparent,
               onPressed: () {},
               child: Text(
-                "打开礼包",
+                '打开礼包',
                 style: Theme.of(context).textTheme.title.copyWith(
                       fontSize: suSetSp(20.0),
                       color: currentThemeColor,
@@ -278,14 +275,14 @@ class _BackpackPageState extends State<BackpackPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "我的背包",
+                  '我的背包',
                   style: Theme.of(context).textTheme.title.copyWith(
                         fontSize: suSetSp(40.0),
                         fontWeight: FontWeight.bold,
                       ),
                 ),
                 Text(
-                  "看看背包里有哪些好东西~",
+                  '看看背包里有哪些好东西~',
                   style: Theme.of(context).textTheme.subtitle.copyWith(
                         fontSize: suSetSp(20.0),
                       ),

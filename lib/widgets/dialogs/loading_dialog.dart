@@ -24,14 +24,14 @@ class LoadingDialogState extends State<LoadingDialog> {
   Duration duration = const Duration(milliseconds: 1500);
   String type, text;
   VoidCallback customPop;
-  Widget icon = CircularProgressIndicator();
+  Widget icon = SpinKitWidget();
 
   @override
   void initState() {
+    super.initState();
     widget.controller?.dialogState = this;
     this.text = widget.text;
     if (mounted) setState(() {});
-    super.initState();
   }
 
   @override

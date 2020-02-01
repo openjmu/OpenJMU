@@ -60,7 +60,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
   void initState() {
     super.initState();
     Instances.eventBus.on<ScrollToTopEvent>().listen((event) {
-      if (this.mounted && event.type == "Praise") {
+      if (this.mounted && event.type == 'Praise') {
         _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
       }
     });
@@ -109,8 +109,8 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
 
       for (var praiseData in _topics) {
         if (!UserAPI.blacklist.contains(jsonEncode({
-          "uid": praiseData['topic']['user']['uid'].toString(),
-          "username": praiseData['topic']['user']['nickname'],
+          'uid': praiseData['topic']['user']['uid'].toString(),
+          'username': praiseData['topic']['user']['nickname'],
         }))) {
           praiseList.add(PraiseAPI.createPraise(praiseData));
         }
@@ -146,8 +146,8 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
 
       for (var praiseData in _topics) {
         if (!UserAPI.blacklist.contains(jsonEncode({
-          "uid": praiseData['topic']['user']['uid'].toString(),
-          "username": praiseData['topic']['user']['nickname'],
+          'uid': praiseData['topic']['user']['uid'].toString(),
+          'username': praiseData['topic']['user']['nickname'],
         }))) {
           praiseList.add(PraiseAPI.createPraise(praiseData));
         }
@@ -192,7 +192,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
                             : CupertinoActivityIndicator(),
                       ),
                       Text(
-                        "　正在加载",
+                        '　正在加载',
                         style: TextStyle(
                           fontSize: suSetSp(14.0),
                         ),
@@ -265,8 +265,8 @@ class PraiseListInPostState extends State<PraiseListInPost> with AutomaticKeepAl
 
   @override
   void initState() {
-    _refreshList();
     super.initState();
+    _refreshList();
   }
 
   @override
@@ -309,10 +309,10 @@ class PraiseListInPostState extends State<PraiseListInPost> with AutomaticKeepAl
       if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint("${e.response.data}");
+        debugPrint('${e.response.data}');
       } else {
-        debugPrint("${e.request}");
-        debugPrint("${e.message}");
+        debugPrint('${e.request}');
+        debugPrint('${e.message}');
       }
       return;
     }
@@ -339,10 +339,10 @@ class PraiseListInPostState extends State<PraiseListInPost> with AutomaticKeepAl
       if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint("${e.response.data}");
+        debugPrint('${e.response.data}');
       } else {
-        debugPrint("${e.request}");
-        debugPrint("${e.message}");
+        debugPrint('${e.request}');
+        debugPrint('${e.message}');
       }
       return;
     }

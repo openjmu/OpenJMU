@@ -19,6 +19,12 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
   List changeLogs;
   bool error = false;
 
+  @override
+  void initState() {
+    super.initState();
+    loadChangelog();
+  }
+
   Future<void> loadChangelog() async {
     try {
       final changelog = await rootBundle.loadString('assets/changelog.json');
@@ -29,12 +35,6 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
       error = true;
       if (mounted) setState(() {});
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    loadChangelog();
   }
 
   Widget get timelineIndicator => Container(

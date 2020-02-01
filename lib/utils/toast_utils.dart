@@ -26,8 +26,5 @@ void showCenterErrorToast(String text) {
 }
 
 void showTopToast(String text) {
-  OKToast.showToast(
-    text,
-    position: OKToast.ToastPosition.top,
-  );
+  OKToast.showToast(text, position: OKToast.ToastPosition.top);
 }

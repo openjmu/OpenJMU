@@ -27,9 +27,9 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
 
   @override
   void initState() {
+    super.initState();
     if (_shouldInit) loadList();
     _shouldInit = false;
-    super.initState();
   }
 
   void loadList({bool loadMore = false}) {

@@ -26,10 +26,9 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
 
   @override
   void initState() {
-    if (_shouldInit) loadList();
-
-    _shouldInit = false;
     super.initState();
+    if (_shouldInit) loadList();
+    _shouldInit = false;
   }
 
   void loadList({bool loadMore = false}) {

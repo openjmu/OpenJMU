@@ -26,9 +26,9 @@ class TeamPostProvider extends ChangeNotifier {
     post.isLike = true;
     if (post.praisor != null) {
       post.praisor.add({
-        "uid": UserAPI.currentUser.uid,
-        "nickname": UserAPI.currentUser.name,
-        "sysavatar": 0,
+        'uid': UserAPI.currentUser.uid,
+        'nickname': UserAPI.currentUser.name,
+        'sysavatar': 0,
       });
     }
     notifyListeners();

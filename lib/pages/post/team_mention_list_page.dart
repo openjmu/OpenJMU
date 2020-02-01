@@ -26,9 +26,9 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
 
   @override
   void initState() {
+    super.initState();
     if (_shouldInit) loadList();
     _shouldInit = false;
-    super.initState();
   }
 
   void loadList({bool loadMore = false}) {

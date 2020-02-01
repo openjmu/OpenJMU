@@ -6,10 +6,7 @@ import 'package:openjmu/pages/main_page.dart';
 import 'package:openjmu/pages/home/apps_page.dart';
 import 'package:openjmu/pages/home/post_square_list_page.dart';
 
-@FFRoute(
-  name: "openjmu://switch-startup",
-  routeName: "切换启动页",
-)
+@FFRoute(name: "openjmu://switch-startup", routeName: "切换启动页")
 class SwitchStartUpPage extends StatefulWidget {
   @override
   _SwitchStartUpPageState createState() => _SwitchStartUpPageState();
@@ -23,17 +20,17 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
   List<List<Map<String, dynamic>>> get pageSection => [
         [
           {
-            "name": "启动页",
-            "pages": List.from(MainPageState.pagesTitle),
-            "index": settingsProvider.homeSplashIndex,
+            'name': '启动页',
+            'pages': List.from(MainPageState.pagesTitle),
+            'index': settingsProvider.homeSplashIndex,
           },
         ],
         [
           for (int i = 0; i < pageTab.length; i++)
             {
-              "name": MainPageState.pagesTitle[i],
-              "pages": pageTab[i],
-              "index": settingsProvider.homeStartUpIndex[i],
+              'name': MainPageState.pagesTitle[i],
+              'pages': pageTab[i],
+              'index': settingsProvider.homeStartUpIndex[i],
             }
         ],
       ];
@@ -41,8 +38,8 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
 
   @override
   void initState() {
-    settingsProvider = Provider.of<SettingsProvider>(currentContext, listen: false);
     super.initState();
+    settingsProvider = Provider.of<SettingsProvider>(currentContext, listen: false);
   }
 
   Widget settingItem(context, index, sectionIndex) {
@@ -59,14 +56,14 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "${page["name"]}",
+                  '${page['name']}',
                   style: Theme.of(context).textTheme.title.copyWith(
                         fontSize: suSetSp(26.0),
                         fontWeight: FontWeight.normal,
                       ),
                 ),
                 Text(
-                  "${page["pages"][page["index"]]}",
+                  '${page['pages'][page['index']]}',
                   style: Theme.of(context).textTheme.caption.copyWith(
                         fontSize: suSetSp(18.0),
                         fontWeight: FontWeight.normal,
@@ -75,7 +72,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
               ],
             ),
             SvgPicture.asset(
-              "assets/icons/arrow-right.svg",
+              'assets/icons/arrow-right.svg',
               color: Colors.grey,
               width: suSetWidth(30.0),
               height: suSetWidth(30.0),
@@ -108,13 +105,13 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
         ),
         child: Center(
           child: Text(
-            "${page['pages'][index]}",
+            '${page['pages'][index]}',
             style: TextStyle(fontSize: suSetSp(20.0)),
           ),
         ),
       ),
       onTap: () {
-        if (page["name"] == "启动页") {
+        if (page['name'] == '启动页') {
           HiveFieldUtils.setHomeSplashIndex(index);
         } else {
           final _list = List<int>.from(settingsProvider.homeStartUpIndex);
@@ -141,7 +138,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
               Padding(
                 padding: EdgeInsets.only(bottom: suSetSp(12.0)),
                 child: Text(
-                  "选择页面",
+                  '选择页面',
                   style: TextStyle(
                     fontSize: suSetSp(24.0),
                     fontWeight: FontWeight.bold,
@@ -162,7 +159,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                     page: page,
                     pageIndex: pageIndex,
                     index: i,
-                    selectedIndex: page["index"],
+                    selectedIndex: page['index'],
                   ),
                 ),
               ),
@@ -175,7 +172,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
 
   List newPageSection(sectionIndex, pageIndex, index) {
     List<List<Map<String, dynamic>>> _section = List.from(pageSection);
-    _section[sectionIndex][pageIndex]["index"] = index;
+    _section[sectionIndex][pageIndex]['index'] = index;
     return _section;
   }
 
@@ -190,14 +187,14 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  "启动页设置",
+                  '启动页设置',
                   style: Theme.of(context).textTheme.title.copyWith(
                         fontSize: suSetSp(26.0),
                         fontWeight: FontWeight.bold,
                       ),
                 ),
                 Text(
-                  "选择您偏好的启动页面",
+                  '选择您偏好的启动页面',
                   style: Theme.of(context).textTheme.caption.copyWith(
                         fontSize: suSetSp(18.0),
                       ),

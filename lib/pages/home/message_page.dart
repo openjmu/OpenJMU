@@ -20,6 +20,7 @@ class MessagePageState extends State<MessagePage> with TickerProviderStateMixin 
 
   @override
   void initState() {
+    super.initState();
     _tabController = TabController(
       initialIndex: Provider.of<SettingsProvider>(
         currentContext,
@@ -28,8 +29,6 @@ class MessagePageState extends State<MessagePage> with TickerProviderStateMixin 
       length: 1,
       vsync: this,
     );
-
-    super.initState();
   }
 
   Widget get _tabBar => Padding(

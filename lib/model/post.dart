@@ -4,14 +4,13 @@
 ///
 part of 'beans.dart';
 
-///
 /// 动态实体
+///
 /// [id] 动态id, [uid] 用户uid, [nickname] 用户名称, [avatar] 用户头像,
 /// [postTime] 动态时间, [from] 动态来源, [glances] 被查看次数,
 /// [category] 动态类型, [content] 动态内容, [pics] 动态图片,
 /// [forwards] 转发次数, [comments] 评论次数, [praises] 点赞次数,
-/// [isLike] 当前用户是否已赞, [rootTopic] 原动态,
-///
+/// [isLike] 当前用户是否已赞, [rootTopic] 原动态
 class Post {
   int id;
   int uid;
@@ -49,7 +48,7 @@ class Post {
     this.isDefaultAvatar,
   });
 
-  bool get isShield => content == "此微博已经被屏蔽";
+  bool get isShield => content == '此微博已经被屏蔽';
 
   @override
   bool operator ==(Object other) =>
@@ -60,43 +59,43 @@ class Post {
 
   @override
   String toString() {
-    return "Post ${JsonEncoder.withIndent("  ").convert(toJson())}";
+    return 'Post ${JsonEncoder.withIndent('' '').convert(toJson())}';
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "id": id,
-      "uid": uid,
-      "nickname": nickname,
-      "avatar": avatar,
-      "postTime": postTime,
-      "from": from,
-      "glances": glances,
-      "category": category,
-      "content": content,
-      "pics": pics,
-      "forwards": forwards,
-      "comments": comments,
-      "praises": praises,
-      "rootTopic": rootTopic,
-      "isLike": isLike,
-      "isDefaultAvatar": isDefaultAvatar,
+      'id': id,
+      'uid': uid,
+      'nickname': nickname,
+      'avatar': avatar,
+      'postTime': postTime,
+      'from': from,
+      'glances': glances,
+      'category': category,
+      'content': content,
+      'pics': pics,
+      'forwards': forwards,
+      'comments': comments,
+      'praises': praises,
+      'rootTopic': rootTopic,
+      'isLike': isLike,
+      'isDefaultAvatar': isDefaultAvatar,
     };
   }
 
   Post.fromJson(Map<String, dynamic> json) {
     json.forEach((k, v) {
-      if (json[k] == "") json[k] = null;
+      if (json[k] == '') json[k] = null;
     });
     Map<String, dynamic> _user = json['user'];
     _user.forEach((k, v) {
-      if (_user[k] == "") _user[k] = null;
+      if (_user[k] == '') _user[k] = null;
     });
 
-    final _avatar = "${API.userAvatar}"
-        "?uid=${_user['uid']}"
-        "&size=f152"
-        "&_t=${DateTime.now().millisecondsSinceEpoch}";
+    final _avatar = '${API.userAvatar}'
+        '?uid=${_user['uid']}'
+        '&size=f152'
+        '&_t=${DateTime.now().millisecondsSinceEpoch}';
     final _postTime = DateTime.fromMillisecondsSinceEpoch(
       int.parse(json['post_time']) * 1000,
     ).toString().substring(0, 16);

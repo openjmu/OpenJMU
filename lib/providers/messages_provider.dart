@@ -63,7 +63,7 @@ class MessagesProvider with ChangeNotifier {
     try {
       content = jsonDecode(content)['content'];
     } catch (e) {}
-    if (content.trim().replaceAll("\n", "").replaceAll("\r", "").isNotEmpty && content != null) {
+    if (content.trim().replaceAll('\n', '').replaceAll('\r', '').isNotEmpty && content != null) {
       final provider = Provider.of<WebAppsProvider>(currentContext, listen: false);
       debugPrint(provider.allApps.toString());
       debugPrint(message.toString());
@@ -80,7 +80,7 @@ class MessagesProvider with ChangeNotifier {
       if (Instances.appLifeCycleState != AppLifecycleState.resumed) {
         NotificationUtils.show(
           app.name,
-          content.trim().replaceAll("\n", "").replaceAll("\r", ""),
+          content.trim().replaceAll('\n', '').replaceAll('\r', ''),
         );
       }
       if (message.messageId != null && message.messageId != 0) {

@@ -4,7 +4,7 @@
 ///
 part of 'beans.dart';
 
-/// 应用中心应用
+/// 应用中心应用实体
 ///
 /// [appId] 应用id, [sequence] 排序下标, [code] 代码,
 /// [name] 名称, [url] 地址, [menuType] 分类

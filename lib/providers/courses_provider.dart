@@ -1,9 +1,9 @@
-import 'dart:convert';
-
 ///
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020-01-14 16:22
 ///
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -135,7 +135,7 @@ class CoursesProvider extends ChangeNotifier {
 
       Instances.courseSchedulePageStateKey.currentState?.setState(() {});
     } catch (e) {
-      debugPrint("Error when updating course: $e");
+      debugPrint('Error when updating course: $e');
       if (!firstLoaded && dateProvider.currentWeek != null) _firstLoaded = true;
       _showError = true;
       notifyListeners();
@@ -171,7 +171,7 @@ class CoursesProvider extends ChangeNotifier {
     final data = jsonDecode(response.data);
     String _r;
     if (data != null) _r = data['classScheduleRemark'];
-    if (_remark != _r && _r != "" && _r != null) {
+    if (_remark != _r && _r != '' && _r != null) {
       _remark = _r;
       await _courseRemarkBox.put(currentUser.uid, _r);
     }
@@ -179,7 +179,7 @@ class CoursesProvider extends ChangeNotifier {
 
   void addCourse(Course course, Map<int, Map> courses) {
     final courseDay = int.parse(course.day.toString().substring(0, 1));
-    if (course.time == "11") {
+    if (course.time == '11') {
       courses[courseDay][11].add(course);
     } else {
       if (courses.keys.contains(courseDay)) {

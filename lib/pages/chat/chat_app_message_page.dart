@@ -38,8 +38,8 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
 
   @override
   void initState() {
-    messagesProvider = Provider.of<MessagesProvider>(context, listen: false);
     super.initState();
+    messagesProvider = Provider.of<MessagesProvider>(context, listen: false);
   }
 
   Widget get topBar => FixedAppBar(

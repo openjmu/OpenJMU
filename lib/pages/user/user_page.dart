@@ -12,11 +12,7 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/edit_signature_dialog.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
 
-@FFRoute(
-  name: "openjmu://user",
-  routeName: "用户页",
-  argumentNames: ["uid"],
-)
+@FFRoute(name: 'openjmu://user', routeName: '用户页', argumentNames: ['uid'])
 class UserPage extends StatefulWidget {
   final int uid;
 
@@ -45,7 +41,7 @@ class _UserPageState extends State<UserPage>
   bool showTitle = false;
   bool refreshing = false;
 
-  List<String> _tabList = ["动态", "黑名单"];
+  List<String> _tabList = ['动态', '黑名单'];
   TabController _tabController;
   PostController postController;
   ScrollController _scrollController = ScrollController();
@@ -54,13 +50,15 @@ class _UserPageState extends State<UserPage>
 
   @override
   void initState() {
+    super.initState();
+
     if (widget.uid == currentUser.uid) isSelf = true;
 
     if (isSelf) expandedHeight += tabBarHeight;
 
     _tabController = TabController(length: _tabList.length, vsync: this);
     postController = PostController(
-      postType: "user",
+      postType: 'user',
       isFollowed: false,
       isMore: false,
       lastValue: (int id) => id,
@@ -86,8 +84,6 @@ class _UserPageState extends State<UserPage>
           if (this.mounted) setState(() {});
         });
       });
-
-    super.initState();
   }
 
   @override
@@ -170,10 +166,10 @@ class _UserPageState extends State<UserPage>
         child: ClipRRect(
           borderRadius: BorderRadius.circular(width / 2),
           child: Hero(
-            tag: "user-page-avatar-${widget.uid}",
+            tag: 'user-page-avatar-${widget.uid}',
             child: FadeInImage(
               fadeInDuration: const Duration(milliseconds: 100),
-              placeholder: AssetImage("assets/avatar_placeholder.png"),
+              placeholder: AssetImage('assets/avatar_placeholder.png'),
               image: UserAPI.getAvatarProvider(uid: widget.uid),
             ),
           ),
@@ -215,7 +211,7 @@ class _UserPageState extends State<UserPage>
               ? Color(0x44ffffff)
               : _user.isFollowing ? Color(0x44ffffff) : currentThemeColor.withOpacity(0.6),
           child: Text(
-            isSelf ? "编辑签名" : _user.isFollowing ? "已关注" : "关注${_user.gender == 2 ? "她" : "他"}",
+            isSelf ? '编辑签名' : _user.isFollowing ? '已关注' : '关注${_user.gender == 2 ? '她' : '他'}',
             style: TextStyle(
               color: Colors.white,
               fontSize: suSetSp(20.0),
@@ -282,7 +278,7 @@ class _UserPageState extends State<UserPage>
               child: Padding(
                 padding: EdgeInsets.all(suSetWidth(3.0)),
                 child: SvgPicture.asset(
-                  "assets/icons/gender/${_user.gender == 2 ? "fe" : ""}male.svg",
+                  'assets/icons/gender/${_user.gender == 2 ? 'fe' : ''}male.svg',
                   width: suSetWidth(20.0),
                   height: suSetWidth(20.0),
                   color: Colors.white,
@@ -300,7 +296,7 @@ class _UserPageState extends State<UserPage>
                 borderRadius: BorderRadius.circular(suSetWidth(20.0)),
               ),
               child: Text(
-                " Lv.$userLevel",
+                ' Lv.$userLevel',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: suSetSp(16.0),
@@ -321,7 +317,7 @@ class _UserPageState extends State<UserPage>
           ],
         ),
         Text(
-          _user.signature ?? "这个人很懒，什么都没写",
+          _user.signature ?? '这个人很懒，什么都没写',
           style: TextStyle(
             color: Colors.grey[350],
             fontSize: suSetSp(19.0),
@@ -337,7 +333,7 @@ class _UserPageState extends State<UserPage>
               onTap: () {
                 navigatorState.pushNamed(
                   Routes.OPENJMU_USERLIST,
-                  arguments: {"user": _user, "type": 1},
+                  arguments: {'user': _user, 'type': 1},
                 );
               },
               child: RichText(
@@ -352,7 +348,7 @@ class _UserPageState extends State<UserPage>
                       ),
                     ),
                     TextSpan(
-                      text: " 关注",
+                      text: ' 关注',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: suSetSp(19.0),
@@ -368,7 +364,7 @@ class _UserPageState extends State<UserPage>
               onTap: () {
                 navigatorState.pushNamed(
                   Routes.OPENJMU_USERLIST,
-                  arguments: {"user": _user, "type": 2},
+                  arguments: {'user': _user, 'type': 2},
                 );
               },
               child: RichText(
@@ -383,7 +379,7 @@ class _UserPageState extends State<UserPage>
                       ),
                     ),
                     TextSpan(
-                      text: " 粉丝",
+                      text: ' 粉丝',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: suSetSp(19.0),
@@ -424,7 +420,7 @@ class _UserPageState extends State<UserPage>
                 ),
               )
             : Text(
-                "${_user.gender == 2 ? "她" : "他"}还没有设置个性标签",
+                '${_user.gender == 2 ? '她' : '他'}还没有设置个性标签',
                 style: TextStyle(color: Colors.grey[350], fontSize: suSetSp(19.0)),
               ),
       ];
@@ -455,7 +451,7 @@ class _UserPageState extends State<UserPage>
               borderRadius: BorderRadius.circular(suSetWidth(32.0)),
               child: FadeInImage(
                 fadeInDuration: const Duration(milliseconds: 100),
-                placeholder: AssetImage("assets/avatar_placeholder.png"),
+                placeholder: AssetImage('assets/avatar_placeholder.png'),
                 image: UserAPI.getAvatarProvider(uid: int.parse(_user['uid'].toString())),
               ),
             ),
@@ -477,7 +473,7 @@ class _UserPageState extends State<UserPage>
                 color: currentThemeColor.withAlpha(0x88),
               ),
               child: Text(
-                "移出黑名单",
+                '移出黑名单',
                 style: TextStyle(fontSize: suSetSp(16.0)),
               ),
             ),
@@ -499,14 +495,14 @@ class _UserPageState extends State<UserPage>
             navigatorState.pushNamed(
               Routes.OPENJMU_IMAGE_VIEWER,
               arguments: {
-                "index": 0,
-                "pics": [
+                'index': 0,
+                'pics': [
                   ImageBean(
                     id: widget.uid,
                     imageUrl: '${API.userAvatar}?uid=${widget.uid}&size=f640',
                   ),
                 ],
-                "heroPrefix": "user-page-avatar-",
+                'heroPrefix': 'user-page-avatar-',
               },
             );
           },
@@ -533,14 +529,14 @@ class _UserPageState extends State<UserPage>
         : navigatorState.pushNamed(
             Routes.OPENJMU_IMAGE_VIEWER,
             arguments: {
-              "index": 0,
-              "pics": [
+              'index': 0,
+              'pics': [
                 ImageBean(
                   id: widget.uid,
                   imageUrl: '${API.userAvatar}?uid=${widget.uid}&size=f640',
                 ),
               ],
-              "needsClear": true,
+              'needsClear': true,
             },
           );
   }
@@ -721,7 +717,7 @@ class _UserPageState extends State<UserPage>
                               )
                             : Center(
                                 child: Text(
-                                  "黑名单为空",
+                                  '黑名单为空',
                                   style: TextStyle(fontSize: suSetSp(20.0)),
                                 ),
                               ),
@@ -734,9 +730,9 @@ class _UserPageState extends State<UserPage>
 }
 
 @FFRoute(
-  name: "openjmu://userlist",
-  routeName: "用户列表页",
-  argumentNames: ["user", "type"],
+  name: 'openjmu://userlist',
+  routeName: '用户列表页',
+  argumentNames: ['user', 'type'],
 )
 class UserListPage extends StatefulWidget {
   final UserInfo user;
@@ -760,8 +756,8 @@ class _UserListState extends State<UserListPage> {
 
   @override
   void initState() {
-    super.initState();
     doUpdate(false);
+    super.initState();
   }
 
   void doUpdate(isMore) {
@@ -829,13 +825,13 @@ class _UserListState extends State<UserListPage> {
   Widget userCard(context, userData) {
     var _user = userData['user'];
     String name = _user['nickname'];
-    if (name.length > 3) name = "${name.substring(0, 3)}...";
+    if (name.length > 3) name = '${name.substring(0, 3)}...';
     TextStyle _textStyle = TextStyle(fontSize: suSetSp(16.0));
     return GestureDetector(
       onTap: () {
         navigatorState.pushNamed(
           Routes.OPENJMU_USER,
-          arguments: {"uid": int.parse(_user['uid'].toString())},
+          arguments: {'uid': int.parse(_user['uid'].toString())},
         );
       },
       child: Container(
@@ -885,7 +881,7 @@ class _UserListState extends State<UserListPage> {
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Text("关注", style: _textStyle),
+                            Text('关注', style: _textStyle),
                             Divider(height: suSetHeight(4.0)),
                             Text(userData['idols'], style: _textStyle),
                           ],
@@ -894,7 +890,7 @@ class _UserListState extends State<UserListPage> {
                         Column(
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Text("粉丝", style: _textStyle),
+                            Text('粉丝', style: _textStyle),
                             Divider(height: suSetHeight(4.0)),
                             Text(userData['fans'], style: _textStyle),
                           ],
@@ -916,13 +912,13 @@ class _UserListState extends State<UserListPage> {
     String _type;
     switch (widget.type) {
       case 0:
-        _type = "用户";
+        _type = '用户';
         break;
       case 1:
-        _type = "关注";
+        _type = '关注';
         break;
       case 2:
-        _type = "粉丝";
+        _type = '粉丝';
         break;
     }
     return Scaffold(
@@ -930,7 +926,7 @@ class _UserListState extends State<UserListPage> {
         children: <Widget>[
           FixedAppBar(
             title: Text(
-              "$_type列表",
+              '$_type列表',
               style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
             ),
           ),
@@ -944,7 +940,7 @@ class _UserListState extends State<UserListPage> {
                       )
                     : Center(
                         child: Text(
-                          "暂无内容",
+                          '暂无内容',
                           style: TextStyle(fontSize: suSetSp(20.0)),
                         ),
                       )

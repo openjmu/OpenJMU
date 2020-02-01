@@ -25,7 +25,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
   @override
   void initState() {
     super.initState();
-    _textEditingController = TextEditingController(text: widget.signature ?? "")
+    _textEditingController = TextEditingController(text: widget.signature ?? '')
       ..addListener(() {
         setState(() {
           if (_textEditingController.text != widget.signature) {
@@ -42,13 +42,13 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
     showDialog<Null>(
       context: context,
       builder: (BuildContext context) => LoadingDialog(
-        text: "正在更新签名",
+        text: '正在更新签名',
         controller: _loadingDialogController,
         isGlobal: false,
       ),
     );
     UserAPI.setSignature(_textEditingController.text).then((response) {
-      _loadingDialogController.changeState("success", "签名更新成功");
+      _loadingDialogController.changeState('success', '签名更新成功');
       UserAPI.currentUser.signature = _textEditingController.text;
       Instances.eventBus.fire(SignatureUpdatedEvent(_textEditingController.text));
       Future.delayed(const Duration(milliseconds: 2300), () {
@@ -56,7 +56,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
       });
     }).catchError((e) {
       debugPrint(e.toString());
-      _loadingDialogController.changeState("failed", "签名更新失败");
+      _loadingDialogController.changeState('failed', '签名更新失败');
     });
   }
 
@@ -80,7 +80,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                 children: <Widget>[
                   Center(
                     child: Text(
-                      "修改签名",
+                      '修改签名',
                       style: Theme.of(context).textTheme.title,
                     ),
                   ),
@@ -105,7 +105,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                         focusedBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey[850]),
                         ),
-                        hintText: UserAPI.currentUser.signature ?? "快来填写你的签名吧~",
+                        hintText: UserAPI.currentUser.signature ?? '快来填写你的签名吧~',
                         hintStyle: TextStyle(
                           textBaseline: TextBaseline.alphabetic,
                         ),
@@ -118,7 +118,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                     children: <Widget>[
                       CupertinoButton(
                         child: Text(
-                          "取消",
+                          '取消',
                           style: TextStyle(
                             color: Theme.of(context).textTheme.body1.color,
                             fontSize: suSetSp(21.0),
@@ -128,7 +128,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                       ),
                       CupertinoButton(
                         child: Text(
-                          "保存",
+                          '保存',
                           style: TextStyle(
                             color: canSave ? currentThemeColor : Theme.of(context).disabledColor,
                             fontSize: suSetSp(21.0),

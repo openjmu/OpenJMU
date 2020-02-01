@@ -29,9 +29,9 @@ class NetUtils {
 
     /// Lock and clear dio while requesting new ticket.
     if (await DataUtils.getTicket(update: true)) {
-      debugPrint("Ticket updated success with new ticket: ${currentUser.sid}");
+      debugPrint('Ticket updated success with new ticket: ${currentUser.sid}');
     } else {
-      debugPrint("Ticket updated error: ${currentUser.sid}");
+      debugPrint('Ticket updated error: ${currentUser.sid}');
     }
     dio.unlock();
 
@@ -40,7 +40,7 @@ class NetUtils {
 
   static void initConfig() async {
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
-//      client.findProxy = (uri) => "PROXY 192.168.0.106:8888";
+//      client.findProxy = (uri) => 'PROXY 192.168.0.106:8888';
 //      client.badCertificateCallback = (
 //        X509Certificate cert,
 //        String host,
@@ -51,16 +51,16 @@ class NetUtils {
     dio.interceptors.add(cookieManager);
     dio.interceptors.add(InterceptorsWrapper(
       onError: (DioError e) async {
-        debugPrint("Dio error with request: ${e.request.uri}");
-        debugPrint("Request data: ${e.request.data}");
-        debugPrint("Dio error: ${e.message}");
+        debugPrint('Dio error with request: ${e.request.uri}');
+        debugPrint('Request data: ${e.request.data}');
+        debugPrint('Dio error: ${e.message}');
         if (e?.response?.statusCode == 401) updateTicket();
         return e;
       },
     ));
     (tokenDio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
-//      client.findProxy = (uri) => "PROXY 192.168.0.106:8888";
+//      client.findProxy = (uri) => 'PROXY 192.168.0.106:8888';
 //      client.badCertificateCallback = (
 //        X509Certificate cert,
 //        String host,
@@ -71,9 +71,9 @@ class NetUtils {
     tokenDio.interceptors.add(tokenCookieManager);
     tokenDio.interceptors.add(InterceptorsWrapper(
       onError: (DioError e) async {
-        debugPrint("TokenDio error with request: ${e.request.uri}");
-        debugPrint("Request data: ${e.request.data}");
-        debugPrint("TokenDio error: ${e.message}");
+        debugPrint('TokenDio error with request: ${e.request.uri}');
+        debugPrint('Request data: ${e.request.data}');
+        debugPrint('TokenDio error: ${e.message}');
         if (e?.response?.statusCode == 401) updateTicket();
         return e;
       },

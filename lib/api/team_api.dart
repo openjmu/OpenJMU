@@ -34,19 +34,19 @@ class TeamPostAPI {
 
   static Map<String, dynamic> fileInfo(int fid) {
     return {
-      "create_time": 0,
-      "desc": "",
-      "ext": "",
-      "fid": fid,
-      "grid": 0,
-      "group": "",
-      "height": 0,
-      "length": 0,
-      "name": "",
-      "size": 0,
-      "source": "",
-      "type": "",
-      "width": 0
+      'create_time': 0,
+      'desc': '',
+      'ext': '',
+      'fid': fid,
+      'grid': 0,
+      'group': '',
+      'height': 0,
+      'length': 0,
+      'name': '',
+      'size': 0,
+      'source': '',
+      'type': '',
+      'width': 0
     };
   }
 
@@ -60,15 +60,15 @@ class TeamPostAPI {
       NetUtils.postWithCookieAndHeaderSet(
         API.teamPostPublish,
         data: {
-          if (postType != 8) "article": content,
-          if (postType == 8) "content": content,
-          if (postType != 8) "file": [if (files != null) ...files],
-          "latitude": 0,
-          "longitude": 0,
-          "post_type": postType,
-          "region_id": regionId,
-          "region_type": regionType,
-          "template": 0
+          if (postType != 8) 'article': content,
+          if (postType == 8) 'content': content,
+          if (postType != 8) 'file': [if (files != null) ...files],
+          'latitude': 0,
+          'longitude': 0,
+          'post_type': postType,
+          'region_id': regionId,
+          'region_type': regionType,
+          'template': 0
         },
         headers: Constants.teamHeader,
       );
@@ -83,17 +83,17 @@ class TeamPostAPI {
       );
 
   static Future reportPost(TeamPost post) async {
-    final message = "————集市内容举报————\n"
-        "举报时间：${DateFormat("yyyy-MM-dd HH:mm:ss").format(DateTime.now())}\n"
-        "举报对象：${post.nickname}\n"
-        "动态ＩＤ：${post.tid}\n"
-        "发布时间：${post.postTime}\n"
-        "举报理由：违反微博广场公约\n"
-        "———From OpenJMU———";
+    final message = '————集市内容举报————\n'
+        '举报时间：${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}\n'
+        '举报对象：${post.nickname}\n'
+        '动态ＩＤ：${post.tid}\n'
+        '发布时间：${post.postTime}\n'
+        '举报理由：违反微博广场公约\n'
+        '———From OpenJMU———';
     MessageUtils.addPackage(
-      "WY_MSG",
+      'WY_MSG',
       M_WY_MSG(
-        type: "MSG_A2A",
+        type: 'MSG_A2A',
         uid: 145685,
         message: message,
       ),
@@ -122,13 +122,13 @@ class TeamCommentAPI {
     bool isComment = false,
   }) async =>
       NetUtils.getWithCookieAndHeaderSet(
-        "${API.teamPostCommentsList(
+        '${API.teamPostCommentsList(
           postId: id,
           page: page,
           regionType: isComment ? 256 : 128,
           postType: isComment ? 8 : 7,
           size: isComment ? 50 : 30,
-        )}",
+        )}',
         headers: Constants.teamHeader,
       );
 
@@ -142,14 +142,14 @@ class TeamCommentAPI {
       NetUtils.postWithCookieAndHeaderSet(
         API.teamPostPublish,
         data: {
-          "article": content,
-          "file": files,
-          "latitude": 0,
-          "longitude": 0,
-          "post_type": postType,
-          "region_id": postId,
-          "region_type": regionType,
-          "template": 0
+          'article': content,
+          'file': files,
+          'latitude': 0,
+          'longitude': 0,
+          'post_type': postType,
+          'region_id': postId,
+          'region_type': regionType,
+          'template': 0
         },
         headers: Constants.teamHeader,
       );
@@ -170,18 +170,18 @@ class TeamPraiseAPI {
       return NetUtils.postWithCookieAndHeaderSet(
         API.teamPostRequestPraise,
         data: {
-          "atype": "p",
-          "post_type": 2,
-          "post_id": id,
+          'atype': 'p',
+          'post_type': 2,
+          'post_id': id,
         },
       ).catchError((e) {
-        debugPrint("${e.response["msg"]}");
+        debugPrint('${e.response['msg']}');
       });
     } else {
       return NetUtils.deleteWithCookieAndHeaderSet(
-        "${API.teamPostRequestUnPraise}/atype/p/post_type/2/post_id/$id",
+        '${API.teamPostRequestUnPraise}/atype/p/post_type/2/post_id/$id',
       ).catchError((e) {
-        debugPrint("${e.response["msg"]}");
+        debugPrint('${e.response['msg']}');
       });
     }
   }

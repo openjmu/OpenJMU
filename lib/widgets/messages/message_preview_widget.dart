@@ -44,7 +44,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
       user = UserInfo.fromJson(response.data);
       if (mounted) setState(() {});
     }).catchError((e) {
-      debugPrint("$e");
+      debugPrint('$e');
     });
 
     timeFormat(null);
@@ -64,11 +64,11 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
     if (widget.message.sendTime.day == now.day &&
         widget.message.sendTime.month == now.month &&
         widget.message.sendTime.year == now.year) {
-      formattedTime = DateFormat("HH:mm").format(widget.message.sendTime);
+      formattedTime = DateFormat('HH:mm').format(widget.message.sendTime);
     } else if (widget.message.sendTime.year == now.year) {
-      formattedTime = DateFormat("MM-dd HH:mm").format(widget.message.sendTime);
+      formattedTime = DateFormat('MM-dd HH:mm').format(widget.message.sendTime);
     } else {
-      formattedTime = DateFormat("YY-MM-dd HH:mm").format(widget.message.sendTime);
+      formattedTime = DateFormat('YY-MM-dd HH:mm').format(widget.message.sendTime);
     }
     if (mounted) setState(() {});
   }
@@ -103,7 +103,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                         height: suSetSp(30.0),
                         child: user != null
                             ? Text(
-                                "${user.name ?? user.uid}",
+                                '${user.name ?? user.uid}',
                                 style: Theme.of(context).textTheme.body1.copyWith(
                                       fontSize: suSetSp(22.0),
                                       fontWeight: FontWeight.w500,
@@ -112,7 +112,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                             : SizedBox.shrink(),
                       ),
                       Text(
-                        " $formattedTime",
+                        ' $formattedTime',
                         style: Theme.of(context).textTheme.body1.copyWith(
                               color: Theme.of(context).textTheme.body1.color.withOpacity(0.5),
                             ),
@@ -127,7 +127,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                         ),
                         child: Center(
                           child: Text(
-                            "${widget.unreadMessages.length}",
+                            '${widget.unreadMessages.length}',
                             style: TextStyle(
                               fontSize: suSetSp(18.0),
                               fontWeight: FontWeight.normal,
@@ -138,7 +138,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                     ],
                   ),
                   Text(
-                    "${widget.message.content['content']}",
+                    '${widget.message.content['content']}',
                     style: Theme.of(context).textTheme.body1.copyWith(
                           color: Theme.of(context).textTheme.body1.color.withOpacity(0.5),
                           fontSize: suSetSp(19.0),

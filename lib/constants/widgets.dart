@@ -85,7 +85,7 @@ class DeveloperTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      "assets/icons/openjmu-team-badge.svg",
+      'assets/icons/openjmu-team-badge.svg',
       height: suSetHeight(height),
     );
   }
@@ -121,7 +121,7 @@ Widget badgeIcon({
 }) =>
     Badge(
       padding: padding ?? const EdgeInsets.all(5.0),
-      badgeContent: Text("$content", style: TextStyle(color: Colors.white)),
+      badgeContent: Text('$content', style: TextStyle(color: Colors.white)),
       badgeColor: currentThemeColor,
       child: icon,
       elevation: Platform.isAndroid ? 2 : 0,
@@ -200,13 +200,9 @@ class LoadMoreIndicator extends StatelessWidget {
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SizedBox(
-                  width: suSetWidth(24.0),
-                  height: suSetHeight(24.0),
-                  child: PlatformProgressIndicator(strokeWidth: 2.0),
-                ),
+                SpinKitWidget(size: 24.0),
                 Text(
-                  "　正在加载",
+                  '　正在加载',
                   style: TextStyle(fontSize: suSetSp(18.0)),
                 ),
               ],
@@ -260,7 +256,7 @@ class ScaledImage extends StatelessWidget {
                 color: Theme.of(context).primaryColor.withOpacity(0.7),
               ),
               child: Text(
-                "长图",
+                '长图',
                 style: TextStyle(
                   color: Theme.of(context).iconTheme.color.withOpacity(0.8),
                   fontSize: suSetSp(16.0),
@@ -288,7 +284,7 @@ class ScaledImage extends StatelessWidget {
                 color: Theme.of(context).primaryColor.withOpacity(0.7),
               ),
               child: Text(
-                "动图",
+                '动图',
                 style: TextStyle(
                   color: Theme.of(context).iconTheme.color.withOpacity(0.9),
                   fontSize: suSetSp(16.0),

@@ -30,8 +30,8 @@ class UserAvatar extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(suSetWidth(size)),
           child: FadeInImage(
-            fadeInDuration: const Duration(milliseconds: 100),
-            placeholder: AssetImage("assets/avatar_placeholder.png"),
+            fadeInDuration: 150.milliseconds,
+            placeholder: AssetImage('assets/avatar_placeholder.png'),
             image: UserAPI.getAvatarProvider(uid: _uid),
           ),
         ),
@@ -41,11 +41,11 @@ class UserAvatar extends StatelessWidget {
                 if (_routeSettings is FFRouteSettings) {
                   final settings = ModalRoute.of(context).settings as FFRouteSettings;
                   if (settings.name != Routes.OPENJMU_USER ||
-                      settings.arguments.toString() != {"uid": _uid}.toString()) {
-                    navigatorState.pushNamed(Routes.OPENJMU_USER, arguments: {"uid": _uid});
+                      settings.arguments.toString() != {'uid': _uid}.toString()) {
+                    navigatorState.pushNamed(Routes.OPENJMU_USER, arguments: {'uid': _uid});
                   }
                 } else {
-                  navigatorState.pushNamed(Routes.OPENJMU_USER, arguments: {"uid": _uid});
+                  navigatorState.pushNamed(Routes.OPENJMU_USER, arguments: {'uid': _uid});
                 }
               }
             : null,

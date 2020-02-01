@@ -5,9 +5,9 @@
 part of 'beans.dart';
 
 /// 用户页用户实体
+///
 /// [id] 用户id, [nickname] 名称, [gender] 性别, [topics] 动态数, [latestTid] 最新动态id
 /// [fans] 粉丝数, [idols] 关注数, [isFollowing] 是否已关注
-///
 class User {
   int id;
   String nickname;
@@ -31,13 +31,13 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: int.parse(json['uid'].toString()),
-      nickname: json["nickname"] ?? json["username"] ?? json["name"] ?? json["uid"].toString(),
-      gender: json["gender"] ?? 0,
-      topics: json["topics"] ?? 0,
-      latestTid: json["latest_tid"] ?? null,
-      fans: json["fans"] ?? 0,
-      idols: json["idols"] ?? 0,
-      isFollowing: json["is_following"] == 1,
+      nickname: json['nickname'] ?? json['username'] ?? json['name'] ?? json['uid'].toString(),
+      gender: json['gender'] ?? 0,
+      topics: json['topics'] ?? 0,
+      latestTid: json['latest_tid'] ?? null,
+      fans: json['fans'] ?? 0,
+      idols: json['idols'] ?? 0,
+      isFollowing: json['is_following'] == 1,
     );
   }
 
@@ -50,15 +50,15 @@ class User {
 
   @override
   String toString() {
-    return 'User ${JsonEncoder.withIndent("  ").convert({
-      "id": id,
-      "nickname": nickname,
-      "gender": gender,
-      "topics": topics,
-      "latestTid": latestTid,
-      "fans": fans,
-      "idols": idols,
-      "isFollowing": isFollowing,
+    return 'User ${JsonEncoder.withIndent('' '').convert({
+      'id': id,
+      'nickname': nickname,
+      'gender': gender,
+      'topics': topics,
+      'latestTid': latestTid,
+      'fans': fans,
+      'idols': idols,
+      'isFollowing': isFollowing,
     })}';
   }
 }

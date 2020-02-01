@@ -52,7 +52,7 @@ class CommentCard extends StatelessWidget {
     }
     if (int.parse(_commentTime.substring(0, 2)) == now.month &&
         int.parse(_commentTime.substring(3, 5)) == now.day) {
-      _commentTime = "${_commentTime.substring(5, 11)}";
+      _commentTime = '${_commentTime.substring(5, 11)}';
     }
     return Text.rich(
       TextSpan(
@@ -65,7 +65,7 @@ class CommentCard extends StatelessWidget {
               size: suSetWidth(16.0),
             ),
           ),
-          TextSpan(text: " $_commentTime　"),
+          TextSpan(text: ' $_commentTime　'),
           WidgetSpan(
             alignment: ui.PlaceholderAlignment.middle,
             child: Icon(
@@ -74,7 +74,7 @@ class CommentCard extends StatelessWidget {
               size: suSetWidth(16.0),
             ),
           ),
-          TextSpan(text: " ${comment.from}　"),
+          TextSpan(text: ' ${comment.from}　'),
         ],
       ),
       style: subtitleStyle,
@@ -106,9 +106,9 @@ class CommentCard extends StatelessWidget {
     if (content != null && content.length > 0) {
       String topic;
       if (comment.toReplyExist) {
-        topic = "<M ${comment.toReplyUid}>@${comment.toReplyUserName}<\/M> 的评论: ";
+        topic = '<M ${comment.toReplyUid}>@${comment.toReplyUserName}<\/M> 的评论: ';
       } else {
-        topic = "<M ${comment.toTopicUid}>@${comment.toTopicUserName}<\/M>: ";
+        topic = '<M ${comment.toTopicUid}>@${comment.toTopicUserName}<\/M>: ';
       }
       topic += content;
       return Container(
@@ -139,7 +139,7 @@ class CommentCard extends StatelessWidget {
       padding: EdgeInsets.all(suSetWidth(30.0)),
       child: Center(
         child: Text(
-          "该条微博已被屏蔽或删除",
+          '该条微博已被屏蔽或删除',
           style: TextStyle(
             color: Colors.white,
             fontSize: suSetSp(20.0),
@@ -154,15 +154,15 @@ class CommentCard extends StatelessWidget {
       padding:
           (isRoot ?? false) ? EdgeInsets.zero : EdgeInsets.symmetric(horizontal: suSetWidth(24.0)),
       child: ExtendedText(
-        content != null ? "$content " : null,
+        content != null ? '$content ' : null,
         style: TextStyle(fontSize: suSetSp(21.0)),
         onSpecialTextTap: specialTextTapRecognizer,
         maxLines: 8,
         overFlowTextSpan: OverFlowTextSpan(
           children: <TextSpan>[
-            TextSpan(text: " ..."),
+            TextSpan(text: ' ...'),
             TextSpan(
-              text: "全文",
+              text: '全文',
               style: TextStyle(color: currentThemeColor),
             ),
           ],
@@ -224,7 +224,7 @@ class CommentCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        "删除评论",
+                        '删除评论',
                         style: TextStyle(fontSize: suSetSp(20.0), color: Colors.white),
                       ),
                     ],
@@ -236,7 +236,7 @@ class CommentCard extends StatelessWidget {
                   Navigator.pop(context);
                   navigatorState.pushNamed(
                     Routes.OPENJMU_ADD_COMMENT,
-                    arguments: {"post": comment.post, "comment": comment},
+                    arguments: {'post': comment.post, 'comment': comment},
                   );
                 },
                 child: Column(
@@ -247,7 +247,7 @@ class CommentCard extends StatelessWidget {
                       child: Icon(Icons.reply, size: suSetWidth(36.0), color: Colors.white),
                     ),
                     Text(
-                      "回复评论",
+                      '回复评论',
                       style: TextStyle(fontSize: suSetSp(20.0), color: Colors.white),
                     ),
                   ],
@@ -260,8 +260,8 @@ class CommentCard extends StatelessWidget {
                   navigatorState.pushNamed(
                     Routes.OPENJMU_POST_DETAIL,
                     arguments: {
-                      "post": comment.post,
-                      "parentContext": context,
+                      'post': comment.post,
+                      'parentContext': context,
                     },
                   );
                 },
@@ -273,7 +273,7 @@ class CommentCard extends StatelessWidget {
                       child: Icon(Icons.pageview, size: suSetWidth(36.0), color: Colors.white),
                     ),
                     Text(
-                      "查看动态",
+                      '查看动态',
                       style: TextStyle(fontSize: suSetSp(20.0), color: Colors.white),
                     ),
                   ],
@@ -292,7 +292,7 @@ class CommentCard extends StatelessWidget {
         children: <Widget>[
           Center(
             child: Text(
-              "该动态已被屏蔽或删除",
+              '该动态已被屏蔽或删除',
               style: TextStyle(color: Colors.white, fontSize: suSetSp(22.0)),
             ),
           )

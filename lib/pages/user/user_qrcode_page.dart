@@ -29,7 +29,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         PermissionGroup.storage,
       ]);
       if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
-        showToast("未获得存储权限");
+        showToast('未获得存储权限');
         return;
       }
       RenderRepaintBoundary boundary = previewContainer.currentContext.findRenderObject();
@@ -39,13 +39,13 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final result = await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
       if (result != null) {
-        showToast("保存成功");
+        showToast('保存成功');
       } else {
-        showToast("保存失败");
+        showToast('保存失败');
       }
     } catch (e) {
       isSaving = false;
-      showToast("保存失败");
+      showToast('保存失败');
     }
   }
 
@@ -62,7 +62,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
       backgroundColor: Theme.of(context).canvasColor,
       appBar: AppBar(
         title: Text(
-          "二维码名片",
+          '二维码名片',
           style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
         ),
         actions: <Widget>[IconButton(icon: Icon(Icons.save), onPressed: saveToGallery)],
@@ -122,7 +122,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                   children: <Widget>[
                     QrImage(
                       version: 3,
-                      data: "openjmu://user/${UserAPI.currentUser.uid}",
+                      data: 'openjmu://user/${UserAPI.currentUser.uid}',
                       padding: EdgeInsets.zero,
                       foregroundColor: Theme.of(context).iconTheme.color,
                     ),
@@ -143,7 +143,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                               ),
                             ],
                             image: DecorationImage(
-                              image: AssetImage("images/logo_1024.png"),
+                              image: AssetImage('images/logo_1024.png'),
                               fit: BoxFit.fill,
                             ),
                           ),

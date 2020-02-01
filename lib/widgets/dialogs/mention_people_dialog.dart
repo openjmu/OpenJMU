@@ -9,7 +9,7 @@ class MentionPeopleDialog extends StatefulWidget {
 
 class EditSignatureDialogState extends State<MentionPeopleDialog> {
   final _textEditingController = TextEditingController();
-  String query = "";
+  String query = '';
   List<User> users = [];
 
   bool loading = false;

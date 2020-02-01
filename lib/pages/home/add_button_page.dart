@@ -14,7 +14,7 @@ class AddingButtonPage extends StatefulWidget {
 }
 
 class _AddingButtonPageState extends State<AddingButtonPage> with TickerProviderStateMixin {
-  final List<String> itemTitles = ["广场", "集市"];
+  final List<String> itemTitles = ['广场', '集市'];
   final List<Color> itemColors = [Colors.orange, Colors.indigoAccent];
   final List<Function> itemOnTap = [
     (context) async {
@@ -50,15 +50,16 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
 
   @override
   void initState() {
+    super.initState();
     initItemsAnimation();
     SchedulerBinding.instance.addPostFrameCallback((_) => backDropFilterAnimate(context, true));
-    super.initState();
   }
 
   @override
   void dispose() {
-//    _backDropFilterController?.dispose();
+    _backgroundOpacityController?.dispose();
     _popButtonController?.dispose();
+    _popButtonOpacityController?.dispose();
     _itemAnimateControllers?.forEach((controller) {
       controller?.dispose();
     });
@@ -69,18 +70,18 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
   }
 
   void initItemsAnimation() {
-    _itemOffset = <double>[for (int i = 0; i < itemTitles.length; i++) 0.0];
+    _itemOffset = List<double>.generate(itemTitles.length, (_) => 0.0);
     _itemAnimations = List(itemTitles.length);
     _itemCurveAnimations = List(itemTitles.length);
     _itemAnimateControllers = List(itemTitles.length);
-    _itemOpacity = <double>[for (int i = 0; i < itemTitles.length; i++) 0.01];
+    _itemOpacity = List<double>.generate(itemTitles.length, (_) => 0.01);
     _itemOpacityAnimations = List(itemTitles.length);
     _itemOpacityCurveAnimations = List(itemTitles.length);
     _itemOpacityAnimateControllers = List(itemTitles.length);
 
     for (int i = 0; i < itemTitles.length; i++) {
       _itemAnimateControllers[i] = AnimationController(
-        duration: Duration(milliseconds: _animateDuration),
+        duration: _animateDuration.milliseconds,
         vsync: this,
       );
       _itemCurveAnimations[i] = CurvedAnimation(
@@ -98,7 +99,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
         });
 
       _itemOpacityAnimateControllers[i] = AnimationController(
-        duration: Duration(milliseconds: _animateDuration),
+        duration: _animateDuration.milliseconds,
         vsync: this,
       );
       _itemOpacityCurveAnimations[i] = CurvedAnimation(
@@ -119,7 +120,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
 
   void itemsAnimate(bool forward) {
     for (int i = 0; i < _itemAnimateControllers.length; i++) {
-      Future.delayed(Duration(milliseconds: 50 * i), () {
+      Future.delayed((i * 50).milliseconds, () {
         if (forward) {
           _itemAnimateControllers[i]?.forward();
           _itemOpacityAnimateControllers[i]?.forward();
@@ -139,10 +140,10 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     final rotateDegree = 45 * (math.pi / 180) * 3;
 
     _popButtonOpacityController = _popButtonController = AnimationController(
-      duration: Duration(milliseconds: _animateDuration),
+      duration: _animateDuration.milliseconds,
       vsync: this,
     );
-    Animation _popButtonCurve = CurvedAnimation(
+    final _popButtonCurve = CurvedAnimation(
       parent: _popButtonController,
       curve: Curves.easeInOut,
     );
@@ -172,7 +173,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     popButtonAnimate(context, forward);
 
     _backgroundOpacityController = AnimationController(
-      duration: Duration(milliseconds: _animateDuration),
+      duration: _animateDuration.milliseconds,
       vsync: this,
     );
     final _backgroundOpacityCurve = CurvedAnimation(
@@ -189,12 +190,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
       });
 
     if (forward) {
-      Future.delayed(
-        Duration(milliseconds: _animateDuration ~/ 2),
-        () {
-          itemsAnimate(true);
-        },
-      );
+      Future.delayed((_animateDuration ~/ 2).milliseconds, () => itemsAnimate(true));
     } else {
       itemsAnimate(false);
     }
@@ -250,7 +246,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                   sigmaX: 3.0 * _backgroundOpacity,
                   sigmaY: 3.0 * _backgroundOpacity,
                 ),
-                child: Text(" ", style: TextStyle(inherit: false)),
+                child: Text(' ', style: TextStyle(inherit: false)),
               ),
             ),
           ),
@@ -260,11 +256,8 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
           child: Container(
             width: Screens.width,
             height: Screens.height,
-            constraints: BoxConstraints(
-              maxWidth: Screens.width,
-              maxHeight: Screens.height,
-            ),
-            child: child ?? SizedBox(),
+            constraints: BoxConstraints(maxWidth: Screens.width, maxHeight: Screens.height),
+            child: child ?? SizedBox.shrink(),
           ),
         ),
         Positioned(
@@ -295,13 +288,10 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                   Container(
                     width: suSetWidth(80.0),
                     height: suSetWidth(80.0),
-                    decoration: BoxDecoration(
-                      color: itemColors[index],
-                      shape: BoxShape.circle,
-                    ),
+                    decoration: BoxDecoration(color: itemColors[index], shape: BoxShape.circle),
                     child: Center(
                       child: SvgPicture.asset(
-                        "assets/icons/addButton/${itemTitles[index]}.svg",
+                        'assets/icons/addButton/${itemTitles[index]}.svg',
                         color: Colors.white,
                         width: suSetWidth(32.0),
                       ),
@@ -310,15 +300,11 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                   emptyDivider(height: suSetHeight(10.0)),
                   Text(
                     itemTitles[index],
-                    style: Theme.of(context).textTheme.body1.copyWith(
-                          fontSize: suSetSp(20.0),
-                        ),
+                    style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
                   ),
                 ],
               ),
-              onTap: () {
-                itemOnTap[index](context);
-              },
+              onTap: () => itemOnTap[index](context),
             ),
           ),
         ),

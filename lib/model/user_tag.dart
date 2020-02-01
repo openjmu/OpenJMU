@@ -4,10 +4,9 @@
 ///
 part of 'beans.dart';
 
-///
 /// 用户个性标签
-/// [id] 标签id, [name] 名称
 ///
+/// [id] 标签id, [name] 名称
 class UserTag {
   int id;
   String name;

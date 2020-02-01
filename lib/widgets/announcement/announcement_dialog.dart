@@ -8,22 +8,20 @@ import 'package:extended_text_library/extended_text_library.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-class AnnouncementDialog extends StatefulWidget {
+class AnnouncementDialog extends StatelessWidget {
   final Map<String, dynamic> announcement;
 
-  AnnouncementDialog(this.announcement, {Key key}) : super(key: key);
+  const AnnouncementDialog({
+    Key key,
+    this.announcement,
+  }) : super(key: key);
 
-  @override
-  _AnnouncementDialogState createState() => _AnnouncementDialogState();
-}
-
-class _AnnouncementDialogState extends State<AnnouncementDialog> {
   @override
   Widget build(BuildContext context) {
     if (Platform.isIOS) {
       return CupertinoAlertDialog(
         title: Text(
-          "${widget.announcement['title']}",
+          '${announcement['title']}',
           style: TextStyle(
             fontSize: suSetSp(22.0),
             color: Colors.black,
@@ -32,17 +30,14 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
         content: Wrap(
           children: <Widget>[
             ExtendedText(
-              "${widget.announcement['content']}",
-              style: TextStyle(
-                fontSize: suSetSp(18.0),
-                color: Colors.black,
-              ),
+              '${announcement['content']}',
+              style: TextStyle(fontSize: suSetSp(18.0), color: Colors.black),
               specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
               onSpecialTextTap: (dynamic data) {
                 final text = data['content'];
                 navigatorState.pushNamed(
                   Routes.OPENJMU_INAPPBROWSER,
-                  arguments: {"url": text, "title": "网页链接"},
+                  arguments: {'url': text, 'title': '网页链接'},
                 );
               },
               textAlign: TextAlign.left,
@@ -52,14 +47,10 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
         actions: <Widget>[
           CupertinoButton(
             child: Text(
-              "确认",
-              style: TextStyle(
-                fontSize: suSetSp(19.0),
-              ),
+              '确认',
+              style: TextStyle(fontSize: suSetSp(19.0)),
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+            onPressed: Navigator.of(context).pop,
           ),
         ],
       );
@@ -67,26 +58,20 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
       return AlertDialog(
         backgroundColor: currentThemeColor,
         title: Text(
-          "${widget.announcement['title']}",
-          style: TextStyle(
-            fontSize: suSetSp(22.0),
-            color: Colors.white,
-          ),
+          '${announcement['title']}',
+          style: TextStyle(fontSize: suSetSp(22.0), color: Colors.white),
         ),
         content: Wrap(
           children: <Widget>[
             ExtendedText(
-              "${widget.announcement['content']}",
-              style: TextStyle(
-                fontSize: suSetSp(18.0),
-                color: Colors.white,
-              ),
+              '${announcement['content']}',
+              style: TextStyle(fontSize: suSetSp(18.0), color: Colors.white),
               specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
               onSpecialTextTap: (dynamic data) {
                 final text = data['content'];
                 navigatorState.pushNamed(
                   Routes.OPENJMU_INAPPBROWSER,
-                  arguments: {"url": text, "title": "网页链接"},
+                  arguments: {'url': text, 'title': '网页链接'},
                 );
               },
             ),
@@ -95,15 +80,10 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
         actions: <Widget>[
           FlatButton(
             child: Text(
-              "确认",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: suSetSp(18.0),
-              ),
+              '确认',
+              style: TextStyle(color: Colors.white, fontSize: suSetSp(18.0)),
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+            onPressed: Navigator.of(context).pop,
           )
         ],
       );
@@ -112,8 +92,8 @@ class _AnnouncementDialogState extends State<AnnouncementDialog> {
 }
 
 class LinkText extends SpecialText {
-  static String startKey = "https://";
-  static const String endKey = " ";
+  static String startKey = 'https://';
+  static const String endKey = ' ';
 
   LinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
       : super(startKey, endKey, textStyle, onTap: onTap);
@@ -127,7 +107,7 @@ class LinkText extends SpecialText {
       ),
       recognizer: TapGestureRecognizer()
         ..onTap = () {
-          Map<String, dynamic> data = {'content': toString()};
+          final data = {'content': toString()};
           if (onTap != null) onTap(data);
         },
     );

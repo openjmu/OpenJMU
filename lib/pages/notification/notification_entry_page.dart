@@ -22,24 +22,24 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
     with TickerProviderStateMixin {
   final items = <Map<String, dynamic>>[
     {
-      "name": "广场",
-      "color": Colors.orange,
-      "notifications": Provider.of<NotificationProvider>(
+      'name': '广场',
+      'color': Colors.orange,
+      'notifications': Provider.of<NotificationProvider>(
         currentContext,
         listen: false,
       ).notifications,
-      "onTap": (context) async {
+      'onTap': (context) async {
         navigatorState.pushNamed(Routes.OPENJMU_NOTIFICATIONS);
       },
     },
     {
-      "name": "集市",
-      "color": Colors.indigoAccent,
-      "notifications": Provider.of<NotificationProvider>(
+      'name': '集市',
+      'color': Colors.indigoAccent,
+      'notifications': Provider.of<NotificationProvider>(
         currentContext,
         listen: false,
       ).teamNotifications,
-      "onTap": (context) async {
+      'onTap': (context) async {
         navigatorState.pushNamed(Routes.OPENJMU_TEAM_NOTIFICATIONS);
       },
     },
@@ -75,9 +75,9 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
 
   @override
   void initState() {
+    super.initState();
     initItemsAnimation();
     SchedulerBinding.instance.addPostFrameCallback((_) => backDropFilterAnimate(context, true));
-    super.initState();
   }
 
   @override
@@ -85,6 +85,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
     _backgroundOpacityController?.dispose();
     _backDropFilterController?.dispose();
     _popButtonController?.dispose();
+    _popButtonOpacityController?.dispose();
     _itemAnimateControllers?.forEach((controller) {
       controller?.dispose();
     });
@@ -145,7 +146,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
 
   void itemsAnimate(bool forward) {
     for (int i = 0; i < _itemAnimateControllers.length; i++) {
-      Future.delayed(Duration(milliseconds: 50 * i), () {
+      Future.delayed((50 * i).milliseconds, () {
         if (forward) {
           _itemAnimateControllers[i]?.forward();
           _itemOpacityAnimateControllers[i]?.forward();
@@ -165,7 +166,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
     final rotateDegree = 45 * (math.pi / 180) * 3;
 
     _popButtonOpacityController = _popButtonController = AnimationController(
-      duration: Duration(milliseconds: _animateDuration),
+      duration: _animateDuration.milliseconds,
       vsync: this,
     );
     final _popButtonCurve = CurvedAnimation(
@@ -199,7 +200,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
     popButtonAnimate(context, forward);
 
     _backgroundOpacityController = AnimationController(
-      duration: Duration(milliseconds: _animateDuration),
+      duration: _animateDuration.milliseconds,
       vsync: this,
     );
     final _backgroundOpacityCurve = CurvedAnimation(
@@ -232,12 +233,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
         if (mounted) setState(() {});
       });
     if (forward) {
-      Future.delayed(
-        Duration(milliseconds: _animateDuration ~/ 2),
-        () {
-          itemsAnimate(true);
-        },
-      );
+      Future.delayed((_animateDuration ~/ 2).milliseconds, () => itemsAnimate(true));
     } else {
       itemsAnimate(false);
     }
@@ -288,7 +284,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
                   sigmaX: 3.0 * _backgroundOpacity,
                   sigmaY: 3.0 * _backgroundOpacity,
                 ),
-                child: Text(" ", style: TextStyle(inherit: false)),
+                child: Text('' '', style: TextStyle(inherit: false)),
               ),
             ),
           ),
@@ -310,7 +306,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
                 borderRadius: BorderRadius.circular(backdropRadius * 2),
                 child: BackdropFilter(
                   filter: ui.ImageFilter.blur(sigmaX: 15.0, sigmaY: 15.0),
-                  child: Text(" ", style: TextStyle(inherit: false)),
+                  child: Text('' '', style: TextStyle(inherit: false)),
                 ),
               ),
             ),
@@ -364,7 +360,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
                     children: <Widget>[
                       Center(
                         child: SvgPicture.asset(
-                          "assets/icons/addButton/${items[itemIndex]['name']}.svg",
+                          'assets/icons/addButton/${items[itemIndex]['name']}.svg',
                           color: Colors.white,
                           width: suSetWidth(28.0),
                         ),
@@ -376,10 +372,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
                           child: Badge(
                             badgeContent: Text(
                               items[itemIndex]['notifications'].total.toString(),
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: suSetSp(20.0),
-                              ),
+                              style: TextStyle(color: Colors.white, fontSize: suSetSp(20.0)),
                             ),
                             badgeColor: currentThemeColor,
                           ),
@@ -414,10 +407,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
         child: SizedBox.fromSize(
           size: Size.square(Screens.width / 3 * 2),
           child: Stack(
-            children: List<Widget>.generate(
-              items.length * 2 - 1,
-              (i) => item(context, i),
-            ),
+            children: List<Widget>.generate(items.length * 2 - 1, (i) => item(context, i)),
           ),
         ),
       ),

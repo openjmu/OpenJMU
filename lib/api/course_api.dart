@@ -15,12 +15,12 @@ class CourseAPI {
 
   static Future getCourse() async => NetUtils.get(
         API.courseScheduleCourses,
-        data: {"sid": UserAPI.currentUser.sid},
+        data: {'sid': UserAPI.currentUser.sid},
       );
 
   static Future getRemark() async => NetUtils.get(
         API.courseScheduleClassRemark,
-        data: {"sid": UserAPI.currentUser.sid},
+        data: {'sid': UserAPI.currentUser.sid},
       );
 
   static String getCourseTime(int courseIndex) {
@@ -31,7 +31,7 @@ class CourseAPI {
   }
 
   static Future setCustomCourse(Map<String, dynamic> course) async => NetUtils.post(
-        "${API.courseScheduleCustom}?sid=${UserAPI.currentUser.sid}",
+        '${API.courseScheduleCustom}?sid=${UserAPI.currentUser.sid}',
         data: course,
       );
 
@@ -72,18 +72,18 @@ class CourseAPI {
   };
 
   static Map<String, String> courseTimeChinese = {
-    "1": "一二节",
-    "12": "一二节",
-    "3": "三四节",
-    "34": "三四节",
-    "5": "五六节",
-    "56": "五六节",
-    "7": "七八节",
-    "78": "七八节",
-    "9": "九十节",
-    "90": "九十节",
-    "11": "十一节",
-    "911": "九十十一节",
+    '1': '一二节',
+    '12': '一二节',
+    '3': '三四节',
+    '34': '三四节',
+    '5': '五六节',
+    '56': '五六节',
+    '7': '七八节',
+    '78': '七八节',
+    '9': '九十节',
+    '90': '九十节',
+    '11': '十一节',
+    '911': '九十十一节',
   };
 
   static final List<Color> courseColorsList = [

@@ -4,10 +4,9 @@
 ///
 part of 'beans.dart';
 
+/// 通知实体
 ///
-/// 通知类
 /// [at] @人计数, [comment] 评论计数, [praise] 点赞计数, [fans] 新粉丝计数
-///
 class Notifications {
   int at, comment, praise, fans;
 
@@ -30,12 +29,7 @@ class Notifications {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      "at": at,
-      "comment": comment,
-      "praise": praise,
-      "fans": praise,
-    };
+    return {'at': at, 'comment': comment, 'praise': praise, 'fans': praise};
   }
 
   @override
@@ -48,6 +42,6 @@ class Notifications {
 
   @override
   String toString() {
-    return JsonEncoder.withIndent("  ").convert(toJson());
+    return JsonEncoder.withIndent(' ').convert(toJson());
   }
 }

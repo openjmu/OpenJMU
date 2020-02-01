@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 
-class ImageGestureDetector extends StatefulWidget {
+class ImageGestureDetector extends StatelessWidget {
   final Widget child;
   final BuildContext context;
   final Function onLongPress;
@@ -18,22 +18,17 @@ class ImageGestureDetector extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ImageGestureDetectorState createState() => _ImageGestureDetectorState();
-}
-
-class _ImageGestureDetectorState extends State<ImageGestureDetector> with TickerProviderStateMixin {
-  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: ((widget.enableTapPop ?? false) && widget.context != null)
+      onTap: ((enableTapPop ?? false) && context != null)
           ? () {
-              widget.slidePageKey.currentState.popPage();
-              Navigator.pop(widget.context);
+              slidePageKey.currentState.popPage();
+              Navigator.pop(context);
             }
           : null,
-      onLongPress: (widget.onLongPress != null) ? () => widget.onLongPress() : null,
-      child: widget.child,
+      onLongPress: (onLongPress != null) ? () => onLongPress() : null,
+      child: child,
     );
   }
 }

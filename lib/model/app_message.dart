@@ -4,11 +4,10 @@
 ///
 part of 'beans.dart';
 
-///
 /// 应用消息实体
+///
 /// [appId] 应用id, [permissionCode] 权限code, [messageId] 消息id,
 /// [messageType] 消息类型, [sendTime] 发送时间, [read] 是否已读,
-///
 @HiveType(typeId: HiveAdapterTypeIds.appMessage)
 class AppMessage with HiveObject {
   @HiveField(0)
@@ -77,14 +76,14 @@ class AppMessage with HiveObject {
 
   Map<String, dynamic> toJson() {
     return {
-      "appId": appId,
-      "permissionCode": permissionCode,
-      "messageId": messageId,
-      "messageType": messageType,
-      "sendTime": sendTime.toString(),
-      "ackId": ackId,
-      "content": content,
-      "read": read,
+      'appId': appId,
+      'permissionCode': permissionCode,
+      'messageId': messageId,
+      'messageType': messageType,
+      'sendTime': sendTime.toString(),
+      'ackId': ackId,
+      'content': content,
+      'read': read,
     };
   }
 

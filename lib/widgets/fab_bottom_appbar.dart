@@ -18,7 +18,7 @@ class FABBottomAppBarItem {
     this.child,
   }) : assert(
           iconPath == null && child != null || iconPath != null && child == null,
-          "cannot set icon and child at the same time.",
+          'cannot set icon and child at the same time.',
         );
 
   @override
@@ -73,13 +73,13 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
     if (widget.initIndex != null) _selectedIndex = widget.initIndex;
     Instances.eventBus
       ..on<ActionsEvent>().listen((event) {
-        if (event.type == "action_home") {
+        if (event.type == 'action_home') {
           _selectedIndex = 0;
-        } else if (event.type == "action_apps") {
+        } else if (event.type == 'action_apps') {
           _selectedIndex = 1;
-        } else if (event.type == "action_discover") {
+        } else if (event.type == 'action_discover') {
           _selectedIndex = 2;
-        } else if (event.type == "action_user") {
+        } else if (event.type == 'action_user') {
           _selectedIndex = 3;
         }
         if (mounted) setState(() {});
@@ -158,13 +158,13 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
                                 ? CrossFadeState.showFirst
                                 : CrossFadeState.showSecond,
                             firstChild: SvgPicture.asset(
-                              "assets/icons/bottomNavigation/${item.iconPath}.svg",
+                              'assets/icons/bottomNavigation/${item.iconPath}.svg',
                               color: widget.selectedColor,
                               width: suSetWidth(widget.iconSize),
                               height: suSetWidth(widget.iconSize),
                             ),
                             secondChild: SvgPicture.asset(
-                              "assets/icons/bottomNavigation/${item.iconPath}.svg",
+                              'assets/icons/bottomNavigation/${item.iconPath}.svg',
                               color: widget.color,
                               width: suSetWidth(widget.iconSize),
                               height: suSetWidth(widget.iconSize),

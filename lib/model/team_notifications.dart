@@ -4,11 +4,10 @@
 ///
 part of 'beans.dart';
 
-///
 /// 小组通知类
+///
 /// [latestNotify] 最新的通知内容类型,
 /// [mention] @人计数, [reply] 评论计数, [praise] 点赞计数
-///
 class TeamNotifications {
   String latestNotify;
   int mention, reply, praise;
@@ -32,12 +31,7 @@ class TeamNotifications {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      "latest_u": latestNotify,
-      "mention": mention,
-      "reply": reply,
-      "praise": praise,
-    };
+    return {'latest_u': latestNotify, 'mention': mention, 'reply': reply, 'praise': praise};
   }
 
   @override
@@ -50,6 +44,6 @@ class TeamNotifications {
 
   @override
   String toString() {
-    return JsonEncoder.withIndent("  ").convert(toJson());
+    return JsonEncoder.withIndent('  ').convert(toJson());
   }
 }

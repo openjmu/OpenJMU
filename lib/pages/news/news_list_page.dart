@@ -51,13 +51,13 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
           .data;
 
       List<News> _newsList = [];
-      final _news = data["data"];
+      final _news = data['data'];
       int _total = int.parse(data['total'].toString());
       int _count = int.parse(data['count'].toString());
       int _lastTimeStamp = int.parse(data['min_ts'].toString());
 
       for (var newsData in _news) {
-        if (newsData != null && newsData != "") {
+        if (newsData != null && newsData != '') {
           _newsList.add(News.fromJson(newsData));
         }
       }
@@ -95,7 +95,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
               borderRadius: BorderRadius.circular(suSetSp(20.0)),
             ),
             child: Text(
-              "专题",
+              '专题',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: suSetSp(18.0),
@@ -141,7 +141,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Text(
-                "${news.glances} ",
+                '${news.glances} ',
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: suSetSp(14.0),
@@ -160,15 +160,14 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
   }
 
   Widget coverImg(News news) {
-    final imageUrl = "${API.showFile}${news.cover}"
-        "/sid/${UserAPI.currentUser.sid}";
+    final imageUrl = '${API.showFile}${news.cover}/sid/${UserAPI.currentUser.sid}';
     ImageProvider coverImg = ExtendedNetworkImageProvider(imageUrl);
     return SizedBox(
       width: suSetSp(80.0),
       height: suSetSp(80.0),
       child: FadeInImage(
         fadeInDuration: const Duration(milliseconds: 100),
-        placeholder: AssetImage("assets/avatar_placeholder.png"),
+        placeholder: AssetImage('assets/avatar_placeholder.png'),
         image: coverImg,
         fit: BoxFit.cover,
       ),
@@ -181,7 +180,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
       padding: EdgeInsets.all(suSetSp(8.0)),
       child: InkWell(
         onTap: () {
-          navigatorState.pushNamed(Routes.OPENJMU_NEWS_DETAIL, arguments: {"news": news});
+          navigatorState.pushNamed(Routes.OPENJMU_NEWS_DETAIL, arguments: {'news': news});
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -237,8 +236,8 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
                         if (newsList.length >= index + 1) {
                           final element = newsList.elementAt(index);
                           ExtendedNetworkImageProvider(
-                            "${API.showFile}${element.cover}"
-                            "/sid/${UserAPI.currentUser.sid}",
+                            '${API.showFile}${element.cover}'
+                            '/sid/${UserAPI.currentUser.sid}',
                           ).evict();
                         }
                       });

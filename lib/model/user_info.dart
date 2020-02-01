@@ -4,12 +4,11 @@
 ///
 part of 'beans.dart';
 
-///
 /// 用户信息实体
+///
 /// [sid] 用户token, [ticket] 用户当前token, [blowfish] 用户设备uuid
 /// [uid] 用户uid, [unitId] 组织/学校id, [workId] 工号/学号, [classId] 班级id,
 /// [name] 名字, [signature] 签名, [gender] 性别, [isFollowing] 是否已关注
-///
 class UserInfo {
   /// For Login Process
   String sid;
@@ -50,9 +49,8 @@ class UserInfo {
   @override
   int get hashCode => uid.hashCode;
 
-  @override
-  String toString() {
-    return "UserInfo ${JsonEncoder.withIndent("  ").convert({
+  Map<String, dynamic> toJson() {
+    return {
       'sid': sid,
       'uid': uid,
       'name': name,
@@ -65,12 +63,17 @@ class UserInfo {
 //      'classId': classId,
       'gender': gender,
       'isFollowing': isFollowing,
-    })}";
+    };
+  }
+
+  @override
+  String toString() {
+    return 'UserInfo ${JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 
   factory UserInfo.fromJson(Map<String, dynamic> json) {
     json.forEach((k, v) {
-      if (json[k] == "") json[k] = null;
+      if (json[k] == '') json[k] = null;
     });
     return UserInfo(
       sid: json['sid'],

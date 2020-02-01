@@ -66,7 +66,9 @@ class AnnouncementWidget extends StatelessWidget {
           onTap: () {
             showDialog<Null>(
               context: context,
-              builder: (BuildContext context) => AnnouncementDialog(announcements[0]),
+              builder: (BuildContext context) => AnnouncementDialog(
+                announcement: announcements[0],
+              ),
             );
           },
         );

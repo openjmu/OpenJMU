@@ -58,7 +58,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
                           color: currentThemeColor,
                         ),
                         child: Text(
-                          "楼主",
+                          '楼主',
                           style: TextStyle(
                             fontSize: suSetSp(12.0),
                             color: Colors.white,
@@ -118,14 +118,14 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
       context: context,
       builder: (context) => CupertinoAlertDialog(
         title: Text(
-          "删除此楼",
+          '删除此楼',
         ),
         content: Text(
-          "是否删除该楼内容？",
+          '是否删除该楼内容？',
         ),
         actions: <Widget>[
           CupertinoDialogAction(
-            child: Text("确认"),
+            child: Text('确认'),
             isDefaultAction: false,
             onPressed: () {
               Navigator.of(context).pop(true);
@@ -133,7 +133,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
             textStyle: TextStyle(color: currentThemeColor),
           ),
           CupertinoDialogAction(
-            child: Text("取消"),
+            child: Text('取消'),
             isDefaultAction: true,
             onPressed: () {
               Navigator.of(context).pop(false);
@@ -149,7 +149,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
   void delete() {
     TeamPostAPI.deletePost(postId: comment.rid, postType: 8).then(
       (response) {
-        showToast("删除成功");
+        showToast('删除成功');
         Instances.eventBus.fire(TeamPostCommentDeletedEvent(
           commentId: comment.rid,
           topPostId: topPost.tid,
@@ -161,16 +161,16 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
   Widget _postTime(context) {
     final now = DateTime.now();
     DateTime _postTime = comment.postTime;
-    String time = "";
+    String time = '';
     if (_postTime.day == now.day && _postTime.month == now.month && _postTime.year == now.year) {
-      time += DateFormat("HH:mm").format(_postTime);
+      time += DateFormat('HH:mm').format(_postTime);
     } else if (_postTime.year == now.year) {
-      time += DateFormat("MM-dd HH:mm").format(_postTime);
+      time += DateFormat('MM-dd HH:mm').format(_postTime);
     } else {
-      time += DateFormat("yyyy-MM-dd HH:mm").format(_postTime);
+      time += DateFormat('yyyy-MM-dd HH:mm').format(_postTime);
     }
     return Text(
-      "第${comment.floor}楼 · $time",
+      '第${comment.floor}楼 · $time',
       style: Theme.of(context).textTheme.caption.copyWith(
             fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
@@ -183,7 +183,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
           vertical: suSetHeight(4.0),
         ),
         child: ExtendedText(
-          comment.content ?? "",
+          comment.content ?? '',
           style: TextStyle(
             fontSize: suSetSp(21.0),
           ),
@@ -191,9 +191,9 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
           maxLines: 8,
           overFlowTextSpan: OverFlowTextSpan(
             children: <TextSpan>[
-              TextSpan(text: " ... "),
+              TextSpan(text: ' ... '),
               TextSpan(
-                text: "全文",
+                text: '全文',
                 style: TextStyle(color: currentThemeColor),
               ),
             ],

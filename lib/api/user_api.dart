@@ -51,10 +51,10 @@ class UserAPI {
 
   static ImageProvider getAvatarProvider({int uid, int t}) {
     return ExtendedNetworkImageProvider(
-      "${API.userAvatar}"
-      "?uid=${uid ?? currentUser.uid}"
-      "&_t=${t ?? avatarLastModified}"
-      "&size=f152",
+      '${API.userAvatar}'
+      '?uid=${uid ?? currentUser.uid}'
+      '&_t=${t ?? avatarLastModified}'
+      '&size=f152',
       cache: true,
       retries: 1,
     );
@@ -62,16 +62,16 @@ class UserAPI {
 
   static void updateAvatarProvider() {
     ExtendedNetworkImageProvider(
-      "${API.userAvatar}"
-      "?uid=${currentUser.uid}"
-      "&size=f152"
-      "&_t=$avatarLastModified",
+      '${API.userAvatar}'
+      '?uid=${currentUser.uid}'
+      '&size=f152'
+      '&_t=$avatarLastModified',
     ).evict();
     ExtendedNetworkImageProvider(
-      "${API.userAvatar}"
-      "?uid=${currentUser.uid}"
-      "&size=f640"
-      "&_t=$avatarLastModified",
+      '${API.userAvatar}'
+      '?uid=${currentUser.uid}'
+      '&size=f640'
+      '&_t=$avatarLastModified',
     ).evict();
     avatarLastModified = DateTime.now().millisecondsSinceEpoch;
   }
@@ -96,76 +96,76 @@ class UserAPI {
   }
 
   static Future getTags(int uid) {
-    return NetUtils.getWithCookieAndHeaderSet(API.userTags, data: {"uid": uid});
+    return NetUtils.getWithCookieAndHeaderSet(API.userTags, data: {'uid': uid});
   }
 
   static Future getFans(int uid) {
-    return NetUtils.getWithCookieAndHeaderSet("${API.userFans}$uid");
+    return NetUtils.getWithCookieAndHeaderSet('${API.userFans}$uid');
   }
 
   static Future getIdols(int uid) {
-    return NetUtils.getWithCookieAndHeaderSet("${API.userIdols}$uid");
+    return NetUtils.getWithCookieAndHeaderSet('${API.userIdols}$uid');
   }
 
   static Future getFansList(int uid, int page) {
     return NetUtils.getWithCookieAndHeaderSet(
-      "${API.userFans}$uid/page/$page/page_size/20",
+      '${API.userFans}$uid/page/$page/page_size/20',
     );
   }
 
   static Future getIdolsList(int uid, int page) {
     return NetUtils.getWithCookieAndHeaderSet(
-      "${API.userIdols}$uid/page/$page/page_size/20",
+      '${API.userIdols}$uid/page/$page/page_size/20',
     );
   }
 
   static Future getFansAndFollowingsCount(int uid) {
-    return NetUtils.getWithCookieAndHeaderSet("${API.userFansAndIdols}$uid");
+    return NetUtils.getWithCookieAndHeaderSet('${API.userFansAndIdols}$uid');
   }
 
   static Future getNotifications() async => NetUtils.getWithCookieAndHeaderSet(API.postUnread);
 
   static Future follow(int uid) async {
-    NetUtils.postWithCookieAndHeaderSet("${API.userRequestFollow}$uid").then((response) {
+    NetUtils.postWithCookieAndHeaderSet('${API.userRequestFollow}$uid').then((response) {
       return NetUtils.postWithCookieAndHeaderSet(
         API.userFollowAdd,
-        data: {"fid": uid, "tagid": 0},
+        data: {'fid': uid, 'tagid': 0},
       );
     }).catchError((e) {
       debugPrint(e.toString());
-      showCenterErrorToast("关注失败，${jsonDecode(e.response.data)['msg']}");
+      showCenterErrorToast('关注失败，${jsonDecode(e.response.data)['msg']}');
     });
   }
 
   static Future unFollow(int uid) async {
-    NetUtils.deleteWithCookieAndHeaderSet("${API.userRequestFollow}$uid").then((response) {
+    NetUtils.deleteWithCookieAndHeaderSet('${API.userRequestFollow}$uid').then((response) {
       return NetUtils.postWithCookieAndHeaderSet(
         API.userFollowDel,
-        data: {"fid": uid},
+        data: {'fid': uid},
       );
     }).catchError((e) {
       debugPrint(e.toString());
-      showCenterErrorToast("取消关注失败，${e.response.data['msg']}");
+      showCenterErrorToast('取消关注失败，${e.response.data['msg']}');
     });
   }
 
   static Future setSignature(content) async {
     return NetUtils.postWithCookieAndHeaderSet(
       API.userSignature,
-      data: {"signature": content},
+      data: {'signature': content},
     );
   }
 
   static Future<Map<String, dynamic>> searchUser(name) async {
     Map<String, dynamic> users = (await NetUtils.getWithCookieSet(
       API.searchUser,
-      data: {"keyword": name},
+      data: {'keyword': name},
     ))
         .data;
     if (users['total'] == null) {
       users = {
-        "total": 1,
-        "data": [users]
+        'total': 1,
+        'data': [users]
       };
     }
     return users;
@@ -185,32 +185,32 @@ class UserAPI {
   static void fAddToBlacklist({int uid, String name}) {
     NetUtils.postWithCookieSet(
       API.addToBlacklist,
-      data: {"fid": uid},
+      data: {'fid': uid},
     ).then((response) {
       addToBlacklist(uid: uid, name: name);
-      showToast("屏蔽成功");
+      showToast('屏蔽成功');
       Instances.eventBus.fire(BlacklistUpdateEvent());
       UserAPI.unFollow(uid).catchError((e) {
-        debugPrint("${e.toString()}");
+        debugPrint('${e.toString()}');
       });
     }).catchError((e) {
-      showToast("屏蔽失败");
-      debugPrint("Add $name $uid to blacklist failed : $e");
+      showToast('屏蔽失败');
+      debugPrint('Add $name $uid to blacklist failed : $e');
     });
   }
 
   static void fRemoveFromBlacklist({int uid, String name}) {
     NetUtils.postWithCookieSet(
       API.removeFromBlacklist,
-      data: {"fid": uid},
+      data: {'fid': uid},
     ).then((response) {
       removeFromBlackList(uid: uid, name: name);
-      showToast("取消屏蔽成功");
+      showToast('取消屏蔽成功');
       Instances.eventBus.fire(BlacklistUpdateEvent());
     }).catchError((e) {
-      showToast("取消屏蔽失败");
-      debugPrint("Remove $name $uid from blacklist failed: $e");
-      debugPrint("${e.response}");
+      showToast('取消屏蔽失败');
+      debugPrint('Remove $name $uid from blacklist failed: $e');
+      debugPrint('${e.response}');
     });
   }
 
@@ -225,10 +225,10 @@ class UserAPI {
   }
 
   static void addToBlacklist({int uid, String name}) {
-    blacklist.add(jsonEncode({"uid": uid.toString(), "username": name}));
+    blacklist.add(jsonEncode({'uid': uid.toString(), 'username': name}));
   }
 
   static void removeFromBlackList({int uid, String name}) {
-    blacklist.remove(jsonEncode({"uid": uid.toString(), "username": name}));
+    blacklist.remove(jsonEncode({'uid': uid.toString(), 'username': name}));
   }
 }

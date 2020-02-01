@@ -37,6 +37,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
 
   @override
   void initState() {
+    super.initState();
     Instances.eventBus
       ..on<MessageReceivedEvent>().listen((event) {
         if (event.senderUid == widget.uid || event.senderUid == UserAPI.currentUser.uid) {
@@ -51,7 +52,6 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
       pendingMessage = _textEditingController.text;
       if (mounted) setState(() {});
     });
-    super.initState();
   }
 
   Widget get topBar => Container(

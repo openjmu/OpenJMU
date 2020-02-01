@@ -6,37 +6,37 @@ class PraiseAPI {
   const PraiseAPI._();
 
   static getPraiseList(bool isMore, int lastValue) async => NetUtils.getWithCookieAndHeaderSet(
-        (isMore ?? false) ? "${API.praiseList}/id_max/$lastValue" : "${API.praiseList}",
+        (isMore ?? false) ? '${API.praiseList}/id_max/$lastValue' : '${API.praiseList}',
       );
 
   static getPraiseInPostList(postId, {bool isMore, int lastValue}) =>
       NetUtils.getWithCookieAndHeaderSet(
         (isMore ?? false)
-            ? "${API.postPraisesList}$postId/id_max/$lastValue"
-            : "${API.postPraisesList}$postId",
+            ? '${API.postPraisesList}$postId/id_max/$lastValue'
+            : '${API.postPraisesList}$postId',
       );
 
   static Future requestPraise(id, isPraise) async {
     if (isPraise) {
       return NetUtils.postWithCookieAndHeaderSet(
-        "${API.postRequestPraise}$id",
+        '${API.postRequestPraise}$id',
       ).catchError((e) {
-        debugPrint("${e.response}");
+        debugPrint('${e.response}');
       });
     } else {
       return NetUtils.deleteWithCookieAndHeaderSet(
-        "${API.postRequestPraise}$id",
+        '${API.postRequestPraise}$id',
       ).catchError((e) {
-        debugPrint("${e.response}");
+        debugPrint('${e.response}');
       });
     }
   }
 
   static Praise createPraiseInPost(itemData) {
-    final _avatar = "${API.userAvatar}"
-        "?uid=${itemData['user']['uid']}"
-        "&size=f152"
-        "&_t=${DateTime.now().millisecondsSinceEpoch}";
+    final _avatar = '${API.userAvatar}'
+        '?uid=${itemData['user']['uid']}'
+        '&size=f152'
+        '&_t=${DateTime.now().millisecondsSinceEpoch}';
     final _praiseTime = DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
         .toString()
         .substring(0, 16);
@@ -56,10 +56,10 @@ class PraiseAPI {
   }
 
   static Praise createPraise(itemData) {
-    final _avatar = "${API.userAvatar}"
-        "?uid=${itemData['user']['uid']}"
-        "&size=f152"
-        "&_t=${DateTime.now().millisecondsSinceEpoch}";
+    final _avatar = '${API.userAvatar}'
+        '?uid=${itemData['user']['uid']}'
+        '&size=f152'
+        '&_t=${DateTime.now().millisecondsSinceEpoch}';
     final _praiseTime = DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
         .toString()
         .substring(0, 16);

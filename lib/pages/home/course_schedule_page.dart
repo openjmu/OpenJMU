@@ -39,6 +39,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
 
   @override
   void initState() {
+    super.initState();
     coursesProvider = Provider.of<CoursesProvider>(currentContext, listen: false);
     dateProvider = Provider.of<DateProvider>(currentContext, listen: false);
     currentWeek = dateProvider.currentWeek;
@@ -63,7 +64,6 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
           }
         }
       });
-    super.initState();
   }
 
   void updateScrollController() {

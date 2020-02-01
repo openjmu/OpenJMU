@@ -17,7 +17,7 @@ class AppsPage extends StatefulWidget {
 
 class AppsPageState extends State<AppsPage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  static List<String> get tabs => ["课程表", if (!(currentUser?.isTeacher ?? false)) "成绩", "应用"];
+  static List<String> get tabs => ['课程表', if (!(currentUser?.isTeacher ?? false)) '成绩', '应用'];
   final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
   final _scrollController = ScrollController();
@@ -30,6 +30,8 @@ class AppsPageState extends State<AppsPage>
 
   @override
   void initState() {
+    super.initState();
+
     _tabController = TabController(
       initialIndex: Provider.of<SettingsProvider>(
         currentContext,
@@ -47,28 +49,20 @@ class AppsPageState extends State<AppsPage>
       })
       ..on<AppCenterRefreshEvent>().listen((event) {
         switch (tabs[event.currentIndex]) {
-          case "课程表":
+          case '课程表':
             Instances.eventBus.fire(CourseScheduleRefreshEvent());
             break;
-          case "成绩":
-            Provider.of<ScoresProvider>(
-              currentContext,
-              listen: false,
-            ).requestScore();
+          case '成绩':
+            Provider.of<ScoresProvider>(currentContext, listen: false).requestScore();
             break;
-          case "应用":
+          case '应用':
             if (_scrollController.hasClients) _scrollController.jumpTo(0.0);
             refreshIndicatorKey.currentState.show();
-            Provider.of<WebAppsProvider>(
-              currentContext,
-              listen: false,
-            ).updateApps();
+            Provider.of<WebAppsProvider>(currentContext, listen: false).updateApps();
             break;
         }
         if (mounted) setState(() {});
       });
-
-    super.initState();
   }
 
   @override
@@ -81,11 +75,11 @@ class AppsPageState extends State<AppsPage>
   Widget _tab(String name) {
     Widget tab;
     switch (name) {
-      case "成绩":
-      case "应用":
+      case '成绩':
+      case '应用':
         tab = Tab(text: name);
         break;
-      case "课程表":
+      case '课程表':
         tab = Tab(
           child: GestureDetector(
             onTap: (Instances.courseSchedulePageStateKey.currentState != null &&
@@ -106,14 +100,8 @@ class AppsPageState extends State<AppsPage>
                     Instances.courseSchedulePageStateKey.currentState.firstLoaded &&
                     Instances.courseSchedulePageStateKey.currentState.hasCourse)
                   AnimatedCrossFade(
-                    firstChild: Icon(
-                      Icons.keyboard_arrow_down,
-                      size: suSetWidth(28.0),
-                    ),
-                    secondChild: Icon(
-                      Icons.keyboard_arrow_up,
-                      size: suSetWidth(28.0),
-                    ),
+                    firstChild: Icon(Icons.keyboard_arrow_down, size: suSetWidth(28.0)),
+                    secondChild: Icon(Icons.keyboard_arrow_up, size: suSetWidth(28.0)),
                     crossFadeState: Instances.courseSchedulePageStateKey.currentState.showWeek
                         ? CrossFadeState.showSecond
                         : CrossFadeState.showFirst,
@@ -148,7 +136,7 @@ class AppsPageState extends State<AppsPage>
               selector: (_, provider) => provider.dark,
               builder: (_, dark, __) {
                 return ExtendedTabBarView(
-                  physics: tabs.contains("成绩")
+                  physics: tabs.contains('成绩')
                       ? const ScrollPhysics()
                       : const NeverScrollableScrollPhysics(),
                   cacheExtent: 3,
@@ -157,17 +145,17 @@ class AppsPageState extends State<AppsPage>
                     UserAPI.currentUser.isTeacher != null
                         ? UserAPI.currentUser.isTeacher
                             ? InAppBrowserPage(
-                                url: "${API.courseScheduleTeacher}"
-                                    "?sid=${UserAPI.currentUser.sid}"
-                                    "&night=${dark ? 1 : 0}",
-                                title: "课程表",
+                                url: '${API.courseScheduleTeacher}'
+                                    '?sid=${UserAPI.currentUser.sid}'
+                                    '&night=${dark ? 1 : 0}',
+                                title: '课程表',
                                 withAppBar: false,
                                 withAction: false,
                                 keepAlive: true,
                               )
                             : CourseSchedulePage(key: Instances.courseSchedulePageStateKey)
                         : SizedBox(),
-                    if (tabs.contains("成绩")) ScorePage(),
+                    if (tabs.contains('成绩')) ScorePage(),
                     AppCenterPage(
                       refreshIndicatorKey: refreshIndicatorKey,
                       scrollController: _scrollController,
