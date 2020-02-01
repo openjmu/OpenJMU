@@ -38,7 +38,7 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
   }
 
   Widget get timelineIndicator => Container(
-        margin: EdgeInsets.only(right: suSetWidth(30.0)),
+        margin: EdgeInsets.only(right: suSetWidth(40.0)),
         width: suSetWidth(6.0),
         color: currentThemeColor,
         child: Stack(
@@ -57,7 +57,7 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
         ),
       );
 
-  Widget logWidget(ChangeLog log, Map<String, dynamic> sections) {
+  Widget logWidget(ChangeLog log) {
     return Expanded(
       child: Container(
         margin: EdgeInsets.only(bottom: suSetHeight(30.0), right: suSetWidth(30.0)),
@@ -75,7 +75,7 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
               ],
             ),
             Divider(height: suSetHeight(8.0), thickness: suSetHeight(1.0)),
-            sectionWidget(sections),
+            sectionWidget(log.sections),
           ],
         ),
       ),
@@ -120,16 +120,12 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
     return TextSpan(
       children: List<TextSpan>.generate(
         sections[name].length + 1,
-        (j) {
-          if (j == 0) {
-            return TextSpan(
-              text: '\n[$name]\n',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            );
-          } else {
-            return TextSpan(text: '·  ${sections[name][j - 1]}\n');
-          }
-        },
+        (j) => j == 0
+            ? TextSpan(
+                text: '\n[$name]\n',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )
+            : TextSpan(text: '·  ${sections[name][j - 1]}\n'),
       ),
     );
   }
@@ -139,26 +135,47 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          Positioned.fill(
+          Positioned(
+            top: Screens.topSafeHeight,
+            left: 0.0,
+            right: 0.0,
+            bottom: 0.0,
             child: changeLogs != null
                 ? ListView.builder(
                     padding: EdgeInsets.only(
-                      top: Screens.topSafeHeight + suSetHeight(kAppBarHeight),
-                      left: suSetWidth(35.0),
+                      top: suSetHeight(kAppBarHeight),
+                      left: suSetWidth(28.0),
                     ),
                     itemCount: changeLogs.length,
-                    itemBuilder: (context, i) {
-                      final log = ChangeLog.fromJson(changeLogs[i]);
-                      return IntrinsicHeight(
-                        child: Row(
-                          children: <Widget>[timelineIndicator, logWidget(log, log.sections)],
-                        ),
-                      );
-                    },
+                    itemBuilder: (context, i) => IntrinsicHeight(
+                      child: Row(
+                        children: <Widget>[
+                          timelineIndicator,
+                          logWidget(ChangeLog.fromJson(changeLogs[i])),
+                        ],
+                      ),
+                    ),
                   )
-                : Center(child: PlatformProgressIndicator()),
+                : SpinKitWidget(),
           ),
-          Positioned(top: Screens.topSafeHeight, left: suSetWidth(8.0), child: BackButton()),
+          Positioned(
+            top: Screens.topSafeHeight + 8.0,
+            left: 0.0,
+            child: Container(
+              decoration: BoxDecoration(
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    blurRadius: suSetWidth(20.0),
+                    color: Theme.of(context).dividerColor.withOpacity(0.2),
+                    spreadRadius: 0.0,
+                  ),
+                ],
+                color: Theme.of(context).primaryColor,
+                shape: BoxShape.circle,
+              ),
+              child: BackButton(),
+            ),
+          ),
         ],
       ),
     );

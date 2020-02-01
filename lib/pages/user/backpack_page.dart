@@ -296,7 +296,7 @@ class _BackpackPageState extends State<BackpackPage> {
           isLoading
               ? SizedBox(
                   height: suSetSp(500.0),
-                  child: Center(child: PlatformProgressIndicator()),
+                  child: Center(child: SpinKitWidget()),
                 )
               : Expanded(
                   child: PageView.builder(

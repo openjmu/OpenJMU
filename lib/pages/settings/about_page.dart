@@ -76,7 +76,10 @@ class AboutPage extends StatelessWidget {
         }),
       ),
     );
-    if (copy) Clipboard.setData(ClipboardData(text: info));
+    if (copy) {
+      Clipboard.setData(ClipboardData(text: info));
+      showToast('已复制到剪贴板');
+    }
   }
 
   Widget logo(context) => GestureDetector(
@@ -176,7 +179,7 @@ class AboutPage extends StatelessWidget {
           margin: EdgeInsets.only(bottom: suSetHeight(10.0)),
           child: Text(
             '《用户协议》',
-            style: TextStyle(color: defaultColor, fontSize: suSetSp(18.0)),
+            style: TextStyle(color: currentThemeColor, fontSize: suSetSp(18.0)),
           ),
         ),
       );
@@ -188,7 +191,7 @@ class AboutPage extends StatelessWidget {
             TextSpan(
               text: 'OpenJmu Team',
               style: TextStyle(
-                color: defaultColor,
+                color: currentThemeColor,
                 fontFamily: 'chocolate',
                 fontSize: suSetSp(24.0),
               ),

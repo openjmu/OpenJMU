@@ -78,6 +78,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
   }
 
   void scrollToWeek(int week) {
+    currentWeek = week;
+    if (mounted) setState(() {});
     if (weekScrollController?.hasClients ?? false)
       weekScrollController.animateTo(
         math.max(0, (week - 0.5) * suSetWidth(weekSize) - Screens.width / 2),
@@ -153,9 +155,6 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
   Widget _week(context, int index) {
     return InkWell(
       onTap: () {
-        now.add(Duration(days: 7 * (index + 1 - currentWeek)));
-        currentWeek = index + 1;
-        if (mounted) setState(() {});
         scrollToWeek(index + 1);
       },
       child: Container(
@@ -265,13 +264,19 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
       );
 
   String _month() => DateFormat("MMM", "zh_CN").format(
-        now.subtract(Duration(days: now.weekday - 1)),
+        now
+            .add((7 * (currentWeek - dateProvider.currentWeek)).days)
+            .subtract((now.weekday - 1).days),
       );
   String _weekday(int i) => DateFormat("EEE", "zh_CN").format(
-        now.subtract(Duration(days: now.weekday - 1 - i)),
+        now
+            .add((7 * (currentWeek - dateProvider.currentWeek)).days)
+            .subtract((now.weekday - 1 - i).days),
       );
   String _date(int i) => DateFormat("MM/dd").format(
-        now.subtract(Duration(days: now.weekday - 1 - i)),
+        now
+            .add((7 * (currentWeek - dateProvider.currentWeek)).days)
+            .subtract((now.weekday - 1 - i).days),
       );
 
   Widget get weekDayIndicator => Container(
@@ -442,9 +447,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
         width: Screens.width,
         constraints: BoxConstraints(maxWidth: Screens.width),
         child: AnimatedCrossFade(
-          duration: const Duration(milliseconds: 300),
+          duration: 300.milliseconds,
           crossFadeState: !firstLoaded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-          firstChild: Center(child: PlatformProgressIndicator()),
+          firstChild: SpinKitWidget(),
           secondChild: Selector<CoursesProvider, String>(
             selector: (_, provider) => provider.remark,
             builder: (_, remark, __) => Column(
@@ -1006,10 +1011,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                   : Theme.of(context).dividerColor,
             ),
             child: Padding(
-              padding: EdgeInsets.only(
-                top: suSetHeight(30.0),
-                bottom: suSetHeight(30.0),
-              ),
+              padding: EdgeInsets.symmetric(vertical: suSetHeight(30.0)),
               child: Center(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: Screens.width / 2),
@@ -1058,9 +1060,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
         right: 0.0,
         child: IconButton(
           icon: Icon(Icons.close, color: Colors.black),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: Navigator.of(context).pop,
         ),
       );
 
@@ -1081,20 +1081,14 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                   borderRadius: BorderRadius.circular(Screens.width / 2),
                 ),
                 child: loading
-                    ? Center(
-                        child: SizedBox(
-                          width: suSetWidth(30.0),
-                          height: suSetHeight(30.0),
-                          child: PlatformProgressIndicator(),
-                        ),
-                      )
+                    ? SpinKitWidget(size: 30)
                     : Icon(
                         Icons.check,
                         color: content == widget.course?.name
                             ? Colors.black.withAlpha(50)
                             : Colors.black,
                       ),
-                onPressed: content == widget.course?.name
+                onPressed: content == widget.course?.name || loading
                     ? null
                     : () {
                         loading = true;
@@ -1113,6 +1107,11 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                             navigatorState.popUntil((_) => _.isFirst);
                           }
                           Instances.eventBus.fire(CourseScheduleRefreshEvent());
+                        }).catchError((e) {
+                          debugPrint('Failed when editing custom course: $e');
+                          showCenterErrorToast('编辑自定义课程失败');
+                          loading = false;
+                          if (mounted) setState(() {});
                         });
                       },
               ),

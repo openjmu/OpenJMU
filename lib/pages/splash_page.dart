@@ -169,26 +169,13 @@ class SplashState extends State<SplashPage> {
               margin: EdgeInsets.only(
                 bottom: suSetHeight(10.0),
               ),
-              child: Center(
-                child: SizedBox.fromSize(
-                  size: Size.square(suSetWidth(36.0)),
-                  child: PlatformProgressIndicator(
-                    radius: suSetWidth(20.0),
-                    color: Colors.white,
-                  ),
-                ),
+              child: SpinKitWidget(
+                color: currentIsDark ? currentThemeColor : Colors.white,
+                size: 36.0,
               ),
             ),
           ),
-          SizedBox(
-            height: suSetHeight(30.0),
-            child: Center(
-              child: Text(
-                "正在登录",
-                style: TextStyle(color: Colors.white, fontSize: suSetSp(24.0)),
-              ),
-            ),
-          ),
+          SizedBox(height: suSetHeight(30.0)),
         ],
       );
 
@@ -198,7 +185,11 @@ class SplashState extends State<SplashPage> {
             child: Container(
               margin: EdgeInsets.only(bottom: suSetHeight(10.0)),
               child: Center(
-                child: Icon(Icons.warning, color: Colors.white, size: suSetWidth(36.0)),
+                child: Icon(
+                  Icons.signal_wifi_off,
+                  color: currentIsDark ? currentThemeColor : Colors.white,
+                  size: suSetWidth(48.0),
+                ),
               ),
             ),
           ),
@@ -207,7 +198,10 @@ class SplashState extends State<SplashPage> {
             child: Center(
               child: Text(
                 "请检查联网状态",
-                style: TextStyle(color: Colors.white, fontSize: suSetSp(24.0)),
+                style: TextStyle(
+                  color: currentIsDark ? currentThemeColor : Colors.white,
+                  fontSize: suSetSp(24.0),
+                ),
               ),
             ),
           ),
@@ -235,14 +229,20 @@ class SplashState extends State<SplashPage> {
                   top: suSetHeight(showLoading && isOnline != null ? 20.0 : 0.0),
                 ),
                 width: Screens.width,
-                height: suSetHeight(showLoading && isOnline != null ? 80.0 : 0.0),
+                height: suSetHeight(showLoading && isOnline != null ? 100.0 : 0.0),
                 child: SingleChildScrollView(
                   physics: const NeverScrollableScrollPhysics(),
                   child: SizedBox(
-                    height: suSetHeight(showLoading && isOnline != null ? 80.0 : 0.0),
-                    child: showLoading && isOnline != null
-                        ? isOnline ? loginWidget : warningWidget
-                        : SizedBox.shrink(),
+                    height: suSetHeight(showLoading && isOnline != null ? 100.0 : 0.0),
+                    child: AnimatedSwitcher(
+                      duration: 300.milliseconds,
+                      child: showLoading && isOnline != null
+                          ? AnimatedSwitcher(
+                              duration: 300.milliseconds,
+                              child: isOnline ? loginWidget : warningWidget,
+                            )
+                          : SizedBox.shrink(),
+                    ),
                   ),
                 ),
               ),

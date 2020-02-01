@@ -11,7 +11,7 @@ int next(int min, int max) => min + _random.nextInt(max - min);
 class CourseAPI {
   const CourseAPI._();
 
-  static Set<Map<String, Color>> coursesColor = {};
+  static Set<CourseColor> coursesUniqueColor = {};
 
   static Future getCourse() async => NetUtils.get(
         API.courseScheduleCourses,
@@ -86,7 +86,7 @@ class CourseAPI {
     "911": "九十十一节",
   };
 
-  static final List<Color> courseColors = [
+  static final List<Color> courseColorsList = [
     Color(0xffEF9A9A),
     Color(0xffF48FB1),
     Color(0xffCE93D8),
@@ -121,5 +121,5 @@ class CourseAPI {
     Color(0xff3275a9),
   ];
 
-  static Color randomCourseColor() => courseColors[next(0, courseColors.length)];
+  static Color randomCourseColor() => courseColorsList[next(0, courseColorsList.length)];
 }

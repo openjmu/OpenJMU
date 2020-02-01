@@ -376,14 +376,12 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                   : Center(
                       child: Text(
                         "没有搜索到动态内容~\n🧐",
-                        style: TextStyle(
-                          fontSize: suSetSp(30.0),
-                        ),
+                        style: TextStyle(fontSize: suSetSp(30.0)),
                         textAlign: TextAlign.center,
                       ),
                     )
               : SizedBox.shrink()
-          : Center(child: PlatformProgressIndicator()),
+          : SpinKitWidget(),
     );
   }
 }

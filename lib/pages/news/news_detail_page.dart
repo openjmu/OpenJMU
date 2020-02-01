@@ -63,9 +63,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
       appBar: AppBar(
         title: Text(
           widget.news.title,
-          style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: suSetSp(21.0),
-              ),
+          style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
           overflow: TextOverflow.ellipsis,
         ),
         centerTitle: true,
@@ -79,7 +77,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
               withLocalStorage: true,
               resizeToAvoidBottomInset: true,
             )
-          : Center(child: PlatformProgressIndicator()),
+          : SpinKitWidget(),
     );
   }
 }

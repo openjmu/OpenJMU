@@ -209,7 +209,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                     ),
                   ),
                 )
-          : Center(child: PlatformProgressIndicator()),
+          : SpinKitWidget(),
     );
   }
 }

@@ -265,12 +265,33 @@ class MyInfoPageState extends State<MyInfoPage> {
                           text: TextSpan(
                             children: <TextSpan>[
                               TextSpan(text: "${currentUser.name}，$hello~\n"),
+                              TextSpan(text: "今天是"),
+                              TextSpan(text: "${DateFormat("MMMdd", "zh_CN").format(now)}日，"),
+                              TextSpan(text: "${DateFormat("EEE", "zh_CN").format(now)}，"),
                               if (currentWeek > 0)
-                                TextSpan(text: "今天是第$currentWeek周，")
+                                TextSpan(children: <InlineSpan>[
+                                  TextSpan(text: "第"),
+                                  TextSpan(
+                                    text: "$currentWeek",
+                                    style: TextStyle(
+                                      color: currentThemeColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  TextSpan(text: "周"),
+                                ])
                               else
-                                TextSpan(text: "距开学还剩${currentWeek.abs()}周，"),
-                              TextSpan(text: "${DateFormat("MMMdd日，", "zh_CN").format(now)}"),
-                              TextSpan(text: "${DateFormat("EEEE", "zh_CN").format(now)}"),
+                                TextSpan(children: <InlineSpan>[
+                                  TextSpan(text: "距开学还有"),
+                                  TextSpan(
+                                    text: "${currentWeek.abs()}",
+                                    style: TextStyle(
+                                      color: currentThemeColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  TextSpan(text: "周"),
+                                ]),
                             ],
                             style: Theme.of(context).textTheme.body1.copyWith(
                                   fontSize: suSetSp(24.0),
@@ -387,36 +408,36 @@ class MyInfoPageState extends State<MyInfoPage> {
   }
 
   Widget get clearBoxesButton => UnconstrainedBox(
-        child: Container(
-          margin: EdgeInsets.only(top: suSetHeight(40.0)),
-          padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(20.0),
-            vertical: suSetHeight(10.0),
-          ),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(60.0),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                color: Colors.grey[currentIsDark ? 800 : 100],
-                blurRadius: suSetHeight(6.0),
-                offset: Offset(0, suSetHeight(6.0)),
-              ),
-            ],
-            color: Theme.of(context).primaryColor,
-          ),
-          child: FlatButton(
-            onPressed: () => HiveBoxes.clearBoxes(context),
-            child: Text(
-              "(DANGER)\n清除应用数据",
-              style: TextStyle(
-                color: currentThemeColor,
-                fontSize: suSetSp(20.0),
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
+        child: Opacity(
+          opacity: 0.3,
+          child: Container(
+            margin: EdgeInsets.only(top: suSetHeight(40.0)),
+            padding: EdgeInsets.symmetric(
+              horizontal: suSetWidth(30.0),
+              vertical: suSetHeight(10.0),
             ),
-            shape: RoundedRectangleBorder(
+            decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(60.0),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.grey[currentIsDark ? 800 : 100],
+                  blurRadius: suSetHeight(6.0),
+                  offset: Offset(0, suSetHeight(6.0)),
+                ),
+              ],
+              color: Theme.of(context).primaryColor,
+            ),
+            child: GestureDetector(
+              onLongPress: () => HiveBoxes.clearBoxes(context),
+              child: Text(
+                "(DANGER)\n清除应用数据",
+                style: TextStyle(
+                  color: currentThemeColor,
+                  fontSize: suSetSp(20.0),
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
         ),

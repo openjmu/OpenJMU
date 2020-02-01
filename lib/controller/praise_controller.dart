@@ -51,8 +51,6 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
   Widget _errorChild;
   bool error = false;
 
-  Widget _body = Center(child: PlatformProgressIndicator());
-
   List<Praise> _praiseList = [];
 
   @override
@@ -173,6 +171,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
   Widget build(BuildContext context) {
     super.build(context);
     if (!_showLoading) {
+      Widget _body;
       if (_firstLoadComplete) {
         _itemList = ListView.builder(
           padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
@@ -235,11 +234,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
       }
       return _body;
     } else {
-      return Container(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return SpinKitWidget();
     }
   }
 }
@@ -367,47 +362,43 @@ class PraiseListInPostState extends State<PraiseListInPost> with AutomaticKeepAl
   Widget build(BuildContext context) {
     super.build(context);
     return isLoading
-        ? Center(child: PlatformProgressIndicator())
-        : Container(
-            color: Theme.of(context).cardColor,
-            padding: EdgeInsets.zero,
-            child: firstLoadComplete
-                ? ExtendedListView.separated(
-                    padding: EdgeInsets.zero,
-                    separatorBuilder: (context, index) => Divider(
-                      color: Theme.of(context).dividerColor,
-                      height: suSetHeight(1.0),
-                    ),
-                    itemCount: _praises.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index == _praises.length - 1 && canLoadMore) {
-                        _loadList();
-                      }
-                      if (index == _praises.length) {
-                        return LoadMoreIndicator(
-                          canLoadMore: canLoadMore && !isLoading,
-                        );
-                      } else {
-                        return Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: suSetWidth(24.0),
-                                vertical: suSetHeight(10.0),
-                              ),
-                              child: UserAPI.getAvatar(
-                                uid: _praises[index].uid,
-                              ),
-                            ),
-                            Expanded(
-                              child: getPostNickname(context, _praises[index]),
-                            ),
-                          ],
-                        );
-                      }
-                    },
-                  )
-                : LoadMoreIndicator(canLoadMore: false),
-          );
+        ? SpinKitWidget()
+        : firstLoadComplete
+            ? ExtendedListView.separated(
+                padding: EdgeInsets.zero,
+                separatorBuilder: (context, index) => Divider(
+                  color: Theme.of(context).dividerColor,
+                  height: suSetHeight(1.0),
+                ),
+                itemCount: _praises.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == _praises.length - 1 && canLoadMore) {
+                    _loadList();
+                  }
+                  if (index == _praises.length) {
+                    return LoadMoreIndicator(
+                      canLoadMore: canLoadMore && !isLoading,
+                    );
+                  } else {
+                    return Row(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: suSetWidth(24.0),
+                            vertical: suSetHeight(10.0),
+                          ),
+                          child: UserAPI.getAvatar(
+                            uid: _praises[index].uid,
+                          ),
+                        ),
+                        Expanded(
+                          child: getPostNickname(context, _praises[index]),
+                        ),
+                      ],
+                    );
+                  }
+                },
+              )
+            : LoadMoreIndicator(canLoadMore: false);
   }
 }

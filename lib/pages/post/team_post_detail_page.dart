@@ -547,16 +547,13 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                       ? SliverToBoxAdapter(
                           child: SizedBox(
                             height: suSetHeight(300.0),
-                            child: Center(child: PlatformProgressIndicator()),
+                            child: Center(child: SpinKitWidget()),
                           ),
                         )
                       : list != null
                           ? SliverList(
                               delegate: SliverChildBuilderDelegate(
-                                (
-                                  BuildContext context,
-                                  int index,
-                                ) {
+                                (_, int index) {
                                   if (index == list.length - 1 && canLoadMore) {
                                     initialLoad(loadMore: true);
                                   }
@@ -595,9 +592,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                           : SliverToBoxAdapter(
                               child: SizedBox(
                                 height: suSetHeight(300.0),
-                                child: Center(
-                                  child: Text("Nothing here."),
-                                ),
+                                child: Center(child: Text("Nothing here.")),
                               ),
                             ),
                 ],

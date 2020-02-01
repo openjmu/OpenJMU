@@ -149,6 +149,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             ),
             Spacer(),
             IconButton(
+              alignment: Alignment.topRight,
               icon: Icon(
                 post.uid == UserAPI.currentUser.uid
                     ? Icons.delete_outline

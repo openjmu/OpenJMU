@@ -522,6 +522,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget get deleteButton => IconButton(
+        alignment: Alignment.topRight,
         icon: Icon(
           Icons.delete_outline,
           color: Theme.of(context).dividerColor,
@@ -531,6 +532,7 @@ class _PostCardState extends State<PostCard> {
       );
 
   Widget get postActionButton => IconButton(
+        alignment: Alignment.topRight,
         icon: Icon(
           Icons.expand_more,
           color: Theme.of(context).dividerColor,

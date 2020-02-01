@@ -14,7 +14,14 @@ class CoursesProvider extends ChangeNotifier {
 
   final maxCoursesPerDay = 12;
 
-  DateTime now;
+  DateTime _now;
+  DateTime get now => _now;
+  set now(DateTime value) {
+    assert(value != null);
+    if (value == _now) return;
+    _now = value;
+    notifyListeners();
+  }
 
   Map<int, Map> _courses;
   Map<int, Map> get courses => _courses;
@@ -86,7 +93,7 @@ class CoursesProvider extends ChangeNotifier {
     _hasCourses = true;
     _showWeek = false;
     _showError = false;
-    now = null;
+    _now = null;
   }
 
   Map<int, Map> resetCourses(Map<int, Map> courses) {
@@ -105,13 +112,16 @@ class CoursesProvider extends ChangeNotifier {
   }
 
   Future updateCourses() async {
+    final dateProvider = Provider.of<DateProvider>(currentContext, listen: false);
+    if (dateProvider.currentWeek != null) {
+      Instances.courseSchedulePageStateKey.currentState?.scrollToWeek(dateProvider.currentWeek);
+    }
     if (showWeek) {
       showWeek = false;
-      if (Instances.appsPageStateKey.currentState.mounted) {
-        Instances.appsPageStateKey.currentState.setState(() {});
+      if (Instances.appsPageStateKey.currentState?.mounted ?? false) {
+        Instances.appsPageStateKey.currentState?.setState(() {});
       }
     }
-    final dateProvider = Provider.of<DateProvider>(currentContext, listen: false);
     try {
       final responses = await Future.wait(<Future>[CourseAPI.getCourse(), CourseAPI.getRemark()]);
       await courseResponseHandler(responses[0]);
@@ -120,13 +130,10 @@ class CoursesProvider extends ChangeNotifier {
         if (dateProvider.currentWeek != null) _firstLoaded = true;
       }
       if (_showError) _showError = false;
-      Instances.courseSchedulePageStateKey.currentState.updateScrollController();
+      Instances.courseSchedulePageStateKey.currentState?.updateScrollController();
       notifyListeners();
 
-      if (dateProvider.currentWeek != null) {
-        Instances.courseSchedulePageStateKey.currentState.scrollToWeek(dateProvider.currentWeek);
-      }
-      Instances.courseSchedulePageStateKey.currentState.setState(() {});
+      Instances.courseSchedulePageStateKey.currentState?.setState(() {});
     } catch (e) {
       debugPrint("Error when updating course: $e");
       if (!firstLoaded && dateProvider.currentWeek != null) _firstLoaded = true;

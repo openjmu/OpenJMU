@@ -4,15 +4,14 @@
 ///
 part of 'beans.dart';
 
+/// 课程实体
 ///
-/// 课程
 /// [isCustom] **必需**是否自定义课程,
 /// [name] 课程名称, [time] 上课时间, [location] 上课地点, [className] 班级名称,
 /// [teacher] 教师名称, [day] 上课日, [startWeek] 开始周, [endWeek] 结束周,
 /// [classesName] 共同上课的班级,
 /// [isEleven] 是否第十一节,
 /// [oddEven] 是否为单双周, 0为普通, 1为单周, 2为双周
-///
 @HiveType(typeId: HiveAdapterTypeIds.course)
 class Course {
   @HiveField(0)
@@ -60,9 +59,9 @@ class Course {
     int _oddEven = 0;
     final _split = json['allWeek'].split(' ');
     if (_split.length > 1) {
-      if (_split[1] == "单周") {
+      if (_split[1] == '单周') {
         _oddEven = 1;
-      } else if (_split[1] == "双周") {
+      } else if (_split[1] == '双周') {
         _oddEven = 2;
       }
     }
@@ -70,8 +69,8 @@ class Course {
   }
 
   factory Course.fromJson(Map<String, dynamic> json, {bool isCustom = false}) {
-    json.forEach((k, v) {
-      if (json[k] == "") json[k] = null;
+    json.forEach((k, _) {
+      if (json[k] == '') json[k] = null;
     });
     final _oddEven = !isCustom ? judgeOddEven(json) : null;
     final weeks = !isCustom ? json['allWeek'].split(' ')[0].split('-') : null;
@@ -84,10 +83,10 @@ class Course {
         name = json['content'];
       }
     } else {
-      name = json['couName'] ?? "(空)";
+      name = json['couName'] ?? '(空)';
     }
 
-    Course _c = Course(
+    final _c = Course(
       isCustom: isCustom,
       name: name,
       time: !isCustom ? json['coudeTime'] : json['courseTime'].toString(),
@@ -103,32 +102,36 @@ class Course {
       isEleven: json['three'] == 'y',
       oddEven: _oddEven,
     );
-    if (_c.isEleven && _c.time == "90") _c.time = "911";
+    if (_c.isEleven && _c.time == '90') _c.time = '911';
 
-    final Iterable<Map<String, Color>> courses =
-        CourseAPI.coursesColor.where((course) => course.containsKey(_c.name));
-    if (courses.isNotEmpty) {
-      _c.color = courses.elementAt(0)[_c.name];
-    } else {
-      uniqueColor(_c, CourseAPI.randomCourseColor());
-    }
+    uniqueColor(_c, CourseAPI.randomCourseColor());
+
     return _c;
   }
 
   static void uniqueColor<bool>(Course course, Color color) {
-    Iterable<Map<String, Color>> courses =
-        CourseAPI.coursesColor.where((course) => course.containsValue(color));
-    if (courses.isNotEmpty) {
-      uniqueColor(course, CourseAPI.randomCourseColor());
+    final _course = CourseAPI.coursesUniqueColor.firstWhere(
+      (courseColor) => courseColor.name == course.name,
+      orElse: () => null,
+    );
+    if (_course != null) {
+      course.color = _course.color;
     } else {
-      course.color = color;
-      CourseAPI.coursesColor.add({"${course.name}": color});
+      Iterable<CourseColor> courses = CourseAPI.coursesUniqueColor.where(
+        (c) => c.color == color,
+      );
+
+      if (courses.isNotEmpty) {
+        uniqueColor(course, CourseAPI.randomCourseColor());
+      } else {
+        course.color = color;
+        CourseAPI.coursesUniqueColor.add(CourseColor(name: course.name, color: color));
+      }
     }
   }
 
-  @override
-  String toString() {
-    return "Course ${JsonEncoder.withIndent("  ").convert({
+  Map<String, dynamic> toJson() {
+    return {
       'name': name,
       'time': time,
       'room': location,
@@ -140,6 +143,31 @@ class Course {
       'classesName': classesName,
       'isEleven': isEleven,
       'oddEven': oddEven,
-    })}";
+    };
+  }
+
+  @override
+  String toString() {
+    return 'Course ${JsonEncoder.withIndent('  ').convert(toJson())}';
+  }
+}
+
+class CourseColor {
+  String name;
+  Color color;
+
+  CourseColor({this.name, this.color});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is CourseColor && runtimeType == other.runtimeType && name == other.name;
+
+  @override
+  int get hashCode => name.hashCode;
+
+  @override
+  String toString() {
+    return 'CourseColor ($name, $color)';
   }
 }

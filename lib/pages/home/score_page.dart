@@ -249,15 +249,7 @@ class ScorePage extends StatelessWidget {
       child: ClipRect(
         child: BackdropFilter(
           filter: ui.ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          child: Center(
-            child: SizedBox.fromSize(
-              size: Size.square(suSetWidth(80.0)),
-              child: PlatformProgressIndicator(
-                radius: suSetWidth(40.0),
-                strokeWidth: suSetWidth(10.0),
-              ),
-            ),
-          ),
+          child: SpinKitWidget(),
         ),
       ),
     );
@@ -270,7 +262,7 @@ class ScorePage extends StatelessWidget {
         return Stack(
           children: <Widget>[
             !provider.loaded
-                ? Center(child: PlatformProgressIndicator())
+                ? SpinKitWidget()
                 : Column(
                     children: <Widget>[
                       Expanded(

@@ -281,7 +281,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
         );
       }
     } else {
-      _body = Container(child: Center(child: PlatformProgressIndicator()));
+      _body = SpinKitWidget();
     }
 
     return AnimatedSwitcher(duration: 200.milliseconds, child: _body);
@@ -442,7 +442,7 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
   Widget build(BuildContext context) {
     super.build(context);
     return isLoading
-        ? Center(child: PlatformProgressIndicator())
+        ? SpinKitWidget()
         : firstLoadComplete
             ? ExtendedListView.separated(
                 padding: EdgeInsets.zero,

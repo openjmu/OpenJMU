@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:badges/badges.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -126,6 +127,29 @@ Widget badgeIcon({
       elevation: Platform.isAndroid ? 2 : 0,
       showBadge: showBadge,
     );
+
+/// SpinKit widget
+class SpinKitWidget extends StatelessWidget {
+  final Color color;
+  final Duration duration;
+  final double size;
+
+  const SpinKitWidget({
+    Key key,
+    this.color,
+    this.duration = const Duration(milliseconds: 1500),
+    this.size = 50.0,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SpinKitFadingCube(
+      color: color ?? currentThemeColor,
+      duration: duration,
+      size: suSetWidth(size),
+    );
+  }
+}
 
 /// Progress Indicator. Used in loading data.
 class PlatformProgressIndicator extends StatelessWidget {

@@ -49,7 +49,7 @@ class _UserPageState extends State<UserPage>
   TabController _tabController;
   PostController postController;
   ScrollController _scrollController = ScrollController();
-  double get tabBarHeight => suSetHeight(54.0);
+  double get tabBarHeight => suSetHeight(56.0);
   double expandedHeight = kAppBarHeight + suSetHeight(212.0);
 
   @override
@@ -550,7 +550,7 @@ class _UserPageState extends State<UserPage>
     super.build(context);
     return Scaffold(
       body: isLoading
-          ? Center(child: PlatformProgressIndicator())
+          ? SpinKitWidget()
           : NestedScrollView(
               controller: _scrollController,
               headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => <Widget>[
@@ -572,7 +572,7 @@ class _UserPageState extends State<UserPage>
                               emptyDivider(width: suSetWidth(8.0)),
                               Text(
                                 _user.name,
-                                style: Theme.of(context).textTheme.title.copyWith(
+                                style: Theme.of(context).textTheme.body1.copyWith(
                                       fontSize: suSetSp(23.0),
                                     ),
                               ),
@@ -654,7 +654,7 @@ class _UserPageState extends State<UserPage>
                   bottom: isSelf
                       ? PreferredSize(
                           child: Container(
-                            height: suSetHeight(48.0),
+                            height: suSetHeight(56.0),
                             decoration: BoxDecoration(
                               color: Theme.of(context).primaryColor,
                               borderRadius: BorderRadius.only(
@@ -674,8 +674,8 @@ class _UserPageState extends State<UserPage>
                                         color: currentThemeColor,
                                         width: suSetHeight(2.5),
                                       ),
-                                      width: suSetWidth(40.0),
-                                      insets: EdgeInsets.only(bottom: suSetHeight(2.0)),
+                                      width: suSetWidth(28.0),
+                                      insets: EdgeInsets.only(bottom: suSetHeight(6.0)),
                                     ),
                                     labelStyle: TextStyle(
                                       fontSize: suSetSp(20.0),
@@ -948,7 +948,7 @@ class _UserListState extends State<UserListPage> {
                           style: TextStyle(fontSize: suSetSp(20.0)),
                         ),
                       )
-                : Center(child: PlatformProgressIndicator()),
+                : SpinKitWidget(),
           ),
         ],
       ),

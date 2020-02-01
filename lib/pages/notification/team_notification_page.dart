@@ -139,9 +139,7 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [actions()],
-      ),
+      appBar: AppBar(actions: [actions()]),
       body: ExtendedTabBarView(
         cacheExtent: 2,
         controller: _tabController,

@@ -61,8 +61,6 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
   Widget _errorChild;
   bool error = false;
 
-  Widget _body = Center(child: PlatformProgressIndicator());
-
   List<Comment> _commentList = [];
   List<int> _idList = [];
 
@@ -204,6 +202,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
   Widget build(BuildContext context) {
     super.build(context);
     if (!_showLoading) {
+      Widget _body;
       if (_firstLoadComplete) {
         _itemList = ExtendedListView.builder(
           padding: EdgeInsets.zero,
@@ -233,7 +232,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
       }
       return _body;
     } else {
-      return Center(child: CircularProgressIndicator());
+      return SpinKitWidget();
     }
   }
 }
@@ -512,7 +511,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
   Widget build(BuildContext context) {
     super.build(context);
     return isLoading
-        ? Center(child: PlatformProgressIndicator())
+        ? SpinKitWidget()
         : firstLoadComplete
             ? ExtendedListView.separated(
                 padding: EdgeInsets.zero,

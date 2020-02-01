@@ -104,7 +104,7 @@ class _MarketingPageState extends State<MarketingPage> {
                 );
               },
             )
-          : Center(child: PlatformProgressIndicator()),
+          : SpinKitWidget(),
     );
   }
 }

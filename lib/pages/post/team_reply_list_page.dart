@@ -230,7 +230,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                     style: TextStyle(color: currentThemeColor, fontSize: suSetSp(24.0)),
                   ),
                 )
-          : Center(child: PlatformProgressIndicator()),
+          : SpinKitWidget(),
     );
   }
 }

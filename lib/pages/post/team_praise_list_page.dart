@@ -229,7 +229,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                     ),
                   ),
                 )
-          : Center(child: PlatformProgressIndicator()),
+          : SpinKitWidget(),
     );
   }
 }

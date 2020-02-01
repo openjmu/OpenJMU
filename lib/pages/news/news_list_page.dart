@@ -37,7 +37,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
     super.dispose();
   }
 
-  Future getNewsList({bool isLoadMore}) async {
+  Future<void> getNewsList({bool isLoadMore}) async {
     if (!_isLoading) {
       _isLoading = true;
       if (!isLoadMore) lastTimeStamp = 0;
@@ -227,9 +227,7 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
     if (!_showLoading) {
       if (_firstLoadComplete) {
         return RefreshIndicator(
-          onRefresh: () {
-            return getNewsList(isLoadMore: false);
-          },
+          onRefresh: () => getNewsList(isLoadMore: false),
           child: newsList.isEmpty
               ? SizedBox()
               : ExtendedListView.separated(
@@ -248,63 +246,24 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
                   ),
                   shrinkWrap: true,
                   controller: _scrollController,
-                  separatorBuilder: (context, index) => separator(
-                    context,
-                    height: 1.0,
-                  ),
+                  separatorBuilder: (context, index) => separator(context, height: 1.0),
                   itemCount: newsList.length + 1,
                   itemBuilder: (context, index) {
                     if (index == newsList.length) {
-                      if (this._canLoadMore) {
-                        getNewsList(isLoadMore: true);
-                        return SizedBox(
-                          height: suSetSp(40.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              SizedBox(
-                                width: suSetSp(15.0),
-                                height: suSetSp(15.0),
-                                child: PlatformProgressIndicator(strokeWidth: 2.0),
-                              ),
-                              Text(
-                                "　正在加载",
-                                style: TextStyle(
-                                  fontSize: suSetSp(14.0),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        return Container(
-                          height: suSetSp(50.0),
-                          color: Theme.of(context).canvasColor,
-                          child: Center(
-                            child: Text(
-                              Constants.endLineTag,
-                              style: TextStyle(
-                                fontSize: suSetSp(14.0),
-                              ),
-                            ),
-                          ),
-                        );
-                      }
+                      return LoadMoreIndicator(canLoadMore: _canLoadMore);
                     } else if (index < newsList.length) {
                       return newsItem(newsList[index]);
                     } else {
-                      return SizedBox();
+                      return SizedBox.shrink();
                     }
                   },
                 ),
         );
       } else {
-        return Center(child: PlatformProgressIndicator());
+        return SpinKitWidget();
       }
     } else {
-      return Container(
-        child: Center(child: PlatformProgressIndicator()),
-      );
+      return Center(child: SpinKitWidget());
     }
   }
 }
