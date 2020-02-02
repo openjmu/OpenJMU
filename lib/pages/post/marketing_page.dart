@@ -28,7 +28,7 @@ class _MarketingPageState extends State<MarketingPage> {
 
     Instances.eventBus
       ..on<ScrollToTopEvent>().listen((event) {
-        if (this.mounted && ((event.tabIndex == 0) || (event.type == "首页"))) {
+        if (this.mounted && ((event.tabIndex == 0) || (event.type == '首页'))) {
           _scrollController.jumpTo(0.0);
           Future.delayed(const Duration(milliseconds: 50), () {
             _refreshIndicatorKey.currentState.show();
@@ -57,7 +57,7 @@ class _MarketingPageState extends State<MarketingPage> {
         loaded = true;
         if (mounted) setState(() {});
       }).catchError((e) {
-        debugPrint("Get market post list failed: $e");
+        debugPrint('Get market post list failed: $e');
       });
 
   @override

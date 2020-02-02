@@ -3,8 +3,11 @@
 /// [Date] 2020-01-22 14:47
 ///
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
 
-import 'package:openjmu/constants/constants.dart';
+import 'package:openjmu/constants/constants.dart' hide LinkText;
+import 'package:extended_text/extended_text.dart';
+import 'package:extended_text_library/extended_text_library.dart';
 
 class ConfirmationDialog extends StatelessWidget {
   final String title;
@@ -68,7 +71,9 @@ class ConfirmationDialog extends StatelessWidget {
                   fontSize: suSetSp(26.0),
                   fontWeight: FontWeight.bold,
                 ),
-          )
+            maxLines: 1,
+            overflow: TextOverflow.fade,
+          ),
         ],
       );
 
@@ -131,7 +136,7 @@ class ConfirmationDialog extends StatelessWidget {
           child: Container(
             constraints: BoxConstraints(
               minWidth: Screens.width / 5,
-              maxWidth: Screens.width / 1.5,
+              maxWidth: Screens.width / 1.25,
               maxHeight: Screens.height / 2,
             ),
             padding: EdgeInsets.all(suSetWidth(30.0)),
@@ -147,10 +152,17 @@ class ConfirmationDialog extends StatelessWidget {
                   padding: contentPadding ?? EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
                   child: child != null
                       ? child
-                      : Text(
+                      : ExtendedText(
                           '$content',
                           style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.normal),
                           textAlign: TextAlign.center,
+                          specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
+                          onSpecialTextTap: (data) {
+                            navigatorState.pushNamed(
+                              Routes.OPENJMU_INAPPBROWSER,
+                              arguments: {'url': data['content'], 'title': '网页链接'},
+                            );
+                          },
                         ),
                 ),
                 Row(
@@ -166,5 +178,98 @@ class ConfirmationDialog extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class LinkText extends SpecialText {
+  static String startKey = 'https://';
+  static const String endKey = ' ';
+
+  LinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
+      : super(startKey, endKey, textStyle, onTap: onTap);
+
+  @override
+  TextSpan finishText() {
+    return TextSpan(
+      text: toString(),
+      style: textStyle?.copyWith(decoration: TextDecoration.underline),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          final data = {'content': toString()};
+          if (onTap != null) onTap(data);
+        },
+    );
+  }
+}
+
+class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
+  @override
+  TextSpan build(String data, {TextStyle textStyle, SpecialTextGestureTapCallback onTap}) {
+    final linkRegExp = RegExp(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
+        r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)');
+
+    if (data == null || data == '') return null;
+    final inlineList = <InlineSpan>[];
+    if (linkRegExp.allMatches(data).isNotEmpty) {
+      final matches = linkRegExp.allMatches(data);
+      matches.forEach((match) {
+        data = data.replaceFirst(match.group(0), ' ${match.group(0)} ');
+      });
+    }
+
+    if (data.length > 0) {
+      SpecialText specialText;
+      String textStack = '';
+      for (int i = 0; i < data.length; i++) {
+        String char = data[i];
+        textStack += char;
+        if (specialText != null) {
+          if (!specialText.isEnd(textStack)) {
+            specialText.appendContent(char);
+          } else {
+            inlineList.add(specialText.finishText());
+            specialText = null;
+            textStack = '';
+          }
+        } else {
+          specialText = createSpecialText(textStack, textStyle: textStyle, onTap: onTap, index: i);
+          if (specialText != null) {
+            if (textStack.length - specialText.startFlag.length >= 0) {
+              textStack = textStack.substring(0, textStack.length - specialText.startFlag.length);
+              if (textStack.length > 0) {
+                inlineList.add(TextSpan(text: textStack, style: textStyle));
+              }
+            }
+            textStack = '';
+          }
+        }
+      }
+
+      if (specialText != null) {
+        inlineList.add(
+            TextSpan(text: specialText.startFlag + specialText.getContent(), style: textStyle));
+      } else if (textStack.length > 0) {
+        inlineList.add(TextSpan(text: textStack, style: textStyle));
+      }
+    } else {
+      inlineList.add(TextSpan(text: data, style: textStyle));
+    }
+
+    return TextSpan(children: inlineList, style: textStyle);
+  }
+
+  @override
+  SpecialText createSpecialText(
+    String flag, {
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap,
+    int index,
+  }) {
+    if (flag?.isEmpty ?? true) return null;
+
+    if (isStart(flag, LinkText.startKey)) {
+      return LinkText(textStyle, onTap);
+    }
+    return null;
   }
 }

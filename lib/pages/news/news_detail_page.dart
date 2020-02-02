@@ -6,11 +6,7 @@ import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(
-  name: "openjmu://news-detail",
-  routeName: "新闻详情页",
-  argumentNames: ["news"],
-)
+@FFRoute(name: "openjmu://news-detail", routeName: "新闻详情页", argumentNames: ["news"])
 class NewsDetailPage extends StatefulWidget {
   final News news;
 

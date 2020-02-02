@@ -22,12 +22,12 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
     if (API.urlReg.stringMatch(data) != null) {
       Navigator.of(context).pushReplacementNamed(
         Routes.OPENJMU_INAPPBROWSER,
-        arguments: {"url": data},
+        arguments: {'url': data},
       );
     } else if (API.schemeUserPage.stringMatch(data) != null) {
       Navigator.of(context).pushReplacementNamed(
         Routes.OPENJMU_USER,
-        arguments: {"uid": int.parse(data.substring(API.schemeUserPage.pattern.length - 2))},
+        arguments: {'uid': int.parse(data.substring(API.schemeUserPage.pattern.length - 2))},
       );
     } else {
       final needCopy = await ConfirmationDialog.show(
@@ -50,7 +50,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
         children: <Widget>[
           FixedAppBar(
             title: Text(
-              "扫描二维码",
+              '扫描二维码',
               style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
             ),
             centerTitle: true,

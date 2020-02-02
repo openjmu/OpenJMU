@@ -41,22 +41,16 @@ class SplashState extends State<SplashPage> {
       });
 
       OTAUtils.checkUpdate();
-      Provider.of<DateProvider>(
-        currentContext,
-        listen: false,
-      ).getCurrentWeek();
+      Provider.of<DateProvider>(currentContext, listen: false).getCurrentWeek();
 
       _forceToLoginTimer = Timer(30.seconds, () {
-        if (!isUserLogin) {
-          navigate(forceToLogin: true);
+        if (mounted) {
+          navigate(forceToLogin: !isUserLogin);
         }
       });
       _showLoginIndicatorTimer = Timer(5.seconds, () {
-        if (mounted) {
-          setState(() {
-            showLoading = true;
-          });
-        }
+        showLoading = true;
+        if (mounted) setState(() {});
       });
     });
 
@@ -70,13 +64,13 @@ class SplashState extends State<SplashPage> {
       ..on<ConnectivityChangeEvent>().listen((event) {
         if (mounted && isOnline != null) checkOnline(event);
       })
-      ..on<TicketGotEvent>().listen((event) async {
+      ..on<TicketGotEvent>().listen((event) {
         debugPrint('Ticket Got.');
         if (!event.isWizard) {}
         isUserLogin = true;
         if (mounted) {
           setState(() {});
-          await navigate();
+          navigate();
         }
       })
       ..on<TicketFailedEvent>().listen((event) async {
@@ -116,7 +110,11 @@ class SplashState extends State<SplashPage> {
       isInLoginProcess = true;
       if (event.type != ConnectivityResult.none) {
         isOnline = true;
-        DataUtils.reFetchTicket();
+        if (DataUtils.isLogin()) {
+          DataUtils.reFetchTicket();
+        } else {
+          Future.delayed(2.seconds, navigate);
+        }
       } else {
         isOnline = false;
       }

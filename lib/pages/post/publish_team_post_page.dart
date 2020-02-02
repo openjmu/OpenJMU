@@ -21,7 +21,7 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/appbar.dart';
+import 'package:openjmu/widgets/fixed_appbar.dart';
 import 'package:openjmu/widgets/dialogs/convention_dialog.dart';
 import 'package:openjmu/widgets/dialogs/loading_dialog.dart';
 import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
@@ -71,9 +71,9 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
       final leftText = _textEditingController.text.substring(0, currentPosition);
       final rightText = _textEditingController.text
           .substring(currentPosition, _textEditingController.text.length);
-      result = "$leftText##$rightText";
+      result = '$leftText##$rightText';
     } else {
-      result = "##";
+      result = '##';
     }
     _textEditingController.text = result;
     _textEditingController.selection = TextSelection.fromPosition(
@@ -89,13 +89,13 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     ).then((result) {
       if (_focusNode.canRequestFocus) _focusNode.requestFocus();
       if (result != null) {
-        debugPrint("Mentioned User: ${result.toString()}");
+        debugPrint('Mentioned User: ${result.toString()}');
         Future.delayed(const Duration(milliseconds: 250), () {
           if (_focusNode.canRequestFocus) _focusNode.requestFocus();
-          insertText("<M ${result.id}>@${result.nickname}<\/M>");
+          insertText('<M ${result.id}>@${result.nickname}<\/M>');
         });
       } else {
-        debugPrint("No mentioned user returned.");
+        debugPrint('No mentioned user returned.');
       }
     });
   }
@@ -103,7 +103,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
   Future<Null> loadAssets() async {
     if (imagesLength == maxImagesLength) return;
     _focusNode.unfocus();
-    final currentColorValue = "#${currentThemeColor.value.toRadixString(16).substring(2, 8)}";
+    final currentColorValue = '#${currentThemeColor.value.toRadixString(16).substring(2, 8)}';
     List<Asset> resultList = List<Asset>();
     final permissions = await PermissionHandler().requestPermissions([
       PermissionGroup.camera,
@@ -123,14 +123,14 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
           selectedAssets: assets,
           cupertinoOptions: CupertinoOptions(
             selectionFillColor: currentColorValue,
-            takePhotoIcon: "chat",
+            takePhotoIcon: 'chat',
           ),
           materialOptions: MaterialOptions(
             actionBarColor: currentColorValue,
             statusBarColor: currentColorValue,
-            actionBarTitle: "选择图片",
-            allViewTitle: "所有图片",
-            selectionLimitReachedText: "已达到最大张数限制",
+            actionBarTitle: '选择图片',
+            allViewTitle: '所有图片',
+            selectionLimitReachedText: '已达到最大张数限制',
           ),
         ).catchError((e) {
           debugPrint(e.toString());
@@ -141,7 +141,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
         showCenterErrorToast(e.message);
       }
     } else {
-      showToast("权限不足");
+      showToast('权限不足');
       return;
     }
 
@@ -155,7 +155,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
   }
 
   Widget poundIcon(context) => SvgPicture.asset(
-        "assets/icons/add-topic.svg",
+        'assets/icons/add-topic.svg',
         color: Theme.of(context).iconTheme.color,
         width: _iconSize,
         height: _iconSize,
@@ -177,7 +177,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
           enabled: textFieldEnable,
           decoration: InputDecoration(
             enabled: !isLoading,
-            hintText: "分享你的动态...",
+            hintText: '分享你的动态...',
             hintStyle: TextStyle(
               color: Colors.grey,
               textBaseline: TextBaseline.alphabetic,
@@ -374,7 +374,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     return Visibility(
       visible: emoticonPadActive,
       child: EmotionPad(
-        route: "publish",
+        route: 'publish',
         height: _keyboardHeight,
         controller: _textEditingController,
       ),
@@ -385,15 +385,15 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     final byteData = await asset.getByteData();
     final imageData = byteData.buffer.asUint8List();
     final formData = FormData.from({
-      "file": UploadFileInfo.fromBytes(imageData, "${asset.name}"),
-      "type": 3,
-      "sid": UserAPI.currentUser.sid,
-      "id": 77,
-      "md5": md5.convert(imageData),
-      "path": "/${UserAPI.currentUser.uid}",
-      "name": "${asset.name}",
-      "set_default": 0,
-      "size": imageData.length,
+      'file': UploadFileInfo.fromBytes(imageData, '${asset.name}'),
+      'type': 3,
+      'sid': UserAPI.currentUser.sid,
+      'id': 77,
+      'md5': md5.convert(imageData),
+      'path': '/${UserAPI.currentUser.uid}',
+      'name': '${asset.name}',
+      'set_default': 0,
+      'size': imageData.length,
     });
     return formData;
   }
@@ -404,7 +404,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     final end = value.selection.extentOffset;
 
     if (value.selection.isValid) {
-      String newText = "";
+      String newText = '';
       if (value.selection.isCollapsed) {
         if (end > 0) {
           newText += value.text.substring(0, end);
@@ -453,10 +453,10 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
                 child: Text.rich(
                   TextSpan(children: <InlineSpan>[
                     TextSpan(
-                      text: "发布动态前，请确认您已阅读并知晓",
+                      text: '发布动态前，请确认您已阅读并知晓',
                     ),
                     TextSpan(
-                        text: "《集大通平台公约》",
+                        text: '《集大通平台公约》',
                         style: TextStyle(
                           decoration: TextDecoration.underline,
                           fontWeight: FontWeight.bold,
@@ -469,7 +469,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
                             );
                           }),
                     TextSpan(
-                      text: "，且发布的内容符合公约要求。",
+                      text: '，且发布的内容符合公约要求。',
                     ),
                   ]),
                   style: TextStyle(
@@ -493,7 +493,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
                         ),
                         child: Center(
                           child: Text(
-                            "我再想想",
+                            '我再想想',
                             style: TextStyle(
                               fontSize: suSetSp(20.0),
                             ),
@@ -517,7 +517,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
                         ),
                         child: Center(
                           child: Text(
-                            "确认无误",
+                            '确认无误',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: suSetSp(20.0),
@@ -540,9 +540,9 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
   }
 
   void post(context) async {
-    String content = _textEditingController.text;
-    if ((content.length == 0 || content.trim().length == 0) && imagesLength == 0) {
-      showCenterToast("内容不能为空");
+    final content = _textEditingController.text;
+    if ((content?.trim()?.isNotEmpty ?? false) && imagesLength == 0) {
+      showCenterToast('内容不能为空');
     } else {
       final result = await showDialog(
         context: context,
@@ -558,13 +558,13 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
           builder: (BuildContext context) {
             if (assets.length > 0) {
               return LoadingDialog(
-                text: "正在上传图片 (1/${assets.length})",
+                text: '正在上传图片 (1/${assets.length})',
                 controller: _dialogController,
                 isGlobal: false,
               );
             } else {
               return LoadingDialog(
-                text: "正在发布动态...",
+                text: '正在发布动态...',
                 controller: _dialogController,
                 isGlobal: false,
               );
@@ -587,13 +587,13 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
                 _postContent();
               } else {
                 query = [];
-                _dialogController.changeState("failed", "图片上传失败");
+                _dialogController.changeState('failed', '图片上传失败');
                 isLoading = false;
                 if (mounted) setState(() {});
               }
             }).catchError((e) {
               query = [];
-              _dialogController.changeState("failed", "图片上传失败");
+              _dialogController.changeState('failed', '图片上传失败');
               isLoading = false;
               if (mounted) setState(() {});
               debugPrint(e.toString());
@@ -626,7 +626,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
       showErrorToast(e.response.data['msg'] as String);
       query = [];
       failedImages.add(uploadedImages - 1);
-      _dialogController.changeState("failed", "图片上传失败");
+      _dialogController.changeState('failed', '图片上传失败');
       isLoading = false;
       if (mounted) setState(() {});
     });
@@ -636,8 +636,8 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     uploadedImages++;
     if (mounted) setState(() {});
     _dialogController.updateText(
-      "正在上传图片"
-      "($uploadedImages/${assets.length})",
+      '正在上传图片'
+      '($uploadedImages/${assets.length})',
     );
   }
 
@@ -646,7 +646,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
         eagerError: true,
       ).catchError((e) {
         query = [];
-        _dialogController.changeState("failed", "图片上传失败");
+        _dialogController.changeState('failed', '图片上传失败');
         isLoading = false;
         if (mounted) setState(() {});
       });
@@ -654,46 +654,46 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
   Future _postContent() async {
     String content = _textEditingController.text;
     if (imagesLength != 0 && content == null || content.trim().length == 0) {
-      content = "分享图片~";
+      content = '分享图片~';
     }
     if (assets.length > 0) {
-      _dialogController.updateText("正在发布动态...");
+      _dialogController.updateText('正在发布动态...');
     }
     TeamPostAPI.publishPost(
       content: content,
       files: _imageIdList
           .map((id) => {
-                "create_time": 0,
-                "desc": "",
-                "ext": "",
-                "fid": id,
-                "grid": 0,
-                "group": "",
-                "height": 0,
-                "length": 0,
-                "name": "",
-                "size": 0,
-                "source": "",
-                "type": "",
-                "width": 0,
+                'create_time': 0,
+                'desc': '',
+                'ext': '',
+                'fid': id,
+                'grid': 0,
+                'group': '',
+                'height': 0,
+                'length': 0,
+                'name': '',
+                'size': 0,
+                'source': '',
+                'type': '',
+                'width': 0,
               })
           .toList(),
     ).then((response) {
-      if (response.data["tid"] != null) {
+      if (response.data['tid'] != null) {
         _dialogController.changeState(
-          "success",
-          "动态发布成功",
+          'success',
+          '动态发布成功',
           duration: const Duration(seconds: 3),
           customPop: () {
             navigatorState.popUntil((_) => _.isFirst);
           },
         );
       } else {
-        _dialogController.changeState("failed", "动态发布失败");
+        _dialogController.changeState('failed', '动态发布失败');
       }
       return response;
     }).catchError((e) {
-      _dialogController.changeState("failed", "动态发布失败");
+      _dialogController.changeState('failed', '动态发布失败');
       debugPrint(e.toString());
     }).whenComplete(() {
       isLoading = false;
@@ -707,14 +707,14 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
         context: context,
         builder: (context) => CupertinoAlertDialog(
           title: Text(
-            "退出发布动态",
+            '退出发布动态',
           ),
           content: Text(
-            "仍有未发送的内容，是否退出？",
+            '仍有未发送的内容，是否退出？',
           ),
           actions: <Widget>[
             CupertinoDialogAction(
-              child: Text("确认"),
+              child: Text('确认'),
               isDefaultAction: false,
               onPressed: () {
                 Navigator.of(context).pop(true);
@@ -722,7 +722,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
               textStyle: TextStyle(color: currentThemeColor),
             ),
             CupertinoDialogAction(
-              child: Text("取消"),
+              child: Text('取消'),
               isDefaultAction: true,
               onPressed: () {
                 Navigator.of(context).pop(false);
@@ -757,7 +757,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
             children: <Widget>[
               FixedAppBar(
                 title: Text(
-                  "发布集市动态",
+                  '发布集市动态',
                   style: Theme.of(context).textTheme.title.copyWith(
                         fontSize: suSetSp(23.0),
                       ),

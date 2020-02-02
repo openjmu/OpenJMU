@@ -13,7 +13,7 @@ import 'package:openjmu/pages/post/team_mention_list_page.dart';
 import 'package:openjmu/pages/post/team_reply_list_page.dart';
 import 'package:openjmu/pages/post/team_praise_list_page.dart';
 
-@FFRoute(name: "openjmu://team-notifications", routeName: "小组通知页")
+@FFRoute(name: 'openjmu://team-notifications', routeName: '小组通知页')
 class TeamNotificationPage extends StatefulWidget {
   @override
   _TeamNotificationPageState createState() => _TeamNotificationPageState();
@@ -45,13 +45,13 @@ class _TeamNotificationPageState extends State<TeamNotificationPage> with Ticker
     final latestNotify = provider.teamNotifications.latestNotify;
     int index = 0;
     switch (latestNotify) {
-      case "mention":
+      case 'mention':
         index = 0;
         break;
-      case "reply":
+      case 'reply':
         index = 1;
         break;
-      case "praise":
+      case 'praise':
         index = 2;
         break;
     }

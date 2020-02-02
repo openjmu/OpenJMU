@@ -12,7 +12,7 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/edit_signature_dialog.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
 
-@FFRoute(name: 'openjmu://user', routeName: '用户页', argumentNames: ['uid'])
+@FFRoute(name: "openjmu://user", routeName: "用户页", argumentNames: ["uid"])
 class UserPage extends StatefulWidget {
   final int uid;
 
@@ -172,6 +172,7 @@ class _UserPageState extends State<UserPage>
               placeholder: AssetImage('assets/avatar_placeholder.png'),
               image: UserAPI.getAvatarProvider(uid: widget.uid),
             ),
+            placeholderBuilder: (_, __, child) => child,
           ),
         ),
       ),

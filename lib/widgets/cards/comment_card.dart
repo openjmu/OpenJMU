@@ -167,7 +167,7 @@ class CommentCard extends StatelessWidget {
             ),
           ],
         ),
-        specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
+        specialTextSpanBuilder: StackSpecialTextSpanBuilder(widgetType: WidgetType.comment),
       ),
     );
   }

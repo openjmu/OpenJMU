@@ -97,16 +97,16 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
   Widget _postTime(context, DateTime postTime) {
     final now = DateTime.now();
     DateTime _postTime = postTime;
-    String time = "";
+    String time = '';
     if (_postTime.day == now.day && _postTime.month == now.month && _postTime.year == now.year) {
-      time += DateFormat("HH:mm").format(_postTime);
+      time += DateFormat('HH:mm').format(_postTime);
     } else if (postTime.year == now.year) {
-      time += DateFormat("MM-dd HH:mm").format(_postTime);
+      time += DateFormat('MM-dd HH:mm').format(_postTime);
     } else {
-      time += DateFormat("yyyy-MM-dd HH:mm").format(_postTime);
+      time += DateFormat('yyyy-MM-dd HH:mm').format(_postTime);
     }
     return Text(
-      "$time",
+      '$time',
       style: Theme.of(context).textTheme.caption.copyWith(
             fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
@@ -117,15 +117,15 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
   Widget _content(TeamMentionItem item) => Padding(
         padding: EdgeInsets.only(bottom: suSetHeight(10.0)),
         child: ExtendedText(
-          item.post?.content ?? item.comment?.content ?? "",
+          item.post?.content ?? item.comment?.content ?? '',
           style: TextStyle(fontSize: suSetSp(21.0)),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
           overFlowTextSpan: OverFlowTextSpan(
             children: <TextSpan>[
-              TextSpan(text: " ... "),
+              TextSpan(text: ' ... '),
               TextSpan(
-                text: "全文",
+                text: '全文',
                 style: TextStyle(
                   color: currentThemeColor,
                   fontSize: suSetSp(21.0),
@@ -165,11 +165,11 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                             navigatorState.pushNamed(
                               Routes.OPENJMU_TEAM_POST_DETAIL,
                               arguments: {
-                                "provider": provider,
-                                "type": item.type == TeamMentionType.post
+                                'provider': provider,
+                                'type': item.type == TeamMentionType.post
                                     ? TeamPostType.post
                                     : TeamPostType.comment,
-                                "postId": item.comment?.originId,
+                                'postId': item.comment?.originId,
                               },
                             );
                           },
@@ -202,7 +202,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                 )
               : Center(
                   child: Text(
-                    "暂无内容",
+                    '暂无内容',
                     style: TextStyle(
                       color: currentThemeColor,
                       fontSize: suSetSp(24.0),
@@ -248,19 +248,19 @@ class TeamMentionItem {
 
   Map<String, dynamic> toJson() {
     return {
-      "postId": postId,
-      "post": post,
-      "comment": comment,
-      "scope": scope,
-      "fromUserId": fromUserId,
-      "fromUsername": fromUsername,
-      "type": type,
+      'postId': postId,
+      'post': post,
+      'comment': comment,
+      'scope': scope,
+      'fromUserId': fromUserId,
+      'fromUsername': fromUsername,
+      'type': type,
     };
   }
 
   @override
   String toString() {
-    return JsonEncoder.withIndent("  ").convert(toJson());
+    return JsonEncoder.withIndent('  ').convert(toJson());
   }
 }
 

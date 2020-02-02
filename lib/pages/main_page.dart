@@ -117,17 +117,20 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   }
 
   void _getNotification(_) {
-    Future.wait([
-      UserAPI.getNotifications(),
-      TeamPostAPI.getNotifications(),
-    ]).then((responses) {
-      final provider = Provider.of<NotificationProvider>(currentContext, listen: false);
-      provider.updateNotification(
-        Notifications.fromJson(responses[0].data),
-        TeamNotifications.fromJson(responses[1].data),
-      );
+    final provider = Provider.of<NotificationProvider>(currentContext, listen: false);
+    UserAPI.getNotifications().then((response) {
+      final notification = Notifications.fromJson(response.data);
+      provider.updateNotification(notification);
+      if (_ == null) debugPrint('Updated notifications with :$notification');
     }).catchError((e) {
       debugPrint('Error when getting notification: $e');
+    });
+    TeamPostAPI.getNotifications().then((response) {
+      final notification = TeamNotifications.fromJson(response.data);
+      provider.updateTeamNotification(notification);
+      if (_ == null) debugPrint('Updated team notifications with: $notification');
+    }).catchError((e) {
+      debugPrint('Error when getting team notification: $e');
     });
   }
 
@@ -155,30 +158,32 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     return WillPopScope(
       onWillPop: doubleBackExit,
       child: Scaffold(
-        body: Column(
-          children: <Widget>[
-            Selector<SettingsProvider, bool>(
-              selector: (_, provider) => provider.announcementsEnabled,
-              builder: (_, announcementEnabled, __) {
-                if (announcementEnabled) {
-                  return AnnouncementWidget(context, color: currentThemeColor, gap: 24.0);
-                } else {
-                  return SizedBox.shrink();
-                }
-              },
-            ),
-            Expanded(
-              child: IndexedStack(
-                children: <Widget>[
-                  PostSquareListPage(),
-                  AppsPage(key: Instances.appsPageStateKey),
-                  MessagePage(),
-                  MyInfoPage(),
-                ],
-                index: _tabIndex,
+        body: SafeArea(
+          child: Column(
+            children: <Widget>[
+              Selector<SettingsProvider, bool>(
+                selector: (_, provider) => provider.announcementsEnabled,
+                builder: (_, announcementEnabled, __) {
+                  if (announcementEnabled) {
+                    return AnnouncementWidget(context, color: currentThemeColor, gap: 24.0);
+                  } else {
+                    return SizedBox.shrink();
+                  }
+                },
               ),
-            ),
-          ],
+              Expanded(
+                child: IndexedStack(
+                  children: <Widget>[
+                    PostSquareListPage(),
+                    AppsPage(key: Instances.appsPageStateKey),
+                    MessagePage(),
+                    MyInfoPage(),
+                  ],
+                  index: _tabIndex,
+                ),
+              ),
+            ],
+          ),
         ),
         bottomNavigationBar: FABBottomAppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,

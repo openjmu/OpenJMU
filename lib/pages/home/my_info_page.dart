@@ -14,27 +14,27 @@ class MyInfoPageState extends State<MyInfoPage> {
   List<List<Map<String, String>>> settingsSection() => [
         if (Provider.of<SettingsProvider>(currentContext, listen: false).debug)
           [
-            {"name": "背包", "icon": "idols"},
+            {'name': '背包', 'icon': 'idols'},
           ],
         [
           {
-            "name": "夜间模式${Provider.of<ThemesProvider>(
+            'name': '夜间模式${Provider.of<ThemesProvider>(
               currentContext,
               listen: false,
-            ).platformBrightness ? " (已跟随系统)" : ""}",
-            "icon": "nightmode",
+            ).platformBrightness ? ' (已跟随系统)' : ''}',
+            'icon': 'nightmode',
           },
-          {"name": "偏好设置", "icon": "settings"},
+          {'name': '偏好设置', 'icon': 'settings'},
         ],
         [
-          {"name": "关于OpenJMU", "icon": "idols"},
+          {'name': '关于OpenJMU', 'icon': 'idols'},
         ],
         [
-          {"name": "退出登录", "icon": "exit"},
+          {'name': '退出登录', 'icon': 'exit'},
         ],
         if (Provider.of<SettingsProvider>(currentContext, listen: false).debug)
           [
-            {"name": "测试页", "icon": "idols"},
+            {'name': '测试页', 'icon': 'idols'},
           ],
       ];
 
@@ -44,7 +44,7 @@ class MyInfoPageState extends State<MyInfoPage> {
   int signedCount = 0;
 
   DateTime now = DateTime.now();
-  String hello = "你好";
+  String hello = '你好';
 
   @override
   void initState() {
@@ -65,19 +65,19 @@ class MyInfoPageState extends State<MyInfoPage> {
     int hour = DateTime.now().hour;
 
     if (hour >= 0 && hour < 6) {
-      hello = "深夜了，注意休息";
+      hello = '深夜了，注意休息';
     } else if (hour >= 6 && hour < 8) {
-      hello = "早上好";
+      hello = '早上好';
     } else if (hour >= 8 && hour < 11) {
-      hello = "上午好";
+      hello = '上午好';
     } else if (hour >= 11 && hour < 14) {
-      hello = "中午好";
+      hello = '中午好';
     } else if (hour >= 14 && hour < 18) {
-      hello = "下午好";
+      hello = '下午好';
     } else if (hour >= 18 && hour < 20) {
-      hello = "傍晚好";
+      hello = '傍晚好';
     } else if (hour >= 20 && hour <= 24) {
-      hello = "晚上好";
+      hello = '晚上好';
     }
     if (mounted) setState(() {});
   }
@@ -107,7 +107,7 @@ class MyInfoPageState extends State<MyInfoPage> {
               crossAxisAlignment: WrapCrossAlignment.end,
               children: <Widget>[
                 Text(
-                  "${UserAPI.currentUser.name}",
+                  '${UserAPI.currentUser.name}',
                   style: TextStyle(
                     color: Theme.of(context).textTheme.title.color,
                     fontSize: suSetSp(26.0),
@@ -126,7 +126,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         children: <Widget>[
           Expanded(
             child: Text(
-              UserAPI.currentUser.signature ?? "这里空空如也~",
+              UserAPI.currentUser.signature ?? '这里空空如也~',
               style: TextStyle(
                 color: Theme.of(context).textTheme.caption.color,
                 fontSize: suSetSp(20.0),
@@ -172,7 +172,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                         ),
                 ),
                 Text(
-                  signed ? "已签$signedCount天" : "签到",
+                  signed ? '已签$signedCount天' : '签到',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: suSetSp(20.0),
@@ -187,7 +187,6 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   Widget get userInfo => Container(
         color: Theme.of(context).primaryColor,
-        padding: EdgeInsets.only(top: Screens.topSafeHeight),
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => navigatorState.pushNamed(
@@ -263,33 +262,33 @@ class MyInfoPageState extends State<MyInfoPage> {
                           textAlign: TextAlign.center,
                           text: TextSpan(
                             children: <TextSpan>[
-                              TextSpan(text: "${currentUser.name}，$hello~\n"),
-                              TextSpan(text: "今天是"),
-                              TextSpan(text: "${DateFormat("MMMdd", "zh_CN").format(now)}日，"),
-                              TextSpan(text: "${DateFormat("EEE", "zh_CN").format(now)}，"),
+                              TextSpan(text: '${currentUser.name}，$hello~\n'),
+                              TextSpan(text: '今天是'),
+                              TextSpan(text: '${DateFormat('MMMdd', 'zh_CN').format(now)}日，'),
+                              TextSpan(text: '${DateFormat('EEE', 'zh_CN').format(now)}，'),
                               if (currentWeek > 0)
                                 TextSpan(children: <InlineSpan>[
-                                  TextSpan(text: "第"),
+                                  TextSpan(text: '第'),
                                   TextSpan(
-                                    text: "$currentWeek",
+                                    text: '$currentWeek',
                                     style: TextStyle(
                                       color: currentThemeColor,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  TextSpan(text: "周"),
+                                  TextSpan(text: '周'),
                                 ])
                               else
                                 TextSpan(children: <InlineSpan>[
-                                  TextSpan(text: "距开学还有"),
+                                  TextSpan(text: '距开学还有'),
                                   TextSpan(
-                                    text: "${currentWeek.abs()}",
+                                    text: '${currentWeek.abs() + 1}',
                                     style: TextStyle(
                                       color: currentThemeColor,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  TextSpan(text: "周"),
+                                  TextSpan(text: '周'),
                                 ]),
                             ],
                             style: Theme.of(context).textTheme.body1.copyWith(
@@ -338,11 +337,11 @@ class MyInfoPageState extends State<MyInfoPage> {
                 right: suSetWidth(24.0),
               ),
               child: SvgPicture.asset(
-                (item['name'] == "夜间模式")
+                (item['name'] == '夜间模式')
                     ? currentIsDark
-                        ? "assets/icons/daymode-line.svg"
-                        : "assets/icons/${item['icon']}-line.svg"
-                    : "assets/icons/${item['icon']}-line.svg",
+                        ? 'assets/icons/daymode-line.svg'
+                        : 'assets/icons/${item['icon']}-line.svg'
+                    : 'assets/icons/${item['icon']}-line.svg',
                 color: Theme.of(context).iconTheme.color,
                 width: suSetWidth(40.0),
                 height: suSetHeight(32.0),
@@ -350,14 +349,14 @@ class MyInfoPageState extends State<MyInfoPage> {
             ),
             Expanded(
               child: Text(
-                (item['name'] == "夜间模式") ? currentIsDark ? "日间模式" : item['name'] : item['name'],
+                (item['name'] == '夜间模式') ? currentIsDark ? '日间模式' : item['name'] : item['name'],
                 style: TextStyle(fontSize: suSetSp(23.0)),
               ),
             ),
             Padding(
               padding: EdgeInsets.only(right: suSetSp(12.0)),
               child: SvgPicture.asset(
-                "assets/icons/arrow-right.svg",
+                'assets/icons/arrow-right.svg',
                 color: Colors.grey,
                 width: suSetWidth(30.0),
                 height: suSetWidth(30.0),
@@ -374,30 +373,30 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   void _handleItemClick(context, String item) {
     switch (item) {
-      case "背包":
+      case '背包':
         navigatorState.pushNamed(Routes.OPENJMU_BACKPACK);
         break;
 
-      case "夜间模式":
+      case '夜间模式':
         final provider = Provider.of<ThemesProvider>(currentContext, listen: false);
         provider.dark = !provider.dark;
         break;
-      case "切换主题":
+      case '切换主题':
         navigatorState.pushNamed(Routes.OPENJMU_THEME);
         break;
-      case "偏好设置":
+      case '偏好设置':
         navigatorState.pushNamed(Routes.OPENJMU_SETTINGS);
         break;
 
-      case "关于OpenJMU":
+      case '关于OpenJMU':
         navigatorState.pushNamed(Routes.OPENJMU_ABOUT);
         break;
 
-      case "退出登录":
+      case '退出登录':
         UserAPI.logout(context);
         break;
 
-      case "测试页":
+      case '测试页':
         navigatorState.pushNamed(Routes.OPENJMU_TEST_DASHBOARD);
         break;
 
@@ -429,7 +428,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             child: GestureDetector(
               onLongPress: () => HiveBoxes.clearBoxes(context),
               child: Text(
-                "(DANGER)\n清除应用数据",
+                '(DANGER)\n清除应用数据',
                 style: TextStyle(
                   color: currentThemeColor,
                   fontSize: suSetSp(20.0),

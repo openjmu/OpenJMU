@@ -383,6 +383,7 @@ class TeamPostPreviewCard extends StatelessWidget {
       _exImage = Hero(
         tag: 'team-post-preview-image-${post.tid}-$imageId',
         child: _exImage,
+        placeholderBuilder: (_, __, child) => child,
       );
       imagesWidget.add(_exImage);
     }
@@ -443,10 +444,7 @@ class TeamPostPreviewCard extends StatelessWidget {
             Expanded(
               child: LikeButton(
                 size: suSetWidth(26.0),
-                circleColor: CircleColor(
-                  start: currentThemeColor,
-                  end: currentThemeColor,
-                ),
+                circleColor: CircleColor(start: currentThemeColor, end: currentThemeColor),
                 bubblesColor: BubblesColor(
                   dotPrimaryColor: currentThemeColor,
                   dotSecondaryColor: currentThemeColor,
@@ -466,7 +464,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   horizontal: suSetWidth(8.0),
                 ),
                 countBuilder: (count, isLiked, text) => Text(
-                  count == 0 ? '赞' : text,
+                  (isLiked ? moreThanOne(count) : moreThanZero(count)) > 0 ? text : '赞',
                   style: TextStyle(
                     color: isLiked
                         ? currentThemeColor

@@ -9,8 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/appbar.dart';
-import 'package:openjmu/widgets/webapp_icon.dart';
 
 @FFRoute(
   name: "openjmu://chat-app-message-page",
@@ -89,7 +87,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
               color: currentThemeColor,
               child: Center(
                 child: Text(
-                  "前往应用",
+                  '前往应用',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: suSetSp(22.0),
@@ -100,9 +98,9 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
                 navigatorState.pushNamed(
                   Routes.OPENJMU_INAPPBROWSER,
                   arguments: {
-                    "url": widget.app.replacedUrl,
-                    "title": widget.app.name,
-                    "app": widget.app,
+                    'url': widget.app.replacedUrl,
+                    'title': widget.app.name,
+                    'app': widget.app,
                   },
                 );
               },
@@ -174,7 +172,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
             Padding(
               padding: EdgeInsets.only(left: suSetWidth(8.0)),
               child: Text(
-                "${timeHandler(message.sendTime)}",
+                '${timeHandler(message.sendTime)}',
                 style: TextStyle(
                   color: Theme.of(context).textTheme.caption.color.withOpacity(0.25),
                   fontSize: suSetSp(14.0),
@@ -189,13 +187,13 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
 
   String timeHandler(DateTime dateTime) {
     final now = DateTime.now();
-    String time = "";
+    String time = '';
     if (dateTime.day == now.day && dateTime.month == now.month && dateTime.year == now.year) {
-      time += DateFormat("HH:mm").format(dateTime);
+      time += DateFormat('HH:mm').format(dateTime);
     } else if (dateTime.year == now.year) {
-      time += DateFormat("MM-dd HH:mm").format(dateTime);
+      time += DateFormat('MM-dd HH:mm').format(dateTime);
     } else {
-      time += DateFormat("yy-MM-dd HH:mm").format(dateTime);
+      time += DateFormat('yy-MM-dd HH:mm').format(dateTime);
     }
     return time;
   }

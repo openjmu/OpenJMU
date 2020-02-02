@@ -173,8 +173,8 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
     if (!_showLoading) {
       Widget _body;
       if (_firstLoadComplete) {
-        _itemList = ListView.builder(
-          padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
+        _itemList = ExtendedListView.builder(
+          padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
           itemBuilder: (context, index) {
             if (index == _praiseList.length) {
               if (this._canLoadMore) {

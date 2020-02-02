@@ -85,6 +85,7 @@ class SettingsProvider extends ChangeNotifier {
     _homeStartUpIndex = [0, 0, 0];
     _newAppCenterIcon = false;
     _hideShieldPost = true;
+    notifyListeners();
   }
 
   Future<void> getAnnouncement() async {
@@ -92,6 +93,7 @@ class SettingsProvider extends ChangeNotifier {
       final data = jsonDecode((await NetUtils.get(API.announcement)).data);
       _announcementsEnabled = data['enabled'];
       _announcements = data['announcements'];
+      notifyListeners();
     } catch (e) {
       debugPrint('Get announcement error: $e');
       Future.delayed(30.seconds, getAnnouncement);

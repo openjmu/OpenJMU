@@ -17,10 +17,10 @@ class PostSquareListPage extends StatefulWidget {
 class PostSquareListPageState extends State<PostSquareListPage>
     with SingleTickerProviderStateMixin {
   static final List<String> tabs = [
-    "广场",
-//    "关注",
-    "集市",
-//    "新闻",
+    '广场',
+//    '关注',
+    '集市',
+//    '新闻',
   ];
   static List<Widget> _post;
 
@@ -29,7 +29,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
     () {
       _post[0] = PostList(
         PostController(
-          postType: "square",
+          postType: 'square',
           isFollowed: false,
           isMore: false,
           lastValue: (int id) => id,
@@ -40,7 +40,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
 //    () {
 //      _post[1] = PostList(
 //        PostController(
-//          postType: "square",
+//          postType: 'square',
 //          isFollowed: true,
 //          isMore: false,
 //          lastValue: (int id) => id,
@@ -107,7 +107,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
         child: IconButton(
           alignment: Alignment.centerRight,
           icon: SvgPicture.asset(
-            "assets/icons/scan-line.svg",
+            'assets/icons/scan-line.svg',
             color: Theme.of(context).iconTheme.color.withOpacity(0.3),
             width: suSetWidth(32.0),
             height: suSetWidth(32.0),
@@ -126,7 +126,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
   Widget get searchButton => SizedBox(
         width: suSetWidth(60.0),
         child: SvgPicture.asset(
-          "assets/icons/search-line.svg",
+          'assets/icons/search-line.svg',
           color: Theme.of(context).iconTheme.color.withOpacity(0.3),
           width: suSetWidth(32.0),
           height: suSetWidth(32.0),
@@ -137,7 +137,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () {
-            navigatorState.pushNamed(Routes.OPENJMU_SEARCH, arguments: {"content": null});
+            navigatorState.pushNamed(Routes.OPENJMU_SEARCH, arguments: {'content': null});
           },
           child: Container(
             height: suSetHeight(48.0),
@@ -150,7 +150,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
                 searchButton,
                 Expanded(
                   child: Text(
-                    "搜索",
+                    '搜索',
                     style: TextStyle(
                       color: Theme.of(context).iconTheme.color.withOpacity(0.3),
                       fontSize: MainPageState.tabUnselectedTextStyle.fontSize,
@@ -189,7 +189,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
                 IconButton(
                   alignment: Alignment.centerRight,
                   icon: SvgPicture.asset(
-                    "assets/icons/liuyan-line.svg",
+                    'assets/icons/liuyan-line.svg',
                     color: Theme.of(context).iconTheme.color.withOpacity(0.3),
                     width: suSetWidth(32.0),
                     height: suSetWidth(32.0),

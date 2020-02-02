@@ -97,16 +97,16 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
   Widget _postTime(context, DateTime postTime) {
     final now = DateTime.now();
     DateTime _postTime = postTime;
-    String time = "";
+    String time = '';
     if (_postTime.day == now.day && _postTime.month == now.month && _postTime.year == now.year) {
-      time += DateFormat("HH:mm").format(_postTime);
+      time += DateFormat('HH:mm').format(_postTime);
     } else if (_postTime.year == now.year) {
-      time += DateFormat("MM-dd HH:mm").format(_postTime);
+      time += DateFormat('MM-dd HH:mm').format(_postTime);
     } else {
-      time += DateFormat("yyyy-MM-dd HH:mm").format(_postTime);
+      time += DateFormat('yyyy-MM-dd HH:mm').format(_postTime);
     }
     return Text(
-      "$time",
+      '$time',
       style: Theme.of(context).textTheme.caption.copyWith(
             fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
@@ -119,7 +119,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
         child: Text.rich(
           TextSpan(
             children: <InlineSpan>[
-              TextSpan(text: "赞了我的帖子 "),
+              TextSpan(text: '赞了我的帖子 '),
               WidgetSpan(
                 alignment: ui.PlaceholderAlignment.middle,
                 child: Icon(
@@ -187,8 +187,8 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                             navigatorState.pushNamed(
                               Routes.OPENJMU_TEAM_POST_DETAIL,
                               arguments: {
-                                "provider": provider,
-                                "type": TeamPostType.post,
+                                'provider': provider,
+                                'type': TeamPostType.post,
                               },
                             );
                           },
@@ -222,7 +222,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                 )
               : Center(
                   child: Text(
-                    "暂无内容",
+                    '暂无内容',
                     style: TextStyle(
                       color: currentThemeColor,
                       fontSize: suSetSp(24.0),
@@ -266,17 +266,17 @@ class TeamPraiseItem {
 
   Map<String, dynamic> toJson() {
     return {
-      "post": post,
-      "from": from,
-      "time": time.toString(),
-      "scope": scope,
-      "fromUserId": fromUserId,
-      "fromUsername": fromUsername,
+      'post': post,
+      'from': from,
+      'time': time.toString(),
+      'scope': scope,
+      'fromUserId': fromUserId,
+      'fromUsername': fromUsername,
     };
   }
 
   @override
   String toString() {
-    return JsonEncoder.withIndent("  ").convert(toJson());
+    return JsonEncoder.withIndent('  ').convert(toJson());
   }
 }

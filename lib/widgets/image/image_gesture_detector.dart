@@ -7,6 +7,7 @@ class ImageGestureDetector extends StatelessWidget {
   final Function onLongPress;
   final bool enableTapPop;
   final GlobalKey<ExtendedImageSlidePageState> slidePageKey;
+  final String heroPrefix;
 
   const ImageGestureDetector({
     Key key,
@@ -15,6 +16,7 @@ class ImageGestureDetector extends StatelessWidget {
     this.onLongPress,
     this.enableTapPop,
     this.slidePageKey,
+    this.heroPrefix,
   }) : super(key: key);
 
   @override
@@ -23,7 +25,7 @@ class ImageGestureDetector extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: ((enableTapPop ?? false) && context != null)
           ? () {
-              slidePageKey.currentState.popPage();
+              if (heroPrefix != null) slidePageKey.currentState.popPage();
               Navigator.pop(context);
             }
           : null,

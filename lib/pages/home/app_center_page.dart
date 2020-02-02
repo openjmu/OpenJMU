@@ -48,7 +48,7 @@ class AppCenterPage extends StatelessWidget {
       onPressed: () {
         navigatorState.pushNamed(
           Routes.OPENJMU_INAPPBROWSER,
-          arguments: {"url": webApp.replacedUrl, "title": webApp.name, "app": webApp},
+          arguments: {'url': webApp.replacedUrl, 'title': webApp.name, 'app': webApp},
         );
       },
     );

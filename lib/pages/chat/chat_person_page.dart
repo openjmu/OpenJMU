@@ -33,7 +33,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   bool shrinkWrap = true;
   bool emoticonPadActive = false;
   double _keyboardHeight = EmotionPadState.emoticonPadDefaultHeight;
-  String pendingMessage = "";
+  String pendingMessage = '';
 
   @override
   void initState() {
@@ -78,7 +78,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
               children: <Widget>[
                 UserAPI.getAvatar(size: 50.0, uid: 164466),
                 Text(
-                  "陈嘉旺",
+                  '陈嘉旺',
                   style: Theme.of(context).textTheme.body1.copyWith(
                         fontSize: suSetSp(19.0),
                         fontWeight: FontWeight.w500,
@@ -100,7 +100,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
         color: emoticonPadActive ? currentThemeColor : Colors.grey[400],
         child: Center(
           child: Image.asset(
-            "assets/emotionIcons/憨笑.png",
+            'assets/emotionIcons/憨笑.png',
             width: suSetSp(32.0),
           ),
         ),
@@ -155,7 +155,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
             decoration: InputDecoration(
               border: InputBorder.none,
               contentPadding: EdgeInsets.zero,
-              hintText: "Say something...",
+              hintText: 'Say something...',
               hintStyle: TextStyle(
                 textBaseline: TextBaseline.alphabetic,
                 fontStyle: FontStyle.italic,
@@ -241,11 +241,11 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
           ),
           child: ExtendedText(
             end == -1
-                ? "${(message.content['content'] as String)}"
-                : "${(message.content['content'] as String).substring(
+                ? '${(message.content['content'] as String)}'
+                : '${(message.content['content'] as String).substring(
                     0,
                     (message.content['content'] as String).indexOf('&<img>'),
-                  )}",
+                  )}',
             style: TextStyle(
               fontSize: suSetSp(19.0),
             ),
@@ -260,7 +260,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   Widget get emoticonPad => Visibility(
         visible: emoticonPadActive,
         child: EmotionPad(
-          route: "message",
+          route: 'message',
           height: _keyboardHeight,
           controller: _textEditingController,
         ),
@@ -281,7 +281,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   void sendMessage() {
     MessageUtils.sendTextMessage(pendingMessage, widget.uid);
     _textEditingController.clear();
-    pendingMessage = "";
+    pendingMessage = '';
     if (mounted) setState(() {});
   }
 

@@ -30,17 +30,18 @@ class NotificationProvider extends ChangeNotifier {
 
   int get initialIndex => _notifications.comment > 0 ? 1 : (_notifications.praise > 0 ? 2 : 0);
 
-  void updateNotification(
-    Notifications notification,
-    TeamNotifications teamNotification,
-  ) {
-    final shouldNotifyListeners =
-        this.notifications != notification && this.teamNotifications != teamNotification;
-    this.notifications
+  void updateNotification(Notifications notification) {
+    final shouldNotifyListeners = this.notifications != notification;
+    _notifications
       ..at = notification.at
       ..comment = notification.comment
       ..praise = notification.praise
       ..fans = notification.fans;
+    if (shouldNotifyListeners) notifyListeners();
+  }
+
+  void updateTeamNotification(TeamNotifications teamNotification) {
+    final shouldNotifyListeners = this.teamNotifications != teamNotification;
     this.teamNotifications
       ..latestNotify = teamNotification.latestNotify
       ..mention = teamNotification.mention

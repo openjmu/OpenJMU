@@ -94,16 +94,16 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
   Widget _postTime(context, DateTime postTime) {
     final now = DateTime.now();
     DateTime _postTime = postTime;
-    String time = "";
+    String time = '';
     if (_postTime.day == now.day && _postTime.month == now.month && _postTime.year == now.year) {
-      time += DateFormat("HH:mm").format(_postTime);
+      time += DateFormat('HH:mm').format(_postTime);
     } else if (_postTime.year == now.year) {
-      time += DateFormat("MM-dd HH:mm").format(_postTime);
+      time += DateFormat('MM-dd HH:mm').format(_postTime);
     } else {
-      time += DateFormat("yyyy-MM-dd HH:mm").format(_postTime);
+      time += DateFormat('yyyy-MM-dd HH:mm').format(_postTime);
     }
     return Text(
-      "$time",
+      '$time',
       style: Theme.of(context).textTheme.caption.copyWith(
             fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
@@ -116,15 +116,15 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
           vertical: suSetHeight(6.0),
         ),
         child: ExtendedText(
-          item.post?.content ?? item.comment?.content ?? "",
+          item.post?.content ?? item.comment?.content ?? '',
           style: TextStyle(fontSize: suSetSp(21.0)),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
           overFlowTextSpan: OverFlowTextSpan(
             children: <TextSpan>[
-              TextSpan(text: " ... "),
+              TextSpan(text: ' ... '),
               TextSpan(
-                text: "全文",
+                text: '全文',
                 style: TextStyle(color: currentThemeColor, fontSize: suSetSp(18.0)),
               ),
             ],
@@ -150,7 +150,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
           specialTextSpanBuilder: StackSpecialTextSpanBuilder(
             prefixSpans: <InlineSpan>[
               TextSpan(
-                text: item.type == TeamReplyType.post ? "回复我的帖子：" : "评论我的回帖：",
+                text: item.type == TeamReplyType.post ? '回复我的帖子：' : '评论我的回帖：',
                 style: TextStyle(color: Theme.of(context).iconTheme.color.withOpacity(0.5)),
               ),
             ],
@@ -192,7 +192,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                           onTap: () {
                             navigatorState.pushNamed(
                               Routes.OPENJMU_TEAM_POST_DETAIL,
-                              arguments: {"provider": provider, "type": TeamPostType.comment},
+                              arguments: {'provider': provider, 'type': TeamPostType.comment},
                             );
                           },
                           child: Container(
@@ -225,7 +225,7 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                 )
               : Center(
                   child: Text(
-                    "暂无内容",
+                    '暂无内容',
                     style: TextStyle(color: currentThemeColor, fontSize: suSetSp(24.0)),
                   ),
                 )
@@ -269,19 +269,19 @@ class TeamReplyItem {
 
   Map<String, dynamic> toJson() {
     return {
-      "post": post,
-      "comment": comment,
-      "toPost": toPost,
-      "scope": scope,
-      "fromUserId": fromUserId,
-      "fromUsername": fromUsername,
-      "type": type,
+      'post': post,
+      'comment': comment,
+      'toPost': toPost,
+      'scope': scope,
+      'fromUserId': fromUserId,
+      'fromUsername': fromUsername,
+      'type': type,
     };
   }
 
   @override
   String toString() {
-    return JsonEncoder.withIndent("  ").convert(toJson());
+    return JsonEncoder.withIndent('  ').convert(toJson());
   }
 }
 

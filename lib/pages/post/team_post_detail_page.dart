@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:extended_text_field/extended_text_field.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/appbar.dart';
 import 'package:openjmu/widgets/cards/team_post_card.dart';
 import 'package:openjmu/widgets/cards/team_comment_preview_card.dart';
 import 'package:openjmu/widgets/cards/team_post_comment_preview_card.dart';
@@ -44,22 +43,22 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
 
   List<Map<String, dynamic>> get extendedFeature => [
 //        {
-//          "name": "添加图片",
-//          "icon": Icons.add_photo_alternate,
-//          "color": Colors.blueAccent,
-//          "action": () {},
+//          'name': '添加图片',
+//          'icon': Icons.add_photo_alternate,
+//          'color': Colors.blueAccent,
+//          'action': () {},
 //        },
         {
-          "name": "提到某人",
-          "icon": Icons.alternate_email,
-          "color": Colors.teal,
-          "action": mentionPeople,
+          'name': '提到某人',
+          'icon': Icons.alternate_email,
+          'color': Colors.teal,
+          'action': mentionPeople,
         },
         {
-          "name": "插入话题",
-          "icon": Icons.create,
-          "color": Colors.deepOrangeAccent,
-          "action": addTopic,
+          'name': '插入话题',
+          'icon': Icons.create,
+          'color': Colors.deepOrangeAccent,
+          'action': addTopic,
         },
       ];
 
@@ -175,7 +174,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
 
   void setReplyToPost(TeamPost post) {
     replyToPost = post;
-    replyHint = "回复@${post.nickname}:";
+    replyHint = '回复@${post.nickname}:';
     if (mounted) setState(() {});
     if (!_focusNode.hasFocus) {
       _focusNode.requestFocus();
@@ -185,7 +184,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
 
   void setReplyToComment(TeamPostComment comment) {
     replyToComment = comment;
-    replyHint = "回复@${comment.userInfo['nickname']}:";
+    replyHint = '回复@${comment.userInfo['nickname']}:';
     if (mounted) setState(() {});
     if (!_focusNode.hasFocus) {
       _focusNode.requestFocus();
@@ -215,7 +214,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                       vertical: suSetHeight(10.0),
                     ),
                     prefixText: replyHint,
-                    hintText: replyHint == null ? "给你一个神评的机会..." : null,
+                    hintText: replyHint == null ? '给你一个神评的机会...' : null,
                   ),
                   cursorColor: currentThemeColor,
                   style: Theme.of(context).textTheme.body1.copyWith(
@@ -378,9 +377,9 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       final leftText = _textEditingController.text.substring(0, currentPosition);
       final rightText = _textEditingController.text
           .substring(currentPosition, _textEditingController.text.length);
-      result = "$leftText#话题#$rightText";
+      result = '$leftText#话题#$rightText';
     } else {
-      result = "#话题#";
+      result = '#话题#';
     }
     _textEditingController.text = result;
     _textEditingController.selection = TextSelection.fromPosition(
@@ -396,10 +395,10 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     ).then((result) {
       if (_focusNode.canRequestFocus) _focusNode.requestFocus();
       if (result != null) {
-        debugPrint("Mentioned User: ${result.toString()}");
+        debugPrint('Mentioned User: ${result.toString()}');
         Future.delayed(const Duration(milliseconds: 250), () {
           if (_focusNode.canRequestFocus) _focusNode.requestFocus();
-          insertText("<M ${result.id}>@${result.nickname}<\/M>");
+          insertText('<M ${result.id}>@${result.nickname}<\/M>');
         });
       }
     });
@@ -411,7 +410,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     final end = value.selection.extentOffset;
 
     if (value.selection.isValid) {
-      String newText = "";
+      String newText = '';
       if (value.selection.isCollapsed) {
         if (end > 0) {
           newText += value.text.substring(0, end);
@@ -464,7 +463,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         break;
     }
     TeamPostAPI.publishPost(
-      content: "${prefix ?? ""}${_textEditingController.text}",
+      content: '${prefix ?? ''}${_textEditingController.text}',
       postType: postType,
       regionId: postId,
       regionType: regionType,
@@ -473,11 +472,11 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       _focusNode.unfocus();
       _textEditingController.clear();
       replyHint = null;
-      showToast("发送成功");
+      showToast('发送成功');
       initialLoad();
     }).catchError((e) {
-      debugPrint("Reply failed: $e");
-      showErrorToast("发送失败");
+      debugPrint('Reply failed: $e');
+      showErrorToast('发送失败');
     }).whenComplete(() {
       sending = false;
       if (mounted) setState(() {});
@@ -489,7 +488,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         curve: Curves.fastOutSlowIn,
         height: showEmoticonPad ? _keyboardHeight : 0.0,
         child: EmotionPad(
-          route: "publish",
+          route: 'publish',
           height: MediaQuery.of(context).viewInsets.bottom,
           controller: _textEditingController,
         ),
@@ -508,7 +507,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         children: <Widget>[
           FixedAppBar(
             title: Text(
-              "集市动态",
+              '集市动态',
               style: Theme.of(context).textTheme.title.copyWith(
                     fontSize: suSetSp(23.0),
                   ),
@@ -590,7 +589,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                           : SliverToBoxAdapter(
                               child: SizedBox(
                                 height: suSetHeight(300.0),
-                                child: Center(child: Text("Nothing here.")),
+                                child: Center(child: Text('Nothing here.')),
                               ),
                             ),
                 ],

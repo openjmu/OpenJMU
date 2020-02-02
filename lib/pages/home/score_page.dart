@@ -10,10 +10,10 @@ class ScorePage extends StatelessWidget {
     final error = provider.errorString;
 
     String result;
-    if (error.contains("The method 'transform' was called on null")) {
-      result = "电波暂时无法到达成绩业务的门口\n😰";
+    if (error.contains('The method \'transform\' was called on null')) {
+      result = '电波暂时无法到达成绩业务的门口\n😰';
     } else {
-      result = "成绩好像还没有准备好呢\n🤒";
+      result = '成绩好像还没有准备好呢\n🤒';
     }
 
     return Center(
@@ -28,19 +28,19 @@ class ScorePage extends StatelessWidget {
   void gotoEvaluate() {
     String url;
     if (UserAPI.currentUser.isCY) {
-      url = "http://cyjwb.jmu.edu.cn/";
+      url = 'http://cyjwb.jmu.edu.cn/';
     } else {
-      url = "http://sso.jmu.edu.cn/imapps/1070?sid=${UserAPI.currentUser.sid}";
+      url = 'http://sso.jmu.edu.cn/imapps/1070?sid=${UserAPI.currentUser.sid}';
     }
     navigatorState.pushNamed(
       Routes.OPENJMU_INAPPBROWSER,
-      arguments: {"url": url, "title": "教学评测"},
+      arguments: {'url': url, 'title': '教学评测'},
     );
   }
 
   Widget get noScoreWidget => Center(
         child: Text(
-          "暂时还没有你的成绩\n🤔",
+          '暂时还没有你的成绩\n🤔',
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: suSetSp(30.0)),
         ),
@@ -65,16 +65,16 @@ class ScorePage extends StatelessWidget {
             child: Text.rich(
               TextSpan(
                 children: <InlineSpan>[
-                  TextSpan(text: "请及时完成 "),
+                  TextSpan(text: '请及时完成 '),
                   TextSpan(
-                    text: "教学评测",
+                    text: '教学评测',
                     style: TextStyle(
                       decoration: TextDecoration.underline,
                       fontWeight: FontWeight.bold,
                     ),
                     recognizer: TapGestureRecognizer()..onTap = gotoEvaluate,
                   ),
-                  TextSpan(text: " (校园内网)\n未教学评测的科目成绩将不予显示"),
+                  TextSpan(text: ' (校园内网)\n未教学评测的科目成绩将不予显示'),
                 ],
               ),
               style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(19.0)),
@@ -113,7 +113,7 @@ class ScorePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "$currentYear-${currentYear + 1}",
+                    '$currentYear-${currentYear + 1}',
                     style: TextStyle(
                       color: _term == selectedTerm
                           ? Colors.white
@@ -123,7 +123,7 @@ class ScorePage extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "第$currentTerm学期",
+                    '第$currentTerm学期',
                     style: TextStyle(
                       color: _term == selectedTerm
                           ? Colors.white
@@ -174,7 +174,7 @@ class ScorePage extends StatelessWidget {
 
   Widget _name(context, Score score) {
     return Text(
-      "${score.courseName}",
+      '${score.courseName}',
       style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(24.0)),
       overflow: TextOverflow.ellipsis,
     );
@@ -185,7 +185,7 @@ class ScorePage extends StatelessWidget {
       TextSpan(
         children: <TextSpan>[
           TextSpan(
-            text: "${score.score}",
+            text: '${score.score}',
             style: Theme.of(context).textTheme.title.copyWith(
                   fontSize: suSetSp(36.0),
                   fontWeight: FontWeight.bold,
@@ -193,13 +193,13 @@ class ScorePage extends StatelessWidget {
                 ),
           ),
           TextSpan(
-            text: " / ",
+            text: ' / ',
             style: TextStyle(
               color: Theme.of(context).textTheme.body1.color,
             ),
           ),
           TextSpan(
-            text: "${score.scorePoint}",
+            text: '${score.scorePoint}',
             style: Theme.of(context).textTheme.subtitle.copyWith(
                   fontSize: suSetSp(20.0),
                 ),
@@ -211,8 +211,8 @@ class ScorePage extends StatelessWidget {
 
   Widget _timeAndPoint(context, Score score) {
     return Text(
-      "学时: ${score.creditHour}　"
-      "学分: ${score.credit.toStringAsFixed(1)}",
+      '学时: ${score.creditHour}　'
+      '学分: ${score.credit.toStringAsFixed(1)}',
       style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
     );
   }
@@ -249,7 +249,7 @@ class ScorePage extends StatelessWidget {
       child: ClipRect(
         child: BackdropFilter(
           filter: ui.ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          child: SpinKitWidget(),
+          child: AbsorbPointer(child: SpinKitWidget()),
         ),
       ),
     );

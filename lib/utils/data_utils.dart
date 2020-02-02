@@ -46,7 +46,7 @@ class DataUtils {
       Instances.eventBus.fire(TicketGotEvent(isWizard));
       return true;
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Failed when login: $e');
       if (e.response != null) {
         showToast('登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}');
       }
@@ -54,15 +54,14 @@ class DataUtils {
     }
   }
 
-  static Future logout() async {
-    NetUtils.dio.clear();
-    NetUtils.tokenDio.clear();
+  static Future<void> logout() async {
     MessageUtils.sendLogout();
-    Future.delayed(300.milliseconds, () {
-      Provider.of<ThemesProvider>(currentContext, listen: false).resetTheme();
+    NetUtils.postWithCookieSet(API.logout).whenComplete(() {
+      NetUtils.dio.clear();
+      NetUtils.tokenDio.clear();
       clearLoginInfo();
-      showToast('退出登录成功');
     });
+    showToast('退出登录成功');
   }
 
   static Future<bool> checkWizard() async {
@@ -99,7 +98,7 @@ class DataUtils {
       final result = await getTicket();
       if (!result) throw Error.safeToString('Re-fetch ticket failed.');
       bool isWizard = true;
-//      if (!UserAPI.currentUser.isTeacher) isWizard = await checkWizard();
+//      if (!currentUser.isTeacher) isWizard = await checkWizard();
       if (currentUser.sid != null) {
         UserAPI.setBlacklist((await UserAPI.getBlacklist()).data['users']);
       }
@@ -113,8 +112,8 @@ class DataUtils {
   static Future<void> getUserInfo([uid]) async {
     return await NetUtils.tokenDio
         .get(
-      '${API.userInfo}?uid=${uid ?? UserAPI.currentUser.uid}',
-      options: Options(cookies: buildPHPSESSIDCookies(UserAPI.currentUser.sid)),
+      '${API.userInfo}?uid=${uid ?? currentUser.uid}',
+      options: Options(cookies: buildPHPSESSIDCookies(currentUser.sid)),
     )
         .then((response) {
       final data = response.data;
@@ -123,7 +122,7 @@ class DataUtils {
         'uid': currentUser.uid,
         'username': data['username'],
         'signature': data['signature'],
-        'ticket': UserAPI.currentUser.sid,
+        'ticket': settingsBox.get(spTicket),
         'isTeacher': int.parse(data['type'].toString()) == 1,
         'isCY': checkCY(data['workid']),
         'unitId': data['unitid'],
@@ -139,28 +138,27 @@ class DataUtils {
 
   static void setUserInfo(Map<String, dynamic> data) {
     UserAPI.currentUser = UserInfo.fromJson(data);
-    if (!data['isTeacher']) {
-      HiveFieldUtils.setEnabledNewAppsIcon(true);
-      Instances.eventBus.fire(AppCenterSettingsUpdateEvent());
-    }
+    HiveFieldUtils.setEnabledNewAppsIcon(!data['isTeacher']);
   }
 
-  static Future<Null> saveLoginInfo(Map<String, dynamic> data) async {
+  static Future<void> saveLoginInfo(Map<String, dynamic> data) async {
     if (data != null) {
       setUserInfo(data);
-      await settingsBox.put(spIsLogin, true);
-      await settingsBox.put(spTicket, data['ticket']);
-      await settingsBox.put(spUserUid, data['uid']);
-      await settingsBox.put(spUserWorkId, data['workId']);
+      await settingsBox.putAll({
+        spIsLogin: true,
+        spTicket: data['ticket'],
+        spUserUid: data['uid'],
+        spUserWorkId: data['workId'],
+      });
     }
   }
 
   /// 清除登录信息
-  static Future clearLoginInfo() async {
-    final _userWorkId = settingsBox.get(spUserWorkId);
+  static Future<void> clearLoginInfo() async {
+    final workId = settingsBox.get(spUserWorkId);
     UserAPI.currentUser = UserInfo();
     await settingsBox.clear();
-    await settingsBox.put(spUserWorkId, _userWorkId);
+    await settingsBox.put(spUserWorkId, workId);
   }
 
   static Map<String, dynamic> getSpTicket() {
@@ -168,27 +166,22 @@ class DataUtils {
     return tickets;
   }
 
-  static Future<bool> getTicket({bool update = false}) async {
+  static Future<bool> getTicket() async {
     try {
-      final params = Constants.loginParams(
-        ticket: update ? settingsBox.get(spTicket) : UserAPI.currentUser.sid,
-      );
+      debugPrint('Fetch new ticket with: ${settingsBox.get(spTicket)}');
+      final params = Constants.loginParams(ticket: settingsBox.get(spTicket));
       NetUtils.tokenCookieJar.deleteAll();
       final response = (await NetUtils.tokenDio.post(API.loginTicket, data: params)).data;
-      await updateSid(response);
+      updateSid(response);
       await getUserInfo();
       return true;
     } catch (e) {
-      if (e.response != null) {
-        debugPrint('Error response.');
-        debugPrint(e.response.data.toString());
-      }
-      Instances.eventBus.fire(TicketFailedEvent());
+      debugPrint('Error when getting ticket: $e');
       return false;
     }
   }
 
-  static Future updateSid(response) async {
+  static void updateSid(response) {
     UserAPI.currentUser.sid = response['sid'];
     UserAPI.currentUser.ticket = response['sid'];
     UserAPI.currentUser.uid = settingsBox.get(spUserUid);

@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(
-  name: "openjmu://font-scale",
-  routeName: "更改字号页",
-)
+@FFRoute(name: "openjmu://font-scale", routeName: "更改字号页")
 class FontScalePage extends StatefulWidget {
   @override
   _FontScalePageState createState() => _FontScalePageState();
@@ -41,14 +38,14 @@ class _FontScalePageState extends State<FontScalePage> {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   Text(
-                    "字体大小调节",
+                    '字体大小调节',
                     style: Theme.of(context).textTheme.title.copyWith(
                           fontSize: suSetSp(26.0),
                           fontWeight: FontWeight.bold,
                         ),
                   ),
                   Text(
-                    "调整字体大小以获得最佳阅读体验",
+                    '调整字体大小以获得最佳阅读体验',
                     style: Theme.of(context).textTheme.caption.copyWith(
                           fontSize: suSetSp(18.0),
                         ),
@@ -60,7 +57,7 @@ class _FontScalePageState extends State<FontScalePage> {
             Expanded(
               child: Center(
                 child: Text(
-                  "这是一行示例文字\nThis is a sample sentence",
+                  '这是一行示例文字\nThis is a sample sentence',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: suSetSp(baseFontSize, scale: scale)),
                 ),
@@ -79,7 +76,7 @@ class _FontScalePageState extends State<FontScalePage> {
                           child: Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              "小",
+                              '小',
                               style: TextStyle(
                                 fontSize: suSetSp(baseFontSize, scale: scaleRange[0]),
                               ),
@@ -89,7 +86,7 @@ class _FontScalePageState extends State<FontScalePage> {
                         Expanded(
                           child: Center(
                             child: Text(
-                              "标准",
+                              '标准',
                               style: TextStyle(
                                 fontSize: suSetSp(
                                   baseFontSize,
@@ -103,7 +100,7 @@ class _FontScalePageState extends State<FontScalePage> {
                           child: Align(
                             alignment: Alignment.centerRight,
                             child: Text(
-                              "大",
+                              '大',
                               style: TextStyle(
                                 fontSize: suSetSp(baseFontSize, scale: scaleRange[1]),
                               ),

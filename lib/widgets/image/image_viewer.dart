@@ -157,6 +157,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
       enableTapPop: true,
       onLongPress: () => onLongPress(context),
       slidePageKey: slidePageKey,
+      heroPrefix: widget.heroPrefix,
       child: ExtendedImage.network(
         widget.pics[index].imageUrl,
         fit: BoxFit.contain,
@@ -164,9 +165,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
         onDoubleTap: updateAnimation,
         enableSlideOutPage: true,
         heroBuilderForSlidingPage: (Widget result) {
-          if (index < widget.pics.length) {
-            String tag = '';
-            if (widget.heroPrefix != null) tag += widget.heroPrefix;
+          if (index < widget.pics.length && widget.heroPrefix != null) {
+            String tag = widget.heroPrefix;
             if (widget.pics[index].postId != null) tag += '${widget.pics[index].postId}-';
             tag += '${widget.pics[index].id}';
 
@@ -225,7 +225,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
       slideType: SlideType.onlyImage,
       slidePageBackgroundHandler: slidePageBackgroundHandler,
       slideEndHandler: slideEndHandler,
-      resetPageDuration: 300.milliseconds,
+      resetPageDuration: widget.heroPrefix != null ? 300.milliseconds : 1.microseconds,
       child: AnnotatedRegion(
         value: SystemUiOverlayStyle.light,
         child: Material(

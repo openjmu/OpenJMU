@@ -6,10 +6,7 @@ import 'package:extended_tabs/extended_tabs.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(
-  name: "openjmu://notifications",
-  routeName: "通知页",
-)
+@FFRoute(name: "openjmu://notifications", routeName: "通知页")
 class NotificationPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => NotificationPageState();
@@ -71,7 +68,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                       ? IconButton(
                           icon: badgeIcon(
                             content:
-                                provider.notifications.at == 0 ? "" : provider.notifications.at,
+                                provider.notifications.at == 0 ? '' : provider.notifications.at,
                             icon: Icon(actionsIcons[0], size: suSetWidth(30.0)),
                           ),
                           onPressed: () {
@@ -89,7 +86,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                       ? IconButton(
                           icon: badgeIcon(
                             content: provider.notifications.comment == 0
-                                ? ""
+                                ? ''
                                 : provider.notifications.comment,
                             icon: Icon(
                               actionsIcons[1],
@@ -114,7 +111,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                       ? IconButton(
                           icon: badgeIcon(
                             content: provider.notifications.praise == 0
-                                ? ""
+                                ? ''
                                 : provider.notifications.praise,
                             icon: Icon(
                               actionsIcons[2],
@@ -146,7 +143,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
   void postByMention() {
     _mentionPost = PostList(
       PostController(
-        postType: "mention",
+        postType: 'mention',
         isFollowed: false,
         isMore: false,
         lastValue: (int id) => id,
@@ -158,7 +155,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
   void commentByMention() {
     _mentionComment = CommentList(
       CommentController(
-        commentType: "mention",
+        commentType: 'mention',
         isMore: false,
         lastValue: (int id) => id,
       ),
@@ -169,7 +166,7 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
   void commentByReply() {
     _replyComment = CommentList(
       CommentController(
-        commentType: "reply",
+        commentType: 'reply',
         isMore: false,
         lastValue: (int id) => id,
       ),
@@ -229,8 +226,8 @@ class NotificationPageState extends State<NotificationPage> with TickerProviderS
                   ),
                   labelStyle: TextStyle(fontSize: suSetSp(22.0)),
                   tabs: <Tab>[
-                    Tab(text: "@我的评论"),
-                    Tab(text: "@我的动态"),
+                    Tab(text: '@我的评论'),
+                    Tab(text: '@我的动态'),
                   ],
                   controller: _mentionTabController,
                 ),

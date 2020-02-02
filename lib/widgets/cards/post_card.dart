@@ -149,7 +149,7 @@ class _PostCardState extends State<PostCard> {
       if (content['article'] == '此微博已经被屏蔽' || content['content'] == '此微博已经被屏蔽') {
         return Container(
           margin: EdgeInsets.only(top: suSetHeight(10.0)),
-          child: getPostBanned('shield'),
+          child: getPostBanned('shield', isRoot: true),
         );
       } else {
         final _post = Post.fromJson(content);
@@ -200,7 +200,7 @@ class _PostCardState extends State<PostCard> {
     } else {
       return Container(
         margin: EdgeInsets.only(top: suSetWidth(10.0)),
-        child: getPostBanned('delete'),
+        child: getPostBanned('delete', isRoot: true),
       );
     }
   }
@@ -282,6 +282,7 @@ class _PostCardState extends State<PostCard> {
               '${widget.isDetail ? 'isDetail-' : ''}'
               '${widget.post.id}-$imageId',
           child: _exImage,
+          placeholderBuilder: (_, __, child) => child,
         );
         imagesWidget.add(_exImage);
       }
@@ -335,7 +336,7 @@ class _PostCardState extends State<PostCard> {
               countBuilder: (int count, bool isLiked, String text) => SizedBox(
                 width: suSetWidth(40.0),
                 child: Text(
-                  count == 0 ? '' : text,
+                  (isLiked ? moreThanOne(count) : moreThanZero(count)) > 0 ? text : '',
                   style: TextStyle(
                     color: isLiked
                         ? currentThemeColor
@@ -438,7 +439,7 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  Widget getPostBanned(String type) {
+  Widget getPostBanned(String type, {bool isRoot = false}) {
     String content = '该条微博已被';
     switch (type) {
       case 'shield':
@@ -452,8 +453,11 @@ class _PostCardState extends State<PostCard> {
       selector: (_, provider) => provider.dark,
       builder: (_, dark, __) {
         return Container(
-          color: dark ? Colors.grey[600] : Colors.grey[400],
           padding: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+          decoration: BoxDecoration(
+            borderRadius: !isRoot ? BorderRadius.circular(suSetWidth(10.0)) : null,
+            color: dark ? Colors.grey[700] : Colors.grey[400],
+          ),
           child: Center(
             child: Text(
               content,
@@ -640,7 +644,7 @@ class _PostCardState extends State<PostCard> {
             onTap: widget.isDetail || post.isShield ? null : pushToDetail,
             onLongPress: post.isShield ? pushToDetail : null,
             child: Container(
-              margin: post.isShield || widget.isDetail
+              margin: widget.isDetail
                   ? EdgeInsets.zero
                   : EdgeInsets.symmetric(
                       horizontal: widget.fromPage == 'user' ? 0.0 : suSetWidth(12.0),

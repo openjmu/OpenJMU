@@ -31,16 +31,15 @@ class FixedAppBar extends StatelessWidget {
       _title = Center(child: _title);
     }
     return Container(
-      padding: EdgeInsets.only(
-        top: MediaQuery.of(context).padding.top,
-      ),
+      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       height: suSetHeight(kAppBarHeight) + MediaQuery.of(context).padding.top,
       decoration: BoxDecoration(
         boxShadow: elevation > 0
             ? <BoxShadow>[
                 BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: suSetHeight(elevation * 2.0),
+                  color: Color(0x0d000000),
+                  blurRadius: suSetHeight(elevation * 1.0),
+                  offset: Offset(0, elevation * 2.0),
                 ),
               ]
             : null,

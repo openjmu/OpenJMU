@@ -17,7 +17,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
     try {
       OtaUpdate().execute(API.latestAndroid).listen(
         (OtaEvent event) {
-          print(event.status);
+          debugPrint('${event.status} ${event.value}');
           switch (event.status) {
             case OtaStatus.DOWNLOADING:
               updateProgress(double.parse(event.value).toInt());

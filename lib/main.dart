@@ -69,7 +69,13 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
 
     Instances.eventBus
-      ..on<LogoutEvent>().listen((event) async {
+      ..on<LogoutEvent>().listen((event) {
+        DataUtils.logout();
+        navigatorState.pushNamedAndRemoveUntil(
+          Routes.OPENJMU_LOGIN,
+          (_) => false,
+          arguments: {'initAction': initAction},
+        );
         if (!currentUser.isTeacher) {
           Provider.of<CoursesProvider>(currentContext, listen: false).unloadCourses();
           Provider.of<ScoresProvider>(currentContext, listen: false).unloadScore();
@@ -77,15 +83,10 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         Provider.of<MessagesProvider>(currentContext, listen: false).unloadMessages();
         Provider.of<ReportRecordsProvider>(currentContext, listen: false).unloadRecords();
         Provider.of<WebAppsProvider>(currentContext, listen: false).unloadApps();
-
-        navigatorState.pushNamedAndRemoveUntil(
-          Routes.OPENJMU_LOGIN,
-          (_) => false,
-          arguments: {'initAction': initAction},
-        );
-
-        DataUtils.logout();
-        if (mounted) setState(() {});
+        Future.delayed(300.milliseconds, () {
+          Provider.of<ThemesProvider>(currentContext, listen: false).resetTheme();
+          Provider.of<SettingsProvider>(currentContext, listen: false).reset();
+        });
       })
       ..on<TicketGotEvent>().listen((event) {
         if (!currentUser.isTeacher) {
@@ -105,12 +106,12 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         showToastWidget(
           OTAUtils.updateDialog(event),
           dismissOtherToast: true,
+          duration: 1.weeks,
           handleTouch: true,
-          duration: 1.days,
         );
       });
 
-    initSettings();
+    tryRecoverLoginInfo();
     NetUtils.initConfig();
     initQuickActions();
 
@@ -141,7 +142,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     if (mounted) setState(() {});
   }
 
-  void initSettings() async {
+  void tryRecoverLoginInfo() async {
     if (DataUtils.isLogin()) {
       DataUtils.recoverLoginInfo();
     } else {

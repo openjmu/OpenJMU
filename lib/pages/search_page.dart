@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/cards/post_card.dart';
@@ -85,7 +85,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
       loadMore = true;
     }
     await PostAPI.getPostList(
-      "search",
+      'search',
       false,
       loadMore,
       loadMore ? postList.last.id : 0,
@@ -147,7 +147,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.zero,
-                  hintText: "输入要搜索的内容...",
+                  hintText: '输入要搜索的内容...',
                   hintStyle: TextStyle(
                     color: Colors.grey,
                     fontStyle: FontStyle.italic,
@@ -165,7 +165,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                 textInputAction: TextInputAction.search,
                 onSubmitted: (String text) {
                   if (!_loaded) _loaded = true;
-                  if (text != null && text != "") {
+                  if (text != null && text != '') {
                     search(context, text);
                   } else {
                     return null;
@@ -178,9 +178,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
             GestureDetector(
               behavior: HitTestBehavior.opaque,
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(16.0),
-                ),
+                padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
                 child: Icon(
                   Icons.clear,
                   size: suSetWidth(24.0),
@@ -189,7 +187,8 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
               ),
               onTap: () {
                 _controller.clear();
-                FocusScope.of(context).requestFocus(_focusNode);
+                _focusNode.requestFocus();
+                SystemChannels.textInput.invokeMethod('TextInput.show');
               },
             )
         ],
@@ -210,7 +209,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                   left: suSetWidth(12.0),
                 ),
                 child: Text(
-                  "相关用户 (${userList.length})",
+                  '相关用户 (${userList.length})',
                   style: Theme.of(context).textTheme.caption.copyWith(
                         fontSize: suSetSp(16.0),
                       ),
@@ -222,9 +221,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                   itemCount: userList.length,
                   itemBuilder: (context, index) {
                     return Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: suSetHeight(12.0),
-                      ),
+                      padding: EdgeInsets.symmetric(horizontal: suSetHeight(12.0)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -237,7 +234,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                                 child: FadeInImage(
                                   fadeInDuration: const Duration(milliseconds: 100),
                                   placeholder: AssetImage(
-                                    "assets/avatar_placeholder.png",
+                                    'assets/avatar_placeholder.png',
                                   ),
                                   image: UserAPI.getAvatarProvider(
                                     uid: userList[index].id,
@@ -246,7 +243,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                               ),
                               onTap: () => navigatorState.pushNamed(
                                 Routes.OPENJMU_USER,
-                                arguments: {"uid": userList[index].id},
+                                arguments: {'uid': userList[index].id},
                               ),
                             ),
                           ),
@@ -281,20 +278,12 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
             padding: EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
               children: <Widget>[
-                IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
+                BackButton(),
                 Expanded(child: searchTextField(context)),
                 IconButton(
-                  icon: Icon(
-                    Icons.search,
-                    size: suSetWidth(30.0),
-                  ),
+                  icon: Icon(Icons.search, size: suSetWidth(30.0)),
                   onPressed: () {
-                    if (_controller.text != null && _controller.text != "") {
+                    if (_controller.text?.trim()?.isNotEmpty ?? false) {
                       search(context, _controller.text);
                     }
                   },
@@ -324,7 +313,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                                 left: suSetWidth(12.0),
                               ),
                               child: Text(
-                                "相关动态",
+                                '相关动态',
                                 style: Theme.of(context).textTheme.caption.copyWith(
                                       fontSize: suSetSp(19.0),
                                     ),
@@ -340,19 +329,14 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                               left: suSetWidth(12.0),
                             ),
                             child: Text(
-                              "相关动态",
+                              '相关动态',
                               style: Theme.of(context).textTheme.caption.copyWith(
                                     fontSize: suSetSp(16.0),
                                   ),
                             ),
                           );
                         } else if (index == postList.length + 1) {
-                          if (_canLoadMore)
-                            search(
-                              context,
-                              _controller.text,
-                              isMore: true,
-                            );
+                          if (_canLoadMore) search(context, _controller.text, isMore: true);
                           return PostCard(
                             postList[index - 2],
                             isDetail: false,
@@ -371,7 +355,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                     )
                   : Center(
                       child: Text(
-                        "没有搜索到动态内容~\n🧐",
+                        '没有搜索到动态内容~\n🧐',
                         style: TextStyle(fontSize: suSetSp(30.0)),
                         textAlign: TextAlign.center,
                       ),

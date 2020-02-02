@@ -82,7 +82,7 @@ class PostDetailPageState extends State<PostDetailPage> {
     _commentsList = CommentListInPost(widget.post, commentListInPostController);
     _praisesList = PraiseListInPost(widget.post);
 
-    setCurrentTabActive(widget.parentContext, 1, "comments");
+    setCurrentTabActive(widget.parentContext, 1, 'comments');
     PostAPI.glancePost(widget.post.id);
 
     Instances.eventBus
@@ -161,13 +161,13 @@ class PostDetailPageState extends State<PostDetailPage> {
     setState(() {
       _tabIndex = index;
 
-      forwardsColor = tab == "forwards" ? activeColor : Theme.of(context).cardColor;
-      commentsColor = tab == "comments" ? activeColor : Theme.of(context).cardColor;
-      praisesColor = tab == "praises" ? activeColor : Theme.of(context).cardColor;
+      forwardsColor = tab == 'forwards' ? activeColor : Theme.of(context).cardColor;
+      commentsColor = tab == 'comments' ? activeColor : Theme.of(context).cardColor;
+      praisesColor = tab == 'praises' ? activeColor : Theme.of(context).cardColor;
 
-      forwardsStyle = tab == "forwards" ? textActiveStyle : textInActiveStyle;
-      commentsStyle = tab == "comments" ? textActiveStyle : textInActiveStyle;
-      praisesStyle = tab == "praises" ? textActiveStyle : textInActiveStyle;
+      forwardsStyle = tab == 'forwards' ? textActiveStyle : textInActiveStyle;
+      commentsStyle = tab == 'comments' ? textActiveStyle : textInActiveStyle;
+      praisesStyle = tab == 'praises' ? textActiveStyle : textInActiveStyle;
     });
   }
 
@@ -177,7 +177,7 @@ class PostDetailPageState extends State<PostDetailPage> {
         fromPage: widget.fromPage,
         isDetail: true,
         parentContext: widget.parentContext,
-        key: ValueKey("post-key-${widget.post.id}"),
+        key: ValueKey('post-key-${widget.post.id}'),
       );
 
   Widget get deleteButton => IconButton(
@@ -260,7 +260,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       final canReport = await provider.addRecord(widget.post.id);
       if (canReport) {
         PostAPI.reportPost(widget.post);
-        showToast("举报成功");
+        showToast('举报成功');
         navigatorState.pop();
       }
     }
@@ -278,9 +278,9 @@ class PostDetailPageState extends State<PostDetailPage> {
               padding: EdgeInsets.zero,
               minWidth: suSetWidth(sectionButtonWidth),
               shape: sectionButtonShape,
-              child: Text("转发 $forwards", style: forwardsStyle),
+              child: Text('转发 $forwards', style: forwardsStyle),
               onPressed: () {
-                setCurrentTabActive(context, 0, "forwards");
+                setCurrentTabActive(context, 0, 'forwards');
               },
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
@@ -290,9 +290,9 @@ class PostDetailPageState extends State<PostDetailPage> {
               padding: EdgeInsets.zero,
               minWidth: suSetWidth(sectionButtonWidth),
               shape: sectionButtonShape,
-              child: Text("评论 $comments", style: commentsStyle),
+              child: Text('评论 $comments', style: commentsStyle),
               onPressed: () {
-                setCurrentTabActive(context, 1, "comments");
+                setCurrentTabActive(context, 1, 'comments');
               },
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
@@ -303,9 +303,9 @@ class PostDetailPageState extends State<PostDetailPage> {
               padding: EdgeInsets.zero,
               minWidth: suSetWidth(sectionButtonWidth),
               shape: sectionButtonShape,
-              child: Text("赞 $praises", style: praisesStyle),
+              child: Text('赞 ${moreThanZero(praises)}', style: praisesStyle),
               onPressed: () {
-                setCurrentTabActive(context, 2, "praises");
+                setCurrentTabActive(context, 2, 'praises');
               },
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
@@ -326,16 +326,16 @@ class PostDetailPageState extends State<PostDetailPage> {
                 onPressed: () {
                   navigatorState.pushNamed(
                     Routes.OPENJMU_ADD_FORWARD,
-                    arguments: {"post": widget.post},
+                    arguments: {'post': widget.post},
                   );
                 },
                 icon: SvgPicture.asset(
-                  "assets/icons/postActions/forward-fill.svg",
+                  'assets/icons/postActions/forward-fill.svg',
                   color: Theme.of(context).textTheme.body1.color,
                   width: suSetWidth(iconSize),
                 ),
                 label: Text(
-                  "转发",
+                  '转发',
                   style: Theme.of(context).textTheme.body1.copyWith(
                         fontSize: suSetSp(actionFontSize),
                       ),
@@ -348,16 +348,16 @@ class PostDetailPageState extends State<PostDetailPage> {
                 onPressed: () {
                   navigatorState.pushNamed(
                     Routes.OPENJMU_ADD_COMMENT,
-                    arguments: {"post": widget.post},
+                    arguments: {'post': widget.post},
                   );
                 },
                 icon: SvgPicture.asset(
-                  "assets/icons/postActions/comment-fill.svg",
+                  'assets/icons/postActions/comment-fill.svg',
                   color: Theme.of(context).textTheme.body1.color,
                   width: suSetWidth(iconSize),
                 ),
                 label: Text(
-                  "评论",
+                  '评论',
                   style: Theme.of(context).textTheme.body1.copyWith(
                         fontSize: suSetSp(actionFontSize),
                       ),
@@ -373,7 +373,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                   end: currentThemeColor,
                 ),
                 countBuilder: (int count, bool isLiked, String text) => Text(
-                  count == 0 ? "赞" : text,
+                  (isLiked ? moreThanOne(count) : moreThanZero(count)) > 0 ? text : '赞',
                   style: Theme.of(context).textTheme.body1.copyWith(
                         color:
                             isLiked ? currentThemeColor : Theme.of(context).textTheme.body1.color,
@@ -385,7 +385,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                   dotSecondaryColor: currentThemeColor,
                 ),
                 likeBuilder: (bool isLiked) => SvgPicture.asset(
-                  "assets/icons/postActions/praise-fill.svg",
+                  'assets/icons/postActions/praise-fill.svg',
                   color: isLiked ? currentThemeColor : Theme.of(context).textTheme.body1.color,
                   width: suSetWidth(iconSize),
                 ),
@@ -415,7 +415,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       Instances.eventBus.fire(PraiseInPostUpdatedEvent(
         postId: widget.post.id,
         count: praises,
-        type: "square",
+        type: 'square',
         isLike: !isLiked,
       ));
     }).catchError((e) {
@@ -435,7 +435,7 @@ class PostDetailPageState extends State<PostDetailPage> {
           FixedAppBar(
             centerTitle: true,
             title: Text(
-              "动态正文",
+              '动态正文',
               style: Theme.of(context).textTheme.title.copyWith(
                     fontSize: suSetSp(23.0),
                   ),

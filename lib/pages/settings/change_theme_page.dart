@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/appbar.dart';
 
 @FFRoute(name: "openjmu://theme", routeName: "更改主题")
 class ChangeThemePage extends StatelessWidget {
@@ -50,14 +49,14 @@ class ChangeThemePage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 Text(
-                  "切换主题",
+                  '切换主题',
                   style: Theme.of(context).textTheme.title.copyWith(
                         fontSize: suSetSp(26.0),
                         fontWeight: FontWeight.bold,
                       ),
                 ),
                 Text(
-                  "多彩颜色，丰富你的界面",
+                  '多彩颜色，丰富你的界面',
                   style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(18.0)),
                 ),
               ],

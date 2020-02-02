@@ -4,8 +4,6 @@ import 'package:provider/provider.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/main_page.dart';
-import 'package:openjmu/widgets/appbar.dart';
-import 'package:openjmu/widgets/slide_menu_item.dart';
 import 'package:openjmu/widgets/messages/app_message_preview_widget.dart';
 //import 'package:openjmu/widgets/messages/message_preview_widget.dart';
 
@@ -70,7 +68,7 @@ class MessagePageState extends State<MessagePage> with TickerProviderStateMixin 
                         ),
                       ),
                     ),
-                    Tab(text: "通知"),
+                    Tab(text: '通知'),
                   ],
                 );
               },
@@ -96,14 +94,14 @@ class MessagePageState extends State<MessagePage> with TickerProviderStateMixin 
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SvgPicture.asset(
-                  "images/placeholder/no_message.svg",
+                  'images/placeholder/no_message.svg',
                   width: Screens.width / 3.5,
                   height: Screens.width / 3.5,
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: suSetHeight(30.0)),
                   child: Text(
-                    "无新消息",
+                    '无新消息',
                     style: TextStyle(fontSize: suSetSp(22.0)),
                   ),
                 )

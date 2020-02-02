@@ -205,7 +205,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
       Widget _body;
       if (_firstLoadComplete) {
         _itemList = ExtendedListView.builder(
-          padding: EdgeInsets.zero,
+          padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
           controller: widget._commentController.commentType == 'mention' ? null : _scrollController,
           itemCount: _commentList.length + 1,
           itemBuilder: (context, index) {
@@ -397,9 +397,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
       content != null ? '$content ' : null,
       style: TextStyle(fontSize: suSetSp(19.0)),
       onSpecialTextTap: specialTextTapRecognizer,
-      specialTextSpanBuilder: StackSpecialTextSpanBuilder(
-        widgetType: WidgetType.comment,
-      ),
+      specialTextSpanBuilder: StackSpecialTextSpanBuilder(widgetType: WidgetType.comment),
     );
   }
 
@@ -417,6 +415,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
       context,
       title: '删除评论',
       content: '是否确认删除这条评论?',
+      showConfirm: true,
     );
     if (confirm) {
       final _loadingDialogController = LoadingDialogController();

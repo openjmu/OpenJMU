@@ -108,7 +108,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                   Padding(
                     padding: EdgeInsets.only(bottom: suSetHeight(10.0)),
                     child: Text(
-                      "班级备注",
+                      '班级备注',
                       style: Theme.of(context).textTheme.title.copyWith(
                             fontSize: suSetSp(24.0),
                           ),
@@ -117,7 +117,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                   Selector<CoursesProvider, String>(
                     selector: (_, provider) => provider.remark,
                     builder: (_, remark, __) => Text(
-                      "$remark",
+                      '$remark',
                       style: TextStyle(fontSize: suSetSp(20.0)),
                     ),
                   ),
@@ -178,14 +178,12 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                 child: RichText(
                   text: TextSpan(
                     children: <InlineSpan>[
-                      TextSpan(text: "第"),
+                      TextSpan(text: '第'),
                       TextSpan(
-                        text: "${index + 1}",
-                        style: TextStyle(
-                          fontSize: suSetSp(30.0),
-                        ),
+                        text: '${index + 1}',
+                        style: TextStyle(fontSize: suSetSp(30.0)),
                       ),
-                      TextSpan(text: "周"),
+                      TextSpan(text: '周'),
                     ],
                     style: Theme.of(context).textTheme.body1.copyWith(
                           fontSize: suSetSp(18.0),
@@ -229,10 +227,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                       TextSpan(
                         children: <InlineSpan>[
                           TextSpan(
-                            text: "班级备注: ",
+                            text: '班级备注: ',
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          TextSpan(text: "$remark"),
+                          TextSpan(text: '$remark'),
                         ],
                         style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
                       ),
@@ -263,17 +261,17 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
         ),
       );
 
-  String _month() => DateFormat("MMM", "zh_CN").format(
+  String _month() => DateFormat('MMM', 'zh_CN').format(
         now
             .add((7 * (currentWeek - dateProvider.currentWeek)).days)
             .subtract((now.weekday - 1).days),
       );
-  String _weekday(int i) => DateFormat("EEE", "zh_CN").format(
+  String _weekday(int i) => DateFormat('EEE', 'zh_CN').format(
         now
             .add((7 * (currentWeek - dateProvider.currentWeek)).days)
             .subtract((now.weekday - 1 - i).days),
       );
-  String _date(int i) => DateFormat("MM/dd").format(
+  String _date(int i) => DateFormat('MM/dd').format(
         now
             .add((7 * (currentWeek - dateProvider.currentWeek)).days)
             .subtract((now.weekday - 1 - i).days),
@@ -288,15 +286,13 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
               width: monthWidth,
               child: Center(
                 child: Text(
-                  "${_month().substring(0, _month().length - 1)}"
-                  "\n"
-                  "${_month().substring(
+                  '${_month().substring(0, _month().length - 1)}'
+                  '\n'
+                  '${_month().substring(
                     _month().length - 1,
                     _month().length,
-                  )}",
-                  style: TextStyle(
-                    fontSize: suSetSp(18.0),
-                  ),
+                  )}',
+                  style: TextStyle(fontSize: suSetSp(18.0)),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -307,10 +303,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                   margin: EdgeInsets.symmetric(horizontal: 1.5),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(suSetWidth(5.0)),
-                    color: DateFormat("MM/dd").format(
+                    color: DateFormat('MM/dd').format(
                               now.subtract(Duration(days: now.weekday - 1 - i)),
                             ) ==
-                            DateFormat("MM/dd").format(DateTime.now())
+                            DateFormat('MM/dd').format(DateTime.now())
                         ? currentThemeColor.withAlpha(100)
                         : null,
                   ),
@@ -415,7 +411,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
   Widget get emptyTips => Expanded(
         child: Center(
           child: Text(
-            "没有课的日子\n往往就是这么的朴实无华\n且枯燥\n😆",
+            '没有课的日子\n往往就是这么的朴实无华\n且枯燥\n😆',
             style: TextStyle(
               fontSize: suSetSp(30.0),
             ),
@@ -430,7 +426,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
   Widget get errorTips => Expanded(
         child: Center(
           child: Text(
-            "课表看起来还未准备好\n不如到广场放松一下？\n🤒",
+            '课表看起来还未准备好\n不如到广场放松一下？\n🤒',
             style: TextStyle(fontSize: suSetSp(30.0)),
             strutStyle: StrutStyle(height: 1.8),
             textAlign: TextAlign.center,
@@ -482,7 +478,7 @@ class CourseWidget extends StatelessWidget {
     @required this.coordinate,
     this.hasEleven,
     this.currentWeek,
-  })  : assert(coordinate.length == 2, "Invalid course coordinate"),
+  })  : assert(coordinate.length == 2, 'Invalid course coordinate'),
         super(key: key);
 
   bool get isOutOfTerm => currentWeek < 1 || currentWeek > 20;
@@ -515,7 +511,7 @@ class CourseWidget extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              "✍️",
+              '✍️',
               style: TextStyle(
                 color: !CourseAPI.inCurrentWeek(
                   course,
@@ -546,7 +542,7 @@ class CourseWidget extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              "${courseList.length}",
+              '${courseList.length}',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: suSetSp(14.0),
@@ -563,13 +559,13 @@ class CourseWidget extends StatelessWidget {
                 TextSpan(
                   children: <InlineSpan>[
                     if (!CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) && !isOutOfTerm)
-                      TextSpan(text: "[非本周]\n"),
+                      TextSpan(text: '[非本周]\n'),
                     TextSpan(
                       text: course.name.substring(0, math.min(10, course.name.length)),
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
-                    if (course.name.length > 10) TextSpan(text: "..."),
-                    if (course.location != null) TextSpan(text: "\n📍${course.location}"),
+                    if (course.name.length > 10) TextSpan(text: '...'),
+                    if (course.location != null) TextSpan(text: '\n📍${course.location}'),
                   ],
                   style: Theme.of(context).textTheme.body1.copyWith(
                         color: !CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) &&
@@ -714,7 +710,7 @@ class CoursesDialog extends StatelessWidget {
                     children: <Widget>[
                       if (courseList[index].isCustom)
                         Text(
-                          "[自定义]",
+                          '[自定义]',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: suSetSp(24.0),
@@ -724,7 +720,7 @@ class CoursesDialog extends StatelessWidget {
                       if (!CourseAPI.inCurrentWeek(courseList[index], currentWeek: currentWeek) &&
                           !isOutOfTerm)
                         Text(
-                          "[非本周]",
+                          '[非本周]',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: suSetSp(24.0),
@@ -743,7 +739,7 @@ class CoursesDialog extends StatelessWidget {
                       ),
                       if (courseList[index].location != null)
                         Text(
-                          "📍${courseList[index].location}",
+                          '📍${courseList[index].location}',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: suSetSp(24.0),
@@ -806,16 +802,16 @@ class CoursesDialog extends StatelessWidget {
                 children: <Widget>[
                   if (course.isCustom)
                     Text(
-                      "[自定义]",
+                      '[自定义]',
                       style: style,
                     ),
                   if (!CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) && !isOutOfTerm)
                     Text(
-                      "[非本周]",
+                      '[非本周]',
                       style: style,
                     ),
                   Text(
-                    "${courseList[0].name}",
+                    '${courseList[0].name}',
                     style: style.copyWith(
                       fontSize: suSetSp(28.0),
                       fontWeight: FontWeight.bold,
@@ -824,25 +820,25 @@ class CoursesDialog extends StatelessWidget {
                   ),
                   if (course.location != null)
                     Text(
-                      "📍 ${course.location}",
+                      '📍 ${course.location}',
                       style: style,
                     ),
                   if (course.startWeek != null && course.endWeek != null)
                     Text(
-                      "📅 ${course.startWeek}"
-                      "-"
-                      "${course.endWeek}"
-                      "${course.oddEven == 1 ? "单" : course.oddEven == 2 ? "双" : ""}周",
+                      '📅 ${course.startWeek}'
+                      '-'
+                      '${course.endWeek}'
+                      '${course.oddEven == 1 ? '单' : course.oddEven == 2 ? '双' : ''}周',
                       style: style,
                     ),
                   Text(
-                    "⏰ ${shortWeekdays[course.day]} "
-                    "${CourseAPI.courseTimeChinese[course.time]}",
+                    '⏰ ${shortWeekdays[course.day]} '
+                    '${CourseAPI.courseTimeChinese[course.time]}',
                     style: style,
                   ),
                   if (course.teacher != null)
                     Text(
-                      "🎓 ${course.teacher}",
+                      '🎓 ${course.teacher}',
                       style: style,
                     ),
                   SizedBox(height: 12.0),
@@ -906,19 +902,19 @@ class CoursesDialog extends StatelessWidget {
                           onPressed: () {
                             Future.wait(<Future>[
                               CourseAPI.setCustomCourse({
-                                "content": Uri.encodeComponent(""),
-                                "couDayTime": courseList[0].day,
-                                "coudeTime": courseList[0].time,
+                                'content': Uri.encodeComponent(''),
+                                'couDayTime': courseList[0].day,
+                                'coudeTime': courseList[0].time,
                               }),
                               CourseAPI.setCustomCourse({
-                                "content": Uri.encodeComponent(""),
-                                "couDayTime": courseList[0].day,
-                                "coudeTime": courseList[0].time.toString().substring(0, 1),
+                                'content': Uri.encodeComponent(''),
+                                'couDayTime': courseList[0].day,
+                                'coudeTime': courseList[0].time.toString().substring(0, 1),
                               }),
                               CourseAPI.setCustomCourse({
-                                "content": Uri.encodeComponent(""),
-                                "couDayTime": courseList[0].day,
-                                "coudeTime": courseList[0].time.toString().substring(1, 2),
+                                'content': Uri.encodeComponent(''),
+                                'couDayTime': courseList[0].day,
+                                'coudeTime': courseList[0].time.toString().substring(1, 2),
                               }),
                             ]).then((responses) {
                               bool isOk = true;
@@ -1031,7 +1027,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                       cursorColor: currentThemeColor,
                       decoration: InputDecoration(
                         border: InputBorder.none,
-                        hintText: "自定义内容",
+                        hintText: '自定义内容',
                         hintStyle: TextStyle(
                           color: Colors.grey,
                           fontSize: suSetSp(24.0),
@@ -1094,12 +1090,12 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                         loading = true;
                         if (mounted) setState(() {});
                         CourseAPI.setCustomCourse({
-                          "content": Uri.encodeComponent(content),
-                          "couDayTime":
+                          'content': Uri.encodeComponent(content),
+                          'couDayTime':
                               widget.course != null ? widget.course.time : widget.coordinate[0],
-                          "coudeTime": widget.course != null
+                          'coudeTime': widget.course != null
                               ? widget.course.time
-                              : "${widget.coordinate[1] - 1}${widget.coordinate[1]}",
+                              : '${widget.coordinate[1] - 1}${widget.coordinate[1]}',
                         }).then((response) {
                           loading = false;
                           if (mounted) setState(() {});

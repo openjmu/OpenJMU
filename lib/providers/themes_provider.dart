@@ -54,7 +54,7 @@ class ThemesProvider with ChangeNotifier {
     _platformBrightness = HiveFieldUtils.getBrightnessPlatform();
   }
 
-  Future resetTheme() async {
+  Future<void> resetTheme() async {
     HiveFieldUtils.setColorTheme(0);
     HiveFieldUtils.setAMOLEDDark(false);
     HiveFieldUtils.setBrightnessDark(false);

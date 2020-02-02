@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:event_bus/event_bus.dart';
 
@@ -9,6 +11,8 @@ BuildContext get currentContext => navigatorState.context;
 Brightness get currentBrightness => Theme.of(currentContext).brightness;
 Color get currentThemeColor => Theme.of(currentContext).accentColor;
 bool get currentIsDark => currentBrightness == Brightness.dark;
+int moreThanZero(num value) => math.min(0, value);
+int moreThanOne(num value) => math.min(1, value);
 
 class Instances {
   const Instances._();

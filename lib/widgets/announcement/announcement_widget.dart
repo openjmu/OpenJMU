@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/announcement/announcement_dialog.dart';
 
 class AnnouncementWidget extends StatelessWidget {
   final BuildContext context;
@@ -14,7 +13,8 @@ class AnnouncementWidget extends StatelessWidget {
     this.color,
     this.gap,
     this.radius,
-  });
+    Key key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,21 +34,22 @@ class AnnouncementWidget extends StatelessWidget {
             ),
             child: Row(
               children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(right: suSetWidth(6.0)),
+                Container(
+                  margin: EdgeInsets.only(right: suSetWidth(10.0)),
                   child: Icon(
-                    Icons.error_outline,
-                    size: suSetWidth(18.0),
+                    Icons.info,
+                    size: suSetHeight(19.0),
                     color: color ?? defaultColor,
                   ),
                 ),
                 Expanded(
                   child: Text(
-                    "${announcements[0]['title']}",
+                    '${announcements[0]['title']}',
                     style: TextStyle(
                       color: color ?? defaultColor,
-                      fontSize: suSetSp(18.0),
+                      fontSize: suSetSp(19.0),
                     ),
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -64,12 +65,8 @@ class AnnouncementWidget extends StatelessWidget {
             ),
           ),
           onTap: () {
-            showDialog<Null>(
-              context: context,
-              builder: (BuildContext context) => AnnouncementDialog(
-                announcement: announcements[0],
-              ),
-            );
+            final data = announcements[0];
+            ConfirmationDialog.show(context, title: data['title'], content: data['content']);
           },
         );
       },

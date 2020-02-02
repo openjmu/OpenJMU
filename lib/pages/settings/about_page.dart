@@ -45,6 +45,7 @@ class AboutPage extends StatelessWidget {
   Future<void> showDebugInfoDialog(context) async {
     final info = '[uid      ] ${currentUser.uid}\n'
         '[sid      ] ${currentUser.sid}\n'
+        '[ticket   ] ${currentUser.ticket}\n'
         '[workId   ] ${currentUser.workId}\n'
         '[uuid     ] ${DeviceUtils.deviceUuid}\n'
         '${DeviceUtils.devicePushToken != null ? '[pushToken] ${DeviceUtils.devicePushToken}\n' : ''}'
@@ -55,6 +56,7 @@ class AboutPage extends StatelessWidget {
       title: '调试信息',
       showConfirm: true,
       confirmLabel: '复制',
+      cancelLabel: '返回',
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -66,7 +68,10 @@ class AboutPage extends StatelessWidget {
                   alignment: ui.PlaceholderAlignment.middle,
                   child: Text(
                     list[i].substring(j, j + 1),
-                    style: TextStyle(fontFamily: 'JetBrains Mono'),
+                    style: TextStyle(
+                      fontSize: suSetSp(16.0),
+                      fontFamily: 'JetBrains Mono',
+                    ),
                   ),
                 );
               }),

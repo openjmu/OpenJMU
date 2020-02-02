@@ -62,7 +62,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   Future<bool> doubleBackExit() async {
     int now = DateTime.now().millisecondsSinceEpoch;
     if (now - last > 800) {
-      showToast("再按一次退出应用");
+      showToast('再按一次退出应用');
       last = DateTime.now().millisecondsSinceEpoch;
       return false;
     } else {
@@ -94,7 +94,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         right: 0.0,
         top: 0.0,
         child: Image.asset(
-          "images/login_top.png",
+          'images/login_top.png',
           width: Screens.width - suSetWidth(60.0),
           fit: BoxFit.fitWidth,
         ),
@@ -106,7 +106,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         bottom: 15.0,
         child: Center(
           child: Image.asset(
-            "images/login_bottom.png",
+            'images/login_bottom.png',
             color: Colors.grey.withAlpha(50),
             width: Screens.width - suSetWidth(150.0),
             fit: BoxFit.fitWidth,
@@ -118,9 +118,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         right: suSetWidth(40.0),
         top: suSetHeight(50.0),
         child: Hero(
-          tag: "Logo",
+          tag: 'Logo',
           child: SvgPicture.asset(
-            "images/splash_page_logo.svg",
+            'images/splash_page_logo.svg',
             color: Theme.of(context).primaryColor.withOpacity(0.3),
             width: suSetWidth(120.0),
             height: suSetHeight(120.0),
@@ -142,11 +142,11 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                   right: suSetWidth(6.0),
                 ),
                 child: Text(
-                  "OPENJMU",
+                  'OPENJMU',
                   style: TextStyle(
                     color: Theme.of(context).iconTheme.color,
                     fontSize: suSetSp(50.0),
-                    fontFamily: "chocolate",
+                    fontFamily: 'chocolate',
                   ),
                 ),
               ),
@@ -277,8 +277,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               navigatorState.pushNamed(
                 Routes.OPENJMU_INAPPBROWSER,
                 arguments: {
-                  "url": "http://myid.jmu.edu.cn/ids/EmployeeNoQuery.aspx",
-                  "title": "集大通行证 - 工号查询",
+                  'url': 'http://myid.jmu.edu.cn/ids/EmployeeNoQuery.aspx',
+                  'title': '集大通行证 - 工号查询',
                 },
               );
             },
@@ -330,9 +330,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               child: Text.rich(
                 TextSpan(
                   children: <TextSpan>[
-                    TextSpan(text: "登录即代表您同意"),
+                    TextSpan(text: '登录即代表您同意'),
                     TextSpan(
-                      text: "《用户协议》",
+                      text: '《用户协议》',
                       style: TextStyle(
                         color: defaultColor,
                         decoration: TextDecoration.underline,
@@ -342,8 +342,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                           navigatorState.pushNamed(
                             Routes.OPENJMU_INAPPBROWSER,
                             arguments: {
-                              "url": "${API.homePage}/license.html",
-                              "title": "OpenJMU 用户协议",
+                              'url': '${API.homePage}/license.html',
+                              'title': 'OpenJMU 用户协议',
                             },
                           );
                         },
@@ -469,7 +469,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
           navigatorState.pushNamedAndRemoveUntil(
             Routes.OPENJMU_HOME,
             (_) => false,
-            arguments: {"initAction": widget.initAction},
+            arguments: {'initAction': widget.initAction},
           );
         } else {
           _login = false;
@@ -495,9 +495,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
       navigatorState.pushNamed(
         Routes.OPENJMU_INAPPBROWSER,
         arguments: {
-          "url": "https://net.jmu.edu.cn/info/1309/2476.htm",
-          "title": "集大通行证登录说明",
-          "withCookie": false,
+          'url': 'https://net.jmu.edu.cn/info/1309/2476.htm',
+          'title': '集大通行证登录说明',
+          'withCookie': false,
         },
       );
     }

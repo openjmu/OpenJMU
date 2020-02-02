@@ -75,7 +75,10 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
 
   @override
   void dispose() {
-    _webViewController?.stopLoading()?.catchError((e) => debugPrint("$e"));
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+    _webViewController
+        ?.stopLoading()
+        ?.catchError((e) => debugPrint('Error while trying to stop loading webview: $e'));
     super.dispose();
   }
 

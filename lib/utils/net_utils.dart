@@ -23,19 +23,18 @@ class NetUtils {
 
   /// Method to update ticket.
   static void updateTicket() async {
+    // Lock and clear dio while requesting new ticket.
     dio
       ..lock()
       ..clear();
 
-    /// Lock and clear dio while requesting new ticket.
-    if (await DataUtils.getTicket(update: true)) {
+    if (await DataUtils.getTicket()) {
       debugPrint('Ticket updated success with new ticket: ${currentUser.sid}');
     } else {
       debugPrint('Ticket updated error: ${currentUser.sid}');
     }
+    // Release lock.
     dio.unlock();
-
-    /// Release lock.
   }
 
   static void initConfig() async {

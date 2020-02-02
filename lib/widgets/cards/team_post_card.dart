@@ -191,6 +191,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
       _exImage = Hero(
         tag: 'team-post-image-${post.tid}-$imageId',
         child: _exImage,
+        placeholderBuilder: (_, __, child) => child,
       );
       imagesWidget.add(_exImage);
     }

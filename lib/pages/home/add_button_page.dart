@@ -139,7 +139,11 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
     }
     final rotateDegree = 45 * (math.pi / 180) * 3;
 
-    _popButtonOpacityController = _popButtonController = AnimationController(
+    _popButtonController = AnimationController(
+      duration: _animateDuration.milliseconds,
+      vsync: this,
+    );
+    _popButtonOpacityController = AnimationController(
       duration: _animateDuration.milliseconds,
       vsync: this,
     );

@@ -165,7 +165,11 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
     }
     final rotateDegree = 45 * (math.pi / 180) * 3;
 
-    _popButtonOpacityController = _popButtonController = AnimationController(
+    _popButtonController = AnimationController(
+      duration: _animateDuration.milliseconds,
+      vsync: this,
+    );
+    _popButtonOpacityController = AnimationController(
       duration: _animateDuration.milliseconds,
       vsync: this,
     );
@@ -252,9 +256,19 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
         child: Center(
           child: GestureDetector(
             behavior: HitTestBehavior.opaque,
-            child: SizedBox(
+            child: Container(
               width: suSetWidth(MainPageState.bottomBarHeight),
               height: suSetHeight(MainPageState.bottomBarHeight),
+              decoration: BoxDecoration(
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    blurRadius: suSetWidth(20.0),
+                    color: Theme.of(context).dividerColor.withOpacity(0.2),
+                    spreadRadius: 0.0,
+                  ),
+                ],
+                shape: BoxShape.circle,
+              ),
               child: Transform.rotate(
                 angle: _popButtonRotateAngle,
                 child: Icon(
@@ -392,9 +406,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
 
     popping = true;
     await backDropFilterAnimate(context, false);
-    await Future.delayed(Duration(milliseconds: _animateDuration), () {
-      navigatorState.pop();
-    });
+    await Future.delayed(_animateDuration.milliseconds, navigatorState.pop);
     return false;
   }
 

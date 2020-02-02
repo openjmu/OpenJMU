@@ -406,6 +406,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
       _exImage = Hero(
         tag: 'team-comment-preview-image-${post.tid}-$imageId',
         child: _exImage,
+        placeholderBuilder: (_, __, child) => child,
       );
       imagesWidget.add(_exImage);
     }

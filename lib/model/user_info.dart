@@ -80,7 +80,7 @@ class UserInfo {
       uid: json['uid'],
       name: json['username'] ?? json['uid'].toString(),
       signature: json['signature'],
-      ticket: json['sid'],
+      ticket: json['ticket'],
       isTeacher: json['isTeacher'] ?? int.parse(json['type'].toString()) == 1,
       isCY: json['isCY'],
       unitId: json['unitId'] ?? json['unitid'],

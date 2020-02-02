@@ -25,15 +25,15 @@ class MessagesProvider with ChangeNotifier {
 //          || _personalMessages[currentUser.uid].isNotEmpty
       ;
 
-  void initMessages() {
+  Future<void> initMessages() async {
     final appBox = HiveBoxes.appMessagesBox;
 //    final personalBox = HiveBoxes.personalMessagesBox;
 
     if (!appBox.containsKey(currentUser.uid)) {
-      appBox.put(currentUser.uid, Map<int, List>());
+      await appBox.put(currentUser.uid, Map<int, List>());
     }
 //    if (!personalBox.containsKey(currentUser.uid)) {
-//      personalBox.put(currentUser.uid, Map<int, List>());
+//      await personalBox.put(currentUser.uid, Map<int, List>());
 //    }
 
     _appsMessages = appBox.get(currentUser.uid).cast<int, List>();

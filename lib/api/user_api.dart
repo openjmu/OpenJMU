@@ -28,9 +28,7 @@ class UserAPI {
       content: '是否确认退出登录?',
     );
     if (confirm) {
-      NetUtils.postWithCookieSet(API.logout).then((response) {
-        Instances.eventBus.fire(LogoutEvent());
-      });
+      Instances.eventBus.fire(LogoutEvent());
     }
   }
 
