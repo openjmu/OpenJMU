@@ -16,6 +16,9 @@ class ChangeLogPage extends StatefulWidget {
 }
 
 class _ChangeLogPageState extends State<ChangeLogPage> {
+  final _pageController = PageController();
+  double _currentPage = 0.0;
+
   List changeLogs;
   bool error = false;
 
@@ -57,27 +60,84 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
         ),
       );
 
-  Widget logWidget(ChangeLog log) {
+  Widget _logLine(bool left) {
     return Expanded(
       child: Container(
-        margin: EdgeInsets.only(bottom: suSetHeight(30.0), right: suSetWidth(30.0)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
+        width: double.infinity,
+        height: suSetHeight(10.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.horizontal(
+            left: Radius.circular(left ? 0 : 999),
+            right: Radius.circular(!left ? 0 : 999),
+          ),
+          color: currentThemeColor,
+        ),
+      ),
+    );
+  }
+
+  Widget _logVersion(ChangeLog log) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: suSetWidth(40.0)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: <Widget>[
+              versionInfo(log),
+              buildNumberInfo(log),
+            ],
+          ),
+          SizedBox(height: suSetHeight(12.0)),
+          dateInfo(log),
+        ],
+      ),
+    );
+  }
+
+  Widget logWidget(
+    int index,
+    ChangeLog log, {
+    double parallaxOffset,
+  }) {
+    return Container(
+      child: Column(
+        children: <Widget>[
+          SizedBox(
+            width: Screens.width,
+            height: Screens.height / 6,
+            child: Row(
               children: <Widget>[
-                versionInfo(log),
-                buildNumberInfo(log),
-                Spacer(),
-                dateInfo(log),
+                index == 0 ? Spacer() : _logLine(true),
+                _logVersion(log),
+                _logLine(false),
               ],
             ),
-            Divider(height: suSetHeight(8.0), thickness: suSetHeight(1.0)),
-            sectionWidget(log.sections),
-          ],
-        ),
+          ),
+          Expanded(
+            child: Transform(
+              transform: Matrix4.translationValues(parallaxOffset, 0.0, 0.0),
+              child: Container(
+                margin: EdgeInsets.only(
+                  left: suSetWidth(40.0),
+                  right: suSetWidth(40.0),
+                  bottom: suSetHeight(60.0),
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(suSetWidth(15.0)),
+                  color: Theme.of(context).canvasColor,
+                ),
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.all(suSetWidth(20.0)),
+                  physics: const BouncingScrollPhysics(),
+                  child: sectionWidget(log.sections),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -122,7 +182,7 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
         sections[name].length + 1,
         (j) => j == 0
             ? TextSpan(
-                text: '\n[$name]\n',
+                text: '[$name]\n',
                 style: TextStyle(fontWeight: FontWeight.bold),
               )
             : TextSpan(text: '·  ${sections[name][j - 1]}\n'),
@@ -133,47 +193,43 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
+      body: Column(
         children: <Widget>[
-          Positioned(
-            top: Screens.topSafeHeight,
-            left: 0.0,
-            right: 0.0,
-            bottom: 0.0,
-            child: changeLogs != null
-                ? ListView.builder(
-                    padding: EdgeInsets.only(
-                      top: suSetHeight(kAppBarHeight),
-                      left: suSetWidth(28.0),
-                    ),
-                    itemCount: changeLogs.length,
-                    itemBuilder: (context, i) => IntrinsicHeight(
-                      child: Row(
-                        children: <Widget>[
-                          timelineIndicator,
-                          logWidget(ChangeLog.fromJson(changeLogs[i])),
-                        ],
-                      ),
-                    ),
-                  )
-                : SpinKitWidget(),
-          ),
-          Positioned(
-            top: Screens.topSafeHeight + 8.0,
-            left: 0.0,
-            child: Container(
-              decoration: BoxDecoration(
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    blurRadius: suSetWidth(20.0),
-                    color: Theme.of(context).dividerColor.withOpacity(0.2),
-                    spreadRadius: 0.0,
+          FixedAppBar(
+            title: Text(
+              '版本履历',
+              style: Theme.of(context).textTheme.title.copyWith(
+                    fontSize: suSetSp(23.0),
                   ),
-                ],
-                color: Theme.of(context).primaryColor,
-                shape: BoxShape.circle,
-              ),
-              child: BackButton(),
+            ),
+            centerTitle: true,
+          ),
+          Expanded(
+            child: AnimatedSwitcher(
+              duration: 1.seconds,
+              child: changeLogs != null
+                  ? LayoutBuilder(
+                      builder: (context, constraints) => NotificationListener(
+                        onNotification: (ScrollNotification note) {
+                          setState(() {
+                            _currentPage = _pageController.page;
+                          });
+                          return true;
+                        },
+                        child: PageView.custom(
+                          controller: _pageController,
+                          childrenDelegate: SliverChildBuilderDelegate(
+                            (context, index) => logWidget(
+                              index,
+                              ChangeLog.fromJson(changeLogs[index]),
+                              parallaxOffset: constraints.maxWidth / 2.0 * (index - _currentPage),
+                            ),
+                            childCount: changeLogs.length,
+                          ),
+                        ),
+                      ),
+                    )
+                  : SpinKitWidget(),
             ),
           ),
         ],

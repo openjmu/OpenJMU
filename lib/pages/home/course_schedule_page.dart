@@ -392,9 +392,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                 child: Column(
                   children: <Widget>[
                     for (int count = 1; count < _maxCoursesPerDay + 1; count++)
-                      if (count.isEven)
+                      if (count.isOdd)
                         CourseWidget(
-                          courseList: courses[day].cast<int, List>()[count - 1].cast<Course>(),
+                          courseList: courses[day].cast<int, List>()[count].cast<Course>(),
                           hasEleven: hasEleven && count == 10,
                           currentWeek: currentWeek,
                           coordinate: [day, count],
@@ -661,7 +661,7 @@ class CourseWidget extends StatelessWidget {
   }
 }
 
-class CoursesDialog extends StatelessWidget {
+class CoursesDialog extends StatefulWidget {
   final List<Course> courseList;
   final int currentWeek;
   final List<int> coordinate;
@@ -673,20 +673,74 @@ class CoursesDialog extends StatelessWidget {
     @required this.coordinate,
   }) : super(key: key);
 
+  @override
+  _CoursesDialogState createState() => _CoursesDialogState();
+}
+
+class _CoursesDialogState extends State<CoursesDialog> {
   final int darkModeAlpha = 200;
+  bool deleting = false;
 
   void showCoursesDetail(context, Course course) {
     showDialog(
       context: context,
       builder: (context) => CoursesDialog(
         courseList: [course],
-        currentWeek: currentWeek,
-        coordinate: coordinate,
+        currentWeek: widget.currentWeek,
+        coordinate: widget.coordinate,
       ),
     );
   }
 
-  bool get isOutOfTerm => currentWeek < 1 || currentWeek > 20;
+  void deleteCourse() {
+    setState(() {
+      deleting = true;
+    });
+    Future.wait(
+      <Future>[
+        CourseAPI.setCustomCourse({
+          'content': Uri.encodeComponent(''),
+          'couDayTime': widget.courseList[0].day,
+          'coudeTime': widget.courseList[0].time,
+        }),
+        CourseAPI.setCustomCourse({
+          'content': Uri.encodeComponent(''),
+          'couDayTime': widget.courseList[0].day,
+          'coudeTime': widget.courseList[0].time.toString().substring(0, 1),
+        }),
+        if (widget.courseList[0].time.toString().length > 1)
+          CourseAPI.setCustomCourse({
+            'content': Uri.encodeComponent(''),
+            'couDayTime': widget.courseList[0].day,
+            'coudeTime': widget.courseList[0].time.toString().substring(1, 2),
+          }),
+      ],
+      eagerError: true,
+    ).then((responses) {
+      bool isOk = true;
+      for (final response in responses) {
+        if (!jsonDecode(response.data)['isOk']) {
+          isOk = false;
+          break;
+        }
+      }
+      if (isOk) {
+        navigatorState.popUntil((_) => _.isFirst);
+        Instances.eventBus.fire(CourseScheduleRefreshEvent());
+        Future.delayed(400.milliseconds, () {
+          widget.courseList.removeAt(0);
+        });
+      }
+    }).catchError((e) {
+      showToast('删除课程失败');
+      debugPrint('Failed in deleting custom course: $e');
+    }).whenComplete(() {
+      deleting = false;
+      if (mounted) setState(() {});
+    });
+  }
+
+  bool get isOutOfTerm => widget.currentWeek < 1 || widget.currentWeek > 20;
 
   Widget courseContent(int index) => Stack(
         children: <Widget>[
@@ -697,10 +751,11 @@ class CoursesDialog extends StatelessWidget {
                 padding: const EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
-                  color: courseList.isNotEmpty
-                      ? CourseAPI.inCurrentWeek(courseList[index], currentWeek: currentWeek) ||
+                  color: widget.courseList.isNotEmpty
+                      ? CourseAPI.inCurrentWeek(widget.courseList[index],
+                                  currentWeek: widget.currentWeek) ||
                               isOutOfTerm
-                          ? courseList[index].color.withOpacity(dark ? darkModeAlpha : 1.0)
+                          ? widget.courseList[index].color.withOpacity(dark ? darkModeAlpha : 1.0)
                           : Colors.grey
                       : null,
                 ),
@@ -708,7 +763,7 @@ class CoursesDialog extends StatelessWidget {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      if (courseList[index].isCustom)
+                      if (widget.courseList[index].isCustom)
                         Text(
                           '[自定义]',
                           style: TextStyle(
@@ -717,7 +772,8 @@ class CoursesDialog extends StatelessWidget {
                             height: 1.5,
                           ),
                         ),
-                      if (!CourseAPI.inCurrentWeek(courseList[index], currentWeek: currentWeek) &&
+                      if (!CourseAPI.inCurrentWeek(widget.courseList[index],
+                              currentWeek: widget.currentWeek) &&
                           !isOutOfTerm)
                         Text(
                           '[非本周]',
@@ -728,7 +784,7 @@ class CoursesDialog extends StatelessWidget {
                           ),
                         ),
                       Text(
-                        courseList[index].name,
+                        widget.courseList[index].name,
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: suSetSp(24.0),
@@ -737,9 +793,9 @@ class CoursesDialog extends StatelessWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      if (courseList[index].location != null)
+                      if (widget.courseList[index].location != null)
                         Text(
-                          '📍${courseList[index].location}',
+                          '📍${widget.courseList[index].location}',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: suSetSp(24.0),
@@ -758,7 +814,7 @@ class CoursesDialog extends StatelessWidget {
   Widget get coursesPage => PageView.builder(
         controller: PageController(viewportFraction: 0.8),
         physics: const BouncingScrollPhysics(),
-        itemCount: courseList.length,
+        itemCount: widget.courseList.length,
         itemBuilder: (context, index) {
           return Padding(
             padding: EdgeInsets.symmetric(
@@ -767,7 +823,7 @@ class CoursesDialog extends StatelessWidget {
             ),
             child: GestureDetector(
               onTap: () {
-                showCoursesDetail(context, courseList[index]);
+                showCoursesDetail(context, widget.courseList[index]);
               },
               child: courseContent(index),
             ),
@@ -776,11 +832,7 @@ class CoursesDialog extends StatelessWidget {
       );
 
   Widget courseDetail(Course course) {
-    final style = TextStyle(
-      color: Colors.black,
-      fontSize: suSetSp(24.0),
-      height: 1.8,
-    );
+    final style = TextStyle(color: Colors.black, fontSize: suSetSp(24.0), height: 1.8);
     return Selector<ThemesProvider, bool>(
         selector: (_, provider) => provider.dark,
         builder: (_, dark, __) {
@@ -790,8 +842,8 @@ class CoursesDialog extends StatelessWidget {
             padding: EdgeInsets.all(suSetWidth(12.0)),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(suSetWidth(15.0)),
-              color: courseList.isNotEmpty
-                  ? CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) || isOutOfTerm
+              color: widget.courseList.isNotEmpty
+                  ? CourseAPI.inCurrentWeek(course, currentWeek: widget.currentWeek) || isOutOfTerm
                       ? dark ? course.color.withAlpha(darkModeAlpha) : course.color
                       : Colors.grey
                   : null,
@@ -800,29 +852,19 @@ class CoursesDialog extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  if (course.isCustom)
-                    Text(
-                      '[自定义]',
-                      style: style,
-                    ),
-                  if (!CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) && !isOutOfTerm)
-                    Text(
-                      '[非本周]',
-                      style: style,
-                    ),
+                  if (course.isCustom) Text('[自定义]', style: style),
+                  if (!CourseAPI.inCurrentWeek(course, currentWeek: widget.currentWeek) &&
+                      !isOutOfTerm)
+                    Text('[非本周]', style: style),
                   Text(
-                    '${courseList[0].name}',
+                    '${widget.courseList[0].name}',
                     style: style.copyWith(
                       fontSize: suSetSp(28.0),
                       fontWeight: FontWeight.bold,
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  if (course.location != null)
-                    Text(
-                      '📍 ${course.location}',
-                      style: style,
-                    ),
+                  if (course.location != null) Text('📍 ${course.location}', style: style),
                   if (course.startWeek != null && course.endWeek != null)
                     Text(
                       '📅 ${course.startWeek}'
@@ -836,11 +878,7 @@ class CoursesDialog extends StatelessWidget {
                     '${CourseAPI.courseTimeChinese[course.time]}',
                     style: style,
                   ),
-                  if (course.teacher != null)
-                    Text(
-                      '🎓 ${course.teacher}',
-                      style: style,
-                    ),
+                  if (course.teacher != null) Text('🎓 ${course.teacher}', style: style),
                   SizedBox(height: 12.0),
                 ],
               ),
@@ -854,16 +892,51 @@ class CoursesDialog extends StatelessWidget {
         right: 0.0,
         child: IconButton(
           icon: Icon(Icons.close, color: Colors.black),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
+          onPressed: Navigator.of(context).pop,
         ),
+      );
+
+  Widget get deleteButton => MaterialButton(
+        padding: EdgeInsets.zero,
+        minWidth: suSetWidth(60.0),
+        height: suSetWidth(60.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Screens.width / 2),
+        ),
+        child: Icon(
+          Icons.delete,
+          color: Colors.black,
+          size: suSetWidth(32.0),
+        ),
+        onPressed: deleteCourse,
+      );
+
+  Widget get editButton => MaterialButton(
+        padding: EdgeInsets.zero,
+        minWidth: suSetWidth(60.0),
+        height: suSetWidth(60.0),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(Screens.width / 2),
+        ),
+        child: Icon(Icons.edit, color: Colors.black, size: suSetWidth(32.0)),
+        onPressed: !deleting
+            ? () {
+                showDialog(
+                  context: context,
+                  builder: (context) => CourseEditDialog(
+                    course: widget.courseList[0],
+                    coordinate: widget.coordinate,
+                  ),
+                  barrierDismissible: false,
+                );
+              }
+            : null,
       );
 
   @override
   Widget build(BuildContext context) {
-    final bool isDetail = courseList.length == 1;
-    final Course firstCourse = courseList[0];
+    final bool isDetail = widget.courseList.length == 1;
+    final Course firstCourse = widget.courseList[0];
     return SimpleDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
@@ -877,7 +950,7 @@ class CoursesDialog extends StatelessWidget {
             children: <Widget>[
               !isDetail ? coursesPage : courseDetail(firstCourse),
               closeButton(context),
-              if (isDetail && courseList[0].isCustom)
+              if (isDetail && widget.courseList[0].isCustom)
                 Theme(
                   data: Theme.of(context).copyWith(splashFactory: InkSplash.splashFactory),
                   child: Positioned(
@@ -887,74 +960,13 @@ class CoursesDialog extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: <Widget>[
-                        MaterialButton(
-                          padding: EdgeInsets.zero,
-                          minWidth: suSetWidth(60.0),
-                          height: suSetWidth(60.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(Screens.width / 2),
-                          ),
-                          child: Icon(
-                            Icons.delete,
-                            color: Colors.black,
-                            size: suSetWidth(32.0),
-                          ),
-                          onPressed: () {
-                            Future.wait(<Future>[
-                              CourseAPI.setCustomCourse({
-                                'content': Uri.encodeComponent(''),
-                                'couDayTime': courseList[0].day,
-                                'coudeTime': courseList[0].time,
-                              }),
-                              CourseAPI.setCustomCourse({
-                                'content': Uri.encodeComponent(''),
-                                'couDayTime': courseList[0].day,
-                                'coudeTime': courseList[0].time.toString().substring(0, 1),
-                              }),
-                              CourseAPI.setCustomCourse({
-                                'content': Uri.encodeComponent(''),
-                                'couDayTime': courseList[0].day,
-                                'coudeTime': courseList[0].time.toString().substring(1, 2),
-                              }),
-                            ]).then((responses) {
-                              bool isOk = true;
-                              for (final response in responses) {
-                                if (!jsonDecode(response.data)['isOk']) {
-                                  isOk = false;
-                                  break;
-                                }
-                              }
-                              if (isOk) {
-                                navigatorState.popUntil((_) => _.isFirst);
-                                Instances.eventBus.fire(CourseScheduleRefreshEvent());
-                              }
-                            });
-                            courseList.removeAt(0);
-                          },
-                        ),
-                        MaterialButton(
-                          padding: EdgeInsets.zero,
-                          minWidth: suSetWidth(60.0),
-                          height: suSetWidth(60.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(Screens.width / 2),
-                          ),
-                          child: Icon(
-                            Icons.edit,
-                            color: Colors.black,
-                            size: suSetWidth(32.0),
-                          ),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => CourseEditDialog(
-                                course: courseList[0],
-                                coordinate: coordinate,
-                              ),
-                              barrierDismissible: false,
-                            );
-                          },
-                        ),
+                        deleting
+                            ? SizedBox.fromSize(
+                                size: Size.square(suSetWidth(60.0)),
+                                child: SpinKitWidget(size: 30),
+                              )
+                            : deleteButton,
+                        editButton,
                       ],
                     ),
                   ),
@@ -990,9 +1002,9 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
 
   @override
   void initState() {
+    super.initState();
     content = widget.course?.name;
     _controller = TextEditingController(text: content);
-    super.initState();
   }
 
   Widget get courseEditField => Selector<ThemesProvider, bool>(
@@ -1091,11 +1103,8 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                         if (mounted) setState(() {});
                         CourseAPI.setCustomCourse({
                           'content': Uri.encodeComponent(content),
-                          'couDayTime':
-                              widget.course != null ? widget.course.time : widget.coordinate[0],
-                          'coudeTime': widget.course != null
-                              ? widget.course.time
-                              : '${widget.coordinate[1] - 1}${widget.coordinate[1]}',
+                          'couDayTime': widget.course?.day ?? widget.coordinate[0],
+                          'coudeTime': widget.course?.time ?? widget.coordinate[1],
                         }).then((response) {
                           loading = false;
                           if (mounted) setState(() {});

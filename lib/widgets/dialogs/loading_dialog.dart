@@ -9,11 +9,11 @@ class LoadingDialog extends StatefulWidget {
   final String text;
   final bool isGlobal;
 
-  LoadingDialog({
+  const LoadingDialog({
     Key key,
     this.text,
     this.controller,
-    this.isGlobal,
+    this.isGlobal = false,
   }) : super(key: key);
 
   @override
@@ -21,7 +21,7 @@ class LoadingDialog extends StatefulWidget {
 }
 
 class LoadingDialogState extends State<LoadingDialog> {
-  Duration duration = const Duration(milliseconds: 1500);
+  Duration duration = 1500.milliseconds;
   String type, text;
   VoidCallback customPop;
   Widget icon = SpinKitWidget();
@@ -36,48 +36,45 @@ class LoadingDialogState extends State<LoadingDialog> {
 
   @override
   void didChangeDependencies() {
-    widget.controller?.dialogState = this;
     super.didChangeDependencies();
+    widget.controller?.dialogState = this;
   }
 
   @override
   void didUpdateWidget(oldWidget) {
-    widget.controller?.dialogState = this;
     super.didUpdateWidget(oldWidget);
+    widget.controller?.dialogState = this;
   }
 
-  void updateContent(
+  void updateContent({
     String type,
     Widget icon,
     String text,
-    Duration duration, {
+    Duration duration,
     Function customPop,
   }) {
-    this.customPop = customPop;
-    setState(() {
-      if (duration != null) this.duration = duration;
-      this.type = type;
-      this.icon = icon;
-      this.text = text;
-    });
+    this.type = type;
+    this.icon = icon;
+    this.text = text;
+    if (duration != null) this.duration = duration;
+    if (customPop != null) this.customPop = customPop;
+    if (mounted) setState(() {});
   }
 
   void updateIcon(Widget icon) {
-    setState(() {
-      this.icon = icon;
-    });
+    this.icon = icon;
+    if (mounted) setState(() {});
   }
 
   void updateText(String text) {
-    setState(() {
-      this.text = text;
-    });
+    this.text = text;
+    if (mounted) setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
     if (!(widget.isGlobal ?? false)) {
-      if (this.type != null && this.type != "loading") {
+      if (this.type != null && this.type != 'loading') {
         Future.delayed(duration, () {
           try {
             if (customPop != null) {
@@ -87,7 +84,7 @@ class LoadingDialogState extends State<LoadingDialog> {
             }
           } catch (e) {}
         });
-      } else if (this.type == "dismiss") {
+      } else if (this.type == 'dismiss') {
         try {
           if (customPop != null) {
             customPop();
@@ -100,7 +97,7 @@ class LoadingDialogState extends State<LoadingDialog> {
     Widget child = Center(
       child: SizedBox(
         width: suSetWidth(180.0),
-        height: suSetHeight(180.0),
+        height: suSetWidth(180.0),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: Theme.of(context).canvasColor,
@@ -115,9 +112,7 @@ class LoadingDialogState extends State<LoadingDialog> {
                 padding: EdgeInsets.only(top: suSetHeight(40.0)),
                 child: Text(
                   this.text,
-                  style: Theme.of(context).textTheme.body1.copyWith(
-                        fontSize: suSetSp(16.0),
-                      ),
+                  style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(16.0)),
                 ),
               ),
             ],
@@ -126,23 +121,14 @@ class LoadingDialogState extends State<LoadingDialog> {
       ),
     );
     if (widget.isGlobal ?? false) {
-      child = Container(
-        color: Colors.black54,
-        child: child,
-      );
+      child = Container(color: Colors.black54, child: child);
     } else {
-      child = Material(
-        type: MaterialType.transparency,
-        child: child,
-      );
+      child = Material(type: MaterialType.transparency, child: child);
     }
 
     widget.controller?.dialogState = this;
 
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: child,
-    );
+    return WillPopScope(onWillPop: () async => false, child: child);
   }
 }
 
@@ -158,7 +144,7 @@ class LoadingDialogController {
   }
 
   void updateContent(type, icon, text, duration) {
-    dialogState.updateContent(type, icon, text, duration);
+    dialogState.updateContent(type: type, icon: icon, text: text, duration: duration);
   }
 
   void changeState(
@@ -170,46 +156,38 @@ class LoadingDialogController {
     switch (type) {
       case 'success':
         dialogState.updateContent(
-          "success",
-          Icon(
-            Icons.check_circle,
-            color: Colors.green,
-            size: suSetWidth(60.0),
-          ),
-          text,
-          duration,
+          type: 'success',
+          icon: Icon(Icons.check_circle, color: Colors.green, size: suSetWidth(60.0)),
+          text: text,
+          duration: duration,
           customPop: customPop,
         );
         break;
       case 'failed':
         dialogState.updateContent(
-          "failed",
-          RotationTransition(
+          type: 'failed',
+          icon: RotationTransition(
             turns: AlwaysStoppedAnimation(45 / 360),
-            child: Icon(
-              Icons.add_circle,
-              color: Colors.redAccent,
-              size: suSetWidth(60.0),
-            ),
+            child: Icon(Icons.add_circle, color: Colors.redAccent, size: suSetWidth(60.0)),
           ),
-          text,
-          duration,
+          text: text,
+          duration: duration,
         );
         break;
       case 'loading':
         dialogState.updateContent(
-          "loading",
-          CircularProgressIndicator(),
-          text,
-          duration,
+          type: 'loading',
+          icon: CircularProgressIndicator(),
+          text: text,
+          duration: duration,
         );
         break;
       case 'dismiss':
         dialogState.updateContent(
-          "dismiss",
-          CircularProgressIndicator(),
-          text,
-          duration,
+          type: 'dismiss',
+          icon: CircularProgressIndicator(),
+          text: text,
+          duration: duration,
         );
         break;
     }

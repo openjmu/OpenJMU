@@ -16,7 +16,6 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/fixed_appbar.dart';
 import 'package:openjmu/widgets/dialogs/convention_dialog.dart';
 import 'package:openjmu/widgets/dialogs/loading_dialog.dart';
 import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
@@ -423,127 +422,44 @@ class PublishPostPageState extends State<PublishPostPage> {
     }
   }
 
-  Widget confirmConventionDialog(context) {
-    return Center(
-      child: Material(
-        type: MaterialType.transparency,
-        child: Container(
-          padding: EdgeInsets.all(suSetWidth(20.0)),
-          width: Screens.width * 0.9,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(suSetWidth(20.0)),
-            color: Theme.of(context).cardColor.withOpacity(0.8),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Icon(
-                Icons.error_outline,
-                size: suSetWidth(120.0),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: suSetHeight(20.0),
-                ),
-                child: Text.rich(
-                  TextSpan(children: <InlineSpan>[
-                    TextSpan(
-                      text: '发布动态前，请确认您已阅读并知晓',
-                    ),
-                    TextSpan(
-                        text: '《集大通平台公约》',
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            showDialog(
-                              context: context,
-                              builder: (_) => ConventionDialog(),
-                            );
-                          }),
-                    TextSpan(
-                      text: '，且发布的内容符合公约要求。',
-                    ),
-                  ]),
-                  style: TextStyle(
-                    fontSize: suSetSp(22.0),
-                    fontWeight: FontWeight.normal,
-                    height: 1.7,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      child: Container(
-                        height: suSetHeight(40.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.0),
-                          color: Theme.of(context).canvasColor.withOpacity(0.6),
-                        ),
-                        child: Center(
-                          child: Text(
-                            '我再想想',
-                            style: TextStyle(
-                              fontSize: suSetSp(20.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.of(context).pop(false);
-                      },
-                    ),
-                  ),
-                  SizedBox(width: suSetWidth(20.0)),
-                  Expanded(
-                    child: GestureDetector(
-                      behavior: HitTestBehavior.opaque,
-                      child: Container(
-                        height: suSetHeight(40.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20.0),
-                          color: currentThemeColor.withOpacity(0.6),
-                        ),
-                        child: Center(
-                          child: Text(
-                            '确认无误',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: suSetSp(20.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        Navigator.of(context).pop(true);
-                      },
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   void post(context) async {
     final content = _textEditingController.text;
-    if (content?.trim()?.isNotEmpty ?? false) {
+    if (content?.trim()?.isEmpty ?? true) {
       showCenterToast('内容不能为空');
     } else {
-      final result = await showDialog(
-        context: context,
-        builder: (_) => confirmConventionDialog(_),
+      final confirm = await ConfirmationDialog.show(
+        context,
+        title: '平台公约提醒',
+        showConfirm: true,
+        confirmLabel: '确认无误',
+        cancelLabel: '我再想想',
+        child: Text.rich(
+          TextSpan(children: <InlineSpan>[
+            TextSpan(text: '发布动态前，请确认您已阅读并知晓'),
+            TextSpan(
+                text: '《集大通平台公约》',
+                style: TextStyle(
+                  decoration: TextDecoration.underline,
+                  fontWeight: FontWeight.bold,
+                ),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () {
+                    showDialog(
+                      context: context,
+                      builder: (_) => ConventionDialog(),
+                    );
+                  }),
+            TextSpan(text: '，且发布的内容符合公约要求。'),
+          ]),
+          style: TextStyle(
+            fontSize: suSetSp(22.0),
+            fontWeight: FontWeight.normal,
+            height: 1.7,
+          ),
+          textAlign: TextAlign.center,
+        ),
       );
-      if (result != null && result) {
+      if (confirm) {
         setState(() {
           isLoading = true;
         });
@@ -555,14 +471,9 @@ class PublishPostPageState extends State<PublishPostPage> {
               return LoadingDialog(
                 text: '正在上传图片 (1/${assets.length})',
                 controller: _dialogController,
-                isGlobal: false,
               );
             } else {
-              return LoadingDialog(
-                text: '正在发布动态...',
-                controller: _dialogController,
-                isGlobal: false,
-              );
+              return LoadingDialog(text: '正在发布动态...', controller: _dialogController);
             }
           },
         );
@@ -686,37 +597,14 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   Future<bool> checkEmptyWhenPop() async {
     if (imagesLength != 0 || currentLength != 0) {
-      final result = await showCupertinoDialog<bool>(
-        context: context,
-        builder: (context) => CupertinoAlertDialog(
-          title: Text(
-            '退出发布动态',
-          ),
-          content: Text(
-            '仍有未发送的内容，是否退出？',
-          ),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              child: Text('确认'),
-              isDefaultAction: false,
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              textStyle: TextStyle(color: currentThemeColor),
-            ),
-            CupertinoDialogAction(
-              child: Text('取消'),
-              isDefaultAction: true,
-              onPressed: () {
-                Navigator.of(context).pop(false);
-              },
-              textStyle: TextStyle(color: currentThemeColor),
-            ),
-          ],
-        ),
+      final confirm = await ConfirmationDialog.show(
+        context,
+        title: '退出发布动态',
+        content: '仍有未发送的内容，是否退出？',
+        showConfirm: true,
       );
-      if (result) Navigator.of(context).pop(false);
-      return result;
+      if (confirm) Navigator.of(context).pop(false);
+      return confirm;
     } else {
       Navigator.of(context).pop(false);
       return true;
@@ -726,9 +614,8 @@ class PublishPostPageState extends State<PublishPostPage> {
   @override
   Widget build(BuildContext context) {
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-    if (keyboardHeight > 0) {
-      emoticonPadActive = false;
-    }
+    if (keyboardHeight > 0) emoticonPadActive = false;
+
     _keyboardHeight = math.max(_keyboardHeight, keyboardHeight);
 
     return WillPopScope(
