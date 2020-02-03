@@ -32,12 +32,13 @@ class OTAUtils {
 
   static Future<void> checkUpdate({bool fromHome = false}) async {
     NetUtils.get(API.checkUpdate).then((response) async {
+      final data = jsonDecode(response.data);
+      updateChangelog(data['changelog']);
       final _currentBuild = buildNumber;
       final _currentVersion = version;
-      final data = jsonDecode(response.data);
       final _forceUpdate = data['forceUpdate'];
       final _remoteVersion = data['version'];
-      final _remoteBuildNumber = int.parse(data['buildNumber'].toString());
+      final _remoteBuildNumber = data['buildNumber'].toString().toIntOrNull();
       debugPrint('Build: $_currentVersion+$_currentBuild'
           ' | '
           '$_remoteVersion+$_remoteBuildNumber');
@@ -123,9 +124,7 @@ class OTAUtils {
                       ),
                       Center(
                         child: Container(
-                          margin: EdgeInsets.symmetric(
-                            vertical: suSetHeight(12.0),
-                          ),
+                          margin: EdgeInsets.symmetric(vertical: suSetHeight(12.0)),
                           child: RichText(
                             text: TextSpan(
                               children: <TextSpan>[
@@ -144,9 +143,7 @@ class OTAUtils {
                       ),
                       Center(
                         child: Container(
-                          margin: EdgeInsets.symmetric(
-                            vertical: suSetHeight(6.0),
-                          ),
+                          margin: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
                           child: RichText(
                             text: TextSpan(
                               children: <TextSpan>[
@@ -178,15 +175,10 @@ class OTAUtils {
                   if (!event.forceUpdate)
                     Expanded(
                       child: FlatButton(
-                        onPressed: () {
-                          dismissAllToast();
-                        },
+                        onPressed: dismissAllToast,
                         child: Text(
                           '取消',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: suSetSp(18.0),
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: suSetSp(18.0)),
                         ),
                       ),
                     ),
@@ -211,5 +203,18 @@ class OTAUtils {
         ),
       ),
     );
+  }
+
+  static Future<void> updateChangelog(List data) async {
+    final box = HiveBoxes.changelogBox;
+    final List<ChangeLog> logs = data.map((log) => ChangeLog.fromJson(log)).toList();
+    if (box.values != null) {
+      box.addAll(logs);
+    } else {
+      if (box.values.toString() != logs.toString()) {
+        await box.clear();
+        box.addAll(logs);
+      }
+    }
   }
 }

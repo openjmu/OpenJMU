@@ -97,7 +97,7 @@ class Constants {
         'blowfish': DeviceUtils.deviceUuid,
         if (ticket != null) 'ticket': '$ticket',
         if (username != null) 'account': '$username',
-        if (password != null) 'password': '${sha1.convert(utf8.encode(password))}',
+        if (password != null) 'password': '${sha1.convert(password.toUtf8())}',
         if (password != null) 'encrypt': 1,
         if (username != null) 'unitid': unitId,
         if (username != null) 'unitcode': 'jmu',

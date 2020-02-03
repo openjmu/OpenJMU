@@ -2,10 +2,9 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020-01-31 22:29
 ///
-import 'dart:convert';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -15,48 +14,89 @@ class ChangeLogPage extends StatefulWidget {
   _ChangeLogPageState createState() => _ChangeLogPageState();
 }
 
-class _ChangeLogPageState extends State<ChangeLogPage> {
+class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateMixin {
   final _pageController = PageController();
   double _currentPage = 0.0;
 
-  List changeLogs;
+  Set changeLogs = HiveBoxes.changelogBox.values.toSet();
   bool error = false;
+  bool displayBack = true;
+  bool animating = false;
+
+  double _blurOpacity = 0.0;
+  Animation<double> _blurOpacityAnimation;
+  AnimationController _blurOpacityController;
 
   @override
   void initState() {
     super.initState();
-    loadChangelog();
+    if (changeLogs == null) OTAUtils.checkUpdate();
   }
 
-  Future<void> loadChangelog() async {
-    try {
-      final changelog = await rootBundle.loadString('assets/changelog.json');
-      changeLogs = (jsonDecode(changelog) as List).cast<Map>();
-      if (mounted) setState(() {});
-    } catch (e) {
-      debugPrint('Failed when loading changelog: $e');
-      error = true;
-      if (mounted) setState(() {});
-    }
+  void blurAnimate(bool forward) {
+    animating = forward;
+    if (mounted) setState(() {});
+
+    _blurOpacityController = AnimationController(duration: 1.seconds, vsync: this);
+    final _blurOpacityCurve = CurvedAnimation(
+      parent: _blurOpacityController,
+      curve: Curves.ease,
+    );
+    _blurOpacityAnimation = Tween(
+      begin: forward ? 0.0 : _blurOpacity,
+      end: forward ? 1.0 : 0.0,
+    ).animate(_blurOpacityCurve)
+      ..addListener(() {
+        _blurOpacity = _blurOpacityAnimation.value;
+        if (mounted) setState(() {});
+      });
+
+    _blurOpacityController
+      ..stop()
+      ..forward();
   }
 
-  Widget get timelineIndicator => Container(
-        margin: EdgeInsets.only(right: suSetWidth(40.0)),
-        width: suSetWidth(6.0),
-        color: currentThemeColor,
-        child: Stack(
-          overflow: Overflow.visible,
-          children: <Widget>[
-            Positioned(
-              top: suSetHeight(38.0),
-              left: -suSetWidth(7.0),
-              child: Container(
-                width: suSetWidth(20.0),
-                height: suSetWidth(20.0),
-                decoration: BoxDecoration(shape: BoxShape.circle, color: currentThemeColor),
+  Widget get goBackButton => Container(
+        margin: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+        child: MaterialButton(
+          elevation: 0.0,
+          highlightElevation: 0.0,
+          hoverElevation: 0.0,
+          focusElevation: 0.0,
+          color: currentThemeColor.withOpacity(0.2),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(999),
+          ),
+          onPressed: () {
+            blurAnimate(true);
+            Future.delayed(3.seconds, () {
+              blurAnimate(false);
+            });
+            _pageController.animateToPage(
+              displayBack ? changeLogs.length : 0,
+              duration: 4.seconds,
+              curve: Curves.fastOutSlowIn,
+            );
+          },
+          child: AnimatedCrossFade(
+            duration: 300.milliseconds,
+            crossFadeState: displayBack ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            firstChild: Text(
+              '回到梦开始的地方 →',
+              style: TextStyle(
+                color: currentThemeColor,
+                fontSize: suSetSp(20.0),
               ),
             ),
-          ],
+            secondChild: Text(
+              '← 踏上新旅途',
+              style: TextStyle(
+                color: currentThemeColor,
+                fontSize: suSetSp(20.0),
+              ),
+            ),
+          ),
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
       );
 
@@ -80,24 +120,54 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: suSetWidth(40.0)),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          log.buildNumber == OTAUtils.buildNumber
+              ? Expanded(
+                  flex: 3,
+                  child: Center(child: Text('📍', style: TextStyle(fontSize: suSetSp(40.0)))),
+                )
+              : Spacer(flex: 2),
+          versionInfo(log),
+          SizedBox(height: suSetHeight(12.0)),
           Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[
-              versionInfo(log),
+              dateInfo(log),
               buildNumberInfo(log),
             ],
           ),
-          SizedBox(height: suSetHeight(12.0)),
-          dateInfo(log),
+          Spacer(flex: 2),
         ],
       ),
     );
   }
 
-  Widget logWidget(
+  Widget versionInfo(ChangeLog log) {
+    return Text(
+      '${log.version}',
+      style: Theme.of(context).textTheme.title.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: suSetSp(log.buildNumber == OTAUtils.buildNumber ? 45.0 : 50.0),
+          ),
+    );
+  }
+
+  Widget dateInfo(ChangeLog log) {
+    return Text(
+      '${log.date} ',
+      style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(20.0)),
+    );
+  }
+
+  Widget buildNumberInfo(ChangeLog log) {
+    return Text(
+      '(${log.buildNumber})',
+      style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(20.0)),
+    );
+  }
+
+  Widget detailWidget(
     int index,
     ChangeLog log, {
     double parallaxOffset,
@@ -112,7 +182,7 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
               children: <Widget>[
                 index == 0 ? Spacer() : _logLine(true),
                 _logVersion(log),
-                _logLine(false),
+                index == changeLogs.length - 1 ? Spacer() : _logLine(false),
               ],
             ),
           ),
@@ -142,27 +212,6 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
     );
   }
 
-  Widget versionInfo(ChangeLog log) {
-    return Text(
-      '${log.version} ',
-      style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(40.0)),
-    );
-  }
-
-  Widget buildNumberInfo(ChangeLog log) {
-    return Text(
-      '(${log.buildNumber})',
-      style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
-    );
-  }
-
-  Widget dateInfo(ChangeLog log) {
-    return Text(
-      '${log.date}',
-      style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(20.0)),
-    );
-  }
-
   Widget sectionWidget(Map<String, dynamic> sections) {
     return Text.rich(
       TextSpan(
@@ -185,10 +234,80 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
                 text: '[$name]\n',
                 style: TextStyle(fontWeight: FontWeight.bold),
               )
-            : TextSpan(text: '·  ${sections[name][j - 1]}\n'),
+            : TextSpan(
+                text: '${j == 1 ? '\n' : ''}'
+                    '·  ${sections[name][j - 1]}\n'
+                    '${j == sections[name].length ? '\n' : ''}',
+              ),
       ),
     );
   }
+
+  Widget get startWidget => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(suSetWidth(20.0)),
+            child: Image.asset(
+              'images/logo_1024.png',
+              width: suSetWidth(150.0),
+              height: suSetWidth(150.0),
+            ),
+          ),
+          SizedBox(height: suSetHeight(50.0)),
+          Text(
+            'Open The Sky',
+            style: TextStyle(
+              color: defaultColor,
+              fontFamily: 'chocolate',
+              fontSize: suSetSp(50.0),
+            ),
+          ),
+          SizedBox(height: suSetHeight(20.0)),
+          Text(
+            '2019.03.17',
+            style: TextStyle(
+              fontFamily: 'chocolate',
+              fontSize: suSetSp(30.0),
+            ),
+          ),
+          SizedBox(height: suSetHeight(80.0)),
+        ],
+      );
+
+  Widget get emptyTips => Padding(
+        padding: EdgeInsets.all(suSetWidth(60.0)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            SpinKitWidget(),
+            SizedBox(height: suSetHeight(40.0)),
+            Text.rich(
+              TextSpan(
+                children: <InlineSpan>[
+                  TextSpan(text: '履历跑得太快，程序已经追不上它了...待会儿它就会回来的\n'),
+                  TextSpan(text: '🚀', style: TextStyle(fontSize: suSetSp(50.0))),
+                ],
+              ),
+              style: TextStyle(fontSize: suSetSp(25.0)),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+
+  Widget get backdrop => Positioned.fill(
+        child: IgnorePointer(
+          ignoring: !animating,
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(
+              sigmaX: 2.0 * _blurOpacity,
+              sigmaY: 2.0 * _blurOpacity,
+            ),
+            child: Text(' '),
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -205,60 +324,56 @@ class _ChangeLogPageState extends State<ChangeLogPage> {
             centerTitle: true,
           ),
           Expanded(
-            child: AnimatedSwitcher(
-              duration: 1.seconds,
-              child: changeLogs != null
-                  ? LayoutBuilder(
-                      builder: (context, constraints) => NotificationListener(
-                        onNotification: (ScrollNotification note) {
-                          setState(() {
-                            _currentPage = _pageController.page;
-                          });
-                          return true;
-                        },
-                        child: PageView.custom(
-                          controller: _pageController,
-                          childrenDelegate: SliverChildBuilderDelegate(
-                            (context, index) => logWidget(
-                              index,
-                              ChangeLog.fromJson(changeLogs[index]),
-                              parallaxOffset: constraints.maxWidth / 2.0 * (index - _currentPage),
+            child: Stack(
+              children: <Widget>[
+                Positioned.fill(
+                  child: changeLogs != null
+                      ? LayoutBuilder(
+                          builder: (context, constraints) => NotificationListener(
+                            onNotification: (ScrollNotification notification) {
+                              _currentPage = _pageController.page;
+                              if (notification.metrics.axisDirection == AxisDirection.right &&
+                                  _currentPage > 2.0) {
+                                displayBack = false;
+                              } else {
+                                displayBack = true;
+                              }
+                              if (mounted) setState(() {});
+                              return true;
+                            },
+                            child: Column(
+                              children: <Widget>[
+                                goBackButton,
+                                Expanded(
+                                  child: PageView.custom(
+                                    controller: _pageController,
+                                    physics: const BouncingScrollPhysics(),
+                                    childrenDelegate: SliverChildBuilderDelegate(
+                                      (context, index) => index == changeLogs.length
+                                          ? startWidget
+                                          : detailWidget(
+                                              index,
+                                              changeLogs.elementAt(index),
+                                              parallaxOffset: constraints.maxWidth /
+                                                  2.0 *
+                                                  (index - _currentPage),
+                                            ),
+                                      childCount: changeLogs.length + 1,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            childCount: changeLogs.length,
                           ),
-                        ),
-                      ),
-                    )
-                  : SpinKitWidget(),
+                        )
+                      : emptyTips,
+                ),
+                backdrop,
+              ],
             ),
           ),
         ],
       ),
     );
-  }
-}
-
-class ChangeLog {
-  String version;
-  int buildNumber;
-  String date;
-  Map<String, dynamic> sections;
-
-  ChangeLog({this.version, this.buildNumber, this.date, this.sections});
-
-  ChangeLog.fromJson(Map<String, dynamic> json) {
-    version = json['version'];
-    buildNumber = json['buildNumber'];
-    date = json['date'];
-    sections = json['sections'];
-  }
-
-  Map<String, dynamic> toJson() {
-    return {'version': version, 'buildNumber': buildNumber, 'date': date, 'sections': sections};
-  }
-
-  @override
-  String toString() {
-    return 'ChangeLog ${JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 }

@@ -51,6 +51,39 @@ class AppMessageAdapter extends TypeAdapter<AppMessage> {
   }
 }
 
+class ChangeLogAdapter extends TypeAdapter<ChangeLog> {
+  @override
+  final typeId = 5;
+
+  @override
+  ChangeLog read(BinaryReader reader) {
+    var numOfFields = reader.readByte();
+    var fields = <int, dynamic>{
+      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return ChangeLog(
+      version: fields[0] as String,
+      buildNumber: fields[1] as int,
+      date: fields[2] as String,
+      sections: (fields[3] as Map)?.cast<String, dynamic>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, ChangeLog obj) {
+    writer
+      ..writeByte(4)
+      ..writeByte(0)
+      ..write(obj.version)
+      ..writeByte(1)
+      ..write(obj.buildNumber)
+      ..writeByte(2)
+      ..write(obj.date)
+      ..writeByte(3)
+      ..write(obj.sections);
+  }
+}
+
 class CourseAdapter extends TypeAdapter<Course> {
   @override
   final typeId = 2;

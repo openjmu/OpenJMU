@@ -23,10 +23,12 @@ class HiveBoxes {
 
   static Box<List> reportRecordBox;
   static Box<dynamic> settingsBox;
+  static Box<ChangeLog> changelogBox;
 
   static Future openBoxes() async {
     Hive
       ..registerAdapter(AppMessageAdapter())
+      ..registerAdapter(ChangeLogAdapter())
       ..registerAdapter(CourseAdapter())
       ..registerAdapter(MessageAdapter())
       ..registerAdapter(ScoreAdapter())
@@ -43,6 +45,8 @@ class HiveBoxes {
 
     reportRecordBox = await Hive.openBox<List>('openjmu_report_record');
     settingsBox = await Hive.openBox<dynamic>('openjmu_app_settings');
+
+    changelogBox = await Hive.openBox<ChangeLog>('openjmu_changelog');
   }
 
   static void clearBoxes(context) async {
@@ -55,6 +59,7 @@ class HiveBoxes {
     if (confirm) {
       debugPrint('Clearing Hive Boxes...');
       await appMessagesBox?.clear();
+      await changelogBox?.clear();
       await coursesBox?.clear();
       await courseRemarkBox?.clear();
       await personalMessagesBox?.clear();
@@ -76,4 +81,5 @@ class HiveAdapterTypeIds {
   static const int course = 2;
   static const int score = 3;
   static const int webapp = 4;
+  static const int changelog = 5;
 }

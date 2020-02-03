@@ -413,7 +413,7 @@ class UintConverter {
   }
 
   void addString(String value) {
-    final bytes = utf8.encode(value);
+    final bytes = value.toUtf8();
     // String package needs to add length before content.
     addWrapper(UintWrapper(bytes.length, 16));
     for (final byte in bytes) add(byte, 8);

@@ -102,11 +102,11 @@ class ScoresProvider extends ChangeNotifier {
   void requestScore() async {
     if (!loading) loading = true;
     try {
-      _socket?.add(utf8.encode(jsonEncode({
+      _socket?.add(jsonEncode({
         'uid': '${currentUser.uid}',
         'sid': '${currentUser.sid}',
         'workid': '${currentUser.workId}',
-      })));
+      }).toUtf8());
     } catch (e) {
       if (e.toString().contains('StreamSink is closed')) {
         if (await initSocket()) {

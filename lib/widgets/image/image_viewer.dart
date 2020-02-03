@@ -205,9 +205,20 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = SpinKitWidget(color: Colors.grey);
+              loader = SpinKitWidget();
               break;
             case LoadState.completed:
+              loader = FadeTransition(
+                opacity: Tween(
+                  begin: 0.0,
+                  end: 1.0,
+                ).animate(AnimationController(
+                  duration: 300.milliseconds,
+                  vsync: this,
+                )..forward()),
+                child: state.completedWidget,
+              );
+              break;
             case LoadState.failed:
               break;
           }
