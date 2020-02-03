@@ -56,7 +56,7 @@ class AppCenterPage extends StatelessWidget {
 
   Widget getSectionColumn(context, WebAppsProvider provider, String name) {
     final list = provider.appCategoriesList[name];
-    if (list.isNotEmpty) {
+    if (list?.isNotEmpty ?? false) {
       return Container(
         margin: EdgeInsets.all(suSetWidth(12.0)),
         decoration: BoxDecoration(

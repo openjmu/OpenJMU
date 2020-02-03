@@ -12,11 +12,11 @@ import 'package:openjmu/pages/main_page.dart';
 
 @FFRoute(name: "openjmu://splash", routeName: "启动页", argumentNames: ["initAction"])
 class SplashPage extends StatefulWidget {
-  final String initAction;
+  final int initAction;
 
   const SplashPage({
-    this.initAction,
     Key key,
+    this.initAction,
   }) : super(key: key);
 
   @override
@@ -130,7 +130,7 @@ class SplashState extends State<SplashPage> {
           pageBuilder: (_, animation, __) => FadeTransition(
             opacity: animation,
             child: !isUserLogin || forceToLogin
-                ? LoginPage(initAction: widget.initAction)
+                ? LoginPage()
                 : MainPage(initAction: widget.initAction),
           ),
         ),

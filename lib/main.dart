@@ -27,6 +27,7 @@ void main() async {
   await HiveBoxes.openBoxes();
   await DeviceUtils.initDeviceInfo();
   await OTAUtils.initPackageInfo();
+  NetUtils.initConfig();
   NotificationUtils.initSettings();
 
   await SystemChrome.setPreferredOrientations([
@@ -47,13 +48,6 @@ class OpenJMUApp extends StatefulWidget {
 }
 
 class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
-  final _quickActions = [
-    ['actions_home', '首页'],
-    ['actions_apps', '应用'],
-    ['actions_message', '消息'],
-    ['actions_mine', '我的'],
-  ];
-
   final connectivitySubscription = Connectivity().onConnectivityChanged.listen(
     (ConnectivityResult result) {
       Instances.eventBus.fire(ConnectivityChangeEvent(result));
@@ -61,12 +55,14 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     },
   );
 
-  String initAction;
+  int initAction;
   Brightness get _platformBrightness => Screens.mediaQuery.platformBrightness ?? Brightness.light;
 
   @override
   void initState() {
+    debugPrint('Current platform is: ${Platform.operatingSystem}');
     WidgetsBinding.instance.addObserver(this);
+    tryRecoverLoginInfo();
 
     Instances.eventBus
       ..on<LogoutEvent>().listen((event) {
@@ -83,7 +79,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         Provider.of<MessagesProvider>(currentContext, listen: false).unloadMessages();
         Provider.of<ReportRecordsProvider>(currentContext, listen: false).unloadRecords();
         Provider.of<WebAppsProvider>(currentContext, listen: false).unloadApps();
-        Future.delayed(300.milliseconds, () {
+        Future.delayed(250.milliseconds, () {
           Provider.of<ThemesProvider>(currentContext, listen: false).resetTheme();
           Provider.of<SettingsProvider>(currentContext, listen: false).reset();
         });
@@ -98,9 +94,9 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         Provider.of<WebAppsProvider>(currentContext, listen: false).initApps();
       })
       ..on<ActionsEvent>().listen((event) {
-        initAction = _quickActions.firstWhere((action) {
-          return action[0] == event.type;
-        })[1];
+        initAction = Constants.quickActionsList.keys
+            .toList()
+            .indexOf(Constants.quickActionsList.keys.firstWhere((action) => action == event.type));
       })
       ..on<HasUpdateEvent>().listen((event) {
         showToastWidget(
@@ -110,12 +106,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
           handleTouch: true,
         );
       });
-
-    tryRecoverLoginInfo();
-    NetUtils.initConfig();
-    initQuickActions();
-
-    debugPrint('Current platform is: ${Platform.operatingSystem}');
 
     super.initState();
   }
@@ -129,16 +119,20 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initQuickActions();
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     debugPrint('——— didChangeAppLifecycleState ———');
-    debugPrint('AppLifecycleState change to: ${state.toString()}');
+    debugPrint('AppLifecycleState change to: ${state.toString()}\n');
     Instances.appLifeCycleState = state;
   }
 
   @override
   void didChangePlatformBrightness() {
-    debugPrint('——— didChangePlatformBrightness ———');
-    debugPrint('Platform brightness changed.\n');
     if (mounted) setState(() {});
   }
 
@@ -148,7 +142,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     } else {
       Instances.eventBus.fire(TicketFailedEvent());
     }
-
     if (mounted) setState(() {});
   }
 
@@ -159,11 +152,11 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       Instances.eventBus.fire(ActionsEvent(shortcutType));
     });
     quickActions.setShortcutItems(List<ShortcutItem>.generate(
-      _quickActions.length,
+      Constants.quickActionsList.length,
       (index) => ShortcutItem(
-        type: _quickActions[index][0],
-        icon: _quickActions[index][0],
-        localizedTitle: _quickActions[index][1],
+        type: Constants.quickActionsList.keys.elementAt(index),
+        icon: Constants.quickActionsList.keys.elementAt(index),
+        localizedTitle: Constants.quickActionsList.values.elementAt(index),
       ),
     ));
   }

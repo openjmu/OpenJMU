@@ -1,7 +1,9 @@
 #include "AppDelegate.h"
 #include "GeneratedPluginRegistrant.h"
 #import <UserNotifications/UserNotifications.h>
-#import <Flutter/Flutter.h>
+
+static NSString *const CHANNEL_NAME = @"cn.edu.jmu.openjmu/iOSPushToken";
+
 static NSString *SendTime;
 static NSString *token;
 static NSString *isAddToPushSuccess;
@@ -22,8 +24,9 @@ static NSString *isAddToPushSuccess;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [GeneratedPluginRegistrant registerWithRegistry:self];
+
     FlutterViewController *controller = (FlutterViewController *) self.window.rootViewController;
-    FlutterMethodChannel *iOSTokenChannel = [FlutterMethodChannel methodChannelWithName:@"cn.edu.jmu.openjmu/iOSPushToken" binaryMessenger:controller];
+    FlutterMethodChannel *iOSTokenChannel = [FlutterMethodChannel methodChannelWithName:CHANNEL_NAME binaryMessenger:controller];
     [iOSTokenChannel setMethodCallHandler:^(FlutterMethodCall *call, FlutterResult result) {
 
         if ([@"getPushToken" isEqualToString:call.method]) {

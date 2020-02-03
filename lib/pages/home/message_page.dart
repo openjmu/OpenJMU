@@ -80,10 +80,10 @@ class MessagePageState extends State<MessagePage> with TickerProviderStateMixin 
 
   Widget get _messageList => Consumer2<MessagesProvider, WebAppsProvider>(
         builder: (context, messageProvider, webAppsProvider, _) {
-          final shouldDisplayAppsMessages =
-              messageProvider.appsMessages.isNotEmpty && webAppsProvider.apps.isNotEmpty;
+          final shouldDisplayAppsMessages = (messageProvider.appsMessages?.isNotEmpty ?? false) &&
+              (webAppsProvider.apps?.isNotEmpty ?? false);
 //            final shouldDisplayPersonalMessages =
-//                messageProvider.personalMessages[currentUser.uid].isNotEmpty;
+//                messageProvider.personalMessages.isNotEmpty;
           final shouldDisplayMessages = shouldDisplayAppsMessages
 //                    ||
 //                    shouldDisplayPersonalMessages

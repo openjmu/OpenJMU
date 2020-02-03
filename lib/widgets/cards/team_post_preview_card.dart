@@ -422,17 +422,13 @@ class TeamPostPreviewCard extends StatelessWidget {
                 onPressed: null,
                 icon: SvgPicture.asset(
                   'assets/icons/postActions/comment-fill.svg',
-                  color: currentBrightness == Brightness.dark
-                      ? actionIconColorDark
-                      : actionIconColorLight,
+                  color: currentIsDark ? actionIconColorDark : actionIconColorLight,
                   width: suSetWidth(26.0),
                 ),
                 label: Text(
                   provider.post.repliesCount == 0 ? '评论' : '${provider.post.repliesCount}',
                   style: TextStyle(
-                    color: currentBrightness == Brightness.dark
-                        ? actionTextColorDark
-                        : actionTextColorLight,
+                    color: currentIsDark ? actionTextColorDark : actionTextColorLight,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),
@@ -444,38 +440,34 @@ class TeamPostPreviewCard extends StatelessWidget {
             Expanded(
               child: LikeButton(
                 size: suSetWidth(26.0),
-                circleColor: CircleColor(start: currentThemeColor, end: currentThemeColor),
                 bubblesColor: BubblesColor(
                   dotPrimaryColor: currentThemeColor,
                   dotSecondaryColor: currentThemeColor,
                 ),
-                likeBuilder: (bool isLiked) => SvgPicture.asset(
-                  'assets/icons/postActions/praise-fill.svg',
-                  color: isLiked
-                      ? currentThemeColor
-                      : currentBrightness == Brightness.dark
-                          ? actionIconColorDark
-                          : actionIconColorLight,
-                  width: suSetWidth(26.0),
-                ),
-                likeCount: provider.post.praisesCount,
-                likeCountAnimationType: LikeCountAnimationType.none,
-                likeCountPadding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(8.0),
-                ),
+                circleColor: CircleColor(start: currentThemeColor, end: currentThemeColor),
                 countBuilder: (count, isLiked, text) => Text(
-                  (isLiked ? moreThanOne(count) : moreThanZero(count)) > 0 ? text : '赞',
+                  count > 0 ? text : '赞',
                   style: TextStyle(
                     color: isLiked
                         ? currentThemeColor
-                        : currentBrightness == Brightness.dark
-                            ? actionTextColorDark
-                            : actionTextColorLight,
+                        : currentIsDark ? actionTextColorDark : actionTextColorLight,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),
                 ),
                 isLiked: provider.post.isLike,
+                likeBuilder: (bool isLiked) => SvgPicture.asset(
+                  'assets/icons/postActions/praise-fill.svg',
+                  color: isLiked
+                      ? currentThemeColor
+                      : currentIsDark ? actionIconColorDark : actionIconColorLight,
+                  width: suSetWidth(26.0),
+                ),
+                likeCount: provider.post.isLike
+                    ? moreThanOne(provider.post.praisesCount)
+                    : moreThanZero(provider.post.praisesCount),
+                likeCountAnimationType: LikeCountAnimationType.none,
+                likeCountPadding: EdgeInsets.symmetric(horizontal: suSetWidth(8.0)),
                 onTap: (bool isLiked) async => onLikeButtonTap(isLiked, provider),
               ),
             ),

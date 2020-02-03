@@ -39,7 +39,7 @@ class WebAppIcon extends StatelessWidget {
     return Selector<SettingsProvider, bool>(
       selector: (_, provider) => provider.newAppCenterIcon,
       builder: (_, newAppCenterIcon, __) {
-        return !currentUser.isTeacher || newAppCenterIcon
+        return !(currentUser?.isTeacher ?? false) || newAppCenterIcon
             ? FutureBuilder(
                 initialData: SizedBox(),
                 future: loadAsset(),

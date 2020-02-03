@@ -69,20 +69,15 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
 
   @override
   void initState() {
-    _selectedIndex = Provider.of<SettingsProvider>(currentContext, listen: false).homeSplashIndex;
-    if (widget.initIndex != null) _selectedIndex = widget.initIndex;
+    _selectedIndex = widget.initIndex ??
+        Provider.of<SettingsProvider>(currentContext, listen: false).homeSplashIndex;
     Instances.eventBus
       ..on<ActionsEvent>().listen((event) {
-        if (event.type == 'action_home') {
-          _selectedIndex = 0;
-        } else if (event.type == 'action_apps') {
-          _selectedIndex = 1;
-        } else if (event.type == 'action_discover') {
-          _selectedIndex = 2;
-        } else if (event.type == 'action_user') {
-          _selectedIndex = 3;
+        final index = Constants.quickActionsList.keys.toList().indexOf(event.type);
+        if (index != -1) {
+          _selectedIndex = index;
+          if (mounted) setState(() {});
         }
-        if (mounted) setState(() {});
       });
     super.initState();
   }

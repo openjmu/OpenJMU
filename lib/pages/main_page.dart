@@ -20,7 +20,7 @@ import 'package:openjmu/widgets/announcement/announcement_widget.dart';
   argumentNames: ["initAction"],
 )
 class MainPage extends StatefulWidget {
-  final String initAction;
+  final int initAction;
 
   const MainPage({
     Key key,
@@ -60,10 +60,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     super.initState();
     debugPrint('CurrentUser ${UserAPI.currentUser}');
 
-    _tabIndex = Provider.of<SettingsProvider>(currentContext, listen: false).homeSplashIndex;
-    if (widget.initAction != null) {
-      _tabIndex = pagesTitle.indexOf(widget.initAction);
-    }
+    _tabIndex = widget.initAction ??
+        Provider.of<SettingsProvider>(currentContext, listen: false).homeSplashIndex;
 
     initPushService();
     initNotification();
@@ -71,14 +69,10 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
     Instances.eventBus
       ..on<ActionsEvent>().listen((event) {
-        if (event.type == 'action_home') {
-          _selectedTab(0);
-        } else if (event.type == 'action_apps') {
-          _selectedTab(1);
-        } else if (event.type == 'action_message') {
-          _selectedTab(2);
-        } else if (event.type == 'action_user') {
-          _selectedTab(3);
+        final index = Constants.quickActionsList.keys.toList().indexOf(event.type);
+        if (index != -1) {
+          _selectedTab(index);
+          if (mounted) setState(() {});
         }
       });
   }
@@ -193,9 +187,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           selectedColor: currentThemeColor,
           onTabSelected: _selectedTab,
           showText: false,
-          initIndex: pagesTitle.indexOf(widget.initAction) == -1
-              ? _tabIndex
-              : pagesTitle.indexOf(widget.initAction),
+          initIndex: _tabIndex,
           items: [
             ...List<FABBottomAppBarItem>.generate(
               pagesTitle.length,

@@ -71,7 +71,7 @@ class BackpackItemType {
   }
 }
 
-@FFRoute(name: 'openjmu://backpack', routeName: '背包页')
+@FFRoute(name: "openjmu://backpack", routeName: "背包页")
 class BackpackPage extends StatefulWidget {
   @override
   _BackpackPageState createState() => _BackpackPageState();

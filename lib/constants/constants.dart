@@ -29,7 +29,14 @@ const double kAppBarHeight = 75.0;
 class Constants {
   const Constants._();
 
-  static final developerList = <int>[
+  static const quickActionsList = <String, String>{
+    'actions_home': '广场',
+    'actions_apps': '应用',
+    'actions_message': '消息',
+    'actions_mine': '我的',
+  };
+
+  static const developerList = <int>[
     136172,
     182999,
     164466,
@@ -42,21 +49,21 @@ class Constants {
     183824
   ];
 
-  static final endLineTag = '👀 没有更多了';
+  static const endLineTag = '👀 没有更多了';
 
   /// Fow news list.
   static final appId = Platform.isIOS ? 274 : 273;
-  static final apiKey = 'c2bd7a89a377595c1da3d49a0ca825d5';
-  static final cloudId = 'jmu';
+  static const apiKey = 'c2bd7a89a377595c1da3d49a0ca825d5';
+  static const cloudId = 'jmu';
   static final deviceType = Platform.isIOS ? 'iPhone' : 'Android';
-  static final marketTeamId = 430;
-  static final unitCode = 'jmu';
-  static final unitId = 55;
+  static const marketTeamId = 430;
+  static const unitCode = 'jmu';
+  static const unitId = 55;
 
-  static final postApiKeyAndroid = '1FD8506EF9FF0FAB7CAFEBB610F536A1';
-  static final postApiSecretAndroid = 'E3277DE3AED6E2E5711A12F707FA2365';
-  static final postApiKeyIOS = '3E63F9003DF7BE296A865910D8DEE630';
-  static final postApiSecretIOS = '773958E5CFE0FF8252808C417A8ECCAB';
+  static const postApiKeyAndroid = '1FD8506EF9FF0FAB7CAFEBB610F536A1';
+  static const postApiSecretAndroid = 'E3277DE3AED6E2E5711A12F707FA2365';
+  static const postApiKeyIOS = '3E63F9003DF7BE296A865910D8DEE630';
+  static const postApiSecretIOS = '773958E5CFE0FF8252808C417A8ECCAB';
 
   /// Request header for team.
   static get teamHeader => {

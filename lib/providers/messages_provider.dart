@@ -15,7 +15,7 @@ class MessagesProvider with ChangeNotifier {
   Map<int, List> get appsMessages => _appsMessages;
 //  Map<int, List> get personalMessages => _personalMessages;
 
-  int get unreadCount => appsMessages.values.fold(
+  int get unreadCount => (appsMessages?.values ?? []).fold(
       0,
       (initialValue, list) =>
           initialValue +

@@ -336,13 +336,11 @@ class _PostCardState extends State<PostCard> {
               countBuilder: (int count, bool isLiked, String text) => SizedBox(
                 width: suSetWidth(40.0),
                 child: Text(
-                  (isLiked ? moreThanOne(count) : moreThanZero(count)) > 0 ? text : '',
+                  count > 0 ? text : '',
                   style: TextStyle(
                     color: isLiked
                         ? currentThemeColor
-                        : currentBrightness == Brightness.dark
-                            ? actionTextColorDark
-                            : actionTextColorLight,
+                        : currentIsDark ? actionTextColorDark : actionTextColorLight,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),
@@ -356,12 +354,10 @@ class _PostCardState extends State<PostCard> {
                 'assets/icons/postActions/praise-fill.svg',
                 color: isLiked
                     ? currentThemeColor
-                    : currentBrightness == Brightness.dark
-                        ? actionIconColorDark
-                        : actionIconColorLight,
+                    : currentIsDark ? actionIconColorDark : actionIconColorLight,
                 width: suSetWidth(26.0),
               ),
-              likeCount: praises,
+              likeCount: widget.post.isLike ? moreThanOne(praises) : moreThanZero(praises),
               likeCountAnimationType: LikeCountAnimationType.none,
               likeCountPadding: EdgeInsets.symmetric(
                 horizontal: suSetWidth(10.0),
@@ -378,9 +374,7 @@ class _PostCardState extends State<PostCard> {
               onPressed: null,
               icon: SvgPicture.asset(
                 'assets/icons/postActions/comment-fill.svg',
-                color: currentBrightness == Brightness.dark
-                    ? actionIconColorDark
-                    : actionIconColorLight,
+                color: currentIsDark ? actionIconColorDark : actionIconColorLight,
                 width: suSetWidth(26.0),
               ),
               label: SizedBox(
@@ -388,9 +382,7 @@ class _PostCardState extends State<PostCard> {
                 child: Text(
                   comments == 0 ? '' : '$comments',
                   style: TextStyle(
-                    color: currentBrightness == Brightness.dark
-                        ? actionTextColorDark
-                        : actionTextColorLight,
+                    color: currentIsDark ? actionTextColorDark : actionTextColorLight,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),
@@ -412,9 +404,7 @@ class _PostCardState extends State<PostCard> {
               },
               icon: SvgPicture.asset(
                 'assets/icons/postActions/forward-fill.svg',
-                color: currentBrightness == Brightness.dark
-                    ? actionIconColorDark
-                    : actionIconColorLight,
+                color: currentIsDark ? actionIconColorDark : actionIconColorLight,
                 width: suSetWidth(26.0),
               ),
               label: SizedBox(
@@ -422,9 +412,7 @@ class _PostCardState extends State<PostCard> {
                 child: Text(
                   forwards == 0 ? '' : '$forwards',
                   style: TextStyle(
-                    color: currentBrightness == Brightness.dark
-                        ? actionTextColorDark
-                        : actionTextColorLight,
+                    color: currentIsDark ? actionTextColorDark : actionTextColorLight,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),

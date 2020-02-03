@@ -126,6 +126,10 @@ Widget _defaultTransitionsBuilder(
 }
 
 Route<dynamic> onGenerateRouteHelper(RouteSettings settings, Widget child) {
+  assert(
+    child != null,
+    'child cannot be null otherwise no route can be pushed when error occured.',
+  );
   final routeResult = getRouteResult(
     name: settings.name,
     arguments: settings.arguments,

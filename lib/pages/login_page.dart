@@ -7,19 +7,8 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/rounded_check_box.dart';
 import 'package:openjmu/widgets/announcement/announcement_widget.dart';
 
-@FFRoute(
-  name: "openjmu://login",
-  routeName: "登录页",
-  argumentNames: ["initAction"],
-)
+@FFRoute(name: "openjmu://login", routeName: "登录页")
 class LoginPage extends StatefulWidget {
-  final String initAction;
-
-  const LoginPage({
-    Key key,
-    this.initAction,
-  }) : super(key: key);
-
   @override
   LoginPageState createState() => LoginPageState();
 }
@@ -469,7 +458,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
           navigatorState.pushNamedAndRemoveUntil(
             Routes.OPENJMU_HOME,
             (_) => false,
-            arguments: {'initAction': widget.initAction},
+            arguments: {'initAction': null},
           );
         } else {
           _login = false;

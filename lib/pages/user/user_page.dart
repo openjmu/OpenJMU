@@ -731,9 +731,9 @@ class _UserPageState extends State<UserPage>
 }
 
 @FFRoute(
-  name: 'openjmu://userlist',
-  routeName: '用户列表页',
-  argumentNames: ['user', 'type'],
+  name: "openjmu://userlist",
+  routeName: "用户列表页",
+  argumentNames: ["user", "type"],
 )
 class UserListPage extends StatefulWidget {
   final UserInfo user;

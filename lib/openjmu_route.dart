@@ -163,9 +163,7 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case "openjmu://login":
       return RouteResult(
-        widget: LoginPage(
-          initAction: arguments['initAction'],
-        ),
+        widget: LoginPage(),
         routeName: "登录页",
       );
     case "openjmu://news-detail":
@@ -382,8 +380,7 @@ class Routes {
   /// [name] : openjmu://chat-app-message-page
   /// [routeName] : 应用消息页
   /// [arguments] : [app]
-  static const String OPENJMU_CHAT_APP_MESSAGE_PAGE =
-      "openjmu://chat-app-message-page";
+  static const String OPENJMU_CHAT_APP_MESSAGE_PAGE = "openjmu://chat-app-message-page";
 
   /// 通知页
   ///
@@ -395,8 +392,7 @@ class Routes {
   ///
   /// [name] : openjmu://team-notifications
   /// [routeName] : 小组通知页
-  static const String OPENJMU_TEAM_NOTIFICATIONS =
-      "openjmu://team-notifications";
+  static const String OPENJMU_TEAM_NOTIFICATIONS = "openjmu://team-notifications";
 
   /// 启动页
   ///
@@ -435,7 +431,6 @@ class Routes {
   ///
   /// [name] : openjmu://login
   /// [routeName] : 登录页
-  /// [arguments] : [initAction]
   static const String OPENJMU_LOGIN = "openjmu://login";
 
   /// 新闻详情页

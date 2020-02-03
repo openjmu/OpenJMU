@@ -373,7 +373,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                   end: currentThemeColor,
                 ),
                 countBuilder: (int count, bool isLiked, String text) => Text(
-                  (isLiked ? moreThanOne(count) : moreThanZero(count)) > 0 ? text : '赞',
+                  count > 0 ? text : '赞',
                   style: Theme.of(context).textTheme.body1.copyWith(
                         color:
                             isLiked ? currentThemeColor : Theme.of(context).textTheme.body1.color,
@@ -389,7 +389,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                   color: isLiked ? currentThemeColor : Theme.of(context).textTheme.body1.color,
                   width: suSetWidth(iconSize),
                 ),
-                likeCount: praises,
+                likeCount: widget.post.isLike ? moreThanOne(praises) : moreThanZero(praises),
                 likeCountAnimationType: LikeCountAnimationType.none,
                 likeCountPadding: EdgeInsets.symmetric(
                   horizontal: suSetWidth(10.0),
