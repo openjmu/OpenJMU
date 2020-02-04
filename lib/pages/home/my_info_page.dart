@@ -165,10 +165,10 @@ class MyInfoPageState extends State<MyInfoPage> {
                             valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
-                      : Icon(
-                          Icons.assignment_turned_in,
+                      : SvgPicture.asset(
+                          'assets/icons/sign-line.svg',
                           color: Colors.white,
-                          size: suSetWidth(26.0),
+                          width: suSetWidth(26.0),
                         ),
                 ),
                 Text(

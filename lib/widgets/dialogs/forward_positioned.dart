@@ -204,7 +204,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
     ).then((user) {
       if (_focusNode.canRequestFocus) _focusNode.requestFocus();
       if (user != null) {
-        Future.delayed(const Duration(milliseconds: 250), () {
+        Future.delayed(250.milliseconds, () {
           insertText('<M ${user.id}>@${user.nickname}<\/M>');
         });
       }

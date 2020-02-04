@@ -35,7 +35,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   static final pagesTitle = <String>['广场', '应用', '消息'];
   static final pagesIcon = <String>['square', 'apps', 'messages'];
   static const bottomBarHeight = 72.0;
-  double get bottomBarIconSize => bottomBarHeight / 2.15;
+  double get bottomBarIconSize => bottomBarHeight / 1.9;
 
   static TextStyle get tabSelectedTextStyle => TextStyle(
         fontSize: suSetSp(23.0),
@@ -197,12 +197,12 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
               text: '我的',
               child: Center(
                 child: SizedBox.fromSize(
-                  size: Size.square(suSetWidth(bottomBarIconSize * 1.5)),
+                  size: Size.square(suSetWidth(bottomBarIconSize * 1.25)),
                   child: AnimatedContainer(
                     duration: 200.milliseconds,
                     curve: Curves.easeInOut,
-                    width: suSetWidth(bottomBarHeight * 0.55),
-                    height: suSetWidth(bottomBarHeight * 0.55),
+                    width: suSetWidth(bottomBarHeight * 0.4),
+                    height: suSetWidth(bottomBarHeight * 0.4),
                     padding: EdgeInsets.all(suSetWidth(3.0)),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,

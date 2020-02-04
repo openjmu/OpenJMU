@@ -419,13 +419,11 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
     );
     if (confirm) {
       final _loadingDialogController = LoadingDialogController();
-      showDialog(
-        context: context,
-        builder: (BuildContext dialogContext) => LoadingDialog(
-          text: '正在删除评论',
-          controller: _loadingDialogController,
-          isGlobal: false,
-        ),
+      LoadingDialog.show(
+        context,
+        text: '正在删除评论',
+        controller: _loadingDialogController,
+        isGlobal: false,
       );
       CommentAPI.deleteComment(comment.post.id, comment.id).then((response) {
         _loadingDialogController.changeState('success', '评论删除成功');
@@ -437,72 +435,26 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
     }
   }
 
-  void showActions(int index) {
-    showDialog<Null>(
-      context: context,
-      builder: (BuildContext context) => SimpleDialog(
-        backgroundColor: currentThemeColor,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              if (_comments[index].fromUserUid == UserAPI.currentUser.uid ||
-                  widget.post.uid == UserAPI.currentUser.uid)
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => confirmDelete(context, _comments[index]),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.all(suSetWidth(6.0)),
-                        child: Icon(
-                          Icons.delete,
-                          size: suSetWidth(44.0),
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        '删除评论',
-                        style: TextStyle(fontSize: suSetSp(19.0), color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  Clipboard.setData(ClipboardData(
-                    text: replaceMentionTag(_comments[index].content),
-                  ));
-                  showToast('已复制到剪贴板');
-                  Navigator.of(context).pop();
-                },
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(suSetWidth(6.0)),
-                      child: Icon(
-                        Icons.content_copy,
-                        size: suSetWidth(44.0),
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      '复制评论',
-                      style: TextStyle(
-                        fontSize: suSetSp(19.0),
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+  void showActions(context, int index) {
+    ConfirmationBottomSheet.show(
+      context,
+      children: <Widget>[
+        ConfirmationBottomSheetAction(
+          icon: Icon(Icons.visibility_off),
+          text: '删除评论',
+          onTap: () => confirmDelete(context, _comments[index]),
+        ),
+        ConfirmationBottomSheetAction(
+          icon: Icon(Icons.report),
+          text: '复制评论',
+          onTap: () {
+            Clipboard.setData(ClipboardData(
+              text: replaceMentionTag(_comments[index].content),
+            ));
+            showToast('已复制到剪贴板');
+          },
+        ),
+      ],
     );
   }
 
@@ -533,7 +485,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
                       return SizedBox.shrink();
                     }
                     return InkWell(
-                      onTap: () => showActions(index),
+                      onTap: () => showActions(context, index),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[

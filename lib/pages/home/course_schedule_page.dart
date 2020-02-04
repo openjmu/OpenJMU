@@ -88,45 +88,13 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
       );
   }
 
-  void showRemarkDetail() {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) {
-        return SimpleDialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(suSetWidth(15.0)),
-          ),
-          backgroundColor: Theme.of(context).canvasColor.withOpacity(0.8),
-          contentPadding: EdgeInsets.zero,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(20.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: suSetHeight(10.0)),
-                    child: Text(
-                      '班级备注',
-                      style: Theme.of(context).textTheme.title.copyWith(
-                            fontSize: suSetSp(24.0),
-                          ),
-                    ),
-                  ),
-                  Selector<CoursesProvider, String>(
-                    selector: (_, provider) => provider.remark,
-                    builder: (_, remark, __) => Text(
-                      '$remark',
-                      style: TextStyle(fontSize: suSetSp(20.0)),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
+  void showRemarkDetail(context) {
+    final provider = Provider.of<CoursesProvider>(context, listen: false);
+    ConfirmationDialog.show(
+      context,
+      title: '班级备注',
+      content: '${provider.remark}',
+      cancelLabel: '返回',
     );
   }
 
@@ -200,7 +168,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
 
   Widget get remarkWidget => GestureDetector(
         behavior: HitTestBehavior.opaque,
-        onTap: showRemarkDetail,
+        onTap: () => showRemarkDetail(context),
         child: Container(
           width: Screens.width,
           constraints: BoxConstraints(
@@ -486,13 +454,11 @@ class CourseWidget extends StatelessWidget {
   void showCoursesDetail(context) {
     showDialog(
       context: context,
-      builder: (context) {
-        return CoursesDialog(
-          courseList: courseList,
-          currentWeek: currentWeek,
-          coordinate: coordinate,
-        );
-      },
+      builder: (_) => CoursesDialog(
+        courseList: courseList,
+        currentWeek: currentWeek,
+        coordinate: coordinate,
+      ),
     );
   }
 

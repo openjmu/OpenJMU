@@ -120,36 +120,13 @@ class TeamCommentPreviewCard extends StatelessWidget {
       );
 
   void confirmDelete(context, TeamPostProvider provider) async {
-    final result = await showCupertinoDialog<bool>(
-      context: context,
-      builder: (context) => CupertinoAlertDialog(
-        title: Text(
-          '删除此楼',
-        ),
-        content: Text(
-          '是否删除该楼内容？',
-        ),
-        actions: <Widget>[
-          CupertinoDialogAction(
-            child: Text('确认'),
-            isDefaultAction: false,
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-            textStyle: TextStyle(color: currentThemeColor),
-          ),
-          CupertinoDialogAction(
-            child: Text('取消'),
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-            textStyle: TextStyle(color: currentThemeColor),
-          ),
-        ],
-      ),
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '删除此楼',
+      content: '是否删除该楼内容',
+      showConfirm: true,
     );
-    if (result != null && result) delete(provider);
+    if (confirm) delete(provider);
   }
 
   void delete(TeamPostProvider provider) {

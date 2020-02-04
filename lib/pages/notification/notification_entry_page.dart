@@ -376,7 +376,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
                         child: SvgPicture.asset(
                           'assets/icons/addButton/${items[itemIndex]['name']}.svg',
                           color: Colors.white,
-                          width: suSetWidth(28.0),
+                          width: suSetWidth(36.0),
                         ),
                       ),
                       if (items[itemIndex]['notifications'].total > 0)

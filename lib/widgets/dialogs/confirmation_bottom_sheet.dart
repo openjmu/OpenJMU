@@ -346,7 +346,7 @@ class ConfirmationBottomSheetAction extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        onTap();
+        if (onTap != null) onTap();
         Navigator.of(context).pop();
       },
       child: Padding(

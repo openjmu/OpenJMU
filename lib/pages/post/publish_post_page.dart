@@ -83,7 +83,6 @@ class PublishPostPageState extends State<PublishPostPage> {
       context: context,
       builder: (BuildContext context) => MentionPeopleDialog(),
     ).then((result) {
-      debugPrint('Popped.');
       if (_focusNode.canRequestFocus) _focusNode.requestFocus();
       if (result != null) {
         debugPrint('Mentioned User: ${result.toString()}');
@@ -444,10 +443,7 @@ class PublishPostPageState extends State<PublishPostPage> {
                 ),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => ConventionDialog(),
-                    );
+                    showDialog(context: context, builder: (_) => ConventionDialog());
                   }),
             TextSpan(text: '，且发布的内容符合公约要求。'),
           ]),
@@ -463,19 +459,10 @@ class PublishPostPageState extends State<PublishPostPage> {
         setState(() {
           isLoading = true;
         });
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            if (assets.length > 0) {
-              return LoadingDialog(
-                text: '正在上传图片 (1/${assets.length})',
-                controller: _dialogController,
-              );
-            } else {
-              return LoadingDialog(text: '正在发布动态...', controller: _dialogController);
-            }
-          },
+        LoadingDialog.show(
+          context,
+          controller: _dialogController,
+          text: assets.length > 0 ? '正在上传图片 (1/${assets.length})' : '正在发布动态...',
         );
         Map<String, dynamic> data = {};
         data['category'] = 'text';

@@ -102,64 +102,49 @@ class PostSquareListPageState extends State<PostSquareListPage>
         tabs: List<Tab>.generate(tabs.length, (index) => Tab(text: tabs[index])),
       );
 
-  Widget get scanQrCodeButton => SizedBox(
-        width: suSetWidth(60.0),
-        child: IconButton(
-          alignment: Alignment.centerRight,
-          icon: SvgPicture.asset(
-            'assets/icons/scan-line.svg',
-            color: Theme.of(context).iconTheme.color.withOpacity(0.3),
-            width: suSetWidth(32.0),
-            height: suSetWidth(32.0),
-          ),
-          onPressed: () async {
-            final permissions = await PermissionHandler().requestPermissions(
-              [PermissionGroup.camera],
-            );
-            if (permissions[PermissionGroup.camera] == PermissionStatus.granted) {
-              navigatorState.pushNamed(Routes.OPENJMU_SCAN_QRCODE);
-            }
-          },
+  Widget get scanQrCodeButton => IconButton(
+        icon: SvgPicture.asset(
+          'assets/icons/scan-line.svg',
+          color: Theme.of(context).iconTheme.color.withOpacity(0.3),
+          width: suSetWidth(32.0),
+          height: suSetWidth(32.0),
         ),
+        onPressed: () async {
+          final permissions = await PermissionHandler().requestPermissions(
+            [PermissionGroup.camera],
+          );
+          if (permissions[PermissionGroup.camera] == PermissionStatus.granted) {
+            navigatorState.pushNamed(Routes.OPENJMU_SCAN_QRCODE);
+          }
+        },
       );
 
-  Widget get searchButton => SizedBox(
-        width: suSetWidth(60.0),
-        child: SvgPicture.asset(
+  Widget get searchButton => IconButton(
+        icon: SvgPicture.asset(
           'assets/icons/search-line.svg',
           color: Theme.of(context).iconTheme.color.withOpacity(0.3),
           width: suSetWidth(32.0),
           height: suSetWidth(32.0),
         ),
+        onPressed: () {
+          navigatorState.pushNamed(Routes.OPENJMU_SEARCH, arguments: {'content': null});
+        },
       );
 
-  Widget get searchBar => Expanded(
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            navigatorState.pushNamed(Routes.OPENJMU_SEARCH, arguments: {'content': null});
-          },
-          child: Container(
-            height: suSetHeight(48.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(suSetWidth(10.0)),
-              color: Theme.of(context).canvasColor,
-            ),
-            child: Row(
-              children: <Widget>[
-                searchButton,
-                Expanded(
-                  child: Text(
-                    '搜索',
-                    style: TextStyle(
-                      color: Theme.of(context).iconTheme.color.withOpacity(0.3),
-                      fontSize: MainPageState.tabUnselectedTextStyle.fontSize,
-                    ),
-                  ),
-                ),
-                scanQrCodeButton,
-              ],
-            ),
+  Widget get searchBar => Align(
+        alignment: Alignment.centerRight,
+        child: Container(
+          height: suSetHeight(48.0),
+          decoration: BoxDecoration(
+            borderRadius: maxBorderRadius,
+            color: Theme.of(context).canvasColor,
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              searchButton,
+              scanQrCodeButton,
+            ],
           ),
         ),
       );
@@ -237,6 +222,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
                 child: Row(
                   children: <Widget>[
                     tabBar,
+                    Spacer(),
                     searchBar,
                     notificationButton,
                   ],

@@ -242,11 +242,12 @@ class CommentPositionedState extends State<CommentPositioned> {
       context: context,
       builder: (BuildContext context) => MentionPeopleDialog(),
     ).then((user) {
-      FocusScope.of(context).requestFocus(_focusNode);
-      if (user != null)
-        Future.delayed(Duration(milliseconds: 250), () {
+      _focusNode.requestFocus();
+      if (user != null) {
+        Future.delayed(250.milliseconds, () {
           insertText('<M ${user.id}>@${user.nickname}<\/M>');
         });
+      }
     });
   }
 

@@ -297,7 +297,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                       child: SvgPicture.asset(
                         'assets/icons/addButton/${itemTitles[index]}.svg',
                         color: Colors.white,
-                        width: suSetWidth(32.0),
+                        width: suSetWidth(40.0),
                       ),
                     ),
                   ),

@@ -60,12 +60,10 @@ class _ImageCropPageState extends State<ImageCropPage> {
 
   void _cropImage(context) async {
     if (_cropping) return;
-    showDialog<Null>(
-      context: context,
-      builder: (BuildContext ctx) => LoadingDialog(
-        text: '正在更新头像',
-        controller: _controller,
-      ),
+    LoadingDialog.show(
+      context,
+      text: '正在更新头像',
+      controller: _controller,
     );
     _cropping = true;
     try {

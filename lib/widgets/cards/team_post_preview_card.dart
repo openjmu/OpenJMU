@@ -28,32 +28,13 @@ class TeamPostPreviewCard extends StatelessWidget {
   final actionTextColorLight = const Color(0xffBDBDBD);
 
   void confirmDelete(context) async {
-    final result = await showCupertinoDialog<bool>(
-      context: context,
-      builder: (context) => CupertinoAlertDialog(
-        title: Text('删除动态'),
-        content: Text('是否删除该条动态？'),
-        actions: <Widget>[
-          CupertinoDialogAction(
-            child: Text('确认'),
-            isDefaultAction: false,
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-            textStyle: TextStyle(color: currentThemeColor),
-          ),
-          CupertinoDialogAction(
-            child: Text('取消'),
-            isDefaultAction: true,
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-            textStyle: TextStyle(color: currentThemeColor),
-          ),
-        ],
-      ),
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '删除动态',
+      content: '是否删除该条动态?',
+      showConfirm: true,
     );
-    if (result != null && result) delete(context);
+    if (confirm) delete(context);
   }
 
   void delete(context) {

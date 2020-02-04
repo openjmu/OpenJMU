@@ -181,13 +181,11 @@ class CommentCard extends StatelessWidget {
     );
     if (confirm) {
       final _loadingDialogController = LoadingDialogController();
-      showDialog(
-        context: context,
-        builder: (BuildContext dialogContext) => LoadingDialog(
-          text: '正在删除评论',
-          controller: _loadingDialogController,
-          isGlobal: false,
-        ),
+      LoadingDialog.show(
+        context,
+        controller: _loadingDialogController,
+        text: '正在删除评论',
+        isGlobal: false,
       );
       CommentAPI.deleteComment(comment.post.id, comment.id).then((response) {
         _loadingDialogController.changeState('success', '评论删除成功');
@@ -199,115 +197,47 @@ class CommentCard extends StatelessWidget {
     }
   }
 
-  Widget dialog(context) {
+  void showAction(context) {
     if (comment.post != null) {
-      return SimpleDialog(
-        backgroundColor: currentThemeColor,
+      ConfirmationBottomSheet.show(
+        context,
         children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              if (comment.fromUserUid == UserAPI.currentUser.uid ||
-                  comment.post.uid == UserAPI.currentUser.uid)
-                GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: () => confirmDelete(context),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.all(suSetWidth(6.0)),
-                        child: Icon(
-                          Icons.delete,
-                          size: suSetWidth(36.0),
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        '删除评论',
-                        style: TextStyle(fontSize: suSetSp(20.0), color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  Navigator.pop(context);
-                  navigatorState.pushNamed(
-                    Routes.OPENJMU_ADD_COMMENT,
-                    arguments: {'post': comment.post, 'comment': comment},
-                  );
-                },
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(suSetWidth(6.0)),
-                      child: Icon(Icons.reply, size: suSetWidth(36.0), color: Colors.white),
-                    ),
-                    Text(
-                      '回复评论',
-                      style: TextStyle(fontSize: suSetSp(20.0), color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  Navigator.of(context).pop();
-                  navigatorState.pushNamed(
-                    Routes.OPENJMU_POST_DETAIL,
-                    arguments: {
-                      'post': comment.post,
-                      'parentContext': context,
-                    },
-                  );
-                },
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(suSetWidth(6.0)),
-                      child: Icon(Icons.pageview, size: suSetWidth(36.0), color: Colors.white),
-                    ),
-                    Text(
-                      '查看动态',
-                      style: TextStyle(fontSize: suSetSp(20.0), color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          )
+          if (comment.fromUserUid == currentUser.uid || comment.post.uid == currentUser.uid)
+            ConfirmationBottomSheetAction(
+              text: '删除评论',
+              icon: Icon(Icons.delete, size: suSetWidth(36.0), color: Colors.white),
+              onTap: () => confirmDelete(context),
+            ),
+          ConfirmationBottomSheetAction(
+            text: '回复评论',
+            icon: Icon(Icons.reply, size: suSetWidth(36.0), color: Colors.white),
+            onTap: () => navigatorState.pushNamed(
+              Routes.OPENJMU_ADD_COMMENT,
+              arguments: {'post': comment.post, 'comment': comment},
+            ),
+          ),
+          ConfirmationBottomSheetAction(
+            text: '查看动态',
+            icon: Icon(Icons.pageview, size: suSetWidth(36.0), color: Colors.white),
+            onTap: () => navigatorState.pushNamed(
+              Routes.OPENJMU_POST_DETAIL,
+              arguments: {
+                'post': comment.post,
+                'parentContext': context,
+              },
+            ),
+          ),
         ],
       );
     } else {
-      return SimpleDialog(
-        backgroundColor: Colors.redAccent,
-        contentPadding: EdgeInsets.symmetric(
-          vertical: suSetHeight(16.0),
-        ),
-        children: <Widget>[
-          Center(
-            child: Text(
-              '该动态已被屏蔽或删除',
-              style: TextStyle(color: Colors.white, fontSize: suSetSp(22.0)),
-            ),
-          )
-        ],
-      );
+      ConfirmationDialog.show(context, title: '无可用操作', content: '该动态已被删除');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => showDialog<Null>(
-        context: context,
-        builder: (BuildContext context) => dialog(context),
-      ),
+      onTap: () => showAction(context),
       child: Container(
         margin: EdgeInsets.symmetric(
           horizontal: suSetWidth(12.0),

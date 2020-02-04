@@ -468,22 +468,10 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
         setState(() {
           isLoading = true;
         });
-        showDialog(
-          context: context,
-          barrierDismissible: false,
-          builder: (BuildContext context) {
-            if (assets.length > 0) {
-              return LoadingDialog(
-                text: '正在上传图片 (1/${assets.length})',
-                controller: _dialogController,
-              );
-            } else {
-              return LoadingDialog(
-                text: '正在发布动态...',
-                controller: _dialogController,
-              );
-            }
-          },
+        LoadingDialog.show(
+          context,
+          controller: _dialogController,
+          text: assets.length > 0 ? '正在上传图片 (1/${assets.length})' : '正在发布动态...',
         );
 
         if (assets.length > 0) {

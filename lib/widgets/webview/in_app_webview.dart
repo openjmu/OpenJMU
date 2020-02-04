@@ -116,30 +116,27 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
   }
 
   Future<bool> waitForConfirmation(String applicationLabel) async {
-    return showDialog<bool>(
-      context: context,
-      builder: (_) => ConfirmationDialog(
-        title: '跳转外部应用',
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
-          child: Text.rich(
-            TextSpan(
-              children: <InlineSpan>[
-                TextSpan(text: '即将打开应用\n'),
-                TextSpan(
-                  text: '$applicationLabel',
-                  style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            style: TextStyle(fontWeight: FontWeight.normal),
-            textAlign: TextAlign.center,
+    return ConfirmationDialog.show(
+      context,
+      title: '跳转外部应用',
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+        child: Text.rich(
+          TextSpan(
+            children: <InlineSpan>[
+              TextSpan(text: '即将打开应用\n'),
+              TextSpan(
+                text: '$applicationLabel',
+                style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
+          style: TextStyle(fontWeight: FontWeight.normal),
+          textAlign: TextAlign.center,
         ),
-        showConfirm: true,
-        confirmLabel: '允许',
       ),
-      barrierDismissible: false,
+      showConfirm: true,
+      confirmLabel: '允许',
     );
   }
 

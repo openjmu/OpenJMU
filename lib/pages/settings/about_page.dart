@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -159,10 +160,11 @@ class AboutPage extends StatelessWidget {
                         style: TextStyle(fontSize: suSetSp(22.0)),
                       ),
                       Spacer(),
-                      Icon(
-                        Icons.chevron_right,
-                        color: Theme.of(context).dividerColor,
-                        size: suSetWidth(30.0),
+                      SvgPicture.asset(
+                        'assets/icons/arrow-right.svg',
+                        color: Colors.grey,
+                        width: suSetWidth(30.0),
+                        height: suSetWidth(30.0),
                       ),
                     ],
                   ),

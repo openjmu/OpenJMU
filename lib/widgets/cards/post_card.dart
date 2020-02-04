@@ -542,13 +542,11 @@ class _PostCardState extends State<PostCard> {
     );
     if (confirm) {
       final _loadingDialogController = LoadingDialogController();
-      showDialog(
-        context: context,
-        builder: (BuildContext dialogContext) => LoadingDialog(
-          text: '正在删除动态',
-          controller: _loadingDialogController,
-          isGlobal: false,
-        ),
+      LoadingDialog.show(
+        context,
+        controller: _loadingDialogController,
+        text: '正在删除动态',
+        isGlobal: false,
       );
       PostAPI.deletePost(widget.post.id).then((response) {
         _loadingDialogController.changeState('success', '动态删除成功');

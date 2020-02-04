@@ -18,6 +18,22 @@ class LoadingDialog extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => LoadingDialogState();
+
+  static void show(
+    context, {
+    LoadingDialogController controller,
+    String text,
+    bool isGlobal,
+  }) {
+    showDialog<Null>(
+      context: context,
+      builder: (_) => LoadingDialog(
+        controller: controller,
+        text: text,
+        isGlobal: isGlobal,
+      ),
+    );
+  }
 }
 
 class LoadingDialogState extends State<LoadingDialog> {
