@@ -65,11 +65,38 @@ class TransparentRoute extends PageRoute<void> {
   }
 }
 
+/// Max radius for border radius.
+const maxBorderRadius = BorderRadius.all(Radius.circular(999999));
+
 /// Constant widgets.
 ///
 /// This section was declared for widgets that will be reuse in code.
-/// Including [separator], [emptyDivider], [nightModeCover], [badgeIcon], [progressIndicator],
-/// [ScaledImage]
+/// Including [OpenJMULogo], [DeveloperTag], [separator], [emptyDivider], [badgeIcon],
+/// [PlatformProgressIndicator], [LoadMoreIndicator], [ScaledImage]
+
+/// OpenJMU logo.
+class OpenJMULogo extends StatelessWidget {
+  final double width;
+  final double height;
+  final double radius;
+
+  const OpenJMULogo({
+    Key key,
+    this.width = 80.0,
+    this.height,
+    this.radius = 0.0,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return UnconstrainedBox(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(suSetWidth(radius)),
+        child: Image.asset("images/logo_1024.png", width: width, height: height),
+      ),
+    );
+  }
+}
 
 /// Developer tag.
 class DeveloperTag extends StatelessWidget {
@@ -103,13 +130,6 @@ Widget separator(context, {Color color, double height}) => DecoratedBox(
 Widget emptyDivider({double width, double height}) => SizedBox(
       width: width != null ? suSetWidth(width) : null,
       height: height != null ? suSetHeight(height) : null,
-    );
-
-/// Cover when night mode. Used in covering post thumb images.
-Widget get nightModeCover => Positioned.fill(
-      child: DecoratedBox(
-        decoration: BoxDecoration(color: const Color(0x44000000)),
-      ),
     );
 
 /// Badge Icon. Used in notification.

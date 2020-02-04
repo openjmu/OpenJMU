@@ -64,9 +64,7 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
           hoverElevation: 0.0,
           focusElevation: 0.0,
           color: currentThemeColor.withOpacity(0.2),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: maxBorderRadius),
           onPressed: () {
             blurAnimate(true);
             Future.delayed(3.seconds, () {

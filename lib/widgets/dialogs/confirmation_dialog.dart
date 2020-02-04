@@ -15,9 +15,13 @@ class ConfirmationDialog extends StatelessWidget {
   final Widget child;
   final String content;
   final EdgeInsetsGeometry contentPadding;
+  final TextAlign contentAlignment;
+  final Color backgroundColor;
   final bool showConfirm;
   final String confirmLabel;
   final String cancelLabel;
+  final VoidCallback onConfirm;
+  final VoidCallback onCancel;
 
   const ConfirmationDialog({
     Key key,
@@ -26,9 +30,13 @@ class ConfirmationDialog extends StatelessWidget {
     this.child,
     this.content,
     this.contentPadding,
+    this.contentAlignment = TextAlign.center,
+    this.backgroundColor = Colors.transparent,
     this.showConfirm = false,
     this.confirmLabel = '确认',
     this.cancelLabel = '取消',
+    this.onConfirm,
+    this.onCancel,
   })  : assert(
           !(child == null && content == null) && !(child != null && content != null),
           '\'child\' and \'content\' cannot be set or not set at the same time.',
@@ -42,6 +50,7 @@ class ConfirmationDialog extends StatelessWidget {
     Widget child,
     String content,
     EdgeInsetsGeometry contentPadding,
+    TextAlign contentAlignment = TextAlign.center,
     bool showConfirm = false,
     String confirmLabel = '确认',
     String cancelLabel = '取消',
@@ -54,6 +63,7 @@ class ConfirmationDialog extends StatelessWidget {
             child: child,
             content: content,
             contentPadding: contentPadding,
+            contentAlignment: contentAlignment,
             showConfirm: showConfirm,
             confirmLabel: confirmLabel,
             cancelLabel: cancelLabel,
@@ -88,7 +98,13 @@ class ConfirmationDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(suSetWidth(10.0)),
         ),
         color: Theme.of(context).canvasColor,
-        onPressed: () => Navigator.of(context).pop(true),
+        onPressed: () {
+          if (onConfirm != null) {
+            onConfirm();
+          } else {
+            Navigator.of(context).pop(true);
+          }
+        },
         child: Text(
           confirmLabel,
           style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
@@ -109,7 +125,13 @@ class ConfirmationDialog extends StatelessWidget {
           borderRadius: BorderRadius.circular(suSetWidth(10.0)),
         ),
         color: currentThemeColor.withOpacity(0.8),
-        onPressed: () => Navigator.of(context).pop(false),
+        onPressed: () {
+          if (onCancel != null) {
+            onCancel();
+          } else {
+            Navigator.of(context).pop(false);
+          }
+        },
         child: Text(
           cancelLabel,
           style: TextStyle(
@@ -125,19 +147,19 @@ class ConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Navigator.of(context).pop(false);
-        return false;
-      },
-      child: Center(
-        child: Material(
-          type: MaterialType.transparency,
+    return Material(
+      color: backgroundColor ?? Colors.transparent,
+      child: WillPopScope(
+        onWillPop: () async {
+          Navigator.of(context).pop(false);
+          return false;
+        },
+        child: Center(
           child: Container(
             constraints: BoxConstraints(
               minWidth: Screens.width / 5,
               maxWidth: Screens.width / 1.25,
-              maxHeight: Screens.height / 2,
+              maxHeight: Screens.height / 1.5,
             ),
             padding: EdgeInsets.all(suSetWidth(30.0)),
             decoration: BoxDecoration(
@@ -148,14 +170,15 @@ class ConfirmationDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 if (title != null) titleWidget(context),
-                Padding(
-                  padding: contentPadding ?? EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
-                  child: child != null
-                      ? child
-                      : ExtendedText(
+                child != null
+                    ? child
+                    : Padding(
+                        padding:
+                            contentPadding ?? EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+                        child: ExtendedText(
                           '$content',
                           style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.normal),
-                          textAlign: TextAlign.center,
+                          textAlign: contentAlignment,
                           specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
                           onSpecialTextTap: (data) {
                             navigatorState.pushNamed(
@@ -164,7 +187,7 @@ class ConfirmationDialog extends StatelessWidget {
                             );
                           },
                         ),
-                ),
+                      ),
                 Row(
                   children: <Widget>[
                     if (showConfirm) confirmButton(context),

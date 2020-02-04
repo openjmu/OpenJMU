@@ -68,17 +68,127 @@ class OTAUtils {
       if (permission != PermissionStatus.granted) {
         final permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
         if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
-          showUpdateDialog();
+          startUpdate();
         } else {
           _tryUpdate();
         }
       } else {
-        showUpdateDialog();
+        startUpdate();
       }
     }
   }
 
-  static void showUpdateDialog() {
+  static Widget updateNotifyDialog(HasUpdateEvent event) {
+    String text;
+    if (event.currentVersion == event.response['version']) {
+      text = '${event.currentVersion}(${event.currentBuild}) ->'
+          '${event.response['version']}(${event.response['buildNumber']})';
+    } else {
+      text = '${event.currentVersion} -> ${event.response['version']}';
+    }
+    return Material(
+      color: Colors.black26,
+      child: Stack(
+        children: <Widget>[
+          if (event.forceUpdate)
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ui.ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+                child: Text(' '),
+              ),
+            ),
+          ConfirmationDialog(
+            child: Expanded(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+                child: Column(
+                  children: <Widget>[
+                    Center(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
+                        child: Text(
+                          'OpenJmu has new version',
+                          style: TextStyle(
+                            color: currentThemeColor,
+                            fontFamily: 'chocolate',
+                            fontSize: suSetSp(28.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Center(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
+                        child: Text(
+                          text,
+                          style: TextStyle(
+                            color: currentThemeColor,
+                            fontFamily: 'chocolate',
+                            fontSize: suSetSp(28.0),
+                          ),
+                        ),
+                      ),
+                    ),
+                    if (!event.forceUpdate)
+                      Center(
+                        child: Container(
+                          margin: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
+                          child: MaterialButton(
+                            color: currentThemeColor,
+                            shape: RoundedRectangleBorder(borderRadius: maxBorderRadius),
+                            onPressed: () {
+                              dismissAllToast();
+                              navigatorState.pushNamed(Routes.OPENJMU_CHANGELOG_PAGE);
+                            },
+                            child: Text(
+                              '查看版本履历',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: suSetSp(20.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Text(
+                          event.response['updateLog'],
+                          style: TextStyle(fontSize: suSetSp(18.0)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            showConfirm: !event.forceUpdate,
+            onConfirm: dismissAllToast,
+            onCancel: _tryUpdate,
+            confirmLabel: '下次一定',
+            cancelLabel: '现在更新',
+          ),
+          Positioned(
+            top: Screens.height / 12,
+            left: 0.0,
+            right: 0.0,
+            child: Center(child: OpenJMULogo(radius: 15.0)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Future<void> showUpdateDialog(HasUpdateEvent event) async {
+    showToastWidget(
+      updateNotifyDialog(event),
+      dismissOtherToast: true,
+      duration: 1.weeks,
+      handleTouch: true,
+    );
+  }
+
+  static void startUpdate() {
     showToastWidget(
       UpdatingDialog(),
       dismissOtherToast: true,
@@ -125,18 +235,12 @@ class OTAUtils {
                       Center(
                         child: Container(
                           margin: EdgeInsets.symmetric(vertical: suSetHeight(12.0)),
-                          child: RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: 'OpenJmu has new version',
-                                  style: TextStyle(
-                                    fontFamily: 'chocolate',
-                                    color: Colors.white,
-                                    fontSize: suSetSp(24.0),
-                                  ),
-                                ),
-                              ],
+                          child: Text(
+                            'OpenJmu has new version',
+                            style: TextStyle(
+                              fontFamily: 'chocolate',
+                              color: Colors.white,
+                              fontSize: suSetSp(24.0),
                             ),
                           ),
                         ),
@@ -208,7 +312,7 @@ class OTAUtils {
   static Future<void> updateChangelog(List data) async {
     final box = HiveBoxes.changelogBox;
     final List<ChangeLog> logs = data.map((log) => ChangeLog.fromJson(log)).toList();
-    if (box.values != null) {
+    if (box.values == null) {
       box.addAll(logs);
     } else {
       if (box.values.toString() != logs.toString()) {

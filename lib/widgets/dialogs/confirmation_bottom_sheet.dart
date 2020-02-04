@@ -86,7 +86,7 @@ class _ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
         width: suSetWidth(54.0),
         height: suSetHeight(8.0),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: maxBorderRadius,
           color: Theme.of(context).dividerColor,
         ),
       );
@@ -125,7 +125,7 @@ class _ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
         height: suSetWidth(60.0),
         margin: EdgeInsets.only(top: suSetHeight(20.0)),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: maxBorderRadius,
           color: currentThemeColor.withOpacity(0.9),
         ),
         child: Center(
@@ -151,7 +151,7 @@ class _ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
         width: Screens.width,
         height: suSetWidth(60.0),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: maxBorderRadius,
           color: Theme.of(context).canvasColor,
         ),
         child: Center(
@@ -345,7 +345,10 @@ class ConfirmationBottomSheetAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: onTap,
+      onTap: () {
+        onTap();
+        Navigator.of(context).pop();
+      },
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: suSetHeight(24.0)),
         child: Row(

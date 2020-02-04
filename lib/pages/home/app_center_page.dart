@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/webapp_icon.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppCenterPage extends StatelessWidget {
   final GlobalKey refreshIndicatorKey;
@@ -50,6 +51,15 @@ class AppCenterPage extends StatelessWidget {
           Routes.OPENJMU_INAPPBROWSER,
           arguments: {'url': webApp.replacedUrl, 'title': webApp.name, 'app': webApp},
         );
+      },
+      onLongPress: () async {
+        final confirm = await ConfirmationDialog.show(
+          context,
+          title: '打开应用',
+          content: '是否使用浏览器打开该应用?',
+          showConfirm: true,
+        );
+        if (confirm) launch(webApp.replacedUrl);
       },
     );
   }

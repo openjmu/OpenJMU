@@ -79,9 +79,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
           ),
           child: UnconstrainedBox(
             child: MaterialButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(500.0),
-              ),
+              shape: RoundedRectangleBorder(borderRadius: maxBorderRadius),
               padding: EdgeInsets.all(suSetHeight(10.0)),
               highlightElevation: 4.0,
               color: currentThemeColor,

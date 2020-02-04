@@ -284,7 +284,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       _body = SpinKitWidget();
     }
 
-    return AnimatedSwitcher(duration: 1.seconds, child: _body);
+    return AnimatedSwitcher(duration: 500.milliseconds, child: _body);
   }
 }
 

@@ -177,7 +177,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
                   child: Visibility(
                     visible: provider.showNotification,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
+                      borderRadius: maxBorderRadius,
                       child: Container(
                         width: suSetWidth(12.0),
                         height: suSetWidth(12.0),

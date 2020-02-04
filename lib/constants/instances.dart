@@ -8,6 +8,7 @@ import 'package:openjmu/pages/home/course_schedule_page.dart';
 
 NavigatorState get navigatorState => Instances.navigatorKey.currentState;
 BuildContext get currentContext => navigatorState.context;
+ThemeData get currentTheme => Theme.of(currentContext);
 Brightness get currentBrightness => Theme.of(currentContext).brightness;
 Color get currentThemeColor => Theme.of(currentContext).accentColor;
 bool get currentIsDark => currentBrightness == Brightness.dark;

@@ -120,18 +120,21 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
       context: context,
       builder: (_) => ConfirmationDialog(
         title: '跳转外部应用',
-        child: Text.rich(
-          TextSpan(
-            children: <InlineSpan>[
-              TextSpan(text: '即将打开应用\n'),
-              TextSpan(
-                text: '$applicationLabel',
-                style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.bold),
-              ),
-            ],
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+          child: Text.rich(
+            TextSpan(
+              children: <InlineSpan>[
+                TextSpan(text: '即将打开应用\n'),
+                TextSpan(
+                  text: '$applicationLabel',
+                  style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            style: TextStyle(fontWeight: FontWeight.normal),
+            textAlign: TextAlign.center,
           ),
-          style: TextStyle(fontWeight: FontWeight.normal),
-          textAlign: TextAlign.center,
         ),
         showConfirm: true,
         confirmLabel: '允许',
@@ -209,7 +212,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
               width: suSetWidth(40.0),
               height: suSetHeight(8.0),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100.0),
+                borderRadius: maxBorderRadius,
                 color: Theme.of(context).iconTheme.color.withOpacity(0.7),
               ),
             ),
@@ -368,12 +371,15 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             allowFileAccessFromFileURLs: true,
             allowUniversalAccessFromFileURLs: true,
             builtInZoomControls: true,
-            displayZoomControls: true,
+            displayZoomControls: false,
             forceDark: currentIsDark
                 ? AndroidInAppWebViewForceDark.FORCE_DARK_ON
                 : AndroidInAppWebViewForceDark.FORCE_DARK_OFF,
+            loadWithOverviewMode: true,
             mixedContentMode: AndroidInAppWebViewMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
             safeBrowsingEnabled: false,
+            supportZoom: true,
+            useWideViewPort: true,
           ),
           ios: IOSInAppWebViewOptions(
             allowsAirPlayForMediaPlayback: true,

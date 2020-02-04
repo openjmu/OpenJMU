@@ -98,14 +98,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
             .toList()
             .indexOf(Constants.quickActionsList.keys.firstWhere((action) => action == event.type));
       })
-      ..on<HasUpdateEvent>().listen((event) {
-        showToastWidget(
-          OTAUtils.updateDialog(event),
-          dismissOtherToast: true,
-          duration: 1.weeks,
-          handleTouch: true,
-        );
-      });
+      ..on<HasUpdateEvent>().listen(OTAUtils.showUpdateDialog);
 
     super.initState();
   }

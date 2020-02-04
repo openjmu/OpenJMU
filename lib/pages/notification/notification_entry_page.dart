@@ -412,14 +412,17 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: willPop,
-      child: wrapper(
-        context,
-        child: SizedBox.fromSize(
-          size: Size.square(Screens.width / 3 * 2),
-          child: Stack(
-            children: List<Widget>.generate(items.length * 2 - 1, (i) => item(context, i)),
+    return IgnorePointer(
+      ignoring: entering || popping,
+      child: WillPopScope(
+        onWillPop: willPop,
+        child: wrapper(
+          context,
+          child: SizedBox.fromSize(
+            size: Size.square(Screens.width / 3 * 2),
+            child: Stack(
+              children: List<Widget>.generate(items.length * 2 - 1, (i) => item(context, i)),
+            ),
           ),
         ),
       ),

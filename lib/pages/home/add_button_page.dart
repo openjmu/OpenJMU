@@ -329,21 +329,24 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: willPop,
-      child: wrapper(
-        context,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 4,
-              children: List<Widget>.generate(itemTitles.length, (i) => item(context, i)),
-            ),
-            SizedBox(height: suSetHeight(120.0)),
-          ],
+    return IgnorePointer(
+      ignoring: entering || popping,
+      child: WillPopScope(
+        onWillPop: willPop,
+        child: wrapper(
+          context,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              GridView.count(
+                shrinkWrap: true,
+                crossAxisCount: 4,
+                children: List<Widget>.generate(itemTitles.length, (i) => item(context, i)),
+              ),
+              SizedBox(height: suSetHeight(120.0)),
+            ],
+          ),
         ),
       ),
     );

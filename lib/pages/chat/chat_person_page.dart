@@ -142,9 +142,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
             maxHeight: suSetSp(140.0),
           ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(
-              suSetSp(30.0),
-            ),
+            borderRadius: BorderRadius.circular(suSetSp(30.0)),
             color: Theme.of(context).primaryColor,
           ),
           padding: EdgeInsets.all(suSetSp(14.0)),

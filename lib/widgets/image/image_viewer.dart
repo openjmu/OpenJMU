@@ -34,13 +34,15 @@ class ImageViewer extends StatefulWidget {
   });
 
   @override
-  _ImageViewerState createState() => _ImageViewerState();
+  ImageViewerState createState() => ImageViewerState();
 }
 
-class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin {
-  final rebuild = StreamController<int>.broadcast();
+class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin {
+  final pageStreamController = StreamController<int>.broadcast();
+  final backgroundOpacityStreamController = StreamController<double>.broadcast();
   final slidePageKey = GlobalKey<ExtendedImageSlidePageState>();
   int currentIndex;
+  bool popping = false;
 
   AnimationController _doubleTapAnimationController;
   Animation _doubleTapCurveAnimation;
@@ -75,10 +77,17 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   void dispose() {
     final provider = Provider.of<ThemesProvider>(currentContext, listen: false);
     provider.setSystemUIDark(provider.dark);
-    rebuild?.close();
+    pageStreamController?.close();
+    backgroundOpacityStreamController?.close();
     _doubleTapAnimationController?.dispose();
 
     super.dispose();
+  }
+
+  void pop() {
+    if (popping) return;
+    popping = true;
+    backgroundOpacityStreamController.add(0.0);
   }
 
   Future<void> _downloadImage(url, {AndroidDestinationType destination}) async {
@@ -144,23 +153,28 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   Color slidePageBackgroundHandler(Offset offset, Size pageSize) {
     double opacity = 0.0;
     opacity = offset.distance / (Offset(pageSize.width, pageSize.height).distance / 2.0);
+    backgroundOpacityStreamController.add(1.0 - opacity);
     return Colors.black.withOpacity(math.min(1.0, math.max(1.0 - opacity, 0.0)));
   }
 
   bool slideEndHandler(Offset offset) {
-    return offset.distance > Offset(Screens.width, Screens.height).distance / 7;
+    final shouldEnd = offset.distance > Offset(Screens.width, Screens.height).distance / 7;
+    if (shouldEnd) pop();
+    return shouldEnd;
   }
 
   Widget pageBuilder(context, index) {
     return ImageGestureDetector(
       context: context,
+      imageViewerState: this,
+      slidePageKey: slidePageKey,
       enableTapPop: true,
       onLongPress: () => onLongPress(context),
-      slidePageKey: slidePageKey,
       heroPrefix: widget.heroPrefix,
       child: ExtendedImage.network(
         widget.pics[index].imageUrl,
         fit: BoxFit.contain,
+        colorBlendMode: currentIsDark ? BlendMode.darken : BlendMode.srcIn,
         mode: ExtendedImageMode.gesture,
         onDoubleTap: updateAnimation,
         enableSlideOutPage: true,
@@ -230,49 +244,69 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return ExtendedImageSlidePage(
-      key: slidePageKey,
-      slideAxis: SlideAxis.both,
-      slideType: SlideType.onlyImage,
-      slidePageBackgroundHandler: slidePageBackgroundHandler,
-      slideEndHandler: slideEndHandler,
-      resetPageDuration: widget.heroPrefix != null ? 300.milliseconds : 1.microseconds,
-      child: AnnotatedRegion(
-        value: SystemUiOverlayStyle.light,
-        child: Material(
-          type: MaterialType.transparency,
-          child: Stack(
-            children: <Widget>[
-              ExtendedImageGesturePageView.builder(
-                physics: const BouncingScrollPhysics(),
-                controller: _controller,
-                itemCount: widget.pics.length,
-                itemBuilder: pageBuilder,
-                onPageChanged: (int index) {
-                  currentIndex = index;
-                  rebuild.add(index);
-                },
-                scrollDirection: Axis.horizontal,
-              ),
-              Positioned(
-                top: 0.0,
-                left: 0.0,
-                right: 0.0,
-                child: ViewAppBar(post: widget.post, onMoreClicked: () => onLongPress(context)),
-              ),
-              if (widget.pics.length > 1)
+    return IgnorePointer(
+      ignoring: popping,
+      child: ExtendedImageSlidePage(
+        key: slidePageKey,
+        slideAxis: SlideAxis.both,
+        slideType: SlideType.onlyImage,
+        slidePageBackgroundHandler: slidePageBackgroundHandler,
+        slideEndHandler: slideEndHandler,
+        resetPageDuration: widget.heroPrefix != null ? 300.milliseconds : 1.microseconds,
+        child: AnnotatedRegion(
+          value: SystemUiOverlayStyle.light,
+          child: Material(
+            type: MaterialType.transparency,
+            child: Stack(
+              children: <Widget>[
+                ExtendedImageGesturePageView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  controller: _controller,
+                  itemCount: widget.pics.length,
+                  itemBuilder: pageBuilder,
+                  onPageChanged: (int index) {
+                    currentIndex = index;
+                    pageStreamController.add(index);
+                  },
+                  scrollDirection: Axis.horizontal,
+                ),
                 Positioned(
+                  top: 0.0,
                   left: 0.0,
                   right: 0.0,
-                  bottom: 0.0,
-                  child: ImageList(
-                    controller: _controller,
-                    reBuild: rebuild,
-                    index: currentIndex,
-                    pics: widget.pics,
+                  child: StreamBuilder<double>(
+                    initialData: 1.0,
+                    stream: backgroundOpacityStreamController.stream,
+                    builder: (context, data) => Opacity(
+                      opacity: popping ? 0.0 : data.data,
+                      child: ViewAppBar(
+                        post: widget.post,
+                        onMoreClicked: () => onLongPress(context),
+                      ),
+                    ),
                   ),
                 ),
-            ],
+                if (widget.pics.length > 1)
+                  Positioned(
+                    left: 0.0,
+                    right: 0.0,
+                    bottom: 0.0,
+                    child: StreamBuilder<double>(
+                      initialData: 1.0,
+                      stream: backgroundOpacityStreamController.stream,
+                      builder: (context, data) => Opacity(
+                        opacity: popping ? 0.0 : data.data,
+                        child: ImageList(
+                          controller: _controller,
+                          pageStreamController: pageStreamController,
+                          index: currentIndex,
+                          pics: widget.pics,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -282,13 +316,13 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
 class ImageList extends StatelessWidget {
   final PageController controller;
-  final StreamController<int> reBuild;
+  final StreamController<int> pageStreamController;
   final int index;
   final List<ImageBean> pics;
 
   ImageList({
     this.controller,
-    this.reBuild,
+    this.pageStreamController,
     this.index,
     this.pics,
   });
@@ -309,7 +343,7 @@ class ImageList extends StatelessWidget {
       ),
       child: StreamBuilder<int>(
         initialData: index,
-        stream: reBuild.stream,
+        stream: pageStreamController.stream,
         builder: (context, data) => SizedBox(
           height: suSetHeight(52.0),
           child: Row(
