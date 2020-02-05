@@ -312,15 +312,7 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
     return Scaffold(
       body: Column(
         children: <Widget>[
-          FixedAppBar(
-            title: Text(
-              '版本履历',
-              style: Theme.of(context).textTheme.title.copyWith(
-                    fontSize: suSetSp(23.0),
-                  ),
-            ),
-            centerTitle: true,
-          ),
+          FixedAppBar(title: Text('版本履历')),
           Expanded(
             child: Stack(
               children: <Widget>[

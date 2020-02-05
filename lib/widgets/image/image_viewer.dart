@@ -222,16 +222,17 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
               loader = SpinKitWidget();
               break;
             case LoadState.completed:
-              loader = FadeTransition(
-                opacity: Tween(
-                  begin: 0.0,
-                  end: 1.0,
-                ).animate(AnimationController(
-                  duration: 300.milliseconds,
-                  vsync: this,
-                )..forward()),
-                child: state.completedWidget,
-              );
+              // TODO: GIF will setState and cause this flash.
+//              loader = FadeTransition(
+//                opacity: Tween(
+//                  begin: 0.0,
+//                  end: 1.0,
+//                ).animate(AnimationController(
+//                  duration: 300.milliseconds,
+//                  vsync: this,
+//                )..forward()),
+//                child: state.completedWidget,
+//              );
               break;
             case LoadState.failed:
               break;

@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -38,6 +36,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
   }
 
   void updateSignature(context) {
+    Navigator.of(context).pop();
     final _loadingDialogController = LoadingDialogController();
     LoadingDialog.show(
       context,
@@ -49,9 +48,6 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
       _loadingDialogController.changeState('success', '签名更新成功');
       UserAPI.currentUser.signature = _textEditingController.text;
       Instances.eventBus.fire(SignatureUpdatedEvent(_textEditingController.text));
-      Future.delayed(const Duration(milliseconds: 2300), () {
-        Navigator.of(context).pop();
-      });
     }).catchError((e) {
       debugPrint(e.toString());
       _loadingDialogController.changeState('failed', '签名更新失败');

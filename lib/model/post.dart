@@ -29,7 +29,7 @@ class Post {
   bool isDefaultAvatar;
   Map<String, dynamic> rootTopic;
 
-  Post._({
+  Post({
     this.id,
     this.uid,
     this.nickname,

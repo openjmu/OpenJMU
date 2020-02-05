@@ -26,9 +26,10 @@ class UserAvatar extends StatelessWidget {
     final _uid = uid ?? UserAPI.currentUser.uid;
     return SizedBox(
       width: suSetWidth(size),
+      height: suSetWidth(size),
       child: GestureDetector(
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(suSetWidth(size)),
+          borderRadius: maxBorderRadius,
           child: FadeInImage(
             fadeInDuration: 150.milliseconds,
             placeholder: AssetImage('assets/avatar_placeholder.png'),

@@ -407,10 +407,7 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
 
   Text getPostNickname(context, post) => Text(
         post.nickname,
-        style: TextStyle(
-          color: Theme.of(context).textTheme.title.color,
-          fontSize: suSetSp(20.0),
-        ),
+        style: TextStyle(fontSize: suSetSp(20.0)),
       );
 
   Text getPostTime(context, post) {

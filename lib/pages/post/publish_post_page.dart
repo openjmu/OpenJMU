@@ -613,12 +613,7 @@ class PublishPostPageState extends State<PublishPostPage> {
           child: Column(
             children: <Widget>[
               FixedAppBar(
-                title: Text(
-                  '发布动态',
-                  style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: suSetSp(23.0),
-                      ),
-                ),
+                title: Text('发布动态'),
                 actions: <Widget>[
                   IconButton(
                     icon: Icon(Icons.send),

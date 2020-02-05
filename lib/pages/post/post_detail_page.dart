@@ -431,13 +431,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       body: Column(
         children: <Widget>[
           FixedAppBar(
-            centerTitle: true,
-            title: Text(
-              '动态正文',
-              style: Theme.of(context).textTheme.title.copyWith(
-                    fontSize: suSetSp(23.0),
-                  ),
-            ),
+            title: Text('动态正文'),
             actions: <Widget>[
               widget.post.uid == currentUser.uid ? deleteButton : postActionButton,
             ],

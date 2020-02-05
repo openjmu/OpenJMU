@@ -506,12 +506,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       body: Column(
         children: <Widget>[
           FixedAppBar(
-            title: Text(
-              '集市动态',
-              style: Theme.of(context).textTheme.title.copyWith(
-                    fontSize: suSetSp(23.0),
-                  ),
-            ),
+            title: Text('集市动态'),
             centerTitle: true,
           ),
           Expanded(

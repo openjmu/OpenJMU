@@ -48,13 +48,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          FixedAppBar(
-            title: Text(
-              '扫描二维码',
-              style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
-            ),
-            centerTitle: true,
-          ),
+          FixedAppBar(title: Text('扫描二维码')),
           Expanded(
             child: QrcodeReaderView(
               key: _key,

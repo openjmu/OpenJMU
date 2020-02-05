@@ -50,10 +50,7 @@ class ChangeThemePage extends StatelessWidget {
               children: <Widget>[
                 Text(
                   '切换主题',
-                  style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: suSetSp(26.0),
-                        fontWeight: FontWeight.bold,
-                      ),
+                  style: TextStyle(fontSize: suSetSp(26.0), fontWeight: FontWeight.bold),
                 ),
                 Text(
                   '多彩颜色，丰富你的界面',

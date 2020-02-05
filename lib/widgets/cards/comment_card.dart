@@ -205,12 +205,12 @@ class CommentCard extends StatelessWidget {
           if (comment.fromUserUid == currentUser.uid || comment.post.uid == currentUser.uid)
             ConfirmationBottomSheetAction(
               text: '删除评论',
-              icon: Icon(Icons.delete, size: suSetWidth(36.0), color: Colors.white),
+              icon: Icon(Icons.delete),
               onTap: () => confirmDelete(context),
             ),
           ConfirmationBottomSheetAction(
             text: '回复评论',
-            icon: Icon(Icons.reply, size: suSetWidth(36.0), color: Colors.white),
+            icon: Icon(Icons.reply),
             onTap: () => navigatorState.pushNamed(
               Routes.OPENJMU_ADD_COMMENT,
               arguments: {'post': comment.post, 'comment': comment},
@@ -218,13 +218,10 @@ class CommentCard extends StatelessWidget {
           ),
           ConfirmationBottomSheetAction(
             text: '查看动态',
-            icon: Icon(Icons.pageview, size: suSetWidth(36.0), color: Colors.white),
+            icon: Icon(Icons.pageview),
             onTap: () => navigatorState.pushNamed(
               Routes.OPENJMU_POST_DETAIL,
-              arguments: {
-                'post': comment.post,
-                'parentContext': context,
-              },
+              arguments: {'post': comment.post, 'parentContext': context},
             ),
           ),
         ],

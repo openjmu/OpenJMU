@@ -48,9 +48,17 @@ class FixedAppBar extends StatelessWidget {
       child: Row(
         children: <Widget>[
           if (automaticallyImplyLeading && Navigator.of(context).canPop()) BackButton(),
-          Expanded(child: _title),
+          Expanded(
+            child: DefaultTextStyle(
+              child: _title,
+              style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
+              maxLines: 1,
+              softWrap: false,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
           if (automaticallyImplyLeading && Navigator.of(context).canPop() && actions == null)
-            SizedBox.fromSize(size: Size.square(56.0)),
+            SizedBox(width: 56.0),
           if (actions != null) ...actions,
         ],
       ),

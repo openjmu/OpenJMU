@@ -367,10 +367,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
   Widget getCommentNickname(context, comment) {
     return Text(
       comment.fromUserName,
-      style: TextStyle(
-        color: Theme.of(context).textTheme.title.color,
-        fontSize: suSetSp(20.0),
-      ),
+      style: TextStyle(fontSize: suSetSp(20.0)),
     );
   }
 

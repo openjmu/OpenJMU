@@ -356,19 +356,20 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
           width: suSetWidth(100.0),
           height: suSetHeight(50.0),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(suSetWidth(6.0)),
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  blurRadius: suSetWidth(10.0),
-                  color: !_loginDisabled
-                      ? colorGradient[1].withAlpha(100)
-                      : Theme.of(context).dividerColor,
-                  offset: Offset(0.0, suSetHeight(10.0)),
-                ),
-              ],
-              gradient: LinearGradient(
-                colors: !_loginDisabled ? colorGradient : [Colors.grey, Colors.grey],
-              )),
+            borderRadius: BorderRadius.circular(suSetWidth(6.0)),
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                blurRadius: suSetWidth(10.0),
+                color: !_loginDisabled
+                    ? colorGradient[1].withAlpha(100)
+                    : Theme.of(context).dividerColor,
+                offset: Offset(0.0, suSetHeight(10.0)),
+              ),
+            ],
+            gradient: LinearGradient(
+              colors: !_loginDisabled ? colorGradient : [Colors.grey, Colors.grey],
+            ),
+          ),
           child: Center(
             child: !_login
                 ? Icon(Icons.arrow_forward, size: suSetWidth(36.0), color: Colors.white)

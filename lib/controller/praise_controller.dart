@@ -351,10 +351,7 @@ class PraiseListInPostState extends State<PraiseListInPost> with AutomaticKeepAl
   Widget getPostNickname(context, praise) {
     return Text(
       praise.nickname,
-      style: TextStyle(
-        color: Theme.of(context).textTheme.body1.color,
-        fontSize: suSetSp(20.0),
-      ),
+      style: TextStyle(fontSize: suSetSp(20.0)),
     );
   }
 

@@ -211,7 +211,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                 child: Text(
                   '相关用户 (${userList.length})',
                   style: Theme.of(context).textTheme.caption.copyWith(
-                        fontSize: suSetSp(16.0),
+                        fontSize: suSetSp(18.0),
                       ),
                 ),
               ),
@@ -225,28 +225,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          SizedBox(
-                            width: suSetWidth(48.0),
-                            height: suSetHeight(48.0),
-                            child: GestureDetector(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(suSetWidth(24.0)),
-                                child: FadeInImage(
-                                  fadeInDuration: const Duration(milliseconds: 100),
-                                  placeholder: AssetImage(
-                                    'assets/avatar_placeholder.png',
-                                  ),
-                                  image: UserAPI.getAvatarProvider(
-                                    uid: userList[index].id,
-                                  ),
-                                ),
-                              ),
-                              onTap: () => navigatorState.pushNamed(
-                                Routes.OPENJMU_USER,
-                                arguments: {'uid': userList[index].id},
-                              ),
-                            ),
-                          ),
+                          UserAvatar(uid: userList[index].id),
                           SizedBox(height: suSetHeight(8.0)),
                           Text(
                             userList[index].nickname,
@@ -331,7 +310,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                             child: Text(
                               '相关动态',
                               style: Theme.of(context).textTheme.caption.copyWith(
-                                    fontSize: suSetSp(16.0),
+                                    fontSize: suSetSp(19.0),
                                   ),
                             ),
                           );

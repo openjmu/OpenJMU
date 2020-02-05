@@ -925,12 +925,7 @@ class _UserListState extends State<UserListPage> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          FixedAppBar(
-            title: Text(
-              '$_type列表',
-              style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
-            ),
-          ),
+          FixedAppBar(title: Text('$_type列表')),
           Expanded(
             child: !isLoading
                 ? _users.length != 0

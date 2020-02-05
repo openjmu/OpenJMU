@@ -21,7 +21,7 @@ class ConfirmationBottomSheet extends StatefulWidget {
   final String cancelLabel;
   final Color backgroundColor;
 
-  ConfirmationBottomSheet({
+  const ConfirmationBottomSheet({
     Key key,
     this.alignment = Alignment.bottomCenter,
     this.contentPadding = EdgeInsets.zero,
@@ -40,7 +40,7 @@ class ConfirmationBottomSheet extends StatefulWidget {
         super(key: key);
 
   static Future<bool> show(
-    context, {
+    BuildContext context, {
     AlignmentGeometry alignment = Alignment.bottomCenter,
     EdgeInsetsGeometry contentPadding = EdgeInsets.zero,
     String title,
@@ -52,32 +52,32 @@ class ConfirmationBottomSheet extends StatefulWidget {
     String cancelLabel = '取消',
     Color backgroundColor,
   }) async {
-    return await showGeneralDialog<bool>(
-          context: context,
-          barrierDismissible: false,
-          pageBuilder: (_, __, ___) => ConfirmationBottomSheet(
-            alignment: alignment,
-            title: title,
-            centerTitle: centerTitle,
-            content: content,
-            children: children,
-            contentPadding: contentPadding,
-            showConfirm: showConfirm,
-            confirmLabel: confirmLabel,
-            cancelLabel: cancelLabel,
-            backgroundColor: backgroundColor,
-          ),
-          barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-          transitionDuration: 100.milliseconds,
-        ) ??
-        false;
+    final result = await showGeneralDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      pageBuilder: (_, __, ___) => ConfirmationBottomSheet(
+        alignment: alignment,
+        title: title,
+        centerTitle: centerTitle,
+        content: content,
+        children: children,
+        contentPadding: contentPadding,
+        showConfirm: showConfirm,
+        confirmLabel: confirmLabel,
+        cancelLabel: cancelLabel,
+        backgroundColor: backgroundColor,
+      ),
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      transitionDuration: 100.milliseconds,
+    );
+    return result ?? false;
   }
 
   @override
-  _ConfirmationBottomSheetState createState() => _ConfirmationBottomSheetState();
+  ConfirmationBottomSheetState createState() => ConfirmationBottomSheetState();
 }
 
-class _ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
+class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
   final _dismissWrapperKey = GlobalKey<_DismissWrapperState>();
   bool animating = false;
 
@@ -346,8 +346,8 @@ class ConfirmationBottomSheetAction extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        if (onTap != null) onTap();
         Navigator.of(context).pop();
+        onTap();
       },
       child: Padding(
         padding: EdgeInsets.symmetric(vertical: suSetHeight(24.0)),

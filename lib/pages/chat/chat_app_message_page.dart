@@ -42,9 +42,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
 
   Widget get topBar => FixedAppBar(
         title: Padding(
-          padding: EdgeInsets.symmetric(
-            vertical: suSetHeight(4.0),
-          ),
+          padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,11 +54,8 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
                     WebAppIcon(size: 60.0, app: widget.app),
                     Text(
                       widget.app.name,
-                      style: Theme.of(context).textTheme.body1.copyWith(
-                            fontSize: suSetSp(23.0),
-                            fontWeight: FontWeight.w500,
-                          ),
-                    )
+                      style: TextStyle(fontWeight: FontWeight.w500),
+                    ),
                   ],
                 ),
               ),
@@ -70,9 +65,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
       );
 
   Widget get bottomBar => Theme(
-        data: Theme.of(context).copyWith(
-          splashFactory: InkSplash.splashFactory,
-        ),
+        data: Theme.of(context).copyWith(splashFactory: InkSplash.splashFactory),
         child: Container(
           margin: EdgeInsets.only(
             bottom: math.max(MediaQuery.of(context).padding.bottom, 34.0),
