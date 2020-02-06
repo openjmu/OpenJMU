@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -34,20 +35,12 @@ class AnnouncementWidget extends StatelessWidget {
             ),
             child: Row(
               children: <Widget>[
-                Container(
-                  margin: EdgeInsets.only(right: suSetWidth(10.0)),
-                  child: Icon(
-                    Icons.info,
-                    size: suSetHeight(19.0),
-                    color: color ?? defaultColor,
-                  ),
-                ),
                 Expanded(
                   child: Text(
                     '${announcements[0]['title']}',
                     style: TextStyle(
                       color: color ?? defaultColor,
-                      fontSize: suSetSp(19.0),
+                      fontSize: suSetSp(21.0),
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -55,10 +48,10 @@ class AnnouncementWidget extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(left: suSetWidth(6.0)),
-                  child: Icon(
-                    Icons.keyboard_arrow_right,
-                    size: suSetWidth(18.0),
-                    color: color ?? defaultColor,
+                  child: SvgPicture.asset(
+                    'assets/icons/arrow-right.svg',
+                    width: suSetWidth(24.0),
+                    color: currentThemeColor,
                   ),
                 ),
               ],
