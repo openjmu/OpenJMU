@@ -123,12 +123,15 @@ class LoadingDialogState extends State<LoadingDialog> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              this.icon,
-              Padding(
-                padding: EdgeInsets.only(top: suSetHeight(40.0)),
+              SizedBox.fromSize(
+                size: Size.square(suSetWidth(50.0)),
+                child: Center(child: icon),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: suSetHeight(40.0)),
                 child: Text(
-                  this.text,
-                  style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(16.0)),
+                  text,
+                  style: TextStyle(fontSize: suSetSp(16.0)),
                 ),
               ),
             ],
