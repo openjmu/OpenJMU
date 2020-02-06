@@ -239,7 +239,7 @@ class SettingsPage extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       '偏好设置',
-                      style: Theme.of(context).textTheme.title.copyWith(
+                      style: Theme.of(context).textTheme.headline6.copyWith(
                             fontSize: suSetSp(26.0),
                             fontWeight: FontWeight.bold,
                           ),

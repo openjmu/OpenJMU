@@ -109,7 +109,6 @@ class MyInfoPageState extends State<MyInfoPage> {
                 Text(
                   '${UserAPI.currentUser.name}',
                   style: TextStyle(
-                    color: Theme.of(context).textTheme.title.color,
                     fontSize: suSetSp(26.0),
                     fontWeight: FontWeight.bold,
                   ),
@@ -291,7 +290,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                                   TextSpan(text: '周'),
                                 ]),
                             ],
-                            style: Theme.of(context).textTheme.body1.copyWith(
+                            style: Theme.of(context).textTheme.bodyText2.copyWith(
                                   fontSize: suSetSp(24.0),
                                 ),
                           ),

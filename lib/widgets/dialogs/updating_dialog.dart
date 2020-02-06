@@ -68,10 +68,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
                 ),
                 Text(
                   '正在下载 $progress%',
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.body1.color,
-                    fontSize: suSetSp(18.0),
-                  ),
+                  style: TextStyle(fontSize: suSetSp(18.0)),
                 ),
               ],
             ),

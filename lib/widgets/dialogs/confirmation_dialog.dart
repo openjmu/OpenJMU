@@ -77,10 +77,7 @@ class ConfirmationDialog extends StatelessWidget {
         children: <Widget>[
           Text(
             title,
-            style: Theme.of(context).textTheme.title.copyWith(
-                  fontSize: suSetSp(26.0),
-                  fontWeight: FontWeight.bold,
-                ),
+            style: TextStyle(fontSize: suSetSp(26.0), fontWeight: FontWeight.bold),
             maxLines: 1,
             overflow: TextOverflow.fade,
           ),
@@ -107,7 +104,7 @@ class ConfirmationDialog extends StatelessWidget {
         },
         child: Text(
           confirmLabel,
-          style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
+          style: TextStyle(fontSize: suSetSp(22.0)),
         ),
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),

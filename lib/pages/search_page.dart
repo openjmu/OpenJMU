@@ -157,11 +157,11 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                 ),
                 focusNode: _focusNode,
                 keyboardType: TextInputType.text,
-                style: Theme.of(context).textTheme.title.copyWith(
-                      fontSize: suSetSp(20.0),
-                      fontWeight: FontWeight.normal,
-                      textBaseline: TextBaseline.alphabetic,
-                    ),
+                style: TextStyle(
+                  fontSize: suSetSp(20.0),
+                  fontWeight: FontWeight.normal,
+                  textBaseline: TextBaseline.alphabetic,
+                ),
                 textInputAction: TextInputAction.search,
                 onSubmitted: (String text) {
                   if (!_loaded) _loaded = true;
@@ -229,7 +229,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                           SizedBox(height: suSetHeight(8.0)),
                           Text(
                             userList[index].nickname,
-                            style: Theme.of(context).textTheme.body1.copyWith(
+                            style: Theme.of(context).textTheme.bodyText2.copyWith(
                                   fontSize: suSetSp(16.0),
                                 ),
                           ),

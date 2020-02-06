@@ -389,6 +389,7 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
   void _emitVibration() {
     switch (defaultTargetPlatform) {
       case TargetPlatform.iOS:
+      case TargetPlatform.macOS:
         HapticFeedback.lightImpact();
         break;
       case TargetPlatform.fuchsia:

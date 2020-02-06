@@ -144,9 +144,9 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
   Widget versionInfo(ChangeLog log) {
     return Text(
       '${log.version}',
-      style: Theme.of(context).textTheme.title.copyWith(
-            fontWeight: FontWeight.bold,
+      style: Theme.of(context).textTheme.headline6.copyWith(
             fontSize: suSetSp(log.buildNumber == OTAUtils.buildNumber ? 45.0 : 50.0),
+            fontWeight: FontWeight.bold,
           ),
     );
   }
@@ -218,7 +218,7 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
           (i) => contentColumn(sections, i),
         ),
       ),
-      style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
+      style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: suSetSp(20.0)),
     );
   }
 

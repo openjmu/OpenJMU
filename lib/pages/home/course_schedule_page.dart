@@ -153,9 +153,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                       ),
                       TextSpan(text: '周'),
                     ],
-                    style: Theme.of(context).textTheme.body1.copyWith(
-                          fontSize: suSetSp(18.0),
-                        ),
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: suSetSp(18.0)),
                   ),
                 ),
               ),
@@ -200,7 +198,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                           ),
                           TextSpan(text: '$remark'),
                         ],
-                        style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
+                              fontSize: suSetSp(20.0),
+                            ),
                       ),
                       textAlign: TextAlign.center,
                       maxLines: 1,
@@ -533,7 +533,7 @@ class CourseWidget extends StatelessWidget {
                     if (course.name.length > 10) TextSpan(text: '...'),
                     if (course.location != null) TextSpan(text: '\n📍${course.location}'),
                   ],
-                  style: Theme.of(context).textTheme.body1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText2.copyWith(
                         color: !CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) &&
                                 !isOutOfTerm
                             ? Colors.grey

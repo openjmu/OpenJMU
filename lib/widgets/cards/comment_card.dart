@@ -24,10 +24,7 @@ class CommentCard extends StatelessWidget {
       children: <Widget>[
         Text(
           comment.fromUserName ?? comment.fromUserUid,
-          style: TextStyle(
-            color: Theme.of(context).textTheme.title.color,
-            fontSize: suSetSp(22.0),
-          ),
+          style: TextStyle(fontSize: suSetSp(22.0)),
           textAlign: TextAlign.left,
         ),
         if (Constants.developerList.contains(comment.fromUserUid))

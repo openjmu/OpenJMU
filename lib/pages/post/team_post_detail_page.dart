@@ -217,7 +217,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                     hintText: replyHint == null ? '给你一个神评的机会...' : null,
                   ),
                   cursorColor: currentThemeColor,
-                  style: Theme.of(context).textTheme.body1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontSize: suSetSp(20.0),
                         textBaseline: TextBaseline.alphabetic,
                       ),

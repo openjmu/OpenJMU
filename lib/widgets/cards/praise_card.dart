@@ -29,10 +29,7 @@ class PraiseCard extends StatelessWidget {
         children: <Widget>[
           Text(
             praise.nickname ?? praise.uid,
-            style: TextStyle(
-              color: Theme.of(context).textTheme.title.color,
-              fontSize: suSetSp(22.0),
-            ),
+            style: TextStyle(fontSize: suSetSp(22.0)),
             textAlign: TextAlign.left,
           ),
           if (Constants.developerList.contains(praise.uid))

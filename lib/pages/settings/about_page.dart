@@ -205,7 +205,7 @@ class AboutPage extends StatelessWidget {
             ),
           ],
         ),
-        style: TextStyle(color: Theme.of(context).textTheme.body1.color),
+        style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: suSetSp(20.0)),
       );
 
   @override

@@ -71,7 +71,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                         Center(
                           child: Text(
                             "提到用户",
-                            style: Theme.of(context).textTheme.title.copyWith(
+                            style: Theme.of(context).textTheme.headline6.copyWith(
                                   fontSize: suSetSp(24.0),
                                 ),
                           ),
@@ -107,7 +107,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                       textBaseline: TextBaseline.alphabetic,
                                     ),
                                   ),
-                                  style: Theme.of(context).textTheme.body1.copyWith(
+                                  style: Theme.of(context).textTheme.bodyText2.copyWith(
                                         fontSize: suSetSp(20.0),
                                         textBaseline: TextBaseline.alphabetic,
                                       ),
@@ -128,7 +128,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                                       child: Icon(
                                         Icons.search,
                                         size: suSetWidth(32.0),
-                                        color: Theme.of(context).textTheme.title.color,
+                                        color: Theme.of(context).textTheme.bodyText2.color,
                                       ),
                                     )
                                   : SizedBox(
@@ -205,7 +205,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                       behavior: HitTestBehavior.translucent,
                       child: Icon(
                         Icons.close,
-                        color: Theme.of(context).textTheme.title.color,
+                        color: Theme.of(context).textTheme.bodyText2.color,
                       ),
                       onTap: () {
                         Navigator.of(context).pop(null);

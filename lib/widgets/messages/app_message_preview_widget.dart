@@ -144,7 +144,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                           child: app != null
                               ? Text(
                                   '${app.name ?? app.appId}',
-                                  style: Theme.of(context).textTheme.body1.copyWith(
+                                  style: Theme.of(context).textTheme.bodyText2.copyWith(
                                         fontSize: suSetSp(22.0),
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -153,8 +153,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                         ),
                         Text(
                           ' $formattedTime',
-                          style: Theme.of(context).textTheme.body1.copyWith(
-                                color: Theme.of(context).textTheme.body1.color.withOpacity(0.5),
+                          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                color: Theme.of(context).textTheme.bodyText2.color.withOpacity(0.5),
                               ),
                         ),
                         Spacer(),
@@ -163,8 +163,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                     ),
                     Text(
                       '${widget.message.content}',
-                      style: Theme.of(context).textTheme.body1.copyWith(
-                            color: Theme.of(context).textTheme.body1.color.withOpacity(0.5),
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            color: Theme.of(context).textTheme.bodyText2.color.withOpacity(0.5),
                             fontSize: suSetSp(19.0),
                           ),
                       maxLines: 1,

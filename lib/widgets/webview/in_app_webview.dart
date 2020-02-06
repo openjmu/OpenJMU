@@ -273,10 +273,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
                       Flexible(
                         child: Text(
                           title,
-                          style: TextStyle(
-                            color: Theme.of(context).textTheme.title.color,
-                            fontSize: suSetSp(22.0),
-                          ),
+                          style: TextStyle(fontSize: suSetSp(22.0)),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),

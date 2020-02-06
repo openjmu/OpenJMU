@@ -261,54 +261,55 @@ class TeamCommentPreviewCard extends StatelessWidget {
                     Expanded(
                       child: ExtendedText(
                         _post['content'],
-                        specialTextSpanBuilder:
-                            StackSpecialTextSpanBuilder(prefixSpans: <InlineSpan>[
-                          TextSpan(
-                            text: '@${_post['user']['nickname']}',
-                            style: TextStyle(
-                              color: Colors.blue,
+                        specialTextSpanBuilder: StackSpecialTextSpanBuilder(
+                          prefixSpans: <InlineSpan>[
+                            TextSpan(
+                              text: '@${_post['user']['nickname']}',
+                              style: TextStyle(
+                                color: Colors.blue,
+                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  navigatorState.pushNamed(
+                                    Routes.OPENJMU_USER,
+                                    arguments: {'uid': int.parse(_post['user']['uid'])},
+                                  );
+                                },
                             ),
-                            recognizer: TapGestureRecognizer()
-                              ..onTap = () {
-                                navigatorState.pushNamed(
-                                  Routes.OPENJMU_USER,
-                                  arguments: {'uid': int.parse(_post['user']['uid'])},
-                                );
-                              },
-                          ),
-                          if (int.parse(_post['user']['uid']) == topPost.uid)
-                            WidgetSpan(
-                              alignment: ui.PlaceholderAlignment.middle,
-                              child: Container(
-                                margin: EdgeInsets.symmetric(
-                                  horizontal: suSetWidth(6.0),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: suSetWidth(6.0),
-                                  vertical: suSetHeight(1.0),
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(suSetWidth(5.0)),
-                                  color: currentThemeColor,
-                                ),
-                                child: Text(
-                                  '楼主',
-                                  style: TextStyle(
-                                    fontSize: suSetSp(17.0),
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                            if (int.parse(_post['user']['uid']) == topPost.uid)
+                              WidgetSpan(
+                                alignment: ui.PlaceholderAlignment.middle,
+                                child: Container(
+                                  margin: EdgeInsets.symmetric(
+                                    horizontal: suSetWidth(6.0),
+                                  ),
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: suSetWidth(6.0),
+                                    vertical: suSetHeight(1.0),
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+                                    color: currentThemeColor,
+                                  ),
+                                  child: Text(
+                                    '楼主',
+                                    style: TextStyle(
+                                      fontSize: suSetSp(17.0),
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),
+                            TextSpan(
+                              text: ': ',
+                              style: TextStyle(
+                                color: Colors.blue,
+                              ),
                             ),
-                          TextSpan(
-                            text: ': ',
-                            style: TextStyle(
-                              color: Colors.blue,
-                            ),
-                          ),
-                        ]),
-                        style: Theme.of(context).textTheme.body1.copyWith(
+                          ],
+                        ),
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
                               fontSize: suSetSp(19.0),
                             ),
                         onSpecialTextTap: specialTextTapRecognizer,

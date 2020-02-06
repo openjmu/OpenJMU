@@ -5,7 +5,7 @@ version: 0.9.1+161
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
-  flutter: ">=1.12.13+hotfix.7"
+  flutter: ">=1.13.8"
 
 dependencies:
   flutter:
@@ -48,7 +48,7 @@ dependencies:
   launch_review: 2.0.0
   like_button: ^0.2.0
   multi_image_picker: 4.6.1
-  oktoast: 2.3.0
+  oktoast: 2.3.1
   open_file: 3.0.1
   ota_update: 2.1.1
   package_info: ^0.4.0+13

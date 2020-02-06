@@ -32,7 +32,6 @@ class PublishPostPageState extends State<PublishPostPage> {
   final _focusNode = FocusNode();
   final _iconSize = suSetHeight(28.0);
   final gridCount = 5;
-//  final maxLength = 2000;
 
   final assets = <Asset>[];
   final failedImages = <int>{};
@@ -185,24 +184,17 @@ class PublishPostPageState extends State<PublishPostPage> {
             ),
             counterStyle: TextStyle(color: Colors.transparent),
           ),
-          style: Theme.of(context).textTheme.body1.copyWith(
+          style: Theme.of(context).textTheme.bodyText2.copyWith(
                 fontSize: suSetSp(22.0),
                 textBaseline: TextBaseline.alphabetic,
               ),
-//          maxLength: maxLength,
           maxLines: null,
           onChanged: (content) {
-//            if (content.length == maxLength) {
-//              setState(() {
-//                counterTextColor = Colors.red;
-//              });
-//            } else {
             if (counterTextColor != Colors.grey) {
               setState(() {
                 counterTextColor = Colors.grey;
               });
             }
-//            }
             setState(() {
               currentLength = content.length;
             });

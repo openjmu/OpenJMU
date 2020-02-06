@@ -311,95 +311,95 @@ class PostDetailPageState extends State<PostDetailPage> {
         ),
       );
 
-  Widget get toolbar => Container(
-        height: Screens.bottomSafeHeight + suSetHeight(70.0),
-        padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
-        color: Theme.of(context).cardColor,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: FlatButton.icon(
-                onPressed: () {
-                  navigatorState.pushNamed(
-                    Routes.OPENJMU_ADD_FORWARD,
-                    arguments: {'post': widget.post},
-                  );
-                },
-                icon: SvgPicture.asset(
-                  'assets/icons/postActions/forward-fill.svg',
-                  color: Theme.of(context).textTheme.body1.color,
-                  width: suSetWidth(iconSize),
-                ),
-                label: Text(
-                  '转发',
-                  style: Theme.of(context).textTheme.body1.copyWith(
-                        fontSize: suSetSp(actionFontSize),
-                      ),
-                ),
-                splashColor: Colors.grey,
+  Widget get toolbar {
+    final bodyTextTheme = Theme.of(context).textTheme.bodyText2;
+    return Container(
+      height: Screens.bottomSafeHeight + suSetHeight(70.0),
+      padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
+      color: Theme.of(context).cardColor,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Expanded(
+            child: FlatButton.icon(
+              onPressed: () {
+                navigatorState.pushNamed(
+                  Routes.OPENJMU_ADD_FORWARD,
+                  arguments: {'post': widget.post},
+                );
+              },
+              icon: SvgPicture.asset(
+                'assets/icons/postActions/forward-fill.svg',
+                color: bodyTextTheme.color,
+                width: suSetWidth(iconSize),
               ),
-            ),
-            Expanded(
-              child: FlatButton.icon(
-                onPressed: () {
-                  navigatorState.pushNamed(
-                    Routes.OPENJMU_ADD_COMMENT,
-                    arguments: {'post': widget.post},
-                  );
-                },
-                icon: SvgPicture.asset(
-                  'assets/icons/postActions/comment-fill.svg',
-                  color: Theme.of(context).textTheme.body1.color,
-                  width: suSetWidth(iconSize),
-                ),
-                label: Text(
-                  '评论',
-                  style: Theme.of(context).textTheme.body1.copyWith(
-                        fontSize: suSetSp(actionFontSize),
-                      ),
-                ),
-                splashColor: Colors.grey,
+              label: Text(
+                '转发',
+                style: Theme.of(context).textTheme.bodyText2.copyWith(
+                      fontSize: suSetSp(actionFontSize),
+                    ),
               ),
+              splashColor: Colors.grey,
             ),
-            Expanded(
-              child: LikeButton(
-                size: suSetWidth(iconSize),
-                circleColor: CircleColor(
-                  start: currentThemeColor,
-                  end: currentThemeColor,
-                ),
-                countBuilder: (int count, bool isLiked, String text) => Text(
-                  count > 0 ? text : '赞',
-                  style: Theme.of(context).textTheme.body1.copyWith(
-                        color:
-                            isLiked ? currentThemeColor : Theme.of(context).textTheme.body1.color,
-                        fontSize: suSetSp(actionFontSize),
-                      ),
-                ),
-                bubblesColor: BubblesColor(
-                  dotPrimaryColor: currentThemeColor,
-                  dotSecondaryColor: currentThemeColor,
-                ),
-                likeBuilder: (bool isLiked) => SvgPicture.asset(
-                  'assets/icons/postActions/praise-fill.svg',
-                  color: isLiked ? currentThemeColor : Theme.of(context).textTheme.body1.color,
-                  width: suSetWidth(iconSize),
-                ),
-                likeCount: widget.post.isLike ? moreThanOne(praises) : moreThanZero(praises),
-                likeCountAnimationType: LikeCountAnimationType.none,
-                likeCountPadding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(10.0),
-                  vertical: suSetHeight(12.0),
-                ),
-                isLiked: widget.post.isLike,
-                onTap: onLikeButtonTap,
+          ),
+          Expanded(
+            child: FlatButton.icon(
+              onPressed: () {
+                navigatorState.pushNamed(
+                  Routes.OPENJMU_ADD_COMMENT,
+                  arguments: {'post': widget.post},
+                );
+              },
+              icon: SvgPicture.asset(
+                'assets/icons/postActions/comment-fill.svg',
+                color: bodyTextTheme.color,
+                width: suSetWidth(iconSize),
               ),
+              label: Text(
+                '评论',
+                style: bodyTextTheme.copyWith(fontSize: suSetSp(actionFontSize)),
+              ),
+              splashColor: Colors.grey,
             ),
-          ],
-        ),
-      );
+          ),
+          Expanded(
+            child: LikeButton(
+              size: suSetWidth(iconSize),
+              circleColor: CircleColor(
+                start: currentThemeColor,
+                end: currentThemeColor,
+              ),
+              countBuilder: (int count, bool isLiked, String text) => Text(
+                count > 0 ? text : '赞',
+                style: bodyTextTheme.copyWith(
+                  color: isLiked ? currentThemeColor : bodyTextTheme.color,
+                  fontSize: suSetSp(actionFontSize),
+                ),
+              ),
+              bubblesColor: BubblesColor(
+                dotPrimaryColor: currentThemeColor,
+                dotSecondaryColor: currentThemeColor,
+              ),
+              likeBuilder: (bool isLiked) => SvgPicture.asset(
+                'assets/icons/postActions/praise-fill.svg',
+                color: isLiked ? currentThemeColor : bodyTextTheme.color,
+                width: suSetWidth(iconSize),
+              ),
+              likeCount: widget.post.isLike ? moreThanOne(praises) : moreThanZero(praises),
+              likeCountAnimationType: LikeCountAnimationType.none,
+              likeCountPadding: EdgeInsets.symmetric(
+                horizontal: suSetWidth(10.0),
+                vertical: suSetHeight(12.0),
+              ),
+              isLiked: widget.post.isLike,
+              onTap: onLikeButtonTap,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Future<bool> onLikeButtonTap(bool isLiked) {
     final Completer<bool> completer = Completer<bool>();

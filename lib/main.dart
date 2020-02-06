@@ -167,9 +167,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
             pageTransitionsTheme: PageTransitionsTheme(builders: {
               TargetPlatform.android: ZoomPageTransitionsBuilder(),
             }),
-            textTheme: (isDark ? Typography().white : Typography().black).copyWith(
-              subhead: TextStyle(textBaseline: TextBaseline.alphabetic),
-            ),
           );
           return AnnotatedRegion(
             value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,

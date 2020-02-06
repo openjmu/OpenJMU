@@ -71,10 +71,7 @@ class _PostCardState extends State<PostCard> {
         children: <Widget>[
           Text(
             post.nickname ?? post.uid,
-            style: TextStyle(
-              color: Theme.of(context).textTheme.title.color,
-              fontSize: suSetSp(22.0),
-            ),
+            style: TextStyle(fontSize: suSetSp(22.0)),
             textAlign: TextAlign.left,
           ),
           if (Constants.developerList.contains(post.uid))

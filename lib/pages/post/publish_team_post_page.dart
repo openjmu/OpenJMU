@@ -188,7 +188,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
             ),
             counterStyle: TextStyle(color: Colors.transparent),
           ),
-          style: Theme.of(context).textTheme.body1.copyWith(
+          style: Theme.of(context).textTheme.bodyText2.copyWith(
                 fontSize: suSetSp(22.0),
                 textBaseline: TextBaseline.alphabetic,
               ),

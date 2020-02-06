@@ -103,10 +103,7 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
           children: <Widget>[
             Text(
               widget.title,
-              style: Theme.of(context).textTheme.title.copyWith(
-                    fontSize: suSetSp(28.0),
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: TextStyle(fontSize: suSetSp(28.0), fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -365,7 +362,7 @@ class ConfirmationBottomSheetAction extends StatelessWidget {
                 padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
                 child: Text(
                   text,
-                  style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
+                  style: TextStyle(fontSize: suSetSp(22.0)),
                 ),
               ),
             ),
