@@ -53,24 +53,23 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          widget.news.title,
-          style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
-          overflow: TextOverflow.ellipsis,
-        ),
-        centerTitle: true,
+      body: Column(
+        children: <Widget>[
+          FixedAppBar(title: Text(widget.news.title)),
+          Expanded(
+            child: (pageContent != null && _contentLoaded)
+                ? WebviewScaffold(
+                    url: pageContent,
+                    allowFileURLs: true,
+                    enableAppScheme: true,
+                    withJavascript: true,
+                    withLocalStorage: true,
+                    resizeToAvoidBottomInset: true,
+                  )
+                : SpinKitWidget(),
+          ),
+        ],
       ),
-      body: (pageContent != null && _contentLoaded)
-          ? WebviewScaffold(
-              url: pageContent,
-              allowFileURLs: true,
-              enableAppScheme: true,
-              withJavascript: true,
-              withLocalStorage: true,
-              resizeToAvoidBottomInset: true,
-            )
-          : SpinKitWidget(),
     );
   }
 }
