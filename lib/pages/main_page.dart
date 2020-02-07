@@ -160,9 +160,10 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 builder: (_, announcementEnabled, __) {
                   if (announcementEnabled) {
                     return Container(
-                      margin: EdgeInsets.symmetric(
-                        horizontal: suSetWidth(12.0),
-                        vertical: suSetHeight(10.0),
+                      margin: EdgeInsets.only(
+                        left: suSetWidth(16.0),
+                        right: suSetWidth(16.0),
+                        top: suSetHeight(10.0),
                       ),
                       child: AnnouncementWidget(
                         context,

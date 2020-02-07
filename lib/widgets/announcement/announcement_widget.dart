@@ -35,9 +35,10 @@ class AnnouncementWidget extends StatelessWidget {
             ),
             child: Row(
               children: <Widget>[
+                Icon(Icons.notifications_active, size: suSetWidth(24.0), color: currentThemeColor),
                 Expanded(
                   child: Text(
-                    '${announcements[0]['title']}',
+                    '  ${announcements[0]['title']}',
                     style: TextStyle(
                       color: color ?? defaultColor,
                       fontSize: suSetSp(21.0),
