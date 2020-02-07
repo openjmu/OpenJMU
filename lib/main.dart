@@ -182,18 +182,10 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   title: 'OpenJMU',
                   theme: theme,
                   home: SplashPage(initAction: initAction),
-                  navigatorObservers: [
-                    FFNavigatorObserver(
-                      showStatusBarChange: (bool showStatusBar) {
-                        SystemChrome.setEnabledSystemUIOverlays(
-                          showStatusBar ? SystemUiOverlay.values : [],
-                        );
-                      },
-                    ),
-                  ],
+                  navigatorObservers: [FFNavigatorObserver()],
                   onGenerateRoute: (RouteSettings settings) => onGenerateRouteHelper(
                     settings,
-                    NoRoutePage(route: settings.name),
+                    notFoundFallback: NoRoutePage(route: settings.name),
                   ),
                   localizationsDelegates: Constants.localizationsDelegates,
                   supportedLocales: Constants.supportedLocales,
