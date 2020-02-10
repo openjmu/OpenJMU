@@ -82,6 +82,9 @@ class TeamPostAPI {
         headers: Constants.teamHeader,
       );
 
+  /// Report content to specific account through message socket.
+  ///
+  /// Currently *145685* is '信息化中心用户服务'.
   static Future reportPost(TeamPost post) async {
     final message = '————集市内容举报————\n'
         '举报时间：${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}\n'
