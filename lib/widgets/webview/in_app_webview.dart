@@ -60,7 +60,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
   @override
   void initState() {
     url = (widget.url ?? url).trim();
-    title = (widget.title ?? title).trim();
+    title = (widget.app.name ?? widget.title ?? title).trim();
 
     if (url.startsWith(API.labsHost) && currentIsDark) {
       url += '&night=1';
