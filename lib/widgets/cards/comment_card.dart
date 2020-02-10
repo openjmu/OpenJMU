@@ -42,15 +42,6 @@ class CommentCard extends StatelessWidget {
   }
 
   Widget get getCommentInfo {
-    String _commentTime = comment.commentTime;
-    DateTime now = DateTime.now();
-    if (int.parse(_commentTime.substring(0, 4)) == now.year) {
-      _commentTime = _commentTime.substring(5, 16);
-    }
-    if (int.parse(_commentTime.substring(0, 2)) == now.month &&
-        int.parse(_commentTime.substring(3, 5)) == now.day) {
-      _commentTime = '${_commentTime.substring(5, 11)}';
-    }
     return Text.rich(
       TextSpan(
         children: <InlineSpan>[
@@ -62,7 +53,7 @@ class CommentCard extends StatelessWidget {
               size: suSetWidth(16.0),
             ),
           ),
-          TextSpan(text: ' $_commentTime　'),
+          TextSpan(text: ' ${PostAPI.postTimeConverter(comment.commentTime)}　'),
           WidgetSpan(
             alignment: ui.PlaceholderAlignment.middle,
             child: Icon(

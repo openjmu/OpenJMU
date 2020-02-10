@@ -46,15 +46,6 @@ class PraiseCard extends StatelessWidget {
       );
 
   Row getPraiseInfo(Praise praise) {
-    String _praiseTime = praise.praiseTime;
-    DateTime now = DateTime.now();
-    if (int.parse(_praiseTime.substring(0, 4)) == now.year) {
-      _praiseTime = _praiseTime.substring(5, 16);
-    }
-    if (int.parse(_praiseTime.substring(0, 2)) == now.month &&
-        int.parse(_praiseTime.substring(3, 5)) == now.day) {
-      _praiseTime = '${_praiseTime.substring(5, 11)}';
-    }
     return Row(
       children: <Widget>[
         Icon(
@@ -62,7 +53,7 @@ class PraiseCard extends StatelessWidget {
           color: Colors.grey,
           size: suSetWidth(13.0),
         ),
-        Text(' $_praiseTime', style: subtitleStyle),
+        Text(' ${PostAPI.postTimeConverter(praise.praiseTime)}', style: subtitleStyle),
       ],
     );
   }
@@ -160,7 +151,7 @@ class PraiseCard extends StatelessWidget {
               ),
               child: Row(
                 children: <Widget>[
-                  UserAPI.getAvatar(size: 48.0, uid: praise.uid),
+                  UserAPI.getAvatar(size: 54.0, uid: praise.uid),
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(

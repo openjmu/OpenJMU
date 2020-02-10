@@ -9,7 +9,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_text/extended_text.dart';
-import 'package:intl/intl.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/post/team_post_detail_page.dart';
@@ -98,18 +97,8 @@ class _TeamPostCardState extends State<TeamPostCard> {
       );
 
   Widget _postTime(context) {
-    final now = DateTime.now();
-    DateTime _postTime = post.postTime;
-    String time = '';
-    if (_postTime.day == now.day && _postTime.month == now.month && _postTime.year == now.year) {
-      time += DateFormat('HH:mm').format(_postTime);
-    } else if (_postTime.year == now.year) {
-      time += DateFormat('MM-dd HH:mm').format(_postTime);
-    } else {
-      time += DateFormat('yyyy-MM-dd HH:mm').format(_postTime);
-    }
     return Text(
-      '$time',
+      '${TeamPostAPI.timeConverter(post)}',
       style: Theme.of(context).textTheme.caption.copyWith(
             fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,

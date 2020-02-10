@@ -121,4 +121,40 @@ class PostAPI {
       ),
     );
   }
+
+  /// Convert [DateTime] to formatted string.
+  ///
+  /// Like WeChat, precise to minutes instead of specific time.
+  static String postTimeConverter(time) {
+    assert(time is DateTime || time is String, 'time must be DateTime or String type.');
+    final now = DateTime.now();
+    DateTime origin;
+    if (time is String) {
+      origin = DateTime.tryParse(time);
+    } else {
+      origin = time;
+    }
+    assert(origin != null, 'time cannot be converted.');
+
+    String _formatToDay(DateTime date) {
+      return DateFormat('yy-MM-dd').format(date);
+    }
+
+    String _formatToMinutes(DateTime date) {
+      return DateFormat('yy-MM-dd HH:mm').format(date);
+    }
+
+    final difference = now.difference(origin);
+    if (difference <= 59.minutes) {
+      return '${difference.inMinutes}分钟前';
+    } else if (difference <= 23.hours && origin.weekday == now.weekday) {
+      return '${difference.inHours}小时前';
+    } else if (_formatToDay(now - 1.days) == _formatToDay(origin)) {
+      return '昨天';
+    } else if (difference <= 30.days) {
+      return '${difference.inDays}天前';
+    } else {
+      return _formatToMinutes(origin);
+    }
+  }
 }

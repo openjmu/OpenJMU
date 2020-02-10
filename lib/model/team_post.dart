@@ -103,6 +103,8 @@ class TeamPost {
   @override
   int get hashCode => tid.hashCode;
 
+  bool get isReplied => postInfo?.isNotEmpty ?? false;
+
   Map<String, dynamic> toJson() {
     return {
       'tid': tid,

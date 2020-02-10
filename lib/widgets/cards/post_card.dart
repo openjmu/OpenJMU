@@ -88,17 +88,6 @@ class _PostCardState extends State<PostCard> {
       );
 
   Widget getPostInfo(Post post) {
-    String _postTime = post.postTime;
-    DateTime now = DateTime.now();
-    if (int.parse(_postTime.substring(0, 4)) == now.year) {
-      _postTime = _postTime.substring(5, 16);
-    } else {
-      _postTime = _postTime.substring(2, 16);
-    }
-    if (int.parse(_postTime.substring(0, 2)) == now.month &&
-        int.parse(_postTime.substring(3, 5)) == now.day) {
-      _postTime = '${_postTime.substring(5, 11)}';
-    }
     return Text.rich(
       TextSpan(
         children: <InlineSpan>[
@@ -110,7 +99,7 @@ class _PostCardState extends State<PostCard> {
               size: suSetWidth(16.0),
             ),
           ),
-          TextSpan(text: ' $_postTime　'),
+          TextSpan(text: ' ${PostAPI.postTimeConverter(post.postTime)}　'),
           WidgetSpan(
             alignment: ui.PlaceholderAlignment.middle,
             child: Icon(

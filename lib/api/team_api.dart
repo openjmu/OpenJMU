@@ -103,6 +103,48 @@ class TeamPostAPI {
     );
   }
 
+  /// Convert [DateTime] to formatted string.
+  ///
+  /// Like WeChat, precise to minutes instead of specific time.
+  static String timeConverter(content) {
+    final now = DateTime.now();
+    DateTime origin;
+    String time = '';
+    if (content is TeamPost) {
+      if (content.isReplied) {
+        origin = DateTime.fromMillisecondsSinceEpoch(int.parse(content.postInfo[0]['post_time']));
+        time += '回复于';
+      } else {
+        origin = content.postTime;
+      }
+    } else {
+      origin = content;
+    }
+    assert(origin != null, 'time cannot be converted.');
+
+    String _formatToDay(DateTime date) {
+      return DateFormat('yy-MM-dd').format(date);
+    }
+
+    String _formatToMinutes(DateTime date) {
+      return DateFormat('yy-MM-dd HH:mm').format(date);
+    }
+
+    final difference = now.difference(origin);
+    if (difference <= 59.minutes) {
+      time += '${difference.inMinutes}分钟前';
+    } else if (difference <= 23.hours && origin.weekday == now.weekday) {
+      time += '${difference.inHours}小时前';
+    } else if (_formatToDay(now - 1.days) == _formatToDay(origin)) {
+      time += '昨天';
+    } else if (difference <= 30.days) {
+      time += '${difference.inDays}天前';
+    } else {
+      time += _formatToMinutes(origin);
+    }
+    return time;
+  }
+
   static Future getNotifications() async => NetUtils.getWithCookieAndHeaderSet(
         API.teamNotification,
         headers: Constants.teamHeader,
