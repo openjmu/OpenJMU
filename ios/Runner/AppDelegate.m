@@ -138,8 +138,25 @@ static NSString *isAddToPushSuccess;
     NSDateFormatter *forMatter = [[NSDateFormatter alloc] init];
     [forMatter setDateFormat:@"yyyy/MM/dd HH:mm:ss"];
     SendTime = [forMatter stringFromDate:now]; // 转换系统现在的时间
-    NSString *tokenString = [[NSString alloc] initWithData:deviceToken encoding:NSSymbolStringEncoding];
-    token = tokenString;
+    if(@available(iOS 13.0,*)){
+        if(deviceToken.length !=0 ){
+            NSUInteger capacity = deviceToken.length * 2;
+            NSMutableString *ptoken = [NSMutableString stringWithCapacity:capacity];
+            const unsigned char *buf = (const unsigned char*) [deviceToken bytes];
+            NSInteger t;
+            for (t=0; t<deviceToken.length; ++t) {
+                [ptoken appendFormat:@"%02lX", (unsigned long)buf[t]];
+                }
+            token = [[ptoken description] stringByReplacingOccurrencesOfString:@"-" withString:@""];
+        }
+    }
+    else {
+        token = [[[[deviceToken description]
+                   stringByReplacingOccurrencesOfString:@" " withString:@""]
+                  stringByReplacingOccurrencesOfString:@"<" withString:@""]
+                 stringByReplacingOccurrencesOfString:@">" withString:@""];
+    }
+    NSLog(@">>>>[Token]:%@<<<<<<<<",token);
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
