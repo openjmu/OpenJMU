@@ -20,10 +20,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
       return;
     }
     if (API.urlReg.stringMatch(data) != null) {
-      Navigator.of(context).pushReplacementNamed(
-        Routes.OPENJMU_INAPPBROWSER,
-        arguments: {'url': data},
-      );
+      API.launchWeb(url: '$data');
     } else if (API.schemeUserPage.stringMatch(data) != null) {
       Navigator.of(context).pushReplacementNamed(
         Routes.OPENJMU_USER,

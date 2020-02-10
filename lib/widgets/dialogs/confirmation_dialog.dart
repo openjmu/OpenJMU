@@ -178,10 +178,7 @@ class ConfirmationDialog extends StatelessWidget {
                           textAlign: contentAlignment,
                           specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
                           onSpecialTextTap: (data) {
-                            navigatorState.pushNamed(
-                              Routes.OPENJMU_INAPPBROWSER,
-                              arguments: {'url': data['content'], 'title': '网页链接'},
-                            );
+                            API.launchWeb(url: data['content'], title: '网页链接');
                           },
                         ),
                       ),

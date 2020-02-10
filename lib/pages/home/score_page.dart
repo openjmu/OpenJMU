@@ -30,12 +30,9 @@ class ScorePage extends StatelessWidget {
     if (UserAPI.currentUser.isCY) {
       url = 'http://cyjwb.jmu.edu.cn/';
     } else {
-      url = 'http://sso.jmu.edu.cn/imapps/1070?sid=${UserAPI.currentUser.sid}';
+      url = 'http://sso.jmu.edu.cn/imapps/1070?sid=${currentUser.sid}';
     }
-    navigatorState.pushNamed(
-      Routes.OPENJMU_INAPPBROWSER,
-      arguments: {'url': url, 'title': '教学评测'},
-    );
+    API.launchWeb(url: url, title: '教学评测');
   }
 
   Widget get noScoreWidget => Center(

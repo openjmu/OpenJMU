@@ -263,12 +263,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               ),
             ),
             onPressed: () {
-              navigatorState.pushNamed(
-                Routes.OPENJMU_INAPPBROWSER,
-                arguments: {
-                  'url': 'http://myid.jmu.edu.cn/ids/EmployeeNoQuery.aspx',
-                  'title': '集大通行证 - 工号查询',
-                },
+              API.launchWeb(
+                url: 'http://myid.jmu.edu.cn/ids/EmployeeNoQuery.aspx',
+                title: '集大通行证 - 工号查询',
               );
             },
           ),
@@ -328,12 +325,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                       ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          navigatorState.pushNamed(
-                            Routes.OPENJMU_INAPPBROWSER,
-                            arguments: {
-                              'url': '${API.homePage}/license.html',
-                              'title': 'OpenJMU 用户协议',
-                            },
+                          API.launchWeb(
+                            url: '${API.homePage}/license.html',
+                            title: 'OpenJMU 用户协议',
                           );
                         },
                     ),
@@ -482,13 +476,10 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
       showConfirm: true,
     );
     if (confirm) {
-      navigatorState.pushNamed(
-        Routes.OPENJMU_INAPPBROWSER,
-        arguments: {
-          'url': 'https://net.jmu.edu.cn/info/1309/2476.htm',
-          'title': '集大通行证登录说明',
-          'withCookie': false,
-        },
+      API.launchWeb(
+        url: 'https://net.jmu.edu.cn/info/1309/2476.htm',
+        title: '网页链接',
+        withCookie: false,
       );
     }
   }

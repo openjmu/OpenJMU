@@ -19,19 +19,13 @@ class AboutPage extends StatelessWidget {
         {
           'name': '官方网站',
           'onTap': () {
-            navigatorState.pushNamed(
-              Routes.OPENJMU_INAPPBROWSER,
-              arguments: {'url': API.homePage, 'title': 'OpenJMU'},
-            );
+            API.launchWeb(url: API.homePage, title: 'OpenJMU');
           },
         },
         {
           'name': '吐个槽',
           'onTap': () {
-            navigatorState.pushNamed(
-              Routes.OPENJMU_INAPPBROWSER,
-              arguments: {'url': API.complaints, 'title': '吐个槽'},
-            );
+            API.launchWeb(url: API.complaints, title: '吐个槽');
           },
         },
         if (Platform.isAndroid)
@@ -177,10 +171,7 @@ class AboutPage extends StatelessWidget {
 
   Widget agreement(context) => GestureDetector(
         onTap: () {
-          navigatorState.pushNamed(
-            Routes.OPENJMU_INAPPBROWSER,
-            arguments: {'url': '${API.homePage}/license.html', 'title': 'OpenJMU 用户协议'},
-          );
+          API.launchWeb(url: '${API.homePage}/license.html', title: 'OpenJMU 用户协议');
         },
         child: Container(
           margin: EdgeInsets.only(bottom: suSetHeight(10.0)),

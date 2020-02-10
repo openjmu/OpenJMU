@@ -425,15 +425,9 @@ void specialTextTapRecognizer(data) {
   } else if (text.startsWith('@')) {
     navigatorState.pushNamed(Routes.OPENJMU_USER, arguments: {'uid': data['uid']});
   } else if (text.startsWith('https://')) {
-    navigatorState.pushNamed(
-      Routes.OPENJMU_INAPPBROWSER,
-      arguments: {'url': text.trim(), 'title': '网页链接'},
-    );
+    API.launchWeb(url: text, title: '网页链接');
   } else if (text.startsWith('http://')) {
-    navigatorState.pushNamed(
-      Routes.OPENJMU_INAPPBROWSER,
-      arguments: {'url': text.trim(), 'title': '网页链接'},
-    );
+    API.launchWeb(url: text, title: '网页链接');
   } else if (text.startsWith('|')) {
     final imageId = data['image'] as int;
     final imageUrl = API.commentImageUrl(imageId, 'o');

@@ -47,10 +47,7 @@ class AppCenterPage extends StatelessWidget {
         ],
       ),
       onPressed: () {
-        navigatorState.pushNamed(
-          Routes.OPENJMU_INAPPBROWSER,
-          arguments: {'url': webApp.replacedUrl, 'title': webApp.name, 'app': webApp},
-        );
+        API.launchWeb(url: webApp.replacedUrl, app: webApp);
       },
       onLongPress: () async {
         final confirm = await ConfirmationDialog.show(

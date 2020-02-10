@@ -173,15 +173,10 @@ class ConventionDialog extends StatelessWidget {
                         ),
                         TextSpan(
                           text: 'http://net.jmu.edu.cn/info/1309/2518.htm',
-                          style: TextStyle(
-                            decoration: TextDecoration.underline,
-                          ),
+                          style: TextStyle(decoration: TextDecoration.underline),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              navigatorState.pushNamed(
-                                Routes.OPENJMU_INAPPBROWSER,
-                                arguments: {'url': 'http://net.jmu.edu.cn/info/1309/2518.htm'},
-                              );
+                              API.launchWeb(url: 'http://net.jmu.edu.cn/info/1309/2518.htm');
                             },
                         ),
                         TextSpan(

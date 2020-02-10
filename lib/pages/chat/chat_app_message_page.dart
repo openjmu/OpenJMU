@@ -86,14 +86,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
                 ),
               ),
               onPressed: () {
-                navigatorState.pushNamed(
-                  Routes.OPENJMU_INAPPBROWSER,
-                  arguments: {
-                    'url': widget.app.replacedUrl,
-                    'title': widget.app.name,
-                    'app': widget.app,
-                  },
-                );
+                API.launchWeb(url: widget.app.replacedUrl, app: widget.app);
               },
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
