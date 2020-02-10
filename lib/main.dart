@@ -7,12 +7,12 @@ import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
-import 'package:openjmu/pages/no_route_page.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:quick_actions/quick_actions.dart';
 
 import 'package:openjmu/constants/constants.dart' hide PageRouteType;
 import 'package:openjmu/pages/splash_page.dart';
+import 'package:openjmu/pages/no_route_page.dart';
 import 'package:openjmu/openjmu_route.dart';
 import 'package:openjmu/openjmu_route_helper.dart';
 
