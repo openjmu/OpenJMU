@@ -48,6 +48,13 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _announcementsUserEnabled = false;
+  bool get announcementsUserEnabled => _announcementsUserEnabled;
+  set announcementsUserEnabled(bool value) {
+    _announcementsUserEnabled = value;
+    notifyListeners();
+  }
+
   bool _newAppCenterIcon = false;
   bool get newAppCenterIcon => _newAppCenterIcon;
   set newAppCenterIcon(bool value) {
@@ -85,14 +92,16 @@ class SettingsProvider extends ChangeNotifier {
     _homeStartUpIndex = [0, 0, 0];
     _newAppCenterIcon = false;
     _hideShieldPost = true;
+    _announcementsUserEnabled = _announcementsEnabled;
     notifyListeners();
   }
 
   Future<void> getAnnouncement() async {
     try {
       final data = jsonDecode((await NetUtils.get(API.announcement)).data);
-      _announcementsEnabled = data['enabled'];
       _announcements = data['announcements'];
+      _announcementsEnabled = data['enabled'];
+      _announcementsUserEnabled = _announcementsEnabled;
       notifyListeners();
     } catch (e) {
       debugPrint('Get announcement error: $e');
