@@ -156,22 +156,10 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           child: Column(
             children: <Widget>[
               Selector<SettingsProvider, bool>(
-                selector: (_, provider) => provider.announcementsEnabled,
-                builder: (_, announcementEnabled, __) {
-                  if (announcementEnabled) {
-                    return Container(
-                      margin: EdgeInsets.only(
-                        left: suSetWidth(16.0),
-                        right: suSetWidth(16.0),
-                        top: suSetHeight(10.0),
-                      ),
-                      child: AnnouncementWidget(
-                        context,
-                        color: currentThemeColor,
-                        gap: 24.0,
-                        radius: 15.0,
-                      ),
-                    );
+                selector: (_, provider) => provider.announcementsUserEnabled,
+                builder: (_, announcementsUserEnabled, __) {
+                  if (announcementsUserEnabled) {
+                    return AnnouncementWidget(color: currentThemeColor, gap: 24.0, canClose: true);
                   } else {
                     return SizedBox.shrink();
                   }

@@ -4,24 +4,60 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class AnnouncementWidget extends StatelessWidget {
-  final BuildContext context;
   final Color color;
   final double gap;
   final double radius;
+  final bool canClose;
 
-  const AnnouncementWidget(
-    this.context, {
+  const AnnouncementWidget({
+    Key key,
     this.color,
     this.gap,
     this.radius,
-    Key key,
+    this.canClose = false,
   }) : super(key: key);
+
+  IconThemeData get iconTheme => IconThemeData(color: currentThemeColor, size: suSetWidth(26.0));
+
+  Widget title(SettingsProvider provider) {
+    return Expanded(
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: suSetWidth(6.0)),
+        child: Text(
+          '  ${provider.announcements[0]['title']}',
+          style: TextStyle(
+            color: color ?? defaultColor,
+            fontSize: suSetSp(20.0),
+          ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    );
+  }
+
+  Widget actionIcon(context, SettingsProvider provider) {
+    return IconTheme(
+      data: iconTheme,
+      child: canClose
+          ? GestureDetector(
+              onTap: () {
+                provider.announcementsUserEnabled = false;
+              },
+              child: IconTheme(data: iconTheme, child: Icon(Icons.close)),
+            )
+          : SvgPicture.asset(
+              'assets/icons/arrow-right.svg',
+              color: iconTheme.color,
+              width: iconTheme.size,
+            ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Selector<SettingsProvider, List>(
-      selector: (_, provider) => provider.announcements,
-      builder: (_, announcements, __) {
+    return Consumer<SettingsProvider>(
+      builder: (_, provider, __) {
         return GestureDetector(
           behavior: HitTestBehavior.translucent,
           child: Container(
@@ -35,31 +71,14 @@ class AnnouncementWidget extends StatelessWidget {
             ),
             child: Row(
               children: <Widget>[
-                Icon(Icons.notifications_active, size: suSetWidth(24.0), color: currentThemeColor),
-                Expanded(
-                  child: Text(
-                    '  ${announcements[0]['title']}',
-                    style: TextStyle(
-                      color: color ?? defaultColor,
-                      fontSize: suSetSp(21.0),
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(left: suSetWidth(6.0)),
-                  child: SvgPicture.asset(
-                    'assets/icons/arrow-right.svg',
-                    width: suSetWidth(24.0),
-                    color: currentThemeColor,
-                  ),
-                ),
+                Icon(Icons.notifications_active, color: iconTheme.color, size: iconTheme.size),
+                title(provider),
+                actionIcon(context, provider),
               ],
             ),
           ),
           onTap: () {
-            final data = announcements[0];
+            final data = provider.announcements[0];
             ConfirmationDialog.show(context, title: data['title'], content: data['content']);
           },
         );

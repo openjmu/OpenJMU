@@ -416,7 +416,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         selector: (_, provider) => provider.announcementsEnabled,
                         builder: (_, announcementEnabled, __) {
                           if (announcementEnabled) {
-                            return AnnouncementWidget(context, radius: 6.0);
+                            return AnnouncementWidget(radius: 6.0);
                           } else {
                             return SizedBox.shrink();
                           }
