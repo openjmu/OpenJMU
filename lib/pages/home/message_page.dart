@@ -41,7 +41,7 @@ class MessagePageState extends State<MessagePage> with TickerProviderStateMixin 
             width: suSetWidth(26.0),
             insets: EdgeInsets.only(bottom: suSetHeight(4.0)),
           ),
-          labelColor: Theme.of(context).textTheme.bodyText2.color,
+          labelColor: Theme.of(context).textTheme.body1.color,
           labelStyle: MainPageState.tabSelectedTextStyle,
           labelPadding: EdgeInsets.symmetric(
             horizontal: suSetWidth(20.0),

@@ -57,7 +57,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
               children: <Widget>[
                 Text(
                   '${page['name']}',
-                  style: Theme.of(context).textTheme.headline6.copyWith(
+                  style: Theme.of(context).textTheme.title.copyWith(
                         fontSize: suSetSp(26.0),
                         fontWeight: FontWeight.normal,
                       ),
@@ -188,7 +188,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
               children: <Widget>[
                 Text(
                   '启动页设置',
-                  style: Theme.of(context).textTheme.headline6.copyWith(
+                  style: Theme.of(context).textTheme.title.copyWith(
                         fontSize: suSetSp(26.0),
                         fontWeight: FontWeight.bold,
                       ),

@@ -229,7 +229,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                           SizedBox(height: suSetHeight(8.0)),
                           Text(
                             userList[index].nickname,
-                            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            style: Theme.of(context).textTheme.body1.copyWith(
                                   fontSize: suSetSp(16.0),
                                 ),
                           ),

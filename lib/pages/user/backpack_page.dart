@@ -161,7 +161,7 @@ class _BackpackPageState extends State<BackpackPage> {
       children: <Widget>[
         Text(
           myItems[index].name,
-          style: Theme.of(context).textTheme.headline6.copyWith(
+          style: Theme.of(context).textTheme.title.copyWith(
                 fontWeight: FontWeight.bold,
                 fontSize: suSetSp(30.0),
               ),
@@ -172,7 +172,7 @@ class _BackpackPageState extends State<BackpackPage> {
           height: suSetSp(54.0),
           child: Text(
             myItems[index].description,
-            style: Theme.of(context).textTheme.subtitle2.copyWith(fontSize: suSetSp(18.0)),
+            style: Theme.of(context).textTheme.subtitle.copyWith(fontSize: suSetSp(18.0)),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -245,7 +245,7 @@ class _BackpackPageState extends State<BackpackPage> {
               onPressed: () {},
               child: Text(
                 '打开礼包',
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
+                style: Theme.of(context).textTheme.body1.copyWith(
                       fontSize: suSetSp(20.0),
                       color: currentThemeColor,
                     ),
@@ -274,14 +274,14 @@ class _BackpackPageState extends State<BackpackPage> {
               children: <Widget>[
                 Text(
                   '我的背包',
-                  style: Theme.of(context).textTheme.headline6.copyWith(
+                  style: Theme.of(context).textTheme.title.copyWith(
                         fontSize: suSetSp(40.0),
                         fontWeight: FontWeight.bold,
                       ),
                 ),
                 Text(
                   '看看背包里有哪些好东西~',
-                  style: Theme.of(context).textTheme.subtitle2.copyWith(fontSize: suSetSp(20.0)),
+                  style: Theme.of(context).textTheme.subtitle.copyWith(fontSize: suSetSp(20.0)),
                 ),
               ],
             ),

@@ -312,7 +312,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       );
 
   Widget get toolbar {
-    final bodyTextTheme = Theme.of(context).textTheme.bodyText2;
+    final bodyTextTheme = Theme.of(context).textTheme.body1;
     return Container(
       height: Screens.bottomSafeHeight + suSetHeight(70.0),
       padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
@@ -336,9 +336,7 @@ class PostDetailPageState extends State<PostDetailPage> {
               ),
               label: Text(
                 '转发',
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: suSetSp(actionFontSize),
-                    ),
+                style: bodyTextTheme.copyWith(fontSize: suSetSp(actionFontSize)),
               ),
               splashColor: Colors.grey,
             ),

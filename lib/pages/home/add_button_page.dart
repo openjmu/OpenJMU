@@ -304,7 +304,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                   emptyDivider(height: suSetHeight(10.0)),
                   Text(
                     itemTitles[index],
-                    style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: suSetSp(20.0)),
+                    style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
                   ),
                 ],
               ),

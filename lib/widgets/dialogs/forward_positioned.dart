@@ -97,7 +97,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
               : null,
         ),
         enabled: !_forwarding,
-        style: Theme.of(context).textTheme.bodyText2.copyWith(
+        style: Theme.of(context).textTheme.body1.copyWith(
               fontSize: suSetSp(20.0),
               textBaseline: TextBaseline.alphabetic,
             ),

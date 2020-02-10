@@ -272,7 +272,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                style: Theme.of(context).textTheme.bodyText2.copyWith(
+                style: Theme.of(context).textTheme.body1.copyWith(
                       fontSize: suSetSp(19.0),
                     ),
                 onSpecialTextTap: specialTextTapRecognizer,

@@ -39,7 +39,7 @@ class _FontScalePageState extends State<FontScalePage> {
                 children: <Widget>[
                   Text(
                     '字体大小调节',
-                    style: Theme.of(context).textTheme.headline6.copyWith(
+                    style: Theme.of(context).textTheme.title.copyWith(
                           fontSize: suSetSp(26.0),
                           fontWeight: FontWeight.bold,
                         ),

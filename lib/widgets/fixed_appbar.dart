@@ -51,7 +51,7 @@ class FixedAppBar extends StatelessWidget {
           Expanded(
             child: DefaultTextStyle(
               child: _title,
-              style: Theme.of(context).textTheme.headline6.copyWith(fontSize: suSetSp(23.0)),
+              style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
               maxLines: 1,
               softWrap: false,
               overflow: TextOverflow.ellipsis,

@@ -569,7 +569,7 @@ class _UserPageState extends State<UserPage>
                               emptyDivider(width: suSetWidth(8.0)),
                               Text(
                                 _user.name,
-                                style: Theme.of(context).textTheme.bodyText2.copyWith(
+                                style: Theme.of(context).textTheme.body1.copyWith(
                                       fontSize: suSetSp(23.0),
                                     ),
                               ),

@@ -169,10 +169,10 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
           contentPadding: EdgeInsets.all(suSetWidth(12.0)),
           labelText: '工号/学号',
           labelStyle: TextStyle(
-            color: Theme.of(context).textTheme.bodyText2.color,
+            color: Theme.of(context).textTheme.body1.color,
           ),
         ),
-        style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: suSetSp(22.0)),
+        style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
         strutStyle: StrutStyle(
           fontSize: suSetSp(22.0),
           height: 1.7,
@@ -209,7 +209,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
           ),
           labelText: '密码',
           labelStyle: TextStyle(
-            color: Theme.of(context).textTheme.bodyText2.color,
+            color: Theme.of(context).textTheme.body1.color,
           ),
           suffixIcon: IconButton(
             icon: Icon(
@@ -224,7 +224,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             },
           ),
         ),
-        style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: suSetSp(22.0)),
+        style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
         strutStyle: StrutStyle(
           fontSize: suSetSp(22.0),
           height: 1.7,
@@ -338,7 +338,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                         },
                     ),
                   ],
-                  style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: suSetSp(18.0)),
+                  style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(18.0)),
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.fade,

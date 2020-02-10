@@ -290,7 +290,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                                   TextSpan(text: '周'),
                                 ]),
                             ],
-                            style: Theme.of(context).textTheme.bodyText2.copyWith(
+                            style: Theme.of(context).textTheme.body1.copyWith(
                                   fontSize: suSetSp(24.0),
                                 ),
                           ),
