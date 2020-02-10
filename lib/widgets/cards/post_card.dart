@@ -599,7 +599,6 @@ class _PostCardState extends State<PostCard> {
       if (canReport) {
         PostAPI.reportPost(widget.post);
         showToast('举报成功');
-        navigatorState.pop();
       }
     }
   }

@@ -89,7 +89,6 @@ class TeamPostPreviewCard extends StatelessWidget {
     if (confirm) {
       TeamPostAPI.reportPost(post);
       showToast('举报成功');
-      navigatorState.pop();
     }
   }
 
