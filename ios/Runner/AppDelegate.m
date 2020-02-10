@@ -57,48 +57,43 @@ static NSString *isAddToPushSuccess;
 
 
     }];
-    {
-        // TODO:暂时还未实现的功能
-        if (@available(iOS 10.0, *)) {
+    // TODO:暂时还未实现的功能
+    if (@available(iOS 10.0, *)) {
 
-            [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:(UNAuthorizationOptionBadge | UNAuthorizationOptionSound | UNAuthorizationOptionAlert) completionHandler:^(BOOL granted, NSError *_Nullable error) {
-                NSLog(@"%@", error);
-            }];
-            UNNotificationCategory *generalCategory = [UNNotificationCategory
-                    categoryWithIdentifier:@"GENERAL"
-                                   actions:@[]
-                         intentIdentifiers:@[]
-                                   options:UNNotificationCategoryOptionCustomDismissAction];
+        [[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:(UNAuthorizationOptionBadge | UNAuthorizationOptionSound | UNAuthorizationOptionAlert) completionHandler:^(BOOL granted, NSError *_Nullable error) {
+            NSLog(@"%@", error);
+        }];
+        UNNotificationCategory *generalCategory = [UNNotificationCategory
+                categoryWithIdentifier:@"GENERAL"
+                               actions:@[]
+                     intentIdentifiers:@[]
+                               options:UNNotificationCategoryOptionCustomDismissAction];
 
-            // Create the custom actions for expired timer notifications.
-            UNNotificationAction *stopAction = [UNNotificationAction
-                    actionWithIdentifier:@"SNOOZE_ACTION"
-                                   title:@"取消"
-                                 options:UNNotificationActionOptionAuthenticationRequired];
-            UNNotificationAction *forAction = [UNNotificationAction
-                    actionWithIdentifier:@"FOR_ACTION"
-                                   title:@"进入OpenJMU"
-                                 options:UNNotificationActionOptionForeground];
+        // Create the custom actions for expired timer notifications.
+        UNNotificationAction *stopAction = [UNNotificationAction
+                actionWithIdentifier:@"SNOOZE_ACTION"
+                               title:@"取消"
+                             options:UNNotificationActionOptionAuthenticationRequired];
+        UNNotificationAction *forAction = [UNNotificationAction
+                actionWithIdentifier:@"FOR_ACTION"
+                               title:@"进入OpenJMU"
+                             options:UNNotificationActionOptionForeground];
 
-            // Create the category with the custom actions.
-            UNNotificationCategory *expiredCategory = [UNNotificationCategory
-                    categoryWithIdentifier:@"TIMER_EXPIRED"
-                                   actions:@[stopAction, forAction]
-                         intentIdentifiers:@[]
-                                   options:UNNotificationCategoryOptionNone];
+        // Create the category with the custom actions.
+        UNNotificationCategory *expiredCategory = [UNNotificationCategory
+                categoryWithIdentifier:@"TIMER_EXPIRED"
+                               actions:@[stopAction, forAction]
+                     intentIdentifiers:@[]
+                               options:UNNotificationCategoryOptionNone];
 
-            // Register the notification categories.
-            UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-            [center setDelegate:self];
-            [center setNotificationCategories:[NSSet setWithObjects:generalCategory, expiredCategory, nil]];
+        // Register the notification categories.
+        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+        [center setDelegate:self];
+        [center setNotificationCategories:[NSSet setWithObjects:generalCategory, expiredCategory, nil]];
 
-            [[UIApplication sharedApplication] registerForRemoteNotifications];
-        } else {
-
-        }
-        return YES;
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
     }
-    return [super application:application didFinishLaunchingWithOptions:launchOptions];
+    return YES;
 }
 
 - (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id <UIUserActivityRestoring>> *__nullable restorableObjects))restorationHandler {
@@ -138,25 +133,23 @@ static NSString *isAddToPushSuccess;
     NSDateFormatter *forMatter = [[NSDateFormatter alloc] init];
     [forMatter setDateFormat:@"yyyy/MM/dd HH:mm:ss"];
     SendTime = [forMatter stringFromDate:now]; // 转换系统现在的时间
-    if(@available(iOS 13.0,*)){
-        if(deviceToken.length !=0 ){
+    if (@available(iOS 13.0, *)) {
+        if (deviceToken.length != 0) {
             NSUInteger capacity = deviceToken.length * 2;
-            NSMutableString *ptoken = [NSMutableString stringWithCapacity:capacity];
-            const unsigned char *buf = (const unsigned char*) [deviceToken bytes];
+            NSMutableString *tokenString = [NSMutableString stringWithCapacity:capacity];
+            const unsigned char *buf = (const unsigned char *) [deviceToken bytes];
             NSInteger t;
-            for (t=0; t<deviceToken.length; ++t) {
-                [ptoken appendFormat:@"%02lX", (unsigned long)buf[t]];
-                }
-            token = [[ptoken description] stringByReplacingOccurrencesOfString:@"-" withString:@""];
+            for (t = 0; t < deviceToken.length; ++t) {
+                [tokenString appendFormat:@"%02lX", (unsigned long) buf[t]];
+            }
+            token = [[tokenString description] stringByReplacingOccurrencesOfString:@"-" withString:@""];
         }
-    }
-    else {
+    } else {
         token = [[[[deviceToken description]
-                   stringByReplacingOccurrencesOfString:@" " withString:@""]
-                  stringByReplacingOccurrencesOfString:@"<" withString:@""]
-                 stringByReplacingOccurrencesOfString:@">" withString:@""];
+                stringByReplacingOccurrencesOfString:@" " withString:@""]
+                stringByReplacingOccurrencesOfString:@"<" withString:@""]
+                stringByReplacingOccurrencesOfString:@">" withString:@""];
     }
-    NSLog(@">>>>[Token]:%@<<<<<<<<",token);
 }
 
 - (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error {
