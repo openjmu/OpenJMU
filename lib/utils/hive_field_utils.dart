@@ -7,6 +7,11 @@ import 'package:openjmu/constants/constants.dart';
 class HiveFieldUtils {
   const HiveFieldUtils._();
 
+  static SettingsProvider get provider => Provider.of<SettingsProvider>(
+        currentContext,
+        listen: false,
+      );
+
   static final _box = HiveBoxes.settingsBox;
 
   static final String brightnessDark = 'theme_brightness';
@@ -19,6 +24,7 @@ class HiveFieldUtils {
   static final String settingFontScale = 'setting_font_scale';
   static final String settingNewIcons = 'setting_new_icons';
   static final String settingHideShieldPost = 'setting_hide_shield_post';
+  static final String settingLaunchFromSystemBrowser = 'setting_launch_from_system_browser';
 
   static final String deviceUuid = 'device_uuid';
   static final String devicePushToken = 'device_push_token';
@@ -63,39 +69,43 @@ class HiveFieldUtils {
   /// 获取是否隐藏被屏蔽的动态
   static bool getEnabledHideShieldPost() => _box?.get(settingHideShieldPost);
 
+  /// 获取是否通过系统浏览器打开网页
+  static bool getLaunchFromSystemBrowser() => _box?.get(settingLaunchFromSystemBrowser);
+
   /// 设置首页的初始页
   static Future<Null> setHomeSplashIndex(int index) async {
-    final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
-    _provider.homeSplashIndex = index;
+    provider.homeSplashIndex = index;
     await _box?.put(settingHomeSplashIndex, index);
   }
 
   /// 设置首页各子页的初始页
   static Future<Null> setHomeStartUpIndex(List<int> indexList) async {
-    final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
-    _provider.homeStartUpIndex = indexList;
+    provider.homeStartUpIndex = indexList;
     await _box?.put(settingHomeStartUpIndex, indexList);
   }
 
   /// 设置字体缩放
   static Future<Null> setFontScale(double scale) async {
-    final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
-    _provider.fontScale = scale;
+    provider.fontScale = scale;
     await _box?.put(settingFontScale, scale);
   }
 
   /// 设置是否启用新应用图标
   static Future<Null> setEnabledNewAppsIcon(bool enable) async {
-    final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
-    _provider.newAppCenterIcon = enable;
+    provider.newAppCenterIcon = enable;
     await _box?.put(settingNewIcons, enable);
   }
 
   /// 设置是否隐藏被屏蔽的动态
   static Future<Null> setEnabledHideShieldPost(bool enable) async {
-    final _provider = Provider.of<SettingsProvider>(currentContext, listen: false);
-    _provider.hideShieldPost = enable;
+    provider.hideShieldPost = enable;
     await _box?.put(settingHideShieldPost, enable);
+  }
+
+  /// 设置是否通过系统浏览器打开网页
+  static Future<Null> setLaunchFromSystemBrowser(bool enable) async {
+    provider.launchFromSystemBrowser = enable;
+    await _box?.put(settingLaunchFromSystemBrowser, enable);
   }
 
   /// 获取设备PushToken

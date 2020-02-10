@@ -69,6 +69,15 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool _launchFromSystemBrowser = false;
+  bool get launchFromSystemBrowser => _launchFromSystemBrowser;
+  set launchFromSystemBrowser(bool value) {
+    assert(value != null);
+    if (_launchFromSystemBrowser == value) return;
+    _launchFromSystemBrowser = value;
+    notifyListeners();
+  }
+
   final fontScaleRange = <double>[0.6, 1.4];
   double _fontScale = 1.0;
   double get fontScale => _fontScale;
@@ -84,6 +93,8 @@ class SettingsProvider extends ChangeNotifier {
     _homeStartUpIndex = HiveFieldUtils.getHomeStartUpIndex() ?? _homeStartUpIndex;
     _newAppCenterIcon = HiveFieldUtils.getEnabledNewAppsIcon() ?? _newAppCenterIcon;
     _hideShieldPost = HiveFieldUtils.getEnabledHideShieldPost() ?? _hideShieldPost;
+    _launchFromSystemBrowser =
+        HiveFieldUtils.getLaunchFromSystemBrowser() ?? _launchFromSystemBrowser;
   }
 
   void reset() {
@@ -92,6 +103,8 @@ class SettingsProvider extends ChangeNotifier {
     _homeStartUpIndex = [0, 0, 0];
     _newAppCenterIcon = false;
     _hideShieldPost = true;
+    _launchFromSystemBrowser = false;
+
     _announcementsUserEnabled = _announcementsEnabled;
     notifyListeners();
   }

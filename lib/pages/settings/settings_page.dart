@@ -115,6 +115,24 @@ class SettingsPage extends StatelessWidget {
               },
             ),
           },
+          if (Constants.developerList.contains(currentUser.uid))
+            {
+              'icon': 'hide_blocked',
+              'name': '使用系统浏览器',
+              'description': '应用及网页将通过系统自带浏览器打开',
+              'widget': Selector<SettingsProvider, bool>(
+                selector: (_, provider) => provider.launchFromSystemBrowser,
+                builder: (_, launchFromSystemBrowser, __) {
+                  return CustomSwitch(
+                    activeColor: currentThemeColor,
+                    value: launchFromSystemBrowser,
+                    onChanged: (bool value) async {
+                      await HiveFieldUtils.setLaunchFromSystemBrowser(value);
+                    },
+                  );
+                },
+              ),
+            },
         ],
       ];
 
