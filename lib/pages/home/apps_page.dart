@@ -23,7 +23,6 @@ class AppsPageState extends State<AppsPage>
   final _scrollController = ScrollController();
 
   TabController _tabController;
-  int listTotalSize = 0;
 
   @override
   bool get wantKeepAlive => true;
@@ -44,7 +43,7 @@ class AppsPageState extends State<AppsPage>
     Instances.eventBus
       ..on<ScrollToTopEvent>().listen((event) {
         if (mounted && event.tabIndex == 1) {
-          _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
+          _scrollController.animateTo(0, duration: 500.milliseconds, curve: Curves.ease);
         }
       })
       ..on<AppCenterRefreshEvent>().listen((event) {
@@ -71,6 +70,44 @@ class AppsPageState extends State<AppsPage>
     _tabController?.dispose();
     super.dispose();
   }
+
+  Widget get _appBar => Positioned(
+        top: 0.0,
+        left: 0.0,
+        right: 0.0,
+        child: FixedAppBar(
+          automaticallyImplyLeading: false,
+          title: Padding(
+            padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
+            child: Row(
+              children: <Widget>[
+                Expanded(child: _tabBar),
+                _refreshIcon,
+              ],
+            ),
+          ),
+        ),
+      );
+
+  Widget get _tabBar => TabBar(
+        isScrollable: true,
+        indicator: RoundedUnderlineTabIndicator(
+          borderSide: BorderSide(
+            color: currentThemeColor,
+            width: suSetHeight(3.0),
+          ),
+          width: suSetWidth(26.0),
+          insets: EdgeInsets.only(bottom: suSetHeight(4.0)),
+        ),
+        labelColor: Theme.of(context).textTheme.bodyText2.color,
+        labelStyle: MainPageState.tabSelectedTextStyle,
+        labelPadding: EdgeInsets.symmetric(
+          horizontal: suSetWidth(16.0),
+        ),
+        unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
+        tabs: List<Tab>.generate(tabs.length, (i) => _tab(tabs[i])),
+        controller: _tabController,
+      );
 
   Widget _tab(String name) {
     Widget tab;
@@ -115,6 +152,17 @@ class AppsPageState extends State<AppsPage>
     return tab;
   }
 
+  Widget get _refreshIcon => SizedBox(
+        width: suSetWidth(60.0),
+        child: IconButton(
+          alignment: Alignment.centerRight,
+          icon: Icon(Icons.refresh, size: suSetWidth(32.0)),
+          onPressed: () {
+            Instances.eventBus.fire(AppCenterRefreshEvent(_tabController.index));
+          },
+        ),
+      );
+
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
@@ -142,11 +190,11 @@ class AppsPageState extends State<AppsPage>
                   cacheExtent: 3,
                   controller: _tabController,
                   children: <Widget>[
-                    UserAPI.currentUser.isTeacher != null
-                        ? UserAPI.currentUser.isTeacher
+                    currentUser.isTeacher != null
+                        ? currentUser?.isTeacher ?? false
                             ? InAppBrowserPage(
                                 url: '${API.courseScheduleTeacher}'
-                                    '?sid=${UserAPI.currentUser.sid}'
+                                    '?sid=${currentUser.sid}'
                                     '&night=${dark ? 1 : 0}',
                                 title: '课程表',
                                 withAppBar: false,
@@ -154,7 +202,7 @@ class AppsPageState extends State<AppsPage>
                                 keepAlive: true,
                               )
                             : CourseSchedulePage(key: Instances.courseSchedulePageStateKey)
-                        : SizedBox(),
+                        : SizedBox.shrink(),
                     if (tabs.contains('成绩')) ScorePage(),
                     AppCenterPage(
                       refreshIndicatorKey: refreshIndicatorKey,
@@ -165,52 +213,7 @@ class AppsPageState extends State<AppsPage>
               },
             ),
           ),
-          Positioned(
-            top: 0.0,
-            left: 0.0,
-            right: 0.0,
-            child: FixedAppBar(
-              automaticallyImplyLeading: false,
-              title: Padding(
-                padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: TabBar(
-                        isScrollable: true,
-                        indicator: RoundedUnderlineTabIndicator(
-                          borderSide: BorderSide(
-                            color: currentThemeColor,
-                            width: suSetHeight(3.0),
-                          ),
-                          width: suSetWidth(26.0),
-                          insets: EdgeInsets.only(bottom: suSetHeight(4.0)),
-                        ),
-                        labelColor: Theme.of(context).textTheme.bodyText2.color,
-                        labelStyle: MainPageState.tabSelectedTextStyle,
-                        labelPadding: EdgeInsets.symmetric(
-                          horizontal: suSetWidth(16.0),
-                        ),
-                        unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
-                        tabs: List<Tab>.generate(tabs.length, (i) => _tab(tabs[i])),
-                        controller: _tabController,
-                      ),
-                    ),
-                    SizedBox(
-                      width: suSetWidth(60.0),
-                      child: IconButton(
-                        alignment: Alignment.centerRight,
-                        icon: Icon(Icons.refresh, size: suSetWidth(32.0)),
-                        onPressed: () {
-                          Instances.eventBus.fire(AppCenterRefreshEvent(_tabController.index));
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          _appBar,
         ],
       ),
     );
