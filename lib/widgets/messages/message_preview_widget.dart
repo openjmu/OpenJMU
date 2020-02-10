@@ -68,7 +68,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
     } else if (widget.message.sendTime.year == now.year) {
       formattedTime = DateFormat('MM-dd HH:mm').format(widget.message.sendTime);
     } else {
-      formattedTime = DateFormat('YY-MM-dd HH:mm').format(widget.message.sendTime);
+      formattedTime = DateFormat('yy-MM-dd HH:mm').format(widget.message.sendTime);
     }
     if (mounted) setState(() {});
   }
