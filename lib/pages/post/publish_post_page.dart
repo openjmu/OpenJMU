@@ -47,7 +47,7 @@ class PublishPostPageState extends State<PublishPostPage> {
 
   int currentLength = 0, currentOffset;
   Color counterTextColor = Colors.grey;
-  double _keyboardHeight = EmotionPadState.emoticonPadDefaultHeight;
+  double _keyboardHeight = EmotionPad.emoticonPadDefaultHeight;
 
   bool emoticonPadActive = false;
 
@@ -354,25 +354,27 @@ class PublishPostPageState extends State<PublishPostPage> {
       emoticonPadActive = active;
       if (mounted) setState(() {});
     };
-    emoticonPadActive
-        ? change()
-        : MediaQuery.of(context).viewInsets.bottom != 0.0
-            ? SystemChannels.textInput.invokeMethod('TextInput.hide').whenComplete(
-                () async {
-                  Future.delayed(const Duration(milliseconds: 300), () {}).whenComplete(change);
-                },
-              )
-            : change();
+    if (emoticonPadActive) {
+      change();
+    } else {
+      if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
+        SystemChannels.textInput.invokeMethod('TextInput.hide').whenComplete(
+          () {
+            Future.delayed(300.milliseconds, null).whenComplete(change);
+          },
+        );
+      } else {
+        change();
+      }
+    }
   }
 
   Widget emoticonPad(context) {
-    return Visibility(
-      visible: emoticonPadActive,
-      child: EmotionPad(
-        route: 'publish',
-        height: _keyboardHeight,
-        controller: _textEditingController,
-      ),
+    return EmotionPad(
+      active: emoticonPadActive,
+      route: 'publish',
+      height: _keyboardHeight,
+      controller: _textEditingController,
     );
   }
 

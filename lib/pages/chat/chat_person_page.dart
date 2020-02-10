@@ -32,7 +32,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
   List<Message> messages = [];
   bool shrinkWrap = true;
   bool emoticonPadActive = false;
-  double _keyboardHeight = EmotionPadState.emoticonPadDefaultHeight;
+  double _keyboardHeight = EmotionPad.emoticonPadDefaultHeight;
   String pendingMessage = '';
 
   @override
@@ -255,13 +255,11 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
     );
   }
 
-  Widget get emoticonPad => Visibility(
-        visible: emoticonPadActive,
-        child: EmotionPad(
-          route: 'message',
-          height: _keyboardHeight,
-          controller: _textEditingController,
-        ),
+  Widget get emoticonPad => EmotionPad(
+        active: emoticonPadActive,
+        height: _keyboardHeight,
+        route: 'message',
+        controller: _textEditingController,
       );
 
   void judgeShrink(context) {

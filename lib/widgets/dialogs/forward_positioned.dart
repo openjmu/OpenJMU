@@ -149,15 +149,19 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       emoticonPadActive = active;
       if (mounted) setState(() {});
     };
-    emoticonPadActive
-        ? change()
-        : MediaQuery.of(context).viewInsets.bottom != 0.0
-            ? SystemChannels.textInput.invokeMethod('TextInput.hide').whenComplete(
-                () async {
-                  Future.delayed(const Duration(milliseconds: 300), () {}).whenComplete(change);
-                },
-              )
-            : change();
+    if (emoticonPadActive) {
+      change();
+    } else {
+      if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
+        SystemChannels.textInput.invokeMethod('TextInput.hide').whenComplete(
+          () {
+            Future.delayed(300.milliseconds, null).whenComplete(change);
+          },
+        );
+      } else {
+        change();
+      }
+    }
   }
 
   void insertText(String text) {
@@ -188,13 +192,11 @@ class ForwardPositionedState extends State<ForwardPositioned> {
     }
   }
 
-  Widget get emoticonPad => Visibility(
-        visible: emoticonPadActive,
-        child: EmotionPad(
-          route: 'comment',
-          height: _keyboardHeight,
-          controller: _forwardController,
-        ),
+  Widget get emoticonPad => EmotionPad(
+        route: 'comment',
+        active: emoticonPadActive,
+        height: _keyboardHeight,
+        controller: _forwardController,
       );
 
   void mentionPeople(context) {

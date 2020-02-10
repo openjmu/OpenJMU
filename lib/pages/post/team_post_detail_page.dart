@@ -68,7 +68,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   bool loading, canLoadMore = true, canSend = false, sending = false;
   bool showExtendedPad = false, showEmoticonPad = false;
   String replyHint;
-  double _keyboardHeight = EmotionPadState.emoticonPadDefaultHeight;
+  double _keyboardHeight = EmotionPad.emoticonPadDefaultHeight;
   TeamPost replyToPost;
   TeamPostComment replyToComment;
 
@@ -349,15 +349,20 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       if (showEmoticonPad) showExtendedPad = false;
       if (mounted) setState(() {});
     };
-    showEmoticonPad
-        ? change()
-        : MediaQuery.of(context).viewInsets.bottom != 0.0
-            ? SystemChannels.textInput.invokeMethod('TextInput.hide').whenComplete(
-                () {
-                  Future.delayed(300.milliseconds, change);
-                },
-              )
-            : change();
+
+    if (showEmoticonPad) {
+      change();
+    } else {
+      if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
+        SystemChannels.textInput.invokeMethod('TextInput.hide').whenComplete(
+          () {
+            Future.delayed(300.milliseconds, null).whenComplete(change);
+          },
+        );
+      } else {
+        change();
+      }
+    }
   }
 
   void triggerExtendedPad() {
@@ -483,15 +488,11 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     });
   }
 
-  Widget get emoticonPad => AnimatedContainer(
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.fastOutSlowIn,
-        height: showEmoticonPad ? _keyboardHeight : 0.0,
-        child: EmotionPad(
-          route: 'publish',
-          height: MediaQuery.of(context).viewInsets.bottom,
-          controller: _textEditingController,
-        ),
+  Widget get emoticonPad => EmotionPad(
+        active: showEmoticonPad,
+        height: _keyboardHeight,
+        route: 'publish',
+        controller: _textEditingController,
       );
 
   @override

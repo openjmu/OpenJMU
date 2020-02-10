@@ -186,15 +186,19 @@ class CommentPositionedState extends State<CommentPositioned> {
       emoticonPadActive = active;
       if (mounted) setState(() {});
     };
-    emoticonPadActive
-        ? change()
-        : MediaQuery.of(context).viewInsets.bottom != 0.0
-            ? SystemChannels.textInput.invokeMethod('TextInput.hide').whenComplete(
-                () async {
-                  Future.delayed(const Duration(milliseconds: 300), () {}).whenComplete(change);
-                },
-              )
-            : change();
+    if (emoticonPadActive) {
+      change();
+    } else {
+      if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
+        SystemChannels.textInput.invokeMethod('TextInput.hide').whenComplete(
+          () {
+            Future.delayed(300.milliseconds, null).whenComplete(change);
+          },
+        );
+      } else {
+        change();
+      }
+    }
   }
 
   void insertText(String text) {
@@ -227,13 +231,11 @@ class CommentPositionedState extends State<CommentPositioned> {
   }
 
   Widget emoticonPad(context) {
-    return Visibility(
-      visible: emoticonPadActive,
-      child: EmotionPad(
-        route: 'comment',
-        height: _keyboardHeight,
-        controller: _commentController,
-      ),
+    return EmotionPad(
+      active: emoticonPadActive,
+      height: _keyboardHeight,
+      route: 'comment',
+      controller: _commentController,
     );
   }
 
@@ -369,7 +371,9 @@ class CommentPositionedState extends State<CommentPositioned> {
               },
             ),
           ),
-          Container(
+          AnimatedContainer(
+            curve: Curves.ease,
+            duration: 100.milliseconds,
             color: Theme.of(context).cardColor,
             padding: EdgeInsets.only(
               bottom: !emoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
@@ -388,7 +392,9 @@ class CommentPositionedState extends State<CommentPositioned> {
             ),
           ),
           emoticonPad(context),
-          SizedBox(
+          AnimatedContainer(
+            curve: Curves.ease,
+            duration: 100.milliseconds,
             height: MediaQuery.of(context).viewInsets.bottom,
           ),
         ],

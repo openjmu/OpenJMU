@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
@@ -121,28 +121,24 @@ class EmoticonUtils {
   };
 }
 
-class EmotionPad extends StatefulWidget {
-  final String route;
+class EmotionPad extends StatelessWidget {
+  final bool active;
   final double height;
+  final String route;
   final TextEditingController controller;
 
   EmotionPad({
     Key key,
+    @required this.active,
+    @required this.height,
     this.route,
-    this.height,
     this.controller,
   }) : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() => EmotionPadState();
-}
-
-class EmotionPadState extends State<EmotionPad> {
   static double get emoticonPadDefaultHeight => suSetHeight(260.0);
-  static double emoticonPadHeight;
 
   void insertText(String text) {
-    final value = widget.controller.value;
+    final value = controller.value;
     final start = value.selection.baseOffset;
     final end = value.selection.extentOffset;
 
@@ -159,7 +155,7 @@ class EmotionPadState extends State<EmotionPad> {
       } else {
         newText = value.text.replaceRange(start, end, text);
       }
-      widget.controller.value = value.copyWith(
+      controller.value = value.copyWith(
         text: newText,
         selection: value.selection.copyWith(
           baseOffset: end + text.length,
@@ -171,10 +167,11 @@ class EmotionPadState extends State<EmotionPad> {
 
   @override
   Widget build(BuildContext context) {
-    double height = max(emoticonPadDefaultHeight, widget.height);
+    final _height = math.max(emoticonPadDefaultHeight, height);
     return Container(
+      width: double.infinity,
+      height: active ? _height : 0.0,
       color: Theme.of(context).canvasColor,
-      height: height,
       child: GridView.builder(
         padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
