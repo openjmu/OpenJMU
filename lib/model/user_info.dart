@@ -14,7 +14,6 @@ class UserInfo {
   String sid;
   String ticket;
   bool isTeacher;
-  bool isCY;
 
   /// Common Object
   int uid;
@@ -33,7 +32,6 @@ class UserInfo {
     this.signature,
     this.ticket,
     this.isTeacher,
-    this.isCY,
     this.unitId,
     this.workId,
     this.classId,
@@ -57,18 +55,53 @@ class UserInfo {
       'signature': signature,
       'ticket': ticket,
       'isTeacher': isTeacher,
-      'isCY': isCY,
       'unitId': unitId,
       'workId': workId,
 //      'classId': classId,
       'gender': gender,
       'isFollowing': isFollowing,
+      'isPostgraduate': isPostgraduate,
+      'isContinuingEducation': isContinuingEducation,
+      'isCY': isCY,
     };
   }
 
   @override
   String toString() {
     return 'UserInfo ${JsonEncoder.withIndent('  ').convert(toJson())}';
+  }
+
+  /// 是否为研究生
+  bool get isPostgraduate {
+    if (workId.length != 12) {
+      return false;
+    } else {
+      final int code = int.tryParse(workId.substring(4, 6));
+      if (code == null) return false;
+      return code >= 10 && code <= 19;
+    }
+  }
+
+  /// 是否为继续教育学生
+  bool get isContinuingEducation {
+    if (workId.length != 12) {
+      return false;
+    } else {
+      final int code = int.tryParse(workId.substring(4, 6));
+      if (code == null) return false;
+      return code >= 30 && code <= 39;
+    }
+  }
+
+  /// 是否为诚毅学院学生
+  bool get isCY {
+    if (workId.length != 12) {
+      return false;
+    } else {
+      final int code = int.tryParse(workId.substring(4, 6));
+      if (code == null) return false;
+      return code >= 41 && code <= 45;
+    }
   }
 
   factory UserInfo.fromJson(Map<String, dynamic> json) {
@@ -82,7 +115,6 @@ class UserInfo {
       signature: json['signature'],
       ticket: json['ticket'],
       isTeacher: json['isTeacher'] ?? int.parse(json['type'].toString()) == 1,
-      isCY: json['isCY'],
       unitId: json['unitId'] ?? json['unitid'],
       workId: (json['workId'] ?? json['workid'] ?? json['uid']).toString(),
       classId: null,

@@ -32,7 +32,6 @@ class DataUtils {
         'signature': user['signature'],
         'ticket': loginData['ticket'],
         'isTeacher': int.parse(user['type'].toString()) == 1,
-        'isCY': checkCY(user['workid']),
         'unitId': loginData['unitid'],
         'workId': user['workid'],
 //        'classId': user['class_id'],
@@ -70,19 +69,6 @@ class DataUtils {
       return true;
     } else {
       return false;
-    }
-  }
-
-  static bool checkCY(String workId) {
-    if (workId.length != 12) {
-      return false;
-    } else {
-      final int code = int.tryParse(workId.substring(4, 6));
-      if (code >= 41 && code <= 45) {
-        return true;
-      } else {
-        return false;
-      }
     }
   }
 
@@ -124,7 +110,6 @@ class DataUtils {
         'signature': data['signature'],
         'ticket': settingsBox.get(spTicket),
         'isTeacher': int.parse(data['type'].toString()) == 1,
-        'isCY': checkCY(data['workid']),
         'unitId': data['unitid'],
         'workId': data['workid'],
 //        'classId': user['class_id'],
