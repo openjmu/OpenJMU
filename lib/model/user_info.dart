@@ -78,7 +78,7 @@ class UserInfo {
     } else {
       final int code = int.tryParse(workId.substring(4, 6));
       if (code == null) return false;
-      return code >= 10 && code <= 19;
+      return (code >= 10 && code <= 19);
     }
   }
 
@@ -89,7 +89,7 @@ class UserInfo {
     } else {
       final int code = int.tryParse(workId.substring(4, 6));
       if (code == null) return false;
-      return code >= 30 && code <= 39;
+      return (code >= 30 && code <= 39);
     }
   }
 
@@ -100,7 +100,7 @@ class UserInfo {
     } else {
       final int code = int.tryParse(workId.substring(4, 6));
       if (code == null) return false;
-      return code >= 41 && code <= 45;
+      return (code >= 41 && code <= 45);
     }
   }
 

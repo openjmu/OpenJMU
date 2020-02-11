@@ -17,7 +17,11 @@ class AppsPage extends StatefulWidget {
 
 class AppsPageState extends State<AppsPage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  static List<String> get tabs => ['课程表', if (!(currentUser?.isTeacher ?? false)) '成绩', '应用'];
+  static List<String> get tabs => [
+        if (!(currentUser?.isPostgraduate ?? false)) '课程表',
+        if (!((currentUser?.isTeacher ?? false) || (currentUser?.isPostgraduate ?? false))) '成绩',
+        '应用',
+      ];
   final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
   final _scrollController = ScrollController();
@@ -190,19 +194,20 @@ class AppsPageState extends State<AppsPage>
                   cacheExtent: 3,
                   controller: _tabController,
                   children: <Widget>[
-                    currentUser.isTeacher != null
-                        ? currentUser?.isTeacher ?? false
-                            ? InAppBrowserPage(
-                                url: '${API.courseScheduleTeacher}'
-                                    '?sid=${currentUser.sid}'
-                                    '&night=${dark ? 1 : 0}',
-                                title: '课程表',
-                                withAppBar: false,
-                                withAction: false,
-                                keepAlive: true,
-                              )
-                            : CourseSchedulePage(key: Instances.courseSchedulePageStateKey)
-                        : SizedBox.shrink(),
+                    if (tabs.contains('课程表'))
+                      currentUser.isTeacher != null
+                          ? currentUser?.isTeacher ?? false
+                              ? InAppBrowserPage(
+                                  url: '${API.courseScheduleTeacher}'
+                                      '?sid=${currentUser.sid}'
+                                      '&night=${dark ? 1 : 0}',
+                                  title: '课程表',
+                                  withAppBar: false,
+                                  withAction: false,
+                                  keepAlive: true,
+                                )
+                              : CourseSchedulePage(key: Instances.courseSchedulePageStateKey)
+                          : SizedBox.shrink(),
                     if (tabs.contains('成绩')) ScorePage(),
                     AppCenterPage(
                       refreshIndicatorKey: refreshIndicatorKey,

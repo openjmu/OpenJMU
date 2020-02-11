@@ -56,6 +56,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   );
 
   int initAction;
+
   Brightness get _platformBrightness => Screens.mediaQuery.platformBrightness ?? Brightness.light;
 
   @override
@@ -65,16 +66,28 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     tryRecoverLoginInfo();
 
     Instances.eventBus
+      ..on<TicketGotEvent>().listen((event) {
+        if (!currentUser.isTeacher) {
+          if (!currentUser.isPostgraduate) {
+            Provider.of<CoursesProvider>(currentContext, listen: false).initCourses();
+            Provider.of<ScoresProvider>(currentContext, listen: false).initScore();
+          }
+        }
+        Provider.of<MessagesProvider>(currentContext, listen: false).initMessages();
+        Provider.of<ReportRecordsProvider>(currentContext, listen: false).initRecords();
+        Provider.of<WebAppsProvider>(currentContext, listen: false).initApps();
+      })
       ..on<LogoutEvent>().listen((event) {
-        DataUtils.logout();
         navigatorState.pushNamedAndRemoveUntil(
           Routes.OPENJMU_LOGIN,
           (_) => false,
           arguments: {'initAction': initAction},
         );
         if (!currentUser.isTeacher) {
-          Provider.of<CoursesProvider>(currentContext, listen: false).unloadCourses();
-          Provider.of<ScoresProvider>(currentContext, listen: false).unloadScore();
+          if (!currentUser.isPostgraduate) {
+            Provider.of<CoursesProvider>(currentContext, listen: false).unloadCourses();
+            Provider.of<ScoresProvider>(currentContext, listen: false).unloadScore();
+          }
         }
         Provider.of<MessagesProvider>(currentContext, listen: false).unloadMessages();
         Provider.of<ReportRecordsProvider>(currentContext, listen: false).unloadRecords();
@@ -83,15 +96,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
           Provider.of<ThemesProvider>(currentContext, listen: false).resetTheme();
           Provider.of<SettingsProvider>(currentContext, listen: false).reset();
         });
-      })
-      ..on<TicketGotEvent>().listen((event) {
-        if (!currentUser.isTeacher) {
-          Provider.of<CoursesProvider>(currentContext, listen: false).initCourses();
-          Provider.of<ScoresProvider>(currentContext, listen: false).initScore();
-        }
-        Provider.of<MessagesProvider>(currentContext, listen: false).initMessages();
-        Provider.of<ReportRecordsProvider>(currentContext, listen: false).initRecords();
-        Provider.of<WebAppsProvider>(currentContext, listen: false).initApps();
+        DataUtils.logout();
       })
       ..on<ActionsEvent>().listen((event) {
         initAction = Constants.quickActionsList.keys
