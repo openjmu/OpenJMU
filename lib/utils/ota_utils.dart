@@ -5,10 +5,8 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:launch_review/launch_review.dart';
 import 'package:package_info/package_info.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/updating_dialog.dart';
@@ -64,16 +62,14 @@ class OTAUtils {
     if (Platform.isIOS) {
       LaunchReview.launch(iOSAppId: '1459832676');
     } else {
-      final permission = await PermissionHandler().checkPermissionStatus(PermissionGroup.storage);
-      if (permission != PermissionStatus.granted) {
-        final permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-        if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
-          startUpdate();
-        } else {
-          _tryUpdate();
-        }
+      if (await canLaunch('coolmarket://apk/$packageName')) {
+        launch('coolmarket://apk/$packageName');
       } else {
-        startUpdate();
+        launch(
+          'https://www.coolapk.com/apk/$packageName',
+          forceSafariVC: false,
+          forceWebView: false,
+        );
       }
     }
   }
@@ -166,7 +162,7 @@ class OTAUtils {
             onConfirm: dismissAllToast,
             onCancel: _tryUpdate,
             confirmLabel: '下次一定',
-            cancelLabel: '现在更新',
+            cancelLabel: '前往更新',
           ),
           Positioned(
             top: Screens.height / 12,
@@ -194,118 +190,6 @@ class OTAUtils {
       dismissOtherToast: true,
       duration: 1.weeks,
       handleTouch: true,
-    );
-  }
-
-  static Widget updateDialog(HasUpdateEvent event) {
-    String text;
-    if (event.currentVersion == event.response['version']) {
-      text = '${event.currentVersion}(${event.currentBuild}) ->'
-          '${event.response['version']}(${event.response['buildNumber']})';
-    } else {
-      text = '${event.currentVersion} -> ${event.response['version']}';
-    }
-    return Material(
-      color: Colors.black38,
-      child: Container(
-        margin: EdgeInsets.all(suSetWidth(50.0)),
-        padding: EdgeInsets.all(suSetWidth(30.0)),
-        color: currentThemeColor.withOpacity(0.8),
-        child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Center(
-                        child: Container(
-                          margin: EdgeInsets.only(bottom: suSetHeight(12.0)),
-                          child: SvgPicture.asset(
-                            'images/splash_page_logo.svg',
-                            color: Colors.white,
-                            width: suSetWidth(120.0),
-                          ),
-                          decoration: BoxDecoration(shape: BoxShape.circle),
-                        ),
-                      ),
-                      Center(
-                        child: Container(
-                          margin: EdgeInsets.symmetric(vertical: suSetHeight(12.0)),
-                          child: Text(
-                            'OpenJmu has new version',
-                            style: TextStyle(
-                              fontFamily: 'chocolate',
-                              color: Colors.white,
-                              fontSize: suSetSp(24.0),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Center(
-                        child: Container(
-                          margin: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
-                          child: RichText(
-                            text: TextSpan(
-                              children: <TextSpan>[
-                                TextSpan(
-                                  text: text,
-                                  style: TextStyle(
-                                    fontFamily: 'chocolate',
-                                    color: Colors.white,
-                                    fontSize: suSetSp(20.0),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      RichText(
-                        text: TextSpan(
-                          text: event.response['updateLog'],
-                          style: TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Row(
-                children: <Widget>[
-                  if (!event.forceUpdate)
-                    Expanded(
-                      child: FlatButton(
-                        onPressed: dismissAllToast,
-                        child: Text(
-                          '取消',
-                          style: TextStyle(color: Colors.white, fontSize: suSetSp(18.0)),
-                        ),
-                      ),
-                    ),
-                  Expanded(
-                    child: FlatButton(
-                      color: Colors.white,
-                      onPressed: _tryUpdate,
-                      child: Text(
-                        Platform.isIOS ? '前往 App Store 更新' : '更新',
-                        style: TextStyle(
-                          color: currentThemeColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: suSetSp(18.0),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      ),
     );
   }
 
