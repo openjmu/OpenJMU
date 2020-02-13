@@ -66,19 +66,19 @@ We cannot provide any account for test due to policy reason at present stage. If
 # 8多说，上图！ Let's see some screenshots !
 ## 截图 ScreenShots
 <div align="center">
-    <img width="280" src="screenshots/Screenshot_1.jpg"/>
-    <img width="280" src="screenshots/Screenshot_2.jpg"/>
-    <img width="280" src="screenshots/Screenshot_3.jpg"/>
-    <img width="280" src="screenshots/Screenshot_4.jpg"/>
-    <img width="280" src="screenshots/Screenshot_5.jpg"/>
-    <img width="280" src="screenshots/Screenshot_6.jpg"/>
-    <img width="280" src="screenshots/Screenshot_7.jpg"/>
-    <img width="280" src="screenshots/Screenshot_8.jpg"/>
-    <img width="280" src="screenshots/Screenshot_9.jpg"/>
-    <img width="280" src="screenshots/Screenshot_10.jpg"/>
-    <img width="280" src="screenshots/Screenshot_11.jpg"/>
-    <img width="280" src="screenshots/Screenshot_12.jpg"/>
-    <img width="280" src="screenshots/Screenshot_13.jpg"/>
-    <img width="280" src="screenshots/Screenshot_14.jpg"/>
-    <img width="280" src="screenshots/Screenshot_15.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_1.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_2.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_3.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_4.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_5.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_6.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_7.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_8.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_9.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_10.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_11.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_12.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_13.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_14.jpg"/>
+    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_15.jpg"/>
 </div>
