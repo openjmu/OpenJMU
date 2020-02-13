@@ -23,12 +23,14 @@ class WebAppIcon extends StatelessWidget {
       debugPrint('Error when load webapp icon: $e.\nLoading fallback icon...');
       return ExtendedImage.network(
         oldIconUrl,
-        width: suSetWidth(size),
-        height: suSetWidth(size),
+        width: suSetWidth(oldIconSize),
+        height: suSetWidth(oldIconSize),
         fit: BoxFit.fill,
       );
     }
   }
+
+  double get oldIconSize => size / 1.5;
 
   String get iconPath => 'assets/icons/appCenter/${app.code}-${app.name}.svg';
 
@@ -39,20 +41,26 @@ class WebAppIcon extends StatelessWidget {
     return Selector<SettingsProvider, bool>(
       selector: (_, provider) => provider.newAppCenterIcon,
       builder: (_, newAppCenterIcon, __) {
-        return !(currentUser?.isTeacher ?? false) || newAppCenterIcon
+        final shouldUseNew = !(currentUser?.isTeacher ?? false) || newAppCenterIcon;
+        return shouldUseNew
             ? FutureBuilder(
-                initialData: SizedBox(),
+                initialData: SizedBox.shrink(),
                 future: loadAsset(),
-                builder: (_, snapshot) => SizedBox(
-                  width: suSetWidth(size),
-                  height: suSetHeight(size),
+                builder: (_, snapshot) => SizedBox.fromSize(
+                  size: Size.square(suSetWidth(size)),
                   child: Center(child: snapshot.data),
                 ),
               )
-            : SizedBox(
-                width: suSetWidth(size / 1.2),
-                height: suSetHeight(size / 1.2),
-                child: Center(child: ExtendedImage.network(oldIconUrl, fit: BoxFit.fill)),
+            : SizedBox.fromSize(
+                size: Size.square(suSetWidth(size)),
+                child: Center(
+                  child: ExtendedImage.network(
+                    oldIconUrl,
+                    fit: BoxFit.fill,
+                    width: suSetWidth(oldIconSize),
+                    height: suSetWidth(oldIconSize),
+                  ),
+                ),
               );
       },
     );

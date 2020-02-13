@@ -128,7 +128,7 @@ class PublishPostPageState extends State<PublishPostPage> {
             selectionLimitReachedText: '已达到最大张数限制',
           ),
         ).catchError((e) {
-          debugPrint(e.toString());
+          debugPrint('Error when picking images: $e');
         });
         if (results != null) resultList = results;
         if (_focusNode.canRequestFocus) _focusNode.requestFocus();

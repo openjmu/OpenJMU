@@ -12,7 +12,6 @@ class SettingsProvider extends ChangeNotifier {
   /// For test page.
   /// TODO: Set this to false before release.
   bool _debug = !kReleaseMode && false;
-//  bool _debug = true;
   bool get debug => _debug;
   set debug(bool value) {
     _debug = value;
