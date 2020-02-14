@@ -421,10 +421,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
               children: <Widget>[
                 if (remark != null) remarkWidget,
                 weekSelection(context),
-                if (firstLoaded && hasCourse) weekDayIndicator,
-                if (firstLoaded && hasCourse) courseLineGrid(context),
+                if (firstLoaded && hasCourse && !showError) weekDayIndicator,
+                if (firstLoaded && hasCourse && !showError) courseLineGrid(context),
                 if (firstLoaded && !hasCourse && !showError) emptyTips,
-                if (firstLoaded && !hasCourse && showError) errorTips,
+                if (firstLoaded && showError) errorTips,
               ],
             ),
           ),
