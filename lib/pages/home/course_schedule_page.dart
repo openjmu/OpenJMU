@@ -360,11 +360,11 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
               Expanded(
                 child: Column(
                   children: <Widget>[
-                    for (int count = 1; count < _maxCoursesPerDay + 1; count++)
+                    for (int count = 1; count < _maxCoursesPerDay; count++)
                       if (count.isOdd)
                         CourseWidget(
                           courseList: courses[day].cast<int, List>()[count].cast<Course>(),
-                          hasEleven: hasEleven && count == 10,
+                          hasEleven: hasEleven && count == 9,
                           currentWeek: currentWeek,
                           coordinate: [day, count],
                         ),
@@ -567,7 +567,7 @@ class CourseWidget extends StatelessWidget {
       );
     }
     if (course == null && courseList.isNotEmpty) course = courseList[0];
-    if (hasEleven) isEleven = course?.isEleven ?? false;
+    if (hasEleven) isEleven = courseList.firstWhere((c) => c.isEleven, orElse: () => null) != null;
     return Expanded(
       flex: hasEleven ? 3 : 2,
       child: Column(
