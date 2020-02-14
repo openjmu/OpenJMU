@@ -272,7 +272,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(suSetWidth(5.0)),
                     color: DateFormat('MM/dd').format(
-                              now.subtract(Duration(days: now.weekday - 1 - i)),
+                              now.subtract((7 * (currentWeek - dateProvider.currentWeek)).days +
+                                  Duration(days: now.weekday - 1 - i)),
                             ) ==
                             DateFormat('MM/dd').format(DateTime.now())
                         ? currentThemeColor.withAlpha(100)
