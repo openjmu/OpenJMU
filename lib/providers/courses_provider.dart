@@ -183,7 +183,36 @@ class CoursesProvider extends ChangeNotifier {
       courses[courseDay][11].add(course);
     } else {
       if (courses.keys.contains(courseDay)) {
-        courses[courseDay][int.parse(course.time.substring(0, 1))].add(course);
+        int courseTime;
+        switch (course.time) {
+          case "12":
+          case "01":
+          case "02":
+            courseTime = 1;
+            break;
+          case "34":
+          case "03":
+          case "04":
+            courseTime = 3;
+            break;
+          case "56":
+          case "05":
+          case "06":
+            courseTime = 5;
+            break;
+          case "78":
+          case "07":
+          case "08":
+            courseTime = 7;
+            break;
+          case "90":
+          case "911":
+          case "09":
+          case "10":
+            courseTime = 9;
+            break;
+        }
+        courses[courseDay][courseTime].add(course);
       }
     }
   }
