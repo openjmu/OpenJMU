@@ -135,15 +135,15 @@ class UserAPI {
     });
   }
 
-  static Future unFollow(int uid) async {
+  static Future unFollow(int uid, {bool fromBlacklist = false}) async {
     NetUtils.deleteWithCookieAndHeaderSet('${API.userRequestFollow}$uid').then((response) {
       return NetUtils.postWithCookieAndHeaderSet(
         API.userFollowDel,
         data: {'fid': uid},
       );
     }).catchError((e) {
-      debugPrint(e.toString());
-      showCenterErrorToast('取消关注失败，${e.response.data['msg']}');
+      debugPrint('Failed when unfollow $uid: $e');
+      if (!fromBlacklist) showCenterErrorToast('取消关注失败，${e.response.data['msg']}');
     });
   }
 
