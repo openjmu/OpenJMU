@@ -549,11 +549,12 @@ class _PostCardState extends State<PostCard> {
     ConfirmationBottomSheet.show(
       context,
       children: <Widget>[
-        ConfirmationBottomSheetAction(
-          icon: Icon(Icons.visibility_off),
-          text: '屏蔽此人',
-          onTap: () => confirmBlock(context),
-        ),
+        if (!UserAPI.blacklist.contains(widget.post.uid))
+          ConfirmationBottomSheetAction(
+            icon: Icon(Icons.visibility_off),
+            text: '屏蔽此人',
+            onTap: () => confirmBlock(context),
+          ),
         ConfirmationBottomSheetAction(
           icon: Icon(Icons.report),
           text: '举报动态',
