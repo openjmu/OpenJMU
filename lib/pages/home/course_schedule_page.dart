@@ -136,11 +136,11 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                 borderRadius: BorderRadius.circular(suSetWidth(20.0)),
                 border: (week == index + 1 && currentWeek != week)
                     ? Border.all(
-                        color: currentThemeColor.withAlpha(100),
+                        color: currentThemeColor.withOpacity(0.35),
                         width: 2.0,
                       )
                     : null,
-                color: currentWeek == index + 1 ? currentThemeColor.withAlpha(100) : null,
+                color: currentWeek == index + 1 ? currentThemeColor.withOpacity(0.35) : null,
               ),
               child: Center(
                 child: RichText(
@@ -276,7 +276,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                                   Duration(days: now.weekday - 1 - i)),
                             ) ==
                             DateFormat('MM/dd').format(DateTime.now())
-                        ? currentThemeColor.withAlpha(100)
+                        ? currentThemeColor.withOpacity(0.35)
                         : null,
                   ),
                   child: Center(
@@ -474,7 +474,7 @@ class CourseWidget extends StatelessWidget {
               topRight: Radius.circular(suSetWidth(10.0)),
               bottomLeft: Radius.circular(suSetWidth(5.0)),
             ),
-            color: currentThemeColor.withAlpha(100),
+            color: currentThemeColor.withOpacity(0.35),
           ),
           child: Center(
             child: Text(
@@ -505,7 +505,7 @@ class CourseWidget extends StatelessWidget {
               topLeft: Radius.circular(suSetWidth(10.0)),
               bottomRight: Radius.circular(suSetWidth(5.0)),
             ),
-            color: currentThemeColor.withAlpha(100),
+            color: currentThemeColor.withOpacity(0.35),
           ),
           child: Center(
             child: Text(
@@ -606,7 +606,7 @@ class CourseWidget extends StatelessWidget {
                           color: courseList.isNotEmpty
                               ? CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) ||
                                       isOutOfTerm
-                                  ? course.color.withAlpha(200)
+                                  ? course.color.withOpacity(0.85)
                                   : Theme.of(context).dividerColor
                               : null,
                         ),
@@ -645,7 +645,7 @@ class CoursesDialog extends StatefulWidget {
 }
 
 class _CoursesDialogState extends State<CoursesDialog> {
-  final int darkModeAlpha = 200;
+  final double darkModeOpacity = 0.85;
   bool deleting = false;
 
   void showCoursesDetail(context, Course course) {
@@ -711,69 +711,65 @@ class _CoursesDialogState extends State<CoursesDialog> {
 
   Widget courseContent(int index) => Stack(
         children: <Widget>[
-          Selector<ThemesProvider, bool>(
-            selector: (_, provider) => provider.dark,
-            builder: (_, dark, __) {
-              return Container(
-                padding: const EdgeInsets.all(20.0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15.0),
-                  color: widget.courseList.isNotEmpty
-                      ? CourseAPI.inCurrentWeek(widget.courseList[index],
-                                  currentWeek: widget.currentWeek) ||
-                              isOutOfTerm
-                          ? widget.courseList[index].color.withOpacity(dark ? darkModeAlpha : 1.0)
-                          : Colors.grey
-                      : null,
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      if (widget.courseList[index].isCustom)
-                        Text(
-                          '[自定义]',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: suSetSp(24.0),
-                            height: 1.5,
-                          ),
-                        ),
-                      if (!CourseAPI.inCurrentWeek(widget.courseList[index],
-                              currentWeek: widget.currentWeek) &&
-                          !isOutOfTerm)
-                        Text(
-                          '[非本周]',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: suSetSp(24.0),
-                            height: 1.5,
-                          ),
-                        ),
-                      Text(
-                        widget.courseList[index].name,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: suSetSp(24.0),
-                          fontWeight: FontWeight.bold,
-                          height: 1.5,
-                        ),
-                        textAlign: TextAlign.center,
+          Container(
+            padding: const EdgeInsets.all(20.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15.0),
+              color: widget.courseList.isNotEmpty
+                  ? CourseAPI.inCurrentWeek(widget.courseList[index],
+                              currentWeek: widget.currentWeek) ||
+                          isOutOfTerm
+                      ? widget.courseList[index].color
+                          .withOpacity(currentIsDark ? darkModeOpacity : 1.0)
+                      : Colors.grey
+                  : null,
+            ),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  if (widget.courseList[index].isCustom)
+                    Text(
+                      '[自定义]',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: suSetSp(24.0),
+                        height: 1.5,
                       ),
-                      if (widget.courseList[index].location != null)
-                        Text(
-                          '📍${widget.courseList[index].location}',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: suSetSp(24.0),
-                            height: 1.5,
-                          ),
-                        ),
-                    ],
+                    ),
+                  if (!CourseAPI.inCurrentWeek(widget.courseList[index],
+                          currentWeek: widget.currentWeek) &&
+                      !isOutOfTerm)
+                    Text(
+                      '[非本周]',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: suSetSp(24.0),
+                        height: 1.5,
+                      ),
+                    ),
+                  Text(
+                    widget.courseList[index].name,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: suSetSp(24.0),
+                      fontWeight: FontWeight.bold,
+                      height: 1.5,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                ),
-              );
-            },
+                  if (widget.courseList[index].location != null)
+                    Text(
+                      '📍${widget.courseList[index].location}',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: suSetSp(24.0),
+                        height: 1.5,
+                      ),
+                    ),
+                ],
+              ),
+            ),
           ),
         ],
       );
@@ -800,58 +796,53 @@ class _CoursesDialogState extends State<CoursesDialog> {
 
   Widget courseDetail(Course course) {
     final style = TextStyle(color: Colors.black, fontSize: suSetSp(24.0), height: 1.8);
-    return Selector<ThemesProvider, bool>(
-        selector: (_, provider) => provider.dark,
-        builder: (_, dark, __) {
-          return Container(
-            width: double.maxFinite,
-            height: double.maxFinite,
-            padding: EdgeInsets.all(suSetWidth(12.0)),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(suSetWidth(15.0)),
-              color: widget.courseList.isNotEmpty
-                  ? CourseAPI.inCurrentWeek(course, currentWeek: widget.currentWeek) || isOutOfTerm
-                      ? dark ? course.color.withAlpha(darkModeAlpha) : course.color
-                      : Colors.grey
-                  : null,
-            ),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  if (course.isCustom) Text('[自定义]', style: style),
-                  if (!CourseAPI.inCurrentWeek(course, currentWeek: widget.currentWeek) &&
-                      !isOutOfTerm)
-                    Text('[非本周]', style: style),
-                  Text(
-                    '${widget.courseList[0].name}',
-                    style: style.copyWith(
-                      fontSize: suSetSp(28.0),
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  if (course.location != null) Text('📍 ${course.location}', style: style),
-                  if (course.startWeek != null && course.endWeek != null)
-                    Text(
-                      '📅 ${course.startWeek}'
-                      '-'
-                      '${course.endWeek}'
-                      '${course.oddEven == 1 ? '单' : course.oddEven == 2 ? '双' : ''}周',
-                      style: style,
-                    ),
-                  Text(
-                    '⏰ ${shortWeekdays[course.day]} '
-                    '${CourseAPI.courseTimeChinese[course.time]}',
-                    style: style,
-                  ),
-                  if (course.teacher != null) Text('🎓 ${course.teacher}', style: style),
-                  SizedBox(height: 12.0),
-                ],
+    return Container(
+      width: double.maxFinite,
+      height: double.maxFinite,
+      padding: EdgeInsets.all(suSetWidth(12.0)),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(suSetWidth(15.0)),
+        color: widget.courseList.isNotEmpty
+            ? CourseAPI.inCurrentWeek(course, currentWeek: widget.currentWeek) || isOutOfTerm
+                ? course.color.withOpacity(currentIsDark ? 0.85 : 1.0)
+                : Colors.grey
+            : null,
+      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            if (course.isCustom) Text('[自定义]', style: style),
+            if (!CourseAPI.inCurrentWeek(course, currentWeek: widget.currentWeek) && !isOutOfTerm)
+              Text('[非本周]', style: style),
+            Text(
+              '${widget.courseList[0].name}',
+              style: style.copyWith(
+                fontSize: suSetSp(28.0),
+                fontWeight: FontWeight.bold,
               ),
+              textAlign: TextAlign.center,
             ),
-          );
-        });
+            if (course.location != null) Text('📍 ${course.location}', style: style),
+            if (course.startWeek != null && course.endWeek != null)
+              Text(
+                '📅 ${course.startWeek}'
+                '-'
+                '${course.endWeek}'
+                '${course.oddEven == 1 ? '单' : course.oddEven == 2 ? '双' : ''}周',
+                style: style,
+              ),
+            Text(
+              '⏰ ${shortWeekdays[course.day]} '
+              '${CourseAPI.courseTimeChinese[course.time]}',
+              style: style,
+            ),
+            if (course.teacher != null) Text('🎓 ${course.teacher}', style: style),
+            SizedBox(height: 12.0),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget closeButton(context) => Positioned(
@@ -961,7 +952,7 @@ class CourseEditDialog extends StatefulWidget {
 }
 
 class _CourseEditDialogState extends State<CourseEditDialog> {
-  final int darkModeAlpha = 200;
+  final double darkModeOpacity = 0.85;
 
   TextEditingController _controller;
   String content;
@@ -974,60 +965,55 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
     _controller = TextEditingController(text: content);
   }
 
-  Widget get courseEditField => Selector<ThemesProvider, bool>(
-        selector: (_, provider) => provider.dark,
-        builder: (_, dark, __) {
-          return Container(
-            padding: EdgeInsets.all(suSetWidth(12.0)),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(suSetWidth(18.0)),
-              color: widget.course != null
-                  ? dark ? widget.course.color.withAlpha(darkModeAlpha) : widget.course.color
-                  : Theme.of(context).dividerColor,
-            ),
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: suSetHeight(30.0)),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: Screens.width / 2),
-                  child: ScrollConfiguration(
-                    behavior: NoGlowScrollBehavior(),
-                    child: TextField(
-                      controller: _controller,
-                      autofocus: true,
-                      enabled: !loading,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: suSetSp(26.0),
-                        height: 1.5,
-                        textBaseline: TextBaseline.alphabetic,
-                      ),
-                      textAlign: TextAlign.center,
-                      cursorColor: currentThemeColor,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: '自定义内容',
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                          fontSize: suSetSp(24.0),
-                          height: 1.5,
-                          textBaseline: TextBaseline.alphabetic,
-                        ),
-                      ),
-                      maxLines: null,
-                      maxLength: 30,
-                      buildCounter: (_, {currentLength, maxLength, isFocused}) => null,
-                      onChanged: (String value) {
-                        content = value;
-                        if (mounted) setState(() {});
-                      },
+  Widget get courseEditField => Container(
+        padding: EdgeInsets.all(suSetWidth(12.0)),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(suSetWidth(18.0)),
+          color: widget.course != null
+              ? widget.course.color.withOpacity(currentIsDark ? darkModeOpacity : 1.0)
+              : Theme.of(context).dividerColor,
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: suSetHeight(30.0)),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: Screens.width / 2),
+              child: ScrollConfiguration(
+                behavior: NoGlowScrollBehavior(),
+                child: TextField(
+                  controller: _controller,
+                  autofocus: true,
+                  enabled: !loading,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: suSetSp(26.0),
+                    height: 1.5,
+                    textBaseline: TextBaseline.alphabetic,
+                  ),
+                  textAlign: TextAlign.center,
+                  cursorColor: currentThemeColor,
+                  decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: '自定义内容',
+                    hintStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: suSetSp(24.0),
+                      height: 1.5,
+                      textBaseline: TextBaseline.alphabetic,
                     ),
                   ),
+                  maxLines: null,
+                  maxLength: 30,
+                  buildCounter: (_, {currentLength, maxLength, isFocused}) => null,
+                  onChanged: (String value) {
+                    content = value;
+                    if (mounted) setState(() {});
+                  },
                 ),
               ),
             ),
-          );
-        },
+          ),
+        ),
       );
 
   Widget closeButton(context) => Positioned(
@@ -1060,7 +1046,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                     : Icon(
                         Icons.check,
                         color: content == widget.course?.name
-                            ? Colors.black.withAlpha(50)
+                            ? Colors.black.withOpacity(0.15)
                             : Colors.black,
                       ),
                 onPressed: content == widget.course?.name || loading
