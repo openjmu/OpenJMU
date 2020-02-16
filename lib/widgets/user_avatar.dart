@@ -11,6 +11,7 @@ class UserAvatar extends StatelessWidget {
   final double size;
   final int uid;
   final int timestamp;
+  final double radius;
   final bool canJump;
 
   const UserAvatar({
@@ -18,18 +19,21 @@ class UserAvatar extends StatelessWidget {
     this.uid,
     this.size = 48.0,
     this.timestamp,
+    this.radius,
     this.canJump = true,
-  }) : super(key: key);
+  })  : assert(radius == null || (radius != null && radius > 0.0)),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _uid = uid ?? UserAPI.currentUser.uid;
+    final _uid = uid ?? currentUser.uid;
     return SizedBox(
       width: suSetWidth(size),
       height: suSetWidth(size),
       child: GestureDetector(
         child: ClipRRect(
-          borderRadius: maxBorderRadius,
+          borderRadius:
+              radius != null ? BorderRadius.circular(suSetWidth(radius)) : maxBorderRadius,
           child: FadeInImage(
             fadeInDuration: 150.milliseconds,
             placeholder: AssetImage('assets/avatar_placeholder.png'),
