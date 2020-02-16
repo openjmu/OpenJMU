@@ -181,17 +181,19 @@ class UserAPI {
   }
 
   static void fAddToBlacklist(BlacklistUser user) {
-    NetUtils.postWithCookieSet(API.addToBlacklist, data: {'fid': user.uid}).then((response) {
-      blacklist.add(user);
-      showToast('屏蔽成功');
-      Instances.eventBus.fire(BlacklistUpdateEvent());
-      unFollow(user.uid).catchError((e) {
-        debugPrint('Unfollow user failed: $e');
+    if (blacklist.contains(user)) {
+      showToast('仇恨值拉满啦！不要重复屏蔽噢~');
+    } else {
+      NetUtils.postWithCookieSet(API.addToBlacklist, data: {'fid': user.uid}).then((response) {
+        blacklist.add(user);
+        showToast('屏蔽成功');
+        Instances.eventBus.fire(BlacklistUpdateEvent());
+        unFollow(user.uid, fromBlacklist: true);
+      }).catchError((e) {
+        showToast('屏蔽失败');
+        debugPrint('Add $user to blacklist failed : $e');
       });
-    }).catchError((e) {
-      showToast('屏蔽失败');
-      debugPrint('Add $user to blacklist failed : $e');
-    });
+    }
   }
 
   static void fRemoveFromBlacklist(BlacklistUser user) {
