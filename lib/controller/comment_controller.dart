@@ -286,6 +286,73 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
     _refreshList();
   }
 
+  void confirmDelete(context, Comment comment) async {
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '删除评论',
+      content: '是否确认删除这条评论?',
+      showConfirm: true,
+    );
+    if (confirm) {
+      final _loadingDialogController = LoadingDialogController();
+      LoadingDialog.show(
+        context,
+        text: '正在删除评论',
+        controller: _loadingDialogController,
+        isGlobal: false,
+      );
+      CommentAPI.deleteComment(comment.post.id, comment.id).then((response) {
+        _loadingDialogController.changeState('success', '评论删除成功');
+        Instances.eventBus.fire(PostCommentDeletedEvent(comment.post.id));
+      }).catchError((e) {
+        debugPrint(e.toString());
+        _loadingDialogController.changeState('failed', '评论删除失败');
+      });
+    }
+  }
+
+  void replyTo(int index) {
+    if (_comments.length >= index && _comments[index] != null) {
+      navigatorState.pushNamed(
+        Routes.OPENJMU_ADD_COMMENT,
+        arguments: {
+          'post': widget.post,
+          'comment': _comments?.elementAt(index) ?? null,
+        },
+      );
+    }
+  }
+
+  void showActions(context, int index) {
+    ConfirmationBottomSheet.show(
+      context,
+      children: <Widget>[
+        if (widget.post.uid == currentUser.uid)
+          ConfirmationBottomSheetAction(
+            icon: Icon(Icons.delete),
+            text: '删除评论',
+            onTap: () => confirmDelete(context, _comments[index]),
+          )
+        else
+          ConfirmationBottomSheetAction(
+            icon: Icon(Icons.reply),
+            text: '回复评论',
+            onTap: () => replyTo(index),
+          ),
+        ConfirmationBottomSheetAction(
+          icon: Icon(Icons.report),
+          text: '复制评论',
+          onTap: () {
+            Clipboard.setData(ClipboardData(
+              text: replaceMentionTag(_comments[index].content),
+            ));
+            showToast('已复制到剪贴板');
+          },
+        ),
+      ],
+    );
+  }
+
   Future<Null> _loadList() async {
     isLoading = true;
     try {

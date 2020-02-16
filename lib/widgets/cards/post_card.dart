@@ -571,7 +571,7 @@ class _PostCardState extends State<PostCard> {
       showConfirm: true,
     );
     if (confirm) {
-      UserAPI.fAddToBlacklist(uid: widget.post.uid, name: widget.post.nickname);
+      UserAPI.fAddToBlacklist(BlacklistUser(uid: widget.post.uid, username: widget.post.nickname));
     }
   }
 

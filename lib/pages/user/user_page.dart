@@ -426,7 +426,7 @@ class _UserPageState extends State<UserPage>
               ),
       ];
 
-  void removeFromBlacklist(context, Map<String, dynamic> user) async {
+  void removeFromBlacklist(context, BlacklistUser user) async {
     final confirm = await ConfirmationDialog.show(
       context,
       title: '移出黑名单',
@@ -434,12 +434,11 @@ class _UserPageState extends State<UserPage>
       showConfirm: true,
     );
     if (confirm) {
-      UserAPI.fRemoveFromBlacklist(uid: int.parse(user['uid']), name: user['username']);
+      UserAPI.fRemoveFromBlacklist(user);
     }
   }
 
-  Widget blacklistUser(String user) {
-    final _user = jsonDecode(user);
+  Widget blacklistUser(BlacklistUser user) {
     return Padding(
       padding: EdgeInsets.all(suSetWidth(8.0)),
       child: Column(
@@ -458,12 +457,13 @@ class _UserPageState extends State<UserPage>
             ),
           ),
           Text(
-            _user['username'],
+            user.username,
             style: TextStyle(fontSize: suSetSp(18.0)),
             overflow: TextOverflow.ellipsis,
           ),
           GestureDetector(
-            onTap: () => removeFromBlacklist(context, _user),
+            behavior: HitTestBehavior.opaque,
+            onTap: () => removeFromBlacklist(context, user),
             child: Container(
               padding: EdgeInsets.symmetric(
                 horizontal: suSetWidth(10.0),
@@ -713,7 +713,7 @@ class _UserPageState extends State<UserPage>
                                 crossAxisCount: 3,
                                 children: List<Widget>.generate(
                                   UserAPI.blacklist.length,
-                                  (i) => blacklistUser(UserAPI.blacklist[i]),
+                                  (i) => blacklistUser(UserAPI.blacklist.elementAt(i)),
                                 ),
                               )
                             : Center(

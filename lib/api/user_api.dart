@@ -172,7 +172,7 @@ class UserAPI {
   ///
   /// Blacklists.
   ///
-  static List<String> blacklist = [];
+  static final blacklist = <BlacklistUser>{};
 
   static Future getBlacklist({int pos, int size}) {
     return NetUtils.getWithCookieSet(
@@ -180,53 +180,38 @@ class UserAPI {
     );
   }
 
-  static void fAddToBlacklist({int uid, String name}) {
-    NetUtils.postWithCookieSet(
-      API.addToBlacklist,
-      data: {'fid': uid},
-    ).then((response) {
-      addToBlacklist(uid: uid, name: name);
+  static void fAddToBlacklist(BlacklistUser user) {
+    NetUtils.postWithCookieSet(API.addToBlacklist, data: {'fid': user.uid}).then((response) {
+      blacklist.add(user);
       showToast('屏蔽成功');
       Instances.eventBus.fire(BlacklistUpdateEvent());
-      UserAPI.unFollow(uid).catchError((e) {
-        debugPrint('${e.toString()}');
+      unFollow(user.uid).catchError((e) {
+        debugPrint('Unfollow user failed: $e');
       });
     }).catchError((e) {
       showToast('屏蔽失败');
-      debugPrint('Add $name $uid to blacklist failed : $e');
+      debugPrint('Add $user to blacklist failed : $e');
     });
   }
 
-  static void fRemoveFromBlacklist({int uid, String name}) {
-    NetUtils.postWithCookieSet(
-      API.removeFromBlacklist,
-      data: {'fid': uid},
-    ).then((response) {
-      removeFromBlackList(uid: uid, name: name);
-      showToast('取消屏蔽成功');
-      Instances.eventBus.fire(BlacklistUpdateEvent());
-    }).catchError((e) {
+  static void fRemoveFromBlacklist(BlacklistUser user) {
+    blacklist.remove(user);
+    showToast('取消屏蔽成功');
+    Instances.eventBus.fire(BlacklistUpdateEvent());
+    NetUtils.postWithCookieSet(API.removeFromBlacklist, data: {'fid': user.uid}).catchError((e) {
       showToast('取消屏蔽失败');
-      debugPrint('Remove $name $uid from blacklist failed: $e');
-      debugPrint('${e.response}');
+      debugPrint('Remove $user from blacklist failed: $e');
+      if (blacklist.contains(user)) blacklist.remove(user);
+      Instances.eventBus.fire(BlacklistUpdateEvent());
     });
   }
 
   static void setBlacklist(List list) {
-    if (list.length > 0)
+    if (list.isNotEmpty) {
       list.forEach((person) {
-        addToBlacklist(
-          uid: int.parse(person['uid'].toString()),
-          name: person['username'],
-        );
+        final user = BlacklistUser.fromJson(person);
+        blacklist.add(user);
       });
-  }
-
-  static void addToBlacklist({int uid, String name}) {
-    blacklist.add(jsonEncode({'uid': uid.toString(), 'username': name}));
-  }
-
-  static void removeFromBlackList({int uid, String name}) {
-    blacklist.remove(jsonEncode({'uid': uid.toString(), 'username': name}));
+    }
   }
 }

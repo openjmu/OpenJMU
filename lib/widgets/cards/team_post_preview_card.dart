@@ -37,7 +37,8 @@ class TeamPostPreviewCard extends StatelessWidget {
   }
 
   void delete(context) {
-    final post = Provider.of<TeamPostProvider>(context).post;
+    final provider = Provider.of<TeamPostProvider>(context, listen: false);
+    final post = provider.post;
     TeamPostAPI.deletePost(postId: post.tid, postType: 7).then((response) {
       showToast('删除成功');
       Instances.eventBus.fire(TeamPostDeletedEvent(postId: post.tid));
@@ -45,6 +46,8 @@ class TeamPostPreviewCard extends StatelessWidget {
   }
 
   void confirmAction(context) {
+    final provider = Provider.of<TeamPostProvider>(context, listen: false);
+    final post = provider.post;
     ConfirmationBottomSheet.show(
       context,
       children: <Widget>[
@@ -72,7 +75,7 @@ class TeamPostPreviewCard extends StatelessWidget {
       showConfirm: true,
     );
     if (confirm) {
-      UserAPI.fAddToBlacklist(uid: post.uid, name: post.nickname);
+      UserAPI.fAddToBlacklist(BlacklistUser(uid: post.uid, username: post.nickname));
     }
   }
 

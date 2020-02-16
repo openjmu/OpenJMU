@@ -13,6 +13,7 @@ export 'package:openjmu/model/special_text.dart';
 part 'beans.g.dart';
 
 part 'app_message.dart';
+part 'blacklist_user.dart';
 part 'changelog.dart';
 part 'comment.dart';
 part 'course.dart';
