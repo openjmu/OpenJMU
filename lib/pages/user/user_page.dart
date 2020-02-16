@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -167,11 +166,7 @@ class _UserPageState extends State<UserPage>
           borderRadius: BorderRadius.circular(width / 2),
           child: Hero(
             tag: 'user-page-avatar-${widget.uid}',
-            child: FadeInImage(
-              fadeInDuration: const Duration(milliseconds: 100),
-              placeholder: AssetImage('assets/avatar_placeholder.png'),
-              image: UserAPI.getAvatarProvider(uid: widget.uid),
-            ),
+            child: UserAvatar(uid: widget.uid, size: width, canJump: false),
             placeholderBuilder: (_, __, child) => child,
           ),
         ),
@@ -444,18 +439,7 @@ class _UserPageState extends State<UserPage>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          SizedBox(
-            width: suSetWidth(64.0),
-            height: suSetHeight(64.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(suSetWidth(32.0)),
-              child: FadeInImage(
-                fadeInDuration: const Duration(milliseconds: 100),
-                placeholder: AssetImage('assets/avatar_placeholder.png'),
-                image: UserAPI.getAvatarProvider(uid: int.parse(_user['uid'].toString())),
-              ),
-            ),
-          ),
+          UserAvatar(uid: user.uid, size: 64.0, canJump: false),
           Text(
             user.username,
             style: TextStyle(fontSize: suSetSp(18.0)),

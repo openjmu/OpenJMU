@@ -79,14 +79,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          Container(
-                            width: suSetSp(avatarSize),
-                            height: suSetSp(avatarSize),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15.0),
-                              image: DecorationImage(image: UserAPI.getAvatarProvider()),
-                            ),
-                          ),
+                          UserAvatar(size: avatarSize),
                           Expanded(
                             child: Padding(
                               padding: EdgeInsets.symmetric(
