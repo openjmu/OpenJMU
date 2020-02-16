@@ -158,7 +158,7 @@ class _UserPageState extends State<UserPage>
 
   Widget avatar(context, double width) {
     return GestureDetector(
-      behavior: HitTestBehavior.translucent,
+      behavior: HitTestBehavior.opaque,
       onTap: () => avatarTap(context),
       child: SizedBox(
         width: suSetWidth(width),

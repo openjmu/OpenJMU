@@ -654,9 +654,7 @@ class _PostCardState extends State<PostCard> {
                                 ),
                               ),
                               if (!widget.isDetail)
-                                post.uid == UserAPI.currentUser.uid
-                                    ? deleteButton
-                                    : postActionButton,
+                                post.uid == currentUser.uid ? deleteButton : postActionButton,
                             ],
                           ),
                         ),

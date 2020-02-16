@@ -466,60 +466,11 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
   }
 
   String replaceMentionTag(text) {
-    String commentText = text;
     final RegExp mTagStartReg = RegExp(r'<M?\w+.*?\/?>');
     final RegExp mTagEndReg = RegExp(r'<\/M?\w+.*?\/?>');
-    commentText = commentText.replaceAllMapped(mTagStartReg, (_) => '');
-    commentText = commentText.replaceAllMapped(mTagEndReg, (_) => '');
+    final commentText =
+        text.replaceAllMapped(mTagStartReg, (_) => '').replaceAllMapped(mTagEndReg, (_) => '');
     return commentText;
-  }
-
-  void confirmDelete(context, Comment comment) async {
-    final confirm = await ConfirmationDialog.show(
-      context,
-      title: '删除评论',
-      content: '是否确认删除这条评论?',
-      showConfirm: true,
-    );
-    if (confirm) {
-      final _loadingDialogController = LoadingDialogController();
-      LoadingDialog.show(
-        context,
-        text: '正在删除评论',
-        controller: _loadingDialogController,
-        isGlobal: false,
-      );
-      CommentAPI.deleteComment(comment.post.id, comment.id).then((response) {
-        _loadingDialogController.changeState('success', '评论删除成功');
-        Instances.eventBus.fire(PostCommentDeletedEvent(comment.post.id));
-      }).catchError((e) {
-        debugPrint(e.toString());
-        _loadingDialogController.changeState('failed', '评论删除失败');
-      });
-    }
-  }
-
-  void showActions(context, int index) {
-    ConfirmationBottomSheet.show(
-      context,
-      children: <Widget>[
-        ConfirmationBottomSheetAction(
-          icon: Icon(Icons.visibility_off),
-          text: '删除评论',
-          onTap: () => confirmDelete(context, _comments[index]),
-        ),
-        ConfirmationBottomSheetAction(
-          icon: Icon(Icons.report),
-          text: '复制评论',
-          onTap: () {
-            Clipboard.setData(ClipboardData(
-              text: replaceMentionTag(_comments[index].content),
-            ));
-            showToast('已复制到剪贴板');
-          },
-        ),
-      ],
-    );
   }
 
   @mustCallSuper
@@ -607,17 +558,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
                               color: Colors.grey,
                               size: suSetWidth(28.0),
                             ),
-                            onPressed: () {
-                              if (_comments.length >= index && _comments[index] != null) {
-                                navigatorState.pushNamed(
-                                  Routes.OPENJMU_ADD_COMMENT,
-                                  arguments: {
-                                    'post': widget.post,
-                                    'comment': _comments?.elementAt(index) ?? null,
-                                  },
-                                );
-                              }
-                            },
+                            onPressed: () => replyTo(index),
                           ),
                         ],
                       ),

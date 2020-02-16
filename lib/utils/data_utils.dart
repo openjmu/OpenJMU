@@ -54,6 +54,7 @@ class DataUtils {
   }
 
   static Future<void> logout() async {
+    UserAPI.blacklist?.clear();
     MessageUtils.sendLogout();
     NetUtils.postWithCookieSet(API.logout).whenComplete(() {
       NetUtils.dio.clear();
