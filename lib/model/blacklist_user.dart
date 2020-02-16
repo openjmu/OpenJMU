@@ -11,8 +11,8 @@ class BlacklistUser {
   BlacklistUser({this.uid, this.username});
 
   BlacklistUser.fromJson(Map<String, dynamic> json) {
-    uid = json['uid'];
-    username = json['username'];
+    uid = int.parse(json['uid'].toString());
+    username = json['username'].toString();
   }
 
   Map<String, dynamic> toJson() {
