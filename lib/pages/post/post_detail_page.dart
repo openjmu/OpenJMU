@@ -226,8 +226,13 @@ class PostDetailPageState extends State<PostDetailPage> {
         )))
           ConfirmationBottomSheetAction(
             icon: Icon(Icons.visibility_off),
-            text: '屏蔽此人',
-            onTap: () => confirmBlock(context),
+            text: '${UserAPI.blacklist.contains(
+              BlacklistUser(uid: widget.post.uid, username: widget.post.nickname),
+            ) ? '移出' : '加入'}黑名单',
+            onTap: () => UserAPI.confirmBlock(
+              context,
+              BlacklistUser(uid: widget.post.uid, username: widget.post.nickname),
+            ),
           ),
         ConfirmationBottomSheetAction(
           icon: Icon(Icons.report),
@@ -236,18 +241,6 @@ class PostDetailPageState extends State<PostDetailPage> {
         ),
       ],
     );
-  }
-
-  void confirmBlock(context) async {
-    final confirm = await ConfirmationDialog.show(
-      context,
-      title: '屏蔽此人',
-      content: '确定屏蔽此人吗',
-      showConfirm: true,
-    );
-    if (confirm) {
-      UserAPI.fAddToBlacklist(BlacklistUser(uid: widget.post.uid, username: widget.post.nickname));
-    }
   }
 
   void confirmReport(context) async {

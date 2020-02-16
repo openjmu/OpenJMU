@@ -549,12 +549,16 @@ class _PostCardState extends State<PostCard> {
     ConfirmationBottomSheet.show(
       context,
       children: <Widget>[
-        if (!UserAPI.blacklist.contains(widget.post.uid))
-          ConfirmationBottomSheetAction(
-            icon: Icon(Icons.visibility_off),
-            text: '屏蔽此人',
-            onTap: () => confirmBlock(context),
+        ConfirmationBottomSheetAction(
+          icon: Icon(Icons.visibility_off),
+          text: '${UserAPI.blacklist.contains(
+            BlacklistUser(uid: widget.post.uid, username: widget.post.nickname),
+          ) ? '移出' : '加入'}黑名单',
+          onTap: () => UserAPI.confirmBlock(
+            context,
+            BlacklistUser(uid: widget.post.uid, username: widget.post.nickname),
           ),
+        ),
         ConfirmationBottomSheetAction(
           icon: Icon(Icons.report),
           text: '举报动态',
@@ -562,18 +566,6 @@ class _PostCardState extends State<PostCard> {
         ),
       ],
     );
-  }
-
-  void confirmBlock(context) async {
-    final confirm = await ConfirmationDialog.show(
-      context,
-      title: '屏蔽此人',
-      content: '确定屏蔽此人吗',
-      showConfirm: true,
-    );
-    if (confirm) {
-      UserAPI.fAddToBlacklist(BlacklistUser(uid: widget.post.uid, username: widget.post.nickname));
-    }
   }
 
   void confirmReport(context) async {

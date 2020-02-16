@@ -169,9 +169,7 @@ class UserAPI {
     return users;
   }
 
-  ///
   /// Blacklists.
-  ///
   static final blacklist = <BlacklistUser>{};
 
   static Future getBlacklist({int pos, int size}) {
@@ -180,17 +178,34 @@ class UserAPI {
     );
   }
 
+  static void confirmBlock(context, BlacklistUser user) async {
+    final add = !UserAPI.blacklist.contains(user);
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '${add ? '加入' : '移出'}黑名单',
+      content: '确定将此人${add ? '加入' : '移出'}黑名单吗?',
+      showConfirm: true,
+    );
+    if (confirm) {
+      if (add) {
+        UserAPI.fAddToBlacklist(user);
+      } else {
+        UserAPI.fRemoveFromBlacklist(user);
+      }
+    }
+  }
+
   static void fAddToBlacklist(BlacklistUser user) {
     if (blacklist.contains(user)) {
       showToast('仇恨值拉满啦！不要重复屏蔽噢~');
     } else {
       NetUtils.postWithCookieSet(API.addToBlacklist, data: {'fid': user.uid}).then((response) {
         blacklist.add(user);
-        showToast('屏蔽成功');
+        showToast('加入黑名单成功');
         Instances.eventBus.fire(BlacklistUpdateEvent());
         unFollow(user.uid, fromBlacklist: true);
       }).catchError((e) {
-        showToast('屏蔽失败');
+        showToast('加入黑名单失败');
         debugPrint('Add $user to blacklist failed : $e');
       });
     }
@@ -198,10 +213,10 @@ class UserAPI {
 
   static void fRemoveFromBlacklist(BlacklistUser user) {
     blacklist.remove(user);
-    showToast('取消屏蔽成功');
+    showToast('移出黑名单成功');
     Instances.eventBus.fire(BlacklistUpdateEvent());
     NetUtils.postWithCookieSet(API.removeFromBlacklist, data: {'fid': user.uid}).catchError((e) {
-      showToast('取消屏蔽失败');
+      showToast('移出黑名单失败');
       debugPrint('Remove $user from blacklist failed: $e');
       if (blacklist.contains(user)) blacklist.remove(user);
       Instances.eventBus.fire(BlacklistUpdateEvent());
