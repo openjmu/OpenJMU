@@ -57,12 +57,15 @@ class Course {
 
   static int judgeOddEven(Map<String, dynamic> json) {
     int _oddEven = 0;
-    final _split = json['allWeek'].split(' ');
+    final _split = (json['allWeek'] as String).split(' ');
     if (_split.length > 1) {
-      if (_split[1] == '单周') {
-        _oddEven = 1;
-      } else if (_split[1] == '双周') {
-        _oddEven = 2;
+      switch (_split[1]) {
+        case '单周':
+          _oddEven = 1;
+          break;
+        case '双周':
+          _oddEven = 2;
+          break;
       }
     }
     return _oddEven;
@@ -73,31 +76,29 @@ class Course {
       if (json[k] == '') json[k] = null;
     });
     final _oddEven = !isCustom ? judgeOddEven(json) : null;
-    final weeks = !isCustom ? json['allWeek'].split(' ')[0].split('-') : null;
+    final weeks = !isCustom ? (json['allWeek'] as String).split(' ')[0].split('-') : null;
 
-    String name;
+    String _name;
     if (isCustom) {
       try {
-        name = Uri.decodeComponent(json['content']);
+        _name = Uri.decodeComponent(json['content']);
       } catch (e) {
-        name = json['content'];
+        _name = json['content'];
       }
     } else {
-      name = json['couName'] ?? '(空)';
+      _name = json['couName'] ?? '(空)';
     }
 
     final _c = Course(
       isCustom: isCustom,
-      name: name,
-      time: !isCustom ? json['coudeTime'] : json['courseTime'].toString(),
+      name: _name,
+      time: timeHandler((json[isCustom ? 'courseTime' : 'coudeTime']).toString().toIntOrNull()),
       location: json['couRoom'],
       className: json['className'],
       teacher: json['couTeaName'],
-      day: int.parse(
-        (!isCustom ? json['couDayTime'] : json['courseDaytime']).toString().substring(0, 1),
-      ),
-      startWeek: !isCustom ? int.parse(weeks[0]) : null,
-      endWeek: !isCustom ? int.parse(weeks[1]) : null,
+      day: json[!isCustom ? 'couDayTime' : 'courseDaytime'].toString().substring(0, 1).toInt(),
+      startWeek: !isCustom ? weeks[0].toInt() : null,
+      endWeek: !isCustom ? weeks[1].toInt() : null,
       classesName: !isCustom ? json['comboClassName'].split(',') : null,
       isEleven: json['three'] == 'y',
       oddEven: _oddEven,
@@ -117,9 +118,7 @@ class Course {
     if (_course != null) {
       course.color = _course.color;
     } else {
-      Iterable<CourseColor> courses = CourseAPI.coursesUniqueColor.where(
-        (c) => c.color == color,
-      );
+      final courses = CourseAPI.coursesUniqueColor.where((c) => c.color == color);
 
       if (courses.isNotEmpty) {
         uniqueColor(course, CourseAPI.randomCourseColor());
@@ -130,8 +129,46 @@ class Course {
     }
   }
 
+  /// Convert time due to inconsistent data.
+  static String timeHandler(int time) {
+    int courseTime;
+    switch (time.toString()) {
+      case '12':
+      case '1':
+      case '2':
+        courseTime = 1;
+        break;
+      case '34':
+      case '3':
+      case '4':
+        courseTime = 3;
+        break;
+      case '56':
+      case '5':
+      case '6':
+        courseTime = 5;
+        break;
+      case '78':
+      case '7':
+      case '8':
+        courseTime = 7;
+        break;
+      case '90':
+      case '911':
+      case '9':
+      case '10':
+        courseTime = 9;
+        break;
+      case '11':
+        courseTime = 11;
+        break;
+    }
+    return courseTime.toString();
+  }
+
   Map<String, dynamic> toJson() {
     return {
+      'isCustom': isCustom,
       'name': name,
       'time': time,
       'room': location,
