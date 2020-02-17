@@ -43,7 +43,6 @@ class MyInfoPageState extends State<MyInfoPage> {
 
   int signedCount = 0;
 
-  DateTime now = DateTime.now();
   String hello = '你好';
 
   @override
@@ -247,9 +246,9 @@ class MyInfoPageState extends State<MyInfoPage> {
                 NetUtils.updateTicket();
               }
             },
-            child: Selector<DateProvider, int>(
-              selector: (_, provider) => provider.currentWeek,
-              builder: (_, currentWeek, __) => currentWeek != null && currentWeek <= 20
+            child: Consumer<DateProvider>(
+              builder: (_, provider, __) => provider.currentWeek != null &&
+                      provider.currentWeek <= 20
                   ? Container(
                       color: Theme.of(context).primaryColor,
                       padding: EdgeInsets.symmetric(
@@ -263,13 +262,14 @@ class MyInfoPageState extends State<MyInfoPage> {
                             children: <TextSpan>[
                               TextSpan(text: '${currentUser.name}，$hello~\n'),
                               TextSpan(text: '今天是'),
-                              TextSpan(text: '${DateFormat('MMMdd', 'zh_CN').format(now)}日，'),
-                              TextSpan(text: '${DateFormat('EEE', 'zh_CN').format(now)}，'),
-                              if (currentWeek > 0)
+                              TextSpan(
+                                  text: '${DateFormat('MMMdd', 'zh_CN').format(provider.now)}日，'),
+                              TextSpan(text: '${DateFormat('EEE', 'zh_CN').format(provider.now)}，'),
+                              if (provider.currentWeek > 0)
                                 TextSpan(children: <InlineSpan>[
                                   TextSpan(text: '第'),
                                   TextSpan(
-                                    text: '$currentWeek',
+                                    text: '${provider.currentWeek}',
                                     style: TextStyle(
                                       color: currentThemeColor,
                                       fontWeight: FontWeight.bold,
@@ -281,7 +281,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                                 TextSpan(children: <InlineSpan>[
                                   TextSpan(text: '距开学还有'),
                                   TextSpan(
-                                    text: '${currentWeek.abs() + 1}',
+                                    text: '${provider.currentWeek.abs() + 1}',
                                     style: TextStyle(
                                       color: currentThemeColor,
                                       fontWeight: FontWeight.bold,

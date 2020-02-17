@@ -275,7 +275,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                               now.subtract((7 * (currentWeek - dateProvider.currentWeek)).days +
                                   Duration(days: now.weekday - 1 - i)),
                             ) ==
-                            DateFormat('MM/dd').format(DateTime.now())
+                            DateFormat('MM/dd').format(now)
                         ? currentThemeColor.withOpacity(0.35)
                         : null,
                   ),
