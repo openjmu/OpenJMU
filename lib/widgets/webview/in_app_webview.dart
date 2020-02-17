@@ -351,7 +351,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
           crossPlatform: InAppWebViewOptions(
             applicationNameForUserAgent: 'openjmu-webview',
             cacheEnabled: widget.withCookie ?? true,
-            clearCache: widget.withCookie ?? false,
+            clearCache: !widget.withCookie ?? false,
             javaScriptCanOpenWindowsAutomatically: true,
             transparentBackground: true,
             useOnDownloadStart: true,
