@@ -35,6 +35,8 @@ class SplashState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
+    Instances.webviewCookieManager.deleteAllCookies();
+
     SchedulerBinding.instance.addPostFrameCallback((_) {
       setState(() {
         firstFramed = true;
