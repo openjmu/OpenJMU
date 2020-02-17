@@ -567,7 +567,7 @@ class CourseWidget extends StatelessWidget {
       );
     }
     if (course == null && courseList.isNotEmpty) course = courseList[0];
-    if (hasEleven) isEleven = courseList.firstWhere((c) => c.isEleven, orElse: () => null) != null;
+    if (hasEleven) isEleven = course?.isEleven ?? false;
     return Expanded(
       flex: hasEleven ? 3 : 2,
       child: Column(
