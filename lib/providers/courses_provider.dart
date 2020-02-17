@@ -178,21 +178,14 @@ class CoursesProvider extends ChangeNotifier {
   }
 
   void addCourse(Course course, Map<int, Map> courses) {
-    final courseDay = int.parse(course.day.toString().substring(0, 1));
-    if (course.time == '11') {
-      courses[courseDay][11].add(course);
-    } else {
-      if (courses.keys.contains(courseDay)) {
-        final courseTime = course.time.toInt();
-        if (courseDay != null && courseTime != null) {
-          try {
-            courses[courseDay][courseTime].add(course);
-          } catch (e) {
-            debugPrint('Failed when trying to add course at day($courseDay) time($courseTime)');
-            debugPrint('$course');
-          }
-        }
-      }
+    final courseDay = course.day.toString().substring(0, 1).toInt();
+    final courseTime = course.time.toInt();
+    assert(courseDay != null && courseTime != null);
+    try {
+      courses[courseDay][courseTime].add(course);
+    } catch (e) {
+      debugPrint('Failed when trying to add course at day($courseDay) time($courseTime)');
+      debugPrint('$course');
     }
   }
 
