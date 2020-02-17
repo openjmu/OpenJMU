@@ -107,13 +107,15 @@ class CourseAdapter extends TypeAdapter<Course> {
       classesName: (fields[10] as List)?.cast<String>(),
       isEleven: fields[11] as bool,
       oddEven: fields[9] as int,
+      rawDay: fields[12] as int,
+      rawTime: fields[13] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Course obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.isCustom)
       ..writeByte(1)
@@ -137,7 +139,11 @@ class CourseAdapter extends TypeAdapter<Course> {
       ..writeByte(10)
       ..write(obj.classesName)
       ..writeByte(11)
-      ..write(obj.isEleven);
+      ..write(obj.isEleven)
+      ..writeByte(12)
+      ..write(obj.rawDay)
+      ..writeByte(13)
+      ..write(obj.rawTime);
   }
 }
 

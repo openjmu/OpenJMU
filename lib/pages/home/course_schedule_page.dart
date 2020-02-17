@@ -663,23 +663,19 @@ class _CoursesDialogState extends State<CoursesDialog> {
     setState(() {
       deleting = true;
     });
+    final _course = widget.courseList[0];
     Future.wait(
       <Future>[
         CourseAPI.setCustomCourse({
           'content': Uri.encodeComponent(''),
-          'couDayTime': widget.courseList[0].day,
-          'coudeTime': widget.courseList[0].time,
+          'couDayTime': _course.day,
+          'coudeTime': _course.time,
         }),
-        CourseAPI.setCustomCourse({
-          'content': Uri.encodeComponent(''),
-          'couDayTime': widget.courseList[0].day,
-          'coudeTime': widget.courseList[0].time.toString().substring(0, 1),
-        }),
-        if (widget.courseList[0].time.toString().length > 1)
+        if (_course.shouldUseRaw)
           CourseAPI.setCustomCourse({
             'content': Uri.encodeComponent(''),
-            'couDayTime': widget.courseList[0].day,
-            'coudeTime': widget.courseList[0].time.toString().substring(1, 2),
+            'couDayTime': _course.rawDay,
+            'coudeTime': _course.rawTime,
           }),
       ],
       eagerError: true,
@@ -965,6 +961,39 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
     _controller = TextEditingController(text: content);
   }
 
+  void editCourse() {
+    loading = true;
+    if (mounted) setState(() {});
+    Future editFuture;
+
+    if (widget.course?.shouldUseRaw ?? false) {
+      editFuture = CourseAPI.setCustomCourse({
+        'content': Uri.encodeComponent(content),
+        'couDayTime': widget.course?.rawDay ?? widget.coordinate[0],
+        'coudeTime': widget.course?.rawTime ?? widget.coordinate[1],
+      });
+    } else {
+      editFuture = CourseAPI.setCustomCourse({
+        'content': Uri.encodeComponent(content),
+        'couDayTime': widget.course?.day ?? widget.coordinate[0],
+        'coudeTime': widget.course?.time ?? widget.coordinate[1],
+      });
+    }
+    editFuture.then((response) {
+      loading = false;
+      if (mounted) setState(() {});
+      if (jsonDecode(response.data)['isOk']) {
+        navigatorState.popUntil((_) => _.isFirst);
+      }
+      Instances.eventBus.fire(CourseScheduleRefreshEvent());
+    }).catchError((e) {
+      debugPrint('Failed when editing custom course: $e');
+      showCenterErrorToast('编辑自定义课程失败');
+      loading = false;
+      if (mounted) setState(() {});
+    });
+  }
+
   Widget get courseEditField => Container(
         padding: EdgeInsets.all(suSetWidth(12.0)),
         decoration: BoxDecoration(
@@ -1049,29 +1078,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                             ? Colors.black.withOpacity(0.15)
                             : Colors.black,
                       ),
-                onPressed: content == widget.course?.name || loading
-                    ? null
-                    : () {
-                        loading = true;
-                        if (mounted) setState(() {});
-                        CourseAPI.setCustomCourse({
-                          'content': Uri.encodeComponent(content),
-                          'couDayTime': widget.course?.day ?? widget.coordinate[0],
-                          'coudeTime': widget.course?.time ?? widget.coordinate[1],
-                        }).then((response) {
-                          loading = false;
-                          if (mounted) setState(() {});
-                          if (jsonDecode(response.data)['isOk']) {
-                            navigatorState.popUntil((_) => _.isFirst);
-                          }
-                          Instances.eventBus.fire(CourseScheduleRefreshEvent());
-                        }).catchError((e) {
-                          debugPrint('Failed when editing custom course: $e');
-                          showCenterErrorToast('编辑自定义课程失败');
-                          loading = false;
-                          if (mounted) setState(() {});
-                        });
-                      },
+                onPressed: content == widget.course?.name || loading ? null : editCourse,
               ),
             ],
           ),

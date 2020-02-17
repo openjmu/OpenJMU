@@ -9,9 +9,11 @@ part of 'beans.dart';
 /// [isCustom] **必需**是否自定义课程,
 /// [name] 课程名称, [time] 上课时间, [location] 上课地点, [className] 班级名称,
 /// [teacher] 教师名称, [day] 上课日, [startWeek] 开始周, [endWeek] 结束周,
-/// [classesName] 共同上课的班级,
-/// [isEleven] 是否第十一节,
-/// [oddEven] 是否为单双周, 0为普通, 1为单周, 2为双周
+/// [oddEven] 是否为单双周, 0为普通, 1为单周, 2为双周,
+/// [classesName] 共同上课的班级, [isEleven] 是否第十一节,
+///
+/// [rawDay] 原始天数 [rawTime] 原始课时
+/// 以上两项用于编辑课程信息。由于课程表的数据错乱，需要保存原始数据，否则会造成编辑错误。
 @HiveType(typeId: HiveAdapterTypeIds.course)
 class Course {
   @HiveField(0)
@@ -38,6 +40,10 @@ class Course {
   List<String> classesName;
   @HiveField(11)
   bool isEleven;
+  @HiveField(12)
+  int rawDay;
+  @HiveField(13)
+  String rawTime;
   Color color;
 
   Course({
@@ -53,7 +59,12 @@ class Course {
     this.classesName,
     this.isEleven,
     this.oddEven,
+    this.rawDay,
+    this.rawTime,
   });
+
+  /// Whether we should use raw data to modify.
+  bool get shouldUseRaw => day != rawDay || time != rawTime;
 
   static int judgeOddEven(Map<String, dynamic> json) {
     int _oddEven = 0;
@@ -96,17 +107,17 @@ class Course {
       location: json['couRoom'],
       className: json['className'],
       teacher: json['couTeaName'],
-      day: json[!isCustom ? 'couDayTime' : 'courseDaytime'].toString().substring(0, 1).toInt(),
+      day: json[isCustom ? 'courseDaytime' : 'couDayTime'].toString().substring(0, 1).toInt(),
       startWeek: !isCustom ? weeks[0].toInt() : null,
       endWeek: !isCustom ? weeks[1].toInt() : null,
       classesName: !isCustom ? json['comboClassName'].split(',') : null,
       isEleven: json['three'] == 'y',
       oddEven: _oddEven,
+      rawDay: json[isCustom ? 'courseDaytime' : 'couDayTime'].toString().toInt(),
+      rawTime: json[isCustom ? 'courseTime' : 'coudeTime'].toString(),
     );
     if (_c.isEleven && _c.time == '90') _c.time = '911';
-
     uniqueColor(_c, CourseAPI.randomCourseColor());
-
     return _c;
   }
 

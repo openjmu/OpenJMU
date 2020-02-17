@@ -178,7 +178,7 @@ class CoursesProvider extends ChangeNotifier {
   }
 
   void addCourse(Course course, Map<int, Map> courses) {
-    final courseDay = course.day.toString().substring(0, 1).toInt();
+    final courseDay = course.day;
     final courseTime = course.time.toInt();
     assert(courseDay != null && courseTime != null);
     try {
