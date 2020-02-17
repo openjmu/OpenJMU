@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:event_bus/event_bus.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import 'package:openjmu/pages/home/apps_page.dart';
 import 'package:openjmu/pages/home/course_schedule_page.dart';
@@ -24,4 +25,5 @@ class Instances {
 
   static final appsPageStateKey = GlobalKey<AppsPageState>();
   static final courseSchedulePageStateKey = GlobalKey<CourseSchedulePageState>();
+  static final CookieManager webviewCookieManager = CookieManager();
 }
