@@ -68,6 +68,7 @@ class HiveBoxes {
       await webAppsBox?.clear();
       await settingsBox?.clear();
       await startWeekBox?.clear();
+      debugPrint('Boxes cleared');
       if (kReleaseMode) SystemNavigator.pop();
     }
   }
