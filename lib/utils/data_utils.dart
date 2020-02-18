@@ -66,6 +66,8 @@ class DataUtils {
     NetUtils.postWithCookieSet(API.logout).whenComplete(() {
       NetUtils.dio.clear();
       NetUtils.tokenDio.clear();
+      NetUtils.cookieJar.deleteAll();
+      NetUtils.tokenCookieJar.deleteAll();
       clearLoginInfo();
     });
     showToast('退出登录成功');
