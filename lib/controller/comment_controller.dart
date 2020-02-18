@@ -327,18 +327,17 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
     ConfirmationBottomSheet.show(
       context,
       children: <Widget>[
-        if (widget.post.uid == currentUser.uid)
+        if (_comments[index].fromUserUid == currentUser.uid || widget.post.uid == currentUser.uid)
           ConfirmationBottomSheetAction(
             icon: Icon(Icons.delete),
             text: '删除评论',
             onTap: () => confirmDelete(context, _comments[index]),
-          )
-        else
-          ConfirmationBottomSheetAction(
-            icon: Icon(Icons.reply),
-            text: '回复评论',
-            onTap: () => replyTo(index),
           ),
+        ConfirmationBottomSheetAction(
+          icon: Icon(Icons.reply),
+          text: '回复评论',
+          onTap: () => replyTo(index),
+        ),
         ConfirmationBottomSheetAction(
           icon: Icon(Icons.report),
           text: '复制评论',
