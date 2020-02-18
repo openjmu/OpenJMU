@@ -4,7 +4,7 @@
 [![GitHub forks](https://img.shields.io/github/forks/openjmu/OpenJMU)](https://github.com/openjmu/OpenJMU/network)
 [![GitHub issues](https://img.shields.io/github/issues/openjmu/OpenJMU)](https://github.com/openjmu/OpenJMU/issues)
 
-![](illustration.png)
+![illustration.png](https://i.loli.net/2020/02/15/BIwubHMLk3DRqfj.png)
 
 使用 [Flutter](https://flutter.dev/) 对 [集大通](http://99.jmu.edu.cn/) 进行重写的客户端。
 
@@ -66,19 +66,19 @@ We cannot provide any account for test due to policy reason at present stage. If
 # 8多说，上图！ Let's see some screenshots !
 ## 截图 ScreenShots
 <div align="center">
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_1.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_2.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_3.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_4.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_5.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_6.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_7.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_8.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_9.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_10.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_11.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_12.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_13.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_14.jpg"/>
-    <img width="280" src="https://raw.githubusercontent.com/openjmu/OpenJMU/master/screenshots/Screenshot_15.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/vYGUXSltJzsxmKH.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/kSXxJ6UWMPQCjNm.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/Fm65NRQtq72TCnS.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/kvJBTbUP7yrZ2ia.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/swRYFQWIlpjAD29.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/vR9G6hdMWj2eXcy.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/ODhsAmukxnNyX3M.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/Ku8evoJcP2VNsIk.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/uBy412QcfJUoRYS.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/ktvSo1zn94Ih6MX.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/twMfbWUnrXdcmLA.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/5irJdMvFCaOfenN.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/RX4iJQbrTgqWj9k.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/kmiLKJbAEGzjrT5.jpg"/>
+    <img width="280" src="https://i.loli.net/2020/02/18/X6iJux94ozfVce7.jpg"/>
 </div>
