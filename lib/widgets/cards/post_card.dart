@@ -611,7 +611,7 @@ class _PostCardState extends State<PostCard> {
               margin: widget.isDetail
                   ? EdgeInsets.zero
                   : EdgeInsets.symmetric(
-                      horizontal: widget.fromPage == 'user' ? 0.0 : suSetWidth(12.0),
+                      horizontal: suSetWidth(widget.fromPage == 'user' ? 0.0 : 12.0),
                       vertical: suSetHeight(6.0),
                     ),
               decoration: BoxDecoration(
