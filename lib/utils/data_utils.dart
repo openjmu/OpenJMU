@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
+import 'package:uuid/uuid.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -12,14 +13,19 @@ class DataUtils {
 
   static final settingsBox = HiveBoxes.settingsBox;
 
+  static final spBlowfish = 'blowfish';
   static final spIsLogin = 'isLogin';
   static final spTicket = 'ticket';
-
   static final spUserUid = 'userUid';
   static final spUserWorkId = 'userWorkId';
 
   static Future<bool> login(String username, String password) async {
-    final params = Constants.loginParams(username: username, password: password);
+    final blowfish = Uuid().v4();
+    final params = Constants.loginParams(
+      username: username,
+      password: password,
+      blowfish: blowfish,
+    );
     try {
       final loginData = (await UserAPI.login(params)).data;
       UserAPI.currentUser.sid = loginData['sid'];
@@ -31,6 +37,7 @@ class DataUtils {
         'username': user['username'],
         'signature': user['signature'],
         'ticket': loginData['ticket'],
+        'blowfish': blowfish,
         'isTeacher': int.parse(user['type'].toString()) == 1,
         'unitId': loginData['unitid'],
         'workId': user['workid'],
@@ -77,7 +84,7 @@ class DataUtils {
 
   static Future recoverLoginInfo() async {
     final info = getSpTicket();
-    UserAPI.currentUser.sid = info['ticket'];
+    UserAPI.currentUser.ticket = info['ticket'];
   }
 
   static Future reFetchTicket() async {
@@ -109,6 +116,7 @@ class DataUtils {
         'uid': currentUser.uid,
         'username': data['username'],
         'signature': data['signature'],
+        'blowfish': settingsBox.get(spBlowfish),
         'ticket': settingsBox.get(spTicket),
         'isTeacher': int.parse(data['type'].toString()) == 1,
         'unitId': data['unitid'],
@@ -131,6 +139,7 @@ class DataUtils {
     if (data != null) {
       setUserInfo(data);
       await settingsBox.putAll({
+        spBlowfish: data['blowfish'],
         spIsLogin: true,
         spTicket: data['ticket'],
         spUserUid: data['uid'],
@@ -155,7 +164,11 @@ class DataUtils {
   static Future<bool> getTicket() async {
     try {
       debugPrint('Fetch new ticket with: ${settingsBox.get(spTicket)}');
-      final params = Constants.loginParams(ticket: settingsBox.get(spTicket));
+      final params = Constants.loginParams(
+        blowfish: settingsBox.get(spBlowfish),
+        ticket: settingsBox.get(spTicket),
+      );
+      NetUtils.cookieJar.deleteAll();
       NetUtils.tokenCookieJar.deleteAll();
       final response = (await NetUtils.tokenDio.post(API.loginTicket, data: params)).data;
       updateSid(response);

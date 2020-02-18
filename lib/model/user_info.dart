@@ -6,13 +6,14 @@ part of 'beans.dart';
 
 /// 用户信息实体
 ///
-/// [sid] 用户token, [ticket] 用户当前token, [blowfish] 用户设备uuid
+/// [sid] 用户token, [ticket] 用户用于更新token的凭证, [blowfish] 用户设备随机uuid,
 /// [uid] 用户uid, [unitId] 组织/学校id, [workId] 工号/学号, [classId] 班级id,
 /// [name] 名字, [signature] 签名, [gender] 性别, [isFollowing] 是否已关注
 class UserInfo {
   /// For Login Process
   String sid;
   String ticket;
+  String blowfish;
   bool isTeacher;
 
   /// Common Object
@@ -31,6 +32,7 @@ class UserInfo {
     this.name,
     this.signature,
     this.ticket,
+    this.blowfish,
     this.isTeacher,
     this.unitId,
     this.workId,
@@ -54,6 +56,7 @@ class UserInfo {
       'name': name,
       'signature': signature,
       'ticket': ticket,
+      'blowfish': blowfish,
       'isTeacher': isTeacher,
       'unitId': unitId,
       'workId': workId,
@@ -114,6 +117,7 @@ class UserInfo {
       name: json['username'] ?? json['uid'].toString(),
       signature: json['signature'],
       ticket: json['ticket'],
+      blowfish: json['blowfish'],
       isTeacher: json['isTeacher'] ?? int.parse(json['type'].toString()) == 1,
       unitId: json['unitId'] ?? json['unitid'],
       workId: (json['workId'] ?? json['workid'] ?? json['uid']).toString(),

@@ -90,21 +90,24 @@ class Constants {
   };
 
   static Map<String, dynamic> loginParams({
+    @required String blowfish,
     String username,
     String password,
     String ticket,
-  }) =>
-      {
-        'appid': appId,
-        'blowfish': DeviceUtils.deviceUuid,
-        if (ticket != null) 'ticket': '$ticket',
-        if (username != null) 'account': '$username',
-        if (password != null) 'password': '${sha1.convert(password.toUtf8())}',
-        if (password != null) 'encrypt': 1,
-        if (username != null) 'unitid': unitId,
-        if (username != null) 'unitcode': 'jmu',
-        'clientinfo': jsonEncode(loginClientInfo),
-      };
+  }) {
+    assert(blowfish != null, 'blowfish cannot be null');
+    return {
+      'appid': appId,
+      'blowfish': blowfish,
+      if (ticket != null) 'ticket': '$ticket',
+      if (username != null) 'account': '$username',
+      if (password != null) 'password': '${sha1.convert(password.toUtf8())}',
+      if (password != null) 'encrypt': 1,
+      if (username != null) 'unitid': unitId,
+      if (username != null) 'unitcode': 'jmu',
+      'clientinfo': jsonEncode(loginClientInfo),
+    };
+  }
 
   static Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates => [
         GlobalWidgetsLocalizations.delegate,
