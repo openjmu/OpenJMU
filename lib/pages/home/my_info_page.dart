@@ -425,7 +425,7 @@ class MyInfoPageState extends State<MyInfoPage> {
               color: Theme.of(context).primaryColor,
             ),
             child: GestureDetector(
-              onLongPress: () => HiveBoxes.clearBoxes(context),
+              onLongPress: () => HiveBoxes.clearBoxes(context: context),
               child: Text(
                 '(DANGER)\n清除应用数据',
                 style: TextStyle(

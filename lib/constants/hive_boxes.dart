@@ -49,13 +49,16 @@ class HiveBoxes {
     changelogBox = await Hive.openBox<ChangeLog>('openjmu_changelog');
   }
 
-  static void clearBoxes(context) async {
-    final confirm = await ConfirmationBottomSheet.show(
-      context,
-      title: '清除应用数据',
-      showConfirm: true,
-      content: '清除数据会将您的所有应用内容（包括设置、应用消息）清除。\n确定继续吗？',
-    );
+  static void clearBoxes({context}) async {
+    bool confirm = true;
+    if (context != null) {
+      confirm = await ConfirmationBottomSheet.show(
+        context,
+        title: '清除应用数据',
+        showConfirm: true,
+        content: '清除数据会将您的所有应用内容（包括设置、应用消息）清除。\n确定继续吗？',
+      );
+    }
     if (confirm) {
       debugPrint('Clearing Hive Boxes...');
       await appMessagesBox?.clear();
