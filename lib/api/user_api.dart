@@ -17,7 +17,7 @@ class UserAPI {
   static List<Cookie> cookiesForJWGL;
 
   static Future login(Map<String, dynamic> params) async {
-    return NetUtils.post(API.login, data: params);
+    return NetUtils.tokenDio.post(API.login, data: params);
   }
 
   static void logout(context) async {
