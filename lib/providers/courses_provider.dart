@@ -119,6 +119,7 @@ class CoursesProvider extends ChangeNotifier {
     if (showWeek) {
       showWeek = false;
       if (Instances.appsPageStateKey.currentState?.mounted ?? false) {
+        // ignore: invalid_use_of_protected_member
         Instances.appsPageStateKey.currentState?.setState(() {});
       }
     }
@@ -133,6 +134,7 @@ class CoursesProvider extends ChangeNotifier {
       Instances.courseSchedulePageStateKey.currentState?.updateScrollController();
       notifyListeners();
 
+      // ignore: invalid_use_of_protected_member
       Instances.courseSchedulePageStateKey.currentState?.setState(() {});
     } catch (e) {
       debugPrint('Error when updating course: $e');

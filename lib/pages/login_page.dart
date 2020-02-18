@@ -63,11 +63,11 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   void usernameListener() {
     _username = _usernameController.text;
     if (this.mounted) {
-      if (_usernameController.text.length > 0 && !_usernameCanClear) {
+      if (_usernameController.text.isNotEmpty && !_usernameCanClear) {
         setState(() {
           _usernameCanClear = true;
         });
-      } else if (_usernameController.text.length == 0 && _usernameCanClear) {
+      } else if (_usernameController.text.isEmpty && _usernameCanClear) {
         setState(() {
           _usernameCanClear = false;
         });
@@ -476,11 +476,11 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
       showConfirm: true,
     );
     if (confirm) {
-      API.launchWeb(
+      unawaited(API.launchWeb(
         url: 'https://net.jmu.edu.cn/info/1309/2476.htm',
         title: '网页链接',
         withCookie: false,
-      );
+      ));
     }
   }
 

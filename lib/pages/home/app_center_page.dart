@@ -56,7 +56,9 @@ class AppCenterPage extends StatelessWidget {
           content: '是否使用浏览器打开该应用?',
           showConfirm: true,
         );
-        if (confirm) launch(webApp.replacedUrl, forceSafariVC: false);
+        if (confirm) {
+          unawaited(launch(webApp.replacedUrl, forceSafariVC: false));
+        }
       },
     );
   }

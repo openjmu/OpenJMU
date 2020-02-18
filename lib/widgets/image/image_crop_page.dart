@@ -76,29 +76,27 @@ class _ImageCropPageState extends State<ImageCropPage> {
         targetWidth: 640,
         targetHeight: 640,
       );
-      uploadImage(context, compressedFile);
+      unawaited(uploadImage(context, compressedFile));
     } catch (e) {
       debugPrint('Crop image faild: $e');
       _controller.changeState('failed', '头像更新失败');
     }
   }
 
-  Future uploadImage(context, file) async {
-    final formData = await createForm(file);
-    NetUtils.postWithCookieSet(
-      API.userAvatarUpload,
-      data: formData,
-    ).then((response) {
+  Future<void> uploadImage(context, file) async {
+    try {
+      final formData = await createForm(file);
+      await NetUtils.postWithCookieSet(API.userAvatarUpload, data: formData);
       _controller.changeState('success', '头像更新成功');
       _cropping = false;
       Future.delayed(Duration(milliseconds: 2200), () {
         Navigator.of(context).pop(true);
       });
-    }).catchError((e) {
+    } catch (e) {
       debugPrint(e.toString());
       _controller.changeState('failed', '头像更新失败');
       _cropping = false;
-    });
+    }
   }
 
   Future createForm(File file) async {

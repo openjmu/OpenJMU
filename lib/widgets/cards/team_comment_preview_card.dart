@@ -207,11 +207,9 @@ class TeamCommentPreviewCard extends StatelessWidget {
             shrinkWrap: true,
             itemCount: post.replyInfo.length + (post.replyInfo.length != post.repliesCount ? 1 : 0),
             itemBuilder: (_, index) {
-              if (index == post.replyInfo.length)
+              if (index == post.replyInfo.length) {
                 return Container(
-                  margin: EdgeInsets.only(
-                    top: suSetHeight(12.0),
-                  ),
+                  margin: EdgeInsets.only(top: suSetHeight(12.0)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -234,11 +232,10 @@ class TeamCommentPreviewCard extends StatelessWidget {
                     ],
                   ),
                 );
+              }
               final _post = post.replyInfo[index];
               return Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: suSetHeight(4.0),
-                ),
+                padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
                 child: Row(
                   children: <Widget>[
                     Expanded(
@@ -248,9 +245,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                           prefixSpans: <InlineSpan>[
                             TextSpan(
                               text: '@${_post['user']['nickname']}',
-                              style: TextStyle(
-                                color: Colors.blue,
-                              ),
+                              style: TextStyle(color: Colors.blue),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   navigatorState.pushNamed(
@@ -286,9 +281,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                               ),
                             TextSpan(
                               text: ': ',
-                              style: TextStyle(
-                                color: Colors.blue,
-                              ),
+                              style: TextStyle(color: Colors.blue),
                             ),
                           ],
                         ),

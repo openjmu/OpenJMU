@@ -291,8 +291,8 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
     } else {
       if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
         SystemChannels.textInput.invokeMethod('TextInput.hide').whenComplete(
-          () async {
-            Future.delayed(const Duration(milliseconds: 300), () {}).whenComplete(change);
+          () {
+            Future.delayed(300.milliseconds, () {}).whenComplete(change);
           },
         );
       } else {

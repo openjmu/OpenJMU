@@ -110,7 +110,9 @@ class MentionText extends SpecialText {
   int getUidFromContent(content) {
     Iterable<Match> matches = mTagStartReg.allMatches(content);
     String result;
-    for (Match m in matches) result = m.group(0);
+    for (Match m in matches) {
+      result = m.group(0);
+    }
     return int.parse(result.substring(3, result.length - 1));
   }
 
@@ -286,8 +288,8 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
   final List<InlineSpan> suffixSpans;
 
   StackSpecialTextSpanBuilder({
-    this.builderType: BuilderType.extendedText,
-    this.widgetType: WidgetType.post,
+    this.builderType = BuilderType.extendedText,
+    this.widgetType = WidgetType.post,
     this.prefixSpans,
     this.suffixSpans,
   });
@@ -333,7 +335,7 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
           if (specialText != null) {
             if (textStack.length - specialText.startFlag.length >= 0) {
               textStack = textStack.substring(0, textStack.length - specialText.startFlag.length);
-              if (textStack.length > 0) {
+              if (textStack.isNotEmpty) {
                 inlineList.add(TextSpan(text: textStack, style: textStyle));
               }
             }
@@ -346,7 +348,7 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
           text: specialText.startFlag + specialText.getContent(),
           style: textStyle,
         ));
-      } else if (textStack.length > 0) {
+      } else if (textStack.isNotEmpty) {
         inlineList.add(TextSpan(text: textStack, style: textStyle));
       }
     } else {

@@ -49,7 +49,7 @@ class HiveBoxes {
     changelogBox = await Hive.openBox<ChangeLog>('openjmu_changelog');
   }
 
-  static void clearBoxes({context}) async {
+  static Future<void> clearBoxes({context}) async {
     bool confirm = true;
     if (context != null) {
       confirm = await ConfirmationBottomSheet.show(
@@ -72,7 +72,7 @@ class HiveBoxes {
       await settingsBox?.clear();
       await startWeekBox?.clear();
       debugPrint('Boxes cleared');
-      if (kReleaseMode) SystemNavigator.pop();
+      if (kReleaseMode) unawaited(SystemNavigator.pop());
     }
   }
 }

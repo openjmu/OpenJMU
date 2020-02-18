@@ -234,7 +234,7 @@ class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       });
     }
 
-    if (data.length > 0) {
+    if (data.isNotEmpty) {
       SpecialText specialText;
       String textStack = '';
       for (int i = 0; i < data.length; i++) {
@@ -253,7 +253,7 @@ class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
           if (specialText != null) {
             if (textStack.length - specialText.startFlag.length >= 0) {
               textStack = textStack.substring(0, textStack.length - specialText.startFlag.length);
-              if (textStack.length > 0) {
+              if (textStack.isNotEmpty) {
                 inlineList.add(TextSpan(text: textStack, style: textStyle));
               }
             }
@@ -265,7 +265,7 @@ class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       if (specialText != null) {
         inlineList.add(
             TextSpan(text: specialText.startFlag + specialText.getContent(), style: textStyle));
-      } else if (textStack.length > 0) {
+      } else if (textStack.isNotEmpty) {
         inlineList.add(TextSpan(text: textStack, style: textStyle));
       }
     } else {

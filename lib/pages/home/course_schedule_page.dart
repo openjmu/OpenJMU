@@ -80,12 +80,13 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
   void scrollToWeek(int week) {
     currentWeek = week;
     if (mounted) setState(() {});
-    if (weekScrollController?.hasClients ?? false)
+    if (weekScrollController?.hasClients ?? false) {
       weekScrollController.animateTo(
         math.max(0, (week - 0.5) * suSetWidth(weekSize) - Screens.width / 2),
         duration: const Duration(milliseconds: 300),
         curve: Curves.ease,
       );
+    }
   }
 
   void showRemarkDetail(context) {

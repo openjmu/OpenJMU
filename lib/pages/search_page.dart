@@ -56,7 +56,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
   bool get wantKeepAlive => true;
 
   void canClearListener() {
-    _canClear = _controller.text.length > 0;
+    _canClear = _controller.text.isNotEmpty;
     if (mounted) setState(() {});
   }
 
@@ -81,7 +81,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
 
   Future getPosts(String searchQuery) async {
     bool loadMore = false;
-    if (postList != null && postList.length > 0) {
+    if (postList != null && postList.isNotEmpty) {
       loadMore = true;
     }
     await PostAPI.getPostList(
@@ -92,7 +92,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
       additionAttrs: {'words': searchQuery},
     ).then((response) {
       List _ps = response.data['topics'];
-      if (_ps.length == 0) _canLoadMore = false;
+      if (_ps.isEmpty) _canLoadMore = false;
       _ps.forEach((post) {
         Post p = Post.fromJson(post['topic']);
         if (postList == null) postList = [];

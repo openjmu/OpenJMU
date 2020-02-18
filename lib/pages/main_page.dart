@@ -83,7 +83,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     super.dispose();
   }
 
-  void initPushService() async {
+  void initPushService() {
     try {
       final data = <String, dynamic>{
         'token': DeviceUtils.devicePushToken,

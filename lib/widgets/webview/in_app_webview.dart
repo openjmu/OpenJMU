@@ -97,12 +97,14 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
       debugPrint('Found scheme when load: $url');
       if (Platform.isAndroid) {
         Future.delayed(1.microseconds, () async {
-          controller.stopLoading();
+          unawaited(controller.stopLoading());
           debugPrint('Try to launch intent...');
           final appName = await ChannelUtils.getSchemeLaunchAppName(url);
           if (appName != null) {
             final shouldLaunch = await waitForConfirmation(appName);
-            if (shouldLaunch) _launchURL(url: url);
+            if (shouldLaunch) {
+              await _launchURL(url: url);
+            }
           }
         });
       }
@@ -187,7 +189,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     );
   }
 
-  Future<void> showMore(context) async {
+  void showMore(context) {
     showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(

@@ -17,15 +17,14 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
   Future<void> onScan(context, String data) async {
     if (data == null) {
       showCenterErrorToast('没有识别到二维码~换一张试试');
-      return;
     }
     if (API.urlReg.stringMatch(data) != null) {
-      API.launchWeb(url: '$data');
+      unawaited(API.launchWeb(url: '$data'));
     } else if (API.schemeUserPage.stringMatch(data) != null) {
-      Navigator.of(context).pushReplacementNamed(
+      unawaited(Navigator.of(context).pushReplacementNamed(
         Routes.OPENJMU_USER,
         arguments: {'uid': int.parse(data.substring(API.schemeUserPage.pattern.length - 2))},
-      );
+      ));
     } else {
       final needCopy = await ConfirmationDialog.show(
         context,
@@ -35,7 +34,9 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
         confirmLabel: '复制',
         cancelLabel: '返回',
       );
-      if (needCopy) Clipboard.setData(ClipboardData(text: '$data'));
+      if (needCopy) {
+        unawaited(Clipboard.setData(ClipboardData(text: '$data')));
+      }
       _key.currentState.startScan();
     }
   }

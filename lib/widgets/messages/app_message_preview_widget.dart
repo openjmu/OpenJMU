@@ -105,7 +105,9 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
       widget.message.content = content['content'];
       Provider.of<MessagesProvider>(currentContext, listen: false).saveAppsMessages();
       if (mounted) setState(() {});
-    } catch (e) {}
+    } catch (e) {
+      return;
+    }
   }
 
   @mustCallSuper

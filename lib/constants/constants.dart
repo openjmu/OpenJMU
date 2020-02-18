@@ -8,8 +8,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:openjmu/constants/constants.dart';
 
 export 'package:dartx/dartx.dart';
+export 'package:dio/dio.dart' show Response;
 export 'package:ff_annotation_route/ff_annotation_route.dart' show FFRoute, PageRouteType;
 export 'package:oktoast/oktoast.dart' hide showToast;
+export 'package:pedantic/pedantic.dart';
 export 'package:url_launcher/url_launcher.dart';
 
 export 'package:openjmu/api/api.dart';

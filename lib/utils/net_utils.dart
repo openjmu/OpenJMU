@@ -97,12 +97,12 @@ class NetUtils {
         ),
       );
 
-  static Future<Response> getWithCookieSet(
+  static Future<Response<T>> getWithCookieSet<T>(
     String url, {
     data,
     cookies,
   }) async =>
-      await dio.get(
+      await dio.get<T>(
         url,
         queryParameters: data,
         options: Options(
@@ -110,13 +110,13 @@ class NetUtils {
         ),
       );
 
-  static Future<Response> getWithCookieAndHeaderSet(
+  static Future<Response<T>> getWithCookieAndHeaderSet<T>(
     String url, {
     data,
     cookies,
     headers,
   }) async =>
-      await dio.get(
+      await dio.get<T>(
         url,
         queryParameters: data,
         options: Options(
@@ -125,9 +125,12 @@ class NetUtils {
         ),
       );
 
-  static Future<Response> post(String url, {data}) async => await dio.post(url, data: data);
+  static Future<Response<T>> post<T>(String url, {data}) async => await dio.post<T>(
+        url,
+        data: data,
+      );
 
-  static Future<Response> postWithCookieSet(String url, {data}) async => await dio.post(
+  static Future<Response<T>> postWithCookieSet<T>(String url, {data}) async => await dio.post<T>(
         url,
         data: data,
         options: Options(
@@ -135,13 +138,13 @@ class NetUtils {
         ),
       );
 
-  static Future<Response> postWithCookieAndHeaderSet(
+  static Future<Response<T>> postWithCookieAndHeaderSet<T>(
     String url, {
     cookies,
     headers,
     data,
   }) async =>
-      await dio.post(
+      await dio.post<T>(
         url,
         data: data,
         options: Options(
@@ -150,12 +153,12 @@ class NetUtils {
         ),
       );
 
-  static Future<Response> deleteWithCookieAndHeaderSet(
+  static Future<Response<T>> deleteWithCookieAndHeaderSet<T>(
     String url, {
     data,
     headers,
   }) async =>
-      await dio.delete(
+      await dio.delete<T>(
         url,
         data: data,
         options: Options(

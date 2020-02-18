@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
@@ -16,12 +15,12 @@ class UserAPI {
 
   static List<Cookie> cookiesForJWGL;
 
-  static Future login(Map<String, dynamic> params) async {
-    return NetUtils.tokenDio.post(API.login, data: params);
+  static Future<Response<T>> login<T>(Map<String, dynamic> params) async {
+    return NetUtils.tokenDio.post<T>(API.login, data: params);
   }
 
-  static void logout(context) async {
-    final confirm = await ConfirmationBottomSheet.show(
+  static Future<void> logout(BuildContext context) async {
+    final bool confirm = await ConfirmationBottomSheet.show(
       context,
       title: '退出登录',
       showConfirm: true,
@@ -32,7 +31,7 @@ class UserAPI {
     }
   }
 
-  static UserTag createUserTag(tagData) => UserTag(
+  static UserTag createUserTag(Map<String, dynamic> tagData) => UserTag(
         id: tagData['id'],
         name: tagData['tagname'],
       );
@@ -74,13 +73,13 @@ class UserAPI {
     avatarLastModified = DateTime.now().millisecondsSinceEpoch;
   }
 
-  static Future getUserInfo({int uid}) async {
+  static Future<dynamic> getUserInfo<T>({int uid}) async {
     if (uid == null) {
       return currentUser;
     } else {
       return NetUtils.getWithCookieAndHeaderSet(
         API.userInfo,
-        data: {'uid': uid},
+        data: <String, dynamic>{'uid': uid},
       );
     }
   }
@@ -124,27 +123,22 @@ class UserAPI {
   static Future getNotifications() async => NetUtils.getWithCookieAndHeaderSet(API.postUnread);
 
   static Future follow(int uid) async {
-    NetUtils.postWithCookieAndHeaderSet('${API.userRequestFollow}$uid').then((response) {
-      return NetUtils.postWithCookieAndHeaderSet(
-        API.userFollowAdd,
-        data: {'fid': uid, 'tagid': 0},
-      );
-    }).catchError((e) {
-      debugPrint(e.toString());
-      showCenterErrorToast('关注失败，${jsonDecode(e.response.data)['msg']}');
-    });
+    try {
+      await NetUtils.postWithCookieAndHeaderSet('${API.userRequestFollow}$uid');
+      await NetUtils.postWithCookieAndHeaderSet(API.userFollowAdd, data: {'fid': uid, 'tagid': 0});
+    } catch (e) {
+      debugPrint('Failed when folloe: $e');
+    }
   }
 
   static Future unFollow(int uid, {bool fromBlacklist = false}) async {
-    NetUtils.deleteWithCookieAndHeaderSet('${API.userRequestFollow}$uid').then((response) {
-      return NetUtils.postWithCookieAndHeaderSet(
-        API.userFollowDel,
-        data: {'fid': uid},
-      );
-    }).catchError((e) {
+    try {
+      await NetUtils.deleteWithCookieAndHeaderSet('${API.userRequestFollow}$uid');
+      await NetUtils.postWithCookieAndHeaderSet(API.userFollowAdd, data: {'fid': uid});
+    } catch (e) {
       debugPrint('Failed when unfollow $uid: $e');
-      if (!fromBlacklist) showCenterErrorToast('取消关注失败，${e.response.data['msg']}');
-    });
+      if (!fromBlacklist) showCenterErrorToast('取消关注失败');
+    }
   }
 
   static Future setSignature(content) async {

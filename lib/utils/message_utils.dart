@@ -239,7 +239,7 @@ class MessageUtils {
     try {
       final package = packageBuilder(
         Messages.messageCommands[command],
-        content?.requestBody() ?? null,
+        content?.requestBody(),
       );
       messageSocket.add(package);
       debugPrint('\nSending $command: $package');
@@ -357,7 +357,9 @@ class MessageUtils {
     // Fire [MessageReceivedEvent].
     Instances.eventBus.fire(event);
     // Notify each listener with event.
-    for (final listener in messageListeners) listener(event);
+    for (final listener in messageListeners) {
+      listener(event);
+    }
   }
 
   static decodeMultiOfflineMessage(Packet packet) {
@@ -416,13 +418,17 @@ class UintConverter {
     final bytes = value.toUtf8();
     // String package needs to add length before content.
     addWrapper(UintWrapper(bytes.length, 16));
-    for (final byte in bytes) add(byte, 8);
+    for (final byte in bytes) {
+      add(byte, 8);
+    }
   }
 
   Uint8List asUint8List() {
     int size = 0;
     int offset = 0;
-    for (final number in numbers) size += number.radix ~/ 8;
+    for (final number in numbers) {
+      size += number.radix ~/ 8;
+    }
     final ByteBuffer buffer = Uint8List(size).buffer;
     final ByteData data = ByteData.view(buffer);
 

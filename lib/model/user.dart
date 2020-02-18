@@ -34,7 +34,7 @@ class User {
       nickname: json['nickname'] ?? json['username'] ?? json['name'] ?? json['uid'].toString(),
       gender: json['gender'] ?? 0,
       topics: json['topics'] ?? 0,
-      latestTid: json['latest_tid'] ?? null,
+      latestTid: json['latest_tid'],
       fans: json['fans'] ?? 0,
       idols: json['idols'] ?? 0,
       isFollowing: json['is_following'] == 1,

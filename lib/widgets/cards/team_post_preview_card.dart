@@ -80,7 +80,7 @@ class TeamPostPreviewCard extends StatelessWidget {
       showConfirm: true,
     );
     if (confirm) {
-      TeamPostAPI.reportPost(post);
+      unawaited(TeamPostAPI.reportPost(post));
       showToast('举报成功');
     }
   }
@@ -186,11 +186,9 @@ class TeamPostPreviewCard extends StatelessWidget {
           shrinkWrap: true,
           itemCount: provider.post.postInfo.length + (provider.post.repliesCount > 2 ? 1 : 0),
           itemBuilder: (_, index) {
-            if (index == provider.post.postInfo.length)
+            if (index == provider.post.postInfo.length) {
               return Container(
-                margin: EdgeInsets.only(
-                  top: suSetHeight(12.0),
-                ),
+                margin: EdgeInsets.only(top: suSetHeight(12.0)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -213,6 +211,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   ],
                 ),
               );
+            }
             final _post = provider.post.postInfo[index];
             return Padding(
               padding: EdgeInsets.symmetric(

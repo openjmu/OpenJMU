@@ -317,7 +317,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
         Routes.OPENJMU_ADD_COMMENT,
         arguments: {
           'post': widget.post,
-          'comment': _comments?.elementAt(index) ?? null,
+          'comment': _comments?.elementAt(index),
         },
       );
     }

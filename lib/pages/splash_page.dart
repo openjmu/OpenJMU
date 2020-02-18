@@ -124,7 +124,7 @@ class SplashState extends State<SplashPage> {
     if (mounted) setState(() {});
   }
 
-  Future navigate({bool forceToLogin = false}) async {
+  void navigate({bool forceToLogin = false}) {
     try {
       navigatorState.pushAndRemoveUntil(
         PageRouteBuilder(

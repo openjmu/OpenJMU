@@ -106,32 +106,29 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         maxLines: 3,
       );
 
-  void _request(context) async {
+  Future<void> _request(context) async {
     setState(() {
       _forwarding = true;
     });
     String content;
-    _forwardController.text.length == 0 ? content = '转发' : content = _forwardController.text;
+    _forwardController.text.isEmpty ? content = '转发' : content = _forwardController.text;
 
     /// Sending image if it exist.
     if (_image != null) {
-      Map<String, dynamic> data = (await getImageRequest(createForm(_image))).data;
+      final Map<String, dynamic> data = (await getImageRequest(createForm(_image))).data;
       _imageID = int.parse(data['image_id']);
       content += ' |$_imageID| ';
     }
 
-    PostAPI.postForward(
-      content,
-      widget.post.id,
-      commentAtTheMeanTime,
-    ).then((response) {
+    try {
+      await PostAPI.postForward(content, widget.post.id, commentAtTheMeanTime);
       showToast('转发成功');
       Navigator.of(context).pop();
       Instances.eventBus.fire(PostForwardedEvent(
         widget.post.id,
         widget.post.forwards,
       ));
-    }).catchError((e) {
+    } catch (e) {
       _forwarding = false;
       debugPrint('Forward post failed: $e');
       if (e is DioError && e.response.statusCode == 404) {
@@ -141,7 +138,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         showToast('转发失败');
       }
       if (mounted) setState(() {});
-    });
+    }
   }
 
   void updatePadStatus(bool active) {

@@ -114,7 +114,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
             [PermissionGroup.camera],
           );
           if (permissions[PermissionGroup.camera] == PermissionStatus.granted) {
-            navigatorState.pushNamed(Routes.OPENJMU_SCAN_QRCODE);
+            unawaited(navigatorState.pushNamed(Routes.OPENJMU_SCAN_QRCODE));
           }
         },
       );

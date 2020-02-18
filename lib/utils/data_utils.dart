@@ -60,7 +60,7 @@ class DataUtils {
     }
   }
 
-  static Future<void> logout() async {
+  static void logout() {
     UserAPI.blacklist?.clear();
     MessageUtils.sendLogout();
     NetUtils.postWithCookieSet(API.logout).whenComplete(() {
@@ -84,7 +84,7 @@ class DataUtils {
 
   static String recoverWorkId() => settingsBox.get(spUserWorkId);
 
-  static Future recoverLoginInfo() async {
+  static void recoverLoginInfo() async {
     final info = getSpTicket();
     UserAPI.currentUser.ticket = info['ticket'];
   }

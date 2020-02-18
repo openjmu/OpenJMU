@@ -20,7 +20,7 @@ class WebAppsProvider extends ChangeNotifier {
 
   Future getAppList() async => NetUtils.getWithCookieSet(API.webAppLists);
 
-  void initApps() async {
+  void initApps() {
     _appCategoriesList = <String, Set<WebApp>>{
       for (final key in categories.keys) key: <WebApp>{},
     };

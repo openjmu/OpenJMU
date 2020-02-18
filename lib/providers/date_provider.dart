@@ -66,9 +66,9 @@ class DateProvider extends ChangeNotifier {
         _day = DateTime.parse(jsonDecode(result)['start']);
       }
       if (_startDate == null) {
-        updateStartDate(_day);
+        unawaited(updateStartDate(_day));
       } else {
-        if (_startDate != _day) updateStartDate(_day);
+        if (_startDate != _day) unawaited(updateStartDate(_day));
       }
 
       final _d = _startDate.difference(now).inDays;

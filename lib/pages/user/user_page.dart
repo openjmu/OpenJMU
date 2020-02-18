@@ -114,7 +114,7 @@ class _UserPageState extends State<UserPage>
     }
   }
 
-  Future<Null> _fetchUserInformation(uid) async {
+  Future<void> _fetchUserInformation(uid) async {
     if (uid == UserAPI.currentUser.uid) {
       _user = UserAPI.currentUser;
     } else {
@@ -122,7 +122,7 @@ class _UserPageState extends State<UserPage>
       _user = UserInfo.fromJson(user);
     }
 
-    Future.wait(<Future>[
+    await Future.wait(<Future>[
       UserAPI.getLevel(uid).then((response) {
         userLevel = int.parse(response.data['score']['levelinfo']['level'].toString());
       }),
@@ -135,24 +135,25 @@ class _UserPageState extends State<UserPage>
         _tags = _userTags;
       }),
       _getCount(uid),
-    ]).then((whatever) {
-      if (mounted) {
-        setState(() {
-          isLoading = false;
-          refreshing = false;
-        });
-      }
-    });
+    ]);
+
+    if (mounted) {
+      setState(() {
+        isLoading = false;
+        refreshing = false;
+      });
+    }
   }
 
   Future<Null> _getCount(id) async {
     Map data = (await UserAPI.getFansAndFollowingsCount(id)).data;
-    if (this.mounted)
+    if (this.mounted) {
       setState(() {
         _user.isFollowing = data['is_following'] == 1;
         _fansCount = data['fans'].toString();
         _idolsCount = data['idols'].toString();
       });
+    }
   }
 
   Widget avatar(context, double width) {
@@ -199,6 +200,9 @@ class _UserPageState extends State<UserPage>
                 UserAPI.follow(widget.uid).then((response) {
                   _user.isFollowing = true;
                   if (mounted) setState(() {});
+                }).catchError((e) {
+                  debugPrint('Failed when follow: $e');
+                  showCenterErrorToast('关注失败');
                 });
               }
             }
@@ -387,7 +391,7 @@ class _UserPageState extends State<UserPage>
             ),
           ],
         ),
-        _tags?.length != 0
+        _tags?.isNotEmpty ?? false
             ? SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
@@ -468,7 +472,7 @@ class _UserPageState extends State<UserPage>
     );
   }
 
-  void avatarExtraActions(context) async {
+  void avatarExtraActions(context) {
     ConfirmationBottomSheet.show(
       context,
       children: <Widget>[
@@ -495,7 +499,7 @@ class _UserPageState extends State<UserPage>
         ConfirmationBottomSheetAction(
           icon: Icon(Icons.photo_library),
           text: '更换头像',
-          onTap: () async {
+          onTap: () {
             Navigator.of(context).pop();
             navigatorState.pushNamed(Routes.OPENJMU_IMAGE_CROP).then((result) {
               if (result != null && result) {
@@ -782,8 +786,10 @@ class _UserListState extends State<UserListPage> {
     int total = int.parse(response.data['total'].toString());
     if (_users.length + data.length < total) canLoadMore = true;
     List users = [];
-    for (int i = 0; i < data.length; i++) users.add(data[i]);
-    if (mounted)
+    for (int i = 0; i < data.length; i++) {
+      users.add(data[i]);
+    }
+    if (mounted) {
       setState(() {
         if (isMore) {
           List _u = _users;
@@ -794,6 +800,7 @@ class _UserListState extends State<UserListPage> {
         }
         isLoading = false;
       });
+    }
   }
 
   Widget renderRow(context, i) {
@@ -912,7 +919,7 @@ class _UserListState extends State<UserListPage> {
           FixedAppBar(title: Text('$_type列表')),
           Expanded(
             child: !isLoading
-                ? _users.length != 0
+                ? _users?.isNotEmpty ?? false
                     ? ListView.builder(
                         padding: EdgeInsets.zero,
                         itemCount: (_users.length / 2).ceil(),

@@ -98,7 +98,9 @@ class LoadingDialogState extends State<LoadingDialog> {
             } else {
               Navigator.pop(context);
             }
-          } catch (e) {}
+          } catch (e) {
+            debugPrint('Error when running pop in loading dialog: $e');
+          }
         });
       } else if (this.type == 'dismiss') {
         try {
@@ -107,7 +109,9 @@ class LoadingDialogState extends State<LoadingDialog> {
           } else {
             Navigator.pop(context);
           }
-        } catch (e) {}
+        } catch (e) {
+          debugPrint('Error when running pop in loading dialog: $e');
+        }
       }
     }
     Widget child = Center(

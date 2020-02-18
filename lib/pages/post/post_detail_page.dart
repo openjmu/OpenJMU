@@ -190,7 +190,7 @@ class PostDetailPageState extends State<PostDetailPage> {
         onPressed: () => postExtraActions(context),
       );
 
-  void confirmDelete(context) async {
+  Future<void> confirmDelete(context) async {
     final confirm = await ConfirmationDialog.show(
       context,
       title: '删除动态',
@@ -205,14 +205,15 @@ class PostDetailPageState extends State<PostDetailPage> {
         text: '正在删除动态',
         isGlobal: false,
       );
-      PostAPI.deletePost(widget.post.id).then((response) {
+      try {
+        await PostAPI.deletePost(widget.post.id);
         _loadingDialogController.changeState('success', '动态删除成功');
         Instances.eventBus.fire(PostDeletedEvent(widget.post.id, widget.fromPage, widget.index));
-      }).catchError((e) {
+      } catch (e) {
         debugPrint(e.toString());
         debugPrint(e.response?.toString());
         _loadingDialogController.changeState('failed', '动态删除失败');
-      });
+      }
     }
   }
 
@@ -254,7 +255,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       final provider = Provider.of<ReportRecordsProvider>(context, listen: false);
       final canReport = await provider.addRecord(widget.post.id);
       if (canReport) {
-        PostAPI.reportPost(widget.post);
+        unawaited(PostAPI.reportPost(widget.post));
         showToast('举报成功');
         navigatorState.pop();
       }

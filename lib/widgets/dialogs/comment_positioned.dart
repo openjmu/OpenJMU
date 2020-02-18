@@ -53,10 +53,11 @@ class CommentPositionedState extends State<CommentPositioned> {
   @override
   void initState() {
     super.initState();
-    if (widget.comment != null)
+    if (widget.comment != null) {
       setState(() {
         toComment = widget.comment;
       });
+    }
     _commentController
       ..addListener(() {
         setState(() {
@@ -133,7 +134,7 @@ class CommentPositionedState extends State<CommentPositioned> {
   }
 
   Future _request(context) async {
-    if (commentContent.length <= 0 && _image == null) {
+    if (commentContent.isEmpty && _image == null) {
       showCenterErrorToast('内容不能为空！');
     } else {
       setState(() {
@@ -333,7 +334,7 @@ class CommentPositionedState extends State<CommentPositioned> {
                         color: currentThemeColor,
                       ),
                     ),
-                    onTap: (_commentController.text.length > 0 || _image != null)
+                    onTap: (_commentController.text.isNotEmpty || _image != null)
                         ? () => _request(context)
                         : null,
                   )

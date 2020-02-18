@@ -58,10 +58,13 @@ Future<List<int>> cropImage({ExtendedImageEditorState state}) async {
 
   if (action.needCrop) option.addOption(ClipOption.fromRect(cropRect));
 
-  if (action.needFlip)
+  if (action.needFlip) {
     option.addOption(FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
+  }
 
-  if (action.hasRotateAngle) option.addOption(RotateOption(rotateAngle));
+  if (action.hasRotateAngle) {
+    option.addOption(RotateOption(rotateAngle));
+  }
 
   final result = await ImageEditor.editImage(
     image: img,

@@ -17,10 +17,10 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
   final List<String> itemTitles = ['广场', '集市'];
   final List<Color> itemColors = [Colors.orange, Colors.indigoAccent];
   final List<Function> itemOnTap = [
-    (context) async {
+    (context) {
       navigatorState.pushNamed(Routes.OPENJMU_PUBLISH_POST);
     },
-    (context) async {
+    (context) {
       navigatorState.pushNamed(Routes.OPENJMU_PUBLISH_TEAM_POST);
     },
   ];

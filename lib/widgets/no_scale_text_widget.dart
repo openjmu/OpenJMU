@@ -1,4 +1,4 @@
-import 'dart:math' as Math;
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
@@ -28,7 +28,7 @@ class MaxScaleTextWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = MediaQuery.of(context);
-    final scale = Math.min(max, data.textScaleFactor);
+    final scale = math.min(max, data.textScaleFactor);
     return MediaQuery(
       data: data.copyWith(textScaleFactor: scale),
       child: child,

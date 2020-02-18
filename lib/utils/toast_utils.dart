@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// ignore: library_prefixes
 import 'package:oktoast/oktoast.dart' as OKToast;
 
 void showToast(String text) {

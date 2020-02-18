@@ -62,7 +62,7 @@ class PublishPostPageState extends State<PublishPostPage> {
   void addTopic() {
     final currentPosition = _textEditingController.selection.baseOffset;
     String result;
-    if (_textEditingController.text.length > 0) {
+    if (_textEditingController.text.isNotEmpty) {
       final leftText = _textEditingController.text.substring(0, currentPosition);
       final rightText = _textEditingController.text
           .substring(currentPosition, _textEditingController.text.length);
@@ -415,7 +415,7 @@ class PublishPostPageState extends State<PublishPostPage> {
     }
   }
 
-  void post(context) async {
+  Future<void> post(context) async {
     final content = _textEditingController.text;
     if (content?.trim()?.isEmpty ?? true) {
       showCenterToast('内容不能为空');
@@ -456,12 +456,12 @@ class PublishPostPageState extends State<PublishPostPage> {
         LoadingDialog.show(
           context,
           controller: _dialogController,
-          text: assets.length > 0 ? '正在上传图片 (1/${assets.length})' : '正在发布动态...',
+          text: assets.isNotEmpty ? '正在上传图片 (1/${assets.length})' : '正在发布动态...',
         );
         Map<String, dynamic> data = {};
         data['category'] = 'text';
         data['content'] = Uri.encodeFull(content);
-        if (assets.length > 0) {
+        if (assets.isNotEmpty) {
           try {
             if (query == null) query = List(assets.length);
             _imageIdList = List(assets.length);
@@ -470,8 +470,8 @@ class PublishPostPageState extends State<PublishPostPage> {
               final _form = await createForm(imageData);
               query[i] = getImageRequest(_form, i);
             }
-            _postImagesQuery().then((responses) {
-              final rs = responses as List;
+            try {
+              final List rs = await _postImagesQuery();
               if (rs != null && rs.length == assets.length && !rs.contains(null)) {
                 final extraId = _imageIdList.toString();
                 data['extra_id'] = extraId.substring(1, extraId.length - 1);
@@ -482,13 +482,13 @@ class PublishPostPageState extends State<PublishPostPage> {
                 isLoading = false;
                 if (mounted) setState(() {});
               }
-            }).catchError((e) {
+            } catch (e) {
               query = [];
               _dialogController.changeState('failed', '图片上传失败');
               isLoading = false;
               if (mounted) setState(() {});
               debugPrint(e.toString());
-            });
+            }
           } catch (exception) {
             query = [];
             debugPrint(exception.toString());
@@ -544,8 +544,8 @@ class PublishPostPageState extends State<PublishPostPage> {
         if (mounted) setState(() {});
       });
 
-  Future _postContent(content) async {
-    if (assets.length > 0) {
+  void _postContent(content) {
+    if (assets.isNotEmpty) {
       _dialogController.updateText('正在发布动态...');
     }
     NetUtils.postWithCookieAndHeaderSet(

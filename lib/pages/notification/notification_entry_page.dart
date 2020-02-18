@@ -28,7 +28,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
         currentContext,
         listen: false,
       ).notifications,
-      'onTap': (context) async {
+      'onTap': (context) {
         navigatorState.pushNamed(Routes.OPENJMU_NOTIFICATIONS);
       },
     },
@@ -39,7 +39,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
         currentContext,
         listen: false,
       ).teamNotifications,
-      'onTap': (context) async {
+      'onTap': (context) {
         navigatorState.pushNamed(Routes.OPENJMU_TEAM_NOTIFICATIONS);
       },
     },

@@ -28,8 +28,8 @@ class OTAUtils {
     _packageInfo = await PackageInfo.fromPlatform();
   }
 
-  static Future<void> checkUpdate({bool fromHome = false}) async {
-    NetUtils.get(API.checkUpdate).then((response) async {
+  static void checkUpdate({bool fromHome = false}) {
+    NetUtils.get(API.checkUpdate).then((response) {
       final data = jsonDecode(response.data);
       updateChangelog(data['changelog']);
       final _currentBuild = buildNumber;
@@ -63,13 +63,13 @@ class OTAUtils {
       LaunchReview.launch(iOSAppId: '1459832676');
     } else {
       if (await canLaunch('coolmarket://apk/$packageName')) {
-        launch('coolmarket://apk/$packageName');
+        unawaited(launch('coolmarket://apk/$packageName'));
       } else {
-        launch(
+        unawaited(launch(
           'https://www.coolapk.com/apk/$packageName',
           forceSafariVC: false,
           forceWebView: false,
-        );
+        ));
       }
     }
   }
@@ -197,11 +197,11 @@ class OTAUtils {
     final box = HiveBoxes.changelogBox;
     final List<ChangeLog> logs = data.map((log) => ChangeLog.fromJson(log)).toList();
     if (box.values == null) {
-      box.addAll(logs);
+      await box.addAll(logs);
     } else {
       if (box.values.toString() != logs.toString()) {
         await box.clear();
-        box.addAll(logs);
+        await box.addAll(logs);
       }
     }
   }

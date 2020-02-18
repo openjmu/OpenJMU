@@ -223,7 +223,9 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
       final content = jsonDecode(message.content);
       message.content = content['content'];
       if (mounted) setState(() {});
-    } catch (e) {}
+    } catch (e) {
+      return;
+    }
   }
 
   @override

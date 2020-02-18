@@ -230,10 +230,11 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
     _position
       ..curve = Curves.ease
       ..reverseCurve = Curves.ease.flipped;
-    if (value)
+    if (value) {
       _positionController.forward();
-    else
+    } else {
       _positionController.reverse();
+    }
   }
 
   TickerProvider get vsync => _vsync;
@@ -300,10 +301,11 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
   @override
   void attach(PipelineOwner owner) {
     super.attach(owner);
-    if (value)
+    if (value) {
       _positionController.forward();
-    else
+    } else {
       _positionController.reverse();
+    }
     if (isInteractive) {
       switch (_reactionController.status) {
         case AnimationStatus.forward:
@@ -329,9 +331,11 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
 
   void _handlePositionStateChanged(AnimationStatus status) {
     if (isInteractive) {
-      if (status == AnimationStatus.completed && !_value)
+      if (status == AnimationStatus.completed && !_value) {
         onChanged(true);
-      else if (status == AnimationStatus.dismissed && _value) onChanged(false);
+      } else if (status == AnimationStatus.dismissed && _value) {
+        onChanged(false);
+      }
     }
   }
 
@@ -379,10 +383,11 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
   }
 
   void _handleDragEnd(DragEndDetails details) {
-    if (_position.value >= 0.5)
+    if (_position.value >= 0.5) {
       _positionController.forward();
-    else
+    } else {
       _positionController.reverse();
+    }
     _reactionController.reverse();
   }
 

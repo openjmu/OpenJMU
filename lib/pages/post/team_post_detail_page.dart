@@ -80,18 +80,20 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     initialLoad();
 
     _textEditingController.addListener(() {
-      final _canSend = _textEditingController.text.length > 0;
-      if (mounted && canSend != _canSend)
+      final _canSend = _textEditingController.text.isNotEmpty;
+      if (mounted && canSend != _canSend) {
         setState(() {
           canSend = _canSend;
         });
+      }
     });
 
     _focusNode.addListener(() {
-      if (mounted && _focusNode.hasFocus)
+      if (mounted && _focusNode.hasFocus) {
         setState(() {
           showExtendedPad = false;
         });
+      }
     });
 
     Instances.eventBus
@@ -378,7 +380,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     await Future.delayed(const Duration(milliseconds: 100));
     final currentPosition = _textEditingController.selection.baseOffset;
     String result;
-    if (_textEditingController.text.length > 0) {
+    if (_textEditingController.text.isNotEmpty) {
       final leftText = _textEditingController.text.substring(0, currentPosition);
       final rightText = _textEditingController.text
           .substring(currentPosition, _textEditingController.text.length);

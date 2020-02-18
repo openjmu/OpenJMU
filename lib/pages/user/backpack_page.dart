@@ -91,9 +91,9 @@ class _BackpackPageState extends State<BackpackPage> {
     getBackpackItem();
   }
 
-  Future getBackpackItem() async {
+  Future<void> getBackpackItem() async {
     try {
-      Map<String, dynamic> types = (await NetUtils.getWithHeaderSet(
+      final Map<String, dynamic> types = (await NetUtils.getWithHeaderSet(
         API.backPackItemType(),
         headers: _header,
       ))
@@ -104,7 +104,7 @@ class _BackpackPageState extends State<BackpackPage> {
         _itemTypes['${item.type}'] = item;
       }
 
-      Future.wait(<Future>[
+      await Future.wait(<Future>[
         NetUtils.getWithHeaderSet(
           API.backPackMyItemList(),
           headers: _header,
@@ -121,7 +121,7 @@ class _BackpackPageState extends State<BackpackPage> {
           API.backPackReceiveList(),
           headers: _header,
         ).then((response) {
-//                        print(response);
+//          print(response);
         }),
       ]).then((responses) {
         setState(() {

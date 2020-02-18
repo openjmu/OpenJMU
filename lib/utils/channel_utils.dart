@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 class ChannelUtils {
   const ChannelUtils._();
 
-  static const _pmc_flagSecure = const MethodChannel('cn.edu.jmu.openjmu/setFlagSecure');
-  static const _pmc_schemeLauncher = const MethodChannel('cn.edu.jmu.openjmu/schemeLauncher');
-  static const _pmc_iOSPushToken = const MethodChannel('cn.edu.jmu.openjmu/iOSPushToken');
+  static const _pmc_flagSecure = MethodChannel('cn.edu.jmu.openjmu/setFlagSecure');
+  static const _pmc_schemeLauncher = MethodChannel('cn.edu.jmu.openjmu/schemeLauncher');
+  static const _pmc_iOSPushToken = MethodChannel('cn.edu.jmu.openjmu/iOSPushToken');
 
   static Future<Null> setFlagSecure(bool secure) async {
     try {
