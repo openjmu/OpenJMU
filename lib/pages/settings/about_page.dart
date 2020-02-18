@@ -52,28 +52,31 @@ class AboutPage extends StatelessWidget {
       showConfirm: true,
       confirmLabel: '复制',
       cancelLabel: '返回',
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: List<Widget>.generate(list.length, (i) {
-          return Text.rich(
-            TextSpan(
-              children: List<InlineSpan>.generate(list[i].length, (j) {
-                return WidgetSpan(
-                  alignment: ui.PlaceholderAlignment.middle,
-                  child: Text(
-                    list[i].substring(j, j + 1),
-                    style: TextStyle(
-                      fontSize: suSetSp(16.0),
-                      fontFamily: 'JetBrains Mono',
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List<Widget>.generate(list.length, (i) {
+            return Text.rich(
+              TextSpan(
+                children: List<InlineSpan>.generate(list[i].length, (j) {
+                  return WidgetSpan(
+                    alignment: ui.PlaceholderAlignment.middle,
+                    child: Text(
+                      list[i].substring(j, j + 1),
+                      style: TextStyle(
+                        fontSize: suSetSp(16.0),
+                        fontFamily: 'JetBrains Mono',
+                      ),
                     ),
-                  ),
-                );
-              }),
-            ),
-            textAlign: TextAlign.left,
-          );
-        }),
+                  );
+                }),
+              ),
+              textAlign: TextAlign.left,
+            );
+          }),
+        ),
       ),
     );
     if (copy) {
