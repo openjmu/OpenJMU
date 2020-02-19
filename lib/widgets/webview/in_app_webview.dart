@@ -383,6 +383,14 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             sharedCookiesEnabled: true,
           ),
         ),
+        onCreateWindow: (
+          InAppWebViewController controller,
+          OnCreateWindowRequest onCreateWindowRequest,
+        ) {
+          if (Uri.tryParse(onCreateWindowRequest.url) != null) {
+            controller.loadUrl(url: onCreateWindowRequest.url);
+          }
+        },
         onLoadStart: (InAppWebViewController controller, String url) {
           _webViewController = controller;
 
