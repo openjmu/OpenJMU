@@ -122,20 +122,25 @@ class _UserPageState extends State<UserPage>
       _user = UserInfo.fromJson(user);
     }
 
-    await Future.wait(<Future>[
-      UserAPI.getLevel(uid).then((response) {
-        userLevel = int.parse(response.data['score']['levelinfo']['level'].toString());
-      }),
-      UserAPI.getTags(uid).then((response) {
-        List tags = response.data['data'];
-        List<UserTag> _userTags = [];
-        tags.forEach((tag) {
-          _userTags.add(UserAPI.createUserTag(tag));
-        });
-        _tags = _userTags;
-      }),
-      _getCount(uid),
-    ]);
+    await Future.wait(
+      <Future>[
+        UserAPI.getLevel(uid).then((response) {
+          userLevel = int.parse(response.data['score']['levelinfo']['level'].toString());
+        }),
+        UserAPI.getTags(uid).then((response) {
+          List tags = response.data['data'];
+          List<UserTag> _userTags = [];
+          tags.forEach((tag) {
+            _userTags.add(UserAPI.createUserTag(tag));
+          });
+          _tags = _userTags;
+        }),
+        _getCount(uid),
+      ],
+      eagerError: true,
+    ).catchError((e) {
+      debugPrint('Failed when fetch user information: $e');
+    });
 
     if (mounted) {
       setState(() {
@@ -757,12 +762,16 @@ class _UserListState extends State<UserListPage> {
   void getIdolsList(page, isMore) {
     UserAPI.getIdolsList(widget.user.uid, page).then((response) {
       setUserList(response, isMore);
+    }).catchError((e) {
+      debugPrint('Failed when getting idol list: $e');
     });
   }
 
   void getFansList(page, isMore) {
     UserAPI.getFansList(widget.user.uid, page).then((response) {
       setUserList(response, isMore);
+    }).catchError((e) {
+      debugPrint('Failed when getting fans list: $e');
     });
   }
 

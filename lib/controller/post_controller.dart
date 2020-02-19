@@ -181,47 +181,52 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     }
     _lastValue = 0;
 
-    final result = (await PostAPI.getPostList(
-      widget._postController.postType,
-      widget._postController.isFollowed,
-      false,
-      _lastValue,
-      additionAttrs: widget._postController.additionAttrs,
-    ))
-        .data;
+    try {
+      final result = (await PostAPI.getPostList(
+        widget._postController.postType,
+        widget._postController.isFollowed,
+        false,
+        _lastValue,
+        additionAttrs: widget._postController.additionAttrs,
+      ))
+          .data;
 
-    List<Post> postList = [];
-    List<int> idList = [];
-    List _topics = result['topics'] ?? result['data'];
-    int _total = int.parse(result['total'].toString());
-    int _count = int.parse(result['count'].toString());
+      List<Post> postList = [];
+      List<int> idList = [];
+      List _topics = result['topics'] ?? result['data'];
+      int _total = int.parse(result['total'].toString());
+      int _count = int.parse(result['count'].toString());
 
-    for (var postData in _topics) {
-      if (postData['topic'] != null && postData != '') {
-        if (!UserAPI.blacklist.contains(jsonEncode({
-          'uid': postData['topic']['user']['uid'].toString(),
-          'username': postData['topic']['user']['nickname'],
-        }))) {
-          postList.add(Post.fromJson(postData['topic']));
-          idList.add(
-            postData['id'] is String ? int.parse(postData['id']) : postData['id'],
-          );
+      for (var postData in _topics) {
+        if (postData['topic'] != null && postData != '') {
+          if (!UserAPI.blacklist.contains(jsonEncode({
+            'uid': postData['topic']['user']['uid'].toString(),
+            'username': postData['topic']['user']['nickname'],
+          }))) {
+            postList.add(Post.fromJson(postData['topic']));
+            idList.add(
+              postData['id'] is String ? int.parse(postData['id']) : postData['id'],
+            );
+          }
         }
       }
-    }
-    _postList = postList;
+      _postList = postList;
 
-    if (needLoader) {
-      if (idList.toString() != _idList.toString()) {
+      if (needLoader) {
+        if (idList.toString() != _idList.toString()) {
+          _idList = idList;
+        }
+      } else {
         _idList = idList;
       }
-    } else {
-      _idList = idList;
+
+      _canLoadMore = _idList.length < _total && _count != 0;
+      _lastValue = _idList.isEmpty ? 0 : widget._postController.lastValue(_idList.last);
+    } catch (e) {
+      debugPrint('Failed when refresh post list: $e');
     }
 
     _isLoading = false;
-    _canLoadMore = _idList.length < _total && _count != 0;
-    _lastValue = _idList.isEmpty ? 0 : widget._postController.lastValue(_idList.last);
     if (mounted) setState(() {});
   }
 
