@@ -105,29 +105,30 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       });
 
     _emptyChild = GestureDetector(
-      onTap: () {},
+      onTap: _refreshData,
       child: Container(
         child: Center(
           child: Text(
-            '这里空空如也~',
-            style: TextStyle(color: currentThemeColor),
+            '这里空空如也~轻触重试',
+            style: TextStyle(
+              fontSize: suSetSp(30.0),
+              color: currentThemeColor,
+            ),
           ),
         ),
       ),
     );
 
     _errorChild = GestureDetector(
-      onTap: () {
-        setState(() {
-          _isLoading = false;
-          _refreshData();
-        });
-      },
+      onTap: _refreshData,
       child: Container(
         child: Center(
           child: Text(
             '加载失败，轻触重试',
-            style: TextStyle(color: currentThemeColor),
+            style: TextStyle(
+              fontSize: suSetSp(30.0),
+              color: currentThemeColor,
+            ),
           ),
         ),
       ),
@@ -179,6 +180,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     } else {
       return;
     }
+    error = false;
     _lastValue = 0;
 
     try {
@@ -223,6 +225,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       _canLoadMore = _idList.length < _total && _count != 0;
       _lastValue = _idList.isEmpty ? 0 : widget._postController.lastValue(_idList.last);
     } catch (e) {
+      error = true;
       debugPrint('Failed when refresh post list: $e');
     }
 
