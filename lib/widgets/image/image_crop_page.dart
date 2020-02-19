@@ -89,7 +89,8 @@ class _ImageCropPageState extends State<ImageCropPage> {
       await NetUtils.postWithCookieSet(API.userAvatarUpload, data: formData);
       _controller.changeState('success', '头像更新成功');
       _cropping = false;
-      Future.delayed(Duration(milliseconds: 2200), () {
+      UserAPI.avatarLastModified = DateTime.now().millisecondsSinceEpoch;
+      Future<void>.delayed(2200.milliseconds, () {
         Navigator.of(context).pop(true);
       });
     } catch (e) {
