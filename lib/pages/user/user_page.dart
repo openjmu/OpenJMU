@@ -192,19 +192,12 @@ class _UserPageState extends State<UserPage>
               );
             } else {
               if (_user.isFollowing) {
-                UserAPI.unFollow(widget.uid).then((response) {
-                  _user.isFollowing = false;
-                  if (mounted) setState(() {});
-                });
+                UserAPI.unFollow(widget.uid);
               } else {
-                UserAPI.follow(widget.uid).then((response) {
-                  _user.isFollowing = true;
-                  if (mounted) setState(() {});
-                }).catchError((e) {
-                  debugPrint('Failed when follow: $e');
-                  showCenterErrorToast('关注失败');
-                });
+                UserAPI.follow(widget.uid);
               }
+              _user.isFollowing = !_user.isFollowing;
+              if (mounted) setState(() {});
             }
           },
           color: isSelf

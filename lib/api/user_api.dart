@@ -128,6 +128,7 @@ class UserAPI {
       await NetUtils.postWithCookieAndHeaderSet(API.userFollowAdd, data: {'fid': uid, 'tagid': 0});
     } catch (e) {
       debugPrint('Failed when folloe: $e');
+      showCenterErrorToast('关注失败');
     }
   }
 
