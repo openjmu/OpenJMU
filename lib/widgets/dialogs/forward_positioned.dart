@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_text_field/extended_text_field.dart';
-import 'package:image_picker/image_picker.dart';
+//import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:openjmu/constants/constants.dart';
@@ -51,13 +51,13 @@ class ForwardPositionedState extends State<ForwardPositioned> {
     super.dispose();
   }
 
-  Future<void> _addImage() async {
-    final file = await ImagePicker.pickImage(source: ImageSource.gallery);
-    if (file == null) return;
-
-    _image = file;
-    if (mounted) setState(() {});
-  }
+//  Future<void> _addImage() async {
+//    final file = await ImagePicker.pickImage(source: ImageSource.gallery);
+//    if (file == null) return;
+//
+//    _image = file;
+//    if (mounted) setState(() {});
+//  }
 
   FormData createForm(File file) => FormData.from({
         'image': UploadFileInfo(file, path.basename(file.path)),
@@ -231,19 +231,19 @@ class ForwardPositionedState extends State<ForwardPositioned> {
               ),
             ),
             Spacer(),
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: _addImage,
-              child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(6.0),
-                ),
-                child: Icon(
-                  Icons.add_photo_alternate,
-                  size: suSetWidth(32.0),
-                ),
-              ),
-            ),
+//            GestureDetector(
+//              behavior: HitTestBehavior.opaque,
+//              onTap: _addImage,
+//              child: Padding(
+//                padding: EdgeInsets.symmetric(
+//                  horizontal: suSetWidth(6.0),
+//                ),
+//                child: Icon(
+//                  Icons.add_photo_alternate,
+//                  size: suSetWidth(32.0),
+//                ),
+//              ),
+//            ),
             GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: () {
