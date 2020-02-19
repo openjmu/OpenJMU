@@ -526,8 +526,6 @@ class CourseWidget extends StatelessWidget {
             ? Text.rich(
                 TextSpan(
                   children: <InlineSpan>[
-                    if (!CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) && !isOutOfTerm)
-                      TextSpan(text: '[非本周]\n'),
                     TextSpan(
                       text: course.name.substring(0, math.min(10, course.name.length)),
                       style: TextStyle(fontWeight: FontWeight.w600),
@@ -736,17 +734,6 @@ class _CoursesDialogState extends State<CoursesDialog> {
                         height: 1.5,
                       ),
                     ),
-                  if (!CourseAPI.inCurrentWeek(widget.courseList[index],
-                          currentWeek: widget.currentWeek) &&
-                      !isOutOfTerm)
-                    Text(
-                      '[非本周]',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: suSetSp(24.0),
-                        height: 1.5,
-                      ),
-                    ),
                   Text(
                     widget.courseList[index].name,
                     style: TextStyle(
@@ -831,8 +818,6 @@ class _CoursesDialogState extends State<CoursesDialog> {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             if (course.isCustom) Text('[自定义]', style: style),
-            if (!CourseAPI.inCurrentWeek(course, currentWeek: widget.currentWeek) && !isOutOfTerm)
-              Text('[非本周]', style: style),
             Text(
               '${widget.courseList[0].name}',
               style: style.copyWith(
