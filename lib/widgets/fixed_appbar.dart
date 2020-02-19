@@ -59,7 +59,7 @@ class FixedAppBar extends StatelessWidget {
           ),
           if (automaticallyImplyLeading &&
               Navigator.of(context).canPop() &&
-              (actions?.isEmpty ?? false))
+              (actions?.isEmpty ?? true))
             SizedBox(width: 48.0),
           if (actions?.isNotEmpty ?? false) ...actions,
         ],
