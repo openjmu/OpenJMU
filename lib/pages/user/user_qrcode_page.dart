@@ -113,31 +113,9 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                             version: 3,
                             data: 'openjmu://user/${UserAPI.currentUser.uid}',
                             padding: EdgeInsets.zero,
-                            foregroundColor: Theme.of(context).iconTheme.color,
-                          ),
-                          Positioned.fill(
-                            child: Center(
-                              child: Container(
-                                width: suSetSp(avatarSize),
-                                height: suSetSp(avatarSize),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.all(color: Colors.white, width: 3.0),
-                                  borderRadius: BorderRadius.circular(10.0),
-                                  boxShadow: <BoxShadow>[
-                                    BoxShadow(
-                                      offset: Offset(0.0, 3.0),
-                                      blurRadius: 5.0,
-                                      color: Theme.of(context).iconTheme.color,
-                                    ),
-                                  ],
-                                  image: DecorationImage(
-                                    image: AssetImage('images/logo_1024.png'),
-                                    fit: BoxFit.fill,
-                                  ),
-                                ),
-                              ),
-                            ),
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black,
+                            embeddedImage: AssetImage('images/logo_1024_rounded.png'),
                           ),
                         ],
                       ),
