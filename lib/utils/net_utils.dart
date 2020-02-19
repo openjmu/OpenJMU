@@ -112,9 +112,9 @@ class NetUtils {
 
   static Future<Response<T>> getWithCookieAndHeaderSet<T>(
     String url, {
-    data,
-    cookies,
-    headers,
+    Map<String, dynamic> data,
+    List<Cookie> cookies,
+    Map<String, dynamic> headers,
   }) async =>
       await dio.get<T>(
         url,

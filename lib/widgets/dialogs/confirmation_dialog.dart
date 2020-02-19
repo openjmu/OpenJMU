@@ -10,19 +10,6 @@ import 'package:extended_text/extended_text.dart';
 import 'package:extended_text_library/extended_text_library.dart';
 
 class ConfirmationDialog extends StatelessWidget {
-  final String title;
-  final bool centerTitle;
-  final Widget child;
-  final String content;
-  final EdgeInsetsGeometry contentPadding;
-  final TextAlign contentAlignment;
-  final Color backgroundColor;
-  final bool showConfirm;
-  final String confirmLabel;
-  final String cancelLabel;
-  final VoidCallback onConfirm;
-  final VoidCallback onCancel;
-
   const ConfirmationDialog({
     Key key,
     this.title,
@@ -43,8 +30,21 @@ class ConfirmationDialog extends StatelessWidget {
         ),
         super(key: key);
 
+  final String title;
+  final bool centerTitle;
+  final Widget child;
+  final String content;
+  final EdgeInsetsGeometry contentPadding;
+  final TextAlign contentAlignment;
+  final Color backgroundColor;
+  final bool showConfirm;
+  final String confirmLabel;
+  final String cancelLabel;
+  final VoidCallback onConfirm;
+  final VoidCallback onCancel;
+
   static Future<bool> show(
-    context, {
+    BuildContext context, {
     String title,
     bool centerTitle = true,
     Widget child,
@@ -72,7 +72,7 @@ class ConfirmationDialog extends StatelessWidget {
         false;
   }
 
-  Widget titleWidget(context) => Row(
+  Widget titleWidget(BuildContext context) => Row(
         mainAxisAlignment: centerTitle ? MainAxisAlignment.center : MainAxisAlignment.start,
         children: <Widget>[
           Text(
@@ -84,7 +84,7 @@ class ConfirmationDialog extends StatelessWidget {
         ],
       );
 
-  Widget confirmButton(context) {
+  Widget confirmButton(BuildContext context) {
     return Expanded(
       flex: 5,
       child: MaterialButton(
@@ -111,7 +111,7 @@ class ConfirmationDialog extends StatelessWidget {
     );
   }
 
-  Widget cancelButton(context) {
+  Widget cancelButton(BuildContext context) {
     return Expanded(
       flex: 5,
       child: MaterialButton(
@@ -167,25 +167,25 @@ class ConfirmationDialog extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 if (title != null) titleWidget(context),
-                child != null
-                    ? child
-                    : Padding(
-                        padding:
-                            contentPadding ?? EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
-                        child: ExtendedText(
-                          '$content',
-                          style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.normal),
-                          textAlign: contentAlignment,
-                          specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
-                          onSpecialTextTap: (data) {
-                            API.launchWeb(url: data['content'], title: '网页链接');
-                          },
-                        ),
-                      ),
+                if (child != null)
+                  child
+                else
+                  Padding(
+                    padding: contentPadding ?? EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+                    child: ExtendedText(
+                      '$content',
+                      style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.normal),
+                      textAlign: contentAlignment,
+                      specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
+                      onSpecialTextTap: (dynamic data) {
+                        API.launchWeb(url: data['content'] as String, title: '网页链接');
+                      },
+                    ),
+                  ),
                 Row(
                   children: <Widget>[
                     if (showConfirm) confirmButton(context),
-                    if (showConfirm) Spacer(flex: 1),
+                    if (showConfirm) const Spacer(flex: 1),
                     cancelButton(context),
                   ],
                 ),
@@ -212,7 +212,7 @@ class LinkText extends SpecialText {
       style: textStyle?.copyWith(decoration: TextDecoration.underline),
       recognizer: TapGestureRecognizer()
         ..onTap = () {
-          final data = {'content': toString()};
+          final Map<String, dynamic> data = <String, dynamic>{'content': toString()};
           if (onTap != null) onTap(data);
         },
     );

@@ -19,12 +19,6 @@ import 'package:openjmu/widgets/image/image_gesture_detector.dart';
   pageRouteType: PageRouteType.transparent,
 )
 class ImageViewer extends StatefulWidget {
-  final int index;
-  final List<ImageBean> pics;
-  final bool needsClear;
-  final Post post;
-  final String heroPrefix;
-
   const ImageViewer({
     @required this.index,
     @required this.pics,
@@ -33,19 +27,27 @@ class ImageViewer extends StatefulWidget {
     this.post,
   });
 
+  final int index;
+  final List<ImageBean> pics;
+  final bool needsClear;
+  final Post post;
+  final String heroPrefix;
+
   @override
   ImageViewerState createState() => ImageViewerState();
 }
 
 class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin {
-  final pageStreamController = StreamController<int>.broadcast();
-  final backgroundOpacityStreamController = StreamController<double>.broadcast();
-  final slidePageKey = GlobalKey<ExtendedImageSlidePageState>();
+  final StreamController<int> pageStreamController = StreamController<int>.broadcast();
+  final StreamController<double> backgroundOpacityStreamController =
+      StreamController<double>.broadcast();
+  final GlobalKey<ExtendedImageSlidePageState> slidePageKey =
+      GlobalKey<ExtendedImageSlidePageState>();
   int currentIndex;
   bool popping = false;
 
   AnimationController _doubleTapAnimationController;
-  Animation _doubleTapCurveAnimation;
+  Animation<double> _doubleTapCurveAnimation;
   Animation<double> _doubleTapAnimation;
   VoidCallback _doubleTapListener;
 
@@ -63,10 +65,7 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
 
     _controller = PageController(initialPage: currentIndex);
 
-    _doubleTapAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
+    _doubleTapAnimationController = AnimationController(duration: 200.milliseconds, vsync: this);
     _doubleTapCurveAnimation = CurvedAnimation(
       parent: _doubleTapAnimationController,
       curve: Curves.linear,
@@ -75,7 +74,7 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
 
   @override
   void dispose() {
-    final provider = Provider.of<ThemesProvider>(currentContext, listen: false);
+    final ThemesProvider provider = Provider.of<ThemesProvider>(currentContext, listen: false);
     provider.setSystemUIDark(provider.dark);
     pageStreamController?.close();
     backgroundOpacityStreamController?.close();
@@ -85,12 +84,14 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
   }
 
   void pop() {
-    if (popping) return;
+    if (popping) {
+      return;
+    }
     popping = true;
     backgroundOpacityStreamController.add(0.0);
   }
 
-  Future<void> _downloadImage(url, {AndroidDestinationType destination}) async {
+  Future<void> _downloadImage(String url, {AndroidDestinationType destination}) async {
     String path;
     try {
       String imageId;
@@ -100,21 +101,25 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
               destination: AndroidDestinationType.custom(directory: 'OpenJMU'),
             )
           : imageId = await ImageDownloader.downloadImage(url);
-      if (imageId == null) return;
+      if (imageId == null) {
+        return;
+      }
       path = await ImageDownloader.findPath(imageId);
     } on PlatformException catch (error) {
       showCenterToast(error.message);
       return;
     }
-    if (!mounted) return;
+    if (!mounted) {
+      return;
+    }
     showCenterToast('图片保存至：$path');
     return;
   }
 
   void updateAnimation(ExtendedImageGestureState state) {
-    double begin = state.gestureDetails.totalScale;
-    double end = state.gestureDetails.totalScale == 1.0 ? 3.0 : 1.0;
-    Offset pointerDownPosition = state.pointerDownPosition;
+    final double begin = state.gestureDetails.totalScale;
+    final double end = state.gestureDetails.totalScale == 1.0 ? 3.0 : 1.0;
+    final Offset pointerDownPosition = state.pointerDownPosition;
 
     _doubleTapAnimation?.removeListener(_doubleTapListener);
     _doubleTapAnimationController
@@ -126,7 +131,7 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
         doubleTapPosition: pointerDownPosition,
       );
     };
-    _doubleTapAnimation = Tween(
+    _doubleTapAnimation = Tween<double>(
       begin: begin,
       end: end,
     ).animate(_doubleTapCurveAnimation)
@@ -135,7 +140,7 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
     _doubleTapAnimationController.forward();
   }
 
-  void onLongPress(context) {
+  void onLongPress(BuildContext context) {
     ConfirmationBottomSheet.show(
       context,
       children: <Widget>[
@@ -158,12 +163,14 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
   }
 
   bool slideEndHandler(Offset offset) {
-    final shouldEnd = offset.distance > Offset(Screens.width, Screens.height).distance / 7;
-    if (shouldEnd) pop();
+    final bool shouldEnd = offset.distance > Offset(Screens.width, Screens.height).distance / 7;
+    if (shouldEnd) {
+      pop();
+    }
     return shouldEnd;
   }
 
-  Widget pageBuilder(context, index) {
+  Widget pageBuilder(BuildContext context, int index) {
     return ImageGestureDetector(
       context: context,
       imageViewerState: this,
@@ -181,7 +188,9 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
         heroBuilderForSlidingPage: (Widget result) {
           if (index < widget.pics.length && widget.heroPrefix != null) {
             String tag = widget.heroPrefix;
-            if (widget.pics[index].postId != null) tag += '${widget.pics[index].postId}-';
+            if (widget.pics[index].postId != null) {
+              tag += '${widget.pics[index].postId}-';
+            }
             tag += '${widget.pics[index].id}';
 
             return Hero(
@@ -194,9 +203,9 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
                 BuildContext fromHeroContext,
                 BuildContext toHeroContext,
               ) {
-                final Hero hero = flightDirection == HeroFlightDirection.pop
+                final Hero hero = (flightDirection == HeroFlightDirection.pop
                     ? fromHeroContext.widget
-                    : toHeroContext.widget;
+                    : toHeroContext.widget) as Hero;
                 return hero.child;
               },
             );
@@ -219,10 +228,10 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = SpinKitWidget();
+              loader = const SpinKitWidget();
               break;
             case LoadState.completed:
-              // TODO: GIF will setState and cause this flash.
+              // TODO(AlexVincent525): GIF will setState and cause this flash.
 //              loader = FadeTransition(
 //                opacity: Tween(
 //                  begin: 0.0,
@@ -254,7 +263,7 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
         slidePageBackgroundHandler: slidePageBackgroundHandler,
         slideEndHandler: slideEndHandler,
         resetPageDuration: widget.heroPrefix != null ? 300.milliseconds : 1.microseconds,
-        child: AnnotatedRegion(
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.light,
           child: Material(
             type: MaterialType.transparency,
@@ -278,7 +287,7 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
                   child: StreamBuilder<double>(
                     initialData: 1.0,
                     stream: backgroundOpacityStreamController.stream,
-                    builder: (context, data) => Opacity(
+                    builder: (BuildContext context, AsyncSnapshot<double> data) => Opacity(
                       opacity: popping ? 0.0 : data.data,
                       child: ViewAppBar(
                         post: widget.post,
@@ -295,7 +304,7 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
                     child: StreamBuilder<double>(
                       initialData: 1.0,
                       stream: backgroundOpacityStreamController.stream,
-                      builder: (context, data) => Opacity(
+                      builder: (BuildContext context, AsyncSnapshot<double> data) => Opacity(
                         opacity: popping ? 0.0 : data.data,
                         child: ImageList(
                           controller: _controller,
@@ -316,17 +325,17 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
 }
 
 class ImageList extends StatelessWidget {
-  final PageController controller;
-  final StreamController<int> pageStreamController;
-  final int index;
-  final List<ImageBean> pics;
-
-  ImageList({
+  const ImageList({
     this.controller,
     this.pageStreamController,
     this.index,
     this.pics,
   });
+
+  final PageController controller;
+  final StreamController<int> pageStreamController;
+  final int index;
+  final List<ImageBean> pics;
 
   @override
   Widget build(BuildContext context) {
@@ -345,13 +354,13 @@ class ImageList extends StatelessWidget {
       child: StreamBuilder<int>(
         initialData: index,
         stream: pageStreamController.stream,
-        builder: (context, data) => SizedBox(
+        builder: (BuildContext context, AsyncSnapshot<int> data) => SizedBox(
           height: suSetHeight(52.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List<Widget>.generate(
               pics.length,
-              (i) => Container(
+              (int i) => Container(
                 margin: EdgeInsets.symmetric(horizontal: suSetWidth(2.0)),
                 width: suSetWidth(52.0),
                 height: suSetWidth(52.0),
@@ -395,14 +404,14 @@ class ImageList extends StatelessWidget {
 }
 
 class ViewAppBar extends StatelessWidget {
-  final Post post;
-  final VoidCallback onMoreClicked;
-
   const ViewAppBar({
     Key key,
     this.post,
     this.onMoreClicked,
   }) : super(key: key);
+
+  final Post post;
+  final VoidCallback onMoreClicked;
 
   @override
   Widget build(BuildContext context) {
@@ -442,7 +451,7 @@ class ViewAppBar extends StatelessWidget {
                         ),
                       ],
                     )
-                  : SizedBox.shrink(),
+                  : const SizedBox.shrink(),
             ),
             if (onMoreClicked != null)
               IconButton(
@@ -458,19 +467,23 @@ class ViewAppBar extends StatelessWidget {
 }
 
 class ImageBean {
-  int id;
-  String imageUrl;
-  String imageThumbUrl;
-  int postId;
-
-  ImageBean({this.id, this.imageUrl, this.imageThumbUrl, this.postId});
+  const ImageBean({this.id, this.imageUrl, this.imageThumbUrl, this.postId});
+  final int id;
+  final String imageUrl;
+  final String imageThumbUrl;
+  final int postId;
 
   Map<String, dynamic> toJson() {
-    return {'id': id, 'imageUrl': imageUrl, 'imageThumbUrl': imageThumbUrl, 'postId': postId};
+    return <String, dynamic>{
+      'id': id,
+      'imageUrl': imageUrl,
+      'imageThumbUrl': imageThumbUrl,
+      'postId': postId,
+    };
   }
 
   @override
   String toString() {
-    return 'ImageBean ${JsonEncoder.withIndent('  ').convert(toJson())}';
+    return 'ImageBean ${const JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 }

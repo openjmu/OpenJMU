@@ -6,18 +6,18 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class WebAppIcon extends StatelessWidget {
-  final WebApp app;
-  final double size;
-
   const WebAppIcon({
     Key key,
     @required this.app,
     this.size = 60.0,
   }) : super(key: key);
 
+  final WebApp app;
+  final double size;
+
   Future<Widget> loadAsset() async {
     try {
-      final _ = await rootBundle.load(iconPath);
+      await rootBundle.load(iconPath);
       return SvgPicture.asset(iconPath, width: suSetWidth(size), height: suSetWidth(size));
     } catch (e) {
       debugPrint('Error when load webapp icon: $e.\nLoading fallback icon...');
@@ -39,14 +39,14 @@ class WebAppIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<SettingsProvider, bool>(
-      selector: (_, provider) => provider.newAppCenterIcon,
-      builder: (_, newAppCenterIcon, __) {
-        final shouldUseNew = !(currentUser?.isTeacher ?? false) || newAppCenterIcon;
+      selector: (_, SettingsProvider provider) => provider.newAppCenterIcon,
+      builder: (_, bool newAppCenterIcon, __) {
+        final bool shouldUseNew = !(currentUser?.isTeacher ?? false) || newAppCenterIcon;
         return shouldUseNew
-            ? FutureBuilder(
-                initialData: SizedBox.shrink(),
+            ? FutureBuilder<Widget>(
+                initialData: const SizedBox.shrink(),
                 future: loadAsset(),
-                builder: (_, snapshot) => SizedBox.fromSize(
+                builder: (_, AsyncSnapshot<Widget> snapshot) => SizedBox.fromSize(
                   size: Size.square(suSetWidth(size)),
                   child: Center(child: snapshot.data),
                 ),

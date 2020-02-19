@@ -35,20 +35,20 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
       });
   }
 
-  void updateSignature(context) {
+  void updateSignature(BuildContext context) {
     Navigator.of(context).pop();
-    final _loadingDialogController = LoadingDialogController();
+    final LoadingDialogController _loadingDialogController = LoadingDialogController();
     LoadingDialog.show(
       context,
       text: '正在更新签名',
       controller: _loadingDialogController,
       isGlobal: false,
     );
-    UserAPI.setSignature(_textEditingController.text).then((response) {
+    UserAPI.setSignature(_textEditingController.text).then((dynamic _) {
       _loadingDialogController.changeState('success', '签名更新成功');
       UserAPI.currentUser.signature = _textEditingController.text;
       Instances.eventBus.fire(SignatureUpdatedEvent(_textEditingController.text));
-    }).catchError((e) {
+    }).catchError((dynamic e) {
       debugPrint(e.toString());
       _loadingDialogController.changeState('failed', '签名更新失败');
     });
@@ -102,9 +102,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                           borderSide: BorderSide(color: Colors.grey[850]),
                         ),
                         hintText: UserAPI.currentUser.signature ?? '快来填写你的签名吧~',
-                        hintStyle: TextStyle(
-                          textBaseline: TextBaseline.alphabetic,
-                        ),
+                        hintStyle: const TextStyle(textBaseline: TextBaseline.alphabetic),
                       ),
                       cursorColor: currentThemeColor,
                     ),

@@ -469,7 +469,10 @@ class _UserPageState extends State<UserPage>
                 'pics': [
                   ImageBean(
                     id: widget.uid,
-                    imageUrl: '${API.userAvatar}?uid=${widget.uid}&size=f640',
+                    imageUrl: '${API.userAvatar}?'
+                        'uid=${widget.uid}'
+                        '&size=f640'
+                        '&_t=${UserAPI.avatarLastModified}',
                   ),
                 ],
                 'heroPrefix': 'user-page-avatar-',

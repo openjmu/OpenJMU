@@ -12,40 +12,42 @@ import 'package:flutter/widgets.dart';
 import 'openjmu_route.dart';
 
 class FFNavigatorObserver extends NavigatorObserver {
-  final RouteChange routeChange;
-
   FFNavigatorObserver({this.routeChange});
 
+  final RouteChange routeChange;
+
   @override
-  void didPop(Route route, Route previousRoute) {
+  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
     super.didPop(route, previousRoute);
     _didRouteChange(previousRoute, route);
   }
 
   @override
-  void didPush(Route route, Route previousRoute) {
+  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     super.didPush(route, previousRoute);
     _didRouteChange(route, previousRoute);
   }
 
   @override
-  void didRemove(Route route, Route previousRoute) {
+  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
     super.didRemove(route, previousRoute);
     _didRouteChange(previousRoute, route);
   }
 
   @override
-  void didReplace({Route newRoute, Route oldRoute}) {
+  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
     super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
     _didRouteChange(newRoute, oldRoute);
   }
 
-  void _didRouteChange(Route newRoute, Route oldRoute) {
+  void _didRouteChange(Route<dynamic> newRoute, Route<dynamic> oldRoute) {
     routeChange?.call(newRoute?.settings, oldRoute?.settings);
   }
 
-  FFRouteSettings getFFRouteSettings(Route route) {
-    if (route?.settings is FFRouteSettings) return route.settings;
+  FFRouteSettings getFFRouteSettings(Route<dynamic> route) {
+    if (route?.settings is FFRouteSettings) {
+      return route.settings as FFRouteSettings;
+    }
     return null;
   }
 }
@@ -91,9 +93,9 @@ Widget _defaultTransitionsBuilder(
 }
 
 Route<dynamic> onGenerateRouteHelper(RouteSettings settings, {Widget notFoundFallback}) {
-  final routeResult = getRouteResult(
+  final RouteResult routeResult = getRouteResult(
     name: settings.name,
-    arguments: settings.arguments,
+    arguments: settings.arguments as Map<String, dynamic>,
   );
   if (routeResult.showStatusBar != null || routeResult.routeName != null) {
     settings = FFRouteSettings(
@@ -104,37 +106,38 @@ Route<dynamic> onGenerateRouteHelper(RouteSettings settings, {Widget notFoundFal
       showStatusBar: routeResult.showStatusBar,
     );
   }
-  final page = routeResult.widget ??
+  final Widget page = routeResult.widget ??
       notFoundFallback ??
-      Center(child: Text("${settings.name}\npage not found."));
+      Center(child: Text('${settings.name}\npage not found.'));
 
   if (settings?.arguments is Map<String, dynamic>) {
-    RouteBuilder builder = (settings.arguments as Map<String, dynamic>)['routeBuilder'];
-    if (builder != null) return builder(page);
+    final RouteBuilder builder =
+        (settings.arguments as Map<String, dynamic>)['routeBuilder'] as RouteBuilder;
+    if (builder != null) {
+      return builder(page);
+    }
   }
 
   switch (routeResult.pageRouteType) {
     case PageRouteType.material:
-      return MaterialPageRoute(settings: settings, builder: (_) => page);
+      return MaterialPageRoute<dynamic>(settings: settings, builder: (_) => page);
     case PageRouteType.cupertino:
-      return CupertinoPageRoute(settings: settings, builder: (_) => page);
+      return CupertinoPageRoute<dynamic>(settings: settings, builder: (_) => page);
     case PageRouteType.transparent:
-      return FFTransparentPageRoute(
+      return FFTransparentPageRoute<dynamic>(
         settings: settings,
         pageBuilder: (_, __, ___) => page,
       );
     default:
       return Platform.isIOS
-          ? CupertinoPageRoute(settings: settings, builder: (_) => page)
-          : MaterialPageRoute(settings: settings, builder: (_) => page);
+          ? CupertinoPageRoute<dynamic>(settings: settings, builder: (_) => page)
+          : MaterialPageRoute<dynamic>(settings: settings, builder: (_) => page);
   }
 }
 
-typedef RouteBuilder = PageRoute Function(Widget page);
+typedef RouteBuilder = PageRoute<dynamic> Function(Widget page);
 
 class FFRouteSettings extends RouteSettings {
-  final String routeName;
-  final bool showStatusBar;
   const FFRouteSettings({
     this.routeName,
     this.showStatusBar,
@@ -142,4 +145,7 @@ class FFRouteSettings extends RouteSettings {
     bool isInitialRoute = false,
     Object arguments,
   }) : super(name: name, isInitialRoute: isInitialRoute, arguments: arguments);
+
+  final String routeName;
+  final bool showStatusBar;
 }

@@ -30,11 +30,11 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
       });
   }
 
-  void updateSid(context) {
+  void updateSid(BuildContext context) {
     UserAPI.currentUser.sid = sid;
     UserAPI.currentUser.ticket = sid;
     Navigator.of(context).pop();
-    debugPrint("${UserAPI.currentUser}");
+    debugPrint('${UserAPI.currentUser}');
   }
 
   @override
@@ -57,7 +57,7 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                 children: <Widget>[
                   Center(
                     child: Text(
-                      "Set SID Manually (DEBUG)",
+                      'Set SID Manually (DEBUG)',
                       style: Theme.of(context).textTheme.title,
                     ),
                   ),
@@ -81,9 +81,7 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                           borderSide: BorderSide(color: Colors.grey[850]),
                         ),
                         hintText: currentUser.signature,
-                        hintStyle: TextStyle(
-                          textBaseline: TextBaseline.alphabetic,
-                        ),
+                        hintStyle: const TextStyle(textBaseline: TextBaseline.alphabetic),
                       ),
                       cursorColor: currentThemeColor,
                     ),
@@ -96,7 +94,7 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                           child: CupertinoDialogAction(
                             isDefaultAction: true,
                             child: Text(
-                              "取消",
+                              '取消',
                               style: TextStyle(fontSize: suSetSp(18.0)),
                             ),
                             onPressed: () => Navigator.of(context).pop(),
@@ -105,7 +103,7 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                         Expanded(
                           child: CupertinoDialogAction(
                             child: Text(
-                              "保存",
+                              '保存',
                               style: TextStyle(
                                 color:
                                     canSave ? currentThemeColor : Theme.of(context).disabledColor,

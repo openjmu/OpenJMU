@@ -8,9 +8,9 @@ class MentionPeopleDialog extends StatefulWidget {
 }
 
 class EditSignatureDialogState extends State<MentionPeopleDialog> {
-  final _textEditingController = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
   String query = '';
-  List<User> users = [];
+  final List<User> users = <User>[];
 
   bool loading = false;
 
@@ -18,7 +18,9 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
   void initState() {
     _textEditingController.addListener(() {
       query = _textEditingController.text;
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
     super.initState();
   }
@@ -31,19 +33,25 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
 
   void requestSearch() {
     if (query.isEmpty || loading) {
-      if (query.isEmpty) showToast('要搜的人难道不配有名字吗？🤔');
+      if (query.isEmpty) {
+        showToast('要搜的人难道不配有名字吗？🤔');
+      }
     } else {
       loading = true;
-      if (mounted) setState(() {});
-      UserAPI.searchUser(query).then((response) {
+      if (mounted) {
+        setState(() {});
+      }
+      UserAPI.searchUser(query).then((dynamic response) {
         users.clear();
-        response['data'].forEach((userData) {
-          users.add(User.fromJson(userData));
+        response['data'].forEach((dynamic userData) {
+          users.add(User.fromJson(userData as Map<String, dynamic>));
         });
         loading = false;
-        if (mounted) setState(() {});
-      }).catchError((e) {
-        debugPrint(e.toString());
+        if (mounted) {
+          setState(() {});
+        }
+      }).catchError((dynamic e) {
+        debugPrint('Failed when request search: $e');
         loading = false;
       });
     }
@@ -51,10 +59,8 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
 
   Widget get title => Center(
         child: Text(
-          "提到用户",
-          style: Theme.of(context).textTheme.title.copyWith(
-                fontSize: suSetSp(24.0),
-              ),
+          '提到用户',
+          style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(24.0)),
         ),
       );
 
@@ -66,8 +72,8 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
           decoration: InputDecoration(
             border: InputBorder.none,
             contentPadding: EdgeInsets.zero,
-            hintText: "请输入名字进行搜索",
-            hintStyle: TextStyle(textBaseline: TextBaseline.alphabetic),
+            hintText: '请输入名字进行搜索',
+            hintStyle: const TextStyle(textBaseline: TextBaseline.alphabetic),
           ),
           textInputAction: TextInputAction.search,
           style: Theme.of(context).textTheme.body1.copyWith(
@@ -77,7 +83,9 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
           scrollPadding: EdgeInsets.zero,
           maxLines: 1,
           onChanged: (String value) {
-            if (value.length + 1 == 30) return null;
+            if (value.length + 1 == 30) {
+              return null;
+            }
           },
           onSubmitted: (_) => requestSearch(),
         ),
@@ -97,7 +105,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
         constraints: BoxConstraints(maxHeight: Screens.height / 3),
         child: SingleChildScrollView(
           child: Wrap(
-            children: List<Widget>.generate(users.length, (index) => user(index)),
+            children: List<Widget>.generate(users.length, (int index) => user(index)),
           ),
         ),
       );
@@ -163,12 +171,13 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                       child: Row(
                         children: <Widget>[
                           searchField,
-                          !loading
-                              ? searchButton
-                              : SizedBox.fromSize(
-                                  size: Size.square(suSetWidth(32.0)),
-                                  child: PlatformProgressIndicator(),
-                                ),
+                          if (!loading)
+                            searchButton
+                          else
+                            SizedBox.fromSize(
+                              size: Size.square(suSetWidth(32.0)),
+                              child: const PlatformProgressIndicator(),
+                            ),
                         ],
                       ),
                     ),

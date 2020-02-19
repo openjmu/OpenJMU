@@ -10,19 +10,21 @@ import 'package:intl/intl.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class MessagePreviewWidget extends StatefulWidget {
-  final int uid;
-  final WebApp app;
-  final Message message;
-  final List<Message> unreadMessages;
-
   const MessagePreviewWidget({
     this.uid,
     this.app,
     @required this.message,
     @required this.unreadMessages,
+    this.height = 80.0,
     Key key,
   })  : assert(uid != null || app != null),
         super(key: key);
+
+  final int uid;
+  final WebApp app;
+  final Message message;
+  final List<Message> unreadMessages;
+  final double height;
 
   @override
   _MessagePreviewWidgetState createState() => _MessagePreviewWidgetState();
@@ -40,15 +42,17 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
 
   @override
   void initState() {
-    UserAPI.getUserInfo(uid: widget.uid).then((response) {
-      user = UserInfo.fromJson(response.data);
-      if (mounted) setState(() {});
-    }).catchError((e) {
+    UserAPI.getUserInfo<void>(uid: widget.uid).then((dynamic response) {
+      user = UserInfo.fromJson((response as Response<dynamic>).data as Map<String, dynamic>);
+      if (mounted) {
+        setState(() {});
+      }
+    }).catchError((dynamic e) {
       debugPrint('$e');
     });
 
     timeFormat(null);
-    timeUpdateTimer = Timer.periodic(const Duration(minutes: 1), timeFormat);
+    timeUpdateTimer = Timer.periodic(1.minutes, timeFormat);
 
     super.initState();
   }
@@ -59,8 +63,8 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
     super.dispose();
   }
 
-  void timeFormat(_) {
-    final now = DateTime.now();
+  void timeFormat(Timer _) {
+    final DateTime now = DateTime.now();
     if (widget.message.sendTime.day == now.day &&
         widget.message.sendTime.month == now.month &&
         widget.message.sendTime.year == now.year) {
@@ -70,24 +74,22 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
     } else {
       formattedTime = DateFormat('yy-MM-dd HH:mm').format(widget.message.sendTime);
     }
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
+  @override
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
     return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: suSetSp(16.0),
-      ),
-      height: suSetSp(90.0),
-      decoration: BoxDecoration(),
+      padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
+      height: suSetHeight(widget.height),
       child: Row(
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(
-              right: suSetSp(16.0),
-            ),
+            padding: EdgeInsets.only(right: suSetWidth(16.0)),
             child: UserAPI.getAvatar(size: 60.0, uid: widget.uid),
           ),
           Expanded(
@@ -109,7 +111,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                                       fontWeight: FontWeight.w500,
                                     ),
                               )
-                            : SizedBox.shrink(),
+                            : const SizedBox.shrink(),
                       ),
                       Text(
                         ' $formattedTime',
@@ -117,7 +119,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                               color: Theme.of(context).textTheme.body1.color.withOpacity(0.5),
                             ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       Container(
                         width: suSetWidth(28.0),
                         height: suSetWidth(28.0),

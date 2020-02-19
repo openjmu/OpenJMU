@@ -77,7 +77,7 @@ class UserAPI {
     if (uid == null) {
       return currentUser;
     } else {
-      return NetUtils.getWithCookieAndHeaderSet(
+      return NetUtils.getWithCookieAndHeaderSet<void>(
         API.userInfo,
         data: <String, dynamic>{'uid': uid},
       );

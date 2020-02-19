@@ -255,7 +255,9 @@ class _RenderCheckbox extends RenderToggleable {
 
   @override
   set value(bool newValue) {
-    if (newValue == value) return;
+    if (newValue == value) {
+      return;
+    }
     _oldValue = value;
     super.value = newValue;
   }
@@ -342,7 +344,7 @@ class _RenderCheckbox extends RenderToggleable {
     final Canvas canvas = context.canvas;
     paintRadialReaction(canvas, offset, size.center(Offset.zero));
 
-    final Offset origin = offset + (size / 2.0 - const Size.square(_kEdgeSize) / 2.0);
+    final Offset origin = offset + (size / 2.0 - const Size.square(_kEdgeSize) / 2.0 as Offset);
     final AnimationStatus status = position.status;
     final double tNormalized =
         status == AnimationStatus.forward || status == AnimationStatus.completed

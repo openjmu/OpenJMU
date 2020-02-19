@@ -21,15 +21,15 @@ class ImageCropPage extends StatefulWidget {
 }
 
 class _ImageCropPageState extends State<ImageCropPage> {
-  final _editorKey = GlobalKey<ExtendedImageEditorState>();
-  final _controller = LoadingDialogController();
+  final GlobalKey<ExtendedImageEditorState> _editorKey = GlobalKey<ExtendedImageEditorState>();
+  final LoadingDialogController _controller = LoadingDialogController();
   File _file;
   bool _cropping = false;
   bool firstLoad = true;
 
   @override
   void initState() {
-    _openImage().catchError((e) {});
+    _openImage().catchError((dynamic e) {});
     super.initState();
   }
 
@@ -39,10 +39,14 @@ class _ImageCropPageState extends State<ImageCropPage> {
     super.dispose();
   }
 
-  Future _openImage() async {
-    final file = await ImagePicker.pickImage(source: ImageSource.gallery);
-    if (file != null) _file = file;
-    if (mounted) setState(() {});
+  Future<void> _openImage() async {
+    final File file = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (file != null) {
+      _file = file;
+    }
+    if (mounted) {
+      setState(() {});
+    }
     resetCrop();
   }
 
@@ -58,8 +62,10 @@ class _ImageCropPageState extends State<ImageCropPage> {
     _editorKey.currentState?.rotate(right: right);
   }
 
-  void _cropImage(context) async {
-    if (_cropping) return;
+  Future<void> _cropImage(BuildContext context) async {
+    if (_cropping) {
+      return;
+    }
     LoadingDialog.show(
       context,
       text: '正在更新头像',
@@ -67,10 +73,10 @@ class _ImageCropPageState extends State<ImageCropPage> {
     );
     _cropping = true;
     try {
-      final path = (await getApplicationDocumentsDirectory()).path;
-      final file = File('$path/_temp_avatar.jpg');
+      final String path = (await getApplicationDocumentsDirectory()).path;
+      final File file = File('$path/_temp_avatar.jpg');
       file.writeAsBytesSync(await cropImage(state: _editorKey.currentState));
-      final compressedFile = await FlutterNativeImage.compressImage(
+      final File compressedFile = await FlutterNativeImage.compressImage(
         file.path,
         quality: 100,
         targetWidth: 640,
@@ -83,10 +89,10 @@ class _ImageCropPageState extends State<ImageCropPage> {
     }
   }
 
-  Future<void> uploadImage(context, file) async {
+  Future<void> uploadImage(BuildContext context, File file) async {
     try {
-      final formData = await createForm(file);
-      await NetUtils.postWithCookieSet(API.userAvatarUpload, data: formData);
+      final FormData formData = await createForm(file);
+      await NetUtils.postWithCookieSet<void>(API.userAvatarUpload, data: formData);
       _controller.changeState('success', '头像更新成功');
       _cropping = false;
       UserAPI.avatarLastModified = DateTime.now().millisecondsSinceEpoch;
@@ -100,8 +106,8 @@ class _ImageCropPageState extends State<ImageCropPage> {
     }
   }
 
-  Future createForm(File file) async {
-    return FormData.from({
+  Future<FormData> createForm(File file) async {
+    return FormData.from(<String, dynamic>{
       'offset': 0,
       'md5': md5.convert(await file.readAsBytes()),
       'photo': UploadFileInfo(file, path.basename(file.path)),
@@ -134,7 +140,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
                     mode: ExtendedImageMode.editor,
                     enableLoadState: true,
                     extendedImageEditorKey: _editorKey,
-                    initEditorConfigHandler: (state) {
+                    initEditorConfigHandler: (ExtendedImageState state) {
                       return EditorConfig(
                         maxScale: 8.0,
                         cropRectPadding: const EdgeInsets.all(30.0),
@@ -165,7 +171,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
                         ),
                       ),
                       highlightColor: Colors.red,
-                      customBorder: CircleBorder(),
+                      customBorder: const CircleBorder(),
                     ),
                   ),
           ),

@@ -1,6 +1,6 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,20 +21,20 @@ import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
   pageRouteType: PageRouteType.transparent,
 )
 class ForwardPositioned extends StatefulWidget {
-  final Post post;
-
   const ForwardPositioned({
     Key key,
     @required this.post,
   }) : super(key: key);
+
+  final Post post;
 
   @override
   State<StatefulWidget> createState() => ForwardPositionedState();
 }
 
 class ForwardPositionedState extends State<ForwardPositioned> {
-  final _forwardController = TextEditingController();
-  final _focusNode = FocusNode();
+  final TextEditingController _forwardController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   File _image;
   int _imageID;
 
@@ -59,15 +59,13 @@ class ForwardPositionedState extends State<ForwardPositioned> {
 //    if (mounted) setState(() {});
 //  }
 
-  FormData createForm(File file) => FormData.from({
+  FormData createForm(File file) => FormData.from(<String, dynamic>{
         'image': UploadFileInfo(file, path.basename(file.path)),
         'image_type': 0,
       });
 
-  Future getImageRequest(FormData formData) async => NetUtils.postWithCookieAndHeaderSet(
-        API.postUploadImage,
-        data: formData,
-      );
+  Future<Response<dynamic>> getImageRequest(FormData formData) async =>
+      NetUtils.postWithCookieAndHeaderSet<void>(API.postUploadImage, data: formData);
 
   Widget get textField => ExtendedTextField(
         specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
@@ -76,23 +74,16 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         decoration: InputDecoration(
           contentPadding: EdgeInsets.all(suSetWidth(16.0)),
           border: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: currentThemeColor,
-            ),
+            borderSide: BorderSide(color: currentThemeColor),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: currentThemeColor,
-            ),
+            borderSide: BorderSide(color: currentThemeColor),
           ),
           suffixIcon: _image != null
               ? Container(
                   margin: EdgeInsets.only(right: suSetWidth(16.0)),
                   width: suSetWidth(70.0),
-                  child: Image.file(
-                    _image,
-                    fit: BoxFit.cover,
-                  ),
+                  child: Image.file(_image, fit: BoxFit.cover),
                 )
               : null,
         ),
@@ -106,7 +97,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         maxLines: 3,
       );
 
-  Future<void> _request(context) async {
+  Future<void> _request(BuildContext context) async {
     setState(() {
       _forwarding = true;
     });
@@ -115,8 +106,9 @@ class ForwardPositionedState extends State<ForwardPositioned> {
 
     /// Sending image if it exist.
     if (_image != null) {
-      final Map<String, dynamic> data = (await getImageRequest(createForm(_image))).data;
-      _imageID = int.parse(data['image_id']);
+      final Map<String, dynamic> data =
+          (await getImageRequest(createForm(_image))).data as Map<String, dynamic>;
+      _imageID = int.parse(data['image_id'] as String);
       content += ' |$_imageID| ';
     }
 
@@ -137,22 +129,26 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       } else {
         showToast('转发失败');
       }
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
   void updatePadStatus(bool active) {
-    final change = () {
+    final VoidCallback change = () {
       emoticonPadActive = active;
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     };
     if (emoticonPadActive) {
       change();
     } else {
       if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
-        SystemChannels.textInput.invokeMethod('TextInput.hide').whenComplete(
+        SystemChannels.textInput.invokeMethod<void>('TextInput.hide').whenComplete(
           () {
-            Future.delayed(300.milliseconds, null).whenComplete(change);
+            Future<void>.delayed(300.milliseconds, null).whenComplete(change);
           },
         );
       } else {
@@ -162,9 +158,9 @@ class ForwardPositionedState extends State<ForwardPositioned> {
   }
 
   void insertText(String text) {
-    final value = _forwardController.value;
-    final start = value.selection.baseOffset;
-    final end = value.selection.extentOffset;
+    final TextEditingValue value = _forwardController.value;
+    final int start = value.selection.baseOffset;
+    final int end = value.selection.extentOffset;
     if (value.selection.isValid) {
       String newText = '';
       if (value.selection.isCollapsed) {
@@ -185,7 +181,9 @@ class ForwardPositionedState extends State<ForwardPositioned> {
           extentOffset: end + text.length,
         ),
       );
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -196,14 +194,16 @@ class ForwardPositionedState extends State<ForwardPositioned> {
         controller: _forwardController,
       );
 
-  void mentionPeople(context) {
+  void mentionPeople(BuildContext context) {
     showDialog<User>(
       context: context,
       builder: (BuildContext context) => MentionPeopleDialog(),
-    ).then((user) {
-      if (_focusNode.canRequestFocus) _focusNode.requestFocus();
+    ).then((dynamic user) {
+      if (_focusNode.canRequestFocus) {
+        _focusNode.requestFocus();
+      }
       if (user != null) {
-        Future.delayed(250.milliseconds, () {
+        Future<void>.delayed(250.milliseconds, () {
           insertText('<M ${user.id}>@${user.nickname}<\/M>');
         });
       }
@@ -217,9 +217,9 @@ class ForwardPositionedState extends State<ForwardPositioned> {
             RoundedCheckbox(
               activeColor: currentThemeColor,
               value: commentAtTheMeanTime,
-              onChanged: (value) {
+              onChanged: (dynamic value) {
                 setState(() {
-                  commentAtTheMeanTime = value;
+                  commentAtTheMeanTime = value as bool;
                 });
               },
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -230,7 +230,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                 fontSize: suSetSp(20.0),
               ),
             ),
-            Spacer(),
+            const Spacer(),
 //            GestureDetector(
 //              behavior: HitTestBehavior.opaque,
 //              onTap: _addImage,
@@ -277,38 +277,39 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                 ),
               ),
             ),
-            !_forwarding
-                ? GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: suSetWidth(6.0),
-                      ),
-                      child: Icon(
-                        Icons.send,
-                        size: suSetWidth(32.0),
-                        color: currentThemeColor,
-                      ),
-                    ),
-                    onTap: () => _request(context),
-                  )
-                : Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: suSetWidth(14.0),
-                    ),
-                    child: SizedBox(
-                      width: suSetWidth(12.0),
-                      height: suSetWidth(12.0),
-                      child: PlatformProgressIndicator(strokeWidth: 2.0),
-                    ),
+            if (!_forwarding)
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: suSetWidth(6.0),
                   ),
+                  child: Icon(
+                    Icons.send,
+                    size: suSetWidth(32.0),
+                    color: currentThemeColor,
+                  ),
+                ),
+                onTap: () => _request(context),
+              )
+            else
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: suSetWidth(14.0),
+                ),
+                child: SizedBox(
+                  width: suSetWidth(12.0),
+                  height: suSetWidth(12.0),
+                  child: const PlatformProgressIndicator(strokeWidth: 2.0),
+                ),
+              ),
           ],
         ),
       );
 
   @override
   Widget build(BuildContext context) {
-    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     if (keyboardHeight > 0) {
       emoticonPadActive = false;
     }

@@ -23,15 +23,6 @@ import 'package:openjmu/constants/constants.dart';
   ],
 )
 class InAppBrowserPage extends StatefulWidget {
-  final String url;
-  final String title;
-  final WebApp app;
-  final bool withCookie;
-  final bool withAppBar;
-  final bool withAction;
-  final bool withScaffold;
-  final bool keepAlive;
-
   const InAppBrowserPage({
     Key key,
     @required this.url,
@@ -43,6 +34,15 @@ class InAppBrowserPage extends StatefulWidget {
     this.withScaffold = true,
     this.keepAlive = false,
   }) : super(key: key);
+
+  final String url;
+  final String title;
+  final WebApp app;
+  final bool withCookie;
+  final bool withAppBar;
+  final bool withAction;
+  final bool withScaffold;
+  final bool keepAlive;
 
   @override
   _InAppBrowserPageState createState() => _InAppBrowserPageState();
@@ -67,15 +67,17 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     }
 
     Instances.eventBus
-      ..on<CourseScheduleRefreshEvent>().listen((event) {
-        if (mounted) loadCourseSchedule();
+      ..on<CourseScheduleRefreshEvent>().listen((CourseScheduleRefreshEvent event) {
+        if (mounted) {
+          loadCourseSchedule();
+        }
       });
     super.initState();
   }
 
   @override
   void dispose() {
-    SystemChannels.textInput.invokeMethod('TextInput.hide');
+    SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
     super.dispose();
   }
 
@@ -87,21 +89,21 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             '&night=${currentIsDark ? 1 : 0}',
       );
     } catch (e) {
-      debugPrint("$e");
+      debugPrint('$e');
     }
   }
 
   bool checkSchemeLoad(InAppWebViewController controller, String url) {
-    final protocolRegExp = RegExp(r'(http|https):\/\/([\w.]+\/?)\S*');
+    final RegExp protocolRegExp = RegExp(r'(http|https):\/\/([\w.]+\/?)\S*');
     if (!url.startsWith(protocolRegExp) && url.contains('://')) {
       debugPrint('Found scheme when load: $url');
       if (Platform.isAndroid) {
-        Future.delayed(1.microseconds, () async {
+        Future<void>.delayed(1.microseconds, () async {
           unawaited(controller.stopLoading());
           debugPrint('Try to launch intent...');
-          final appName = await ChannelUtils.getSchemeLaunchAppName(url);
+          final String appName = await ChannelUtils.getSchemeLaunchAppName(url);
           if (appName != null) {
-            final shouldLaunch = await waitForConfirmation(appName);
+            final bool shouldLaunch = await waitForConfirmation(appName);
             if (shouldLaunch) {
               await _launchURL(url: url);
             }
@@ -123,7 +125,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
         child: Text.rich(
           TextSpan(
             children: <InlineSpan>[
-              TextSpan(text: '即将打开应用\n'),
+              const TextSpan(text: '即将打开应用\n'),
               TextSpan(
                 text: '$applicationLabel',
                 style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.bold),
@@ -189,8 +191,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     );
   }
 
-  void showMore(context) {
-    showModalBottomSheet(
+  void showMore(BuildContext context) {
+    showModalBottomSheet<void>(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(suSetWidth(20.0)),
@@ -242,16 +244,16 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     );
   }
 
-  Future<Null> _launchURL({String url, bool forceSafariVC = true}) async {
-    final uri = Uri.encodeFull(url ?? this.url);
+  Future<void> _launchURL({String url, bool forceSafariVC = true}) async {
+    final String uri = Uri.encodeFull(url ?? this.url);
     if (await canLaunch(uri)) {
-      await launch(uri, forceSafariVC: Platform.isIOS ? forceSafariVC : false);
+      await launch(uri, forceSafariVC: Platform.isIOS && forceSafariVC);
     } else {
       showCenterErrorToast('无法打开网址: $uri');
     }
   }
 
-  Widget get appBar => PreferredSize(
+  PreferredSizeWidget get appBar => PreferredSize(
         preferredSize: Size.fromHeight(suSetHeight(kAppBarHeight)),
         child: Container(
           height: Screens.topSafeHeight + suSetHeight(kAppBarHeight),
@@ -291,7 +293,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
         ),
       );
 
-  Widget get refreshIndicator => Center(
+  Widget get refreshIndicator => const Center(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0),
           child: SizedBox(
@@ -359,7 +361,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             useOnDownloadStart: true,
             useShouldOverrideUrlLoading: true,
           ),
-          // TODO: Currently zoom control in android was broken, need to find the root cause.
+          // TODO(AlexVincent525): Currently zoom control in android was broken, need to find the root cause.
           android: AndroidInAppWebViewOptions(
             allowFileAccessFromFileURLs: true,
             allowUniversalAccessFromFileURLs: true,
@@ -400,19 +402,21 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
           _webViewController = controller;
 
           this.url = url;
-          final _title = (await controller.getTitle())?.trim();
+          final String _title = (await controller.getTitle())?.trim();
           if (_title != null && _title.isNotEmpty && _title != this.url) {
             title = _title;
           } else {
-            final ogTitle = await controller.evaluateJavascript(
+            final String ogTitle = await controller.evaluateJavascript(
               source: 'var ogTitle = document.querySelector(\'[property="og:title"]\');\n'
                   'if (ogTitle != undefined) ogTitle.content;',
-            );
+            ) as String;
             if (ogTitle != null) {
               title = ogTitle;
             }
           }
-          if (this.mounted) setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         },
         onConsoleMessage: (InAppWebViewController controller, ConsoleMessage consoleMessage) {
           _webViewController = controller;
@@ -425,7 +429,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
         onDownloadStart: (InAppWebViewController controller, String url) {
           _webViewController = controller;
 
-          debugPrint("WebView started download from: $url");
+          debugPrint('WebView started download from: $url');
           NetUtils.download(url);
         },
         onWebViewCreated: (InAppWebViewController controller) {

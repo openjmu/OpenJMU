@@ -10,7 +10,7 @@ import 'package:openjmu/constants/constants.dart';
 
 class SettingsProvider extends ChangeNotifier {
   /// For test page.
-  /// TODO: Set this to false before release.
+  /// Set this to [false] before release.
   bool _debug = !kReleaseMode && false;
   bool get debug => _debug;
   set debug(bool value) {
@@ -26,10 +26,10 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<int> _homeStartUpIndex = [0, 0, 0];
+  List<int> _homeStartUpIndex = <int>[0, 0, 0];
   List<int> get homeStartUpIndex => _homeStartUpIndex;
   set homeStartUpIndex(List<int> value) {
-    _homeStartUpIndex = List.from(value);
+    _homeStartUpIndex = List<int>.from(value);
     notifyListeners();
   }
 
@@ -72,12 +72,14 @@ class SettingsProvider extends ChangeNotifier {
   bool get launchFromSystemBrowser => _launchFromSystemBrowser;
   set launchFromSystemBrowser(bool value) {
     assert(value != null);
-    if (_launchFromSystemBrowser == value) return;
+    if (_launchFromSystemBrowser == value) {
+      return;
+    }
     _launchFromSystemBrowser = value;
     notifyListeners();
   }
 
-  final fontScaleRange = <double>[0.6, 1.4];
+  final List<double> fontScaleRange = <double>[0.6, 1.4];
   double _fontScale = 1.0;
   double get fontScale => _fontScale;
   set fontScale(double value) {
@@ -99,7 +101,7 @@ class SettingsProvider extends ChangeNotifier {
   void reset() {
     _fontScale = 1.0;
     _homeSplashIndex = 0;
-    _homeStartUpIndex = [0, 0, 0];
+    _homeStartUpIndex = <int>[0, 0, 0];
     _newAppCenterIcon = false;
     _hideShieldPost = true;
     _launchFromSystemBrowser = false;

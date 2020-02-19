@@ -5,10 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class LoadingDialog extends StatefulWidget {
-  final LoadingDialogController controller;
-  final String text;
-  final bool isGlobal;
-
   const LoadingDialog({
     Key key,
     this.text,
@@ -16,16 +12,20 @@ class LoadingDialog extends StatefulWidget {
     this.isGlobal = false,
   }) : super(key: key);
 
+  final LoadingDialogController controller;
+  final String text;
+  final bool isGlobal;
+
   @override
   State<StatefulWidget> createState() => LoadingDialogState();
 
   static void show(
-    context, {
+    BuildContext context, {
     LoadingDialogController controller,
     String text,
     bool isGlobal,
   }) {
-    showDialog<Null>(
+    showDialog<void>(
       context: context,
       builder: (_) => LoadingDialog(
         controller: controller,
@@ -40,14 +40,16 @@ class LoadingDialogState extends State<LoadingDialog> {
   Duration duration = 1500.milliseconds;
   String type, text;
   VoidCallback customPop;
-  Widget icon = SpinKitWidget();
+  Widget icon = const SpinKitWidget();
 
   @override
   void initState() {
     super.initState();
     widget.controller?.dialogState = this;
-    this.text = widget.text;
-    if (mounted) setState(() {});
+    text = widget.text;
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -57,7 +59,7 @@ class LoadingDialogState extends State<LoadingDialog> {
   }
 
   @override
-  void didUpdateWidget(oldWidget) {
+  void didUpdateWidget(LoadingDialog oldWidget) {
     super.didUpdateWidget(oldWidget);
     widget.controller?.dialogState = this;
   }
@@ -72,26 +74,36 @@ class LoadingDialogState extends State<LoadingDialog> {
     this.type = type;
     this.icon = icon;
     this.text = text;
-    if (duration != null) this.duration = duration;
-    if (customPop != null) this.customPop = customPop;
-    if (mounted) setState(() {});
+    if (duration != null) {
+      duration = duration;
+    }
+    if (customPop != null) {
+      customPop = customPop;
+    }
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void updateIcon(Widget icon) {
     this.icon = icon;
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void updateText(String text) {
     this.text = text;
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     if (!(widget.isGlobal ?? false)) {
-      if (this.type != null && this.type != 'loading') {
-        Future.delayed(duration, () {
+      if (type != null && type != 'loading') {
+        Future<void>.delayed(duration, () {
           try {
             if (customPop != null) {
               customPop();
@@ -102,7 +114,7 @@ class LoadingDialogState extends State<LoadingDialog> {
             debugPrint('Error when running pop in loading dialog: $e');
           }
         });
-      } else if (this.type == 'dismiss') {
+      } else if (type == 'dismiss') {
         try {
           if (customPop != null) {
             customPop();
@@ -158,15 +170,15 @@ class LoadingDialogState extends State<LoadingDialog> {
 class LoadingDialogController {
   LoadingDialogState dialogState;
 
-  void updateText(text) {
+  void updateText(String text) {
     dialogState.updateText(text);
   }
 
-  void updateIcon(icon) {
+  void updateIcon(Widget icon) {
     dialogState.updateIcon(icon);
   }
 
-  void updateContent(type, icon, text, duration) {
+  void updateContent(String type, Widget icon, String text, Duration duration) {
     dialogState.updateContent(type: type, icon: icon, text: text, duration: duration);
   }
 
@@ -190,7 +202,7 @@ class LoadingDialogController {
         dialogState.updateContent(
           type: 'failed',
           icon: RotationTransition(
-            turns: AlwaysStoppedAnimation(45 / 360),
+            turns: const AlwaysStoppedAnimation<double>(45 / 360),
             child: Icon(Icons.add_circle, color: Colors.redAccent, size: suSetWidth(60.0)),
           ),
           text: text,
@@ -200,7 +212,7 @@ class LoadingDialogController {
       case 'loading':
         dialogState.updateContent(
           type: 'loading',
-          icon: CircularProgressIndicator(),
+          icon: const CircularProgressIndicator(),
           text: text,
           duration: duration,
         );
@@ -208,7 +220,7 @@ class LoadingDialogController {
       case 'dismiss':
         dialogState.updateContent(
           type: 'dismiss',
-          icon: CircularProgressIndicator(),
+          icon: const CircularProgressIndicator(),
           text: text,
           duration: duration,
         );

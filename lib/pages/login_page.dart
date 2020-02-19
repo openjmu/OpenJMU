@@ -443,28 +443,33 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
       );
 
   void loginButtonPressed(context) {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      setState(() {
-        _login = true;
-      });
-      DataUtils.login(_username, _password).then((result) {
-        if (result) {
-          navigatorState.pushNamedAndRemoveUntil(
-            Routes.OPENJMU_HOME,
-            (_) => false,
-            arguments: {'initAction': null},
-          );
-        } else {
+    try {
+      if (_formKey.currentState.validate()) {
+        _formKey.currentState.save();
+        setState(() {
+          _login = true;
+        });
+        DataUtils.login(_username, _password).then((result) {
+          if (result) {
+            navigatorState.pushNamedAndRemoveUntil(
+              Routes.OPENJMU_HOME,
+              (_) => false,
+              arguments: {'initAction': null},
+            );
+          } else {
+            _login = false;
+            if (mounted) setState(() {});
+          }
+        }).catchError((e) {
+          debugPrint('Failed when login: $e');
+          showCenterErrorToast('登录失败');
           _login = false;
           if (mounted) setState(() {});
-        }
-      }).catchError((e) {
-        debugPrint('Failed when login: $e');
-        showToast('登录失败');
-        _login = false;
-        if (mounted) setState(() {});
-      });
+        });
+      }
+    } catch (e) {
+      debugPrint('Failed when login: $e');
+      showCenterErrorToast('登录失败');
     }
   }
 

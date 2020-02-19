@@ -12,15 +12,15 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/webapp_icon.dart';
 
 class AppMessagePreviewWidget extends StatefulWidget {
-  final AppMessage message;
-  final double height;
-
   const AppMessagePreviewWidget({
     @required this.message,
     this.height = 70.0,
     Key key,
   })  : assert(message != null),
         super(key: key);
+
+  final AppMessage message;
+  final double height;
 
   @override
   _AppMessagePreviewWidgetState createState() => _AppMessagePreviewWidgetState();
@@ -49,8 +49,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     super.dispose();
   }
 
-  void timeFormat(_, {bool fromBuild = false}) {
-    final now = DateTime.now();
+  void timeFormat(Timer _, {bool fromBuild = false}) {
+    final DateTime now = DateTime.now();
     if (widget.message.sendTime.day == now.day &&
         widget.message.sendTime.month == now.month &&
         widget.message.sendTime.year == now.year) {
@@ -60,14 +60,21 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     } else {
       formattedTime = DateFormat('yy-MM-dd HH:mm').format(widget.message.sendTime);
     }
-    if (mounted && !fromBuild) setState(() {});
+    if (mounted && !fromBuild) {
+      setState(() {});
+    }
   }
 
   Widget get unreadCounter => Consumer<MessagesProvider>(
-        builder: (_, provider, __) {
-          final messages = provider.appsMessages[widget.message.appId];
-          final unreadMessages = messages.where((message) => !message.read)?.toList();
-          if (unreadMessages.isEmpty) return SizedBox.shrink();
+        builder: (_, MessagesProvider provider, __) {
+          final List<dynamic> messages = provider.appsMessages[widget.message.appId];
+          final List<AppMessage> unreadMessages = messages
+              .where((dynamic message) => !(message as AppMessage).read)
+              ?.toList()
+              ?.cast<AppMessage>();
+          if (unreadMessages.isEmpty) {
+            return const SizedBox.shrink();
+          }
           return Container(
             width: suSetWidth(28.0),
             height: suSetWidth(28.0),
@@ -77,8 +84,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
             ),
             child: Center(
               child: Selector<ThemesProvider, bool>(
-                selector: (_, provider) => provider.dark,
-                builder: (_, dark, __) {
+                selector: (_, ThemesProvider provider) => provider.dark,
+                builder: (_, bool dark, __) {
                   return Text(
                     '${unreadMessages.length}',
                     style: TextStyle(
@@ -95,21 +102,27 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
       );
 
   void updateApp() {
-    final provider = Provider.of<WebAppsProvider>(currentContext, listen: false);
-    app = provider.allApps.where((app) => app.appId == widget.message.appId).elementAt(0);
+    final WebAppsProvider provider = Provider.of<WebAppsProvider>(currentContext, listen: false);
+    app = provider.allApps
+        .where((dynamic app) => (app as WebApp).appId == widget.message.appId)
+        .elementAt(0);
   }
 
   void tryDecodeContent() {
     try {
-      final content = jsonDecode(widget.message.content);
-      widget.message.content = content['content'];
+      final Map<String, dynamic> content =
+          jsonDecode(widget.message.content) as Map<String, dynamic>;
+      widget.message.content = content['content'] as String;
       Provider.of<MessagesProvider>(currentContext, listen: false).saveAppsMessages();
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     } catch (e) {
       return;
     }
   }
 
+  @override
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
@@ -120,21 +133,23 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () {
-        navigatorState.pushNamed(Routes.OPENJMU_CHAT_APP_MESSAGE_PAGE, arguments: {'app': app});
+        navigatorState.pushNamed(
+          Routes.OPENJMU_CHAT_APP_MESSAGE_PAGE,
+          arguments: <String, dynamic>{'app': app},
+        );
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: suSetSp(16.0)),
+        padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
         height: suSetHeight(widget.height),
-        decoration: BoxDecoration(),
         child: Row(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(right: suSetSp(16.0)),
+              padding: EdgeInsets.only(right: suSetWidth(16.0)),
               child: WebAppIcon(app: app),
             ),
             Expanded(
               child: SizedBox(
-                height: suSetSp(60.0),
+                height: suSetHeight(60.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -142,7 +157,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                     Row(
                       children: <Widget>[
                         SizedBox(
-                          height: suSetSp(30.0),
+                          height: suSetHeight(30.0),
                           child: app != null
                               ? Text(
                                   '${app.name ?? app.appId}',
@@ -151,7 +166,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                                         fontWeight: FontWeight.w500,
                                       ),
                                 )
-                              : SizedBox.shrink(),
+                              : const SizedBox.shrink(),
                         ),
                         Text(
                           ' $formattedTime',
@@ -159,7 +174,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                                 color: Theme.of(context).textTheme.body1.color.withOpacity(0.5),
                               ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         unreadCounter,
                       ],
                     ),
