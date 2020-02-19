@@ -150,8 +150,8 @@ class _UserPageState extends State<UserPage>
     }
   }
 
-  Future<Null> _getCount(id) async {
-    Map data = (await UserAPI.getFansAndFollowingsCount(id)).data;
+  Future<void> _getCount(id) async {
+    final data = (await UserAPI.getFansAndFollowingsCount(id)).data;
     if (this.mounted) {
       setState(() {
         _user.isFollowing = data['is_following'] == 1;
@@ -182,13 +182,9 @@ class _UserPageState extends State<UserPage>
 
   Widget get followButton => Container(
         height: suSetHeight(48.0),
-        padding: EdgeInsets.symmetric(
-          horizontal: suSetWidth(4.0),
-        ),
+        padding: EdgeInsets.symmetric(horizontal: suSetWidth(4.0)),
         child: FlatButton(
-          padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(28.0),
-          ),
+          padding: EdgeInsets.symmetric(horizontal: suSetWidth(28.0)),
           onPressed: () {
             if (isSelf) {
               showDialog<Null>(
@@ -210,10 +206,7 @@ class _UserPageState extends State<UserPage>
               : _user.isFollowing ? Color(0x44ffffff) : currentThemeColor.withOpacity(0.6),
           child: Text(
             isSelf ? '编辑签名' : _user.isFollowing ? '已关注' : '关注${_user.gender == 2 ? '她' : '他'}',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: suSetSp(20.0),
-            ),
+            style: TextStyle(color: Colors.white, fontSize: suSetSp(20.0)),
           ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(suSetWidth(32.0)),
@@ -224,10 +217,7 @@ class _UserPageState extends State<UserPage>
   Widget qrCode(context) => Container(
         width: suSetHeight(48.0),
         height: suSetHeight(48.0),
-        decoration: BoxDecoration(
-          color: Color(0x44ffffff),
-          shape: BoxShape.circle,
-        ),
+        decoration: BoxDecoration(color: Color(0x44ffffff), shape: BoxShape.circle),
         child: GestureDetector(
           behavior: HitTestBehavior.translucent,
           child: Icon(
@@ -347,10 +337,7 @@ class _UserPageState extends State<UserPage>
                     ),
                     TextSpan(
                       text: ' 关注',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: suSetSp(19.0),
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: suSetSp(19.0)),
                     ),
                   ],
                 ),
@@ -378,10 +365,7 @@ class _UserPageState extends State<UserPage>
                     ),
                     TextSpan(
                       text: ' 粉丝',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: suSetSp(19.0),
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: suSetSp(19.0)),
                     ),
                   ],
                 ),
