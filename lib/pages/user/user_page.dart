@@ -478,7 +478,6 @@ class _UserPageState extends State<UserPage>
           icon: Icon(Icons.account_circle),
           text: '查看大头像',
           onTap: () {
-            Navigator.of(context).pop();
             navigatorState.pushNamed(
               Routes.OPENJMU_IMAGE_VIEWER,
               arguments: {
@@ -498,7 +497,6 @@ class _UserPageState extends State<UserPage>
           icon: Icon(Icons.photo_library),
           text: '更换头像',
           onTap: () {
-            Navigator.of(context).pop();
             navigatorState.pushNamed(Routes.OPENJMU_IMAGE_CROP).then((result) {
               if (result != null && result) {
                 Instances.eventBus.fire(AvatarUpdatedEvent());
