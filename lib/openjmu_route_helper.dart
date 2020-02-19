@@ -41,7 +41,7 @@ class FFNavigatorObserver extends NavigatorObserver {
   }
 
   void _didRouteChange(Route newRoute, Route oldRoute) {
-    routeChange?.call(newRoute.settings, oldRoute.settings);
+    routeChange?.call(newRoute?.settings, oldRoute?.settings);
   }
 
   FFRouteSettings getFFRouteSettings(Route route) {
