@@ -256,9 +256,9 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       final leftText = _textEditingController.text.substring(0, currentPosition);
       final rightText = _textEditingController.text
           .substring(currentPosition, _textEditingController.text.length);
-      result = '$leftText#话题#$rightText';
+      result = '$leftText##$rightText';
     } else {
-      result = '#话题#';
+      result = '##';
     }
     _textEditingController.text = result;
     _textEditingController.selection = TextSelection.fromPosition(
