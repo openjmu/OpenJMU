@@ -110,9 +110,11 @@ class SettingsProvider extends ChangeNotifier {
 
   Future<void> getAnnouncement() async {
     try {
-      final data = jsonDecode((await NetUtils.get(API.announcement)).data);
-      _announcements = data['announcements'];
-      _announcementsEnabled = data['enabled'];
+      final Map<String, dynamic> data =
+          (jsonDecode((await NetUtils.get(API.announcement)).data as String) as Map)
+              .cast<String, dynamic>();
+      _announcements = (data['announcements'] as List).cast<Map<String, dynamic>>();
+      _announcementsEnabled = data['enabled'] as bool;
       _announcementsUserEnabled = _announcementsEnabled;
       notifyListeners();
     } catch (e) {
