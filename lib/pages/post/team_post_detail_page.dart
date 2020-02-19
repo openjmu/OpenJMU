@@ -194,152 +194,24 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     }
   }
 
-  Widget get textField => Expanded(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(suSetWidth(50.0)),
-            color: Theme.of(context).canvasColor.withOpacity(0.5),
-          ),
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: ExtendedTextField(
-                  controller: _textEditingController,
-                  focusNode: _focusNode,
-                  specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
-                  enabled: !sending,
-                  decoration: InputDecoration(
-                    isDense: true,
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(
-                      horizontal: suSetWidth(20.0),
-                      vertical: suSetHeight(10.0),
-                    ),
-                    prefixText: replyHint,
-                    hintText: replyHint == null ? '给你一个神评的机会...' : null,
-                  ),
-                  cursorColor: currentThemeColor,
-                  style: Theme.of(context).textTheme.body1.copyWith(
-                        fontSize: suSetSp(20.0),
-                        textBaseline: TextBaseline.alphabetic,
-                      ),
-                  maxLines: null,
-                ),
-              ),
-              emoticonButton,
-            ],
-          ),
-        ),
-      );
+  void confirmDelete(context, TeamPostProvider provider) async {
+    final confirm = await ConfirmationDialog.show(
+      context,
+      title: '删除动态',
+      content: '是否删除该条动态?',
+      showConfirm: true,
+    );
+    if (confirm) delete(provider);
+  }
 
-  Widget get extendedPadButton => Container(
-        padding: EdgeInsets.only(left: suSetWidth(12.0)),
-        height: suSetHeight(46.0),
-        child: MaterialButton(
-          elevation: 0.0,
-          highlightElevation: canSend ? 2.0 : 0.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(suSetWidth(50.0)),
-          ),
-          minWidth: suSetWidth(60.0),
-          color: currentThemeColor,
-          child: Center(
-            child: Icon(
-              Icons.add_circle_outline,
-              color: Colors.white,
-              size: suSetWidth(28.0),
-            ),
-          ),
-          onPressed: triggerExtendedPad,
-        ),
-      );
-
-  Widget get sendButton => Container(
-        padding: EdgeInsets.only(left: suSetWidth(12.0)),
-        height: suSetHeight(46.0),
-        child: MaterialButton(
-          elevation: 0.0,
-          highlightElevation: canSend ? 2.0 : 0.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(suSetWidth(50.0)),
-          ),
-          minWidth: suSetWidth(60.0),
-          disabledColor: currentThemeColor.withOpacity(sending ? 1 : 0.3),
-          color: currentThemeColor.withOpacity(canSend ? 1 : 0.3),
-          child: Center(
-            child: SizedBox.fromSize(
-              size: Size.square(suSetWidth(28.0)),
-              child: sending
-                  ? PlatformProgressIndicator()
-                  : Icon(
-                      Icons.send,
-                      color: Colors.white,
-                      size: suSetWidth(28.0),
-                    ),
-            ),
-          ),
-          onPressed: !sending && canSend ? send : null,
-        ),
-      );
-
-  Widget get extendedPad => AnimatedContainer(
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.fastOutSlowIn,
-        width: Screens.width,
-        height: showExtendedPad ? Screens.width / 5 : 0.0,
-        child: Center(
-          child: GridView.builder(
-            physics: const NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.zero,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5,
-            ),
-            itemCount: extendedFeature.length,
-            itemBuilder: (context, index) {
-              return InkWell(
-                splashFactory: InkSplash.splashFactory,
-                onTap: extendedFeature[index]['action'],
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(bottom: suSetHeight(12.0)),
-                      padding: EdgeInsets.all(suSetWidth(14.0)),
-                      decoration: BoxDecoration(
-                        color: extendedFeature[index]['color'],
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        extendedFeature[index]['icon'],
-                        size: suSetWidth(26.0),
-                      ),
-                    ),
-                    Text(
-                      extendedFeature[index]['name'],
-                      style: TextStyle(fontSize: suSetSp(19.0)),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      );
-
-  Widget get emoticonButton => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: triggerEmoticonPad,
-        child: Container(
-          margin: EdgeInsets.only(right: suSetWidth(12.0)),
-          child: Center(
-            child: Icon(
-              Icons.insert_emoticon,
-              color: showEmoticonPad ? currentThemeColor : null,
-              size: suSetWidth(30.0),
-            ),
-          ),
-        ),
-      );
+  void delete(TeamPostProvider provider) {
+    TeamPostAPI.deletePost(postId: provider.post.tid, postType: 7).then(
+      (response) {
+        showToast('删除成功');
+        Instances.eventBus.fire(TeamCommentDeletedEvent(postId: provider.post.tid));
+      },
+    );
+  }
 
   void triggerEmoticonPad() {
     if (showEmoticonPad && _focusNode.canRequestFocus) {
@@ -490,6 +362,165 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     });
   }
 
+  Widget get deleteButton => SizedBox.fromSize(
+        size: Size.square(48.0),
+        child: IconButton(
+          padding: EdgeInsets.zero,
+          icon: Icon(Icons.delete_outline),
+          iconSize: suSetWidth(32.0),
+          onPressed: () {
+            confirmDelete(context, provider);
+          },
+        ),
+      );
+
+  Widget get textField => Expanded(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(suSetWidth(50.0)),
+            color: Theme.of(context).canvasColor.withOpacity(0.5),
+          ),
+          child: Row(
+            children: <Widget>[
+              Expanded(
+                child: ExtendedTextField(
+                  controller: _textEditingController,
+                  focusNode: _focusNode,
+                  specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
+                  enabled: !sending,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: suSetWidth(20.0),
+                      vertical: suSetHeight(10.0),
+                    ),
+                    prefixText: replyHint,
+                    hintText: replyHint == null ? '给你一个神评的机会...' : null,
+                  ),
+                  cursorColor: currentThemeColor,
+                  style: Theme.of(context).textTheme.body1.copyWith(
+                        fontSize: suSetSp(20.0),
+                        textBaseline: TextBaseline.alphabetic,
+                      ),
+                  maxLines: null,
+                ),
+              ),
+              emoticonButton,
+            ],
+          ),
+        ),
+      );
+
+  Widget get extendedPadButton => Container(
+        padding: EdgeInsets.only(left: suSetWidth(12.0)),
+        height: suSetHeight(46.0),
+        child: MaterialButton(
+          elevation: 0.0,
+          highlightElevation: canSend ? 2.0 : 0.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(suSetWidth(50.0)),
+          ),
+          minWidth: suSetWidth(60.0),
+          color: currentThemeColor,
+          child: Center(
+            child: Icon(
+              Icons.add_circle_outline,
+              color: Colors.white,
+              size: suSetWidth(28.0),
+            ),
+          ),
+          onPressed: triggerExtendedPad,
+        ),
+      );
+
+  Widget get sendButton => Container(
+        padding: EdgeInsets.only(left: suSetWidth(12.0)),
+        height: suSetHeight(46.0),
+        child: MaterialButton(
+          elevation: 0.0,
+          highlightElevation: canSend ? 2.0 : 0.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(suSetWidth(50.0)),
+          ),
+          minWidth: suSetWidth(60.0),
+          disabledColor: currentThemeColor.withOpacity(sending ? 1 : 0.3),
+          color: currentThemeColor.withOpacity(canSend ? 1 : 0.3),
+          child: Center(
+            child: SizedBox.fromSize(
+              size: Size.square(suSetWidth(28.0)),
+              child: sending
+                  ? PlatformProgressIndicator()
+                  : Icon(
+                      Icons.send,
+                      color: Colors.white,
+                      size: suSetWidth(28.0),
+                    ),
+            ),
+          ),
+          onPressed: !sending && canSend ? send : null,
+        ),
+      );
+
+  Widget get extendedPad => AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        curve: Curves.fastOutSlowIn,
+        width: Screens.width,
+        height: showExtendedPad ? Screens.width / 5 : 0.0,
+        child: Center(
+          child: GridView.builder(
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5,
+            ),
+            itemCount: extendedFeature.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                splashFactory: InkSplash.splashFactory,
+                onTap: extendedFeature[index]['action'],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(bottom: suSetHeight(12.0)),
+                      padding: EdgeInsets.all(suSetWidth(14.0)),
+                      decoration: BoxDecoration(
+                        color: extendedFeature[index]['color'],
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        extendedFeature[index]['icon'],
+                        size: suSetWidth(26.0),
+                      ),
+                    ),
+                    Text(
+                      extendedFeature[index]['name'],
+                      style: TextStyle(fontSize: suSetSp(19.0)),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      );
+
+  Widget get emoticonButton => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: triggerEmoticonPad,
+        child: Container(
+          margin: EdgeInsets.only(right: suSetWidth(12.0)),
+          child: Center(
+            child: Icon(
+              Icons.insert_emoticon,
+              color: showEmoticonPad ? currentThemeColor : null,
+              size: suSetWidth(30.0),
+            ),
+          ),
+        ),
+      );
+
   Widget get emoticonPad => EmotionPad(
         active: showEmoticonPad,
         height: _keyboardHeight,
@@ -511,6 +542,9 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
           FixedAppBar(
             title: Text('集市动态'),
             centerTitle: true,
+            actions: <Widget>[
+              if (provider.post?.uid == currentUser.uid ?? false) deleteButton,
+            ],
           ),
           Expanded(
             child: Listener(

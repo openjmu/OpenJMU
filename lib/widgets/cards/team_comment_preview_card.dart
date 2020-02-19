@@ -93,13 +93,13 @@ class TeamCommentPreviewCard extends StatelessWidget {
                   Icons.reply,
                   color: Theme.of(context).dividerColor,
                 ),
-                iconSize: suSetWidth(40.0),
+                iconSize: suSetWidth(36.0),
                 onPressed: () {
                   detailPageState.setReplyToPost(provider.post);
                 },
               ),
             ),
-            if (topPost.uid == UserAPI.currentUser.uid)
+            if (topPost.uid == currentUser.uid || provider.post.uid == currentUser.uid)
               SizedBox.fromSize(
                 size: Size.square(suSetWidth(50.0)),
                 child: IconButton(
