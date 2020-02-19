@@ -57,9 +57,11 @@ class FixedAppBar extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          if (automaticallyImplyLeading && Navigator.of(context).canPop() && actions == null)
-            SizedBox(width: 56.0),
-          if (actions != null) ...actions,
+          if (automaticallyImplyLeading &&
+              Navigator.of(context).canPop() &&
+              (actions?.isEmpty ?? false))
+            SizedBox(width: 48.0),
+          if (actions?.isNotEmpty ?? false) ...actions,
         ],
       ),
     );
