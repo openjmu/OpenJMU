@@ -95,6 +95,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         'uuid': DeviceUtils.deviceUuid,
         'platform': Platform.isIOS ? 'ios' : 'android',
       };
+      debugPrint('Push data: $data');
       NetUtils.post(API.pushUpload, data: data).then((response) {
         debugPrint('Push service info upload success.');
       }).catchError((e) {
