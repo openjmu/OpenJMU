@@ -460,6 +460,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
           if (mounted) setState(() {});
         }
       }).catchError((e) {
+        debugPrint('Failed when login: $e');
+        showToast('登录失败');
         _login = false;
         if (mounted) setState(() {});
       });
