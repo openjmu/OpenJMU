@@ -43,7 +43,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
 
   @override
   void didChangeDependencies() {
-    if (widget.content != null) {
+    if (widget.content?.trim()?.isNotEmpty ?? false) {
       _autoFocus = false;
       _controller?.removeListener(canClearListener);
       _controller = TextEditingController(text: widget.content);
@@ -104,24 +104,52 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
   }
 
   void search(context, String content, {bool isMore = false}) {
-    _focusNode.unfocus();
-    _loading = true;
-    if (!isMore) {
-      _loaded = false;
-      _canLoadMore = true;
-      userList?.clear();
-      postList = null;
-      if (mounted) setState(() {});
+    if (_controller.text?.trim()?.isNotEmpty ?? false) {
+      _focusNode.unfocus();
+      _loading = true;
+      if (!isMore) {
+        _loaded = false;
+        _canLoadMore = true;
+        userList?.clear();
+        postList = null;
+        if (mounted) setState(() {});
+      }
+      Future.wait([
+        getUsers(content),
+        getPosts(content),
+      ]).then((responses) {
+        if (!_loaded) _loaded = true;
+        _loading = false;
+        if (mounted) setState(() {});
+      });
+    } else {
+      showToast('一定要搜点什么才行...');
     }
-    Future.wait([
-      getUsers(content),
-      getPosts(content),
-    ]).then((responses) {
-      if (!_loaded) _loaded = true;
-      _loading = false;
-      if (mounted) setState(() {});
-    });
   }
+
+  Widget get searchButton => IconButton(
+        icon: Icon(Icons.search, size: suSetWidth(30.0)),
+        onPressed: () {
+          search(context, _controller.text);
+        },
+      );
+
+  Widget get clearButton => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          _controller.clear();
+          _focusNode.requestFocus();
+          SystemChannels.textInput.invokeMethod('TextInput.show');
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
+          child: Icon(
+            Icons.clear,
+            size: suSetWidth(24.0),
+            color: Theme.of(context).iconTheme.color,
+          ),
+        ),
+      );
 
   Widget searchTextField(context, {String content}) {
     if (content != null) {
@@ -139,58 +167,35 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
       child: Row(
         children: <Widget>[
           Expanded(
-            child: SizedBox(
-              child: TextField(
-                autofocus: _autoFocus && !_loaded,
-                controller: _controller,
-                cursorColor: currentThemeColor,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                  hintText: '输入要搜索的内容...',
-                  hintStyle: TextStyle(
-                    color: Colors.grey,
-                    fontStyle: FontStyle.italic,
-                    textBaseline: TextBaseline.alphabetic,
-                  ),
-                  isDense: true,
-                ),
-                focusNode: _focusNode,
-                keyboardType: TextInputType.text,
-                style: TextStyle(
-                  fontSize: suSetSp(20.0),
-                  fontWeight: FontWeight.normal,
+            child: TextField(
+              autofocus: _autoFocus && !_loaded,
+              controller: _controller,
+              cursorColor: currentThemeColor,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                contentPadding: EdgeInsets.zero,
+                hintText: '输入要搜索的内容...',
+                hintStyle: TextStyle(
+                  color: Colors.grey,
+                  fontStyle: FontStyle.italic,
                   textBaseline: TextBaseline.alphabetic,
                 ),
-                textInputAction: TextInputAction.search,
-                onSubmitted: (String text) {
-                  if (!_loaded) _loaded = true;
-                  if (text != null && text != '') {
-                    search(context, text);
-                  } else {
-                    return null;
-                  }
-                },
+                isDense: true,
               ),
+              focusNode: _focusNode,
+              keyboardType: TextInputType.text,
+              style: TextStyle(
+                fontSize: suSetSp(20.0),
+                fontWeight: FontWeight.normal,
+                textBaseline: TextBaseline.alphabetic,
+              ),
+              textInputAction: TextInputAction.search,
+              onSubmitted: (String text) {
+                search(context, text);
+              },
             ),
           ),
-          if (_canClear)
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
-                child: Icon(
-                  Icons.clear,
-                  size: suSetWidth(24.0),
-                  color: Theme.of(context).iconTheme.color,
-                ),
-              ),
-              onTap: () {
-                _controller.clear();
-                _focusNode.requestFocus();
-                SystemChannels.textInput.invokeMethod('TextInput.show');
-              },
-            )
+          if (_canClear) clearButton,
         ],
       ),
     );
@@ -204,15 +209,10 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(
-                  top: suSetHeight(16.0),
-                  left: suSetWidth(12.0),
-                ),
+                padding: EdgeInsets.only(top: suSetHeight(16.0), left: suSetWidth(12.0)),
                 child: Text(
                   '相关用户 (${userList.length})',
-                  style: Theme.of(context).textTheme.caption.copyWith(
-                        fontSize: suSetSp(18.0),
-                      ),
+                  style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(18.0)),
                 ),
               ),
               Expanded(
@@ -229,9 +229,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                           SizedBox(height: suSetHeight(8.0)),
                           Text(
                             userList[index].nickname,
-                            style: Theme.of(context).textTheme.body1.copyWith(
-                                  fontSize: suSetSp(16.0),
-                                ),
+                            style: TextStyle(fontSize: suSetSp(16.0)),
                           ),
                         ],
                       ),
@@ -239,7 +237,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                   },
                 ),
               ),
-              Divider(height: 1.0),
+              Divider(height: suSetHeight(2.0)),
             ],
           ),
         )
@@ -259,14 +257,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
               children: <Widget>[
                 BackButton(),
                 Expanded(child: searchTextField(context)),
-                IconButton(
-                  icon: Icon(Icons.search, size: suSetWidth(30.0)),
-                  onPressed: () {
-                    if (_controller.text?.trim()?.isNotEmpty ?? false) {
-                      search(context, _controller.text);
-                    }
-                  },
-                ),
+                searchButton,
               ],
             ),
           ),
