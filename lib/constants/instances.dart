@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
@@ -22,6 +23,7 @@ class Instances {
   static final EventBus eventBus = EventBus();
   static final navigatorKey = GlobalKey<NavigatorState>();
   static AppLifecycleState appLifeCycleState = AppLifecycleState.resumed;
+  static ConnectivityResult connectivityResult;
 
   static final appsPageStateKey = GlobalKey<AppsPageState>();
   static final courseSchedulePageStateKey = GlobalKey<CourseSchedulePageState>();

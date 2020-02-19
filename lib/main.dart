@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -48,22 +51,29 @@ class OpenJMUApp extends StatefulWidget {
 }
 
 class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
-  final connectivitySubscription = Connectivity().onConnectivityChanged.listen(
-    (ConnectivityResult result) {
-      Instances.eventBus.fire(ConnectivityChangeEvent(result));
-      debugPrint('Current connectivity: $result');
-    },
-  );
+  StreamSubscription connectivitySubscription;
 
   int initAction;
 
   Brightness get _platformBrightness => Screens.mediaQuery.platformBrightness ?? Brightness.light;
+
+  ToastFuture connectivityToastFuture;
 
   @override
   void initState() {
     debugPrint('Current platform is: ${Platform.operatingSystem}');
     WidgetsBinding.instance.addObserver(this);
     tryRecoverLoginInfo();
+
+    Connectivity().checkConnectivity().then(checkIfNoConnectivity);
+    connectivitySubscription = Connectivity().onConnectivityChanged.listen(
+      (ConnectivityResult result) {
+        checkIfNoConnectivity(result);
+        Instances.eventBus.fire(ConnectivityChangeEvent(result));
+        Instances.connectivityResult = result;
+        debugPrint('Current connectivity: $result');
+      },
+    );
 
     Instances.eventBus
       ..on<TicketGotEvent>().listen((event) {
@@ -158,6 +168,63 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       ),
     ));
   }
+
+  void checkIfNoConnectivity(ConnectivityResult result) {
+    if (result == ConnectivityResult.none) {
+      if (mounted) {
+        connectivityToastFuture = showToastWidget(
+          noConnectivityWidget,
+          duration: 999.weeks,
+          handleTouch: true,
+        );
+      } else {
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          connectivityToastFuture = showToastWidget(
+            noConnectivityWidget,
+            duration: 999.weeks,
+            handleTouch: true,
+          );
+        });
+      }
+    } else {
+      if (Instances.connectivityResult == ConnectivityResult.none) {
+        connectivityToastFuture?.dismiss(showAnim: true);
+      }
+    }
+  }
+
+  Widget get noConnectivityWidget => Material(
+        color: Colors.black26,
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
+          child: Center(
+            child: Container(
+              width: Screens.width / 2,
+              height: Screens.width / 2,
+              padding: EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                color: Theme.of(context).canvasColor,
+                shape: BoxShape.circle,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    Icons.router,
+                    size: Screens.width / 6,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                  SizedBox(height: Screens.width / 20),
+                  Text(
+                    '检查网络连接',
+                    style: Theme.of(context).textTheme.body1.copyWith(fontSize: 20.0),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
