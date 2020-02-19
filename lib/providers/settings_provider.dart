@@ -33,10 +33,10 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List _announcements = [];
-  List get announcements => _announcements;
-  set announcements(List value) {
-    _announcements = List.from(value);
+  List<Map<String, dynamic>> _announcements = <Map<String, dynamic>>[];
+  List<Map<String, dynamic>> get announcements => _announcements;
+  set announcements(List<Map<String, dynamic>> value) {
+    _announcements = List<Map<String, dynamic>>.from(value);
     notifyListeners();
   }
 
@@ -119,7 +119,7 @@ class SettingsProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       debugPrint('Get announcement error: $e');
-      Future.delayed(30.seconds, getAnnouncement);
+      Future<void>.delayed(30.seconds, getAnnouncement);
     }
   }
 }
