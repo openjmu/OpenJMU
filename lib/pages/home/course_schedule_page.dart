@@ -533,6 +533,8 @@ class CourseWidget extends StatelessWidget {
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     if (course.name.length > 10) TextSpan(text: '...'),
+                    if (!course.isCustom)
+                      TextSpan(text: '\n${course.startWeek}-${course.endWeek}周'),
                     if (course.location != null) TextSpan(text: '\n📍${course.location}'),
                   ],
                   style: Theme.of(context).textTheme.body1.copyWith(
@@ -755,6 +757,19 @@ class _CoursesDialogState extends State<CoursesDialog> {
                     ),
                     textAlign: TextAlign.center,
                   ),
+                  if (!widget.courseList[index].isCustom)
+                    Text(
+                      '📅 '
+                      '${widget.courseList[index].startWeek}'
+                      '-'
+                      '${widget.courseList[index].endWeek}'
+                      '周',
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: suSetSp(24.0),
+                        height: 1.5,
+                      ),
+                    ),
                   if (widget.courseList[index].location != null)
                     Text(
                       '📍${widget.courseList[index].location}',
@@ -767,6 +782,12 @@ class _CoursesDialogState extends State<CoursesDialog> {
                 ],
               ),
             ),
+          ),
+          Positioned(
+            left: 0.0,
+            right: 0.0,
+            bottom: 0.0,
+            child: Icon(Icons.more_horiz),
           ),
         ],
       );
