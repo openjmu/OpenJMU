@@ -85,7 +85,7 @@ class Post {
 
   Post.fromJson(Map<String, dynamic> json) {
     json.forEach((k, v) {
-      if (json[k] == '') json[k] = null;
+      if (json[k] == '' || json[k] == <dynamic>[]) json[k] = null;
     });
     Map<String, dynamic> _user = json['user'];
     _user.forEach((k, v) {
