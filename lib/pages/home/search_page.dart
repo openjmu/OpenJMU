@@ -108,7 +108,8 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
   }
 
   void search(BuildContext context, String content, {bool isMore = false}) {
-    if (_controller.text?.trim()?.isNotEmpty ?? false) {
+    final String query = filteredSearchQuery(content);
+    if (query?.isNotEmpty ?? false) {
       _focusNode.unfocus();
       _loading = true;
       if (!isMore) {
@@ -135,6 +136,21 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
     } else {
       showToast('一定要搜点什么才行...');
     }
+  }
+
+  String filteredSearchQuery(String query) {
+    String result;
+    if (query?.isNotEmpty ?? false) {
+      result = query
+          .replaceAll('+', '')
+          .replaceAll('-', '')
+          .replaceAll('*', '')
+          .replaceAll('/', '')
+          .replaceAll('=', '')
+          .replaceAll('\$', '')
+          .trim();
+    }
+    return result;
   }
 
   Widget get searchButton => IconButton(
