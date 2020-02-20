@@ -225,7 +225,6 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       (dynamic _) {
         showToast('删除成功');
         Instances.eventBus.fire(TeamCommentDeletedEvent(postId: provider.post.tid));
-        navigatorState.pop();
       },
     );
   }

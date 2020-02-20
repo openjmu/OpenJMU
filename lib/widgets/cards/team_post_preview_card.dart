@@ -226,7 +226,9 @@ class TeamPostPreviewCard extends StatelessWidget {
                   prefixSpans: <InlineSpan>[
                     TextSpan(
                       text: '@${_post['user_info']['nickname']}',
-                      style: TextStyle(color: Colors.blue),
+                      style: TextStyle(
+                        color: Colors.blue,
+                      ),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           navigatorState.pushNamed(
@@ -262,7 +264,10 @@ class TeamPostPreviewCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                    const TextSpan(text: ': ', style: TextStyle(color: Colors.blue)),
+                    TextSpan(
+                      text: ': ',
+                      style: TextStyle(color: Colors.blue),
+                    ),
                   ],
                 ),
                 style: Theme.of(context).textTheme.body1.copyWith(
