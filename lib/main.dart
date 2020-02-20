@@ -65,7 +65,9 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     tryRecoverLoginInfo();
 
-    Connectivity().checkConnectivity().then(checkIfNoConnectivity);
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      Connectivity().checkConnectivity().then(checkIfNoConnectivity);
+    });
     connectivitySubscription = Connectivity().onConnectivityChanged.listen(
       (ConnectivityResult result) {
         checkIfNoConnectivity(result);
@@ -170,28 +172,21 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   }
 
   void checkIfNoConnectivity(ConnectivityResult result) {
-    if (result == ConnectivityResult.none) {
-      if (mounted) {
-        connectivityToastFuture = showToastWidget(
-          noConnectivityWidget,
-          duration: 999.weeks,
-          handleTouch: true,
-        );
-      } else {
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          connectivityToastFuture = showToastWidget(
-            noConnectivityWidget,
-            duration: 999.weeks,
-            handleTouch: true,
-          );
-        });
-      }
+    if (result == ConnectivityResult.none && connectivityToastFuture == null) {
+      connectivityToastFuture ??= showNoConnectivityDialog;
     } else {
-      if (Instances.connectivityResult == ConnectivityResult.none) {
-        connectivityToastFuture?.dismiss(showAnim: true);
+      connectivityToastFuture?.dismiss(showAnim: true);
+      if (connectivityToastFuture != null) {
+        connectivityToastFuture = null;
       }
     }
   }
+
+  ToastFuture get showNoConnectivityDialog => showToastWidget(
+        noConnectivityWidget,
+        duration: 999.weeks,
+        handleTouch: true,
+      );
 
   Widget get noConnectivityWidget => Material(
         color: Colors.black26,
