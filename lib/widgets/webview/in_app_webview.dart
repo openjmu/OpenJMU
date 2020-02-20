@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -49,6 +50,8 @@ class InAppBrowserPage extends StatefulWidget {
 }
 
 class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepAliveClientMixin {
+  final StreamController<double> progressController = StreamController<double>.broadcast();
+
   InAppWebViewController _webViewController;
   String title = '', url = 'about:blank';
 
@@ -78,6 +81,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
   @override
   void dispose() {
     SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
+    progressController?.close();
     super.dispose();
   }
 
@@ -257,37 +261,62 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
         preferredSize: Size.fromHeight(suSetHeight(kAppBarHeight)),
         child: Container(
           height: Screens.topSafeHeight + suSetHeight(kAppBarHeight),
-          child: SafeArea(
-            child: Row(
-              children: <Widget>[
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: Icon(Icons.close),
-                  onPressed: Navigator.of(context).pop,
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      if (widget.app != null) WebAppIcon(app: widget.app, size: 60.0),
-                      Flexible(
-                        child: Text(
-                          title,
-                          style: TextStyle(fontSize: suSetSp(22.0)),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
+          padding: EdgeInsets.only(top: Screens.topSafeHeight),
+          child: Stack(
+            children: <Widget>[
+              SizedBox(
+                height: suSetHeight(kAppBarHeight),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: Icon(Icons.close),
+                      onPressed: Navigator.of(context).pop,
+                    ),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: <Widget>[
+                          if (widget.app != null) WebAppIcon(app: widget.app, size: 60.0),
+                          Flexible(
+                            child: Text(
+                              title,
+                              style: TextStyle(fontSize: suSetSp(22.0)),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: Icon(Icons.more_horiz),
+                      onPressed: () => showMore(context),
+                    ),
+                  ],
                 ),
-                IconButton(
-                  padding: EdgeInsets.zero,
-                  icon: Icon(Icons.more_horiz),
-                  onPressed: () => showMore(context),
-                ),
-              ],
+              ),
+              progressBar,
+            ],
+          ),
+        ),
+      );
+
+  Widget get progressBar => Positioned(
+        left: 0.0,
+        right: 0.0,
+        bottom: 0.0,
+        child: SizedBox(
+          height: suSetHeight(2.0),
+          child: StreamBuilder<double>(
+            initialData: 0.0,
+            stream: progressController.stream,
+            builder: (BuildContext context, AsyncSnapshot<double> data) => LinearProgressIndicator(
+              backgroundColor: Theme.of(context).primaryColor,
+              value: data.data,
             ),
           ),
         ),
@@ -357,10 +386,12 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             applicationNameForUserAgent: 'openjmu-webview',
             cacheEnabled: widget.withCookie ?? true,
             clearCache: !widget.withCookie ?? false,
+            horizontalScrollBarEnabled: false,
             javaScriptCanOpenWindowsAutomatically: true,
             transparentBackground: true,
             useOnDownloadStart: true,
             useShouldOverrideUrlLoading: true,
+            verticalScrollBarEnabled: false,
           ),
           // TODO(AlexVincent525): Currently zoom control in android was broken, need to find the root cause.
           android: AndroidInAppWebViewOptions(
@@ -395,13 +426,9 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
           }
         },
         onLoadStart: (InAppWebViewController controller, String url) {
-          _webViewController = controller;
-
           debugPrint('Webview onLoadStart: $url');
         },
         onLoadStop: (InAppWebViewController controller, String url) async {
-          _webViewController = controller;
-
           this.url = url;
           final String _title = (await controller.getTitle())?.trim();
           if (_title != null && _title.isNotEmpty && _title != this.url) {
@@ -418,18 +445,20 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
           if (mounted) {
             setState(() {});
           }
+          Future.delayed(500.milliseconds, () {
+            progressController.add(0.0);
+          });
+        },
+        onProgressChanged: (InAppWebViewController controller, int progress) {
+          progressController.add(progress / 100);
         },
         onConsoleMessage: (InAppWebViewController controller, ConsoleMessage consoleMessage) {
-          _webViewController = controller;
-
           debugPrint('Console message: '
               '${consoleMessage.messageLevel.toString()}'
               ' - '
               '${consoleMessage.message}');
         },
         onDownloadStart: (InAppWebViewController controller, String url) {
-          _webViewController = controller;
-
           debugPrint('WebView started download from: $url');
           NetUtils.download(url);
         },
