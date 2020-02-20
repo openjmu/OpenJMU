@@ -11,27 +11,31 @@ import 'package:openjmu/constants/constants.dart';
 class DataUtils {
   const DataUtils._();
 
-  static final settingsBox = HiveBoxes.settingsBox;
+  static final Box<dynamic> settingsBox = HiveBoxes.settingsBox;
 
-  static final spBlowfish = 'blowfish';
-  static final spIsLogin = 'isLogin';
-  static final spTicket = 'ticket';
-  static final spUserUid = 'userUid';
-  static final spUserWorkId = 'userWorkId';
+  static const String spBlowfish = 'blowfish';
+  static const String spIsLogin = 'isLogin';
+  static const String spTicket = 'ticket';
+  static const String spUserUid = 'userUid';
+  static const String spUserWorkId = 'userWorkId';
 
   static Future<bool> login(String username, String password) async {
-    final blowfish = Uuid().v4();
-    final params = Constants.loginParams(
+    final String blowfish = Uuid().v4();
+    final Map<String, dynamic> params = Constants.loginParams(
       username: username,
       password: password,
       blowfish: blowfish,
     );
     try {
-      final loginData = (await UserAPI.login(params)).data;
-      UserAPI.currentUser.sid = loginData['sid'];
-      UserAPI.currentUser.ticket = loginData['ticket'];
-      final user = (await UserAPI.getUserInfo(uid: loginData['uid'])).data;
-      final userInfo = {
+      final Map<String, dynamic> loginData =
+          (await UserAPI.login<Map<String, dynamic>>(params)).data;
+      UserAPI.currentUser.sid = loginData['sid'] as String;
+      UserAPI.currentUser.ticket = loginData['ticket'] as String;
+      final Map<String, dynamic> user = (await UserAPI.getUserInfo(
+        uid: loginData['uid'].toString().toInt(),
+      ) as Response<Map<String, dynamic>>)
+          .data;
+      final Map<String, dynamic> userInfo = <String, dynamic>{
         'sid': loginData['sid'],
         'uid': loginData['uid'],
         'username': user['username'],
@@ -45,9 +49,13 @@ class DataUtils {
         'gender': int.parse(user['gender'].toString()),
       };
       bool isWizard = true;
-      if (!userInfo['isTeacher']) isWizard = await checkWizard();
+      if (!(userInfo['isTeacher'] as bool)) {
+        isWizard = await checkWizard();
+      }
       await saveLoginInfo(userInfo);
-      UserAPI.setBlacklist((await UserAPI.getBlacklist()).data['users']);
+      UserAPI.setBlacklist(
+        (await UserAPI.getBlacklist()).data['users'] as List<Map<String, dynamic>>,
+      );
       showToast('登录成功！');
       Instances.eventBus.fire(TicketGotEvent(isWizard));
       return true;
@@ -63,7 +71,7 @@ class DataUtils {
   static void logout() {
     UserAPI.blacklist?.clear();
     MessageUtils.sendLogout();
-    NetUtils.postWithCookieSet(API.logout).whenComplete(() {
+    NetUtils.postWithCookieSet<void>(API.logout).whenComplete(() {
       NetUtils.dio.clear();
       NetUtils.tokenDio.clear();
       NetUtils.cookieJar.deleteAll();
@@ -74,7 +82,7 @@ class DataUtils {
   }
 
   static Future<bool> checkWizard() async {
-    final info = (await UserAPI.getStudentInfo()).data;
+    final Map<String, dynamic> info = (await UserAPI.getStudentInfo()).data;
     if (info['wizard'].toString() == '1') {
       return true;
     } else {
@@ -82,21 +90,26 @@ class DataUtils {
     }
   }
 
-  static String recoverWorkId() => settingsBox.get(spUserWorkId);
+  static String recoverWorkId() => settingsBox.get(spUserWorkId) as String;
 
-  static void recoverLoginInfo() async {
-    final info = getSpTicket();
-    UserAPI.currentUser.ticket = info['ticket'];
+  static void recoverLoginInfo() {
+    final Map<String, dynamic> info = getSpTicket();
+    UserAPI.currentUser.ticket = info['ticket'] as String;
   }
 
-  static Future reFetchTicket() async {
+  static Future<void> reFetchTicket() async {
     try {
-      final result = await getTicket();
-      if (!result) throw Error.safeToString('Re-fetch ticket failed.');
-      bool isWizard = true;
+      final bool result = await getTicket();
+      if (!result) {
+        throw Error.safeToString('Re-fetch ticket failed.');
+      }
+      bool isWizard;
+      isWizard = true;
 //      if (!currentUser.isTeacher) isWizard = await checkWizard();
       if (currentUser.sid != null) {
-        UserAPI.setBlacklist((await UserAPI.getBlacklist()).data['users']);
+        UserAPI.setBlacklist(
+          ((await UserAPI.getBlacklist()).data['users'] as List<dynamic>).cast<Map>(),
+        );
       }
       Instances.eventBus.fire(TicketGotEvent(isWizard));
     } catch (e) {
@@ -105,15 +118,15 @@ class DataUtils {
     }
   }
 
-  static Future<void> getUserInfo([uid]) async {
+  static Future<void> getUserInfo([int uid]) async {
     return await NetUtils.tokenDio
-        .get(
+        .get<Map<String, dynamic>>(
       '${API.userInfo}?uid=${uid ?? currentUser.uid}',
       options: Options(cookies: buildPHPSESSIDCookies(currentUser.sid)),
     )
-        .then((response) {
-      final data = response.data;
-      final userInfo = <String, dynamic>{
+        .then((Response<Map<String, dynamic>> response) {
+      final Map<String, dynamic> data = response.data;
+      final Map<String, dynamic> userInfo = <String, dynamic>{
         'sid': currentUser.sid,
         'uid': currentUser.uid,
         'username': data['username'],
@@ -127,20 +140,20 @@ class DataUtils {
         'gender': int.parse(data['gender'].toString()),
       };
       setUserInfo(userInfo);
-    }).catchError((e) {
+    }).catchError((dynamic e) {
       debugPrint('Get user info error: ${e.request.cookies}');
     });
   }
 
   static void setUserInfo(Map<String, dynamic> data) {
     UserAPI.currentUser = UserInfo.fromJson(data);
-    HiveFieldUtils.setEnabledNewAppsIcon(!data['isTeacher']);
+    HiveFieldUtils.setEnabledNewAppsIcon(!(data['isTeacher'] as bool));
   }
 
   static Future<void> saveLoginInfo(Map<String, dynamic> data) async {
     if (data != null) {
       setUserInfo(data);
-      await settingsBox.putAll({
+      await settingsBox.putAll(<dynamic, dynamic>{
         spBlowfish: data['blowfish'],
         spIsLogin: true,
         spTicket: data['ticket'],
@@ -152,27 +165,31 @@ class DataUtils {
 
   /// 清除登录信息
   static Future<void> clearLoginInfo() async {
-    final workId = settingsBox.get(spUserWorkId);
+    final String workId = settingsBox.get(spUserWorkId) as String;
     UserAPI.currentUser = UserInfo();
     await settingsBox.clear();
     await settingsBox.put(spUserWorkId, workId);
   }
 
   static Map<String, dynamic> getSpTicket() {
-    final tickets = <String, dynamic>{'ticket': settingsBox.get(spTicket)};
+    final Map<String, dynamic> tickets = <String, dynamic>{'ticket': settingsBox.get(spTicket)};
     return tickets;
   }
 
   static Future<bool> getTicket() async {
     try {
       debugPrint('Fetch new ticket with: ${settingsBox.get(spTicket)}');
-      final params = Constants.loginParams(
-        blowfish: settingsBox.get(spBlowfish),
-        ticket: settingsBox.get(spTicket),
+      final Map<String, dynamic> params = Constants.loginParams(
+        blowfish: settingsBox.get(spBlowfish) as String,
+        ticket: settingsBox.get(spTicket) as String,
       );
       NetUtils.cookieJar.deleteAll();
       NetUtils.tokenCookieJar.deleteAll();
-      final response = (await NetUtils.tokenDio.post(API.loginTicket, data: params)).data;
+      final Map<String, dynamic> response = (await NetUtils.tokenDio.post<Map<String, dynamic>>(
+        API.loginTicket,
+        data: params,
+      ))
+          .data;
       updateSid(response);
       await getUserInfo();
       return true;
@@ -182,17 +199,17 @@ class DataUtils {
     }
   }
 
-  static void updateSid(response) {
-    UserAPI.currentUser.sid = response['sid'];
-    UserAPI.currentUser.ticket = response['sid'];
-    UserAPI.currentUser.uid = settingsBox.get(spUserUid);
+  static void updateSid(Map<String, dynamic> response) {
+    UserAPI.currentUser.sid = response['sid'] as String;
+    UserAPI.currentUser.ticket = response['sid'] as String;
+    UserAPI.currentUser.uid = settingsBox.get(spUserUid) as int;
   }
 
   /// 是否登录
-  static bool isLogin() => settingsBox.get(spIsLogin) ?? false;
+  static bool isLogin() => settingsBox.get(spIsLogin) as bool ?? false;
 
   static Map<String, dynamic> buildPostHeaders(String sid) {
-    final headers = <String, String>{
+    final Map<String, String> headers = <String, String>{
       'CLOUDID': 'jmu',
       'CLOUD-ID': 'jmu',
       'UAP-SID': sid,
@@ -203,7 +220,7 @@ class DataUtils {
     return headers;
   }
 
-  static List<Cookie> buildPHPSESSIDCookies(String sid) => [
+  static List<Cookie> buildPHPSESSIDCookies(String sid) => <Cookie>[
         if (sid != null) Cookie('PHPSESSID', sid),
         if (sid != null) Cookie('OAPSID', sid),
       ];

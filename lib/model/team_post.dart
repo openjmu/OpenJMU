@@ -15,26 +15,6 @@ part of 'beans.dart';
 /// [isLike] 当前用户是否已赞, [praisor] 赞了的人, [heat] 热度, [floor] 楼层,
 /// [unitId] 机构id, [groupId] 组别id,
 class TeamPost {
-  int tid, uid, rootTid, rootUid;
-  String nickname;
-  DateTime postTime;
-  String category;
-  String title;
-  String content;
-  List pics;
-  List postInfo;
-  Map<String, dynamic> userInfo;
-  List replyInfo;
-  int repliesCount;
-  int praisesCount;
-  int glances;
-  bool isLike;
-  List praisor;
-  double heat;
-  int floor;
-  int unitId;
-  int groupId;
-
   TeamPost({
     this.tid,
     this.uid,
@@ -61,39 +41,65 @@ class TeamPost {
   });
 
   factory TeamPost.fromJson(Map<String, dynamic> json) {
-    if (json == null) return null;
-    json.forEach((k, v) {
-      if (json[k] == '') json[k] = null;
+    if (json == null) {
+      return null;
+    }
+    json.forEach((String k, dynamic v) {
+      if (json[k] == '') {
+        json[k] = null;
+      }
     });
-    Map<String, dynamic> _user = json['user_info'];
-    _user.forEach((k, v) {
-      if (_user[k] == '') _user[k] = null;
+    final Map<String, dynamic> _user = json['user_info'] as Map<String, dynamic>;
+    _user.forEach((String k, dynamic v) {
+      if (_user[k] == '') {
+        _user[k] = null;
+      }
     });
-    TeamPost _post = TeamPost(
-      tid: int.tryParse(json['tid'].toString()),
-      uid: int.tryParse(_user['uid'].toString()),
-      rootTid: int.tryParse(json['root_tid'].toString()),
-      rootUid: int.tryParse(json['root_uid'].toString()),
-      nickname: _user['nickname'] ?? _user['uid'].toString(),
-      postTime: DateTime.fromMillisecondsSinceEpoch(int.tryParse(json['post_time'])),
-      category: json['category'],
-      content: json['content'],
-      pics: json['file_info'],
-      postInfo: json['post_info'],
+    final TeamPost _post = TeamPost(
+      tid: json['tid'].toString().toIntOrNull(),
+      uid: _user['uid'].toString().toIntOrNull(),
+      rootTid: json['root_tid'].toString().toIntOrNull(),
+      rootUid: json['root_uid'].toString().toIntOrNull(),
+      nickname: ((_user['nickname'] ?? _user['uid']) as dynamic).toString(),
+      postTime: DateTime.fromMillisecondsSinceEpoch((json['post_time'] as String).toIntOrNull()),
+      category: json['category'] as String,
+      content: json['content'] as String,
+      pics: (json['file_info'] as List)?.cast<Map>(),
+      postInfo: (json['post_info'] as List)?.cast<Map>(),
       userInfo: _user,
-      replyInfo: json['reply_info'],
-      repliesCount: int.tryParse(json['replys'].toString()),
-      praisesCount: int.tryParse(json['praises'].toString()),
-      glances: int.tryParse(json['glances'].toString()),
-      isLike: int.tryParse(json['praised'].toString()) == 1,
-      praisor: json['praisor'],
-      heat: double.tryParse(json['heat'].toString()),
-      floor: int.tryParse(json['floor'].toString()),
-      unitId: int.tryParse(json['unit_id'].toString()),
-      groupId: int.tryParse(json['group_id'].toString()),
+      replyInfo: (json['reply_info'] as List)?.cast<Map>(),
+      repliesCount: json['replys'].toString().toIntOrNull(),
+      praisesCount: json['praises'].toString().toIntOrNull(),
+      glances: json['glances'].toString().toIntOrNull(),
+      isLike: json['praised'].toString().toIntOrNull() == 1,
+      praisor: (json['praisor'] as List)?.cast<Map>(),
+      heat: json['heat'].toString().toDoubleOrNull(),
+      floor: json['floor'].toString().toIntOrNull(),
+      unitId: json['unit_id'].toString().toIntOrNull(),
+      groupId: json['group_id'].toString().toIntOrNull(),
     );
     return _post;
   }
+
+  int tid, uid, rootTid, rootUid;
+  String nickname;
+  DateTime postTime;
+  String category;
+  String title;
+  String content;
+  List<Map> pics;
+  List<Map> postInfo;
+  Map<String, dynamic> userInfo;
+  List<Map> replyInfo;
+  int repliesCount;
+  int praisesCount;
+  int glances;
+  bool isLike;
+  List<Map> praisor;
+  double heat;
+  int floor;
+  int unitId;
+  int groupId;
 
   @override
   bool operator ==(Object other) =>
@@ -106,7 +112,7 @@ class TeamPost {
   bool get isReplied => postInfo?.isNotEmpty ?? false;
 
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'tid': tid,
       'uid': uid,
       'rootTid': rootTid,
@@ -134,6 +140,6 @@ class TeamPost {
 
   @override
   String toString() {
-    return 'TeamPost ${JsonEncoder.withIndent('  ').convert(toJson())}';
+    return 'TeamPost ${const JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 }

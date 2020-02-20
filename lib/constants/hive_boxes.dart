@@ -12,20 +12,20 @@ import 'package:openjmu/constants/constants.dart';
 class HiveBoxes {
   const HiveBoxes._();
 
-  static Box<Map> appMessagesBox;
-  static Box<Map> personalMessagesBox;
+  static Box<Map<dynamic, dynamic>> appMessagesBox;
+  static Box<Map<dynamic, dynamic>> personalMessagesBox;
 
-  static Box<Map> coursesBox;
+  static Box<Map<dynamic, dynamic>> coursesBox;
   static Box<String> courseRemarkBox;
   static Box<DateTime> startWeekBox;
-  static Box<Map> scoresBox;
-  static Box<List> webAppsBox;
+  static Box<Map<dynamic, dynamic>> scoresBox;
+  static Box<List<dynamic>> webAppsBox;
 
-  static Box<List> reportRecordBox;
+  static Box<List<dynamic>> reportRecordBox;
   static Box<dynamic> settingsBox;
   static Box<ChangeLog> changelogBox;
 
-  static Future openBoxes() async {
+  static Future<void> openBoxes() async {
     Hive
       ..registerAdapter(AppMessageAdapter())
       ..registerAdapter(ChangeLogAdapter())
@@ -34,22 +34,22 @@ class HiveBoxes {
       ..registerAdapter(ScoreAdapter())
       ..registerAdapter(WebAppAdapter());
 
-    appMessagesBox = await Hive.openBox<Map>('openjmu_app_messages');
+    appMessagesBox = await Hive.openBox<Map<dynamic, dynamic>>('openjmu_app_messages');
 //    personalMessagesBox = await Hive.openBox<Map>('openjmu_personal_messages');
 
-    coursesBox = await Hive.openBox<Map>('openjmu_user_courses');
+    coursesBox = await Hive.openBox<Map<dynamic, dynamic>>('openjmu_user_courses');
     courseRemarkBox = await Hive.openBox<String>('openjmu_user_course_remark');
     startWeekBox = await Hive.openBox<DateTime>('openjmu_start_week');
-    scoresBox = await Hive.openBox<Map>('openjmu_user_scores');
-    webAppsBox = await Hive.openBox<List>('openjmu_webapps');
+    scoresBox = await Hive.openBox<Map<dynamic, dynamic>>('openjmu_user_scores');
+    webAppsBox = await Hive.openBox<List<dynamic>>('openjmu_webapps');
 
-    reportRecordBox = await Hive.openBox<List>('openjmu_report_record');
+    reportRecordBox = await Hive.openBox<List<dynamic>>('openjmu_report_record');
     settingsBox = await Hive.openBox<dynamic>('openjmu_app_settings');
 
     changelogBox = await Hive.openBox<ChangeLog>('openjmu_changelog');
   }
 
-  static Future<void> clearBoxes({context}) async {
+  static Future<void> clearBoxes({BuildContext context}) async {
     bool confirm = true;
     if (context != null) {
       confirm = await ConfirmationBottomSheet.show(
@@ -72,7 +72,9 @@ class HiveBoxes {
       await settingsBox?.clear();
       await startWeekBox?.clear();
       debugPrint('Boxes cleared');
-      if (kReleaseMode) unawaited(SystemNavigator.pop());
+      if (kReleaseMode) {
+        unawaited(SystemNavigator.pop());
+      }
     }
   }
 }

@@ -7,23 +7,23 @@ import 'package:extended_text/extended_text.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class CommentCard extends StatelessWidget {
-  final Comment comment;
-
   const CommentCard(
     this.comment, {
     Key key,
   }) : super(key: key);
+
+  final Comment comment;
 
   TextStyle get subtitleStyle => TextStyle(color: Colors.grey, fontSize: suSetSp(18.0));
   TextStyle get rootTopicTextStyle => TextStyle(fontSize: suSetSp(18.0));
   TextStyle get rootTopicMentionStyle => TextStyle(color: Colors.blue, fontSize: suSetSp(18.0));
   Color get subIconColor => Colors.grey;
 
-  Widget getCommentNickname(context) {
+  Widget getCommentNickname(BuildContext context) {
     return Row(
       children: <Widget>[
         Text(
-          comment.fromUserName ?? comment.fromUserUid,
+          '${comment.fromUserName ?? comment.fromUserUid}',
           style: TextStyle(fontSize: suSetSp(22.0)),
           textAlign: TextAlign.left,
         ),
@@ -69,8 +69,8 @@ class CommentCard extends StatelessWidget {
     );
   }
 
-  Widget getCommentContent(context, Comment comment) {
-    String content = comment.content;
+  Widget getCommentContent(BuildContext context, Comment comment) {
+    final String content = comment.content;
     return Row(
       children: <Widget>[
         Expanded(
@@ -89,9 +89,9 @@ class CommentCard extends StatelessWidget {
     );
   }
 
-  Widget getRootContent(context, Comment comment) {
-    var content = comment.toReplyContent ?? comment.toTopicContent;
-    if (content != null && content.length > 0) {
+  Widget getRootContent(BuildContext context, Comment comment) {
+    final String content = comment.toReplyContent ?? comment.toTopicContent;
+    if (content != null && content.isNotEmpty) {
       String topic;
       if (comment.toReplyExist) {
         topic = '<M ${comment.toReplyUid}>@${comment.toReplyUserName}<\/M> 的评论: ';
@@ -137,10 +137,9 @@ class CommentCard extends StatelessWidget {
     );
   }
 
-  Widget getExtendedText(context, content, {isRoot}) {
+  Widget getExtendedText(BuildContext context, String content, {bool isRoot = false}) {
     return Padding(
-      padding:
-          (isRoot ?? false) ? EdgeInsets.zero : EdgeInsets.symmetric(horizontal: suSetWidth(24.0)),
+      padding: isRoot ? EdgeInsets.zero : EdgeInsets.symmetric(horizontal: suSetWidth(24.0)),
       child: ExtendedText(
         content != null ? '$content ' : null,
         style: TextStyle(fontSize: suSetSp(21.0)),
@@ -148,7 +147,7 @@ class CommentCard extends StatelessWidget {
         maxLines: 8,
         overFlowTextSpan: OverFlowTextSpan(
           children: <TextSpan>[
-            TextSpan(text: ' ...'),
+            const TextSpan(text: ' ...'),
             TextSpan(
               text: '全文',
               style: TextStyle(color: currentThemeColor),
@@ -160,32 +159,32 @@ class CommentCard extends StatelessWidget {
     );
   }
 
-  void confirmDelete(context) async {
-    final confirm = await ConfirmationDialog.show(
+  Future<void> confirmDelete(BuildContext context) async {
+    final bool confirm = await ConfirmationDialog.show(
       context,
       title: '删除评论',
       content: '是否确认删除这条评论?',
       showConfirm: true,
     );
     if (confirm) {
-      final _loadingDialogController = LoadingDialogController();
+      final LoadingDialogController _loadingDialogController = LoadingDialogController();
       LoadingDialog.show(
         context,
         controller: _loadingDialogController,
         text: '正在删除评论',
         isGlobal: false,
       );
-      CommentAPI.deleteComment(comment.post.id, comment.id).then((response) {
+      CommentAPI.deleteComment(comment.post.id, comment.id).then((dynamic _) {
         _loadingDialogController.changeState('success', '评论删除成功');
         Instances.eventBus.fire(PostCommentDeletedEvent(comment.post.id));
-      }).catchError((e) {
+      }).catchError((dynamic e) {
         debugPrint(e.toString());
         _loadingDialogController.changeState('failed', '评论删除失败');
       });
     }
   }
 
-  void showAction(context) {
+  void showAction(BuildContext context) {
     if (comment.post != null) {
       ConfirmationBottomSheet.show(
         context,
@@ -201,7 +200,7 @@ class CommentCard extends StatelessWidget {
             icon: Icon(Icons.reply),
             onTap: () => navigatorState.pushNamed(
               Routes.OPENJMU_ADD_COMMENT,
-              arguments: {'post': comment.post, 'comment': comment},
+              arguments: <String, dynamic>{'post': comment.post, 'comment': comment},
             ),
           ),
           ConfirmationBottomSheetAction(
@@ -209,7 +208,7 @@ class CommentCard extends StatelessWidget {
             icon: Icon(Icons.pageview),
             onTap: () => navigatorState.pushNamed(
               Routes.OPENJMU_POST_DETAIL,
-              arguments: {'post': comment.post, 'parentContext': context},
+              arguments: <String, dynamic>{'post': comment.post, 'parentContext': context},
             ),
           ),
         ],

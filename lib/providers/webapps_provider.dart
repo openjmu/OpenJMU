@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class WebAppsProvider extends ChangeNotifier {
-  final _box = HiveBoxes.webAppsBox;
+  final Box<List<dynamic>> _box = HiveBoxes.webAppsBox;
 
   Set<WebApp> _displayedWebApps = <WebApp>{};
   Set<WebApp> _allWebApps = <WebApp>{};
@@ -18,14 +18,18 @@ class WebAppsProvider extends ChangeNotifier {
 
   bool fetching = true;
 
-  Future getAppList() async => NetUtils.getWithCookieSet(API.webAppLists);
+  Future<dynamic> getAppList() async => NetUtils.getWithCookieSet<dynamic>(API.webAppLists);
 
   void initApps() {
     _appCategoriesList = <String, Set<WebApp>>{
-      for (final key in categories.keys) key: <WebApp>{},
+      for (final String key in categories.keys) key: <WebApp>{},
     };
-    if (_allWebApps.isNotEmpty) _allWebApps.clear();
-    if (_displayedWebApps.isNotEmpty) _displayedWebApps.clear();
+    if (_allWebApps.isNotEmpty) {
+      _allWebApps.clear();
+    }
+    if (_displayedWebApps.isNotEmpty) {
+      _displayedWebApps.clear();
+    }
     if (_box.get(currentUser.uid)?.isNotEmpty ?? false) {
       _allWebApps = _box.get(currentUser.uid).cast<WebApp>().toSet();
       recoverApps();
@@ -34,14 +38,16 @@ class WebAppsProvider extends ChangeNotifier {
   }
 
   void recoverApps() {
-    final _tempSet = <WebApp>{};
-    final _tempCategoryList = <String, Set<WebApp>>{
-      for (final key in categories.keys) key: <WebApp>{},
+    final Set<WebApp> _tempSet = <WebApp>{};
+    final Map<String, Set<WebApp>> _tempCategoryList = <String, Set<WebApp>>{
+      for (final String key in categories.keys) key: <WebApp>{},
     };
 
-    for (final app in _allWebApps) {
+    for (final WebApp app in _allWebApps) {
       if (app.name?.isNotEmpty ?? false) {
-        if (!appFiltered(app)) _tempSet.add(app);
+        if (!appFiltered(app)) {
+          _tempSet.add(app);
+        }
         if (app.menuType != null &&
             _tempCategoryList.containsKey(app.menuType) &&
             !appFiltered(app) &&
@@ -56,18 +62,21 @@ class WebAppsProvider extends ChangeNotifier {
     fetching = false;
   }
 
-  Future updateApps() async {
-    final _tempSet = <WebApp>{};
-    final _tempAllSet = <WebApp>{};
-    final _tempCategoryList = <String, Set<WebApp>>{
-      for (final key in categories.keys) key: <WebApp>{},
+  Future<void> updateApps() async {
+    final Set<WebApp> _tempSet = <WebApp>{};
+    final Set<WebApp> _tempAllSet = <WebApp>{};
+    final Map<String, Set<WebApp>> _tempCategoryList = <String, Set<WebApp>>{
+      for (final String key in categories.keys) key: <WebApp>{},
     };
-    final data = (await getAppList()).data;
+    final List<Map<String, dynamic>> data =
+        ((await getAppList()).data as List<dynamic>).cast<Map<String, dynamic>>();
 
     for (int i = 0; i < data.length; i++) {
-      final _app = appWrapper(WebApp.fromJson(data[i]));
+      final WebApp _app = appWrapper(WebApp.fromJson(data[i]));
       if (_app.name?.isNotEmpty ?? false) {
-        if (!appFiltered(_app)) _tempSet.add(_app);
+        if (!appFiltered(_app)) {
+          _tempSet.add(_app);
+        }
         if (_app.menuType != null &&
             _tempCategoryList.containsKey(_app.menuType) &&
             !appFiltered(_app) &&
@@ -79,7 +88,7 @@ class WebAppsProvider extends ChangeNotifier {
     }
 
     /// Temporary add web vpn to apps list.
-    final _webVpnApp = webVPN;
+    final WebApp _webVpnApp = webVPN;
     _tempAllSet.add(_webVpnApp);
     _tempCategoryList[_webVpnApp.menuType].add(_webVpnApp);
     _tempSet.add(_webVpnApp);
@@ -129,7 +138,7 @@ class WebAppsProvider extends ChangeNotifier {
       (app.code == '6501') ||
       (app.code == '4001' && app.name == '集大通');
 
-  final Map<String, String> categories = {
+  final Map<String, String> categories = <String, String>{
 //    '10': '个人事务',
     'A4': '我的服务',
     'A3': '我的系统',

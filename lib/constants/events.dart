@@ -114,16 +114,17 @@ class AddEmoticonEvent {
 }
 
 class HasUpdateEvent {
-  bool forceUpdate;
-  String currentVersion;
-  int currentBuild;
-  Map<String, dynamic> response;
   HasUpdateEvent({
     this.forceUpdate,
     this.currentVersion,
     this.currentBuild,
     this.response,
   });
+
+  bool forceUpdate;
+  String currentVersion;
+  int currentBuild;
+  Map<String, dynamic> response;
 }
 
 class OTAEvent {

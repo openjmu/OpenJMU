@@ -8,10 +8,10 @@ part of 'beans.dart';
 ///
 /// [id] 标签id, [name] 名称
 class UserTag {
-  int id;
-  String name;
+  const UserTag({this.id, this.name});
 
-  UserTag({this.id, this.name});
+  final int id;
+  final String name;
 
   @override
   bool operator ==(Object other) =>

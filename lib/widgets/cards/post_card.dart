@@ -14,13 +14,6 @@ import 'package:openjmu/controller/extended_typed_network_image_provider.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
 
 class PostCard extends StatefulWidget {
-  final Post post;
-  final bool isDetail;
-  final bool isRootContent;
-  final String fromPage;
-  final int index;
-  final BuildContext parentContext;
-
   const PostCard(
     this.post, {
     this.isDetail = false,
@@ -31,15 +24,22 @@ class PostCard extends StatefulWidget {
     Key key,
   }) : super(key: key);
 
+  final Post post;
+  final bool isDetail;
+  final bool isRootContent;
+  final String fromPage;
+  final int index;
+  final BuildContext parentContext;
+
   @override
   State createState() => _PostCardState();
 }
 
 class _PostCardState extends State<PostCard> {
-  final Color actionIconColorDark = Color(0xff757575);
-  final Color actionIconColorLight = Color(0xffE0E0E0);
-  final Color actionTextColorDark = Color(0xff9E9E9E);
-  final Color actionTextColorLight = Color(0xffBDBDBD);
+  final Color actionIconColorDark = const Color(0xff757575);
+  final Color actionIconColorLight = const Color(0xffE0E0E0);
+  final Color actionTextColorDark = const Color(0xff9E9E9E);
+  final Color actionTextColorLight = const Color(0xffBDBDBD);
   final double contentPadding = 22.0;
 
   TextStyle get subtitleStyle => TextStyle(color: Colors.grey, fontSize: suSetSp(18.0));
@@ -50,27 +50,39 @@ class _PostCardState extends State<PostCard> {
   void initState() {
     super.initState();
     Instances.eventBus
-      ..on<ForwardInPostUpdatedEvent>().listen((event) {
-        if (event.postId == widget.post.id) widget.post.forwards = event.count;
-        if (mounted) setState(() {});
-      })
-      ..on<CommentInPostUpdatedEvent>().listen((event) {
-        if (event.postId == widget.post.id) widget.post.comments = event.count;
-        if (mounted) setState(() {});
-      })
-      ..on<PraiseInPostUpdatedEvent>().listen((event) {
+      ..on<ForwardInPostUpdatedEvent>().listen((ForwardInPostUpdatedEvent event) {
         if (event.postId == widget.post.id) {
-          if (event.isLike != null) widget.post.isLike = event.isLike;
+          widget.post.forwards = event.count;
+        }
+        if (mounted) {
+          setState(() {});
+        }
+      })
+      ..on<CommentInPostUpdatedEvent>().listen((CommentInPostUpdatedEvent event) {
+        if (event.postId == widget.post.id) {
+          widget.post.comments = event.count;
+        }
+        if (mounted) {
+          setState(() {});
+        }
+      })
+      ..on<PraiseInPostUpdatedEvent>().listen((PraiseInPostUpdatedEvent event) {
+        if (event.postId == widget.post.id) {
+          if (event.isLike != null) {
+            widget.post.isLike = event.isLike;
+          }
           widget.post.praises = event.count;
         }
-        if (this.mounted) setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       });
   }
 
-  Widget getPostNickname(context, post) => Row(
+  Widget getPostNickname(BuildContext context, Post post) => Row(
         children: <Widget>[
           Text(
-            post.nickname ?? post.uid,
+            '${post.nickname ?? post.uid}',
             style: TextStyle(fontSize: suSetSp(22.0)),
             textAlign: TextAlign.left,
           ),
@@ -115,7 +127,7 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  Widget getPostContent(context, post) => Container(
+  Widget getPostContent(BuildContext context, Post post) => Container(
         width: Screens.width,
         margin: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
         child: Column(
@@ -129,8 +141,8 @@ class _PostCardState extends State<PostCard> {
         ),
       );
 
-  Widget getRootPost(context, rootTopic) {
-    var content = rootTopic['topic'];
+  Widget getRootPost(BuildContext context, Map<String, dynamic> rootTopic) {
+    final Map<String, dynamic> content = rootTopic['topic'] as Map<String, dynamic>;
     if (rootTopic['exists'] == 1) {
       if (content['article'] == '此微博已经被屏蔽' || content['content'] == '此微博已经被屏蔽') {
         return Container(
@@ -138,17 +150,17 @@ class _PostCardState extends State<PostCard> {
           child: getPostBanned('shield', isRoot: true),
         );
       } else {
-        final _post = Post.fromJson(content);
+        final Post _post = Post.fromJson(content);
         String topic =
             '<M ${content['user']['uid']}>@${content['user']['nickname'] ?? content['user']['uid']}<\/M>: ';
-        topic += content['article'] ?? content['content'];
+        topic += (content['article'] ?? content['content']).toString();
         return Container(
           margin: EdgeInsets.only(top: suSetHeight(8.0)),
           child: GestureDetector(
             onTap: () {
               navigatorState.pushNamed(
                 Routes.OPENJMU_POST_DETAIL,
-                arguments: {
+                arguments: <String, dynamic>{
                   'post': _post,
                   'index': widget.index,
                   'fromPage': widget.fromPage,
@@ -175,7 +187,10 @@ class _PostCardState extends State<PostCard> {
                   if (rootTopic['topic']['image'] != null)
                     Padding(
                       padding: EdgeInsets.only(top: suSetHeight(8.0)),
-                      child: getRootPostImages(context, rootTopic['topic']),
+                      child: getRootPostImages(
+                        context,
+                        rootTopic['topic'] as Map<String, dynamic>,
+                      ),
                     ),
                 ],
               ),
@@ -191,7 +206,7 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  Widget getPostImages(context, Post post) {
+  Widget getPostImages(BuildContext context, Post post) {
     return Padding(
       padding: (post.pics?.length ?? 0) > 0
           ? EdgeInsets.symmetric(
@@ -203,17 +218,18 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  Widget getRootPostImages(context, rootTopic) {
-    return getImages(context, rootTopic['image']);
+  Widget getRootPostImages(BuildContext context, Map<String, dynamic> rootTopic) {
+    return getImages(context, rootTopic['image'] as List<dynamic>);
   }
 
-  Widget getImages(context, data) {
+  Widget getImages(BuildContext context, List<dynamic> data) {
     if (data != null) {
-      List<Widget> imagesWidget = [];
+      final List<Widget> imagesWidget = <Widget>[];
       for (int index = 0; index < data.length; index++) {
-        final imageId = int.parse(data[index]['id'].toString());
-        final imageUrl = data[index]['image_middle'];
-        final provider = ExtendedTypedNetworkImageProvider(imageUrl);
+        final int imageId = data[index]['id'].toString().toInt();
+        final String imageUrl = data[index]['image_middle'] as String;
+        final ExtendedTypedNetworkImageProvider provider =
+            ExtendedTypedNetworkImageProvider(imageUrl);
         Widget _exImage = ExtendedImage(
           image: provider,
           fit: BoxFit.cover,
@@ -221,10 +237,10 @@ class _PostCardState extends State<PostCard> {
             Widget loader;
             switch (state.extendedImageLoadState) {
               case LoadState.loading:
-                loader = Center(child: CupertinoActivityIndicator());
+                loader = const Center(child: CupertinoActivityIndicator());
                 break;
               case LoadState.completed:
-                final info = state.extendedImageInfo;
+                final ImageInfo info = state.extendedImageInfo;
                 if (info != null) {
                   loader = ScaledImage(
                     image: info.image,
@@ -245,13 +261,13 @@ class _PostCardState extends State<PostCard> {
           onTap: () {
             navigatorState.pushNamed(
               Routes.OPENJMU_IMAGE_VIEWER,
-              arguments: {
+              arguments: <String, dynamic>{
                 'index': index,
-                'pics': data.map<ImageBean>((f) {
+                'pics': data.map<ImageBean>((dynamic f) {
                   return ImageBean(
                     id: imageId,
-                    imageUrl: f['image_original'],
-                    imageThumbUrl: f['image_thumb'],
+                    imageUrl: f['image_original'] as String,
+                    imageThumbUrl: f['image_thumb'] as String,
                     postId: widget.post.id,
                   );
                 }).toList(),
@@ -268,7 +284,7 @@ class _PostCardState extends State<PostCard> {
               '${widget.isDetail ? 'isDetail-' : ''}'
               '${widget.post.id}-$imageId',
           child: _exImage,
-          placeholderBuilder: (_, __, child) => child,
+          placeholderBuilder: (_, __, Widget child) => child,
         );
         imagesWidget.add(_exImage);
       }
@@ -301,14 +317,14 @@ class _PostCardState extends State<PostCard> {
       }
       return _image;
     } else {
-      return SizedBox.shrink();
+      return const SizedBox.shrink();
     }
   }
 
-  Widget postActions(context) {
-    int forwards = widget.post.forwards;
-    int comments = widget.post.comments;
-    int praises = widget.post.praises;
+  Widget postActions(BuildContext context) {
+    final int forwards = widget.post.forwards;
+    final int comments = widget.post.comments;
+    final int praises = widget.post.praises;
 
     return SizedBox(
       width: Screens.width * 0.5,
@@ -385,7 +401,7 @@ class _PostCardState extends State<PostCard> {
               onPressed: () {
                 navigatorState.pushNamed(
                   Routes.OPENJMU_ADD_FORWARD,
-                  arguments: {'post': widget.post},
+                  arguments: <String, dynamic>{'post': widget.post},
                 );
               },
               icon: SvgPicture.asset(
@@ -423,30 +439,25 @@ class _PostCardState extends State<PostCard> {
         content += '删除';
         break;
     }
-    return Selector<ThemesProvider, bool>(
-      selector: (_, provider) => provider.dark,
-      builder: (_, dark, __) {
-        return Container(
-          padding: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
-          decoration: BoxDecoration(
-            borderRadius: !isRoot ? BorderRadius.circular(suSetWidth(10.0)) : null,
-            color: dark ? Colors.grey[700] : Colors.grey[400],
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+      decoration: BoxDecoration(
+        borderRadius: !isRoot ? BorderRadius.circular(suSetWidth(10.0)) : null,
+        color: currentIsDark ? Colors.grey[700] : Colors.grey[400],
+      ),
+      child: Center(
+        child: Text(
+          content,
+          style: TextStyle(
+            color: Colors.grey[currentIsDark ? 350 : 50],
+            fontSize: suSetSp(22.0),
           ),
-          child: Center(
-            child: Text(
-              content,
-              style: TextStyle(
-                color: Colors.grey[dark ? 350 : 50],
-                fontSize: suSetSp(22.0),
-              ),
-            ),
-          ),
-        );
-      },
+        ),
+      ),
     );
   }
 
-  Widget getExtendedText(content, {isRoot}) {
+  Widget getExtendedText(String content, {bool isRoot = false}) {
     return GestureDetector(
       onLongPress: widget.isDetail
           ? () {
@@ -455,7 +466,7 @@ class _PostCardState extends State<PostCard> {
             }
           : null,
       child: Padding(
-        padding: (isRoot ?? false)
+        padding: isRoot ?? false
             ? EdgeInsets.zero
             : EdgeInsets.symmetric(
                 horizontal: suSetWidth(contentPadding),
@@ -469,7 +480,7 @@ class _PostCardState extends State<PostCard> {
               ? null
               : OverFlowTextSpan(
                   children: <TextSpan>[
-                    TextSpan(text: ' ... '),
+                    const TextSpan(text: ' ... '),
                     TextSpan(
                       text: '全文',
                       style: TextStyle(color: currentThemeColor),
@@ -484,13 +495,13 @@ class _PostCardState extends State<PostCard> {
 
   Future<bool> onLikeButtonTap(bool isLiked) {
     final Completer<bool> completer = Completer<bool>();
-    int id = widget.post.id;
+    final int id = widget.post.id;
 
     widget.post.isLike = !widget.post.isLike;
     !isLiked ? widget.post.praises++ : widget.post.praises--;
     completer.complete(!isLiked);
 
-    PraiseAPI.requestPraise(id, !isLiked).catchError((e) {
+    PraiseAPI.requestPraise(id, !isLiked).catchError((dynamic e) {
       isLiked ? widget.post.praises++ : widget.post.praises--;
       completer.complete(isLiked);
       return completer.future;
@@ -519,15 +530,15 @@ class _PostCardState extends State<PostCard> {
         onPressed: () => postExtraActions(context),
       );
 
-  void confirmDelete(context) async {
-    final confirm = await ConfirmationDialog.show(
+  Future<void> confirmDelete(BuildContext context) async {
+    final bool confirm = await ConfirmationDialog.show(
       context,
       title: '删除动态',
       content: '是否确认删除这条动态?',
       showConfirm: true,
     );
     if (confirm) {
-      final _loadingDialogController = LoadingDialogController();
+      final LoadingDialogController _loadingDialogController = LoadingDialogController();
       LoadingDialog.show(
         context,
         controller: _loadingDialogController,
@@ -546,7 +557,7 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  void postExtraActions(context) {
+  void postExtraActions(BuildContext context) {
     ConfirmationBottomSheet.show(
       context,
       children: <Widget>[
@@ -569,16 +580,19 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  void confirmReport(context) async {
-    final confirm = await ConfirmationDialog.show(
+  Future<void> confirmReport(BuildContext context) async {
+    final bool confirm = await ConfirmationDialog.show(
       context,
       title: '举报动态',
       content: '确定举报该条动态吗?',
       showConfirm: true,
     );
     if (confirm) {
-      final provider = Provider.of<ReportRecordsProvider>(context, listen: false);
-      final canReport = await provider.addRecord(widget.post.id);
+      final ReportRecordsProvider provider = Provider.of<ReportRecordsProvider>(
+        context,
+        listen: false,
+      );
+      final bool canReport = await provider.addRecord(widget.post.id);
       if (canReport) {
         unawaited(PostAPI.reportPost(widget.post));
         showToast('举报成功');
@@ -589,7 +603,7 @@ class _PostCardState extends State<PostCard> {
   void pushToDetail() {
     navigatorState.pushNamed(
       Routes.OPENJMU_POST_DETAIL,
-      arguments: {
+      arguments: <String, dynamic>{
         'post': widget.post,
         'index': widget.index,
         'fromPage': widget.fromPage,
@@ -600,11 +614,11 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    final post = widget.post;
-    final hideShield = post.isShield &&
+    final Post post = widget.post;
+    final bool hideShield = post.isShield &&
         Provider.of<SettingsProvider>(currentContext, listen: false).hideShieldPost;
     return hideShield
-        ? SizedBox.shrink()
+        ? const SizedBox.shrink()
         : GestureDetector(
             onTap: widget.isDetail || post.isShield ? null : pushToDetail,
             onLongPress: post.isShield ? pushToDetail : null,
@@ -667,10 +681,11 @@ class _PostCardState extends State<PostCard> {
                                         fontSize: suSetSp(18.0),
                                       ),
                                 ),
-                                Spacer(),
-                                widget.isDetail
-                                    ? SizedBox(height: suSetWidth(16.0))
-                                    : postActions(context),
+                                const Spacer(),
+                                if (widget.isDetail)
+                                  SizedBox(height: suSetWidth(16.0))
+                                else
+                                  postActions(context),
                               ],
                             ),
                           ),

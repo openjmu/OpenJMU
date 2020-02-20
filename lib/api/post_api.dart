@@ -8,12 +8,12 @@ import 'package:openjmu/constants/constants.dart';
 class PostAPI {
   const PostAPI._();
 
-  static Future getPostList(
+  static Future<Response<Map<String, dynamic>>> getPostList(
     String postType,
     bool isFollowed,
     bool isMore,
     int lastValue, {
-    additionAttrs,
+    Map<String, dynamic> additionAttrs,
   }) async {
     String _postUrl;
     switch (postType) {
@@ -40,7 +40,7 @@ class PostAPI {
         }
         break;
       case 'search':
-        final keyword = Uri.encodeQueryComponent(additionAttrs['words']);
+        final String keyword = Uri.encodeQueryComponent(additionAttrs['words'] as String);
         if (isMore) {
           _postUrl = '${API.postListByWords}$keyword/id_max/$lastValue';
         } else {
@@ -55,7 +55,7 @@ class PostAPI {
         }
         break;
     }
-    return NetUtils.getWithCookieAndHeaderSet(_postUrl);
+    return NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(_postUrl);
   }
 
   static Future getForwardListInPost(

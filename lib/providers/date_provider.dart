@@ -38,14 +38,18 @@ class DateProvider extends ChangeNotifier {
   DateTime get now => _now;
   set now(DateTime value) {
     assert(value != null);
-    if (value == _now) return;
+    if (value == _now) {
+      return;
+    }
     _now = value;
     notifyListeners();
   }
 
   Future<void> initCurrentWeek() async {
-    final _dateInCache = HiveBoxes.startWeekBox.get('startDate');
-    if (_dateInCache != null) _startDate = _dateInCache;
+    final DateTime _dateInCache = HiveBoxes.startWeekBox.get('startDate');
+    if (_dateInCache != null) {
+      _startDate = _dateInCache;
+    }
     await getCurrentWeek();
     initCurrentWeekTimer();
   }
@@ -57,24 +61,28 @@ class DateProvider extends ChangeNotifier {
 
   Future<void> getCurrentWeek() async {
     now = DateTime.now();
-    final box = HiveBoxes.startWeekBox;
+    final Box<DateTime> box = HiveBoxes.startWeekBox;
     try {
       DateTime _day;
       _day = box.get('startDate');
       if (_day == null) {
-        final result = (await NetUtils.get(API.firstDayOfTerm)).data;
-        _day = DateTime.parse(jsonDecode(result)['start']);
+        final String result = (await NetUtils.get<String>(API.firstDayOfTerm)).data;
+        _day = DateTime.parse(jsonDecode(result)['start'] as String);
       }
       if (_startDate == null) {
         unawaited(updateStartDate(_day));
       } else {
-        if (_startDate != _day) unawaited(updateStartDate(_day));
+        if (_startDate != _day) {
+          unawaited(updateStartDate(_day));
+        }
       }
 
-      final _d = _startDate.difference(now).inDays;
-      if (_difference != _d) _difference = _d;
+      final int _d = _startDate.difference(now).inDays;
+      if (_difference != _d) {
+        _difference = _d;
+      }
 
-      final _w = -((_difference - 1) / 7).floor();
+      final int _w = -((_difference - 1) / 7).floor();
       if (_currentWeek != _w && _w <= 20) {
         _currentWeek = _w;
         notifyListeners();
@@ -102,7 +110,7 @@ class DateProvider extends ChangeNotifier {
   }
 }
 
-const shortWeekdays = <int, String>{
+const Map<int, String> shortWeekdays = <int, String>{
   1: '周一',
   2: '周二',
   3: '周三',

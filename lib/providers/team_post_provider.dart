@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class TeamPostProvider extends ChangeNotifier {
-  final TeamPost post;
-
   TeamPostProvider(this.post);
+
+  final TeamPost post;
 
   void replied() {
     post.repliesCount++;
@@ -25,7 +25,7 @@ class TeamPostProvider extends ChangeNotifier {
     post.praisesCount++;
     post.isLike = true;
     if (post.praisor != null) {
-      post.praisor.add({
+      post.praisor.add(<String, dynamic>{
         'uid': UserAPI.currentUser.uid,
         'nickname': UserAPI.currentUser.name,
         'sysavatar': 0,
@@ -39,7 +39,7 @@ class TeamPostProvider extends ChangeNotifier {
     post.isLike = false;
     if (post.praisor != null) {
       post.praisor.removeWhere(
-        (user) => user['uid'] == UserAPI.currentUser.uid,
+        (Map user) => user['uid'] == UserAPI.currentUser.uid,
       );
     }
     notifyListeners();

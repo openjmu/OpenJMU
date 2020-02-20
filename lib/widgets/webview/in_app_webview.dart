@@ -9,17 +9,17 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:openjmu/constants/constants.dart';
 
 @FFRoute(
-  name: "openjmu://inappbrowser",
-  routeName: "网页浏览",
+  name: 'openjmu://inappbrowser',
+  routeName: '网页浏览',
   argumentNames: [
-    "url",
-    "title",
-    "app",
-    "withCookie",
-    "withAppBar",
-    "withAction",
-    "withScaffold",
-    "keepAlive",
+    'url',
+    'title',
+    'app',
+    'withCookie',
+    'withAppBar',
+    'withAction',
+    'withScaffold',
+    'keepAlive',
   ],
 )
 class InAppBrowserPage extends StatefulWidget {
@@ -344,6 +344,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
         ),
       ];
 
+  @override
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);

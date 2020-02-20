@@ -71,7 +71,7 @@ class Constants {
   static const postApiSecretIOS = '773958E5CFE0FF8252808C417A8ECCAB';
 
   /// Request header for team.
-  static get teamHeader => {
+  static Map<String, dynamic> get teamHeader => <String, dynamic>{
         'APIKEY': apiKey,
         'APPID': 273,
         'CLIENTTYPE': Platform.operatingSystem,

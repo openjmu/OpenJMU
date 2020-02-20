@@ -32,8 +32,8 @@ class UserAPI {
   }
 
   static UserTag createUserTag(Map<String, dynamic> tagData) => UserTag(
-        id: tagData['id'],
-        name: tagData['tagname'],
+        id: tagData['id'] as int,
+        name: tagData['tagname'] as String,
       );
 
   /// Update cache network image provider after avatar is updated.
@@ -73,19 +73,20 @@ class UserAPI {
     avatarLastModified = DateTime.now().millisecondsSinceEpoch;
   }
 
-  static Future<dynamic> getUserInfo<T>({int uid}) async {
+  static Future<dynamic> getUserInfo({int uid}) async {
     if (uid == null) {
       return currentUser;
     } else {
-      return NetUtils.getWithCookieAndHeaderSet<void>(
+      return NetUtils.getWithCookieAndHeaderSet<dynamic>(
         API.userInfo,
         data: <String, dynamic>{'uid': uid},
       );
     }
   }
 
-  static Future getStudentInfo({int uid}) async {
-    return NetUtils.getWithCookieSet(API.studentInfo(uid: uid ?? currentUser.uid));
+  static Future<Response<Map<String, dynamic>>> getStudentInfo({int uid}) async {
+    return NetUtils.getWithCookieSet<Map<String, dynamic>>(
+        API.studentInfo(uid: uid ?? currentUser.uid));
   }
 
   static Future getLevel(int uid) {
@@ -120,7 +121,8 @@ class UserAPI {
     return NetUtils.getWithCookieAndHeaderSet('${API.userFansAndIdols}$uid');
   }
 
-  static Future getNotifications() async => NetUtils.getWithCookieAndHeaderSet(API.postUnread);
+  static Future<Response<Map<String, dynamic>>> getNotifications() async =>
+      NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(API.postUnread);
 
   static Future follow(int uid) async {
     try {
@@ -149,14 +151,14 @@ class UserAPI {
     );
   }
 
-  static Future<Map<String, dynamic>> searchUser(name) async {
-    Map<String, dynamic> users = (await NetUtils.getWithCookieSet(
+  static Future<Map<String, dynamic>> searchUser(String name) async {
+    Map<String, dynamic> users = (await NetUtils.getWithCookieSet<Map<String, dynamic>>(
       API.searchUser,
-      data: {'keyword': name},
+      data: <String, dynamic>{'keyword': name},
     ))
         .data;
     if (users['total'] == null) {
-      users = {
+      users = <String, dynamic>{
         'total': 1,
         'data': [users]
       };
@@ -165,15 +167,15 @@ class UserAPI {
   }
 
   /// Blacklists.
-  static final blacklist = <BlacklistUser>{};
+  static final Set<BlacklistUser> blacklist = <BlacklistUser>{};
 
-  static Future getBlacklist({int pos, int size}) {
-    return NetUtils.getWithCookieSet(
+  static Future<Response<Map<String, dynamic>>> getBlacklist({int pos, int size}) {
+    return NetUtils.getWithCookieSet<Map<String, dynamic>>(
       API.blacklist(pos: pos, size: size),
     );
   }
 
-  static void confirmBlock(context, BlacklistUser user) async {
+  static void confirmBlock(BuildContext context, BlacklistUser user) async {
     final add = !UserAPI.blacklist.contains(user);
     final confirm = await ConfirmationDialog.show(
       context,
@@ -218,12 +220,12 @@ class UserAPI {
     });
   }
 
-  static void setBlacklist(List list) {
+  static void setBlacklist(List<Map> list) {
     if (list.isNotEmpty) {
-      list.forEach((person) {
-        final user = BlacklistUser.fromJson(person);
+      for (final Map person in list) {
+        final BlacklistUser user = BlacklistUser.fromJson(person as Map<String, dynamic>);
         blacklist.add(user);
-      });
+      }
     }
   }
 }

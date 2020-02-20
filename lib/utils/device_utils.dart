@@ -9,8 +9,8 @@ import 'package:openjmu/constants/constants.dart';
 class DeviceUtils {
   const DeviceUtils._();
 
-  static final _deviceInfoPlugin = DeviceInfoPlugin();
-  static var deviceInfo;
+  static final DeviceInfoPlugin _deviceInfoPlugin = DeviceInfoPlugin();
+  static dynamic deviceInfo;
 
   static String deviceModel = 'OpenJMU Device';
   static String devicePushToken;
@@ -25,15 +25,15 @@ class DeviceUtils {
   static Future<void> getModel() async {
     if (Platform.isAndroid) {
       deviceInfo = await _deviceInfoPlugin.androidInfo;
-      final androidInfo = deviceInfo as AndroidDeviceInfo;
+      final AndroidDeviceInfo androidInfo = deviceInfo as AndroidDeviceInfo;
 
-      final model = '${androidInfo.brand} ${androidInfo.product}';
+      final String model = '${androidInfo.brand} ${androidInfo.product}';
       deviceModel = model;
     } else if (Platform.isIOS) {
       deviceInfo = await _deviceInfoPlugin.iosInfo;
-      final iosInfo = deviceInfo as IosDeviceInfo;
+      final IosDeviceInfo iosInfo = deviceInfo as IosDeviceInfo;
 
-      final model = '${iosInfo.model} ${iosInfo.utsname.machine} ${iosInfo.systemVersion}';
+      final String model = '${iosInfo.model} ${iosInfo.utsname.machine} ${iosInfo.systemVersion}';
       deviceModel = model;
     }
 
@@ -42,8 +42,8 @@ class DeviceUtils {
 
   static Future<void> getDevicePushToken() async {
     if (Platform.isIOS) {
-      final _savedToken = HiveFieldUtils.getDevicePushToken();
-      final _tempToken = await ChannelUtils.iOSGetPushToken();
+      final String _savedToken = HiveFieldUtils.getDevicePushToken();
+      final String _tempToken = await ChannelUtils.iOSGetPushToken();
       if (_savedToken != null) {
         if (_savedToken != _tempToken) {
           await HiveFieldUtils.setDevicePushToken(_tempToken);

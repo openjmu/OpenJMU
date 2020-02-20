@@ -7,7 +7,7 @@ import 'package:openjmu/constants/constants.dart';
 class Messages {
   const Messages._();
 
-  static final Map<String, dynamic> socketConfig = {
+  static final Map<String, dynamic> socketConfig = <String, dynamic>{
     'host': '210.34.130.61',
     'port': 7777,
   };

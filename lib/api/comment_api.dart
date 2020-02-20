@@ -57,7 +57,8 @@ class CommentAPI {
     return NetUtils.postWithCookieAndHeaderSet(url, data: data);
   }
 
-  static deleteComment(int postId, int commentId) async => NetUtils.deleteWithCookieAndHeaderSet(
+  static Future<void> deleteComment(int postId, int commentId) async =>
+      NetUtils.deleteWithCookieAndHeaderSet<void>(
         '${API.postRequestComment}$postId/rid/$commentId',
       );
 

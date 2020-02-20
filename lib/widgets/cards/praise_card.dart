@@ -5,12 +5,12 @@ import 'package:extended_text/extended_text.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class PraiseCard extends StatelessWidget {
-  final Praise praise;
-
   PraiseCard(
     this.praise, {
     Key key,
   }) : super(key: key);
+
+  final Praise praise;
 
   final TextStyle subtitleStyle = TextStyle(
     color: Colors.grey,
@@ -25,10 +25,10 @@ class PraiseCard extends StatelessWidget {
   );
   final Color subIconColor = Colors.grey;
 
-  Widget getPraiseNickname(context, Praise praise) => Row(
+  Widget getPraiseNickname(BuildContext context, Praise praise) => Row(
         children: <Widget>[
           Text(
-            praise.nickname ?? praise.uid,
+            '${praise.nickname ?? praise.uid}',
             style: TextStyle(fontSize: suSetSp(22.0)),
             textAlign: TextAlign.left,
           ),
@@ -58,7 +58,7 @@ class PraiseCard extends StatelessWidget {
     );
   }
 
-  Widget getPraiseContent(context, Praise praise) {
+  Widget getPraiseContent(BuildContext context, Praise praise) {
     return Row(
       children: <Widget>[
         Expanded(
@@ -83,8 +83,8 @@ class PraiseCard extends StatelessWidget {
     );
   }
 
-  Widget getRootContent(context, Praise praise) {
-    Post _post = Post.fromJson(praise.post);
+  Widget getRootContent(BuildContext context, Praise praise) {
+    final Post _post = Post.fromJson(praise.post);
     String topic = '<M ${_post.uid}>@${_post.nickname}<\/M>: ';
     topic += _post.content;
     return Container(
@@ -103,16 +103,16 @@ class PraiseCard extends StatelessWidget {
     );
   }
 
-  Widget getExtendedText(context, content) {
+  Widget getExtendedText(BuildContext context, String content) {
     return ExtendedText(
-      content != null ? '$content ' : null,
+      content,
       style: TextStyle(fontSize: suSetSp(21.0)),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       maxLines: 8,
       overFlowTextSpan: OverFlowTextSpan(
         children: <TextSpan>[
-          TextSpan(text: ' ... '),
+          const TextSpan(text: ' ... '),
           TextSpan(
             text: '全文',
             style: TextStyle(color: currentThemeColor),
@@ -124,12 +124,12 @@ class PraiseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Post _post = Post.fromJson(this.praise.post);
+    final Post _post = Post.fromJson(praise.post);
     return GestureDetector(
       onTap: () {
         navigatorState.pushNamed(
           Routes.OPENJMU_POST_DETAIL,
-          arguments: {'post': _post, 'parentContext': context},
+          arguments: <String, dynamic>{'post': _post, 'parentContext': context},
         );
       },
       child: Container(

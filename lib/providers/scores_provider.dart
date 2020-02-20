@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class ScoresProvider extends ChangeNotifier {
-  final _scoreBox = HiveBoxes.scoresBox;
+  final Box<Map<dynamic, dynamic>> _scoreBox = HiveBoxes.scoresBox;
 
   Socket _socket;
   String _scoreData = '';
@@ -19,7 +19,9 @@ class ScoresProvider extends ChangeNotifier {
   bool get loaded => _loaded;
   set loaded(bool value) {
     assert(value != null);
-    if (value == _loaded) return;
+    if (value == _loaded) {
+      return;
+    }
     _loaded = value;
     notifyListeners();
   }
@@ -28,7 +30,9 @@ class ScoresProvider extends ChangeNotifier {
   bool get loading => _loading;
   set loading(bool value) {
     assert(value != null);
-    if (value == _loading) return;
+    if (value == _loading) {
+      return;
+    }
     _loading = value;
     notifyListeners();
   }
@@ -42,8 +46,10 @@ class ScoresProvider extends ChangeNotifier {
   List<String> get terms => _terms;
   set terms(List<String> value) {
     assert(value != null);
-    if (value == _terms) return;
-    _terms = List.from(value);
+    if (value == _terms) {
+      return;
+    }
+    _terms = List<String>.from(value);
     notifyListeners();
   }
 
@@ -51,7 +57,9 @@ class ScoresProvider extends ChangeNotifier {
   String get selectedTerm => _selectedTerm;
   set selectedTerm(String value) {
     assert(value != null);
-    if (value == _selectedTerm) return;
+    if (value == _selectedTerm) {
+      return;
+    }
     _selectedTerm = value;
     notifyListeners();
   }
@@ -62,18 +70,21 @@ class ScoresProvider extends ChangeNotifier {
   List<Score> get scores => _scores;
   set scores(List<Score> value) {
     assert(value != null);
-    if (value == _scores) return;
-    _scores = List.from(value);
+    if (value == _scores) {
+      return;
+    }
+    _scores = List<Score>.from(value);
     notifyListeners();
   }
 
-  List get filteredScores => _scores?.filter((score) => score.termId == _selectedTerm)?.toList();
+  List<Score> get filteredScores =>
+      _scores?.filter((Score score) => score.termId == _selectedTerm)?.toList();
 
-  void initScore() async {
-    final data = _scoreBox.get(currentUser.uid)?.cast<String, dynamic>();
+  Future<void> initScore() async {
+    final Map<String, dynamic> data = _scoreBox.get(currentUser.uid)?.cast<String, dynamic>();
     if (data != null && data['terms'] != null && data['scores'] != null) {
-      _terms = (data['terms'] as List).cast<String>();
-      _scores = (data['scores'] as List).cast<Score>();
+      _terms = (data['terms'] as List<dynamic>).cast<String>();
+      _scores = (data['scores'] as List<dynamic>).cast<Score>();
       _loaded = true;
     }
     if (await initSocket()) {
@@ -99,10 +110,12 @@ class ScoresProvider extends ChangeNotifier {
     }
   }
 
-  void requestScore() async {
-    if (!loading) loading = true;
+  Future<void> requestScore() async {
+    if (!loading) {
+      loading = true;
+    }
     try {
-      _socket?.add(jsonEncode({
+      _socket?.add(jsonEncode(<String, dynamic>{
         'uid': '${currentUser.uid}',
         'sid': '${currentUser.sid}',
         'workid': '${currentUser.workId}',
@@ -119,27 +132,37 @@ class ScoresProvider extends ChangeNotifier {
     }
   }
 
-  void onReceive(data) async {
-    final value = utf8.decode(data);
+  void onReceive(List<int> data) {
+    final String value = utf8.decode(data);
     _scoreData += value;
-    if (_scoreData.endsWith(']}}')) tryDecodeScores();
+    if (_scoreData.endsWith(']}}')) {
+      tryDecodeScores();
+    }
   }
 
   void tryDecodeScores() {
     try {
-      final response = jsonDecode(_scoreData)['obj'];
-      if (response['terms'].length > 0 && response['scores'].length > 0) {
-        final scoreList = <Score>[];
-        _terms = List<String>.from(response['terms']);
+      final Map<String, dynamic> response =
+          (jsonDecode(_scoreData) as Map<String, dynamic>)['obj'] as Map<String, dynamic>;
+      if ((response['terms'] as List<dynamic>).isNotEmpty &&
+          (response['scores'] as List<dynamic>).isNotEmpty) {
+        final List<Score> scoreList = <Score>[];
+        _terms = List<String>.from(response['terms'] as List<dynamic>);
         _selectedTerm = _terms.last;
-        response['scores'].forEach((score) {
-          scoreList.add(Score.fromJson(score));
-        });
-        if (_scores != scoreList) _scores = scoreList;
+        for (final dynamic score in response['scores'] as List<dynamic>) {
+          scoreList.add(Score.fromJson(score as Map<String, dynamic>));
+        }
+        if (_scores != scoreList) {
+          _scores = scoreList;
+        }
       }
       updateScoreCache();
-      if (_loadError) _loadError = false;
-      if (!_loaded) _loaded = true;
+      if (_loadError) {
+        _loadError = false;
+      }
+      if (!_loaded) {
+        _loaded = true;
+      }
       _loading = false;
       notifyListeners();
       debugPrint('Scores decoded successfully with ${_scores?.length ?? 0} scores.');
@@ -149,10 +172,13 @@ class ScoresProvider extends ChangeNotifier {
     }
   }
 
-  void updateScoreCache() async {
-    final beforeData = _scoreBox.get(currentUser.uid)?.cast<String, dynamic>();
+  Future<void> updateScoreCache() async {
+    final Map<String, dynamic> beforeData = _scoreBox.get(currentUser.uid)?.cast<String, dynamic>();
     if (beforeData == null || beforeData['scores'] != _scores) {
-      final presentData = {'terms': _terms, 'scores': _scores};
+      final Map<String, dynamic> presentData = <String, dynamic>{
+        'terms': _terms,
+        'scores': _scores,
+      };
       await _scoreBox.put(currentUser.uid, presentData);
       debugPrint('Scores cache updated successfully.');
     } else {
@@ -189,14 +215,14 @@ class ScoresProvider extends ChangeNotifier {
   }
 }
 
-const fiveBandScale = <String, Map<String, double>>{
-  '优秀': {'score': 95.0, 'point': 4.625},
-  '良好': {'score': 85.0, 'point': 3.875},
-  '中等': {'score': 75.0, 'point': 3.125},
-  '及格': {'score': 65.0, 'point': 2.375},
-  '不及格': {'score': 55.0, 'point': 0.0},
+const Map<String, Map<String, double>> fiveBandScale = <String, Map<String, double>>{
+  '优秀': <String, double>{'score': 95.0, 'point': 4.625},
+  '良好': <String, double>{'score': 85.0, 'point': 3.875},
+  '中等': <String, double>{'score': 75.0, 'point': 3.125},
+  '及格': <String, double>{'score': 65.0, 'point': 2.375},
+  '不及格': <String, double>{'score': 55.0, 'point': 0.0},
 };
-const twoBandScale = <String, Map<String, double>>{
-  '合格': {'score': 80.0, 'point': 3.5},
-  '不合格': {'score': 50.0, 'point': 0.0},
+const Map<String, Map<String, double>> twoBandScale = <String, Map<String, double>>{
+  '合格': <String, double>{'score': 80.0, 'point': 3.5},
+  '不合格': <String, double>{'score': 50.0, 'point': 0.0},
 };

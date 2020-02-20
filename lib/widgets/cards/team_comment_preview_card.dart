@@ -16,16 +16,16 @@ import 'package:openjmu/pages/post/team_post_detail_page.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
 
 class TeamCommentPreviewCard extends StatelessWidget {
-  final TeamPost topPost;
-  final TeamPostDetailPageState detailPageState;
-
   const TeamCommentPreviewCard({
     Key key,
     @required this.topPost,
     @required this.detailPageState,
   }) : super(key: key);
 
-  Widget _header(context, TeamPostProvider provider) => Container(
+  final TeamPost topPost;
+  final TeamPostDetailPageState detailPageState;
+
+  Widget _header(BuildContext context, TeamPostProvider provider) => Container(
         height: suSetHeight(70.0),
         padding: EdgeInsets.symmetric(
           vertical: suSetHeight(4.0),
@@ -84,7 +84,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                 _postTime(context, provider.post),
               ],
             ),
-            Spacer(),
+            const Spacer(),
             SizedBox.fromSize(
               size: Size.square(suSetWidth(50.0)),
               child: IconButton(
@@ -118,19 +118,21 @@ class TeamCommentPreviewCard extends StatelessWidget {
         ),
       );
 
-  void confirmDelete(context, TeamPostProvider provider) async {
-    final confirm = await ConfirmationDialog.show(
+  Future<void> confirmDelete(BuildContext context, TeamPostProvider provider) async {
+    final bool confirm = await ConfirmationDialog.show(
       context,
       title: '删除此楼',
       content: '是否删除该楼内容',
       showConfirm: true,
     );
-    if (confirm) delete(provider);
+    if (confirm) {
+      delete(provider);
+    }
   }
 
   void delete(TeamPostProvider provider) {
     TeamPostAPI.deletePost(postId: provider.post.tid, postType: 7).then(
-      (response) {
+      (dynamic _) {
         showToast('删除成功');
         provider.commentDeleted();
         Instances.eventBus.fire(TeamCommentDeletedEvent(
@@ -141,7 +143,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
     );
   }
 
-  Widget _postTime(context, TeamPost post) {
+  Widget _postTime(BuildContext context, TeamPost post) {
     return Text(
       '第${post.floor}楼 · ${TeamPostAPI.timeConverter(post)}',
       style: Theme.of(context).textTheme.caption.copyWith(
@@ -166,7 +168,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
             maxLines: 8,
             overFlowTextSpan: OverFlowTextSpan(
               children: <TextSpan>[
-                TextSpan(text: ' ... '),
+                const TextSpan(text: ' ... '),
                 TextSpan(
                   text: '全文',
                   style: TextStyle(color: currentThemeColor),
@@ -178,21 +180,22 @@ class TeamCommentPreviewCard extends StatelessWidget {
         ),
       );
 
-  Widget _replyInfo(context, TeamPost post) => GestureDetector(
+  Widget _replyInfo(BuildContext context, TeamPost post) => GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: post.replyInfo != null && post.replyInfo.isNotEmpty
             ? () {
-                final provider = TeamPostProvider(post);
+                final TeamPostProvider provider = TeamPostProvider(post);
                 navigatorState.pushNamed(
                   Routes.OPENJMU_TEAM_POST_DETAIL,
-                  arguments: {'provider': provider, 'type': TeamPostType.comment},
+                  arguments: <String, dynamic>{
+                    'provider': provider,
+                    'type': TeamPostType.comment,
+                  },
                 );
               }
             : null,
         child: Container(
-          margin: EdgeInsets.symmetric(
-            vertical: suSetHeight(12.0),
-          ),
+          margin: EdgeInsets.symmetric(vertical: suSetHeight(12.0)),
           padding: EdgeInsets.symmetric(
             horizontal: suSetWidth(24.0),
             vertical: suSetHeight(8.0),
@@ -206,7 +209,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: post.replyInfo.length + (post.replyInfo.length != post.repliesCount ? 1 : 0),
-            itemBuilder: (_, index) {
+            itemBuilder: (_, int index) {
               if (index == post.replyInfo.length) {
                 return Container(
                   margin: EdgeInsets.only(top: suSetHeight(12.0)),
@@ -233,14 +236,14 @@ class TeamCommentPreviewCard extends StatelessWidget {
                   ),
                 );
               }
-              final _post = post.replyInfo[index];
+              final Map<String, dynamic> _post = post.replyInfo[index].cast<String, dynamic>();
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
                 child: Row(
                   children: <Widget>[
                     Expanded(
                       child: ExtendedText(
-                        _post['content'],
+                        _post['content'] as String,
                         specialTextSpanBuilder: StackSpecialTextSpanBuilder(
                           prefixSpans: <InlineSpan>[
                             TextSpan(
@@ -250,17 +253,17 @@ class TeamCommentPreviewCard extends StatelessWidget {
                                 ..onTap = () {
                                   navigatorState.pushNamed(
                                     Routes.OPENJMU_USER,
-                                    arguments: {'uid': int.parse(_post['user']['uid'])},
+                                    arguments: <String, dynamic>{
+                                      'uid': _post['user']['uid'].toString().toInt(),
+                                    },
                                   );
                                 },
                             ),
-                            if (int.parse(_post['user']['uid']) == topPost.uid)
+                            if (_post['user']['uid'].toString().toInt() == topPost.uid)
                               WidgetSpan(
                                 alignment: ui.PlaceholderAlignment.middle,
                                 child: Container(
-                                  margin: EdgeInsets.symmetric(
-                                    horizontal: suSetWidth(6.0),
-                                  ),
+                                  margin: EdgeInsets.symmetric(horizontal: suSetWidth(6.0)),
                                   padding: EdgeInsets.symmetric(
                                     horizontal: suSetWidth(6.0),
                                     vertical: suSetHeight(1.0),
@@ -299,52 +302,47 @@ class TeamCommentPreviewCard extends StatelessWidget {
         ),
       );
 
-  Widget _images(context, TeamPost post) {
-    List<Widget> imagesWidget = [];
+  Widget _images(BuildContext context, TeamPost post) {
+    final List<Widget> imagesWidget = <Widget>[];
     for (int index = 0; index < post.pics.length; index++) {
-      final imageId = int.parse(post.pics[index]['fid']);
-      final imageUrl = API.teamFile(fid: imageId);
-      Widget _exImage = Selector<ThemesProvider, bool>(
-        selector: (_, provider) => provider.dark,
-        builder: (_, dark, __) {
-          return ExtendedImage.network(
-            imageUrl,
-            fit: BoxFit.cover,
-            cache: true,
-            color: dark ? Colors.black.withAlpha(50) : null,
-            colorBlendMode: dark ? BlendMode.darken : BlendMode.srcIn,
-            loadStateChanged: (ExtendedImageState state) {
-              Widget loader;
-              switch (state.extendedImageLoadState) {
-                case LoadState.loading:
-                  loader = Center(child: CupertinoActivityIndicator());
-                  break;
-                case LoadState.completed:
-                  final info = state.extendedImageInfo;
-                  if (info != null) {
-                    loader = ScaledImage(
-                      image: info.image,
-                      length: post.pics.length,
-                      num200: suSetSp(200),
-                      num400: suSetSp(400),
-                    );
-                  }
-                  break;
-                case LoadState.failed:
-                  break;
+      final int imageId = post.pics[index]['fid'].toString().toInt();
+      final String imageUrl = API.teamFile(fid: imageId);
+      Widget _exImage = ExtendedImage.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        cache: true,
+        color: currentIsDark ? Colors.black.withAlpha(50) : null,
+        colorBlendMode: currentIsDark ? BlendMode.darken : BlendMode.srcIn,
+        loadStateChanged: (ExtendedImageState state) {
+          Widget loader;
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              loader = const Center(child: CupertinoActivityIndicator());
+              break;
+            case LoadState.completed:
+              final ImageInfo info = state.extendedImageInfo;
+              if (info != null) {
+                loader = ScaledImage(
+                  image: info.image,
+                  length: post.pics.length,
+                  num200: suSetSp(200),
+                  num400: suSetSp(400),
+                );
               }
-              return loader;
-            },
-          );
+              break;
+            case LoadState.failed:
+              break;
+          }
+          return loader;
         },
       );
       _exImage = GestureDetector(
         onTap: () {
           navigatorState.pushNamed(
             Routes.OPENJMU_IMAGE_VIEWER,
-            arguments: {
+            arguments: <String, dynamic>{
               'index': index,
-              'pics': post.pics.map<ImageBean>((f) {
+              'pics': post.pics.map<ImageBean>((dynamic _) {
                 return ImageBean(
                   id: imageId,
                   imageUrl: imageUrl,
@@ -360,7 +358,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
       _exImage = Hero(
         tag: 'team-comment-preview-image-${post.tid}-$imageId',
         child: _exImage,
-        placeholderBuilder: (_, __, child) => child,
+        placeholderBuilder: (_, __, Widget child) => child,
       );
       imagesWidget.add(_exImage);
     }
@@ -391,13 +389,13 @@ class TeamCommentPreviewCard extends StatelessWidget {
   }
 
   Future<bool> onLikeButtonTap(bool isLiked, TeamPost post) {
-    final completer = Completer<bool>();
+    final Completer<bool> completer = Completer<bool>();
 
     post.isLike = !post.isLike;
     !isLiked ? post.praisesCount++ : post.praisesCount--;
     completer.complete(!isLiked);
 
-    TeamPraiseAPI.requestPraise(post.tid, !isLiked).catchError((e) {
+    TeamPraiseAPI.requestPraise(post.tid, !isLiked).catchError((dynamic e) {
       isLiked ? post.praisesCount++ : post.praisesCount--;
       completer.complete(isLiked);
       return completer.future;
@@ -409,7 +407,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<TeamPostProvider>(
-      builder: (_, provider, __) {
+      builder: (_, TeamPostProvider provider, __) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -4,11 +4,17 @@ import 'package:flutter/services.dart';
 class ChannelUtils {
   const ChannelUtils._();
 
-  static const _pmc_flagSecure = MethodChannel('cn.edu.jmu.openjmu/setFlagSecure');
-  static const _pmc_schemeLauncher = MethodChannel('cn.edu.jmu.openjmu/schemeLauncher');
-  static const _pmc_iOSPushToken = MethodChannel('cn.edu.jmu.openjmu/iOSPushToken');
+  static const MethodChannel _pmc_flagSecure = MethodChannel(
+    'cn.edu.jmu.openjmu/setFlagSecure',
+  );
+  static const MethodChannel _pmc_schemeLauncher = MethodChannel(
+    'cn.edu.jmu.openjmu/schemeLauncher',
+  );
+  static const MethodChannel _pmc_iOSPushToken = MethodChannel(
+    'cn.edu.jmu.openjmu/iOSPushToken',
+  );
 
-  static Future<Null> setFlagSecure(bool secure) async {
+  static Future<void> setFlagSecure(bool secure) async {
     try {
       String method;
       if (secure) {
@@ -16,7 +22,7 @@ class ChannelUtils {
       } else {
         method = 'disable';
       }
-      await _pmc_flagSecure.invokeMethod(method);
+      await _pmc_flagSecure.invokeMethod<void>(method);
     } on PlatformException catch (e) {
       debugPrint('Set flag secure failed: ${e.message}.');
     }
@@ -24,7 +30,7 @@ class ChannelUtils {
 
   static Future<String> getSchemeLaunchAppName(String uri) async {
     try {
-      String result = await _pmc_schemeLauncher.invokeMethod(
+      final String result = await _pmc_schemeLauncher.invokeMethod(
         'launchAppName',
         <String, Object>{'url': uri},
       );
@@ -38,7 +44,7 @@ class ChannelUtils {
   static Future<String> iOSGetPushToken() async {
     debugPrint('Getting iOS push token from native...');
     try {
-      String result = await _pmc_iOSPushToken.invokeMethod('getPushToken');
+      final String result = await _pmc_iOSPushToken.invokeMethod('getPushToken');
       return result;
     } on PlatformException catch (e) {
       debugPrint('iosPushGetter failed: ${e.message}.');
@@ -46,9 +52,9 @@ class ChannelUtils {
     }
   }
 
-  static Future iosGetPushDate() async {
+  static Future<String> iosGetPushDate() async {
     try {
-      String result = await _pmc_iOSPushToken.invokeMethod('getPushDate');
+      final String result = await _pmc_iOSPushToken.invokeMethod('getPushDate');
       return result;
     } on PlatformException catch (e) {
       debugPrint('iosPushDate failed: ${e.message}.');

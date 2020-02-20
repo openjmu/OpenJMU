@@ -121,15 +121,16 @@ class Course {
     return _c;
   }
 
-  static void uniqueColor<bool>(Course course, Color color) {
-    final _course = CourseAPI.coursesUniqueColor.firstWhere(
-      (courseColor) => courseColor.name == course.name,
+  static void uniqueColor(Course course, Color color) {
+    final CourseColor _courseColor = CourseAPI.coursesUniqueColor.firstWhere(
+      (CourseColor courseColor) => courseColor.name == course.name,
       orElse: () => null,
     );
-    if (_course != null) {
-      course.color = _course.color;
+    if (_courseColor != null) {
+      course.color = _courseColor.color;
     } else {
-      final courses = CourseAPI.coursesUniqueColor.where((c) => c.color == color);
+      final List<CourseColor> courses =
+          CourseAPI.coursesUniqueColor.where((CourseColor c) => c.color == color).toList();
 
       if (courses.isNotEmpty) {
         uniqueColor(course, CourseAPI.randomCourseColor());

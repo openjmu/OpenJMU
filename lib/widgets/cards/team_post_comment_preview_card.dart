@@ -10,10 +10,6 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/post/team_post_detail_page.dart';
 
 class TeamPostCommentPreviewCard extends StatelessWidget {
-  final TeamPostComment comment;
-  final TeamPost topPost;
-  final TeamPostDetailPageState detailPageState;
-
   const TeamPostCommentPreviewCard({
     Key key,
     @required this.comment,
@@ -21,7 +17,11 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
     @required this.detailPageState,
   }) : super(key: key);
 
-  Widget _header(context) => Container(
+  final TeamPostComment comment;
+  final TeamPost topPost;
+  final TeamPostDetailPageState detailPageState;
+
+  Widget _header(BuildContext context) => Container(
         height: suSetHeight(70.0),
         padding: EdgeInsets.symmetric(
           vertical: suSetHeight(4.0),
@@ -37,7 +37,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     Text(
-                      comment.userInfo['nickname'] ?? comment.uid.toString(),
+                      (comment.userInfo['nickname'] ?? comment.uid).toString(),
                       style: TextStyle(
                         fontSize: suSetSp(22.0),
                         fontWeight: FontWeight.bold,
@@ -80,7 +80,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
                 _postTime(context),
               ],
             ),
-            Spacer(),
+            const Spacer(),
             SizedBox.fromSize(
               size: Size.square(suSetWidth(50.0)),
               child: IconButton(
@@ -112,19 +112,21 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
         ),
       );
 
-  void confirmDelete(context) async {
-    final confirm = await ConfirmationDialog.show(
+  Future<void> confirmDelete(BuildContext context) async {
+    final bool confirm = await ConfirmationDialog.show(
       context,
       title: '删除此楼',
       content: '是否删除该楼内容',
       showConfirm: true,
     );
-    if (confirm) delete();
+    if (confirm) {
+      delete();
+    }
   }
 
   void delete() {
     TeamPostAPI.deletePost(postId: comment.rid, postType: 8).then(
-      (response) {
+      (dynamic _) {
         showToast('删除成功');
         Instances.eventBus.fire(TeamPostCommentDeletedEvent(
           commentId: comment.rid,
@@ -134,7 +136,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
     );
   }
 
-  Widget _postTime(context) {
+  Widget _postTime(BuildContext context) {
     return Text(
       '第${comment.floor}楼 · ${TeamPostAPI.timeConverter(comment.postTime)}',
       style: Theme.of(context).textTheme.caption.copyWith(
@@ -157,7 +159,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
           maxLines: 8,
           overFlowTextSpan: OverFlowTextSpan(
             children: <TextSpan>[
-              TextSpan(text: ' ... '),
+              const TextSpan(text: ' ... '),
               TextSpan(
                 text: '全文',
                 style: TextStyle(color: currentThemeColor),

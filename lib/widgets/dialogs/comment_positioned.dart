@@ -1,6 +1,6 @@
-import 'dart:math';
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,28 +15,28 @@ import 'package:openjmu/widgets/rounded_check_box.dart';
 import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 
 @FFRoute(
-  name: "openjmu://add-comment",
-  routeName: "新增评论",
-  argumentNames: ["post", "comment"],
+  name: 'openjmu://add-comment',
+  routeName: '新增评论',
+  argumentNames: ['post', 'comment'],
   pageRouteType: PageRouteType.transparent,
 )
 class CommentPositioned extends StatefulWidget {
-  final Post post;
-  final Comment comment;
-
   const CommentPositioned({
     Key key,
     @required this.post,
     this.comment,
   }) : super(key: key);
 
+  final Post post;
+  final Comment comment;
+
   @override
   State<StatefulWidget> createState() => CommentPositionedState();
 }
 
 class CommentPositionedState extends State<CommentPositioned> {
-  final _commentController = TextEditingController();
-  final _focusNode = FocusNode();
+  final TextEditingController _commentController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
   File _image;
   int _imageID;
 
@@ -73,24 +73,26 @@ class CommentPositionedState extends State<CommentPositioned> {
   }
 
   Future<void> _addImage() async {
-    final file = await ImagePicker.pickImage(source: ImageSource.gallery);
-    if (file == null) return;
+    final File file = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (file == null) {
+      return;
+    }
 
     _image = file;
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
-  FormData createForm(File file) => FormData.from({
+  FormData createForm(File file) => FormData.from(<String, dynamic>{
         'image': UploadFileInfo(file, path.basename(file.path)),
         'image_type': 0,
       });
 
-  Future getImageRequest(FormData formData) async => NetUtils.postWithCookieAndHeaderSet(
-        API.postUploadImage,
-        data: formData,
-      );
+  Future<Response<T>> getImageRequest<T>(FormData formData) async =>
+      NetUtils.postWithCookieAndHeaderSet<T>(API.postUploadImage, data: formData);
 
-  Widget textField(context) {
+  Widget textField(BuildContext context) {
     String _hintText;
     toComment != null ? _hintText = '回复:@${toComment.fromUserName} ' : _hintText = null;
     return ExtendedTextField(
@@ -133,7 +135,7 @@ class CommentPositionedState extends State<CommentPositioned> {
     );
   }
 
-  Future _request(context) async {
+  Future<void> _request(BuildContext context) async {
     if (commentContent.isEmpty && _image == null) {
       showCenterErrorToast('内容不能为空！');
     } else {
@@ -142,7 +144,7 @@ class CommentPositionedState extends State<CommentPositioned> {
       });
       String content = '';
 
-      Comment _c = widget.comment;
+      final Comment _c = widget.comment;
       int _cid;
       if (toComment != null) {
         content =
@@ -154,8 +156,9 @@ class CommentPositionedState extends State<CommentPositioned> {
 
       /// Sending image if it exist.
       if (_image != null) {
-        Map<String, dynamic> data = (await getImageRequest(createForm(_image))).data;
-        _imageID = int.parse(data['image_id']);
+        final Map<String, dynamic> data =
+            (await getImageRequest<Map<String, dynamic>>(createForm(_image))).data;
+        _imageID = (data['image_id'] as String).toIntOrNull();
         content += ' |$_imageID| ';
       }
 
@@ -164,11 +167,11 @@ class CommentPositionedState extends State<CommentPositioned> {
         widget.post.id,
         forwardAtTheMeanTime,
         replyToId: _cid,
-      ).then((response) {
+      ).then((dynamic response) {
         showToast('评论成功');
         Navigator.of(context).pop();
         Instances.eventBus.fire(PostCommentedEvent(widget.post.id));
-      }).catchError((e) {
+      }).catchError((dynamic e) {
         _commenting = false;
         debugPrint('Comment post failed: $e');
         if (e is DioError && e.response.statusCode == 404) {
@@ -177,23 +180,27 @@ class CommentPositionedState extends State<CommentPositioned> {
         } else {
           showToast('评论失败');
         }
-        if (mounted) setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       });
     }
   }
 
   void updatePadStatus(bool active) {
-    final change = () {
+    final VoidCallback change = () {
       emoticonPadActive = active;
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     };
     if (emoticonPadActive) {
       change();
     } else {
       if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
-        SystemChannels.textInput.invokeMethod('TextInput.hide').whenComplete(
+        SystemChannels.textInput.invokeMethod<void>('TextInput.hide').whenComplete(
           () {
-            Future.delayed(300.milliseconds, null).whenComplete(change);
+            Future<void>.delayed(300.milliseconds, null).whenComplete(change);
           },
         );
       } else {
@@ -203,9 +210,9 @@ class CommentPositionedState extends State<CommentPositioned> {
   }
 
   void insertText(String text) {
-    var value = _commentController.value;
-    int start = value.selection.baseOffset;
-    int end = value.selection.extentOffset;
+    final TextEditingValue value = _commentController.value;
+    final int start = value.selection.baseOffset;
+    final int end = value.selection.extentOffset;
     if (value.selection.isValid) {
       String newText = '';
       if (value.selection.isCollapsed) {
@@ -231,7 +238,7 @@ class CommentPositionedState extends State<CommentPositioned> {
     }
   }
 
-  Widget emoticonPad(context) {
+  Widget emoticonPad(BuildContext context) {
     return EmotionPad(
       active: emoticonPadActive,
       height: _keyboardHeight,
@@ -240,14 +247,14 @@ class CommentPositionedState extends State<CommentPositioned> {
     );
   }
 
-  void mentionPeople(context) {
+  void mentionPeople(BuildContext context) {
     showDialog<User>(
       context: context,
       builder: (BuildContext context) => MentionPeopleDialog(),
-    ).then((user) {
+    ).then((User user) {
       _focusNode.requestFocus();
       if (user != null) {
-        Future.delayed(250.milliseconds, () {
+        Future<void>.delayed(250.milliseconds, () {
           insertText('<M ${user.id}>@${user.nickname}<\/M>');
         });
       }
@@ -261,7 +268,7 @@ class CommentPositionedState extends State<CommentPositioned> {
             RoundedCheckbox(
               activeColor: currentThemeColor,
               value: forwardAtTheMeanTime,
-              onChanged: (value) {
+              onChanged: (bool value) {
                 setState(() {
                   forwardAtTheMeanTime = value;
                 });
@@ -274,18 +281,13 @@ class CommentPositionedState extends State<CommentPositioned> {
                 fontSize: suSetSp(20.0),
               ),
             ),
-            Spacer(),
+            const Spacer(),
             GestureDetector(
               behavior: HitTestBehavior.opaque,
               onTap: _addImage,
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(6.0),
-                ),
-                child: Icon(
-                  Icons.add_photo_alternate,
-                  size: suSetWidth(32.0),
-                ),
+                padding: EdgeInsets.symmetric(horizontal: suSetWidth(6.0)),
+                child: Icon(Icons.add_photo_alternate, size: suSetWidth(32.0)),
               ),
             ),
             GestureDetector(
@@ -294,13 +296,8 @@ class CommentPositionedState extends State<CommentPositioned> {
                 mentionPeople(context);
               },
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(6.0),
-                ),
-                child: Icon(
-                  Icons.alternate_email,
-                  size: suSetWidth(32.0),
-                ),
+                padding: EdgeInsets.symmetric(horizontal: suSetWidth(6.0)),
+                child: Icon(Icons.alternate_email, size: suSetWidth(32.0)),
               ),
             ),
             GestureDetector(
@@ -311,9 +308,7 @@ class CommentPositionedState extends State<CommentPositioned> {
                 updatePadStatus(!emoticonPadActive);
               },
               child: Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(6.0),
-                ),
+                padding: EdgeInsets.symmetric(horizontal: suSetWidth(6.0)),
                 child: Icon(
                   Icons.sentiment_very_satisfied,
                   size: suSetWidth(32.0),
@@ -321,44 +316,45 @@ class CommentPositionedState extends State<CommentPositioned> {
                 ),
               ),
             ),
-            !_commenting
-                ? GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: suSetWidth(6.0),
-                      ),
-                      child: Icon(
-                        Icons.send,
-                        size: suSetWidth(32.0),
-                        color: currentThemeColor,
-                      ),
-                    ),
-                    onTap: (_commentController.text.isNotEmpty || _image != null)
-                        ? () => _request(context)
-                        : null,
-                  )
-                : Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: suSetWidth(14.0),
-                    ),
-                    child: SizedBox(
-                      width: suSetWidth(12.0),
-                      height: suSetWidth(12.0),
-                      child: PlatformProgressIndicator(strokeWidth: 2.0),
-                    ),
+            if (!_commenting)
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: suSetWidth(6.0),
                   ),
+                  child: Icon(
+                    Icons.send,
+                    size: suSetWidth(32.0),
+                    color: currentThemeColor,
+                  ),
+                ),
+                onTap: (_commentController.text.isNotEmpty || _image != null)
+                    ? () => _request(context)
+                    : null,
+              )
+            else
+              Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: suSetWidth(14.0),
+                ),
+                child: SizedBox(
+                  width: suSetWidth(12.0),
+                  height: suSetWidth(12.0),
+                  child: const PlatformProgressIndicator(strokeWidth: 2.0),
+                ),
+              ),
           ],
         ),
       );
 
   @override
   Widget build(BuildContext context) {
-    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     if (keyboardHeight > 0) {
       emoticonPadActive = false;
     }
-    _keyboardHeight = max(keyboardHeight, _keyboardHeight ?? 0);
+    _keyboardHeight = math.max(keyboardHeight, _keyboardHeight ?? 0);
 
     return Material(
       color: Colors.black38,
@@ -367,9 +363,7 @@ class CommentPositionedState extends State<CommentPositioned> {
           Expanded(
             child: GestureDetector(
               behavior: HitTestBehavior.opaque,
-              onTap: () {
-                Navigator.of(context).pop();
-              },
+              onTap: Navigator.of(context).pop,
             ),
           ),
           AnimatedContainer(
@@ -385,10 +379,7 @@ class CommentPositionedState extends State<CommentPositioned> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  textField(context),
-                  toolbar,
-                ],
+                children: <Widget>[textField(context), toolbar],
               ),
             ),
           ),

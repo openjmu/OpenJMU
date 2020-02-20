@@ -29,18 +29,18 @@ class OTAUtils {
   }
 
   static void checkUpdate({bool fromHome = false}) {
-    NetUtils.get(API.checkUpdate).then((response) {
-      final data = jsonDecode(response.data);
-      updateChangelog(data['changelog']);
-      final _currentBuild = buildNumber;
-      final _currentVersion = version;
-      final _forceUpdate = data['forceUpdate'];
-      final _remoteVersion = data['version'];
-      final _remoteBuildNumber = data['buildNumber'].toString().toIntOrNull();
+    NetUtils.get<String>(API.checkUpdate).then((Response<String> response) {
+      final Map<String, dynamic> data = jsonDecode(response.data) as Map<String, dynamic>;
+      updateChangelog((data['changelog'] as List<dynamic>).cast<Map>());
+      final int _currentBuild = buildNumber;
+      final int _remoteBuild = data['buildNumber'].toString().toIntOrNull();
+      final String _currentVersion = version;
+      final String _remoteVersion = data['version'] as String;
+      final bool _forceUpdate = data['forceUpdate'] as bool;
       debugPrint('Build: $_currentVersion+$_currentBuild'
           ' | '
-          '$_remoteVersion+$_remoteBuildNumber');
-      if (_currentBuild < _remoteBuildNumber) {
+          '$_remoteVersion+$_remoteBuild');
+      if (_currentBuild < _remoteBuild) {
         Instances.eventBus.fire(HasUpdateEvent(
           forceUpdate: _forceUpdate,
           currentVersion: _currentVersion,
@@ -48,13 +48,17 @@ class OTAUtils {
           response: data,
         ));
       } else {
-        if (fromHome) showToast('已更新为最新版本');
+        if (fromHome) {
+          showToast('已更新为最新版本');
+        }
       }
       remoteVersion = _remoteVersion;
-      remoteBuildNumber = _remoteBuildNumber;
-    }).catchError((e) {
+      remoteBuildNumber = _remoteBuild;
+    }).catchError((dynamic e) {
       debugPrint('Failed when checking update: $e');
-      if (!fromHome) Future.delayed(30.seconds, checkUpdate);
+      if (!fromHome) {
+        Future<void>.delayed(30.seconds, checkUpdate);
+      }
     });
   }
 
@@ -90,7 +94,7 @@ class OTAUtils {
             Positioned.fill(
               child: BackdropFilter(
                 filter: ui.ImageFilter.blur(sigmaX: 2.0, sigmaY: 2.0),
-                child: Text(' '),
+                child: const Text(' '),
               ),
             ),
           ConfirmationDialog(
@@ -149,7 +153,7 @@ class OTAUtils {
                     Expanded(
                       child: SingleChildScrollView(
                         child: Text(
-                          event.response['updateLog'],
+                          event.response['updateLog'] as String,
                           style: TextStyle(fontSize: suSetSp(18.0)),
                         ),
                       ),
@@ -168,7 +172,7 @@ class OTAUtils {
             top: Screens.height / 12,
             left: 0.0,
             right: 0.0,
-            child: Center(child: OpenJMULogo(radius: 15.0)),
+            child: const Center(child: OpenJMULogo(radius: 15.0)),
           ),
         ],
       ),
@@ -193,9 +197,11 @@ class OTAUtils {
     );
   }
 
-  static Future<void> updateChangelog(List data) async {
-    final box = HiveBoxes.changelogBox;
-    final List<ChangeLog> logs = data.map((log) => ChangeLog.fromJson(log)).toList();
+  static Future<void> updateChangelog(List<Map> data) async {
+    final Box<ChangeLog> box = HiveBoxes.changelogBox;
+    final List<ChangeLog> logs = data
+        .map((Map<dynamic, dynamic> log) => ChangeLog.fromJson(log as Map<String, dynamic>))
+        .toList();
     if (box.values == null) {
       await box.addAll(logs);
     } else {

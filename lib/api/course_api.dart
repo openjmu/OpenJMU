@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-final _random = math.Random();
+final math.Random _random = math.Random();
 
 int next(int min, int max) => min + _random.nextInt(max - min);
 
@@ -13,14 +13,14 @@ class CourseAPI {
 
   static Set<CourseColor> coursesUniqueColor = {};
 
-  static Future getCourse() async => NetUtils.get(
+  static Future<Response<String>> getCourse() async => NetUtils.get(
         API.courseScheduleCourses,
-        data: {'sid': UserAPI.currentUser.sid},
+        data: <String, dynamic>{'sid': UserAPI.currentUser.sid},
       );
 
-  static Future getRemark() async => NetUtils.get(
+  static Future<Response<String>> getRemark() async => NetUtils.get(
         API.courseScheduleClassRemark,
-        data: {'sid': UserAPI.currentUser.sid},
+        data: <String, dynamic>{'sid': UserAPI.currentUser.sid},
       );
 
   static String getCourseTime(int courseIndex) {

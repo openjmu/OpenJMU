@@ -7,18 +7,20 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/rounded_check_box.dart';
 import 'package:openjmu/widgets/announcement/announcement_widget.dart';
 
-@FFRoute(name: "openjmu://login", routeName: "登录页")
+@FFRoute(name: 'openjmu://login', routeName: '登录页')
 class LoginPage extends StatefulWidget {
   @override
   LoginPageState createState() => LoginPageState();
 }
 
 class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
-  final _formKey = GlobalKey<FormState>();
-  final _formScrollController = ScrollController();
-  final _usernameController = TextEditingController(text: DataUtils.recoverWorkId());
-  final _passwordController = TextEditingController();
-  final colorGradient = <Color>[Color(0xffff8976), Color(0xffff3c33)];
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final ScrollController _formScrollController = ScrollController();
+  final TextEditingController _usernameController = TextEditingController(
+    text: DataUtils.recoverWorkId(),
+  );
+  final TextEditingController _passwordController = TextEditingController();
+  final List<Color> colorGradient = <Color>[const Color(0xffff8976), const Color(0xffff3c33)];
 
   String _username = DataUtils.recoverWorkId() ?? '', _password = '';
 
@@ -49,7 +51,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 
   int last = 0;
   Future<bool> doubleBackExit() async {
-    int now = DateTime.now().millisecondsSinceEpoch;
+    final int now = DateTime.now().millisecondsSinceEpoch;
     if (now - last > 800) {
       showToast('再按一次退出应用');
       last = DateTime.now().millisecondsSinceEpoch;
@@ -62,7 +64,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
 
   void usernameListener() {
     _username = _usernameController.text;
-    if (this.mounted) {
+    if (mounted) {
       if (_usernameController.text.isNotEmpty && !_usernameCanClear) {
         setState(() {
           _usernameCanClear = true;
@@ -181,7 +183,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         cursorColor: defaultColor,
         onSaved: (String value) => _username = value,
         validator: (String value) {
-          if (value.isEmpty) return '请输入账户';
+          if (value.isEmpty) {
+            return '请输入账户';
+          }
           return null;
         },
         keyboardType: TextInputType.number,
@@ -193,7 +197,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         onSaved: (String value) => _password = value,
         obscureText: _isObscure,
         validator: (String value) {
-          if (value.isEmpty) return '请输入密码';
+          if (value.isEmpty) {
+            return '请输入密码';
+          }
           return null;
         },
         decoration: InputDecoration(
@@ -302,7 +308,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                 activeColor: defaultColor,
                 inactiveColor: Theme.of(context).iconTheme.color,
                 onChanged: !_login
-                    ? (value) {
+                    ? (bool value) {
                         setState(() {
                           _agreement = value;
                         });
@@ -316,7 +322,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               child: Text.rich(
                 TextSpan(
                   children: <TextSpan>[
-                    TextSpan(text: '登录即代表您同意'),
+                    const TextSpan(text: '登录即代表您同意'),
                     TextSpan(
                       text: '《用户协议》',
                       style: TextStyle(
@@ -361,7 +367,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               ),
             ],
             gradient: LinearGradient(
-              colors: !_loginDisabled ? colorGradient : [Colors.grey, Colors.grey],
+              colors: !_loginDisabled ? colorGradient : <Color>[Colors.grey, Colors.grey],
             ),
           ),
           child: Center(
@@ -384,7 +390,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
               shrinkWrap: true,
               controller: _formScrollController,
               padding: EdgeInsets.symmetric(horizontal: suSetWidth(50.0)),
-              physics: NeverScrollableScrollPhysics(parent: ClampingScrollPhysics()),
+              physics: const NeverScrollableScrollPhysics(parent: ClampingScrollPhysics()),
               children: <Widget>[
                 logoTitle,
                 emptyDivider(height: suSetHeight(40.0)),
@@ -407,12 +413,12 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Selector<SettingsProvider, bool>(
-                        selector: (_, provider) => provider.announcementsEnabled,
-                        builder: (_, announcementEnabled, __) {
+                        selector: (_, SettingsProvider provider) => provider.announcementsEnabled,
+                        builder: (_, bool announcementEnabled, __) {
                           if (announcementEnabled) {
-                            return AnnouncementWidget(radius: 6.0);
+                            return const AnnouncementWidget(radius: 6.0);
                           } else {
-                            return SizedBox.shrink();
+                            return const SizedBox.shrink();
                           }
                         },
                       ),
@@ -442,29 +448,33 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         ),
       );
 
-  void loginButtonPressed(context) {
+  void loginButtonPressed(BuildContext context) {
     try {
       if (_formKey.currentState.validate()) {
         _formKey.currentState.save();
         setState(() {
           _login = true;
         });
-        DataUtils.login(_username, _password).then((result) {
+        DataUtils.login(_username, _password).then((bool result) {
           if (result) {
             navigatorState.pushNamedAndRemoveUntil(
               Routes.OPENJMU_HOME,
               (_) => false,
-              arguments: {'initAction': null},
+              arguments: <String, dynamic>{'initAction': null},
             );
           } else {
             _login = false;
-            if (mounted) setState(() {});
+            if (mounted) {
+              setState(() {});
+            }
           }
-        }).catchError((e) {
+        }).catchError((dynamic e) {
           debugPrint('Failed when login: $e');
           showCenterErrorToast('登录失败');
           _login = false;
-          if (mounted) setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         });
       }
     } catch (e) {
@@ -473,8 +483,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
   }
 
-  void resetPassword() async {
-    final confirm = await ConfirmationDialog.show(
+  Future<void> resetPassword() async {
+    final bool confirm = await ConfirmationDialog.show(
       context,
       title: '忘记密码',
       content: '找回密码详见\n网络中心主页 -> 集大通行证',
@@ -503,8 +513,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
   }
 
-  void setAlignment(context) {
-    final inputMethodHeight = MediaQuery.of(context).viewInsets.bottom;
+  void setAlignment(BuildContext context) {
+    final double inputMethodHeight = MediaQuery.of(context).viewInsets.bottom;
     if (inputMethodHeight > 1.0 && !_keyboardAppeared) {
       setState(() {
         _keyboardAppeared = true;
@@ -519,7 +529,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   @override
   Widget build(BuildContext context) {
     setAlignment(context);
-    return AnnotatedRegion(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
       value: currentIsDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
       child: WillPopScope(
         onWillPop: doubleBackExit,

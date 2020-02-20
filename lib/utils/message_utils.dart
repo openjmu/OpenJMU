@@ -15,7 +15,7 @@ class MessageUtils {
   /// Here the buffer zone will store all the bytes received through socket.
   /// Some packets need to be combined manually, after that the buffer will
   /// be clear/updated.
-  static List<int> bytesBufferZone = [];
+  static List<int> bytesBufferZone = <int>[];
 
   /// Buffer zone for packets.
   ///
@@ -23,7 +23,7 @@ class MessageUtils {
   /// Since packets came with sequence, whether the packets has contained all
   /// of the content or not, there'll be only one command at the same time.
   /// So through this buffer zone, packets can be combined together.
-  static Map<int, Packet> packageBufferZone = {};
+  static Map<int, Packet> packageBufferZone = <int, Packet>{};
 
   /// Socket for message.
   static Socket messageSocket;
@@ -35,13 +35,14 @@ class MessageUtils {
   static Timer messageKeepAliveTimer;
 
   /// Message observer list. Methods can subscribe and receive callback.
-  static ObserverList<Function> messageListeners = ObserverList<Function>();
+  static ObserverList<Function(MessageReceivedEvent)> messageListeners =
+      ObserverList<Function(MessageReceivedEvent)>();
 
   static void initMessageSocket() {
     debugPrint('Connecting message socket...');
     Socket.connect(
-      Messages.socketConfig['host'],
-      Messages.socketConfig['port'],
+      Messages.socketConfig['host'] as String,
+      Messages.socketConfig['port'] as int,
     ).then((Socket socket) {
       debugPrint('Message socket connected.');
 
@@ -51,7 +52,7 @@ class MessageUtils {
       messageSocket.listen(bufferedStream, onDone: destroySocket);
 
       sendCheckCodeVerify();
-    }).catchError((e) {
+    }).catchError((dynamic e) {
       messageSocket = null;
       debugPrint('Error when connecting to message socket: $e');
     });
@@ -68,7 +69,7 @@ class MessageUtils {
 
   /// Common header builder.
   static Uint8List commonHeader(int command, int length) {
-    final _uc = UintConverter();
+    final UintConverter _uc = UintConverter();
     _uc
       ..add(54328, 32) // Fixed prefix.
       ..add(0, 16) // Status.
@@ -82,14 +83,14 @@ class MessageUtils {
 
   /// Convert a integer to unsigned integer in specific radix.
   static Uint8List commonUint(int value, int radix) {
-    final _uc = UintConverter();
+    final UintConverter _uc = UintConverter();
     _uc.add(value, radix);
     return _uc.asUint8List();
   }
 
   /// Convert a string to bytes.
   static Uint8List commonString(String value) {
-    final _uc = UintConverter();
+    final UintConverter _uc = UintConverter();
     _uc.addString(value);
     return _uc.asUint8List();
   }
@@ -97,7 +98,7 @@ class MessageUtils {
   /// Common group key converter.
   static Uint8List commonGroupKey(String groupId, int type) {
     assert(type < 0 || type > 2);
-    final _uc = UintConverter();
+    final UintConverter _uc = UintConverter();
     _uc
       ..addString(groupId)
       ..add(type, 16);
@@ -112,16 +113,18 @@ class MessageUtils {
     List<int> data,
     bool increaseSequence = true,
   ]) {
-    final header = commonHeader(command, data?.length ?? 0);
-    if (increaseSequence) packageSequence++;
-    final result = <int>[...header, ...(data ?? [])];
+    final Uint8List header = commonHeader(command, data?.length ?? 0);
+    if (increaseSequence) {
+      packageSequence++;
+    }
+    final List<int> result = <int>[...header, ...data ?? <int>[]];
     return result;
   }
 
   /// Return a integer from bytes with fixed radix.
   static int getPackageUint(List<int> data, int radix) {
     assert(radix % 8 == 0);
-    final byteData = ByteData.view(Uint8List.fromList(data).buffer);
+    final ByteData byteData = ByteData.view(Uint8List.fromList(data).buffer);
     int result;
     if (radix == 8) {
       result = byteData.getUint8(0);
@@ -140,12 +143,12 @@ class MessageUtils {
   /// Structure like:
   /// {'length': 233, 'content': 'some words...'}
   static Map<String, dynamic> getPackageString(List<int> data) {
-    final byteData = ByteData.view(Uint8List.fromList(data.sublist(0, 2)).buffer);
-    Map<String, dynamic> result = {
+    final ByteData byteData = ByteData.view(Uint8List.fromList(data.sublist(0, 2)).buffer);
+    final Map<String, dynamic> result = <String, dynamic>{
       'length': byteData.getUint16(0),
       'content': null,
     };
-    result['content'] = utf8.decode(data.sublist(2, 2 + result['length']));
+    result['content'] = utf8.decode(data.sublist(2, 2 + (result['length'] as int)));
     return result;
   }
 
@@ -154,14 +157,16 @@ class MessageUtils {
   /// Using this method to buffer bytes from socket, with fixed rules.
   static void bufferedStream(List<int> bytes, {bool addBytes = true}) {
     // Whether bytes should add to buffer.
-    if (addBytes) bytesBufferZone.addAll(bytes);
+    if (addBytes) {
+      bytesBufferZone.addAll(bytes);
+    }
     // Judge if bytes contains a full header.
     if (bytesBufferZone.length >= 28) {
-      final length = getPackageUint(bytesBufferZone.sublist(24, 28), 32) + 28;
+      final int length = getPackageUint(bytesBufferZone.sublist(24, 28), 32) + 28;
       // Judge if bytes can be fully decoded.
       if (bytesBufferZone.length >= length) {
         // Pull out bytes with specific size.
-        final result = bytesBufferZone.sublist(0, length);
+        final List<int> result = bytesBufferZone.sublist(0, length);
         // Remove bytes from buffer.
         bytesBufferZone.removeRange(0, length);
         // Call packet buffered method with result before another decoding.
@@ -182,7 +187,7 @@ class MessageUtils {
   static void bufferedPacket(Packet packet) {
     // See if the command have buffered packet.
     if (packageBufferZone[packet.command] != null) {
-      final _tempPacket = packageBufferZone[packet.command];
+      final Packet _tempPacket = packageBufferZone[packet.command];
       // Combine two packet to one.
       _tempPacket
         ..status = packet.status
@@ -196,7 +201,7 @@ class MessageUtils {
       packageBufferZone[packet.command] = packet;
     }
     // Proceed with SUCCESS(200) status packet.
-    final status = packageBufferZone[packet.command].status;
+    final int status = packageBufferZone[packet.command].status;
     if (status == 200 || status == 0) {
       commandHandler(packageBufferZone[packet.command]);
       // Clear buffer after handle.
@@ -217,8 +222,10 @@ class MessageUtils {
       case 0x9000:
         sendKeepAlive(null);
         messageKeepAliveTimer = Timer.periodic(30.seconds, sendKeepAlive);
-        Future.delayed(5.seconds, () {
-          if (messageSocket != null) sendGetOfflineMessage();
+        Future<void>.delayed(5.seconds, () {
+          if (messageSocket != null) {
+            sendGetOfflineMessage();
+          }
         });
         break;
       case 0x1f:
@@ -237,7 +244,7 @@ class MessageUtils {
   /// [content] is optional.
   static void addPackage(String command, [MessageRequest content]) {
     try {
-      final package = packageBuilder(
+      final List<int> package = packageBuilder(
         Messages.messageCommands[command],
         content?.requestBody(),
       );
@@ -260,7 +267,7 @@ class MessageUtils {
         M_WY_MULTPOINT_LOGIN(),
       );
   static void sendLogout() => addPackage('WY_LOGOUT');
-  static void sendKeepAlive(_) => addPackage('WY_KEEPALIVE');
+  static void sendKeepAlive(dynamic _) => addPackage('WY_KEEPALIVE');
   static void sendGetOfflineMessage() => addPackage('WY_GET_OFFLINEMSG');
   static void sendTextMessage(String message, int uid) {
     addPackage(
@@ -335,13 +342,13 @@ class MessageUtils {
     List<int> content, {
     int messageId,
   }) {
-    final _type = getPackageUint(content.sublist(0, 1), 8);
-    final _senderUid = getPackageUint(content.sublist(1, 9), 64);
-    final _senderMultiPortId = getPackageUint(content.sublist(9, 17), 64);
-    final _sendTime = getPackageUint(content.sublist(17, 21), 32);
-    final _ackId = getPackageUint(content.sublist(21, 29), 64);
-    final _content = getPackageString(content.sublist(29));
-    final event = MessageReceivedEvent(
+    final int _type = getPackageUint(content.sublist(0, 1), 8);
+    final int _senderUid = getPackageUint(content.sublist(1, 9), 64);
+    final int _senderMultiPortId = getPackageUint(content.sublist(9, 17), 64);
+    final int _sendTime = getPackageUint(content.sublist(17, 21), 32);
+    final int _ackId = getPackageUint(content.sublist(21, 29), 64);
+    final Map<String, dynamic> _content = getPackageString(content.sublist(29));
+    final MessageReceivedEvent event = MessageReceivedEvent(
       messageId: messageId,
       type: _type,
       senderUid: _senderUid,
@@ -357,21 +364,21 @@ class MessageUtils {
     // Fire [MessageReceivedEvent].
     Instances.eventBus.fire(event);
     // Notify each listener with event.
-    for (final listener in messageListeners) {
+    for (final Function(MessageReceivedEvent) listener in messageListeners) {
       listener(event);
     }
   }
 
-  static decodeMultiOfflineMessage(Packet packet) {
-    List<MessageReceivedEvent> messageEvents = [];
-    List<int> content = List.from(packet.content);
+  static void decodeMultiOfflineMessage(Packet packet) {
+    final List<MessageReceivedEvent> messageEvents = <MessageReceivedEvent>[];
+    final List<int> content = List<int>.from(packet.content);
     int count = getPackageUint(content.sublist(0, 2), 16);
     content.removeRange(0, 2);
     while (content.isNotEmpty && count > 0) {
-      final messageId = getPackageUint(content.sublist(0, 8), 64);
-      final messageCommand = getPackageUint(content.sublist(8, 10), 16);
-      final messageContentSize = getPackageUint(content.sublist(10, 12), 16);
-      final messageContent = decodeMessageEvent(
+      final int messageId = getPackageUint(content.sublist(0, 8), 64);
+      final int messageCommand = getPackageUint(content.sublist(8, 10), 16);
+      final int messageContentSize = getPackageUint(content.sublist(10, 12), 16);
+      final MessageReceivedEvent messageContent = decodeMessageEvent(
         content.sublist(12, 12 + messageContentSize),
         messageId: messageId,
       );
@@ -389,13 +396,13 @@ class MessageUtils {
 ///
 /// [value] Unsigned integer value, [radix] Radix of the unsigned integer
 class UintWrapper {
-  final int value;
-  final int radix;
-
   const UintWrapper(
     this.value,
     this.radix,
   ) : assert(radix % 8 == 0 && radix <= 64);
+
+  final int value;
+  final int radix;
 }
 
 /// Converter for [UintWrapper].
@@ -404,7 +411,7 @@ class UintWrapper {
 /// wrapper will be converted to bytes and combined together. To create a
 /// bytes list, construct a [UintConverter] at first, then add wrappers.
 class UintConverter {
-  final numbers = <UintWrapper>[];
+  final List<UintWrapper> numbers = <UintWrapper>[];
 
   void addWrapper(UintWrapper uintWrapper) {
     numbers.add(uintWrapper);
@@ -415,10 +422,10 @@ class UintConverter {
   }
 
   void addString(String value) {
-    final bytes = value.toUtf8();
+    final List<int> bytes = value.toUtf8();
     // String package needs to add length before content.
     addWrapper(UintWrapper(bytes.length, 16));
-    for (final byte in bytes) {
+    for (final int byte in bytes) {
       add(byte, 8);
     }
   }
@@ -426,13 +433,13 @@ class UintConverter {
   Uint8List asUint8List() {
     int size = 0;
     int offset = 0;
-    for (final number in numbers) {
+    for (final UintWrapper number in numbers) {
       size += number.radix ~/ 8;
     }
     final ByteBuffer buffer = Uint8List(size).buffer;
     final ByteData data = ByteData.view(buffer);
 
-    for (final number in numbers) {
+    for (final UintWrapper number in numbers) {
       if (number.radix == 8) {
         data.setUint8(offset, number.value);
       } else if (number.radix == 16) {

@@ -9,34 +9,38 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class MessagesProvider with ChangeNotifier {
-  Map<int, List> _appsMessages;
-//  Map<int, List> _personalMessages;
+  Map<int, List<dynamic>> _appsMessages;
+//  Map<int, List<dynamic>> _personalMessages;
 
-  Map<int, List> get appsMessages => _appsMessages;
-//  Map<int, List> get personalMessages => _personalMessages;
+  Map<int, List<dynamic>> get appsMessages => _appsMessages;
+//  Map<int, List<dynamic>> get personalMessages => _personalMessages;
 
-  int get unreadCount => (appsMessages?.values ?? []).fold(
-      0,
-      (initialValue, list) =>
-          initialValue +
-          list.cast<AppMessage>().fold(0, (init, message) => init + (message.read ? 0 : 1)));
+  int get unreadCount =>
+      appsMessages?.values?.fold<int>(
+          0,
+          (int initialValue, List<dynamic> list) =>
+              initialValue +
+              list
+                  .cast<AppMessage>()
+                  .fold<int>(0, (int init, AppMessage message) => init + (message.read ? 0 : 1))) ??
+      0;
 
-  bool get hasMessages => _appsMessages.isNotEmpty
-//          || _personalMessages[currentUser.uid].isNotEmpty
+  bool get hasMessages => _appsMessages?.isNotEmpty
+//          || _personalMessages[currentUser.uid]?.isNotEmpty
       ;
 
   Future<void> initMessages() async {
-    final appBox = HiveBoxes.appMessagesBox;
+    final Box<Map<dynamic, dynamic>> appBox = HiveBoxes.appMessagesBox;
 //    final personalBox = HiveBoxes.personalMessagesBox;
 
     if (!appBox.containsKey(currentUser.uid)) {
-      await appBox.put(currentUser.uid, Map<int, List>());
+      await appBox.put(currentUser.uid, <int, List<AppMessage>>{});
     }
 //    if (!personalBox.containsKey(currentUser.uid)) {
 //      await personalBox.put(currentUser.uid, Map<int, List>());
 //    }
 
-    _appsMessages = appBox.get(currentUser.uid).cast<int, List>();
+    _appsMessages = appBox.get(currentUser.uid).cast<int, List<dynamic>>();
 //    _personalMessages = personalBox.get(currentUser.uid).cast<int, List>();
   }
 
@@ -58,26 +62,27 @@ class MessagesProvider with ChangeNotifier {
   }
 
   void _incomingAppsMessage(MessageReceivedEvent event) {
-    final message = AppMessage.fromEvent(event);
+    final AppMessage message = AppMessage.fromEvent(event);
     String content = message.content;
     try {
-      content = jsonDecode(content)['content'];
+      content = jsonDecode(content)['content'] as String;
     } catch (e) {
       debugPrint('Incoming message don\'t need to convert.');
     }
     if (content != null && content.trim().replaceAll('\n', '').replaceAll('\r', '').isNotEmpty) {
-      final provider = Provider.of<WebAppsProvider>(currentContext, listen: false);
+      final WebAppsProvider provider = Provider.of<WebAppsProvider>(currentContext, listen: false);
       debugPrint(provider.allApps.toString());
       debugPrint(message.toString());
-      final app = provider.allApps.where((app) => app.appId == message.appId).elementAt(0);
+      final WebApp app =
+          provider.allApps.where((WebApp app) => app.appId == message.appId).elementAt(0);
 
       if (!_appsMessages.containsKey(message.appId)) {
         _appsMessages[message.appId] = <AppMessage>[];
       }
       _appsMessages[message.appId].insert(0, message);
-      final tempMessages = List.from(_appsMessages[message.appId]);
+      final List<dynamic> tempMessages = List<dynamic>.from(_appsMessages[message.appId]);
       _appsMessages.remove(message.appId);
-      _appsMessages[message.appId] = List.from(tempMessages);
+      _appsMessages[message.appId] = List<dynamic>.from(tempMessages);
       saveAppsMessages();
       if (Instances.appLifeCycleState != AppLifecycleState.resumed) {
         NotificationUtils.show(
@@ -131,7 +136,7 @@ class MessagesProvider with ChangeNotifier {
   }
 
   void saveAppsMessages() {
-    HiveBoxes.appMessagesBox.put(currentUser.uid, Map.from(_appsMessages));
+    HiveBoxes.appMessagesBox.put(currentUser.uid, Map<int, List<dynamic>>.from(_appsMessages));
   }
 
 //  void savePersonalMessage() {

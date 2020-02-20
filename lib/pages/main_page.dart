@@ -15,26 +15,26 @@ import 'package:openjmu/widgets/fab_bottom_appbar.dart';
 import 'package:openjmu/widgets/announcement/announcement_widget.dart';
 
 @FFRoute(
-  name: "openjmu://home",
-  routeName: "首页",
-  argumentNames: ["initAction"],
+  name: 'openjmu://home',
+  routeName: '首页',
+  argumentNames: ['initAction'],
 )
 class MainPage extends StatefulWidget {
-  final int initAction;
-
   const MainPage({
     Key key,
     this.initAction,
   }) : super(key: key);
+
+  final int initAction;
 
   @override
   State<StatefulWidget> createState() => MainPageState();
 }
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
-  static const pagesTitle = <String>['广场', '应用', '消息'];
-  static const pagesIcon = <String>['square', 'apps', 'messages'];
-  static const bottomBarHeight = 72.0;
+  static const List<String> pagesTitle = <String>['广场', '应用', '消息'];
+  static const List<String> pagesIcon = <String>['square', 'apps', 'messages'];
+  static const double bottomBarHeight = 72.0;
   double get bottomBarIconSize => bottomBarHeight / 1.9;
 
   static TextStyle get tabSelectedTextStyle => TextStyle(
@@ -68,11 +68,13 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     MessageUtils.initMessageSocket();
 
     Instances.eventBus
-      ..on<ActionsEvent>().listen((event) {
-        final index = Constants.quickActionsList.keys.toList().indexOf(event.type);
+      ..on<ActionsEvent>().listen((ActionsEvent event) {
+        final int index = Constants.quickActionsList.keys.toList().indexOf(event.type);
         if (index != -1) {
           _selectedTab(index);
-          if (mounted) setState(() {});
+          if (mounted) {
+            setState(() {});
+          }
         }
       });
   }
@@ -85,7 +87,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   void initPushService() {
     try {
-      final data = <String, dynamic>{
+      final Map<String, dynamic> data = <String, dynamic>{
         'token': DeviceUtils.devicePushToken,
         'date': DateFormat('yyyy/MM/dd HH:mm:ss', 'en').format(DateTime.now()),
         'uid': '${currentUser.uid}',
@@ -96,9 +98,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         'platform': Platform.isIOS ? 'ios' : 'android',
       };
       debugPrint('Push data: $data');
-      NetUtils.post(API.pushUpload, data: data).then((response) {
+      NetUtils.post<void>(API.pushUpload, data: data).then((dynamic _) {
         debugPrint('Push service info upload success.');
-      }).catchError((e) {
+      }).catchError((dynamic e) {
         debugPrint('Push service upload error: $e');
       });
     } catch (e) {
@@ -111,20 +113,25 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     notificationTimer = Timer.periodic(10.seconds, _getNotification);
   }
 
-  void _getNotification(_) {
-    final provider = Provider.of<NotificationProvider>(currentContext, listen: false);
-    UserAPI.getNotifications().then((response) {
-      final notification = Notifications.fromJson(response.data);
+  void _getNotification(Timer _) {
+    final NotificationProvider provider =
+        Provider.of<NotificationProvider>(currentContext, listen: false);
+    UserAPI.getNotifications().then((Response<Map<String, dynamic>> response) {
+      final Notifications notification = Notifications.fromJson(response.data);
       provider.updateNotification(notification);
-      if (_ == null) debugPrint('Updated notifications with :$notification');
-    }).catchError((e) {
+      if (_ == null) {
+        debugPrint('Updated notifications with :$notification');
+      }
+    }).catchError((dynamic e) {
       debugPrint('Error when getting notification: $e');
     });
-    TeamPostAPI.getNotifications().then((response) {
-      final notification = TeamNotifications.fromJson(response.data);
+    TeamPostAPI.getNotifications().then((Response<Map<String, dynamic>> response) {
+      final TeamNotifications notification = TeamNotifications.fromJson(response.data);
       provider.updateTeamNotification(notification);
-      if (_ == null) debugPrint('Updated team notifications with: $notification');
-    }).catchError((e) {
+      if (_ == null) {
+        debugPrint('Updated team notifications with: $notification');
+      }
+    }).catchError((dynamic e) {
       debugPrint('Error when getting team notification: $e');
     });
   }
@@ -137,16 +144,17 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   int lastBack = 0;
   Future<bool> doubleBackExit() {
-    int now = DateTime.now().millisecondsSinceEpoch;
+    final int now = DateTime.now().millisecondsSinceEpoch;
     if (now - lastBack > 800) {
       showToast('再按一次退出应用');
       lastBack = DateTime.now().millisecondsSinceEpoch;
     } else {
       SystemNavigator.pop();
     }
-    return Future.value(false);
+    return Future<bool>.value(false);
   }
 
+  @override
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
@@ -157,12 +165,12 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           child: Column(
             children: <Widget>[
               Selector<SettingsProvider, bool>(
-                selector: (_, provider) => provider.announcementsUserEnabled,
-                builder: (_, announcementsUserEnabled, __) {
+                selector: (_, SettingsProvider provider) => provider.announcementsUserEnabled,
+                builder: (_, bool announcementsUserEnabled, __) {
                   if (announcementsUserEnabled) {
                     return AnnouncementWidget(color: currentThemeColor, gap: 24.0, canClose: true);
                   } else {
-                    return SizedBox.shrink();
+                    return const SizedBox.shrink();
                   }
                 },
               ),
@@ -189,10 +197,10 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           onTabSelected: _selectedTab,
           showText: false,
           initIndex: _tabIndex,
-          items: [
+          items: <FABBottomAppBarItem>[
             ...List<FABBottomAppBarItem>.generate(
               pagesTitle.length,
-              (i) => FABBottomAppBarItem(iconPath: pagesIcon[i], text: pagesTitle[i]),
+              (int i) => FABBottomAppBarItem(iconPath: pagesIcon[i], text: pagesTitle[i]),
             ),
             FABBottomAppBarItem(
               text: '我的',
@@ -211,7 +219,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                           ? Border.all(color: currentThemeColor, width: suSetWidth(3.0))
                           : null,
                     ),
-                    child: UserAvatar(canJump: false),
+                    child: const UserAvatar(canJump: false),
                   ),
                 ),
               ),

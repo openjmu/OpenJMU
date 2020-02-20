@@ -13,16 +13,16 @@ import 'package:openjmu/constants/constants.dart';
 class NetUtils {
   const NetUtils._();
 
-  static final dio = Dio();
-  static final tokenDio = Dio();
+  static final Dio dio = Dio();
+  static final Dio tokenDio = Dio();
 
-  static final cookieJar = DefaultCookieJar();
-  static final cookieManager = CookieManager(cookieJar);
-  static final tokenCookieJar = DefaultCookieJar();
-  static final tokenCookieManager = CookieManager(tokenCookieJar);
+  static final DefaultCookieJar cookieJar = DefaultCookieJar();
+  static final CookieManager cookieManager = CookieManager(cookieJar);
+  static final DefaultCookieJar tokenCookieJar = DefaultCookieJar();
+  static final CookieManager tokenCookieManager = CookieManager(tokenCookieJar);
 
   /// Method to update ticket.
-  static void updateTicket() async {
+  static Future<void> updateTicket() async {
     // Lock and clear dio while requesting new ticket.
     dio
       ..lock()
@@ -37,7 +37,7 @@ class NetUtils {
     dio.unlock();
   }
 
-  static void initConfig() async {
+  static void initConfig() {
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
 //      client.findProxy = (uri) => 'PROXY 192.168.0.106:8888';
 //      client.badCertificateCallback = (
@@ -49,11 +49,13 @@ class NetUtils {
     };
     dio.interceptors.add(cookieManager);
     dio.interceptors.add(InterceptorsWrapper(
-      onError: (DioError e) async {
+      onError: (DioError e) {
         debugPrint('Dio error with request: ${e.request.uri}');
         debugPrint('Request data: ${e.request.data}');
         debugPrint('Dio error: ${e.message}');
-        if (e?.response?.statusCode == 401) updateTicket();
+        if (e?.response?.statusCode == 401) {
+          updateTicket();
+        }
         return e;
       },
     ));
@@ -69,27 +71,27 @@ class NetUtils {
     };
     tokenDio.interceptors.add(tokenCookieManager);
     tokenDio.interceptors.add(InterceptorsWrapper(
-      onError: (DioError e) async {
+      onError: (DioError e) {
         debugPrint('TokenDio error with request: ${e.request.uri}');
         debugPrint('Request data: ${e.request.data}');
         debugPrint('TokenDio error: ${e.message}');
-        if (e?.response?.statusCode == 401) updateTicket();
+        if (e?.response?.statusCode == 401) {
+          updateTicket();
+        }
         return e;
       },
     ));
   }
 
-  static Future<Response> get(String url, {data}) async => await dio.get(
-        url,
-        queryParameters: data,
-      );
+  static Future<Response<T>> get<T>(String url, {Map<String, dynamic> data}) async =>
+      await dio.get<T>(url, queryParameters: data);
 
-  static Future<Response> getWithHeaderSet(
+  static Future<Response<T>> getWithHeaderSet<T>(
     String url, {
-    data,
-    headers,
+    Map<String, dynamic> data,
+    Map<String, dynamic> headers,
   }) async =>
-      await dio.get(
+      await dio.get<T>(
         url,
         queryParameters: data,
         options: Options(
@@ -99,8 +101,8 @@ class NetUtils {
 
   static Future<Response<T>> getWithCookieSet<T>(
     String url, {
-    data,
-    cookies,
+    Map<String, dynamic> data,
+    List<Cookie> cookies,
   }) async =>
       await dio.get<T>(
         url,
@@ -125,12 +127,14 @@ class NetUtils {
         ),
       );
 
-  static Future<Response<T>> post<T>(String url, {data}) async => await dio.post<T>(
+  static Future<Response<T>> post<T>(String url, {Map<String, dynamic> data}) async =>
+      await dio.post<T>(
         url,
         data: data,
       );
 
-  static Future<Response<T>> postWithCookieSet<T>(String url, {data}) async => await dio.post<T>(
+  static Future<Response<T>> postWithCookieSet<T>(String url, {Map<String, dynamic> data}) async =>
+      await dio.post<T>(
         url,
         data: data,
         options: Options(
@@ -140,9 +144,9 @@ class NetUtils {
 
   static Future<Response<T>> postWithCookieAndHeaderSet<T>(
     String url, {
-    cookies,
-    headers,
-    data,
+    Map<String, dynamic> data,
+    List<Cookie> cookies,
+    Map<String, dynamic> headers,
   }) async =>
       await dio.post<T>(
         url,
@@ -155,8 +159,8 @@ class NetUtils {
 
   static Future<Response<T>> deleteWithCookieAndHeaderSet<T>(
     String url, {
-    data,
-    headers,
+    Map<String, dynamic> data,
+    Map<String, dynamic> headers,
   }) async =>
       await dio.delete<T>(
         url,
@@ -167,10 +171,15 @@ class NetUtils {
         ),
       );
 
-  static Future<Response> download(String url, {data, Map<String, dynamic> headers}) async {
-    Response response;
+  static Future<Response<dynamic>> download(
+    String url, {
+    Map<String, dynamic> data,
+    Map<String, dynamic> headers,
+  }) async {
+    Response<dynamic> response;
     String path;
-    final permissions = await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+    final Map<PermissionGroup, PermissionStatus> permissions =
+        await PermissionHandler().requestPermissions(<PermissionGroup>[PermissionGroup.storage]);
     if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
       showToast('开始下载...');
       debugPrint('File start download: $url');
@@ -187,7 +196,7 @@ class NetUtils {
         );
         debugPrint('File downloaded: $path');
         showToast('下载完成 $path');
-        final openFileResult = await OpenFile.open(path);
+        final OpenResult openFileResult = await OpenFile.open(path);
         debugPrint('File open result: ${openFileResult.type}');
         return response;
       } catch (e) {

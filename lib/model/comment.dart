@@ -9,20 +9,6 @@ part of 'beans.dart';
 /// [id] 评论id, [fromUserUid] 评论uid, [fromUserName] 评论用户名, [fromUserAvatar] 评论用户头像
 /// [content] 评论内容, [commentTime] 评论时间, [from] 来源
 class Comment {
-  int id, fromUserUid, floor;
-  String fromUserName;
-  String fromUserAvatar;
-  String content;
-  String commentTime;
-  String from;
-
-  bool toReplyExist, toTopicExist;
-  int toReplyUid, toTopicUid;
-  String toReplyUserName, toTopicUserName;
-  var toReplyContent, toTopicContent;
-
-  Post post;
-
   Comment({
     this.id,
     this.floor,
@@ -42,6 +28,20 @@ class Comment {
     this.toTopicContent,
     this.post,
   });
+
+  int id, fromUserUid, floor;
+  String fromUserName;
+  String fromUserAvatar;
+  String content;
+  String commentTime;
+  String from;
+
+  bool toReplyExist, toTopicExist;
+  int toReplyUid, toTopicUid;
+  String toReplyUserName, toTopicUserName;
+  String toReplyContent, toTopicContent;
+
+  Post post;
 
   @override
   String toString() {

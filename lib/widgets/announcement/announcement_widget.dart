@@ -4,11 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class AnnouncementWidget extends StatelessWidget {
-  final Color color;
-  final double gap;
-  final double radius;
-  final bool canClose;
-
   const AnnouncementWidget({
     Key key,
     this.color,
@@ -16,6 +11,11 @@ class AnnouncementWidget extends StatelessWidget {
     this.radius,
     this.canClose = false,
   }) : super(key: key);
+
+  final Color color;
+  final double gap;
+  final double radius;
+  final bool canClose;
 
   IconThemeData get iconTheme => IconThemeData(color: currentThemeColor, size: suSetWidth(26.0));
 
@@ -36,7 +36,7 @@ class AnnouncementWidget extends StatelessWidget {
     );
   }
 
-  Widget actionIcon(context, SettingsProvider provider) {
+  Widget actionIcon(BuildContext context, SettingsProvider provider) {
     return IconTheme(
       data: iconTheme,
       child: canClose
@@ -57,7 +57,7 @@ class AnnouncementWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
-      builder: (_, provider, __) {
+      builder: (_, SettingsProvider provider, __) {
         return GestureDetector(
           behavior: HitTestBehavior.translucent,
           child: Container(
@@ -78,8 +78,12 @@ class AnnouncementWidget extends StatelessWidget {
             ),
           ),
           onTap: () {
-            final data = provider.announcements[0];
-            ConfirmationDialog.show(context, title: data['title'], content: data['content']);
+            final Map data = provider.announcements[0];
+            ConfirmationDialog.show(
+              context,
+              title: data['title'] as String,
+              content: data['content'] as String,
+            );
           },
         );
       },

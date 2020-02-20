@@ -9,24 +9,26 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class CoursesProvider extends ChangeNotifier {
-  final _courseBox = HiveBoxes.coursesBox;
-  final _courseRemarkBox = HiveBoxes.courseRemarkBox;
+  final Box<Map<dynamic, dynamic>> _courseBox = HiveBoxes.coursesBox;
+  final Box<String> _courseRemarkBox = HiveBoxes.courseRemarkBox;
 
-  final maxCoursesPerDay = 12;
+  final int maxCoursesPerDay = 12;
 
   DateTime _now;
   DateTime get now => _now;
   set now(DateTime value) {
     assert(value != null);
-    if (value == _now) return;
+    if (value == _now) {
+      return;
+    }
     _now = value;
     notifyListeners();
   }
 
-  Map<int, Map> _courses;
-  Map<int, Map> get courses => _courses;
-  set courses(Map<int, Map> value) {
-    _courses = Map<int, Map>.from(value);
+  Map<int, Map<dynamic, dynamic>> _courses;
+  Map<int, Map<dynamic, dynamic>> get courses => _courses;
+  set courses(Map<int, Map<dynamic, dynamic>> value) {
+    _courses = Map<int, Map<dynamic, dynamic>>.from(value);
     notifyListeners();
   }
 
@@ -67,21 +69,24 @@ class CoursesProvider extends ChangeNotifier {
 
   void initCourses() {
     now = DateTime.now();
-    _courses = _courseBox.get(currentUser.uid)?.cast<int, Map>();
+    _courses = _courseBox.get(currentUser.uid)?.cast<int, Map<dynamic, dynamic>>();
     _remark = _courseRemarkBox.get(currentUser.uid);
     if (_courses == null) {
       _courses = resetCourses(_courses);
       updateCourses();
     } else {
-      _courses.values.forEach((map) {
-        map.cast<int, List>().values.cast<List>().forEach((list) {
-          list.cast<Course>().forEach((course) {
+      for (final Map<dynamic, dynamic> _map in _courses.values) {
+        final Map<int, List<dynamic>> map = _map.cast<int, List<dynamic>>();
+        final List<List<dynamic>> lists = map.values?.toList()?.cast<List<dynamic>>();
+        for (final List<dynamic> list in lists) {
+          final List<Course> courses = list.cast<Course>();
+          for (final Course course in courses) {
             if (course.color == null) {
               Course.uniqueColor(course, CourseAPI.randomCourseColor());
             }
-          });
-        });
-      });
+          }
+        }
+      }
       firstLoaded = true;
     }
   }
@@ -96,23 +101,23 @@ class CoursesProvider extends ChangeNotifier {
     _now = null;
   }
 
-  Map<int, Map> resetCourses(Map<int, Map> courses) {
-    courses = {
+  Map<int, Map<dynamic, dynamic>> resetCourses(Map<int, Map<dynamic, dynamic>> courses) {
+    courses = <int, Map<dynamic, dynamic>>{
       for (int i = 1; i < 7 + 1; i++)
-        i: {
-          for (int i = 1; i < maxCoursesPerDay + 1; i++) i: [],
+        i: <dynamic, dynamic>{
+          for (int i = 1; i < maxCoursesPerDay + 1; i++) i: <dynamic>[],
         },
     };
-    for (int key in courses.keys) {
-      courses[key] = {
-        for (int i = 1; i < maxCoursesPerDay + 1; i++) i: [],
+    for (final int key in courses.keys) {
+      courses[key] = <dynamic, dynamic>{
+        for (int i = 1; i < maxCoursesPerDay + 1; i++) i: <dynamic>[],
       };
     }
     return courses;
   }
 
-  Future updateCourses() async {
-    final dateProvider = Provider.of<DateProvider>(currentContext, listen: false);
+  Future<void> updateCourses() async {
+    final DateProvider dateProvider = Provider.of<DateProvider>(currentContext, listen: false);
     if (dateProvider.currentWeek != null) {
       Instances.courseSchedulePageStateKey.currentState?.scrollToWeek(dateProvider.currentWeek);
     }
@@ -124,13 +129,22 @@ class CoursesProvider extends ChangeNotifier {
       }
     }
     try {
-      final responses = await Future.wait(<Future>[CourseAPI.getCourse(), CourseAPI.getRemark()]);
+      final List<Response<String>> responses = await Future.wait<Response<String>>(
+        <Future<Response<String>>>[
+          CourseAPI.getCourse(),
+          CourseAPI.getRemark(),
+        ],
+      );
       await courseResponseHandler(responses[0]);
       await remarkResponseHandler(responses[1]);
       if (!_firstLoaded) {
-        if (dateProvider.currentWeek != null) _firstLoaded = true;
+        if (dateProvider.currentWeek != null) {
+          _firstLoaded = true;
+        }
       }
-      if (_showError) _showError = false;
+      if (_showError) {
+        _showError = false;
+      }
       Instances.courseSchedulePageStateKey.currentState?.updateScrollController();
       notifyListeners();
 
@@ -138,50 +152,55 @@ class CoursesProvider extends ChangeNotifier {
       Instances.courseSchedulePageStateKey.currentState?.setState(() {});
     } catch (e) {
       debugPrint('Error when updating course: $e');
-      if (!firstLoaded && dateProvider.currentWeek != null) _firstLoaded = true;
+      if (!firstLoaded && dateProvider.currentWeek != null) {
+        _firstLoaded = true;
+      }
       _showError = true;
       notifyListeners();
     }
   }
 
-  Future courseResponseHandler(response) async {
-    final data = jsonDecode(response.data);
-    final _courseList = data['courses'];
-    final _customCourseList = data['othCase'];
-    Map<int, Map> _s;
+  Future<void> courseResponseHandler(Response<String> response) async {
+    final Map<String, dynamic> data = jsonDecode(response.data) as Map<String, dynamic>;
+    final List<dynamic> _courseList = data['courses'] as List<dynamic>;
+    final List<dynamic> _customCourseList = data['othCase'] as List<dynamic>;
+    Map<int, Map<dynamic, dynamic>> _s;
     _s = resetCourses(_s);
-    if (_courseList.length == 0) {
+    if (_courseList.isEmpty) {
       _hasCourses = false;
     }
-    _courseList.forEach((course) {
-      final _c = Course.fromJson(course);
+    for (final dynamic course in _courseList) {
+      final Course _c = Course.fromJson(course as Map<String, dynamic>);
       addCourse(_c, _s);
-    });
-    _customCourseList.forEach((course) {
-      if (course['content'].trim().isNotEmpty) {
-        final _c = Course.fromJson(course, isCustom: true);
+    }
+    for (final dynamic _course in _customCourseList) {
+      final Map<String, dynamic> course = _course as Map<String, dynamic>;
+      if ((course['content'] as String)?.trim()?.isNotEmpty ?? false) {
+        final Course _c = Course.fromJson(course, isCustom: true);
         addCourse(_c, _s);
       }
-    });
+    }
     if (_courses.toString() != _s.toString()) {
       _courses = _s;
-      await _courseBox.put(currentUser.uid, Map.from(_s));
+      await _courseBox.put(currentUser.uid, Map<int, Map<dynamic, dynamic>>.from(_s));
     }
   }
 
-  Future remarkResponseHandler(response) async {
-    final data = jsonDecode(response.data);
+  Future<void> remarkResponseHandler(Response<String> response) async {
+    final Map<String, dynamic> data = jsonDecode(response.data) as Map<String, dynamic>;
     String _r;
-    if (data != null) _r = data['classScheduleRemark'];
+    if (data != null) {
+      _r = data['classScheduleRemark'] as String;
+    }
     if (_remark != _r && _r != '' && _r != null) {
       _remark = _r;
       await _courseRemarkBox.put(currentUser.uid, _r);
     }
   }
 
-  void addCourse(Course course, Map<int, Map> courses) {
-    final courseDay = course.day;
-    final courseTime = course.time.toInt();
+  void addCourse(Course course, Map<int, Map<dynamic, dynamic>> courses) {
+    final int courseDay = course.day;
+    final int courseTime = course.time.toInt();
     assert(courseDay != null && courseTime != null);
     try {
       courses[courseDay][courseTime].add(course);
@@ -191,12 +210,12 @@ class CoursesProvider extends ChangeNotifier {
     }
   }
 
-  Future setCourses(Map<int, Map> courses) async {
+  Future<void> setCourses(Map<int, Map<dynamic, dynamic>> courses) async {
     await _courseBox.put(currentUser.uid, courses);
-    _courses = Map<int, Map>.from(courses);
+    _courses = Map<int, Map<dynamic, dynamic>>.from(courses);
   }
 
-  Future setRemark(String value) async {
+  Future<void> setRemark(String value) async {
     await _courseRemarkBox.put(currentUser.uid, value);
     _remark = value;
   }

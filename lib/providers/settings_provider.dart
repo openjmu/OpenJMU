@@ -33,10 +33,10 @@ class SettingsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Map<String, dynamic>> _announcements = <Map<String, dynamic>>[];
-  List<Map<String, dynamic>> get announcements => _announcements;
-  set announcements(List<Map<String, dynamic>> value) {
-    _announcements = List<Map<String, dynamic>>.from(value);
+  List<Map> _announcements = <Map>[];
+  List<Map> get announcements => _announcements;
+  set announcements(List<Map> value) {
+    _announcements = List<Map>.from(value);
     notifyListeners();
   }
 
@@ -113,9 +113,8 @@ class SettingsProvider extends ChangeNotifier {
   Future<void> getAnnouncement() async {
     try {
       final Map<String, dynamic> data =
-          (jsonDecode((await NetUtils.get(API.announcement)).data as String) as Map)
-              .cast<String, dynamic>();
-      _announcements = (data['announcements'] as List).cast<Map<String, dynamic>>();
+          jsonDecode((await NetUtils.get<String>(API.announcement)).data) as Map<String, dynamic>;
+      _announcements = (data['announcements'] as List<dynamic>).cast<Map>();
       _announcementsEnabled = data['enabled'] as bool;
       _announcementsUserEnabled = _announcementsEnabled;
       notifyListeners();

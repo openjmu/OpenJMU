@@ -26,8 +26,8 @@ class TeamPostAPI {
     );
   }
 
-  static Future getPostDetail({int id, int postType = 2}) async =>
-      NetUtils.getWithCookieAndHeaderSet(
+  static Future<Response<Map<String, dynamic>>> getPostDetail({int id, int postType = 2}) async =>
+      NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(
         API.teamPostDetail(postId: id, postType: postType),
         headers: Constants.teamHeader,
       );
@@ -73,11 +73,11 @@ class TeamPostAPI {
         headers: Constants.teamHeader,
       );
 
-  static Future deletePost({
+  static Future<Response<void>> deletePost({
     @required int postId,
     @required int postType,
   }) async =>
-      NetUtils.deleteWithCookieAndHeaderSet(
+      NetUtils.deleteWithCookieAndHeaderSet<void>(
         API.teamPostDelete(postId: postId, postType: postType),
         headers: Constants.teamHeader,
       );
@@ -145,7 +145,8 @@ class TeamPostAPI {
     return time;
   }
 
-  static Future getNotifications() async => NetUtils.getWithCookieAndHeaderSet(
+  static Future<Response<Map<String, dynamic>>> getNotifications() async =>
+      NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(
         API.teamNotification,
         headers: Constants.teamHeader,
       );

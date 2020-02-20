@@ -42,7 +42,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
 
   @override
   void initState() {
-    UserAPI.getUserInfo<void>(uid: widget.uid).then((dynamic response) {
+    UserAPI.getUserInfo(uid: widget.uid).then((dynamic response) {
       user = UserInfo.fromJson((response as Response<dynamic>).data as Map<String, dynamic>);
       if (mounted) {
         setState(() {});

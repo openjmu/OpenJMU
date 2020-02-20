@@ -10,14 +10,14 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/login_page.dart';
 import 'package:openjmu/pages/main_page.dart';
 
-@FFRoute(name: "openjmu://splash", routeName: "启动页", argumentNames: ["initAction"])
+@FFRoute(name: 'openjmu://splash', routeName: '启动页', argumentNames: ['initAction'])
 class SplashPage extends StatefulWidget {
-  final int initAction;
-
   const SplashPage({
     Key key,
     this.initAction,
   }) : super(key: key);
+
+  final int initAction;
 
   @override
   SplashState createState() => SplashState();
@@ -52,7 +52,9 @@ class SplashState extends State<SplashPage> {
       });
       _showLoginIndicatorTimer = Timer(5.seconds, () {
         showLoading = true;
-        if (mounted) setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       });
     });
 
@@ -63,10 +65,12 @@ class SplashState extends State<SplashPage> {
     });
 
     Instances.eventBus
-      ..on<ConnectivityChangeEvent>().listen((event) {
-        if (mounted && isOnline != null) checkOnline(event);
+      ..on<ConnectivityChangeEvent>().listen((ConnectivityChangeEvent event) {
+        if (mounted && isOnline != null) {
+          checkOnline(event);
+        }
       })
-      ..on<TicketGotEvent>().listen((event) {
+      ..on<TicketGotEvent>().listen((TicketGotEvent event) {
         debugPrint('Ticket Got.');
         if (!event.isWizard) {}
         isUserLogin = true;
@@ -75,12 +79,12 @@ class SplashState extends State<SplashPage> {
           navigate();
         }
       })
-      ..on<TicketFailedEvent>().listen((event) async {
+      ..on<TicketFailedEvent>().listen((TicketFailedEvent event) {
         debugPrint('Ticket Failed.');
         isUserLogin = false;
         if (mounted) {
           setState(() {});
-          await navigate();
+          navigate();
         }
       });
   }
@@ -94,12 +98,8 @@ class SplashState extends State<SplashPage> {
 
   Future<ConnectivityResult> checkConnectivity() async {
     try {
-      final connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult != null && connectivityResult != ConnectivityResult.none) {
-        isOnline = true;
-      } else {
-        isOnline = false;
-      }
+      final ConnectivityResult connectivityResult = await Connectivity().checkConnectivity();
+      isOnline = connectivityResult != null && connectivityResult != ConnectivityResult.none;
       return connectivityResult;
     } catch (e) {
       debugPrint('Checking connectivity error: $e');
@@ -107,7 +107,7 @@ class SplashState extends State<SplashPage> {
     }
   }
 
-  void checkOnline(event) {
+  void checkOnline(ConnectivityChangeEvent event) {
     if (!isInLoginProcess) {
       isInLoginProcess = true;
       if (event.type != ConnectivityResult.none) {
@@ -115,21 +115,23 @@ class SplashState extends State<SplashPage> {
         if (DataUtils.isLogin()) {
           DataUtils.reFetchTicket();
         } else {
-          Future.delayed(2.seconds, navigate);
+          Future<void>.delayed(2.seconds, navigate);
         }
       } else {
         isOnline = false;
       }
     }
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void navigate({bool forceToLogin = false}) {
     try {
-      navigatorState.pushAndRemoveUntil(
-        PageRouteBuilder(
+      navigatorState.pushAndRemoveUntil<void>(
+        PageRouteBuilder<void>(
           transitionDuration: !isUserLogin || forceToLogin ? 1.seconds : 500.milliseconds,
-          pageBuilder: (_, animation, __) => FadeTransition(
+          pageBuilder: (_, Animation<double> animation, __) => FadeTransition(
             opacity: animation,
             child: !isUserLogin || forceToLogin
                 ? LoginPage()
@@ -206,7 +208,7 @@ class SplashState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: AnimatedOpacity(
         duration: 500.milliseconds,
@@ -237,7 +239,7 @@ class SplashState extends State<SplashPage> {
                               duration: 300.milliseconds,
                               child: isOnline ? loginWidget : warningWidget,
                             )
-                          : SizedBox.shrink(),
+                          : const SizedBox.shrink(),
                     ),
                   ),
                 ),

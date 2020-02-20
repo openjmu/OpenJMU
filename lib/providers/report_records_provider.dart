@@ -10,7 +10,7 @@ class ReportRecordsProvider extends ChangeNotifier {
   Set<int> _records;
   Set<int> get records => _records;
   set records(Set<int> value) {
-    _records = Set.from(value);
+    _records = Set<int>.from(value);
     notifyListeners();
   }
 
@@ -24,7 +24,7 @@ class ReportRecordsProvider extends ChangeNotifier {
       return false;
     } else {
       _records.add(postId);
-      await HiveBoxes.reportRecordBox.put(currentUser.uid, List.from(_records));
+      await HiveBoxes.reportRecordBox.put(currentUser.uid, List<int>.from(_records));
       return true;
     }
   }
