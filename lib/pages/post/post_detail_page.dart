@@ -88,8 +88,8 @@ class PostDetailPageState extends State<PostDetailPage> {
     Instances.eventBus
       ..on<PostDeletedEvent>().listen((event) {
         if (this.mounted && event.postId == widget.post.id) {
-          Future.delayed(const Duration(milliseconds: 2200), () {
-            Navigator.of(context).pop();
+          Future.delayed(2200.milliseconds, () {
+            navigatorState.pop(true);
           });
         }
       })
