@@ -220,9 +220,9 @@ class UserAPI {
     });
   }
 
-  static void setBlacklist(List<Map> list) {
+  static void setBlacklist(List<dynamic> list) {
     if (list.isNotEmpty) {
-      for (final Map person in list) {
+      for (final Map<dynamic, dynamic> person in list) {
         final BlacklistUser user = BlacklistUser.fromJson(person as Map<String, dynamic>);
         blacklist.add(user);
       }

@@ -31,10 +31,11 @@ class DataUtils {
           (await UserAPI.login<Map<String, dynamic>>(params)).data;
       UserAPI.currentUser.sid = loginData['sid'] as String;
       UserAPI.currentUser.ticket = loginData['ticket'] as String;
-      final Map<String, dynamic> user = (await UserAPI.getUserInfo(
+      final Map<String, dynamic> user = ((await UserAPI.getUserInfo(
         uid: loginData['uid'].toString().toInt(),
-      ) as Response<Map<String, dynamic>>)
-          .data;
+      ) as Response<dynamic>)
+              .data as Map<dynamic, dynamic>)
+          .cast<String, dynamic>();
       final Map<String, dynamic> userInfo = <String, dynamic>{
         'sid': loginData['sid'],
         'uid': loginData['uid'],
@@ -42,11 +43,11 @@ class DataUtils {
         'signature': user['signature'],
         'ticket': loginData['ticket'],
         'blowfish': blowfish,
-        'isTeacher': int.parse(user['type'].toString()) == 1,
+        'isTeacher': user['type'].toString().toInt() == 1,
         'unitId': loginData['unitid'],
         'workId': user['workid'],
 //        'classId': user['class_id'],
-        'gender': int.parse(user['gender'].toString()),
+        'gender': user['gender'].toString().toInt(),
       };
       bool isWizard = true;
       if (!(userInfo['isTeacher'] as bool)) {
@@ -54,7 +55,8 @@ class DataUtils {
       }
       await saveLoginInfo(userInfo);
       UserAPI.setBlacklist(
-        (await UserAPI.getBlacklist()).data['users'] as List<Map<String, dynamic>>,
+        ((await UserAPI.getBlacklist()).data['users'] as List<dynamic>)
+            .cast<Map<dynamic, dynamic>>(),
       );
       showToast('登录成功！');
       Instances.eventBus.fire(TicketGotEvent(isWizard));
@@ -108,7 +110,8 @@ class DataUtils {
 //      if (!currentUser.isTeacher) isWizard = await checkWizard();
       if (currentUser.sid != null) {
         UserAPI.setBlacklist(
-          ((await UserAPI.getBlacklist()).data['users'] as List<dynamic>).cast<Map>(),
+          ((await UserAPI.getBlacklist()).data['users'] as List<dynamic>)
+              .cast<Map<dynamic, dynamic>>(),
         );
       }
       Instances.eventBus.fire(TicketGotEvent(isWizard));
