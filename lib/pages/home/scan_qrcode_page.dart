@@ -17,6 +17,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
   Future<void> onScan(BuildContext context, String data) async {
     if (data == null) {
       showCenterErrorToast('没有识别到二维码~换一张试试');
+      return;
     }
     if (API.urlReg.stringMatch(data) != null) {
       Navigator.of(context).pop();
@@ -49,7 +50,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
     return Scaffold(
       body: Column(
         children: <Widget>[
-          FixedAppBar(title: Text('扫描二维码')),
+          const FixedAppBar(title: Text('扫描二维码')),
           Expanded(
             child: QrcodeReaderView(
               key: _key,
