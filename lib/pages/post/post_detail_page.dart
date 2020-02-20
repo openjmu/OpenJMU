@@ -274,7 +274,7 @@ class PostDetailPageState extends State<PostDetailPage> {
               padding: EdgeInsets.zero,
               minWidth: suSetWidth(sectionButtonWidth),
               shape: sectionButtonShape,
-              child: Text('转发 $forwards', style: forwardsStyle),
+              child: Text('转发 ${moreThanZero(forwards)}', style: forwardsStyle),
               onPressed: () {
                 setCurrentTabActive(context, 0, 'forwards');
               },
@@ -286,7 +286,7 @@ class PostDetailPageState extends State<PostDetailPage> {
               padding: EdgeInsets.zero,
               minWidth: suSetWidth(sectionButtonWidth),
               shape: sectionButtonShape,
-              child: Text('评论 $comments', style: commentsStyle),
+              child: Text('评论 ${moreThanZero(comments)}', style: commentsStyle),
               onPressed: () {
                 setCurrentTabActive(context, 1, 'comments');
               },
