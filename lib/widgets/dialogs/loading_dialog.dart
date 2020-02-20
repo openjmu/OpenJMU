@@ -37,16 +37,16 @@ class LoadingDialog extends StatefulWidget {
 }
 
 class LoadingDialogState extends State<LoadingDialog> {
-  Duration duration = 1500.milliseconds;
-  String type, text;
-  VoidCallback customPop;
-  Widget icon = const SpinKitWidget();
+  Duration _duration = 1500.milliseconds;
+  String _type, _text;
+  VoidCallback _customPop;
+  Widget _icon = const SpinKitWidget();
 
   @override
   void initState() {
     super.initState();
     widget.controller?.dialogState = this;
-    text = widget.text;
+    _text = widget.text;
     if (mounted) {
       setState(() {});
     }
@@ -69,16 +69,16 @@ class LoadingDialogState extends State<LoadingDialog> {
     Widget icon,
     String text,
     Duration duration,
-    Function customPop,
+    VoidCallback customPop,
   }) {
-    this.type = type;
-    this.icon = icon;
-    this.text = text;
+    _type = type;
+    _icon = icon;
+    _text = text;
     if (duration != null) {
-      duration = duration;
+      _duration = duration;
     }
     if (customPop != null) {
-      customPop = customPop;
+      _customPop = customPop;
     }
     if (mounted) {
       setState(() {});
@@ -86,14 +86,14 @@ class LoadingDialogState extends State<LoadingDialog> {
   }
 
   void updateIcon(Widget icon) {
-    this.icon = icon;
+    _icon = icon;
     if (mounted) {
       setState(() {});
     }
   }
 
   void updateText(String text) {
-    this.text = text;
+    _text = text;
     if (mounted) {
       setState(() {});
     }
@@ -102,11 +102,11 @@ class LoadingDialogState extends State<LoadingDialog> {
   @override
   Widget build(BuildContext context) {
     if (!(widget.isGlobal ?? false)) {
-      if (type != null && type != 'loading') {
-        Future<void>.delayed(duration, () {
+      if (_type != null && _type != 'loading') {
+        Future<void>.delayed(_duration, () {
           try {
-            if (customPop != null) {
-              customPop();
+            if (_customPop != null) {
+              _customPop();
             } else {
               Navigator.pop(context);
             }
@@ -114,10 +114,10 @@ class LoadingDialogState extends State<LoadingDialog> {
             debugPrint('Error when running pop in loading dialog: $e');
           }
         });
-      } else if (type == 'dismiss') {
+      } else if (_type == 'dismiss') {
         try {
-          if (customPop != null) {
-            customPop();
+          if (_customPop != null) {
+            _customPop();
           } else {
             Navigator.pop(context);
           }
@@ -127,9 +127,8 @@ class LoadingDialogState extends State<LoadingDialog> {
       }
     }
     Widget child = Center(
-      child: SizedBox(
-        width: suSetWidth(180.0),
-        height: suSetWidth(180.0),
+      child: SizedBox.fromSize(
+        size: Size.square(suSetWidth(180.0)),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: Theme.of(context).canvasColor,
@@ -141,12 +140,12 @@ class LoadingDialogState extends State<LoadingDialog> {
             children: <Widget>[
               SizedBox.fromSize(
                 size: Size.square(suSetWidth(50.0)),
-                child: Center(child: icon),
+                child: Center(child: _icon),
               ),
               Container(
                 margin: EdgeInsets.only(top: suSetHeight(40.0)),
                 child: Text(
-                  text,
+                  _text,
                   style: TextStyle(fontSize: suSetSp(16.0)),
                 ),
               ),
@@ -186,7 +185,7 @@ class LoadingDialogController {
     String type,
     String text, {
     Duration duration,
-    Function customPop,
+    VoidCallback customPop,
   }) {
     switch (type) {
       case 'success':

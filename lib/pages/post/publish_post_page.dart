@@ -560,7 +560,7 @@ class PublishPostPageState extends State<PublishPostPage> {
           '动态发布成功',
           duration: 3.seconds,
           customPop: () {
-            navigatorState.popUntil((_) => _.isFirst);
+            navigatorState.popUntil((Route<dynamic> route) => route.isFirst);
           },
         );
       } else {
