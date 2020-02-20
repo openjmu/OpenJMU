@@ -9,7 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(name: "openjmu://user-qrcode", routeName: "用户二维码页")
+@FFRoute(name: 'openjmu://user-qrcode', routeName: '用户二维码页')
 class UserQrCodePage extends StatefulWidget {
   @override
   _UserQrCodePageState createState() => _UserQrCodePageState();
@@ -17,11 +17,12 @@ class UserQrCodePage extends StatefulWidget {
 
 class _UserQrCodePageState extends State<UserQrCodePage> {
   final GlobalKey previewContainer = GlobalKey();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool isSaving = false;
 
   void saveToGallery() async {
-    if (isSaving) return;
+    if (isSaving) {
+      return;
+    }
     isSaving = true;
 
     try {
@@ -49,11 +50,17 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
     }
   }
 
-  void showInSnackBar(String value) {
-    _scaffoldKey.currentState.showSnackBar(SnackBar(
-      content: Text(value),
-    ));
-  }
+  Widget get qrImage => QrImage(
+        version: 3,
+        data: 'openjmu://user/${currentUser.uid}',
+        padding: EdgeInsets.zero,
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        embeddedImage: AssetImage('images/logo_1024_rounded.png'),
+        embeddedImageStyle: QrEmbeddedImageStyle(
+          size: Size.square(suSetWidth(80.0)),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -71,9 +78,12 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
               child: RepaintBoundary(
                 key: previewContainer,
                 child: Container(
-                  width: Screens.width - suSetWidth(60.0),
-                  padding: EdgeInsets.all(24.0),
-                  color: Theme.of(context).cardColor,
+                  margin: EdgeInsets.all(suSetWidth(40.0)),
+                  padding: EdgeInsets.all(suSetWidth(36.0)),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(suSetWidth(20.0)),
+                    color: Colors.grey[350],
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
@@ -82,43 +92,18 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                           UserAvatar(size: avatarSize),
                           Expanded(
                             child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: suSetSp(18.0),
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Flexible(
-                                        child: Text(
-                                          UserAPI.currentUser.name,
-                                          style: TextStyle(fontSize: suSetSp(21.0)),
-                                          textAlign: TextAlign.left,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                              padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+                              child: Text(
+                                currentUser.name,
+                                style: TextStyle(color: Colors.black, fontSize: suSetSp(22.0)),
+                                textAlign: TextAlign.left,
                               ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: suSetSp(30.0)),
-                      Stack(
-                        children: <Widget>[
-                          QrImage(
-                            version: 3,
-                            data: 'openjmu://user/${UserAPI.currentUser.uid}',
-                            padding: EdgeInsets.zero,
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.black,
-                            embeddedImage: AssetImage('images/logo_1024_rounded.png'),
-                          ),
-                        ],
-                      ),
+                      SizedBox(height: suSetHeight(30.0)),
+                      qrImage,
                     ],
                   ),
                 ),
