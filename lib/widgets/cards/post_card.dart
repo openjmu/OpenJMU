@@ -142,7 +142,7 @@ class _PostCardState extends State<PostCard> {
       );
 
   Widget getRootPost(BuildContext context, Map<String, dynamic> rootTopic) {
-    final Map<String, dynamic> content = rootTopic['topic'] as Map<String, dynamic>;
+    dynamic content = rootTopic['topic'];
     if (rootTopic['exists'] == 1) {
       if (content['article'] == '此微博已经被屏蔽' || content['content'] == '此微博已经被屏蔽') {
         return Container(
