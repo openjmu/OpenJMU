@@ -28,7 +28,7 @@ class ScorePage extends StatelessWidget {
   void gotoEvaluate() {
     String url;
     if (UserAPI.currentUser.isCY) {
-      url = 'http://cyjwb.jmu.edu.cn/';
+      url = 'http://cyjwgl.jmu.edu.cn/';
     } else {
       url = 'http://sso.jmu.edu.cn/imapps/1070?sid=${currentUser.sid}';
     }
