@@ -5,28 +5,31 @@ import 'package:flutter_qr_reader/qrcode_reader_view.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(name: "openjmu://scan-qrcode", routeName: "扫描二维码")
+@FFRoute(name: 'openjmu://scan-qrcode', routeName: '扫描二维码')
 class ScanQrCodePage extends StatefulWidget {
   @override
   _ScanQrCodePageState createState() => _ScanQrCodePageState();
 }
 
 class _ScanQrCodePageState extends State<ScanQrCodePage> {
-  final _key = GlobalKey<QrcodeReaderViewState>();
+  final GlobalKey<QrcodeReaderViewState> _key = GlobalKey<QrcodeReaderViewState>();
 
-  Future<void> onScan(context, String data) async {
+  Future<void> onScan(BuildContext context, String data) async {
     if (data == null) {
       showCenterErrorToast('没有识别到二维码~换一张试试');
     }
     if (API.urlReg.stringMatch(data) != null) {
+      Navigator.of(context).pop();
       unawaited(API.launchWeb(url: '$data'));
     } else if (API.schemeUserPage.stringMatch(data) != null) {
       unawaited(Navigator.of(context).pushReplacementNamed(
         Routes.OPENJMU_USER,
-        arguments: {'uid': int.parse(data.substring(API.schemeUserPage.pattern.length - 2))},
+        arguments: <String, dynamic>{
+          'uid': int.parse(data.substring(API.schemeUserPage.pattern.length - 2))
+        },
       ));
     } else {
-      final needCopy = await ConfirmationDialog.show(
+      final bool needCopy = await ConfirmationDialog.show(
         context,
         title: '扫码结果',
         content: '$data',
