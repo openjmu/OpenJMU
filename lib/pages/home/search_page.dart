@@ -229,7 +229,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
 
   Widget get userListView => (userList != null && userList.isNotEmpty)
       ? SizedBox(
-          height: suSetHeight(140.0),
+          height: suSetHeight(150.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -238,7 +238,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                 padding: EdgeInsets.only(top: suSetHeight(16.0), left: suSetWidth(12.0)),
                 child: Text(
                   '相关用户 (${userList.length})',
-                  style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(18.0)),
+                  style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(19.0)),
                 ),
               ),
               Expanded(
@@ -247,15 +247,15 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                   itemCount: userList.length,
                   itemBuilder: (BuildContext _, int index) {
                     return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: suSetHeight(12.0)),
+                      padding: EdgeInsets.symmetric(horizontal: suSetHeight(15.0)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          UserAvatar(uid: userList[index].id),
+                          UserAvatar(uid: userList[index].id, size: 56.0),
                           SizedBox(height: suSetHeight(8.0)),
                           Text(
                             userList[index].nickname,
-                            style: TextStyle(fontSize: suSetSp(16.0)),
+                            style: TextStyle(fontSize: suSetSp(18.0)),
                           ),
                         ],
                       ),
