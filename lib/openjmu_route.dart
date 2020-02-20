@@ -27,7 +27,7 @@ import 'pages/user/user_page.dart';
 import 'pages/user/user_qrcode_page.dart';
 import 'pages/login_page.dart';
 import 'pages/news/news_detail_page.dart';
-import 'pages/search_page.dart';
+import 'pages/home/search_page.dart';
 import 'widgets/webview/in_app_webview.dart';
 import 'widgets/image/image_crop_page.dart';
 import 'widgets/image/image_viewer.dart';
