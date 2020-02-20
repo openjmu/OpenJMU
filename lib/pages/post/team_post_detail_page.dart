@@ -76,7 +76,9 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   void initState() {
     super.initState();
     provider = widget.provider;
-    canLoadMore = loading = (provider.post?.repliesCount ?? -1) != 0;
+    canLoadMore =
+        (provider.post?.repliesCount ?? -1) > (widget.type == TeamPostType.comment ? 50 : 30);
+    loading = (provider.post?.repliesCount ?? -1) > 0;
     initialLoad();
 
     _textEditingController.addListener(() {
@@ -102,6 +104,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
           comments.removeWhere((item) => item.tid == event.postId);
           if (mounted) setState(() {});
         }
+        initialLoad();
       })
       ..on<TeamPostCommentDeletedEvent>().listen((event) {
         if (event.topPostId == provider.post.tid) {
@@ -113,6 +116,14 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
 
   void initialLoad({bool loadMore = false}) async {
     if (!loadMore) {
+      switch (widget.type) {
+        case TeamPostType.post:
+          comments.clear();
+          break;
+        case TeamPostType.comment:
+          postComments.clear();
+          break;
+      }
       if (provider.post == null) {
         final data = (await TeamPostAPI.getPostDetail(
           id: widget.postId,
@@ -124,15 +135,16 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       }
     }
     if (loadMore) ++commentPage;
-    if (provider.post.repliesCount != 0) {
+    if (provider.post.repliesCount > 0) {
       TeamCommentAPI.getCommentInPostList(
         id: provider.post.tid,
         page: commentPage,
         isComment: widget.type == TeamPostType.comment,
       ).then((response) {
         final data = response.data;
-        total = int.parse(data['total'].toString());
-        canLoadMore = int.parse(data['count'].toString()) != 0;
+        total = data['total'].toString().toInt();
+        canLoadMore =
+            data['count'].toString().toInt() > (widget.type == TeamPostType.comment ? 50 : 30);
         Set list;
         switch (widget.type) {
           case TeamPostType.post:
@@ -160,6 +172,10 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         loading = false;
         if (mounted) setState(() {});
       });
+    } else {
+      total = 0;
+      canLoadMore = false;
+      if (mounted) setState(() {});
     }
   }
 
