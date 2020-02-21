@@ -171,7 +171,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   }
 
   void checkIfNoConnectivity(ConnectivityResult result) {
-    if (result == ConnectivityResult.none && connectivityToastFuture == null) {
+    if (result == ConnectivityResult.none) {
       connectivityToastFuture ??= showNoConnectivityDialog;
     } else {
       connectivityToastFuture?.dismiss(showAnim: true);
