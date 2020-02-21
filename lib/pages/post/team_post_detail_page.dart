@@ -224,7 +224,14 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     TeamPostAPI.deletePost(postId: provider.post.tid, postType: 7).then(
       (dynamic _) {
         showToast('删除成功');
-        Instances.eventBus.fire(TeamCommentDeletedEvent(postId: provider.post.tid));
+        switch (widget.type) {
+          case TeamPostType.post:
+            Instances.eventBus.fire(TeamPostDeletedEvent(postId: provider.post.tid));
+            break;
+          case TeamPostType.comment:
+            Instances.eventBus.fire(TeamCommentDeletedEvent(postId: provider.post.tid));
+            break;
+        }
         navigatorState.pop();
       },
     );
