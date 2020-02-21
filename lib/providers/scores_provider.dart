@@ -88,7 +88,7 @@ class ScoresProvider extends ChangeNotifier {
       _loaded = true;
     }
     if (await initSocket()) {
-      requestScore();
+      unawaited(requestScore());
     }
   }
 
@@ -123,7 +123,7 @@ class ScoresProvider extends ChangeNotifier {
     } catch (e) {
       if (e.toString().contains('StreamSink is closed')) {
         if (await initSocket()) {
-          requestScore();
+          unawaited(requestScore());
         }
       } else {
         loading = false;
