@@ -286,7 +286,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
     _refreshList();
   }
 
-  void confirmDelete(context, Comment comment) async {
+  Future<void> confirmDelete(context, Comment comment) async {
     final confirm = await ConfirmationDialog.show(
       context,
       title: '删除评论',
@@ -301,13 +301,14 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
         controller: _loadingDialogController,
         isGlobal: false,
       );
-      CommentAPI.deleteComment(comment.post.id, comment.id).then((response) {
+      try {
+        await CommentAPI.deleteComment(comment.post.id, comment.id);
         _loadingDialogController.changeState('success', '评论删除成功');
         Instances.eventBus.fire(PostCommentDeletedEvent(comment.post.id));
-      }).catchError((e) {
+      } catch (e) {
         debugPrint(e.toString());
         _loadingDialogController.changeState('failed', '评论删除失败');
-      });
+      }
     }
   }
 

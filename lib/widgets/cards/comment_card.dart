@@ -174,13 +174,14 @@ class CommentCard extends StatelessWidget {
         text: '正在删除评论',
         isGlobal: false,
       );
-      CommentAPI.deleteComment(comment.post.id, comment.id).then((dynamic _) {
+      try {
+        await CommentAPI.deleteComment(comment.post.id, comment.id);
         _loadingDialogController.changeState('success', '评论删除成功');
         Instances.eventBus.fire(PostCommentDeletedEvent(comment.post.id));
-      }).catchError((dynamic e) {
+      } catch (e) {
         debugPrint(e.toString());
         _loadingDialogController.changeState('failed', '评论删除失败');
-      });
+      }
     }
   }
 
