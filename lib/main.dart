@@ -66,16 +66,9 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     tryRecoverLoginInfo();
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      Connectivity().checkConnectivity().then(checkIfNoConnectivity);
+      Connectivity().checkConnectivity().then(connectivityHandler);
     });
-    connectivitySubscription = Connectivity().onConnectivityChanged.listen(
-      (ConnectivityResult result) {
-        checkIfNoConnectivity(result);
-        Instances.eventBus.fire(ConnectivityChangeEvent(result));
-        Instances.connectivityResult = result;
-        debugPrint('Current connectivity: $result');
-      },
-    );
+    connectivitySubscription = Connectivity().onConnectivityChanged.listen(connectivityHandler);
 
     Instances.eventBus
       ..on<TicketGotEvent>().listen((event) {
@@ -169,6 +162,13 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         localizedTitle: Constants.quickActionsList.values.elementAt(index),
       ),
     ));
+  }
+
+  void connectivityHandler(ConnectivityResult result) {
+    checkIfNoConnectivity(result);
+    Instances.eventBus.fire(ConnectivityChangeEvent(result));
+    Instances.connectivityResult = result;
+    debugPrint('Current connectivity: $result');
   }
 
   void checkIfNoConnectivity(ConnectivityResult result) {

@@ -29,6 +29,7 @@ class SplashState extends State<SplashPage> {
   bool isInLoginProcess = false;
   bool isUserLogin = false;
   bool showLoading = false;
+
   Timer _forceToLoginTimer;
   Timer _showLoginIndicatorTimer;
 
@@ -58,20 +59,13 @@ class SplashState extends State<SplashPage> {
       });
     });
 
-    checkConnectivity().then((ConnectivityResult result) {
-      if (result != ConnectivityResult.none) {
-        checkOnline(ConnectivityChangeEvent(result));
-      }
-    });
-
     Instances.eventBus
       ..on<ConnectivityChangeEvent>().listen((ConnectivityChangeEvent event) {
-        if (mounted && isOnline != null) {
-          checkOnline(event);
+        if (mounted) {
+          checkOnline();
         }
       })
       ..on<TicketGotEvent>().listen((TicketGotEvent event) {
-        debugPrint('Ticket Got.');
         if (!event.isWizard) {}
         isUserLogin = true;
         if (mounted) {
@@ -80,7 +74,6 @@ class SplashState extends State<SplashPage> {
         }
       })
       ..on<TicketFailedEvent>().listen((TicketFailedEvent event) {
-        debugPrint('Ticket Failed.');
         isUserLogin = false;
         if (mounted) {
           setState(() {});
@@ -96,33 +89,23 @@ class SplashState extends State<SplashPage> {
     super.dispose();
   }
 
-  Future<ConnectivityResult> checkConnectivity() async {
-    try {
-      final ConnectivityResult connectivityResult = await Connectivity().checkConnectivity();
-      isOnline = connectivityResult != null && connectivityResult != ConnectivityResult.none;
-      return connectivityResult;
-    } catch (e) {
-      debugPrint('Checking connectivity error: $e');
-      return ConnectivityResult.none;
-    }
-  }
-
-  void checkOnline(ConnectivityChangeEvent event) {
+  void checkOnline() {
     if (!isInLoginProcess) {
-      isInLoginProcess = true;
-      if (event.type != ConnectivityResult.none) {
+      if (Instances.connectivityResult != null &&
+          Instances.connectivityResult != ConnectivityResult.none) {
         isOnline = true;
         if (DataUtils.isLogin()) {
           DataUtils.reFetchTicket();
+          isInLoginProcess = true;
         } else {
           Future<void>.delayed(2.seconds, navigate);
         }
       } else {
         isOnline = false;
       }
-    }
-    if (mounted) {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
