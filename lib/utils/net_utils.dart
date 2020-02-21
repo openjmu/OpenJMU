@@ -50,9 +50,11 @@ class NetUtils {
     dio.interceptors.add(cookieManager);
     dio.interceptors.add(InterceptorsWrapper(
       onError: (DioError e) {
-        debugPrint('Dio error with request: ${e.request.uri}');
-        debugPrint('Request data: ${e.request.data}');
-        debugPrint('Dio error: ${e.message}');
+        if (logNetworkError) {
+          debugPrint('Dio error with request: ${e.request.uri}');
+          debugPrint('Request data: ${e.request.data}');
+          debugPrint('Dio error: ${e.message}');
+        }
         if (e?.response?.statusCode == 401) {
           updateTicket();
         }
@@ -72,9 +74,11 @@ class NetUtils {
     tokenDio.interceptors.add(tokenCookieManager);
     tokenDio.interceptors.add(InterceptorsWrapper(
       onError: (DioError e) {
-        debugPrint('TokenDio error with request: ${e.request.uri}');
-        debugPrint('Request data: ${e.request.data}');
-        debugPrint('TokenDio error: ${e.message}');
+        if (logNetworkError) {
+          debugPrint('TokenDio error with request: ${e.request.uri}');
+          debugPrint('Request data: ${e.request.data}');
+          debugPrint('TokenDio error: ${e.message}');
+        }
         if (e?.response?.statusCode == 401) {
           updateTicket();
         }

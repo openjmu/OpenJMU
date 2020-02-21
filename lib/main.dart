@@ -115,7 +115,6 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   @override
   void dispose() {
-    debugPrint('Main dart disposed.');
     WidgetsBinding.instance.removeObserver(this);
     connectivitySubscription?.cancel();
     super.dispose();

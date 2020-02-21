@@ -8,3 +8,6 @@ export 'notification_utils.dart';
 export 'ota_utils.dart';
 export 'hive_field_utils.dart';
 export 'toast_utils.dart';
+
+const bool logNetworkError = false;
+const bool logMessageSocketPacket = false;

@@ -214,7 +214,9 @@ class MessageUtils {
   /// The handler can handle specific command with custom callback.
   /// What you need is to handler the command you want to.
   static void commandHandler(Packet packet) {
-    debugPrint('Handling packet: $packet');
+    if (logMessageSocketPacket) {
+      debugPrint('Handling packet: $packet');
+    }
     switch (packet.command) {
       case 0x75:
         sendMultiPortLogin();
@@ -249,7 +251,10 @@ class MessageUtils {
         content?.requestBody(),
       );
       messageSocket.add(package);
-      debugPrint('\nSending $command: $package');
+
+      if (logMessageSocketPacket) {
+        debugPrint('\nSending $command: $package');
+      }
     } catch (e) {
       debugPrint('Error when trying to add package: $e');
     }
