@@ -29,7 +29,7 @@ void main() async {
 
   await HiveBoxes.openBoxes();
   await DeviceUtils.initDeviceInfo();
-  await OTAUtils.initPackageInfo();
+  await PackageUtils.initPackageInfo();
   NetUtils.initConfig();
   NotificationUtils.initSettings();
 
@@ -108,7 +108,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
             .toList()
             .indexOf(Constants.quickActionsList.keys.firstWhere((action) => action == event.type));
       })
-      ..on<HasUpdateEvent>().listen(OTAUtils.showUpdateDialog);
+      ..on<HasUpdateEvent>().listen(PackageUtils.showUpdateDialog);
 
     super.initState();
   }

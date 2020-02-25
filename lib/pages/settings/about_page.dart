@@ -32,7 +32,7 @@ class AboutPage extends StatelessWidget {
           {
             'name': '检查新版本',
             'onTap': () {
-              OTAUtils.checkUpdate(fromHome: true);
+              PackageUtils.checkUpdate(fromHome: true);
             },
           }
       ];
@@ -115,7 +115,7 @@ class AboutPage extends StatelessWidget {
   Widget get versionInfo => Container(
         margin: EdgeInsets.only(bottom: suSetHeight(10.0)),
         child: Text(
-          'Version ${OTAUtils.version} (${OTAUtils.buildNumber})',
+          'Version ${PackageUtils.version} (${PackageUtils.buildNumber})',
           style: TextStyle(fontSize: suSetSp(22.0)),
         ),
       );

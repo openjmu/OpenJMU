@@ -30,7 +30,7 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    if (changeLogs == null) OTAUtils.checkUpdate();
+    if (changeLogs == null) PackageUtils.checkUpdate();
   }
 
   void blurAnimate(bool forward) {
@@ -119,7 +119,7 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
       margin: EdgeInsets.symmetric(horizontal: suSetWidth(40.0)),
       child: Column(
         children: <Widget>[
-          log.buildNumber == OTAUtils.buildNumber
+          log.buildNumber == PackageUtils.buildNumber
               ? Expanded(
                   flex: 3,
                   child: Center(child: Text('📍', style: TextStyle(fontSize: suSetSp(40.0)))),
@@ -145,7 +145,7 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
     return Text(
       '${log.version}',
       style: Theme.of(context).textTheme.title.copyWith(
-            fontSize: suSetSp(log.buildNumber == OTAUtils.buildNumber ? 45.0 : 50.0),
+            fontSize: suSetSp(log.buildNumber == PackageUtils.buildNumber ? 45.0 : 50.0),
             fontWeight: FontWeight.bold,
           ),
     );

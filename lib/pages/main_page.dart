@@ -93,7 +93,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         'uid': '${currentUser.uid}',
         'name': '${currentUser.name ?? currentUser.uid}',
         'workid': '${currentUser.workId ?? currentUser.uid}',
-        'buildnumber': OTAUtils.buildNumber,
+        'buildnumber': PackageUtils.buildNumber,
         'uuid': DeviceUtils.deviceUuid,
         'platform': Platform.isIOS ? 'ios' : 'android',
       };

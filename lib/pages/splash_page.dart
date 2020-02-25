@@ -43,7 +43,7 @@ class SplashState extends State<SplashPage> {
         firstFramed = true;
       });
 
-      OTAUtils.checkUpdate();
+      PackageUtils.checkUpdate();
       Provider.of<DateProvider>(currentContext, listen: false).getCurrentWeek();
 
       _forceToLoginTimer = Timer(30.seconds, () {
