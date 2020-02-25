@@ -11,8 +11,8 @@ import 'package:package_info/package_info.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/updating_dialog.dart';
 
-class OTAUtils {
-  const OTAUtils._();
+class PackageUtils {
+  const PackageUtils._();
 
   static PackageInfo _packageInfo;
   static PackageInfo get packageInfo => _packageInfo;
