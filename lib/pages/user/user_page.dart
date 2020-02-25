@@ -187,7 +187,7 @@ class _UserPageState extends State<UserPage>
           padding: EdgeInsets.symmetric(horizontal: suSetWidth(28.0)),
           onPressed: () {
             if (isSelf) {
-              showDialog<Null>(
+              showDialog<void>(
                 context: context,
                 builder: (BuildContext context) => EditSignatureDialog(_user.signature),
               );

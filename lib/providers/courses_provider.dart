@@ -28,7 +28,7 @@ class CoursesProvider extends ChangeNotifier {
   Map<int, Map<dynamic, dynamic>> _courses;
   Map<int, Map<dynamic, dynamic>> get courses => _courses;
   set courses(Map<int, Map<dynamic, dynamic>> value) {
-    _courses = Map<int, Map<dynamic, dynamic>>.from(value);
+    _courses = <int, Map<dynamic, dynamic>>{...value};
     notifyListeners();
   }
 
