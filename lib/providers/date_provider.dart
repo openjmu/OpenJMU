@@ -10,8 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class DateProvider extends ChangeNotifier {
+  DateProvider() {
+    initCurrentWeek();
+  }
+
   DateTime _startDate;
+
   DateTime get startDate => _startDate;
+
   set startDate(DateTime value) {
     _startDate = value;
     notifyListeners();
@@ -21,21 +27,27 @@ class DateProvider extends ChangeNotifier {
   Timer _fetchCurrentWeekTimer;
 
   int _currentWeek = 0;
+
   int get currentWeek => _currentWeek;
+
   set currentWeek(int value) {
     _currentWeek = value;
     notifyListeners();
   }
 
   int _difference;
+
   int get difference => _difference;
+
   set difference(int value) {
     _difference = value;
     notifyListeners();
   }
 
   DateTime _now;
+
   DateTime get now => _now;
+
   set now(DateTime value) {
     assert(value != null);
     if (value == _now) {

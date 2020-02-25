@@ -28,12 +28,12 @@ List<SingleChildWidget> get providers => _providers;
 
 final _providers = [
   buildProvider<CoursesProvider>(CoursesProvider()),
-  buildProvider<DateProvider>(DateProvider()..initCurrentWeek()),
-  buildProvider<MessagesProvider>(MessagesProvider()..initListener()),
+  buildProvider<DateProvider>(DateProvider()),
+  buildProvider<MessagesProvider>(MessagesProvider()),
   buildProvider<NotificationProvider>(NotificationProvider()),
   buildProvider<ReportRecordsProvider>(ReportRecordsProvider()),
   buildProvider<ScoresProvider>(ScoresProvider()),
-  buildProvider<SettingsProvider>(SettingsProvider()..init()),
-  buildProvider<ThemesProvider>(ThemesProvider()..initTheme()),
+  buildProvider<SettingsProvider>(SettingsProvider()),
+  buildProvider<ThemesProvider>(ThemesProvider()),
   buildProvider<WebAppsProvider>(WebAppsProvider()),
 ];

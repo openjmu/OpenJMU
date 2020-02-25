@@ -9,6 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class SettingsProvider extends ChangeNotifier {
+  SettingsProvider() {
+    init();
+  }
+
   /// For test page.
   /// Set this to [false] before release.
   bool _debug = !kReleaseMode && false;

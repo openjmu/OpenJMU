@@ -9,6 +9,10 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class MessagesProvider with ChangeNotifier {
+  MessagesProvider() {
+    initListener();
+  }
+
   Map<int, List<dynamic>> _appsMessages;
 //  Map<int, List<dynamic>> _personalMessages;
 

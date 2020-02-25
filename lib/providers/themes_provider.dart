@@ -8,6 +8,10 @@ import 'package:flutter/services.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class ThemesProvider with ChangeNotifier {
+  ThemesProvider() {
+    initTheme();
+  }
+
   Color _currentColor = defaultColor;
   Color get currentColor => _currentColor;
   set currentColor(Color value) {
