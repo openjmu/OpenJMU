@@ -8,8 +8,31 @@ final math.Random _random = math.Random();
 
 int next(int min, int max) => min + _random.nextInt(max - min);
 
+enum CourseType {
+  /// [Course] for current day.
+  ///
+  /// This type of course will only display courses
+  /// belong to the current ***day***.
+  today,
+
+  /// [Course] for current week.
+  ///
+  /// This type of course will only display courses
+  /// belong to the current ***week***.
+  week,
+
+  /// [Course] for current term.
+  ///
+  /// This type of course will only display courses
+  /// belong to the current ***term***.
+  term
+}
+
 class CourseAPI {
   const CourseAPI._();
+
+  static TimeOfDay _time(int hour, int minute) => TimeOfDay(hour: hour, minute: minute);
+  static double _timeToDouble(TimeOfDay time) => time.hour + time.minute / 60.0;
 
   static Set<CourseColor> coursesUniqueColor = {};
 
@@ -35,7 +58,27 @@ class CourseAPI {
         data: course,
       );
 
-  static TimeOfDay _time(int hour, int minute) => TimeOfDay(hour: hour, minute: minute);
+  static bool inReadyTime(Course course) {
+    final double timeNow = _timeToDouble(TimeOfDay.now());
+    final List<TimeOfDay> times = courseTime[course.time];
+    final double start = _timeToDouble(times[0]);
+    return start - timeNow <= 0.5 && start - timeNow > 0;
+  }
+
+  static bool inCurrentTime(Course course) {
+    final double timeNow = _timeToDouble(TimeOfDay.now()) - (1 / 60);
+    final List<TimeOfDay> times = courseTime[course.time];
+    final double start = _timeToDouble(times[0]);
+    double end = _timeToDouble(times[1]) - (1 / 60);
+    if (course.isEleven) end = _timeToDouble(courseTime["11"][1]);
+    return start <= timeNow && end >= timeNow;
+  }
+
+  static bool inCurrentDay(Course course) {
+    final provider = Provider.of<CoursesProvider>(currentContext, listen: false);
+    final now = provider.now;
+    return course.day == now.weekday;
+  }
 
   static bool inCurrentWeek(Course course, {int currentWeek}) {
     if (course.isCustom) return true;
