@@ -36,18 +36,23 @@ class CommentController {
 }
 
 class CommentList extends StatefulWidget {
-  final CommentController _commentController;
-  final bool needRefreshIndicator;
+  const CommentList(
+    this.commentController, {
+    Key key,
+    this.needRefreshIndicator = true,
+    this.scrollController,
+  }) : super(key: key);
 
-  CommentList(this._commentController, {Key key, this.needRefreshIndicator = true})
-      : super(key: key);
+  final CommentController commentController;
+  final bool needRefreshIndicator;
+  final ScrollController scrollController;
 
   @override
   State createState() => _CommentListState();
 }
 
 class _CommentListState extends State<CommentList> with AutomaticKeepAliveClientMixin {
-  final ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController;
 
   num _lastValue = 0;
   bool _isLoading = false;
@@ -70,10 +75,12 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
   @override
   void initState() {
     super.initState();
-    widget._commentController._commentListState = this;
+    widget.commentController._commentListState = this;
+    _scrollController == widget.scrollController ?? ScrollController();
+
     Instances.eventBus.on<ScrollToTopEvent>().listen((event) {
       if (this.mounted &&
-          ((event.tabIndex == 0 && widget._commentController.commentType == 'square') ||
+          ((event.tabIndex == 0 && widget.commentController.commentType == 'square') ||
               (event.type == 'Post'))) {
         _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
       }
@@ -118,10 +125,10 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
       _isLoading = true;
 
       Map result = (await CommentAPI.getCommentList(
-        widget._commentController.commentType,
+        widget.commentController.commentType,
         true,
         _lastValue,
-        additionAttrs: widget._commentController.additionAttrs,
+        additionAttrs: widget.commentController.additionAttrs,
       ))
           .data;
 
@@ -147,7 +154,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _idList.length < _total && _count != 0;
-          _lastValue = _idList.isEmpty ? 0 : widget._commentController.lastValue(_idList.last);
+          _lastValue = _idList.isEmpty ? 0 : widget.commentController.lastValue(_idList.last);
         });
       }
     }
@@ -161,10 +168,10 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
       _lastValue = 0;
 
       Map result = (await CommentAPI.getCommentList(
-        widget._commentController.commentType,
+        widget.commentController.commentType,
         false,
         _lastValue,
-        additionAttrs: widget._commentController.additionAttrs,
+        additionAttrs: widget.commentController.additionAttrs,
       ))
           .data;
 
@@ -192,7 +199,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _idList.length < _total && _count != 0;
-          _lastValue = _idList.isEmpty ? 0 : widget._commentController.lastValue(_idList.last);
+          _lastValue = _idList.isEmpty ? 0 : widget.commentController.lastValue(_idList.last);
         });
       }
     }
@@ -206,7 +213,7 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
       if (_firstLoadComplete) {
         _itemList = ExtendedListView.builder(
           padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
-          controller: widget._commentController.commentType == 'mention' ? null : _scrollController,
+          controller: widget.commentController.commentType == 'mention' ? null : _scrollController,
           itemCount: _commentList.length + 1,
           itemBuilder: (context, index) {
             if (index == _commentList.length - 1) {

@@ -23,21 +23,23 @@ class PraiseController {
 }
 
 class PraiseList extends StatefulWidget {
-  final PraiseController _praiseController;
-  final bool needRefreshIndicator;
-
-  PraiseList(
-    this._praiseController, {
+  const PraiseList(
+    this.praiseController, {
     Key key,
     this.needRefreshIndicator = true,
+    this.scrollController,
   }) : super(key: key);
+
+  final PraiseController praiseController;
+  final bool needRefreshIndicator;
+  final ScrollController scrollController;
 
   @override
   State createState() => _PraiseListState();
 }
 
 class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMixin {
-  final ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController;
 
   num _lastValue = 0;
   bool _isLoading = false;
@@ -59,6 +61,8 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
   @override
   void initState() {
     super.initState();
+    _scrollController = widget.scrollController ?? ScrollController();
+
     Instances.eventBus.on<ScrollToTopEvent>().listen((event) {
       if (this.mounted && event.type == 'Praise') {
         _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
@@ -124,7 +128,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
           _isLoading = false;
           _canLoadMore = _praiseList.length < _total && _count != 0;
           _lastValue =
-              _praiseList.isEmpty ? 0 : widget._praiseController.lastValue(_praiseList.last);
+              _praiseList.isEmpty ? 0 : widget.praiseController.lastValue(_praiseList.last);
         });
       }
     }
@@ -161,7 +165,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
           _isLoading = false;
           _canLoadMore = _praiseList.length < _total && _count != 0;
           _lastValue =
-              _praiseList.isEmpty ? 0 : widget._praiseController.lastValue(_praiseList.last);
+              _praiseList.isEmpty ? 0 : widget.praiseController.lastValue(_praiseList.last);
         });
       }
     }
