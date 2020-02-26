@@ -16,16 +16,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/controller/extended_typed_network_image_provider.dart';
 
-export 'package:openjmu/widgets/fixed_appbar.dart';
-export 'package:openjmu/widgets/webapp_icon.dart';
 export 'package:openjmu/widgets/custom_switch.dart';
+export 'package:openjmu/widgets/dismiss_wrapper.dart';
 export 'package:openjmu/widgets/fab_bottom_appbar.dart';
-export 'package:openjmu/widgets/webview/in_app_webview.dart';
+export 'package:openjmu/widgets/fixed_appbar.dart';
 export 'package:openjmu/widgets/no_scale_text_widget.dart';
 export 'package:openjmu/widgets/rounded_check_box.dart';
 export 'package:openjmu/widgets/rounded_tab_indicator.dart';
 export 'package:openjmu/widgets/slide_menu_item.dart';
 export 'package:openjmu/widgets/user_avatar.dart';
+export 'package:openjmu/widgets/webapp_icon.dart';
+export 'package:openjmu/widgets/webview/in_app_webview.dart';
 
 export 'package:openjmu/widgets/dialogs/confirmation_bottom_sheet.dart';
 export 'package:openjmu/widgets/dialogs/confirmation_dialog.dart' hide LinkText;
