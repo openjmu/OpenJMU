@@ -10,7 +10,6 @@ import 'dart:math';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:dio/dio.dart';
@@ -434,38 +433,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     if ((content?.trim()?.isEmpty ?? true) && imagesLength == 0) {
       showCenterToast('内容不能为空');
     } else {
-      final confirm = await ConfirmationDialog.show(
-        context,
-        title: '平台公约提醒',
-        showConfirm: true,
-        confirmLabel: '确认无误',
-        cancelLabel: '我再想想',
-        child: Text.rich(
-          TextSpan(children: <InlineSpan>[
-            TextSpan(text: '发布动态前，请确认您已阅读并知晓'),
-            TextSpan(
-                text: '《集大通平台公约》',
-                style: TextStyle(
-                  decoration: TextDecoration.underline,
-                  fontWeight: FontWeight.bold,
-                ),
-                recognizer: TapGestureRecognizer()
-                  ..onTap = () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => ConventionDialog(),
-                    );
-                  }),
-            TextSpan(text: '，且发布的内容符合公约要求。'),
-          ]),
-          style: TextStyle(
-            fontSize: suSetSp(22.0),
-            fontWeight: FontWeight.normal,
-            height: 1.7,
-          ),
-          textAlign: TextAlign.center,
-        ),
-      );
+      final bool confirm = await ConventionDialog.show(context);
       if (confirm) {
         setState(() {
           isLoading = true;
