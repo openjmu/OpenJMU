@@ -71,12 +71,12 @@ class MessagesProvider with ChangeNotifier {
     try {
       content = jsonDecode(content)['content'] as String;
     } catch (e) {
-      debugPrint('Incoming message don\'t need to convert.');
+      trueDebugPrint('Incoming message don\'t need to convert.');
     }
     if (content != null && content.trim().replaceAll('\n', '').replaceAll('\r', '').isNotEmpty) {
       final WebAppsProvider provider = Provider.of<WebAppsProvider>(currentContext, listen: false);
-      debugPrint(provider.allApps.toString());
-      debugPrint(message.toString());
+      trueDebugPrint(provider.allApps.toString());
+      trueDebugPrint(message.toString());
       final WebApp app =
           provider.allApps.where((WebApp app) => app.appId == message.appId).elementAt(0);
 

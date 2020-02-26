@@ -20,7 +20,7 @@ class WebAppIcon extends StatelessWidget {
       await rootBundle.load(iconPath);
       return SvgPicture.asset(iconPath, width: suSetWidth(size), height: suSetWidth(size));
     } catch (e) {
-      debugPrint('Error when load webapp icon: $e.\nLoading fallback icon...');
+      trueDebugPrint('Error when load webapp icon: $e.\nLoading fallback icon...');
       return ExtendedImage.network(
         oldIconUrl,
         width: suSetWidth(oldIconSize),

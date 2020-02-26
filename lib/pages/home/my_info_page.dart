@@ -94,7 +94,7 @@ class MyInfoPageState extends State<MyInfoPage> {
         });
         getSignStatus();
       }).catchError((e) {
-        debugPrint(e.toString());
+        trueDebugPrint(e.toString());
       });
     }
   }

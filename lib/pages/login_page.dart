@@ -469,7 +469,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             }
           }
         }).catchError((dynamic e) {
-          debugPrint('Failed when login: $e');
+          trueDebugPrint('Failed when login: $e');
           showCenterErrorToast('登录失败');
           _login = false;
           if (mounted) {
@@ -478,7 +478,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         });
       }
     } catch (e) {
-      debugPrint('Failed when login: $e');
+      trueDebugPrint('Failed when login: $e');
       showCenterErrorToast('登录失败');
     }
   }

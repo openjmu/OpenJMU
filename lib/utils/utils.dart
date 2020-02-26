@@ -9,5 +9,13 @@ export 'package_utils.dart';
 export 'hive_field_utils.dart';
 export 'toast_utils.dart';
 
+import 'package:flutter/foundation.dart';
+
 const bool logNetworkError = false;
 const bool logMessageSocketPacket = false;
+
+void trueDebugPrint(String message, {int wrapWidth}) {
+  if (!kReleaseMode) {
+    debugPrint(message, wrapWidth: wrapWidth);
+  }
+}

@@ -49,7 +49,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
       UserAPI.currentUser.signature = _textEditingController.text;
       Instances.eventBus.fire(SignatureUpdatedEvent(_textEditingController.text));
     }).catchError((dynamic e) {
-      debugPrint(e.toString());
+      trueDebugPrint(e.toString());
       _loadingDialogController.changeState('failed', '签名更新失败');
     });
   }

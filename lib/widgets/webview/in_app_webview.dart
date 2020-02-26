@@ -50,7 +50,7 @@ class InAppBrowserPage extends StatefulWidget {
 }
 
 class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepAliveClientMixin {
-  final StreamController<double> progressController = StreamController<double>.broadcast();
+  StreamController<double> progressController = StreamController<double>.broadcast();
 
   InAppWebViewController _webViewController;
   String title = '', url = 'about:blank';
@@ -81,7 +81,9 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
   @override
   void dispose() {
     SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
-    progressController?.close();
+    progressController.close().whenComplete(() {
+      progressController = null;
+    });
     super.dispose();
   }
 
@@ -93,18 +95,18 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             '&night=${currentIsDark ? 1 : 0}',
       );
     } catch (e) {
-      debugPrint('$e');
+      trueDebugPrint('$e');
     }
   }
 
   bool checkSchemeLoad(InAppWebViewController controller, String url) {
     final RegExp protocolRegExp = RegExp(r'(http|https):\/\/([\w.]+\/?)\S*');
     if (!url.startsWith(protocolRegExp) && url.contains('://')) {
-      debugPrint('Found scheme when load: $url');
+      trueDebugPrint('Found scheme when load: $url');
       if (Platform.isAndroid) {
         Future<void>.delayed(1.microseconds, () async {
           unawaited(controller.stopLoading());
-          debugPrint('Try to launch intent...');
+          trueDebugPrint('Try to launch intent...');
           final String appName = await ChannelUtils.getSchemeLaunchAppName(url);
           if (appName != null) {
             final bool shouldLaunch = await waitForConfirmation(appName);
@@ -426,7 +428,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
           }
         },
         onLoadStart: (InAppWebViewController controller, String url) {
-          debugPrint('Webview onLoadStart: $url');
+          trueDebugPrint('Webview onLoadStart: $url');
         },
         onLoadStop: (InAppWebViewController controller, String url) async {
           this.url = url;
@@ -446,20 +448,20 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             setState(() {});
           }
           Future.delayed(500.milliseconds, () {
-            progressController.add(0.0);
+            progressController?.add(0.0);
           });
         },
         onProgressChanged: (InAppWebViewController controller, int progress) {
-          progressController.add(progress / 100);
+          progressController?.add(progress / 100);
         },
         onConsoleMessage: (InAppWebViewController controller, ConsoleMessage consoleMessage) {
-          debugPrint('Console message: '
+          trueDebugPrint('Console message: '
               '${consoleMessage.messageLevel.toString()}'
               ' - '
               '${consoleMessage.message}');
         },
         onDownloadStart: (InAppWebViewController controller, String url) {
-          debugPrint('WebView started download from: $url');
+          trueDebugPrint('WebView started download from: $url');
           NetUtils.download(url);
         },
         onWebViewCreated: (InAppWebViewController controller) {

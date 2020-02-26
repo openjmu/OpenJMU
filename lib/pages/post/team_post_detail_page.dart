@@ -298,7 +298,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     ).then((result) {
       if (_focusNode.canRequestFocus) _focusNode.requestFocus();
       if (result != null) {
-        debugPrint('Mentioned User: ${result.toString()}');
+        trueDebugPrint('Mentioned User: ${result.toString()}');
         Future.delayed(const Duration(milliseconds: 250), () {
           if (_focusNode.canRequestFocus) _focusNode.requestFocus();
           insertText('<M ${result.id}>@${result.nickname}<\/M>');
@@ -378,7 +378,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       showToast('发送成功');
       initialLoad();
     }).catchError((e) {
-      debugPrint('Reply failed: $e');
+      trueDebugPrint('Reply failed: $e');
       showErrorToast('发送失败');
     }).whenComplete(() {
       sending = false;

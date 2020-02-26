@@ -1,5 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+
+import 'package:openjmu/constants/constants.dart';
 
 class ChannelUtils {
   const ChannelUtils._();
@@ -24,7 +25,7 @@ class ChannelUtils {
       }
       await _pmc_flagSecure.invokeMethod<void>(method);
     } on PlatformException catch (e) {
-      debugPrint('Set flag secure failed: ${e.message}.');
+      trueDebugPrint('Set flag secure failed: ${e.message}.');
     }
   }
 
@@ -36,18 +37,18 @@ class ChannelUtils {
       );
       return result;
     } on PlatformException catch (e) {
-      debugPrint('Error when invoke method `launchAppName`: $e');
+      trueDebugPrint('Error when invoke method `launchAppName`: $e');
       return null;
     }
   }
 
   static Future<String> iOSGetPushToken() async {
-    debugPrint('Getting iOS push token from native...');
+    trueDebugPrint('Getting iOS push token from native...');
     try {
       final String result = await _pmc_iOSPushToken.invokeMethod('getPushToken');
       return result;
     } on PlatformException catch (e) {
-      debugPrint('iosPushGetter failed: ${e.message}.');
+      trueDebugPrint('iosPushGetter failed: ${e.message}.');
       return null;
     }
   }
@@ -57,7 +58,7 @@ class ChannelUtils {
       final String result = await _pmc_iOSPushToken.invokeMethod('getPushDate');
       return result;
     } on PlatformException catch (e) {
-      debugPrint('iosPushDate failed: ${e.message}.');
+      trueDebugPrint('iosPushDate failed: ${e.message}.');
       return null;
     }
   }

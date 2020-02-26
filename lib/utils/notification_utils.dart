@@ -4,7 +4,6 @@
 ///
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -53,7 +52,7 @@ class NotificationUtils {
 
   static Future _onSelect(String payload) async {
     if (payload != null) {
-      debugPrint('notification payload: ' + payload);
+      trueDebugPrint('notification payload: ' + payload);
     }
   }
 }

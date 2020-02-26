@@ -126,7 +126,7 @@ class SplashState extends State<SplashPage> {
       _forceToLoginTimer?.cancel();
       _showLoginIndicatorTimer?.cancel();
     } catch (e) {
-      debugPrint('Error when navigating: $e');
+      trueDebugPrint('Error when navigating: $e');
     }
   }
 

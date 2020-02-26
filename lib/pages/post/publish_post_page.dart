@@ -83,13 +83,13 @@ class PublishPostPageState extends State<PublishPostPage> {
     ).then((result) {
       if (_focusNode.canRequestFocus) _focusNode.requestFocus();
       if (result != null) {
-        debugPrint('Mentioned User: ${result.toString()}');
+        trueDebugPrint('Mentioned User: ${result.toString()}');
         Future.delayed(const Duration(milliseconds: 250), () {
           if (_focusNode.canRequestFocus) _focusNode.requestFocus();
           insertText('<M ${result.id}>@${result.nickname}<\/M>');
         });
       } else {
-        debugPrint('No mentioned user returned.');
+        trueDebugPrint('No mentioned user returned.');
       }
     });
   }
@@ -127,7 +127,7 @@ class PublishPostPageState extends State<PublishPostPage> {
             selectionLimitReachedText: '已达到最大张数限制',
           ),
         ).catchError((e) {
-          debugPrint('Error when picking images: $e');
+          trueDebugPrint('Error when picking images: $e');
         });
         if (results != null) resultList = results;
         if (_focusNode.canRequestFocus) _focusNode.requestFocus();
@@ -458,11 +458,11 @@ class PublishPostPageState extends State<PublishPostPage> {
               _dialogController.changeState('failed', '图片上传失败');
               isLoading = false;
               if (mounted) setState(() {});
-              debugPrint(e.toString());
+              trueDebugPrint(e.toString());
             }
           } catch (exception) {
             query = [];
-            debugPrint(exception.toString());
+            trueDebugPrint(exception.toString());
           }
         } else {
           Map<String, dynamic> data = {};
@@ -486,8 +486,8 @@ class PublishPostPageState extends State<PublishPostPage> {
       return response;
     }).catchError((e) {
       query = [];
-      debugPrint(e.toString());
-      debugPrint(e.response.toString());
+      trueDebugPrint(e.toString());
+      trueDebugPrint(e.response.toString());
       showErrorToast(e.response.data['msg'] as String);
       failedImages.add(uploadedImages - 1);
       _dialogController.changeState('failed', '图片上传失败');
@@ -540,7 +540,7 @@ class PublishPostPageState extends State<PublishPostPage> {
       return response;
     }).catchError((e) {
       _dialogController.changeState('failed', '动态发布失败');
-      debugPrint(e.toString());
+      trueDebugPrint(e.toString());
     }).whenComplete(() {
       isLoading = false;
       if (mounted) setState(() {});

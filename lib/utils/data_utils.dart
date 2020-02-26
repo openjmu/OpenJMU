@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:uuid/uuid.dart';
 
@@ -62,7 +61,7 @@ class DataUtils {
       Instances.eventBus.fire(TicketGotEvent(isWizard));
       return true;
     } catch (e) {
-      debugPrint('Failed when login: $e');
+      trueDebugPrint('Failed when login: $e');
       if (e.response != null) {
         showToast('登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}');
       }
@@ -116,7 +115,7 @@ class DataUtils {
       }
       Instances.eventBus.fire(TicketGotEvent(isWizard));
     } catch (e) {
-      debugPrint('Error in recover login info: $e');
+      trueDebugPrint('Error in recover login info: $e');
       Instances.eventBus.fire(TicketFailedEvent());
     }
   }
@@ -144,7 +143,7 @@ class DataUtils {
       };
       setUserInfo(userInfo);
     }).catchError((dynamic e) {
-      debugPrint('Get user info error: ${e.request.cookies}');
+      trueDebugPrint('Get user info error: ${e.request.cookies}');
     });
   }
 
@@ -181,7 +180,7 @@ class DataUtils {
 
   static Future<bool> getTicket() async {
     try {
-      debugPrint('Fetch new ticket with: ${settingsBox.get(spTicket)}');
+      trueDebugPrint('Fetch new ticket with: ${settingsBox.get(spTicket)}');
       final Map<String, dynamic> params = Constants.loginParams(
         blowfish: settingsBox.get(spBlowfish) as String,
         ticket: settingsBox.get(spTicket) as String,
@@ -197,7 +196,7 @@ class DataUtils {
       await getUserInfo();
       return true;
     } catch (e) {
-      debugPrint('Error when getting ticket: $e');
+      trueDebugPrint('Error when getting ticket: $e');
       return false;
     }
   }

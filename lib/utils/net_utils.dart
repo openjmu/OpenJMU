@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:open_file/open_file.dart';
@@ -29,9 +28,9 @@ class NetUtils {
       ..clear();
 
     if (await DataUtils.getTicket()) {
-      debugPrint('Ticket updated success with new ticket: ${currentUser.sid}');
+      trueDebugPrint('Ticket updated success with new ticket: ${currentUser.sid}');
     } else {
-      debugPrint('Ticket updated error: ${currentUser.sid}');
+      trueDebugPrint('Ticket updated error: ${currentUser.sid}');
     }
     // Release lock.
     dio.unlock();
@@ -51,9 +50,9 @@ class NetUtils {
     dio.interceptors.add(InterceptorsWrapper(
       onError: (DioError e) {
         if (logNetworkError) {
-          debugPrint('Dio error with request: ${e.request.uri}');
-          debugPrint('Request data: ${e.request.data}');
-          debugPrint('Dio error: ${e.message}');
+          trueDebugPrint('Dio error with request: ${e.request.uri}');
+          trueDebugPrint('Request data: ${e.request.data}');
+          trueDebugPrint('Dio error: ${e.message}');
         }
         if (e?.response?.statusCode == 401) {
           updateTicket();
@@ -75,9 +74,9 @@ class NetUtils {
     tokenDio.interceptors.add(InterceptorsWrapper(
       onError: (DioError e) {
         if (logNetworkError) {
-          debugPrint('TokenDio error with request: ${e.request.uri}');
-          debugPrint('Request data: ${e.request.data}');
-          debugPrint('TokenDio error: ${e.message}');
+          trueDebugPrint('TokenDio error with request: ${e.request.uri}');
+          trueDebugPrint('Request data: ${e.request.data}');
+          trueDebugPrint('TokenDio error: ${e.message}');
         }
         if (e?.response?.statusCode == 401) {
           updateTicket();
@@ -186,7 +185,7 @@ class NetUtils {
         await PermissionHandler().requestPermissions(<PermissionGroup>[PermissionGroup.storage]);
     if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
       showToast('开始下载...');
-      debugPrint('File start download: $url');
+      trueDebugPrint('File start download: $url');
       path = (await getExternalStorageDirectory()).path;
       path += '/' + url.split('/').last.split('?').first;
       try {
@@ -198,17 +197,17 @@ class NetUtils {
             headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
           ),
         );
-        debugPrint('File downloaded: $path');
+        trueDebugPrint('File downloaded: $path');
         showToast('下载完成 $path');
         final OpenResult openFileResult = await OpenFile.open(path);
-        debugPrint('File open result: ${openFileResult.type}');
+        trueDebugPrint('File open result: ${openFileResult.type}');
         return response;
       } catch (e) {
-        debugPrint('File download failed: $e');
+        trueDebugPrint('File download failed: $e');
         return null;
       }
     } else {
-      debugPrint('No permission to download file: $url');
+      trueDebugPrint('No permission to download file: $url');
       showToast('未获得存储权限');
       return null;
     }

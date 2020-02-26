@@ -17,7 +17,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
     try {
       OtaUpdate().execute(API.latestAndroid).listen(
         (OtaEvent event) {
-          debugPrint('${event.status} ${event.value}');
+          trueDebugPrint('${event.status} ${event.value}');
           switch (event.status) {
             case OtaStatus.DOWNLOADING:
               updateProgress(double.parse(event.value).toInt());
@@ -35,7 +35,7 @@ class _UpdatingDialogState extends State<UpdatingDialog> {
     } catch (e) {
       dismissAllToast();
       showToast('更新失败: $e');
-      debugPrint('Failed to make OTA update. Details: $e');
+      trueDebugPrint('Failed to make OTA update. Details: $e');
     }
     super.initState();
   }

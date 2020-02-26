@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:openjmu/constants/constants.dart';
 
 class PraiseAPI {
@@ -21,13 +19,13 @@ class PraiseAPI {
       return NetUtils.postWithCookieAndHeaderSet(
         '${API.postRequestPraise}$id',
       ).catchError((e) {
-        debugPrint('${e.response}');
+        trueDebugPrint('${e.response}');
       });
     } else {
       return NetUtils.deleteWithCookieAndHeaderSet(
         '${API.postRequestPraise}$id',
       ).catchError((e) {
-        debugPrint('${e.response}');
+        trueDebugPrint('${e.response}');
       });
     }
   }

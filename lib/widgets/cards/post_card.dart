@@ -550,8 +550,8 @@ class _PostCardState extends State<PostCard> {
         _loadingDialogController.changeState('success', '动态删除成功');
         Instances.eventBus.fire(PostDeletedEvent(widget.post.id, widget.fromPage, widget.index));
       } catch (e) {
-        debugPrint(e.toString());
-        debugPrint(e.response?.toString());
+        trueDebugPrint(e.toString());
+        trueDebugPrint(e.response?.toString());
         _loadingDialogController.changeState('failed', '动态删除失败');
       }
     }

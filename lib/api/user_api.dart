@@ -129,7 +129,7 @@ class UserAPI {
       await NetUtils.postWithCookieAndHeaderSet('${API.userRequestFollow}$uid');
       await NetUtils.postWithCookieAndHeaderSet(API.userFollowAdd, data: {'fid': uid, 'tagid': 0});
     } catch (e) {
-      debugPrint('Failed when folloe: $e');
+      trueDebugPrint('Failed when folloe: $e');
       showCenterErrorToast('关注失败');
     }
   }
@@ -139,7 +139,7 @@ class UserAPI {
       await NetUtils.deleteWithCookieAndHeaderSet('${API.userRequestFollow}$uid');
       await NetUtils.postWithCookieAndHeaderSet(API.userFollowAdd, data: {'fid': uid});
     } catch (e) {
-      debugPrint('Failed when unfollow $uid: $e');
+      trueDebugPrint('Failed when unfollow $uid: $e');
       if (!fromBlacklist) showCenterErrorToast('取消关注失败');
     }
   }
@@ -203,7 +203,7 @@ class UserAPI {
         unFollow(user.uid, fromBlacklist: true);
       }).catchError((e) {
         showToast('加入黑名单失败');
-        debugPrint('Add $user to blacklist failed : $e');
+        trueDebugPrint('Add $user to blacklist failed : $e');
       });
     }
   }
@@ -214,7 +214,7 @@ class UserAPI {
     Instances.eventBus.fire(BlacklistUpdateEvent());
     NetUtils.postWithCookieSet(API.removeFromBlacklist, data: {'fid': user.uid}).catchError((e) {
       showToast('移出黑名单失败');
-      debugPrint('Remove $user from blacklist failed: $e');
+      trueDebugPrint('Remove $user from blacklist failed: $e');
       if (blacklist.contains(user)) blacklist.remove(user);
       Instances.eventBus.fire(BlacklistUpdateEvent());
     });

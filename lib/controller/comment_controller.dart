@@ -306,7 +306,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
         _loadingDialogController.changeState('success', '评论删除成功');
         Instances.eventBus.fire(PostCommentDeletedEvent(comment.post.id));
       } catch (e) {
-        debugPrint(e.toString());
+        trueDebugPrint(e.toString());
         _loadingDialogController.changeState('failed', '评论删除失败');
       }
     }
@@ -385,10 +385,10 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
       if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint('${e.response.data}');
+        trueDebugPrint('${e.response.data}');
       } else {
-        debugPrint('${e.request}');
-        debugPrint('${e.message}');
+        trueDebugPrint('${e.request}');
+        trueDebugPrint('${e.message}');
       }
       return;
     }
@@ -422,10 +422,10 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
       if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint('${e.response.data}');
+        trueDebugPrint('${e.response.data}');
       } else {
-        debugPrint('${e.request}');
-        debugPrint('${e.message}');
+        trueDebugPrint('${e.request}');
+        trueDebugPrint('${e.message}');
       }
       return;
     }

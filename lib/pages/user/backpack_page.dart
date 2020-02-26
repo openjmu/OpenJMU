@@ -129,7 +129,7 @@ class _BackpackPageState extends State<BackpackPage> {
         });
       });
     } catch (e) {
-      debugPrint('Get backpack item error: $e');
+      trueDebugPrint('Get backpack item error: $e');
     }
   }
 

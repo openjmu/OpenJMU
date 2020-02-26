@@ -96,7 +96,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
         if (mounted) setState(() {});
       })
       ..on<PostDeletedEvent>().listen((event) {
-        debugPrint('PostDeleted: ${event.postId} / ${event.page} / ${event.index}');
+        trueDebugPrint('PostDeleted: ${event.postId} / ${event.page} / ${event.index}');
         if ((event.page == widget._postController.postType) && event.index != null) {
           _idList.removeAt(event.index);
           _postList.removeAt(event.index);
@@ -226,7 +226,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       _lastValue = _idList.isEmpty ? 0 : widget._postController.lastValue(_idList.last);
     } catch (e) {
       error = true;
-      debugPrint('Failed when refresh post list: $e');
+      trueDebugPrint('Failed when refresh post list: $e');
     }
 
     _isLoading = false;
@@ -372,10 +372,10 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
       if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint('${e.response.data}');
+        trueDebugPrint('${e.response.data}');
       } else {
-        debugPrint('${e.request}');
-        debugPrint('${e.message}');
+        trueDebugPrint('${e.request}');
+        trueDebugPrint('${e.message}');
       }
       return;
     }
@@ -404,10 +404,10 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
       if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint('${e.response.data}');
+        trueDebugPrint('${e.response.data}');
       } else {
-        debugPrint('${e.request}');
-        debugPrint('${e.message}');
+        trueDebugPrint('${e.request}');
+        trueDebugPrint('${e.message}');
       }
       return;
     }

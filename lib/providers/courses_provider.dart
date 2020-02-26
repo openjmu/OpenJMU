@@ -151,7 +151,7 @@ class CoursesProvider extends ChangeNotifier {
       // ignore: invalid_use_of_protected_member
       Instances.courseSchedulePageStateKey.currentState?.setState(() {});
     } catch (e) {
-      debugPrint('Error when updating course: $e');
+      trueDebugPrint('Error when updating course: $e');
       if (!firstLoaded && dateProvider.currentWeek != null) {
         _firstLoaded = true;
       }
@@ -205,8 +205,8 @@ class CoursesProvider extends ChangeNotifier {
     try {
       courses[courseDay][courseTime].add(course);
     } catch (e) {
-      debugPrint('Failed when trying to add course at day($courseDay) time($courseTime)');
-      debugPrint('$course');
+      trueDebugPrint('Failed when trying to add course at day($courseDay) time($courseTime)');
+      trueDebugPrint('$course');
     }
   }
 

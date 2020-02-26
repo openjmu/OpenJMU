@@ -58,7 +58,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
-    debugPrint('CurrentUser ${UserAPI.currentUser}');
+    trueDebugPrint('CurrentUser ${UserAPI.currentUser}');
 
     _tabIndex = widget.initAction ??
         Provider.of<SettingsProvider>(currentContext, listen: false).homeSplashIndex;
@@ -97,14 +97,14 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         'uuid': DeviceUtils.deviceUuid,
         'platform': Platform.isIOS ? 'ios' : 'android',
       };
-      debugPrint('Push data: $data');
+      trueDebugPrint('Push data: $data');
       NetUtils.post<void>(API.pushUpload, data: data).then((dynamic _) {
-        debugPrint('Push service info upload success.');
+        trueDebugPrint('Push service info upload success.');
       }).catchError((dynamic e) {
-        debugPrint('Push service upload error: $e');
+        trueDebugPrint('Push service upload error: $e');
       });
     } catch (e) {
-      debugPrint('Push service init error: $e');
+      trueDebugPrint('Push service init error: $e');
     }
   }
 
@@ -120,19 +120,19 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       final Notifications notification = Notifications.fromJson(response.data);
       provider.updateNotification(notification);
       if (_ == null) {
-        debugPrint('Updated notifications with :$notification');
+        trueDebugPrint('Updated notifications with :$notification');
       }
     }).catchError((dynamic e) {
-      debugPrint('Error when getting notification: $e');
+      trueDebugPrint('Error when getting notification: $e');
     });
     TeamPostAPI.getNotifications().then((Response<Map<String, dynamic>> response) {
       final TeamNotifications notification = TeamNotifications.fromJson(response.data);
       provider.updateTeamNotification(notification);
       if (_ == null) {
-        debugPrint('Updated team notifications with: $notification');
+        trueDebugPrint('Updated team notifications with: $notification');
       }
     }).catchError((dynamic e) {
-      debugPrint('Error when getting team notification: $e');
+      trueDebugPrint('Error when getting team notification: $e');
     });
   }
 

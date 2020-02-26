@@ -61,7 +61,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    debugPrint('Current platform is: ${Platform.operatingSystem}');
+    trueDebugPrint('Current platform is: ${Platform.operatingSystem}');
     WidgetsBinding.instance.addObserver(this);
     tryRecoverLoginInfo();
 
@@ -128,8 +128,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    debugPrint('——— didChangeAppLifecycleState ———');
-    debugPrint('AppLifecycleState change to: ${state.toString()}\n');
+    trueDebugPrint('——— didChangeAppLifecycleState ———');
+    trueDebugPrint('AppLifecycleState change to: ${state.toString()}\n');
     Instances.appLifeCycleState = state;
   }
 
@@ -150,7 +150,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
   void initQuickActions() {
     final quickActions = QuickActions();
     quickActions.initialize((String shortcutType) {
-      debugPrint('QuickActions triggered: $shortcutType');
+      trueDebugPrint('QuickActions triggered: $shortcutType');
       Instances.eventBus.fire(ActionsEvent(shortcutType));
     });
     quickActions.setShortcutItems(List<ShortcutItem>.generate(
@@ -167,7 +167,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     checkIfNoConnectivity(result);
     Instances.eventBus.fire(ConnectivityChangeEvent(result));
     Instances.connectivityResult = result;
-    debugPrint('Current connectivity: $result');
+    trueDebugPrint('Current connectivity: $result');
   }
 
   void checkIfNoConnectivity(ConnectivityResult result) {

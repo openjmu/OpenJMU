@@ -77,7 +77,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
         );
       }
     }).catchError((dynamic e) {
-      debugPrint('Error when get users: $e');
+      trueDebugPrint('Error when get users: $e');
     });
   }
 
@@ -103,7 +103,7 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
         postList.add(p);
       }
     }).catchError((dynamic e) {
-      debugPrint('Error when searching posts: $e');
+      trueDebugPrint('Error when searching posts: $e');
     });
   }
 

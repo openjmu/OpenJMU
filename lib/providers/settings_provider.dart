@@ -123,7 +123,7 @@ class SettingsProvider extends ChangeNotifier {
       _announcementsUserEnabled = _announcementsEnabled;
       notifyListeners();
     } catch (e) {
-      debugPrint('Get announcement error: $e');
+      trueDebugPrint('Get announcement error: $e');
       Future<void>.delayed(30.seconds, getAnnouncement);
     }
   }

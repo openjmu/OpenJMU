@@ -122,7 +122,7 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       ));
     } catch (e) {
       _forwarding = false;
-      debugPrint('Forward post failed: $e');
+      trueDebugPrint('Forward post failed: $e');
       if (e is DioError && e.response.statusCode == 404) {
         showToast('原动态已被删除');
         Navigator.of(context).pop();

@@ -139,7 +139,7 @@ class _UserPageState extends State<UserPage>
       ],
       eagerError: true,
     ).catchError((e) {
-      debugPrint('Failed when fetch user information: $e');
+      trueDebugPrint('Failed when fetch user information: $e');
     });
 
     if (mounted) {
@@ -748,7 +748,7 @@ class _UserListState extends State<UserListPage> {
     UserAPI.getIdolsList(widget.user.uid, page).then((response) {
       setUserList(response, isMore);
     }).catchError((e) {
-      debugPrint('Failed when getting idol list: $e');
+      trueDebugPrint('Failed when getting idol list: $e');
     });
   }
 
@@ -756,7 +756,7 @@ class _UserListState extends State<UserListPage> {
     UserAPI.getFansList(widget.user.uid, page).then((response) {
       setUserList(response, isMore);
     }).catchError((e) {
-      debugPrint('Failed when getting fans list: $e');
+      trueDebugPrint('Failed when getting fans list: $e');
     });
   }
 

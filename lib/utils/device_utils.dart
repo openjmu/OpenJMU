@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:device_info/device_info.dart';
@@ -37,7 +36,7 @@ class DeviceUtils {
       deviceModel = model;
     }
 
-    debugPrint('deviceModel: $deviceModel');
+    trueDebugPrint('deviceModel: $deviceModel');
   }
 
   static Future<void> getDevicePushToken() async {
@@ -53,7 +52,7 @@ class DeviceUtils {
       } else {
         await HiveFieldUtils.setDevicePushToken(_tempToken);
       }
-      debugPrint('devicePushToken: $devicePushToken');
+      trueDebugPrint('devicePushToken: $devicePushToken');
     }
   }
 
@@ -67,6 +66,6 @@ class DeviceUtils {
         await HiveFieldUtils.setDeviceUuid(Uuid().v4());
       }
     }
-    debugPrint('deviceUuid: $deviceUuid');
+    trueDebugPrint('deviceUuid: $deviceUuid');
   }
 }

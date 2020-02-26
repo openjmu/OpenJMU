@@ -1,6 +1,5 @@
 import 'dart:core';
 
-import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -76,8 +75,8 @@ class PostAPI {
         'tids': [postId]
       },
     ).catchError((e) {
-      debugPrint('${e.toString()}');
-      debugPrint('${e.response}');
+      trueDebugPrint('${e.toString()}');
+      trueDebugPrint('${e.response}');
     });
   }
 

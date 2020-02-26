@@ -221,13 +221,13 @@ class TeamPraiseAPI {
           'post_id': id,
         },
       ).catchError((e) {
-        debugPrint('${e.response['msg']}');
+        trueDebugPrint('${e.response['msg']}');
       });
     } else {
       return NetUtils.deleteWithCookieAndHeaderSet(
         '${API.teamPostRequestUnPraise}/atype/p/post_type/2/post_id/$id',
       ).catchError((e) {
-        debugPrint('${e.response['msg']}');
+        trueDebugPrint('${e.response['msg']}');
       });
     }
   }

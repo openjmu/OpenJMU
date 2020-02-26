@@ -62,7 +62,7 @@ class HiveBoxes {
       );
     }
     if (confirm) {
-      debugPrint('Clearing Hive Boxes...');
+      trueDebugPrint('Clearing Hive Boxes...');
       await appMessagesBox?.clear();
       await changelogBox?.clear();
       await coursesBox?.clear();
@@ -73,7 +73,7 @@ class HiveBoxes {
       await webAppsBox?.clear();
       await settingsBox?.clear();
       await startWeekBox?.clear();
-      debugPrint('Boxes cleared');
+      trueDebugPrint('Boxes cleared');
       if (kReleaseMode) {
         unawaited(SystemNavigator.pop());
       }

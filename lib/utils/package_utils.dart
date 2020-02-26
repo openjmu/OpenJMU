@@ -37,7 +37,7 @@ class PackageUtils {
       final String _currentVersion = version;
       final String _remoteVersion = data['version'] as String;
       final bool _forceUpdate = data['forceUpdate'] as bool;
-      debugPrint('Build: $_currentVersion+$_currentBuild'
+      trueDebugPrint('Build: $_currentVersion+$_currentBuild'
           ' | '
           '$_remoteVersion+$_remoteBuild');
       if (_currentBuild < _remoteBuild) {
@@ -55,7 +55,7 @@ class PackageUtils {
       remoteVersion = _remoteVersion;
       remoteBuildNumber = _remoteBuild;
     }).catchError((dynamic e) {
-      debugPrint('Failed when checking update: $e');
+      trueDebugPrint('Failed when checking update: $e');
       if (!fromHome) {
         Future<void>.delayed(30.seconds, checkUpdate);
       }

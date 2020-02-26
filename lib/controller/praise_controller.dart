@@ -309,10 +309,10 @@ class PraiseListInPostState extends State<PraiseListInPost> with AutomaticKeepAl
       if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint('${e.response.data}');
+        trueDebugPrint('${e.response.data}');
       } else {
-        debugPrint('${e.request}');
-        debugPrint('${e.message}');
+        trueDebugPrint('${e.request}');
+        trueDebugPrint('${e.message}');
       }
       return;
     }
@@ -339,10 +339,10 @@ class PraiseListInPostState extends State<PraiseListInPost> with AutomaticKeepAl
       if (this.mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
-        debugPrint('${e.response.data}');
+        trueDebugPrint('${e.response.data}');
       } else {
-        debugPrint('${e.request}');
-        debugPrint('${e.message}');
+        trueDebugPrint('${e.request}');
+        trueDebugPrint('${e.message}');
       }
       return;
     }
