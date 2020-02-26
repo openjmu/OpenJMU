@@ -107,20 +107,20 @@ class EmoticonUtils {
     '[NO]': '$_emoticonFilePath/NO.png',
     '[OK]': '$_emoticonFilePath/OK.png',
     '[爱情]': '$_emoticonFilePath/aiqing.png',
-    '[飞吻1]': '$_emoticonFilePath/feiwen1.png',
-    '[跳跳]': '$_emoticonFilePath/tiaotiao.png',
-    '[发抖]': '$_emoticonFilePath/fadou.png',
-    '[怄火]': '$_emoticonFilePath/ouhuo.png',
-    '[转圈]': '$_emoticonFilePath/zhuanquan.png',
-    '[磕头]': '$_emoticonFilePath/ketou.png',
-    '[回头]': '$_emoticonFilePath/huitou.png',
-    '[跳绳]': '$_emoticonFilePath/tiaosheng.png',
-    '[挥手]': '$_emoticonFilePath/huishou.png',
-    '[激动3]': '$_emoticonFilePath/jidong3.png',
-    '[街舞]': '$_emoticonFilePath/jiewu.png',
-    '[献舞]': '$_emoticonFilePath/xianwu.png',
-    '[左太极]': '$_emoticonFilePath/zuotaiji.png',
-    '[右太极]': '$_emoticonFilePath/youtaiji.png',
+    // 飞吻1
+    // 跳跳
+    // 发抖
+    // 怄火
+    // 转圈
+    // 磕头
+    // 回头
+    // 跳绳
+    // 挥手
+    // 激动3
+    // 街舞
+    // 献舞
+    // 左太极
+    // 右太极
 
   };
 }
