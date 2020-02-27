@@ -61,7 +61,6 @@ class AppsPageState extends State<AppsPage>
           case '应用':
             if (_scrollController.hasClients) _scrollController.jumpTo(0.0);
             refreshIndicatorKey.currentState.show();
-            Provider.of<WebAppsProvider>(currentContext, listen: false).updateApps();
             break;
         }
         if (mounted) setState(() {});
