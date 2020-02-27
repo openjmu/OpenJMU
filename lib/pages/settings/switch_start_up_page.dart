@@ -72,7 +72,7 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
               ],
             ),
             SvgPicture.asset(
-              'assets/icons/arrow-right.svg',
+              R.ASSETS_ICONS_ARROW_RIGHT_SVG,
               color: Colors.grey,
               width: suSetWidth(30.0),
               height: suSetWidth(30.0),

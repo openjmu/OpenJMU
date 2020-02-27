@@ -62,8 +62,6 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   TextStyle forwardsStyle, commentsStyle, praisesStyle;
 
-  Color forwardsColor, commentsColor = currentThemeColor, praisesColor;
-
   Widget _post;
   Widget _forwardsList;
   Widget _commentsList;
@@ -160,10 +158,6 @@ class PostDetailPageState extends State<PostDetailPage> {
   void setCurrentTabActive(context, index, tab) {
     setState(() {
       _tabIndex = index;
-
-      forwardsColor = tab == 'forwards' ? activeColor : Theme.of(context).cardColor;
-      commentsColor = tab == 'comments' ? activeColor : Theme.of(context).cardColor;
-      praisesColor = tab == 'praises' ? activeColor : Theme.of(context).cardColor;
 
       forwardsStyle = tab == 'forwards' ? textActiveStyle : textInActiveStyle;
       commentsStyle = tab == 'comments' ? textActiveStyle : textInActiveStyle;
@@ -269,7 +263,7 @@ class PostDetailPageState extends State<PostDetailPage> {
         child: Row(
           children: <Widget>[
             MaterialButton(
-              color: forwardsColor,
+              color: _tabIndex == 0 ? activeColor : Theme.of(context).cardColor,
               elevation: 0,
               padding: EdgeInsets.zero,
               minWidth: suSetWidth(sectionButtonWidth),
@@ -281,7 +275,7 @@ class PostDetailPageState extends State<PostDetailPage> {
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             ),
             MaterialButton(
-              color: commentsColor,
+              color: _tabIndex == 1 ? activeColor : Theme.of(context).cardColor,
               elevation: 0,
               padding: EdgeInsets.zero,
               minWidth: suSetWidth(sectionButtonWidth),
@@ -294,7 +288,7 @@ class PostDetailPageState extends State<PostDetailPage> {
             ),
             Expanded(child: Container()),
             MaterialButton(
-              color: praisesColor,
+              color: _tabIndex == 2 ? activeColor : Theme.of(context).cardColor,
               elevation: 0,
               padding: EdgeInsets.zero,
               minWidth: suSetWidth(sectionButtonWidth),
@@ -328,7 +322,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                 );
               },
               icon: SvgPicture.asset(
-                'assets/icons/postActions/forward-fill.svg',
+                R.ASSETS_ICONS_POSTACTIONS_FORWARD_FILL_SVG,
                 color: bodyTextTheme.color,
                 width: suSetWidth(iconSize),
               ),
@@ -348,7 +342,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                 );
               },
               icon: SvgPicture.asset(
-                'assets/icons/postActions/comment-fill.svg',
+                R.ASSETS_ICONS_POSTACTIONS_COMMENT_FILL_SVG,
                 color: bodyTextTheme.color,
                 width: suSetWidth(iconSize),
               ),
@@ -378,7 +372,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                 dotSecondaryColor: currentThemeColor,
               ),
               likeBuilder: (bool isLiked) => SvgPicture.asset(
-                'assets/icons/postActions/praise-fill.svg',
+                R.ASSETS_ICONS_POSTACTIONS_PRAISE_FILL_SVG,
                 color: isLiked ? currentThemeColor : bodyTextTheme.color,
                 width: suSetWidth(iconSize),
               ),

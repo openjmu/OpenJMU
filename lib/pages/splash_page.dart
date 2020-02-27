@@ -135,7 +135,7 @@ class SplashState extends State<SplashPage> {
         child: Hero(
           tag: 'Logo',
           child: SvgPicture.asset(
-            'images/splash_page_logo.svg',
+            R.IMAGES_SPLASH_PAGE_LOGO_SVG,
             width: suSetWidth(150.0),
             height: suSetHeight(150.0),
             color: currentIsDark ? currentThemeColor : Colors.white,

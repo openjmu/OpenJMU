@@ -85,7 +85,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         right: 0.0,
         top: 0.0,
         child: Image.asset(
-          'images/login_top.png',
+          R.IMAGES_LOGIN_TOP_PNG,
           width: Screens.width - suSetWidth(60.0),
           fit: BoxFit.fitWidth,
         ),
@@ -97,7 +97,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         bottom: 15.0,
         child: Center(
           child: Image.asset(
-            'images/login_bottom.png',
+            R.IMAGES_LOGIN_BOTTOM_PNG,
             color: Colors.grey.withAlpha(50),
             width: Screens.width - suSetWidth(150.0),
             fit: BoxFit.fitWidth,
@@ -111,7 +111,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         child: Hero(
           tag: 'Logo',
           child: SvgPicture.asset(
-            'images/splash_page_logo.svg',
+            R.IMAGES_SPLASH_PAGE_LOGO_SVG,
             color: Theme.of(context).primaryColor.withOpacity(0.3),
             width: suSetWidth(120.0),
             height: suSetHeight(120.0),

@@ -23,6 +23,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
   final items = <Map<String, dynamic>>[
     {
       'name': '广场',
+      'icon': R.ASSETS_ICONS_ADDBUTTON_GUANGCHANG_SVG,
       'color': Colors.orange,
       'notifications': Provider.of<NotificationProvider>(
         currentContext,
@@ -34,6 +35,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
     },
     {
       'name': '集市',
+      'icon': R.ASSETS_ICONS_ADDBUTTON_JISHI_SVG,
       'color': Colors.indigoAccent,
       'notifications': Provider.of<NotificationProvider>(
         currentContext,
@@ -374,7 +376,7 @@ class _NotificationEntryPageState extends State<NotificationEntryPage>
                     children: <Widget>[
                       Center(
                         child: SvgPicture.asset(
-                          'assets/icons/addButton/${items[itemIndex]['name']}.svg',
+                          items[itemIndex]['icon'] as String,
                           color: Colors.white,
                           width: suSetWidth(36.0),
                         ),

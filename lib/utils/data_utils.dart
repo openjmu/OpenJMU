@@ -149,7 +149,9 @@ class DataUtils {
 
   static void setUserInfo(Map<String, dynamic> data) {
     UserAPI.currentUser = UserInfo.fromJson(data);
-    HiveFieldUtils.setEnabledNewAppsIcon(!(data['isTeacher'] as bool));
+    if (HiveFieldUtils.getEnabledNewAppsIcon() == null) {
+      HiveFieldUtils.setEnabledNewAppsIcon(!(data['isTeacher'] as bool));
+    }
   }
 
   static Future<void> saveLoginInfo(Map<String, dynamic> data) async {

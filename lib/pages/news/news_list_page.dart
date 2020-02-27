@@ -166,8 +166,8 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
       width: suSetSp(80.0),
       height: suSetSp(80.0),
       child: FadeInImage(
-        fadeInDuration: const Duration(milliseconds: 100),
-        placeholder: AssetImage('assets/avatar_placeholder.png'),
+        fadeInDuration: 100.milliseconds,
+        placeholder: AssetImage(R.ASSETS_AVATAR_PLACEHOLDER_PNG),
         image: coverImg,
         fit: BoxFit.cover,
       ),

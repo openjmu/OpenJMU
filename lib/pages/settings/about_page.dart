@@ -7,7 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(name: "openjmu://about", routeName: "关于页")
+@FFRoute(name: 'openjmu://about', routeName: '关于页')
 class AboutPage extends StatelessWidget {
   List<Map<String, dynamic>> get actions => [
         {
@@ -92,7 +92,7 @@ class AboutPage extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(suSetWidth(20.0)),
             child: Image.asset(
-              'images/logo_1024.png',
+              R.IMAGES_LOGO_1024_PNG,
               width: suSetWidth(100.0),
               height: suSetWidth(100.0),
             ),
@@ -158,7 +158,7 @@ class AboutPage extends StatelessWidget {
                       ),
                       Spacer(),
                       SvgPicture.asset(
-                        'assets/icons/arrow-right.svg',
+                        R.ASSETS_ICONS_ARROW_RIGHT_SVG,
                         color: Colors.grey,
                         width: suSetWidth(30.0),
                         height: suSetWidth(30.0),

@@ -32,10 +32,16 @@ class PostController {
 }
 
 class PostList extends StatefulWidget {
-  final PostController _postController;
-  final bool needRefreshIndicator;
+  const PostList(
+    this.postController, {
+    Key key,
+    this.needRefreshIndicator = true,
+    this.scrollController,
+  }) : super(key: key);
 
-  PostList(this._postController, {Key key, this.needRefreshIndicator = true}) : super(key: key);
+  final PostController postController;
+  final bool needRefreshIndicator;
+  final ScrollController scrollController;
 
   @override
   State createState() => _PostListState();
@@ -45,7 +51,7 @@ class PostList extends StatefulWidget {
 
 class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
   final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
-  final ScrollController _scrollController = ScrollController();
+  ScrollController _scrollController;
 
   int _lastValue = 0;
   bool _isLoading = false;
@@ -66,11 +72,13 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   @override
   void initState() {
     super.initState();
-    widget._postController._postListState = this;
+    widget.postController._postListState = this;
+    _scrollController == widget.scrollController ?? ScrollController();
+
     Instances.eventBus
       ..on<ScrollToTopEvent>().listen((event) {
         if (this.mounted &&
-            ((event.tabIndex == 0 && widget._postController.postType == 'square') ||
+            ((event.tabIndex == 0 && widget.postController.postType == 'square') ||
                 (event.type == '首页'))) {
           if (_postList.length > 20) _postList = _postList.sublist(0, 20);
           _scrollController.animateTo(
@@ -97,7 +105,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       })
       ..on<PostDeletedEvent>().listen((event) {
         trueDebugPrint('PostDeleted: ${event.postId} / ${event.page} / ${event.index}');
-        if ((event.page == widget._postController.postType) && event.index != null) {
+        if ((event.page == widget.postController.postType) && event.index != null) {
           _idList.removeAt(event.index);
           _postList.removeAt(event.index);
         }
@@ -142,11 +150,11 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       _isLoading = true;
     }
     final result = (await PostAPI.getPostList(
-      widget._postController.postType,
-      widget._postController.isFollowed,
+      widget.postController.postType,
+      widget.postController.isFollowed,
       true,
       _lastValue,
-      additionAttrs: widget._postController.additionAttrs,
+      additionAttrs: widget.postController.additionAttrs,
     ))
         .data;
 
@@ -170,7 +178,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
 
     _isLoading = false;
     _canLoadMore = _idList.length < _total && _count != 0;
-    _lastValue = _idList.isEmpty ? 0 : widget._postController.lastValue(_idList.last);
+    _lastValue = _idList.isEmpty ? 0 : widget.postController.lastValue(_idList.last);
     if (mounted) setState(() {});
   }
 
@@ -185,11 +193,11 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
 
     try {
       final result = (await PostAPI.getPostList(
-        widget._postController.postType,
-        widget._postController.isFollowed,
+        widget.postController.postType,
+        widget.postController.isFollowed,
         false,
         _lastValue,
-        additionAttrs: widget._postController.additionAttrs,
+        additionAttrs: widget.postController.additionAttrs,
       ))
           .data;
 
@@ -223,7 +231,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       }
 
       _canLoadMore = _idList.length < _total && _count != 0;
-      _lastValue = _idList.isEmpty ? 0 : widget._postController.lastValue(_idList.last);
+      _lastValue = _idList.isEmpty ? 0 : widget.postController.lastValue(_idList.last);
     } catch (e) {
       error = true;
       trueDebugPrint('Failed when refresh post list: $e');
@@ -258,7 +266,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
             });
           },
         ),
-        controller: widget._postController.postType == 'user' ? null : _scrollController,
+        controller: widget.postController.postType == 'user' ? null : _scrollController,
         itemCount: _postList.length + 1,
         itemBuilder: (context, index) {
           if (index == _postList.length - 1 && _canLoadMore) _loadData();
@@ -267,7 +275,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
           } else if (index < _postList.length) {
             return PostCard(
               _postList[index],
-              fromPage: widget._postController.postType,
+              fromPage: widget.postController.postType,
               index: index,
               isDetail: false,
               parentContext: context,

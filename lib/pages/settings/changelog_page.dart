@@ -247,7 +247,7 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
           ClipRRect(
             borderRadius: BorderRadius.circular(suSetWidth(20.0)),
             child: Image.asset(
-              'images/logo_1024.png',
+              R.IMAGES_LOGO_1024_PNG,
               width: suSetWidth(150.0),
               height: suSetWidth(150.0),
             ),

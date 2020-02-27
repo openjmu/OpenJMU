@@ -9,7 +9,6 @@ import 'package:launch_review/launch_review.dart';
 import 'package:package_info/package_info.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/dialogs/updating_dialog.dart';
 
 class PackageUtils {
   const PackageUtils._();
@@ -182,15 +181,6 @@ class PackageUtils {
   static Future<void> showUpdateDialog(HasUpdateEvent event) async {
     showToastWidget(
       updateNotifyDialog(event),
-      dismissOtherToast: true,
-      duration: 1.weeks,
-      handleTouch: true,
-    );
-  }
-
-  static void startUpdate() {
-    showToastWidget(
-      UpdatingDialog(),
       dismissOtherToast: true,
       duration: 1.weeks,
       handleTouch: true,

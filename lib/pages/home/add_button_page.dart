@@ -14,6 +14,10 @@ class AddingButtonPage extends StatefulWidget {
 }
 
 class _AddingButtonPageState extends State<AddingButtonPage> with TickerProviderStateMixin {
+  final List<String> itemIcons = [
+    R.ASSETS_ICONS_ADDBUTTON_GUANGCHANG_SVG,
+    R.ASSETS_ICONS_ADDBUTTON_JISHI_SVG,
+  ];
   final List<String> itemTitles = ['广场', '集市'];
   final List<Color> itemColors = [Colors.orange, Colors.indigoAccent];
   final List<Function> itemOnTap = [
@@ -295,7 +299,7 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                     decoration: BoxDecoration(color: itemColors[index], shape: BoxShape.circle),
                     child: Center(
                       child: SvgPicture.asset(
-                        'assets/icons/addButton/${itemTitles[index]}.svg',
+                        itemIcons[index],
                         color: Colors.white,
                         width: suSetWidth(40.0),
                       ),

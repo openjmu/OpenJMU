@@ -164,7 +164,7 @@ class MyInfoPageState extends State<MyInfoPage> {
                           ),
                         )
                       : SvgPicture.asset(
-                          'assets/icons/sign-line.svg',
+                          R.ASSETS_ICONS_SIGN_LINE_SVG,
                           color: Colors.white,
                           width: suSetWidth(26.0),
                         ),
@@ -338,7 +338,7 @@ class MyInfoPageState extends State<MyInfoPage> {
               child: SvgPicture.asset(
                 (item['name'] == '夜间模式')
                     ? currentIsDark
-                        ? 'assets/icons/daymode-line.svg'
+                        ? R.ASSETS_ICONS_DAYMODE_LINE_SVG
                         : 'assets/icons/${item['icon']}-line.svg'
                     : 'assets/icons/${item['icon']}-line.svg',
                 color: Theme.of(context).iconTheme.color,
@@ -355,7 +355,7 @@ class MyInfoPageState extends State<MyInfoPage> {
             Padding(
               padding: EdgeInsets.only(right: suSetSp(12.0)),
               child: SvgPicture.asset(
-                'assets/icons/arrow-right.svg',
+                R.ASSETS_ICONS_ARROW_RIGHT_SVG,
                 color: Colors.grey,
                 width: suSetWidth(30.0),
                 height: suSetWidth(30.0),

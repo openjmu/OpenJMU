@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(name: "openjmu://theme", routeName: "更改主题")
+@FFRoute(name: 'openjmu://theme', routeName: '更改主题')
 class ChangeThemePage extends StatelessWidget {
   Widget colorItem(context, int index) {
     return Consumer<ThemesProvider>(

@@ -94,7 +94,7 @@ class MessagePageState extends State<MessagePage> with TickerProviderStateMixin 
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 SvgPicture.asset(
-                  'images/placeholder/no_message.svg',
+                  R.IMAGES_PLACEHOLDER_NO_MESSAGE_SVG,
                   width: Screens.width / 3.5,
                   height: Screens.width / 3.5,
                 ),
