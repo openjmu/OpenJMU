@@ -93,7 +93,7 @@ class OpenJMULogo extends StatelessWidget {
     return UnconstrainedBox(
       child: ClipRRect(
         borderRadius: BorderRadius.circular(suSetWidth(radius)),
-        child: Image.asset("images/logo_1024.png", width: width, height: height),
+        child: Image.asset(R.IMAGES_LOGO_1024_PNG, width: width, height: height),
       ),
     );
   }
@@ -113,7 +113,7 @@ class DeveloperTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      'assets/icons/openjmu-team-badge.svg',
+      R.ASSETS_ICONS_OPENJMU_TEAM_BADGE_SVG,
       height: suSetHeight(height),
     );
   }

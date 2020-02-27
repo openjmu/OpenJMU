@@ -8,7 +8,7 @@ class SettingsPage extends StatelessWidget {
   List<List<Map<String, dynamic>>> get pageSection => [
         [
           {
-            'icon': 'night_mode',
+            'icon': R.ASSETS_ICONS_SETTINGS_NIGHT_MODE_SVG,
             'name': '夜间模式',
             'description': '减轻眩光，提升夜间使用体验',
             'widget': Consumer<ThemesProvider>(
@@ -23,7 +23,7 @@ class SettingsPage extends StatelessWidget {
             ),
           },
           {
-            'icon': 'follow_system',
+            'icon': R.ASSETS_ICONS_SETTINGS_FOLLOW_SYSTEM_SVG,
             'name': '跟随系统夜间模式',
             'description': '夜间模式将跟随系统主题切换',
             'level': 2,
@@ -38,7 +38,7 @@ class SettingsPage extends StatelessWidget {
             ),
           },
           {
-            'icon': 'amoled_black',
+            'icon': R.ASSETS_ICONS_SETTINGS_AMOLED_BLACK_SVG,
             'name': 'AMOLED 黑',
             'description': '更深的背景颜色，节省电量',
             'level': 2,
@@ -55,7 +55,7 @@ class SettingsPage extends StatelessWidget {
         ],
         [
           {
-            'icon': 'theme_color',
+            'icon': R.ASSETS_ICONS_SETTINGS_THEME_COLOR_SVG,
             'name': '切换主题',
             'description': '多彩颜色，丰富你的界面',
             'widget': Container(
@@ -76,7 +76,7 @@ class SettingsPage extends StatelessWidget {
           },
           if (currentUser.isTeacher)
             {
-              'icon': 'new_icons',
+              'icon': R.ASSETS_ICONS_SETTINGS_NEW_ICONS_SVG,
               'name': '应用中心新图标',
               'description': '全新图标设计，简洁直达',
               'widget': Selector<SettingsProvider, bool>(
@@ -93,13 +93,13 @@ class SettingsPage extends StatelessWidget {
               ),
             },
           {
-            'icon': 'font_size',
+            'icon': R.ASSETS_ICONS_SETTINGS_FONT_SIZE_SVG,
             'name': '字体大小调节',
             'description': '调整字体大小以获得最佳阅读体验',
             'route': Routes.OPENJMU_FONT_SCALE,
           },
           {
-            'icon': 'hide_blocked',
+            'icon': R.ASSETS_ICONS_SETTINGS_HIDE_BLOCKED_SVG,
             'name': '隐藏屏蔽的动态',
             'description': '广场中被屏蔽的动态将被隐藏',
             'widget': Selector<SettingsProvider, bool>(
@@ -117,7 +117,7 @@ class SettingsPage extends StatelessWidget {
           },
           if (Constants.developerList.contains(currentUser.uid))
             {
-              'icon': 'hide_blocked',
+              'icon': R.ASSETS_ICONS_SETTINGS_HIDE_BLOCKED_SVG,
               'name': '使用系统浏览器',
               'description': '应用及网页将通过系统自带浏览器打开',
               'widget': Selector<SettingsProvider, bool>(
@@ -155,7 +155,7 @@ class SettingsPage extends StatelessWidget {
               ),
               child: page['level'] == null || page['level'] == 1
                   ? SvgPicture.asset(
-                      'assets/icons/settings/${page['icon']}.svg',
+                      page['icon'] as String,
                       width: suSetWidth(iconSize),
                       height: suSetWidth(iconSize),
                     )
@@ -200,7 +200,7 @@ class SettingsPage extends StatelessWidget {
                   color: Theme.of(context).dividerColor,
                 ),
                 child: SvgPicture.asset(
-                  'assets/icons/arrow-right.svg',
+                  R.ASSETS_ICONS_ARROW_RIGHT_SVG,
                   color: Colors.white.withOpacity(0.9),
                   width: suSetSp(iconSize / 1.25),
                   height: suSetSp(iconSize / 1.25),

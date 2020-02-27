@@ -322,7 +322,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                 );
               },
               icon: SvgPicture.asset(
-                'assets/icons/postActions/forward-fill.svg',
+                R.ASSETS_ICONS_POSTACTIONS_FORWARD_FILL_SVG,
                 color: bodyTextTheme.color,
                 width: suSetWidth(iconSize),
               ),
@@ -342,7 +342,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                 );
               },
               icon: SvgPicture.asset(
-                'assets/icons/postActions/comment-fill.svg',
+                R.ASSETS_ICONS_POSTACTIONS_COMMENT_FILL_SVG,
                 color: bodyTextTheme.color,
                 width: suSetWidth(iconSize),
               ),
@@ -372,7 +372,7 @@ class PostDetailPageState extends State<PostDetailPage> {
                 dotSecondaryColor: currentThemeColor,
               ),
               likeBuilder: (bool isLiked) => SvgPicture.asset(
-                'assets/icons/postActions/praise-fill.svg',
+                R.ASSETS_ICONS_POSTACTIONS_PRAISE_FILL_SVG,
                 color: isLiked ? currentThemeColor : bodyTextTheme.color,
                 width: suSetWidth(iconSize),
               ),

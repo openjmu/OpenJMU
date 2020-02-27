@@ -104,7 +104,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
 
   Widget get scanQrCodeButton => IconButton(
         icon: SvgPicture.asset(
-          'assets/icons/scan-line.svg',
+          R.ASSETS_ICONS_SCAN_LINE_SVG,
           color: Theme.of(context).iconTheme.color.withOpacity(0.3),
           width: suSetWidth(32.0),
           height: suSetWidth(32.0),
@@ -121,7 +121,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
 
   Widget get searchButton => IconButton(
         icon: SvgPicture.asset(
-          'assets/icons/search-line.svg',
+          R.ASSETS_ICONS_SEARCH_LINE_SVG,
           color: Theme.of(context).iconTheme.color.withOpacity(0.3),
           width: suSetWidth(32.0),
           height: suSetWidth(32.0),
@@ -174,7 +174,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
                 IconButton(
                   alignment: Alignment.centerRight,
                   icon: SvgPicture.asset(
-                    'assets/icons/liuyan-line.svg',
+                    R.ASSETS_ICONS_LIUYAN_LINE_SVG,
                     color: Theme.of(context).iconTheme.color.withOpacity(0.3),
                     width: suSetWidth(32.0),
                     height: suSetWidth(32.0),

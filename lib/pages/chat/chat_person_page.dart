@@ -100,7 +100,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
         color: emoticonPadActive ? currentThemeColor : Colors.grey[400],
         child: Center(
           child: Image.asset(
-            'assets/emotionIcons/憨笑.png',
+            R.ASSETS_EMOTIONICONS_HANXIAO_PNG,
             width: suSetSp(32.0),
           ),
         ),

@@ -21,7 +21,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
   List<Map<String, Map<String, dynamic>>> get actions => [
         {
           '广场': {
-            'icon': 'guangchang',
+            'icon': R.ASSETS_ICONS_ADDBUTTON_GUANGCHANG_SVG,
             'content': [
               {
                 'icon': 'praise',
@@ -49,7 +49,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
         },
         {
           '集市': {
-            'icon': 'jishi',
+            'icon': R.ASSETS_ICONS_ADDBUTTON_JISHI_SVG,
             'content': [
               {
                 'icon': 'praise',
@@ -208,7 +208,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     SvgPicture.asset(
-                      'assets/icons/addButton/${actions[i][key]['icon'] as String}.svg',
+                      actions[i][key]['icon'] as String,
                       width: suSetWidth(36.0),
                       height: suSetWidth(36.0),
                       color: _index == i

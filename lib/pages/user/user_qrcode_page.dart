@@ -56,7 +56,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         padding: EdgeInsets.zero,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
-        embeddedImage: AssetImage('images/logo_1024_rounded.png'),
+        embeddedImage: AssetImage(R.IMAGES_LOGO_1024_ROUNDED_PNG),
         embeddedImageStyle: QrEmbeddedImageStyle(
           size: Size.square(suSetWidth(80.0)),
         ),

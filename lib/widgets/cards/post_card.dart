@@ -353,7 +353,7 @@ class _PostCardState extends State<PostCard> {
                 dotSecondaryColor: currentThemeColor,
               ),
               likeBuilder: (bool isLiked) => SvgPicture.asset(
-                'assets/icons/postActions/praise-fill.svg',
+                R.ASSETS_ICONS_POSTACTIONS_PRAISE_FILL_SVG,
                 color: isLiked
                     ? currentThemeColor
                     : currentIsDark ? actionIconColorDark : actionIconColorLight,
@@ -375,7 +375,7 @@ class _PostCardState extends State<PostCard> {
               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
               onPressed: null,
               icon: SvgPicture.asset(
-                'assets/icons/postActions/comment-fill.svg',
+                R.ASSETS_ICONS_POSTACTIONS_COMMENT_FILL_SVG,
                 color: currentIsDark ? actionIconColorDark : actionIconColorLight,
                 width: suSetWidth(26.0),
               ),
@@ -405,7 +405,7 @@ class _PostCardState extends State<PostCard> {
                 );
               },
               icon: SvgPicture.asset(
-                'assets/icons/postActions/forward-fill.svg',
+                R.ASSETS_ICONS_POSTACTIONS_FORWARD_FILL_SVG,
                 color: currentIsDark ? actionIconColorDark : actionIconColorLight,
                 width: suSetWidth(26.0),
               ),

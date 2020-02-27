@@ -15,14 +15,15 @@ export 'package:oktoast/oktoast.dart' hide showToast;
 export 'package:pedantic/pedantic.dart';
 export 'package:url_launcher/url_launcher.dart';
 
+export 'events.dart';
+export 'hive_boxes.dart';
+export 'instances.dart';
+export 'messages.dart';
+export 'resources.dart';
+export 'screens.dart';
+export 'widgets.dart';
 export 'package:openjmu/api/api.dart';
-export 'package:openjmu/constants/instances.dart';
-export 'package:openjmu/constants/messages.dart';
-export 'package:openjmu/constants/screens.dart';
-export 'package:openjmu/constants/widgets.dart';
 export 'package:openjmu/model/beans.dart';
-export 'package:openjmu/constants/events.dart';
-export 'package:openjmu/constants/hive_boxes.dart';
 export 'package:openjmu/providers/providers.dart';
 export 'package:openjmu/utils/utils.dart';
 

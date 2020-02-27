@@ -47,7 +47,7 @@ class AnnouncementWidget extends StatelessWidget {
               child: IconTheme(data: iconTheme, child: Icon(Icons.close)),
             )
           : SvgPicture.asset(
-              'assets/icons/arrow-right.svg',
+              R.ASSETS_ICONS_ARROW_RIGHT_SVG,
               color: iconTheme.color,
               width: iconTheme.size,
             ),

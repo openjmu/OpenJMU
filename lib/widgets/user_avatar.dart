@@ -36,7 +36,7 @@ class UserAvatar extends StatelessWidget {
               radius != null ? BorderRadius.circular(suSetWidth(radius)) : maxBorderRadius,
           child: FadeInImage(
             fadeInDuration: 150.milliseconds,
-            placeholder: AssetImage('assets/avatar_placeholder.png'),
+            placeholder: AssetImage(R.ASSETS_AVATAR_PLACEHOLDER_PNG),
             image: UserAPI.getAvatarProvider(uid: _uid),
           ),
         ),

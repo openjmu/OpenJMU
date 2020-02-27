@@ -153,7 +153,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
   }
 
   Widget poundIcon(context) => SvgPicture.asset(
-        'assets/icons/add-topic.svg',
+        R.ASSETS_ICONS_ADD_TOPIC_SVG,
         color: Theme.of(context).iconTheme.color,
         width: _iconSize,
         height: _iconSize,
