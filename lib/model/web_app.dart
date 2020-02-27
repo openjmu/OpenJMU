@@ -32,6 +32,9 @@ class WebApp {
     this.menuType,
   });
 
+  /// Using [appId] and [code] to produce an unique id.
+  String get uniqueId => '$appId-$code';
+
   WebApp.fromJson(Map<String, dynamic> json) {
     json.forEach((k, v) {
       if (json[k] == '') json[k] = null;
@@ -80,7 +83,7 @@ class WebApp {
           code == other.code;
 
   @override
-  int get hashCode => appId.hashCode;
+  int get hashCode => appId.hashCode ^ code.hashCode;
 
   static Map category = {
 //        '10': '个人事务',

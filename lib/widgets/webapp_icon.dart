@@ -15,6 +15,12 @@ class WebAppIcon extends StatelessWidget {
   final WebApp app;
   final double size;
 
+  double get oldIconSize => size / 1.5;
+
+  String get iconPath => 'assets/icons/appCenter/${app.appId}-${app.code}.svg';
+
+  String get oldIconUrl => '${API.webAppIcons}appid=${app.appId}&code=${app.code}';
+
   Future<Widget> loadAsset() async {
     try {
       await rootBundle.load(iconPath);
@@ -29,12 +35,6 @@ class WebAppIcon extends StatelessWidget {
       );
     }
   }
-
-  double get oldIconSize => size / 1.5;
-
-  String get iconPath => 'assets/icons/appCenter/${app.code}-${app.name}.svg';
-
-  String get oldIconUrl => '${API.webAppIcons}appid=${app.appId}&code=${app.code}';
 
   @override
   Widget build(BuildContext context) {
