@@ -18,53 +18,59 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class NotificationsPageState extends State<NotificationsPage> with TickerProviderStateMixin {
-  List<Map<String, List<Map<String, dynamic>>>> get actions => [
+  List<Map<String, Map<String, dynamic>>> get actions => [
         {
-          '广场': [
-            {
-              'icon': 'praise',
-              'field': provider.notifications.praise,
-              'action': provider.readPraise,
-              'select': selectSquareIndex,
-              'index': _squareIndex,
-            },
-            {
-              'icon': 'comment',
-              'field': provider.notifications.comment,
-              'action': provider.readReply,
-              'select': selectSquareIndex,
-              'index': _squareIndex,
-            },
-            {
-              'icon': 'forward',
-              'field': provider.notifications.at,
-              'action': provider.readMention,
-              'select': selectSquareIndex,
-              'index': _squareIndex,
-            },
-          ]
+          '广场': {
+            'icon': 'guangchang',
+            'content': [
+              {
+                'icon': 'praise',
+                'field': provider.notifications.praise,
+                'action': provider.readPraise,
+                'select': selectSquareIndex,
+                'index': _squareIndex,
+              },
+              {
+                'icon': 'comment',
+                'field': provider.notifications.comment,
+                'action': provider.readReply,
+                'select': selectSquareIndex,
+                'index': _squareIndex,
+              },
+              {
+                'icon': 'forward',
+                'field': provider.notifications.at,
+                'action': provider.readMention,
+                'select': selectSquareIndex,
+                'index': _squareIndex,
+              },
+            ],
+          },
         },
         {
-          '集市': [
-            {
-              'icon': 'praise',
-              'field': provider.teamNotifications.praise,
-              'action': provider.readPraise,
-              'index': _teamIndex,
-            },
-            {
-              'icon': 'comment',
-              'field': provider.teamNotifications.reply,
-              'action': provider.readTeamReply,
-              'index': _teamIndex,
-            },
-            {
-              'icon': 'forward',
-              'field': provider.teamNotifications.mention,
-              'action': provider.readTeamMention,
-              'index': _teamIndex,
-            },
-          ]
+          '集市': {
+            'icon': 'jishi',
+            'content': [
+              {
+                'icon': 'praise',
+                'field': provider.teamNotifications.praise,
+                'action': provider.readPraise,
+                'index': _teamIndex,
+              },
+              {
+                'icon': 'comment',
+                'field': provider.teamNotifications.reply,
+                'action': provider.readTeamReply,
+                'index': _teamIndex,
+              },
+              {
+                'icon': 'forward',
+                'field': provider.teamNotifications.mention,
+                'action': provider.readTeamMention,
+                'index': _teamIndex,
+              },
+            ],
+          },
         },
       ];
 
@@ -202,7 +208,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     SvgPicture.asset(
-                      'assets/icons/addButton/$key.svg',
+                      'assets/icons/addButton/${actions[i][key]['icon'] as String}.svg',
                       width: suSetWidth(36.0),
                       height: suSetWidth(36.0),
                       color: _index == i
@@ -250,9 +256,9 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
             final String key = actions[i].keys.elementAt(0);
             return Row(
               children: List<Widget>.generate(
-                actions[i][key].length,
+                (actions[i][key]['content'] as List<dynamic>).length,
                 (int j) {
-                  final Map<String, dynamic> item = actions[i].values.elementAt(0)[j];
+                  final Map<String, dynamic> item = actions[i].values.elementAt(0)['content'][j];
                   final int count = item['field'] as int;
                   return GestureDetector(
                     behavior: HitTestBehavior.opaque,
@@ -277,7 +283,8 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
       );
 
   Widget getActionIcon(int sectionIndex, int actionIndex) {
-    final Map<String, dynamic> item = actions[sectionIndex].values.elementAt(0)[actionIndex];
+    final Map<String, dynamic> item =
+        actions[sectionIndex].values.elementAt(0)['content'][actionIndex];
     final String icon = item['icon'] as String;
     final int index = item['index'] as int;
     return AnimatedCrossFade(
