@@ -37,7 +37,7 @@ class EmoticonUtils {
     '[流汗2]': '$_emoticonFilePath/liuhan2.png',
     '[憨笑]': '$_emoticonFilePath/hanxiao.png',
     '[大兵]': '$_emoticonFilePath/dabing.png',
-    // 奋斗1
+    // '[奋斗1]': '$_emoticonFilePath/fendou1.png',
     '[咒骂]': '$_emoticonFilePath/zhouma.png',
     '[疑问2]': '$_emoticonFilePath/yiwen2.png',
     '[嘘]': '$_emoticonFilePath/xu.png',
@@ -47,13 +47,13 @@ class EmoticonUtils {
     '[骷髅]': '$_emoticonFilePath/kulou.png',
     // 敲打
     '[再见]': '$_emoticonFilePath/zaijian.png',
-    // 擦汗
-    // 抠鼻
+    // '[擦汗]': '$_emoticonFilePath/cahan.png',
+    // '[抠鼻]': '$_emoticonFilePath/koubi.png',
     '[鼓掌1]': '$_emoticonFilePath/guzhang1.png',
     '[糗大了]': '$_emoticonFilePath/qiudale.png',
     '[坏笑1]': '$_emoticonFilePath/huaixiao1.png',
-    // 左哼哼
-    // 右哼哼
+    // '[左哼哼]': '$_emoticonFilePath/zuohengheng.png',
+    // '[右哼哼]': '$_emoticonFilePath/youhengheng.png',
     '[哈欠]': '$_emoticonFilePath/haqian.png',
     '[鄙视2]': '$_emoticonFilePath/bishi2.png',
     '[委屈1]': '$_emoticonFilePath/weiqu1.png',
@@ -100,12 +100,12 @@ class EmoticonUtils {
     '[爱情]': '$_emoticonFilePath/aiqing.png',
     '[飞吻1]': '$_emoticonFilePath/feiwen1.png',
     // 跳跳
-    // 发抖
+    // '[发抖]': '$_emoticonFilePath/fadou.png',
     '[怄火]': '$_emoticonFilePath/ouhuo.png',
     '[转圈]': '$_emoticonFilePath/zhuanquan.png',
     '[磕头]': '$_emoticonFilePath/ketou.png',
     // 回头
-    // 跳绳
+    // '[跳绳]': '$_emoticonFilePath/tiaosheng.png',
     '[挥手]': '$_emoticonFilePath/zaijian.png',
     '[激动3]': '$_emoticonFilePath/jidong3.png',
     '[街舞]': '$_emoticonFilePath/jiewu.png',
