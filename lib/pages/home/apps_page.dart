@@ -6,7 +6,6 @@ import 'package:openjmu/pages/main_page.dart';
 import 'package:openjmu/pages/home/app_center_page.dart';
 import 'package:openjmu/pages/home/course_schedule_page.dart';
 import 'package:openjmu/pages/home/score_page.dart';
-import 'package:openjmu/widgets/webview/in_app_webview.dart';
 
 class AppsPage extends StatefulWidget {
   const AppsPage({@required Key key}) : super(key: key);

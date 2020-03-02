@@ -50,7 +50,6 @@ dependencies:
   multi_image_picker: 4.6.1
   oktoast: 2.3.1
   open_file: 3.0.1
-  ota_update: 2.1.1
   package_info: ^0.4.0+13
   path_provider: 1.5.1
   permission_handler: 4.2.0+hotfix.2
