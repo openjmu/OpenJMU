@@ -40,20 +40,16 @@ class CommentList extends StatefulWidget {
     this.commentController, {
     Key key,
     this.needRefreshIndicator = true,
-    this.scrollController,
   }) : super(key: key);
 
   final CommentController commentController;
   final bool needRefreshIndicator;
-  final ScrollController scrollController;
 
   @override
   State createState() => _CommentListState();
 }
 
 class _CommentListState extends State<CommentList> with AutomaticKeepAliveClientMixin {
-  ScrollController _scrollController;
-
   num _lastValue = 0;
   bool _isLoading = false;
   bool _canLoadMore = true;
@@ -76,15 +72,6 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
   void initState() {
     super.initState();
     widget.commentController._commentListState = this;
-    _scrollController == widget.scrollController ?? ScrollController();
-
-    Instances.eventBus.on<ScrollToTopEvent>().listen((event) {
-      if (this.mounted &&
-          ((event.tabIndex == 0 && widget.commentController.commentType == 'square') ||
-              (event.type == 'Post'))) {
-        _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
-      }
-    });
 
     _emptyChild = GestureDetector(
       onTap: () {},
@@ -213,7 +200,6 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
       if (_firstLoadComplete) {
         _itemList = ExtendedListView.builder(
           padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
-          controller: widget.commentController.commentType == 'mention' ? null : _scrollController,
           itemCount: _commentList.length + 1,
           itemBuilder: (context, index) {
             if (index == _commentList.length - 1) {
@@ -378,10 +364,8 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
       }
 
       list.forEach((comment) {
-        if (!UserAPI.blacklist.contains(jsonEncode({
-          'uid': comment['reply']['user']['uid'].toString(),
-          'username': comment['reply']['user']['nickname']
-        }))) {
+        if (!UserAPI.blacklist
+            .contains(jsonEncode({'uid': comment['reply']['user']['uid'].toString(), 'username': comment['reply']['user']['nickname']}))) {
           comment['reply']['post'] = widget.post;
           _comments.add(CommentAPI.createCommentInPost(comment['reply']));
         }
@@ -413,10 +397,8 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
       if (response['count'] as int < total) canLoadMore = true;
 
       list.forEach((comment) {
-        if (!UserAPI.blacklist.contains(jsonEncode({
-          'uid': comment['reply']['user']['uid'].toString(),
-          'username': comment['reply']['user']['nickname']
-        }))) {
+        if (!UserAPI.blacklist
+            .contains(jsonEncode({'uid': comment['reply']['user']['uid'].toString(), 'username': comment['reply']['user']['nickname']}))) {
           comment['reply']['post'] = widget.post;
           _comments.add(CommentAPI.createCommentInPost(comment['reply']));
         }
@@ -451,8 +433,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
     if (int.parse(_commentTime.substring(0, 4)) == now.year) {
       _commentTime = _commentTime.substring(5, 16);
     }
-    if (int.parse(_commentTime.substring(0, 2)) == now.month &&
-        int.parse(_commentTime.substring(3, 5)) == now.day) {
+    if (int.parse(_commentTime.substring(0, 2)) == now.month && int.parse(_commentTime.substring(3, 5)) == now.day) {
       _commentTime = '${_commentTime.substring(5, 11)}';
     }
     return Text(
@@ -475,8 +456,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
   String replaceMentionTag(text) {
     final RegExp mTagStartReg = RegExp(r'<M?\w+.*?\/?>');
     final RegExp mTagEndReg = RegExp(r'<\/M?\w+.*?\/?>');
-    final commentText =
-        text.replaceAllMapped(mTagStartReg, (_) => '').replaceAllMapped(mTagEndReg, (_) => '');
+    final commentText = text.replaceAllMapped(mTagStartReg, (_) => '').replaceAllMapped(mTagEndReg, (_) => '');
     return commentText;
   }
 
@@ -532,8 +512,7 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
                                       context,
                                       _comments[index],
                                     ),
-                                    if (Constants.developerList
-                                        .contains(_comments[index].fromUserUid))
+                                    if (Constants.developerList.contains(_comments[index].fromUserUid))
                                       Container(
                                         margin: EdgeInsets.only(
                                           left: suSetWidth(14.0),

@@ -27,20 +27,16 @@ class PraiseList extends StatefulWidget {
     this.praiseController, {
     Key key,
     this.needRefreshIndicator = true,
-    this.scrollController,
   }) : super(key: key);
 
   final PraiseController praiseController;
   final bool needRefreshIndicator;
-  final ScrollController scrollController;
 
   @override
   State createState() => _PraiseListState();
 }
 
 class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMixin {
-  ScrollController _scrollController;
-
   num _lastValue = 0;
   bool _isLoading = false;
   bool _canLoadMore = true;
@@ -61,13 +57,6 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
   @override
   void initState() {
     super.initState();
-    _scrollController = widget.scrollController ?? ScrollController();
-
-    Instances.eventBus.on<ScrollToTopEvent>().listen((event) {
-      if (this.mounted && event.type == 'Praise') {
-        _scrollController.animateTo(0, duration: Duration(milliseconds: 500), curve: Curves.ease);
-      }
-    });
 
     _emptyChild = GestureDetector(
       onTap: () {},
@@ -127,8 +116,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _praiseList.length < _total && _count != 0;
-          _lastValue =
-              _praiseList.isEmpty ? 0 : widget.praiseController.lastValue(_praiseList.last);
+          _lastValue = _praiseList.isEmpty ? 0 : widget.praiseController.lastValue(_praiseList.last);
         });
       }
     }
@@ -164,8 +152,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _praiseList.length < _total && _count != 0;
-          _lastValue =
-              _praiseList.isEmpty ? 0 : widget.praiseController.lastValue(_praiseList.last);
+          _lastValue = _praiseList.isEmpty ? 0 : widget.praiseController.lastValue(_praiseList.last);
         });
       }
     }
@@ -191,9 +178,7 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
                       SizedBox(
                         width: suSetWidth(15.0),
                         height: suSetHeight(15.0),
-                        child: Platform.isAndroid
-                            ? CircularProgressIndicator(strokeWidth: 2.0)
-                            : CupertinoActivityIndicator(),
+                        child: Platform.isAndroid ? CircularProgressIndicator(strokeWidth: 2.0) : CupertinoActivityIndicator(),
                       ),
                       Text(
                         '　正在加载',
@@ -223,7 +208,6 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
             }
           },
           itemCount: _praiseList.length + 1,
-          controller: _scrollController,
         );
 
         if (widget.needRefreshIndicator) {

@@ -14,8 +14,7 @@ class PostSquareListPage extends StatefulWidget {
   PostSquareListPageState createState() => PostSquareListPageState();
 }
 
-class PostSquareListPageState extends State<PostSquareListPage>
-    with SingleTickerProviderStateMixin {
+class PostSquareListPageState extends State<PostSquareListPage> with SingleTickerProviderStateMixin {
   static final List<String> tabs = [
     '广场',
 //    '关注',
@@ -35,6 +34,7 @@ class PostSquareListPageState extends State<PostSquareListPage>
           lastValue: (int id) => id,
         ),
         needRefreshIndicator: true,
+        scrollController: ScrollController(),
       );
     },
 //    () {
