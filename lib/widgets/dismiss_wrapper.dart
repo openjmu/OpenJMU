@@ -15,13 +15,12 @@ class DismissWrapper extends StatefulWidget {
     @required this.children,
     this.backgroundColor,
     this.padding,
-    this.notification,
-  }) : super(key: key);
+  })  : assert(children != null, '`children` must not be null.'),
+        super(key: key);
 
   final List<Widget> children;
   final Color backgroundColor;
   final EdgeInsetsGeometry padding;
-  final ScrollNotification notification;
 
   @override
   DismissWrapperState createState() => DismissWrapperState();
@@ -76,15 +75,7 @@ class DismissWrapperState extends State<DismissWrapper> with TickerProviderState
 
   void _onMove(PointerMoveEvent event) {
     final double y = math.max(0.0, (event.localPosition - downPosition).dy);
-    if (widget.notification != null) {
-      print('not null');
-      print(widget.notification.metrics.pixels);
-      if (widget.notification.metrics.pixels == 0.0) {
-        animationController.value = y;
-      }
-    } else {
-      animationController.value = y;
-    }
+    animationController.value = y;
   }
 
   void _onUp(PointerUpEvent event) {
@@ -95,7 +86,10 @@ class DismissWrapperState extends State<DismissWrapper> with TickerProviderState
       animationController.animateTo(0, duration: duration * percent);
     } else {
       animationController
-          .animateTo(columnHeight, duration: duration * (1 - percent))
+          .animateTo(
+            columnHeight,
+            duration: duration * (1 - percent),
+          )
           .then<dynamic>((_) => Navigator.pop(context));
     }
   }
@@ -109,7 +103,7 @@ class DismissWrapperState extends State<DismissWrapper> with TickerProviderState
       onPointerUp: _onUp,
       child: AnimatedBuilder(
         animation: animationController,
-        builder: (_, Widget child) => Transform.translate(
+        builder: (BuildContext _, Widget child) => Transform.translate(
           offset: Offset(0, animationController.value),
           child: child,
         ),
