@@ -6,7 +6,6 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/main_page.dart';
-import 'package:openjmu/pages/notification/notification_entry_page.dart';
 import 'package:openjmu/pages/post/marketing_page.dart';
 
 class PostSquareListPage extends StatefulWidget {
@@ -180,9 +179,7 @@ class PostSquareListPageState extends State<PostSquareListPage> with SingleTicke
                     height: suSetWidth(32.0),
                   ),
                   onPressed: () {
-                    navigatorState.push(TransparentRoute(
-                      builder: (_) => NotificationEntryPage(),
-                    ));
+                    navigatorState.pushNamed(Routes.OPENJMU_NOTIFICATIONS);
                   },
                 ),
               ],

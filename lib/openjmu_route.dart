@@ -5,34 +5,33 @@
 
 import 'package:flutter/widgets.dart';
 
-import 'pages/main_page.dart';
-import 'pages/settings/changelog_page.dart';
-import 'pages/settings/switch_start_up_page.dart';
-import 'pages/settings/font_scale_page.dart';
-import 'pages/settings/change_theme_page.dart';
-import 'pages/settings/about_page.dart';
-import 'pages/settings/settings_page.dart';
+import 'pages/chat/chat_app_message_page.dart';
 import 'pages/home/scan_qrcode_page.dart';
 import 'pages/home/search_page.dart';
-import 'pages/post/publish_team_post_page.dart';
-import 'pages/post/team_post_detail_page.dart';
+import 'pages/login_page.dart';
+import 'pages/main_page.dart';
+import 'pages/news/news_detail_page.dart';
+import 'pages/notification/notifications_page.dart';
 import 'pages/post/post_detail_page.dart';
 import 'pages/post/publish_post_page.dart';
-import 'pages/test/test_dashboard_page.dart';
-import 'pages/chat/chat_app_message_page.dart';
-import 'pages/notification/notification_page.dart';
-import 'pages/notification/team_notification_page.dart';
+import 'pages/post/publish_team_post_page.dart';
+import 'pages/post/team_post_detail_page.dart';
+import 'pages/settings/about_page.dart';
+import 'pages/settings/changelog_page.dart';
+import 'pages/settings/change_theme_page.dart';
+import 'pages/settings/font_scale_page.dart';
+import 'pages/settings/settings_page.dart';
+import 'pages/settings/switch_start_up_page.dart';
 import 'pages/splash_page.dart';
+import 'pages/test/test_dashboard_page.dart';
 import 'pages/user/backpack_page.dart';
 import 'pages/user/user_page.dart';
 import 'pages/user/user_qrcode_page.dart';
-import 'pages/login_page.dart';
-import 'pages/news/news_detail_page.dart';
-import 'widgets/webview/in_app_webview.dart';
+import 'widgets/dialogs/comment_positioned.dart';
+import 'widgets/dialogs/forward_positioned.dart';
 import 'widgets/image/image_crop_page.dart';
 import 'widgets/image/image_viewer.dart';
-import 'widgets/dialogs/forward_positioned.dart';
-import 'widgets/dialogs/comment_positioned.dart';
+import 'widgets/webview/in_app_webview.dart';
 
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   switch (name) {
@@ -132,8 +131,9 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case "openjmu://notifications":
       return RouteResult(
-        widget: NotificationPage(),
+        widget: NotificationsPage(),
         routeName: "通知页",
+        pageRouteType: PageRouteType.transparent,
       );
     case "openjmu://post-detail":
       return RouteResult(
@@ -183,11 +183,6 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       return RouteResult(
         widget: SwitchStartUpPage(),
         routeName: "切换启动页",
-      );
-    case "openjmu://team-notifications":
-      return RouteResult(
-        widget: TeamNotificationPage(),
-        routeName: "小组通知页",
       );
     case "openjmu://team-post-detail":
       return RouteResult(
@@ -283,7 +278,6 @@ List<String> routeNames = [
   "openjmu://settings",
   "openjmu://splash",
   "openjmu://switch-startup",
-  "openjmu://team-notifications",
   "openjmu://team-post-detail",
   "openjmu://test-dashboard",
   "openjmu://theme",
@@ -387,6 +381,7 @@ class Routes {
   ///
   /// [name] : openjmu://notifications
   /// [routeName] : 通知页
+  /// [pageRouteType] : PageRouteType.transparent
   static const String OPENJMU_NOTIFICATIONS = "openjmu://notifications";
 
   /// 动态详情页
@@ -439,12 +434,6 @@ class Routes {
   /// [name] : openjmu://switch-startup
   /// [routeName] : 切换启动页
   static const String OPENJMU_SWITCH_STARTUP = "openjmu://switch-startup";
-
-  /// 小组通知页
-  ///
-  /// [name] : openjmu://team-notifications
-  /// [routeName] : 小组通知页
-  static const String OPENJMU_TEAM_NOTIFICATIONS = "openjmu://team-notifications";
 
   /// 小组动态详情页
   ///
