@@ -16,6 +16,7 @@ Color get currentThemeColor => Theme.of(currentContext).accentColor;
 bool get currentIsDark => currentBrightness == Brightness.dark;
 int moreThanZero(num value) => math.max(0, value);
 int moreThanOne(num value) => math.max(1, value);
+int get currentTimeStamp => DateTime.now().millisecondsSinceEpoch;
 
 class Instances {
   const Instances._();
