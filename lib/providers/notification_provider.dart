@@ -2,6 +2,8 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2019-11-23 07:07
 ///
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -48,6 +50,47 @@ class NotificationProvider extends ChangeNotifier {
         break;
     }
     return index;
+  }
+
+  Timer notificationTimer;
+
+  void initNotification() {
+    getNotification(null);
+    notificationTimer = Timer.periodic(10.seconds, getNotification);
+  }
+
+  void stopNotification() {
+    notificationTimer?.cancel();
+    notificationTimer = null;
+  }
+
+  void getNotification(Timer _) {
+    _getSquareNotification(_);
+    _getTeamNotification(_);
+  }
+
+  void _getSquareNotification(Timer _) {
+    UserAPI.getNotifications().then((Response<Map<String, dynamic>> response) {
+      final Notifications notification = Notifications.fromJson(response.data);
+      updateNotification(notification);
+      if (_ == null) {
+        trueDebugPrint('Updated notifications with :$notification');
+      }
+    }).catchError((dynamic e) {
+      trueDebugPrint('Error when getting notification: $e');
+    });
+  }
+
+  void _getTeamNotification(Timer _) {
+    TeamPostAPI.getNotifications().then((Response<Map<String, dynamic>> response) {
+      final TeamNotifications notification = TeamNotifications.fromJson(response.data);
+      updateTeamNotification(notification);
+      if (_ == null) {
+        trueDebugPrint('Updated team notifications with: $notification');
+      }
+    }).catchError((dynamic e) {
+      trueDebugPrint('Error when getting team notification: $e');
+    });
   }
 
   void updateNotification(Notifications notification) {
@@ -106,5 +149,11 @@ class NotificationProvider extends ChangeNotifier {
     teamNotifications.praise = 0;
     teamNotifications.latestNotify = 'praise';
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    notificationTimer?.cancel();
+    super.dispose();
   }
 }

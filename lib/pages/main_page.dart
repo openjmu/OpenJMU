@@ -46,7 +46,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         textBaseline: TextBaseline.alphabetic,
       );
 
-  Timer notificationTimer;
+  double get bottomBarIconSize => bottomBarHeight / 1.9;
 
   int _tabIndex;
 
@@ -61,10 +61,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     _tabIndex = widget.initAction ??
         Provider.of<SettingsProvider>(currentContext, listen: false).homeSplashIndex;
 
-    initPushService();
-    initNotification();
-    MessageUtils.initMessageSocket();
-
     Instances.eventBus
       ..on<ActionsEvent>().listen((ActionsEvent event) {
         final int index = Constants.quickActionsList.keys.toList().indexOf(event.type);
@@ -75,63 +71,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           }
         }
       });
-  }
-
-  @override
-  void dispose() {
-    notificationTimer?.cancel();
-    super.dispose();
-  }
-
-  void initPushService() {
-    try {
-      final Map<String, dynamic> data = <String, dynamic>{
-        'token': DeviceUtils.devicePushToken,
-        'date': DateFormat('yyyy/MM/dd HH:mm:ss', 'en').format(DateTime.now()),
-        'uid': '${currentUser.uid}',
-        'name': '${currentUser.name ?? currentUser.uid}',
-        'workid': '${currentUser.workId ?? currentUser.uid}',
-        'buildnumber': PackageUtils.buildNumber,
-        'uuid': DeviceUtils.deviceUuid,
-        'platform': Platform.isIOS ? 'ios' : 'android',
-      };
-      trueDebugPrint('Push data: $data');
-      NetUtils.post<void>(API.pushUpload, data: data).then((dynamic _) {
-        trueDebugPrint('Push service info upload success.');
-      }).catchError((dynamic e) {
-        trueDebugPrint('Push service upload error: $e');
-      });
-    } catch (e) {
-      trueDebugPrint('Push service init error: $e');
-    }
-  }
-
-  void initNotification() {
-    _getNotification(null);
-    notificationTimer = Timer.periodic(10.seconds, _getNotification);
-  }
-
-  void _getNotification(Timer _) {
-    final NotificationProvider provider =
-        Provider.of<NotificationProvider>(currentContext, listen: false);
-    UserAPI.getNotifications().then((Response<Map<String, dynamic>> response) {
-      final Notifications notification = Notifications.fromJson(response.data);
-      provider.updateNotification(notification);
-      if (_ == null) {
-        trueDebugPrint('Updated notifications with :$notification');
-      }
-    }).catchError((dynamic e) {
-      trueDebugPrint('Error when getting notification: $e');
-    });
-    TeamPostAPI.getNotifications().then((Response<Map<String, dynamic>> response) {
-      final TeamNotifications notification = TeamNotifications.fromJson(response.data);
-      provider.updateTeamNotification(notification);
-      if (_ == null) {
-        trueDebugPrint('Updated team notifications with: $notification');
-      }
-    }).catchError((dynamic e) {
-      trueDebugPrint('Error when getting team notification: $e');
-    });
   }
 
   void _selectedTab(int index) {

@@ -73,6 +73,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
     Instances.eventBus
       ..on<TicketGotEvent>().listen((event) {
+        initPushService();
+        MessageUtils.initMessageSocket();
         if (!currentUser.isTeacher) {
           if (!currentUser.isPostgraduate) {
             Provider.of<CoursesProvider>(currentContext, listen: false).initCourses();
@@ -80,6 +82,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
           }
         }
         Provider.of<MessagesProvider>(currentContext, listen: false).initMessages();
+        Provider.of<NotificationProvider>(currentContext, listen: false).initNotification();
         Provider.of<ReportRecordsProvider>(currentContext, listen: false).initRecords();
         Provider.of<WebAppsProvider>(currentContext, listen: false).initApps();
       })
