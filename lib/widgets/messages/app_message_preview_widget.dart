@@ -6,10 +6,8 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/webapp_icon.dart';
 
 class AppMessagePreviewWidget extends StatefulWidget {
   const AppMessagePreviewWidget({

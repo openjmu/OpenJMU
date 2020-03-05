@@ -1,5 +1,3 @@
-import 'package:intl/intl.dart';
-
 import 'package:openjmu/constants/constants.dart';
 
 class SignAPI {

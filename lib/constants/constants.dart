@@ -11,6 +11,7 @@ export 'package:dartx/dartx.dart';
 export 'package:dio/dio.dart' show Response;
 export 'package:ff_annotation_route/ff_annotation_route.dart' show FFRoute, PageRouteType;
 export 'package:hive/hive.dart' show Box;
+export 'package:intl/intl.dart' show DateFormat;
 export 'package:oktoast/oktoast.dart' hide showToast;
 export 'package:pedantic/pedantic.dart';
 export 'package:url_launcher/url_launcher.dart';
