@@ -15,7 +15,9 @@ class CoursesProvider extends ChangeNotifier {
   final int maxCoursesPerDay = 12;
 
   DateTime _now;
+
   DateTime get now => _now;
+
   set now(DateTime value) {
     assert(value != null);
     if (value == _now) {
@@ -26,42 +28,54 @@ class CoursesProvider extends ChangeNotifier {
   }
 
   Map<int, Map<dynamic, dynamic>> _courses;
+
   Map<int, Map<dynamic, dynamic>> get courses => _courses;
+
   set courses(Map<int, Map<dynamic, dynamic>> value) {
     _courses = <int, Map<dynamic, dynamic>>{...value};
     notifyListeners();
   }
 
   String _remark;
+
   String get remark => _remark;
+
   set remark(String value) {
     _remark = value;
     notifyListeners();
   }
 
   bool _firstLoaded = false;
+
   bool get firstLoaded => _firstLoaded;
+
   set firstLoaded(bool value) {
     _firstLoaded = value;
     notifyListeners();
   }
 
   bool _hasCourses = true;
+
   bool get hasCourses => _hasCourses;
+
   set hasCourses(bool value) {
     _hasCourses = value;
     notifyListeners();
   }
 
   bool _showWeek = false;
+
   bool get showWeek => _showWeek;
+
   set showWeek(bool value) {
     _showWeek = value;
     notifyListeners();
   }
 
   bool _showError = false;
+
   bool get showError => _showError;
+
   set showError(bool value) {
     _showError = value;
     notifyListeners();
@@ -180,10 +194,9 @@ class CoursesProvider extends ChangeNotifier {
         addCourse(_c, _s);
       }
     }
-    if (_courses.toString() != _s.toString()) {
-      _courses = _s;
-      await _courseBox.put(currentUser.uid, Map<int, Map<dynamic, dynamic>>.from(_s));
-    }
+    _courses = _s;
+    await _courseBox.delete(currentUser.uid);
+    await _courseBox.put(currentUser.uid, Map<int, Map<dynamic, dynamic>>.from(_s));
   }
 
   Future<void> remarkResponseHandler(Response<String> response) async {
@@ -192,8 +205,9 @@ class CoursesProvider extends ChangeNotifier {
     if (data != null) {
       _r = data['classScheduleRemark'] as String;
     }
-    if (_remark != _r && _r != '' && _r != null) {
+    if (_r != null && _r != '') {
       _remark = _r;
+      await _courseRemarkBox.delete(currentUser.uid);
       await _courseRemarkBox.put(currentUser.uid, _r);
     }
   }
