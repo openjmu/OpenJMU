@@ -99,6 +99,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
           }
         }
         Provider.of<MessagesProvider>(currentContext, listen: false).unloadMessages();
+        Provider.of<NotificationProvider>(currentContext, listen: false).stopNotification();
         Provider.of<ReportRecordsProvider>(currentContext, listen: false).unloadRecords();
         Provider.of<WebAppsProvider>(currentContext, listen: false).unloadApps();
         Future.delayed(250.milliseconds, () {
@@ -182,6 +183,29 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       if (connectivityToastFuture != null) {
         connectivityToastFuture = null;
       }
+    }
+  }
+
+  void initPushService() {
+    try {
+      final Map<String, dynamic> data = <String, dynamic>{
+        'token': DeviceUtils.devicePushToken,
+        'date': DateFormat('yyyy/MM/dd HH:mm:ss', 'en').format(DateTime.now()),
+        'uid': '${currentUser.uid}',
+        'name': '${currentUser.name ?? currentUser.uid}',
+        'workid': '${currentUser.workId ?? currentUser.uid}',
+        'buildnumber': PackageUtils.buildNumber,
+        'uuid': DeviceUtils.deviceUuid,
+        'platform': Platform.isIOS ? 'ios' : 'android',
+      };
+      trueDebugPrint('Push data: $data');
+      NetUtils.post<void>(API.pushUpload, data: data).then((dynamic _) {
+        trueDebugPrint('Push service info upload success.');
+      }).catchError((dynamic e) {
+        trueDebugPrint('Push service upload error: $e');
+      });
+    } catch (e) {
+      trueDebugPrint('Push service init error: $e');
     }
   }
 

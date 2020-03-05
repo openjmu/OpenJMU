@@ -180,7 +180,12 @@ class PostSquareListPageState extends State<PostSquareListPage>
                     height: suSetWidth(32.0),
                   ),
                   onPressed: () {
-                    navigatorState.pushNamed(Routes.OPENJMU_NOTIFICATIONS);
+                    Provider.of<NotificationProvider>(currentContext, listen: false)
+                        .stopNotification();
+                    navigatorState.pushNamed(Routes.OPENJMU_NOTIFICATIONS).then((dynamic _) {
+                      Provider.of<NotificationProvider>(currentContext, listen: false)
+                          .initNotification();
+                    });
                   },
                 ),
               ],
