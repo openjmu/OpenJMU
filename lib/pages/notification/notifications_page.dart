@@ -7,6 +7,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart' hide NestedScrollView;
 import 'package:flutter/scheduler.dart';
+import 'package:badges/badges.dart';
 import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -40,6 +41,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
         {
           '广场': {
             'icon': R.ASSETS_ICONS_ADDBUTTON_GUANGCHANG_SVG,
+            'notification': notificationProvider.notifications,
             'content': [
               {
                 'icon': 'praise',
@@ -68,11 +70,12 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
         {
           '集市': {
             'icon': R.ASSETS_ICONS_ADDBUTTON_JISHI_SVG,
+            'notification': notificationProvider.teamNotifications,
             'content': [
               {
                 'icon': 'praise',
                 'field': notificationProvider.teamNotifications.praise,
-                'action': notificationProvider.readPraise,
+                'action': notificationProvider.readTeamPraise,
                 'select': selectTeamIndex,
                 'index': _teamIndex,
               },
@@ -108,18 +111,26 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
     super.initState();
     notificationProvider = Provider.of<NotificationProvider>(currentContext, listen: false);
 
-    backgroundOpacityController = AnimationController.unbounded(vsync: this, duration: duration, value: 0);
+    backgroundOpacityController =
+        AnimationController.unbounded(value: 0.0, duration: duration, vsync: this);
 
     scrollController.addListener(() {
-      backgroundOpacityController.value = scrollController.offset / maximumSheetHeight * maximumOpacity;
+      backgroundOpacityController.value =
+          scrollController.offset / maximumSheetHeight * maximumOpacity;
       final canJump = scrollController.offset < maximumSheetHeight && !tapping && !animating;
       if (canJump) {
         scrollController.jumpTo(maximumSheetHeight);
       }
     });
 
+    if (notificationProvider.teamNotifications.total > 0 &&
+        notificationProvider.notifications.total == 0) {
+      _index = 1;
+    }
     _squareIndex = notificationProvider.initialIndex;
     _teamIndex = notificationProvider.teamInitialIndex;
+    actions[_index].values.elementAt(0)['content'][_index == 0 ? _squareIndex : _teamIndex]
+        ['action']();
 
     SchedulerBinding.instance.addPostFrameCallback((Duration _) async {
       await scrollController.animateTo(
@@ -197,7 +208,9 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
       animating = true;
       await scrollController.animateTo(
         maximumSheetHeight,
-        duration: math.max(50, ((maximumSheetHeight - scrollController.offset) / maximumSheetHeight * 300)).milliseconds,
+        duration: math
+            .max(50, ((maximumSheetHeight - scrollController.offset) / maximumSheetHeight * 300))
+            .milliseconds,
         curve: Curves.easeOut,
       );
       animating = false;
@@ -222,7 +235,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
     return false;
   }
 
-  Widget postByMention() {
+  Widget get postByMention {
     return PostList(
       PostController(
         postType: 'mention',
@@ -234,7 +247,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
     );
   }
 
-  Widget commentByMention() {
+  Widget get commentByMention {
     return CommentList(
       CommentController(
         commentType: 'mention',
@@ -245,7 +258,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
     );
   }
 
-  Widget commentByReply() {
+  Widget get commentByReply {
     return CommentList(
       CommentController(
         commentType: 'reply',
@@ -256,7 +269,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
     );
   }
 
-  Widget praiseList() {
+  Widget get praiseList {
     return PraiseList(
       PraiseController(
         isMore: false,
@@ -300,7 +313,8 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
         children: List<Widget>.generate(
           actions.length,
           (int i) {
-            final String key = actions[i].keys.elementAt(0);
+            final Map<String, dynamic> section = actions[i];
+            final String key = section.keys.elementAt(0);
             return GestureDetector(
               onTap: () => selectIndex(i),
               child: AnimatedContainer(
@@ -312,42 +326,65 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
                 padding: EdgeInsets.symmetric(horizontal: suSetWidth(12.0)),
                 decoration: BoxDecoration(
                   borderRadius: maxBorderRadius,
-                  color: _index == i ? currentThemeColor.withOpacity(currentIsDark ? 0.75 : 0.35) : null,
+                  color: _index == i
+                      ? currentThemeColor.withOpacity(currentIsDark ? 0.75 : 0.35)
+                      : null,
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                child: Stack(
+                  overflow: Overflow.visible,
                   children: <Widget>[
-                    SvgPicture.asset(
-                      actions[i][key]['icon'] as String,
-                      width: suSetWidth(36.0),
-                      height: suSetWidth(36.0),
-                      color: _index == i
-                          ? Color.lerp(
-                              currentThemeColor,
-                              Colors.white,
-                              currentIsDark ? 0.5 : 0.0,
-                            )
-                          : Theme.of(context).dividerColor,
-                    ),
-                    if (_index == i)
-                      Expanded(
-                        child: OverflowBox(
-                          minWidth: suSetWidth(50.0),
-                          maxWidth: suSetWidth(50.0),
-                          child: Text(
-                            key,
-                            style: TextStyle(
-                              color: _index == i
-                                  ? Color.lerp(
-                                      currentThemeColor,
-                                      Colors.white,
-                                      currentIsDark ? 0.5 : 0.0,
-                                    )
-                                  : null,
-                              fontSize: suSetSp(20.0),
-                              height: suSetHeight(1.25),
+                    Positioned.fill(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          SvgPicture.asset(
+                            actions[i][key]['icon'] as String,
+                            width: suSetWidth(36.0),
+                            height: suSetWidth(36.0),
+                            color: _index == i
+                                ? Color.lerp(
+                                    currentThemeColor,
+                                    Colors.white,
+                                    currentIsDark ? 0.5 : 0.0,
+                                  )
+                                : Theme.of(context).dividerColor,
+                          ),
+                          if (_index == i)
+                            Expanded(
+                              child: OverflowBox(
+                                minWidth: suSetWidth(50.0),
+                                maxWidth: suSetWidth(50.0),
+                                child: Text(
+                                  key,
+                                  style: TextStyle(
+                                    color: _index == i
+                                        ? Color.lerp(
+                                            currentThemeColor,
+                                            Colors.white,
+                                            currentIsDark ? 0.5 : 0.0,
+                                          )
+                                        : null,
+                                    fontSize: suSetSp(20.0),
+                                    height: suSetHeight(1.25),
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                             ),
-                            textAlign: TextAlign.center,
+                        ],
+                      ),
+                    ),
+                    if (section[key]['notification'].total > 0)
+                      AnimatedPositioned(
+                        duration: duration,
+                        curve: Curves.easeInOut,
+                        top: suSetHeight(_index == i ? -3.0 : 4.0),
+                        right: -suSetWidth(_index == i ? 15.0 : 0.0),
+                        child: Badge(
+                          padding: EdgeInsets.all(suSetWidth(6.0)),
+                          badgeContent: Text(
+                            '${section[key]['notification'].total}',
+                            style: TextStyle(color: Colors.white, fontSize: suSetSp(16.0)),
                           ),
                         ),
                       ),
@@ -394,7 +431,8 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
       );
 
   Widget getActionIcon(int sectionIndex, int actionIndex) {
-    final Map<String, dynamic> item = actions[sectionIndex].values.elementAt(0)['content'][actionIndex];
+    final Map<String, dynamic> item =
+        actions[sectionIndex].values.elementAt(0)['content'][actionIndex];
     final String icon = item['icon'] as String;
     final int index = item['index'] as int;
     return AnimatedCrossFade(
@@ -413,49 +451,55 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
     );
   }
 
-  Widget mentionList() => Column(
-        children: <Widget>[
-          Row(
-            children: List<Widget>.generate(squareMentionActions.length, (int i) {
-              return Expanded(
-                child: AnimatedContainer(
-                  duration: duration,
-                  margin: EdgeInsets.symmetric(
-                    horizontal: suSetWidth(24.0),
-                    vertical: suSetHeight(10.0),
-                  ),
-                  padding: EdgeInsets.symmetric(vertical: suSetHeight(10.0)),
-                  decoration: BoxDecoration(
-                    borderRadius: maxBorderRadius,
-                    color: _mentionIndex == i ? currentThemeColor.withOpacity(currentIsDark ? 0.5 : 0.4) : null,
-                  ),
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => selectMentionIndex(i),
-                    child: Center(
-                      child: Text(
-                        '@我的${squareMentionActions[i]}',
-                        style: TextStyle(
-                          color: _mentionIndex == i && !currentIsDark ? currentThemeColor.withOpacity(0.75) : null,
-                        ),
+  Widget get mentionList {
+    return Column(
+      children: <Widget>[
+        Row(
+          children: List<Widget>.generate(squareMentionActions.length, (int i) {
+            return Expanded(
+              child: AnimatedContainer(
+                duration: duration,
+                margin: EdgeInsets.symmetric(
+                  horizontal: suSetWidth(24.0),
+                  vertical: suSetHeight(10.0),
+                ),
+                padding: EdgeInsets.symmetric(vertical: suSetHeight(10.0)),
+                decoration: BoxDecoration(
+                  borderRadius: maxBorderRadius,
+                  color: _mentionIndex == i
+                      ? currentThemeColor.withOpacity(currentIsDark ? 0.5 : 0.4)
+                      : null,
+                ),
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => selectMentionIndex(i),
+                  child: Center(
+                    child: Text(
+                      '@我的${squareMentionActions[i]}',
+                      style: TextStyle(
+                        color: _mentionIndex == i && !currentIsDark
+                            ? currentThemeColor.withOpacity(0.75)
+                            : null,
                       ),
                     ),
                   ),
                 ),
-              );
-            }),
+              ),
+            );
+          }),
+        ),
+        Expanded(
+          child: IndexedStack(
+            index: _mentionIndex,
+            children: <Widget>[
+              NestedScrollViewInnerScrollPositionKeyWidget(Key('List-0-2-0'), postByMention),
+              NestedScrollViewInnerScrollPositionKeyWidget(Key('List-0-2-1'), commentByMention),
+            ],
           ),
-          Expanded(
-            child: IndexedStack(
-              index: _mentionIndex,
-              children: <Widget>[
-                NestedScrollViewInnerScrollPositionKeyWidget(Key('List-0-2-0'), commentByMention()),
-                NestedScrollViewInnerScrollPositionKeyWidget(Key('List-0-2-1'), postByMention()),
-              ],
-            ),
-          ),
-        ],
-      );
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -527,17 +571,22 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
                             IndexedStack(
                               index: _squareIndex,
                               children: <Widget>[
-                                NestedScrollViewInnerScrollPositionKeyWidget(Key('List-0-0'), praiseList()),
-                                NestedScrollViewInnerScrollPositionKeyWidget(Key('List-0-1'), commentByReply()),
-                                mentionList(),
+                                NestedScrollViewInnerScrollPositionKeyWidget(
+                                    Key('List-0-0'), praiseList),
+                                NestedScrollViewInnerScrollPositionKeyWidget(
+                                    Key('List-0-1'), commentByReply),
+                                mentionList,
                               ],
                             ),
                             IndexedStack(
                               index: _teamIndex,
                               children: <Widget>[
-                                NestedScrollViewInnerScrollPositionKeyWidget(Key('List-1-0'), TeamMentionListPage()),
-                                NestedScrollViewInnerScrollPositionKeyWidget(Key('List-1-1'), TeamReplyListPage()),
-                                NestedScrollViewInnerScrollPositionKeyWidget(Key('List-1-2'), TeamPraiseListPage()),
+                                NestedScrollViewInnerScrollPositionKeyWidget(
+                                    Key('List-1-0'), TeamPraiseListPage()),
+                                NestedScrollViewInnerScrollPositionKeyWidget(
+                                    Key('List-1-1'), TeamReplyListPage()),
+                                NestedScrollViewInnerScrollPositionKeyWidget(
+                                    Key('List-1-2'), TeamMentionListPage()),
                               ],
                             ),
                           ],

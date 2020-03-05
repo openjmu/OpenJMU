@@ -48,6 +48,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   double get bottomBarIconSize => bottomBarHeight / 1.9;
 
+  final PageController pageController = PageController(initialPage: 1);
   int _tabIndex;
 
   @override
@@ -98,72 +99,80 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     super.build(context);
     return WillPopScope(
       onWillPop: doubleBackExit,
-      child: Scaffold(
-        body: SafeArea(
-          child: Column(
-            children: <Widget>[
-              Selector<SettingsProvider, bool>(
-                selector: (_, SettingsProvider provider) => provider.announcementsUserEnabled,
-                builder: (_, bool announcementsUserEnabled, __) {
-                  if (announcementsUserEnabled) {
-                    return AnnouncementWidget(color: currentThemeColor, gap: 24.0, canClose: true);
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
-              ),
-              Expanded(
-                child: IndexedStack(
-                  children: <Widget>[
-                    PostSquareListPage(),
-                    AppsPage(key: Instances.appsPageStateKey),
-                    MessagePage(),
-                    MyInfoPage(),
-                  ],
-                  index: _tabIndex,
-                ),
-              ),
-            ],
-          ),
-        ),
-        bottomNavigationBar: FABBottomAppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          color: Colors.grey[600].withOpacity(currentIsDark ? 0.8 : 0.4),
-          height: bottomBarHeight,
-          iconSize: bottomBarIconSize,
-          selectedColor: currentThemeColor,
-          onTabSelected: _selectedTab,
-          showText: false,
-          initIndex: _tabIndex,
-          items: <FABBottomAppBarItem>[
-            ...List<FABBottomAppBarItem>.generate(
-              pagesTitle.length,
-              (int i) => FABBottomAppBarItem(iconPath: pagesIcon[i], text: pagesTitle[i]),
-            ),
-            FABBottomAppBarItem(
-              text: '我的',
-              child: Center(
-                child: SizedBox.fromSize(
-                  size: Size.square(suSetWidth(bottomBarIconSize * 1.25)),
-                  child: AnimatedContainer(
-                    duration: 200.milliseconds,
-                    curve: Curves.easeInOut,
-                    width: suSetWidth(bottomBarHeight * 0.4),
-                    height: suSetWidth(bottomBarHeight * 0.4),
-                    padding: EdgeInsets.all(suSetWidth(3.0)),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: _tabIndex == 3
-                          ? Border.all(color: currentThemeColor, width: suSetWidth(3.0))
-                          : null,
+      child: PageView(
+        controller: pageController,
+        scrollDirection: Axis.vertical,
+        children: <Widget>[
+          Container(color: currentThemeColor),
+          Scaffold(
+            body: SafeArea(
+              child: Column(
+                children: <Widget>[
+                  Selector<SettingsProvider, bool>(
+                    selector: (_, SettingsProvider provider) => provider.announcementsUserEnabled,
+                    builder: (_, bool announcementsUserEnabled, __) {
+                      if (announcementsUserEnabled) {
+                        return AnnouncementWidget(
+                            color: currentThemeColor, gap: 24.0, canClose: true);
+                      } else {
+                        return const SizedBox.shrink();
+                      }
+                    },
+                  ),
+                  Expanded(
+                    child: IndexedStack(
+                      children: <Widget>[
+                        PostSquareListPage(),
+                        AppsPage(key: Instances.appsPageStateKey),
+                        MessagePage(),
+                        MyInfoPage(),
+                      ],
+                      index: _tabIndex,
                     ),
-                    child: const UserAvatar(canJump: false),
+                  ),
+                ],
+              ),
+            ),
+            bottomNavigationBar: FABBottomAppBar(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              color: Colors.grey[600].withOpacity(currentIsDark ? 0.8 : 0.4),
+              height: bottomBarHeight,
+              iconSize: bottomBarIconSize,
+              selectedColor: currentThemeColor,
+              onTabSelected: _selectedTab,
+              showText: false,
+              initIndex: _tabIndex,
+              items: <FABBottomAppBarItem>[
+                ...List<FABBottomAppBarItem>.generate(
+                  pagesTitle.length,
+                  (int i) => FABBottomAppBarItem(iconPath: pagesIcon[i], text: pagesTitle[i]),
+                ),
+                FABBottomAppBarItem(
+                  text: '我的',
+                  child: Center(
+                    child: SizedBox.fromSize(
+                      size: Size.square(suSetWidth(bottomBarIconSize * 1.25)),
+                      child: AnimatedContainer(
+                        duration: 200.milliseconds,
+                        curve: Curves.easeInOut,
+                        width: suSetWidth(bottomBarHeight * 0.4),
+                        height: suSetWidth(bottomBarHeight * 0.4),
+                        padding: EdgeInsets.all(suSetWidth(3.0)),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: _tabIndex == 3
+                              ? Border.all(color: currentThemeColor, width: suSetWidth(3.0))
+                              : null,
+                        ),
+                        child: const UserAvatar(canJump: false),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
