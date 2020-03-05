@@ -1,7 +1,6 @@
 /// Generate by [resource_generator](https://github.com/CaiJingLong/flutter_resource_generator) library.
 /// PLEASE DO NOT EDIT MANUALLY.
 class R {
-
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/.DS_Store)
   static const String ASSETS__DS_STORE = "assets/.DS_Store";
 
@@ -291,7 +290,8 @@ class R {
   static const String ASSETS_ICONS_ADDBUTTON__DS_STORE = "assets/icons/addButton/.DS_Store";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/addButton/guangchang.svg)
-  static const String ASSETS_ICONS_ADDBUTTON_GUANGCHANG_SVG = "assets/icons/addButton/guangchang.svg";
+  static const String ASSETS_ICONS_ADDBUTTON_GUANGCHANG_SVG =
+      "assets/icons/addButton/guangchang.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/addButton/jishi.svg)
   static const String ASSETS_ICONS_ADDBUTTON_JISHI_SVG = "assets/icons/addButton/jishi.svg";
@@ -300,7 +300,8 @@ class R {
   static const String ASSETS_ICONS_APPCENTER__DS_STORE = "assets/icons/appCenter/.DS_Store";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/1023-102301.svg)
-  static const String ASSETS_ICONS_APPCENTER_1023_102301_SVG = "assets/icons/appCenter/1023-102301.svg";
+  static const String ASSETS_ICONS_APPCENTER_1023_102301_SVG =
+      "assets/icons/appCenter/1023-102301.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/1064-1001.svg)
   static const String ASSETS_ICONS_APPCENTER_1064_1001_SVG = "assets/icons/appCenter/1064-1001.svg";
@@ -318,37 +319,44 @@ class R {
   static const String ASSETS_ICONS_APPCENTER_16_1_SVG = "assets/icons/appCenter/16-1.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/16777215-20171211.svg)
-  static const String ASSETS_ICONS_APPCENTER_16777215_20171211_SVG = "assets/icons/appCenter/16777215-20171211.svg";
+  static const String ASSETS_ICONS_APPCENTER_16777215_20171211_SVG =
+      "assets/icons/appCenter/16777215-20171211.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/17-1.svg)
   static const String ASSETS_ICONS_APPCENTER_17_1_SVG = "assets/icons/appCenter/17-1.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/171116-171116.svg)
-  static const String ASSETS_ICONS_APPCENTER_171116_171116_SVG = "assets/icons/appCenter/171116-171116.svg";
+  static const String ASSETS_ICONS_APPCENTER_171116_171116_SVG =
+      "assets/icons/appCenter/171116-171116.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/1721-1721.svg)
   static const String ASSETS_ICONS_APPCENTER_1721_1721_SVG = "assets/icons/appCenter/1721-1721.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/17912-1701.svg)
-  static const String ASSETS_ICONS_APPCENTER_17912_1701_SVG = "assets/icons/appCenter/17912-1701.svg";
+  static const String ASSETS_ICONS_APPCENTER_17912_1701_SVG =
+      "assets/icons/appCenter/17912-1701.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/179121-1.svg)
   static const String ASSETS_ICONS_APPCENTER_179121_1_SVG = "assets/icons/appCenter/179121-1.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/180324-180324.svg)
-  static const String ASSETS_ICONS_APPCENTER_180324_180324_SVG = "assets/icons/appCenter/180324-180324.svg";
+  static const String ASSETS_ICONS_APPCENTER_180324_180324_SVG =
+      "assets/icons/appCenter/180324-180324.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/180325-180325.svg)
-  static const String ASSETS_ICONS_APPCENTER_180325_180325_SVG = "assets/icons/appCenter/180325-180325.svg";
+  static const String ASSETS_ICONS_APPCENTER_180325_180325_SVG =
+      "assets/icons/appCenter/180325-180325.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/180404-180404.svg)
-  static const String ASSETS_ICONS_APPCENTER_180404_180404_SVG = "assets/icons/appCenter/180404-180404.svg";
+  static const String ASSETS_ICONS_APPCENTER_180404_180404_SVG =
+      "assets/icons/appCenter/180404-180404.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/1901-1901.svg)
   static const String ASSETS_ICONS_APPCENTER_1901_1901_SVG = "assets/icons/appCenter/1901-1901.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/201709-Z010.svg)
-  static const String ASSETS_ICONS_APPCENTER_201709_Z010_SVG = "assets/icons/appCenter/201709-Z010.svg";
+  static const String ASSETS_ICONS_APPCENTER_201709_Z010_SVG =
+      "assets/icons/appCenter/201709-Z010.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/2072-2072.svg)
   static const String ASSETS_ICONS_APPCENTER_2072_2072_SVG = "assets/icons/appCenter/2072-2072.svg";
@@ -414,7 +422,8 @@ class R {
   static const String ASSETS_ICONS_APPCENTER_531_53101_SVG = "assets/icons/appCenter/531-53101.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/5478-547801.svg)
-  static const String ASSETS_ICONS_APPCENTER_5478_547801_SVG = "assets/icons/appCenter/5478-547801.svg";
+  static const String ASSETS_ICONS_APPCENTER_5478_547801_SVG =
+      "assets/icons/appCenter/5478-547801.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/55-3401.svg)
   static const String ASSETS_ICONS_APPCENTER_55_3401_SVG = "assets/icons/appCenter/55-3401.svg";
@@ -444,7 +453,8 @@ class R {
   static const String ASSETS_ICONS_APPCENTER_66_01_SVG = "assets/icons/appCenter/66-01.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/666666-666666.svg)
-  static const String ASSETS_ICONS_APPCENTER_666666_666666_SVG = "assets/icons/appCenter/666666-666666.svg";
+  static const String ASSETS_ICONS_APPCENTER_666666_666666_SVG =
+      "assets/icons/appCenter/666666-666666.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/67-6701.svg)
   static const String ASSETS_ICONS_APPCENTER_67_6701_SVG = "assets/icons/appCenter/67-6701.svg";
@@ -453,7 +463,8 @@ class R {
   static const String ASSETS_ICONS_APPCENTER_68_6801_SVG = "assets/icons/appCenter/68-6801.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/8001-NOTIFY.svg)
-  static const String ASSETS_ICONS_APPCENTER_8001_NOTIFY_SVG = "assets/icons/appCenter/8001-NOTIFY.svg";
+  static const String ASSETS_ICONS_APPCENTER_8001_NOTIFY_SVG =
+      "assets/icons/appCenter/8001-NOTIFY.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/appCenter/8002-01.svg)
   static const String ASSETS_ICONS_APPCENTER_8002_01_SVG = "assets/icons/appCenter/8002-01.svg";
@@ -465,16 +476,20 @@ class R {
   static const String ASSETS_ICONS_ARROW_RIGHT_SVG = "assets/icons/arrow-right.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/bottomNavigation/.DS_Store)
-  static const String ASSETS_ICONS_BOTTOMNAVIGATION__DS_STORE = "assets/icons/bottomNavigation/.DS_Store";
+  static const String ASSETS_ICONS_BOTTOMNAVIGATION__DS_STORE =
+      "assets/icons/bottomNavigation/.DS_Store";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/bottomNavigation/apps.svg)
-  static const String ASSETS_ICONS_BOTTOMNAVIGATION_APPS_SVG = "assets/icons/bottomNavigation/apps.svg";
+  static const String ASSETS_ICONS_BOTTOMNAVIGATION_APPS_SVG =
+      "assets/icons/bottomNavigation/apps.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/bottomNavigation/messages.svg)
-  static const String ASSETS_ICONS_BOTTOMNAVIGATION_MESSAGES_SVG = "assets/icons/bottomNavigation/messages.svg";
+  static const String ASSETS_ICONS_BOTTOMNAVIGATION_MESSAGES_SVG =
+      "assets/icons/bottomNavigation/messages.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/bottomNavigation/square.svg)
-  static const String ASSETS_ICONS_BOTTOMNAVIGATION_SQUARE_SVG = "assets/icons/bottomNavigation/square.svg";
+  static const String ASSETS_ICONS_BOTTOMNAVIGATION_SQUARE_SVG =
+      "assets/icons/bottomNavigation/square.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/daymode-line.svg)
   static const String ASSETS_ICONS_DAYMODE_LINE_SVG = "assets/icons/daymode-line.svg";
@@ -504,13 +519,16 @@ class R {
   static const String ASSETS_ICONS_POSTACTIONS__DS_STORE = "assets/icons/postActions/.DS_Store";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/postActions/comment-fill.svg)
-  static const String ASSETS_ICONS_POSTACTIONS_COMMENT_FILL_SVG = "assets/icons/postActions/comment-fill.svg";
+  static const String ASSETS_ICONS_POSTACTIONS_COMMENT_FILL_SVG =
+      "assets/icons/postActions/comment-fill.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/postActions/forward-fill.svg)
-  static const String ASSETS_ICONS_POSTACTIONS_FORWARD_FILL_SVG = "assets/icons/postActions/forward-fill.svg";
+  static const String ASSETS_ICONS_POSTACTIONS_FORWARD_FILL_SVG =
+      "assets/icons/postActions/forward-fill.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/postActions/praise-fill.svg)
-  static const String ASSETS_ICONS_POSTACTIONS_PRAISE_FILL_SVG = "assets/icons/postActions/praise-fill.svg";
+  static const String ASSETS_ICONS_POSTACTIONS_PRAISE_FILL_SVG =
+      "assets/icons/postActions/praise-fill.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/scan-line.svg)
   static const String ASSETS_ICONS_SCAN_LINE_SVG = "assets/icons/scan-line.svg";
@@ -525,19 +543,23 @@ class R {
   static const String ASSETS_ICONS_SETTINGS__DS_STORE = "assets/icons/settings/.DS_Store";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/settings/amoled_black.svg)
-  static const String ASSETS_ICONS_SETTINGS_AMOLED_BLACK_SVG = "assets/icons/settings/amoled_black.svg";
+  static const String ASSETS_ICONS_SETTINGS_AMOLED_BLACK_SVG =
+      "assets/icons/settings/amoled_black.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/settings/follow_system.svg)
-  static const String ASSETS_ICONS_SETTINGS_FOLLOW_SYSTEM_SVG = "assets/icons/settings/follow_system.svg";
+  static const String ASSETS_ICONS_SETTINGS_FOLLOW_SYSTEM_SVG =
+      "assets/icons/settings/follow_system.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/settings/font_size.svg)
   static const String ASSETS_ICONS_SETTINGS_FONT_SIZE_SVG = "assets/icons/settings/font_size.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/settings/hide_blocked.svg)
-  static const String ASSETS_ICONS_SETTINGS_HIDE_BLOCKED_SVG = "assets/icons/settings/hide_blocked.svg";
+  static const String ASSETS_ICONS_SETTINGS_HIDE_BLOCKED_SVG =
+      "assets/icons/settings/hide_blocked.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/settings/launch_page.svg)
-  static const String ASSETS_ICONS_SETTINGS_LAUNCH_PAGE_SVG = "assets/icons/settings/launch_page.svg";
+  static const String ASSETS_ICONS_SETTINGS_LAUNCH_PAGE_SVG =
+      "assets/icons/settings/launch_page.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/settings/new_icons.svg)
   static const String ASSETS_ICONS_SETTINGS_NEW_ICONS_SVG = "assets/icons/settings/new_icons.svg";
@@ -546,7 +568,8 @@ class R {
   static const String ASSETS_ICONS_SETTINGS_NIGHT_MODE_SVG = "assets/icons/settings/night_mode.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/settings/theme_color.svg)
-  static const String ASSETS_ICONS_SETTINGS_THEME_COLOR_SVG = "assets/icons/settings/theme_color.svg";
+  static const String ASSETS_ICONS_SETTINGS_THEME_COLOR_SVG =
+      "assets/icons/settings/theme_color.svg";
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./assets/icons/sign-line.svg)
   static const String ASSETS_ICONS_SIGN_LINE_SVG = "assets/icons/sign-line.svg";

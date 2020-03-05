@@ -364,8 +364,10 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
       }
 
       list.forEach((comment) {
-        if (!UserAPI.blacklist
-            .contains(jsonEncode({'uid': comment['reply']['user']['uid'].toString(), 'username': comment['reply']['user']['nickname']}))) {
+        if (!UserAPI.blacklist.contains(jsonEncode({
+          'uid': comment['reply']['user']['uid'].toString(),
+          'username': comment['reply']['user']['nickname']
+        }))) {
           comment['reply']['post'] = widget.post;
           _comments.add(CommentAPI.createCommentInPost(comment['reply']));
         }
@@ -397,8 +399,10 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
       if (response['count'] as int < total) canLoadMore = true;
 
       list.forEach((comment) {
-        if (!UserAPI.blacklist
-            .contains(jsonEncode({'uid': comment['reply']['user']['uid'].toString(), 'username': comment['reply']['user']['nickname']}))) {
+        if (!UserAPI.blacklist.contains(jsonEncode({
+          'uid': comment['reply']['user']['uid'].toString(),
+          'username': comment['reply']['user']['nickname']
+        }))) {
           comment['reply']['post'] = widget.post;
           _comments.add(CommentAPI.createCommentInPost(comment['reply']));
         }
@@ -433,7 +437,8 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
     if (int.parse(_commentTime.substring(0, 4)) == now.year) {
       _commentTime = _commentTime.substring(5, 16);
     }
-    if (int.parse(_commentTime.substring(0, 2)) == now.month && int.parse(_commentTime.substring(3, 5)) == now.day) {
+    if (int.parse(_commentTime.substring(0, 2)) == now.month &&
+        int.parse(_commentTime.substring(3, 5)) == now.day) {
       _commentTime = '${_commentTime.substring(5, 11)}';
     }
     return Text(
@@ -456,7 +461,8 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
   String replaceMentionTag(text) {
     final RegExp mTagStartReg = RegExp(r'<M?\w+.*?\/?>');
     final RegExp mTagEndReg = RegExp(r'<\/M?\w+.*?\/?>');
-    final commentText = text.replaceAllMapped(mTagStartReg, (_) => '').replaceAllMapped(mTagEndReg, (_) => '');
+    final commentText =
+        text.replaceAllMapped(mTagStartReg, (_) => '').replaceAllMapped(mTagEndReg, (_) => '');
     return commentText;
   }
 
@@ -512,7 +518,8 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
                                       context,
                                       _comments[index],
                                     ),
-                                    if (Constants.developerList.contains(_comments[index].fromUserUid))
+                                    if (Constants.developerList
+                                        .contains(_comments[index].fromUserUid))
                                       Container(
                                         margin: EdgeInsets.only(
                                           left: suSetWidth(14.0),

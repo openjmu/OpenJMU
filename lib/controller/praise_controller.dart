@@ -116,7 +116,8 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _praiseList.length < _total && _count != 0;
-          _lastValue = _praiseList.isEmpty ? 0 : widget.praiseController.lastValue(_praiseList.last);
+          _lastValue =
+              _praiseList.isEmpty ? 0 : widget.praiseController.lastValue(_praiseList.last);
         });
       }
     }
@@ -152,7 +153,8 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _praiseList.length < _total && _count != 0;
-          _lastValue = _praiseList.isEmpty ? 0 : widget.praiseController.lastValue(_praiseList.last);
+          _lastValue =
+              _praiseList.isEmpty ? 0 : widget.praiseController.lastValue(_praiseList.last);
         });
       }
     }
@@ -178,7 +180,9 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
                       SizedBox(
                         width: suSetWidth(15.0),
                         height: suSetHeight(15.0),
-                        child: Platform.isAndroid ? CircularProgressIndicator(strokeWidth: 2.0) : CupertinoActivityIndicator(),
+                        child: Platform.isAndroid
+                            ? CircularProgressIndicator(strokeWidth: 2.0)
+                            : CupertinoActivityIndicator(),
                       ),
                       Text(
                         '　正在加载',

@@ -30,16 +30,16 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
-  static const List<String> pagesTitle = <String>['广场', '应用', '消息'];
-  static const List<String> pagesIcon = <String>['square', 'apps', 'messages'];
-  static const double bottomBarHeight = 72.0;
-  double get bottomBarIconSize => bottomBarHeight / 1.9;
+  static List<String> get pagesTitle => <String>['广场', '应用', '消息'];
+  static List<String> get pagesIcon => <String>['square', 'apps', 'messages'];
+  static double get bottomBarHeight => 72.0;
 
   static TextStyle get tabSelectedTextStyle => TextStyle(
         fontSize: suSetSp(23.0),
         fontWeight: FontWeight.bold,
         textBaseline: TextBaseline.alphabetic,
       );
+
   static TextStyle get tabUnselectedTextStyle => TextStyle(
         fontSize: suSetSp(23.0),
         fontWeight: FontWeight.w300,
@@ -141,6 +141,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   }
 
   int lastBack = 0;
+
   Future<bool> doubleBackExit() {
     final int now = DateTime.now().millisecondsSinceEpoch;
     if (now - lastBack > 800) {

@@ -76,7 +76,8 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     Instances.eventBus
       ..on<ScrollToTopEvent>().listen((event) {
         if (mounted &&
-            ((event.tabIndex == 0 && widget.postController.postType == 'square') || (event.type == '首页')) &&
+            ((event.tabIndex == 0 && widget.postController.postType == 'square') ||
+                (event.type == '首页')) &&
             _scrollController != null) {
           if (_postList.length > 20) _postList = _postList.sublist(0, 20);
           _scrollController.animateTo(
@@ -239,6 +240,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     if (mounted) setState(() {});
   }
 
+  @override
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
@@ -430,7 +432,8 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
     if (int.parse(_postTime.substring(0, 4)) == now.year) {
       _postTime = _postTime.substring(5, 16);
     }
-    if (int.parse(_postTime.substring(0, 2)) == now.month && int.parse(_postTime.substring(3, 5)) == now.day) {
+    if (int.parse(_postTime.substring(0, 2)) == now.month &&
+        int.parse(_postTime.substring(3, 5)) == now.day) {
       _postTime = '${_postTime.substring(5, 11)}';
     }
     return Text(

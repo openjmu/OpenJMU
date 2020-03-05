@@ -45,12 +45,16 @@ class TransparentRoute extends PageRoute<void> {
 
   @override
   bool get opaque => false;
+
   @override
   Color get barrierColor => null;
+
   @override
   String get barrierLabel => null;
+
   @override
   bool get maintainState => true;
+
   @override
   Duration get transitionDuration => duration ?? Duration.zero;
 
@@ -141,8 +145,11 @@ Widget badgeIcon({
   bool showBadge = true,
 }) =>
     Badge(
-      padding: padding ?? const EdgeInsets.all(5.0),
-      badgeContent: Text('$content', style: TextStyle(color: Colors.white)),
+      padding: padding ?? EdgeInsets.all(suSetWidth(6.0)),
+      badgeContent: Text(
+        '$content',
+        style: TextStyle(color: Colors.white, fontSize: suSetSp(16.0)),
+      ),
       badgeColor: currentThemeColor,
       child: icon,
       elevation: Platform.isAndroid ? 2 : 0,
@@ -429,6 +436,7 @@ class NoSplash extends InteractiveInkFeature {
         super(controller: controller, referenceBox: referenceBox, onRemoved: onRemoved) {
     controller.addInkFeature(this);
   }
+
   @override
   void paintFeature(Canvas canvas, Matrix4 transform) {}
 }

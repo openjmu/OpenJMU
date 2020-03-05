@@ -8,7 +8,9 @@ import 'package:openjmu/constants/constants.dart';
 
 class NotificationProvider extends ChangeNotifier {
   Notifications _notifications = Notifications();
+
   Notifications get notifications => _notifications;
+
   set notifications(Notifications notifications) {
     final shouldNotifyListeners = this.notifications != notifications;
     this.notifications
@@ -20,7 +22,9 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   TeamNotifications _teamNotifications = TeamNotifications();
+
   TeamNotifications get teamNotifications => _teamNotifications;
+
   set teamNotifications(TeamNotifications value) {
     _teamNotifications = value;
     notifyListeners();
@@ -29,6 +33,7 @@ class NotificationProvider extends ChangeNotifier {
   bool get showNotification => notifications.total > 0 || teamNotifications.total > 0;
 
   int get initialIndex => _notifications.comment > 0 ? 1 : (_notifications.praise > 0 ? 2 : 0);
+
   int get teamInitialIndex {
     int index = 0;
     switch (teamNotifications.latestNotify) {
