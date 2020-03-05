@@ -71,7 +71,7 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
   void initState() {
     super.initState();
     widget.postController._postListState = this;
-    _scrollController == widget.scrollController;
+    _scrollController = widget.scrollController;
 
     Instances.eventBus
       ..on<ScrollToTopEvent>().listen((event) {
