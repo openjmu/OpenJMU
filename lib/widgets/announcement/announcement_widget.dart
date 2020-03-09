@@ -6,18 +6,23 @@ import 'package:openjmu/constants/constants.dart';
 class AnnouncementWidget extends StatelessWidget {
   const AnnouncementWidget({
     Key key,
-    this.color,
+    this.contentColor,
+    this.backgroundColor,
     this.gap,
     this.radius,
     this.canClose = false,
   }) : super(key: key);
 
-  final Color color;
+  final Color contentColor;
+  final Color backgroundColor;
   final double gap;
   final double radius;
   final bool canClose;
 
-  IconThemeData get iconTheme => IconThemeData(color: currentThemeColor, size: suSetWidth(26.0));
+  IconThemeData get iconTheme => IconThemeData(
+        color: contentColor ?? currentThemeColor,
+        size: suSetWidth(26.0),
+      );
 
   Widget title(SettingsProvider provider) {
     return Expanded(
@@ -26,7 +31,7 @@ class AnnouncementWidget extends StatelessWidget {
         child: Text(
           '  ${provider.announcements[0]['title']}',
           style: TextStyle(
-            color: color ?? defaultColor,
+            color: contentColor ?? defaultColor,
             fontSize: suSetSp(20.0),
           ),
           maxLines: 1,
@@ -67,7 +72,7 @@ class AnnouncementWidget extends StatelessWidget {
             ),
             decoration: BoxDecoration(
               borderRadius: radius != null ? BorderRadius.circular(suSetWidth(radius)) : null,
-              color: (color ?? defaultColor).withAlpha(0x44),
+              color: (backgroundColor ?? defaultColor).withAlpha(0x44),
             ),
             child: Row(
               children: <Widget>[
