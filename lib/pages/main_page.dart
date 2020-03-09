@@ -1,8 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/home/apps_page.dart';
@@ -31,7 +28,9 @@ class MainPage extends StatefulWidget {
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   static List<String> get pagesTitle => <String>['广场', '应用', '消息'];
+
   static List<String> get pagesIcon => <String>['square', 'apps', 'messages'];
+
   static double get bottomBarHeight => 72.0;
 
   static TextStyle get tabSelectedTextStyle => TextStyle(
@@ -78,19 +77,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     setState(() {
       _tabIndex = index;
     });
-  }
-
-  int lastBack = 0;
-
-  Future<bool> doubleBackExit() {
-    final int now = DateTime.now().millisecondsSinceEpoch;
-    if (now - lastBack > 800) {
-      showToast('再按一次退出应用');
-      lastBack = DateTime.now().millisecondsSinceEpoch;
-    } else {
-      SystemNavigator.pop();
-    }
-    return Future<bool>.value(false);
   }
 
   @override
