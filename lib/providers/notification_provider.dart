@@ -34,18 +34,18 @@ class NotificationProvider extends ChangeNotifier {
 
   bool get showNotification => notifications.total > 0 || teamNotifications.total > 0;
 
-  int get initialIndex => _notifications.comment > 0 ? 1 : (_notifications.praise > 0 ? 2 : 0);
+  int get initialIndex => _notifications.comment > 0 ? 1 : (_notifications.at > 0 ? 2 : 0);
 
   int get teamInitialIndex {
     int index = 0;
     switch (teamNotifications.latestNotify) {
-      case 'mention':
+      case 'praise':
         index = 0;
         break;
       case 'reply':
         index = 1;
         break;
-      case 'praise':
+      case 'mention':
         index = 2;
         break;
     }
