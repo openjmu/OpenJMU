@@ -191,43 +191,46 @@ class SplashState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
-      child: AnimatedOpacity(
-        duration: 500.milliseconds,
-        curve: Curves.easeInOut,
-        opacity: firstFramed ? 1.0 : 0.0,
-        child: Scaffold(
-          backgroundColor:
-              currentIsDark ? Theme.of(context).scaffoldBackgroundColor : currentThemeColor,
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              logo,
-              AnimatedContainer(
-                duration: 200.milliseconds,
-                margin: EdgeInsets.only(
-                  top: suSetHeight(showLoading && isOnline != null ? 20.0 : 0.0),
-                ),
-                width: Screens.width,
-                height: suSetHeight(showLoading && isOnline != null ? 100.0 : 0.0),
-                child: SingleChildScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  child: SizedBox(
-                    height: suSetHeight(showLoading && isOnline != null ? 100.0 : 0.0),
-                    child: AnimatedSwitcher(
-                      duration: 300.milliseconds,
-                      child: showLoading && isOnline != null
-                          ? AnimatedSwitcher(
-                              duration: 300.milliseconds,
-                              child: isOnline ? loginWidget : warningWidget,
-                            )
-                          : const SizedBox.shrink(),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: AnimatedOpacity(
+          duration: 500.milliseconds,
+          curve: Curves.easeInOut,
+          opacity: firstFramed ? 1.0 : 0.0,
+          child: Scaffold(
+            backgroundColor:
+                currentIsDark ? Theme.of(context).scaffoldBackgroundColor : currentThemeColor,
+            body: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                logo,
+                AnimatedContainer(
+                  duration: 200.milliseconds,
+                  margin: EdgeInsets.only(
+                    top: suSetHeight(showLoading && isOnline != null ? 20.0 : 0.0),
+                  ),
+                  width: Screens.width,
+                  height: suSetHeight(showLoading && isOnline != null ? 100.0 : 0.0),
+                  child: SingleChildScrollView(
+                    physics: const NeverScrollableScrollPhysics(),
+                    child: SizedBox(
+                      height: suSetHeight(showLoading && isOnline != null ? 100.0 : 0.0),
+                      child: AnimatedSwitcher(
+                        duration: 300.milliseconds,
+                        child: showLoading && isOnline != null
+                            ? AnimatedSwitcher(
+                                duration: 300.milliseconds,
+                                child: isOnline ? loginWidget : warningWidget,
+                              )
+                            : const SizedBox.shrink(),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
