@@ -1,11 +1,15 @@
+///
+/// [Author] Alex (https://github.com/AlexVincent525)
+/// [Date] 2020-03-08 17:07
+///
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/rounded_check_box.dart';
-import 'package:openjmu/widgets/announcement/announcement_widget.dart';
 
 @FFRoute(name: 'openjmu://login', routeName: '登录页')
 class LoginPage extends StatefulWidget {
@@ -14,54 +18,120 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+  /// Focus nodes for input field. Basically for dismiss.
+  /// 输入框的焦点实例。主要用于点击其他位置时失焦动作。
+  final FocusNode usernameNode = FocusNode();
+  final FocusNode passwordNode = FocusNode();
+
+  /// Form state.
+  /// 表单状态
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final ScrollController _formScrollController = ScrollController();
+
+  /// TEC for fields.
+  /// 字段的输入控制器
   final TextEditingController _usernameController = TextEditingController(
-    text: DataUtils.recoverWorkId(),
+    text: DataUtils.recoverWorkId(), // 加载保存的学工号
   );
   final TextEditingController _passwordController = TextEditingController();
-  final List<Color> colorGradient = <Color>[const Color(0xffff8976), const Color(0xffff3c33)];
 
-  String _username = DataUtils.recoverWorkId() ?? '', _password = '';
-
-  bool _agreement = false;
-  bool _login = false;
-  bool _loginDisabled = true;
-  bool _isObscure = true;
-  bool _usernameCanClear = false;
-  bool _keyboardAppeared = false;
+  /// Gradient for background transition.
+  /// 背景渐变颜色组
+  List<Color> get colorGradient => <Color>[defaultColor, Colors.pink[400]];
 
   bool get loginButtonEnable => !(_login || _loginDisabled);
+
+  /// Animation controller for background transition.
+  /// 背景渐变的动画控制器，单位为角度。
+  AnimationController backgroundAnimateController;
+
+  /// Rotate duration for background transition.
+  /// 背景渐变旋转的周期
+  Duration get backgroundRotateDuration => 10.seconds;
+
+  /// Common animate duration.
+  /// 通用的动画周期
+  Duration get animateDuration => kRadialReactionDuration;
+
+  /// White text style.
+  /// 白色的文字样式
+  TextStyle get whiteTextStyle => TextStyle(
+        color: Colors.white,
+        fontSize: suSetSp(18.0),
+      );
+
+  String _username = DataUtils.recoverWorkId() ?? ''; // 账户变量
+  String _password = ''; // 密码变量
+  bool _agreement = false; // 是否已勾选统一协议
+  bool _login = false; // 是否正在登陆
+  bool _loginDisabled = true; // 是否允许登陆
+  bool _isObscure = true; // 是否开启密码显示
+  bool _usernameCanClear = false; // 账户是否可以清空
+  bool _keyboardAppeared = false; // 键盘是否出现
 
   @override
   void initState() {
     super.initState();
 
+    /// Binding state ticker to animation controller.
+    /// 绑定当前状态实例至动画控制器
+    backgroundAnimateController = AnimationController.unbounded(
+      vsync: this,
+      duration: backgroundRotateDuration,
+      value: 0,
+    );
+
+    /// Start animation when post.
+    /// 第一帧开始执行背景渐变动画
+    SchedulerBinding.instance.addPostFrameCallback((Duration _) {
+      animateBackground();
+    });
+
+    /// Initialize `_usernameCanClear`.
+    /// 初始化账户是否清空标志位
+    _usernameCanClear = _username?.isNotEmpty ?? false;
+
+    /// Bind text fields listener.
+    /// 绑定输入部件的监听
     _usernameController..addListener(usernameListener);
     _passwordController..addListener(passwordListener);
   }
 
   @override
   void dispose() {
+    /// Dispose all controllers.
+    /// 销毁所有控制器
+    backgroundAnimateController?.dispose();
     _usernameController?.dispose();
     _passwordController?.dispose();
+    usernameNode
+      ..unfocus()
+      ..dispose();
+    passwordNode
+      ..unfocus()
+      ..dispose();
+    _formKey.currentState?.reset();
+    _formKey.currentState?.dispose();
 
     super.dispose();
   }
 
-  int last = 0;
-  Future<bool> doubleBackExit() async {
-    final int now = DateTime.now().millisecondsSinceEpoch;
-    if (now - last > 800) {
-      showToast('再按一次退出应用');
-      last = DateTime.now().millisecondsSinceEpoch;
-      return false;
-    } else {
-      dismissAllToast();
-      return true;
+  /// Function calling background animate.
+  /// 背景动画执行方法
+  Future<void> animateBackground({bool reset = false}) async {
+    /// If `reset` then reset value to zero.
+    /// 如果为递归调用重置，则将值重新设置为0。
+    if (reset) {
+      backgroundAnimateController.value = 0;
     }
+    await backgroundAnimateController.animateTo(360, duration: backgroundRotateDuration);
+
+    /// Call function itself to keep the animation running after previous is done.
+    /// 动画执行完成后递归调用动画以保证动画执行
+    unawaited(animateBackground(reset: true));
   }
 
+  /// Listener for username text field.
+  /// 账户输入字段的监听
   void usernameListener() {
     _username = _usernameController.text;
     if (mounted) {
@@ -77,377 +147,14 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
   }
 
+  /// Listener for password text field.
+  /// 密码输入字段的监听
   void passwordListener() {
     _password = _passwordController.text;
   }
 
-  Widget get topBackground => Positioned(
-        right: 0.0,
-        top: 0.0,
-        child: Image.asset(
-          R.IMAGES_LOGIN_TOP_PNG,
-          width: Screens.width - suSetWidth(60.0),
-          fit: BoxFit.fitWidth,
-        ),
-      );
-
-  Widget get bottomBackground => Positioned(
-        left: 0.0,
-        right: 0.0,
-        bottom: 15.0,
-        child: Center(
-          child: Image.asset(
-            R.IMAGES_LOGIN_BOTTOM_PNG,
-            color: Colors.grey.withAlpha(50),
-            width: Screens.width - suSetWidth(150.0),
-            fit: BoxFit.fitWidth,
-          ),
-        ),
-      );
-
-  Widget get logo => Positioned(
-        right: suSetWidth(40.0),
-        top: suSetHeight(50.0),
-        child: Hero(
-          tag: 'Logo',
-          child: SvgPicture.asset(
-            R.IMAGES_SPLASH_PAGE_LOGO_SVG,
-            color: Theme.of(context).primaryColor.withOpacity(0.3),
-            width: suSetWidth(120.0),
-            height: suSetHeight(120.0),
-          ),
-        ),
-      );
-
-  Widget get logoTitle => Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        textBaseline: TextBaseline.ideographic,
-        children: <Widget>[
-          Stack(
-            children: <Widget>[
-              Container(
-                margin: EdgeInsets.only(
-                  top: suSetHeight(10.0),
-                  left: suSetWidth(6.0),
-                  right: suSetWidth(6.0),
-                ),
-                child: Text(
-                  'OPENJMU',
-                  style: TextStyle(
-                    color: Theme.of(context).iconTheme.color,
-                    fontSize: suSetSp(50.0),
-                    fontFamily: 'chocolate',
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      );
-
-  Widget get usernameTextField => TextFormField(
-        controller: _usernameController,
-        decoration: InputDecoration(
-          prefixIcon: Icon(
-            Icons.person,
-            color: Theme.of(context).iconTheme.color,
-            size: suSetWidth(24.0),
-          ),
-          suffixIcon: _usernameCanClear
-              ? IconButton(
-                  icon: Icon(
-                    Icons.clear,
-                    color: Theme.of(context).iconTheme.color,
-                    size: suSetWidth(28.0),
-                  ),
-                  onPressed: _usernameController.clear,
-                )
-              : null,
-          border: InputBorder.none,
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: defaultColor),
-          ),
-          contentPadding: EdgeInsets.all(suSetWidth(12.0)),
-          labelText: '工号/学号',
-          labelStyle: TextStyle(
-            color: Theme.of(context).textTheme.body1.color,
-          ),
-        ),
-        style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
-        strutStyle: StrutStyle(
-          fontSize: suSetSp(22.0),
-          height: 1.7,
-          forceStrutHeight: true,
-        ),
-        cursorColor: defaultColor,
-        onSaved: (String value) => _username = value,
-        validator: (String value) {
-          if (value.isEmpty) {
-            return '请输入账户';
-          }
-          return null;
-        },
-        keyboardType: TextInputType.number,
-        enabled: !_login,
-      );
-
-  Widget get passwordTextField => TextFormField(
-        controller: _passwordController,
-        onSaved: (String value) => _password = value,
-        obscureText: _isObscure,
-        validator: (String value) {
-          if (value.isEmpty) {
-            return '请输入密码';
-          }
-          return null;
-        },
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: defaultColor),
-          ),
-          contentPadding: EdgeInsets.all(suSetWidth(12.0)),
-          prefixIcon: Icon(
-            Icons.lock,
-            color: Theme.of(context).iconTheme.color,
-            size: suSetWidth(24.0),
-          ),
-          labelText: '密码',
-          labelStyle: TextStyle(
-            color: Theme.of(context).textTheme.body1.color,
-          ),
-          suffixIcon: IconButton(
-            icon: Icon(
-              _isObscure ? Icons.visibility_off : Icons.visibility,
-              color: _isObscure ? Colors.grey : defaultColor,
-              size: suSetWidth(28.0),
-            ),
-            onPressed: () {
-              setState(() {
-                _isObscure = !_isObscure;
-              });
-            },
-          ),
-        ),
-        style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(22.0)),
-        strutStyle: StrutStyle(
-          fontSize: suSetSp(22.0),
-          height: 1.7,
-          forceStrutHeight: true,
-        ),
-        cursorColor: defaultColor,
-        enabled: !_login,
-      );
-
-  Widget get noAccountButton => Padding(
-        padding: EdgeInsets.zero,
-        child: Align(
-          alignment: Alignment.center,
-          child: FlatButton(
-            padding: EdgeInsets.zero,
-            child: Text(
-              '没有账号',
-              style: TextStyle(color: Colors.grey, fontSize: suSetSp(16.0)),
-            ),
-            onPressed: () {},
-          ),
-        ),
-      );
-
-  Widget get findWorkId => Padding(
-        padding: EdgeInsets.zero,
-        child: Align(
-          alignment: Alignment.center,
-          child: FlatButton(
-            padding: EdgeInsets.zero,
-            child: Text(
-              '学工号查询',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: suSetSp(18.0),
-              ),
-            ),
-            onPressed: () {
-              API.launchWeb(
-                url: 'http://myid.jmu.edu.cn/ids/EmployeeNoQuery.aspx',
-                title: '集大通行证 - 工号查询',
-              );
-            },
-          ),
-        ),
-      );
-
-  Widget get forgetPasswordButton => Padding(
-        padding: EdgeInsets.zero,
-        child: Align(
-          alignment: Alignment.center,
-          child: FlatButton(
-            padding: EdgeInsets.zero,
-            child: Text(
-              '忘记密码',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: suSetSp(18.0),
-              ),
-            ),
-            onPressed: resetPassword,
-          ),
-        ),
-      );
-
-  Widget get userAgreementCheckbox => Expanded(
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            SizedBox.fromSize(
-              size: Size.square(suSetWidth(42.0)),
-              child: RoundedCheckbox(
-                value: _agreement,
-                activeColor: defaultColor,
-                inactiveColor: Theme.of(context).iconTheme.color,
-                onChanged: !_login
-                    ? (bool value) {
-                        setState(() {
-                          _agreement = value;
-                        });
-                        validateForm();
-                      }
-                    : null,
-                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-              ),
-            ),
-            Expanded(
-              child: Text.rich(
-                TextSpan(
-                  children: <TextSpan>[
-                    const TextSpan(text: '登录即代表您同意'),
-                    TextSpan(
-                      text: '《用户协议》',
-                      style: TextStyle(
-                        color: defaultColor,
-                        decoration: TextDecoration.underline,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          API.launchWeb(
-                            url: '${API.homePage}/license.html',
-                            title: 'OpenJMU 用户协议',
-                          );
-                        },
-                    ),
-                  ],
-                  style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(18.0)),
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.fade,
-              ),
-            ),
-          ],
-        ),
-      );
-
-  Widget get loginButton => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: loginButtonEnable ? () => loginButtonPressed(context) : null,
-        child: Container(
-          margin: EdgeInsets.only(left: suSetWidth(4.0)),
-          width: suSetWidth(100.0),
-          height: suSetHeight(50.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(suSetWidth(6.0)),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                blurRadius: suSetWidth(10.0),
-                color: !_loginDisabled
-                    ? colorGradient[1].withAlpha(100)
-                    : Theme.of(context).dividerColor,
-                offset: Offset(0.0, suSetHeight(10.0)),
-              ),
-            ],
-            gradient: LinearGradient(
-              colors: !_loginDisabled ? colorGradient : <Color>[Colors.grey, Colors.grey],
-            ),
-          ),
-          child: Center(
-            child: !_login
-                ? Icon(Icons.arrow_forward, size: suSetWidth(36.0), color: Colors.white)
-                : SizedBox.fromSize(
-                    size: Size.square(suSetWidth(32.0)),
-                    child: PlatformProgressIndicator(strokeWidth: 3.0, color: Colors.white),
-                  ),
-          ),
-        ),
-      );
-
-  Widget get loginForm => SafeArea(
-        child: Form(
-          key: _formKey,
-          child: Align(
-            alignment: _keyboardAppeared ? Alignment.bottomCenter : Alignment.center,
-            child: ListView(
-              shrinkWrap: true,
-              controller: _formScrollController,
-              padding: EdgeInsets.symmetric(horizontal: suSetWidth(50.0)),
-              physics: const NeverScrollableScrollPhysics(parent: ClampingScrollPhysics()),
-              children: <Widget>[
-                logoTitle,
-                emptyDivider(height: suSetHeight(40.0)),
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: suSetWidth(10.0),
-                    vertical: suSetHeight(10.0),
-                  ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(suSetWidth(6.0)),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                        blurRadius: suSetWidth(20.0),
-                        color: Theme.of(context).dividerColor,
-                      ),
-                    ],
-                    color: Theme.of(context).cardColor,
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Selector<SettingsProvider, bool>(
-                        selector: (_, SettingsProvider provider) => provider.announcementsEnabled,
-                        builder: (_, bool announcementEnabled, __) {
-                          if (announcementEnabled) {
-                            return const AnnouncementWidget(radius: 6.0);
-                          } else {
-                            return const SizedBox.shrink();
-                          }
-                        },
-                      ),
-                      usernameTextField,
-                      emptyDivider(height: suSetHeight(10.0)),
-                      passwordTextField,
-                      emptyDivider(height: suSetHeight(10.0)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[findWorkId, forgetPasswordButton],
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: suSetHeight(20.0)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[userAgreementCheckbox, loginButton],
-                  ),
-                ),
-                emptyDivider(height: suSetHeight(30.0)),
-              ],
-            ),
-          ),
-          onChanged: validateForm,
-        ),
-      );
-
+  /// Function called after login button pressed.
+  /// 登录按钮的回调
   void loginButtonPressed(BuildContext context) {
     try {
       if (_formKey.currentState.validate()) {
@@ -483,7 +190,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
   }
 
-  Future<void> resetPassword() async {
+  /// Function called after forgot button pressed.
+  /// 忘记密码按钮的回调
+  Future<void> forgotPassword() async {
     final bool confirm = await ConfirmationDialog.show(
       context,
       title: '忘记密码',
@@ -501,6 +210,11 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
   }
 
+  /// Function called when validating fields.
+  /// 校验表单的方法
+  ///
+  /// `_username`/`_password`/`_agreement` all needs to be passed.
+  /// 账号、密码、协议均需要完成才可登录。
   void validateForm() {
     if (_username.isNotEmpty && _password.isNotEmpty && _agreement && _loginDisabled) {
       setState(() {
@@ -513,6 +227,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
   }
 
+  /// Set input fields alignment to avoid blocked by insets
+  /// when the input methods was shown/hidden.
+  /// 键盘弹出或收起时设置输入字段的对齐方式以防止遮挡。
   void setAlignment(BuildContext context) {
     final double inputMethodHeight = MediaQuery.of(context).viewInsets.bottom;
     if (inputMethodHeight > 1.0 && !_keyboardAppeared) {
@@ -526,21 +243,448 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     }
   }
 
+  /// Function called when triggered listener.
+  /// 触发页面监听器时，所有的输入框失焦，隐藏键盘。
+  void dismissFocusNodes() {
+    if (usernameNode?.hasFocus ?? false) {
+      usernameNode?.unfocus();
+    }
+    if (passwordNode?.hasFocus ?? false) {
+      passwordNode.unfocus();
+    }
+  }
+
+  /// Animated background.
+  /// 会旋转的背景
+  ///
+  /// Using [pythagoreanTheorem] to calculate radius that can cover the
+  /// whole screen when rotating.
+  /// 使用勾股定理计算半径，使得旋转时仍然可以铺满屏幕
+  Widget get animatingBackground {
+    final double radius = pythagoreanTheorem(Screens.width, Screens.height); // 半径
+    final double horizontalOffset = radius - Screens.width; // 水平偏移
+    final double verticalOffset = radius - Screens.height; // 垂直偏移
+
+    return Positioned(
+      left: -horizontalOffset,
+      right: -horizontalOffset,
+      top: -verticalOffset,
+      bottom: -verticalOffset,
+      child: AnimatedBuilder(
+        animation: backgroundAnimateController,
+        builder: (BuildContext _, Widget child) {
+          return SizedBox(
+            width: radius,
+            height: radius,
+            child: Transform(
+              alignment: Alignment.center,
+              transform: Matrix4.rotationZ(math.pi / 180 * backgroundAnimateController.value),
+              child: Container(
+                width: double.maxFinite,
+                height: double.maxFinite,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: colorGradient,
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  /// Wrapper for content part.
+  /// 内容块包装
+  Widget contentWrapper({@required List<Widget> children}) {
+    return Positioned.fill(
+      child: Listener(
+        behavior: HitTestBehavior.translucent,
+        onPointerUp: (PointerUpEvent event) {
+          dismissFocusNodes();
+        },
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: suSetWidth(30.0),
+              vertical: suSetHeight(30.0),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: children,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Logo on top.
+  /// 顶部Logo
+  Widget get topLogo => Text(
+        'OpenJMU',
+        style: whiteTextStyle.copyWith(
+          fontFamily: 'Chocolate',
+          fontSize: suSetSp(40.0),
+        ),
+      );
+
+  /// Welcome tip widget.
+  /// 欢迎语部件
+  Widget get welcomeTip => Container(
+        margin: EdgeInsets.symmetric(vertical: suSetHeight(15.0)),
+        height: suSetHeight(100.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              '欢迎使用',
+              style: whiteTextStyle.copyWith(fontSize: suSetSp(40.0), fontWeight: FontWeight.w600),
+            ),
+            Text(
+              '登录以继续',
+              style: whiteTextStyle.copyWith(fontSize: suSetSp(22.0)),
+            ),
+          ],
+        ),
+      );
+
+  /// Announcement widget.
+  /// 公告部件
+  Widget get announcementWidget => Selector<SettingsProvider, bool>(
+        selector: (_, SettingsProvider provider) => provider.announcementsEnabled,
+        builder: (_, bool announcementEnabled, __) {
+          if (announcementEnabled) {
+            return Container(
+              margin: EdgeInsets.symmetric(vertical: suSetHeight(15.0)),
+              child: AnnouncementWidget(
+                contentColor: Colors.white,
+                backgroundColor: Colors.grey[850],
+                radius: 10.0,
+              ),
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
+      );
+
+  /// Input field wrapper.
+  /// 输入区域包装
+  ///
+  /// [title] 标签文字, [child] 内容部件
+  Widget inputFieldWrapper({
+    @required String title,
+    @required Widget child,
+  }) {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: suSetHeight(14.0)),
+      padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+      width: double.maxFinite,
+      height: suSetHeight(100.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(suSetWidth(15.0)),
+        color: Colors.black.withOpacity(0.15),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            title,
+            style: whiteTextStyle.copyWith(fontSize: suSetSp(18.0)),
+          ),
+          Theme(
+            data: Theme.of(context).copyWith(
+              cursorColor: Colors.white,
+              textSelectionColor: Colors.white54,
+              textSelectionHandleColor: Colors.white,
+            ),
+            child: child,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Username field.
+  /// 账户输入部件
+  Widget get usernameField => inputFieldWrapper(
+        title: '学号/工号',
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: TextFormField(
+                focusNode: usernameNode,
+                controller: _usernameController,
+                onSaved: (String value) => _username = value,
+                validator: (String value) {
+                  if (value.isEmpty) {
+                    return '请输入账户';
+                  }
+                  return null;
+                },
+                keyboardType: TextInputType.number,
+                enabled: !_login,
+                scrollPadding: EdgeInsets.zero,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                  isDense: true,
+                ),
+                style: whiteTextStyle.copyWith(fontSize: suSetSp(36.0)),
+              ),
+            ),
+            if (_usernameCanClear)
+              SizedBox.fromSize(
+                size: Size.square(suSetWidth(40.0)),
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: Icon(
+                    Icons.clear,
+                    color: Colors.white,
+                    size: suSetWidth(40.0),
+                  ),
+                  onPressed: _usernameController.clear,
+                ),
+              ),
+          ],
+        ),
+      );
+
+  /// Password field.
+  /// 密码输入部件
+  Widget get passwordField => inputFieldWrapper(
+        title: '密码',
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: TextFormField(
+                focusNode: passwordNode,
+                controller: _passwordController,
+                onSaved: (String value) => _password = value,
+                obscureText: _isObscure,
+                validator: (String value) {
+                  if (value.isEmpty) {
+                    return '请输入密码';
+                  }
+                  return null;
+                },
+                enabled: !_login,
+                scrollPadding: EdgeInsets.zero,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                  isDense: true,
+                ),
+                style: whiteTextStyle.copyWith(fontSize: suSetSp(36.0)),
+              ),
+            ),
+            SizedBox.fromSize(
+              size: Size.square(suSetWidth(40.0)),
+              child: IconButton(
+                padding: EdgeInsets.zero,
+                icon: Icon(
+                  _isObscure ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.white.withOpacity(_isObscure ? 0.25 : 1.0),
+                  size: suSetWidth(40.0),
+                ),
+                onPressed: () {
+                  setState(() {
+                    _isObscure = !_isObscure;
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
+      );
+
+  /// Agreement checkbox.
+  /// 用户协议复选框
+  ///
+  /// TODO(Alex): Need time to customize with background and size.
+  Widget get agreementCheckbox => SizedBox.fromSize(
+        size: Size.square(suSetWidth(60.0)),
+        child: RoundedCheckbox(
+          value: _agreement,
+          activeColor: Colors.white30,
+          inactiveColor: Colors.black12,
+          onChanged: !_login
+              ? (bool value) {
+                  setState(() {
+                    _agreement = value;
+                  });
+                  validateForm();
+                }
+              : null,
+          materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        ),
+      );
+
+  /// Agreement tips.
+  /// 用户协议提示
+  Widget get agreementTip => Text.rich(
+        TextSpan(
+          children: <TextSpan>[
+            const TextSpan(text: '登录即代表您同意'),
+            TextSpan(
+              text: '《用户协议》',
+              style: TextStyle(
+                decoration: TextDecoration.underline,
+              ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  API.launchWeb(
+                    url: '${API.homePage}/license.html',
+                    title: 'OpenJMU 用户协议',
+                  );
+                },
+            ),
+          ],
+          style: whiteTextStyle.copyWith(fontSize: suSetSp(18.0)),
+        ),
+        maxLines: 1,
+        overflow: TextOverflow.fade,
+      );
+
+  /// Agreement widget.
+  /// 用户协议部件。包含复选框和提示。
+  Widget get agreementWidget => Padding(
+        padding: EdgeInsets.symmetric(vertical: suSetHeight(10.0)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            agreementCheckbox,
+            agreementTip,
+          ],
+        ),
+      );
+
+  /// Login button.
+  /// 登录按钮
+  Widget get loginButton => AnimatedOpacity(
+        duration: animateDuration,
+        opacity: _loginDisabled ? 0.5 : 1.0,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: loginButtonEnable ? () => loginButtonPressed(context) : null,
+          child: Container(
+            margin: EdgeInsets.symmetric(vertical: suSetHeight(10.0)),
+            padding: EdgeInsets.symmetric(horizontal: suSetWidth(24.0)),
+            height: suSetHeight(80.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(suSetWidth(15.0)),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: Colors.black26,
+                  offset: Offset(0, suSetHeight(2.0)),
+                  blurRadius: suSetHeight(5.0),
+                ),
+              ],
+              color: Colors.white,
+            ),
+            child: Row(children: <Widget>[
+              Text(
+                '登录',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: suSetSp(20.0),
+                ),
+              ),
+              const Spacer(flex: 1),
+              Expanded(
+                flex: 1,
+                child: ClipRRect(
+                  borderRadius: maxBorderRadius,
+                  child: LinearProgressIndicator(
+                    backgroundColor: Colors.grey[200],
+                    valueColor: AlwaysStoppedAnimation<Color>(defaultColor),
+                    value: _login ? null : 0.0,
+                  ),
+                ),
+              ),
+            ]),
+          ),
+        ),
+      );
+
+  /// Actions down below.
+  /// 其他操作项。包含“账号查询”、“忘记密码”。
+  Widget get otherActions => SizedBox(
+        height: suSetHeight(30.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            FlatButton(
+              padding: EdgeInsets.zero,
+              child: Text('账号查询', style: whiteTextStyle),
+              onPressed: () {
+                API.launchWeb(
+                  url: 'http://myid.jmu.edu.cn/ids/EmployeeNoQuery.aspx',
+                  title: '集大通行证 - 工号查询',
+                );
+              },
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            Text('|', style: whiteTextStyle),
+            FlatButton(
+              padding: EdgeInsets.zero,
+              child: Text('忘记密码', style: whiteTextStyle),
+              onPressed: forgotPassword,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+          ],
+        ),
+      );
+
   @override
   Widget build(BuildContext context) {
     setAlignment(context);
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: currentIsDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+      value: SystemUiOverlayStyle.light,
       child: WillPopScope(
         onWillPop: doubleBackExit,
         child: Scaffold(
-          backgroundColor: Theme.of(context).primaryColor,
+          resizeToAvoidBottomInset: false,
           body: Stack(
             children: <Widget>[
-              topBackground,
-              bottomBackground,
-              logo,
-              loginForm,
+              animatingBackground,
+              contentWrapper(
+                children: <Widget>[
+                  topLogo,
+                  Expanded(
+                    flex: 6,
+                    child: Form(
+                      key: _formKey,
+                      onChanged: validateForm,
+                      child: AnimatedAlign(
+                        duration: animateDuration,
+                        curve: Curves.easeInOut,
+                        alignment: _keyboardAppeared ? Alignment.topCenter : Alignment.center,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            welcomeTip,
+                            announcementWidget,
+                            usernameField,
+                            passwordField,
+                            agreementWidget,
+                            loginButton,
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  const Spacer(flex: 1),
+                  otherActions,
+                ],
+              ),
             ],
           ),
         ),
