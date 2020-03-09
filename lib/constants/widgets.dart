@@ -26,11 +26,11 @@ export 'package:openjmu/widgets/rounded_tab_indicator.dart';
 export 'package:openjmu/widgets/slide_menu_item.dart';
 export 'package:openjmu/widgets/user_avatar.dart';
 export 'package:openjmu/widgets/webapp_icon.dart';
-export 'package:openjmu/widgets/webview/in_app_webview.dart';
-
+export 'package:openjmu/widgets/announcement/announcement_widget.dart';
 export 'package:openjmu/widgets/dialogs/confirmation_bottom_sheet.dart';
 export 'package:openjmu/widgets/dialogs/confirmation_dialog.dart' hide LinkText;
 export 'package:openjmu/widgets/dialogs/loading_dialog.dart';
+export 'package:openjmu/widgets/webview/in_app_webview.dart';
 
 class TransparentRoute extends PageRoute<void> {
   TransparentRoute({

@@ -253,14 +253,21 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     return MultiProvider(
       providers: providers,
       child: Consumer2<ThemesProvider, SettingsProvider>(
-        builder: (_, themesProvider, settingsProvider, __) {
+        builder: (
+          BuildContext _,
+          ThemesProvider themesProvider,
+          SettingsProvider settingsProvider,
+          Widget __,
+        ) {
           final isDark = themesProvider.platformBrightness
               ? _platformBrightness == Brightness.dark
               : themesProvider.dark;
           final theme = (isDark ? themesProvider.darkTheme : themesProvider.lightTheme).copyWith(
-            pageTransitionsTheme: PageTransitionsTheme(builders: {
-              TargetPlatform.android: ZoomPageTransitionsBuilder(),
-            }),
+            pageTransitionsTheme: PageTransitionsTheme(
+              builders: <TargetPlatform, PageTransitionsBuilder>{
+                TargetPlatform.android: ZoomPageTransitionsBuilder(),
+              },
+            ),
           );
           return AnnotatedRegion(
             value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
@@ -269,7 +276,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
               child: OKToast(
                 child: MaterialApp(
                   navigatorKey: Instances.navigatorKey,
-                  builder: (c, w) {
+                  builder: (BuildContext c, Widget w) {
                     ScreenUtil.init(c, allowFontScaling: true);
                     return NoScaleTextWidget(child: w);
                   },
