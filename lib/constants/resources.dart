@@ -580,6 +580,15 @@ class R {
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./images/.DS_Store)
   static const String IMAGES__DS_STORE = "images/.DS_Store";
 
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/./images/jmu_logo.png)
+  static const String IMAGES_JMU_LOGO = "images/jmu_logo.png";
+
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/./images/jmu_logo_filled.png)
+  static const String IMAGES_JMU_LOGO_FILLED = "images/jmu_logo_filled.png";
+
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/./images/jmu_name.png)
+  static const String IMAGES_JMU_NAME_PNG = "images/jmu_name.png";
+
   /// ![preview](file:///Users/alex/Documents/OpenJMU/./images/login_bottom.png)
   static const String IMAGES_LOGIN_BOTTOM_PNG = "images/login_bottom.png";
 

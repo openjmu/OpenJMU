@@ -4,10 +4,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/home/apps_page.dart';
 import 'package:openjmu/pages/home/message_page.dart';
-import 'package:openjmu/pages/home/my_info_page.dart';
-import 'package:openjmu/pages/home/post_square_list_page.dart';
-import 'package:openjmu/widgets/fab_bottom_appbar.dart';
-import 'package:openjmu/widgets/announcement/announcement_widget.dart';
+import 'package:openjmu/pages/home/post_square_page.dart';
+import 'package:openjmu/pages/home/self_page.dart';
+import 'package:openjmu/pages/home/marketing_page.dart';
 
 @FFRoute(
   name: 'openjmu://home',
@@ -79,56 +78,65 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     });
   }
 
+  /// Announcement widget.
+  /// 公告组件
+  Widget get announcementWidget => Selector<SettingsProvider, bool>(
+        selector: (_, SettingsProvider provider) => provider.announcementsUserEnabled,
+        builder: (_, bool announcementsUserEnabled, __) {
+          if (announcementsUserEnabled) {
+            return AnnouncementWidget(gap: 24.0, canClose: true);
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
+      );
+
   @override
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
     return WillPopScope(
       onWillPop: doubleBackExit,
-      child: PageView(
-        controller: pageController,
-        scrollDirection: Axis.vertical,
-        children: <Widget>[
-          Container(color: currentThemeColor),
-          Scaffold(
-            body: SafeArea(
-              child: Column(
-                children: <Widget>[
-                  Selector<SettingsProvider, bool>(
-                    selector: (_, SettingsProvider provider) => provider.announcementsUserEnabled,
-                    builder: (_, bool announcementsUserEnabled, __) {
-                      if (announcementsUserEnabled) {
-                        return AnnouncementWidget(gap: 24.0, canClose: true);
-                      } else {
-                        return const SizedBox.shrink();
-                      }
-                    },
-                  ),
-                  Expanded(
-                    child: IndexedStack(
-                      children: <Widget>[
-                        PostSquareListPage(),
-                        AppsPage(key: Instances.appsPageStateKey),
-                        MessagePage(),
-                        MyInfoPage(),
-                      ],
-                      index: _tabIndex,
+      child: Material(
+        type: MaterialType.transparency,
+        child: PageView(
+          controller: appPageController,
+          scrollDirection: Axis.vertical,
+          children: <Widget>[
+//            Container(color: currentThemeColor, child: Center(child: Text('App Page'))),
+            Scaffold(
+              key: Instances.mainPageScaffoldKey,
+              body: SafeArea(
+                child: Column(
+                  children: <Widget>[
+                    announcementWidget,
+                    Expanded(
+                      child: IndexedStack(
+                        children: <Widget>[
+                          PostSquarePage(),
+                          MarketingPage(),
+                          AppsPage(key: Instances.appsPageStateKey),
+                          MessagePage(),
+                        ],
+                        index: _tabIndex,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            bottomNavigationBar: FABBottomAppBar(
-              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              color: Colors.grey[600].withOpacity(currentIsDark ? 0.8 : 0.4),
-              height: bottomBarHeight,
-              iconSize: bottomBarIconSize,
-              selectedColor: currentThemeColor,
-              onTabSelected: _selectedTab,
-              showText: false,
-              initIndex: _tabIndex,
-              items: <FABBottomAppBarItem>[
-                ...List<FABBottomAppBarItem>.generate(
+              drawer: SelfPage(),
+              drawerEdgeDragWidth: Screens.width * 0.25,
+              bottomNavigationBar: FABBottomAppBar(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                color: Colors.grey[600].withOpacity(currentIsDark ? 0.8 : 0.4),
+                height: bottomBarHeight,
+                iconSize: bottomBarIconSize,
+                selectedColor: currentThemeColor,
+                itemFontSize: 16.0,
+                onTabSelected: _selectedTab,
+                showText: true,
+                initIndex: _tabIndex,
+                items: List<FABBottomAppBarItem>.generate(
                   pagesTitle.length,
                   (int i) => FABBottomAppBarItem(iconPath: pagesIcon[i], text: pagesTitle[i]),
                 ),
