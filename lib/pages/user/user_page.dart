@@ -44,6 +44,7 @@ class _UserPageState extends State<UserPage>
   TabController _tabController;
   PostController postController;
   ScrollController _scrollController = ScrollController();
+
   double get tabBarHeight => suSetHeight(56.0);
   double expandedHeight = kAppBarHeight + suSetHeight(212.0);
 
@@ -722,6 +723,9 @@ class UserListPage extends StatefulWidget {
 
 class _UserListState extends State<UserListPage> {
   List _users = [];
+  List get users => _users.where((dynamic userData) {
+        return userData['user'] != null;
+      }).toList();
 
   bool canLoadMore = false, isLoading = true;
   int total, pages = 1;
@@ -772,18 +776,18 @@ class _UserListState extends State<UserListPage> {
     }
     int total = int.parse(response.data['total'].toString());
     if (_users.length + data.length < total) canLoadMore = true;
-    List users = [];
+    List list = [];
     for (int i = 0; i < data.length; i++) {
-      users.add(data[i]);
+      list.add(data[i]);
     }
     if (mounted) {
       setState(() {
         if (isMore) {
           List _u = _users;
-          _u.addAll(users);
+          _u.addAll(list);
           _users = _u;
         } else {
-          _users = users;
+          _users = list;
         }
         isLoading = false;
       });
@@ -792,17 +796,19 @@ class _UserListState extends State<UserListPage> {
 
   Widget renderRow(context, i) {
     int start = i * 2;
-    if (_users != null && i + 1 == (_users.length / 2).ceil() && canLoadMore) doUpdate(true);
+    if (users != null && i + 1 == (users.length / 2).ceil() && canLoadMore) {
+      doUpdate(true);
+    }
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        for (int j = start; j < start + 2 && j < _users.length; j++) userCard(context, _users[j])
+        for (int j = start; j < start + 2 && j < users.length; j++) userCard(context, users[j])
       ],
     );
   }
 
   Widget userCard(context, userData) {
-    var _user = userData['user'];
+    final Map<String, dynamic> _user = userData['user'];
     String name = _user['nickname'];
     if (name.length > 3) name = '${name.substring(0, 3)}...';
     TextStyle _textStyle = TextStyle(fontSize: suSetSp(16.0));
@@ -834,7 +840,7 @@ class _UserListState extends State<UserListPage> {
           children: <Widget>[
             UserAPI.getAvatar(
               size: 64.0,
-              uid: int.parse(_user['uid'].toString()),
+              uid: _user['uid'].toString().toInt(),
             ),
             SizedBox(width: suSetWidth(12.0)),
             Row(
@@ -906,10 +912,10 @@ class _UserListState extends State<UserListPage> {
           FixedAppBar(title: Text('$_type列表')),
           Expanded(
             child: !isLoading
-                ? _users?.isNotEmpty ?? false
+                ? users?.isNotEmpty ?? false
                     ? ListView.builder(
                         padding: EdgeInsets.zero,
-                        itemCount: (_users.length / 2).ceil(),
+                        itemCount: (users.length / 2).ceil(),
                         itemBuilder: (context, i) => renderRow(context, i),
                       )
                     : Center(
