@@ -69,7 +69,7 @@ class SettingsPage extends StatelessWidget {
             'route': Routes.OPENJMU_THEME,
           },
           {
-            'icon': 'launch_page',
+            'icon': R.ASSETS_ICONS_SETTINGS_LAUNCH_PAGE_SVG,
             'name': '启动页设置',
             'description': '选择您偏好的启动页面',
             'route': Routes.OPENJMU_SWITCH_STARTUP,
