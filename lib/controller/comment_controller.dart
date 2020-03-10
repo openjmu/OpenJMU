@@ -431,18 +431,9 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
     );
   }
 
-  Widget getCommentTime(context, comment) {
-    String _commentTime = comment.commentTime;
-    DateTime now = DateTime.now();
-    if (int.parse(_commentTime.substring(0, 4)) == now.year) {
-      _commentTime = _commentTime.substring(5, 16);
-    }
-    if (int.parse(_commentTime.substring(0, 2)) == now.month &&
-        int.parse(_commentTime.substring(3, 5)) == now.day) {
-      _commentTime = '${_commentTime.substring(5, 11)}';
-    }
+  Widget getCommentTime(BuildContext context, Comment comment) {
     return Text(
-      _commentTime,
+      PostAPI.postTimeConverter(comment.commentTime),
       style: Theme.of(context).textTheme.caption.copyWith(
             fontSize: suSetSp(16.0),
           ),

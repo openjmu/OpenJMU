@@ -426,18 +426,9 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
         style: TextStyle(fontSize: suSetSp(20.0)),
       );
 
-  Text getPostTime(context, post) {
-    String _postTime = post.postTime;
-    DateTime now = DateTime.now();
-    if (int.parse(_postTime.substring(0, 4)) == now.year) {
-      _postTime = _postTime.substring(5, 16);
-    }
-    if (int.parse(_postTime.substring(0, 2)) == now.month &&
-        int.parse(_postTime.substring(3, 5)) == now.day) {
-      _postTime = '${_postTime.substring(5, 11)}';
-    }
+  Text getPostTime(context, Post post) {
     return Text(
-      _postTime,
+      PostAPI.postTimeConverter(post.postTime),
       style: Theme.of(context).textTheme.caption.copyWith(
             fontSize: suSetSp(16.0),
           ),
