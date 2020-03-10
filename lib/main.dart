@@ -84,6 +84,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         Provider.of<MessagesProvider>(currentContext, listen: false).initMessages();
         Provider.of<NotificationProvider>(currentContext, listen: false).initNotification();
         Provider.of<ReportRecordsProvider>(currentContext, listen: false).initRecords();
+        Provider.of<SignProvider>(currentContext, listen: false).getSignStatus();
         Provider.of<WebAppsProvider>(currentContext, listen: false).initApps();
       })
       ..on<LogoutEvent>().listen((event) {
@@ -101,6 +102,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         Provider.of<MessagesProvider>(currentContext, listen: false).unloadMessages();
         Provider.of<NotificationProvider>(currentContext, listen: false).stopNotification();
         Provider.of<ReportRecordsProvider>(currentContext, listen: false).unloadRecords();
+        Provider.of<SignProvider>(currentContext, listen: false).resetSignStatus();
         Provider.of<WebAppsProvider>(currentContext, listen: false).unloadApps();
         Future.delayed(250.milliseconds, () {
           Provider.of<ThemesProvider>(currentContext, listen: false).resetTheme();
