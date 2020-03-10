@@ -325,7 +325,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   /// Logo on top.
   /// 顶部Logo
   Widget get topLogo => Text(
-        'OpenJMU',
+        'OpenJmu',
         style: whiteTextStyle.copyWith(
           fontFamily: 'Chocolate',
           fontSize: suSetSp(40.0),
