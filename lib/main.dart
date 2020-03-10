@@ -280,7 +280,10 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   navigatorKey: Instances.navigatorKey,
                   builder: (BuildContext c, Widget w) {
                     ScreenUtil.init(c, allowFontScaling: true);
-                    return NoScaleTextWidget(child: w);
+                    return ScrollConfiguration(
+                      behavior: const NoGlowScrollBehavior(),
+                      child: NoScaleTextWidget(child: w),
+                    );
                   },
                   title: 'OpenJMU',
                   theme: theme,
