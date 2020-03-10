@@ -555,11 +555,13 @@ class PublishPostPageState extends State<PublishPostPage> {
         content: '仍有未发送的内容，是否退出？',
         showConfirm: true,
       );
-      if (confirm) Navigator.of(context).pop(false);
-      return confirm;
+      if (confirm) {
+        Navigator.of(context).pop();
+      }
+      return false;
     } else {
-      Navigator.of(context).pop(false);
-      return true;
+      Navigator.of(context).pop();
+      return false;
     }
   }
 
