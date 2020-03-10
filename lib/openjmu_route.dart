@@ -131,7 +131,9 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case "openjmu://notifications":
       return RouteResult(
-        widget: NotificationsPage(),
+        widget: NotificationsPage(
+          initialPage: arguments['initialPage'],
+        ),
         routeName: "通知页",
         pageRouteType: PageRouteType.transparent,
       );

@@ -32,7 +32,9 @@ class NotificationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get showNotification => notifications.total > 0 || teamNotifications.total > 0;
+  bool get showNotification => notifications.total > 0;
+
+  bool get showTeamNotification => teamNotifications.total > 0;
 
   int get initialIndex => _notifications.comment > 0 ? 1 : (_notifications.at > 0 ? 2 : 0);
 
@@ -100,7 +102,9 @@ class NotificationProvider extends ChangeNotifier {
       ..comment = notification.comment
       ..praise = notification.praise
       ..fans = notification.fans;
-    if (shouldNotifyListeners) notifyListeners();
+    if (shouldNotifyListeners && notificationTimer != null) {
+      notifyListeners();
+    }
   }
 
   void updateTeamNotification(TeamNotifications teamNotification) {
@@ -110,7 +114,9 @@ class NotificationProvider extends ChangeNotifier {
       ..mention = teamNotification.mention
       ..reply = teamNotification.reply
       ..praise = teamNotification.praise;
-    if (shouldNotifyListeners) notifyListeners();
+    if (shouldNotifyListeners && notificationTimer != null) {
+      notifyListeners();
+    }
   }
 
   void readMention() {
