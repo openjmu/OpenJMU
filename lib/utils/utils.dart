@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
+
 import 'package:openjmu/constants/constants.dart';
 
 export 'channel_utils.dart';
