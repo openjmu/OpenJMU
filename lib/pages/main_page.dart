@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/home/apps_page.dart';
@@ -26,9 +25,9 @@ class MainPage extends StatefulWidget {
 }
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
-  static List<String> get pagesTitle => <String>['广场', '应用', '消息'];
+  static List<String> get pagesTitle => <String>['广场', '集市', '课业', '消息'];
 
-  static List<String> get pagesIcon => <String>['square', 'apps', 'messages'];
+  static List<String> get pagesIcon => <String>['square', 'market', 'apps', 'messages'];
 
   static double get bottomBarHeight => 72.0;
 
@@ -44,9 +43,9 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         textBaseline: TextBaseline.alphabetic,
       );
 
-  double get bottomBarIconSize => bottomBarHeight / 1.9;
+  double get bottomBarIconSize => bottomBarHeight / 2.25;
 
-  final PageController pageController = PageController(initialPage: 1);
+  final PageController appPageController = PageController(initialPage: 1);
   int _tabIndex;
 
   @override
@@ -140,32 +139,10 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                   pagesTitle.length,
                   (int i) => FABBottomAppBarItem(iconPath: pagesIcon[i], text: pagesTitle[i]),
                 ),
-                FABBottomAppBarItem(
-                  text: '我的',
-                  child: Center(
-                    child: SizedBox.fromSize(
-                      size: Size.square(suSetWidth(bottomBarIconSize * 1.25)),
-                      child: AnimatedContainer(
-                        duration: 200.milliseconds,
-                        curve: Curves.easeInOut,
-                        width: suSetWidth(bottomBarHeight * 0.4),
-                        height: suSetWidth(bottomBarHeight * 0.4),
-                        padding: EdgeInsets.all(suSetWidth(3.0)),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: _tabIndex == 3
-                              ? Border.all(color: currentThemeColor, width: suSetWidth(3.0))
-                              : null,
-                        ),
-                        child: const UserAvatar(canJump: false),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

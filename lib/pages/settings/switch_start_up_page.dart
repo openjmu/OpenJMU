@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/main_page.dart';
 import 'package:openjmu/pages/home/apps_page.dart';
-import 'package:openjmu/pages/home/post_square_list_page.dart';
 
 @FFRoute(name: "openjmu://switch-startup", routeName: "切换启动页")
 class SwitchStartUpPage extends StatefulWidget {
@@ -14,7 +13,6 @@ class SwitchStartUpPage extends StatefulWidget {
 
 class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
   List<List<String>> get pageTab => [
-        List.from(PostSquareListPageState.tabs),
         List.from(AppsPageState.tabs),
       ];
   List<List<Map<String, dynamic>>> get pageSection => [

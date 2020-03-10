@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/pages/home/add_button_page.dart';
+//import 'package:openjmu/pages/home/add_button_page.dart';
 
 class FABBottomAppBarItem {
   String iconPath;
@@ -97,36 +97,36 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
     });
   }
 
-  Widget get _middleItem => Expanded(
-        child: Selector<ThemesProvider, bool>(
-          selector: (_, provider) => provider.dark,
-          builder: (_, dark, __) {
-            return UnconstrainedBox(
-              child: SizedBox(
-                width: suSetWidth(68.0),
-                height: suSetWidth(52.0),
-                child: MaterialButton(
-                  padding: EdgeInsets.zero,
-                  color: widget.selectedColor,
-                  elevation: 2.0,
-                  highlightElevation: 6.0,
-                  child: Icon(
-                    Icons.add,
-                    color: Colors.white.withOpacity(dark ? 0.7 : 1.0),
-                    size: suSetWidth(36.0),
-                  ),
-                  onPressed: () {
-                    navigatorState.push(TransparentRoute(builder: (context) => AddingButtonPage()));
-                  },
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(suSetWidth(30.0)),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      );
+//  Widget get _middleItem => Expanded(
+//        child: Selector<ThemesProvider, bool>(
+//          selector: (_, provider) => provider.dark,
+//          builder: (_, dark, __) {
+//            return UnconstrainedBox(
+//              child: SizedBox(
+//                width: suSetWidth(68.0),
+//                height: suSetWidth(52.0),
+//                child: MaterialButton(
+//                  padding: EdgeInsets.zero,
+//                  color: widget.selectedColor,
+//                  elevation: 2.0,
+//                  highlightElevation: 6.0,
+//                  child: Icon(
+//                    Icons.add,
+//                    color: Colors.white.withOpacity(dark ? 0.7 : 1.0),
+//                    size: suSetWidth(36.0),
+//                  ),
+//                  onPressed: () {
+//                    navigatorState.push(TransparentRoute(builder: (context) => AddingButtonPage()));
+//                  },
+//                  shape: RoundedRectangleBorder(
+//                    borderRadius: BorderRadius.circular(suSetWidth(30.0)),
+//                  ),
+//                ),
+//              ),
+//            );
+//          },
+//        ),
+//      );
 
   Widget _buildTabItem({
     FABBottomAppBarItem item,
@@ -214,7 +214,27 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
                   );
                 },
               ),
-            if (index == 2)
+            if (index == 1)
+              Consumer<NotificationProvider>(
+                builder: (_, provider, __) {
+                  return Positioned(
+                    top: widget.height / 8,
+                    right: Screens.width / widget.items.length / 5,
+                    child: Visibility(
+                      visible: provider.showTeamNotification,
+                      child: ClipRRect(
+                        borderRadius: maxBorderRadius,
+                        child: Container(
+                          width: suSetWidth(12.0),
+                          height: suSetWidth(12.0),
+                          color: widget.selectedColor,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            if (index == 3)
               Consumer<MessagesProvider>(
                 builder: (_, provider, __) {
                   return Positioned(
@@ -250,7 +270,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
         onPressed: _updateIndex,
       );
     });
-    items.insert(items.length >> 1, _middleItem);
+//    items.insert(items.length >> 1, _middleItem);
 
     Widget appBar = Row(
       mainAxisSize: MainAxisSize.max,

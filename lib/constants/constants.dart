@@ -10,6 +10,7 @@ import 'package:openjmu/constants/constants.dart';
 export 'package:dartx/dartx.dart';
 export 'package:dio/dio.dart' show Response;
 export 'package:ff_annotation_route/ff_annotation_route.dart' show FFRoute, PageRouteType;
+export 'package:flutter_svg/flutter_svg.dart';
 export 'package:hive/hive.dart' show Box;
 export 'package:intl/intl.dart' show DateFormat;
 export 'package:oktoast/oktoast.dart' hide showToast;
