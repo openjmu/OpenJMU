@@ -4,6 +4,8 @@ import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart' hide Image;
+import 'package:flutter/gestures.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:extended_image/extended_image.dart';
@@ -270,7 +272,7 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
             child: Stack(
               children: <Widget>[
                 ExtendedImageGesturePageView.builder(
-                  physics: const BouncingScrollPhysics(),
+                  physics: const CustomScrollPhysics(),
                   controller: _controller,
                   itemCount: widget.pics.length,
                   itemBuilder: pageBuilder,
@@ -486,4 +488,15 @@ class ImageBean {
   String toString() {
     return 'ImageBean ${const JsonEncoder.withIndent('  ').convert(toJson())}';
   }
+}
+
+class CustomScrollPhysics extends BouncingScrollPhysics {
+  const CustomScrollPhysics({ScrollPhysics parent}) : super(parent: parent);
+
+  @override
+  SpringDescription get spring => SpringDescription.withDampingRatio(
+        mass: 0.5,
+        stiffness: 300.0,
+        ratio: 1.1,
+      );
 }
