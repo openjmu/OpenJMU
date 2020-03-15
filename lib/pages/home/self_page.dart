@@ -69,6 +69,9 @@ class SelfPage extends StatelessWidget {
           ],
       ];
 
+  /// 顶部内容基础高度
+  double get headerHeight => 200.0;
+
   /// Handler for setting item.
   /// 设置项的回调处理
   void _handleItemClick(BuildContext context, Map<String, dynamic> item) {
@@ -84,7 +87,7 @@ class SelfPage extends StatelessWidget {
   /// 顶部部件封装
   Widget headerWrapper({@required Widget child}) {
     return Container(
-      height: suSetHeight(200.0),
+      height: suSetHeight(headerHeight),
       child: Stack(
         overflow: Overflow.visible,
         children: <Widget>[
@@ -130,7 +133,7 @@ class SelfPage extends StatelessWidget {
             vertical: suSetHeight(25.0),
           ),
           width: Screens.width * 0.7,
-          height: suSetHeight(80.0) + Screens.topSafeHeight,
+          height: suSetHeight(headerHeight - 20.0) - Screens.topSafeHeight,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(suSetWidth(25.0)),
@@ -224,7 +227,7 @@ class SelfPage extends StatelessWidget {
         builder: (BuildContext _, SignProvider provider, Widget __) {
           return MaterialButton(
             color: currentThemeColor,
-            minWidth: provider.hasSigned ? suSetWidth(120.0) : suSetWidth(100.0),
+            minWidth: provider.hasSigned ? suSetWidth(130.0) : suSetWidth(100.0),
             height: suSetHeight(50.0),
             padding: EdgeInsets.zero,
             shape: RoundedRectangleBorder(
@@ -302,7 +305,7 @@ class SelfPage extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       child: Container(
-        height: suSetHeight(60.0),
+        height: suSetHeight(64.0),
         child: Row(
           children: <Widget>[
             Padding(
@@ -313,7 +316,7 @@ class SelfPage extends StatelessWidget {
               child: SvgPicture.asset(
                 item['icon'] as String,
                 color: currentThemeColor,
-                width: suSetWidth(30.0),
+                width: suSetWidth(32.0),
               ),
             ),
             Expanded(
@@ -543,7 +546,7 @@ class SelfPage extends StatelessWidget {
                 ),
                 Expanded(
                   child: ListView.separated(
-                    padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+                    padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
                     separatorBuilder: (BuildContext _, int __) => separator(context),
                     itemCount: settingsSection.length,
                     itemBuilder: (BuildContext _, int index) =>
