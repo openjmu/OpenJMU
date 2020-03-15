@@ -32,6 +32,10 @@ export 'package:openjmu/widgets/dialogs/confirmation_dialog.dart' hide LinkText;
 export 'package:openjmu/widgets/dialogs/loading_dialog.dart';
 export 'package:openjmu/widgets/webview/in_app_webview.dart';
 
+/// Empty counter builder for [TextField].
+final InputCounterWidgetBuilder emptyCounterBuilder =
+    (BuildContext _, {int currentLength, int maxLength, bool isFocused}) => null;
+
 class TransparentRoute extends PageRoute<void> {
   TransparentRoute({
     @required this.builder,

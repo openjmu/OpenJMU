@@ -1039,7 +1039,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                   ),
                   maxLines: null,
                   maxLength: 30,
-                  buildCounter: (_, {currentLength, maxLength, isFocused}) => null,
+                  buildCounter: emptyCounterBuilder,
                   onChanged: (String value) {
                     content = value;
                     if (mounted) setState(() {});
