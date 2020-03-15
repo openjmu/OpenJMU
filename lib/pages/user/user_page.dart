@@ -907,26 +907,22 @@ class _UserListState extends State<UserListPage> {
         break;
     }
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          FixedAppBar(title: Text('$_type列表')),
-          Expanded(
-            child: !isLoading
-                ? users?.isNotEmpty ?? false
-                    ? ListView.builder(
-                        padding: EdgeInsets.zero,
-                        itemCount: (users.length / 2).ceil(),
-                        itemBuilder: (context, i) => renderRow(context, i),
-                      )
-                    : Center(
-                        child: Text(
-                          '暂无内容',
-                          style: TextStyle(fontSize: suSetSp(20.0)),
-                        ),
-                      )
-                : SpinKitWidget(),
-          ),
-        ],
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(title: Text('$_type列表')),
+        body: !isLoading
+            ? users?.isNotEmpty ?? false
+                ? ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: (users.length / 2).ceil(),
+                    itemBuilder: (context, i) => renderRow(context, i),
+                  )
+                : Center(
+                    child: Text(
+                      '暂无内容',
+                      style: TextStyle(fontSize: suSetSp(20.0)),
+                    ),
+                  )
+            : SpinKitWidget(),
       ),
     );
   }

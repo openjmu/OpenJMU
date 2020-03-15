@@ -47,17 +47,11 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          const FixedAppBar(title: Text('扫描二维码')),
-          Expanded(
-            child: QrcodeReaderView(
-              key: _key,
-              onScan: (String data) => onScan(context, data),
-            ),
-          ),
-        ],
+    return FixedAppBarWrapper(
+      appBar: FixedAppBar(title: Text('扫描二维码')),
+      body: QrcodeReaderView(
+        key: _key,
+        onScan: (String data) => onScan(context, data),
       ),
     );
   }

@@ -46,10 +46,12 @@ class PostDetailPageState extends State<PostDetailPage> {
         fontSize: suSetSp(20.0),
         fontWeight: FontWeight.bold,
       );
+
   TextStyle get textInActiveStyle => TextStyle(
         color: Colors.grey,
         fontSize: suSetSp(18.0),
       );
+
   ShapeBorder get sectionButtonShape => RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(suSetWidth(10.0)),
       );
@@ -418,38 +420,40 @@ class PostDetailPageState extends State<PostDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          FixedAppBar(
-            title: Text('动态正文'),
-            actions: <Widget>[
-              widget.post.uid == currentUser.uid ? deleteButton : postActionButton,
-            ],
-          ),
-          Expanded(
-            child: ScrollConfiguration(
-              behavior: NoGlowScrollBehavior(),
-              child: NestedScrollView(
-                physics: const ClampingScrollPhysics(),
-                headerSliverBuilder: (_, __) => [
-                  SliverToBoxAdapter(child: _post),
-                  SliverPersistentHeader(
-                    delegate: CommonSliverPersistentHeaderDelegate(
-                      child: actionLists,
-                      height: suSetHeight(74.0),
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(
+          title: Text('动态正文'),
+          actions: <Widget>[
+            widget.post.uid == currentUser.uid ? deleteButton : postActionButton,
+          ],
+        ),
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: ScrollConfiguration(
+                behavior: NoGlowScrollBehavior(),
+                child: NestedScrollView(
+                  physics: const ClampingScrollPhysics(),
+                  headerSliverBuilder: (_, __) => [
+                    SliverToBoxAdapter(child: _post),
+                    SliverPersistentHeader(
+                      delegate: CommonSliverPersistentHeaderDelegate(
+                        child: actionLists,
+                        height: suSetHeight(74.0),
+                      ),
+                      pinned: true,
                     ),
-                    pinned: true,
+                  ],
+                  body: IndexedStack(
+                    index: _tabIndex,
+                    children: <Widget>[_forwardsList, _commentsList, _praisesList],
                   ),
-                ],
-                body: IndexedStack(
-                  index: _tabIndex,
-                  children: <Widget>[_forwardsList, _commentsList, _praisesList],
                 ),
               ),
             ),
-          ),
-          toolbar,
-        ],
+            toolbar,
+          ],
+        ),
       ),
     );
   }

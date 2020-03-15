@@ -42,33 +42,29 @@ class ChangeThemePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          FixedAppBar(
-            title: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  '切换主题',
-                  style: TextStyle(fontSize: suSetSp(26.0), fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '多彩颜色，丰富你的界面',
-                  style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(18.0)),
-                ),
-              ],
-            ),
-            elevation: 0.0,
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(
+          title: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                '切换主题',
+                style: TextStyle(fontSize: suSetSp(26.0), fontWeight: FontWeight.bold),
+              ),
+              Text(
+                '多彩颜色，丰富你的界面',
+                style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(18.0)),
+              ),
+            ],
           ),
-          Expanded(
-            child: GridView.builder(
-              padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
-              itemCount: supportColors.length,
-              itemBuilder: colorItem,
-            ),
-          ),
-        ],
+          elevation: 0.0,
+        ),
+        body: GridView.builder(
+          padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+          itemCount: supportColors.length,
+          itemBuilder: colorItem,
+        ),
       ),
     );
   }

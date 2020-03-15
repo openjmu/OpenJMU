@@ -246,60 +246,52 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ThemesProvider>(
-      builder: (_, provider, __) {
-        return Scaffold(
-          body: Column(
+    return Scaffold(
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(
+          title: Column(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              FixedAppBar(
-                title: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(
-                      '偏好设置',
-                      style: Theme.of(context).textTheme.title.copyWith(
-                            fontSize: suSetSp(26.0),
-                            fontWeight: FontWeight.bold,
-                          ),
+              Text(
+                '偏好设置',
+                style: Theme.of(context).textTheme.title.copyWith(
+                      fontSize: suSetSp(26.0),
+                      fontWeight: FontWeight.bold,
                     ),
-                    Text(
-                      '管理您的应用偏好设置',
-                      style: Theme.of(context).textTheme.caption.copyWith(
-                            fontSize: suSetSp(18.0),
-                          ),
-                    ),
-                  ],
-                ),
-                elevation: 0.0,
               ),
-              Expanded(
-                child: ListView.separated(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: suSetWidth(40.0),
-                  ),
-                  separatorBuilder: (context, index) => separator(
-                    context,
-                    color: Colors.transparent,
-                    height: 20.0,
-                  ),
-                  itemCount: pageSection.length,
-                  itemBuilder: (context, sectionIndex) => ListView.builder(
-                    padding: EdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: pageSection[sectionIndex].length,
-                    itemBuilder: (context, index) => settingItem(
-                      context: context,
-                      index: index,
-                      sectionIndex: sectionIndex,
+              Text(
+                '管理您的应用偏好设置',
+                style: Theme.of(context).textTheme.caption.copyWith(
+                      fontSize: suSetSp(18.0),
                     ),
-                  ),
-                ),
               ),
             ],
           ),
-        );
-      },
+          elevation: 0.0,
+        ),
+        body: ListView.separated(
+          padding: EdgeInsets.symmetric(
+            horizontal: suSetWidth(40.0),
+          ),
+          separatorBuilder: (context, index) => separator(
+            context,
+            color: Colors.transparent,
+            height: 20.0,
+          ),
+          itemCount: pageSection.length,
+          itemBuilder: (context, sectionIndex) => ListView.builder(
+            padding: EdgeInsets.zero,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: pageSection[sectionIndex].length,
+            itemBuilder: (context, index) => settingItem(
+              context: context,
+              index: index,
+              sectionIndex: sectionIndex,
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

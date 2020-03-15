@@ -73,20 +73,15 @@ class AppsPageState extends State<AppsPage>
     super.dispose();
   }
 
-  Widget get _appBar => Positioned(
-        top: 0.0,
-        left: 0.0,
-        right: 0.0,
-        child: FixedAppBar(
-          automaticallyImplyLeading: false,
-          title: Padding(
-            padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
-            child: Row(
-              children: <Widget>[
-                Expanded(child: _tabBar),
-                _refreshIcon,
-              ],
-            ),
+  Widget get _appBar => FixedAppBar(
+        automaticallyImplyLeading: false,
+        title: Padding(
+          padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
+          child: Row(
+            children: <Widget>[
+              Expanded(child: _tabBar),
+              _refreshIcon,
+            ],
           ),
         ),
       );
@@ -168,56 +163,43 @@ class AppsPageState extends State<AppsPage>
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
-    _tabController = TabController(
-      initialIndex: _tabController.index,
-      length: tabs.length,
-      vsync: this,
-    );
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
-      body: Stack(
-        children: <Widget>[
-          Positioned(
-            top: suSetHeight(kAppBarHeight) + MediaQuery.of(context).padding.top,
-            left: 0.0,
-            right: 0.0,
-            bottom: 0.0,
-            child: Selector<ThemesProvider, bool>(
-              selector: (_, provider) => provider.dark,
-              builder: (_, dark, __) {
-                return ExtendedTabBarView(
-                  physics: tabs.contains('成绩')
-                      ? const ScrollPhysics()
-                      : const NeverScrollableScrollPhysics(),
-                  cacheExtent: 3,
-                  controller: _tabController,
-                  children: <Widget>[
-                    if (tabs.contains('课程表'))
-                      currentUser.isTeacher != null
-                          ? currentUser?.isTeacher ?? false
-                              ? InAppBrowserPage(
-                                  url: '${API.courseScheduleTeacher}'
-                                      '?sid=${currentUser.sid}'
-                                      '&night=${dark ? 1 : 0}',
-                                  title: '课程表',
-                                  withAppBar: false,
-                                  withAction: false,
-                                  keepAlive: true,
-                                )
-                              : CourseSchedulePage(key: Instances.courseSchedulePageStateKey)
-                          : SizedBox.shrink(),
-                    if (tabs.contains('成绩')) ScorePage(),
-                    AppCenterPage(
-                      refreshIndicatorKey: refreshIndicatorKey,
-                      scrollController: _scrollController,
-                    ),
-                  ],
-                );
-              },
-            ),
-          ),
-          _appBar,
-        ],
+      body: FixedAppBarWrapper(
+        appBar: _appBar,
+        body: Selector<ThemesProvider, bool>(
+          selector: (_, provider) => provider.dark,
+          builder: (_, dark, __) {
+            return ExtendedTabBarView(
+              physics: tabs.contains('成绩')
+                  ? const ScrollPhysics()
+                  : const NeverScrollableScrollPhysics(),
+              cacheExtent: 3,
+              controller: _tabController,
+              children: <Widget>[
+                if (tabs.contains('课程表'))
+                  currentUser.isTeacher != null
+                      ? currentUser?.isTeacher ?? false
+                          ? InAppBrowserPage(
+                              url: '${API.courseScheduleTeacher}'
+                                  '?sid=${currentUser.sid}'
+                                  '&night=${dark ? 1 : 0}',
+                              title: '课程表',
+                              withAppBar: false,
+                              withAction: false,
+                              keepAlive: true,
+                            )
+                          : CourseSchedulePage(key: Instances.courseSchedulePageStateKey)
+                      : SizedBox.shrink(),
+                if (tabs.contains('成绩')) ScorePage(),
+                AppCenterPage(
+                  refreshIndicatorKey: refreshIndicatorKey,
+                  scrollController: _scrollController,
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

@@ -89,51 +89,38 @@ class PostSquarePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          top: suSetHeight(kAppBarHeight) + MediaQuery.of(context).padding.top,
-          left: 0.0,
-          right: 0.0,
-          bottom: 0.0,
-          child: Container(
-            color: Theme.of(context).canvasColor,
-            child: PostList(
-              PostController(
-                postType: 'square',
-                isFollowed: false,
-                isMore: false,
-                lastValue: (int id) => id,
+    return FixedAppBarWrapper(
+      appBar: FixedAppBar(
+        automaticallyImplyLeading: false,
+        elevation: 1.0,
+        title: Padding(
+          padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+          child: Row(
+            children: <Widget>[
+              GestureDetector(
+                onTap: Instances.mainPageScaffoldKey.currentState.openDrawer,
+                child: UserAvatar(canJump: false),
               ),
-              needRefreshIndicator: true,
-              scrollController: ScrollController(),
-            ),
+              const Spacer(),
+              publishButton(context),
+              notificationButton,
+            ],
           ),
         ),
-        Positioned(
-          top: 0.0,
-          left: 0.0,
-          right: 0.0,
-          child: FixedAppBar(
-            automaticallyImplyLeading: false,
-            elevation: 1.0,
-            title: Padding(
-              padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
-              child: Row(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: Instances.mainPageScaffoldKey.currentState.openDrawer,
-                    child: UserAvatar(canJump: false),
-                  ),
-                  const Spacer(),
-                  publishButton(context),
-                  notificationButton,
-                ],
-              ),
-            ),
+      ),
+      body: Container(
+        color: Theme.of(context).canvasColor,
+        child: PostList(
+          PostController(
+            postType: 'square',
+            isFollowed: false,
+            isMore: false,
+            lastValue: (int id) => id,
           ),
+          needRefreshIndicator: true,
+          scrollController: ScrollController(),
         ),
-      ],
+      ),
     );
   }
 }

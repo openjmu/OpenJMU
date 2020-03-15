@@ -119,63 +119,59 @@ class _ImageCropPageState extends State<ImageCropPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          FixedAppBar(
-            title: Text(_file == null ? '上传头像' : '裁剪头像'),
-            actions: _file != null
-                ? <Widget>[
-                    IconButton(
-                      icon: Icon(Icons.check),
-                      onPressed: () => _cropImage(context),
-                    ),
-                  ]
-                : null,
-          ),
-          Expanded(
-            child: _file != null
-                ? ExtendedImage.file(
-                    _file,
-                    fit: BoxFit.contain,
-                    mode: ExtendedImageMode.editor,
-                    enableLoadState: true,
-                    extendedImageEditorKey: _editorKey,
-                    initEditorConfigHandler: (ExtendedImageState state) {
-                      return EditorConfig(
-                        maxScale: 8.0,
-                        cropRectPadding: const EdgeInsets.all(30.0),
-                        cropAspectRatio: 1.0,
-                        hitTestSize: 30.0,
-                        cornerColor: Colors.grey,
-                        lineColor: Colors.grey,
-                      );
-                    },
-                  )
-                : Center(
-                    child: InkWell(
-                      onTap: _openImage,
-                      child: Padding(
-                        padding: EdgeInsets.all(suSetSp(60.0)),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Icon(Icons.add, size: suSetSp(60.0)),
-                            emptyDivider(height: 20.0),
-                            Text(
-                              '选择需要上传的头像',
-                              style: Theme.of(context).textTheme.body1.copyWith(
-                                    fontSize: suSetSp(20.0),
-                                  ),
-                            ),
-                          ],
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(
+          title: Text(_file == null ? '上传头像' : '裁剪头像'),
+          actions: _file != null
+              ? <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.check),
+                    onPressed: () => _cropImage(context),
+                  ),
+                ]
+              : null,
+        ),
+        body: _file != null
+            ? ExtendedImage.file(
+                _file,
+                fit: BoxFit.contain,
+                mode: ExtendedImageMode.editor,
+                enableLoadState: true,
+                extendedImageEditorKey: _editorKey,
+                initEditorConfigHandler: (ExtendedImageState state) {
+                  return EditorConfig(
+                    maxScale: 8.0,
+                    cropRectPadding: const EdgeInsets.all(30.0),
+                    cropAspectRatio: 1.0,
+                    hitTestSize: 30.0,
+                    cornerColor: Colors.grey,
+                    lineColor: Colors.grey,
+                  );
+                },
+              )
+            : Center(
+                child: InkWell(
+                  onTap: _openImage,
+                  child: Padding(
+                    padding: EdgeInsets.all(suSetSp(60.0)),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Icon(Icons.add, size: suSetSp(60.0)),
+                        emptyDivider(height: 20.0),
+                        Text(
+                          '选择需要上传的头像',
+                          style: Theme.of(context).textTheme.body1.copyWith(
+                                fontSize: suSetSp(20.0),
+                              ),
                         ),
-                      ),
-                      highlightColor: Colors.red,
-                      customBorder: const CircleBorder(),
+                      ],
                     ),
                   ),
-          ),
-        ],
+                  highlightColor: Colors.red,
+                  customBorder: const CircleBorder(),
+                ),
+              ),
       ),
       bottomNavigationBar: _file != null
           ? BottomAppBar(

@@ -67,50 +67,46 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
     final avatarSize = 64.0;
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
-      body: Column(
-        children: <Widget>[
-          FixedAppBar(
-            title: Text('二维码名片'),
-            actions: <Widget>[IconButton(icon: Icon(Icons.save), onPressed: saveToGallery)],
-          ),
-          Expanded(
-            child: Center(
-              child: RepaintBoundary(
-                key: previewContainer,
-                child: Container(
-                  margin: EdgeInsets.all(suSetWidth(40.0)),
-                  padding: EdgeInsets.all(suSetWidth(36.0)),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(suSetWidth(20.0)),
-                    color: Colors.grey[350],
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(
+          title: Text('二维码名片'),
+          actions: <Widget>[IconButton(icon: Icon(Icons.save), onPressed: saveToGallery)],
+        ),
+        body: Center(
+          child: RepaintBoundary(
+            key: previewContainer,
+            child: Container(
+              margin: EdgeInsets.all(suSetWidth(40.0)),
+              padding: EdgeInsets.all(suSetWidth(36.0)),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(suSetWidth(20.0)),
+                color: Colors.grey[350],
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Row(
                     children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          UserAvatar(size: avatarSize),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
-                              child: Text(
-                                currentUser.name,
-                                style: TextStyle(color: Colors.black, fontSize: suSetSp(22.0)),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
+                      UserAvatar(size: avatarSize),
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+                          child: Text(
+                            currentUser.name,
+                            style: TextStyle(color: Colors.black, fontSize: suSetSp(22.0)),
+                            textAlign: TextAlign.left,
                           ),
-                        ],
+                        ),
                       ),
-                      SizedBox(height: suSetHeight(30.0)),
-                      qrImage,
                     ],
                   ),
-                ),
+                  SizedBox(height: suSetHeight(30.0)),
+                  qrImage,
+                ],
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }

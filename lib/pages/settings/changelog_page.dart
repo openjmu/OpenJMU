@@ -15,7 +15,7 @@ class ChangeLogPage extends StatefulWidget {
 }
 
 class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateMixin {
-  final _pageController = PageController();
+  final PageController _pageController = PageController();
   double _currentPage = 0.0;
 
   Set changeLogs = HiveBoxes.changelogBox.values.toSet();
@@ -310,59 +310,54 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: <Widget>[
-          FixedAppBar(title: Text('版本履历')),
-          Expanded(
-            child: Stack(
-              children: <Widget>[
-                Positioned.fill(
-                  child: changeLogs != null
-                      ? LayoutBuilder(
-                          builder: (context, constraints) => NotificationListener(
-                            onNotification: (ScrollNotification notification) {
-                              _currentPage = _pageController.page;
-                              if (notification.metrics.axisDirection == AxisDirection.right &&
-                                  _currentPage > 2.0) {
-                                displayBack = false;
-                              } else {
-                                displayBack = true;
-                              }
-                              if (mounted) setState(() {});
-                              return true;
-                            },
-                            child: Column(
-                              children: <Widget>[
-                                goBackButton,
-                                Expanded(
-                                  child: PageView.custom(
-                                    controller: _pageController,
-                                    physics: const BouncingScrollPhysics(),
-                                    childrenDelegate: SliverChildBuilderDelegate(
-                                      (context, index) => index == changeLogs.length
-                                          ? startWidget
-                                          : detailWidget(
-                                              index,
-                                              changeLogs.elementAt(index),
-                                              parallaxOffset: constraints.maxWidth /
-                                                  2.0 *
-                                                  (index - _currentPage),
-                                            ),
-                                      childCount: changeLogs.length + 1,
-                                    ),
-                                  ),
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(title: Text('版本履历')),
+        body: Stack(
+          children: <Widget>[
+            Positioned.fill(
+              child: changeLogs != null
+                  ? LayoutBuilder(
+                      builder: (context, constraints) => NotificationListener(
+                        onNotification: (ScrollNotification notification) {
+                          _currentPage = _pageController.page;
+                          if (notification.metrics.axisDirection == AxisDirection.right &&
+                              _currentPage > 2.0) {
+                            displayBack = false;
+                          } else {
+                            displayBack = true;
+                          }
+                          if (mounted) setState(() {});
+                          return true;
+                        },
+                        child: Column(
+                          children: <Widget>[
+                            goBackButton,
+                            Expanded(
+                              child: PageView.custom(
+                                controller: _pageController,
+                                physics: const BouncingScrollPhysics(),
+                                childrenDelegate: SliverChildBuilderDelegate(
+                                  (BuildContext _, int index) => index == changeLogs.length
+                                      ? startWidget
+                                      : detailWidget(
+                                          index,
+                                          changeLogs.elementAt(index),
+                                          parallaxOffset:
+                                              constraints.maxWidth / 2.0 * (index - _currentPage),
+                                        ),
+                                  childCount: changeLogs.length + 1,
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        )
-                      : emptyTips,
-                ),
-                backdrop,
-              ],
+                          ],
+                        ),
+                      ),
+                    )
+                  : emptyTips,
             ),
-          ),
-        ],
+            backdrop,
+          ],
+        ),
       ),
     );
   }

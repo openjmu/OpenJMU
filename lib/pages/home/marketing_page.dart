@@ -163,69 +163,56 @@ class _MarketingPageState extends State<MarketingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          top: suSetHeight(kAppBarHeight) + MediaQuery.of(context).padding.top,
-          left: 0.0,
-          right: 0.0,
-          bottom: 0.0,
-          child: Container(
-            color: Theme.of(context).canvasColor,
-            child: RefreshIndicator(
-              key: _refreshIndicatorKey,
-              onRefresh: getPostList,
-              child: loaded
-                  ? ExtendedListView.builder(
-                      padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
-                      extendedListDelegate: ExtendedListDelegate(
-                        collectGarbage: collectGarbageHandler,
-                      ),
-                      controller: _scrollController,
-                      itemCount: posts.length + 1,
-                      itemBuilder: (BuildContext _, int index) {
-                        if (index == posts.length - 1 && canLoadMore) {
-                          getPostList(more: true);
-                        }
-                        if (index == posts.length) {
-                          return LoadMoreIndicator(canLoadMore: canLoadMore);
-                        }
-                        return ChangeNotifierProvider.value(
-                          value: TeamPostProvider(posts.elementAt(index)),
-                          child: TeamPostPreviewCard(
-                            key: ValueKey('marketPost-${posts.elementAt(index).tid}'),
-                          ),
-                        );
-                      },
-                    )
-                  : SpinKitWidget(),
-            ),
-          ),
-        ),
-        Positioned(
-          top: 0.0,
-          left: 0.0,
-          right: 0.0,
-          child: FixedAppBar(
-            automaticallyImplyLeading: false,
-            elevation: 1.0,
-            title: Padding(
-              padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
-              child: Row(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: Instances.mainPageScaffoldKey.currentState.openDrawer,
-                    child: UserAvatar(canJump: false),
-                  ),
-                  const Spacer(),
-                  publishButton,
-                  notificationButton,
-                ],
+    return FixedAppBarWrapper(
+      appBar: FixedAppBar(
+        automaticallyImplyLeading: false,
+        elevation: 1.0,
+        title: Padding(
+          padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+          child: Row(
+            children: <Widget>[
+              GestureDetector(
+                onTap: Instances.mainPageScaffoldKey.currentState.openDrawer,
+                child: UserAvatar(canJump: false),
               ),
-            ),
+              const Spacer(),
+              publishButton,
+              notificationButton,
+            ],
           ),
         ),
-      ],
+      ),
+      body: Container(
+        color: Theme.of(context).canvasColor,
+        child: RefreshIndicator(
+          key: _refreshIndicatorKey,
+          onRefresh: getPostList,
+          child: loaded
+              ? ExtendedListView.builder(
+                  padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
+                  extendedListDelegate: ExtendedListDelegate(
+                    collectGarbage: collectGarbageHandler,
+                  ),
+                  controller: _scrollController,
+                  itemCount: posts.length + 1,
+                  itemBuilder: (BuildContext _, int index) {
+                    if (index == posts.length - 1 && canLoadMore) {
+                      getPostList(more: true);
+                    }
+                    if (index == posts.length) {
+                      return LoadMoreIndicator(canLoadMore: canLoadMore);
+                    }
+                    return ChangeNotifierProvider.value(
+                      value: TeamPostProvider(posts.elementAt(index)),
+                      child: TeamPostPreviewCard(
+                        key: ValueKey('marketPost-${posts.elementAt(index).tid}'),
+                      ),
+                    );
+                  },
+                )
+              : SpinKitWidget(),
+        ),
+      ),
     );
   }
 }

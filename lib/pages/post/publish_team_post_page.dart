@@ -5,7 +5,7 @@
 import 'dart:async';
 import 'dart:core';
 import 'dart:io';
-import 'dart:math';
+import 'dart:math' as math;
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
@@ -593,44 +593,42 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
 
   @override
   Widget build(BuildContext context) {
-    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     if (keyboardHeight > 0) emoticonPadActive = false;
 
-    _keyboardHeight = max(_keyboardHeight, keyboardHeight);
+    if (_keyboardHeight != math.max(_keyboardHeight, keyboardHeight)) {
+      _keyboardHeight = math.max(_keyboardHeight, keyboardHeight);
+    }
 
     return WillPopScope(
       onWillPop: checkEmptyWhenPop,
       child: Scaffold(
-        body: ScrollConfiguration(
-          behavior: NoGlowScrollBehavior(),
-          child: Column(
-            children: <Widget>[
-              FixedAppBar(
-                title: Text('发布集市动态'),
-                actions: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.send),
-                    onPressed: () => post(context),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      child: Column(
-                        children: <Widget>[
-                          textField(context),
-                          if (assets.isNotEmpty) customGridView(context),
-                        ],
-                      ),
-                    ),
-                    _toolbar(context),
-                    emoticonPad(context),
-                  ],
-                ),
+        body: FixedAppBarWrapper(
+          appBar: FixedAppBar(
+            title: Text('发布集市动态'),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.send),
+                onPressed: () => post(context),
               ),
             ],
+          ),
+          body: ScrollConfiguration(
+            behavior: NoGlowScrollBehavior(),
+            child: Column(
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      textField(context),
+                      if (assets.isNotEmpty) customGridView(context),
+                    ],
+                  ),
+                ),
+                _toolbar(context),
+                emoticonPad(context),
+              ],
+            ),
           ),
         ),
       ),

@@ -217,7 +217,7 @@ class AboutPage extends StatelessWidget {
                   appName,
                   versionInfo,
                   actionList(context),
-                  Spacer(),
+                  const Spacer(),
                   agreement(context),
                   developedBy(context),
                 ],

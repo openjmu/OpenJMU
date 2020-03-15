@@ -52,24 +52,18 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          FixedAppBar(title: Text(widget.news.title)),
-          Expanded(
-            child: (pageContent != null && _contentLoaded)
-                ? WebviewScaffold(
-                    url: pageContent,
-                    allowFileURLs: true,
-                    enableAppScheme: true,
-                    withJavascript: true,
-                    withLocalStorage: true,
-                    resizeToAvoidBottomInset: true,
-                  )
-                : SpinKitWidget(),
-          ),
-        ],
-      ),
+    return FixedAppBarWrapper(
+      appBar: FixedAppBar(title: Text(widget.news.title)),
+      body: (pageContent != null && _contentLoaded)
+          ? WebviewScaffold(
+              url: pageContent,
+              allowFileURLs: true,
+              enableAppScheme: true,
+              withJavascript: true,
+              withLocalStorage: true,
+              resizeToAvoidBottomInset: true,
+            )
+          : SpinKitWidget(),
     );
   }
 }

@@ -177,53 +177,48 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          FixedAppBar(
-            title: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  '启动页设置',
-                  style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: suSetSp(26.0),
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                Text(
-                  '选择您偏好的启动页面',
-                  style: Theme.of(context).textTheme.caption.copyWith(
-                        fontSize: suSetSp(18.0),
-                      ),
-                ),
-              ],
-            ),
-            elevation: 0.0,
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(
+          title: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                '启动页设置',
+                style: Theme.of(context).textTheme.title.copyWith(
+                      fontSize: suSetSp(26.0),
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              Text(
+                '选择您偏好的启动页面',
+                style: Theme.of(context).textTheme.caption.copyWith(
+                      fontSize: suSetSp(18.0),
+                    ),
+              ),
+            ],
           ),
-          Expanded(
-            child: ListView.separated(
-              padding: EdgeInsets.symmetric(horizontal: suSetSp(40.0)),
-              separatorBuilder: (context, index) => separator(
-                context,
-                color: Colors.transparent,
-                height: 20.0,
-              ),
-              itemCount: pageSection.length,
-              itemBuilder: (context, sectionIndex) => ListView.builder(
-                padding: EdgeInsets.zero,
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: pageSection[sectionIndex].length,
-                itemBuilder: (context, index) => settingItem(
-                  context,
-                  index,
-                  sectionIndex,
-                ),
-              ),
+          elevation: 0.0,
+        ),
+        body: ListView.separated(
+          padding: EdgeInsets.symmetric(horizontal: suSetSp(40.0)),
+          separatorBuilder: (context, index) => separator(
+            context,
+            color: Colors.transparent,
+            height: 20.0,
+          ),
+          itemCount: pageSection.length,
+          itemBuilder: (context, sectionIndex) => ListView.builder(
+            padding: EdgeInsets.zero,
+            physics: const NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: pageSection[sectionIndex].length,
+            itemBuilder: (context, index) => settingItem(
+              context,
+              index,
+              sectionIndex,
             ),
           ),
-        ],
+        ),
       ),
     );
   }

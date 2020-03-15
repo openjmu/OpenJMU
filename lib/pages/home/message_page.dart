@@ -177,22 +177,16 @@ class MessagePageState extends State<MessagePage> with TickerProviderStateMixin 
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
+    return FixedAppBarWrapper(
+      appBar: FixedAppBar(
+        title: _tabBar,
+        centerTitle: false,
+        automaticallyImplyLeading: false,
+      ),
+      body: TabBarView(
+        controller: _tabController,
         children: <Widget>[
-          FixedAppBar(
-            title: _tabBar,
-            centerTitle: false,
-            automaticallyImplyLeading: false,
-          ),
-          Expanded(
-            child: TabBarView(
-              controller: _tabController,
-              children: <Widget>[
-                _messageList,
-              ],
-            ),
-          ),
+          _messageList,
         ],
       ),
     );
