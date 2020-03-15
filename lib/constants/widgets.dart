@@ -20,6 +20,7 @@ export 'package:openjmu/widgets/custom_switch.dart';
 export 'package:openjmu/widgets/dismiss_wrapper.dart';
 export 'package:openjmu/widgets/fab_bottom_appbar.dart';
 export 'package:openjmu/widgets/fixed_appbar.dart';
+export 'package:openjmu/widgets/image/image_viewer.dart';
 export 'package:openjmu/widgets/no_scale_text_widget.dart';
 export 'package:openjmu/widgets/rounded_check_box.dart';
 export 'package:openjmu/widgets/rounded_tab_indicator.dart';
@@ -63,8 +64,7 @@ class TransparentRoute extends PageRoute<void> {
   Duration get transitionDuration => duration ?? Duration.zero;
 
   @override
-  Widget buildPage(
-      BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+  Widget buildPage(BuildContext context, Animation<double> _, Animation<double> __) {
     final result = builder(context);
     return Semantics(
       scopesRoute: true,
@@ -185,12 +185,6 @@ class SpinKitWidget extends StatelessWidget {
 
 /// Progress Indicator. Used in loading data.
 class PlatformProgressIndicator extends StatelessWidget {
-  final double strokeWidth;
-  final double radius;
-  final Color color;
-  final double value;
-  final Brightness brightness;
-
   const PlatformProgressIndicator({
     Key key,
     this.strokeWidth = 4.0,
@@ -199,6 +193,12 @@ class PlatformProgressIndicator extends StatelessWidget {
     this.value,
     this.brightness,
   }) : super(key: key);
+
+  final double strokeWidth;
+  final double radius;
+  final Color color;
+  final double value;
+  final Brightness brightness;
 
   @override
   Widget build(BuildContext context) {

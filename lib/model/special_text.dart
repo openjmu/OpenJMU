@@ -5,7 +5,6 @@ import 'package:flutter/gestures.dart';
 import 'package:extended_text_library/extended_text_library.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/image/image_viewer.dart';
 
 class LinkText extends SpecialText {
   static String startKey = API.wbHost;
