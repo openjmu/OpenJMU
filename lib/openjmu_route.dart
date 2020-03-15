@@ -14,6 +14,7 @@ import 'pages/news/news_detail_page.dart';
 import 'pages/notification/notifications_page.dart';
 import 'pages/post/post_detail_page.dart';
 import 'pages/post/publish_post_page.dart';
+//import 'pages/post/new_publish_post_page.dart';
 import 'pages/post/publish_team_post_page.dart';
 import 'pages/post/team_post_detail_page.dart';
 import 'pages/settings/about_page.dart';
