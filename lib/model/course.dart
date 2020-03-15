@@ -100,10 +100,17 @@ class Course {
       _name = json['couName'] ?? '(空)';
     }
 
+    String _time;
+    if (isCustom) {
+      _time = timeHandler(json['courseTime']);
+    } else {
+      _time = timeHandler(json['coudeTime']);
+    }
+
     final _c = Course(
       isCustom: isCustom,
       name: _name,
-      time: timeHandler((json[isCustom ? 'courseTime' : 'coudeTime']).toString().toIntOrNull()),
+      time: _time,
       location: json['couRoom'],
       className: json['className'],
       teacher: json['couTeaName'],
@@ -142,40 +149,45 @@ class Course {
   }
 
   /// Convert time due to inconsistent data.
-  static String timeHandler(int time) {
-    int courseTime;
+  static String timeHandler(dynamic time) {
+    assert(time != null, 'Time of course cannot be null.');
+    String courseTime = '0';
     switch (time.toString()) {
-      case '12':
       case '1':
       case '2':
-        courseTime = 1;
+      case '12':
+      case '23':
+        courseTime = '1';
         break;
-      case '34':
       case '3':
       case '4':
-        courseTime = 3;
+      case '34':
+      case '45':
+        courseTime = '3';
         break;
-      case '56':
       case '5':
       case '6':
-        courseTime = 5;
+      case '56':
+      case '67':
+        courseTime = '5';
         break;
-      case '78':
       case '7':
       case '8':
-        courseTime = 7;
+      case '78':
+      case '89':
+        courseTime = '7';
         break;
       case '90':
       case '911':
       case '9':
       case '10':
-        courseTime = 9;
+        courseTime = '9';
         break;
       case '11':
-        courseTime = 11;
+        courseTime = '11';
         break;
     }
-    return courseTime.toString();
+    return courseTime;
   }
 
   Map<String, dynamic> toJson() {
