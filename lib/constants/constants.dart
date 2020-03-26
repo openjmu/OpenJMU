@@ -14,7 +14,7 @@ export 'package:flutter_svg/flutter_svg.dart';
 export 'package:hive/hive.dart' show Box;
 export 'package:intl/intl.dart' show DateFormat;
 export 'package:oktoast/oktoast.dart' hide showToast;
-export 'package:pedantic/pedantic.dart';
+export 'package:pedantic/pedantic.dart' show unawaited;
 export 'package:url_launcher/url_launcher.dart';
 
 export 'events.dart';
@@ -32,7 +32,6 @@ export 'package:openjmu/utils/utils.dart';
 export 'package:openjmu/openjmu_route.dart' show Routes;
 
 const double kAppBarHeight = 75.0;
-const String packageName = 'cn.edu.jmu.openjmu';
 
 class Constants {
   const Constants._();
