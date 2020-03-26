@@ -396,7 +396,7 @@ class ScaledImage extends StatelessWidget {
       imageWidget = SizedBox.shrink();
     }
 
-    if (provider?.type == NetworkImageType.gif) {
+    if (provider?.imageType == ImageFileType.gif) {
       imageWidget = Stack(
         children: <Widget>[imageWidget, gifImageIndicator(context)],
       );
