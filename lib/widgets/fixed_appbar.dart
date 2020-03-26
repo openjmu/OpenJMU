@@ -18,6 +18,7 @@ class FixedAppBar extends StatelessWidget {
     this.elevation = 2.0,
     this.actions,
     this.actionsPadding,
+    this.height,
   }) : super(key: key);
 
   final Widget title;
@@ -27,6 +28,7 @@ class FixedAppBar extends StatelessWidget {
   final bool centerTitle;
   final Color backgroundColor;
   final double elevation;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class FixedAppBar extends StatelessWidget {
       type: MaterialType.transparency,
       child: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        height: suSetHeight(kAppBarHeight) + MediaQuery.of(context).padding.top,
+        height: suSetHeight(height ?? kAppBarHeight) + MediaQuery.of(context).padding.top,
         decoration: BoxDecoration(
           boxShadow: elevation > 0
               ? <BoxShadow>[
@@ -52,24 +54,29 @@ class FixedAppBar extends StatelessWidget {
           color: backgroundColor ?? Theme.of(context).primaryColor,
         ),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             if (automaticallyImplyLeading && Navigator.of(context).canPop()) BackButton(),
-            Expanded(
-              child: DefaultTextStyle(
-                child: _title,
-                style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(23.0)),
-                maxLines: 1,
-                softWrap: false,
-                overflow: TextOverflow.ellipsis,
+            if (_title != null)
+              Expanded(
+                child: Align(
+                  alignment: centerTitle ? Alignment.center : AlignmentDirectional.centerStart,
+                  child: DefaultTextStyle(
+                    child: _title,
+                    style: Theme.of(context).textTheme.title.copyWith(fontSize: 23.0.sp),
+                    maxLines: 1,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
               ),
-            ),
             if (automaticallyImplyLeading &&
                 Navigator.of(context).canPop() &&
                 (actions?.isEmpty ?? true))
               SizedBox(width: 48.0)
             else if (actions?.isNotEmpty ?? false)
               Padding(
-                padding: actionsPadding ?? EdgeInsets.only(right: suSetWidth(10.0)),
+                padding: actionsPadding ?? EdgeInsets.zero,
                 child: Row(mainAxisSize: MainAxisSize.min, children: actions),
               ),
           ],
