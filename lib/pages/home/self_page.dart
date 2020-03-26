@@ -86,7 +86,7 @@ class SelfPage extends StatelessWidget {
   /// Wrapper for header.
   /// 顶部部件封装
   Widget headerWrapper({@required Widget child}) {
-    return Container(
+    return SizedBox(
       height: suSetHeight(headerHeight),
       child: Stack(
         overflow: Overflow.visible,
@@ -174,7 +174,7 @@ class SelfPage extends StatelessWidget {
                 '${currentUser.workId}',
                 style: TextStyle(
                   color: Colors.white54,
-                  fontSize: suSetSp(22.0),
+                  fontSize: suSetSp(24.0),
                   fontFamily: 'JetBrains Mono',
                   letterSpacing: suSetSp(4.0),
                   shadows: <Shadow>[
@@ -252,7 +252,7 @@ class SelfPage extends StatelessWidget {
                     margin: EdgeInsets.only(right: suSetWidth(6.0)),
                     child: provider.hasSigned
                         ? Icon(
-                            Icons.create,
+                            Icons.location_on,
                             color: Colors.white,
                             size: suSetWidth(28.0),
                           )
@@ -316,13 +316,13 @@ class SelfPage extends StatelessWidget {
               child: SvgPicture.asset(
                 item['icon'] as String,
                 color: currentThemeColor,
-                width: suSetWidth(32.0),
+                width: suSetWidth(34.0),
               ),
             ),
             Expanded(
               child: Text(
                 item['name'],
-                style: TextStyle(fontSize: suSetSp(19.0)),
+                style: TextStyle(fontSize: suSetSp(20.0)),
               ),
             ),
             Padding(
@@ -494,14 +494,14 @@ class SelfPage extends StatelessWidget {
               children: <Widget>[
                 Row(
                   children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(right: suSetWidth(20.0)),
+                    Padding(
+                      padding: EdgeInsets.only(right: suSetWidth(20.0)),
                       child: UserAvatar(size: 44.0),
                     ),
                     Expanded(
                       child: Text(
                         '${currentUser.name ?? currentUser.workId}',
-                        style: TextStyle(fontSize: suSetSp(20.0)),
+                        style: TextStyle(fontSize: suSetSp(21.0)),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -511,7 +511,7 @@ class SelfPage extends StatelessWidget {
                 ),
                 Container(
                   margin: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
-                  height: suSetHeight(72.0),
+                  height: suSetHeight(80.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: List<Widget>.generate(actions.length, (int index) {
@@ -531,12 +531,12 @@ class SelfPage extends StatelessWidget {
                           children: <Widget>[
                             SvgPicture.asset(
                               action['icon'] as String,
-                              width: suSetWidth(36.0),
+                              width: suSetWidth(40.0),
                               color: currentThemeColor,
                             ),
                             Text(
                               action['name'] as String,
-                              style: TextStyle(fontSize: suSetSp(14.0)),
+                              style: TextStyle(fontSize: suSetSp(16.0)),
                             ),
                           ],
                         ),
