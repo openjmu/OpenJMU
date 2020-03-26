@@ -271,7 +271,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
               },
             ),
           );
-          return AnnotatedRegion(
+          return AnnotatedRegion<SystemUiOverlayStyle>(
             value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
             child: Theme(
               data: theme,
