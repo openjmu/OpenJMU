@@ -5,34 +5,35 @@
 
 import 'package:flutter/widgets.dart';
 
-import 'pages/chat/chat_app_message_page.dart';
+import 'pages/main_page.dart';
+import 'pages/settings/changelog_page.dart';
+import 'pages/settings/switch_start_up_page.dart';
+import 'pages/settings/font_scale_page.dart';
+import 'pages/settings/change_theme_page.dart';
+import 'pages/settings/about_page.dart';
+import 'pages/settings/settings_page.dart';
 import 'pages/home/scan_qrcode_page.dart';
 import 'pages/home/search_page.dart';
-import 'pages/login_page.dart';
-import 'pages/main_page.dart';
-import 'pages/news/news_detail_page.dart';
-import 'pages/notification/notifications_page.dart';
-import 'pages/post/post_detail_page.dart';
-import 'pages/post/publish_post_page.dart';
-//import 'pages/post/new_publish_post_page.dart';
 import 'pages/post/publish_team_post_page.dart';
 import 'pages/post/team_post_detail_page.dart';
-import 'pages/settings/about_page.dart';
-import 'pages/settings/changelog_page.dart';
-import 'pages/settings/change_theme_page.dart';
-import 'pages/settings/font_scale_page.dart';
-import 'pages/settings/settings_page.dart';
-import 'pages/settings/switch_start_up_page.dart';
-import 'pages/splash_page.dart';
+import 'pages/post/post_detail_page.dart';
+import 'pages/post/publish_post_page.dart';
 import 'pages/test/test_dashboard_page.dart';
+import 'pages/chat/chat_app_message_page.dart';
+import 'pages/notification/notifications_page.dart';
+import 'pages/splash_page.dart';
 import 'pages/user/backpack_page.dart';
 import 'pages/user/user_page.dart';
 import 'pages/user/user_qrcode_page.dart';
-import 'widgets/dialogs/comment_positioned.dart';
-import 'widgets/dialogs/forward_positioned.dart';
-import 'widgets/image/image_crop_page.dart';
-import 'widgets/image/image_viewer.dart';
+import 'pages/login_page.dart';
+import 'pages/news/news_detail_page.dart';
 import 'widgets/webview/in_app_webview.dart';
+import 'widgets/image/image_crop_page.dart';
+import 'widgets/image/photo_selector_viewer.dart';
+import 'widgets/image/photo_selector.dart';
+import 'widgets/image/image_viewer.dart';
+import 'widgets/dialogs/forward_positioned.dart';
+import 'widgets/dialogs/comment_positioned.dart';
 
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   switch (name) {
@@ -137,6 +138,23 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         ),
         routeName: "通知页",
         pageRouteType: PageRouteType.transparent,
+      );
+    case "openjmu://photo-selector":
+      return RouteResult(
+        widget: PhotoSelector(
+          provider: arguments['provider'],
+        ),
+        routeName: "图片选择器",
+      );
+    case "openjmu://photo-selector-viewer":
+      return RouteResult(
+        widget: PhotoSelectorViewer(
+          currentIndex: arguments['currentIndex'],
+          assets: arguments['assets'],
+          selectedAssets: arguments['selectedAssets'],
+          selectorProvider: arguments['selectorProvider'],
+        ),
+        routeName: "图片选择查看器",
       );
     case "openjmu://post-detail":
       return RouteResult(
@@ -273,6 +291,8 @@ List<String> routeNames = [
   "openjmu://login",
   "openjmu://news-detail",
   "openjmu://notifications",
+  "openjmu://photo-selector",
+  "openjmu://photo-selector-viewer",
   "openjmu://post-detail",
   "openjmu://publish-post",
   "openjmu://publish-team-post",
@@ -384,8 +404,23 @@ class Routes {
   ///
   /// [name] : openjmu://notifications
   /// [routeName] : 通知页
+  /// [arguments] : [initialPage]
   /// [pageRouteType] : PageRouteType.transparent
   static const String OPENJMU_NOTIFICATIONS = "openjmu://notifications";
+
+  /// 图片选择器
+  ///
+  /// [name] : openjmu://photo-picker
+  /// [routeName] : 图片选择器
+  /// [arguments] : [provider]
+  static const String OPENJMU_PHOTO_SELECTOR = "openjmu://photo-selector";
+
+  /// 图片选择查看器
+  ///
+  /// [name] : openjmu://photo-picker-viewer
+  /// [routeName] : 图片选择查看器
+  /// [arguments] : [currentIndex, assets]
+  static const String OPENJMU_PHOTO_SELECTOR_VIEWER = "openjmu://photo-selector-viewer";
 
   /// 动态详情页
   ///
