@@ -116,12 +116,7 @@ class EmoticonUtils {
 }
 
 class EmotionPad extends StatelessWidget {
-  final bool active;
-  final double height;
-  final String route;
-  final TextEditingController controller;
-
-  EmotionPad({
+  const EmotionPad({
     Key key,
     @required this.active,
     @required this.height,
@@ -129,39 +124,24 @@ class EmotionPad extends StatelessWidget {
     this.controller,
   }) : super(key: key);
 
-  static double get emoticonPadDefaultHeight => suSetHeight(260.0);
+  final bool active;
+  final double height;
+  final String route;
+  final TextEditingController controller;
 
-  void insertText(String text) {
-    final value = controller.value;
-    final start = value.selection.baseOffset;
-    final end = value.selection.extentOffset;
+  static double get emoticonPadDefaultHeight => Screens.width / emoticonPadGridCount * 4;
 
-    if (value.selection.isValid) {
-      String newText = '';
-      if (value.selection.isCollapsed) {
-        if (end > 0) {
-          newText += value.text.substring(0, end);
-        }
-        newText += text;
-        if (value.text.length > end) {
-          newText += value.text.substring(end, value.text.length);
-        }
-      } else {
-        newText = value.text.replaceRange(start, end, text);
-      }
-      controller.value = value.copyWith(
-        text: newText,
-        selection: value.selection.copyWith(
-          baseOffset: end + text.length,
-          extentOffset: end + text.length,
-        ),
-      );
-    }
+  static int get emoticonPadGridCount => 6;
+
+  static String filteredString(String key) {
+    String name;
+    name = key.substring(1, key.length - 1).replaceAll(RegExp(r'\d'), '');
+    return name;
   }
 
   @override
   Widget build(BuildContext context) {
-    final _height = math.max(emoticonPadDefaultHeight, height);
+    final double _height = math.max(emoticonPadDefaultHeight, height);
     return Container(
       width: double.infinity,
       height: active ? _height : 0.0,
@@ -169,21 +149,33 @@ class EmotionPad extends StatelessWidget {
       child: GridView.builder(
         padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 8,
-        ),
-        itemBuilder: (context, index) => Container(
-          margin: EdgeInsets.all(suSetWidth(6.0)),
-          child: IconButton(
-            icon: Image.asset(
-              EmoticonUtils.emoticonMap.values.elementAt(index),
-              fit: BoxFit.contain,
-            ),
-            onPressed: () {
-              insertText(EmoticonUtils.emoticonMap.keys.elementAt(index));
-            },
-          ),
+          crossAxisCount: 6,
         ),
         itemCount: EmoticonUtils.emoticonMap.values.length,
+        itemBuilder: (context, index) => IconButton(
+          icon: Column(
+            children: <Widget>[
+              Expanded(
+                child: RepaintBoundary(
+                  child: Image.asset(
+                    EmoticonUtils.emoticonMap.values.elementAt(index),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              Text(
+                filteredString(EmoticonUtils.emoticonMap.keys.elementAt(index)),
+                style: TextStyle(fontSize: suSetSp(14.0)),
+              ),
+            ],
+          ),
+          onPressed: () {
+            InputUtils.insertText(
+              text: EmoticonUtils.emoticonMap.keys.elementAt(index),
+              controller: controller,
+            );
+          },
+        ),
       ),
     );
   }
