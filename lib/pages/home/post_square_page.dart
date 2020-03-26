@@ -19,12 +19,12 @@ class PostSquarePage extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(right: suSetWidth(6.0)),
-              child: Icon(
-                Icons.create,
+            Padding(
+              padding: EdgeInsets.only(right: suSetWidth(6.0)),
+              child: SvgPicture.asset(
+                R.ASSETS_ICONS_SEND_SVG,
+                height: suSetHeight(22.0),
                 color: Colors.white,
-                size: suSetWidth(28.0),
               ),
             ),
             Text(
