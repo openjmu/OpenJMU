@@ -42,3 +42,6 @@ Future<bool> doubleBackExit() async {
     return true;
   }
 }
+
+/// Just do nothing. :)
+void doNothing() {}
