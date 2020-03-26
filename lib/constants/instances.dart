@@ -14,9 +14,9 @@ BuildContext get currentContext => navigatorState.context;
 
 ThemeData get currentTheme => Theme.of(currentContext);
 
-Brightness get currentBrightness => Theme.of(currentContext).brightness;
+Brightness get currentBrightness => currentTheme.brightness;
 
-Color get currentThemeColor => Theme.of(currentContext).accentColor;
+Color get currentThemeColor => currentTheme.accentColor;
 
 bool get currentIsDark => currentBrightness == Brightness.dark;
 
@@ -24,7 +24,9 @@ int moreThanZero(num value) => math.max(0, value);
 
 int moreThanOne(num value) => math.max(1, value);
 
-int get currentTimeStamp => DateTime.now().millisecondsSinceEpoch;
+DateTime get currentTime => DateTime.now();
+
+int get currentTimeStamp => currentTime.millisecondsSinceEpoch;
 
 class Instances {
   const Instances._();
