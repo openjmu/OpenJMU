@@ -105,18 +105,18 @@ class TeamPostAPI {
   /// Convert [DateTime] to formatted string.
   /// 将时间转换为特定格式
   ///
-  /// Rules combine WeChat & Weibo& TikTok, are down below.
+  /// Rules combined with WeChat & Weibo & TikTok, are down below.
   /// 采用微信、微博和抖音的的时间处理混合方案，具体方案如下。
   ///
-  /// 小于1分钟：刚刚
-  /// 小于1小时：n分钟前
-  /// 小于今天：n小时前
-  /// 昨天：昨天HH:mm
-  /// 小于4天：n天前
-  /// 大于4天：MM-dd
-  /// 去年及以前：yy-MM-dd
+  /// 小于１分钟：　刚刚
+  /// 小于１小时：　n分钟前
+  /// 小于今天　：　n小时前
+  /// 昨天　　　：　昨天HH:mm
+  /// 小于４天　：　n天前
+  /// 大于４天　：　MM-dd
+  /// 去年及以前：　yy-MM-dd
   static String timeConverter(content) {
-    final now = DateTime.now();
+    final DateTime now = DateTime.now();
     DateTime origin;
     String time = '';
     if (content is TeamPost) {
@@ -139,7 +139,7 @@ class TeamPostAPI {
       return DateFormat('MM-dd').format(date);
     }
 
-    final difference = now.difference(origin);
+    final Duration difference = now.difference(origin);
     if (difference <= 1.minutes) {
       time += '刚刚';
     } else if (difference <= 59.minutes) {

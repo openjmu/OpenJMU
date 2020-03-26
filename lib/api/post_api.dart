@@ -1,6 +1,11 @@
+import 'dart:async';
 import 'dart:core';
+import 'dart:typed_data';
+
+import 'package:dio/dio.dart';
 
 import 'package:openjmu/constants/constants.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class PostAPI {
   const PostAPI._();
@@ -101,7 +106,7 @@ class PostAPI {
   /// Report content to specific account through message socket.
   ///
   /// Currently *145685* is '信息化中心用户服务'.
-  static Future reportPost(Post post) async {
+  static Future<void> reportPost(Post post) async {
     final message = '————微博内容举报————\n'
         '举报时间：${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}\n'
         '举报对象：${post.nickname}\n'
@@ -122,19 +127,19 @@ class PostAPI {
   /// Convert [DateTime] to formatted string.
   /// 将时间转换为特定格式
   ///
-  /// Rules combine WeChat & Weibo& TikTok, are down below.
+  /// Rules combined with WeChat & Weibo & TikTok, are down below.
   /// 采用微信、微博和抖音的的时间处理混合方案，具体方案如下。
   ///
-  /// 小于1分钟：刚刚
-  /// 小于1小时：n分钟前
-  /// 小于今天：n小时前
-  /// 昨天：昨天HH:mm
-  /// 小于4天：n天前
-  /// 大于4天：MM-dd
-  /// 去年及以前：yy-MM-dd
+  /// 小于１分钟：　刚刚
+  /// 小于１小时：　n分钟前
+  /// 小于今天　：　n小时前
+  /// 昨天　　　：　昨天HH:mm
+  /// 小于４天　：　n天前
+  /// 大于４天　：　MM-dd
+  /// 去年及以前：　yy-MM-dd
   static String postTimeConverter(dynamic time) {
     assert(time is DateTime || time is String, 'time must be DateTime or String type.');
-    final now = DateTime.now();
+    final DateTime now = DateTime.now();
     DateTime origin;
     if (time is String) {
       origin = DateTime.tryParse(time);
@@ -151,7 +156,7 @@ class PostAPI {
       return DateFormat('MM-dd').format(date);
     }
 
-    final difference = now.difference(origin);
+    final Duration difference = now.difference(origin);
     if (difference <= 1.minutes) {
       return '刚刚';
     } else if (difference <= 59.minutes) {
@@ -167,5 +172,37 @@ class PostAPI {
     } else {
       return _formatToYear(origin);
     }
+  }
+
+  /// Create post publish request.
+  /// 创建发布动态的请求
+  static Future<Response<Map<String, dynamic>>> publishPost(Map<String, dynamic> content) async {
+    return await NetUtils.postWithCookieAndHeaderSet(
+      API.postContent,
+      data: content,
+    );
+  }
+
+  /// Create [FormData] for post's image upload.
+  /// 创建用于发布动态上传的图片的 [FormData]
+  static Future<FormData> createPostImageUploadForm(AssetEntity asset) async {
+    final Uint8List data = await asset.originBytes;
+    return FormData.from({
+      'image': UploadFileInfo.fromBytes(data, asset.title ?? '${currentTimeStamp}.jpg'),
+      'image_type': 0,
+    });
+  }
+
+  /// Create request for post's image upload.
+  /// 创建用于发布动态时上传图片的请求
+  static Future<Response<dynamic>> createPostImageUploadRequest(
+    FormData formData,
+    CancelToken cancelToken,
+  ) async {
+    return await NetUtils.postWithCookieAndHeaderSet<dynamic>(
+      API.postUploadImage,
+      data: formData,
+      cancelToken: cancelToken,
+    );
   }
 }
