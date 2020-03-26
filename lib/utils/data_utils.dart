@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -26,8 +25,10 @@ class DataUtils {
       blowfish: blowfish,
     );
     try {
+//      final Map<String, dynamic> loginData =
+//          (await UserAPI.login<Map<String, dynamic>>(params)).data['data']; // Using xAuth.
       final Map<String, dynamic> loginData =
-          (await UserAPI.login<Map<String, dynamic>>(params)).data;
+          (await UserAPI.login<Map<String, dynamic>>(params)).data; // Using 99.
       UserAPI.currentUser.sid = loginData['sid'] as String;
       UserAPI.currentUser.ticket = loginData['ticket'] as String;
       final Map<String, dynamic> user = ((await UserAPI.getUserInfo(
@@ -62,9 +63,7 @@ class DataUtils {
       return true;
     } catch (e) {
       trueDebugPrint('Failed when login: $e');
-      if (e.response != null) {
-        showToast('登录失败！${jsonDecode(e.response.toString())['msg'] ?? e.toString()}');
-      }
+      showToast('登录失败');
       return false;
     }
   }
@@ -121,30 +120,37 @@ class DataUtils {
   }
 
   static Future<void> getUserInfo([int uid]) async {
-    return await NetUtils.tokenDio
-        .get<Map<String, dynamic>>(
-      '${API.userInfo}?uid=${uid ?? currentUser.uid}',
-      options: Options(cookies: buildPHPSESSIDCookies(currentUser.sid)),
-    )
-        .then((Response<Map<String, dynamic>> response) {
-      final Map<String, dynamic> data = response.data;
-      final Map<String, dynamic> userInfo = <String, dynamic>{
-        'sid': currentUser.sid,
-        'uid': currentUser.uid,
-        'username': data['username'],
-        'signature': data['signature'],
-        'blowfish': settingsBox.get(spBlowfish),
-        'ticket': settingsBox.get(spTicket),
-        'isTeacher': int.parse(data['type'].toString()) == 1,
-        'unitId': data['unitid'],
-        'workId': data['workid'],
-//        'classId': user['class_id'],
-        'gender': int.parse(data['gender'].toString()),
-      };
-      setUserInfo(userInfo);
-    }).catchError((dynamic e) {
+    try {
+      final DateTime _start = currentTime;
+      final Map<String, dynamic> data = (await NetUtils.tokenDio.get<Map<String, dynamic>>(
+        API.userInfo,
+        queryParameters: <String, dynamic>{'uid': uid ?? currentUser.uid},
+        options: Options(cookies: buildPHPSESSIDCookies(currentUser.sid)),
+      ))
+          .data;
+      final DateTime _end = currentTime;
+      trueDebugPrint('Done request user info in: ${_end.difference(_start)}');
+      getUserInfoFromResponse(data);
+    } catch (e) {
       trueDebugPrint('Get user info error: ${e.request.cookies}');
-    });
+    }
+  }
+
+  static void getUserInfoFromResponse(Map<String, dynamic> response) {
+    final Map<String, dynamic> userInfo = <String, dynamic>{
+      'sid': currentUser.sid,
+      'uid': currentUser.uid,
+      'username': response['username'],
+      'signature': response['signature'],
+      'blowfish': settingsBox.get(spBlowfish),
+      'ticket': settingsBox.get(spTicket),
+      'isTeacher': response['type'].toString().toInt() == 1,
+      'unitId': response['unitid'],
+      'workId': response['workid'],
+//      'classId': data['class_id'],
+      'gender': response['gender'].toString().toInt(),
+    };
+    setUserInfo(userInfo);
   }
 
   static void setUserInfo(Map<String, dynamic> data) {
@@ -189,12 +195,16 @@ class DataUtils {
       );
       NetUtils.cookieJar.deleteAll();
       NetUtils.tokenCookieJar.deleteAll();
+      final DateTime _start = currentTime;
       final Map<String, dynamic> response = (await NetUtils.tokenDio.post<Map<String, dynamic>>(
         API.loginTicket,
         data: params,
       ))
           .data;
-      updateSid(response);
+      final DateTime _end = currentTime;
+      trueDebugPrint('Done request new ticket in: ${_end.difference(_start)}');
+//      updateSid(response['data']); // Using xAuth.
+      updateSid(response); // Using 99.
       await getUserInfo();
       return true;
     } catch (e) {
