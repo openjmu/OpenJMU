@@ -35,14 +35,27 @@ class Screens {
 }
 
 /// Screen capability method.
-double suSetSp(double size, {double scale}) =>
-    _sizeCapable(ScreenUtil().setSp(size) * 2, scale: scale);
+double suSetSp(double size, {double scale}) => _sizeCapable(
+      (ScreenUtil().setSp(size) * 2).toDouble(),
+      scale: scale,
+    );
 
 double suSetWidth(double size, {double scale}) =>
-    _sizeCapable(ScreenUtil().setWidth(size) * 2, scale: scale);
+    _sizeCapable((ScreenUtil().setWidth(size) * 2).toDouble(), scale: scale);
 
 double suSetHeight(double size, {double scale}) =>
-    _sizeCapable(ScreenUtil().setHeight(size) * 2, scale: scale);
+    _sizeCapable((ScreenUtil().setHeight(size) * 2).toDouble(), scale: scale);
 
-double _sizeCapable(double size, {double scale}) =>
-    size * (scale ?? Provider.of<SettingsProvider>(currentContext, listen: false).fontScale);
+double _sizeCapable(num size, {double scale}) =>
+    (size * (scale ?? Provider.of<SettingsProvider>(currentContext, listen: false).fontScale))
+        .toDouble();
+
+extension SizeExtension on num {
+  double get w => _sizeCapable(ScreenUtil().setWidth(this) * 2);
+
+  double get h => _sizeCapable(ScreenUtil().setHeight(this) * 2);
+
+  double get sp => _sizeCapable(ScreenUtil().setSp(this) * 2);
+
+  double get ssp => _sizeCapable(ScreenUtil().setSp(this, allowFontScalingSelf: true) * 2);
+}
