@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
+import 'package:extended_text_field/extended_text_field.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -418,16 +419,10 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         child: Row(
           children: <Widget>[
             Expanded(
-              child: TextFormField(
+              child: ExtendedTextField(
                 focusNode: usernameNode,
                 controller: _usernameController,
-                onSaved: (String value) => _username = value,
-                validator: (String value) {
-                  if (value.isEmpty) {
-                    return '请输入账户';
-                  }
-                  return null;
-                },
+                onChanged: (String value) => _username = value,
                 keyboardType: TextInputType.number,
                 enabled: !_login,
                 scrollPadding: EdgeInsets.zero,
@@ -437,6 +432,7 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                   isDense: true,
                 ),
                 style: whiteTextStyle.copyWith(fontSize: suSetSp(36.0)),
+                textSelectionControls: WhiteTextSelectionControls(),
               ),
             ),
             if (_usernameCanClear)
@@ -690,5 +686,34 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
         ),
       ),
     );
+  }
+}
+
+class WhiteTextSelectionControls extends ExtendedMaterialTextSelectionControls {
+  final double _kHandleSize = 22.0;
+
+  @override
+  Widget buildHandle(BuildContext _, TextSelectionHandleType type, double __) {
+    final Widget handle = SizedBox(
+      width: _kHandleSize,
+      height: _kHandleSize,
+      child: CustomPaint(
+        painter: ExtendedMaterialTextSelectionHandlePainter(color: Colors.white),
+      ),
+    );
+
+    // [handle] is a circle, with a rectangle in the top left quadrant of that
+    // circle (an onion pointing to 10:30). We rotate [handle] to point
+    // straight up or up-right depending on the handle type.
+    switch (type) {
+      case TextSelectionHandleType.left: // points up-right
+        return Transform.rotate(angle: math.pi / 2.0, child: handle);
+      case TextSelectionHandleType.right: // points up-left
+        return handle;
+      case TextSelectionHandleType.collapsed: // points up
+        return Transform.rotate(angle: math.pi / 4.0, child: handle);
+    }
+    assert(type != null);
+    return null;
   }
 }
