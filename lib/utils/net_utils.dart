@@ -150,6 +150,7 @@ class NetUtils {
     Map<String, dynamic> data,
     List<Cookie> cookies,
     Map<String, dynamic> headers,
+    CancelToken cancelToken,
   }) async =>
       await dio.post<T>(
         url,
@@ -158,6 +159,7 @@ class NetUtils {
           cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(currentUser.sid),
           headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
         ),
+        cancelToken: cancelToken,
       );
 
   static Future<Response<T>> deleteWithCookieAndHeaderSet<T>(
