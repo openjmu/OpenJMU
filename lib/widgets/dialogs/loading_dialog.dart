@@ -170,15 +170,15 @@ class LoadingDialogController {
   LoadingDialogState dialogState;
 
   void updateText(String text) {
-    dialogState.updateText(text);
+    dialogState?.updateText(text);
   }
 
   void updateIcon(Widget icon) {
-    dialogState.updateIcon(icon);
+    dialogState?.updateIcon(icon);
   }
 
   void updateContent(String type, Widget icon, String text, Duration duration) {
-    dialogState.updateContent(type: type, icon: icon, text: text, duration: duration);
+    dialogState?.updateContent(type: type, icon: icon, text: text, duration: duration);
   }
 
   void changeState(
@@ -189,7 +189,7 @@ class LoadingDialogController {
   }) {
     switch (type) {
       case 'success':
-        dialogState.updateContent(
+        dialogState?.updateContent(
           type: 'success',
           icon: Icon(Icons.check_circle, color: Colors.green, size: suSetWidth(60.0)),
           text: text,
@@ -198,7 +198,7 @@ class LoadingDialogController {
         );
         break;
       case 'failed':
-        dialogState.updateContent(
+        dialogState?.updateContent(
           type: 'failed',
           icon: RotationTransition(
             turns: const AlwaysStoppedAnimation<double>(45 / 360),
@@ -209,7 +209,7 @@ class LoadingDialogController {
         );
         break;
       case 'loading':
-        dialogState.updateContent(
+        dialogState?.updateContent(
           type: 'loading',
           icon: const CircularProgressIndicator(),
           text: text,
@@ -217,7 +217,7 @@ class LoadingDialogController {
         );
         break;
       case 'dismiss':
-        dialogState.updateContent(
+        dialogState?.updateContent(
           type: 'dismiss',
           icon: const CircularProgressIndicator(),
           text: text,
