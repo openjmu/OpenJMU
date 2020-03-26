@@ -13,6 +13,7 @@ export 'package:openjmu/providers/courses_provider.dart';
 export 'package:openjmu/providers/date_provider.dart';
 export 'package:openjmu/providers/messages_provider.dart';
 export 'package:openjmu/providers/notification_provider.dart';
+export 'package:openjmu/providers/photo_selector_provider.dart';
 export 'package:openjmu/providers/report_records_provider.dart';
 export 'package:openjmu/providers/scores_provider.dart';
 export 'package:openjmu/providers/settings_provider.dart';

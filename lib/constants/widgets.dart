@@ -20,6 +20,8 @@ export 'package:openjmu/widgets/custom_switch.dart';
 export 'package:openjmu/widgets/dismiss_wrapper.dart';
 export 'package:openjmu/widgets/fab_bottom_appbar.dart';
 export 'package:openjmu/widgets/fixed_appbar.dart';
+export 'package:openjmu/widgets/image/photo_selector.dart';
+export 'package:openjmu/widgets/image/photo_selector_viewer.dart';
 export 'package:openjmu/widgets/image/image_viewer.dart';
 export 'package:openjmu/widgets/no_scale_text_widget.dart';
 export 'package:openjmu/widgets/rounded_check_box.dart';

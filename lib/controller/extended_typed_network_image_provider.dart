@@ -6,39 +6,39 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/painting.dart';
-import 'package:extended_image/extended_image.dart';
+import 'package:extended_image_library/src/_network_image_io.dart';
 
 class ExtendedTypedNetworkImageProvider extends ExtendedNetworkImageProvider {
   ExtendedTypedNetworkImageProvider(String url) : super(url);
-  NetworkImageType _type;
-  NetworkImageType get type => _getType(rawImageData) ?? _type;
+  ImageFileType _imageType;
+  ImageFileType get imageType => _imageType ?? _getType(rawImageData);
 
   @override
   Future<ui.Codec> instantiateImageCodec(Uint8List data, DecoderCallback decode) async {
-    _type = _getType(data);
+    _imageType = _getType(data);
     return super.instantiateImageCodec(data, decode);
   }
 
-  NetworkImageType _getType(Uint8List data) {
-    NetworkImageType _type;
+  ImageFileType _getType(Uint8List data) {
+    ImageFileType _type;
     if (data != null) {
       final c = data.elementAt(0);
       switch (c) {
         case 0xFF:
-          _type = NetworkImageType.jpg;
+          _type = ImageFileType.jpg;
           break;
         case 0x89:
-          _type = NetworkImageType.png;
+          _type = ImageFileType.png;
           break;
         case 0x47:
-          _type = NetworkImageType.gif;
+          _type = ImageFileType.gif;
           break;
         case 0x49:
         case 0x4D:
-          _type = NetworkImageType.tiff;
+          _type = ImageFileType.tiff;
           break;
         default:
-          _type = NetworkImageType.other;
+          _type = ImageFileType.other;
           break;
       }
     }
@@ -46,4 +46,4 @@ class ExtendedTypedNetworkImageProvider extends ExtendedNetworkImageProvider {
   }
 }
 
-enum NetworkImageType { jpg, png, gif, tiff, other }
+enum ImageFileType { jpg, png, gif, tiff, other }
