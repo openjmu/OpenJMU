@@ -5,12 +5,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/webapp_icon.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AppCenterPage extends StatelessWidget {
-  final GlobalKey refreshIndicatorKey;
-  final ScrollController scrollController;
+  const AppCenterPage({Key key}) : super(key: key);
 
   Widget categoryListView(BuildContext context) {
     final List<Widget> _list = <Widget>[];
@@ -30,13 +27,15 @@ class AppCenterPage extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          WebAppIcon(app: webApp, size: 90.0),
+          WebAppIcon(app: webApp, size: 64.0),
           Text(
             webApp.name,
             style: Theme.of(context).textTheme.body1.copyWith(
-                  fontSize: suSetSp(20.0),
+                  fontSize: 16.0.sp,
                   fontWeight: FontWeight.normal,
                 ),
+            maxLines: 1,
+            overflow: TextOverflow.fade,
           ),
         ],
       ),
