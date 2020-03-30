@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_text_field/extended_text_field.dart';
-//import 'package:image_picker/image_picker.dart';
+//import 'package:image_picker/photo_selector.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:openjmu/constants/constants.dart';
