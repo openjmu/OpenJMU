@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class PostSquarePage extends StatelessWidget {
+  const PostSquarePage({Key key}) : super(key: key);
+
   Widget publishButton(context) => MaterialButton(
         color: currentThemeColor,
         minWidth: suSetWidth(120.0),

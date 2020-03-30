@@ -8,6 +8,8 @@ import 'package:openjmu/widgets/messages/app_message_preview_widget.dart';
 //import 'package:openjmu/widgets/messages/message_preview_widget.dart';
 
 class MessagePage extends StatefulWidget {
+  const MessagePage({Key key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => MessagePageState();
 }

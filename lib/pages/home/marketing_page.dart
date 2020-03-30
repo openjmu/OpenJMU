@@ -10,6 +10,8 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/cards/team_post_preview_card.dart';
 
 class MarketingPage extends StatefulWidget {
+  const MarketingPage({Key key}) : super(key : key);
+
   @override
   _MarketingPageState createState() => _MarketingPageState();
 }
