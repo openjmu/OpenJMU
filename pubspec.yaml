@@ -80,13 +80,14 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
-    - assets/emotionIcons/
+    - assets/emotion-icons/
     - assets/icons/
-    - assets/icons/addButton/
-    - assets/icons/appCenter/
-    - assets/icons/bottomNavigation/
+    - assets/icons/add-button/
+    - assets/icons/app-center/
+    - assets/icons/bottom-navigation/
     - assets/icons/gender/
-    - assets/icons/postActions/
+    - assets/icons/post-actions/
+    - assets/icons/self-page/
     - assets/icons/settings/
     - images/
     - images/placeholder/

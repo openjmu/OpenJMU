@@ -47,7 +47,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
   List<Map<String, Map<String, dynamic>>> get actions => [
         {
           '广场': {
-            'icon': R.ASSETS_ICONS_ADDBUTTON_GUANGCHANG_SVG,
+            'icon': R.ASSETS_ICONS_ADD_BUTTON_GUANGCHANG_SVG,
             'notification': notificationProvider.notifications,
             'content': [
               {
@@ -76,7 +76,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
         },
         {
           '集市': {
-            'icon': R.ASSETS_ICONS_ADDBUTTON_JISHI_SVG,
+            'icon': R.ASSETS_ICONS_ADD_BUTTON_JISHI_SVG,
             'notification': notificationProvider.teamNotifications,
             'content': [
               {

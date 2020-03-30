@@ -376,7 +376,7 @@ class TeamPostPreviewCard extends StatelessWidget {
               child: FlatButton.icon(
                 onPressed: null,
                 icon: SvgPicture.asset(
-                  R.ASSETS_ICONS_POSTACTIONS_COMMENT_FILL_SVG,
+                  R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
                   color: currentIsDark ? actionIconColorDark : actionIconColorLight,
                   width: suSetWidth(26.0),
                 ),
@@ -412,7 +412,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                 ),
                 isLiked: provider.post.isLike,
                 likeBuilder: (bool isLiked) => SvgPicture.asset(
-                  R.ASSETS_ICONS_POSTACTIONS_PRAISE_FILL_SVG,
+                  R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
                   color: isLiked
                       ? currentThemeColor
                       : currentIsDark ? actionIconColorDark : actionIconColorLight,

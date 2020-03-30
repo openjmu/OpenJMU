@@ -153,13 +153,13 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
                                 ? CrossFadeState.showFirst
                                 : CrossFadeState.showSecond,
                             firstChild: SvgPicture.asset(
-                              'assets/icons/bottomNavigation/${item.iconPath}.svg',
+                              item.iconPath,
                               color: widget.selectedColor,
                               width: suSetWidth(widget.iconSize),
                               height: suSetWidth(widget.iconSize),
                             ),
                             secondChild: SvgPicture.asset(
-                              'assets/icons/bottomNavigation/${item.iconPath}.svg',
+                              item.iconPath,
                               color: widget.color,
                               width: suSetWidth(widget.iconSize),
                               height: suSetWidth(widget.iconSize),

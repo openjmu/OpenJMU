@@ -12,17 +12,17 @@ import 'package:openjmu/widgets/dialogs/manually_set_sid_dialog.dart';
 class SelfPage extends StatelessWidget {
   List<Map<String, dynamic>> get actions => <Map<String, dynamic>>[
         {
-          'icon': R.ASSETS_ICONS_SCAN_LINE_SVG,
+          'icon': R.ASSETS_ICONS_SELF_PAGE_SCAN_CODE_SVG,
           'name': '扫码',
           'route': Routes.OPENJMU_SCAN_QRCODE,
         },
         {
-          'icon': R.ASSETS_ICONS_IDOLS_LINE_SVG,
+          'icon': R.ASSETS_ICONS_SELF_PAGE_BACKPACK_SVG,
           'name': '背包',
           'route': Routes.OPENJMU_BACKPACK,
         },
         {
-          'icon': R.ASSETS_ICONS_SETTINGS_THEME_COLOR_SVG,
+          'icon': R.ASSETS_ICONS_SELF_PAGE_CHANGE_THEME_SVG,
           'name': '主题',
           'route': Routes.OPENJMU_THEME,
         },

@@ -27,7 +27,14 @@ class MainPage extends StatefulWidget {
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   static List<String> get pagesTitle => <String>['广场', '集市', '课业', '消息'];
 
-  static List<String> get pagesIcon => <String>['square', 'market', 'apps', 'messages'];
+  /// Icons for bottom navigation.
+  /// 底部导航的各项图标
+  static const List<String> pagesIcon = <String>[
+    R.ASSETS_ICONS_BOTTOM_NAVIGATION_SQUARE_SVG,
+    R.ASSETS_ICONS_BOTTOM_NAVIGATION_MARKET_SVG,
+    R.ASSETS_ICONS_BOTTOM_NAVIGATION_SCHOOL_WORK_SVG,
+    R.ASSETS_ICONS_BOTTOM_NAVIGATION_MESSAGES_SVG,
+  ];
 
   static double get bottomBarHeight => 72.0;
 

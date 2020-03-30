@@ -15,8 +15,8 @@ class AddingButtonPage extends StatefulWidget {
 
 class _AddingButtonPageState extends State<AddingButtonPage> with TickerProviderStateMixin {
   final List<String> itemIcons = [
-    R.ASSETS_ICONS_ADDBUTTON_GUANGCHANG_SVG,
-    R.ASSETS_ICONS_ADDBUTTON_JISHI_SVG,
+    R.ASSETS_ICONS_ADD_BUTTON_GUANGCHANG_SVG,
+    R.ASSETS_ICONS_ADD_BUTTON_JISHI_SVG,
   ];
   final List<String> itemTitles = ['广场', '集市'];
   final List<Color> itemColors = [Colors.orange, Colors.indigoAccent];
