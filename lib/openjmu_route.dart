@@ -410,16 +410,16 @@ class Routes {
 
   /// 图片选择器
   ///
-  /// [name] : openjmu://photo-picker
+  /// [name] : openjmu://photo-selector
   /// [routeName] : 图片选择器
   /// [arguments] : [provider]
   static const String OPENJMU_PHOTO_SELECTOR = "openjmu://photo-selector";
 
   /// 图片选择查看器
   ///
-  /// [name] : openjmu://photo-picker-viewer
+  /// [name] : openjmu://photo-selector-viewer
   /// [routeName] : 图片选择查看器
-  /// [arguments] : [currentIndex, assets]
+  /// [arguments] : [currentIndex, assets, selectedAssets, selectorProvider]
   static const String OPENJMU_PHOTO_SELECTOR_VIEWER = "openjmu://photo-selector-viewer";
 
   /// 动态详情页
