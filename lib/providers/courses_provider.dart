@@ -180,7 +180,7 @@ class CoursesProvider extends ChangeNotifier {
     final List<dynamic> _customCourseList = data['othCase'] as List<dynamic>;
     Map<int, Map<dynamic, dynamic>> _s;
     _s = resetCourses(_s);
-    _hasCourses = _courseList.isNotEmpty;
+    _hasCourses = _courseList.isNotEmpty || _customCourseList.isNotEmpty;
     for (final dynamic course in _courseList) {
       final Course _c = Course.fromJson(course as Map<String, dynamic>);
       addCourse(_c, _s);

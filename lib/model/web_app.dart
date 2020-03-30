@@ -85,7 +85,7 @@ class WebApp {
   @override
   int get hashCode => appId.hashCode ^ code.hashCode;
 
-  static Map category = {
+  static Map<String, String> category = <String, String>{
 //        '10': '个人事务',
     'A4': '我的服务',
     'A3': '我的系统',

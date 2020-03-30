@@ -321,93 +321,6 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
         ),
       );
 
-//  Widget get sectionBar => Row(
-//        children: List<Widget>.generate(
-//          actions.length,
-//          (int i) {
-//            final Map<String, dynamic> section = actions[i];
-//            final String key = section.keys.elementAt(0);
-//            return GestureDetector(
-//              onTap: () => selectIndex(i),
-//              child: AnimatedContainer(
-//                duration: duration,
-//                curve: Curves.easeInOut,
-//                width: suSetWidth(_index == i ? 114.0 : 72.0),
-//                height: suSetHeight(56.0),
-//                margin: EdgeInsets.only(right: suSetWidth(6.0)),
-//                padding: EdgeInsets.symmetric(horizontal: suSetWidth(12.0)),
-//                decoration: BoxDecoration(
-//                  borderRadius: maxBorderRadius,
-//                  color: _index == i
-//                      ? currentThemeColor.withOpacity(currentIsDark ? 0.75 : 0.35)
-//                      : null,
-//                ),
-//                child: Stack(
-//                  overflow: Overflow.visible,
-//                  children: <Widget>[
-//                    Positioned.fill(
-//                      child: Row(
-//                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                        children: <Widget>[
-//                          SvgPicture.asset(
-//                            actions[i][key]['icon'] as String,
-//                            width: suSetWidth(36.0),
-//                            height: suSetWidth(36.0),
-//                            color: _index == i
-//                                ? Color.lerp(
-//                                    currentThemeColor,
-//                                    Colors.white,
-//                                    currentIsDark ? 0.5 : 0.0,
-//                                  )
-//                                : Theme.of(context).dividerColor,
-//                          ),
-//                          if (_index == i)
-//                            Expanded(
-//                              child: OverflowBox(
-//                                minWidth: suSetWidth(50.0),
-//                                maxWidth: suSetWidth(50.0),
-//                                child: Text(
-//                                  key,
-//                                  style: TextStyle(
-//                                    color: _index == i
-//                                        ? Color.lerp(
-//                                            currentThemeColor,
-//                                            Colors.white,
-//                                            currentIsDark ? 0.5 : 0.0,
-//                                          )
-//                                        : null,
-//                                    fontSize: suSetSp(20.0),
-//                                    height: suSetHeight(1.25),
-//                                  ),
-//                                  textAlign: TextAlign.center,
-//                                ),
-//                              ),
-//                            ),
-//                        ],
-//                      ),
-//                    ),
-//                    if (section[key]['notification'].total > 0)
-//                      AnimatedPositioned(
-//                        duration: duration,
-//                        curve: Curves.easeInOut,
-//                        top: suSetHeight(_index == i ? -3.0 : 4.0),
-//                        right: -suSetWidth(_index == i ? 15.0 : 0.0),
-//                        child: Badge(
-//                          padding: EdgeInsets.all(suSetWidth(6.0)),
-//                          badgeContent: Text(
-//                            '${section[key]['notification'].total}',
-//                            style: TextStyle(color: Colors.white, fontSize: suSetSp(16.0)),
-//                          ),
-//                        ),
-//                      ),
-//                  ],
-//                ),
-//              ),
-//            );
-//          },
-//        ),
-//      );
-
   Widget get actionBar => IndexedStack(
         index: _index,
         children: List<Widget>.generate(
@@ -574,11 +487,7 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
                           ),
                           color: Theme.of(context).primaryColor,
                         ),
-                        child: Row(children: [
-//                          sectionBar,
-                          const Spacer(),
-                          actionBar,
-                        ]),
+                        child: Row(children: [const Spacer(), actionBar]),
                       ),
                       Expanded(
                         child: IndexedStack(

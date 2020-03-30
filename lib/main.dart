@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
-import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:quick_actions/quick_actions.dart';
 

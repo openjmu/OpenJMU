@@ -27,7 +27,7 @@ class SelfPage extends StatelessWidget {
           'route': Routes.OPENJMU_THEME,
         },
         {
-          'icon': R.ASSETS_ICONS_SETTINGS_NIGHT_MODE_SVG,
+          'icon': R.ASSETS_ICONS_SELF_PAGE_NIGHT_MODE_SVG,
           'name': '夜间模式',
           'action': () {
             final ThemesProvider provider =

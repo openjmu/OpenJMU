@@ -12,25 +12,19 @@ class AppCenterPage extends StatelessWidget {
   final GlobalKey refreshIndicatorKey;
   final ScrollController scrollController;
 
-  AppCenterPage({
-    this.refreshIndicatorKey,
-    this.scrollController,
-  });
-
-  Widget categoryListView(context, WebAppsProvider provider) {
-    final _list = <Widget>[];
-    WebApp.category.forEach((name, value) {
-      _list.add(getSectionColumn(context, provider, name));
+  Widget categoryListView(BuildContext context) {
+    final List<Widget> _list = <Widget>[];
+    WebApp.category.forEach((String name, String value) {
+      _list.add(getSectionColumn(context, name));
     });
     return ListView.builder(
-      padding: EdgeInsets.zero,
-      controller: scrollController,
+      padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
       itemCount: _list.length,
-      itemBuilder: (BuildContext context, index) => _list[index],
+      itemBuilder: (BuildContext _, int index) => _list[index],
     );
   }
 
-  Widget getWebAppButton(context, WebApp webApp) {
+  Widget appWidget(BuildContext context, WebApp webApp) {
     return FlatButton(
       padding: EdgeInsets.zero,
       child: Column(
@@ -50,7 +44,7 @@ class AppCenterPage extends StatelessWidget {
         API.launchWeb(url: webApp.replacedUrl, app: webApp);
       },
       onLongPress: () async {
-        final confirm = await ConfirmationDialog.show(
+        final bool confirm = await ConfirmationDialog.show(
           context,
           title: '打开应用',
           content: '是否使用浏览器打开该应用?',
@@ -63,83 +57,60 @@ class AppCenterPage extends StatelessWidget {
     );
   }
 
-  Widget getSectionColumn(context, WebAppsProvider provider, String name) {
-    final list = provider.appCategoriesList[name];
-    if (list?.isNotEmpty ?? false) {
-      return Container(
-        margin: EdgeInsets.all(suSetWidth(12.0)),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10.0),
-          color: Theme.of(context).primaryColor,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.symmetric(vertical: suSetHeight(12.0)),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(color: Theme.of(context).canvasColor),
-                ),
-              ),
-              child: Center(
-                child: Text(
-                  WebApp.category[name],
-                  style: Theme.of(context).textTheme.body1.copyWith(
-                        fontSize: suSetSp(22.0),
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-              ),
-            ),
-            GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 1,
-              ),
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              itemCount: list.length,
-              itemBuilder: (context, index) {
-                final _rows = (list.length / 3).ceil();
-                final showBottom = ((index + 1) / 3).ceil() != _rows;
-                final showRight = ((index + 1) / 3).ceil() != (index + 1) ~/ 3;
-                Widget _w = DecoratedBox(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      bottom: showBottom
-                          ? BorderSide(color: Theme.of(context).canvasColor)
-                          : BorderSide.none,
-                      right: showRight
-                          ? BorderSide(color: Theme.of(context).canvasColor)
-                          : BorderSide.none,
-                    ),
+  Widget getSectionColumn(context, String name) {
+    return Selector<WebAppsProvider, Map<String, Set<WebApp>>>(
+      selector: (BuildContext _, WebAppsProvider provider) => provider.appCategoriesList,
+      builder: (BuildContext _, Map<String, Set<WebApp>> appCategoriesList, Widget __) {
+        final Set<WebApp> list = appCategoriesList[name];
+        if (list?.isNotEmpty ?? false) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 12.0.h),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: Theme.of(context).canvasColor),
                   ),
-                  child: getWebAppButton(context, list.elementAt(index)),
-                );
-                return _w;
-              },
-            ),
-          ],
-        ),
-      );
-    } else {
-      return SizedBox.shrink();
-    }
+                ),
+                child: Align(
+                  alignment: AlignmentDirectional.centerStart,
+                  child: Text(
+                    WebApp.category[name],
+                    style: Theme.of(context).textTheme.body1.copyWith(
+                          fontSize: 20.0.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ),
+              ),
+              GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  childAspectRatio: 1,
+                ),
+                physics: const NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                padding: EdgeInsets.zero,
+                itemCount: list.length,
+                itemBuilder: (BuildContext _, int index) =>
+                    appWidget(context, list.elementAt(index)),
+              ),
+            ],
+          );
+        } else {
+          return const SizedBox.shrink();
+        }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<WebAppsProvider>(
-      builder: (_, provider, __) {
-        return provider.fetching
-            ? SpinKitWidget()
-            : RefreshIndicator(
-                key: refreshIndicatorKey,
-                child: categoryListView(context, provider),
-                onRefresh: provider.updateApps,
-              );
+    return Selector<WebAppsProvider, bool>(
+      selector: (BuildContext _, WebAppsProvider provider) => provider.fetching,
+      builder: (BuildContext _, bool fetching, Widget __) {
+        return fetching ? SpinKitWidget() : categoryListView(context);
       },
     );
   }

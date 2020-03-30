@@ -19,18 +19,26 @@ export 'toast_utils.dart';
 const bool logNetworkError = false;
 const bool logMessageSocketPacket = false;
 
+/// Log only in debug mode.
+/// 只在调试模式打印
 void trueDebugPrint(String message, {int wrapWidth}) {
   if (!kReleaseMode) {
     debugPrint(message, wrapWidth: wrapWidth);
   }
 }
 
+/// Pythagorean theorem.
+/// 勾股定理
 double pythagoreanTheorem(double short, double long) {
   return math.sqrt(math.pow(short, 2) + math.pow(long, 2));
 }
 
+/// Last time stamp when user trying to exit app.
+/// 用户最后一次触发退出应用的时间戳
 int _lastWantToPop = 0;
 
+/// Method that check if user triggered back twice quickly.
+/// 检测用户是否快读点击了两次返回，用于双击返回桌面功能。
 Future<bool> doubleBackExit() async {
   final int now = DateTime.now().millisecondsSinceEpoch;
   if (now - _lastWantToPop > 800) {
