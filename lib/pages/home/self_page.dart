@@ -87,7 +87,7 @@ class SelfPage extends StatelessWidget {
   /// 顶部部件封装
   Widget headerWrapper({@required Widget child}) {
     return SizedBox(
-      height: suSetHeight(headerHeight),
+      height: headerHeight.h,
       child: Stack(
         overflow: Overflow.visible,
         children: <Widget>[
@@ -95,7 +95,7 @@ class SelfPage extends StatelessWidget {
             top: 0.0,
             left: 0.0,
             right: 0.0,
-            bottom: -suSetWidth(30.0),
+            bottom: -30.0.w,
             child: SizedBox(
               width: double.maxFinite,
               child: Image(
@@ -109,11 +109,11 @@ class SelfPage extends StatelessWidget {
             top: 0.0,
             left: 0.0,
             right: 0.0,
-            bottom: -suSetWidth(30.0),
+            bottom: -30.0.w,
             child: ClipRect(
               child: BackdropFilter(
                 filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                child: Container(color: Color.fromARGB(120, 50, 50, 50)),
+                child: Container(color: const Color.fromARGB(120, 50, 50, 50)),
               ),
             ),
           ),
@@ -128,19 +128,16 @@ class SelfPage extends StatelessWidget {
   Widget get userCard => Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(25.0),
-            vertical: suSetHeight(25.0),
-          ),
+          padding: EdgeInsets.all(25.0.w),
           width: Screens.width * 0.7,
-          height: suSetHeight(headerHeight - 20.0) - Screens.topSafeHeight,
+          height: (headerHeight - 20.0).h - Screens.topSafeHeight,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(suSetWidth(25.0)),
-              topRight: Radius.circular(suSetWidth(25.0)),
+              topLeft: Radius.circular(25.0.w),
+              topRight: Radius.circular(25.0.w),
             ),
             color: currentThemeColor,
-            gradient: LinearGradient(
+            gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: <Color>[
@@ -154,14 +151,14 @@ class SelfPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               SizedBox(
-                height: suSetHeight(40.0),
+                height: 40.0.h,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Image.asset(
-                      R.IMAGES_JMU_NAME_PNG,
-                      color: Color(0xffffcb28),
+                    SvgPicture.asset(
+                      R.IMAGES_JMU_NAME_SVG,
+                      color: const Color(0xffffcb28),
                     ),
                     ClipRRect(
                       borderRadius: maxBorderRadius,
@@ -174,14 +171,14 @@ class SelfPage extends StatelessWidget {
                 '${currentUser.workId}',
                 style: TextStyle(
                   color: Colors.white54,
-                  fontSize: suSetSp(24.0),
+                  fontSize: 24.0.sp,
                   fontFamily: 'JetBrains Mono',
-                  letterSpacing: suSetSp(4.0),
+                  letterSpacing: 4.0.sp,
                   shadows: <Shadow>[
                     Shadow(
                       blurRadius: 10.0,
                       color: Colors.black26,
-                      offset: Offset(suSetWidth(4.0), suSetHeight(4.0)),
+                      offset: Offset(4.0.w, 4.0.w),
                     ),
                   ],
                 ),
@@ -197,21 +194,18 @@ class SelfPage extends StatelessWidget {
     return Expanded(
       child: OverflowBox(
         child: Container(
-          padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(20.0),
-            vertical: suSetHeight(20.0),
-          ),
           width: double.maxFinite,
+          padding: EdgeInsets.all(20.0.w),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(suSetWidth(25.0)),
-              topRight: Radius.circular(suSetWidth(25.0)),
+              topLeft: Radius.circular(25.0.w),
+              topRight: Radius.circular(25.0.w),
             ),
             boxShadow: <BoxShadow>[
               BoxShadow(
                 blurRadius: 2.0,
                 color: currentTheme.dividerColor,
-                offset: Offset(0, -suSetHeight(2.0)),
+                offset: Offset(0, -2.0.h),
               ),
             ],
             color: currentTheme.primaryColor,
@@ -227,11 +221,11 @@ class SelfPage extends StatelessWidget {
         builder: (BuildContext _, SignProvider provider, Widget __) {
           return MaterialButton(
             color: currentThemeColor,
-            minWidth: provider.hasSigned ? suSetWidth(130.0) : suSetWidth(100.0),
-            height: suSetHeight(50.0),
+            minWidth: (provider.hasSigned ? 130.0 : 100.0).w,
+            height: 50.0.h,
             padding: EdgeInsets.zero,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(suSetWidth(13.0)),
+              borderRadius: BorderRadius.circular(13.0.w),
             ),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             child: Row(
@@ -239,34 +233,34 @@ class SelfPage extends StatelessWidget {
               children: <Widget>[
                 if (provider.isSigning)
                   Container(
-                    margin: EdgeInsets.symmetric(horizontal: suSetWidth(6.0)),
-                    width: suSetWidth(28.0),
-                    height: suSetWidth(28.0),
+                    margin: EdgeInsets.symmetric(horizontal: 6.0.w),
+                    width: 28.0.w,
+                    height: 28.0.w,
                     child: CircularProgressIndicator(
-                      strokeWidth: suSetWidth(3.0),
+                      strokeWidth: 3.0.w,
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                     ),
                   )
                 else
                   Container(
-                    margin: EdgeInsets.only(right: suSetWidth(6.0)),
+                    margin: EdgeInsets.only(right: 6.0.w),
                     child: provider.hasSigned
                         ? Icon(
                             Icons.location_on,
                             color: Colors.white,
-                            size: suSetWidth(28.0),
+                            size: 28.0.w,
                           )
                         : SvgPicture.asset(
                             R.ASSETS_ICONS_SIGN_LINE_SVG,
                             color: Colors.white,
-                            width: suSetWidth(28.0),
+                            width: 28.0.w,
                           ),
                   ),
                 Text(
                   provider.hasSigned ? '已签${provider.signedCount}天' : '签到',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: suSetSp(20.0),
+                    fontSize: 20.0.sp,
                     height: 1.24,
                   ),
                 ),
@@ -291,7 +285,7 @@ class SelfPage extends StatelessWidget {
       separatorBuilder: (BuildContext _, int __) => separator(
         context,
         color: Theme.of(context).canvasColor,
-        height: suSetHeight(1.0),
+        height: 1.0.h,
       ),
       itemCount: settingsSection[index].length,
       itemBuilder: (BuildContext _, int itemIndex) => settingItem(context, index, itemIndex),
@@ -305,32 +299,29 @@ class SelfPage extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       child: Container(
-        height: suSetHeight(64.0),
+        height: 64.0.h,
         child: Row(
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.only(
-                left: suSetWidth(12.0),
-                right: suSetWidth(24.0),
-              ),
+              padding: EdgeInsets.only(left: 12.0.w, right: 24.0.w),
               child: SvgPicture.asset(
                 item['icon'] as String,
                 color: currentThemeColor,
-                width: suSetWidth(34.0),
+                width: 34.0.w,
               ),
             ),
             Expanded(
               child: Text(
                 item['name'],
-                style: TextStyle(fontSize: suSetSp(20.0)),
+                style: TextStyle(fontSize: 20.0.sp),
               ),
             ),
             Padding(
-              padding: EdgeInsets.only(right: suSetSp(12.0)),
+              padding: EdgeInsets.only(right: 12.0.w),
               child: SvgPicture.asset(
                 R.ASSETS_ICONS_ARROW_RIGHT_SVG,
                 color: Theme.of(context).dividerColor,
-                width: suSetWidth(24.0),
+                width: 12.0.w,
               ),
             ),
           ],
@@ -348,18 +339,18 @@ class SelfPage extends StatelessWidget {
         child: Opacity(
           opacity: 0.3,
           child: Container(
-            margin: EdgeInsets.symmetric(vertical: suSetHeight(15.0)),
+            margin: EdgeInsets.symmetric(vertical: 15.0.h),
             padding: EdgeInsets.symmetric(
-              horizontal: suSetWidth(30.0),
-              vertical: suSetHeight(10.0),
+              horizontal: 30.0.w,
+              vertical: 10.0.h,
             ),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(60.0),
+              borderRadius: maxBorderRadius,
               boxShadow: <BoxShadow>[
                 BoxShadow(
                   color: Colors.grey[currentIsDark ? 800 : 100],
-                  blurRadius: suSetHeight(6.0),
-                  offset: Offset(0, suSetHeight(6.0)),
+                  blurRadius: 6.0.h,
+                  offset: Offset(0, 6.0.h),
                 ),
               ],
               color: Theme.of(context).primaryColor,
@@ -370,7 +361,7 @@ class SelfPage extends StatelessWidget {
                 '(DANGER)\n清除应用数据',
                 style: TextStyle(
                   color: currentThemeColor,
-                  fontSize: suSetSp(20.0),
+                  fontSize: 20.0.sp,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
@@ -412,7 +403,7 @@ class SelfPage extends StatelessWidget {
               showDialog(
                 context: context,
                 barrierDismissible: true,
-                builder: (_) => ManuallySetSidDialog(),
+                builder: (BuildContext _) => ManuallySetSidDialog(),
               );
             } else {
               NetUtils.updateTicket();
@@ -424,15 +415,15 @@ class SelfPage extends StatelessWidget {
               if (currentWeek != null && currentWeek <= 20) {
                 return Container(
                   padding: EdgeInsets.symmetric(
-                    horizontal: suSetWidth(24.0),
-                    vertical: suSetHeight(10.0),
+                    horizontal: 24.0.w,
+                    vertical: 10.0.h,
                   ),
                   color: Theme.of(context).primaryColor,
                   child: Text.rich(
                     TextSpan(
                       children: <TextSpan>[
                         TextSpan(text: '$hello～'),
-                        TextSpan(text: '今天是'),
+                        const TextSpan(text: '今天是'),
                         TextSpan(
                           text: '${DateFormat('MMMdd', 'zh_CN').format(now)}日，',
                         ),
@@ -441,7 +432,7 @@ class SelfPage extends StatelessWidget {
                         ),
                         if (currentWeek > 0)
                           TextSpan(children: <InlineSpan>[
-                            TextSpan(text: '第'),
+                            const TextSpan(text: '第'),
                             TextSpan(
                               text: '${currentWeek}',
                               style: TextStyle(
@@ -449,11 +440,11 @@ class SelfPage extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            TextSpan(text: '周'),
+                            const TextSpan(text: '周'),
                           ])
                         else
                           TextSpan(children: <InlineSpan>[
-                            TextSpan(text: '距开学还有'),
+                            const TextSpan(text: '距开学还有'),
                             TextSpan(
                               text: '${currentWeek.abs() + 1}',
                               style: TextStyle(
@@ -461,11 +452,11 @@ class SelfPage extends StatelessWidget {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            TextSpan(text: '周'),
+                            const TextSpan(text: '周'),
                           ]),
                       ],
                       style: Theme.of(context).textTheme.caption.copyWith(
-                            fontSize: suSetSp(16.0),
+                            fontSize: 16.0.sp,
                           ),
                     ),
                     maxLines: 2,
@@ -473,7 +464,7 @@ class SelfPage extends StatelessWidget {
                   ),
                 );
               } else {
-                return SizedBox.shrink();
+                return const SizedBox.shrink();
               }
             },
           ),
@@ -495,13 +486,13 @@ class SelfPage extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.only(right: suSetWidth(20.0)),
+                      padding: EdgeInsets.only(right: 20.0.w),
                       child: UserAvatar(size: 44.0),
                     ),
                     Expanded(
                       child: Text(
                         '${currentUser.name ?? currentUser.workId}',
-                        style: TextStyle(fontSize: suSetSp(21.0)),
+                        style: TextStyle(fontSize: 21.0.sp),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -510,8 +501,8 @@ class SelfPage extends StatelessWidget {
                   ],
                 ),
                 Container(
-                  margin: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
-                  height: suSetHeight(80.0),
+                  margin: EdgeInsets.symmetric(vertical: 20.0.h),
+                  height: 80.0.h,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: List<Widget>.generate(actions.length, (int index) {
@@ -531,12 +522,12 @@ class SelfPage extends StatelessWidget {
                           children: <Widget>[
                             SvgPicture.asset(
                               action['icon'] as String,
-                              width: suSetWidth(40.0),
+                              width: 40.0.w,
                               color: currentThemeColor,
                             ),
                             Text(
                               action['name'] as String,
-                              style: TextStyle(fontSize: suSetSp(16.0)),
+                              style: TextStyle(fontSize: 16.0.sp),
                             ),
                           ],
                         ),
@@ -546,7 +537,7 @@ class SelfPage extends StatelessWidget {
                 ),
                 Expanded(
                   child: ListView.separated(
-                    padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
+                    padding: EdgeInsets.symmetric(horizontal: 10.0.w),
                     separatorBuilder: (BuildContext _, int __) => separator(context),
                     itemCount: settingsSection.length,
                     itemBuilder: (BuildContext _, int index) =>
