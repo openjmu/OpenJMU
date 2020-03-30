@@ -3,7 +3,6 @@ import 'package:extended_tabs/extended_tabs.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/main_page.dart';
-import 'package:openjmu/pages/home/app_center_page.dart';
 import 'package:openjmu/pages/home/course_schedule_page.dart';
 import 'package:openjmu/pages/home/score_page.dart';
 
@@ -19,10 +18,9 @@ class AppsPageState extends State<AppsPage>
   static List<String> get tabs => [
         if (!(currentUser?.isPostgraduate ?? false)) '课程表',
         if (!((currentUser?.isTeacher ?? false) || (currentUser?.isPostgraduate ?? false))) '成绩',
-        '应用',
       ];
-  final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
 
+  final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   final _scrollController = ScrollController();
 
   TabController _tabController;
@@ -110,7 +108,6 @@ class AppsPageState extends State<AppsPage>
     Widget tab;
     switch (name) {
       case '成绩':
-      case '应用':
         tab = Tab(text: name);
         break;
       case '课程表':
@@ -174,7 +171,7 @@ class AppsPageState extends State<AppsPage>
               physics: tabs.contains('成绩')
                   ? const ScrollPhysics()
                   : const NeverScrollableScrollPhysics(),
-              cacheExtent: 3,
+              cacheExtent: tabs.length,
               controller: _tabController,
               children: <Widget>[
                 if (tabs.contains('课程表'))
@@ -192,10 +189,6 @@ class AppsPageState extends State<AppsPage>
                           : CourseSchedulePage(key: Instances.courseSchedulePageStateKey)
                       : SizedBox.shrink(),
                 if (tabs.contains('成绩')) ScorePage(),
-                AppCenterPage(
-                  refreshIndicatorKey: refreshIndicatorKey,
-                  scrollController: _scrollController,
-                ),
               ],
             );
           },
