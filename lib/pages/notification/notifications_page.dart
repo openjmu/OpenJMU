@@ -51,21 +51,21 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
             'notification': notificationProvider.notifications,
             'content': [
               {
-                'icon': 'praise',
+                'icon': R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
                 'field': notificationProvider.notifications.praise,
                 'action': notificationProvider.readPraise,
                 'select': selectSquareIndex,
                 'index': _squareIndex,
               },
               {
-                'icon': 'comment',
+                'icon': R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
                 'field': notificationProvider.notifications.comment,
                 'action': notificationProvider.readReply,
                 'select': selectSquareIndex,
                 'index': _squareIndex,
               },
               {
-                'icon': 'forward',
+                'icon': R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
                 'field': notificationProvider.notifications.at,
                 'action': notificationProvider.readMention,
                 'select': selectSquareIndex,
@@ -80,21 +80,21 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
             'notification': notificationProvider.teamNotifications,
             'content': [
               {
-                'icon': 'praise',
+                'icon': R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
                 'field': notificationProvider.teamNotifications.praise,
                 'action': notificationProvider.readTeamPraise,
                 'select': selectTeamIndex,
                 'index': _teamIndex,
               },
               {
-                'icon': 'comment',
+                'icon': R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
                 'field': notificationProvider.teamNotifications.reply,
                 'action': notificationProvider.readTeamReply,
                 'select': selectTeamIndex,
                 'index': _teamIndex,
               },
               {
-                'icon': 'forward',
+                'icon': R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
                 'field': notificationProvider.teamNotifications.mention,
                 'action': notificationProvider.readTeamMention,
                 'select': selectTeamIndex,
@@ -364,12 +364,12 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
       duration: duration,
       crossFadeState: index == actionIndex ? CrossFadeState.showFirst : CrossFadeState.showSecond,
       firstChild: SvgPicture.asset(
-        'assets/icons/postActions/$icon-fill.svg',
+        icon,
         color: currentThemeColor,
         width: suSetWidth(32.0),
       ),
       secondChild: SvgPicture.asset(
-        'assets/icons/postActions/$icon-fill.svg',
+        icon,
         color: Theme.of(context).dividerColor,
         width: suSetWidth(32.0),
       ),

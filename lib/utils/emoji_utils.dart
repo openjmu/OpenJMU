@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class EmoticonUtils {
-  static final String _emoticonFilePath = 'assets/emotionIcons';
+  static final String _emoticonFilePath = 'assets/emotion_icons';
   static final Map<String, String> emoticonMap = {
     '[微笑2]': '$_emoticonFilePath/weixiao2.png',
     '[撇嘴1]': '$_emoticonFilePath/piezui1.png',
@@ -165,7 +165,7 @@ class EmotionPad extends StatelessWidget {
               ),
               Text(
                 filteredString(EmoticonUtils.emoticonMap.keys.elementAt(index)),
-                style: TextStyle(fontSize: suSetSp(14.0)),
+                style: TextStyle(fontSize: 14.0.sp),
               ),
             ],
           ),
