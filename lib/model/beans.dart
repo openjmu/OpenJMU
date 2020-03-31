@@ -12,6 +12,8 @@ export 'package:openjmu/model/special_text.dart';
 
 part 'beans.g.dart';
 
+part 'backpack_item.dart';
+
 part 'app_message.dart';
 
 part 'blacklist_user.dart';

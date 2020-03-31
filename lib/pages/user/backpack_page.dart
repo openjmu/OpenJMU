@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:badges/badges.dart';
 import 'package:extended_image/extended_image.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -14,12 +12,11 @@ class BackpackPage extends StatefulWidget {
 }
 
 class _BackpackPageState extends State<BackpackPage> {
-  final PageController _myItemListController = PageController(viewportFraction: 0.8);
-  final _header = {'CLOUDID': 'jmu'};
-  bool isLoading = true;
+  final Map<String, String> _iconHeader = {'CLOUDID': 'jmu'};
+  final Map<String, BackpackItemType> _itemTypes = {};
+  final List<BackpackItem> myItems = [];
 
-  Map<String, BackpackItemType> _itemTypes = {};
-  List<BackpackItem> myItems = [];
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -29,166 +26,131 @@ class _BackpackPageState extends State<BackpackPage> {
 
   Future<void> getBackpackItem() async {
     try {
-      final Map<String, dynamic> types = (await NetUtils.getWithHeaderSet(
-        API.backPackItemType(),
-        headers: _header,
+      final Map<String, dynamic> types = (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
+        API.backPackItemType,
+        headers: _iconHeader,
       ))
           .data;
-      List<dynamic> items = types['data'];
+      final List<dynamic> items = types['data'];
       for (int i = 0; i < items.length; i++) {
-        BackpackItemType item = BackpackItemType.fromJson(items[i]);
+        final BackpackItemType item = BackpackItemType.fromJson(items[i] as Map<String, dynamic>);
         _itemTypes['${item.type}'] = item;
       }
 
       await Future.wait(<Future>[
         NetUtils.getWithHeaderSet(
           API.backPackMyItemList(),
-          headers: _header,
+          headers: _iconHeader,
         ).then((response) {
-          List<dynamic> items = response.data['data'] ?? [];
+          final List<dynamic> items = response.data['data'] ?? [];
           for (int i = 0; i < items.length; i++) {
             items[i]['name'] = _itemTypes['${items[i]['itemtype']}'].name;
             items[i]['desc'] = _itemTypes['${items[i]['itemtype']}'].description;
-            BackpackItem item = BackpackItem.fromJson(items[i]);
+            final BackpackItem item = BackpackItem.fromJson(items[i] as Map<String, dynamic>);
             myItems.add(item);
           }
         }),
-        NetUtils.getWithHeaderSet(
-          API.backPackReceiveList(),
-          headers: _header,
-        ).then((response) {
-//          print(response);
-        }),
-      ]).then((responses) {
-        setState(() {
-          isLoading = false;
-        });
-      });
+        NetUtils.getWithHeaderSet(API.backPackReceiveList(), headers: _iconHeader),
+      ]);
+
+      isLoading = false;
+      if (mounted) setState(() {});
     } catch (e) {
       trueDebugPrint('Get backpack item error: $e');
     }
   }
 
-  Widget itemCount(int index) {
-    return Positioned(
-      right: suSetSp(20.0),
-      top: suSetSp(20.0),
-      child: Badge(
-        padding: EdgeInsets.all(suSetSp(10.0)),
-        badgeColor: currentThemeColor,
-        badgeContent: Text(
-          '${myItems[index].count > 99 ? '99+' : myItems[index].count}',
-          style: TextStyle(
-            fontSize: suSetSp(18.0),
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+  /// Icon for backpack item.
+  /// 背包物品的图标
+  Widget itemIcon(int index) {
+    return AspectRatio(
+      aspectRatio: 1.0,
+      child: Padding(
+        padding: EdgeInsets.all(30.0.w),
+        child: ExtendedImage.network(
+          API.backPackItemIcon(itemType: myItems[index].type),
+          headers: {'CLOUDID': 'jmu'}, // REQUIRED. 必需
+          fit: BoxFit.fitHeight,
         ),
-        elevation: 0,
-        toAnimate: false,
       ),
     );
   }
 
+  /// Info for backpack item.
+  /// 背包物品的信息
   Widget itemInfo(int index) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Text(
           myItems[index].name,
-          style: Theme.of(context).textTheme.title.copyWith(
-                fontWeight: FontWeight.bold,
-                fontSize: suSetSp(30.0),
-              ),
+          style: TextStyle(fontSize: 26.0.sp),
           overflow: TextOverflow.ellipsis,
         ),
-        emptyDivider(height: 10.0),
-        SizedBox(
-          height: suSetSp(54.0),
-          child: Text(
-            myItems[index].description,
-            style: Theme.of(context).textTheme.subtitle.copyWith(fontSize: suSetSp(18.0)),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
+        SizedBox(height: 12.0.h),
+        Text(
+          myItems[index].description,
+          style: Theme.of(context).textTheme.subtitle.copyWith(fontSize: 18.0.sp),
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
   }
 
-  Widget itemIcon(int index) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: suSetSp(10.0),
-      ),
-      child: Center(
-        child: SizedBox(
-          height: suSetSp(150.0),
-          child: ExtendedImage.network(
-            '${API.backPackItemIcon(itemType: myItems[index].type)}',
-            headers: {'CLOUDID': 'jmu'},
-            fit: BoxFit.fitHeight,
+  /// Counting for backpack item.
+  /// 背包物品的计数
+  Widget itemCount(int index) {
+    return Positioned(
+      top: 16.0.w,
+      right: 16.0.w,
+      child: Container(
+        height: 24.0.sp,
+        padding: EdgeInsets.symmetric(horizontal: 12.0.w),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(12.0.w),
+          color: currentThemeColor.withOpacity(0.5),
+        ),
+        child: Center(
+          child: Text(
+            '${myItems[index].count > 99 ? '99+' : myItems[index].count}',
+            style: TextStyle(
+              fontSize: 18.0.sp,
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.visible,
           ),
         ),
       ),
     );
   }
 
+  /// Backpack item widget.
+  /// 背包物品部件
   Widget backpackItem(BuildContext context, int index) {
-    return SizedBox(
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: suSetSp(20.0),
-          vertical: suSetSp(60.0),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(suSetSp(40.0)),
-                color: currentThemeColor.withAlpha(30),
-              ),
-              child: Stack(
-                children: <Widget>[
-                  itemCount(index),
-                  Padding(
-                    padding: EdgeInsets.all(suSetSp(20.0)),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        itemInfo(index),
-                        itemIcon(index),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 10.0.h),
+      height: 140.0.h,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15.0.w),
+        color: Theme.of(context).primaryColor,
+      ),
+      child: Stack(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: 12.0.w),
+            child: Row(
+              children: <Widget>[
+                itemIcon(index),
+                Expanded(child: itemInfo(index)),
+              ],
             ),
-            emptyDivider(height: 50.0),
-            FlatButton(
-              shape: RoundedRectangleBorder(
-                side: BorderSide(color: currentThemeColor),
-                borderRadius: BorderRadius.circular(50.0),
-              ),
-              padding: EdgeInsets.symmetric(
-                horizontal: suSetSp(20.0),
-                vertical: suSetSp(12.0),
-              ),
-              color: Colors.transparent,
-              onPressed: () {},
-              child: Text(
-                '打开礼包',
-                style: Theme.of(context).textTheme.body1.copyWith(
-                      fontSize: suSetSp(20.0),
-                      color: currentThemeColor,
-                    ),
-              ),
-            ),
-          ],
-        ),
+          ),
+          itemCount(index),
+        ],
       ),
     );
   }
@@ -196,46 +158,16 @@ class _BackpackPageState extends State<BackpackPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(elevation: 0),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: suSetSp(40.0),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  '我的背包',
-                  style: Theme.of(context).textTheme.title.copyWith(
-                        fontSize: suSetSp(40.0),
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                Text(
-                  '看看背包里有哪些好东西~',
-                  style: Theme.of(context).textTheme.subtitle.copyWith(fontSize: suSetSp(20.0)),
-                ),
-              ],
-            ),
-          ),
-          isLoading
-              ? SizedBox(
-                  height: suSetSp(500.0),
-                  child: Center(child: SpinKitWidget()),
-                )
-              : Expanded(
-                  child: PageView.builder(
-                    controller: _myItemListController,
-                    physics: BouncingScrollPhysics(),
-                    itemCount: myItems.length,
-                    itemBuilder: (context, index) => backpackItem(context, index),
-                  ),
-                ),
-        ],
+      backgroundColor: Theme.of(context).canvasColor,
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(title: Text('背包')),
+        body: isLoading
+            ? Center(child: SpinKitWidget())
+            : ListView.builder(
+                padding: EdgeInsets.symmetric(vertical: 10.0.w),
+                itemCount: myItems.length,
+                itemBuilder: (context, index) => backpackItem(context, index),
+              ),
       ),
     );
   }
