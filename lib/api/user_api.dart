@@ -37,12 +37,9 @@ class UserAPI {
       );
 
   /// Update cache network image provider after avatar is updated.
-  static int avatarLastModified = DateTime.now().millisecondsSinceEpoch;
-  static Widget getAvatar({
-    double size = 48.0,
-    int uid,
-    int t,
-  }) {
+  static int avatarLastModified = currentTimeStamp;
+
+  static Widget getAvatar({double size = 48.0, int uid, int t}) {
     return UserAvatar(uid: uid ?? currentUser.uid, size: size, timestamp: t);
   }
 
@@ -70,7 +67,7 @@ class UserAPI {
       '&size=f640'
       '&_t=$avatarLastModified',
     ).evict();
-    avatarLastModified = DateTime.now().millisecondsSinceEpoch;
+    avatarLastModified = currentTimeStamp;
   }
 
   static Future<dynamic> getUserInfo({int uid}) async {
