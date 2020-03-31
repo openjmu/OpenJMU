@@ -7,71 +7,7 @@ import 'package:extended_image/extended_image.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-class BackpackItem {
-  int id, type, count;
-  String name, description;
-  BackpackItem({
-    this.id,
-    this.type,
-    this.count,
-    this.name,
-    this.description,
-  });
-
-  factory BackpackItem.fromJson(Map<String, dynamic> json) {
-    return BackpackItem(
-      id: json['itemid'],
-      type: json['itemtype'],
-      count: json['pack_num'],
-      name: json['name'],
-      description: json['desc'],
-    );
-  }
-
-  @override
-  String toString() {
-    return 'BackpackItem ${JsonEncoder.withIndent('' '').convert({
-      'id': id,
-      'type': type,
-      'count': count,
-      'name': name,
-    })}';
-  }
-}
-
-class BackpackItemType {
-  String name, description;
-  int type;
-  List<dynamic> thankMessage;
-
-  BackpackItemType({
-    this.name,
-    this.description,
-    this.type,
-    this.thankMessage,
-  });
-
-  factory BackpackItemType.fromJson(Map<String, dynamic> json) {
-    return BackpackItemType(
-      name: json['title'],
-      description: json['desc'],
-      type: json['itemtype'],
-      thankMessage: json['thankmsg'],
-    );
-  }
-
-  @override
-  String toString() {
-    return 'BackpackItemType ${JsonEncoder.withIndent('' '').convert({
-      'title': name,
-      'desc': description,
-      'itemtype': type,
-      'thankmsg': thankMessage,
-    })}';
-  }
-}
-
-@FFRoute(name: "openjmu://backpack", routeName: "背包页")
+@FFRoute(name: 'openjmu://backpack', routeName: '背包页')
 class BackpackPage extends StatefulWidget {
   @override
   _BackpackPageState createState() => _BackpackPageState();
