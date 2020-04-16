@@ -13,11 +13,15 @@ class Screens {
 
   static double fixedFontSize(double fontSize) => fontSize / textScaleFactor;
 
+  static double get scale => mediaQuery.devicePixelRatio;
+
   static double get width => mediaQuery.size.width;
+
+  static int get widthPixels => (width * scale).toInt();
 
   static double get height => mediaQuery.size.height;
 
-  static double get scale => mediaQuery.devicePixelRatio;
+  static int get heightPixels => (height * scale).toInt();
 
   static double get textScaleFactor => mediaQuery.textScaleFactor;
 
