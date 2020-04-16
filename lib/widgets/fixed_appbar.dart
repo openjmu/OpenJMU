@@ -13,6 +13,7 @@ class FixedAppBar extends StatelessWidget {
     Key key,
     this.automaticallyImplyLeading = true,
     this.title,
+    this.leading,
     this.centerTitle = true,
     this.backgroundColor,
     this.elevation = 2.0,
@@ -22,6 +23,7 @@ class FixedAppBar extends StatelessWidget {
   }) : super(key: key);
 
   final Widget title;
+  final Widget leading;
   final List<Widget> actions;
   final EdgeInsetsGeometry actionsPadding;
   final bool automaticallyImplyLeading;
@@ -56,7 +58,8 @@ class FixedAppBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            if (automaticallyImplyLeading && Navigator.of(context).canPop()) BackButton(),
+            if (automaticallyImplyLeading && Navigator.of(context).canPop())
+              leading ?? const BackButton(),
             if (_title != null)
               Expanded(
                 child: Align(
