@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class EmoticonUtils {
-  static final String _emoticonFilePath = 'assets/emotion_icons';
+  static final String _emoticonFilePath = 'assets/emotion-icons';
   static final Map<String, String> emoticonMap = {
     '[微笑2]': '$_emoticonFilePath/weixiao2.png',
     '[撇嘴1]': '$_emoticonFilePath/piezui1.png',
