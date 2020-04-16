@@ -428,7 +428,7 @@ class PhotoSelector extends StatelessWidget {
               ? () async {
                   final Set<AssetEntity> result = await PhotoSelectorViewer.pushToViewer(
                     currentIndex: 0,
-                    assets: provider.currentAssets,
+                    assets: provider.selectedAssets,
                     selectedAssets: provider.selectedAssets,
                     selectorProvider: provider,
                   );
@@ -457,8 +457,12 @@ class PhotoSelector extends StatelessWidget {
   /// Action bar widget aligned to bottom.
   /// 底部操作栏部件
   Widget get bottomActionBar => Container(
-        height: suSetHeight(kAppBarHeight / 1.4),
-        padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+        height: suSetHeight(kAppBarHeight / 1.4) + Screens.bottomSafeHeight,
+        padding: EdgeInsets.only(
+          left: 20.0.w,
+          right: 20.0.w,
+          bottom: Screens.bottomSafeHeight,
+        ),
         color: theme.primaryColor,
         child: Row(children: <Widget>[previewButton]),
       );
