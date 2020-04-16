@@ -44,6 +44,7 @@ class FABBottomAppBar extends StatefulWidget {
   }) {
     assert(this.items.length == 2 || this.items.length == 4);
   }
+
   final List<FABBottomAppBarItem> items;
   final String centerItemText;
   final double height;
@@ -91,7 +92,10 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
         ),
       );
     }
-    widget.onTabSelected(index);
+    if (_selectedIndex == index) {
+      return;
+    }
+    widget.onTabSelected?.call(index);
     setState(() {
       _selectedIndex = index;
     });

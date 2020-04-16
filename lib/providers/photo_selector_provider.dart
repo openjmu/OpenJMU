@@ -139,8 +139,9 @@ class PhotoSelectorProvider extends ChangeNotifier {
   /// Get assets path entities.
   /// 获取所有的资源路径
   Future<void> getAssetList() async {
-    final List<AssetPathEntity> _list =
-        await PhotoManager.getAssetPathList(type: RequestType.image);
+    final List<AssetPathEntity> _list = await PhotoManager.getAssetPathList(
+      type: RequestType.image,
+    );
     for (final AssetPathEntity pathEntity in _list) {
       _pathEntityList[pathEntity] = await getFirstThumbFromPathEntity(pathEntity);
     }
