@@ -111,7 +111,8 @@ class ForumLinkOlderText extends SpecialText {
 ///
 /// e.g. '<M 123456>测试</M>'
 class MentionText extends SpecialText {
-  MentionText(TextStyle textStyle, SpecialTextGestureTapCallback onTap, {this.start, this.type})
+  MentionText(TextStyle textStyle, SpecialTextGestureTapCallback onTap,
+      {this.start, this.type})
       : super(startKey, endKey, textStyle, onTap: onTap);
 
   static const String startKey = '<M';
@@ -199,7 +200,10 @@ class MentionText extends SpecialText {
         style: textStyle?.copyWith(color: Colors.blue),
         recognizer: TapGestureRecognizer()
           ..onTap = () {
-            final Map<String, dynamic> data = {'content': mentionText, 'uid': uid};
+            final Map<String, dynamic> data = {
+              'content': mentionText,
+              'uid': uid
+            };
             if (onTap != null) onTap(data);
           },
       );
@@ -212,7 +216,8 @@ class MentionText extends SpecialText {
 ///
 /// e.g. '#OpenJMU#'
 class PoundText extends SpecialText {
-  PoundText(TextStyle textStyle, SpecialTextGestureTapCallback onTap, {this.start, this.type})
+  PoundText(TextStyle textStyle, SpecialTextGestureTapCallback onTap,
+      {this.start, this.type})
       : super(flag, flag, textStyle, onTap: onTap);
 
   static const String flag = '#';
@@ -266,7 +271,8 @@ class PoundText extends SpecialText {
 ///
 /// e.g. '[哭]'
 class EmoticonText extends SpecialText {
-  EmoticonText(TextStyle textStyle, {this.start, this.type}) : super(startKey, endKey, textStyle);
+  EmoticonText(TextStyle textStyle, {this.start, this.type})
+      : super(startKey, endKey, textStyle);
 
   static const String startKey = '[';
   static const String endKey = ']';
@@ -277,7 +283,8 @@ class EmoticonText extends SpecialText {
   InlineSpan finishText() {
     final key = toString();
     if (EmoticonUtils.emoticonMap.containsKey(key)) {
-      final double size = 30.0 / 27.0 * ((textStyle != null) ? textStyle.fontSize : 17);
+      final double size =
+          30.0 / 27.0 * ((textStyle != null) ? textStyle.fontSize : 17);
 
       if (type == BuilderType.extendedTextField) {
         return ImageSpan(
@@ -352,7 +359,10 @@ class ImageText extends SpecialText {
           text: ' 查看图片',
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              final Map<String, dynamic> data = {'content': toString(), 'image': imageId};
+              final Map<String, dynamic> data = {
+                'content': toString(),
+                'image': imageId
+              };
               if (onTap != null) onTap(data);
             },
         ),
@@ -377,8 +387,9 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
   final List<InlineSpan> prefixSpans;
   final List<InlineSpan> suffixSpans;
 
-  final RegExp linkRegExp = RegExp(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
-      r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)');
+  final RegExp linkRegExp =
+      RegExp(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
+          r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)');
 
   @override
   TextSpan build(
@@ -420,7 +431,8 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
           );
           if (specialText != null) {
             if (textStack.length - specialText.startFlag.length >= 0) {
-              textStack = textStack.substring(0, textStack.length - specialText.startFlag.length);
+              textStack = textStack.substring(
+                  0, textStack.length - specialText.startFlag.length);
               if (textStack.isNotEmpty) {
                 inlineList.add(TextSpan(text: textStack, style: textStyle));
               }
@@ -468,7 +480,8 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       return ForumLinkText(textStyle, onTap);
     } else if (isStart(flag, ForumLinkOlderText.startKey)) {
       return ForumLinkOlderText(textStyle, onTap);
-    } else if (isStart(flag, ImageText.flag) && widgetType == WidgetType.comment) {
+    } else if (isStart(flag, ImageText.flag) &&
+        widgetType == WidgetType.comment) {
       return ImageText(textStyle, onTap, widgetType: widgetType);
     }
     return null;
@@ -488,13 +501,17 @@ class StackSpecialTextFieldSpanBuilder extends SpecialTextSpanBuilder {
     if (isStart(flag, MentionText.startKey)) {
       return MentionText(
         textStyle, onTap,
-        start: index - (MentionText.startKey.length - 1), // Using minus to keep position correct.
+        start: index -
+            (MentionText.startKey.length -
+                1), // Using minus to keep position correct.
         type: BuilderType.extendedTextField,
       );
     } else if (isStart(flag, PoundText.flag)) {
-      return PoundText(textStyle, onTap, start: index, type: BuilderType.extendedTextField);
+      return PoundText(textStyle, onTap,
+          start: index, type: BuilderType.extendedTextField);
     } else if (isStart(flag, EmoticonText.startKey)) {
-      return EmoticonText(textStyle, start: index, type: BuilderType.extendedTextField);
+      return EmoticonText(textStyle,
+          start: index, type: BuilderType.extendedTextField);
     }
     return null;
   }
@@ -508,10 +525,13 @@ void specialTextTapRecognizer(data) {
   if (text.startsWith('#')) {
     navigatorState.pushNamed(
       Routes.OPENJMU_SEARCH,
-      arguments: <String, dynamic>{'content': text.substring(1, text.length - 1)},
+      arguments: <String, dynamic>{
+        'content': text.substring(1, text.length - 1)
+      },
     );
   } else if (text.startsWith('@')) {
-    navigatorState.pushNamed(Routes.OPENJMU_USER, arguments: <String, dynamic>{'uid': data['uid']});
+    navigatorState.pushNamed(Routes.OPENJMU_USER,
+        arguments: <String, dynamic>{'uid': data['uid']});
   } else if (text.startsWith('https://')) {
     API.launchWeb(url: text, title: '网页链接');
   } else if (text.startsWith('http://')) {
@@ -523,7 +543,9 @@ void specialTextTapRecognizer(data) {
       Routes.OPENJMU_IMAGE_VIEWER,
       arguments: <String, dynamic>{
         'index': 0,
-        'pics': <ImageBean>[ImageBean(id: imageId, imageUrl: imageUrl, postId: null)],
+        'pics': <ImageBean>[
+          ImageBean(id: imageId, imageUrl: imageUrl, postId: null)
+        ],
       },
     );
   }

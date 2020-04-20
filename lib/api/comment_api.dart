@@ -84,14 +84,17 @@ class CommentAPI {
       commentTime: _commentTime,
       from: itemData['from_string'],
       toReplyExist: replyExist,
-      toReplyUid: replyExist ? int.parse(replyData['user']['uid'].toString()) : 0,
+      toReplyUid:
+          replyExist ? int.parse(replyData['user']['uid'].toString()) : 0,
       toReplyUserName: replyExist ? replyData['user']['nickname'] : null,
       toReplyContent: replyExist ? replyData['content'] : null,
       toTopicExist: topicExist,
-      toTopicUid: topicExist ? int.parse(topicData['user']['uid'].toString()) : 0,
+      toTopicUid:
+          topicExist ? int.parse(topicData['user']['uid'].toString()) : 0,
       toTopicUserName: topicExist ? topicData['user']['nickname'] : null,
       toTopicContent: topicExist
-          ? itemData['to_topic']['topic']['article'] ?? itemData['to_topic']['topic']['content']
+          ? itemData['to_topic']['topic']['article'] ??
+              itemData['to_topic']['topic']['content']
           : null,
       post: itemData['to_topic']['topic'] != null
           ? Post.fromJson(itemData['to_topic']['topic'])
@@ -120,7 +123,8 @@ class CommentAPI {
       commentTime: _commentTime,
       from: itemData['from_string'],
       toReplyExist: replyExist,
-      toReplyUid: replyExist ? int.parse(replyData['user']['uid'].toString()) : 0,
+      toReplyUid:
+          replyExist ? int.parse(replyData['user']['uid'].toString()) : 0,
       toReplyUserName: replyExist ? replyData['user']['nickname'] : null,
       toReplyContent: replyExist ? replyData['content'] : null,
       toTopicExist: false,

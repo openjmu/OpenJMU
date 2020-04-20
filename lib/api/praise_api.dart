@@ -3,8 +3,11 @@ import 'package:openjmu/constants/constants.dart';
 class PraiseAPI {
   const PraiseAPI._();
 
-  static getPraiseList(bool isMore, int lastValue) async => NetUtils.getWithCookieAndHeaderSet(
-        (isMore ?? false) ? '${API.praiseList}/id_max/$lastValue' : '${API.praiseList}',
+  static getPraiseList(bool isMore, int lastValue) async =>
+      NetUtils.getWithCookieAndHeaderSet(
+        (isMore ?? false)
+            ? '${API.praiseList}/id_max/$lastValue'
+            : '${API.praiseList}',
       );
 
   static getPraiseInPostList(postId, {bool isMore, int lastValue}) =>
@@ -35,9 +38,10 @@ class PraiseAPI {
         '?uid=${itemData['user']['uid']}'
         '&size=f152'
         '&_t=${DateTime.now().millisecondsSinceEpoch}';
-    final _praiseTime = DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
-        .toString()
-        .substring(0, 16);
+    final _praiseTime =
+        DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
+            .toString()
+            .substring(0, 16);
     final _praise = Praise(
       id: itemData['id'],
       uid: itemData['user']['uid'],
@@ -58,9 +62,10 @@ class PraiseAPI {
         '?uid=${itemData['user']['uid']}'
         '&size=f152'
         '&_t=${DateTime.now().millisecondsSinceEpoch}';
-    final _praiseTime = DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
-        .toString()
-        .substring(0, 16);
+    final _praiseTime =
+        DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
+            .toString()
+            .substring(0, 16);
     final _praise = Praise(
       id: itemData['id'],
       uid: itemData['user']['uid'],

@@ -75,7 +75,8 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                         ),
                       ),
                     Spacer(),
-                    _postTime(context, item.post?.postTime ?? item.comment?.postTime),
+                    _postTime(
+                        context, item.post?.postTime ?? item.comment?.postTime),
                   ],
                 ),
                 Text(
@@ -94,7 +95,9 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
     final now = DateTime.now();
     DateTime _postTime = postTime;
     String time = '';
-    if (_postTime.day == now.day && _postTime.month == now.month && _postTime.year == now.year) {
+    if (_postTime.day == now.day &&
+        _postTime.month == now.month &&
+        _postTime.year == now.year) {
       time += DateFormat('HH:mm').format(_postTime);
     } else if (_postTime.year == now.year) {
       time += DateFormat('MM-dd HH:mm').format(_postTime);
@@ -124,7 +127,8 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
               TextSpan(text: ' ... '),
               TextSpan(
                 text: '全文',
-                style: TextStyle(color: currentThemeColor, fontSize: suSetSp(18.0)),
+                style: TextStyle(
+                    color: currentThemeColor, fontSize: suSetSp(18.0)),
               ),
             ],
           ),
@@ -150,7 +154,8 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
             prefixSpans: <InlineSpan>[
               TextSpan(
                 text: item.type == TeamReplyType.post ? '回复我的帖子：' : '评论我的回帖：',
-                style: TextStyle(color: Theme.of(context).iconTheme.color.withOpacity(0.5)),
+                style: TextStyle(
+                    color: Theme.of(context).iconTheme.color.withOpacity(0.5)),
               ),
             ],
           ),
@@ -191,7 +196,10 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                           onTap: () {
                             navigatorState.pushNamed(
                               Routes.OPENJMU_TEAM_POST_DETAIL,
-                              arguments: {'provider': provider, 'type': TeamPostType.comment},
+                              arguments: {
+                                'provider': provider,
+                                'type': TeamPostType.comment
+                              },
                             );
                           },
                           child: Container(
@@ -204,7 +212,8 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
                               vertical: suSetHeight(8.0),
                             ),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+                              borderRadius:
+                                  BorderRadius.circular(suSetWidth(10.0)),
                               color: Theme.of(context).cardColor,
                             ),
                             child: Column(
@@ -225,7 +234,8 @@ class _TeamReplyListPageState extends State<TeamReplyListPage> {
               : Center(
                   child: Text(
                     '暂无内容',
-                    style: TextStyle(color: currentThemeColor, fontSize: suSetSp(24.0)),
+                    style: TextStyle(
+                        color: currentThemeColor, fontSize: suSetSp(24.0)),
                   ),
                 )
           : SpinKitWidget(),
@@ -262,7 +272,9 @@ class TeamReplyItem {
       scope: json['to_post_info']['scope'],
       fromUserId: int.parse(user['uid'].toString()),
       fromUsername: user['nickname'],
-      type: json['to_post_info']['type'] == 'first' ? TeamReplyType.post : TeamReplyType.thread,
+      type: json['to_post_info']['type'] == 'first'
+          ? TeamReplyType.post
+          : TeamReplyType.thread,
     );
   }
 

@@ -174,7 +174,8 @@ class AboutPage extends StatelessWidget {
 
   Widget agreement(context) => GestureDetector(
         onTap: () {
-          API.launchWeb(url: '${API.homePage}/license.html', title: 'OpenJMU 用户协议');
+          API.launchWeb(
+              url: '${API.homePage}/license.html', title: 'OpenJMU 用户协议');
         },
         child: Container(
           margin: EdgeInsets.only(bottom: suSetHeight(10.0)),
@@ -199,7 +200,8 @@ class AboutPage extends StatelessWidget {
             ),
           ],
         ),
-        style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
+        style:
+            Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
       );
 
   @override

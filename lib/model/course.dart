@@ -87,7 +87,8 @@ class Course {
       if (json[k] == '') json[k] = null;
     });
     final _oddEven = !isCustom ? judgeOddEven(json) : null;
-    final weeks = !isCustom ? (json['allWeek'] as String).split(' ')[0].split('-') : null;
+    final weeks =
+        !isCustom ? (json['allWeek'] as String).split(' ')[0].split('-') : null;
 
     String _name;
     if (isCustom) {
@@ -114,13 +115,17 @@ class Course {
       location: json['couRoom'],
       className: json['className'],
       teacher: json['couTeaName'],
-      day: json[isCustom ? 'courseDaytime' : 'couDayTime'].toString().substring(0, 1).toInt(),
+      day: json[isCustom ? 'courseDaytime' : 'couDayTime']
+          .toString()
+          .substring(0, 1)
+          .toInt(),
       startWeek: !isCustom ? weeks[0].toInt() : null,
       endWeek: !isCustom ? weeks[1].toInt() : null,
       classesName: !isCustom ? json['comboClassName'].split(',') : null,
       isEleven: json['three'] == 'y',
       oddEven: _oddEven,
-      rawDay: json[isCustom ? 'courseDaytime' : 'couDayTime'].toString().toInt(),
+      rawDay:
+          json[isCustom ? 'courseDaytime' : 'couDayTime'].toString().toInt(),
       rawTime: json[isCustom ? 'courseTime' : 'coudeTime'].toString(),
     );
     if (_c.isEleven && _c.time == '90') _c.time = '911';
@@ -136,14 +141,16 @@ class Course {
     if (_courseColor != null) {
       course.color = _courseColor.color;
     } else {
-      final List<CourseColor> courses =
-          CourseAPI.coursesUniqueColor.where((CourseColor c) => c.color == color).toList();
+      final List<CourseColor> courses = CourseAPI.coursesUniqueColor
+          .where((CourseColor c) => c.color == color)
+          .toList();
 
       if (courses.isNotEmpty) {
         uniqueColor(course, CourseAPI.randomCourseColor());
       } else {
         course.color = color;
-        CourseAPI.coursesUniqueColor.add(CourseColor(name: course.name, color: color));
+        CourseAPI.coursesUniqueColor
+            .add(CourseColor(name: course.name, color: color));
       }
     }
   }
@@ -222,7 +229,9 @@ class CourseColor {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is CourseColor && runtimeType == other.runtimeType && name == other.name;
+      other is CourseColor &&
+          runtimeType == other.runtimeType &&
+          name == other.name;
 
   @override
   int get hashCode => name.hashCode;

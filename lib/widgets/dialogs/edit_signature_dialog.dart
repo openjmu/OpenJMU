@@ -37,7 +37,8 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
 
   void updateSignature(BuildContext context) {
     Navigator.of(context).pop();
-    final LoadingDialogController _loadingDialogController = LoadingDialogController();
+    final LoadingDialogController _loadingDialogController =
+        LoadingDialogController();
     LoadingDialog.show(
       context,
       text: '正在更新签名',
@@ -47,7 +48,8 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
     UserAPI.setSignature(_textEditingController.text).then((dynamic _) {
       _loadingDialogController.changeState('success', '签名更新成功');
       UserAPI.currentUser.signature = _textEditingController.text;
-      Instances.eventBus.fire(SignatureUpdatedEvent(_textEditingController.text));
+      Instances.eventBus
+          .fire(SignatureUpdatedEvent(_textEditingController.text));
     }).catchError((dynamic e) {
       trueDebugPrint(e.toString());
       _loadingDialogController.changeState('failed', '签名更新失败');
@@ -102,7 +104,8 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                           borderSide: BorderSide(color: Colors.grey[850]),
                         ),
                         hintText: UserAPI.currentUser.signature ?? '快来填写你的签名吧~',
-                        hintStyle: const TextStyle(textBaseline: TextBaseline.alphabetic),
+                        hintStyle: const TextStyle(
+                            textBaseline: TextBaseline.alphabetic),
                       ),
                       cursorColor: currentThemeColor,
                     ),
@@ -121,7 +124,9 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                         child: Text(
                           '保存',
                           style: TextStyle(
-                            color: canSave ? currentThemeColor : Theme.of(context).disabledColor,
+                            color: canSave
+                                ? currentThemeColor
+                                : Theme.of(context).disabledColor,
                             fontSize: suSetSp(21.0),
                           ),
                         ),

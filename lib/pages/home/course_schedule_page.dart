@@ -12,7 +12,8 @@ class CourseSchedulePage extends StatefulWidget {
   CourseSchedulePageState createState() => CourseSchedulePageState();
 }
 
-class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKeepAliveClientMixin {
+class CourseSchedulePageState extends State<CourseSchedulePage>
+    with AutomaticKeepAliveClientMixin {
   final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   final showWeekDuration = 300.milliseconds;
   final showWeekCurve = Curves.fastOutSlowIn;
@@ -39,7 +40,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
   @override
   void initState() {
     super.initState();
-    coursesProvider = Provider.of<CoursesProvider>(currentContext, listen: false);
+    coursesProvider =
+        Provider.of<CoursesProvider>(currentContext, listen: false);
     dateProvider = Provider.of<DateProvider>(currentContext, listen: false);
     currentWeek = dateProvider.currentWeek;
     updateScrollController();
@@ -55,7 +57,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
           currentWeek = dateProvider.currentWeek ?? 0;
           updateScrollController();
           if (mounted) setState(() {});
-          if ((weekScrollController?.hasClients ?? false) && hasCourse && currentWeek > 0) {
+          if ((weekScrollController?.hasClients ?? false) &&
+              hasCourse &&
+              currentWeek > 0) {
             scrollToWeek(currentWeek);
           }
           if (Instances.appsPageStateKey.currentState.mounted) {
@@ -70,7 +74,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
       final week = dateProvider.currentWeek;
       weekScrollController ??= ScrollController(
         initialScrollOffset: week != null
-            ? math.max(0, (week - 0.5) * suSetWidth(weekSize) - Screens.width / 2)
+            ? math.max(
+                0, (week - 0.5) * suSetWidth(weekSize) - Screens.width / 2)
             : 0.0,
       );
     }
@@ -140,7 +145,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                         width: 2.0,
                       )
                     : null,
-                color: currentWeek == index + 1 ? currentThemeColor.withOpacity(0.35) : null,
+                color: currentWeek == index + 1
+                    ? currentThemeColor.withOpacity(0.35)
+                    : null,
               ),
               child: Center(
                 child: RichText(
@@ -153,7 +160,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                       ),
                       TextSpan(text: '周'),
                     ],
-                    style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(18.0)),
+                    style: Theme.of(context)
+                        .textTheme
+                        .body1
+                        .copyWith(fontSize: suSetSp(18.0)),
                   ),
                 ),
               ),
@@ -272,8 +282,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(suSetWidth(5.0)),
                     color: DateFormat('MM/dd').format(
-                              now.subtract((7 * (currentWeek - dateProvider.currentWeek)).days +
-                                  Duration(days: now.weekday - 1 - i)),
+                              now.subtract(
+                                  (7 * (currentWeek - dateProvider.currentWeek))
+                                          .days +
+                                      Duration(days: now.weekday - 1 - i)),
                             ) ==
                             DateFormat('MM/dd').format(now)
                         ? currentThemeColor.withOpacity(0.35)
@@ -304,8 +316,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
       );
 
   Widget courseLineGrid(context) {
-    final double totalHeight =
-        Screens.height - Screens.topSafeHeight - suSetHeight(kAppBarHeight + indicatorHeight);
+    final double totalHeight = Screens.height -
+        Screens.topSafeHeight -
+        suSetHeight(kAppBarHeight + indicatorHeight);
 
     bool hasEleven = false;
     int _maxCoursesPerDay = 8;
@@ -343,7 +356,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                         children: <Widget>[
                           Text(
                             (i + 1).toString(),
-                            style: TextStyle(fontSize: suSetSp(17.0), fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: suSetSp(17.0),
+                                fontWeight: FontWeight.bold),
                           ),
                           Text(
                             CourseAPI.getCourseTime(i + 1),
@@ -363,7 +378,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                     for (int count = 1; count < _maxCoursesPerDay; count++)
                       if (count.isOdd)
                         CourseWidget(
-                          courseList: courses[day].cast<int, List>()[count].cast<Course>(),
+                          courseList: courses[day]
+                              .cast<int, List>()[count]
+                              .cast<Course>(),
                           hasEleven: hasEleven && count == 9,
                           currentWeek: currentWeek,
                           coordinate: [day, count],
@@ -413,7 +430,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
         constraints: BoxConstraints(maxWidth: Screens.width),
         child: AnimatedCrossFade(
           duration: 300.milliseconds,
-          crossFadeState: !firstLoaded ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          crossFadeState: !firstLoaded
+              ? CrossFadeState.showFirst
+              : CrossFadeState.showSecond,
           firstChild: SpinKitWidget(),
           secondChild: Selector<CoursesProvider, String>(
             selector: (_, provider) => provider.remark,
@@ -422,7 +441,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage> with AutomaticKe
                 if (remark != null) remarkWidget,
                 weekSelection(context),
                 if (firstLoaded && hasCourse && !showError) weekDayIndicator,
-                if (firstLoaded && hasCourse && !showError) courseLineGrid(context),
+                if (firstLoaded && hasCourse && !showError)
+                  courseLineGrid(context),
                 if (firstLoaded && !hasCourse && !showError) emptyTips,
                 if (firstLoaded && showError) errorTips,
               ],
@@ -526,16 +546,20 @@ class CourseWidget extends StatelessWidget {
                 TextSpan(
                   children: <InlineSpan>[
                     TextSpan(
-                      text: course.name.substring(0, math.min(10, course.name.length)),
+                      text: course.name
+                          .substring(0, math.min(10, course.name.length)),
                       style: TextStyle(fontWeight: FontWeight.w600),
                     ),
                     if (course.name.length > 10) TextSpan(text: '...'),
                     if (!course.isCustom)
-                      TextSpan(text: '\n${course.startWeek}-${course.endWeek}周'),
-                    if (course.location != null) TextSpan(text: '\n📍${course.location}'),
+                      TextSpan(
+                          text: '\n${course.startWeek}-${course.endWeek}周'),
+                    if (course.location != null)
+                      TextSpan(text: '\n📍${course.location}'),
                   ],
                   style: Theme.of(context).textTheme.body1.copyWith(
-                        color: !CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) &&
+                        color: !CourseAPI.inCurrentWeek(course,
+                                    currentWeek: currentWeek) &&
                                 !isOutOfTerm
                             ? Colors.grey
                             : Colors.black,
@@ -604,7 +628,8 @@ class CourseWidget extends StatelessWidget {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(suSetWidth(5.0)),
                           color: courseList.isNotEmpty
-                              ? CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) ||
+                              ? CourseAPI.inCurrentWeek(course,
+                                          currentWeek: currentWeek) ||
                                       isOutOfTerm
                                   ? course.color.withOpacity(0.85)
                                   : Theme.of(context).dividerColor
@@ -799,7 +824,8 @@ class _CoursesDialogState extends State<CoursesDialog> {
       );
 
   Widget courseDetail(Course course) {
-    final style = TextStyle(color: Colors.black, fontSize: suSetSp(24.0), height: 1.8);
+    final style =
+        TextStyle(color: Colors.black, fontSize: suSetSp(24.0), height: 1.8);
     return Container(
       width: double.maxFinite,
       height: double.maxFinite,
@@ -807,7 +833,9 @@ class _CoursesDialogState extends State<CoursesDialog> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(suSetWidth(15.0)),
         color: widget.courseList.isNotEmpty
-            ? CourseAPI.inCurrentWeek(course, currentWeek: widget.currentWeek) || isOutOfTerm
+            ? CourseAPI.inCurrentWeek(course,
+                        currentWeek: widget.currentWeek) ||
+                    isOutOfTerm
                 ? course.color.withOpacity(currentIsDark ? 0.85 : 1.0)
                 : Colors.grey
             : null,
@@ -825,7 +853,8 @@ class _CoursesDialogState extends State<CoursesDialog> {
               ),
               textAlign: TextAlign.center,
             ),
-            if (course.location != null) Text('📍 ${course.location}', style: style),
+            if (course.location != null)
+              Text('📍 ${course.location}', style: style),
             if (course.startWeek != null && course.endWeek != null)
               Text(
                 '📅 ${course.startWeek}'
@@ -839,7 +868,8 @@ class _CoursesDialogState extends State<CoursesDialog> {
               '${CourseAPI.courseTimeChinese[course.time]}',
               style: style,
             ),
-            if (course.teacher != null) Text('🎓 ${course.teacher}', style: style),
+            if (course.teacher != null)
+              Text('🎓 ${course.teacher}', style: style),
             SizedBox(height: 12.0),
           ],
         ),
@@ -912,7 +942,8 @@ class _CoursesDialogState extends State<CoursesDialog> {
               closeButton(context),
               if (isDetail && widget.courseList[0].isCustom)
                 Theme(
-                  data: Theme.of(context).copyWith(splashFactory: InkSplash.splashFactory),
+                  data: Theme.of(context)
+                      .copyWith(splashFactory: InkSplash.splashFactory),
                   child: Positioned(
                     bottom: suSetHeight(10.0),
                     left: Screens.width / 7,
@@ -1005,7 +1036,8 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(suSetWidth(18.0)),
           color: widget.course != null
-              ? widget.course.color.withOpacity(currentIsDark ? darkModeOpacity : 1.0)
+              ? widget.course.color
+                  .withOpacity(currentIsDark ? darkModeOpacity : 1.0)
               : Theme.of(context).dividerColor,
         ),
         child: Padding(
@@ -1061,7 +1093,8 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
       );
 
   Widget updateButton(context) => Theme(
-        data: Theme.of(context).copyWith(splashFactory: InkSplash.splashFactory),
+        data:
+            Theme.of(context).copyWith(splashFactory: InkSplash.splashFactory),
         child: Positioned(
           bottom: suSetHeight(8.0),
           left: Screens.width / 7,
@@ -1084,7 +1117,9 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                             ? Colors.black.withOpacity(0.15)
                             : Colors.black,
                       ),
-                onPressed: content == widget.course?.name || loading ? null : editCourse,
+                onPressed: content == widget.course?.name || loading
+                    ? null
+                    : editCourse,
               ),
             ],
           ),

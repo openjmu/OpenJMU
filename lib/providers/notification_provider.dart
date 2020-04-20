@@ -36,7 +36,8 @@ class NotificationProvider extends ChangeNotifier {
 
   bool get showTeamNotification => teamNotifications.total > 0;
 
-  int get initialIndex => _notifications.comment > 0 ? 1 : (_notifications.at > 0 ? 2 : 0);
+  int get initialIndex =>
+      _notifications.comment > 0 ? 1 : (_notifications.at > 0 ? 2 : 0);
 
   int get teamInitialIndex {
     int index = 0;
@@ -84,8 +85,10 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   void _getTeamNotification(Timer _) {
-    TeamPostAPI.getNotifications().then((Response<Map<String, dynamic>> response) {
-      final TeamNotifications notification = TeamNotifications.fromJson(response.data);
+    TeamPostAPI.getNotifications()
+        .then((Response<Map<String, dynamic>> response) {
+      final TeamNotifications notification =
+          TeamNotifications.fromJson(response.data);
       updateTeamNotification(notification);
       if (_ == null) {
         trueDebugPrint('Updated team notifications with: $notification');

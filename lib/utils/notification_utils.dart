@@ -19,11 +19,13 @@ class NotificationUtils {
       onDidReceiveLocalNotification: _onReceive,
     );
     final _settings = InitializationSettings(_settingsAndroid, _settingsIOS);
-    NotificationUtils.plugin.initialize(_settings, onSelectNotification: _onSelect);
+    NotificationUtils.plugin
+        .initialize(_settings, onSelectNotification: _onSelect);
   }
 
   static Future show(String title, String body) async {
-    final color = Provider.of<ThemesProvider>(currentContext, listen: false).currentColor;
+    final color =
+        Provider.of<ThemesProvider>(currentContext, listen: false).currentColor;
     final androidDetails = AndroidNotificationDetails(
       'openjmu_message_channel',
       '推送消息',

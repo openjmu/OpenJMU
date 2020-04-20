@@ -47,8 +47,10 @@ class PostList extends StatefulWidget {
   State createState() => _PostListState();
 }
 
-class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin {
-  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
+class _PostListState extends State<PostList>
+    with AutomaticKeepAliveClientMixin {
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
   ScrollController _scrollController;
 
   int _lastValue = 0;
@@ -76,7 +78,8 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
     Instances.eventBus
       ..on<ScrollToTopEvent>().listen((event) {
         if (mounted &&
-            ((event.tabIndex == 0 && widget.postController.postType == 'square') ||
+            ((event.tabIndex == 0 &&
+                    widget.postController.postType == 'square') ||
                 (event.type == '首页')) &&
             _scrollController != null) {
           if (_postList.length > 20) _postList = _postList.sublist(0, 20);
@@ -103,8 +106,10 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
         if (mounted) setState(() {});
       })
       ..on<PostDeletedEvent>().listen((event) {
-        trueDebugPrint('PostDeleted: ${event.postId} / ${event.page} / ${event.index}');
-        if ((event.page == widget.postController.postType) && event.index != null) {
+        trueDebugPrint(
+            'PostDeleted: ${event.postId} / ${event.page} / ${event.index}');
+        if ((event.page == widget.postController.postType) &&
+            event.index != null) {
           _idList.removeAt(event.index);
           _postList.removeAt(event.index);
         }
@@ -177,7 +182,8 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
 
     _isLoading = false;
     _canLoadMore = _idList.length < _total && _count != 0;
-    _lastValue = _idList.isEmpty ? 0 : widget.postController.lastValue(_idList.last);
+    _lastValue =
+        _idList.isEmpty ? 0 : widget.postController.lastValue(_idList.last);
     if (mounted) setState(() {});
   }
 
@@ -214,7 +220,9 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
           }))) {
             postList.add(Post.fromJson(postData['topic']));
             idList.add(
-              postData['id'] is String ? int.parse(postData['id']) : postData['id'],
+              postData['id'] is String
+                  ? int.parse(postData['id'])
+                  : postData['id'],
             );
           }
         }
@@ -230,7 +238,8 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
       }
 
       _canLoadMore = _idList.length < _total && _count != 0;
-      _lastValue = _idList.isEmpty ? 0 : widget.postController.lastValue(_idList.last);
+      _lastValue =
+          _idList.isEmpty ? 0 : widget.postController.lastValue(_idList.last);
     } catch (e) {
       error = true;
       trueDebugPrint('Failed when refresh post list: $e');
@@ -286,7 +295,8 @@ class _PostListState extends State<PostList> with AutomaticKeepAliveClientMixin 
           }
         },
       );
-      _body = _postList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList;
+      _body =
+          _postList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList;
 
       if (widget.needRefreshIndicator) {
         _body = RefreshIndicator(
@@ -326,7 +336,8 @@ class ForwardListInPost extends StatefulWidget {
   State createState() => ForwardListInPostState();
 }
 
-class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeepAliveClientMixin {
+class ForwardListInPostState extends State<ForwardListInPost>
+    with AutomaticKeepAliveClientMixin {
   List<Post> _posts = [];
 
   bool isLoading = true;
@@ -394,7 +405,8 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
     _posts.clear();
     if (mounted) setState(() {});
     try {
-      final response = (await PostAPI.getForwardListInPost(widget.post.id))?.data;
+      final response =
+          (await PostAPI.getForwardListInPost(widget.post.id))?.data;
       final list = response['topics'];
       final total = response['total'] as int;
       if (response['count'] as int < total) canLoadMore = true;
@@ -486,7 +498,8 @@ class ForwardListInPostState extends State<ForwardListInPost> with AutomaticKeep
                               Row(
                                 children: <Widget>[
                                   getPostNickname(context, _posts[index]),
-                                  if (Constants.developerList.contains(_posts[index].uid))
+                                  if (Constants.developerList
+                                      .contains(_posts[index].uid))
                                     Container(
                                       margin: EdgeInsets.only(
                                         left: suSetWidth(14.0),

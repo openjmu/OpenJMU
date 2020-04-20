@@ -95,9 +95,12 @@ class SettingsProvider extends ChangeNotifier {
     getAnnouncement();
     _fontScale = HiveFieldUtils.getFontScale() ?? _fontScale;
     _homeSplashIndex = HiveFieldUtils.getHomeSplashIndex() ?? _homeSplashIndex;
-    _homeStartUpIndex = HiveFieldUtils.getHomeStartUpIndex() ?? _homeStartUpIndex;
-    _newAppCenterIcon = HiveFieldUtils.getEnabledNewAppsIcon() ?? _newAppCenterIcon;
-    _hideShieldPost = HiveFieldUtils.getEnabledHideShieldPost() ?? _hideShieldPost;
+    _homeStartUpIndex =
+        HiveFieldUtils.getHomeStartUpIndex() ?? _homeStartUpIndex;
+    _newAppCenterIcon =
+        HiveFieldUtils.getEnabledNewAppsIcon() ?? _newAppCenterIcon;
+    _hideShieldPost =
+        HiveFieldUtils.getEnabledHideShieldPost() ?? _hideShieldPost;
     _launchFromSystemBrowser =
         HiveFieldUtils.getLaunchFromSystemBrowser() ?? _launchFromSystemBrowser;
   }
@@ -117,7 +120,8 @@ class SettingsProvider extends ChangeNotifier {
   Future<void> getAnnouncement() async {
     try {
       final Map<String, dynamic> data =
-          jsonDecode((await NetUtils.get<String>(API.announcement)).data) as Map<String, dynamic>;
+          jsonDecode((await NetUtils.get<String>(API.announcement)).data)
+              as Map<String, dynamic>;
       _announcements = (data['announcements'] as List<dynamic>).cast<Map>();
       _announcementsEnabled = data['enabled'] as bool;
       _announcementsUserEnabled = _announcementsEnabled;

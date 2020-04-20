@@ -17,7 +17,8 @@ class FABBottomAppBarItem {
     this.text,
     this.child,
   }) : assert(
-          iconPath == null && child != null || iconPath != null && child == null,
+          iconPath == null && child != null ||
+              iconPath != null && child == null,
           'cannot set icon and child at the same time.',
         );
 
@@ -62,7 +63,8 @@ class FABBottomAppBar extends StatefulWidget {
   State<StatefulWidget> createState() => FABBottomAppBarState();
 }
 
-class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliveClientMixin {
+class FABBottomAppBarState extends State<FABBottomAppBar>
+    with AutomaticKeepAliveClientMixin {
   int _selectedIndex;
 
   @override
@@ -71,10 +73,12 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
   @override
   void initState() {
     _selectedIndex = widget.initIndex ??
-        Provider.of<SettingsProvider>(currentContext, listen: false).homeSplashIndex;
+        Provider.of<SettingsProvider>(currentContext, listen: false)
+            .homeSplashIndex;
     Instances.eventBus
       ..on<ActionsEvent>().listen((event) {
-        final index = Constants.quickActionsList.keys.toList().indexOf(event.type);
+        final index =
+            Constants.quickActionsList.keys.toList().indexOf(event.type);
         if (index != -1) {
           _selectedIndex = index;
           if (mounted) setState(() {});
@@ -170,7 +174,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
                             ),
                           )
                         : item.child,
-                    if (widget.showText) SizedBox(height: suSetWidth(widget.iconSize / 8)),
+                    if (widget.showText)
+                      SizedBox(height: suSetWidth(widget.iconSize / 8)),
                     if (widget.showText)
                       AnimatedCrossFade(
                         duration: 200.milliseconds,
@@ -286,12 +291,16 @@ class FABBottomAppBarState extends State<FABBottomAppBar> with AutomaticKeepAliv
     if (Platform.isIOS) {
       appBar = ClipRect(
         child: BackdropFilter(
-          filter: ui.ImageFilter.blur(sigmaX: suSetSp(20.0), sigmaY: suSetSp(20.0)),
+          filter:
+              ui.ImageFilter.blur(sigmaX: suSetSp(20.0), sigmaY: suSetSp(20.0)),
           child: appBar,
         ),
       );
     }
 
-    return BottomAppBar(color: widget.backgroundColor, shape: widget.notchedShape, child: appBar);
+    return BottomAppBar(
+        color: widget.backgroundColor,
+        shape: widget.notchedShape,
+        child: appBar);
   }
 }

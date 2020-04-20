@@ -97,7 +97,9 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
     final now = DateTime.now();
     DateTime _postTime = postTime;
     String time = '';
-    if (_postTime.day == now.day && _postTime.month == now.month && _postTime.year == now.year) {
+    if (_postTime.day == now.day &&
+        _postTime.month == now.month &&
+        _postTime.year == now.year) {
       time += DateFormat('HH:mm').format(_postTime);
     } else if (_postTime.year == now.year) {
       time += DateFormat('MM-dd HH:mm').format(_postTime);
@@ -201,7 +203,8 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                               vertical: suSetHeight(8.0),
                             ),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+                              borderRadius:
+                                  BorderRadius.circular(suSetWidth(10.0)),
                               color: Theme.of(context).cardColor,
                             ),
                             child: Column(
@@ -256,7 +259,8 @@ class TeamPraiseItem {
     return TeamPraiseItem(
       post: post,
       from: json['from'],
-      time: DateTime.fromMillisecondsSinceEpoch(int.parse(json['post_time'].toString())),
+      time: DateTime.fromMillisecondsSinceEpoch(
+          int.parse(json['post_time'].toString())),
       scope: json['post_info']['scope'],
       fromUserId: int.parse(user['uid'].toString()),
       fromUsername: user['nickname'],

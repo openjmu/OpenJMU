@@ -21,7 +21,8 @@ class Notifications {
 
   factory Notifications.fromJson(Map<String, dynamic> json) {
     return Notifications(
-      at: int.parse(json['t_at'].toString()) + int.parse(json['cmt_at'].toString()),
+      at: int.parse(json['t_at'].toString()) +
+          int.parse(json['cmt_at'].toString()),
       comment: int.parse(json['cmt'].toString()),
       praise: int.parse(json['t_praised'].toString()),
       fans: int.parse(json['fans'].toString()),
@@ -35,7 +36,9 @@ class Notifications {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Notifications && runtimeType == other.runtimeType && total == other.total;
+      other is Notifications &&
+          runtimeType == other.runtimeType &&
+          total == other.total;
 
   @override
   int get hashCode => total.hashCode;

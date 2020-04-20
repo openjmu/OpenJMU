@@ -21,7 +21,8 @@ class AppMessagePreviewWidget extends StatefulWidget {
   final double height;
 
   @override
-  _AppMessagePreviewWidgetState createState() => _AppMessagePreviewWidgetState();
+  _AppMessagePreviewWidgetState createState() =>
+      _AppMessagePreviewWidgetState();
 }
 
 class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
@@ -56,7 +57,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
     } else if (widget.message.sendTime.year == now.year) {
       formattedTime = DateFormat('MM-dd HH:mm').format(widget.message.sendTime);
     } else {
-      formattedTime = DateFormat('yy-MM-dd HH:mm').format(widget.message.sendTime);
+      formattedTime =
+          DateFormat('yy-MM-dd HH:mm').format(widget.message.sendTime);
     }
     if (mounted && !fromBuild) {
       setState(() {});
@@ -65,7 +67,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
 
   Widget get unreadCounter => Consumer<MessagesProvider>(
         builder: (_, MessagesProvider provider, __) {
-          final List<dynamic> messages = provider.appsMessages[widget.message.appId];
+          final List<dynamic> messages =
+              provider.appsMessages[widget.message.appId];
           final List<AppMessage> unreadMessages = messages
               .where((dynamic message) => !(message as AppMessage).read)
               ?.toList()
@@ -100,7 +103,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
       );
 
   void updateApp() {
-    final WebAppsProvider provider = Provider.of<WebAppsProvider>(currentContext, listen: false);
+    final WebAppsProvider provider =
+        Provider.of<WebAppsProvider>(currentContext, listen: false);
     app = provider.allApps
         .where((dynamic app) => (app as WebApp).appId == widget.message.appId)
         .elementAt(0);
@@ -111,7 +115,8 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
       final Map<String, dynamic> content =
           jsonDecode(widget.message.content) as Map<String, dynamic>;
       widget.message.content = content['content'] as String;
-      Provider.of<MessagesProvider>(currentContext, listen: false).saveAppsMessages();
+      Provider.of<MessagesProvider>(currentContext, listen: false)
+          .saveAppsMessages();
       if (mounted) {
         setState(() {});
       }
@@ -159,7 +164,10 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                           child: app != null
                               ? Text(
                                   '${app.name ?? app.appId}',
-                                  style: Theme.of(context).textTheme.body1.copyWith(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .body1
+                                      .copyWith(
                                         fontSize: suSetSp(22.0),
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -169,7 +177,11 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                         Text(
                           ' $formattedTime',
                           style: Theme.of(context).textTheme.body1.copyWith(
-                                color: Theme.of(context).textTheme.body1.color.withOpacity(0.5),
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .body1
+                                    .color
+                                    .withOpacity(0.5),
                               ),
                         ),
                         const Spacer(),
@@ -179,7 +191,11 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                     Text(
                       '${widget.message.content}',
                       style: Theme.of(context).textTheme.body1.copyWith(
-                            color: Theme.of(context).textTheme.body1.color.withOpacity(0.5),
+                            color: Theme.of(context)
+                                .textTheme
+                                .body1
+                                .color
+                                .withOpacity(0.5),
                             fontSize: suSetSp(19.0),
                           ),
                       maxLines: 1,

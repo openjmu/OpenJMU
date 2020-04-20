@@ -24,7 +24,8 @@ class HiveFieldUtils {
   static const String settingFontScale = 'setting_font_scale';
   static const String settingNewIcons = 'setting_new_icons';
   static const String settingHideShieldPost = 'setting_hide_shield_post';
-  static const String settingLaunchFromSystemBrowser = 'setting_launch_from_system_browser';
+  static const String settingLaunchFromSystemBrowser =
+      'setting_launch_from_system_browser';
 
   static const String deviceUuid = 'device_uuid';
   static const String devicePushToken = 'device_push_token';
@@ -39,16 +40,20 @@ class HiveFieldUtils {
   static bool getAMOLEDDark() => _box?.get(amoledDark) as bool ?? false;
 
   /// 获取设置的跟随系统夜间模式
-  static bool getBrightnessPlatform() => _box?.get(brightnessPlatform) as bool ?? true;
+  static bool getBrightnessPlatform() =>
+      _box?.get(brightnessPlatform) as bool ?? true;
 
   /// 设置选择的主题色
-  static Future<void> setColorTheme(int value) async => await _box?.put(colorThemeIndex, value);
+  static Future<void> setColorTheme(int value) async =>
+      await _box?.put(colorThemeIndex, value);
 
   /// 设置选择的夜间模式
-  static Future<void> setBrightnessDark(bool value) async => await _box?.put(brightnessDark, value);
+  static Future<void> setBrightnessDark(bool value) async =>
+      await _box?.put(brightnessDark, value);
 
   /// 设置AMOLED夜间模式
-  static Future<void> setAMOLEDDark(bool value) async => await _box?.put(amoledDark, value);
+  static Future<void> setAMOLEDDark(bool value) async =>
+      await _box?.put(amoledDark, value);
 
   /// 设置跟随系统的夜间模式
   static Future<void> setBrightnessPlatform(bool value) async =>
@@ -58,7 +63,8 @@ class HiveFieldUtils {
   static int getHomeSplashIndex() => _box?.get(settingHomeSplashIndex) as int;
 
   /// 获取默认各页启动index
-  static List<int> getHomeStartUpIndex() => _box?.get(settingHomeStartUpIndex) as List<int>;
+  static List<int> getHomeStartUpIndex() =>
+      _box?.get(settingHomeStartUpIndex) as List<int>;
 
   /// 获取字体缩放设置
   static double getFontScale() => _box?.get(settingFontScale) as double;
@@ -67,10 +73,12 @@ class HiveFieldUtils {
   static bool getEnabledNewAppsIcon() => _box?.get(settingNewIcons) as bool;
 
   /// 获取是否隐藏被屏蔽的动态
-  static bool getEnabledHideShieldPost() => _box?.get(settingHideShieldPost) as bool;
+  static bool getEnabledHideShieldPost() =>
+      _box?.get(settingHideShieldPost) as bool;
 
   /// 获取是否通过系统浏览器打开网页
-  static bool getLaunchFromSystemBrowser() => _box?.get(settingLaunchFromSystemBrowser) as bool;
+  static bool getLaunchFromSystemBrowser() =>
+      _box?.get(settingLaunchFromSystemBrowser) as bool;
 
   /// 设置首页的初始页
   static Future<void> setHomeSplashIndex(int index) async {

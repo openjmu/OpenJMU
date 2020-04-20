@@ -36,16 +36,21 @@ class HiveBoxes {
       ..registerAdapter(ScoreAdapter())
       ..registerAdapter(WebAppAdapter());
 
-    appMessagesBox = await Hive.openBox<Map<dynamic, dynamic>>('${hiveBoxPrefix}_app_messages');
+    appMessagesBox = await Hive.openBox<Map<dynamic, dynamic>>(
+        '${hiveBoxPrefix}_app_messages');
 //    personalMessagesBox = await Hive.openBox<Map>('${hiveBoxPrefix}_personal_messages');
 
-    coursesBox = await Hive.openBox<Map<dynamic, dynamic>>('${hiveBoxPrefix}_user_courses');
-    courseRemarkBox = await Hive.openBox<String>('${hiveBoxPrefix}_user_course_remark');
+    coursesBox = await Hive.openBox<Map<dynamic, dynamic>>(
+        '${hiveBoxPrefix}_user_courses');
+    courseRemarkBox =
+        await Hive.openBox<String>('${hiveBoxPrefix}_user_course_remark');
     startWeekBox = await Hive.openBox<DateTime>('${hiveBoxPrefix}_start_week');
-    scoresBox = await Hive.openBox<Map<dynamic, dynamic>>('${hiveBoxPrefix}_user_scores');
+    scoresBox = await Hive.openBox<Map<dynamic, dynamic>>(
+        '${hiveBoxPrefix}_user_scores');
     webAppsBox = await Hive.openBox<List<dynamic>>('${hiveBoxPrefix}_webapps');
 
-    reportRecordBox = await Hive.openBox<List<dynamic>>('${hiveBoxPrefix}_report_record');
+    reportRecordBox =
+        await Hive.openBox<List<dynamic>>('${hiveBoxPrefix}_report_record');
     settingsBox = await Hive.openBox<dynamic>('${hiveBoxPrefix}_app_settings');
 
     changelogBox = await Hive.openBox<ChangeLog>('${hiveBoxPrefix}_changelog');

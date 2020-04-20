@@ -14,7 +14,8 @@ class ExtendedTypedNetworkImageProvider extends ExtendedNetworkImageProvider {
   ImageFileType get imageType => _imageType ?? _getType(rawImageData);
 
   @override
-  Future<ui.Codec> instantiateImageCodec(Uint8List data, DecoderCallback decode) async {
+  Future<ui.Codec> instantiateImageCodec(
+      Uint8List data, DecoderCallback decode) async {
     _imageType = _getType(data);
     return super.instantiateImageCodec(data, decode);
   }

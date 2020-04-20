@@ -25,7 +25,8 @@ class PhotoSelector extends StatelessWidget {
     Key key,
     @required this.provider,
     int gridCount = 4,
-  })  : assert(provider != null, 'PhotoSelectorProvider must be provided and not null.'),
+  })  : assert(provider != null,
+            'PhotoSelectorProvider must be provided and not null.'),
         gridCount = gridCount ?? 4,
         super(key: key);
 
@@ -39,7 +40,8 @@ class PhotoSelector extends StatelessWidget {
 
   /// Static method to push with navigator.
   /// 跳转至选择器的静态方法
-  static Future<Set<AssetEntity>> pushToPicker(PhotoSelectorProvider provider) async {
+  static Future<Set<AssetEntity>> pushToPicker(
+      PhotoSelectorProvider provider) async {
     final dynamic result = await navigatorState.pushNamed(
       Routes.OPENJMU_PHOTO_SELECTOR,
       arguments: <String, dynamic>{'provider': provider},
@@ -62,7 +64,8 @@ class PhotoSelector extends StatelessWidget {
 
   /// [ThemeData] for selector.
   /// 选择器使用的主题
-  ThemeData get theme => Provider.of<ThemesProvider>(currentContext, listen: false).darkTheme;
+  ThemeData get theme =>
+      Provider.of<ThemesProvider>(currentContext, listen: false).darkTheme;
 
   /// Path entity select widget.
   /// 路径选择部件
@@ -128,10 +131,13 @@ class PhotoSelector extends StatelessWidget {
               RepaintBoundary(
                 child: AspectRatio(
                   aspectRatio: 1.0,
-                  child: Selector<PhotoSelectorProvider, Map<AssetPathEntity, Uint8List>>(
-                    selector: (BuildContext _, PhotoSelectorProvider provider) =>
-                        provider.pathEntityList,
-                    builder: (BuildContext _, Map<AssetPathEntity, Uint8List> pathEntityList,
+                  child: Selector<PhotoSelectorProvider,
+                      Map<AssetPathEntity, Uint8List>>(
+                    selector:
+                        (BuildContext _, PhotoSelectorProvider provider) =>
+                            provider.pathEntityList,
+                    builder: (BuildContext _,
+                        Map<AssetPathEntity, Uint8List> pathEntityList,
                         Widget __) {
                       /// The reason that the `thumbData` should be checked at here to see if it is
                       /// null is that even the image file is not exist, the `File` can still
@@ -140,7 +146,8 @@ class PhotoSelector extends StatelessWidget {
                       /// 仍然存在，使得返回的数据为空。
                       final Uint8List thumbData = pathEntityList[pathEntity];
                       if (thumbData != null) {
-                        return Image.memory(pathEntityList[pathEntity], fit: BoxFit.cover);
+                        return Image.memory(pathEntityList[pathEntity],
+                            fit: BoxFit.cover);
                       } else {
                         return Container(color: Colors.white12);
                       }
@@ -166,7 +173,8 @@ class PhotoSelector extends StatelessWidget {
                       ),
                       Text(
                         '(${pathEntity.assetCount})',
-                        style: TextStyle(color: Colors.grey[600], fontSize: 20.0.sp),
+                        style: TextStyle(
+                            color: Colors.grey[600], fontSize: 20.0.sp),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -177,11 +185,13 @@ class PhotoSelector extends StatelessWidget {
               Selector<PhotoSelectorProvider, AssetPathEntity>(
                 selector: (BuildContext _, PhotoSelectorProvider provider) =>
                     provider.currentPathEntity,
-                builder: (BuildContext _, AssetPathEntity currentPathEntity, Widget __) {
+                builder: (BuildContext _, AssetPathEntity currentPathEntity,
+                    Widget __) {
                   if (currentPathEntity == pathEntity) {
                     return AspectRatio(
                       aspectRatio: 1.0,
-                      child: Icon(Icons.check, color: currentThemeColor, size: 32.0.w),
+                      child: Icon(Icons.check,
+                          color: currentThemeColor, size: 32.0.w),
                     );
                   } else {
                     return const SizedBox.shrink();
@@ -200,7 +210,8 @@ class PhotoSelector extends StatelessWidget {
   Widget get pathEntityListWidget {
     final double maxHeight = Screens.height * 0.75;
     return Selector<PhotoSelectorProvider, bool>(
-      selector: (BuildContext _, PhotoSelectorProvider provider) => provider.isSwitchingPath,
+      selector: (BuildContext _, PhotoSelectorProvider provider) =>
+          provider.isSwitchingPath,
       builder: (BuildContext _, bool isSwitchingPath, Widget __) {
         return AnimatedPositioned(
           duration: switchingPathDuration,
@@ -210,14 +221,18 @@ class PhotoSelector extends StatelessWidget {
             width: Screens.width,
             height: maxHeight,
             decoration: BoxDecoration(color: theme.primaryColor),
-            child: Selector<PhotoSelectorProvider, Map<AssetPathEntity, Uint8List>>(
-              selector: (BuildContext _, PhotoSelectorProvider provider) => provider.pathEntityList,
-              builder: (BuildContext _, Map<AssetPathEntity, Uint8List> pathEntityList, Widget __) {
+            child: Selector<PhotoSelectorProvider,
+                Map<AssetPathEntity, Uint8List>>(
+              selector: (BuildContext _, PhotoSelectorProvider provider) =>
+                  provider.pathEntityList,
+              builder: (BuildContext _,
+                  Map<AssetPathEntity, Uint8List> pathEntityList, Widget __) {
                 return ListView.separated(
                   padding: EdgeInsets.only(top: 1.0.h),
                   itemCount: pathEntityList.length,
                   itemBuilder: (BuildContext _, int index) {
-                    return pathEntityWidget(pathEntityList.keys.elementAt(index));
+                    return pathEntityWidget(
+                        pathEntityList.keys.elementAt(index));
                   },
                   separatorBuilder: (BuildContext _, int __) => Container(
                     height: 1.0.h,
@@ -243,7 +258,9 @@ class PhotoSelector extends StatelessWidget {
             minWidth: provider.isSelectedNotEmpty ? 50.0.w : 20.0.w,
             height: 38.0.h,
             padding: EdgeInsets.symmetric(horizontal: 16.0.w),
-            color: provider.isSelectedNotEmpty ? currentThemeColor : theme.dividerColor,
+            color: provider.isSelectedNotEmpty
+                ? currentThemeColor
+                : theme.dividerColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10.0.w),
             ),
@@ -252,7 +269,9 @@ class PhotoSelector extends StatelessWidget {
                   ? '确认(${provider.selectedAssets.length}/${provider.maxAssets})'
                   : '确认',
               style: TextStyle(
-                color: provider.isSelectedNotEmpty ? Colors.white : Colors.grey[600],
+                color: provider.isSelectedNotEmpty
+                    ? Colors.white
+                    : Colors.grey[600],
                 fontSize: 18.0.sp,
                 height: 1.25,
               ),
@@ -290,10 +309,12 @@ class PhotoSelector extends StatelessWidget {
 
   /// Item widget when [AssetEntity.thumbData] loaded successfully.
   /// 资源缩略数据加载成功时使用的部件
-  Widget _succeedItem(int index, Widget completedWidget, {SpecialAssetType specialAssetType}) {
+  Widget _succeedItem(int index, Widget completedWidget,
+      {SpecialAssetType specialAssetType}) {
     final AssetEntity item = provider.currentAssets.elementAt(index);
     return Selector<PhotoSelectorProvider, Set<AssetEntity>>(
-      selector: (BuildContext _, PhotoSelectorProvider provider) => provider.selectedAssets,
+      selector: (BuildContext _, PhotoSelectorProvider provider) =>
+          provider.selectedAssets,
       builder: (BuildContext _, Set<AssetEntity> selectedAssets, Widget __) {
         final bool selected = provider.selectedAssets.contains(item);
         return Stack(
@@ -309,7 +330,8 @@ class PhotoSelector extends StatelessWidget {
                 },
                 child: AnimatedContainer(
                   duration: kThemeAnimationDuration,
-                  color: selected ? Colors.black45 : Colors.black.withOpacity(0.1),
+                  color:
+                      selected ? Colors.black45 : Colors.black.withOpacity(0.1),
                 ),
               ), // 点击预览同目录下所有资源
             ),
@@ -333,7 +355,9 @@ class PhotoSelector extends StatelessWidget {
                   height: 25.0.w,
                   margin: EdgeInsets.all(8.0.w),
                   decoration: BoxDecoration(
-                    border: !selected ? Border.all(color: Colors.white, width: 2.0.w) : null,
+                    border: !selected
+                        ? Border.all(color: Colors.white, width: 2.0.w)
+                        : null,
                     color: selected ? currentThemeColor : null,
                     shape: BoxShape.circle,
                   ),
@@ -343,7 +367,8 @@ class PhotoSelector extends StatelessWidget {
                     child: selected
                         ? Text(
                             '${selectedAssets.toList().indexOf(item) + 1}',
-                            style: TextStyle(color: Colors.white, fontSize: 18.0.sp),
+                            style: TextStyle(
+                                color: Colors.white, fontSize: 18.0.sp),
                           )
                         : const SizedBox.shrink(),
                   ),
@@ -369,7 +394,8 @@ class PhotoSelector extends StatelessWidget {
   /// [GridView] for assets under [PhotoSelectorProvider.currentPathEntity].
   /// 正在查看的目录下的资源网格部件
   Widget get assetsGrid => Selector<PhotoSelectorProvider, Set<AssetEntity>>(
-        selector: (BuildContext _, PhotoSelectorProvider provider) => provider.currentAssets,
+        selector: (BuildContext _, PhotoSelectorProvider provider) =>
+            provider.currentAssets,
         builder: (BuildContext _, Set<AssetEntity> currentAssets, Widget __) {
           return GridView.builder(
             padding: EdgeInsets.zero,
@@ -380,7 +406,8 @@ class PhotoSelector extends StatelessWidget {
             ),
             itemCount: currentAssets.length,
             itemBuilder: (BuildContext _, int index) {
-              final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(
+              final AssetEntityImageProvider imageProvider =
+                  AssetEntityImageProvider(
                 currentAssets.elementAt(index),
                 isOriginal: false,
               );
@@ -402,7 +429,8 @@ class PhotoSelector extends StatelessWidget {
                         if (imageProvider.imageFileType == ImageFileType.gif) {
                           type = SpecialAssetType.gif;
                         }
-                        loader = _succeedItem(index, state.completedWidget, specialAssetType: type);
+                        loader = _succeedItem(index, state.completedWidget,
+                            specialAssetType: type);
                         break;
                       case LoadState.failed:
                         loader = _failedItem;
@@ -421,12 +449,14 @@ class PhotoSelector extends StatelessWidget {
   /// 预览已选图片的按钮
   Widget get previewButton {
     return Selector<PhotoSelectorProvider, bool>(
-      selector: (BuildContext _, PhotoSelectorProvider provider) => provider.isSelectedNotEmpty,
+      selector: (BuildContext _, PhotoSelectorProvider provider) =>
+          provider.isSelectedNotEmpty,
       builder: (BuildContext _, bool isSelectedNotEmpty, Widget __) {
         return GestureDetector(
           onTap: isSelectedNotEmpty
               ? () async {
-                  final Set<AssetEntity> result = await PhotoSelectorViewer.pushToViewer(
+                  final Set<AssetEntity> result =
+                      await PhotoSelectorViewer.pushToViewer(
                     currentIndex: 0,
                     assets: provider.selectedAssets,
                     selectedAssets: provider.selectedAssets,
@@ -438,10 +468,14 @@ class PhotoSelector extends StatelessWidget {
                 }
               : null,
           child: Selector<PhotoSelectorProvider, Set<AssetEntity>>(
-            selector: (BuildContext _, PhotoSelectorProvider provider) => provider.selectedAssets,
-            builder: (BuildContext _, Set<AssetEntity> selectedAssets, Widget __) {
+            selector: (BuildContext _, PhotoSelectorProvider provider) =>
+                provider.selectedAssets,
+            builder:
+                (BuildContext _, Set<AssetEntity> selectedAssets, Widget __) {
               return Text(
-                isSelectedNotEmpty ? '预览(${provider.selectedAssets.length})' : '预览',
+                isSelectedNotEmpty
+                    ? '预览(${provider.selectedAssets.length})'
+                    : '预览',
                 style: TextStyle(
                   color: isSelectedNotEmpty ? null : Colors.grey[600],
                   fontSize: 18.0.sp,

@@ -12,7 +12,8 @@ class ScanQrCodePage extends StatefulWidget {
 }
 
 class _ScanQrCodePageState extends State<ScanQrCodePage> {
-  final GlobalKey<QrcodeReaderViewState> _key = GlobalKey<QrcodeReaderViewState>();
+  final GlobalKey<QrcodeReaderViewState> _key =
+      GlobalKey<QrcodeReaderViewState>();
 
   Future<void> onScan(BuildContext context, String data) async {
     if (data == null) {
@@ -26,7 +27,8 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
       unawaited(Navigator.of(context).pushReplacementNamed(
         Routes.OPENJMU_USER,
         arguments: <String, dynamic>{
-          'uid': int.parse(data.substring(API.schemeUserPage.pattern.length - 2))
+          'uid':
+              int.parse(data.substring(API.schemeUserPage.pattern.length - 2))
         },
       ));
     } else {

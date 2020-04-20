@@ -10,7 +10,8 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/login_page.dart';
 import 'package:openjmu/pages/main_page.dart';
 
-@FFRoute(name: 'openjmu://splash', routeName: '启动页', argumentNames: ['initAction'])
+@FFRoute(
+    name: 'openjmu://splash', routeName: '启动页', argumentNames: ['initAction'])
 class SplashPage extends StatefulWidget {
   const SplashPage({
     Key key,
@@ -113,7 +114,8 @@ class SplashState extends State<SplashPage> {
     try {
       navigatorState.pushAndRemoveUntil<void>(
         PageRouteBuilder<void>(
-          transitionDuration: !isUserLogin || forceToLogin ? 1.seconds : 500.milliseconds,
+          transitionDuration:
+              !isUserLogin || forceToLogin ? 1.seconds : 500.milliseconds,
           pageBuilder: (_, Animation<double> animation, __) => FadeTransition(
             opacity: animation,
             child: !isUserLogin || forceToLogin
@@ -200,8 +202,9 @@ class SplashState extends State<SplashPage> {
           curve: Curves.easeInOut,
           opacity: firstFramed ? 1.0 : 0.0,
           child: Scaffold(
-            backgroundColor:
-                currentIsDark ? Theme.of(context).scaffoldBackgroundColor : currentThemeColor,
+            backgroundColor: currentIsDark
+                ? Theme.of(context).scaffoldBackgroundColor
+                : currentThemeColor,
             body: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -209,14 +212,17 @@ class SplashState extends State<SplashPage> {
                 AnimatedContainer(
                   duration: 200.milliseconds,
                   margin: EdgeInsets.only(
-                    top: suSetHeight(showLoading && isOnline != null ? 20.0 : 0.0),
+                    top: suSetHeight(
+                        showLoading && isOnline != null ? 20.0 : 0.0),
                   ),
                   width: Screens.width,
-                  height: suSetHeight(showLoading && isOnline != null ? 100.0 : 0.0),
+                  height: suSetHeight(
+                      showLoading && isOnline != null ? 100.0 : 0.0),
                   child: SingleChildScrollView(
                     physics: const NeverScrollableScrollPhysics(),
                     child: SizedBox(
-                      height: suSetHeight(showLoading && isOnline != null ? 100.0 : 0.0),
+                      height: suSetHeight(
+                          showLoading && isOnline != null ? 100.0 : 0.0),
                       child: AnimatedSwitcher(
                         duration: 300.milliseconds,
                         child: showLoading && isOnline != null

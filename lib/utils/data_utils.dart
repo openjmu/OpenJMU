@@ -26,7 +26,8 @@ class DataUtils {
     );
     try {
       final Map<String, dynamic> loginData =
-          (await UserAPI.login<Map<String, dynamic>>(params)).data['data']; // Using xAuth.
+          (await UserAPI.login<Map<String, dynamic>>(params))
+              .data['data']; // Using xAuth.
 //      final Map<String, dynamic> loginData =
 //          (await UserAPI.login<Map<String, dynamic>>(params)).data; // Using 99.
       UserAPI.currentUser.sid = loginData['sid'] as String;
@@ -122,12 +123,13 @@ class DataUtils {
   static Future<void> getUserInfo([int uid]) async {
     try {
       final DateTime _start = currentTime;
-      final Map<String, dynamic> data = (await NetUtils.tokenDio.get<Map<String, dynamic>>(
+      final Map<String, dynamic> data =
+          (await NetUtils.tokenDio.get<Map<String, dynamic>>(
         API.userInfo,
         queryParameters: <String, dynamic>{'uid': uid ?? currentUser.uid},
         options: Options(cookies: buildPHPSESSIDCookies(currentUser.sid)),
       ))
-          .data;
+              .data;
       final DateTime _end = currentTime;
       trueDebugPrint('Done request user info in: ${_end.difference(_start)}');
       getUserInfoFromResponse(data);
@@ -182,7 +184,9 @@ class DataUtils {
   }
 
   static Map<String, dynamic> getSpTicket() {
-    final Map<String, dynamic> tickets = <String, dynamic>{'ticket': settingsBox.get(spTicket)};
+    final Map<String, dynamic> tickets = <String, dynamic>{
+      'ticket': settingsBox.get(spTicket)
+    };
     return tickets;
   }
 
@@ -196,11 +200,12 @@ class DataUtils {
       NetUtils.cookieJar.deleteAll();
       NetUtils.tokenCookieJar.deleteAll();
       final DateTime _start = currentTime;
-      final Map<String, dynamic> response = (await NetUtils.tokenDio.post<Map<String, dynamic>>(
+      final Map<String, dynamic> response =
+          (await NetUtils.tokenDio.post<Map<String, dynamic>>(
         API.loginTicket,
         data: params,
       ))
-          .data;
+              .data;
       final DateTime _end = currentTime;
       trueDebugPrint('Done request new ticket in: ${_end.difference(_start)}');
       updateSid(response['data']); // Using xAuth.
@@ -227,9 +232,12 @@ class DataUtils {
       'CLOUDID': 'jmu',
       'CLOUD-ID': 'jmu',
       'UAP-SID': sid,
-      'WEIBO-API-KEY': Platform.isIOS ? Constants.postApiKeyIOS : Constants.postApiKeyAndroid,
-      'WEIBO-API-SECRET':
-          Platform.isIOS ? Constants.postApiSecretIOS : Constants.postApiSecretAndroid,
+      'WEIBO-API-KEY': Platform.isIOS
+          ? Constants.postApiKeyIOS
+          : Constants.postApiKeyAndroid,
+      'WEIBO-API-SECRET': Platform.isIOS
+          ? Constants.postApiSecretIOS
+          : Constants.postApiSecretAndroid,
     };
     return headers;
   }

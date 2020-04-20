@@ -32,7 +32,8 @@ class DeviceUtils {
       deviceInfo = await _deviceInfoPlugin.iosInfo;
       final IosDeviceInfo iosInfo = deviceInfo as IosDeviceInfo;
 
-      final String model = '${iosInfo.model} ${iosInfo.utsname.machine} ${iosInfo.systemVersion}';
+      final String model =
+          '${iosInfo.model} ${iosInfo.utsname.machine} ${iosInfo.systemVersion}';
       deviceModel = model;
     }
 

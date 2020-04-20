@@ -33,7 +33,8 @@ class NotificationsPage extends StatefulWidget {
   State<StatefulWidget> createState() => NotificationsPageState();
 }
 
-class NotificationsPageState extends State<NotificationsPage> with TickerProviderStateMixin {
+class NotificationsPageState extends State<NotificationsPage>
+    with TickerProviderStateMixin {
   Duration get duration => 200.milliseconds;
 
   double get maximumOpacity => 0.4;
@@ -116,15 +117,18 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
   @override
   void initState() {
     super.initState();
-    notificationProvider = Provider.of<NotificationProvider>(currentContext, listen: false);
+    notificationProvider =
+        Provider.of<NotificationProvider>(currentContext, listen: false);
 
-    backgroundOpacityController =
-        AnimationController.unbounded(value: 0.0, duration: duration, vsync: this);
+    backgroundOpacityController = AnimationController.unbounded(
+        value: 0.0, duration: duration, vsync: this);
 
     scrollController.addListener(() {
       backgroundOpacityController.value =
           scrollController.offset / maximumSheetHeight * maximumOpacity;
-      final canJump = scrollController.offset < maximumSheetHeight && !tapping && !animating;
+      final canJump = scrollController.offset < maximumSheetHeight &&
+          !tapping &&
+          !animating;
       if (canJump) {
         scrollController.jumpTo(maximumSheetHeight);
       }
@@ -141,8 +145,8 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
 
     _squareIndex = notificationProvider.initialIndex;
     _teamIndex = notificationProvider.teamInitialIndex;
-    actions[_index].values.elementAt(0)['content'][_index == 0 ? _squareIndex : _teamIndex]
-        ['action']();
+    actions[_index].values.elementAt(0)['content']
+        [_index == 0 ? _squareIndex : _teamIndex]['action']();
 
     SchedulerBinding.instance.addPostFrameCallback((Duration _) async {
       await scrollController.animateTo(
@@ -221,7 +225,11 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
       await scrollController.animateTo(
         maximumSheetHeight,
         duration: math
-            .max(50, ((maximumSheetHeight - scrollController.offset) / maximumSheetHeight * 300))
+            .max(
+                50,
+                ((maximumSheetHeight - scrollController.offset) /
+                    maximumSheetHeight *
+                    300))
             .milliseconds,
         curve: Curves.easeOut,
       );
@@ -237,7 +245,9 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
       animating = true;
       await scrollController.animateTo(
         0,
-        duration: math.max(50, (scrollController.offset / maximumSheetHeight * 250)).milliseconds,
+        duration: math
+            .max(50, (scrollController.offset / maximumSheetHeight * 250))
+            .milliseconds,
         curve: Curves.easeOut,
       );
       navigatorState.pop();
@@ -331,7 +341,8 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
               children: List<Widget>.generate(
                 (actions[i][key]['content'] as List<dynamic>).length,
                 (int j) {
-                  final Map<String, dynamic> item = actions[i].values.elementAt(0)['content'][j];
+                  final Map<String, dynamic> item =
+                      actions[i].values.elementAt(0)['content'][j];
                   final int count = item['field'] as int;
                   return GestureDetector(
                     behavior: HitTestBehavior.opaque,
@@ -340,7 +351,8 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
                       (item['action'] as VoidCallback)();
                     },
                     child: Container(
-                      margin: EdgeInsets.symmetric(horizontal: suSetWidth(21.0)),
+                      margin:
+                          EdgeInsets.symmetric(horizontal: suSetWidth(21.0)),
                       child: badgeIcon(
                         content: count == 0 ? '' : count,
                         icon: getActionIcon(i, j),
@@ -362,7 +374,9 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
     final int index = item['index'] as int;
     return AnimatedCrossFade(
       duration: duration,
-      crossFadeState: index == actionIndex ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+      crossFadeState: index == actionIndex
+          ? CrossFadeState.showFirst
+          : CrossFadeState.showSecond,
       firstChild: SvgPicture.asset(
         icon,
         color: currentThemeColor,
@@ -417,8 +431,10 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
           child: IndexedStack(
             index: _mentionIndex,
             children: <Widget>[
-              NestedScrollViewInnerScrollPositionKeyWidget(Key('List-0-2-0'), postByMention),
-              NestedScrollViewInnerScrollPositionKeyWidget(Key('List-0-2-1'), commentByMention),
+              NestedScrollViewInnerScrollPositionKeyWidget(
+                  Key('List-0-2-0'), postByMention),
+              NestedScrollViewInnerScrollPositionKeyWidget(
+                  Key('List-0-2-1'), commentByMention),
             ],
           ),
         ),
@@ -444,7 +460,8 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
           child: AnimatedBuilder(
             animation: backgroundOpacityController,
             builder: (BuildContext _, Widget child) => Material(
-              color: Colors.black.withOpacity(backgroundOpacityController.value),
+              color:
+                  Colors.black.withOpacity(backgroundOpacityController.value),
               child: child,
             ),
             child: NestedScrollView(
@@ -476,7 +493,8 @@ class NotificationsPageState extends State<NotificationsPage> with TickerProvide
                     children: <Widget>[
                       backButton,
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+                        padding:
+                            EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
                         height: suSetHeight(kAppBarHeight),
                         decoration: BoxDecoration(
                           border: Border(

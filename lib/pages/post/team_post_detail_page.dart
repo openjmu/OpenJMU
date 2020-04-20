@@ -76,8 +76,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
   void initState() {
     super.initState();
     provider = widget.provider;
-    canLoadMore =
-        (provider.post?.repliesCount ?? -1) > (widget.type == TeamPostType.comment ? 50 : 30);
+    canLoadMore = (provider.post?.repliesCount ?? -1) >
+        (widget.type == TeamPostType.comment ? 50 : 30);
     loading = (provider.post?.repliesCount ?? -1) > 0;
     initialLoad();
 
@@ -143,8 +143,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
       ).then((response) {
         final data = response.data;
         total = data['total'].toString().toInt();
-        canLoadMore =
-            data['count'].toString().toInt() > (widget.type == TeamPostType.comment ? 50 : 30);
+        canLoadMore = data['count'].toString().toInt() >
+            (widget.type == TeamPostType.comment ? 50 : 30);
         Set list;
         switch (widget.type) {
           case TeamPostType.post:
@@ -226,10 +226,12 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         showToast('删除成功');
         switch (widget.type) {
           case TeamPostType.post:
-            Instances.eventBus.fire(TeamPostDeletedEvent(postId: provider.post.tid));
+            Instances.eventBus
+                .fire(TeamPostDeletedEvent(postId: provider.post.tid));
             break;
           case TeamPostType.comment:
-            Instances.eventBus.fire(TeamCommentDeletedEvent(postId: provider.post.tid));
+            Instances.eventBus
+                .fire(TeamCommentDeletedEvent(postId: provider.post.tid));
             break;
         }
         navigatorState.pop();
@@ -277,7 +279,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
     final currentPosition = _textEditingController.selection.baseOffset;
     String result;
     if (_textEditingController.text.isNotEmpty) {
-      final leftText = _textEditingController.text.substring(0, currentPosition);
+      final leftText =
+          _textEditingController.text.substring(0, currentPosition);
       final rightText = _textEditingController.text
           .substring(currentPosition, _textEditingController.text.length);
       result = '$leftText##$rightText';
@@ -611,7 +614,8 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                                     initialLoad(loadMore: true);
                                   }
                                   if (index == list.length) {
-                                    return LoadMoreIndicator(canLoadMore: canLoadMore);
+                                    return LoadMoreIndicator(
+                                        canLoadMore: canLoadMore);
                                   }
                                   Widget item;
                                   switch (widget.type) {

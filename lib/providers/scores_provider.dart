@@ -81,7 +81,8 @@ class ScoresProvider extends ChangeNotifier {
       _scores?.filter((Score score) => score.termId == _selectedTerm)?.toList();
 
   Future<void> initScore() async {
-    final Map<String, dynamic> data = _scoreBox.get(currentUser.uid)?.cast<String, dynamic>();
+    final Map<String, dynamic> data =
+        _scoreBox.get(currentUser.uid)?.cast<String, dynamic>();
     if (data != null && data['terms'] != null && data['scores'] != null) {
       _terms = (data['terms'] as List<dynamic>).cast<String>();
       _scores = (data['scores'] as List<dynamic>).cast<Score>();
@@ -142,8 +143,8 @@ class ScoresProvider extends ChangeNotifier {
 
   void tryDecodeScores() {
     try {
-      final Map<String, dynamic> response =
-          (jsonDecode(_scoreData) as Map<String, dynamic>)['obj'] as Map<String, dynamic>;
+      final Map<String, dynamic> response = (jsonDecode(_scoreData)
+          as Map<String, dynamic>)['obj'] as Map<String, dynamic>;
       if ((response['terms'] as List<dynamic>).isNotEmpty &&
           (response['scores'] as List<dynamic>).isNotEmpty) {
         final List<Score> scoreList = <Score>[];
@@ -165,7 +166,8 @@ class ScoresProvider extends ChangeNotifier {
       }
       _loading = false;
       notifyListeners();
-      trueDebugPrint('Scores decoded successfully with ${_scores?.length ?? 0} scores.');
+      trueDebugPrint(
+          'Scores decoded successfully with ${_scores?.length ?? 0} scores.');
       _scoreData = '';
     } catch (e) {
       trueDebugPrint('Decode scores response error: $e');
@@ -173,7 +175,8 @@ class ScoresProvider extends ChangeNotifier {
   }
 
   Future<void> updateScoreCache() async {
-    final Map<String, dynamic> beforeData = _scoreBox.get(currentUser.uid)?.cast<String, dynamic>();
+    final Map<String, dynamic> beforeData =
+        _scoreBox.get(currentUser.uid)?.cast<String, dynamic>();
     if (beforeData == null || beforeData['scores'] != _scores) {
       final Map<String, dynamic> presentData = <String, dynamic>{
         'terms': _terms,
@@ -215,14 +218,16 @@ class ScoresProvider extends ChangeNotifier {
   }
 }
 
-const Map<String, Map<String, double>> fiveBandScale = <String, Map<String, double>>{
+const Map<String, Map<String, double>> fiveBandScale =
+    <String, Map<String, double>>{
   '优秀': <String, double>{'score': 95.0, 'point': 4.625},
   '良好': <String, double>{'score': 85.0, 'point': 3.875},
   '中等': <String, double>{'score': 75.0, 'point': 3.125},
   '及格': <String, double>{'score': 65.0, 'point': 2.375},
   '不及格': <String, double>{'score': 55.0, 'point': 0.0},
 };
-const Map<String, Map<String, double>> twoBandScale = <String, Map<String, double>>{
+const Map<String, Map<String, double>> twoBandScale =
+    <String, Map<String, double>>{
   '合格': <String, double>{'score': 80.0, 'point': 3.5},
   '不合格': <String, double>{'score': 50.0, 'point': 0.0},
 };

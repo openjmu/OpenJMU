@@ -13,7 +13,8 @@ class AddingButtonPage extends StatefulWidget {
   _AddingButtonPageState createState() => _AddingButtonPageState();
 }
 
-class _AddingButtonPageState extends State<AddingButtonPage> with TickerProviderStateMixin {
+class _AddingButtonPageState extends State<AddingButtonPage>
+    with TickerProviderStateMixin {
   final List<String> itemIcons = [
     R.ASSETS_ICONS_ADD_BUTTON_GUANGCHANG_SVG,
     R.ASSETS_ICONS_ADD_BUTTON_JISHI_SVG,
@@ -56,7 +57,8 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
   void initState() {
     super.initState();
     initItemsAnimation();
-    SchedulerBinding.instance.addPostFrameCallback((_) => backDropFilterAnimate(context, true));
+    SchedulerBinding.instance
+        .addPostFrameCallback((_) => backDropFilterAnimate(context, true));
   }
 
   @override
@@ -198,7 +200,8 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
       });
 
     if (forward) {
-      Future.delayed((_animateDuration ~/ 2).milliseconds, () => itemsAnimate(true));
+      Future.delayed(
+          (_animateDuration ~/ 2).milliseconds, () => itemsAnimate(true));
     } else {
       itemsAnimate(false);
     }
@@ -248,7 +251,9 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
             behavior: HitTestBehavior.opaque,
             onTap: willPop,
             child: Container(
-              color: Theme.of(context).primaryColor.withOpacity(0.6 * _backgroundOpacity),
+              color: Theme.of(context)
+                  .primaryColor
+                  .withOpacity(0.6 * _backgroundOpacity),
               child: BackdropFilter(
                 filter: ui.ImageFilter.blur(
                   sigmaX: 3.0 * _backgroundOpacity,
@@ -264,7 +269,8 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
           child: Container(
             width: Screens.width,
             height: Screens.height,
-            constraints: BoxConstraints(maxWidth: Screens.width, maxHeight: Screens.height),
+            constraints: BoxConstraints(
+                maxWidth: Screens.width, maxHeight: Screens.height),
             child: child ?? SizedBox.shrink(),
           ),
         ),
@@ -296,7 +302,8 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                   Container(
                     width: suSetWidth(80.0),
                     height: suSetWidth(80.0),
-                    decoration: BoxDecoration(color: itemColors[index], shape: BoxShape.circle),
+                    decoration: BoxDecoration(
+                        color: itemColors[index], shape: BoxShape.circle),
                     child: Center(
                       child: SvgPicture.asset(
                         itemIcons[index],
@@ -308,7 +315,10 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
                   emptyDivider(height: suSetHeight(10.0)),
                   Text(
                     itemTitles[index],
-                    style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
+                    style: Theme.of(context)
+                        .textTheme
+                        .body1
+                        .copyWith(fontSize: suSetSp(20.0)),
                   ),
                 ],
               ),
@@ -346,7 +356,8 @@ class _AddingButtonPageState extends State<AddingButtonPage> with TickerProvider
               GridView.count(
                 shrinkWrap: true,
                 crossAxisCount: 4,
-                children: List<Widget>.generate(itemTitles.length, (i) => item(context, i)),
+                children: List<Widget>.generate(
+                    itemTitles.length, (i) => item(context, i)),
               ),
               SizedBox(height: suSetHeight(120.0)),
             ],

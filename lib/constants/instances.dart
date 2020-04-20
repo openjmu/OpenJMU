@@ -32,12 +32,15 @@ class Instances {
   const Instances._();
 
   static final EventBus eventBus = EventBus();
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> navigatorKey =
+      GlobalKey<NavigatorState>();
   static AppLifecycleState appLifeCycleState = AppLifecycleState.resumed;
   static ConnectivityResult connectivityResult;
 
-  static final GlobalKey<ScaffoldState> mainPageScaffoldKey = GlobalKey<ScaffoldState>();
-  static final GlobalKey<AppsPageState> appsPageStateKey = GlobalKey<AppsPageState>();
+  static final GlobalKey<ScaffoldState> mainPageScaffoldKey =
+      GlobalKey<ScaffoldState>();
+  static final GlobalKey<AppsPageState> appsPageStateKey =
+      GlobalKey<AppsPageState>();
   static final GlobalKey<CourseSchedulePageState> courseSchedulePageStateKey =
       GlobalKey<CourseSchedulePageState>();
   static final CookieManager webViewCookieManager = CookieManager();

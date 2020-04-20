@@ -42,15 +42,18 @@ class _PostCardState extends State<PostCard> {
   final Color actionTextColorLight = const Color(0xffBDBDBD);
   final double contentPadding = 22.0;
 
-  TextStyle get subtitleStyle => TextStyle(color: Colors.grey, fontSize: suSetSp(18.0));
+  TextStyle get subtitleStyle =>
+      TextStyle(color: Colors.grey, fontSize: suSetSp(18.0));
   TextStyle get rootTopicTextStyle => TextStyle(fontSize: suSetSp(18.0));
-  TextStyle get rootTopicMentionStyle => TextStyle(color: Colors.blue, fontSize: suSetSp(18.0));
+  TextStyle get rootTopicMentionStyle =>
+      TextStyle(color: Colors.blue, fontSize: suSetSp(18.0));
 
   @override
   void initState() {
     super.initState();
     Instances.eventBus
-      ..on<ForwardInPostUpdatedEvent>().listen((ForwardInPostUpdatedEvent event) {
+      ..on<ForwardInPostUpdatedEvent>()
+          .listen((ForwardInPostUpdatedEvent event) {
         if (event.postId == widget.post.id) {
           widget.post.forwards = event.count;
         }
@@ -58,7 +61,8 @@ class _PostCardState extends State<PostCard> {
           setState(() {});
         }
       })
-      ..on<CommentInPostUpdatedEvent>().listen((CommentInPostUpdatedEvent event) {
+      ..on<CommentInPostUpdatedEvent>()
+          .listen((CommentInPostUpdatedEvent event) {
         if (event.postId == widget.post.id) {
           widget.post.comments = event.count;
         }
@@ -144,7 +148,8 @@ class _PostCardState extends State<PostCard> {
   Widget getRootPost(BuildContext context, Map<String, dynamic> rootTopic) {
     dynamic content = rootTopic['topic'];
     if (rootTopic['exists'] == 1) {
-      if (content['article'] == '此微博已经被屏蔽' || content['content'] == '此微博已经被屏蔽') {
+      if (content['article'] == '此微博已经被屏蔽' ||
+          content['content'] == '此微博已经被屏蔽') {
         return Container(
           margin: EdgeInsets.only(top: suSetHeight(10.0)),
           child: getPostBanned('shield', isRoot: true),
@@ -218,7 +223,8 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  Widget getRootPostImages(BuildContext context, Map<String, dynamic> rootTopic) {
+  Widget getRootPostImages(
+      BuildContext context, Map<String, dynamic> rootTopic) {
     return getImages(context, rootTopic['image'] as List<dynamic>);
   }
 
@@ -334,7 +340,8 @@ class _PostCardState extends State<PostCard> {
             child: LikeButton(
               padding: EdgeInsets.zero,
               size: suSetWidth(26.0),
-              circleColor: CircleColor(start: currentThemeColor, end: currentThemeColor),
+              circleColor:
+                  CircleColor(start: currentThemeColor, end: currentThemeColor),
               countBuilder: (int count, bool isLiked, String text) => SizedBox(
                 width: suSetWidth(40.0),
                 child: Text(
@@ -342,7 +349,9 @@ class _PostCardState extends State<PostCard> {
                   style: TextStyle(
                     color: isLiked
                         ? currentThemeColor
-                        : currentIsDark ? actionTextColorDark : actionTextColorLight,
+                        : currentIsDark
+                            ? actionTextColorDark
+                            : actionTextColorLight,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),
@@ -356,10 +365,14 @@ class _PostCardState extends State<PostCard> {
                 R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
                 color: isLiked
                     ? currentThemeColor
-                    : currentIsDark ? actionIconColorDark : actionIconColorLight,
+                    : currentIsDark
+                        ? actionIconColorDark
+                        : actionIconColorLight,
                 width: suSetWidth(26.0),
               ),
-              likeCount: widget.post.isLike ? moreThanOne(praises) : moreThanZero(praises),
+              likeCount: widget.post.isLike
+                  ? moreThanOne(praises)
+                  : moreThanZero(praises),
               likeCountAnimationType: LikeCountAnimationType.none,
               likeCountPadding: EdgeInsets.symmetric(
                 horizontal: suSetWidth(10.0),
@@ -376,7 +389,8 @@ class _PostCardState extends State<PostCard> {
               onPressed: null,
               icon: SvgPicture.asset(
                 R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
-                color: currentIsDark ? actionIconColorDark : actionIconColorLight,
+                color:
+                    currentIsDark ? actionIconColorDark : actionIconColorLight,
                 width: suSetWidth(26.0),
               ),
               label: SizedBox(
@@ -384,7 +398,9 @@ class _PostCardState extends State<PostCard> {
                 child: Text(
                   comments == 0 ? '' : '$comments',
                   style: TextStyle(
-                    color: currentIsDark ? actionTextColorDark : actionTextColorLight,
+                    color: currentIsDark
+                        ? actionTextColorDark
+                        : actionTextColorLight,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),
@@ -406,7 +422,8 @@ class _PostCardState extends State<PostCard> {
               },
               icon: SvgPicture.asset(
                 R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
-                color: currentIsDark ? actionIconColorDark : actionIconColorLight,
+                color:
+                    currentIsDark ? actionIconColorDark : actionIconColorLight,
                 width: suSetWidth(26.0),
               ),
               label: SizedBox(
@@ -414,7 +431,9 @@ class _PostCardState extends State<PostCard> {
                 child: Text(
                   forwards == 0 ? '' : '$forwards',
                   style: TextStyle(
-                    color: currentIsDark ? actionTextColorDark : actionTextColorLight,
+                    color: currentIsDark
+                        ? actionTextColorDark
+                        : actionTextColorLight,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),
@@ -538,7 +557,8 @@ class _PostCardState extends State<PostCard> {
       showConfirm: true,
     );
     if (confirm) {
-      final LoadingDialogController _loadingDialogController = LoadingDialogController();
+      final LoadingDialogController _loadingDialogController =
+          LoadingDialogController();
       LoadingDialog.show(
         context,
         controller: _loadingDialogController,
@@ -548,7 +568,8 @@ class _PostCardState extends State<PostCard> {
       try {
         await PostAPI.deletePost(widget.post.id);
         _loadingDialogController.changeState('success', '动态删除成功');
-        Instances.eventBus.fire(PostDeletedEvent(widget.post.id, widget.fromPage, widget.index));
+        Instances.eventBus.fire(
+            PostDeletedEvent(widget.post.id, widget.fromPage, widget.index));
       } catch (e) {
         trueDebugPrint(e.toString());
         trueDebugPrint(e.response?.toString());
@@ -616,7 +637,8 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     final Post post = widget.post;
     final bool hideShield = post.isShield &&
-        Provider.of<SettingsProvider>(currentContext, listen: false).hideShieldPost;
+        Provider.of<SettingsProvider>(currentContext, listen: false)
+            .hideShieldPost;
     return hideShield
         ? const SizedBox.shrink()
         : GestureDetector(
@@ -626,7 +648,8 @@ class _PostCardState extends State<PostCard> {
               margin: widget.isDetail
                   ? EdgeInsets.zero
                   : EdgeInsets.symmetric(
-                      horizontal: suSetWidth(widget.fromPage == 'user' ? 0.0 : 12.0),
+                      horizontal:
+                          suSetWidth(widget.fromPage == 'user' ? 0.0 : 12.0),
                       vertical: suSetHeight(6.0),
                     ),
               decoration: BoxDecoration(
@@ -653,7 +676,8 @@ class _PostCardState extends State<PostCard> {
                                   ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
                                       getPostNickname(context, post),
                                       getPostInfo(post),
@@ -662,7 +686,9 @@ class _PostCardState extends State<PostCard> {
                                 ),
                               ),
                               if (!widget.isDetail)
-                                post.uid == currentUser.uid ? deleteButton : postActionButton,
+                                post.uid == currentUser.uid
+                                    ? deleteButton
+                                    : postActionButton,
                             ],
                           ),
                         ),
@@ -677,7 +703,10 @@ class _PostCardState extends State<PostCard> {
                               children: <Widget>[
                                 Text(
                                   '浏览${post.glances}次　',
-                                  style: Theme.of(context).textTheme.caption.copyWith(
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .caption
+                                      .copyWith(
                                         fontSize: suSetSp(18.0),
                                       ),
                                 ),

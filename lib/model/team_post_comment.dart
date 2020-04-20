@@ -54,7 +54,9 @@ class TeamPostComment {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TeamPostComment && runtimeType == other.runtimeType && rid == other.rid;
+      other is TeamPostComment &&
+          runtimeType == other.runtimeType &&
+          rid == other.rid;
 
   @override
   int get hashCode => rid.hashCode;

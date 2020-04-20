@@ -37,7 +37,8 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
   @override
   void initState() {
     super.initState();
-    settingsProvider = Provider.of<SettingsProvider>(currentContext, listen: false);
+    settingsProvider =
+        Provider.of<SettingsProvider>(currentContext, listen: false);
   }
 
   Widget settingItem(context, index, sectionIndex) {

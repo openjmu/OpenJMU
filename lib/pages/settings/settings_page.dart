@@ -16,8 +16,9 @@ class SettingsPage extends StatelessWidget {
                 return CustomSwitch(
                   activeColor: currentThemeColor,
                   value: provider.dark,
-                  onChanged:
-                      !provider.platformBrightness ? (bool value) => provider.dark = value : null,
+                  onChanged: !provider.platformBrightness
+                      ? (bool value) => provider.dark = value
+                      : null,
                 );
               },
             ),
@@ -32,7 +33,8 @@ class SettingsPage extends StatelessWidget {
                 return CustomSwitch(
                   activeColor: currentThemeColor,
                   value: provider.platformBrightness,
-                  onChanged: (bool value) => provider.platformBrightness = value,
+                  onChanged: (bool value) =>
+                      provider.platformBrightness = value,
                 );
               },
             ),
@@ -47,7 +49,9 @@ class SettingsPage extends StatelessWidget {
                 return CustomSwitch(
                   activeColor: currentThemeColor,
                   value: provider.amoledDark,
-                  onChanged: currentIsDark ? (bool value) => provider.amoledDark = value : null,
+                  onChanged: currentIsDark
+                      ? (bool value) => provider.amoledDark = value
+                      : null,
                 );
               },
             ),
@@ -144,7 +148,8 @@ class SettingsPage extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(page['level'] == null || page['level'] == 1 ? 16.0 : 0.0),
+          vertical: suSetHeight(
+              page['level'] == null || page['level'] == 1 ? 16.0 : 0.0),
         ),
         child: Row(
           children: <Widget>[
@@ -170,7 +175,9 @@ class SettingsPage extends StatelessWidget {
                     '${page['name']}',
                     style: TextStyle(
                       fontSize: suSetSp(
-                        page['level'] == null || page['level'] == 1 ? 25.0 : 21.0,
+                        page['level'] == null || page['level'] == 1
+                            ? 25.0
+                            : 21.0,
                       ),
                     ),
                   ),
@@ -178,7 +185,9 @@ class SettingsPage extends StatelessWidget {
                     '${page['description']}',
                     style: Theme.of(context).textTheme.caption.copyWith(
                           fontSize: suSetSp(
-                            page['level'] == null || page['level'] == 1 ? 18.0 : 16.0,
+                            page['level'] == null || page['level'] == 1
+                                ? 18.0
+                                : 16.0,
                           ),
                         ),
                   ),

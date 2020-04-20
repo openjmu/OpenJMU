@@ -40,7 +40,8 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
     super.initState();
     Instances.eventBus
       ..on<MessageReceivedEvent>().listen((event) {
-        if (event.senderUid == widget.uid || event.senderUid == UserAPI.currentUser.uid) {
+        if (event.senderUid == widget.uid ||
+            event.senderUid == UserAPI.currentUser.uid) {
           final message = Message.fromEvent(event);
           if (message.content['content'] != Messages.inputting) {
             messages.insert(0, Message.fromEvent(event));
@@ -175,7 +176,9 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
         ),
         child: Container(
           padding: EdgeInsets.only(
-            bottom: !emoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
+            bottom: !emoticonPadActive
+                ? MediaQuery.of(context).padding.bottom
+                : 0.0,
           ),
           decoration: BoxDecoration(
             color: Theme.of(context).canvasColor,
@@ -223,7 +226,8 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
       ),
       width: Screens.width,
       child: Align(
-        alignment: message.isSelf ? Alignment.centerRight : Alignment.centerLeft,
+        alignment:
+            message.isSelf ? Alignment.centerRight : Alignment.centerLeft,
         child: Container(
           padding: EdgeInsets.symmetric(
             horizontal: suSetSp(16.0),
@@ -234,8 +238,9 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20.0),
-            color:
-                message.isSelf ? currentThemeColor.withOpacity(0.5) : Theme.of(context).canvasColor,
+            color: message.isSelf
+                ? currentThemeColor.withOpacity(0.5)
+                : Theme.of(context).canvasColor,
           ),
           child: ExtendedText(
             end == -1

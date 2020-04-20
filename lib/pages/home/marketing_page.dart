@@ -10,7 +10,7 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/cards/team_post_preview_card.dart';
 
 class MarketingPage extends StatefulWidget {
-  const MarketingPage({Key key}) : super(key : key);
+  const MarketingPage({Key key}) : super(key: key);
 
   @override
   _MarketingPageState createState() => _MarketingPageState();
@@ -207,7 +207,8 @@ class _MarketingPageState extends State<MarketingPage> {
                     return ChangeNotifierProvider.value(
                       value: TeamPostProvider(posts.elementAt(index)),
                       child: TeamPostPreviewCard(
-                        key: ValueKey('marketPost-${posts.elementAt(index).tid}'),
+                        key: ValueKey(
+                            'marketPost-${posts.elementAt(index).tid}'),
                       ),
                     );
                   },

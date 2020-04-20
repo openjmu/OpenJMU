@@ -25,7 +25,8 @@ class ConfirmationDialog extends StatelessWidget {
     this.onConfirm,
     this.onCancel,
   })  : assert(
-          !(child == null && content == null) && !(child != null && content != null),
+          !(child == null && content == null) &&
+              !(child != null && content != null),
           '\'child\' and \'content\' cannot be set or not set at the same time.',
         ),
         super(key: key);
@@ -73,11 +74,13 @@ class ConfirmationDialog extends StatelessWidget {
   }
 
   Widget titleWidget(BuildContext context) => Row(
-        mainAxisAlignment: centerTitle ? MainAxisAlignment.center : MainAxisAlignment.start,
+        mainAxisAlignment:
+            centerTitle ? MainAxisAlignment.center : MainAxisAlignment.start,
         children: <Widget>[
           Text(
             title,
-            style: TextStyle(fontSize: suSetSp(26.0), fontWeight: FontWeight.bold),
+            style:
+                TextStyle(fontSize: suSetSp(26.0), fontWeight: FontWeight.bold),
             maxLines: 1,
             overflow: TextOverflow.fade,
           ),
@@ -171,14 +174,18 @@ class ConfirmationDialog extends StatelessWidget {
                   child
                 else
                   Padding(
-                    padding: contentPadding ?? EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+                    padding: contentPadding ??
+                        EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
                     child: ExtendedText(
                       '$content',
-                      style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.normal),
+                      style: TextStyle(
+                          fontSize: suSetSp(20.0),
+                          fontWeight: FontWeight.normal),
                       textAlign: contentAlignment,
                       specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
                       onSpecialTextTap: (dynamic data) {
-                        API.launchWeb(url: data['content'] as String, title: '网页链接');
+                        API.launchWeb(
+                            url: data['content'] as String, title: '网页链接');
                       },
                     ),
                   ),
@@ -212,7 +219,9 @@ class LinkText extends SpecialText {
       style: textStyle?.copyWith(decoration: TextDecoration.underline),
       recognizer: TapGestureRecognizer()
         ..onTap = () {
-          final Map<String, dynamic> data = <String, dynamic>{'content': toString()};
+          final Map<String, dynamic> data = <String, dynamic>{
+            'content': toString()
+          };
           if (onTap != null) onTap(data);
         },
     );
@@ -221,9 +230,11 @@ class LinkText extends SpecialText {
 
 class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
   @override
-  TextSpan build(String data, {TextStyle textStyle, SpecialTextGestureTapCallback onTap}) {
-    final linkRegExp = RegExp(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
-        r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)');
+  TextSpan build(String data,
+      {TextStyle textStyle, SpecialTextGestureTapCallback onTap}) {
+    final linkRegExp =
+        RegExp(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
+            r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)');
 
     if (data == null || data == '') return null;
     final inlineList = <InlineSpan>[];
@@ -249,10 +260,12 @@ class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
             textStack = '';
           }
         } else {
-          specialText = createSpecialText(textStack, textStyle: textStyle, onTap: onTap, index: i);
+          specialText = createSpecialText(textStack,
+              textStyle: textStyle, onTap: onTap, index: i);
           if (specialText != null) {
             if (textStack.length - specialText.startFlag.length >= 0) {
-              textStack = textStack.substring(0, textStack.length - specialText.startFlag.length);
+              textStack = textStack.substring(
+                  0, textStack.length - specialText.startFlag.length);
               if (textStack.isNotEmpty) {
                 inlineList.add(TextSpan(text: textStack, style: textStyle));
               }
@@ -263,8 +276,9 @@ class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       }
 
       if (specialText != null) {
-        inlineList.add(
-            TextSpan(text: specialText.startFlag + specialText.getContent(), style: textStyle));
+        inlineList.add(TextSpan(
+            text: specialText.startFlag + specialText.getContent(),
+            style: textStyle));
       } else if (textStack.isNotEmpty) {
         inlineList.add(TextSpan(text: textStack, style: textStyle));
       }

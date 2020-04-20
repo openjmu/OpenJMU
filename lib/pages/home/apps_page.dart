@@ -17,7 +17,9 @@ class AppsPageState extends State<AppsPage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   static List<String> get tabs => [
         if (!(currentUser?.isPostgraduate ?? false)) '课程表',
-        if (!((currentUser?.isTeacher ?? false) || (currentUser?.isPostgraduate ?? false))) '成绩',
+        if (!((currentUser?.isTeacher ?? false) ||
+            (currentUser?.isPostgraduate ?? false)))
+          '成绩',
       ];
 
   final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
@@ -44,7 +46,8 @@ class AppsPageState extends State<AppsPage>
     Instances.eventBus
       ..on<ScrollToTopEvent>().listen((event) {
         if (mounted && event.tabIndex == 1) {
-          _scrollController.animateTo(0, duration: 500.milliseconds, curve: Curves.ease);
+          _scrollController.animateTo(0,
+              duration: 500.milliseconds, curve: Curves.ease);
         }
       })
       ..on<AppCenterRefreshEvent>().listen((event) {
@@ -53,7 +56,8 @@ class AppsPageState extends State<AppsPage>
             Instances.eventBus.fire(CourseScheduleRefreshEvent());
             break;
           case '成绩':
-            Provider.of<ScoresProvider>(currentContext, listen: false).requestScore();
+            Provider.of<ScoresProvider>(currentContext, listen: false)
+                .requestScore();
             break;
           case '应用':
             if (_scrollController.hasClients) _scrollController.jumpTo(0.0);
@@ -119,7 +123,8 @@ class AppsPageState extends State<AppsPage>
                     if (_tabController.index != 0) {
                       _tabController.animateTo(0);
                     } else {
-                      Instances.courseSchedulePageStateKey.currentState.showWeekWidget();
+                      Instances.courseSchedulePageStateKey.currentState
+                          .showWeekWidget();
                     }
                   }
                 : null,
@@ -128,15 +133,20 @@ class AppsPageState extends State<AppsPage>
               children: <Widget>[
                 Text(name),
                 if (Instances.courseSchedulePageStateKey.currentState != null &&
-                    Instances.courseSchedulePageStateKey.currentState.firstLoaded &&
+                    Instances
+                        .courseSchedulePageStateKey.currentState.firstLoaded &&
                     Instances.courseSchedulePageStateKey.currentState.hasCourse)
                   AnimatedCrossFade(
-                    firstChild: Icon(Icons.keyboard_arrow_down, size: suSetWidth(28.0)),
-                    secondChild: Icon(Icons.keyboard_arrow_up, size: suSetWidth(28.0)),
-                    crossFadeState: Instances.courseSchedulePageStateKey.currentState.showWeek
+                    firstChild:
+                        Icon(Icons.keyboard_arrow_down, size: suSetWidth(28.0)),
+                    secondChild:
+                        Icon(Icons.keyboard_arrow_up, size: suSetWidth(28.0)),
+                    crossFadeState: Instances
+                            .courseSchedulePageStateKey.currentState.showWeek
                         ? CrossFadeState.showSecond
                         : CrossFadeState.showFirst,
-                    duration: Instances.courseSchedulePageStateKey.currentState.showWeekDuration,
+                    duration: Instances.courseSchedulePageStateKey.currentState
+                        .showWeekDuration,
                   ),
               ],
             ),
@@ -152,7 +162,8 @@ class AppsPageState extends State<AppsPage>
           alignment: Alignment.centerRight,
           icon: Icon(Icons.refresh, size: suSetWidth(32.0)),
           onPressed: () {
-            Instances.eventBus.fire(AppCenterRefreshEvent(_tabController.index));
+            Instances.eventBus
+                .fire(AppCenterRefreshEvent(_tabController.index));
           },
         ),
       );
@@ -186,7 +197,8 @@ class AppsPageState extends State<AppsPage>
                               withAction: false,
                               keepAlive: true,
                             )
-                          : CourseSchedulePage(key: Instances.courseSchedulePageStateKey)
+                          : CourseSchedulePage(
+                              key: Instances.courseSchedulePageStateKey)
                       : SizedBox.shrink(),
                 if (tabs.contains('成绩')) ScorePage(),
               ],

@@ -25,9 +25,11 @@ class PublishPostPage extends StatefulWidget {
   _PublishPostPageState createState() => _PublishPostPageState();
 }
 
-class _PublishPostPageState extends State<PublishPostPage> with AutomaticKeepAliveClientMixin {
+class _PublishPostPageState extends State<PublishPostPage>
+    with AutomaticKeepAliveClientMixin {
   final TextEditingController textEditingController = TextEditingController();
-  final LoadingDialogController loadingDialogController = LoadingDialogController();
+  final LoadingDialogController loadingDialogController =
+      LoadingDialogController();
   final FocusNode focusNode = FocusNode();
   final double iconSize = suSetHeight(28.0);
   final int maxAssetsLength = 9;
@@ -132,7 +134,8 @@ class _PublishPostPageState extends State<PublishPostPage> with AutomaticKeepAli
     final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     if (keyboardHeight > 0) isEmoticonPadActive = false;
 
-    if (maximumKeyboardHeight != math.max(maximumKeyboardHeight, keyboardHeight)) {
+    if (maximumKeyboardHeight !=
+        math.max(maximumKeyboardHeight, keyboardHeight)) {
       maximumKeyboardHeight = math.max(maximumKeyboardHeight, keyboardHeight);
     }
   }
@@ -199,7 +202,9 @@ class _PublishPostPageState extends State<PublishPostPage> with AutomaticKeepAli
       LoadingDialog.show(
         context,
         controller: loadingDialogController,
-        text: hasImages ? '正在上传图片 (${uploadedAssets + 1}/$imagesLength)' : '正在发布动态...',
+        text: hasImages
+            ? '正在上传图片 (${uploadedAssets + 1}/$imagesLength)'
+            : '正在发布动态...',
       );
       setState(() {
         isLoading = true;
@@ -238,7 +243,8 @@ class _PublishPostPageState extends State<PublishPostPage> with AutomaticKeepAli
         /// 此处我们需要检查返回数据的类型，如果上传成功，返回的类型是应该是`Map<String, dynamic>`，否则会是
         /// `String`或空值。
         final dynamic result =
-            (await PostAPI.createPostImageUploadRequest(formData, cancelToken)).data;
+            (await PostAPI.createPostImageUploadRequest(formData, cancelToken))
+                .data;
         if (result is Map<String, dynamic>) {
           uploadedAssetId[asset] = result['image_id'].toString().toInt();
           ++uploadedAssets;
@@ -285,11 +291,15 @@ class _PublishPostPageState extends State<PublishPostPage> with AutomaticKeepAli
       'category': 'text',
       'content': Uri.encodeFull(filteredContent),
       if (hasImages)
-        'extra_id':
-            uploadedAssetId.values.toList().toString().replaceAll('[', '').replaceAll(']', ''),
+        'extra_id': uploadedAssetId.values
+            .toList()
+            .toString()
+            .replaceAll('[', '')
+            .replaceAll(']', ''),
     };
     try {
-      final Map<String, dynamic> response = (await PostAPI.publishPost(content)).data;
+      final Map<String, dynamic> response =
+          (await PostAPI.publishPost(content)).data;
       if (response['tid'] != null) {
         loadingDialogController.changeState(
           'success',
@@ -506,7 +516,8 @@ class _PublishPostPageState extends State<PublishPostPage> with AutomaticKeepAli
             height: selectedAssets.isNotEmpty
                 ? suSetHeight(isAssetListViewCollapsed ? 72.0 : 140.0)
                 : 0.0,
-            margin: EdgeInsets.all(isAssetListViewCollapsed ? suSetWidth(12.0) : 0.0),
+            margin: EdgeInsets.all(
+                isAssetListViewCollapsed ? suSetWidth(12.0) : 0.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(
                 suSetWidth(isAssetListViewCollapsed ? 15.0 : 0.0),
@@ -521,7 +532,8 @@ class _PublishPostPageState extends State<PublishPostPage> with AutomaticKeepAli
               ),
               scrollDirection: Axis.horizontal,
               itemCount: math.min(
-                  isAssetListViewCollapsed ? imagesLength : imagesLength + 1, maxAssetsLength),
+                  isAssetListViewCollapsed ? imagesLength : imagesLength + 1,
+                  maxAssetsLength),
               itemBuilder: (BuildContext _, int index) {
                 if (index == imagesLength) {
                   return _assetAddItem;
@@ -536,7 +548,8 @@ class _PublishPostPageState extends State<PublishPostPage> with AutomaticKeepAli
                     child: Stack(
                       children: <Widget>[
                         Positioned.fill(child: _assetWidget(index)),
-                        if (failedAssets.contains(selectedAssets.elementAt(index)))
+                        if (failedAssets
+                            .contains(selectedAssets.elementAt(index)))
                           uploadErrorCover,
                         if (!isAssetListViewCollapsed)
                           Positioned(
@@ -590,7 +603,8 @@ class _PublishPostPageState extends State<PublishPostPage> with AutomaticKeepAli
   Widget toolbar(context) {
     return Container(
       margin: EdgeInsets.only(
-        bottom: !isEmoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
+        bottom:
+            !isEmoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
       ),
       height: suSetHeight(60.0),
       child: Row(
@@ -617,7 +631,9 @@ class _PublishPostPageState extends State<PublishPostPage> with AutomaticKeepAli
                 pickAssets();
               }
             },
-            icon: imagesLength > 0 ? Icons.photo_library : Icons.add_photo_alternate,
+            icon: imagesLength > 0
+                ? Icons.photo_library
+                : Icons.add_photo_alternate,
             color: !isAssetListViewCollapsed && imagesLength > 0
                 ? currentThemeColor
                 : currentTheme.iconTheme.color,
@@ -630,7 +646,9 @@ class _PublishPostPageState extends State<PublishPostPage> with AutomaticKeepAli
               updateEmoticonPadStatus(context, !isEmoticonPadActive);
             },
             icon: Icons.sentiment_very_satisfied,
-            color: isEmoticonPadActive ? currentThemeColor : currentTheme.iconTheme.color,
+            color: isEmoticonPadActive
+                ? currentThemeColor
+                : currentTheme.iconTheme.color,
           ),
         ],
       ),

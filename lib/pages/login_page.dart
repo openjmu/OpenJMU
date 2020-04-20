@@ -18,7 +18,8 @@ class LoginPage extends StatefulWidget {
   LoginPageState createState() => LoginPageState();
 }
 
-class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
+class LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   /// Focus nodes for input field. Basically for dismiss.
   /// 输入框的焦点实例。主要用于点击其他位置时失焦动作。
   final FocusNode usernameNode = FocusNode();
@@ -124,7 +125,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
     if (reset) {
       backgroundAnimateController.value = 0;
     }
-    await backgroundAnimateController.animateTo(360, duration: backgroundRotateDuration);
+    await backgroundAnimateController.animateTo(360,
+        duration: backgroundRotateDuration);
 
     /// Call function itself to keep the animation running after previous is done.
     /// 动画执行完成后递归调用动画以保证动画执行
@@ -217,7 +219,10 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   /// `_username`/`_password`/`_agreement` all needs to be passed.
   /// 账号、密码、协议均需要完成才可登录。
   void validateForm() {
-    if (_username.isNotEmpty && _password.isNotEmpty && _agreement && _loginDisabled) {
+    if (_username.isNotEmpty &&
+        _password.isNotEmpty &&
+        _agreement &&
+        _loginDisabled) {
       setState(() {
         _loginDisabled = false;
       });
@@ -262,7 +267,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   /// whole screen when rotating.
   /// 使用勾股定理计算半径，使得旋转时仍然可以铺满屏幕
   Widget get animatingBackground {
-    final double radius = pythagoreanTheorem(Screens.width, Screens.height); // 半径
+    final double radius =
+        pythagoreanTheorem(Screens.width, Screens.height); // 半径
     final double horizontalOffset = radius - Screens.width; // 水平偏移
     final double verticalOffset = radius - Screens.height; // 垂直偏移
 
@@ -279,7 +285,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
             height: radius,
             child: Transform(
               alignment: Alignment.center,
-              transform: Matrix4.rotationZ(math.pi / 180 * backgroundAnimateController.value),
+              transform: Matrix4.rotationZ(
+                  math.pi / 180 * backgroundAnimateController.value),
               child: Container(
                 width: double.maxFinite,
                 height: double.maxFinite,
@@ -344,7 +351,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
           children: <Widget>[
             Text(
               '欢迎使用',
-              style: whiteTextStyle.copyWith(fontSize: suSetSp(40.0), fontWeight: FontWeight.w600),
+              style: whiteTextStyle.copyWith(
+                  fontSize: suSetSp(40.0), fontWeight: FontWeight.w600),
             ),
             Text(
               '登录以继续',
@@ -357,7 +365,8 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
   /// Announcement widget.
   /// 公告部件
   Widget get announcementWidget => Selector<SettingsProvider, bool>(
-        selector: (_, SettingsProvider provider) => provider.announcementsEnabled,
+        selector: (_, SettingsProvider provider) =>
+            provider.announcementsEnabled,
         builder: (_, bool announcementEnabled, __) {
           if (announcementEnabled) {
             return Container(
@@ -661,7 +670,9 @@ class LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixi
                       child: AnimatedAlign(
                         duration: animateDuration,
                         curve: Curves.easeInOut,
-                        alignment: _keyboardAppeared ? Alignment.topCenter : Alignment.center,
+                        alignment: _keyboardAppeared
+                            ? Alignment.topCenter
+                            : Alignment.center,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -698,7 +709,8 @@ class WhiteTextSelectionControls extends ExtendedMaterialTextSelectionControls {
       width: _kHandleSize,
       height: _kHandleSize,
       child: CustomPaint(
-        painter: ExtendedMaterialTextSelectionHandlePainter(color: Colors.white),
+        painter:
+            ExtendedMaterialTextSelectionHandlePainter(color: Colors.white),
       ),
     );
 

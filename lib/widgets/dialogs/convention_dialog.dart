@@ -16,11 +16,13 @@ class ConventionDialog extends StatelessWidget {
       );
 
   Widget get header => Padding(
-        padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0), vertical: suSetHeight(20.0)),
+        padding: EdgeInsets.symmetric(
+            horizontal: suSetWidth(16.0), vertical: suSetHeight(20.0)),
         child: Center(
           child: Text(
             '发布提醒',
-            style: TextStyle(fontSize: suSetSp(23.0), fontWeight: FontWeight.bold),
+            style:
+                TextStyle(fontSize: suSetSp(23.0), fontWeight: FontWeight.bold),
           ),
         ),
       );
@@ -172,7 +174,8 @@ class ConventionDialog extends StatelessWidget {
               style: TextStyle(decoration: TextDecoration.underline),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  API.launchWeb(url: 'http://net.jmu.edu.cn/info/1309/2518.htm');
+                  API.launchWeb(
+                      url: 'http://net.jmu.edu.cn/info/1309/2518.htm');
                 },
             ),
             TextSpan(
@@ -250,7 +253,9 @@ class ConventionDialog extends StatelessWidget {
           child: Container(
             width: Screens.width * 0.75,
             height: Screens.height * 0.7,
-            color: currentIsDark ? Theme.of(context).canvasColor : Theme.of(context).primaryColor,
+            color: currentIsDark
+                ? Theme.of(context).canvasColor
+                : Theme.of(context).primaryColor,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -266,7 +271,11 @@ class ConventionDialog extends StatelessWidget {
                           horizontal: suSetWidth(20.0),
                           vertical: suSetHeight(10.0),
                         ),
-                        children: <Widget>[confirmTips, conventionTitle, conventionContent],
+                        children: <Widget>[
+                          confirmTips,
+                          conventionTitle,
+                          conventionContent
+                        ],
                       ),
                     ),
                   ),

@@ -26,7 +26,8 @@ class DismissWrapper extends StatefulWidget {
   DismissWrapperState createState() => DismissWrapperState();
 }
 
-class DismissWrapperState extends State<DismissWrapper> with TickerProviderStateMixin {
+class DismissWrapperState extends State<DismissWrapper>
+    with TickerProviderStateMixin {
   final GlobalKey columnKey = GlobalKey();
   final Duration duration = 500.milliseconds;
 
@@ -54,7 +55,8 @@ class DismissWrapperState extends State<DismissWrapper> with TickerProviderState
   }
 
   Future<void> animateWrapper({@required bool forward}) async {
-    final RenderBox renderBox = columnKey.currentContext.findRenderObject() as RenderBox;
+    final RenderBox renderBox =
+        columnKey.currentContext.findRenderObject() as RenderBox;
     final double height = renderBox.size.height;
     if (forward) {
       animationController.value = height;
@@ -69,7 +71,8 @@ class DismissWrapperState extends State<DismissWrapper> with TickerProviderState
 
   void _onDown(PointerDownEvent event) {
     downPosition = event.localPosition;
-    final RenderBox renderBox = columnKey.currentContext.findRenderObject() as RenderBox;
+    final RenderBox renderBox =
+        columnKey.currentContext.findRenderObject() as RenderBox;
     columnHeight = renderBox.size.height;
   }
 
@@ -79,7 +82,8 @@ class DismissWrapperState extends State<DismissWrapper> with TickerProviderState
   }
 
   void _onUp(PointerUpEvent event) {
-    final double percent = math.min(0.999999, animationController.value / columnHeight);
+    final double percent =
+        math.min(0.999999, animationController.value / columnHeight);
     final bool dismiss = percent > 0.5;
 
     if (!dismiss) {
@@ -109,7 +113,8 @@ class DismissWrapperState extends State<DismissWrapper> with TickerProviderState
         ),
         child: Container(
           width: Screens.width,
-          padding: widget.padding ?? EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+          padding: widget.padding ??
+              EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(suSetWidth(24.0)),

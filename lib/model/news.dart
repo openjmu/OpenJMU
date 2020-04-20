@@ -39,10 +39,13 @@ class News {
       postTime: DateTime.fromMillisecondsSinceEpoch(
         int.parse(json['post_time'].toString()),
       ).toString().substring(0, 16),
-      cover: json['cover_img'] != null ? int.parse(json['cover_img']['fid'].toString()) : null,
-      relateTopicId: json['relate_topic'] != null && json['relate_topic'].isNotEmpty
-          ? int.parse(json['relate_topic'][0]['post_id'].toString())
+      cover: json['cover_img'] != null
+          ? int.parse(json['cover_img']['fid'].toString())
           : null,
+      relateTopicId:
+          json['relate_topic'] != null && json['relate_topic'].isNotEmpty
+              ? int.parse(json['relate_topic'][0]['post_id'].toString())
+              : null,
       heat: int.parse(json['heat'].toString()),
       praises: int.parse(json['praises'].toString()),
       replies: int.parse(json['replys'].toString()),
@@ -53,7 +56,8 @@ class News {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is News && runtimeType == other.runtimeType && id == other.id;
+      identical(this, other) ||
+      other is News && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;

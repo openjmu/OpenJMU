@@ -66,7 +66,8 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     final currentPosition = _textEditingController.selection.baseOffset;
     String result;
     if (_textEditingController.text.isNotEmpty) {
-      final leftText = _textEditingController.text.substring(0, currentPosition);
+      final leftText =
+          _textEditingController.text.substring(0, currentPosition);
       final rightText = _textEditingController.text
           .substring(currentPosition, _textEditingController.text.length);
       result = '$leftText##$rightText';
@@ -101,17 +102,20 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
   Future<Null> loadAssets() async {
     if (imagesLength == maxImagesLength) return;
     _focusNode.unfocus();
-    final currentColorValue = '#${currentThemeColor.value.toRadixString(16).substring(2, 8)}';
+    final currentColorValue =
+        '#${currentThemeColor.value.toRadixString(16).substring(2, 8)}';
     List<Asset> resultList = List<Asset>();
     final permissions = await PermissionHandler().requestPermissions([
       PermissionGroup.camera,
       PermissionGroup.storage,
       if (Platform.isIOS) PermissionGroup.photos,
     ]);
-    bool granted = permissions[PermissionGroup.camera] == PermissionStatus.granted &&
-        permissions[PermissionGroup.storage] == PermissionStatus.granted;
+    bool granted =
+        permissions[PermissionGroup.camera] == PermissionStatus.granted &&
+            permissions[PermissionGroup.storage] == PermissionStatus.granted;
     if (Platform.isIOS) {
-      granted = granted && permissions[PermissionGroup.photos] == PermissionStatus.granted;
+      granted = granted &&
+          permissions[PermissionGroup.photos] == PermissionStatus.granted;
     }
     if (granted) {
       try {
@@ -304,7 +308,8 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
   Widget _toolbar(context) {
     return Container(
       margin: EdgeInsets.only(
-        bottom: !emoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
+        bottom:
+            !emoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
       ),
       height: suSetHeight(60.0),
       child: Row(
@@ -343,7 +348,9 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
             },
             icon: Icon(
               Icons.sentiment_very_satisfied,
-              color: emoticonPadActive ? currentThemeColor : Theme.of(context).iconTheme.color,
+              color: emoticonPadActive
+                  ? currentThemeColor
+                  : Theme.of(context).iconTheme.color,
               size: _iconSize,
             ),
           ),
@@ -455,7 +462,9 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
             }
             try {
               final List rs = await _postImagesQuery();
-              if (rs != null && rs.length == assets.length && !rs.contains(null)) {
+              if (rs != null &&
+                  rs.length == assets.length &&
+                  !rs.contains(null)) {
                 _postContent();
               } else {
                 query = [];

@@ -31,7 +31,8 @@ enum CourseType {
 class CourseAPI {
   const CourseAPI._();
 
-  static TimeOfDay _time(int hour, int minute) => TimeOfDay(hour: hour, minute: minute);
+  static TimeOfDay _time(int hour, int minute) =>
+      TimeOfDay(hour: hour, minute: minute);
   static double _timeToDouble(TimeOfDay time) => time.hour + time.minute / 60.0;
 
   static Set<CourseColor> coursesUniqueColor = {};
@@ -53,7 +54,8 @@ class CourseAPI {
     return '$hour:$minute';
   }
 
-  static Future setCustomCourse(Map<String, dynamic> course) async => NetUtils.post(
+  static Future setCustomCourse(Map<String, dynamic> course) async =>
+      NetUtils.post(
         '${API.courseScheduleCustom}?sid=${UserAPI.currentUser.sid}',
         data: course,
       );
@@ -75,7 +77,8 @@ class CourseAPI {
   }
 
   static bool inCurrentDay(Course course) {
-    final provider = Provider.of<CoursesProvider>(currentContext, listen: false);
+    final provider =
+        Provider.of<CoursesProvider>(currentContext, listen: false);
     final now = provider.now;
     return course.day == now.weekday;
   }
@@ -164,5 +167,6 @@ class CourseAPI {
     Color(0xff3275a9),
   ];
 
-  static Color randomCourseColor() => courseColorsList[next(0, courseColorsList.length)];
+  static Color randomCourseColor() =>
+      courseColorsList[next(0, courseColorsList.length)];
 }

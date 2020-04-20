@@ -84,7 +84,8 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                   ),
                   Text(
                     mentionedList[index].scope['name'],
-                    style: TextStyle(color: Colors.blue, fontSize: suSetSp(17.0)),
+                    style:
+                        TextStyle(color: Colors.blue, fontSize: suSetSp(17.0)),
                   ),
                 ],
               ),
@@ -97,7 +98,9 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
     final now = DateTime.now();
     DateTime _postTime = postTime;
     String time = '';
-    if (_postTime.day == now.day && _postTime.month == now.month && _postTime.year == now.year) {
+    if (_postTime.day == now.day &&
+        _postTime.month == now.month &&
+        _postTime.year == now.year) {
       time += DateFormat('HH:mm').format(_postTime);
     } else if (postTime.year == now.year) {
       time += DateFormat('MM-dd HH:mm').format(_postTime);
@@ -182,7 +185,8 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
                               vertical: suSetHeight(8.0),
                             ),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+                              borderRadius:
+                                  BorderRadius.circular(suSetWidth(10.0)),
                               color: Theme.of(context).cardColor,
                             ),
                             child: Column(

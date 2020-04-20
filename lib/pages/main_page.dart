@@ -73,7 +73,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   /// Stream controller for vertical page scrolling offset percent.
   /// 垂直滚动偏移百分比的流控制器，用于更改遮罩
-  final StreamController<double> pageOffsetStreamController = StreamController<double>();
+  final StreamController<double> pageOffsetStreamController =
+      StreamController<double>();
 
   /// Index for pages.
   /// 当前页面索引
@@ -94,7 +95,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     /// Initialize current page index.
     /// 设定初始页面
     _currentIndex = widget.initAction ??
-        Provider.of<SettingsProvider>(currentContext, listen: false).homeSplashIndex;
+        Provider.of<SettingsProvider>(currentContext, listen: false)
+            .homeSplashIndex;
 
     appPageController.addListener(() {
       pageOffsetStreamController.add(appPageController.page);
@@ -104,7 +106,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       ..on<ActionsEvent>().listen((ActionsEvent event) {
         /// Listen to actions event to react with quick actions both on Android and iOS.
         /// 监听原生捷径时间以切换页面
-        final int index = Constants.quickActionsList.keys.toList().indexOf(event.type);
+        final int index =
+            Constants.quickActionsList.keys.toList().indexOf(event.type);
         if (index != -1) {
           _selectedTab(index);
           if (mounted) setState(() {});
@@ -122,7 +125,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   /// Announcement widget.
   /// 公告组件
   Widget get announcementWidget => Selector<SettingsProvider, bool>(
-        selector: (_, SettingsProvider provider) => provider.announcementsUserEnabled,
+        selector: (_, SettingsProvider provider) =>
+            provider.announcementsUserEnabled,
         builder: (_, bool announcementsUserEnabled, __) {
           if (announcementsUserEnabled) {
             return const AnnouncementWidget(gap: 24.0, canClose: true);
@@ -146,7 +150,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         initIndex: _currentIndex,
         items: List<FABBottomAppBarItem>.generate(
           pagesTitle.length,
-          (int i) => FABBottomAppBarItem(iconPath: pagesIcon[i], text: pagesTitle[i]),
+          (int i) =>
+              FABBottomAppBarItem(iconPath: pagesIcon[i], text: pagesTitle[i]),
         ),
       );
 
@@ -170,7 +175,8 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                     curve: Curves.easeInOut,
                   );
                 },
-                child: Opacity(opacity: page, child: Container(color: Colors.black54)),
+                child: Opacity(
+                    opacity: page, child: Container(color: Colors.black54)),
               ),
             ),
           );

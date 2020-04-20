@@ -27,7 +27,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider>
   ImageFileType get imageFileType => _imageFileType ?? _getType();
 
   @override
-  Future<ui.Codec> instantiateImageCodec(Uint8List data, DecoderCallback decode) async {
+  Future<ui.Codec> instantiateImageCodec(
+      Uint8List data, DecoderCallback decode) async {
     rawImageData = data;
     return await decode(data);
   }
@@ -51,7 +52,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider>
     return SynchronousFuture<AssetEntityImageProvider>(this);
   }
 
-  Future<ui.Codec> _loadAsync(AssetEntityImageProvider key, DecoderCallback decode) async {
+  Future<ui.Codec> _loadAsync(
+      AssetEntityImageProvider key, DecoderCallback decode) async {
     assert(key == this);
     Uint8List data;
     if (isOriginal ?? false) {

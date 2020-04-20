@@ -34,7 +34,8 @@ class _TeamPostCardState extends State<TeamPostCard> {
   @override
   void initState() {
     post = widget.post;
-    TeamPostAPI.getPostDetail(id: widget.post.tid).then((Response<Map<String, dynamic>> response) {
+    TeamPostAPI.getPostDetail(id: widget.post.tid)
+        .then((Response<Map<String, dynamic>> response) {
       final TeamPost _post = TeamPost.fromJson(response.data);
       post = _post;
       if (mounted) {

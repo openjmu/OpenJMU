@@ -78,7 +78,8 @@ class DateProvider extends ChangeNotifier {
       DateTime _day;
       _day = box.get('startDate');
       if (_day == null) {
-        final String result = (await NetUtils.get<String>(API.firstDayOfTerm)).data;
+        final String result =
+            (await NetUtils.get<String>(API.firstDayOfTerm)).data;
         _day = DateTime.parse(jsonDecode(result)['start'] as String);
       }
       if (_startDate == null) {

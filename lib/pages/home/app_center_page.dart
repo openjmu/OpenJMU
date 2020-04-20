@@ -58,8 +58,10 @@ class AppCenterPage extends StatelessWidget {
 
   Widget getSectionColumn(context, String name) {
     return Selector<WebAppsProvider, Map<String, Set<WebApp>>>(
-      selector: (BuildContext _, WebAppsProvider provider) => provider.appCategoriesList,
-      builder: (BuildContext _, Map<String, Set<WebApp>> appCategoriesList, Widget __) {
+      selector: (BuildContext _, WebAppsProvider provider) =>
+          provider.appCategoriesList,
+      builder: (BuildContext _, Map<String, Set<WebApp>> appCategoriesList,
+          Widget __) {
         final Set<WebApp> list = appCategoriesList[name];
         if (list?.isNotEmpty ?? false) {
           return Column(

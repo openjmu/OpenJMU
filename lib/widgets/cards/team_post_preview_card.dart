@@ -39,7 +39,8 @@ class TeamPostPreviewCard extends StatelessWidget {
   }
 
   void delete(BuildContext context) {
-    final TeamPostProvider provider = Provider.of<TeamPostProvider>(context, listen: false);
+    final TeamPostProvider provider =
+        Provider.of<TeamPostProvider>(context, listen: false);
     final TeamPost post = provider.post;
     TeamPostAPI.deletePost(postId: post.tid, postType: 7).then((dynamic _) {
       showToast('删除成功');
@@ -48,7 +49,8 @@ class TeamPostPreviewCard extends StatelessWidget {
   }
 
   void confirmAction(BuildContext context) {
-    final TeamPostProvider provider = Provider.of<TeamPostProvider>(context, listen: false);
+    final TeamPostProvider provider =
+        Provider.of<TeamPostProvider>(context, listen: false);
     final TeamPost post = provider.post;
     ConfirmationBottomSheet.show(
       context,
@@ -73,7 +75,8 @@ class TeamPostPreviewCard extends StatelessWidget {
   }
 
   Future<void> confirmReport(BuildContext context) async {
-    final TeamPostProvider provider = Provider.of<TeamPostProvider>(context, listen: false);
+    final TeamPostProvider provider =
+        Provider.of<TeamPostProvider>(context, listen: false);
     final TeamPost post = provider.post;
     final bool confirm = await ConfirmationDialog.show(
       context,
@@ -170,7 +173,8 @@ class TeamPostPreviewCard extends StatelessWidget {
         ),
       );
 
-  Widget _postInfo(BuildContext context, TeamPostProvider provider) => Container(
+  Widget _postInfo(BuildContext context, TeamPostProvider provider) =>
+      Container(
         margin: EdgeInsets.symmetric(
           vertical: suSetHeight(12.0),
         ),
@@ -186,7 +190,8 @@ class TeamPostPreviewCard extends StatelessWidget {
           padding: EdgeInsets.zero,
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: provider.post.postInfo.length + (provider.post.repliesCount > 2 ? 1 : 0),
+          itemCount: provider.post.postInfo.length +
+              (provider.post.repliesCount > 2 ? 1 : 0),
           itemBuilder: (_, int index) {
             if (index == provider.post.postInfo.length) {
               return Container(
@@ -232,12 +237,14 @@ class TeamPostPreviewCard extends StatelessWidget {
                           navigatorState.pushNamed(
                             Routes.OPENJMU_USER,
                             arguments: <String, dynamic>{
-                              'uid': (_post['user_info']['uid'] as String).toInt(),
+                              'uid':
+                                  (_post['user_info']['uid'] as String).toInt(),
                             },
                           );
                         },
                     ),
-                    if ((_post['user_info']['uid'] as String).toInt() == provider.post.uid)
+                    if ((_post['user_info']['uid'] as String).toInt() ==
+                        provider.post.uid)
                       WidgetSpan(
                         alignment: ui.PlaceholderAlignment.middle,
                         child: Container(
@@ -249,7 +256,8 @@ class TeamPostPreviewCard extends StatelessWidget {
                             vertical: suSetHeight(1.0),
                           ),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+                            borderRadius:
+                                BorderRadius.circular(suSetWidth(5.0)),
                             color: currentThemeColor,
                           ),
                           child: Text(
@@ -262,7 +270,8 @@ class TeamPostPreviewCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                    const TextSpan(text: ': ', style: TextStyle(color: Colors.blue)),
+                    const TextSpan(
+                        text: ': ', style: TextStyle(color: Colors.blue)),
                   ],
                 ),
                 style: Theme.of(context).textTheme.body1.copyWith(
@@ -377,13 +386,19 @@ class TeamPostPreviewCard extends StatelessWidget {
                 onPressed: null,
                 icon: SvgPicture.asset(
                   R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
-                  color: currentIsDark ? actionIconColorDark : actionIconColorLight,
+                  color: currentIsDark
+                      ? actionIconColorDark
+                      : actionIconColorLight,
                   width: suSetWidth(26.0),
                 ),
                 label: Text(
-                  provider.post.repliesCount == 0 ? '评论' : '${provider.post.repliesCount}',
+                  provider.post.repliesCount == 0
+                      ? '评论'
+                      : '${provider.post.repliesCount}',
                   style: TextStyle(
-                    color: currentIsDark ? actionTextColorDark : actionTextColorLight,
+                    color: currentIsDark
+                        ? actionTextColorDark
+                        : actionTextColorLight,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),
@@ -399,13 +414,16 @@ class TeamPostPreviewCard extends StatelessWidget {
                   dotPrimaryColor: currentThemeColor,
                   dotSecondaryColor: currentThemeColor,
                 ),
-                circleColor: CircleColor(start: currentThemeColor, end: currentThemeColor),
+                circleColor: CircleColor(
+                    start: currentThemeColor, end: currentThemeColor),
                 countBuilder: (int count, bool isLiked, String text) => Text(
                   count > 0 ? text : '赞',
                   style: TextStyle(
                     color: isLiked
                         ? currentThemeColor
-                        : currentIsDark ? actionTextColorDark : actionTextColorLight,
+                        : currentIsDark
+                            ? actionTextColorDark
+                            : actionTextColorLight,
                     fontSize: suSetSp(18.0),
                     fontWeight: FontWeight.normal,
                   ),
@@ -415,15 +433,19 @@ class TeamPostPreviewCard extends StatelessWidget {
                   R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
                   color: isLiked
                       ? currentThemeColor
-                      : currentIsDark ? actionIconColorDark : actionIconColorLight,
+                      : currentIsDark
+                          ? actionIconColorDark
+                          : actionIconColorLight,
                   width: suSetWidth(26.0),
                 ),
                 likeCount: provider.post.isLike
                     ? moreThanOne(provider.post.praisesCount)
                     : moreThanZero(provider.post.praisesCount),
                 likeCountAnimationType: LikeCountAnimationType.none,
-                likeCountPadding: EdgeInsets.symmetric(horizontal: suSetWidth(8.0)),
-                onTap: (bool isLiked) async => onLikeButtonTap(isLiked, provider),
+                likeCountPadding:
+                    EdgeInsets.symmetric(horizontal: suSetWidth(8.0)),
+                onTap: (bool isLiked) async =>
+                    onLikeButtonTap(isLiked, provider),
               ),
             ),
           ],
@@ -436,7 +458,8 @@ class TeamPostPreviewCard extends StatelessWidget {
     !isLiked ? provider.praised() : provider.unPraised();
     completer.complete(!isLiked);
 
-    TeamPraiseAPI.requestPraise(provider.post.tid, !isLiked).catchError((dynamic e) {
+    TeamPraiseAPI.requestPraise(provider.post.tid, !isLiked)
+        .catchError((dynamic e) {
       isLiked ? provider.praised() : provider.unPraised();
       completer.complete(isLiked);
       return completer.future;
@@ -458,7 +481,10 @@ class TeamPostPreviewCard extends StatelessWidget {
               onTap: () {
                 navigatorState.pushNamed(
                   Routes.OPENJMU_TEAM_POST_DETAIL,
-                  arguments: <String, dynamic>{'provider': provider, 'type': TeamPostType.post},
+                  arguments: <String, dynamic>{
+                    'provider': provider,
+                    'type': TeamPostType.post
+                  },
                 );
               },
               child: Container(
@@ -480,9 +506,11 @@ class TeamPostPreviewCard extends StatelessWidget {
                   children: <Widget>[
                     _header(context, provider.post),
                     _content(provider.post),
-                    if (provider.post.pics != null && provider.post.pics.isNotEmpty)
+                    if (provider.post.pics != null &&
+                        provider.post.pics.isNotEmpty)
                       _images(context, provider.post),
-                    if (provider.post.postInfo != null && provider.post.postInfo.isNotEmpty)
+                    if (provider.post.postInfo != null &&
+                        provider.post.postInfo.isNotEmpty)
                       _postInfo(context, provider),
                     _actions(context, provider),
                   ],

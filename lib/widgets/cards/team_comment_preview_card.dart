@@ -99,7 +99,8 @@ class TeamCommentPreviewCard extends StatelessWidget {
                 },
               ),
             ),
-            if (topPost.uid == currentUser.uid || provider.post.uid == currentUser.uid)
+            if (topPost.uid == currentUser.uid ||
+                provider.post.uid == currentUser.uid)
               SizedBox.fromSize(
                 size: Size.square(suSetWidth(50.0)),
                 child: IconButton(
@@ -118,7 +119,8 @@ class TeamCommentPreviewCard extends StatelessWidget {
         ),
       );
 
-  Future<void> confirmDelete(BuildContext context, TeamPostProvider provider) async {
+  Future<void> confirmDelete(
+      BuildContext context, TeamPostProvider provider) async {
     final bool confirm = await ConfirmationDialog.show(
       context,
       title: '删除此楼',
@@ -208,7 +210,8 @@ class TeamCommentPreviewCard extends StatelessWidget {
             padding: EdgeInsets.zero,
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: post.replyInfo.length + (post.replyInfo.length != post.repliesCount ? 1 : 0),
+            itemCount: post.replyInfo.length +
+                (post.replyInfo.length != post.repliesCount ? 1 : 0),
             itemBuilder: (_, int index) {
               if (index == post.replyInfo.length) {
                 return Container(
@@ -236,7 +239,8 @@ class TeamCommentPreviewCard extends StatelessWidget {
                   ),
                 );
               }
-              final Map<String, dynamic> _post = post.replyInfo[index].cast<String, dynamic>();
+              final Map<String, dynamic> _post =
+                  post.replyInfo[index].cast<String, dynamic>();
               return Padding(
                 padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
                 child: Row(
@@ -254,22 +258,27 @@ class TeamCommentPreviewCard extends StatelessWidget {
                                   navigatorState.pushNamed(
                                     Routes.OPENJMU_USER,
                                     arguments: <String, dynamic>{
-                                      'uid': _post['user']['uid'].toString().toInt(),
+                                      'uid': _post['user']['uid']
+                                          .toString()
+                                          .toInt(),
                                     },
                                   );
                                 },
                             ),
-                            if (_post['user']['uid'].toString().toInt() == topPost.uid)
+                            if (_post['user']['uid'].toString().toInt() ==
+                                topPost.uid)
                               WidgetSpan(
                                 alignment: ui.PlaceholderAlignment.middle,
                                 child: Container(
-                                  margin: EdgeInsets.symmetric(horizontal: suSetWidth(6.0)),
+                                  margin: EdgeInsets.symmetric(
+                                      horizontal: suSetWidth(6.0)),
                                   padding: EdgeInsets.symmetric(
                                     horizontal: suSetWidth(6.0),
                                     vertical: suSetHeight(1.0),
                                   ),
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+                                    borderRadius:
+                                        BorderRadius.circular(suSetWidth(5.0)),
                                     color: currentThemeColor,
                                   ),
                                   child: Text(
@@ -431,9 +440,11 @@ class TeamCommentPreviewCard extends StatelessWidget {
                 children: <Widget>[
                   _header(context, provider),
                   _content(provider.post),
-                  if (provider.post.pics != null && provider.post.pics.isNotEmpty)
+                  if (provider.post.pics != null &&
+                      provider.post.pics.isNotEmpty)
                     _images(context, provider.post),
-                  if (provider.post.replyInfo != null && provider.post.replyInfo.isNotEmpty)
+                  if (provider.post.replyInfo != null &&
+                      provider.post.replyInfo.isNotEmpty)
                     _replyInfo(context, provider.post),
                 ],
               ),

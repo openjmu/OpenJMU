@@ -129,7 +129,8 @@ class EmotionPad extends StatelessWidget {
   final String route;
   final TextEditingController controller;
 
-  static double get emoticonPadDefaultHeight => Screens.width / emoticonPadGridCount * 4;
+  static double get emoticonPadDefaultHeight =>
+      Screens.width / emoticonPadGridCount * 4;
 
   static int get emoticonPadGridCount => 6;
 

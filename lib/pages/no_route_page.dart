@@ -24,7 +24,9 @@ class NoRoutePage extends StatelessWidget {
             TextSpan(
               children: <InlineSpan>[
                 TextSpan(text: 'You\'re visiting\n'),
-                TextSpan(text: '$route\n', style: TextStyle(fontWeight: FontWeight.bold)),
+                TextSpan(
+                    text: '$route\n',
+                    style: TextStyle(fontWeight: FontWeight.bold)),
                 TextSpan(text: 'which result nothing...'),
               ],
               style: TextStyle(fontSize: suSetSp(22.0)),

@@ -42,7 +42,8 @@ class FixedAppBar extends StatelessWidget {
       type: MaterialType.transparency,
       child: Container(
         padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
-        height: suSetHeight(height ?? kAppBarHeight) + MediaQuery.of(context).padding.top,
+        height: suSetHeight(height ?? kAppBarHeight) +
+            MediaQuery.of(context).padding.top,
         decoration: BoxDecoration(
           boxShadow: elevation > 0
               ? <BoxShadow>[
@@ -63,10 +64,15 @@ class FixedAppBar extends StatelessWidget {
             if (_title != null)
               Expanded(
                 child: Align(
-                  alignment: centerTitle ? Alignment.center : AlignmentDirectional.centerStart,
+                  alignment: centerTitle
+                      ? Alignment.center
+                      : AlignmentDirectional.centerStart,
                   child: DefaultTextStyle(
                     child: _title,
-                    style: Theme.of(context).textTheme.title.copyWith(fontSize: 23.0.sp),
+                    style: Theme.of(context)
+                        .textTheme
+                        .title
+                        .copyWith(fontSize: 23.0.sp),
                     maxLines: 1,
                     softWrap: false,
                     overflow: TextOverflow.ellipsis,
@@ -112,7 +118,8 @@ class FixedAppBarWrapper extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           Positioned(
-            top: suSetHeight(kAppBarHeight) + MediaQuery.of(context).padding.top,
+            top:
+                suSetHeight(kAppBarHeight) + MediaQuery.of(context).padding.top,
             left: 0.0,
             right: 0.0,
             bottom: 0.0,

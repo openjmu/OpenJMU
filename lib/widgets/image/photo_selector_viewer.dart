@@ -84,7 +84,8 @@ class _PhotoSelectorViewerState extends State<PhotoSelectorViewer>
   /// widely [setState] and causing other widgets rebuild.
   /// 使用 [StreamController] 的主要目的是缩小页码变化时构建组件的范围，
   /// 防止滥用 [setState] 导致其他部件重新构建。
-  final StreamController<int> pageStreamController = StreamController<int>.broadcast();
+  final StreamController<int> pageStreamController =
+      StreamController<int>.broadcast();
 
   /// [AnimationController] for double tap animation.
   /// 双击缩放的动画控制器
@@ -129,7 +130,8 @@ class _PhotoSelectorViewerState extends State<PhotoSelectorViewer>
   @override
   void initState() {
     super.initState();
-    _doubleTapAnimationController = AnimationController(duration: 200.milliseconds, vsync: this);
+    _doubleTapAnimationController =
+        AnimationController(duration: 200.milliseconds, vsync: this);
     _doubleTapCurveAnimation = CurvedAnimation(
       parent: _doubleTapAnimationController,
       curve: Curves.easeInOut,
@@ -227,12 +229,15 @@ class _PhotoSelectorViewerState extends State<PhotoSelectorViewer>
   Widget get appBar => AnimatedPositioned(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
-        top: isDisplayingDetail ? 0.0 : -(Screens.topSafeHeight + suSetHeight(70.0)),
+        top: isDisplayingDetail
+            ? 0.0
+            : -(Screens.topSafeHeight + suSetHeight(70.0)),
         left: 0.0,
         right: 0.0,
         height: Screens.topSafeHeight + suSetHeight(70.0),
         child: Container(
-          padding: EdgeInsets.only(top: Screens.topSafeHeight, right: suSetWidth(12.0)),
+          padding: EdgeInsets.only(
+              top: Screens.topSafeHeight, right: suSetWidth(12.0)),
           color: Colors.grey[850].withOpacity(0.95),
           child: Row(
             children: <Widget>[
@@ -243,7 +248,8 @@ class _PhotoSelectorViewerState extends State<PhotoSelectorViewer>
                 builder: (BuildContext _, AsyncSnapshot<int> snapshot) {
                   return Text(
                     '${snapshot.data + 1}/${widget.assets.length}',
-                    style: TextStyle(color: Colors.grey[200], fontSize: suSetSp(20.0)),
+                    style: TextStyle(
+                        color: Colors.grey[200], fontSize: suSetSp(20.0)),
                   );
                 },
               ),
@@ -266,12 +272,15 @@ class _PhotoSelectorViewerState extends State<PhotoSelectorViewer>
   /// 当有资源已选时，点击按钮将把已选资源通过路由返回。
   /// 资源选择器将识别并一同返回。
   Widget get confirmButton => Consumer<PhotoSelectorViewerProvider>(
-        builder: (BuildContext _, PhotoSelectorViewerProvider provider, Widget __) {
+        builder:
+            (BuildContext _, PhotoSelectorViewerProvider provider, Widget __) {
           return MaterialButton(
             minWidth: suSetWidth(provider.isSelectedNotEmpty ? 50.0 : 20.0),
             height: suSetHeight(38.0),
             padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
-            color: provider.isSelectedNotEmpty ? currentThemeColor : currentTheme.dividerColor,
+            color: provider.isSelectedNotEmpty
+                ? currentThemeColor
+                : currentTheme.dividerColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(suSetWidth(10.0)),
             ),
@@ -282,7 +291,9 @@ class _PhotoSelectorViewerState extends State<PhotoSelectorViewer>
                       '${widget.selectorProvider.maxAssets})'
                   : '确认',
               style: TextStyle(
-                color: provider.isSelectedNotEmpty ? Colors.white : Colors.grey[600],
+                color: provider.isSelectedNotEmpty
+                    ? Colors.white
+                    : Colors.grey[600],
                 fontSize: suSetSp(18.0),
                 height: 1.25,
               ),
@@ -320,10 +331,13 @@ class _PhotoSelectorViewerState extends State<PhotoSelectorViewer>
                 }
               },
               child: Selector<PhotoSelectorViewerProvider, Set<AssetEntity>>(
-                selector: (BuildContext _, PhotoSelectorViewerProvider provider) =>
-                    provider.currentlySelectedAssets,
-                builder: (BuildContext _, Set<AssetEntity> currentlySelectedAssets, Widget __) {
-                  final bool isSelected = currentlySelectedAssets.contains(asset);
+                selector:
+                    (BuildContext _, PhotoSelectorViewerProvider provider) =>
+                        provider.currentlySelectedAssets,
+                builder: (BuildContext _,
+                    Set<AssetEntity> currentlySelectedAssets, Widget __) {
+                  final bool isSelected =
+                      currentlySelectedAssets.contains(asset);
                   return Stack(
                     children: <Widget>[
                       Positioned.fill(
@@ -342,7 +356,9 @@ class _PhotoSelectorViewerState extends State<PhotoSelectorViewer>
                         curve: Curves.easeInOut,
                         decoration: BoxDecoration(
                           border: isViewing
-                              ? Border.all(color: currentThemeColor, width: suSetWidth(2.0))
+                              ? Border.all(
+                                  color: currentThemeColor,
+                                  width: suSetWidth(2.0))
                               : null,
                           color: isSelected ? null : Colors.white54,
                         ),
@@ -360,7 +376,8 @@ class _PhotoSelectorViewerState extends State<PhotoSelectorViewer>
 
   /// Edit button. (Not usage currently)
   /// 编辑按钮 (目前没有使用)
-  Widget get editButton => Text('编辑', style: TextStyle(fontSize: suSetSp(18.0)));
+  Widget get editButton =>
+      Text('编辑', style: TextStyle(fontSize: suSetSp(18.0)));
 
   /// Select button.
   /// 选择按钮
@@ -371,10 +388,13 @@ class _PhotoSelectorViewerState extends State<PhotoSelectorViewer>
             stream: pageStreamController.stream,
             builder: (BuildContext _, AsyncSnapshot<int> snapshot) {
               return Selector<PhotoSelectorViewerProvider, Set<AssetEntity>>(
-                selector: (BuildContext _, PhotoSelectorViewerProvider provider) =>
-                    provider.currentlySelectedAssets,
-                builder: (BuildContext _, Set<AssetEntity> currentlySelectedAssets, Widget __) {
-                  final AssetEntity asset = widget.assets.elementAt(snapshot.data);
+                selector:
+                    (BuildContext _, PhotoSelectorViewerProvider provider) =>
+                        provider.currentlySelectedAssets,
+                builder: (BuildContext _,
+                    Set<AssetEntity> currentlySelectedAssets, Widget __) {
+                  final AssetEntity asset =
+                      widget.assets.elementAt(snapshot.data);
                   final bool selected = currentlySelectedAssets.contains(asset);
                   return RoundedCheckbox(
                     value: selected,
@@ -400,7 +420,9 @@ class _PhotoSelectorViewerState extends State<PhotoSelectorViewer>
   Widget get bottomDetail => AnimatedPositioned(
         duration: kThemeAnimationDuration,
         curve: Curves.easeInOut,
-        bottom: isDisplayingDetail ? 0.0 : -(Screens.bottomSafeHeight + bottomDetailHeight),
+        bottom: isDisplayingDetail
+            ? 0.0
+            : -(Screens.bottomSafeHeight + bottomDetailHeight),
         left: 0.0,
         right: 0.0,
         height: Screens.bottomSafeHeight + bottomDetailHeight,
@@ -417,7 +439,8 @@ class _PhotoSelectorViewerState extends State<PhotoSelectorViewer>
                     scrollDirection: Axis.horizontal,
                     padding: EdgeInsets.symmetric(horizontal: suSetWidth(8.0)),
                     itemCount: widget.selectedAssets.length,
-                    itemBuilder: (BuildContext _, int index) => _bottomDetailItem(index),
+                    itemBuilder: (BuildContext _, int index) =>
+                        _bottomDetailItem(index),
                   ),
                 ),
                 Container(

@@ -49,8 +49,10 @@ class InAppBrowserPage extends StatefulWidget {
   _InAppBrowserPageState createState() => _InAppBrowserPageState();
 }
 
-class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepAliveClientMixin {
-  StreamController<double> progressController = StreamController<double>.broadcast();
+class _InAppBrowserPageState extends State<InAppBrowserPage>
+    with AutomaticKeepAliveClientMixin {
+  StreamController<double> progressController =
+      StreamController<double>.broadcast();
 
   InAppWebViewController _webViewController;
   String title = '', url = 'about:blank';
@@ -70,7 +72,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
     }
 
     Instances.eventBus
-      ..on<CourseScheduleRefreshEvent>().listen((CourseScheduleRefreshEvent event) {
+      ..on<CourseScheduleRefreshEvent>()
+          .listen((CourseScheduleRefreshEvent event) {
         if (mounted) {
           loadCourseSchedule();
         }
@@ -90,7 +93,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
   void loadCourseSchedule() {
     try {
       _webViewController.loadUrl(
-        url: '${currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}'
+        url:
+            '${currentUser.isTeacher ? API.courseScheduleTeacher : API.courseSchedule}'
             '?sid=${currentUser.sid}'
             '&night=${currentIsDark ? 1 : 0}',
       );
@@ -134,7 +138,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
               const TextSpan(text: '即将打开应用\n'),
               TextSpan(
                 text: '$applicationLabel',
-                style: TextStyle(fontSize: suSetSp(20.0), fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: suSetSp(20.0), fontWeight: FontWeight.bold),
               ),
             ],
           ),
@@ -151,7 +156,10 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
         padding: EdgeInsets.only(bottom: suSetHeight(10.0)),
         child: Text(
           '网页由 $urlDomain 提供',
-          style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(18.0)),
+          style: Theme.of(context)
+              .textTheme
+              .caption
+              .copyWith(fontSize: suSetSp(18.0)),
         ),
       );
 
@@ -190,7 +198,10 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
           SizedBox(height: suSetHeight(10.0)),
           Text(
             text,
-            style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(15.0)),
+            style: Theme.of(context)
+                .textTheme
+                .caption
+                .copyWith(fontSize: suSetSp(15.0)),
           ),
         ],
       ),
@@ -281,7 +292,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          if (widget.app != null) WebAppIcon(app: widget.app, size: 60.0),
+                          if (widget.app != null)
+                            WebAppIcon(app: widget.app, size: 60.0),
                           Flexible(
                             child: Text(
                               title,
@@ -316,7 +328,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
           child: StreamBuilder<double>(
             initialData: 0.0,
             stream: progressController.stream,
-            builder: (BuildContext context, AsyncSnapshot<double> data) => LinearProgressIndicator(
+            builder: (BuildContext context, AsyncSnapshot<double> data) =>
+                LinearProgressIndicator(
               backgroundColor: Theme.of(context).primaryColor,
               value: data.data,
             ),
@@ -405,7 +418,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
                 ? AndroidInAppWebViewForceDark.FORCE_DARK_ON
                 : AndroidInAppWebViewForceDark.FORCE_DARK_OFF,
             loadWithOverviewMode: true,
-            mixedContentMode: AndroidInAppWebViewMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
+            mixedContentMode:
+                AndroidInAppWebViewMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
             safeBrowsingEnabled: false,
             supportZoom: true,
             useWideViewPort: true,
@@ -437,7 +451,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
             title = _title;
           } else {
             final String ogTitle = await controller.evaluateJavascript(
-              source: 'var ogTitle = document.querySelector(\'[property="og:title"]\');\n'
+              source:
+                  'var ogTitle = document.querySelector(\'[property="og:title"]\');\n'
                   'if (ogTitle != undefined) ogTitle.content;',
             ) as String;
             if (ogTitle != null) {
@@ -454,7 +469,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
         onProgressChanged: (InAppWebViewController controller, int progress) {
           progressController?.add(progress / 100);
         },
-        onConsoleMessage: (InAppWebViewController controller, ConsoleMessage consoleMessage) {
+        onConsoleMessage:
+            (InAppWebViewController controller, ConsoleMessage consoleMessage) {
           trueDebugPrint('Console message: '
               '${consoleMessage.messageLevel.toString()}'
               ' - '
@@ -478,7 +494,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage> with AutomaticKeepA
           }
         },
       ),
-      persistentFooterButtons: (widget.withAction ?? true) ? persistentFooterButtons : null,
+      persistentFooterButtons:
+          (widget.withAction ?? true) ? persistentFooterButtons : null,
     );
   }
 }

@@ -53,11 +53,13 @@ class CustomSwitch extends StatefulWidget {
   }
 }
 
-class _CustomSwitchState extends State<CustomSwitch> with TickerProviderStateMixin {
+class _CustomSwitchState extends State<CustomSwitch>
+    with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Opacity(
-      opacity: widget.onChanged == null ? _kCupertinoSwitchDisabledOpacity : 1.0,
+      opacity:
+          widget.onChanged == null ? _kCupertinoSwitchDisabledOpacity : 1.0,
       child: _CustomSwitchRenderObjectWidget(
         value: widget.value,
         activeColor: CupertinoDynamicColor.resolve(
@@ -100,7 +102,8 @@ class _CustomSwitchRenderObjectWidget extends LeafRenderObjectWidget {
     return _RenderCustomSwitch(
       value: value,
       activeColor: activeColor,
-      trackColor: CupertinoDynamicColor.resolve(CupertinoColors.secondarySystemFill, context),
+      trackColor: CupertinoDynamicColor.resolve(
+          CupertinoColors.secondarySystemFill, context),
       onChanged: onChanged,
       textDirection: Directionality.of(context),
       vsync: vsync,
@@ -111,11 +114,13 @@ class _CustomSwitchRenderObjectWidget extends LeafRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, _RenderCustomSwitch renderObject) {
+  void updateRenderObject(
+      BuildContext context, _RenderCustomSwitch renderObject) {
     renderObject
       ..value = value
       ..activeColor = activeColor
-      ..trackColor = CupertinoDynamicColor.resolve(CupertinoColors.secondarySystemFill, context)
+      ..trackColor = CupertinoDynamicColor.resolve(
+          CupertinoColors.secondarySystemFill, context)
       ..onChanged = onChanged
       ..textDirection = Directionality.of(context)
       ..vsync = vsync
@@ -442,7 +447,8 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
         break;
     }
 
-    final Paint paint = Paint()..color = Color.lerp(trackColor, activeColor, currentValue);
+    final Paint paint = Paint()
+      ..color = Color.lerp(trackColor, activeColor, currentValue);
 
     final Rect trackRect = Rect.fromLTWH(
       offset.dx + (size.width - trackWidth) / 2.0,
@@ -456,10 +462,14 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
     );
     canvas.drawRRect(trackRRect, paint);
 
-    final double currentThumbExtension = CupertinoThumbPainter.extension * currentReactionValue;
+    final double currentThumbExtension =
+        CupertinoThumbPainter.extension * currentReactionValue;
     final double thumbLeft = lerpDouble(
       trackRect.left + _kTrackInnerStart - CupertinoThumbPainter.radius,
-      trackRect.left + _kTrackInnerEnd - CupertinoThumbPainter.radius / 1.5 - currentThumbExtension,
+      trackRect.left +
+          _kTrackInnerEnd -
+          CupertinoThumbPainter.radius / 1.5 -
+          currentThumbExtension,
       visualPosition,
     );
     final double thumbRight = lerpDouble(
@@ -484,7 +494,8 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
       thumbBounds,
       trackRRect,
       (PaintingContext innerContext, Offset offset) {
-        const CupertinoThumbPainter.switchThumb().paint(innerContext.canvas, thumbBounds);
+        const CupertinoThumbPainter.switchThumb()
+            .paint(innerContext.canvas, thumbBounds);
       },
     );
   }

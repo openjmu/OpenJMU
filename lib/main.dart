@@ -55,7 +55,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   int initAction;
 
-  Brightness get _platformBrightness => Screens.mediaQuery.platformBrightness ?? Brightness.light;
+  Brightness get _platformBrightness =>
+      Screens.mediaQuery.platformBrightness ?? Brightness.light;
 
   ToastFuture connectivityToastFuture;
 
@@ -68,7 +69,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       Connectivity().checkConnectivity().then(connectivityHandler);
     });
-    connectivitySubscription = Connectivity().onConnectivityChanged.listen(connectivityHandler);
+    connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen(connectivityHandler);
 
     Instances.eventBus
       ..on<TicketGotEvent>().listen((event) {
@@ -76,14 +78,20 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         MessageUtils.initMessageSocket();
         if (!currentUser.isTeacher) {
           if (!currentUser.isPostgraduate) {
-            Provider.of<CoursesProvider>(currentContext, listen: false).initCourses();
-            Provider.of<ScoresProvider>(currentContext, listen: false).initScore();
+            Provider.of<CoursesProvider>(currentContext, listen: false)
+                .initCourses();
+            Provider.of<ScoresProvider>(currentContext, listen: false)
+                .initScore();
           }
         }
-        Provider.of<MessagesProvider>(currentContext, listen: false).initMessages();
-        Provider.of<NotificationProvider>(currentContext, listen: false).initNotification();
-        Provider.of<ReportRecordsProvider>(currentContext, listen: false).initRecords();
-        Provider.of<SignProvider>(currentContext, listen: false).getSignStatus();
+        Provider.of<MessagesProvider>(currentContext, listen: false)
+            .initMessages();
+        Provider.of<NotificationProvider>(currentContext, listen: false)
+            .initNotification();
+        Provider.of<ReportRecordsProvider>(currentContext, listen: false)
+            .initRecords();
+        Provider.of<SignProvider>(currentContext, listen: false)
+            .getSignStatus();
         Provider.of<WebAppsProvider>(currentContext, listen: false).initApps();
       })
       ..on<LogoutEvent>().listen((event) {
@@ -94,25 +102,33 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         );
         if (!currentUser.isTeacher) {
           if (!currentUser.isPostgraduate) {
-            Provider.of<CoursesProvider>(currentContext, listen: false).unloadCourses();
-            Provider.of<ScoresProvider>(currentContext, listen: false).unloadScore();
+            Provider.of<CoursesProvider>(currentContext, listen: false)
+                .unloadCourses();
+            Provider.of<ScoresProvider>(currentContext, listen: false)
+                .unloadScore();
           }
         }
-        Provider.of<MessagesProvider>(currentContext, listen: false).unloadMessages();
-        Provider.of<NotificationProvider>(currentContext, listen: false).stopNotification();
-        Provider.of<ReportRecordsProvider>(currentContext, listen: false).unloadRecords();
-        Provider.of<SignProvider>(currentContext, listen: false).resetSignStatus();
-        Provider.of<WebAppsProvider>(currentContext, listen: false).unloadApps();
+        Provider.of<MessagesProvider>(currentContext, listen: false)
+            .unloadMessages();
+        Provider.of<NotificationProvider>(currentContext, listen: false)
+            .stopNotification();
+        Provider.of<ReportRecordsProvider>(currentContext, listen: false)
+            .unloadRecords();
+        Provider.of<SignProvider>(currentContext, listen: false)
+            .resetSignStatus();
+        Provider.of<WebAppsProvider>(currentContext, listen: false)
+            .unloadApps();
         Future.delayed(250.milliseconds, () {
-          Provider.of<ThemesProvider>(currentContext, listen: false).resetTheme();
+          Provider.of<ThemesProvider>(currentContext, listen: false)
+              .resetTheme();
           Provider.of<SettingsProvider>(currentContext, listen: false).reset();
         });
         DataUtils.logout();
       })
       ..on<ActionsEvent>().listen((event) {
-        initAction = Constants.quickActionsList.keys
-            .toList()
-            .indexOf(Constants.quickActionsList.keys.firstWhere((action) => action == event.type));
+        initAction = Constants.quickActionsList.keys.toList().indexOf(Constants
+            .quickActionsList.keys
+            .firstWhere((action) => action == event.type));
       })
       ..on<HasUpdateEvent>().listen(PackageUtils.showUpdateDialog);
 
@@ -240,7 +256,10 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   SizedBox(height: Screens.width / 20),
                   Text(
                     '检查网络连接',
-                    style: Theme.of(context).textTheme.body1.copyWith(fontSize: 20.0),
+                    style: Theme.of(context)
+                        .textTheme
+                        .body1
+                        .copyWith(fontSize: 20.0),
                   ),
                 ],
               ),
@@ -263,7 +282,9 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
           final isDark = themesProvider.platformBrightness
               ? _platformBrightness == Brightness.dark
               : themesProvider.dark;
-          final theme = (isDark ? themesProvider.darkTheme : themesProvider.lightTheme).copyWith(
+          final theme =
+              (isDark ? themesProvider.darkTheme : themesProvider.lightTheme)
+                  .copyWith(
             pageTransitionsTheme: PageTransitionsTheme(
               builders: <TargetPlatform, PageTransitionsBuilder>{
                 TargetPlatform.android: ZoomPageTransitionsBuilder(),
@@ -271,7 +292,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
             ),
           );
           return AnnotatedRegion<SystemUiOverlayStyle>(
-            value: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+            value:
+                isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
             child: Theme(
               data: theme,
               child: OKToast(
@@ -288,7 +310,8 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   theme: theme,
                   home: SplashPage(initAction: initAction),
                   navigatorObservers: [FFNavigatorObserver()],
-                  onGenerateRoute: (RouteSettings settings) => onGenerateRouteHelper(
+                  onGenerateRoute: (RouteSettings settings) =>
+                      onGenerateRouteHelper(
                     settings,
                     notFoundFallback: NoRoutePage(route: settings.name),
                   ),

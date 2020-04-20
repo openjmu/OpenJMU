@@ -15,7 +15,9 @@ class ReportRecordsProvider extends ChangeNotifier {
   }
 
   void initRecords() {
-    _records = HiveBoxes.reportRecordBox.get(currentUser.uid)?.toSet()?.cast<int>() ?? <int>{};
+    _records =
+        HiveBoxes.reportRecordBox.get(currentUser.uid)?.toSet()?.cast<int>() ??
+            <int>{};
   }
 
   Future<bool> addRecord(int postId) async {
@@ -24,7 +26,8 @@ class ReportRecordsProvider extends ChangeNotifier {
       return false;
     } else {
       _records.add(postId);
-      await HiveBoxes.reportRecordBox.put(currentUser.uid, List<int>.from(_records));
+      await HiveBoxes.reportRecordBox
+          .put(currentUser.uid, List<int>.from(_records));
       return true;
     }
   }

@@ -25,7 +25,8 @@ class TeamPostAPI {
     );
   }
 
-  static Future<Response<Map<String, dynamic>>> getPostDetail({int id, int postType = 2}) async =>
+  static Future<Response<Map<String, dynamic>>> getPostDetail(
+          {int id, int postType = 2}) async =>
       NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(
         API.teamPostDetail(postId: id, postType: postType),
         headers: Constants.teamHeader,
@@ -121,7 +122,8 @@ class TeamPostAPI {
     String time = '';
     if (content is TeamPost) {
       if (content.isReplied) {
-        origin = DateTime.fromMillisecondsSinceEpoch(int.parse(content.postInfo[0]['post_time']));
+        origin = DateTime.fromMillisecondsSinceEpoch(
+            int.parse(content.postInfo[0]['post_time']));
         time += '回复于';
       } else {
         origin = content.postTime;

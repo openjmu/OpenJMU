@@ -20,7 +20,8 @@ class ConfirmationBottomSheet extends StatefulWidget {
     this.cancelLabel = '取消',
     this.backgroundColor,
   })  : assert(
-          !(children == null && content == null) && !(children != null && content != null),
+          !(children == null && content == null) &&
+              !(children != null && content != null),
           '\'children\' and \'content\' cannot be set or not set at the same time.',
         ),
         super(key: key);
@@ -75,7 +76,8 @@ class ConfirmationBottomSheet extends StatefulWidget {
 }
 
 class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
-  final GlobalKey<DismissWrapperState> _dismissWrapperKey = GlobalKey<DismissWrapperState>();
+  final GlobalKey<DismissWrapperState> _dismissWrapperKey =
+      GlobalKey<DismissWrapperState>();
   bool animating = false;
 
   Widget dragIndicator(BuildContext context) => Container(
@@ -95,12 +97,14 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
           bottom: suSetHeight(10.0),
         ),
         child: Row(
-          mainAxisAlignment:
-              widget.centerTitle ? MainAxisAlignment.center : MainAxisAlignment.start,
+          mainAxisAlignment: widget.centerTitle
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.start,
           children: <Widget>[
             Text(
               widget.title,
-              style: TextStyle(fontSize: suSetSp(28.0), fontWeight: FontWeight.bold),
+              style: TextStyle(
+                  fontSize: suSetSp(28.0), fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -241,7 +245,9 @@ class ConfirmationBottomSheetAction extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: suSetWidth(10.0)),
               child: IconTheme(
-                data: Theme.of(context).iconTheme.copyWith(size: suSetWidth(36.0)),
+                data: Theme.of(context)
+                    .iconTheme
+                    .copyWith(size: suSetWidth(36.0)),
                 child: icon,
               ),
             ),

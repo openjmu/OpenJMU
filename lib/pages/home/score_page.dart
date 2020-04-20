@@ -19,7 +19,8 @@ class ScorePage extends StatelessWidget {
     return Center(
       child: Text(
         result,
-        style: TextStyle(fontSize: suSetSp(23.0), fontWeight: FontWeight.normal),
+        style:
+            TextStyle(fontSize: suSetSp(23.0), fontWeight: FontWeight.normal),
         textAlign: TextAlign.center,
       ),
     );
@@ -74,7 +75,10 @@ class ScorePage extends StatelessWidget {
                   TextSpan(text: ' (校园内网)\n未教学评测的科目成绩将不予显示'),
                 ],
               ),
-              style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(19.0)),
+              style: Theme.of(context)
+                  .textTheme
+                  .caption
+                  .copyWith(fontSize: suSetSp(19.0)),
               textAlign: TextAlign.center,
             ),
           ),
@@ -100,9 +104,12 @@ class ScorePage extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(suSetWidth(15.0)),
               boxShadow: <BoxShadow>[
-                BoxShadow(blurRadius: 5.0, color: Theme.of(context).canvasColor),
+                BoxShadow(
+                    blurRadius: 5.0, color: Theme.of(context).canvasColor),
               ],
-              color: _term == selectedTerm ? currentThemeColor : Theme.of(context).canvasColor,
+              color: _term == selectedTerm
+                  ? currentThemeColor
+                  : Theme.of(context).canvasColor,
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: suSetSp(8.0)),
@@ -114,7 +121,11 @@ class ScorePage extends StatelessWidget {
                     style: TextStyle(
                       color: _term == selectedTerm
                           ? Colors.white
-                          : Theme.of(context).textTheme.caption.color.withOpacity(0.3),
+                          : Theme.of(context)
+                              .textTheme
+                              .caption
+                              .color
+                              .withOpacity(0.3),
                       fontWeight: FontWeight.bold,
                       fontSize: suSetSp(18.0),
                     ),
@@ -124,7 +135,11 @@ class ScorePage extends StatelessWidget {
                     style: TextStyle(
                       color: _term == selectedTerm
                           ? Colors.white
-                          : Theme.of(context).textTheme.caption.color.withOpacity(0.3),
+                          : Theme.of(context)
+                              .textTheme
+                              .caption
+                              .color
+                              .withOpacity(0.3),
                       fontWeight: FontWeight.bold,
                       fontSize: suSetSp(20.0),
                     ),
@@ -172,7 +187,8 @@ class ScorePage extends StatelessWidget {
   Widget _name(context, Score score) {
     return Text(
       '${score.courseName}',
-      style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(24.0)),
+      style:
+          Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(24.0)),
       overflow: TextOverflow.ellipsis,
     );
   }
@@ -186,13 +202,18 @@ class ScorePage extends StatelessWidget {
             style: TextStyle(
               fontSize: suSetSp(36.0),
               fontWeight: FontWeight.bold,
-              color: !score.isPass ? Colors.red : Theme.of(context).textTheme.title.color,
+              color: !score.isPass
+                  ? Colors.red
+                  : Theme.of(context).textTheme.title.color,
             ),
           ),
           TextSpan(text: ' / '),
           TextSpan(text: '${score.scorePoint}'),
         ],
-        style: Theme.of(context).textTheme.subtitle.copyWith(fontSize: suSetSp(20.0)),
+        style: Theme.of(context)
+            .textTheme
+            .subtitle
+            .copyWith(fontSize: suSetSp(20.0)),
       ),
     );
   }
@@ -201,7 +222,8 @@ class ScorePage extends StatelessWidget {
     return Text(
       '学时: ${score.creditHour}　'
       '学分: ${score.credit.toStringAsFixed(1)}',
-      style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
+      style:
+          Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
     );
   }
 

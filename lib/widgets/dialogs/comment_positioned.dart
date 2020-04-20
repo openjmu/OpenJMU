@@ -90,11 +90,14 @@ class CommentPositionedState extends State<CommentPositioned> {
       });
 
   Future<Response<T>> getImageRequest<T>(FormData formData) async =>
-      NetUtils.postWithCookieAndHeaderSet<T>(API.postUploadImage, data: formData);
+      NetUtils.postWithCookieAndHeaderSet<T>(API.postUploadImage,
+          data: formData);
 
   Widget textField(BuildContext context) {
     String _hintText;
-    toComment != null ? _hintText = '回复:@${toComment.fromUserName} ' : _hintText = null;
+    toComment != null
+        ? _hintText = '回复:@${toComment.fromUserName} '
+        : _hintText = null;
     return ExtendedTextField(
       specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
       focusNode: _focusNode,
@@ -157,7 +160,8 @@ class CommentPositionedState extends State<CommentPositioned> {
       /// Sending image if it exist.
       if (_image != null) {
         final Map<String, dynamic> data =
-            (await getImageRequest<Map<String, dynamic>>(createForm(_image))).data;
+            (await getImageRequest<Map<String, dynamic>>(createForm(_image)))
+                .data;
         _imageID = (data['image_id'] as String).toIntOrNull();
         content += ' |$_imageID| ';
       }
@@ -198,7 +202,9 @@ class CommentPositionedState extends State<CommentPositioned> {
       change();
     } else {
       if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
-        SystemChannels.textInput.invokeMethod<void>('TextInput.hide').whenComplete(
+        SystemChannels.textInput
+            .invokeMethod<void>('TextInput.hide')
+            .whenComplete(
           () {
             Future<void>.delayed(300.milliseconds, null).whenComplete(change);
           },
@@ -312,7 +318,9 @@ class CommentPositionedState extends State<CommentPositioned> {
                 child: Icon(
                   Icons.sentiment_very_satisfied,
                   size: suSetWidth(32.0),
-                  color: emoticonPadActive ? currentThemeColor : Theme.of(context).iconTheme.color,
+                  color: emoticonPadActive
+                      ? currentThemeColor
+                      : Theme.of(context).iconTheme.color,
                 ),
               ),
             ),
@@ -371,7 +379,9 @@ class CommentPositionedState extends State<CommentPositioned> {
             duration: 100.milliseconds,
             color: Theme.of(context).cardColor,
             padding: EdgeInsets.only(
-              bottom: !emoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
+              bottom: !emoticonPadActive
+                  ? MediaQuery.of(context).padding.bottom
+                  : 0.0,
             ),
             child: Padding(
               padding: EdgeInsets.all(suSetWidth(12.0)),

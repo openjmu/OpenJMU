@@ -178,7 +178,8 @@ class LoadingDialogController {
   }
 
   void updateContent(String type, Widget icon, String text, Duration duration) {
-    dialogState?.updateContent(type: type, icon: icon, text: text, duration: duration);
+    dialogState?.updateContent(
+        type: type, icon: icon, text: text, duration: duration);
   }
 
   void changeState(
@@ -191,7 +192,8 @@ class LoadingDialogController {
       case 'success':
         dialogState?.updateContent(
           type: 'success',
-          icon: Icon(Icons.check_circle, color: Colors.green, size: suSetWidth(60.0)),
+          icon: Icon(Icons.check_circle,
+              color: Colors.green, size: suSetWidth(60.0)),
           text: text,
           duration: duration,
           customPop: customPop,
@@ -202,7 +204,8 @@ class LoadingDialogController {
           type: 'failed',
           icon: RotationTransition(
             turns: const AlwaysStoppedAnimation<double>(45 / 360),
-            child: Icon(Icons.add_circle, color: Colors.redAccent, size: suSetWidth(60.0)),
+            child: Icon(Icons.add_circle,
+                color: Colors.redAccent, size: suSetWidth(60.0)),
           ),
           text: text,
           duration: duration,

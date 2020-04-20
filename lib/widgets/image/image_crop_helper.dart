@@ -7,7 +7,8 @@ import 'package:extended_image/extended_image.dart';
 import 'package:image/image.dart';
 import 'package:image_editor/image_editor.dart';
 
-final Future<LoadBalancer> loadBalancer = LoadBalancer.create(1, IsolateRunner.spawn);
+final Future<LoadBalancer> loadBalancer =
+    LoadBalancer.create(1, IsolateRunner.spawn);
 
 Future<dynamic> isolateDecodeImage(List<int> data) async {
   final ReceivePort response = ReceivePort();
@@ -63,7 +64,8 @@ Future<List<int>> cropImage({ExtendedImageEditorState state}) async {
   }
 
   if (action.needFlip) {
-    option.addOption(FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
+    option.addOption(
+        FlipOption(horizontal: flipHorizontal, vertical: flipVertical));
   }
 
   if (action.hasRotateAngle) {

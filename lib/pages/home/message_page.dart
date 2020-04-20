@@ -14,7 +14,8 @@ class MessagePage extends StatefulWidget {
   State<StatefulWidget> createState() => MessagePageState();
 }
 
-class MessagePageState extends State<MessagePage> with TickerProviderStateMixin {
+class MessagePageState extends State<MessagePage>
+    with TickerProviderStateMixin {
   final _messageScrollController = ScrollController();
   TabController _tabController;
 
@@ -82,8 +83,9 @@ class MessagePageState extends State<MessagePage> with TickerProviderStateMixin 
 
   Widget get _messageList => Consumer2<MessagesProvider, WebAppsProvider>(
         builder: (context, messageProvider, webAppsProvider, _) {
-          final shouldDisplayAppsMessages = (messageProvider.appsMessages?.isNotEmpty ?? false) &&
-              (webAppsProvider.apps?.isNotEmpty ?? false);
+          final shouldDisplayAppsMessages =
+              (messageProvider.appsMessages?.isNotEmpty ?? false) &&
+                  (webAppsProvider.apps?.isNotEmpty ?? false);
 //            final shouldDisplayPersonalMessages =
 //                messageProvider.personalMessages.isNotEmpty;
           final shouldDisplayMessages = shouldDisplayAppsMessages

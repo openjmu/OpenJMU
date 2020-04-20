@@ -49,7 +49,8 @@ class CommentList extends StatefulWidget {
   State createState() => _CommentListState();
 }
 
-class _CommentListState extends State<CommentList> with AutomaticKeepAliveClientMixin {
+class _CommentListState extends State<CommentList>
+    with AutomaticKeepAliveClientMixin {
   num _lastValue = 0;
   bool _isLoading = false;
   bool _canLoadMore = true;
@@ -141,7 +142,9 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _idList.length < _total && _count != 0;
-          _lastValue = _idList.isEmpty ? 0 : widget.commentController.lastValue(_idList.last);
+          _lastValue = _idList.isEmpty
+              ? 0
+              : widget.commentController.lastValue(_idList.last);
         });
       }
     }
@@ -186,7 +189,9 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _idList.length < _total && _count != 0;
-          _lastValue = _idList.isEmpty ? 0 : widget.commentController.lastValue(_idList.last);
+          _lastValue = _idList.isEmpty
+              ? 0
+              : widget.commentController.lastValue(_idList.last);
         });
       }
     }
@@ -217,10 +222,14 @@ class _CommentListState extends State<CommentList> with AutomaticKeepAliveClient
           _body = RefreshIndicator(
             color: currentThemeColor,
             onRefresh: _refreshData,
-            child: _commentList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList,
+            child: _commentList.isEmpty
+                ? (error ? _errorChild : _emptyChild)
+                : _itemList,
           );
         } else {
-          _body = _commentList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList;
+          _body = _commentList.isEmpty
+              ? (error ? _errorChild : _emptyChild)
+              : _itemList;
         }
       }
       return _body;
@@ -252,7 +261,8 @@ class CommentListInPost extends StatefulWidget {
   State createState() => CommentListInPostState();
 }
 
-class CommentListInPostState extends State<CommentListInPost> with AutomaticKeepAliveClientMixin {
+class CommentListInPostState extends State<CommentListInPost>
+    with AutomaticKeepAliveClientMixin {
   final _comments = <Comment>[];
 
   bool isLoading = true;
@@ -321,7 +331,8 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
     ConfirmationBottomSheet.show(
       context,
       children: <Widget>[
-        if (_comments[index].fromUserUid == currentUser.uid || widget.post.uid == currentUser.uid)
+        if (_comments[index].fromUserUid == currentUser.uid ||
+            widget.post.uid == currentUser.uid)
           ConfirmationBottomSheetAction(
             icon: Icon(Icons.delete),
             text: '删除评论',
@@ -393,7 +404,8 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
     });
     _comments.clear();
     try {
-      final response = (await CommentAPI.getCommentInPostList(widget.post.id))?.data;
+      final response =
+          (await CommentAPI.getCommentInPostList(widget.post.id))?.data;
       final list = response['replylist'];
       final total = response['total'] as int;
       if (response['count'] as int < total) canLoadMore = true;
@@ -445,15 +457,17 @@ class CommentListInPostState extends State<CommentListInPost> with AutomaticKeep
       content != null ? '$content ' : null,
       style: TextStyle(fontSize: suSetSp(19.0)),
       onSpecialTextTap: specialTextTapRecognizer,
-      specialTextSpanBuilder: StackSpecialTextSpanBuilder(widgetType: WidgetType.comment),
+      specialTextSpanBuilder:
+          StackSpecialTextSpanBuilder(widgetType: WidgetType.comment),
     );
   }
 
   String replaceMentionTag(text) {
     final RegExp mTagStartReg = RegExp(r'<M?\w+.*?\/?>');
     final RegExp mTagEndReg = RegExp(r'<\/M?\w+.*?\/?>');
-    final commentText =
-        text.replaceAllMapped(mTagStartReg, (_) => '').replaceAllMapped(mTagEndReg, (_) => '');
+    final commentText = text
+        .replaceAllMapped(mTagStartReg, (_) => '')
+        .replaceAllMapped(mTagEndReg, (_) => '');
     return commentText;
   }
 

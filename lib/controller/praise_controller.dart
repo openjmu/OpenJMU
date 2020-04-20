@@ -36,7 +36,8 @@ class PraiseList extends StatefulWidget {
   State createState() => _PraiseListState();
 }
 
-class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMixin {
+class _PraiseListState extends State<PraiseList>
+    with AutomaticKeepAliveClientMixin {
   num _lastValue = 0;
   bool _isLoading = false;
   bool _canLoadMore = true;
@@ -116,8 +117,9 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _praiseList.length < _total && _count != 0;
-          _lastValue =
-              _praiseList.isEmpty ? 0 : widget.praiseController.lastValue(_praiseList.last);
+          _lastValue = _praiseList.isEmpty
+              ? 0
+              : widget.praiseController.lastValue(_praiseList.last);
         });
       }
     }
@@ -153,8 +155,9 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
           _firstLoadComplete = true;
           _isLoading = false;
           _canLoadMore = _praiseList.length < _total && _count != 0;
-          _lastValue =
-              _praiseList.isEmpty ? 0 : widget.praiseController.lastValue(_praiseList.last);
+          _lastValue = _praiseList.isEmpty
+              ? 0
+              : widget.praiseController.lastValue(_praiseList.last);
         });
       }
     }
@@ -218,10 +221,14 @@ class _PraiseListState extends State<PraiseList> with AutomaticKeepAliveClientMi
           _body = RefreshIndicator(
             color: currentThemeColor,
             onRefresh: _refreshData,
-            child: _praiseList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList,
+            child: _praiseList.isEmpty
+                ? (error ? _errorChild : _emptyChild)
+                : _itemList,
           );
         } else {
-          _body = _praiseList.isEmpty ? (error ? _errorChild : _emptyChild) : _itemList;
+          _body = _praiseList.isEmpty
+              ? (error ? _errorChild : _emptyChild)
+              : _itemList;
         }
       }
       return _body;
@@ -243,7 +250,8 @@ class PraiseListInPost extends StatefulWidget {
   State createState() => PraiseListInPostState();
 }
 
-class PraiseListInPostState extends State<PraiseListInPost> with AutomaticKeepAliveClientMixin {
+class PraiseListInPostState extends State<PraiseListInPost>
+    with AutomaticKeepAliveClientMixin {
   final _praises = <Praise>[];
 
   bool isLoading = true;
@@ -316,7 +324,8 @@ class PraiseListInPostState extends State<PraiseListInPost> with AutomaticKeepAl
     });
     _praises.clear();
     try {
-      final response = (await PraiseAPI.getPraiseInPostList(widget.post.id))?.data;
+      final response =
+          (await PraiseAPI.getPraiseInPostList(widget.post.id))?.data;
       final list = response['praisors'];
       final total = response['total'] as int;
       if (response['count'] as int < total) canLoadMore = true;

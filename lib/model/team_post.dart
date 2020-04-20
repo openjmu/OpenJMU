@@ -49,7 +49,8 @@ class TeamPost {
         json[k] = null;
       }
     });
-    final Map<String, dynamic> _user = json['user_info'] as Map<String, dynamic>;
+    final Map<String, dynamic> _user =
+        json['user_info'] as Map<String, dynamic>;
     _user.forEach((String k, dynamic v) {
       if (_user[k] == '') {
         _user[k] = null;
@@ -61,7 +62,8 @@ class TeamPost {
       rootTid: json['root_tid'].toString().toIntOrNull(),
       rootUid: json['root_uid'].toString().toIntOrNull(),
       nickname: ((_user['nickname'] ?? _user['uid']) as dynamic).toString(),
-      postTime: DateTime.fromMillisecondsSinceEpoch((json['post_time'] as String).toIntOrNull()),
+      postTime: DateTime.fromMillisecondsSinceEpoch(
+          (json['post_time'] as String).toIntOrNull()),
       category: json['category'] as String,
       content: json['content'] as String,
       pics: (json['file_info'] as List)?.cast<Map>(),

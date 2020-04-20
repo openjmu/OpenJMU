@@ -53,7 +53,8 @@ class PraiseCard extends StatelessWidget {
           color: Colors.grey,
           size: suSetWidth(13.0),
         ),
-        Text(' ${PostAPI.postTimeConverter(praise.praiseTime)}', style: subtitleStyle),
+        Text(' ${PostAPI.postTimeConverter(praise.praiseTime)}',
+            style: subtitleStyle),
       ],
     );
   }

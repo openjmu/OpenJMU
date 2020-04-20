@@ -90,7 +90,8 @@ class PhotoSelectorProvider extends ChangeNotifier {
   ///
   /// Using [Map] in order to save the thumb data for the first asset under the path.
   /// 使用[Map]来保存路径下第一个资源的缩略数据。
-  Map<AssetPathEntity, Uint8List> _pathEntityList = <AssetPathEntity, Uint8List>{};
+  Map<AssetPathEntity, Uint8List> _pathEntityList =
+      <AssetPathEntity, Uint8List>{};
 
   Map<AssetPathEntity, Uint8List> get pathEntityList => _pathEntityList;
 
@@ -143,7 +144,8 @@ class PhotoSelectorProvider extends ChangeNotifier {
       type: RequestType.image,
     );
     for (final AssetPathEntity pathEntity in _list) {
-      _pathEntityList[pathEntity] = await getFirstThumbFromPathEntity(pathEntity);
+      _pathEntityList[pathEntity] =
+          await getFirstThumbFromPathEntity(pathEntity);
     }
     if (_pathEntityList.isNotEmpty) {
       _currentPathEntity = pathEntityList.keys.elementAt(0);
@@ -157,16 +159,20 @@ class PhotoSelectorProvider extends ChangeNotifier {
   /// Get assets under the specific path entity.
   /// 获取指定路径下的资源
   Future<void> getAssetsFromEntity(AssetPathEntity pathEntity) async {
-    _currentAssets = (await pathEntity.getAssetListPaged(0, pathEntity.assetCount)).toSet();
+    _currentAssets =
+        (await pathEntity.getAssetListPaged(0, pathEntity.assetCount)).toSet();
     _hasAssetsToDisplay = currentAssets?.isNotEmpty ?? false;
     notifyListeners();
   }
 
   /// Get thumb data from the first asset under the specific path entity.
   /// 获取指定路径下的第一个资源的缩略数据
-  Future<Uint8List> getFirstThumbFromPathEntity(AssetPathEntity pathEntity) async {
-    final AssetEntity asset = (await pathEntity.getAssetListRange(start: 0, end: 1)).elementAt(0);
-    final Uint8List assetData = await asset.thumbDataWithSize(pathThumbSize, pathThumbSize);
+  Future<Uint8List> getFirstThumbFromPathEntity(
+      AssetPathEntity pathEntity) async {
+    final AssetEntity asset =
+        (await pathEntity.getAssetListRange(start: 0, end: 1)).elementAt(0);
+    final Uint8List assetData =
+        await asset.thumbDataWithSize(pathThumbSize, pathThumbSize);
     return assetData;
   }
 

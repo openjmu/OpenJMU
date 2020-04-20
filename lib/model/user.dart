@@ -31,7 +31,10 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: int.parse(json['uid'].toString()),
-      nickname: json['nickname'] ?? json['username'] ?? json['name'] ?? json['uid'].toString(),
+      nickname: json['nickname'] ??
+          json['username'] ??
+          json['name'] ??
+          json['uid'].toString(),
       gender: json['gender'] ?? 0,
       topics: json['topics'] ?? 0,
       latestTid: json['latest_tid'],
@@ -43,7 +46,8 @@ class User {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is User && runtimeType == other.runtimeType && id == other.id;
+      identical(this, other) ||
+      other is User && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;

@@ -26,14 +26,16 @@ class _BackpackPageState extends State<BackpackPage> {
 
   Future<void> getBackpackItem() async {
     try {
-      final Map<String, dynamic> types = (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
+      final Map<String, dynamic> types =
+          (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
         API.backPackItemType,
         headers: _iconHeader,
       ))
-          .data;
+              .data;
       final List<dynamic> items = types['data'];
       for (int i = 0; i < items.length; i++) {
-        final BackpackItemType item = BackpackItemType.fromJson(items[i] as Map<String, dynamic>);
+        final BackpackItemType item =
+            BackpackItemType.fromJson(items[i] as Map<String, dynamic>);
         _itemTypes['${item.type}'] = item;
       }
 
@@ -45,12 +47,15 @@ class _BackpackPageState extends State<BackpackPage> {
           final List<dynamic> items = response.data['data'] ?? [];
           for (int i = 0; i < items.length; i++) {
             items[i]['name'] = _itemTypes['${items[i]['itemtype']}'].name;
-            items[i]['desc'] = _itemTypes['${items[i]['itemtype']}'].description;
-            final BackpackItem item = BackpackItem.fromJson(items[i] as Map<String, dynamic>);
+            items[i]['desc'] =
+                _itemTypes['${items[i]['itemtype']}'].description;
+            final BackpackItem item =
+                BackpackItem.fromJson(items[i] as Map<String, dynamic>);
             myItems.add(item);
           }
         }),
-        NetUtils.getWithHeaderSet(API.backPackReceiveList(), headers: _iconHeader),
+        NetUtils.getWithHeaderSet(API.backPackReceiveList(),
+            headers: _iconHeader),
       ]);
 
       isLoading = false;
@@ -91,7 +96,8 @@ class _BackpackPageState extends State<BackpackPage> {
         SizedBox(height: 12.0.h),
         Text(
           myItems[index].description,
-          style: Theme.of(context).textTheme.subtitle.copyWith(fontSize: 18.0.sp),
+          style:
+              Theme.of(context).textTheme.subtitle.copyWith(fontSize: 18.0.sp),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),

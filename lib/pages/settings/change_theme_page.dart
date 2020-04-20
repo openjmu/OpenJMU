@@ -20,7 +20,8 @@ class ChangeThemePage extends StatelessWidget {
               ),
               AnimatedOpacity(
                 duration: 100.milliseconds,
-                opacity: provider.currentColor == supportColors[index] ? 1.0 : 0.0,
+                opacity:
+                    provider.currentColor == supportColors[index] ? 1.0 : 0.0,
                 child: Container(
                   margin: EdgeInsets.all(suSetWidth(12.0)),
                   decoration: BoxDecoration(
@@ -28,7 +29,8 @@ class ChangeThemePage extends StatelessWidget {
                     color: Colors.white38,
                   ),
                   child: SizedBox.expand(
-                    child: Icon(Icons.check, color: Colors.white, size: suSetSp(40.0)),
+                    child: Icon(Icons.check,
+                        color: Colors.white, size: suSetSp(40.0)),
                   ),
                 ),
               ),
@@ -49,11 +51,15 @@ class ChangeThemePage extends StatelessWidget {
             children: <Widget>[
               Text(
                 '切换主题',
-                style: TextStyle(fontSize: suSetSp(26.0), fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: suSetSp(26.0), fontWeight: FontWeight.bold),
               ),
               Text(
                 '多彩颜色，丰富你的界面',
-                style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(18.0)),
+                style: Theme.of(context)
+                    .textTheme
+                    .caption
+                    .copyWith(fontSize: suSetSp(18.0)),
               ),
             ],
           ),
@@ -61,7 +67,8 @@ class ChangeThemePage extends StatelessWidget {
         ),
         body: GridView.builder(
           padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+          gridDelegate:
+              SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
           itemCount: supportColors.length,
           itemBuilder: colorItem,
         ),

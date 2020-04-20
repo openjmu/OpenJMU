@@ -49,10 +49,13 @@ class SignProvider extends ChangeNotifier {
   /// 获取签到状态
   Future<void> getSignStatus() async {
     try {
-      final bool signed =
-          ((await SignAPI.getTodayStatus()).data as Map<String, dynamic>)['status'] == 1;
-      final int count =
-          ((await SignAPI.getSignList()).data as Map<String, dynamic>)['signdata']?.length ?? 0;
+      final bool signed = ((await SignAPI.getTodayStatus()).data
+              as Map<String, dynamic>)['status'] ==
+          1;
+      final int count = ((await SignAPI.getSignList()).data
+                  as Map<String, dynamic>)['signdata']
+              ?.length ??
+          0;
       _hasSigned = signed;
       _signedCount = count;
     } catch (e) {

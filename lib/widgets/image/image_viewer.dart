@@ -39,8 +39,10 @@ class ImageViewer extends StatefulWidget {
   ImageViewerState createState() => ImageViewerState();
 }
 
-class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin {
-  final StreamController<int> pageStreamController = StreamController<int>.broadcast();
+class ImageViewerState extends State<ImageViewer>
+    with TickerProviderStateMixin {
+  final StreamController<int> pageStreamController =
+      StreamController<int>.broadcast();
   final StreamController<double> backgroundOpacityStreamController =
       StreamController<double>.broadcast();
   final GlobalKey<ExtendedImageSlidePageState> slidePageKey =
@@ -67,7 +69,8 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
 
     _controller = PageController(initialPage: currentIndex);
 
-    _doubleTapAnimationController = AnimationController(duration: 200.milliseconds, vsync: this);
+    _doubleTapAnimationController =
+        AnimationController(duration: 200.milliseconds, vsync: this);
     _doubleTapCurveAnimation = CurvedAnimation(
       parent: _doubleTapAnimationController,
       curve: Curves.linear,
@@ -76,7 +79,8 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
 
   @override
   void dispose() {
-    final ThemesProvider provider = Provider.of<ThemesProvider>(currentContext, listen: false);
+    final ThemesProvider provider =
+        Provider.of<ThemesProvider>(currentContext, listen: false);
     provider.setSystemUIDark(provider.dark);
     pageStreamController?.close();
     backgroundOpacityStreamController?.close();
@@ -93,7 +97,8 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
     backgroundOpacityStreamController.add(0.0);
   }
 
-  Future<void> _downloadImage(String url, {AndroidDestinationType destination}) async {
+  Future<void> _downloadImage(String url,
+      {AndroidDestinationType destination}) async {
     String path;
     try {
       String imageId;
@@ -159,13 +164,16 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
 
   Color slidePageBackgroundHandler(Offset offset, Size pageSize) {
     double opacity = 0.0;
-    opacity = offset.distance / (Offset(pageSize.width, pageSize.height).distance / 2.0);
+    opacity = offset.distance /
+        (Offset(pageSize.width, pageSize.height).distance / 2.0);
     backgroundOpacityStreamController.add(1.0 - opacity);
-    return Colors.black.withOpacity(math.min(1.0, math.max(1.0 - opacity, 0.0)));
+    return Colors.black
+        .withOpacity(math.min(1.0, math.max(1.0 - opacity, 0.0)));
   }
 
   bool slideEndHandler(Offset offset) {
-    final bool shouldEnd = offset.distance > Offset(Screens.width, Screens.height).distance / 7;
+    final bool shouldEnd =
+        offset.distance > Offset(Screens.width, Screens.height).distance / 7;
     if (shouldEnd) {
       pop();
     }
@@ -264,7 +272,8 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
         slideType: SlideType.onlyImage,
         slidePageBackgroundHandler: slidePageBackgroundHandler,
         slideEndHandler: slideEndHandler,
-        resetPageDuration: widget.heroPrefix != null ? 300.milliseconds : 1.microseconds,
+        resetPageDuration:
+            widget.heroPrefix != null ? 300.milliseconds : 1.microseconds,
         child: AnnotatedRegion<SystemUiOverlayStyle>(
           value: SystemUiOverlayStyle.light,
           child: Material(
@@ -289,7 +298,9 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
                   child: StreamBuilder<double>(
                     initialData: 1.0,
                     stream: backgroundOpacityStreamController.stream,
-                    builder: (BuildContext context, AsyncSnapshot<double> data) => Opacity(
+                    builder:
+                        (BuildContext context, AsyncSnapshot<double> data) =>
+                            Opacity(
                       opacity: popping ? 0.0 : data.data,
                       child: ViewAppBar(
                         post: widget.post,
@@ -306,7 +317,9 @@ class ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin 
                     child: StreamBuilder<double>(
                       initialData: 1.0,
                       stream: backgroundOpacityStreamController.stream,
-                      builder: (BuildContext context, AsyncSnapshot<double> data) => Opacity(
+                      builder:
+                          (BuildContext context, AsyncSnapshot<double> data) =>
+                              Opacity(
                         opacity: popping ? 0.0 : data.data,
                         child: ImageList(
                           controller: _controller,
@@ -369,7 +382,8 @@ class ImageList extends StatelessWidget {
                 child: AnimatedContainer(
                   curve: Curves.fastOutSlowIn,
                   duration: kTabScrollDuration,
-                  margin: EdgeInsets.all(suSetWidth(i == data.data ? 0.0 : 6.0)),
+                  margin:
+                      EdgeInsets.all(suSetWidth(i == data.data ? 0.0 : 6.0)),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(suSetWidth(8.0)),
                     border: Border.all(

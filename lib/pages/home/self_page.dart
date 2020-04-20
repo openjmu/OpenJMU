@@ -39,7 +39,8 @@ class SelfPage extends StatelessWidget {
         },
       ];
 
-  List<List<Map<String, dynamic>>> get settingsSection => <List<Map<String, dynamic>>>[
+  List<List<Map<String, dynamic>>> get settingsSection =>
+      <List<Map<String, dynamic>>>[
         [
           {
             'name': '偏好设置',
@@ -288,7 +289,8 @@ class SelfPage extends StatelessWidget {
         height: 1.0.h,
       ),
       itemCount: settingsSection[index].length,
-      itemBuilder: (BuildContext _, int itemIndex) => settingItem(context, index, itemIndex),
+      itemBuilder: (BuildContext _, int itemIndex) =>
+          settingItem(context, index, itemIndex),
     );
   }
 
@@ -410,7 +412,8 @@ class SelfPage extends StatelessWidget {
             }
           },
           child: Selector<DateProvider, int>(
-            selector: (BuildContext _, DateProvider provider) => provider.currentWeek,
+            selector: (BuildContext _, DateProvider provider) =>
+                provider.currentWeek,
             builder: (BuildContext _, int currentWeek, Widget __) {
               if (currentWeek != null && currentWeek <= 20) {
                 return Container(
@@ -505,7 +508,8 @@ class SelfPage extends StatelessWidget {
                   height: 80.0.h,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: List<Widget>.generate(actions.length, (int index) {
+                    children:
+                        List<Widget>.generate(actions.length, (int index) {
                       final Map<String, dynamic> action = actions[index];
                       return GestureDetector(
                         behavior: HitTestBehavior.opaque,
@@ -538,7 +542,8 @@ class SelfPage extends StatelessWidget {
                 Expanded(
                   child: ListView.separated(
                     padding: EdgeInsets.symmetric(horizontal: 10.0.w),
-                    separatorBuilder: (BuildContext _, int __) => separator(context),
+                    separatorBuilder: (BuildContext _, int __) =>
+                        separator(context),
                     itemCount: settingsSection.length,
                     itemBuilder: (BuildContext _, int index) =>
                         settingSectionListView(context, index),

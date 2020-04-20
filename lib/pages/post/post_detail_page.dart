@@ -94,7 +94,9 @@ class PostDetailPageState extends State<PostDetailPage> {
         }
       })
       ..on<PostForwardedEvent>().listen((event) {
-        if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
+        if (this.mounted &&
+            event.postId == widget.post.id &&
+            this.forwards != null) {
           setState(() {
             this.forwards++;
           });
@@ -102,7 +104,9 @@ class PostDetailPageState extends State<PostDetailPage> {
         }
       })
       ..on<PostForwardDeletedEvent>().listen((event) {
-        if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
+        if (this.mounted &&
+            event.postId == widget.post.id &&
+            this.forwards != null) {
           setState(() {
             this.forwards--;
           });
@@ -110,7 +114,9 @@ class PostDetailPageState extends State<PostDetailPage> {
         }
       })
       ..on<PostCommentedEvent>().listen((event) {
-        if (this.mounted && event.postId == widget.post.id && this.comments != null) {
+        if (this.mounted &&
+            event.postId == widget.post.id &&
+            this.comments != null) {
           setState(() {
             this.comments++;
           });
@@ -118,7 +124,9 @@ class PostDetailPageState extends State<PostDetailPage> {
         }
       })
       ..on<PostCommentDeletedEvent>().listen((event) {
-        if (this.mounted && event.postId == widget.post.id && this.comments != null) {
+        if (this.mounted &&
+            event.postId == widget.post.id &&
+            this.comments != null) {
           setState(() {
             this.comments--;
           });
@@ -126,9 +134,12 @@ class PostDetailPageState extends State<PostDetailPage> {
         }
       })
       ..on<ForwardInPostUpdatedEvent>().listen((event) {
-        if (this.mounted && event.postId == widget.post.id && this.forwards != null) {
+        if (this.mounted &&
+            event.postId == widget.post.id &&
+            this.forwards != null) {
           if (event.count < this.forwards) {
-            Instances.eventBus.fire(PostForwardDeletedEvent(widget.post.id, event.count));
+            Instances.eventBus
+                .fire(PostForwardDeletedEvent(widget.post.id, event.count));
           }
           setState(() {
             this.forwards = event.count;
@@ -136,14 +147,18 @@ class PostDetailPageState extends State<PostDetailPage> {
         }
       })
       ..on<CommentInPostUpdatedEvent>().listen((event) {
-        if (this.mounted && event.postId == widget.post.id && this.comments != null) {
+        if (this.mounted &&
+            event.postId == widget.post.id &&
+            this.comments != null) {
           setState(() {
             this.comments = event.count;
           });
         }
       })
       ..on<PraiseInPostUpdatedEvent>().listen((event) {
-        if (this.mounted && event.postId == widget.post.id && this.praises != null) {
+        if (this.mounted &&
+            event.postId == widget.post.id &&
+            this.praises != null) {
           setState(() {
             this.praises = event.count;
           });
@@ -204,7 +219,8 @@ class PostDetailPageState extends State<PostDetailPage> {
       try {
         await PostAPI.deletePost(widget.post.id);
         _loadingDialogController.changeState('success', '动态删除成功');
-        Instances.eventBus.fire(PostDeletedEvent(widget.post.id, widget.fromPage, widget.index));
+        Instances.eventBus.fire(
+            PostDeletedEvent(widget.post.id, widget.fromPage, widget.index));
       } catch (e) {
         trueDebugPrint(e.toString());
         trueDebugPrint(e.response?.toString());
@@ -224,11 +240,13 @@ class PostDetailPageState extends State<PostDetailPage> {
           ConfirmationBottomSheetAction(
             icon: Icon(Icons.visibility_off),
             text: '${UserAPI.blacklist.contains(
-              BlacklistUser(uid: widget.post.uid, username: widget.post.nickname),
+              BlacklistUser(
+                  uid: widget.post.uid, username: widget.post.nickname),
             ) ? '移出' : '加入'}黑名单',
             onTap: () => UserAPI.confirmBlock(
               context,
-              BlacklistUser(uid: widget.post.uid, username: widget.post.nickname),
+              BlacklistUser(
+                  uid: widget.post.uid, username: widget.post.nickname),
             ),
           ),
         ConfirmationBottomSheetAction(
@@ -248,7 +266,8 @@ class PostDetailPageState extends State<PostDetailPage> {
       showConfirm: true,
     );
     if (confirm) {
-      final provider = Provider.of<ReportRecordsProvider>(context, listen: false);
+      final provider =
+          Provider.of<ReportRecordsProvider>(context, listen: false);
       final canReport = await provider.addRecord(widget.post.id);
       if (canReport) {
         unawaited(PostAPI.reportPost(widget.post));
@@ -330,7 +349,8 @@ class PostDetailPageState extends State<PostDetailPage> {
               ),
               label: Text(
                 '转发',
-                style: bodyTextTheme.copyWith(fontSize: suSetSp(actionFontSize)),
+                style:
+                    bodyTextTheme.copyWith(fontSize: suSetSp(actionFontSize)),
               ),
               splashColor: Colors.grey,
             ),
@@ -350,7 +370,8 @@ class PostDetailPageState extends State<PostDetailPage> {
               ),
               label: Text(
                 '评论',
-                style: bodyTextTheme.copyWith(fontSize: suSetSp(actionFontSize)),
+                style:
+                    bodyTextTheme.copyWith(fontSize: suSetSp(actionFontSize)),
               ),
               splashColor: Colors.grey,
             ),
@@ -378,7 +399,9 @@ class PostDetailPageState extends State<PostDetailPage> {
                 color: isLiked ? currentThemeColor : bodyTextTheme.color,
                 width: suSetWidth(iconSize),
               ),
-              likeCount: widget.post.isLike ? moreThanOne(praises) : moreThanZero(praises),
+              likeCount: widget.post.isLike
+                  ? moreThanOne(praises)
+                  : moreThanZero(praises),
               likeCountAnimationType: LikeCountAnimationType.none,
               likeCountPadding: EdgeInsets.symmetric(
                 horizontal: suSetWidth(10.0),
@@ -424,7 +447,9 @@ class PostDetailPageState extends State<PostDetailPage> {
         appBar: FixedAppBar(
           title: Text('动态正文'),
           actions: <Widget>[
-            widget.post.uid == currentUser.uid ? deleteButton : postActionButton,
+            widget.post.uid == currentUser.uid
+                ? deleteButton
+                : postActionButton,
           ],
         ),
         body: Column(
@@ -446,7 +471,11 @@ class PostDetailPageState extends State<PostDetailPage> {
                   ],
                   body: IndexedStack(
                     index: _tabIndex,
-                    children: <Widget>[_forwardsList, _commentsList, _praisesList],
+                    children: <Widget>[
+                      _forwardsList,
+                      _commentsList,
+                      _praisesList
+                    ],
                   ),
                 ),
               ),
@@ -459,7 +488,8 @@ class PostDetailPageState extends State<PostDetailPage> {
   }
 }
 
-class CommonSliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegate {
+class CommonSliverPersistentHeaderDelegate
+    extends SliverPersistentHeaderDelegate {
   final Widget child;
   final double height;
 
@@ -475,7 +505,8 @@ class CommonSliverPersistentHeaderDelegate extends SliverPersistentHeaderDelegat
   double get maxExtent => height;
 
   @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+  Widget build(
+      BuildContext context, double shrinkOffset, bool overlapsContent) {
     return child;
   }
 

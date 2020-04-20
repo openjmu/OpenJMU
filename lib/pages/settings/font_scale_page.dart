@@ -18,7 +18,8 @@ class _FontScalePageState extends State<FontScalePage> {
   @override
   void initState() {
     super.initState();
-    settingsProvider = Provider.of<SettingsProvider>(currentContext, listen: false);
+    settingsProvider =
+        Provider.of<SettingsProvider>(currentContext, listen: false);
     scaleRange = settingsProvider.fontScaleRange;
     scale = settingsProvider.fontScale;
   }
@@ -60,7 +61,8 @@ class _FontScalePageState extends State<FontScalePage> {
                   child: Text(
                     '这是一行示例文字\nThis is a sample sentence',
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: suSetSp(baseFontSize, scale: scale)),
+                    style: TextStyle(
+                        fontSize: suSetSp(baseFontSize, scale: scale)),
                   ),
                 ),
               ),
@@ -70,7 +72,8 @@ class _FontScalePageState extends State<FontScalePage> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
                       child: Row(
                         children: <Widget>[
                           Expanded(
@@ -79,7 +82,8 @@ class _FontScalePageState extends State<FontScalePage> {
                               child: Text(
                                 '小',
                                 style: TextStyle(
-                                  fontSize: suSetSp(baseFontSize, scale: scaleRange[0]),
+                                  fontSize: suSetSp(baseFontSize,
+                                      scale: scaleRange[0]),
                                 ),
                               ),
                             ),
@@ -103,7 +107,8 @@ class _FontScalePageState extends State<FontScalePage> {
                               child: Text(
                                 '大',
                                 style: TextStyle(
-                                  fontSize: suSetSp(baseFontSize, scale: scaleRange[1]),
+                                  fontSize: suSetSp(baseFontSize,
+                                      scale: scaleRange[1]),
                                 ),
                               ),
                             ),

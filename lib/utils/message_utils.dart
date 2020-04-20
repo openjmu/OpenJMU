@@ -143,12 +143,14 @@ class MessageUtils {
   /// Structure like:
   /// {'length': 233, 'content': 'some words...'}
   static Map<String, dynamic> getPackageString(List<int> data) {
-    final ByteData byteData = ByteData.view(Uint8List.fromList(data.sublist(0, 2)).buffer);
+    final ByteData byteData =
+        ByteData.view(Uint8List.fromList(data.sublist(0, 2)).buffer);
     final Map<String, dynamic> result = <String, dynamic>{
       'length': byteData.getUint16(0),
       'content': null,
     };
-    result['content'] = utf8.decode(data.sublist(2, 2 + (result['length'] as int)));
+    result['content'] =
+        utf8.decode(data.sublist(2, 2 + (result['length'] as int)));
     return result;
   }
 
@@ -162,7 +164,8 @@ class MessageUtils {
     }
     // Judge if bytes contains a full header.
     if (bytesBufferZone.length >= 28) {
-      final int length = getPackageUint(bytesBufferZone.sublist(24, 28), 32) + 28;
+      final int length =
+          getPackageUint(bytesBufferZone.sublist(24, 28), 32) + 28;
       // Judge if bytes can be fully decoded.
       if (bytesBufferZone.length >= length) {
         // Pull out bytes with specific size.
@@ -382,7 +385,8 @@ class MessageUtils {
     while (content.isNotEmpty && count > 0) {
       final int messageId = getPackageUint(content.sublist(0, 8), 64);
       final int messageCommand = getPackageUint(content.sublist(8, 10), 16);
-      final int messageContentSize = getPackageUint(content.sublist(10, 12), 16);
+      final int messageContentSize =
+          getPackageUint(content.sublist(10, 12), 16);
       final MessageReceivedEvent messageContent = decodeMessageEvent(
         content.sublist(12, 12 + messageContentSize),
         messageId: messageId,

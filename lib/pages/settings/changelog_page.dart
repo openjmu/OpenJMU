@@ -14,7 +14,8 @@ class ChangeLogPage extends StatefulWidget {
   _ChangeLogPageState createState() => _ChangeLogPageState();
 }
 
-class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateMixin {
+class _ChangeLogPageState extends State<ChangeLogPage>
+    with TickerProviderStateMixin {
   final PageController _pageController = PageController();
   double _currentPage = 0.0;
 
@@ -37,7 +38,8 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
     animating = forward;
     if (mounted) setState(() {});
 
-    _blurOpacityController = AnimationController(duration: 1.seconds, vsync: this);
+    _blurOpacityController =
+        AnimationController(duration: 1.seconds, vsync: this);
     final _blurOpacityCurve = CurvedAnimation(
       parent: _blurOpacityController,
       curve: Curves.ease,
@@ -78,7 +80,9 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
           },
           child: AnimatedCrossFade(
             duration: 300.milliseconds,
-            crossFadeState: displayBack ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+            crossFadeState: displayBack
+                ? CrossFadeState.showFirst
+                : CrossFadeState.showSecond,
             firstChild: Text(
               '回到梦开始的地方 →',
               style: TextStyle(
@@ -122,7 +126,9 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
           log.buildNumber == PackageUtils.buildNumber
               ? Expanded(
                   flex: 3,
-                  child: Center(child: Text('📍', style: TextStyle(fontSize: suSetSp(40.0)))),
+                  child: Center(
+                      child: Text('📍',
+                          style: TextStyle(fontSize: suSetSp(40.0)))),
                 )
               : Spacer(flex: 2),
           versionInfo(log),
@@ -145,7 +151,8 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
     return Text(
       '${log.version}',
       style: Theme.of(context).textTheme.title.copyWith(
-            fontSize: suSetSp(log.buildNumber == PackageUtils.buildNumber ? 45.0 : 50.0),
+            fontSize: suSetSp(
+                log.buildNumber == PackageUtils.buildNumber ? 45.0 : 50.0),
             fontWeight: FontWeight.bold,
           ),
     );
@@ -154,14 +161,16 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
   Widget dateInfo(ChangeLog log) {
     return Text(
       '${log.date} ',
-      style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(20.0)),
+      style:
+          Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(20.0)),
     );
   }
 
   Widget buildNumberInfo(ChangeLog log) {
     return Text(
       '(${log.buildNumber})',
-      style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(20.0)),
+      style:
+          Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(20.0)),
     );
   }
 
@@ -218,7 +227,8 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
           (i) => contentColumn(sections, i),
         ),
       ),
-      style: Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
+      style:
+          Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
     );
   }
 
@@ -284,7 +294,8 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
               TextSpan(
                 children: <InlineSpan>[
                   TextSpan(text: '履历跑得太快，程序已经追不上它了...待会儿它就会回来的\n'),
-                  TextSpan(text: '🚀', style: TextStyle(fontSize: suSetSp(50.0))),
+                  TextSpan(
+                      text: '🚀', style: TextStyle(fontSize: suSetSp(50.0))),
                 ],
               ),
               style: TextStyle(fontSize: suSetSp(25.0)),
@@ -320,7 +331,8 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
                       builder: (context, constraints) => NotificationListener(
                         onNotification: (ScrollNotification notification) {
                           _currentPage = _pageController.page;
-                          if (notification.metrics.axisDirection == AxisDirection.right &&
+                          if (notification.metrics.axisDirection ==
+                                  AxisDirection.right &&
                               _currentPage > 2.0) {
                             displayBack = false;
                           } else {
@@ -337,14 +349,17 @@ class _ChangeLogPageState extends State<ChangeLogPage> with TickerProviderStateM
                                 controller: _pageController,
                                 physics: const BouncingScrollPhysics(),
                                 childrenDelegate: SliverChildBuilderDelegate(
-                                  (BuildContext _, int index) => index == changeLogs.length
-                                      ? startWidget
-                                      : detailWidget(
-                                          index,
-                                          changeLogs.elementAt(index),
-                                          parallaxOffset:
-                                              constraints.maxWidth / 2.0 * (index - _currentPage),
-                                        ),
+                                  (BuildContext _, int index) =>
+                                      index == changeLogs.length
+                                          ? startWidget
+                                          : detailWidget(
+                                              index,
+                                              changeLogs.elementAt(index),
+                                              parallaxOffset:
+                                                  constraints.maxWidth /
+                                                      2.0 *
+                                                      (index - _currentPage),
+                                            ),
                                   childCount: changeLogs.length + 1,
                                 ),
                               ),

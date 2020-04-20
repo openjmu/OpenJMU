@@ -31,13 +31,20 @@ class TeamNotifications {
   }
 
   Map<String, dynamic> toJson() {
-    return {'latest_u': latestNotify, 'mention': mention, 'reply': reply, 'praise': praise};
+    return {
+      'latest_u': latestNotify,
+      'mention': mention,
+      'reply': reply,
+      'praise': praise
+    };
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TeamNotifications && runtimeType == other.runtimeType && total == other.total;
+      other is TeamNotifications &&
+          runtimeType == other.runtimeType &&
+          total == other.total;
 
   @override
   int get hashCode => total.hashCode;

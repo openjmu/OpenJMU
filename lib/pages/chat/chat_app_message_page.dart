@@ -64,7 +64,8 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
       );
 
   Widget get bottomBar => Theme(
-        data: Theme.of(context).copyWith(splashFactory: InkSplash.splashFactory),
+        data:
+            Theme.of(context).copyWith(splashFactory: InkSplash.splashFactory),
         child: Container(
           margin: EdgeInsets.only(
             bottom: math.max(MediaQuery.of(context).padding.bottom, 34.0),
@@ -157,7 +158,11 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
               child: Text(
                 '${timeHandler(message.sendTime)}',
                 style: TextStyle(
-                  color: Theme.of(context).textTheme.caption.color.withOpacity(0.25),
+                  color: Theme.of(context)
+                      .textTheme
+                      .caption
+                      .color
+                      .withOpacity(0.25),
                   fontSize: suSetSp(14.0),
                 ),
               ),
@@ -171,7 +176,9 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
   String timeHandler(DateTime dateTime) {
     final now = DateTime.now();
     String time = '';
-    if (dateTime.day == now.day && dateTime.month == now.month && dateTime.year == now.year) {
+    if (dateTime.day == now.day &&
+        dateTime.month == now.month &&
+        dateTime.year == now.year) {
       time += DateFormat('HH:mm').format(dateTime);
     } else if (dateTime.year == now.year) {
       time += DateFormat('MM-dd HH:mm').format(dateTime);
@@ -199,7 +206,8 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
       return !appMessage.read;
     })?.toList();
     if (unreadMessages.isNotEmpty) {
-      while (unreadMessages.last.messageId == null && unreadMessages.last.ackId == null) {
+      while (unreadMessages.last.messageId == null &&
+          unreadMessages.last.ackId == null) {
         unreadMessages.last.read = true;
         unreadMessages.removeLast();
       }

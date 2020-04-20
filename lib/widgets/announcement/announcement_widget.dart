@@ -71,12 +71,15 @@ class AnnouncementWidget extends StatelessWidget {
               vertical: suSetHeight(10.0),
             ),
             decoration: BoxDecoration(
-              borderRadius: radius != null ? BorderRadius.circular(suSetWidth(radius)) : null,
+              borderRadius: radius != null
+                  ? BorderRadius.circular(suSetWidth(radius))
+                  : null,
               color: (backgroundColor ?? defaultColor).withAlpha(0x44),
             ),
             child: Row(
               children: <Widget>[
-                Icon(Icons.notifications_active, color: iconTheme.color, size: iconTheme.size),
+                Icon(Icons.notifications_active,
+                    color: iconTheme.color, size: iconTheme.size),
                 title(provider),
                 actionIcon(context, provider),
               ],

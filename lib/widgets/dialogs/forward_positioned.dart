@@ -65,7 +65,8 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       });
 
   Future<Response<dynamic>> getImageRequest(FormData formData) async =>
-      NetUtils.postWithCookieAndHeaderSet<void>(API.postUploadImage, data: formData);
+      NetUtils.postWithCookieAndHeaderSet<void>(API.postUploadImage,
+          data: formData);
 
   Widget get textField => ExtendedTextField(
         specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
@@ -102,12 +103,15 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       _forwarding = true;
     });
     String content;
-    _forwardController.text.isEmpty ? content = '转发' : content = _forwardController.text;
+    _forwardController.text.isEmpty
+        ? content = '转发'
+        : content = _forwardController.text;
 
     /// Sending image if it exist.
     if (_image != null) {
       final Map<String, dynamic> data =
-          (await getImageRequest(createForm(_image))).data as Map<String, dynamic>;
+          (await getImageRequest(createForm(_image))).data
+              as Map<String, dynamic>;
       _imageID = int.parse(data['image_id'] as String);
       content += ' |$_imageID| ';
     }
@@ -146,7 +150,9 @@ class ForwardPositionedState extends State<ForwardPositioned> {
       change();
     } else {
       if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
-        SystemChannels.textInput.invokeMethod<void>('TextInput.hide').whenComplete(
+        SystemChannels.textInput
+            .invokeMethod<void>('TextInput.hide')
+            .whenComplete(
           () {
             Future<void>.delayed(300.milliseconds, null).whenComplete(change);
           },
@@ -273,7 +279,9 @@ class ForwardPositionedState extends State<ForwardPositioned> {
                 child: Icon(
                   Icons.sentiment_very_satisfied,
                   size: suSetWidth(32.0),
-                  color: emoticonPadActive ? currentThemeColor : Theme.of(context).iconTheme.color,
+                  color: emoticonPadActive
+                      ? currentThemeColor
+                      : Theme.of(context).iconTheme.color,
                 ),
               ),
             ),
@@ -330,7 +338,9 @@ class ForwardPositionedState extends State<ForwardPositioned> {
           Container(
             color: Theme.of(context).cardColor,
             padding: EdgeInsets.only(
-              bottom: !emoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
+              bottom: !emoticonPadActive
+                  ? MediaQuery.of(context).padding.bottom
+                  : 0.0,
             ),
             child: Padding(
               padding: EdgeInsets.all(suSetWidth(12.0)),

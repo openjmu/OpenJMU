@@ -29,7 +29,8 @@ class PackageUtils {
 
   static void checkUpdate({bool fromHome = false}) {
     NetUtils.get<String>(API.checkUpdate).then((Response<String> response) {
-      final Map<String, dynamic> data = jsonDecode(response.data) as Map<String, dynamic>;
+      final Map<String, dynamic> data =
+          jsonDecode(response.data) as Map<String, dynamic>;
       updateChangelog((data['changelog'] as List<dynamic>).cast<Map>());
       final int _currentBuild = buildNumber;
       final int _remoteBuild = data['buildNumber'].toString().toIntOrNull();
@@ -104,7 +105,8 @@ class PackageUtils {
                   children: <Widget>[
                     Center(
                       child: Container(
-                        margin: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
+                        margin:
+                            EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
                         child: Text(
                           'OpenJmu has new version',
                           style: TextStyle(
@@ -117,7 +119,8 @@ class PackageUtils {
                     ),
                     Center(
                       child: Container(
-                        margin: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
+                        margin:
+                            EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
                         child: Text(
                           text,
                           style: TextStyle(
@@ -131,13 +134,16 @@ class PackageUtils {
                     if (!event.forceUpdate)
                       Center(
                         child: Container(
-                          margin: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
+                          margin:
+                              EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
                           child: MaterialButton(
                             color: currentThemeColor,
-                            shape: RoundedRectangleBorder(borderRadius: maxBorderRadius),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: maxBorderRadius),
                             onPressed: () {
                               dismissAllToast();
-                              navigatorState.pushNamed(Routes.OPENJMU_CHANGELOG_PAGE);
+                              navigatorState
+                                  .pushNamed(Routes.OPENJMU_CHANGELOG_PAGE);
                             },
                             child: Text(
                               '查看版本履历',
@@ -190,7 +196,8 @@ class PackageUtils {
   static Future<void> updateChangelog(List<Map> data) async {
     final Box<ChangeLog> box = HiveBoxes.changelogBox;
     final List<ChangeLog> logs = data
-        .map((Map<dynamic, dynamic> log) => ChangeLog.fromJson(log as Map<String, dynamic>))
+        .map((Map<dynamic, dynamic> log) =>
+            ChangeLog.fromJson(log as Map<String, dynamic>))
         .toList();
     if (box.values == null) {
       await box.addAll(logs);

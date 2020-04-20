@@ -126,7 +126,8 @@ class _UserPageState extends State<UserPage>
     await Future.wait(
       <Future>[
         UserAPI.getLevel(uid).then((response) {
-          userLevel = int.parse(response.data['score']['levelinfo']['level'].toString());
+          userLevel = int.parse(
+              response.data['score']['levelinfo']['level'].toString());
         }),
         UserAPI.getTags(uid).then((response) {
           List tags = response.data['data'];
@@ -190,7 +191,8 @@ class _UserPageState extends State<UserPage>
             if (isSelf) {
               showDialog<void>(
                 context: context,
-                builder: (BuildContext context) => EditSignatureDialog(_user.signature),
+                builder: (BuildContext context) =>
+                    EditSignatureDialog(_user.signature),
               );
             } else {
               if (_user.isFollowing) {
@@ -204,9 +206,15 @@ class _UserPageState extends State<UserPage>
           },
           color: isSelf
               ? Color(0x44ffffff)
-              : _user.isFollowing ? Color(0x44ffffff) : currentThemeColor.withOpacity(0.6),
+              : _user.isFollowing
+                  ? Color(0x44ffffff)
+                  : currentThemeColor.withOpacity(0.6),
           child: Text(
-            isSelf ? '编辑签名' : _user.isFollowing ? '已关注' : '关注${_user.gender == 2 ? '她' : '他'}',
+            isSelf
+                ? '编辑签名'
+                : _user.isFollowing
+                    ? '已关注'
+                    : '关注${_user.gender == 2 ? '她' : '他'}',
             style: TextStyle(color: Colors.white, fontSize: suSetSp(20.0)),
           ),
           shape: RoundedRectangleBorder(
@@ -218,7 +226,8 @@ class _UserPageState extends State<UserPage>
   Widget qrCode(context) => Container(
         width: suSetHeight(48.0),
         height: suSetHeight(48.0),
-        decoration: BoxDecoration(color: Color(0x44ffffff), shape: BoxShape.circle),
+        decoration:
+            BoxDecoration(color: Color(0x44ffffff), shape: BoxShape.circle),
         child: GestureDetector(
           behavior: HitTestBehavior.translucent,
           child: Icon(
@@ -261,7 +270,8 @@ class _UserPageState extends State<UserPage>
             emptyDivider(width: suSetWidth(8.0)),
             DecoratedBox(
               decoration: BoxDecoration(
-                color: _user.gender == 2 ? Colors.pinkAccent : Colors.blueAccent,
+                color:
+                    _user.gender == 2 ? Colors.pinkAccent : Colors.blueAccent,
                 shape: BoxShape.circle,
               ),
               child: Padding(
@@ -294,7 +304,8 @@ class _UserPageState extends State<UserPage>
                 ),
               ),
             ),
-            if (Constants.developerList.contains(_user.uid)) emptyDivider(width: 8.0),
+            if (Constants.developerList.contains(_user.uid))
+              emptyDivider(width: 8.0),
             if (Constants.developerList.contains(_user.uid))
               DeveloperTag(
                 padding: EdgeInsets.symmetric(
@@ -338,7 +349,8 @@ class _UserPageState extends State<UserPage>
                     ),
                     TextSpan(
                       text: ' 关注',
-                      style: TextStyle(color: Colors.white, fontSize: suSetSp(19.0)),
+                      style: TextStyle(
+                          color: Colors.white, fontSize: suSetSp(19.0)),
                     ),
                   ],
                 ),
@@ -366,7 +378,8 @@ class _UserPageState extends State<UserPage>
                     ),
                     TextSpan(
                       text: ' 粉丝',
-                      style: TextStyle(color: Colors.white, fontSize: suSetSp(19.0)),
+                      style: TextStyle(
+                          color: Colors.white, fontSize: suSetSp(19.0)),
                     ),
                   ],
                 ),
@@ -394,7 +407,8 @@ class _UserPageState extends State<UserPage>
                             ),
                             child: Text(
                               _tags[i].name,
-                              style: TextStyle(color: Colors.white, fontSize: suSetSp(18.0)),
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: suSetSp(18.0)),
                             ),
                           ),
                         ),
@@ -404,7 +418,8 @@ class _UserPageState extends State<UserPage>
               )
             : Text(
                 '${_user.gender == 2 ? '她' : '他'}还没有设置个性标签',
-                style: TextStyle(color: Colors.grey[350], fontSize: suSetSp(19.0)),
+                style:
+                    TextStyle(color: Colors.grey[350], fontSize: suSetSp(19.0)),
               ),
       ];
 
@@ -522,7 +537,8 @@ class _UserPageState extends State<UserPage>
           ? SpinKitWidget()
           : NestedScrollView(
               controller: _scrollController,
-              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => <Widget>[
+              headerSliverBuilder:
+                  (BuildContext context, bool innerBoxIsScrolled) => <Widget>[
                 SliverAppBar(
                   title: showTitle
                       ? GestureDetector(
@@ -541,9 +557,10 @@ class _UserPageState extends State<UserPage>
                               emptyDivider(width: suSetWidth(8.0)),
                               Text(
                                 _user.name,
-                                style: Theme.of(context).textTheme.body1.copyWith(
-                                      fontSize: suSetSp(23.0),
-                                    ),
+                                style:
+                                    Theme.of(context).textTheme.body1.copyWith(
+                                          fontSize: suSetSp(23.0),
+                                        ),
                               ),
                             ],
                           ),
@@ -593,12 +610,14 @@ class _UserPageState extends State<UserPage>
                         ),
                         BackdropFilter(
                           filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                          child: Container(color: Color.fromARGB(120, 50, 50, 50)),
+                          child:
+                              Container(color: Color.fromARGB(120, 50, 50, 50)),
                         ),
                         SafeArea(
                           top: true,
                           child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: suSetWidth(20.0)),
                             child: Column(
                               children: <Widget>[
                                 emptyDivider(height: kToolbarHeight + 4.0),
@@ -606,9 +625,11 @@ class _UserPageState extends State<UserPage>
                                   physics: NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   itemCount: flexSpaceWidgets(context).length,
-                                  itemBuilder: (BuildContext context, int index) {
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
                                     return Padding(
-                                      padding: EdgeInsets.only(bottom: suSetHeight(12.0)),
+                                      padding: EdgeInsets.only(
+                                          bottom: suSetHeight(12.0)),
                                       child: flexSpaceWidgets(context)[index],
                                     );
                                   },
@@ -644,7 +665,8 @@ class _UserPageState extends State<UserPage>
                                         width: suSetHeight(2.5),
                                       ),
                                       width: suSetWidth(28.0),
-                                      insets: EdgeInsets.only(bottom: suSetHeight(6.0)),
+                                      insets: EdgeInsets.only(
+                                          bottom: suSetHeight(6.0)),
                                     ),
                                     labelStyle: TextStyle(
                                       fontSize: suSetSp(20.0),
@@ -668,7 +690,9 @@ class _UserPageState extends State<UserPage>
                       : null,
                   expandedHeight: kToolbarHeight + expandedHeight,
                   iconTheme: !showTitle
-                      ? Theme.of(context).iconTheme.copyWith(color: Colors.white)
+                      ? Theme.of(context)
+                          .iconTheme
+                          .copyWith(color: Colors.white)
                       : Theme.of(context).iconTheme,
                   primary: true,
                   centerTitle: true,
@@ -685,7 +709,8 @@ class _UserPageState extends State<UserPage>
                                 crossAxisCount: 3,
                                 children: List<Widget>.generate(
                                   UserAPI.blacklist.length,
-                                  (i) => blacklistUser(UserAPI.blacklist.elementAt(i)),
+                                  (i) => blacklistUser(
+                                      UserAPI.blacklist.elementAt(i)),
                                 ),
                               )
                             : Center(
@@ -802,7 +827,8 @@ class _UserListState extends State<UserListPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        for (int j = start; j < start + 2 && j < users.length; j++) userCard(context, users[j])
+        for (int j = start; j < start + 2 && j < users.length; j++)
+          userCard(context, users[j])
       ],
     );
   }

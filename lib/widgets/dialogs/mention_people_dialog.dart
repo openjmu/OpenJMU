@@ -60,7 +60,10 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
   Widget get title => Center(
         child: Text(
           '提到用户',
-          style: Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(24.0)),
+          style: Theme.of(context)
+              .textTheme
+              .title
+              .copyWith(fontSize: suSetSp(24.0)),
         ),
       );
 
@@ -105,7 +108,8 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
         constraints: BoxConstraints(maxHeight: Screens.height / 3),
         child: SingleChildScrollView(
           child: Wrap(
-            children: List<Widget>.generate(users.length, (int index) => user(index)),
+            children:
+                List<Widget>.generate(users.length, (int index) => user(index)),
           ),
         ),
       );
@@ -123,7 +127,8 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
           child: Row(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(left: suSetWidth(24.0), right: suSetWidth(30.0)),
+                margin: EdgeInsets.only(
+                    left: suSetWidth(24.0), right: suSetWidth(30.0)),
                 child: UserAvatar(uid: users[index].id, size: 54.0),
               ),
               Expanded(
@@ -163,10 +168,12 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                     title,
                     Container(
                       margin: EdgeInsets.all(suSetWidth(20.0)),
-                      padding: EdgeInsets.symmetric(horizontal: suSetWidth(8.0)),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: suSetWidth(8.0)),
                       height: suSetHeight(60.0),
                       decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: currentThemeColor)),
+                        border: Border(
+                            bottom: BorderSide(color: currentThemeColor)),
                       ),
                       child: Row(
                         children: <Widget>[

@@ -14,9 +14,11 @@ class CommentCard extends StatelessWidget {
 
   final Comment comment;
 
-  TextStyle get subtitleStyle => TextStyle(color: Colors.grey, fontSize: suSetSp(18.0));
+  TextStyle get subtitleStyle =>
+      TextStyle(color: Colors.grey, fontSize: suSetSp(18.0));
   TextStyle get rootTopicTextStyle => TextStyle(fontSize: suSetSp(18.0));
-  TextStyle get rootTopicMentionStyle => TextStyle(color: Colors.blue, fontSize: suSetSp(18.0));
+  TextStyle get rootTopicMentionStyle =>
+      TextStyle(color: Colors.blue, fontSize: suSetSp(18.0));
   Color get subIconColor => Colors.grey;
 
   Widget getCommentNickname(BuildContext context) {
@@ -94,7 +96,8 @@ class CommentCard extends StatelessWidget {
     if (content != null && content.isNotEmpty) {
       String topic;
       if (comment.toReplyExist) {
-        topic = '<M ${comment.toReplyUid}>@${comment.toReplyUserName}<\/M> 的评论: ';
+        topic =
+            '<M ${comment.toReplyUid}>@${comment.toReplyUserName}<\/M> 的评论: ';
       } else {
         topic = '<M ${comment.toTopicUid}>@${comment.toTopicUserName}<\/M>: ';
       }
@@ -137,9 +140,12 @@ class CommentCard extends StatelessWidget {
     );
   }
 
-  Widget getExtendedText(BuildContext context, String content, {bool isRoot = false}) {
+  Widget getExtendedText(BuildContext context, String content,
+      {bool isRoot = false}) {
     return Padding(
-      padding: isRoot ? EdgeInsets.zero : EdgeInsets.symmetric(horizontal: suSetWidth(24.0)),
+      padding: isRoot
+          ? EdgeInsets.zero
+          : EdgeInsets.symmetric(horizontal: suSetWidth(24.0)),
       child: ExtendedText(
         content != null ? '$content ' : null,
         style: TextStyle(fontSize: suSetSp(21.0)),
@@ -154,7 +160,8 @@ class CommentCard extends StatelessWidget {
             ),
           ],
         ),
-        specialTextSpanBuilder: StackSpecialTextSpanBuilder(widgetType: WidgetType.comment),
+        specialTextSpanBuilder:
+            StackSpecialTextSpanBuilder(widgetType: WidgetType.comment),
       ),
     );
   }
@@ -167,7 +174,8 @@ class CommentCard extends StatelessWidget {
       showConfirm: true,
     );
     if (confirm) {
-      final LoadingDialogController _loadingDialogController = LoadingDialogController();
+      final LoadingDialogController _loadingDialogController =
+          LoadingDialogController();
       LoadingDialog.show(
         context,
         controller: _loadingDialogController,
@@ -190,7 +198,8 @@ class CommentCard extends StatelessWidget {
       ConfirmationBottomSheet.show(
         context,
         children: <Widget>[
-          if (comment.fromUserUid == currentUser.uid || comment.post.uid == currentUser.uid)
+          if (comment.fromUserUid == currentUser.uid ||
+              comment.post.uid == currentUser.uid)
             ConfirmationBottomSheetAction(
               text: '删除评论',
               icon: Icon(Icons.delete),
@@ -201,7 +210,10 @@ class CommentCard extends StatelessWidget {
             icon: Icon(Icons.reply),
             onTap: () => navigatorState.pushNamed(
               Routes.OPENJMU_ADD_COMMENT,
-              arguments: <String, dynamic>{'post': comment.post, 'comment': comment},
+              arguments: <String, dynamic>{
+                'post': comment.post,
+                'comment': comment
+              },
             ),
           ),
           ConfirmationBottomSheetAction(
@@ -209,7 +221,10 @@ class CommentCard extends StatelessWidget {
             icon: Icon(Icons.pageview),
             onTap: () => navigatorState.pushNamed(
               Routes.OPENJMU_POST_DETAIL,
-              arguments: <String, dynamic>{'post': comment.post, 'parentContext': context},
+              arguments: <String, dynamic>{
+                'post': comment.post,
+                'parentContext': context
+              },
             ),
           ),
         ],

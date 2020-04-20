@@ -25,7 +25,8 @@ class Screens {
 
   static double get textScaleFactor => mediaQuery.textScaleFactor;
 
-  static double get navigationBarHeight => mediaQuery.padding.top + kToolbarHeight;
+  static double get navigationBarHeight =>
+      mediaQuery.padding.top + kToolbarHeight;
 
   static double get topSafeHeight => mediaQuery.padding.top;
 
@@ -50,9 +51,11 @@ double suSetWidth(double size, {double scale}) =>
 double suSetHeight(double size, {double scale}) =>
     _sizeCapable((ScreenUtil().setHeight(size) * 2).toDouble(), scale: scale);
 
-double _sizeCapable(num size, {double scale}) =>
-    (size * (scale ?? Provider.of<SettingsProvider>(currentContext, listen: false).fontScale))
-        .toDouble();
+double _sizeCapable(num size, {double scale}) => (size *
+        (scale ??
+            Provider.of<SettingsProvider>(currentContext, listen: false)
+                .fontScale))
+    .toDouble();
 
 extension SizeExtension on num {
   double get w => _sizeCapable(ScreenUtil().setWidth(this) * 2);
@@ -61,5 +64,6 @@ extension SizeExtension on num {
 
   double get sp => _sizeCapable(ScreenUtil().setSp(this) * 2);
 
-  double get ssp => _sizeCapable(ScreenUtil().setSp(this, allowFontScalingSelf: true) * 2);
+  double get ssp =>
+      _sizeCapable(ScreenUtil().setSp(this, allowFontScalingSelf: true) * 2);
 }

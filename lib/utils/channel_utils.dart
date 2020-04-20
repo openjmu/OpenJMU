@@ -45,7 +45,8 @@ class ChannelUtils {
   static Future<String> iOSGetPushToken() async {
     trueDebugPrint('Getting iOS push token from native...');
     try {
-      final String result = await _pmc_iOSPushToken.invokeMethod('getPushToken');
+      final String result =
+          await _pmc_iOSPushToken.invokeMethod('getPushToken');
       return result;
     } on PlatformException catch (e) {
       trueDebugPrint('iosPushGetter failed: ${e.message}.');

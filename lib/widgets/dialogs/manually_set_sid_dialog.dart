@@ -73,7 +73,8 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                       maxLength: 32,
                       maxLines: null,
                       decoration: InputDecoration(
-                        contentPadding: EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
                         border: UnderlineInputBorder(
                           borderSide: BorderSide(color: Colors.grey[700]),
                         ),
@@ -81,7 +82,8 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                           borderSide: BorderSide(color: Colors.grey[850]),
                         ),
                         hintText: currentUser.signature,
-                        hintStyle: const TextStyle(textBaseline: TextBaseline.alphabetic),
+                        hintStyle: const TextStyle(
+                            textBaseline: TextBaseline.alphabetic),
                       ),
                       cursorColor: currentThemeColor,
                     ),
@@ -105,8 +107,9 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
                             child: Text(
                               '保存',
                               style: TextStyle(
-                                color:
-                                    canSave ? currentThemeColor : Theme.of(context).disabledColor,
+                                color: canSave
+                                    ? currentThemeColor
+                                    : Theme.of(context).disabledColor,
                                 fontSize: suSetSp(18.0),
                               ),
                             ),

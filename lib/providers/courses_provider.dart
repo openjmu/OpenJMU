@@ -83,7 +83,8 @@ class CoursesProvider extends ChangeNotifier {
 
   void initCourses() {
     now = DateTime.now();
-    _courses = _courseBox.get(currentUser.uid)?.cast<int, Map<dynamic, dynamic>>();
+    _courses =
+        _courseBox.get(currentUser.uid)?.cast<int, Map<dynamic, dynamic>>();
     _remark = _courseRemarkBox.get(currentUser.uid);
     if (_courses == null) {
       _courses = resetCourses(_courses);
@@ -91,7 +92,8 @@ class CoursesProvider extends ChangeNotifier {
     } else {
       for (final Map<dynamic, dynamic> _map in _courses.values) {
         final Map<int, List<dynamic>> map = _map.cast<int, List<dynamic>>();
-        final List<List<dynamic>> lists = map.values?.toList()?.cast<List<dynamic>>();
+        final List<List<dynamic>> lists =
+            map.values?.toList()?.cast<List<dynamic>>();
         for (final List<dynamic> list in lists) {
           final List<Course> courses = list.cast<Course>();
           for (final Course course in courses) {
@@ -115,7 +117,8 @@ class CoursesProvider extends ChangeNotifier {
     _now = null;
   }
 
-  Map<int, Map<dynamic, dynamic>> resetCourses(Map<int, Map<dynamic, dynamic>> courses) {
+  Map<int, Map<dynamic, dynamic>> resetCourses(
+      Map<int, Map<dynamic, dynamic>> courses) {
     courses = <int, Map<dynamic, dynamic>>{
       for (int i = 1; i < 7 + 1; i++)
         i: <dynamic, dynamic>{
@@ -131,9 +134,11 @@ class CoursesProvider extends ChangeNotifier {
   }
 
   Future<void> updateCourses() async {
-    final DateProvider dateProvider = Provider.of<DateProvider>(currentContext, listen: false);
+    final DateProvider dateProvider =
+        Provider.of<DateProvider>(currentContext, listen: false);
     if (dateProvider.currentWeek != null) {
-      Instances.courseSchedulePageStateKey.currentState?.scrollToWeek(dateProvider.currentWeek);
+      Instances.courseSchedulePageStateKey.currentState
+          ?.scrollToWeek(dateProvider.currentWeek);
     }
     if (showWeek) {
       showWeek = false;
@@ -143,7 +148,8 @@ class CoursesProvider extends ChangeNotifier {
       }
     }
     try {
-      final List<Response<String>> responses = await Future.wait<Response<String>>(
+      final List<Response<String>> responses =
+          await Future.wait<Response<String>>(
         <Future<Response<String>>>[
           CourseAPI.getCourse(),
           CourseAPI.getRemark(),
@@ -159,7 +165,8 @@ class CoursesProvider extends ChangeNotifier {
       if (_showError) {
         _showError = false;
       }
-      Instances.courseSchedulePageStateKey.currentState?.updateScrollController();
+      Instances.courseSchedulePageStateKey.currentState
+          ?.updateScrollController();
       notifyListeners();
 
       // ignore: invalid_use_of_protected_member
@@ -175,7 +182,8 @@ class CoursesProvider extends ChangeNotifier {
   }
 
   Future<void> courseResponseHandler(Response<String> response) async {
-    final Map<String, dynamic> data = jsonDecode(response.data) as Map<String, dynamic>;
+    final Map<String, dynamic> data =
+        jsonDecode(response.data) as Map<String, dynamic>;
     final List<dynamic> _courseList = data['courses'] as List<dynamic>;
     final List<dynamic> _customCourseList = data['othCase'] as List<dynamic>;
     Map<int, Map<dynamic, dynamic>> _s;
@@ -194,11 +202,13 @@ class CoursesProvider extends ChangeNotifier {
     }
     _courses = _s;
     await _courseBox.delete(currentUser.uid);
-    await _courseBox.put(currentUser.uid, Map<int, Map<dynamic, dynamic>>.from(_s));
+    await _courseBox.put(
+        currentUser.uid, Map<int, Map<dynamic, dynamic>>.from(_s));
   }
 
   Future<void> remarkResponseHandler(Response<String> response) async {
-    final Map<String, dynamic> data = jsonDecode(response.data) as Map<String, dynamic>;
+    final Map<String, dynamic> data =
+        jsonDecode(response.data) as Map<String, dynamic>;
     String _r;
     if (data != null) {
       _r = data['classScheduleRemark'] as String;
@@ -217,7 +227,8 @@ class CoursesProvider extends ChangeNotifier {
     try {
       courses[courseDay][courseTime].add(course);
     } catch (e) {
-      trueDebugPrint('Failed when trying to add course at day($courseDay) time($courseTime)');
+      trueDebugPrint(
+          'Failed when trying to add course at day($courseDay) time($courseTime)');
       trueDebugPrint('$course');
     }
   }

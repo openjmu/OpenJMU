@@ -45,9 +45,11 @@ class Messages {
     'MSG_A2A_AUTO_REPLY': 195, // 自动回复消息
     'MSG_A2A_SHAKE_WINDOW': 196, // 抖动窗口
     'MSG_A2A_UPLOAD_FINISHED': 197, // （图片）上传完成
-    'MSG_IN_JSON_FROM_ORG_NO_OFFLINE': 200, // ORG 的 JSON 消息（不记离线），即将废弃以后统一转到 XML 格式
+    'MSG_IN_JSON_FROM_ORG_NO_OFFLINE':
+        200, // ORG 的 JSON 消息（不记离线），即将废弃以后统一转到 XML 格式
     'MSG_IN_XML_FROM_ORG_NO_OFFLINE': 201, // 应用 XML 消息（不记离线）
-    'MSG_NEW_CONV_SOURCE_NOTIFY': 202, // 新会话来源通知 格式为显示的来源字符串（e.g. ' 来自 xx 群的会话 '）
+    'MSG_NEW_CONV_SOURCE_NOTIFY':
+        202, // 新会话来源通知 格式为显示的来源字符串（e.g. ' 来自 xx 群的会话 '）
     'MSG_A2A_QA_BEGIN': 203, // 答疑开始
     'MSG_A2A_QA_END': 204, // 答疑结束
     'MSG_NOOP': 255,

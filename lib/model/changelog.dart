@@ -25,7 +25,12 @@ class ChangeLog {
   }
 
   Map<String, dynamic> toJson() {
-    return {'version': version, 'buildNumber': buildNumber, 'date': date, 'sections': sections};
+    return {
+      'version': version,
+      'buildNumber': buildNumber,
+      'date': date,
+      'sections': sections
+    };
   }
 
   @override
@@ -36,7 +41,9 @@ class ChangeLog {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ChangeLog && runtimeType == other.runtimeType && buildNumber == other.buildNumber;
+      other is ChangeLog &&
+          runtimeType == other.runtimeType &&
+          buildNumber == other.buildNumber;
 
   @override
   int get hashCode => buildNumber.hashCode;

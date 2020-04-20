@@ -11,7 +11,8 @@ class NewsListPage extends StatefulWidget {
   State<StatefulWidget> createState() => NewsListPageState();
 }
 
-class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClientMixin {
+class NewsListPageState extends State<NewsListPage>
+    with AutomaticKeepAliveClientMixin {
   final ScrollController _scrollController = ScrollController();
 
   List<News> newsList;
@@ -160,7 +161,8 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
   }
 
   Widget coverImg(News news) {
-    final imageUrl = '${API.showFile}${news.cover}/sid/${UserAPI.currentUser.sid}';
+    final imageUrl =
+        '${API.showFile}${news.cover}/sid/${UserAPI.currentUser.sid}';
     ImageProvider coverImg = ExtendedNetworkImageProvider(imageUrl);
     return SizedBox(
       width: suSetSp(80.0),
@@ -180,7 +182,8 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
       padding: EdgeInsets.all(suSetSp(8.0)),
       child: InkWell(
         onTap: () {
-          navigatorState.pushNamed(Routes.OPENJMU_NEWS_DETAIL, arguments: {'news': news});
+          navigatorState
+              .pushNamed(Routes.OPENJMU_NEWS_DETAIL, arguments: {'news': news});
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -245,7 +248,8 @@ class NewsListPageState extends State<NewsListPage> with AutomaticKeepAliveClien
                   ),
                   shrinkWrap: true,
                   controller: _scrollController,
-                  separatorBuilder: (context, index) => separator(context, height: 1.0),
+                  separatorBuilder: (context, index) =>
+                      separator(context, height: 1.0),
                   itemCount: newsList.length + 1,
                   itemBuilder: (context, index) {
                     if (index == newsList.length) {

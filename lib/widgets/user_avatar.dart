@@ -32,8 +32,9 @@ class UserAvatar extends StatelessWidget {
       height: suSetWidth(size),
       child: GestureDetector(
         child: ClipRRect(
-          borderRadius:
-              radius != null ? BorderRadius.circular(suSetWidth(radius)) : maxBorderRadius,
+          borderRadius: radius != null
+              ? BorderRadius.circular(suSetWidth(radius))
+              : maxBorderRadius,
           child: FadeInImage(
             fadeInDuration: 150.milliseconds,
             placeholder: AssetImage(R.ASSETS_AVATAR_PLACEHOLDER_PNG),
@@ -44,13 +45,17 @@ class UserAvatar extends StatelessWidget {
             ? () {
                 final _routeSettings = ModalRoute.of(context).settings;
                 if (_routeSettings is FFRouteSettings) {
-                  final settings = ModalRoute.of(context).settings as FFRouteSettings;
+                  final settings =
+                      ModalRoute.of(context).settings as FFRouteSettings;
                   if (settings.name != Routes.OPENJMU_USER ||
-                      settings.arguments.toString() != {'uid': _uid}.toString()) {
-                    navigatorState.pushNamed(Routes.OPENJMU_USER, arguments: {'uid': _uid});
+                      settings.arguments.toString() !=
+                          {'uid': _uid}.toString()) {
+                    navigatorState.pushNamed(Routes.OPENJMU_USER,
+                        arguments: {'uid': _uid});
                   }
                 } else {
-                  navigatorState.pushNamed(Routes.OPENJMU_USER, arguments: {'uid': _uid});
+                  navigatorState
+                      .pushNamed(Routes.OPENJMU_USER, arguments: {'uid': _uid});
                 }
               }
             : null,

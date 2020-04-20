@@ -102,7 +102,8 @@ class _RoundedUnderlinePainter extends BoxPainter {
     assert(configuration.size != null);
     final Rect rect = offset & configuration.size;
     final TextDirection textDirection = configuration.textDirection;
-    final RRect indicator = _indicatorRectFor(rect, textDirection).deflate(borderSide.width);
+    final RRect indicator =
+        _indicatorRectFor(rect, textDirection).deflate(borderSide.width);
     final Paint paint = borderSide.toPaint()..strokeCap = StrokeCap.round;
     canvas.drawRRect(indicator, paint);
   }

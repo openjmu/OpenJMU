@@ -16,14 +16,19 @@ class SearchPage extends StatefulWidget {
   State<StatefulWidget> createState() => SearchPageState();
 }
 
-class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin {
+class SearchPageState extends State<SearchPage>
+    with AutomaticKeepAliveClientMixin {
   final FocusNode _focusNode = FocusNode();
   TextEditingController _controller = TextEditingController();
 
   final List<User> userList = <User>[];
   List<Post> postList;
 
-  bool _loaded = false, _loading = false, _canLoadMore = true, _canClear = false, _autoFocus = true;
+  bool _loaded = false,
+      _loading = false,
+      _canLoadMore = true,
+      _canClear = false,
+      _autoFocus = true;
 
   @override
   void initState() {
@@ -235,10 +240,14 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(top: suSetHeight(16.0), left: suSetWidth(12.0)),
+                padding: EdgeInsets.only(
+                    top: suSetHeight(16.0), left: suSetWidth(12.0)),
                 child: Text(
                   '相关用户 (${userList.length})',
-                  style: Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(19.0)),
+                  style: Theme.of(context)
+                      .textTheme
+                      .caption
+                      .copyWith(fontSize: suSetSp(19.0)),
                 ),
               ),
               Expanded(
@@ -247,7 +256,8 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                   itemCount: userList.length,
                   itemBuilder: (BuildContext _, int index) {
                     return Padding(
-                      padding: EdgeInsets.symmetric(horizontal: suSetHeight(15.0)),
+                      padding:
+                          EdgeInsets.symmetric(horizontal: suSetHeight(15.0)),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
@@ -311,14 +321,19 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                               ),
                               child: Text(
                                 '相关动态',
-                                style: Theme.of(context).textTheme.caption.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .caption
+                                    .copyWith(
                                       fontSize: suSetSp(19.0),
                                     ),
                               ),
                             );
                           }
                         }
-                        if (userList != null && userList.isNotEmpty && index == 1) {
+                        if (userList != null &&
+                            userList.isNotEmpty &&
+                            index == 1) {
                           return Padding(
                             padding: EdgeInsets.only(
                               top: suSetHeight(16.0),
@@ -327,9 +342,10 @@ class SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMix
                             ),
                             child: Text(
                               '相关动态',
-                              style: Theme.of(context).textTheme.caption.copyWith(
-                                    fontSize: suSetSp(19.0),
-                                  ),
+                              style:
+                                  Theme.of(context).textTheme.caption.copyWith(
+                                        fontSize: suSetSp(19.0),
+                                      ),
                             ),
                           );
                         } else if (index == postList.length + 1) {

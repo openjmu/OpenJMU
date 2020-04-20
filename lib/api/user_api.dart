@@ -81,7 +81,8 @@ class UserAPI {
     }
   }
 
-  static Future<Response<Map<String, dynamic>>> getStudentInfo({int uid}) async {
+  static Future<Response<Map<String, dynamic>>> getStudentInfo(
+      {int uid}) async {
     return NetUtils.getWithCookieSet<Map<String, dynamic>>(
         API.studentInfo(uid: uid ?? currentUser.uid));
   }
@@ -124,7 +125,8 @@ class UserAPI {
   static Future follow(int uid) async {
     try {
       await NetUtils.postWithCookieAndHeaderSet('${API.userRequestFollow}$uid');
-      await NetUtils.postWithCookieAndHeaderSet(API.userFollowAdd, data: {'fid': uid, 'tagid': 0});
+      await NetUtils.postWithCookieAndHeaderSet(API.userFollowAdd,
+          data: {'fid': uid, 'tagid': 0});
     } catch (e) {
       trueDebugPrint('Failed when folloe: $e');
       showCenterErrorToast('关注失败');
@@ -133,8 +135,10 @@ class UserAPI {
 
   static Future unFollow(int uid, {bool fromBlacklist = false}) async {
     try {
-      await NetUtils.deleteWithCookieAndHeaderSet('${API.userRequestFollow}$uid');
-      await NetUtils.postWithCookieAndHeaderSet(API.userFollowAdd, data: {'fid': uid});
+      await NetUtils.deleteWithCookieAndHeaderSet(
+          '${API.userRequestFollow}$uid');
+      await NetUtils.postWithCookieAndHeaderSet(API.userFollowAdd,
+          data: {'fid': uid});
     } catch (e) {
       trueDebugPrint('Failed when unfollow $uid: $e');
       if (!fromBlacklist) showCenterErrorToast('取消关注失败');
@@ -149,11 +153,12 @@ class UserAPI {
   }
 
   static Future<Map<String, dynamic>> searchUser(String name) async {
-    Map<String, dynamic> users = (await NetUtils.getWithCookieSet<Map<String, dynamic>>(
+    Map<String, dynamic> users =
+        (await NetUtils.getWithCookieSet<Map<String, dynamic>>(
       API.searchUser,
       data: <String, dynamic>{'keyword': name},
     ))
-        .data;
+            .data;
     if (users['total'] == null) {
       users = <String, dynamic>{
         'total': 1,
@@ -166,7 +171,8 @@ class UserAPI {
   /// Blacklists.
   static final Set<BlacklistUser> blacklist = <BlacklistUser>{};
 
-  static Future<Response<Map<String, dynamic>>> getBlacklist({int pos, int size}) {
+  static Future<Response<Map<String, dynamic>>> getBlacklist(
+      {int pos, int size}) {
     return NetUtils.getWithCookieSet<Map<String, dynamic>>(
       API.blacklist(pos: pos, size: size),
     );
@@ -193,7 +199,8 @@ class UserAPI {
     if (blacklist.contains(user)) {
       showToast('仇恨值拉满啦！不要重复屏蔽噢~');
     } else {
-      NetUtils.postWithCookieSet(API.addToBlacklist, data: {'fid': user.uid}).then((response) {
+      NetUtils.postWithCookieSet(API.addToBlacklist, data: {'fid': user.uid})
+          .then((response) {
         blacklist.add(user);
         showToast('加入黑名单成功');
         Instances.eventBus.fire(BlacklistUpdateEvent());
@@ -209,7 +216,8 @@ class UserAPI {
     blacklist.remove(user);
     showToast('移出黑名单成功');
     Instances.eventBus.fire(BlacklistUpdateEvent());
-    NetUtils.postWithCookieSet(API.removeFromBlacklist, data: {'fid': user.uid}).catchError((e) {
+    NetUtils.postWithCookieSet(API.removeFromBlacklist, data: {'fid': user.uid})
+        .catchError((e) {
       showToast('移出黑名单失败');
       trueDebugPrint('Remove $user from blacklist failed: $e');
       if (blacklist.contains(user)) blacklist.remove(user);
@@ -220,7 +228,8 @@ class UserAPI {
   static void setBlacklist(List<dynamic> list) {
     if (list.isNotEmpty) {
       for (final Map<dynamic, dynamic> person in list) {
-        final BlacklistUser user = BlacklistUser.fromJson(person as Map<String, dynamic>);
+        final BlacklistUser user =
+            BlacklistUser.fromJson(person as Map<String, dynamic>);
         blacklist.add(user);
       }
     }

@@ -18,7 +18,8 @@ class WebAppsProvider extends ChangeNotifier {
 
   bool fetching = true;
 
-  Future<dynamic> getAppList() async => NetUtils.getWithCookieSet<dynamic>(API.webAppLists);
+  Future<dynamic> getAppList() async =>
+      NetUtils.getWithCookieSet<dynamic>(API.webAppLists);
 
   void initApps() {
     _appCategoriesList = <String, Set<WebApp>>{
@@ -69,7 +70,8 @@ class WebAppsProvider extends ChangeNotifier {
       for (final String key in categories.keys) key: <WebApp>{},
     };
     final List<Map<String, dynamic>> data =
-        ((await getAppList()).data as List<dynamic>).cast<Map<String, dynamic>>();
+        ((await getAppList()).data as List<dynamic>)
+            .cast<Map<String, dynamic>>();
 
     for (int i = 0; i < data.length; i++) {
       final WebApp _app = appWrapper(WebApp.fromJson(data[i]));

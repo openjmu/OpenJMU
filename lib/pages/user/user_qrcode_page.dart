@@ -33,12 +33,14 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         showToast('未获得存储权限');
         return;
       }
-      RenderRepaintBoundary boundary = previewContainer.currentContext.findRenderObject();
+      RenderRepaintBoundary boundary =
+          previewContainer.currentContext.findRenderObject();
       ui.Image image = await boundary.toImage(
         pixelRatio: ui.window.devicePixelRatio,
       );
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      final result = await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
+      final result =
+          await ImageGallerySaver.saveImage(byteData.buffer.asUint8List());
       if (result != null) {
         showToast('保存成功');
       } else {
@@ -70,7 +72,9 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
       body: FixedAppBarWrapper(
         appBar: FixedAppBar(
           title: Text('二维码名片'),
-          actions: <Widget>[IconButton(icon: Icon(Icons.save), onPressed: saveToGallery)],
+          actions: <Widget>[
+            IconButton(icon: Icon(Icons.save), onPressed: saveToGallery)
+          ],
         ),
         body: Center(
           child: RepaintBoundary(
@@ -90,10 +94,12 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                       UserAvatar(size: avatarSize),
                       Expanded(
                         child: Padding(
-                          padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: suSetWidth(20.0)),
                           child: Text(
                             currentUser.name,
-                            style: TextStyle(color: Colors.black, fontSize: suSetSp(22.0)),
+                            style: TextStyle(
+                                color: Colors.black, fontSize: suSetSp(22.0)),
                             textAlign: TextAlign.left,
                           ),
                         ),

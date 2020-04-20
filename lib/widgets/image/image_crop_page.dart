@@ -21,7 +21,8 @@ class ImageCropPage extends StatefulWidget {
 }
 
 class _ImageCropPageState extends State<ImageCropPage> {
-  final GlobalKey<ExtendedImageEditorState> _editorKey = GlobalKey<ExtendedImageEditorState>();
+  final GlobalKey<ExtendedImageEditorState> _editorKey =
+      GlobalKey<ExtendedImageEditorState>();
   final LoadingDialogController _controller = LoadingDialogController();
   File _file;
   bool _cropping = false;
@@ -92,7 +93,8 @@ class _ImageCropPageState extends State<ImageCropPage> {
   Future<void> uploadImage(BuildContext context, File file) async {
     try {
       final FormData formData = await createForm(file);
-      await NetUtils.postWithCookieSet<void>(API.userAvatarUpload, data: formData);
+      await NetUtils.postWithCookieSet<void>(API.userAvatarUpload,
+          data: formData);
       _controller.changeState('success', '头像更新成功');
       _cropping = false;
       UserAPI.avatarLastModified = DateTime.now().millisecondsSinceEpoch;

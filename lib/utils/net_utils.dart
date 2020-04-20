@@ -28,7 +28,8 @@ class NetUtils {
       ..clear();
 
     if (await DataUtils.getTicket()) {
-      trueDebugPrint('Ticket updated success with new ticket: ${currentUser.sid}');
+      trueDebugPrint(
+          'Ticket updated success with new ticket: ${currentUser.sid}');
     } else {
       trueDebugPrint('Ticket updated error: ${currentUser.sid}');
     }
@@ -37,7 +38,8 @@ class NetUtils {
   }
 
   static void initConfig() {
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
+    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+        (HttpClient client) {
 //      client.findProxy = (uri) => 'PROXY 192.168.0.106:8888';
 //      client.badCertificateCallback = (
 //        X509Certificate cert,
@@ -60,8 +62,8 @@ class NetUtils {
         return e;
       },
     ));
-    (tokenDio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
-        (HttpClient client) {
+    (tokenDio.httpClientAdapter as DefaultHttpClientAdapter)
+        .onHttpClientCreate = (HttpClient client) {
 //      client.findProxy = (uri) => 'PROXY 192.168.0.106:8888';
 //      client.badCertificateCallback = (
 //        X509Certificate cert,
@@ -86,7 +88,8 @@ class NetUtils {
     ));
   }
 
-  static Future<Response<T>> get<T>(String url, {Map<String, dynamic> data}) async =>
+  static Future<Response<T>> get<T>(String url,
+          {Map<String, dynamic> data}) async =>
       await dio.get<T>(url, queryParameters: data);
 
   static Future<Response<T>> getWithHeaderSet<T>(
@@ -130,13 +133,15 @@ class NetUtils {
         ),
       );
 
-  static Future<Response<T>> post<T>(String url, {Map<String, dynamic> data}) async =>
+  static Future<Response<T>> post<T>(String url,
+          {Map<String, dynamic> data}) async =>
       await dio.post<T>(
         url,
         data: data,
       );
 
-  static Future<Response<T>> postWithCookieSet<T>(String url, {Map<String, dynamic> data}) async =>
+  static Future<Response<T>> postWithCookieSet<T>(String url,
+          {Map<String, dynamic> data}) async =>
       await dio.post<T>(
         url,
         data: data,
@@ -184,7 +189,8 @@ class NetUtils {
     Response<dynamic> response;
     String path;
     final Map<PermissionGroup, PermissionStatus> permissions =
-        await PermissionHandler().requestPermissions(<PermissionGroup>[PermissionGroup.storage]);
+        await PermissionHandler()
+            .requestPermissions(<PermissionGroup>[PermissionGroup.storage]);
     if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
       showToast('开始下载...');
       trueDebugPrint('File start download: $url');
