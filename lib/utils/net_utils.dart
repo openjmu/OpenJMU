@@ -92,6 +92,19 @@ class NetUtils {
           {Map<String, dynamic> data}) async =>
       await dio.get<T>(url, queryParameters: data);
 
+  /// Get response through bytes.
+  ///
+  /// For now it provides response for image saving.
+  static Future<Response<T>> getBytes<T>(
+    String url, {
+    Map<String, dynamic> data,
+  }) async =>
+      await dio.get<T>(
+        url,
+        queryParameters: data,
+        options: Options(responseType: ResponseType.bytes),
+      );
+
   static Future<Response<T>> getWithHeaderSet<T>(
     String url, {
     Map<String, dynamic> data,

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math' as math;
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart' hide Image;
 import 'package:flutter/gestures.dart';
@@ -9,10 +9,11 @@ import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/rendering.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:image_downloader/image_downloader.dart';
+import 'package:image_save/image_save.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/image/image_gesture_detector.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 @FFRoute(
   name: "openjmu://image-viewer",
@@ -97,30 +98,38 @@ class ImageViewerState extends State<ImageViewer>
     backgroundOpacityStreamController.add(0.0);
   }
 
-  Future<void> _downloadImage(String url,
-      {AndroidDestinationType destination}) async {
-    String path;
+  Future<void> _downloadImage(String url) async {
     try {
-      String imageId;
-      Platform.isAndroid
-          ? imageId = await ImageDownloader.downloadImage(
-              url,
-              destination: AndroidDestinationType.custom(directory: 'OpenJMU'),
-            )
-          : imageId = await ImageDownloader.downloadImage(url);
-      if (imageId == null) {
-        return;
+      final Response<List<int>> response =
+          await NetUtils.getBytes<List<int>>(url);
+      final String filename = response.headers
+          .value('Content-Disposition')
+          ?.split('; ')
+          ?.elementAt(1)
+          ?.split('=')
+          ?.elementAt(1);
+      final String fileExtension = filename
+          ?.substring(filename?.lastIndexOf('.'), (filename?.length) ?? 0 + 1)
+          ?.replaceAll('.', '');
+      if (filename != null && fileExtension != null) {
+        final bool success = await ImageSave.saveImage(
+          Uint8List.fromList(response.data),
+          fileExtension,
+          albumName: 'OpenJMU',
+        );
+        if (success) {
+          showCenterToast('图片已保存至相册');
+        } else {
+          showErrorToast('图片保存失败');
+        }
       }
-      path = await ImageDownloader.findPath(imageId);
     } on PlatformException catch (error) {
-      showCenterToast(error.message);
+      showErrorToast(error.message);
       return;
     }
     if (!mounted) {
       return;
     }
-    showCenterToast('图片保存至：$path');
-    return;
   }
 
   void updateAnimation(ExtendedImageGestureState state) {
@@ -154,8 +163,19 @@ class ImageViewerState extends State<ImageViewer>
         ConfirmationBottomSheetAction(
           icon: Icon(Icons.save_alt),
           text: '保存图片',
-          onTap: () {
-            _downloadImage(widget.pics[currentIndex].imageUrl);
+          onTap: () async {
+            final Map<PermissionGroup, PermissionStatus> requests =
+                await PermissionHandler().requestPermissions(
+              <PermissionGroup>[
+                PermissionGroup.photos,
+                PermissionGroup.storage,
+              ],
+            );
+            if (!requests.values.any(
+              (PermissionStatus p) => p == PermissionStatus.granted,
+            )) {
+              unawaited(_downloadImage(widget.pics[currentIndex].imageUrl));
+            }
           },
         ),
       ],
