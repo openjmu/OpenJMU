@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math' as math;
 import 'dart:typed_data';
 
@@ -167,12 +168,12 @@ class ImageViewerState extends State<ImageViewer>
             final Map<PermissionGroup, PermissionStatus> requests =
                 await PermissionHandler().requestPermissions(
               <PermissionGroup>[
-                PermissionGroup.photos,
-                PermissionGroup.storage,
+                if (Platform.isIOS) PermissionGroup.photos,
+                if (Platform.isAndroid) PermissionGroup.storage,
               ],
             );
             if (!requests.values.any(
-              (PermissionStatus p) => p == PermissionStatus.granted,
+              (PermissionStatus p) => p != PermissionStatus.granted,
             )) {
               unawaited(_downloadImage(widget.pics[currentIndex].imageUrl));
             }
