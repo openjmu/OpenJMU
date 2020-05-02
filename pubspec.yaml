@@ -25,6 +25,10 @@ dependencies:
   extended_nested_scroll_view: ^0.4.0
   extended_text: ^0.7.1
   extended_text_field: ^0.4.9
+  flutter_displaymode:
+    git:
+      url: https://github.com/AlexVincent525/flutter_displaymode.git
+      ref: d608e19991bc5f5734768971727e8465c10c929f
   flutter_icons: ^1.0.0+1
   flutter_inappwebview:
     git:
