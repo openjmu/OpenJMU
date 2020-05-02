@@ -139,11 +139,18 @@ class _TeamPostCardState extends State<TeamPostCard> {
             case LoadState.completed:
               final ImageInfo info = state.extendedImageInfo;
               if (info != null) {
-                loader = ScaledImage(
-                  image: info.image,
-                  length: post.pics.length,
-                  num200: suSetSp(200),
-                  num400: suSetSp(400),
+                loader = TweenAnimationBuilder<double>(
+                  tween: Tween<double>(begin: 0, end: 1),
+                  duration: const Duration(milliseconds: 300),
+                  builder: (BuildContext _, double value, Widget child) {
+                    return Opacity(opacity: value, child: child);
+                  },
+                  child: ScaledImage(
+                    image: info.image,
+                    length: post.pics.length,
+                    num200: suSetWidth(200),
+                    num400: suSetWidth(400),
+                  ),
                 );
               }
               break;

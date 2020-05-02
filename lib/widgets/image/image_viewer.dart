@@ -262,17 +262,14 @@ class ImageViewerState extends State<ImageViewer>
               loader = const SpinKitWidget();
               break;
             case LoadState.completed:
-              // TODO(AlexVincent525): GIF will setState and cause this flash.
-//              loader = FadeTransition(
-//                opacity: Tween(
-//                  begin: 0.0,
-//                  end: 1.0,
-//                ).animate(AnimationController(
-//                  duration: 300.milliseconds,
-//                  vsync: this,
-//                )..forward()),
-//                child: state.completedWidget,
-//              );
+              loader = TweenAnimationBuilder<double>(
+                tween: Tween<double>(begin: 0, end: 1),
+                duration: const Duration(milliseconds: 300),
+                builder: (BuildContext _, double value, Widget child) {
+                  return Opacity(opacity: value, child: child);
+                },
+                child: state.completedWidget,
+              );
               break;
             case LoadState.failed:
               break;
