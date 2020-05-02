@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
@@ -65,6 +66,12 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     trueDebugPrint('Current platform is: ${Platform.operatingSystem}');
     WidgetsBinding.instance.addObserver(this);
     tryRecoverLoginInfo();
+
+    /// Set default display mode to compatible with 90/120Hz refresh rate on Android.
+    /// 在安卓上设置默认显示模式以适配90/120赫兹显示
+    if (Platform.isAndroid) {
+      FlutterDisplayMode.setDeviceDefault();
+    }
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       Connectivity().checkConnectivity().then(connectivityHandler);
