@@ -88,6 +88,18 @@ class NetUtils {
     ));
   }
 
+  /// Get header only.
+  static Future<Response<T>> head<T>(
+    String url, {
+    Map<String, dynamic> queryParameters,
+    Map<String, dynamic> data,
+  }) async =>
+      await dio.head<T>(
+        url,
+        data: data,
+        queryParameters: queryParameters,
+      );
+
   static Future<Response<T>> get<T>(String url,
           {Map<String, dynamic> data}) async =>
       await dio.get<T>(url, queryParameters: data);
