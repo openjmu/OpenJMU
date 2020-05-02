@@ -45,8 +45,8 @@ class InputUtils {
       controller.value = value.copyWith(
         text: newText,
         selection: value.selection.copyWith(
-          baseOffset: end + selectionOffset ?? text.length,
-          extentOffset: end + selectionOffset ?? text.length,
+          baseOffset: end + (selectionOffset ?? text.length),
+          extentOffset: end + (selectionOffset ?? text.length),
         ),
       );
       // ignore: invalid_use_of_protected_member
