@@ -144,9 +144,9 @@ class TeamPostAPI {
     final Duration difference = now.difference(origin);
     if (difference <= 1.minutes) {
       time += '刚刚';
-    } else if (difference <= 59.minutes) {
+    } else if (difference < 60.minutes) {
       time += '${difference.inMinutes}分钟前';
-    } else if (difference <= 23.hours && origin.weekday == now.weekday) {
+    } else if (difference < 24.hours && origin.weekday == now.weekday) {
       time += '${difference.inHours}小时前';
     } else if (_formatToMonth(now - 1.days) == _formatToMonth(origin)) {
       time += '昨天 ${DateFormat('HH:mm').format(origin)}';
