@@ -162,9 +162,9 @@ class PostAPI {
     final Duration difference = now.difference(origin);
     if (difference <= 1.minutes) {
       return '刚刚';
-    } else if (difference <= 59.minutes) {
+    } else if (difference < 60.minutes) {
       return '${difference.inMinutes}分钟前';
-    } else if (difference <= 23.hours && origin.weekday == now.weekday) {
+    } else if (difference < 24.hours && origin.weekday == now.weekday) {
       return '${difference.inHours}小时前';
     } else if (_formatToMonth(now - 1.days) == _formatToMonth(origin)) {
       return '昨天 ${DateFormat('HH:mm').format(origin)}';
