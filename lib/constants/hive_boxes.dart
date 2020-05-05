@@ -14,17 +14,37 @@ const String hiveBoxPrefix = 'openjmu';
 class HiveBoxes {
   const HiveBoxes._();
 
+  /// 应用消息表
   static Box<Map<dynamic, dynamic>> appMessagesBox;
+
+  /// 私聊消息表
   static Box<Map<dynamic, dynamic>> personalMessagesBox;
 
+  /// 课程缓存表
   static Box<Map<dynamic, dynamic>> coursesBox;
+
+  /// 课表备注表
   static Box<String> courseRemarkBox;
+
+  /// 学期开始日缓存表
   static Box<DateTime> startWeekBox;
+
+  /// 成绩缓存表
   static Box<Map<dynamic, dynamic>> scoresBox;
+
+  /// 应用中心应用缓存表
   static Box<List<dynamic>> webAppsBox;
 
+  /// 最近使用的应用缓存表
+  static Box<List<dynamic>> webAppsCommonBox;
+
+  /// 举报去重池
   static Box<List<dynamic>> reportRecordBox;
+
+  /// 设置表
   static Box<dynamic> settingsBox;
+
+  /// 更新日志缓存表
   static Box<ChangeLog> changelogBox;
 
   static Future<void> openBoxes() async {
@@ -48,6 +68,8 @@ class HiveBoxes {
     scoresBox = await Hive.openBox<Map<dynamic, dynamic>>(
         '${hiveBoxPrefix}_user_scores');
     webAppsBox = await Hive.openBox<List<dynamic>>('${hiveBoxPrefix}_webapps');
+    webAppsCommonBox =
+        await Hive.openBox<List<dynamic>>('${hiveBoxPrefix}_webapps_recent');
 
     reportRecordBox =
         await Hive.openBox<List<dynamic>>('${hiveBoxPrefix}_report_record');
@@ -56,7 +78,30 @@ class HiveBoxes {
     changelogBox = await Hive.openBox<ChangeLog>('${hiveBoxPrefix}_changelog');
   }
 
-  static Future<void> clearBoxes({BuildContext context}) async {
+  static Future<void> clearCacheBoxes({BuildContext context}) async {
+    bool confirm = true;
+    if (context != null) {
+      confirm = await ConfirmationBottomSheet.show(
+        context,
+        title: '清除缓存数据',
+        showConfirm: true,
+        content: '清除缓存会清除包括课程表数据、成绩和学期起始日的数据。\n确定继续吗？',
+      );
+    }
+    if (confirm) {
+      trueDebugPrint('Clearing Hive Cache Boxes...');
+      await coursesBox?.clear();
+      await courseRemarkBox?.clear();
+      await scoresBox?.clear();
+      await startWeekBox?.clear();
+      trueDebugPrint('Boxes cleared');
+      if (kReleaseMode) {
+        unawaited(SystemNavigator.pop());
+      }
+    }
+  }
+
+  static Future<void> clearAllBoxes({BuildContext context}) async {
     bool confirm = true;
     if (context != null) {
       confirm = await ConfirmationBottomSheet.show(

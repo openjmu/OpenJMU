@@ -8,6 +8,7 @@ import 'package:openjmu/constants/constants.dart';
 
 class WebAppsProvider extends ChangeNotifier {
   final Box<List<dynamic>> _box = HiveBoxes.webAppsBox;
+  final Box<List<dynamic>> _commonBox = HiveBoxes.webAppsCommonBox;
 
   Set<WebApp> _displayedWebApps = <WebApp>{};
   Set<WebApp> _allWebApps = <WebApp>{};
@@ -18,9 +19,11 @@ class WebAppsProvider extends ChangeNotifier {
 
   bool fetching = true;
 
+  /// 获取当前用户的App列表
   Future<dynamic> getAppList() async =>
       NetUtils.getWithCookieSet<dynamic>(API.webAppLists);
 
+  /// 初始化App列表
   void initApps() {
     _appCategoriesList = <String, Set<WebApp>>{
       for (final String key in categories.keys) key: <WebApp>{},
@@ -38,6 +41,7 @@ class WebAppsProvider extends ChangeNotifier {
     updateApps();
   }
 
+  /// 从缓存数据中拉出列表
   void recoverApps() {
     final Set<WebApp> _tempSet = <WebApp>{};
     final Map<String, Set<WebApp>> _tempCategoryList = <String, Set<WebApp>>{
@@ -63,6 +67,7 @@ class WebAppsProvider extends ChangeNotifier {
     fetching = false;
   }
 
+  /// 更新App列表
   Future<void> updateApps() async {
     final Set<WebApp> _tempSet = <WebApp>{};
     final Set<WebApp> _tempAllSet = <WebApp>{};
@@ -105,6 +110,7 @@ class WebAppsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 注销时清空变量缓存
   void unloadApps() {
     _allWebApps.clear();
     _displayedWebApps.clear();

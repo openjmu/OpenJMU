@@ -358,7 +358,7 @@ class SelfPage extends StatelessWidget {
               color: Theme.of(context).primaryColor,
             ),
             child: GestureDetector(
-              onLongPress: () => HiveBoxes.clearBoxes(context: context),
+              onLongPress: () => HiveBoxes.clearAllBoxes(context: context),
               child: Text(
                 '(DANGER)\n清除应用数据',
                 style: TextStyle(
