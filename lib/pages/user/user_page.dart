@@ -119,8 +119,13 @@ class _UserPageState extends State<UserPage>
     if (uid == UserAPI.currentUser.uid) {
       _user = UserAPI.currentUser;
     } else {
-      Map<String, dynamic> user = (await UserAPI.getUserInfo(uid: uid)).data;
-      _user = UserInfo.fromJson(user);
+      try {
+        final Map<String, dynamic> user = (await UserAPI.getUserInfo(uid: uid)).data;
+        _user = UserInfo.fromJson(user);
+      } catch (e) {
+        trueDebugPrint('Failed in fetching user information: $e');
+        return;
+      }
     }
 
     await Future.wait(
