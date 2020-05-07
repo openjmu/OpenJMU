@@ -192,7 +192,11 @@ class ImageViewerState extends State<ImageViewer>
         .withOpacity(math.min(1.0, math.max(1.0 - opacity, 0.0)));
   }
 
-  bool slideEndHandler(Offset offset) {
+  bool slideEndHandler(
+    Offset offset, {
+    ExtendedImageSlidePageState state,
+    ScaleEndDetails details,
+  }) {
     final bool shouldEnd =
         offset.distance > Offset(Screens.width, Screens.height).distance / 7;
     if (shouldEnd) {
