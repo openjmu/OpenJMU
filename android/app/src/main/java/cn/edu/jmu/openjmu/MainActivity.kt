@@ -8,6 +8,7 @@ import cn.edu.jmu.openjmu.plugin.SecureFlagPlugin
 
 class MainActivity: FlutterActivity() {
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
         flutterEngine.plugins.add(SecureFlagPlugin())
         flutterEngine.plugins.add(SchemeLauncherPlugin())
     }
