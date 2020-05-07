@@ -108,7 +108,7 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                             ? Text(
                                 '${user.name ?? user.uid}',
                                 style:
-                                    Theme.of(context).textTheme.body1.copyWith(
+                                    Theme.of(context).textTheme.bodyText2.copyWith(
                                           fontSize: suSetSp(22.0),
                                           fontWeight: FontWeight.w500,
                                         ),
@@ -117,10 +117,10 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                       ),
                       Text(
                         ' $formattedTime',
-                        style: Theme.of(context).textTheme.body1.copyWith(
+                        style: Theme.of(context).textTheme.bodyText2.copyWith(
                               color: Theme.of(context)
                                   .textTheme
-                                  .body1
+                                  .bodyText2
                                   .color
                                   .withOpacity(0.5),
                             ),
@@ -147,10 +147,10 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                   ),
                   Text(
                     '${widget.message.content['content']}',
-                    style: Theme.of(context).textTheme.body1.copyWith(
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
                           color: Theme.of(context)
                               .textTheme
-                              .body1
+                              .bodyText2
                               .color
                               .withOpacity(0.5),
                           fontSize: suSetSp(19.0),

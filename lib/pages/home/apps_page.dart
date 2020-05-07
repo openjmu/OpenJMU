@@ -98,7 +98,7 @@ class AppsPageState extends State<AppsPage>
           width: suSetWidth(26.0),
           insets: EdgeInsets.only(bottom: suSetHeight(4.0)),
         ),
-        labelColor: Theme.of(context).textTheme.body1.color,
+        labelColor: Theme.of(context).textTheme.bodyText2.color,
         labelStyle: MainPageState.tabSelectedTextStyle,
         labelPadding: EdgeInsets.symmetric(
           horizontal: suSetWidth(16.0),

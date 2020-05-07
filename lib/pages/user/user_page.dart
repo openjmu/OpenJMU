@@ -563,7 +563,7 @@ class _UserPageState extends State<UserPage>
                               Text(
                                 _user.name,
                                 style:
-                                    Theme.of(context).textTheme.body1.copyWith(
+                                    Theme.of(context).textTheme.bodyText2.copyWith(
                                           fontSize: suSetSp(23.0),
                                         ),
                               ),

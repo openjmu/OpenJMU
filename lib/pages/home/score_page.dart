@@ -188,7 +188,7 @@ class ScorePage extends StatelessWidget {
     return Text(
       '${score.courseName}',
       style:
-          Theme.of(context).textTheme.title.copyWith(fontSize: suSetSp(24.0)),
+          Theme.of(context).textTheme.headline6.copyWith(fontSize: suSetSp(24.0)),
       overflow: TextOverflow.ellipsis,
     );
   }
@@ -204,7 +204,7 @@ class ScorePage extends StatelessWidget {
               fontWeight: FontWeight.bold,
               color: !score.isPass
                   ? Colors.red
-                  : Theme.of(context).textTheme.title.color,
+                  : Theme.of(context).textTheme.headline6.color,
             ),
           ),
           TextSpan(text: ' / '),
@@ -212,7 +212,7 @@ class ScorePage extends StatelessWidget {
         ],
         style: Theme.of(context)
             .textTheme
-            .subtitle
+            .subtitle2
             .copyWith(fontSize: suSetSp(20.0)),
       ),
     );
@@ -223,7 +223,7 @@ class ScorePage extends StatelessWidget {
       '学时: ${score.creditHour}　'
       '学分: ${score.credit.toStringAsFixed(1)}',
       style:
-          Theme.of(context).textTheme.body1.copyWith(fontSize: suSetSp(20.0)),
+          Theme.of(context).textTheme.bodyText2.copyWith(fontSize: suSetSp(20.0)),
     );
   }
 

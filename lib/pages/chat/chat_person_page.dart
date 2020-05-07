@@ -80,7 +80,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
                 UserAPI.getAvatar(size: 50.0, uid: 164466),
                 Text(
                   '陈嘉旺',
-                  style: Theme.of(context).textTheme.body1.copyWith(
+                  style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontSize: suSetSp(19.0),
                         fontWeight: FontWeight.w500,
                       ),
@@ -160,7 +160,7 @@ class _ChatPersonPageState extends State<ChatPersonPage> {
                 fontStyle: FontStyle.italic,
               ),
             ),
-            style: Theme.of(context).textTheme.body1.copyWith(
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
                   fontSize: suSetSp(20.0),
                   textBaseline: TextBaseline.alphabetic,
                 ),

@@ -383,7 +383,7 @@ class _PublishPostPageState extends State<PublishPostPage>
               ),
             ),
             buildCounter: emptyCounterBuilder,
-            style: currentTheme.textTheme.body1.copyWith(
+            style: currentTheme.textTheme.bodyText2.copyWith(
               fontSize: 22.0.sp,
               textBaseline: TextBaseline.alphabetic,
             ),

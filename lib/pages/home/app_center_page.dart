@@ -30,7 +30,7 @@ class AppCenterPage extends StatelessWidget {
           WebAppIcon(app: webApp, size: 64.0),
           Text(
             webApp.name,
-            style: Theme.of(context).textTheme.body1.copyWith(
+            style: Theme.of(context).textTheme.bodyText2.copyWith(
                   fontSize: 16.0.sp,
                   fontWeight: FontWeight.normal,
                 ),
@@ -78,7 +78,7 @@ class AppCenterPage extends StatelessWidget {
                   alignment: AlignmentDirectional.centerStart,
                   child: Text(
                     WebApp.category[name],
-                    style: Theme.of(context).textTheme.body1.copyWith(
+                    style: Theme.of(context).textTheme.bodyText2.copyWith(
                           fontSize: 20.0.sp,
                           fontWeight: FontWeight.bold,
                         ),

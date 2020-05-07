@@ -77,7 +77,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                   Center(
                     child: Text(
                       '修改签名',
-                      style: Theme.of(context).textTheme.title.copyWith(
+                      style: Theme.of(context).textTheme.headline6.copyWith(
                             fontSize: suSetSp(23.0),
                           ),
                     ),
@@ -86,7 +86,7 @@ class EditSignatureDialogState extends State<EditSignatureDialog> {
                     padding: EdgeInsets.all(suSetWidth(20.0)),
                     child: TextField(
                       autofocus: true,
-                      style: Theme.of(context).textTheme.body1.copyWith(
+                      style: Theme.of(context).textTheme.bodyText2.copyWith(
                             fontSize: suSetSp(20.0),
                             textBaseline: TextBaseline.alphabetic,
                           ),

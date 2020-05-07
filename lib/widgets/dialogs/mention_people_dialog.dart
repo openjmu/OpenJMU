@@ -62,7 +62,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
           '提到用户',
           style: Theme.of(context)
               .textTheme
-              .title
+              .headline6
               .copyWith(fontSize: suSetSp(24.0)),
         ),
       );
@@ -79,7 +79,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
             hintStyle: const TextStyle(textBaseline: TextBaseline.alphabetic),
           ),
           textInputAction: TextInputAction.search,
-          style: Theme.of(context).textTheme.body1.copyWith(
+          style: Theme.of(context).textTheme.bodyText2.copyWith(
                 fontSize: suSetSp(20.0),
                 textBaseline: TextBaseline.alphabetic,
               ),
@@ -100,7 +100,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
         child: Icon(
           Icons.search,
           size: suSetWidth(32.0),
-          color: Theme.of(context).textTheme.body1.color,
+          color: Theme.of(context).textTheme.bodyText2.color,
         ),
       );
 

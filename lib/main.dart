@@ -265,7 +265,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                     '检查网络连接',
                     style: Theme.of(context)
                         .textTheme
-                        .body1
+                        .bodyText1
                         .copyWith(fontSize: 20.0),
                   ),
                 ],

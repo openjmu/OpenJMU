@@ -317,7 +317,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
                     itemTitles[index],
                     style: Theme.of(context)
                         .textTheme
-                        .body1
+                        .bodyText2
                         .copyWith(fontSize: suSetSp(20.0)),
                   ),
                 ],

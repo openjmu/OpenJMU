@@ -97,7 +97,7 @@ class _BackpackPageState extends State<BackpackPage> {
         Text(
           myItems[index].description,
           style:
-              Theme.of(context).textTheme.subtitle.copyWith(fontSize: 18.0.sp),
+              Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 18.0.sp),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),

@@ -127,7 +127,7 @@ class CommentPositionedState extends State<CommentPositioned> {
             : null,
       ),
       enabled: !_commenting,
-      style: Theme.of(context).textTheme.body1.copyWith(
+      style: Theme.of(context).textTheme.bodyText2.copyWith(
             fontSize: suSetSp(20.0),
             textBaseline: TextBaseline.alphabetic,
           ),
