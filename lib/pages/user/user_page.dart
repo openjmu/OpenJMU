@@ -120,7 +120,8 @@ class _UserPageState extends State<UserPage>
       _user = UserAPI.currentUser;
     } else {
       try {
-        final Map<String, dynamic> user = (await UserAPI.getUserInfo(uid: uid)).data;
+        final Map<String, dynamic> user =
+            (await UserAPI.getUserInfo(uid: uid)).data;
         _user = UserInfo.fromJson(user);
       } catch (e) {
         trueDebugPrint('Failed in fetching user information: $e');
@@ -562,10 +563,12 @@ class _UserPageState extends State<UserPage>
                               emptyDivider(width: suSetWidth(8.0)),
                               Text(
                                 _user.name,
-                                style:
-                                    Theme.of(context).textTheme.bodyText2.copyWith(
-                                          fontSize: suSetSp(23.0),
-                                        ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2
+                                    .copyWith(
+                                      fontSize: suSetSp(23.0),
+                                    ),
                               ),
                             ],
                           ),

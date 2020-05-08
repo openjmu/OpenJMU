@@ -248,9 +248,11 @@ class _ConventionDialogState extends State<ConventionDialog> {
             borderRadius: BorderRadius.circular(10.0.w),
           ),
           color: context.themeData.canvasColor,
-          onPressed: canSend ? () {
-            Navigator.of(context).pop(true);
-          } : null,
+          onPressed: canSend
+              ? () {
+                  Navigator.of(context).pop(true);
+                }
+              : null,
           child: Text(
             () {
               final String s = '确认无误';

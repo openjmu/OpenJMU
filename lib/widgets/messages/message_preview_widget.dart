@@ -107,11 +107,13 @@ class _MessagePreviewWidgetState extends State<MessagePreviewWidget>
                         child: user != null
                             ? Text(
                                 '${user.name ?? user.uid}',
-                                style:
-                                    Theme.of(context).textTheme.bodyText2.copyWith(
-                                          fontSize: suSetSp(22.0),
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyText2
+                                    .copyWith(
+                                      fontSize: suSetSp(22.0),
+                                      fontWeight: FontWeight.w500,
+                                    ),
                               )
                             : const SizedBox.shrink(),
                       ),

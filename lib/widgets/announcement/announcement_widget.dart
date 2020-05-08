@@ -86,13 +86,12 @@ class AnnouncementWidget extends StatelessWidget {
             ),
           ),
           onTap: () {
-            final Map<String, dynamic> data = provider.announcements[0].cast<String, dynamic>();
-            ConfirmationDialog.show(
-              context,
-              title: data['title'] as String,
-              content: data['content'] as String,
-              cancelLabel: '朕已阅'
-            );
+            final Map<String, dynamic> data =
+                provider.announcements[0].cast<String, dynamic>();
+            ConfirmationDialog.show(context,
+                title: data['title'] as String,
+                content: data['content'] as String,
+                cancelLabel: '朕已阅');
           },
         );
       },

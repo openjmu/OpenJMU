@@ -227,8 +227,10 @@ class _ChangeLogPageState extends State<ChangeLogPage>
           (i) => contentColumn(sections, i),
         ),
       ),
-      style:
-          Theme.of(context).textTheme.bodyText2.copyWith(fontSize: suSetSp(20.0)),
+      style: Theme.of(context)
+          .textTheme
+          .bodyText2
+          .copyWith(fontSize: suSetSp(20.0)),
     );
   }
 
