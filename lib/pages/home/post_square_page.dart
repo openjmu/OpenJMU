@@ -96,12 +96,31 @@ class PostSquarePage extends StatelessWidget {
         automaticallyImplyLeading: false,
         elevation: 1.0,
         title: Padding(
-          padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+          padding: EdgeInsets.only(right: 20.0.w),
           child: Row(
             children: <Widget>[
               GestureDetector(
                 onTap: Instances.mainPageScaffoldKey.currentState.openDrawer,
-                child: UserAvatar(canJump: false),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(right: 10.0.w),
+                      height: 48.0.w,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: List<Widget>.generate(3, (int _) {
+                          return Container(
+                            width: 18.0.w,
+                            height: 3.0.h,
+                            color: context.themeData.dividerColor,
+                          );
+                        }),
+                      ),
+                    ),
+                    UserAvatar(size: 54.0, canJump: false)
+                  ],
+                ),
               ),
               const Spacer(),
               publishButton(context),

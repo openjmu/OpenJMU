@@ -1,10 +1,6 @@
-import 'dart:async';
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/pages/home/app_center_page.dart';
 import 'package:openjmu/pages/home/apps_page.dart';
 import 'package:openjmu/pages/home/marketing_page.dart';
 import 'package:openjmu/pages/home/message_page.dart';
@@ -28,6 +24,34 @@ class MainPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => MainPageState();
+
+  /// Widget that placed in main page to open the self page.
+  /// 首页顶栏左上角打开个人页的封装部件
+  static Widget selfPageOpener(BuildContext context) {
+    return GestureDetector(
+      onTap: Instances.mainPageScaffoldKey.currentState.openDrawer,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Container(
+            margin: EdgeInsets.only(right: 10.0.w),
+            height: 48.0.w,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List<Widget>.generate(3, (int _) {
+                return Container(
+                  width: 18.0.w,
+                  height: 3.0.h,
+                  color: context.themeData.dividerColor,
+                );
+              }),
+            ),
+          ),
+          UserAvatar(size: 54.0, canJump: false)
+        ],
+      ),
+    );
+  }
 }
 
 class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {

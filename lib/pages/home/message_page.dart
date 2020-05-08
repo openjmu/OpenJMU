@@ -17,68 +17,106 @@ class MessagePage extends StatefulWidget {
 class MessagePageState extends State<MessagePage>
     with TickerProviderStateMixin {
   final _messageScrollController = ScrollController();
-  TabController _tabController;
+//  TabController _tabController;
 
-  @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(
-      initialIndex: Provider.of<SettingsProvider>(
-        currentContext,
-        listen: false,
-      ).homeStartUpIndex[2],
-      length: 1,
-      vsync: this,
-    );
-  }
+//  @override
+//  void initState() {
+//    super.initState();
+//    _tabController = TabController(
+//      initialIndex: Provider.of<SettingsProvider>(
+//        currentContext,
+//        listen: false,
+//      ).homeStartUpIndex[2],
+//      length: 1,
+//      vsync: this,
+//    );
+//  }
 
-  Widget get _tabBar => Padding(
-        padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
-        child: TabBar(
-          isScrollable: true,
-          indicator: RoundedUnderlineTabIndicator(
-            borderSide: BorderSide(
-              color: currentThemeColor,
-              width: suSetHeight(3.0),
-            ),
-            width: suSetWidth(26.0),
-            insets: EdgeInsets.only(bottom: suSetHeight(4.0)),
-          ),
-          labelColor: Theme.of(context).textTheme.bodyText2.color,
-          labelStyle: MainPageState.tabSelectedTextStyle,
-          labelPadding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(20.0),
-          ),
-          unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
-          tabs: <Widget>[
-            Consumer<MessagesProvider>(
-              builder: (_, provider, __) {
-                return Stack(
-                  overflow: Overflow.visible,
-                  children: <Widget>[
-                    Positioned(
-                      top: suSetHeight(kToolbarHeight / 4),
-                      right: -suSetWidth(10.0),
-                      child: Visibility(
-                        visible: provider.unreadCount > 0,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(100),
-                          child: Container(
-                            width: suSetWidth(12.0),
-                            height: suSetWidth(12.0),
-                            color: currentThemeColor,
+  Widget get _tabBar => Row(
+        children: <Widget>[
+          Expanded(child: MainPage.selfPageOpener(context)),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
+              child: Center(
+                child: Consumer<MessagesProvider>(
+                  builder: (_, provider, __) {
+                    return Stack(
+                      overflow: Overflow.visible,
+                      children: <Widget>[
+                        Positioned(
+                          top: suSetHeight(kToolbarHeight / 4),
+                          right: -suSetWidth(10.0),
+                          child: Visibility(
+                            visible: provider.unreadCount > 0,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Container(
+                                width: suSetWidth(12.0),
+                                height: suSetWidth(12.0),
+                                color: currentThemeColor,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    Tab(text: '通知'),
-                  ],
-                );
-              },
+                        Text(
+                          '通知',
+                          style: MainPageState.tabUnselectedTextStyle,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+//              child: TabBar(
+//                isScrollable: true,
+//                indicator: RoundedUnderlineTabIndicator(
+//                  borderSide: BorderSide(
+//                    color: currentThemeColor,
+//                    width: suSetHeight(3.0),
+//                  ),
+//                  width: suSetWidth(26.0),
+//                  insets: EdgeInsets.only(bottom: suSetHeight(4.0)),
+//                ),
+//                labelColor: Theme.of(context).textTheme.bodyText2.color,
+//                labelStyle: MainPageState.tabSelectedTextStyle,
+//                labelPadding: EdgeInsets.symmetric(
+//                  horizontal: suSetWidth(20.0),
+//                ),
+//                unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
+//                tabs: <Widget>[
+//                  Consumer<MessagesProvider>(
+//                    builder: (_, provider, __) {
+//                      return Stack(
+//                        overflow: Overflow.visible,
+//                        children: <Widget>[
+//                          Positioned(
+//                            top: suSetHeight(kToolbarHeight / 4),
+//                            right: -suSetWidth(10.0),
+//                            child: Visibility(
+//                              visible: provider.unreadCount > 0,
+//                              child: ClipRRect(
+//                                borderRadius: BorderRadius.circular(100),
+//                                child: Container(
+//                                  width: suSetWidth(12.0),
+//                                  height: suSetWidth(12.0),
+//                                  color: currentThemeColor,
+//                                ),
+//                              ),
+//                            ),
+//                          ),
+//                          Tab(text: '通知'),
+//                        ],
+//                      );
+//                    },
+//                  ),
+//                ],
+//                controller: _tabController,
+//              ),
             ),
-          ],
-          controller: _tabController,
-        ),
+          ),
+          const Spacer(),
+        ],
       );
 
   Widget get _messageList => Consumer2<MessagesProvider, WebAppsProvider>(
@@ -86,11 +124,11 @@ class MessagePageState extends State<MessagePage>
           final shouldDisplayAppsMessages =
               (messageProvider.appsMessages?.isNotEmpty ?? false) &&
                   (webAppsProvider.apps?.isNotEmpty ?? false);
-//            final shouldDisplayPersonalMessages =
-//                messageProvider.personalMessages.isNotEmpty;
+//          final shouldDisplayPersonalMessages =
+//            messageProvider.personalMessages.isNotEmpty;
           final shouldDisplayMessages = shouldDisplayAppsMessages
-//                    ||
-//                    shouldDisplayPersonalMessages
+//                ||
+//                shouldDisplayPersonalMessages
               ;
 
           if (!shouldDisplayMessages) {
@@ -187,12 +225,13 @@ class MessagePageState extends State<MessagePage>
         centerTitle: false,
         automaticallyImplyLeading: false,
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: <Widget>[
-          _messageList,
-        ],
-      ),
+      body: _messageList,
+//      body: TabBarView(
+//        controller: _tabController,
+//        children: <Widget>[
+//          _messageList,
+//        ],
+//      ),
     );
   }
 }

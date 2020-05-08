@@ -7,6 +7,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:extended_list/extended_list.dart';
 
 import 'package:openjmu/constants/constants.dart';
+import 'package:openjmu/pages/main_page.dart';
 import 'package:openjmu/widgets/cards/team_post_preview_card.dart';
 
 class MarketingPage extends StatefulWidget {
@@ -97,10 +98,10 @@ class _MarketingPageState extends State<MarketingPage> {
           children: <Widget>[
             Container(
               margin: EdgeInsets.only(right: suSetWidth(6.0)),
-              child: Icon(
-                Icons.create,
+              child: SvgPicture.asset(
+                R.ASSETS_ICONS_SEND_SVG,
+                height: suSetHeight(22.0),
                 color: Colors.white,
-                size: suSetWidth(28.0),
               ),
             ),
             Text(
@@ -170,13 +171,10 @@ class _MarketingPageState extends State<MarketingPage> {
         automaticallyImplyLeading: false,
         elevation: 1.0,
         title: Padding(
-          padding: EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+          padding: EdgeInsets.only(right: 20.0.w),
           child: Row(
             children: <Widget>[
-              GestureDetector(
-                onTap: Instances.mainPageScaffoldKey.currentState.openDrawer,
-                child: UserAvatar(canJump: false),
-              ),
+              MainPage.selfPageOpener(context),
               const Spacer(),
               publishButton,
               notificationButton,

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:extended_tabs/extended_tabs.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/main_page.dart';
@@ -25,7 +24,7 @@ class AppsPageState extends State<AppsPage>
   final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
   final _scrollController = ScrollController();
 
-  TabController _tabController;
+  int currentIndex = 0;
 
   @override
   bool get wantKeepAlive => true;
@@ -34,14 +33,10 @@ class AppsPageState extends State<AppsPage>
   void initState() {
     super.initState();
 
-    _tabController = TabController(
-      initialIndex: Provider.of<SettingsProvider>(
-        currentContext,
-        listen: false,
-      ).homeStartUpIndex[1],
-      length: tabs.length,
-      vsync: this,
-    );
+    currentIndex = Provider.of<SettingsProvider>(
+      currentContext,
+      listen: false,
+    ).homeStartUpIndex[1];
 
     Instances.eventBus
       ..on<ScrollToTopEvent>().listen((event) {
@@ -71,90 +66,92 @@ class AppsPageState extends State<AppsPage>
   @override
   void dispose() {
     _scrollController?.dispose();
-    _tabController?.dispose();
     super.dispose();
   }
 
   Widget get _appBar => FixedAppBar(
         automaticallyImplyLeading: false,
         title: Padding(
-          padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
+          padding: EdgeInsets.only(right: 20.0.w),
           child: Row(
             children: <Widget>[
-              Expanded(child: _tabBar),
+              MainPage.selfPageOpener(context),
+//              Expanded(child: _tabBar),
+              const Spacer(),
               _refreshIcon,
+              switchButton,
             ],
           ),
         ),
       );
 
-  Widget get _tabBar => TabBar(
-        isScrollable: true,
-        indicator: RoundedUnderlineTabIndicator(
-          borderSide: BorderSide(
-            color: currentThemeColor,
-            width: suSetHeight(3.0),
-          ),
-          width: suSetWidth(26.0),
-          insets: EdgeInsets.only(bottom: suSetHeight(4.0)),
-        ),
-        labelColor: Theme.of(context).textTheme.bodyText2.color,
-        labelStyle: MainPageState.tabSelectedTextStyle,
-        labelPadding: EdgeInsets.symmetric(
-          horizontal: suSetWidth(16.0),
-        ),
-        unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
-        tabs: List<Tab>.generate(tabs.length, (i) => _tab(tabs[i])),
-        controller: _tabController,
-      );
+//  Widget get _tabBar => TabBar(
+//        isScrollable: true,
+//        indicator: RoundedUnderlineTabIndicator(
+//          borderSide: BorderSide(
+//            color: currentThemeColor,
+//            width: suSetHeight(3.0),
+//          ),
+//          width: suSetWidth(26.0),
+//          insets: EdgeInsets.only(bottom: suSetHeight(4.0)),
+//        ),
+//        labelColor: Theme.of(context).textTheme.bodyText2.color,
+//        labelStyle: MainPageState.tabSelectedTextStyle,
+//        labelPadding: EdgeInsets.symmetric(
+//          horizontal: suSetWidth(16.0),
+//        ),
+//        unselectedLabelStyle: MainPageState.tabUnselectedTextStyle,
+//        tabs: List<Tab>.generate(tabs.length, (i) => _tab(tabs[i])),
+//        controller: _tabController,
+//      );
 
-  Widget _tab(String name) {
-    Widget tab;
-    switch (name) {
-      case '成绩':
-        tab = Tab(text: name);
-        break;
-      case '课程表':
-        tab = Tab(
-          child: GestureDetector(
-            onTap: (Instances.courseSchedulePageStateKey.currentState != null &&
-                    Instances.courseSchedulePageStateKey.currentState.hasCourse)
-                ? () {
-                    if (_tabController.index != 0) {
-                      _tabController.animateTo(0);
-                    } else {
-                      Instances.courseSchedulePageStateKey.currentState
-                          .showWeekWidget();
-                    }
-                  }
-                : null,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(name),
-                if (Instances.courseSchedulePageStateKey.currentState != null &&
-                    Instances
-                        .courseSchedulePageStateKey.currentState.firstLoaded &&
-                    Instances.courseSchedulePageStateKey.currentState.hasCourse)
-                  AnimatedCrossFade(
-                    firstChild:
-                        Icon(Icons.keyboard_arrow_down, size: suSetWidth(28.0)),
-                    secondChild:
-                        Icon(Icons.keyboard_arrow_up, size: suSetWidth(28.0)),
-                    crossFadeState: Instances
-                            .courseSchedulePageStateKey.currentState.showWeek
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
-                    duration: Instances.courseSchedulePageStateKey.currentState
-                        .showWeekDuration,
-                  ),
-              ],
-            ),
-          ),
-        );
-    }
-    return tab;
-  }
+//  Widget _tab(String name) {
+//    Widget tab;
+//    switch (name) {
+//      case '成绩':
+//        tab = Tab(text: name);
+//        break;
+//      case '课程表':
+//        tab = Tab(
+//          child: GestureDetector(
+//            onTap: (Instances.courseSchedulePageStateKey.currentState != null &&
+//                    Instances.courseSchedulePageStateKey.currentState.hasCourse)
+//                ? () {
+//                    if (_tabController.index != 0) {
+//                      _tabController.animateTo(0);
+//                    } else {
+//                      Instances.courseSchedulePageStateKey.currentState
+//                          .showWeekWidget();
+//                    }
+//                  }
+//                : null,
+//            child: Row(
+//              mainAxisSize: MainAxisSize.min,
+//              children: <Widget>[
+//                Text(name),
+//                if (Instances.courseSchedulePageStateKey.currentState != null &&
+//                    Instances
+//                        .courseSchedulePageStateKey.currentState.firstLoaded &&
+//                    Instances.courseSchedulePageStateKey.currentState.hasCourse)
+//                  AnimatedCrossFade(
+//                    firstChild:
+//                        Icon(Icons.keyboard_arrow_down, size: suSetWidth(28.0)),
+//                    secondChild:
+//                        Icon(Icons.keyboard_arrow_up, size: suSetWidth(28.0)),
+//                    crossFadeState: Instances
+//                            .courseSchedulePageStateKey.currentState.showWeek
+//                        ? CrossFadeState.showSecond
+//                        : CrossFadeState.showFirst,
+//                    duration: Instances.courseSchedulePageStateKey.currentState
+//                        .showWeekDuration,
+//                  ),
+//              ],
+//            ),
+//          ),
+//        );
+//    }
+//    return tab;
+//  }
 
   Widget get _refreshIcon => SizedBox(
         width: suSetWidth(60.0),
@@ -162,10 +159,50 @@ class AppsPageState extends State<AppsPage>
           alignment: Alignment.centerRight,
           icon: Icon(Icons.refresh, size: suSetWidth(32.0)),
           onPressed: () {
-            Instances.eventBus
-                .fire(AppCenterRefreshEvent(_tabController.index));
+            Instances.eventBus.fire(AppCenterRefreshEvent(currentIndex));
           },
         ),
+      );
+
+  Widget get switchButton => MaterialButton(
+        color: currentThemeColor,
+        minWidth: suSetWidth(currentIndex == 0 ? 100.0 : 120.0),
+        height: suSetHeight(50.0),
+        padding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(suSetWidth(13.0)),
+        ),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(right: suSetWidth(6.0)),
+              child: SvgPicture.asset(
+                R.ASSETS_ICONS_BOTTOM_NAVIGATION_SCHOOL_WORK_SVG,
+                height: suSetHeight(22.0),
+                color: Colors.white,
+              ),
+            ),
+            Text(
+              currentIndex == 0 ? '成绩' : '课程表',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: suSetSp(20.0),
+                height: 1.24,
+              ),
+            ),
+          ],
+        ),
+        onPressed: () {
+          setState(() {
+            if (currentIndex == 0) {
+              currentIndex = 1;
+            } else {
+              currentIndex = 0;
+            }
+          });
+        },
       );
 
   @mustCallSuper
@@ -178,12 +215,8 @@ class AppsPageState extends State<AppsPage>
         body: Selector<ThemesProvider, bool>(
           selector: (_, provider) => provider.dark,
           builder: (_, dark, __) {
-            return ExtendedTabBarView(
-              physics: tabs.contains('成绩')
-                  ? const ScrollPhysics()
-                  : const NeverScrollableScrollPhysics(),
-              cacheExtent: tabs.length,
-              controller: _tabController,
+            return IndexedStack(
+              index: currentIndex,
               children: <Widget>[
                 if (tabs.contains('课程表'))
                   currentUser.isTeacher != null
