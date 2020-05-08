@@ -2,18 +2,55 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2019-11-17 07:30
 ///
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-class ConventionDialog extends StatelessWidget {
+class ConventionDialog extends StatefulWidget {
   static Future<bool> show(BuildContext context) => showDialog<bool>(
         context: context,
         builder: (_) => ConventionDialog(),
         barrierDismissible: false,
       );
+
+  @override
+  _ConventionDialogState createState() => _ConventionDialogState();
+}
+
+class _ConventionDialogState extends State<ConventionDialog> {
+  Timer countDownTimer;
+  int countDown = 5;
+
+  bool get canSend => countDown == 0;
+
+  @override
+  void initState() {
+    super.initState();
+    countDownTimer = Timer.periodic(1.seconds, (Timer timer) {
+      --countDown;
+      if (countDown == 0) {
+        cancelTimer();
+      }
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    cancelTimer();
+    super.dispose();
+  }
+
+  void cancelTimer() {
+    countDownTimer?.cancel();
+    countDownTimer = null;
+  }
 
   Widget get header => Padding(
         padding: EdgeInsets.symmetric(
@@ -208,15 +245,22 @@ class ConventionDialog extends StatelessWidget {
           highlightElevation: 2.0,
           height: suSetHeight(56.0),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+            borderRadius: BorderRadius.circular(10.0.w),
           ),
-          color: Theme.of(context).canvasColor,
-          onPressed: () {
+          color: context.themeData.canvasColor,
+          onPressed: canSend ? () {
             Navigator.of(context).pop(true);
-          },
+          } : null,
           child: Text(
-            '确认无误',
-            style: TextStyle(fontSize: suSetSp(22.0)),
+            () {
+              final String s = '确认无误';
+              if (canSend) {
+                return s;
+              } else {
+                return '$s(${countDown}s)';
+              }
+            }(),
+            style: TextStyle(fontSize: suSetSp(21.0)),
           ),
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
@@ -237,7 +281,7 @@ class ConventionDialog extends StatelessWidget {
           },
           child: Text(
             '我再想想',
-            style: TextStyle(color: Colors.white, fontSize: suSetSp(22.0)),
+            style: TextStyle(color: Colors.white, fontSize: suSetSp(21.0)),
           ),
           materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
@@ -245,9 +289,9 @@ class ConventionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Material(
-        type: MaterialType.transparency,
+    return Material(
+      type: MaterialType.transparency,
+      child: Center(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(suSetWidth(20.0)),
           child: Container(
