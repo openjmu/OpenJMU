@@ -670,10 +670,12 @@ class _PostCardState extends State<PostCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: !post.isShield
                     ? <Widget>[
-                        Padding(
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                            vertical: suSetHeight(10.0),
+                          ),
                           padding: EdgeInsets.symmetric(
                             horizontal: suSetWidth(contentPadding),
-                            vertical: suSetHeight(10.0),
                           ),
                           child: Row(
                             children: <Widget>[

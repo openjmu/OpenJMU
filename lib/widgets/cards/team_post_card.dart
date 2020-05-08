@@ -47,7 +47,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
 
   Widget _header(BuildContext context) => Container(
         height: suSetHeight(64.0),
-        padding: EdgeInsets.symmetric(
+        margin: EdgeInsets.symmetric(
           vertical: suSetHeight(4.0),
         ),
         child: Row(
