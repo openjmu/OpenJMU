@@ -32,7 +32,7 @@ dependencies:
   flutter_displaymode:
     git:
       url: https://github.com/AlexVincent525/flutter_displaymode.git
-      ref: d608e19991bc5f5734768971727e8465c10c929f
+      ref: 7fcc1f9752d626f8c76b29029a5bd7d80ab4a9de
   flutter_icons: ^1.1.0
   flutter_inappwebview:
     git:
