@@ -91,15 +91,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         fontWeight: FontWeight.w300,
       );
 
-  /// Controller for app center page.
-  /// 应用页控制器
-  final PageController appPageController = PageController();
-
-  /// Stream controller for vertical page scrolling offset percent.
-  /// 垂直滚动偏移百分比的流控制器，用于更改遮罩
-  final StreamController<double> pageOffsetStreamController =
-      StreamController<double>();
-
   /// Index for pages.
   /// 当前页面索引
   int _currentIndex;
@@ -121,10 +112,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     _currentIndex = widget.initAction ??
         Provider.of<SettingsProvider>(currentContext, listen: false)
             .homeSplashIndex;
-
-    appPageController.addListener(() {
-      pageOffsetStreamController.add(appPageController.page);
-    });
 
     Instances.eventBus
       ..on<ActionsEvent>().listen((ActionsEvent event) {
@@ -179,37 +166,11 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         initIndex: _currentIndex,
         items: List<FABBottomAppBarItem>.generate(
           pagesTitle.length,
-          (int i) =>
-              FABBottomAppBarItem(iconPath: pagesIcon[i], text: pagesTitle[i]),
+          (int i) => FABBottomAppBarItem(
+            iconPath: pagesIcon[i],
+            text: pagesTitle[i],
+          ),
         ),
-      );
-
-  /// Backdrop for content when app center part lifting up.
-  /// 当应用中心拉起时内容区的遮罩
-  Widget get contentBackdrop => StreamBuilder<double>(
-        initialData: 0.0,
-        stream: pageOffsetStreamController.stream,
-        builder: (BuildContext _, AsyncSnapshot<double> snapshot) {
-          final double page = snapshot.data;
-          return BackdropFilter(
-            filter: ui.ImageFilter.blur(sigmaX: 5.0 * page, sigmaY: 5.0 * page),
-            child: IgnorePointer(
-              ignoring: page < 0.7,
-              child: GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  appPageController.animateToPage(
-                    0,
-                    duration: kThemeAnimationDuration,
-                    curve: Curves.easeInOut,
-                  );
-                },
-                child: Opacity(
-                    opacity: page, child: Container(color: Colors.black54)),
-              ),
-            ),
-          );
-        },
       );
 
   /// Search bar for search pages.
@@ -255,62 +216,29 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
     super.build(context);
     return WillPopScope(
       onWillPop: doubleBackExit,
-      child: Material(
-        type: MaterialType.transparency,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          controller: appPageController,
-          physics: const PageScrollPhysics(),
-          children: <Widget>[
-            SizedBox(
-              width: Screens.width,
-              height: Screens.height,
-              child: Stack(
-                children: <Widget>[
-                  Positioned.fill(
-                    child: Scaffold(
-                      key: Instances.mainPageScaffoldKey,
-                      body: SafeArea(
-                        child: Column(
-                          children: <Widget>[
-                            announcementWidget,
-                            Expanded(
-                              child: IndexedStack(
-                                children: <Widget>[
-                                  const PostSquarePage(),
-                                  const MarketingPage(),
-                                  AppsPage(key: Instances.appsPageStateKey),
-                                  const MessagePage(),
-                                ],
-                                index: _currentIndex,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      drawer: SelfPage(),
-                      drawerEdgeDragWidth: Screens.width * 0.25,
-                      bottomNavigationBar: bottomNavigationBar,
-                    ),
-                  ),
-                  Positioned.fill(child: contentBackdrop),
-                ],
+      child: Scaffold(
+        key: Instances.mainPageScaffoldKey,
+        body: SafeArea(
+          child: Column(
+            children: <Widget>[
+              announcementWidget,
+              Expanded(
+                child: IndexedStack(
+                  children: <Widget>[
+                    const PostSquarePage(),
+                    const MarketingPage(),
+                    AppsPage(key: Instances.appsPageStateKey),
+                    const MessagePage(),
+                  ],
+                  index: _currentIndex,
+                ),
               ),
-            ),
-            Container(
-              width: Screens.width,
-              height: Screens.height * 0.7,
-              padding: EdgeInsets.symmetric(horizontal: 28.0.w),
-              color: Theme.of(context).primaryColor,
-              child: Column(
-                children: <Widget>[
-                  searchBar,
-                  const Expanded(child: AppCenterPage()),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
+        drawer: SelfPage(),
+        drawerEdgeDragWidth: Screens.width * 0.0666,
+        bottomNavigationBar: bottomNavigationBar,
       ),
     );
   }
