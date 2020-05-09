@@ -215,7 +215,14 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   Widget build(BuildContext context) {
     super.build(context);
     return WillPopScope(
-      onWillPop: doubleBackExit,
+      onWillPop: () async {
+        if (Instances.mainPageScaffoldKey.currentState.isDrawerOpen) {
+          Instances.mainPageScaffoldKey.currentState.openEndDrawer();
+          return false;
+        } else {
+          return doubleBackExit();
+        }
+      },
       child: Scaffold(
         key: Instances.mainPageScaffoldKey,
         body: SafeArea(
