@@ -32,7 +32,7 @@ dependencies:
   flutter_displaymode:
     git:
       url: https://github.com/AlexVincent525/flutter_displaymode.git
-      ref: 7fcc1f9752d626f8c76b29029a5bd7d80ab4a9de
+      ref: "7fcc1f9752d626f8c76b29029a5bd7d80ab4a9de"
   flutter_icons: ^1.1.0
   flutter_inappwebview:
     git:
@@ -62,7 +62,7 @@ dependencies:
   path_provider: 1.6.7
   permission_handler: 4.2.0+hotfix.2
   photo_manager: 0.5.0
-  provider: 4.0.2
+  provider: 4.1.0
   pull_to_refresh_notification: ^0.3.3
   qr_flutter: 3.2.0
   quick_actions: ^0.4.0+4
