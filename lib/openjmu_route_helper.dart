@@ -161,9 +161,11 @@ class FFRouteSettings extends RouteSettings {
     this.routeName,
     this.showStatusBar,
     String name,
-    bool isInitialRoute = false,
     Object arguments,
-  }) : super(name: name, arguments: arguments);
+  }) : super(
+          name: name,
+          arguments: arguments,
+        );
 
   final String routeName;
   final bool showStatusBar;

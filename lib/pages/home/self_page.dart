@@ -2,46 +2,35 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020-03-09 20:39
 ///
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/manually_set_sid_dialog.dart';
 
 class SelfPage extends StatelessWidget {
-  List<Map<String, dynamic>> get actions => <Map<String, dynamic>>[
-        {
-          'icon': R.ASSETS_ICONS_SELF_PAGE_SCAN_CODE_SVG,
-          'name': '扫码',
-          'route': Routes.OPENJMU_SCAN_QRCODE,
-        },
-        {
-          'icon': R.ASSETS_ICONS_SELF_PAGE_BACKPACK_SVG,
-          'name': '背包',
-          'route': Routes.OPENJMU_BACKPACK,
-        },
-        {
-          'icon': R.ASSETS_ICONS_SELF_PAGE_CHANGE_THEME_SVG,
-          'name': '主题',
-          'route': Routes.OPENJMU_THEME,
-        },
-        {
-          'icon': R.ASSETS_ICONS_SELF_PAGE_NIGHT_MODE_SVG,
-          'name': '夜间模式',
-          'action': () {
-            final ThemesProvider provider =
-                Provider.of<ThemesProvider>(currentContext, listen: false);
-            if (!provider.platformBrightness) {
-              provider.dark = !provider.dark;
-            }
-          },
-        },
-      ];
-
   List<List<Map<String, dynamic>>> get settingsSection =>
       <List<Map<String, dynamic>>>[
         [
+          {
+            'name': '背包',
+            'icon': R.ASSETS_ICONS_SELF_PAGE_BACKPACK_SVG,
+            'route': Routes.OPENJMU_BACKPACK,
+          },
+          {
+            'icon': R.ASSETS_ICONS_SELF_PAGE_CHANGE_THEME_SVG,
+            'name': '主题',
+            'route': Routes.OPENJMU_THEME,
+          },
+          {
+            'icon': R.ASSETS_ICONS_SELF_PAGE_NIGHT_MODE_SVG,
+            'name': '夜间模式',
+            'action': (BuildContext context) {
+              final ThemesProvider provider = context.read<ThemesProvider>();
+              if (!provider.platformBrightness) {
+                provider.dark = !provider.dark;
+              }
+            },
+          },
           {
             'name': '偏好设置',
             'icon': R.ASSETS_ICONS_SETTINGS_LINE_SVG,
@@ -71,7 +60,7 @@ class SelfPage extends StatelessWidget {
       ];
 
   /// 顶部内容基础高度
-  double get headerHeight => 200.0;
+  double get headerHeight => 186.0;
 
   /// Handler for setting item.
   /// 设置项的回调处理
@@ -89,38 +78,7 @@ class SelfPage extends StatelessWidget {
   Widget headerWrapper({@required Widget child}) {
     return SizedBox(
       height: headerHeight.h,
-      child: Stack(
-        overflow: Overflow.visible,
-        children: <Widget>[
-          Positioned(
-            top: 0.0,
-            left: 0.0,
-            right: 0.0,
-            bottom: -30.0.w,
-            child: SizedBox(
-              width: double.maxFinite,
-              child: Image(
-                image: UserAPI.getAvatarProvider(),
-                width: Screens.width,
-                fit: BoxFit.fitWidth,
-              ),
-            ),
-          ),
-          Positioned(
-            top: 0.0,
-            left: 0.0,
-            right: 0.0,
-            bottom: -30.0.w,
-            child: ClipRect(
-              child: BackdropFilter(
-                filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                child: Container(color: const Color.fromARGB(120, 50, 50, 50)),
-              ),
-            ),
-          ),
-          Positioned.fill(child: child),
-        ],
-      ),
+      child: child,
     );
   }
 
@@ -193,26 +151,14 @@ class SelfPage extends StatelessWidget {
   /// 内容部件封装
   Widget contentWrapper({@required Widget child}) {
     return Expanded(
-      child: OverflowBox(
-        child: Container(
-          width: double.maxFinite,
-          padding: EdgeInsets.all(20.0.w),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(25.0.w),
-              topRight: Radius.circular(25.0.w),
-            ),
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                blurRadius: 2.0,
-                color: currentTheme.dividerColor,
-                offset: Offset(0, -2.0.h),
-              ),
-            ],
-            color: currentTheme.primaryColor,
-          ),
-          child: child,
+      child: Container(
+        width: double.maxFinite,
+        padding: EdgeInsets.symmetric(
+          horizontal: 32.0.w,
+          vertical: 20.0.w,
         ),
+        color: currentTheme.primaryColor,
+        child: child,
       ),
     );
   }
@@ -221,13 +167,13 @@ class SelfPage extends StatelessWidget {
   Widget get signButton => Consumer<SignProvider>(
         builder: (BuildContext _, SignProvider provider, Widget __) {
           return MaterialButton(
-            color: currentThemeColor,
-            minWidth: (provider.hasSigned ? 130.0 : 100.0).w,
+            color: Colors.transparent,
+            elevation: 0.0,
+            highlightElevation: 0.0,
+            focusElevation: 0.0,
+            hoverElevation: 0.0,
             height: 50.0.h,
             padding: EdgeInsets.zero,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(13.0.w),
-            ),
             materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -249,7 +195,7 @@ class SelfPage extends StatelessWidget {
                         ? Icon(
                             Icons.location_on,
                             color: Colors.white,
-                            size: 28.0.w,
+                            size: 36.0.w,
                           )
                         : SvgPicture.asset(
                             R.ASSETS_ICONS_SIGN_LINE_SVG,
@@ -258,7 +204,7 @@ class SelfPage extends StatelessWidget {
                           ),
                   ),
                 Text(
-                  provider.hasSigned ? '已签${provider.signedCount}天' : '签到',
+                  '${provider.signedCount}',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20.0.sp,
@@ -276,18 +222,26 @@ class SelfPage extends StatelessWidget {
         },
       );
 
+  /// 扫描二维码按钮
+  Widget get scanQrCodeButton => IconButton(
+    splashColor: Colors.white,
+    onPressed: () {
+      navigatorState.pushNamed(Routes.OPENJMU_SCAN_QRCODE);
+    },
+    icon: SvgPicture.asset(
+      R.ASSETS_ICONS_SELF_PAGE_SCAN_CODE_SVG,
+      color: Colors.white,
+      width: 56.0.w,
+    ),
+  );
+
   /// Section view for settings.
   /// 设置项的分区部件
   Widget settingSectionListView(BuildContext context, int index) {
-    return ListView.separated(
+    return ListView.builder(
       padding: EdgeInsets.zero,
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
-      separatorBuilder: (BuildContext _, int __) => separator(
-        context,
-        color: Theme.of(context).canvasColor,
-        height: 1.0.h,
-      ),
       itemCount: settingsSection[index].length,
       itemBuilder: (BuildContext _, int itemIndex) =>
           settingItem(context, index, itemIndex),
@@ -301,7 +255,7 @@ class SelfPage extends StatelessWidget {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       child: Container(
-        height: 64.0.h,
+        height: 58.0.h,
         child: Row(
           children: <Widget>[
             Padding(
@@ -363,7 +317,7 @@ class SelfPage extends StatelessWidget {
                 '(DANGER)\n清除应用数据',
                 style: TextStyle(
                   color: currentThemeColor,
-                  fontSize: 20.0.sp,
+                  fontSize: 14.0.sp,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
@@ -371,6 +325,94 @@ class SelfPage extends StatelessWidget {
             ),
           ),
         ),
+      );
+
+  Widget commonApps(BuildContext context) => Container(
+    margin: EdgeInsets.symmetric(vertical: 10.0.h),
+    height: 130.0.h,
+    child: Selector<WebAppsProvider, Set<WebApp>>(
+      selector: (BuildContext _, WebAppsProvider provider) =>
+      provider.apps,
+      builder: (BuildContext _, Set<WebApp> apps, Widget __) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(bottom: 16.0.h),
+              child: Text(
+                '常用应用',
+                style: TextStyle(fontSize: 14.0.sp),
+              ),
+            ),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  if (true)
+                    ...List<Widget>.generate(3, (int index) {
+                      final WebApp app =
+                      apps.elementAt(index + 10);
+                      return Column(
+                        mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          WebAppIcon(app: app, size: 72.0),
+                          Text(
+                            app.name,
+                            style: TextStyle(fontSize: 12.0),
+                          ),
+                        ],
+                      );
+                    })
+                  else
+                    Expanded(
+                      child: Center(
+                        child: Text(
+                          '常用应用会出现在这里\n点击右侧按钮打开应用中心',
+                          style: TextStyle(
+                            fontSize: 14.0.sp,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  allWebAppsButton(context),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    ),
+  );
+
+  /// 前往应用中心的按钮
+  Widget allWebAppsButton(BuildContext context) => MaterialButton(
+    color: context.themeData.canvasColor,
+    minWidth: 56.0.w,
+    height: 56.0.w,
+    elevation: 0.0,
+    padding: EdgeInsets.zero,
+    materialTapTargetSize:
+    MaterialTapTargetSize.shrinkWrap,
+    shape: CircleBorder(),
+    child: SvgPicture.asset(
+      R.ASSETS_ICONS_ARROW_RIGHT_SVG,
+      color: context.themeData.iconTheme.color
+          .withOpacity(0.5),
+      width: 32.0.w,
+    ),
+    onPressed: () {
+      navigatorState.pushNamed(Routes.OPENJMU_APP_CENTER_PAGE);
+    },
+  );
+
+  /// Common divider widget.
+  /// 统一的分割线部件
+  Widget get divider => Container(
+        margin: EdgeInsets.symmetric(vertical: 20.0.h),
+        height: 2.0.h,
+        color: currentTheme.dividerColor,
       );
 
   /// Current date tips.
@@ -482,66 +524,41 @@ class SelfPage extends StatelessWidget {
       width: Screens.width * 0.85,
       child: Column(
         children: <Widget>[
-          headerWrapper(child: userCard),
-          contentWrapper(
-            child: Column(
-              children: <Widget>[
-                Row(
+          headerWrapper(
+            child: Container(
+              padding: EdgeInsets.all(30.0.w),
+              color: currentThemeColor,
+              child: SafeArea(
+                child: Row(
                   children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(right: 20.0.w),
-                      child: UserAvatar(size: 44.0),
-                    ),
+                    UserAvatar(size: 64.0),
+                    SizedBox(width: 20.0.w),
                     Expanded(
                       child: Text(
-                        '${currentUser.name ?? currentUser.workId}',
-                        style: TextStyle(fontSize: 21.0.sp),
+                        currentUser.name,
+                        style: TextStyle(
+                          fontSize: 23.0.sp,
+                          color: Colors.white,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     signButton,
+                    scanQrCodeButton,
                   ],
                 ),
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 20.0.h),
-                  height: 80.0.h,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children:
-                        List<Widget>.generate(actions.length, (int index) {
-                      final Map<String, dynamic> action = actions[index];
-                      return GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          if (action['action'] != null) {
-                            (action['action'] as VoidCallback)();
-                          }
-                          if (action['route'] != null) {
-                            navigatorState.pushNamed(action['route'] as String);
-                          }
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            SvgPicture.asset(
-                              action['icon'] as String,
-                              width: 40.0.w,
-                              color: currentThemeColor,
-                            ),
-                            Text(
-                              action['name'] as String,
-                              style: TextStyle(fontSize: 16.0.sp),
-                            ),
-                          ],
-                        ),
-                      );
-                    }),
-                  ),
-                ),
+              ),
+            ),
+          ),
+          contentWrapper(
+            child: Column(
+              children: <Widget>[
+                commonApps(context),
+                divider,
                 Expanded(
                   child: ListView.separated(
-                    padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+                    padding: EdgeInsets.zero,
                     separatorBuilder: (BuildContext _, int __) =>
                         separator(context),
                     itemCount: settingsSection.length,
@@ -550,6 +567,7 @@ class SelfPage extends StatelessWidget {
                   ),
                 ),
                 clearBoxesButton(context),
+                divider,
                 currentDay(context),
               ],
             ),

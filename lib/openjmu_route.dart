@@ -6,6 +6,7 @@
 import 'package:flutter/widgets.dart';
 
 import 'pages/chat/chat_app_message_page.dart';
+import 'pages/home/app_center_page.dart';
 import 'pages/home/scan_qrcode_page.dart';
 import 'pages/home/search_page.dart';
 import 'pages/login_page.dart';
@@ -35,6 +36,7 @@ import 'widgets/image/photo_selector.dart';
 import 'widgets/image/photo_selector_viewer.dart';
 import 'widgets/webview/in_app_webview.dart';
 
+// ignore_for_file: argument_type_not_assignable
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   switch (name) {
     case 'openjmu://about':
@@ -58,6 +60,11 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         ),
         routeName: '新增转发',
         pageRouteType: PageRouteType.transparent,
+      );
+    case 'openjmu://app-center-page':
+      return RouteResult(
+        widget: AppCenterPage(),
+        routeName: '应用中心',
       );
     case 'openjmu://backpack':
       return RouteResult(
@@ -280,6 +287,7 @@ const List<String> routeNames = <String>[
   'openjmu://about',
   'openjmu://add-comment',
   'openjmu://add-forward',
+  'openjmu://app-center-page',
   'openjmu://backpack',
   'openjmu://changelog-page',
   'openjmu://chat-app-message-page',
@@ -333,6 +341,12 @@ class Routes {
   /// [arguments] : [post]
   /// [pageRouteType] : PageRouteType.transparent
   static const String OPENJMU_ADD_FORWARD = 'openjmu://add-forward';
+
+  /// 应用中心
+  ///
+  /// [name] : openjmu://app-center-page
+  /// [routeName] : 应用中心
+  static const String OPENJMU_APP_CENTER_PAGE = 'openjmu://app-center-page';
 
   /// 背包页
   ///

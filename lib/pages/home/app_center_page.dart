@@ -6,21 +6,25 @@ import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
+@FFRoute(name: 'openjmu://app-center-page', routeName: '应用中心')
 class AppCenterPage extends StatelessWidget {
-  const AppCenterPage({Key key}) : super(key: key);
-
+  /// 整体列表组件
   Widget categoryListView(BuildContext context) {
     final List<Widget> _list = <Widget>[];
     WebApp.category.forEach((String name, String value) {
       _list.add(getSectionColumn(context, name));
     });
-    return ListView.builder(
-      padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
-      itemCount: _list.length,
-      itemBuilder: (BuildContext _, int index) => _list[index],
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+      child: ListView.builder(
+        padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
+        itemCount: _list.length,
+        itemBuilder: (BuildContext _, int index) => _list[index],
+      ),
     );
   }
 
+  /// 应用部件
   Widget appWidget(BuildContext context, WebApp webApp) {
     return FlatButton(
       padding: EdgeInsets.zero,
@@ -56,12 +60,13 @@ class AppCenterPage extends StatelessWidget {
     );
   }
 
+  /// 分类列表组件
   Widget getSectionColumn(context, String name) {
     return Selector<WebAppsProvider, Map<String, Set<WebApp>>>(
       selector: (BuildContext _, WebAppsProvider provider) =>
           provider.appCategoriesList,
       builder: (BuildContext _, Map<String, Set<WebApp>> appCategoriesList,
-          Widget __) {
+          Widget __,) {
         final Set<WebApp> list = appCategoriesList[name];
         if (list?.isNotEmpty ?? false) {
           return Column(
@@ -108,11 +113,18 @@ class AppCenterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<WebAppsProvider, bool>(
-      selector: (BuildContext _, WebAppsProvider provider) => provider.fetching,
-      builder: (BuildContext _, bool fetching, Widget __) {
-        return fetching ? SpinKitWidget() : categoryListView(context);
-      },
+    return Scaffold(
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(
+          title: Text('应用中心'),
+        ),
+        body: Selector<WebAppsProvider, bool>(
+          selector: (BuildContext _, WebAppsProvider provider) => provider.fetching,
+          builder: (BuildContext _, bool fetching, Widget __) {
+            return fetching ? SpinKitWidget() : categoryListView(context);
+          },
+        ),
+      ),
     );
   }
 }
