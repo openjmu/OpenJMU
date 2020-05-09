@@ -104,6 +104,10 @@ class ThemesProvider with ChangeNotifier {
         appBarTheme: AppBarTheme(brightness: Brightness.light, elevation: 1),
         iconTheme: IconThemeData(color: Colors.black),
         primaryIconTheme: IconThemeData(color: Colors.black),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          foregroundColor: Colors.white,
+          backgroundColor: currentColor,
+        ),
         tabBarTheme: TabBarTheme(
           indicatorSize: TabBarIndicatorSize.tab,
           labelColor: Colors.black,
@@ -134,6 +138,10 @@ class ThemesProvider with ChangeNotifier {
         appBarTheme: AppBarTheme(brightness: Brightness.dark, elevation: 0),
         iconTheme: IconThemeData(color: Colors.grey[350]),
         primaryIconTheme: IconThemeData(color: Colors.grey[350]),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          foregroundColor: Colors.black,
+          backgroundColor: currentColor,
+        ),
         tabBarTheme: TabBarTheme(
           indicatorSize: TabBarIndicatorSize.tab,
           labelColor: Colors.grey[200],
