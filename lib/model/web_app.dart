@@ -10,6 +10,15 @@ part of 'beans.dart';
 /// [name] 名称, [url] 地址, [menuType] 分类
 @HiveType(typeId: HiveAdapterTypeIds.webapp)
 class WebApp {
+  WebApp({
+    this.appId,
+    this.sequence,
+    this.code,
+    this.name,
+    this.url,
+    this.menuType,
+  });
+
   @HiveField(0)
   int appId;
   @HiveField(1)
@@ -22,18 +31,6 @@ class WebApp {
   String url;
   @HiveField(5)
   String menuType;
-
-  WebApp({
-    this.appId,
-    this.sequence,
-    this.code,
-    this.name,
-    this.url,
-    this.menuType,
-  });
-
-  /// Using [appId] and [code] to produce an unique id.
-  String get uniqueId => '$appId-$code';
 
   WebApp.fromJson(Map<String, dynamic> json) {
     json.forEach((k, v) {
@@ -58,14 +55,19 @@ class WebApp {
     };
   }
 
+  /// Get encoded json string for settings sync.
+  String get encodedJsonString =>
+      JsonEncoder.withIndent('  ').convert(toJson());
+
   @override
   String toString() {
-    return 'WebApp ${JsonEncoder.withIndent('  ').convert(toJson())}';
+    return 'WebApp $encodedJsonString';
   }
 
-  String get replacedUrl => replaceParamsInUrl();
+  /// Using [appId] and [code] to produce an unique id.
+  String get uniqueId => '$appId-$code';
 
-  String replaceParamsInUrl() {
+  String get replacedUrl {
     final sidReg = RegExp(r'{SID}');
     final uidReg = RegExp(r'{UID}');
     final result = url
