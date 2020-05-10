@@ -85,21 +85,16 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         MessageUtils.initMessageSocket();
         if (!currentUser.isTeacher) {
           if (!currentUser.isPostgraduate) {
-            Provider.of<CoursesProvider>(currentContext, listen: false)
-                .initCourses();
-            Provider.of<ScoresProvider>(currentContext, listen: false)
-                .initScore();
+            currentContext.read<CoursesProvider>().initCourses();
+            currentContext.read<ScoresProvider>().initScore();
           }
         }
-        Provider.of<MessagesProvider>(currentContext, listen: false)
-            .initMessages();
-        Provider.of<NotificationProvider>(currentContext, listen: false)
-            .initNotification();
-        Provider.of<ReportRecordsProvider>(currentContext, listen: false)
-            .initRecords();
-        Provider.of<SignProvider>(currentContext, listen: false)
-            .getSignStatus();
-        Provider.of<WebAppsProvider>(currentContext, listen: false).initApps();
+        currentContext.read<MessagesProvider>().initMessages();
+        currentContext.read<NotificationProvider>().initNotification();
+        currentContext.read<ReportRecordsProvider>().initRecords();
+        currentContext.read<SettingsProvider>().getCloudSettings();
+        currentContext.read<SignProvider>().getSignStatus();
+        currentContext.read<WebAppsProvider>().initApps();
       })
       ..on<LogoutEvent>().listen((event) {
         navigatorState.pushNamedAndRemoveUntil(
