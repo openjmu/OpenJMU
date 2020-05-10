@@ -20,9 +20,13 @@ part 'blacklist_user.dart';
 
 part 'changelog.dart';
 
+part 'cloud_settings.dart';
+
 part 'comment.dart';
 
 part 'course.dart';
+
+part 'json_model.dart';
 
 part 'message.dart';
 
