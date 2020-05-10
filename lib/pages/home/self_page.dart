@@ -157,7 +157,7 @@ class SelfPage extends StatelessWidget {
           horizontal: 32.0.w,
           vertical: 20.0.w,
         ),
-        color: currentTheme.primaryColor,
+        color: currentTheme.canvasColor,
         child: child,
       ),
     );
@@ -224,16 +224,22 @@ class SelfPage extends StatelessWidget {
 
   /// 扫描二维码按钮
   Widget get scanQrCodeButton => IconButton(
-    splashColor: Colors.white,
-    onPressed: () {
-      navigatorState.pushNamed(Routes.OPENJMU_SCAN_QRCODE);
-    },
-    icon: SvgPicture.asset(
-      R.ASSETS_ICONS_SELF_PAGE_SCAN_CODE_SVG,
-      color: Colors.white,
-      width: 56.0.w,
-    ),
-  );
+        splashColor: Colors.white,
+        onPressed: () async {
+          if (await checkPermissions(
+            <PermissionGroup>[PermissionGroup.camera],
+          )) {
+            unawaited(navigatorState.pushNamed(Routes.OPENJMU_SCAN_QRCODE));
+          } else {
+            showToast('未获得相应权限');
+          }
+        },
+        icon: SvgPicture.asset(
+          R.ASSETS_ICONS_SELF_PAGE_SCAN_CODE_SVG,
+          color: Colors.white,
+          width: 56.0.w,
+        ),
+      );
 
   /// Section view for settings.
   /// 设置项的分区部件
@@ -277,7 +283,7 @@ class SelfPage extends StatelessWidget {
               child: SvgPicture.asset(
                 R.ASSETS_ICONS_ARROW_RIGHT_SVG,
                 color: Theme.of(context).dividerColor,
-                width: 12.0.w,
+                width: 24.0.w,
               ),
             ),
           ],
@@ -327,85 +333,99 @@ class SelfPage extends StatelessWidget {
         ),
       );
 
+  /// Common apps section widget.
+  /// 常用应用部件栏
   Widget commonApps(BuildContext context) => Container(
-    margin: EdgeInsets.symmetric(vertical: 10.0.h),
-    height: 130.0.h,
-    child: Selector<WebAppsProvider, Set<WebApp>>(
-      selector: (BuildContext _, WebAppsProvider provider) =>
-      provider.apps,
-      builder: (BuildContext _, Set<WebApp> apps, Widget __) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(bottom: 16.0.h),
-              child: Text(
-                '常用应用',
-                style: TextStyle(fontSize: 14.0.sp),
-              ),
-            ),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  if (true)
-                    ...List<Widget>.generate(3, (int index) {
-                      final WebApp app =
-                      apps.elementAt(index + 10);
-                      return Column(
-                        mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          WebAppIcon(app: app, size: 72.0),
-                          Text(
-                            app.name,
-                            style: TextStyle(fontSize: 12.0),
-                          ),
-                        ],
-                      );
-                    })
-                  else
-                    Expanded(
-                      child: Center(
-                        child: Text(
-                          '常用应用会出现在这里\n点击右侧按钮打开应用中心',
-                          style: TextStyle(
-                            fontSize: 14.0.sp,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
+        margin: EdgeInsets.symmetric(vertical: 10.0.h),
+        height: 140.0.h,
+        child: Selector<WebAppsProvider, Set<WebApp>>(
+          selector: (BuildContext _, WebAppsProvider provider) => provider.apps,
+          builder: (BuildContext _, Set<WebApp> apps, Widget __) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(bottom: 16.0.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text(
+                        '常用应用',
+                        style: TextStyle(fontSize: 18.0.sp),
                       ),
-                    ),
-                  allWebAppsButton(context),
-                ],
-              ),
-            ),
-          ],
-        );
-      },
-    ),
-  );
+                      allWebAppsButton(context),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      if (true)
+                        ...List<Widget>.generate(4, (int index) {
+                          final WebApp app = apps.elementAt(index + 10);
+                          return GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              API.launchWeb(url: app.replacedUrl, app: app);
+                            },
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                WebAppIcon(app: app, size: 72.0),
+                                Text(
+                                  app.name,
+                                  style: TextStyle(fontSize: 12.0),
+                                ),
+                              ],
+                            ),
+                          );
+                        })
+                      else
+                        Expanded(
+                          child: Center(
+                            child: Text(
+                              '常用应用会出现在这里\n点击右侧按钮打开应用中心',
+                              style: TextStyle(
+                                fontSize: 14.0.sp,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      );
 
   /// 前往应用中心的按钮
-  Widget allWebAppsButton(BuildContext context) => MaterialButton(
-    color: context.themeData.canvasColor,
-    minWidth: 56.0.w,
-    height: 56.0.w,
-    elevation: 0.0,
-    padding: EdgeInsets.zero,
-    materialTapTargetSize:
-    MaterialTapTargetSize.shrinkWrap,
-    shape: CircleBorder(),
-    child: SvgPicture.asset(
-      R.ASSETS_ICONS_ARROW_RIGHT_SVG,
-      color: context.themeData.iconTheme.color
-          .withOpacity(0.5),
-      width: 32.0.w,
-    ),
-    onPressed: () {
-      navigatorState.pushNamed(Routes.OPENJMU_APP_CENTER_PAGE);
-    },
-  );
+  Widget allWebAppsButton(BuildContext context) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              '全部应用',
+              style: TextStyle(
+                color: currentThemeColor,
+                fontSize: 16.0.sp,
+              ),
+            ),
+            Icon(
+              Icons.arrow_right,
+              size: 18.0.w,
+              color: currentThemeColor,
+            ),
+          ],
+        ),
+        onTap: () {
+          navigatorState.pushNamed(Routes.OPENJMU_APP_CENTER_PAGE);
+        },
+      );
 
   /// Common divider widget.
   /// 统一的分割线部件
@@ -438,90 +458,84 @@ class SelfPage extends StatelessWidget {
       hello = '晚上好';
     }
 
-    return Selector<SettingsProvider, bool>(
-      selector: (_, provider) => provider.debug,
-      builder: (_, debug, __) {
-        return GestureDetector(
-          onLongPress: () {
-            if (debug) {
-              showDialog(
-                context: context,
-                barrierDismissible: true,
-                builder: (BuildContext _) => ManuallySetSidDialog(),
-              );
-            } else {
-              NetUtils.updateTicket();
-            }
-          },
-          child: Selector<DateProvider, int>(
-            selector: (BuildContext _, DateProvider provider) =>
-                provider.currentWeek,
-            builder: (BuildContext _, int currentWeek, Widget __) {
-              if (currentWeek != null && currentWeek <= 20) {
-                return Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: 24.0.w,
-                    vertical: 10.0.h,
-                  ),
-                  color: Theme.of(context).primaryColor,
-                  child: Text.rich(
-                    TextSpan(
-                      children: <TextSpan>[
-                        TextSpan(text: '$hello～'),
-                        const TextSpan(text: '今天是'),
-                        TextSpan(
-                          text: '${DateFormat('MMMdd', 'zh_CN').format(now)}日，',
-                        ),
-                        TextSpan(
-                          text: '${DateFormat('EEE', 'zh_CN').format(now)}，',
-                        ),
-                        if (currentWeek > 0)
-                          TextSpan(children: <InlineSpan>[
-                            const TextSpan(text: '第'),
-                            TextSpan(
-                              text: '${currentWeek}',
-                              style: TextStyle(
-                                color: currentThemeColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const TextSpan(text: '周'),
-                          ])
-                        else
-                          TextSpan(children: <InlineSpan>[
-                            const TextSpan(text: '距开学还有'),
-                            TextSpan(
-                              text: '${currentWeek.abs() + 1}',
-                              style: TextStyle(
-                                color: currentThemeColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const TextSpan(text: '周'),
-                          ]),
-                      ],
-                      style: Theme.of(context).textTheme.caption.copyWith(
-                            fontSize: 16.0.sp,
-                          ),
-                    ),
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                  ),
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            },
-          ),
-        );
+    return GestureDetector(
+      onLongPress: () {
+        if (context.read<SettingsProvider>().debug) {
+          showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext _) => ManuallySetSidDialog(),
+          );
+        } else {
+          NetUtils.updateTicket();
+        }
       },
+      child: Selector<DateProvider, int>(
+        selector: (BuildContext _, DateProvider provider) =>
+            provider.currentWeek,
+        builder: (BuildContext _, int currentWeek, Widget __) {
+          if (currentWeek != null && currentWeek <= 20) {
+            return Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 24.0.w,
+                vertical: 10.0.h,
+              ),
+              child: Text.rich(
+                TextSpan(
+                  children: <TextSpan>[
+                    TextSpan(text: '$hello～'),
+                    const TextSpan(text: '今天是'),
+                    TextSpan(
+                      text: '${DateFormat('MMMdd', 'zh_CN').format(now)}日，',
+                    ),
+                    TextSpan(
+                      text: '${DateFormat('EEE', 'zh_CN').format(now)}，',
+                    ),
+                    if (currentWeek > 0)
+                      TextSpan(children: <InlineSpan>[
+                        const TextSpan(text: '第'),
+                        TextSpan(
+                          text: '${currentWeek}',
+                          style: TextStyle(
+                            color: currentThemeColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const TextSpan(text: '周'),
+                      ])
+                    else
+                      TextSpan(children: <InlineSpan>[
+                        const TextSpan(text: '距开学还有'),
+                        TextSpan(
+                          text: '${currentWeek.abs() + 1}',
+                          style: TextStyle(
+                            color: currentThemeColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const TextSpan(text: '周'),
+                      ]),
+                  ],
+                  style: Theme.of(context).textTheme.caption.copyWith(
+                        fontSize: 16.0.sp,
+                      ),
+                ),
+                maxLines: 2,
+                textAlign: TextAlign.center,
+              ),
+            );
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: Screens.width * 0.85,
+      width: Screens.width * 0.8,
       child: Column(
         children: <Widget>[
           headerWrapper(
