@@ -10,7 +10,7 @@ export 'package:openjmu/controller/post_controller.dart';
 export 'package:openjmu/controller/praise_controller.dart';
 export 'package:openjmu/model/special_text.dart';
 
-part 'beans.g.dart';
+part 'models.g.dart';
 
 part 'backpack_item.dart';
 

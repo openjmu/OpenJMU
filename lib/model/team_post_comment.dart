@@ -2,7 +2,7 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020-01-06 11:33
 ///
-part of 'beans.dart';
+part of 'models.dart';
 
 /// 小组动态评论实体
 ///

@@ -2,7 +2,7 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020-02-16 22:02
 ///
-part of 'beans.dart';
+part of 'models.dart';
 
 class BlacklistUser {
   int uid;

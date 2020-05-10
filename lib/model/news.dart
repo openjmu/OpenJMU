@@ -2,7 +2,7 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020-01-06 11:52
 ///
-part of 'beans.dart';
+part of 'models.dart';
 
 class News {
   int id;

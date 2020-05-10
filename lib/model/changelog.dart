@@ -2,7 +2,7 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020-02-03 20:41
 ///
-part of 'beans.dart';
+part of 'models.dart';
 
 @HiveType(typeId: HiveAdapterTypeIds.changelog)
 class ChangeLog {

@@ -2,7 +2,7 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020/3/31 13:05
 ///
-part of 'beans.dart';
+part of 'models.dart';
 
 class BackpackItem {
   const BackpackItem({

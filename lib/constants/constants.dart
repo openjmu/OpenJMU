@@ -27,7 +27,7 @@ export 'screens.dart';
 export 'widgets.dart';
 export 'package:openjmu/api/api.dart';
 export 'package:openjmu/extensions/extensions.e.dart';
-export 'package:openjmu/model/beans.dart';
+export 'package:openjmu/model/models.dart';
 export 'package:openjmu/providers/providers.dart';
 export 'package:openjmu/utils/utils.dart';
 
