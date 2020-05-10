@@ -326,9 +326,11 @@ class PraiseListInPostState extends State<PraiseListInPost>
     try {
       final response =
           (await PraiseAPI.getPraiseInPostList(widget.post.id))?.data;
-      final list = response['praisors'];
-      final total = response['total'] as int;
-      if (response['count'] as int < total) canLoadMore = true;
+      final List<dynamic> list = response['praisors'];
+      final int total = '${response['total']}'.toInt();
+      if (response['count'] as int < total) {
+        canLoadMore = true;
+      }
 
       list.forEach((praise) {
         _praises.add(PraiseAPI.createPraiseInPost(praise));
