@@ -7,6 +7,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
+export 'dart:io' show Cookie;
+
 export 'package:dartx/dartx.dart';
 export 'package:dio/dio.dart' show Response;
 export 'package:ff_annotation_route/ff_annotation_route.dart'

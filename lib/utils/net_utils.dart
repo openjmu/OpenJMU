@@ -165,13 +165,16 @@ class NetUtils {
         data: data,
       );
 
-  static Future<Response<T>> postWithCookieSet<T>(String url,
-          {Map<String, dynamic> data}) async =>
+  static Future<Response<T>> postWithCookieSet<T>(
+    String url, {
+    Map<String, dynamic> data,
+    List<Cookie> cookies,
+  }) async =>
       await dio.post<T>(
         url,
         data: data,
         options: Options(
-          cookies: DataUtils.buildPHPSESSIDCookies(currentUser.sid),
+          cookies: cookies ?? DataUtils.buildPHPSESSIDCookies(currentUser.sid),
         ),
       );
 
