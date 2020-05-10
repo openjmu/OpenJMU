@@ -225,23 +225,21 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       },
       child: Scaffold(
         key: Instances.mainPageScaffoldKey,
-        body: SafeArea(
-          child: Column(
-            children: <Widget>[
-              announcementWidget,
-              Expanded(
-                child: IndexedStack(
-                  children: <Widget>[
-                    const PostSquarePage(),
-                    const MarketingPage(),
-                    AppsPage(key: Instances.appsPageStateKey),
-                    const MessagePage(),
-                  ],
-                  index: _currentIndex,
-                ),
+        body: Column(
+          children: <Widget>[
+            Expanded(
+              child: IndexedStack(
+                children: <Widget>[
+                  const PostSquarePage(),
+                  const MarketingPage(),
+                  AppsPage(key: Instances.appsPageStateKey),
+                  const MessagePage(),
+                ],
+                index: _currentIndex,
               ),
-            ],
-          ),
+            ),
+            announcementWidget,
+          ],
         ),
         drawer: SelfPage(),
         drawerEdgeDragWidth: Screens.width * 0.0666,
