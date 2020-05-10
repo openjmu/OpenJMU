@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -53,3 +54,17 @@ Future<bool> doubleBackExit() async {
 
 /// Just do nothing. :)
 void doNothing() {}
+
+/// Check permissions and only return whether they succeed or not.
+Future<bool> checkPermissions(List<PermissionGroup> permissions) async {
+  try {
+    final Map<PermissionGroup, PermissionStatus> status =
+        await PermissionHandler().requestPermissions(permissions);
+    return !status.values.any(
+      (PermissionStatus p) => p != PermissionStatus.granted,
+    );
+  } catch (e) {
+    trueDebugPrint('Error when requesting permission: $e');
+    return false;
+  }
+}
