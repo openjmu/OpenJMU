@@ -9,7 +9,7 @@ import 'package:openjmu/constants/constants.dart';
 class PostSquarePage extends StatelessWidget {
   const PostSquarePage({Key key}) : super(key: key);
 
-  Widget publishButton(context) => MaterialButton(
+  Widget publishButton(BuildContext context) => MaterialButton(
         color: currentThemeColor,
         minWidth: suSetWidth(120.0),
         height: suSetHeight(50.0),

@@ -65,8 +65,11 @@ class AppCenterPage extends StatelessWidget {
     return Selector<WebAppsProvider, Map<String, Set<WebApp>>>(
       selector: (BuildContext _, WebAppsProvider provider) =>
           provider.appCategoriesList,
-      builder: (BuildContext _, Map<String, Set<WebApp>> appCategoriesList,
-          Widget __,) {
+      builder: (
+        BuildContext _,
+        Map<String, Set<WebApp>> appCategoriesList,
+        Widget __,
+      ) {
         final Set<WebApp> list = appCategoriesList[name];
         if (list?.isNotEmpty ?? false) {
           return Column(
@@ -119,7 +122,8 @@ class AppCenterPage extends StatelessWidget {
           title: Text('应用中心'),
         ),
         body: Selector<WebAppsProvider, bool>(
-          selector: (BuildContext _, WebAppsProvider provider) => provider.fetching,
+          selector: (BuildContext _, WebAppsProvider provider) =>
+              provider.fetching,
           builder: (BuildContext _, bool fetching, Widget __) {
             return fetching ? SpinKitWidget() : categoryListView(context);
           },

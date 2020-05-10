@@ -515,9 +515,13 @@ class NotificationsPageState extends State<NotificationsPage>
                               index: _squareIndex,
                               children: <Widget>[
                                 NestedScrollViewInnerScrollPositionKeyWidget(
-                                    Key('List-0-0'), praiseList),
+                                  Key('List-0-0'),
+                                  praiseList,
+                                ),
                                 NestedScrollViewInnerScrollPositionKeyWidget(
-                                    Key('List-0-1'), commentByReply),
+                                  Key('List-0-1'),
+                                  commentByReply,
+                                ),
                                 mentionList,
                               ],
                             ),
@@ -525,11 +529,17 @@ class NotificationsPageState extends State<NotificationsPage>
                               index: _teamIndex,
                               children: <Widget>[
                                 NestedScrollViewInnerScrollPositionKeyWidget(
-                                    Key('List-1-0'), TeamPraiseListPage()),
+                                  Key('List-1-0'),
+                                  TeamPraiseListPage(),
+                                ),
                                 NestedScrollViewInnerScrollPositionKeyWidget(
-                                    Key('List-1-1'), TeamReplyListPage()),
+                                  Key('List-1-1'),
+                                  TeamReplyListPage(),
+                                ),
                                 NestedScrollViewInnerScrollPositionKeyWidget(
-                                    Key('List-1-2'), TeamMentionListPage()),
+                                  Key('List-1-2'),
+                                  TeamMentionListPage(),
+                                ),
                               ],
                             ),
                           ],
