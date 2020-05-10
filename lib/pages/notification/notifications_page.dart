@@ -145,8 +145,6 @@ class NotificationsPageState extends State<NotificationsPage>
 
     _squareIndex = notificationProvider.initialIndex;
     _teamIndex = notificationProvider.teamInitialIndex;
-    actions[_index].values.elementAt(0)['content']
-        [_index == 0 ? _squareIndex : _teamIndex]['action']();
 
     SchedulerBinding.instance.addPostFrameCallback((Duration _) async {
       await scrollController.animateTo(
@@ -156,6 +154,8 @@ class NotificationsPageState extends State<NotificationsPage>
       );
       animating = false;
       if (mounted) {
+        actions[_index].values.elementAt(0)['content']
+            [_index == 0 ? _squareIndex : _teamIndex]['action']();
         setState(() {});
       }
     });
