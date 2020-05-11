@@ -25,6 +25,7 @@ class TeamPost {
     this.category,
     this.title,
     this.content,
+    this.article,
     this.pics,
     this.postInfo,
     this.userInfo,
@@ -66,6 +67,7 @@ class TeamPost {
           (json['post_time'] as String).toIntOrNull()),
       category: json['category'] as String,
       content: json['content'] as String,
+      article: json['article'] as String,
       pics: (json['file_info'] as List)?.cast<Map>(),
       postInfo: (json['post_info'] as List)?.cast<Map>(),
       userInfo: _user,
@@ -83,25 +85,26 @@ class TeamPost {
     return _post;
   }
 
-  int tid, uid, rootTid, rootUid;
-  String nickname;
-  DateTime postTime;
-  String category;
-  String title;
-  String content;
-  List<Map> pics;
-  List<Map> postInfo;
-  Map<String, dynamic> userInfo;
-  List<Map> replyInfo;
+  final int tid, uid, rootTid, rootUid;
+  final String nickname;
+  final DateTime postTime;
+  final String category;
+  final String title;
+  final String content;
+  final String article;
+  final List<Map> pics;
+  final List<Map> postInfo;
+  final Map<String, dynamic> userInfo;
+  final List<Map> replyInfo;
   int repliesCount;
   int praisesCount;
   int glances;
   bool isLike;
-  List<Map> praisor;
-  double heat;
-  int floor;
-  int unitId;
-  int groupId;
+  final List<Map> praisor;
+  final double heat;
+  final int floor;
+  final int unitId;
+  final int groupId;
 
   @override
   bool operator ==(Object other) =>
@@ -124,6 +127,7 @@ class TeamPost {
       'category': category,
       'title': title,
       'content': content,
+      'article': article,
       'pics': pics,
       'postInfo': postInfo,
       'userInfo': userInfo,

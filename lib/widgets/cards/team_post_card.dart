@@ -112,7 +112,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
   Widget get _content => Padding(
         padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
         child: ExtendedText(
-          post.content ?? '',
+          post.article ?? post.content ?? '',
           style: TextStyle(fontSize: suSetSp(21.0)),
           onSpecialTextTap: specialTextTapRecognizer,
           specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
