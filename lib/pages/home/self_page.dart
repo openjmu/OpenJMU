@@ -337,77 +337,78 @@ class SelfPage extends StatelessWidget {
   /// 常用应用部件栏
   Widget commonApps(BuildContext context) => Container(
         margin: EdgeInsets.symmetric(vertical: 10.0.h),
-        height: 140.0.h,
         child: Consumer<WebAppsProvider>(
           builder: (BuildContext _, WebAppsProvider provider, Widget __) {
             final Set<WebApp> commonWebApps = provider.commonWebApps;
             return Material(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 16.0.h),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          '常用应用',
-                          style: TextStyle(fontSize: 18.0.sp),
-                        ),
-                        allWebAppsButton(context),
-                      ],
+              child: IntrinsicHeight(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.only(bottom: 16.0.h),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            '常用应用',
+                            style: TextStyle(fontSize: 20.0.sp),
+                          ),
+                          allWebAppsButton(context),
+                        ],
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: Row(
-                      children: <Widget>[
-                        if (commonWebApps.isNotEmpty) ...<Widget>[
-                          ...List<Widget>.generate(commonWebApps.length,
-                              (int index) {
-                            final WebApp app = commonWebApps.elementAt(index);
-                            return Expanded(
-                              child: InkWell(
-                                splashFactory: InkSplash.splashFactory,
-                                onTap: () {
-                                  API.launchWeb(url: app.replacedUrl, app: app);
-                                },
-                                borderRadius: BorderRadius.circular(15.0.w),
-                                child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Center(
-                                        child: WebAppIcon(app: app, size: 72.0),
+                    Expanded(
+                      child: Row(
+                        children: <Widget>[
+                          if (commonWebApps.isNotEmpty) ...<Widget>[
+                            ...List<Widget>.generate(commonWebApps.length,
+                                (int index) {
+                              final WebApp app = commonWebApps.elementAt(index);
+                              return Expanded(
+                                child: InkWell(
+                                  splashFactory: InkSplash.splashFactory,
+                                  onTap: () {
+                                    API.launchWeb(url: app.replacedUrl, app: app);
+                                  },
+                                  borderRadius: BorderRadius.circular(15.0.w),
+                                  child: Column(
+                                    children: <Widget>[
+                                      WebAppIcon(app: app, size: 84.0),
+                                      Padding(
+                                        padding: EdgeInsets.only(bottom: 14.0.sp),
+                                        child: Text(
+                                          app.name,
+                                          style: TextStyle(fontSize: 14.0.sp),
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      app.name,
-                                      style: TextStyle(fontSize: 14.0.sp),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+                            ...List<Widget>.generate(
+                              provider.maxCommonWebApps - commonWebApps.length,
+                              (int index) => const Spacer(),
+                            ),
+                          ] else
+                            Expanded(
+                              child: Center(
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 20.0.h),
+                                  child: Text(
+                                    '常用应用会出现在这里\n点击右上按钮打开应用中心',
+                                    style: TextStyle(fontSize: 16.0.sp),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                               ),
-                            );
-                          }),
-                          ...List<Widget>.generate(
-                            provider.maxCommonWebApps - commonWebApps.length,
-                            (int index) => const Spacer(),
-                          ),
-                        ] else
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                '常用应用会出现在这里\n点击右上按钮打开应用中心',
-                                style: TextStyle(fontSize: 14.0.sp),
-                                textAlign: TextAlign.center,
-                              ),
                             ),
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             );
           },
