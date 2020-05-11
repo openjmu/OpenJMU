@@ -339,8 +339,9 @@ class SelfPage extends StatelessWidget {
         margin: EdgeInsets.symmetric(vertical: 10.0.h),
         height: 140.0.h,
         child: Selector<WebAppsProvider, Set<WebApp>>(
-          selector: (BuildContext _, WebAppsProvider provider) => provider.apps,
-          builder: (BuildContext _, Set<WebApp> apps, Widget __) {
+          selector: (BuildContext _, WebAppsProvider provider) =>
+              provider.commonWebApps,
+          builder: (BuildContext _, Set<WebApp> commonWebApps, Widget __) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -361,9 +362,10 @@ class SelfPage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      if (true)
-                        ...List<Widget>.generate(4, (int index) {
-                          final WebApp app = apps.elementAt(index + 10);
+                      if (commonWebApps.isNotEmpty)
+                        ...List<Widget>.generate(commonWebApps.length,
+                            (int index) {
+                          final WebApp app = commonWebApps.elementAt(index);
                           return GestureDetector(
                             behavior: HitTestBehavior.opaque,
                             onTap: () {
@@ -385,7 +387,7 @@ class SelfPage extends StatelessWidget {
                         Expanded(
                           child: Center(
                             child: Text(
-                              '常用应用会出现在这里\n点击右侧按钮打开应用中心',
+                              '常用应用会出现在这里\n点击右上按钮打开应用中心',
                               style: TextStyle(
                                 fontSize: 14.0.sp,
                               ),

@@ -11,13 +11,50 @@ class WebAppsProvider extends ChangeNotifier {
   final Box<List<dynamic>> _commonBox = HiveBoxes.webAppsCommonBox;
 
   Set<WebApp> _displayedWebApps = <WebApp>{};
+
   Set<WebApp> _allWebApps = <WebApp>{};
+
   Set<WebApp> get apps => _displayedWebApps;
+
   Set<WebApp> get allApps => _allWebApps;
+
   Map<String, Set<WebApp>> _appCategoriesList;
+
   Map<String, Set<WebApp>> get appCategoriesList => _appCategoriesList;
 
+  final int maxCommonWebApps = 4;
+
+  Set<WebApp> _commonWebApps = <WebApp>{};
+
+  Set<WebApp> get commonWebApps => _commonWebApps;
+
+  set commonWebApps(Set<WebApp> value) {
+    assert(value != null);
+    if (value == _commonWebApps) {
+      return;
+    }
+    _commonWebApps = Set<WebApp>.from(value);
+    notifyListeners();
+  }
+
+  /// Whether the list is fetching.
+  /// 列表是否正在更新
   bool fetching = true;
+
+  /// Whether the user is editing common apps.
+  /// 用户是否正在编辑常用应用
+  bool _isEditingCommonApps = false;
+
+  bool get isEditingCommonApps => _isEditingCommonApps;
+
+  set isEditingCommonApps(bool value) {
+    assert(value != null);
+    if (value == _isEditingCommonApps) {
+      return;
+    }
+    _isEditingCommonApps = value;
+    notifyListeners();
+  }
 
   /// 获取当前用户的App列表
   Future<dynamic> getAppList() async =>
@@ -37,6 +74,9 @@ class WebAppsProvider extends ChangeNotifier {
     if (_box.get(currentUser.uid)?.isNotEmpty ?? false) {
       _allWebApps = _box.get(currentUser.uid).cast<WebApp>().toSet();
       recoverApps();
+    }
+    if (_commonBox.get(currentUser.uid)?.isNotEmpty ?? false) {
+      _commonWebApps = _commonBox.get(currentUser.uid).cast<WebApp>().toSet();
     }
     updateApps();
   }
@@ -110,11 +150,39 @@ class WebAppsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void addCommonApp(WebApp app) {
+    if (_commonWebApps.length == maxCommonWebApps ||
+        _commonWebApps.contains(app)) {
+      return;
+    }
+    final Set<WebApp> set = Set<WebApp>.from(_commonWebApps);
+    set.add(app);
+    commonWebApps = set;
+  }
+
+  void removeCommonApp(WebApp app) {
+    if (_commonWebApps.isEmpty) {
+      return;
+    }
+    final Set<WebApp> set = Set<WebApp>.from(_commonWebApps);
+    set.remove(app);
+    commonWebApps = set;
+  }
+
+  Future<void> saveCommonApps() async {
+    if (_commonBox.keys?.contains(currentUser.uid) ?? false) {
+      _commonBox.get(currentUser.uid)?.clear();
+    }
+    final List<WebApp> list = List<WebApp>.from(commonWebApps);
+    await _commonBox.put(currentUser.uid, list);
+  }
+
   /// 注销时清空变量缓存
   void unloadApps() {
     _allWebApps.clear();
     _displayedWebApps.clear();
     _appCategoriesList.clear();
+    _commonWebApps.clear();
   }
 
   WebApp get webVPN {
