@@ -82,6 +82,13 @@ class ThemesProvider with ChangeNotifier {
     );
   }
 
+  void syncFromCloudSettings(CloudSettingsModel model) {
+    _dark = model.isDark;
+    _amoledDark = model.amoledDark;
+    _platformBrightness = model.platformBrightness;
+    notifyListeners();
+  }
+
   ThemeData get lightTheme => ThemeData.light().copyWith(
         brightness: Brightness.light,
         primaryColor: Colors.white,

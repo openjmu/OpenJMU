@@ -18,19 +18,28 @@ class CloudSettingsModel extends JsonModel {
       .._homeSplashIndex = settings[_fHomeSplashIndex] ?? 0
       .._launchFromSystemBrowser = settings[_fLaunchFromSystemBrowser] ?? false
       .._newAppCenterIcon = settings[_fNewAppCenterIcon] ?? false
+      .._isDark = settings[_fIsDark] ?? false
+      .._amoledDark = settings[_fAMOLEDDark] ?? false
+      .._platformBrightness = settings[_fPlatformBrightness] ?? true
       ..lastModified = DateTime.fromMillisecondsSinceEpoch(
         '${json['last_modified']}000'.toInt(),
       );
     return model;
   }
 
-  factory CloudSettingsModel.fromProvider(SettingsProvider provider) {
+  factory CloudSettingsModel.fromProvider(
+    SettingsProvider settingsProvider,
+    ThemesProvider themesProvider,
+  ) {
     return CloudSettingsModel()
-      .._fontScale = provider.fontScale
-      .._hideShieldPost = provider.hideShieldPost
-      .._homeSplashIndex = provider.homeSplashIndex
-      .._launchFromSystemBrowser = provider.launchFromSystemBrowser
-      .._newAppCenterIcon = provider.newAppCenterIcon;
+      .._fontScale = settingsProvider.fontScale
+      .._hideShieldPost = settingsProvider.hideShieldPost
+      .._homeSplashIndex = settingsProvider.homeSplashIndex
+      .._launchFromSystemBrowser = settingsProvider.launchFromSystemBrowser
+      .._newAppCenterIcon = settingsProvider.newAppCenterIcon
+      .._isDark = themesProvider.dark
+      .._amoledDark = themesProvider.amoledDark
+      .._platformBrightness = themesProvider.platformBrightness;
   }
 
   static const String _fFontScale = 'font_scale';
@@ -38,6 +47,9 @@ class CloudSettingsModel extends JsonModel {
   static const String _fHomeSplashIndex = 'home_splash_index';
   static const String _fLaunchFromSystemBrowser = 'launch_from_system_browser';
   static const String _fNewAppCenterIcon = 'new_app_center_icon';
+  static const String _fIsDark = 'theme_is_dark';
+  static const String _fAMOLEDDark = 'theme_amoled_dark';
+  static const String _fPlatformBrightness = 'theme_platform_brightness';
 
   double _fontScale = 1.0;
   double get fontScale => _fontScale;
@@ -54,6 +66,15 @@ class CloudSettingsModel extends JsonModel {
   bool _newAppCenterIcon = false;
   bool get newAppCenterIcon => _newAppCenterIcon;
 
+  bool _isDark = false;
+  bool get isDark => _isDark;
+
+  bool _amoledDark = false;
+  bool get amoledDark => _amoledDark;
+
+  bool _platformBrightness = true;
+  bool get platformBrightness => _platformBrightness;
+
   DateTime lastModified;
 
   /// Font scale need to be converted as [String], because as it stored in
@@ -68,7 +89,12 @@ class CloudSettingsModel extends JsonModel {
         _fHomeSplashIndex: _homeSplashIndex,
         _fLaunchFromSystemBrowser: _launchFromSystemBrowser,
         _fNewAppCenterIcon: _newAppCenterIcon,
+        _fIsDark: _isDark,
+        _fAMOLEDDark: _amoledDark,
+        _fPlatformBrightness: _platformBrightness,
       },
+      'last_modified':
+          '${lastModified.millisecondsSinceEpoch}'.substring(0, 10),
     };
   }
 
@@ -81,7 +107,10 @@ class CloudSettingsModel extends JsonModel {
           _hideShieldPost == other._hideShieldPost &&
           _homeSplashIndex == other._homeSplashIndex &&
           _launchFromSystemBrowser == other._launchFromSystemBrowser &&
-          _newAppCenterIcon == other._newAppCenterIcon;
+          _newAppCenterIcon == other._newAppCenterIcon &&
+          _isDark == other._isDark &&
+          _amoledDark == other._amoledDark &&
+          _platformBrightness == other._platformBrightness;
 
   @override
   int get hashCode =>
@@ -89,5 +118,8 @@ class CloudSettingsModel extends JsonModel {
       _hideShieldPost.hashCode ^
       _homeSplashIndex.hashCode ^
       _launchFromSystemBrowser.hashCode ^
-      _newAppCenterIcon.hashCode;
+      _newAppCenterIcon.hashCode ^
+      _isDark.hashCode ^
+      _amoledDark.hashCode ^
+      _platformBrightness.hashCode;
 }

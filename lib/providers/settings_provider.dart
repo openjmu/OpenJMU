@@ -259,10 +259,16 @@ class SettingsProvider extends ChangeNotifier {
     _homeSplashIndex = model.homeSplashIndex;
     _launchFromSystemBrowser = model.launchFromSystemBrowser;
     _newAppCenterIcon = model.newAppCenterIcon;
+    navigatorState.overlay.context
+        .read<ThemesProvider>()
+        .syncFromCloudSettings(model);
     notifyListeners();
     showToast('设置更新成功');
   }
 
   CloudSettingsModel get currentCloudSettingsModel =>
-      CloudSettingsModel.fromProvider(this);
+      CloudSettingsModel.fromProvider(
+        this,
+        navigatorState.overlay.context.read<ThemesProvider>(),
+      );
 }
