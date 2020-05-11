@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
@@ -22,9 +23,9 @@ const bool logMessageSocketPacket = false;
 
 /// Log only in debug mode.
 /// 只在调试模式打印
-void trueDebugPrint(String message, {int wrapWidth}) {
+void trueDebugPrint(String message) {
   if (!kReleaseMode) {
-    debugPrint(message, wrapWidth: wrapWidth);
+    log(message);
   }
 }
 
