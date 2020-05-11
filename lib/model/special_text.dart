@@ -19,14 +19,29 @@ class LinkText extends SpecialText {
 
   @override
   InlineSpan finishText() {
-    return TextSpan(
-      text: ' 网页链接 ',
-      style: textStyle?.copyWith(color: Colors.blue),
-      recognizer: TapGestureRecognizer()
-        ..onTap = () {
+    return ExtendedWidgetSpan(
+      alignment: ui.PlaceholderAlignment.middle,
+      child: GestureDetector(
+        onTap: () {
           final Map<String, dynamic> data = {'content': toString()};
           if (onTap != null) onTap(data);
         },
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Icon(
+              Icons.launch,
+              color: Colors.blue,
+              size: textStyle.fontSize,
+            ),
+            Text(
+              ' 网页链接 ',
+              style: textStyle?.copyWith(color: Colors.blue),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
@@ -35,75 +50,33 @@ class LinkText extends SpecialText {
 /// 旧链接 (http) 文字类
 ///
 /// e.g. 'http://wb.jmu.edu.cn/r/wXn'
-class LinkOlderText extends SpecialText {
+class LinkOlderText extends LinkText {
   LinkOlderText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
-      : super(startKey, endKey, textStyle, onTap: onTap);
+      : super(textStyle, onTap);
 
   static const String startKey = 'http://wb.jmu.edu.cn/';
-  static const String endKey = ' ';
-
-  @override
-  InlineSpan finishText() {
-    return TextSpan(
-      text: ' 网页链接 ',
-      style: textStyle?.copyWith(color: Colors.blue),
-      recognizer: TapGestureRecognizer()
-        ..onTap = () {
-          final Map<String, dynamic> data = {'content': toString()};
-          if (onTap != null) onTap(data);
-        },
-    );
-  }
 }
 
 /// Forum link text class.
 /// 论坛链接文字类
 ///
 /// e.g. 'https://forum99.jmu.edu.cn/.....'
-class ForumLinkText extends SpecialText {
+class ForumLinkText extends LinkText {
   ForumLinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
-      : super(startKey, endKey, textStyle, onTap: onTap);
+      : super(textStyle, onTap);
 
   static const String startKey = API.forum99Host;
-  static const String endKey = ' ';
-
-  @override
-  InlineSpan finishText() {
-    return TextSpan(
-      text: ' 网页链接 ',
-      style: textStyle?.copyWith(color: Colors.blue),
-      recognizer: TapGestureRecognizer()
-        ..onTap = () {
-          final Map<String, dynamic> data = {'content': toString()};
-          if (onTap != null) onTap(data);
-        },
-    );
-  }
 }
 
 /// Older forum link text class.
 /// 旧论坛链接 (http) 文字类
 ///
 /// e.g. 'http://forum99.jmu.edu.cn/.....'
-class ForumLinkOlderText extends SpecialText {
+class ForumLinkOlderText extends LinkText {
   ForumLinkOlderText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
-      : super(startKey, endKey, textStyle, onTap: onTap);
+      : super(textStyle, onTap);
 
   static const String startKey = 'http://forum99.jmu.edu.cn/';
-  static const String endKey = ' ';
-
-  @override
-  InlineSpan finishText() {
-    return TextSpan(
-      text: ' 网页链接 ',
-      style: textStyle?.copyWith(color: Colors.blue),
-      recognizer: TapGestureRecognizer()
-        ..onTap = () {
-          final Map<String, dynamic> data = {'content': toString()};
-          if (onTap != null) onTap(data);
-        },
-    );
-  }
 }
 
 /// Mention someone text class.
