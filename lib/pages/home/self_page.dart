@@ -369,14 +369,18 @@ class SelfPage extends StatelessWidget {
                                 child: InkWell(
                                   splashFactory: InkSplash.splashFactory,
                                   onTap: () {
-                                    API.launchWeb(url: app.replacedUrl, app: app);
+                                    API.launchWeb(
+                                      url: app.replacedUrl,
+                                      app: app,
+                                    );
                                   },
                                   borderRadius: BorderRadius.circular(15.0.w),
                                   child: Column(
                                     children: <Widget>[
                                       WebAppIcon(app: app, size: 84.0),
                                       Padding(
-                                        padding: EdgeInsets.only(bottom: 14.0.sp),
+                                        padding:
+                                            EdgeInsets.only(bottom: 14.0.sp),
                                         child: Text(
                                           app.name,
                                           style: TextStyle(fontSize: 14.0.sp),
@@ -395,7 +399,8 @@ class SelfPage extends StatelessWidget {
                             Expanded(
                               child: Center(
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 20.0.h),
+                                  padding:
+                                      EdgeInsets.symmetric(vertical: 20.0.h),
                                   child: Text(
                                     '常用应用会出现在这里\n点击右上按钮打开应用中心',
                                     style: TextStyle(fontSize: 16.0.sp),

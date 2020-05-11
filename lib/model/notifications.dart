@@ -45,6 +45,6 @@ class Notifications {
 
   @override
   String toString() {
-    return JsonEncoder.withIndent(' ').convert(toJson());
+    return JsonEncoder.withIndent('  ').convert(toJson());
   }
 }
