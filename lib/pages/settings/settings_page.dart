@@ -257,7 +257,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        unawaited(context.read<SettingsProvider>().uploadCloudSettings());
+        context.read<SettingsProvider>().uploadCloudSettings();
         return true;
       },
       child: Scaffold(

@@ -143,7 +143,7 @@ class SettingsProvider extends ChangeNotifier {
       ))
               .data;
       if (res['code'] == '700' && res['data'] == null) {
-        unawaited(uploadCloudSettings());
+        uploadCloudSettings();
       } else if (res['code'] == '000') {
         handleSettingsSyncing(CloudSettingsModel.fromJson(res['data']));
       } else {
@@ -156,22 +156,17 @@ class SettingsProvider extends ChangeNotifier {
 
   /// Upload cloud settings to xAuth server.
   /// 上传云设置
-  Future<bool> uploadCloudSettings({bool fromUserAction = false}) async {
-    try {
-      final Map<String, dynamic> response = (await NetUtils.postWithCookieSet(
-        API.cloudSettings,
-        data: currentCloudSettingsModel.toJson(),
-        cookies: <Cookie>[Cookie('sid', currentUser.sid)],
-      ))
-          .data;
-      final bool success = response['code'] == "000";
-      if (success && fromUserAction) {
+  void uploadCloudSettings({bool fromUserAction = false}) {
+    NetUtils.postWithCookieSet<Response<Map<String, dynamic>>>(
+      API.cloudSettings,
+      data: currentCloudSettingsModel.toJson(),
+      cookies: <Cookie>[Cookie('sid', currentUser.sid)],
+    ).then((Response<dynamic> response) {
+      final Map<String, dynamic> data = response.data;
+      if (data['code'] == "000" && fromUserAction) {
         showToast('设置更新成功');
       }
-      return success;
-    } catch (e) {
-      return false;
-    }
+    });
   }
 
   /// Compare settings difference to determine upload or download.
