@@ -142,7 +142,9 @@ class SettingsProvider extends ChangeNotifier {
         cookies: <Cookie>[Cookie('sid', currentUser.sid)],
       ))
               .data;
-      if (res['code'] == '000') {
+      if (res['code'] == '700' && res['data'] == null) {
+        unawaited(uploadCloudSettings());
+      } else if (res['code'] == '000') {
         handleSettingsSyncing(CloudSettingsModel.fromJson(res['data']));
       } else {
         trueDebugPrint('Failed in getting cloud settings: ${res['message']}');
