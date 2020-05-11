@@ -122,12 +122,14 @@ class PostSquarePage extends StatelessWidget {
                   ],
                 ),
               ),
-              const Spacer(),
-              publishButton(context),
-              notificationButton,
             ],
           ),
         ),
+        actions: <Widget>[
+          publishButton(context),
+          notificationButton,
+        ],
+        actionsPadding: EdgeInsets.only(right: 20.0.w),
       ),
       body: Container(
         color: Theme.of(context).canvasColor,

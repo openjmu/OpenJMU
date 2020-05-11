@@ -176,11 +176,15 @@ class _MarketingPageState extends State<MarketingPage> {
             children: <Widget>[
               MainPage.selfPageOpener(context),
               const Spacer(),
-              publishButton,
               notificationButton,
             ],
           ),
         ),
+        actions: <Widget>[
+          publishButton,
+          notificationButton,
+        ],
+        actionsPadding: EdgeInsets.only(right: 20.0.w),
       ),
       body: Container(
         color: Theme.of(context).canvasColor,

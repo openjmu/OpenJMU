@@ -224,6 +224,7 @@ class MessagePageState extends State<MessagePage>
         title: _tabBar,
         centerTitle: false,
         automaticallyImplyLeading: false,
+        automaticallyImplyActions: false,
       ),
       body: _messageList,
 //      body: TabBarView(
