@@ -445,6 +445,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
           trueDebugPrint('Webview onLoadStart: $url');
         },
         onLoadStop: (InAppWebViewController controller, String url) async {
+          unawaited(controller.evaluateJavascript(source: 'window.onbeforeunload=null'));
+
           this.url = url;
           final String _title = (await controller.getTitle())?.trim();
           if (_title != null && _title.isNotEmpty && _title != this.url) {
