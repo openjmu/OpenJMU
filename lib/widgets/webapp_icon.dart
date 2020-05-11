@@ -19,22 +19,26 @@ class WebAppIcon extends StatelessWidget {
 
   String get iconPath => 'assets/icons/app-center/${app.appId}-${app.code}.svg';
 
-  String get oldIconUrl =>
-      '${API.webAppIcons}appid=${app.appId}&code=${app.code}';
+  String get oldIconUrl => '${API.webAppIcons}'
+      'appid=${app.appId}'
+      '&code=${app.code}';
 
   Future<Widget> loadAsset() async {
     try {
       await rootBundle.load(iconPath);
-      return SvgPicture.asset(iconPath,
-          width: suSetWidth(size), height: suSetWidth(size));
+      return SvgPicture.asset(
+        iconPath,
+        width: size.w,
+        height: size.w,
+      );
     } catch (e) {
       trueDebugPrint(
           'Error when load webapp icon: $e.\nLoading fallback icon...');
       return ExtendedImage.network(
         oldIconUrl,
-        width: suSetWidth(oldIconSize),
-        height: suSetWidth(oldIconSize),
         fit: BoxFit.fill,
+        width: oldIconSize.w,
+        height: oldIconSize.w,
       );
     }
   }
@@ -52,18 +56,18 @@ class WebAppIcon extends StatelessWidget {
                 future: loadAsset(),
                 builder: (_, AsyncSnapshot<Widget> snapshot) =>
                     SizedBox.fromSize(
-                  size: Size.square(suSetWidth(size)),
+                  size: Size.square(size.w),
                   child: Center(child: snapshot.data),
                 ),
               )
             : SizedBox.fromSize(
-                size: Size.square(suSetWidth(size)),
+                size: Size.square(size.w),
                 child: Center(
                   child: ExtendedImage.network(
                     oldIconUrl,
                     fit: BoxFit.fill,
-                    width: suSetWidth(oldIconSize),
-                    height: suSetWidth(oldIconSize),
+                    width: oldIconSize.w,
+                    height: oldIconSize.w,
                   ),
                 ),
               );
