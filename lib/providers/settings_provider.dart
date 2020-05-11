@@ -157,7 +157,7 @@ class SettingsProvider extends ChangeNotifier {
   /// Upload cloud settings to xAuth server.
   /// 上传云设置
   void uploadCloudSettings({bool fromUserAction = false}) {
-    NetUtils.postWithCookieSet<Response<Map<String, dynamic>>>(
+    NetUtils.postWithCookieSet<Map<String, dynamic>>(
       API.cloudSettings,
       data: currentCloudSettingsModel.toJson(),
       cookies: <Cookie>[Cookie('sid', currentUser.sid)],
