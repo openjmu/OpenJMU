@@ -64,6 +64,8 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
 
   @override
   void initState() {
+    super.initState();
+
     url = (widget.url ?? url).trim();
     title = (widget.app?.name ?? widget.title ?? title).trim();
 
@@ -78,7 +80,6 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
           loadCourseSchedule();
         }
       });
-    super.initState();
   }
 
   @override
@@ -396,7 +397,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
       appBar: (widget.withAppBar ?? true) ? appBar : null,
       body: InAppWebView(
         initialUrl: url,
-        initialOptions: InAppWebViewWidgetOptions(
+        initialOptions: InAppWebViewGroupOptions(
           crossPlatform: InAppWebViewOptions(
             applicationNameForUserAgent: 'openjmu-webview',
             cacheEnabled: widget.withCookie ?? true,
@@ -415,11 +416,11 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
             builtInZoomControls: true,
             displayZoomControls: false,
             forceDark: currentIsDark
-                ? AndroidInAppWebViewForceDark.FORCE_DARK_ON
-                : AndroidInAppWebViewForceDark.FORCE_DARK_OFF,
+                ? AndroidForceDark.FORCE_DARK_ON
+                : AndroidForceDark.FORCE_DARK_OFF,
             loadWithOverviewMode: true,
             mixedContentMode:
-                AndroidInAppWebViewMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
+                AndroidMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
             safeBrowsingEnabled: false,
             supportZoom: true,
             useWideViewPort: true,
