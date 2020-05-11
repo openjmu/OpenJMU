@@ -182,13 +182,16 @@ class PostDetailPageState extends State<PostDetailPage> {
     });
   }
 
-  Widget get postCard => PostCard(
-        widget.post,
-        index: widget.index,
-        fromPage: widget.fromPage,
-        isDetail: true,
-        parentContext: widget.parentContext,
-        key: ValueKey('post-key-${widget.post.id}'),
+  Widget get postCard => Padding(
+        padding: EdgeInsets.all(10.0.w),
+        child: PostCard(
+          widget.post,
+          index: widget.index,
+          fromPage: widget.fromPage,
+          isDetail: true,
+          parentContext: widget.parentContext,
+          key: ValueKey('post-key-${widget.post.id}'),
+        ),
       );
 
   Widget get deleteButton => IconButton(
