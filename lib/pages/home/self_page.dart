@@ -338,67 +338,77 @@ class SelfPage extends StatelessWidget {
   Widget commonApps(BuildContext context) => Container(
         margin: EdgeInsets.symmetric(vertical: 10.0.h),
         height: 140.0.h,
-        child: Selector<WebAppsProvider, Set<WebApp>>(
-          selector: (BuildContext _, WebAppsProvider provider) =>
-              provider.commonWebApps,
-          builder: (BuildContext _, Set<WebApp> commonWebApps, Widget __) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.only(bottom: 16.0.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      Text(
-                        '常用应用',
-                        style: TextStyle(fontSize: 18.0.sp),
-                      ),
-                      allWebAppsButton(context),
-                    ],
+        child: Consumer<WebAppsProvider>(
+          builder: (BuildContext _, WebAppsProvider provider, Widget __) {
+            final Set<WebApp> commonWebApps = provider.commonWebApps;
+            return Material(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 16.0.h),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text(
+                          '常用应用',
+                          style: TextStyle(fontSize: 18.0.sp),
+                        ),
+                        allWebAppsButton(context),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      if (commonWebApps.isNotEmpty)
-                        ...List<Widget>.generate(commonWebApps.length,
-                            (int index) {
-                          final WebApp app = commonWebApps.elementAt(index);
-                          return GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () {
-                              API.launchWeb(url: app.replacedUrl, app: app);
-                            },
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                WebAppIcon(app: app, size: 72.0),
-                                Text(
-                                  app.name,
-                                  style: TextStyle(fontSize: 12.0),
+                  Expanded(
+                    child: Row(
+                      children: <Widget>[
+                        if (commonWebApps.isNotEmpty) ...<Widget>[
+                          ...List<Widget>.generate(commonWebApps.length,
+                              (int index) {
+                            final WebApp app = commonWebApps.elementAt(index);
+                            return Expanded(
+                              child: InkWell(
+                                splashFactory: InkSplash.splashFactory,
+                                onTap: () {
+                                  API.launchWeb(url: app.replacedUrl, app: app);
+                                },
+                                borderRadius: BorderRadius.circular(15.0.w),
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Center(
+                                        child: WebAppIcon(app: app, size: 72.0),
+                                      ),
+                                    ),
+                                    Text(
+                                      app.name,
+                                      style: TextStyle(fontSize: 14.0.sp),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          );
-                        })
-                      else
-                        Expanded(
-                          child: Center(
-                            child: Text(
-                              '常用应用会出现在这里\n点击右上按钮打开应用中心',
-                              style: TextStyle(
-                                fontSize: 14.0.sp,
                               ),
-                              textAlign: TextAlign.center,
+                            );
+                          }),
+                          ...List<Widget>.generate(
+                            provider.maxCommonWebApps - commonWebApps.length,
+                            (int index) => const Spacer(),
+                          ),
+                        ] else
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                '常用应用会出现在这里\n点击右上按钮打开应用中心',
+                                style: TextStyle(fontSize: 14.0.sp),
+                                textAlign: TextAlign.center,
+                              ),
                             ),
                           ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           },
         ),
@@ -407,22 +417,25 @@ class SelfPage extends StatelessWidget {
   /// 前往应用中心的按钮
   Widget allWebAppsButton(BuildContext context) => GestureDetector(
         behavior: HitTestBehavior.opaque,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              '全部应用',
-              style: TextStyle(
-                color: currentThemeColor,
-                fontSize: 16.0.sp,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 8.0.h),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                '全部应用',
+                style: TextStyle(
+                  color: currentThemeColor,
+                  fontSize: 16.0.sp,
+                ),
               ),
-            ),
-            Icon(
-              Icons.arrow_right,
-              size: 18.0.w,
-              color: currentThemeColor,
-            ),
-          ],
+              Icon(
+                Icons.arrow_right,
+                size: 18.0.w,
+                color: currentThemeColor,
+              ),
+            ],
+          ),
         ),
         onTap: () {
           navigatorState.pushNamed(Routes.OPENJMU_APP_CENTER_PAGE);
