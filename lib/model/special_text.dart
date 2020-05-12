@@ -12,10 +12,9 @@ import 'package:openjmu/constants/constants.dart';
 /// e.g. 'https://wb.jmu.edu.cn/r/wXn'
 class LinkText extends SpecialText {
   LinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
-      : super(startKey, endKey, textStyle, onTap: onTap);
+      : super(' ', ' ', textStyle, onTap: onTap);
 
-  static const String startKey = API.wbHost;
-  static const String endKey = ' ';
+  final String startFlag = API.wbHost;
 
   @override
   InlineSpan finishText() {
@@ -54,7 +53,8 @@ class LinkOlderText extends LinkText {
   LinkOlderText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
       : super(textStyle, onTap);
 
-  static const String startKey = 'http://wb.jmu.edu.cn/';
+  @override
+  final String startFlag = API.wbHostWithoutHttps;
 }
 
 /// Forum link text class.
@@ -65,7 +65,8 @@ class ForumLinkText extends LinkText {
   ForumLinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
       : super(textStyle, onTap);
 
-  static const String startKey = API.forum99Host;
+  @override
+  final String startFlag = API.forum99Host;
 }
 
 /// Older forum link text class.
@@ -76,7 +77,8 @@ class ForumLinkOlderText extends LinkText {
   ForumLinkOlderText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
       : super(textStyle, onTap);
 
-  static const String startKey = 'http://forum99.jmu.edu.cn/';
+  @override
+  final String startFlag = API.forum99HostWithoutHttps;
 }
 
 /// Mention someone text class.
@@ -445,13 +447,13 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
       return PoundText(textStyle, onTap, type: BuilderType.extendedText);
     } else if (isStart(flag, EmoticonText.startKey)) {
       return EmoticonText(textStyle, type: BuilderType.extendedText);
-    } else if (isStart(flag, LinkText.startKey)) {
+    } else if (isStart(flag, API.wbHost)) {
       return LinkText(textStyle, onTap);
-    } else if (isStart(flag, LinkOlderText.startKey)) {
+    } else if (isStart(flag, API.wbHostWithoutHttps)) {
       return LinkOlderText(textStyle, onTap);
-    } else if (isStart(flag, ForumLinkText.startKey)) {
+    } else if (isStart(flag, API.forum99Host)) {
       return ForumLinkText(textStyle, onTap);
-    } else if (isStart(flag, ForumLinkOlderText.startKey)) {
+    } else if (isStart(flag, API.forum99HostWithoutHttps)) {
       return ForumLinkOlderText(textStyle, onTap);
     } else if (isStart(flag, ImageText.flag) &&
         widgetType == WidgetType.comment) {
