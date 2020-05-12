@@ -82,10 +82,13 @@ class ThemesProvider with ChangeNotifier {
     );
   }
 
-  void syncFromCloudSettings(CloudSettingsModel model) {
+  Future<void> syncFromCloudSettings(CloudSettingsModel model) async {
     _dark = model.isDark;
     _amoledDark = model.amoledDark;
     _platformBrightness = model.platformBrightness;
+    await HiveFieldUtils.setBrightnessDark(_dark);
+    await HiveFieldUtils.setAMOLEDDark(_amoledDark);
+    await HiveFieldUtils.setBrightnessPlatform(_platformBrightness);
     notifyListeners();
   }
 

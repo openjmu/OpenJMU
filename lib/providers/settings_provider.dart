@@ -259,9 +259,14 @@ class SettingsProvider extends ChangeNotifier {
     _homeSplashIndex = model.homeSplashIndex;
     _launchFromSystemBrowser = model.launchFromSystemBrowser;
     _newAppCenterIcon = model.newAppCenterIcon;
-    navigatorState.overlay.context
+    await navigatorState.overlay.context
         .read<ThemesProvider>()
         .syncFromCloudSettings(model);
+    await HiveFieldUtils.setFontScale(_fontScale);
+    await HiveFieldUtils.setEnabledHideShieldPost(_hideShieldPost);
+    await HiveFieldUtils.setHomeSplashIndex(_homeSplashIndex);
+    await HiveFieldUtils.setLaunchFromSystemBrowser(_launchFromSystemBrowser);
+    await HiveFieldUtils.setEnabledNewAppsIcon(_newAppCenterIcon);
     notifyListeners();
     showToast('设置更新成功');
   }
