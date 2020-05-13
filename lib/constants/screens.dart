@@ -23,6 +23,8 @@ class Screens {
 
   static int get heightPixels => (height * scale).toInt();
 
+  static double get aspectRatio => width / height;
+
   static double get textScaleFactor => mediaQuery.textScaleFactor;
 
   static double get navigationBarHeight =>
