@@ -73,6 +73,38 @@ android {
             }
         }
     }
+
+    tasks.whenTaskAdded { task ->
+        if (task.name == 'assembleRelease') {
+            task.dependsOn(copyRelease)
+        }
+    }
+}
+
+task copyRelease {
+    doLast {
+        def fromFile = "../../build/app/outputs/apk/release/app-release.apk"
+        def intoFile = "../../release/"
+        def sourceFile = file(fromFile)
+        def destinationPath = file(intoFile)
+        def time = buildTime()
+        def destinationFileName = "OpenJMU_v${flutterVersionName}+${flutterVersionCode}_${time}.apk"
+
+
+        if (!sourceFile.exists()) {
+            throw new GradleException("Source file does not exist.")
+        } else {
+            if (!destinationPath.exists()) {
+                destinationPath.mkdir()
+            }
+            copy {
+                from fromFile
+                into intoFile
+                rename { destinationFileName }
+            }
+        }
+        println("Release file copied to ${destinationPath}/${destinationFileName} .")
+    }
 }
 
 flutter {
@@ -90,4 +122,8 @@ dependencies {
 
 repositories {
     mavenCentral()
+}
+
+def static buildTime() {
+    return new Date().format("MMdd-HHmmss")
 }
