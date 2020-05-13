@@ -79,3 +79,4 @@ lib/generated_plugin_registrant.dart
 lib/api/api.dart
 lib/constants/cerstar_configs.dart
 lib/pages/test
+/release/
