@@ -15,6 +15,9 @@ class UserAPI {
 
   static List<Cookie> cookiesForJWGL;
 
+  static Map<String, BackpackItemType> backpackItemTypes =
+      <String, BackpackItemType>{};
+
   static Future<Response<T>> login<T>(Map<String, dynamic> params) async {
     return NetUtils.tokenDio.post<T>(API.login, data: params);
   }
@@ -166,6 +169,26 @@ class UserAPI {
       };
     }
     return users;
+  }
+
+  /// 获取背包物品的类型
+  static Future<void> getBackpackItemType() async {
+    try {
+      final Map<String, dynamic> types =
+          (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
+        API.backPackItemType,
+        headers: <String, dynamic>{'CLOUDID': 'jmu'},
+      ))
+              .data;
+      final List<dynamic> items = types['data'];
+      for (int i = 0; i < items.length; i++) {
+        final BackpackItemType item =
+            BackpackItemType.fromJson(items[i] as Map<String, dynamic>);
+        backpackItemTypes['${item.type}'] = item;
+      }
+    } catch (e) {
+      trueDebugPrint('Error when getting backpack item type: $e');
+    }
   }
 
   /// Blacklists.

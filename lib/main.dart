@@ -95,6 +95,9 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         currentContext.read<SettingsProvider>().getCloudSettings();
         currentContext.read<SignProvider>().getSignStatus();
         currentContext.read<WebAppsProvider>().initApps();
+        if (UserAPI.backpackItemTypes.isEmpty) {
+          UserAPI.getBackpackItemType();
+        }
       })
       ..on<LogoutEvent>().listen((event) {
         navigatorState.pushNamedAndRemoveUntil(
@@ -104,26 +107,19 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         );
         if (!currentUser.isTeacher) {
           if (!currentUser.isPostgraduate) {
-            Provider.of<CoursesProvider>(currentContext, listen: false)
-                .unloadCourses();
-            Provider.of<ScoresProvider>(currentContext, listen: false)
-                .unloadScore();
+            currentContext.read<CoursesProvider>().unloadCourses();
+            currentContext.read<ScoresProvider>().unloadScore();
           }
         }
-        Provider.of<MessagesProvider>(currentContext, listen: false)
-            .unloadMessages();
-        Provider.of<NotificationProvider>(currentContext, listen: false)
-            .stopNotification();
-        Provider.of<ReportRecordsProvider>(currentContext, listen: false)
-            .unloadRecords();
-        Provider.of<SignProvider>(currentContext, listen: false)
-            .resetSignStatus();
-        Provider.of<WebAppsProvider>(currentContext, listen: false)
-            .unloadApps();
+        currentContext.read<MessagesProvider>().unloadMessages();
+        currentContext.read<NotificationProvider>().stopNotification();
+        currentContext.read<ReportRecordsProvider>().unloadRecords();
+        currentContext.read<SignProvider>().resetSignStatus();
+        currentContext.read<WebAppsProvider>().unloadApps();
+        UserAPI.backpackItemTypes.clear();
         Future.delayed(250.milliseconds, () {
-          Provider.of<ThemesProvider>(currentContext, listen: false)
-              .resetTheme();
-          Provider.of<SettingsProvider>(currentContext, listen: false).reset();
+          currentContext.read<ThemesProvider>().resetTheme();
+          currentContext.read<SettingsProvider>().reset();
         });
         DataUtils.logout();
       })

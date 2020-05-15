@@ -29,6 +29,16 @@ class BackpackItem {
     );
   }
 
+  BackpackItemSpecialType get specialType {
+    if (type == 10000) {
+      return BackpackItemSpecialType.lotteryTicket;
+    } else if (type == 20000) {
+      return BackpackItemSpecialType.flower;
+    } else {
+      return BackpackItemSpecialType.common;
+    }
+  }
+
   @override
   String toString() {
     return 'BackpackItem ${JsonEncoder.withIndent('' '').convert({
@@ -72,4 +82,10 @@ class BackpackItemType {
       'thankmsg': thankMessage,
     })}';
   }
+}
+
+enum BackpackItemSpecialType {
+  lotteryTicket,
+  flower,
+  common,
 }

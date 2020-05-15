@@ -165,6 +165,20 @@ class NetUtils {
         data: data,
       );
 
+  static Future<Response<T>> postWithHeaderSet<T>(
+    String url, {
+    Map<String, dynamic> queryParameters,
+    Map<String, dynamic> data,
+    Map<String, dynamic> headers,
+  }) async =>
+      await dio.post<T>(
+        url,
+        queryParameters: queryParameters,
+        data: data,
+        options: Options(
+            headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid)),
+      );
+
   static Future<Response<T>> postWithCookieSet<T>(
     String url, {
     Map<String, dynamic> data,
