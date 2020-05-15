@@ -76,7 +76,7 @@ android {
 
     tasks.whenTaskAdded { task ->
         if (task.name == 'assembleRelease') {
-            task.dependsOn(copyRelease)
+            task.finalizedBy copyRelease
         }
     }
 }
