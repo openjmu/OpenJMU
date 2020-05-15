@@ -123,7 +123,9 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
       unawaited(Navigator.of(context).pushReplacementNamed(
         Routes.OPENJMU_USER,
         arguments: <String, dynamic>{
-          'uid': scanResult.message.substring(API.schemeUserPage.pattern.length - 2).toInt()
+          'uid': scanResult.message
+              .substring(API.schemeUserPage.pattern.length - 2)
+              .toInt()
         },
       ));
     } else {
@@ -136,7 +138,9 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
         cancelLabel: '返回',
       );
       if (needCopy) {
-        unawaited(Clipboard.setData(ClipboardData(text: '${scanResult.message}')));
+        unawaited(
+          Clipboard.setData(ClipboardData(text: '${scanResult.message}')),
+        );
       }
       unawaited(_controller.startScan());
     }
@@ -193,23 +197,23 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
 
   /// 顶栏
   Widget get appBar => PositionedDirectional(
-    top: Screens.topSafeHeight + 8.0,
-    start: 8.0,
-    end: 8.0,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: <Widget>[backButton, importFromGalleryButton],
-    ),
-  );
+        top: Screens.topSafeHeight + 8.0,
+        start: 8.0,
+        end: 8.0,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[backButton, importFromGalleryButton],
+        ),
+      );
 
   /// 返回键
   Widget get backButton => BackButton(color: Colors.white);
 
   /// 选择图库文件进行扫描
   Widget get importFromGalleryButton => IconButton(
-    icon: Icon(Icons.perm_media, color: Colors.white),
-    onPressed: scanFromFile,
-  );
+        icon: Icon(Icons.perm_media, color: Colors.white),
+        onPressed: scanFromFile,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -238,7 +242,9 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
               )
             : Center(
                 child: Text(
-                  isCamerasEmpty ? 'No camera was ready for scannning.' : 'Preparing camera...',
+                  isCamerasEmpty
+                      ? 'No camera was ready for scannning.'
+                      : 'Preparing camera...',
                 ),
               ),
       ),
@@ -255,11 +261,11 @@ class ScannerPainter extends CustomPainter {
   double get padding => Screens.width / 3.5 + borderWidth / 2;
   double get length => Screens.width - padding * 2;
   Rect get rect => Rect.fromLTWH(
-    padding,
-    padding + Screens.topSafeHeight,
-    length,
-    length,
-  );
+        padding,
+        padding + Screens.topSafeHeight,
+        length,
+        length,
+      );
 
   @override
   void paint(Canvas canvas, Size size) {

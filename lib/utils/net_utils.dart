@@ -41,12 +41,8 @@ class NetUtils {
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
 //      client.findProxy = (uri) => 'PROXY 192.168.0.106:8888';
-//      client.badCertificateCallback = (
-//        X509Certificate cert,
-//        String host,
-//        int port,
-//      ) =>
-//          true;
+      client.badCertificateCallback =
+          (X509Certificate _, String __, int ___) => true;
     };
     dio.interceptors.add(cookieManager);
     dio.interceptors.add(InterceptorsWrapper(
@@ -65,12 +61,8 @@ class NetUtils {
     (tokenDio.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (HttpClient client) {
 //      client.findProxy = (uri) => 'PROXY 192.168.0.106:8888';
-//      client.badCertificateCallback = (
-//        X509Certificate cert,
-//        String host,
-//        int port,
-//      ) =>
-//          true;
+      client.badCertificateCallback =
+          (X509Certificate _, String __, int ___) => true;
     };
     tokenDio.interceptors.add(tokenCookieManager);
     tokenDio.interceptors.add(InterceptorsWrapper(
