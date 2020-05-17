@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -24,7 +23,7 @@ const bool logMessageSocketPacket = false;
 /// Log only in debug mode.
 /// 只在调试模式打印
 void trueDebugPrint(String message) {
-  if (!kReleaseMode) {
+  if (Constants.isDebug) {
     log(message);
   }
 }

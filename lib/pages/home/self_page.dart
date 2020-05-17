@@ -49,7 +49,7 @@ class SelfPage extends StatelessWidget {
             },
           },
         ],
-        if (Provider.of<SettingsProvider>(currentContext, listen: false).debug)
+        if (Constants.isDebug)
           [
             {
               'name': '测试页',
@@ -481,7 +481,7 @@ class SelfPage extends StatelessWidget {
 
     return GestureDetector(
       onLongPress: () {
-        if (context.read<SettingsProvider>().debug) {
+        if (Constants.isDebug) {
           showDialog(
             context: context,
             barrierDismissible: true,

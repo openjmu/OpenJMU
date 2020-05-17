@@ -39,12 +39,12 @@ class CourseAPI {
 
   static Future<Response<String>> getCourse() async => NetUtils.get(
         API.courseScheduleCourses,
-        data: <String, dynamic>{'sid': UserAPI.currentUser.sid},
+        data: <String, dynamic>{'sid': currentUser.sid},
       );
 
   static Future<Response<String>> getRemark() async => NetUtils.get(
         API.courseScheduleClassRemark,
-        data: <String, dynamic>{'sid': UserAPI.currentUser.sid},
+        data: <String, dynamic>{'sid': currentUser.sid},
       );
 
   static String getCourseTime(int courseIndex) {

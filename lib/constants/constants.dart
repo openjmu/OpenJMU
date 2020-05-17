@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -41,6 +42,10 @@ const double kAppBarHeight = 75.0;
 
 class Constants {
   const Constants._();
+
+  /// For test page.
+  /// Set this to [false] before release.
+  static bool get isDebug => !kReleaseMode && true;
 
   static const quickActionsList = <String, String>{
     'actions_home': '广场',

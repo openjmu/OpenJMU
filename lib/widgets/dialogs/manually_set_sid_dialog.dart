@@ -32,7 +32,6 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
 
   void updateSid(BuildContext context) {
     UserAPI.currentUser.sid = sid;
-    UserAPI.currentUser.ticket = sid;
     Navigator.of(context).pop();
     trueDebugPrint('${UserAPI.currentUser}');
   }

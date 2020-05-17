@@ -13,15 +13,6 @@ class SettingsProvider extends ChangeNotifier {
     init();
   }
 
-  /// For test page.
-  /// Set this to [false] before release.
-  bool _debug = !kReleaseMode && false;
-  bool get debug => _debug;
-  set debug(bool value) {
-    _debug = value;
-    notifyListeners();
-  }
-
   // Fow start index.
   int _homeSplashIndex = 0;
   int get homeSplashIndex => _homeSplashIndex;
