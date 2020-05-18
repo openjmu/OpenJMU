@@ -13,9 +13,9 @@ import 'package:extended_image/extended_image.dart';
 import 'package:extended_text_field/extended_text_field.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/controller/asset_entity_image_provider.dart';
 import 'package:openjmu/widgets/dialogs/convention_dialog.dart';
 import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 
@@ -37,7 +37,7 @@ class _PublishPostPageState extends State<PublishPostPage>
   final List<CancelToken> assetsUploadCancelTokens = <CancelToken>[];
   final Map<AssetEntity, int> uploadedAssetId = <AssetEntity, int>{};
 
-  Set<AssetEntity> selectedAssets = <AssetEntity>{};
+  List<AssetEntity> selectedAssets = <AssetEntity>[];
 
   bool isLoading = false;
   bool isTextFieldEnabled = true;
@@ -53,13 +53,6 @@ class _PublishPostPageState extends State<PublishPostPage>
   String get filteredContent => textEditingController?.text?.trim();
 
   bool get isContentNotEmpty => filteredContent?.isNotEmpty ?? false;
-
-  /// Get a [PhotoSelectorProvider] using current properties.
-  /// 根据当前属性获取新的 [PhotoSelectorProvider]
-  PhotoSelectorProvider get newProvider => PhotoSelectorProvider(
-        maxAssets: maxAssetsLength,
-        selectedAssets: selectedAssets,
-      );
 
   @override
   void initState() {
@@ -108,10 +101,13 @@ class _PublishPostPageState extends State<PublishPostPage>
   /// 使用图片选择器选择图片
   Future<void> pickAssets() async {
     unFocusTextField();
-    final PhotoSelectorProvider provider = newProvider;
-    final Set<AssetEntity> result = await PhotoSelector.pushToPicker(provider);
+    final List<AssetEntity> result = await AssetPicker.pickAssets(
+      context,
+      selectedAssets: selectedAssets,
+      themeColor: currentThemeColor,
+    );
     if (result != selectedAssets && result != null) {
-      selectedAssets = Set<AssetEntity>.from(result);
+      selectedAssets = List<AssetEntity>.from(result);
       if (mounted) setState(() {});
     }
   }
@@ -399,19 +395,14 @@ class _PublishPostPageState extends State<PublishPostPage>
     return GestureDetector(
       onTap: !isAssetListViewCollapsed
           ? () async {
-              final PhotoSelectorProvider provider = newProvider;
-              final dynamic result = await navigatorState.pushNamed(
-                Routes.OPENJMU_PHOTO_SELECTOR_VIEWER,
-                arguments: <String, dynamic>{
-                  'currentIndex': index,
-                  'assets': provider.selectedAssets,
-                  'selectedAssets': provider.selectedAssets,
-                  'selectorProvider': provider,
-                },
+              final List<AssetEntity> result = await AssetPickerViewer.pushToViewer(
+                context,
+                currentIndex: index,
+                assets: selectedAssets,
+                themeData: AssetPicker.themeData(currentThemeColor),
               );
-              final Set<AssetEntity> set = result;
-              if (selectedAssets != set && set != null) {
-                selectedAssets = set;
+              if (result != selectedAssets && result != null) {
+                selectedAssets = result;
                 if (mounted) setState(() {});
               }
             }
@@ -468,7 +459,8 @@ class _PublishPostPageState extends State<PublishPostPage>
           '删除',
           style: TextStyle(
             color: currentTheme.iconTheme.color,
-            fontSize: suSetSp(12.0),
+            fontSize: 14.0.sp,
+            fontWeight: FontWeight.normal,
           ),
         ),
       ),

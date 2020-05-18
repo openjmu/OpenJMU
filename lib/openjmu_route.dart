@@ -32,8 +32,6 @@ import 'widgets/dialogs/comment_positioned.dart';
 import 'widgets/dialogs/forward_positioned.dart';
 import 'widgets/image/image_crop_page.dart';
 import 'widgets/image/image_viewer.dart';
-import 'widgets/image/photo_selector.dart';
-import 'widgets/image/photo_selector_viewer.dart';
 import 'widgets/webview/in_app_webview.dart';
 
 // ignore_for_file: argument_type_not_assignable
@@ -145,23 +143,6 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         ),
         routeName: '通知页',
         pageRouteType: PageRouteType.transparent,
-      );
-    case 'openjmu://photo-selector':
-      return RouteResult(
-        widget: PhotoSelector(
-          provider: arguments['provider'],
-        ),
-        routeName: '图片选择器',
-      );
-    case 'openjmu://photo-selector-viewer':
-      return RouteResult(
-        widget: PhotoSelectorViewer(
-          currentIndex: arguments['currentIndex'],
-          assets: arguments['assets'],
-          selectedAssets: arguments['selectedAssets'],
-          selectorProvider: arguments['selectorProvider'],
-        ),
-        routeName: '图片选择查看器',
       );
     case 'openjmu://post-detail':
       return RouteResult(
@@ -422,21 +403,6 @@ class Routes {
   /// [arguments] : [initialPage]
   /// [pageRouteType] : PageRouteType.transparent
   static const String OPENJMU_NOTIFICATIONS = 'openjmu://notifications';
-
-  /// 图片选择器
-  ///
-  /// [name] : openjmu://photo-selector
-  /// [routeName] : 图片选择器
-  /// [arguments] : [provider]
-  static const String OPENJMU_PHOTO_SELECTOR = 'openjmu://photo-selector';
-
-  /// 图片选择查看器
-  ///
-  /// [name] : openjmu://photo-selector-viewer
-  /// [routeName] : 图片选择查看器
-  /// [arguments] : [currentIndex, assets, selectedAssets, selectorProvider]
-  static const String OPENJMU_PHOTO_SELECTOR_VIEWER =
-      'openjmu://photo-selector-viewer';
 
   /// 动态详情页
   ///
