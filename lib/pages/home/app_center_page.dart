@@ -116,58 +116,84 @@ class AppCenterPage extends StatelessWidget {
   Widget commonAppsTips(BuildContext context) {
     final TextStyle style = TextStyle(
       color: Colors.white,
-      fontSize: 20.0.sp,
+      fontSize: 18.0.sp,
     );
-    return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: 10.0.w,
-        vertical: 18.0.h,
-      ),
-      padding: EdgeInsets.symmetric(
-        horizontal: 20.0.w,
-        vertical: 10.0.w,
-      ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0.w),
-        color: currentThemeColor.withOpacity(0.5),
-      ),
-      child: Selector<WebAppsProvider, bool>(
-        selector: (BuildContext _, WebAppsProvider provider) =>
-            provider.isEditingCommonApps,
-        builder: (BuildContext _, bool isEditingCommonApps, Widget __) {
-          return AnimatedCrossFade(
-            duration: 200.milliseconds,
-            crossFadeState: isEditingCommonApps
-                ? CrossFadeState.showSecond
-                : CrossFadeState.showFirst,
-            firstChild: Text('进入编辑模式添加常用应用🔖', style: style),
-            secondChild: IconTheme(
-              data: IconThemeData(
-                color: currentThemeColor,
-                size: 24.0.sp,
-              ),
-              child: Text.rich(
-                TextSpan(
-                  children: <InlineSpan>[
-                    TextSpan(text: '点击 '),
-                    WidgetSpan(
-                      alignment: ui.PlaceholderAlignment.middle,
-                      child: Icon(Icons.add_circle_outline),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: 10.0.w,
+            vertical: 6.0.h,
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: 20.0.w,
+            vertical: 10.0.w,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0.w),
+            color: currentThemeColor.withOpacity(0.5),
+          ),
+          child: Selector<WebAppsProvider, bool>(
+            selector: (BuildContext _, WebAppsProvider provider) =>
+                provider.isEditingCommonApps,
+            builder: (BuildContext _, bool isEditingCommonApps, Widget __) {
+              return AnimatedCrossFade(
+                duration: 200.milliseconds,
+                crossFadeState: isEditingCommonApps
+                    ? CrossFadeState.showSecond
+                    : CrossFadeState.showFirst,
+                firstChild: Text('进入编辑模式添加常用应用🔖', style: style),
+                secondChild: IconTheme(
+                  data: IconThemeData(
+                    color: currentThemeColor,
+                    size: 24.0.sp,
+                  ),
+                  child: Text.rich(
+                    TextSpan(
+                      children: <InlineSpan>[
+                        TextSpan(text: '点击 '),
+                        WidgetSpan(
+                          alignment: ui.PlaceholderAlignment.middle,
+                          child: Icon(Icons.add_circle_outline),
+                        ),
+                        TextSpan(text: ' 或 '),
+                        WidgetSpan(
+                          alignment: ui.PlaceholderAlignment.middle,
+                          child: Icon(Icons.remove_circle),
+                        ),
+                        TextSpan(text: ' 进行调整'),
+                      ],
                     ),
-                    TextSpan(text: ' 或 '),
-                    WidgetSpan(
-                      alignment: ui.PlaceholderAlignment.middle,
-                      child: Icon(Icons.remove_circle),
-                    ),
-                    TextSpan(text: ' 进行调整'),
-                  ],
+                    style: style,
+                  ),
                 ),
-                style: style,
-              ),
+              );
+            },
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: 10.0.w,
+            vertical: 12.0.h,
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: 16.0.w,
+            vertical: 4.0.w,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.0.w),
+            color: Colors.grey.withOpacity(0.5),
+          ),
+          child: Text(
+            '最多只支持4个常用应用',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16.0.sp,
             ),
-          );
-        },
-      ),
+          ),
+        ),
+      ],
     );
   }
 
