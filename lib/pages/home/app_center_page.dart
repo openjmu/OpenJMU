@@ -2,6 +2,8 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2019-12-07 19:39
 ///
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -19,6 +21,7 @@ class AppCenterPage extends StatelessWidget {
     return Column(
       children: <Widget>[
         commonAppsSection(context),
+        commonAppsTips(context),
         Expanded(
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.0.w),
@@ -69,7 +72,7 @@ class AppCenterPage extends StatelessWidget {
                       child: Center(
                         child: Text(
                           '快来添加你的常用应用吧~',
-                          style: TextStyle(fontSize: 18.0.sp),
+                          style: TextStyle(fontSize: 20.0.sp),
                         ),
                       ),
                     );
@@ -84,7 +87,7 @@ class AppCenterPage extends StatelessWidget {
                             return Expanded(
                               child: AspectRatio(
                                 aspectRatio: 1.0,
-                                child: appWidget(context, app, isCommon: true),
+                                child: appWidget(context, app),
                               ),
                             );
                           },
@@ -108,12 +111,68 @@ class AppCenterPage extends StatelessWidget {
     );
   }
 
+  /// Tips widget for common apps.
+  /// 常用应用的提示
+  Widget commonAppsTips(BuildContext context) {
+    final TextStyle style = TextStyle(
+      color: Colors.white,
+      fontSize: 20.0.sp,
+    );
+    return Container(
+      margin: EdgeInsets.symmetric(
+        horizontal: 10.0.w,
+        vertical: 18.0.h,
+      ),
+      padding: EdgeInsets.symmetric(
+        horizontal: 20.0.w,
+        vertical: 10.0.w,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0.w),
+        color: currentThemeColor.withOpacity(0.5),
+      ),
+      child: Selector<WebAppsProvider, bool>(
+        selector: (BuildContext _, WebAppsProvider provider) =>
+            provider.isEditingCommonApps,
+        builder: (BuildContext _, bool isEditingCommonApps, Widget __) {
+          return AnimatedCrossFade(
+            duration: 200.milliseconds,
+            crossFadeState: isEditingCommonApps
+                ? CrossFadeState.showSecond
+                : CrossFadeState.showFirst,
+            firstChild: Text('进入编辑模式添加常用应用🔖', style: style),
+            secondChild: IconTheme(
+              data: IconThemeData(
+                color: currentThemeColor,
+                size: 24.0.sp,
+              ),
+              child: Text.rich(
+                TextSpan(
+                  children: <InlineSpan>[
+                    TextSpan(text: '点击 '),
+                    WidgetSpan(
+                      alignment: ui.PlaceholderAlignment.middle,
+                      child: Icon(Icons.add_circle_outline),
+                    ),
+                    TextSpan(text: ' 或 '),
+                    WidgetSpan(
+                      alignment: ui.PlaceholderAlignment.middle,
+                      child: Icon(Icons.remove_circle),
+                    ),
+                    TextSpan(text: ' 进行调整'),
+                  ],
+                ),
+                style: style,
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
   /// 应用部件
-  Widget appWidget(
-    BuildContext context,
-    WebApp webApp, {
-    bool isCommon = false,
-  }) {
+  Widget appWidget(BuildContext context, WebApp webApp) {
     return Consumer<WebAppsProvider>(
       builder: (BuildContext _, WebAppsProvider provider, Widget __) {
         return InkWell(
@@ -141,11 +200,11 @@ class AppCenterPage extends StatelessWidget {
                   ],
                 ),
               ),
-              if (provider.isEditingCommonApps)
-                appEditIndicator(context, provider, webApp, isCommon: isCommon),
+              appEditIndicator(context, provider, webApp),
             ],
           ),
           onTap: () {
+            final bool isCommon = provider.commonWebApps.contains(webApp);
             if (provider.isEditingCommonApps) {
               if (isCommon) {
                 provider.removeCommonApp(webApp);
@@ -177,26 +236,32 @@ class AppCenterPage extends StatelessWidget {
   Widget appEditIndicator(
     BuildContext context,
     WebAppsProvider provider,
-    WebApp webApp, {
-    bool isCommon = false,
-  }) {
+    WebApp webApp,
+  ) {
+    final bool isCommon = provider.commonWebApps.contains(webApp);
+    final bool isEditing = provider.isEditingCommonApps;
     return PositionedDirectional(
       top: 10.0.w,
       end: 10.0.w,
-      child: !isCommon && provider.commonWebApps.contains(webApp)
-          ? const SizedBox.shrink()
-          : Container(
+      child: isEditing
+          ? Container(
               padding: EdgeInsets.all(3.0.w),
-              decoration: BoxDecoration(
-                color: currentThemeColor,
-                shape: BoxShape.circle,
-              ),
               child: Icon(
-                isCommon ? Icons.close : Icons.add,
-                color: Colors.white,
-                size: 20.0.w,
+                isCommon ? Icons.remove_circle : Icons.add_circle_outline,
+                color: currentThemeColor,
+                size: 32.0.w,
               ),
-            ),
+            )
+          : isCommon
+              ? Container(
+                  padding: EdgeInsets.all(3.0.w),
+                  child: Icon(
+                    Icons.stars,
+                    color: currentThemeColor,
+                    size: 32.0.w,
+                  ),
+                )
+              : const SizedBox.shrink(),
     );
   }
 
