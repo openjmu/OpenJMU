@@ -280,8 +280,6 @@ const List<String> routeNames = <String>[
   'openjmu://login',
   'openjmu://news-detail',
   'openjmu://notifications',
-  'openjmu://photo-selector',
-  'openjmu://photo-selector-viewer',
   'openjmu://post-detail',
   'openjmu://publish-post',
   'openjmu://publish-team-post',

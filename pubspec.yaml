@@ -69,8 +69,8 @@ dependencies:
 dev_dependencies:
   build_runner: ^1.7.3
   extended_image_library: any
-  ff_annotation_route: ^2.0.3
-  flutter_asset_generator: ^0.4.4
+  ff_annotation_route: ^2.1.0
+  flutter_asset_generator: ^0.4.6
   flutter_test:
     sdk: flutter
   hive_generator: ^0.7.0
