@@ -56,9 +56,9 @@ dependencies:
   open_file: 3.0.1
   package_info: ^0.4.0+17
   path_provider: 1.6.7
-  permission_handler: 4.2.0+hotfix.2
-  provider: 4.1.0
-  pull_to_refresh_notification: ^0.3.3
+  permission_handler: 5.0.0+hotfix.6
+  provider: 4.1.2
+  pull_to_refresh_notification: ^0.3.4
   qr_flutter: 3.2.0
   quick_actions: ^0.4.0+4
   r_scan: 0.1.4+1

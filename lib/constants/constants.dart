@@ -20,7 +20,7 @@ export 'package:intl/intl.dart' show DateFormat;
 export 'package:oktoast/oktoast.dart' hide showToast;
 export 'package:pedantic/pedantic.dart' show unawaited;
 export 'package:permission_handler/permission_handler.dart'
-    show PermissionGroup;
+    show Permission;
 export 'package:url_launcher/url_launcher.dart';
 
 export 'events.dart';

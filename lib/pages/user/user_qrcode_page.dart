@@ -26,10 +26,10 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
     isSaving = true;
 
     try {
-      final permissions = await PermissionHandler().requestPermissions([
-        PermissionGroup.storage,
-      ]);
-      if (permissions[PermissionGroup.storage] != PermissionStatus.granted) {
+      final bool isAllGranted = await checkPermissions(
+        <Permission>[Permission.storage],
+      );
+      if (!isAllGranted) {
         showToast('未获得存储权限');
         return;
       }

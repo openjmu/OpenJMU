@@ -56,10 +56,9 @@ Future<bool> doubleBackExit() async {
 void doNothing() {}
 
 /// Check permissions and only return whether they succeed or not.
-Future<bool> checkPermissions(List<PermissionGroup> permissions) async {
+Future<bool> checkPermissions(List<Permission> permissions) async {
   try {
-    final Map<PermissionGroup, PermissionStatus> status =
-        await PermissionHandler().requestPermissions(permissions);
+    final Map<Permission, PermissionStatus> status = await permissions.request();
     return !status.values.any(
       (PermissionStatus p) => p != PermissionStatus.granted,
     );

@@ -227,7 +227,7 @@ class SelfPage extends StatelessWidget {
         splashColor: Colors.white,
         onPressed: () async {
           if (await checkPermissions(
-            <PermissionGroup>[PermissionGroup.camera],
+            <Permission>[Permission.camera]
           )) {
             unawaited(navigatorState.pushNamed(Routes.OPENJMU_SCAN_QRCODE));
           } else {

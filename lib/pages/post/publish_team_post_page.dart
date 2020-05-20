@@ -105,19 +105,14 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage> {
     final currentColorValue =
         '#${currentThemeColor.value.toRadixString(16).substring(2, 8)}';
     List<Asset> resultList = List<Asset>();
-    final permissions = await PermissionHandler().requestPermissions([
-      PermissionGroup.camera,
-      PermissionGroup.storage,
-      if (Platform.isIOS) PermissionGroup.photos,
-    ]);
-    bool granted =
-        permissions[PermissionGroup.camera] == PermissionStatus.granted &&
-            permissions[PermissionGroup.storage] == PermissionStatus.granted;
-    if (Platform.isIOS) {
-      granted = granted &&
-          permissions[PermissionGroup.photos] == PermissionStatus.granted;
-    }
-    if (granted) {
+    final bool isAllGranted = await checkPermissions(
+      <Permission>[
+        Permission.camera,
+        Permission.storage,
+        if (Platform.isIOS) Permission.photos,
+      ],
+    );
+    if (isAllGranted) {
       try {
         final results = await MultiImagePicker.pickImages(
           maxImages: maxImagesLength,

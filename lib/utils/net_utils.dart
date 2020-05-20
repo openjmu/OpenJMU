@@ -5,7 +5,6 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -222,10 +221,10 @@ class NetUtils {
   }) async {
     Response<dynamic> response;
     String path;
-    final Map<PermissionGroup, PermissionStatus> permissions =
-        await PermissionHandler()
-            .requestPermissions(<PermissionGroup>[PermissionGroup.storage]);
-    if (permissions[PermissionGroup.storage] == PermissionStatus.granted) {
+    final bool isAllGranted = await checkPermissions(
+      <Permission>[Permission.storage],
+    );
+    if (isAllGranted) {
       showToast('开始下载...');
       trueDebugPrint('File start download: $url');
       path = (await getExternalStorageDirectory()).path;

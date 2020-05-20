@@ -14,7 +14,6 @@ import 'package:image_save/image_save.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/image/image_gesture_detector.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 @FFRoute(
   name: "openjmu://image-viewer",
@@ -165,16 +164,11 @@ class ImageViewerState extends State<ImageViewer>
           icon: Icon(Icons.save_alt),
           text: '保存图片',
           onTap: () async {
-            final Map<PermissionGroup, PermissionStatus> requests =
-                await PermissionHandler().requestPermissions(
-              <PermissionGroup>[
-                if (Platform.isIOS) PermissionGroup.photos,
-                if (Platform.isAndroid) PermissionGroup.storage,
-              ],
-            );
-            if (!requests.values.any(
-              (PermissionStatus p) => p != PermissionStatus.granted,
-            )) {
+            final bool isAllGranted = await checkPermissions(<Permission>[
+              if (Platform.isIOS) Permission.photos,
+              if (Platform.isAndroid) Permission.storage,
+            ]);
+            if (isAllGranted) {
               unawaited(_downloadImage(widget.pics[currentIndex].imageUrl));
             }
           },
@@ -321,14 +315,15 @@ class ImageViewerState extends State<ImageViewer>
                     initialData: 1.0,
                     stream: backgroundOpacityStreamController.stream,
                     builder:
-                        (BuildContext context, AsyncSnapshot<double> data) =>
-                            Opacity(
-                      opacity: popping ? 0.0 : data.data,
-                      child: ViewAppBar(
-                        post: widget.post,
-                        onMoreClicked: () => onLongPress(context),
-                      ),
-                    ),
+                        (BuildContext context, AsyncSnapshot<double> data) {
+                      return Opacity(
+                        opacity: popping ? 0.0 : data.data,
+                        child: ViewAppBar(
+                          post: widget.post,
+                          onMoreClicked: () => onLongPress(context),
+                        ),
+                      );
+                    },
                   ),
                 ),
                 if (widget.pics.length > 1)
