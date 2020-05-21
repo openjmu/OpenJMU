@@ -61,26 +61,12 @@
 			remoteGlobalIDString = 39FE9E5AD97090D1618E8128D6A6901B;
 			remoteInfo = flutter_native_image;
 		};
-		ABC8B9DE22BE365C00F92406 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 3D5129284401E8B9F61E25ADA5853611;
-			remoteInfo = flutter_qr_reader;
-		};
 		ABC8B9E022BE365C00F92406 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = 875F33D1CA003649B2DE12992F74652C;
 			remoteInfo = flutter_webview_plugin;
-		};
-		ABC8B9E822BE365C00F92406 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 33DABAA8DDA10D304692FA64D62AF436;
-			remoteInfo = image_downloader;
 		};
 		ABC8B9EA22BE365C00F92406 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -145,13 +131,6 @@
 			remoteGlobalIDString = 400FF55D0451E7A8F33A3D0D3E11C1B9;
 			remoteInfo = Reachability;
 		};
-		ABC8B9FC22BE365C00F92406 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = D2E9151FF178A177C7E4A82248E431AB;
-			remoteInfo = shared_preferences;
-		};
 		FA03547023D544200057AA93 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
@@ -173,6 +152,76 @@
 			remoteGlobalIDString = 88201E9CFC476A9A0003632CB83B1D0A;
 			remoteInfo = url_launcher;
 		};
+		FA5C242F247620FE00AF3BC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4517EDEAD6078BFA83F3428E3C048161;
+			remoteInfo = flutter_displaymode;
+		};
+		FA5C2431247620FE00AF3BC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 84D8D6D3A0E58CD8A5EEB311D34E6BDB;
+			remoteInfo = flutter_plugin_android_lifecycle;
+		};
+		FA5C2433247620FE00AF3BC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 5C950814B945573A2A2D7671016B3F22;
+			remoteInfo = image_save;
+		};
+		FA5C2435247620FE00AF3BC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 04317B68497AC08F78B32A98E7307F9D;
+			remoteInfo = open_file;
+		};
+		FA5C2437247620FE00AF3BC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CC745A1D91B2BF4B9C8DB1CADDAE03C9;
+			remoteInfo = photo_manager;
+		};
+		FA5C2439247620FE00AF3BC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CD60FC53FF5A4CDDF4B147113D2FE36E;
+			remoteInfo = r_scan;
+		};
+		FA5C243B247620FE00AF3BC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = F22845DE2655CF256C870C2391064243;
+			remoteInfo = vibration;
+		};
+		FA5C243D247620FE00AF3BC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 996BDA9D388364FDC99AF5424CDA0C23;
+			remoteInfo = video_player;
+		};
+		FA5C243F247620FE00AF3BC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = ADEBDA32F07A150E878C0F9EC21A3524;
+			remoteInfo = ZBarSDK;
+		};
+		FA5C2441247620FE00AF3BC3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 6F73B6C7971A37DCD5170ED89E3DF741;
+			remoteInfo = ZXingObjC;
+		};
 		FA7BFF482354271300F18AC3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
@@ -193,13 +242,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 6EEB82852C15AE78C3B8CD5C481D7C44;
 			remoteInfo = image_editor;
-		};
-		FABBBD7D23C81639000130A5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 26A4AED99D227F4E89A47D8845CCD388;
-			remoteInfo = ota_update;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -326,26 +368,32 @@
 				ABC8B9D322BE365C00F92406 /* BSImageView.framework */,
 				ABC8B9D522BE365C00F92406 /* connectivity.framework */,
 				FA7BFF492354271300F18AC3 /* device_info.framework */,
+				FA5C2430247620FE00AF3BC3 /* flutter_displaymode.framework */,
 				FA03547123D544200057AA93 /* flutter_inappwebview.framework */,
 				FABBBD7823C81639000130A5 /* flutter_local_notifications.framework */,
 				ABC8B9DD22BE365C00F92406 /* flutter_native_image.framework */,
-				ABC8B9DF22BE365C00F92406 /* flutter_qr_reader.framework */,
+				FA5C2432247620FE00AF3BC3 /* flutter_plugin_android_lifecycle.framework */,
 				ABC8B9E122BE365C00F92406 /* flutter_webview_plugin.framework */,
-				ABC8B9E922BE365C00F92406 /* image_downloader.framework */,
 				FABBBD7A23C81639000130A5 /* image_editor.framework */,
 				ABC8B9EB22BE365C00F92406 /* image_gallery_saver.framework */,
 				ABC8B9ED22BE365C00F92406 /* image_picker.framework */,
+				FA5C2434247620FE00AF3BC3 /* image_save.framework */,
 				FA03547323D544200057AA93 /* launch_review.framework */,
 				ABC8B9EF22BE365C00F92406 /* multi_image_picker.framework */,
-				FABBBD7E23C81639000130A5 /* ota_update.framework */,
+				FA5C2436247620FE00AF3BC3 /* open_file.framework */,
 				ABC8B9F122BE365C00F92406 /* package_info.framework */,
 				ABC8B9F322BE365C00F92406 /* path_provider.framework */,
 				ABC8B9F522BE365C00F92406 /* permission_handler.framework */,
+				FA5C2438247620FE00AF3BC3 /* photo_manager.framework */,
 				ABC8B9F722BE365C00F92406 /* Pods_Runner.framework */,
 				ABC8B9F922BE365C00F92406 /* quick_actions.framework */,
+				FA5C243A247620FE00AF3BC3 /* r_scan.framework */,
 				ABC8B9FB22BE365C00F92406 /* Reachability.framework */,
-				ABC8B9FD22BE365C00F92406 /* shared_preferences.framework */,
 				FA4BB6CB2338C9CB008A8438 /* url_launcher.framework */,
+				FA5C243C247620FE00AF3BC3 /* vibration.framework */,
+				FA5C243E247620FE00AF3BC3 /* video_player.framework */,
+				FA5C2440247620FE00AF3BC3 /* ZBarSDK.framework */,
+				FA5C2442247620FE00AF3BC3 /* ZXingObjC.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -484,25 +532,11 @@
 			remoteRef = ABC8B9DC22BE365C00F92406 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		ABC8B9DF22BE365C00F92406 /* flutter_qr_reader.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = flutter_qr_reader.framework;
-			remoteRef = ABC8B9DE22BE365C00F92406 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		ABC8B9E122BE365C00F92406 /* flutter_webview_plugin.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = flutter_webview_plugin.framework;
 			remoteRef = ABC8B9E022BE365C00F92406 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		ABC8B9E922BE365C00F92406 /* image_downloader.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = image_downloader.framework;
-			remoteRef = ABC8B9E822BE365C00F92406 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		ABC8B9EB22BE365C00F92406 /* image_gallery_saver.framework */ = {
@@ -568,13 +602,6 @@
 			remoteRef = ABC8B9FA22BE365C00F92406 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		ABC8B9FD22BE365C00F92406 /* shared_preferences.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = shared_preferences.framework;
-			remoteRef = ABC8B9FC22BE365C00F92406 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
 		FA03547123D544200057AA93 /* flutter_inappwebview.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -596,6 +623,76 @@
 			remoteRef = FA4BB6CA2338C9CB008A8438 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FA5C2430247620FE00AF3BC3 /* flutter_displaymode.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = flutter_displaymode.framework;
+			remoteRef = FA5C242F247620FE00AF3BC3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA5C2432247620FE00AF3BC3 /* flutter_plugin_android_lifecycle.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = flutter_plugin_android_lifecycle.framework;
+			remoteRef = FA5C2431247620FE00AF3BC3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA5C2434247620FE00AF3BC3 /* image_save.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = image_save.framework;
+			remoteRef = FA5C2433247620FE00AF3BC3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA5C2436247620FE00AF3BC3 /* open_file.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = open_file.framework;
+			remoteRef = FA5C2435247620FE00AF3BC3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA5C2438247620FE00AF3BC3 /* photo_manager.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = photo_manager.framework;
+			remoteRef = FA5C2437247620FE00AF3BC3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA5C243A247620FE00AF3BC3 /* r_scan.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = r_scan.framework;
+			remoteRef = FA5C2439247620FE00AF3BC3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA5C243C247620FE00AF3BC3 /* vibration.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = vibration.framework;
+			remoteRef = FA5C243B247620FE00AF3BC3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA5C243E247620FE00AF3BC3 /* video_player.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = video_player.framework;
+			remoteRef = FA5C243D247620FE00AF3BC3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA5C2440247620FE00AF3BC3 /* ZBarSDK.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ZBarSDK.framework;
+			remoteRef = FA5C243F247620FE00AF3BC3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		FA5C2442247620FE00AF3BC3 /* ZXingObjC.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ZXingObjC.framework;
+			remoteRef = FA5C2441247620FE00AF3BC3 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FA7BFF492354271300F18AC3 /* device_info.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -615,13 +712,6 @@
 			fileType = wrapper.framework;
 			path = image_editor.framework;
 			remoteRef = FABBBD7923C81639000130A5 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		FABBBD7E23C81639000130A5 /* ota_update.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ota_update.framework;
-			remoteRef = FABBBD7D23C81639000130A5 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -851,6 +941,7 @@
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -886,6 +977,7 @@
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
