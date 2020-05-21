@@ -182,8 +182,10 @@ class NewsListPageState extends State<NewsListPage>
       padding: EdgeInsets.all(suSetSp(8.0)),
       child: InkWell(
         onTap: () {
-          navigatorState
-              .pushNamed(Routes.OPENJMU_NEWS_DETAIL, arguments: {'news': news});
+          navigatorState.pushNamed(
+            Routes.openjmuNewsDetail,
+            arguments: {'news': news},
+          );
         },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,

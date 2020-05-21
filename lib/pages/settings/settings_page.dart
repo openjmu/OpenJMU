@@ -70,13 +70,13 @@ class SettingsPage extends StatelessWidget {
               width: suSetWidth(iconSize),
               height: suSetWidth(iconSize),
             ),
-            'route': Routes.OPENJMU_THEME,
+            'route': Routes.openjmuTheme,
           },
           {
             'icon': R.ASSETS_ICONS_SETTINGS_LAUNCH_PAGE_SVG,
             'name': '启动页设置',
             'description': '选择您偏好的启动页面',
-            'route': Routes.OPENJMU_SWITCH_STARTUP,
+            'route': Routes.openjmuSwitchStartup,
           },
           if (currentUser.isTeacher)
             {
@@ -100,7 +100,7 @@ class SettingsPage extends StatelessWidget {
             'icon': R.ASSETS_ICONS_SETTINGS_FONT_SIZE_SVG,
             'name': '字体大小调节',
             'description': '调整字体大小以获得最佳阅读体验',
-            'route': Routes.OPENJMU_FONT_SCALE,
+            'route': Routes.openjmuFontScale,
           },
           {
             'icon': R.ASSETS_ICONS_SETTINGS_HIDE_BLOCKED_SVG,

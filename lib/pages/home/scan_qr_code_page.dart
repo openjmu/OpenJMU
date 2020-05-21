@@ -14,7 +14,7 @@ import 'package:r_scan/r_scan.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(name: 'openjmu://scan-qrcode', routeName: '扫描二维码')
+@FFRoute(name: 'openjmu://scan-qr-code', routeName: '扫描二维码')
 class ScanQrCodePage extends StatefulWidget {
   @override
   _ScanQrCodePageState createState() => _ScanQrCodePageState();
@@ -121,7 +121,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
       /// Push to user page if a user scheme is detected.
       /// 如果检测到用户scheme则跳转到用户页
       unawaited(Navigator.of(context).pushReplacementNamed(
-        Routes.OPENJMU_USER,
+        Routes.openjmuUser,
         arguments: <String, dynamic>{
           'uid': scanResult.message
               .substring(API.schemeUserPage.pattern.length - 2)

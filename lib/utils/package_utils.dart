@@ -143,7 +143,7 @@ class PackageUtils {
                             onPressed: () {
                               dismissAllToast();
                               navigatorState
-                                  .pushNamed(Routes.OPENJMU_CHANGELOG_PAGE);
+                                  .pushNamed(Routes.openjmuChangelogPage);
                             },
                             child: Text(
                               '查看版本履历',

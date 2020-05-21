@@ -115,7 +115,7 @@ class _MarketingPageState extends State<MarketingPage> {
           ],
         ),
         onPressed: () {
-          navigatorState.pushNamed(Routes.OPENJMU_PUBLISH_TEAM_POST);
+          navigatorState.pushNamed(Routes.openjmuPublishTeamPost);
         },
       );
 
@@ -152,7 +152,7 @@ class _MarketingPageState extends State<MarketingPage> {
                   onPressed: () async {
                     provider.stopNotification();
                     await navigatorState.pushNamed(
-                      Routes.OPENJMU_NOTIFICATIONS,
+                      Routes.openjmuNotifications,
                       arguments: <String, dynamic>{'initialPage': '集市'},
                     );
                     provider.initNotification();

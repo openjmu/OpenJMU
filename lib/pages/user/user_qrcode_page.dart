@@ -9,7 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(name: 'openjmu://user-qrcode', routeName: '用户二维码页')
+@FFRoute(name: 'openjmu://user-qr-code', routeName: '用户二维码页')
 class UserQrCodePage extends StatefulWidget {
   @override
   _UserQrCodePageState createState() => _UserQrCodePageState();

@@ -209,7 +209,7 @@ class CommentCard extends StatelessWidget {
             text: '回复评论',
             icon: Icon(Icons.reply),
             onTap: () => navigatorState.pushNamed(
-              Routes.OPENJMU_ADD_COMMENT,
+              Routes.openjmuAddComment,
               arguments: <String, dynamic>{
                 'post': comment.post,
                 'comment': comment
@@ -220,7 +220,7 @@ class CommentCard extends StatelessWidget {
             text: '查看动态',
             icon: Icon(Icons.pageview),
             onTap: () => navigatorState.pushNamed(
-              Routes.OPENJMU_POST_DETAIL,
+              Routes.openjmuPostDetail,
               arguments: <String, dynamic>{
                 'post': comment.post,
                 'parentContext': context

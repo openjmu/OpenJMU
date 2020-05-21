@@ -181,7 +181,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
           behavior: HitTestBehavior.opaque,
           onTap: () {
             navigatorState.pushNamed(
-              Routes.OPENJMU_SEARCH,
+              Routes.openjmuSearch,
               arguments: <String, dynamic>{'content': null},
             );
           },

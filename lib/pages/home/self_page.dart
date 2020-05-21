@@ -14,12 +14,12 @@ class SelfPage extends StatelessWidget {
           {
             'name': '背包',
             'icon': R.ASSETS_ICONS_SELF_PAGE_BACKPACK_SVG,
-            'route': Routes.OPENJMU_BACKPACK,
+            'route': Routes.openjmuBackpack,
           },
           {
             'icon': R.ASSETS_ICONS_SELF_PAGE_CHANGE_THEME_SVG,
             'name': '主题',
-            'route': Routes.OPENJMU_THEME,
+            'route': Routes.openjmuTheme,
           },
           {
             'icon': R.ASSETS_ICONS_SELF_PAGE_NIGHT_MODE_SVG,
@@ -34,12 +34,12 @@ class SelfPage extends StatelessWidget {
           {
             'name': '偏好设置',
             'icon': R.ASSETS_ICONS_SETTINGS_LINE_SVG,
-            'route': Routes.OPENJMU_SETTINGS,
+            'route': Routes.openjmuSettings,
           },
           {
             'name': '关于OpenJMU',
             'icon': R.ASSETS_ICONS_IDOLS_LINE_SVG,
-            'route': Routes.OPENJMU_ABOUT,
+            'route': Routes.openjmuAbout,
           },
           {
             'name': '退出登录',
@@ -54,7 +54,7 @@ class SelfPage extends StatelessWidget {
             {
               'name': '测试页',
               'icon': R.ASSETS_ICONS_IDOLS_LINE_SVG,
-              'route': Routes.OPENJMU_TEST_DASHBOARD,
+              'route': Routes.openjmuTestDashboard,
             },
           ],
       ];
@@ -229,7 +229,7 @@ class SelfPage extends StatelessWidget {
           if (await checkPermissions(
             <Permission>[Permission.camera]
           )) {
-            unawaited(navigatorState.pushNamed(Routes.OPENJMU_SCAN_QRCODE));
+            unawaited(navigatorState.pushNamed(Routes.openjmuScanQrCode));
           } else {
             showToast('未获得相应权限');
           }
@@ -444,7 +444,7 @@ class SelfPage extends StatelessWidget {
           ),
         ),
         onTap: () {
-          navigatorState.pushNamed(Routes.OPENJMU_APP_CENTER_PAGE);
+          navigatorState.pushNamed(Routes.openjmuAppCenterPage);
         },
       );
 

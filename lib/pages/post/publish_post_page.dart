@@ -395,7 +395,8 @@ class _PublishPostPageState extends State<PublishPostPage>
     return GestureDetector(
       onTap: !isAssetListViewCollapsed
           ? () async {
-              final List<AssetEntity> result = await AssetPickerViewer.pushToViewer(
+              final List<AssetEntity> result =
+                  await AssetPickerViewer.pushToViewer(
                 context,
                 currentIndex: index,
                 assets: selectedAssets,

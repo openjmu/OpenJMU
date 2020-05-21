@@ -235,7 +235,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           navigatorState.pushNamed(
-                            Routes.OPENJMU_USER,
+                            Routes.openjmuUser,
                             arguments: <String, dynamic>{
                               'uid':
                                   (_post['user_info']['uid'] as String).toInt(),
@@ -325,7 +325,7 @@ class TeamPostPreviewCard extends StatelessWidget {
       _exImage = GestureDetector(
         onTap: () {
           navigatorState.pushNamed(
-            Routes.OPENJMU_IMAGE_VIEWER,
+            Routes.openjmuImageViewer,
             arguments: <String, dynamic>{
               'index': i,
               'pics': post.pics.map((Map<dynamic, dynamic> pic) {
@@ -480,7 +480,7 @@ class TeamPostPreviewCard extends StatelessWidget {
               behavior: HitTestBehavior.opaque,
               onTap: () {
                 navigatorState.pushNamed(
-                  Routes.OPENJMU_TEAM_POST_DETAIL,
+                  Routes.openjmuTeamPostDetail,
                   arguments: <String, dynamic>{
                     'provider': provider,
                     'type': TeamPostType.post

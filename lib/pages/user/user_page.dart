@@ -242,7 +242,7 @@ class _UserPageState extends State<UserPage>
             color: Colors.white,
           ),
           onTap: () {
-            navigatorState.pushNamed(Routes.OPENJMU_USER_QRCODE);
+            navigatorState.pushNamed(Routes.openjmuUserQrCode);
           },
         ),
       );
@@ -338,7 +338,7 @@ class _UserPageState extends State<UserPage>
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 navigatorState.pushNamed(
-                  Routes.OPENJMU_USERLIST,
+                  Routes.openjmuUserlist,
                   arguments: {'user': _user, 'type': 1},
                 );
               },
@@ -367,7 +367,7 @@ class _UserPageState extends State<UserPage>
               behavior: HitTestBehavior.translucent,
               onTap: () {
                 navigatorState.pushNamed(
-                  Routes.OPENJMU_USERLIST,
+                  Routes.openjmuUserlist,
                   arguments: {'user': _user, 'type': 2},
                 );
               },
@@ -485,7 +485,7 @@ class _UserPageState extends State<UserPage>
           text: '查看大头像',
           onTap: () {
             navigatorState.pushNamed(
-              Routes.OPENJMU_IMAGE_VIEWER,
+              Routes.openjmuImageViewer,
               arguments: {
                 'index': 0,
                 'pics': [
@@ -506,7 +506,7 @@ class _UserPageState extends State<UserPage>
           icon: Icon(Icons.photo_library),
           text: '更换头像',
           onTap: () {
-            navigatorState.pushNamed(Routes.OPENJMU_IMAGE_CROP).then((result) {
+            navigatorState.pushNamed(Routes.openjmuImageCrop).then((result) {
               if (result != null && result) {
                 Instances.eventBus.fire(AvatarUpdatedEvent());
               }
@@ -521,7 +521,7 @@ class _UserPageState extends State<UserPage>
     widget.uid == UserAPI.currentUser.uid
         ? avatarExtraActions(context)
         : navigatorState.pushNamed(
-            Routes.OPENJMU_IMAGE_VIEWER,
+            Routes.openjmuImageViewer,
             arguments: {
               'index': 0,
               'pics': [
@@ -849,7 +849,7 @@ class _UserListState extends State<UserListPage> {
     return GestureDetector(
       onTap: () {
         navigatorState.pushNamed(
-          Routes.OPENJMU_USER,
+          Routes.openjmuUser,
           arguments: {'uid': int.parse(_user['uid'].toString())},
         );
       },

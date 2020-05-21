@@ -40,7 +40,7 @@ class PostSquarePage extends StatelessWidget {
           ],
         ),
         onPressed: () {
-          Navigator.of(context).pushNamed(Routes.OPENJMU_PUBLISH_POST);
+          Navigator.of(context).pushNamed(Routes.openjmuPublishPost);
         },
       );
 
@@ -77,7 +77,7 @@ class PostSquarePage extends StatelessWidget {
                   onPressed: () async {
                     provider.stopNotification();
                     await navigatorState.pushNamed(
-                      Routes.OPENJMU_NOTIFICATIONS,
+                      Routes.openjmuNotifications,
                       arguments: <String, dynamic>{'initialPage': '广场'},
                     );
                     provider.initNotification();

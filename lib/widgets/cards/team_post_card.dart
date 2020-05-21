@@ -163,7 +163,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
       _exImage = GestureDetector(
         onTap: () {
           navigatorState.pushNamed(
-            Routes.OPENJMU_IMAGE_VIEWER,
+            Routes.openjmuImageViewer,
             arguments: <String, dynamic>{
               'index': index,
               'pics': post.pics.map<ImageBean>((Map f) {

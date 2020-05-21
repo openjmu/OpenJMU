@@ -168,7 +168,7 @@ class LoginPageState extends State<LoginPage>
         DataUtils.login(_username, _password).then((bool result) {
           if (result) {
             navigatorState.pushNamedAndRemoveUntil(
-              Routes.OPENJMU_HOME,
+              Routes.openjmuHome,
               (_) => false,
               arguments: <String, dynamic>{'initAction': null},
             );

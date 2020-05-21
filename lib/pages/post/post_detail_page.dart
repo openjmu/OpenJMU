@@ -341,7 +341,7 @@ class PostDetailPageState extends State<PostDetailPage> {
             child: FlatButton.icon(
               onPressed: () {
                 navigatorState.pushNamed(
-                  Routes.OPENJMU_ADD_FORWARD,
+                  Routes.openjmuAddForward,
                   arguments: {'post': widget.post},
                 );
               },
@@ -362,7 +362,7 @@ class PostDetailPageState extends State<PostDetailPage> {
             child: FlatButton.icon(
               onPressed: () {
                 navigatorState.pushNamed(
-                  Routes.OPENJMU_ADD_COMMENT,
+                  Routes.openjmuAddComment,
                   arguments: {'post': widget.post},
                 );
               },

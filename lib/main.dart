@@ -17,8 +17,6 @@ import 'package:quick_actions/quick_actions.dart';
 import 'package:openjmu/constants/constants.dart' hide PageRouteType;
 import 'package:openjmu/pages/splash_page.dart';
 import 'package:openjmu/pages/no_route_page.dart';
-import 'package:openjmu/openjmu_route.dart';
-import 'package:openjmu/openjmu_route_helper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -101,7 +99,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
       })
       ..on<LogoutEvent>().listen((event) {
         navigatorState.pushNamedAndRemoveUntil(
-          Routes.OPENJMU_LOGIN,
+          Routes.openjmuLogin,
           (_) => false,
           arguments: {'initAction': initAction},
         );

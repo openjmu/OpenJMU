@@ -188,7 +188,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
             ? () {
                 final TeamPostProvider provider = TeamPostProvider(post);
                 navigatorState.pushNamed(
-                  Routes.OPENJMU_TEAM_POST_DETAIL,
+                  Routes.openjmuTeamPostDetail,
                   arguments: <String, dynamic>{
                     'provider': provider,
                     'type': TeamPostType.comment,
@@ -256,7 +256,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   navigatorState.pushNamed(
-                                    Routes.OPENJMU_USER,
+                                    Routes.openjmuUser,
                                     arguments: <String, dynamic>{
                                       'uid': _post['user']['uid']
                                           .toString()
@@ -348,7 +348,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
       _exImage = GestureDetector(
         onTap: () {
           navigatorState.pushNamed(
-            Routes.OPENJMU_IMAGE_VIEWER,
+            Routes.openjmuImageViewer,
             arguments: <String, dynamic>{
               'index': index,
               'pics': post.pics.map<ImageBean>((dynamic _) {

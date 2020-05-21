@@ -13,7 +13,7 @@ class AboutPage extends StatelessWidget {
         {
           'name': '版本履历',
           'onTap': () {
-            navigatorState.pushNamed(Routes.OPENJMU_CHANGELOG_PAGE);
+            navigatorState.pushNamed(Routes.openjmuChangelogPage);
           },
         },
         {
