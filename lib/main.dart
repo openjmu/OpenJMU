@@ -65,9 +65,11 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     tryRecoverLoginInfo();
 
-    /// Set default display mode to compatible with 90/120Hz refresh rate on Android.
-    /// 在安卓上设置默认显示模式以适配90/120赫兹显示
-    if (Platform.isAndroid) {
+    /// Set default display mode to compatible with 90/120Hz
+    /// refresh rate on OnePlus devices.
+    /// 在一加手机上设置默认显示模式以适配90/120赫兹显示
+    if (Platform.isAndroid &&
+        DeviceUtils.deviceModel.toLowerCase().contains('oneplus')) {
       FlutterDisplayMode.setDeviceDefault();
     }
 
