@@ -58,7 +58,8 @@ void doNothing() {}
 /// Check permissions and only return whether they succeed or not.
 Future<bool> checkPermissions(List<Permission> permissions) async {
   try {
-    final Map<Permission, PermissionStatus> status = await permissions.request();
+    final Map<Permission, PermissionStatus> status =
+        await permissions.request();
     return !status.values.any(
       (PermissionStatus p) => p != PermissionStatus.granted,
     );

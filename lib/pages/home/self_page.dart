@@ -226,9 +226,7 @@ class SelfPage extends StatelessWidget {
   Widget get scanQrCodeButton => IconButton(
         splashColor: Colors.white,
         onPressed: () async {
-          if (await checkPermissions(
-            <Permission>[Permission.camera]
-          )) {
+          if (await checkPermissions(<Permission>[Permission.camera])) {
             unawaited(navigatorState.pushNamed(Routes.openjmuScanQrCode));
           } else {
             showToast('未获得相应权限');
