@@ -2,15 +2,18 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020/5/12 16:05
 ///
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:r_scan/r_scan.dart';
+import 'package:vibration/vibration.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -20,7 +23,13 @@ class ScanQrCodePage extends StatefulWidget {
   _ScanQrCodePageState createState() => _ScanQrCodePageState();
 }
 
-class _ScanQrCodePageState extends State<ScanQrCodePage> {
+class _ScanQrCodePageState extends State<ScanQrCodePage>
+    with TickerProviderStateMixin {
+  final TextStyle buttonTextStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 16.0.sp,
+  );
+
   /// List for available cameras.
   /// 可用的相机列表
   List<RScanCameraDescription> rScanCameras = <RScanCameraDescription>[];
@@ -50,14 +59,30 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
   /// 若不在判断后构建部件，会抛出空调用
   bool isCameraInitialized = false;
 
+  /// Whether user's qr code is displaying.
+  /// 用户的二维码是否正在显示
+  bool isDisplayingUserQrCode = false;
+
+  /// These variables control the animation of the grid shader.
+  /// 下面的变量用于控制
+  final StreamController<double> shaderTranslateStream =
+      StreamController<double>.broadcast();
+  Animation<double> shaderAnimation;
+  AnimationController shaderAnimationController;
+
   @override
   void initState() {
     super.initState();
     fetchCameras();
+    initShaderAnimation();
   }
 
   @override
   void dispose() {
+    shaderTranslateStream.close();
+    shaderAnimationController
+      ..stop()
+      ..dispose();
     _controller?.stopScan();
     _controller?.dispose();
     super.dispose();
@@ -100,17 +125,28 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
 
   /// Callback for scanner result.
   /// 扫描得到结果时的回调
-  Future<void> onScan({bool isFromFile = false}) async {
-    if (!isFromFile) {
-      scanResult = _controller.result;
-    }
+  Future<void> onScan({RScanResult result}) async {
+    scanResult = result ?? _controller.result;
     if (scanResult == null) {
-      if (isFromFile) {
+      if (result != null) {
         showToast('未从图片中扫描到结果');
       }
       return;
     }
+
+    /// Stop scan immediately.
+    /// 立刻停止扫描
     unawaited(_controller.stopScan());
+
+    /// Call vibrate once.
+    /// 振动
+    unawaited(
+      Vibration.hasVibrator().then((bool hasVibrator) {
+        if (hasVibrator) {
+          Vibration.vibrate();
+        }
+      }),
+    );
 
     if (API.urlReg.stringMatch(scanResult.message) != null) {
       /// Launch web page if a common url was detected.
@@ -129,6 +165,8 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
         },
       ));
     } else {
+      /// Other types of result will show a dialog to copy.
+      /// 其他类型的结果会以弹窗形式提供复制
       final bool needCopy = await ConfirmationDialog.show(
         context,
         title: '扫码结果',
@@ -146,6 +184,30 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
     }
   }
 
+  /// Initialize animation for
+  void initShaderAnimation() {
+    shaderAnimationController = AnimationController(
+      duration: 3.seconds,
+      vsync: this,
+    );
+    shaderAnimation = Tween<double>(
+      begin: -Screens.height,
+      end: Screens.height * 0.5,
+    ).animate(shaderAnimationController)
+      ..addListener(() {
+        shaderTranslateStream.add(shaderAnimation.value);
+      });
+    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+      shaderAnimationController.repeat();
+    });
+  }
+
+  void switchUserQrCodeDisplay() {
+    setState(() {
+      isDisplayingUserQrCode = !isDisplayingUserQrCode;
+    });
+  }
+
   /// Scan QR code from file.
   /// 从文件中扫描二维码
   Future<void> scanFromFile() async {
@@ -155,43 +217,83 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
     }
     try {
       final RScanResult result = await RScan.scanImagePath(file.path);
-      scanResult = result;
-      unawaited(onScan(isFromFile: true));
+      unawaited(onScan(result: result));
     } catch (e) {
       showToast('扫码出错');
     }
   }
 
+  /// Animating shader grid layout.
+  /// 闪烁格子布局
+  Widget get animatingGrid => Positioned.fill(
+        child: StreamBuilder(
+          initialData: 0.0,
+          stream: shaderTranslateStream.stream,
+          builder: (BuildContext _, AsyncSnapshot<double> data) {
+            return ShaderMask(
+              shaderCallback: (Rect rect) {
+                final Gradient gradient = LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[
+                    Colors.transparent,
+                    Colors.transparent,
+                    currentThemeColor,
+                    Colors.transparent,
+                  ],
+                  stops: <double>[0.0, 0.75, 0.99, 1.0],
+                  transform: GradientTranslateTransform(
+                    Offset(0, data.data),
+                  ),
+                );
+                return gradient.createShader(rect);
+              },
+              child: GridPaper(
+                color: currentThemeColor.withOpacity(0.75),
+              ),
+            );
+          },
+        ),
+      );
+
   /// 用户的二维码
-  Widget get userQrCode => Positioned(
+  Widget get userQrCode => AnimatedPositioned(
+        duration: kThemeAnimationDuration,
         left: Screens.width / 3.5,
         right: Screens.width / 3.5,
-        bottom: Screens.width / 3.5,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(bottom: 24.0),
-              child: Text(
-                '我的二维码',
-                style: TextStyle(fontSize: 24.0.sp, color: Colors.white),
+        bottom: isDisplayingUserQrCode
+            ? Screens.width / 3.5
+            : Screens.bottomSafeHeight + 16.0,
+        curve: Curves.easeInOut,
+        child: AnimatedOpacity(
+          duration: kThemeAnimationDuration,
+          opacity: isDisplayingUserQrCode ? 1.0 : 0.0,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(bottom: 24.0),
+                child: Text(
+                  '我的二维码',
+                  style: TextStyle(fontSize: 24.0.sp, color: Colors.white),
+                ),
               ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(25.0),
-                color: Colors.white,
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(25.0),
+                  color: Colors.white,
+                ),
+                padding: EdgeInsets.all(24.0),
+                child: QrImage(
+                  version: 3,
+                  data: 'openjmu://user/${currentUser.uid}',
+                  padding: EdgeInsets.zero,
+                  backgroundColor: Colors.white,
+                  foregroundColor: Colors.black,
+                ),
               ),
-              padding: EdgeInsets.all(24.0),
-              child: QrImage(
-                version: 3,
-                data: 'openjmu://user/${currentUser.uid}',
-                padding: EdgeInsets.zero,
-                backgroundColor: Colors.white,
-                foregroundColor: Colors.black,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 
@@ -199,20 +301,50 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
   Widget get appBar => PositionedDirectional(
         top: Screens.topSafeHeight + 8.0,
         start: 8.0,
-        end: 8.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[backButton, importFromGalleryButton],
-        ),
+        child: backButton,
       );
 
   /// 返回键
   Widget get backButton => BackButton(color: Colors.white);
 
+  /// 个人码按钮
+  Widget get selfQrCodeButton => PositionedDirectional(
+        bottom: Screens.bottomSafeHeight,
+        start: 0.0,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: switchUserQrCodeDisplay,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(Icons.person, color: Colors.white, size: 20.0),
+                Text('个人码', style: buttonTextStyle),
+              ],
+            ),
+          ),
+        ),
+      );
+
   /// 选择图库文件进行扫描
-  Widget get importFromGalleryButton => IconButton(
-        icon: Icon(Icons.perm_media, color: Colors.white),
-        onPressed: scanFromFile,
+  Widget get importFromGalleryButton => PositionedDirectional(
+        bottom: Screens.bottomSafeHeight,
+        end: 0.0,
+        child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: scanFromFile,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Icon(Icons.perm_media, color: Colors.white, size: 20.0),
+                Text('相册', style: buttonTextStyle),
+              ],
+            ),
+          ),
+        ),
       );
 
   @override
@@ -230,20 +362,17 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
                       child: RScanCamera(_controller),
                     ),
                   ),
-                  Positioned.fill(
-                    child: CustomPaint(
-                      size: Size(Screens.width, Screens.height),
-                      painter: ScannerPainter(borderRadius: 20.0),
-                    ),
-                  ),
+                  animatingGrid,
                   userQrCode,
                   appBar,
+                  selfQrCodeButton,
+                  importFromGalleryButton,
                 ],
               )
             : Center(
                 child: Text(
                   isCamerasEmpty
-                      ? 'No camera was ready for scannning.'
+                      ? 'No camera was ready for scanning.'
                       : 'Preparing camera...',
                 ),
               ),
@@ -252,53 +381,13 @@ class _ScanQrCodePageState extends State<ScanQrCodePage> {
   }
 }
 
-class ScannerPainter extends CustomPainter {
-  ScannerPainter({this.borderRadius = 0.0});
+class GradientTranslateTransform extends GradientTransform {
+  GradientTranslateTransform(this.offset);
 
-  final double borderRadius;
-
-  double get borderWidth => 10.0.w;
-  double get padding => Screens.width / 3.5 + borderWidth / 2;
-  double get length => Screens.width - padding * 2;
-  Rect get rect => Rect.fromLTWH(
-        padding,
-        padding + Screens.topSafeHeight,
-        length,
-        length,
-      );
+  final Offset offset;
 
   @override
-  void paint(Canvas canvas, Size size) {
-    final Path path = Path();
-
-    /// Draw outer area first.
-    path.moveTo(0, 0);
-    path.lineTo(Screens.width, 0);
-    path.lineTo(Screens.width, Screens.height);
-    path.lineTo(0, Screens.height);
-    path.lineTo(0, 0);
-    path.close();
-
-    /// Draw inside area.
-    path.addRRect(
-      RRect.fromRectAndRadius(rect, Radius.circular(borderRadius)),
-    );
-    path.close();
-
-    path.fillType = PathFillType.evenOdd;
-    canvas.drawPath(path, Paint()..color = Colors.black38);
-
-    /// Draw rounded border.
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(rect, Radius.circular(borderRadius)),
-      Paint()
-        ..color = Colors.white
-        ..strokeWidth = 10.0.w
-        ..strokeCap = StrokeCap.round
-        ..style = PaintingStyle.stroke,
-    );
+  Matrix4 transform(Rect bounds, {TextDirection textDirection}) {
+    return Matrix4.translationValues(offset.dx, offset.dy, 0.0);
   }
-
-  @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
 }
