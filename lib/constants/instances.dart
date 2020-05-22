@@ -7,6 +7,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import 'package:openjmu/pages/home/apps_page.dart';
 import 'package:openjmu/pages/home/course_schedule_page.dart';
+import 'package:openjmu/pages/home/school_work_page.dart';
 
 NavigatorState get navigatorState => Instances.navigatorKey.currentState;
 
@@ -20,9 +21,15 @@ Color get currentThemeColor => currentTheme.accentColor;
 
 bool get currentIsDark => currentBrightness == Brightness.dark;
 
-int moreThanZero(num value) => math.max(0, value);
+num lessThanOne(num value) => math.min(1, value);
 
-int moreThanOne(num value) => math.max(1, value);
+num lessThanZero(num value) => math.min(0, value);
+
+num moreThanOne(num value) => math.max(1, value);
+
+num moreThanZero(num value) => math.max(0, value);
+
+num betweenZeroAndOne(num value) => moreThanZero(lessThanOne(value));
 
 DateTime get currentTime => DateTime.now();
 
@@ -39,8 +46,8 @@ class Instances {
 
   static final GlobalKey<ScaffoldState> mainPageScaffoldKey =
       GlobalKey<ScaffoldState>();
-  static final GlobalKey<AppsPageState> appsPageStateKey =
-      GlobalKey<AppsPageState>();
+  static final GlobalKey<SchoolWorkPageState> schoolWorkPageStateKey =
+      GlobalKey<SchoolWorkPageState>();
   static final GlobalKey<CourseSchedulePageState> courseSchedulePageStateKey =
       GlobalKey<CourseSchedulePageState>();
   static final CookieManager webViewCookieManager = CookieManager();

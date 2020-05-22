@@ -62,8 +62,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
               currentWeek > 0) {
             scrollToWeek(currentWeek);
           }
-          if (Instances.appsPageStateKey.currentState.mounted) {
-            Instances.appsPageStateKey.currentState.setState(() {});
+          if (Instances.schoolWorkPageStateKey.currentState.mounted) {
+            Instances.schoolWorkPageStateKey.currentState.setState(() {});
           }
         }
       });

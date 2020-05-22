@@ -5,14 +5,14 @@ import 'package:openjmu/pages/main_page.dart';
 import 'package:openjmu/pages/home/course_schedule_page.dart';
 import 'package:openjmu/pages/home/score_page.dart';
 
-class AppsPage extends StatefulWidget {
-  const AppsPage({@required Key key}) : super(key: key);
+class SchoolWorkPage extends StatefulWidget {
+  const SchoolWorkPage({@required Key key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => AppsPageState();
+  State<StatefulWidget> createState() => SchoolWorkPageState();
 }
 
-class AppsPageState extends State<AppsPage>
+class SchoolWorkPageState extends State<SchoolWorkPage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   static List<String> get tabs => [
         if (!(currentUser?.isPostgraduate ?? false)) '课程表',
@@ -165,7 +165,8 @@ class AppsPageState extends State<AppsPage>
                               keepAlive: true,
                             )
                           : CourseSchedulePage(
-                              key: Instances.courseSchedulePageStateKey)
+                              key: Instances.courseSchedulePageStateKey,
+                            )
                       : SizedBox.shrink(),
                 if (tabs.contains('成绩')) ScorePage(),
               ],

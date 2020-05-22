@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/pages/home/apps_page.dart';
 import 'package:openjmu/pages/home/marketing_page.dart';
 import 'package:openjmu/pages/home/message_page.dart';
 import 'package:openjmu/pages/home/post_square_page.dart';
+import 'package:openjmu/pages/home/school_work_page.dart';
 import 'package:openjmu/pages/home/self_page.dart';
 
 @FFRoute(
@@ -232,7 +232,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
                 children: <Widget>[
                   const PostSquarePage(),
                   const MarketingPage(),
-                  AppsPage(key: Instances.appsPageStateKey),
+                  SchoolWorkPage(key: Instances.schoolWorkPageStateKey),
                   const MessagePage(),
                 ],
                 index: _currentIndex,
