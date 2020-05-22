@@ -26,6 +26,7 @@ import 'pages/settings/switch_start_up_page.dart';
 import 'pages/splash_page.dart';
 import 'pages/test/test_dashboard_page.dart';
 import 'pages/user/backpack_page.dart';
+import 'pages/user/edit_profile_page.dart';
 import 'pages/user/user_page.dart';
 import 'pages/user/user_qrcode_page.dart';
 import 'widgets/dialogs/comment_positioned.dart';
@@ -80,6 +81,11 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           app: arguments['app'],
         ),
         routeName: '应用消息页',
+      );
+    case 'openjmu://edit-profile-page':
+      return RouteResult(
+        widget: EditProfilePage(),
+        routeName: '编辑资料页',
       );
     case 'openjmu://font-scale':
       return RouteResult(
@@ -244,6 +250,7 @@ class RouteResult {
     this.routeName = '',
     this.pageRouteType,
     this.description = '',
+    this.exts,
   });
 
   /// The Widget return base on route
@@ -260,6 +267,13 @@ class RouteResult {
 
   /// The description of route
   final String description;
+
+  /// The extend arguments
+  final Map<String, dynamic> exts;
 }
 
-enum PageRouteType { material, cupertino, transparent }
+enum PageRouteType {
+  material,
+  cupertino,
+  transparent,
+}

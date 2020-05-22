@@ -10,6 +10,7 @@ const List<String> routeNames = <String>[
   'openjmu://backpack',
   'openjmu://changelog-page',
   'openjmu://chat-app-message-page',
+  'openjmu://edit-profile-page',
   'openjmu://font-scale',
   'openjmu://home',
   'openjmu://image-crop',
@@ -96,6 +97,13 @@ class Routes {
   /// [arguments] : [app]
   static const String openjmuChatAppMessagePage =
       'openjmu://chat-app-message-page';
+
+  /// 编辑资料页
+  ///
+  /// [name] : openjmu://edit-profile-page
+  ///
+  /// [routeName] : 编辑资料页
+  static const String openjmuEditProfilePage = 'openjmu://edit-profile-page';
 
   /// 更改字号页
   ///
