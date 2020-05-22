@@ -41,13 +41,25 @@ class UserInfo {
     this.isFollowing,
   });
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is UserInfo && runtimeType == other.runtimeType && uid == other.uid;
-
-  @override
-  int get hashCode => uid.hashCode;
+  factory UserInfo.fromJson(Map<String, dynamic> json) {
+    json.forEach((k, v) {
+      if (json[k] == '') json[k] = null;
+    });
+    return UserInfo(
+      sid: json['sid'],
+      uid: json['uid'],
+      name: json['username'] ?? json['uid'].toString(),
+      signature: json['signature'],
+      ticket: json['ticket'],
+      blowfish: json['blowfish'],
+      isTeacher: json['isTeacher'] ?? int.parse(json['type'].toString()) == 1,
+      unitId: json['unitId'] ?? json['unitid'],
+      workId: (json['workId'] ?? json['workid'] ?? json['uid']).toString(),
+      classId: (json['classId'] ?? json['classid'])?.toString()?.toInt(),
+      gender: int.parse(json['gender'].toString()),
+      isFollowing: false,
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -60,7 +72,7 @@ class UserInfo {
       'isTeacher': isTeacher,
       'unitId': unitId,
       'workId': workId,
-//      'classId': classId,
+      'classId': classId,
       'gender': gender,
       'isFollowing': isFollowing,
       'isPostgraduate': isPostgraduate,
@@ -73,6 +85,8 @@ class UserInfo {
   String toString() {
     return 'UserInfo ${JsonEncoder.withIndent('  ').convert(toJson())}';
   }
+
+  String get genderText => gender == 2 ? '女' : '男';
 
   /// 是否为研究生
   bool get isPostgraduate {
@@ -107,23 +121,12 @@ class UserInfo {
     }
   }
 
-  factory UserInfo.fromJson(Map<String, dynamic> json) {
-    json.forEach((k, v) {
-      if (json[k] == '') json[k] = null;
-    });
-    return UserInfo(
-      sid: json['sid'],
-      uid: json['uid'],
-      name: json['username'] ?? json['uid'].toString(),
-      signature: json['signature'],
-      ticket: json['ticket'],
-      blowfish: json['blowfish'],
-      isTeacher: json['isTeacher'] ?? int.parse(json['type'].toString()) == 1,
-      unitId: json['unitId'] ?? json['unitid'],
-      workId: (json['workId'] ?? json['workid'] ?? json['uid']).toString(),
-      classId: null,
-      gender: int.parse(json['gender'].toString()),
-      isFollowing: false,
-    );
-  }
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is UserInfo && runtimeType == other.runtimeType && uid == other.uid;
+
+  @override
+  int get hashCode => uid.hashCode;
+
 }
