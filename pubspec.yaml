@@ -82,7 +82,7 @@ dev_dependencies:
 
 dependency_overrides:
   dartx: ^0.4.1
-  image: 2.1.12
+  image: 2.1.13
   intl: ^0.16.1
 
 flutter:
