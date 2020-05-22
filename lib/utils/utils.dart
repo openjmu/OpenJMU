@@ -22,9 +22,9 @@ const bool logMessageSocketPacket = false;
 
 /// Log only in debug mode.
 /// 只在调试模式打印
-void trueDebugPrint(String message) {
+void trueDebugPrint(dynamic message) {
   if (Constants.isDebug) {
-    log(message);
+    log('$message');
   }
 }
 

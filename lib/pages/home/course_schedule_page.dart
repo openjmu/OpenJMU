@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -73,13 +72,11 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     weekSwitcherAnimationController = AnimationController.unbounded(
       vsync: this,
       duration: animateDuration,
-      value: 0.0,
+      value: 0,
     );
 
     currentWeek = dateProvider.currentWeek;
-    SchedulerBinding.instance.addPostFrameCallback((Duration _) {
-      updateScrollController();
-    });
+    updateScrollController();
 
     Instances.eventBus
       ..on<CourseScheduleRefreshEvent>().listen((event) {
@@ -109,11 +106,13 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   void updateScrollController() {
     if (coursesProvider.firstLoaded) {
       final int week = dateProvider.currentWeek;
+      final double offset = currentWeekOffset(week);
       weekScrollController ??= ScrollController(
-        initialScrollOffset: week != null
-            ? math.max(0, (week - 0.5) * weekSize.w - Screens.width / 2)
-            : 0.0,
+        initialScrollOffset: week != null ? offset : 0.0,
       );
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -124,7 +123,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     if (mounted) setState(() {});
     if (weekScrollController?.hasClients ?? false) {
       weekScrollController.animateTo(
-        math.max(0, (week - 0.5) * weekSize.w - Screens.width / 2),
+        currentWeekOffset(currentWeek),
         duration: animateDuration,
         curve: Curves.ease,
       );
@@ -179,6 +178,12 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         duration: animateDuration * (percent - 0.5),
       );
     }
+  }
+
+  /// Return scroll offset according to given week.
+  /// 根据给定的周数返回滚动偏移量
+  double currentWeekOffset(int week) {
+    return math.max(0, (week - 0.5) * weekSize.w - Screens.width / 2);
   }
 
   /// Calculate courses max weekday.
@@ -493,12 +498,8 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         child: Center(
           child: Text(
             '没有课的日子\n往往就是这么的朴实无华\n且枯燥\n😆',
-            style: TextStyle(
-              fontSize: 30.0.sp,
-            ),
-            strutStyle: StrutStyle(
-              height: 1.8,
-            ),
+            style: TextStyle(fontSize: 30.0.sp),
+            strutStyle: StrutStyle(height: 1.8),
             textAlign: TextAlign.center,
           ),
         ),
