@@ -64,6 +64,9 @@ android {
         debug {
             signingConfig signingConfigs.config
         }
+        profile {
+            signingConfig signingConfigs.config
+        }
         release {
             signingConfig signingConfigs.config
             minifyEnabled true
