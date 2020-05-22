@@ -63,15 +63,6 @@ class CoursesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool _showWeek = false;
-
-  bool get showWeek => _showWeek;
-
-  set showWeek(bool value) {
-    _showWeek = value;
-    notifyListeners();
-  }
-
   bool _showError = false;
 
   bool get showError => _showError;
@@ -112,7 +103,6 @@ class CoursesProvider extends ChangeNotifier {
     _remark = null;
     _firstLoaded = false;
     _hasCourses = true;
-    _showWeek = false;
     _showError = false;
     _now = null;
   }
@@ -139,13 +129,6 @@ class CoursesProvider extends ChangeNotifier {
     if (dateProvider.currentWeek != null) {
       Instances.courseSchedulePageStateKey.currentState
           ?.scrollToWeek(dateProvider.currentWeek);
-    }
-    if (showWeek) {
-      showWeek = false;
-      if (Instances.appsPageStateKey.currentState?.mounted ?? false) {
-        // ignore: invalid_use_of_protected_member
-        Instances.appsPageStateKey.currentState?.setState(() {});
-      }
     }
     try {
       final List<Response<String>> responses =

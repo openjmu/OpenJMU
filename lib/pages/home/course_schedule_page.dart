@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -13,26 +14,54 @@ class CourseSchedulePage extends StatefulWidget {
 }
 
 class CourseSchedulePageState extends State<CourseSchedulePage>
-    with AutomaticKeepAliveClientMixin {
-  final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
-  final showWeekDuration = 300.milliseconds;
-  final showWeekCurve = Curves.fastOutSlowIn;
-  final weekSize = 100.0;
-  final monthWidth = 36.0;
-  final indicatorHeight = 60.0;
+    with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
+  /// Refresh indicator key to refresh courses display.
+  /// 用于显示课表刷新状态的的刷新指示器Key
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
+      GlobalKey<RefreshIndicatorState>();
 
+  /// Duration for any animation.
+  /// 所有动画/过渡的时长
+  final Duration animateDuration = 300.milliseconds;
+
+  /// Week widget width in switcher.
+  /// 周数切换内的每周部件宽度
+  final double weekSize = 100.0;
+
+  /// Week widget height in switcher.
+  /// 周数切换器部件宽度
+  double get weekSwitcherHeight => (weekSize / 1.25).h;
+
+  /// Current month / course time widget's width on the left side.
+  /// 左侧月份日期及课时部件的宽度
+  final double monthWidth = 36.0;
+
+  /// Weekday indicator widget's height.
+  /// 天数指示器高度
+  final double weekdayIndicatorHeight = 60.0;
+
+  /// Week switcher animation controller.
+  /// 周数切换器的动画控制器
+  AnimationController weekSwitcherAnimationController;
+
+  /// Week switcher scroll controller.
+  /// 周数切换器的滚动控制器
   ScrollController weekScrollController;
-  CoursesProvider coursesProvider;
-  DateProvider dateProvider;
 
+  CoursesProvider get coursesProvider => currentContext.read<CoursesProvider>();
   bool get firstLoaded => coursesProvider.firstLoaded;
   bool get hasCourse => coursesProvider.hasCourses;
-  bool get showWeek => coursesProvider.showWeek;
   bool get showError => coursesProvider.showError;
   DateTime get now => coursesProvider.now;
   Map<int, Map> get courses => coursesProvider.courses;
+  DateProvider get dateProvider => currentContext.read<DateProvider>();
 
   int currentWeek;
+
+  /// Week duration between current and selected.
+  /// 选中的周数与当前周的相差时长
+  Duration get selectedWeekDaysDuration =>
+      (7 * (currentWeek - dateProvider.currentWeek)).days;
 
   @override
   bool get wantKeepAlive => true;
@@ -40,11 +69,17 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   @override
   void initState() {
     super.initState();
-    coursesProvider =
-        Provider.of<CoursesProvider>(currentContext, listen: false);
-    dateProvider = Provider.of<DateProvider>(currentContext, listen: false);
+
+    weekSwitcherAnimationController = AnimationController.unbounded(
+      vsync: this,
+      duration: animateDuration,
+      value: 0.0,
+    );
+
     currentWeek = dateProvider.currentWeek;
-    updateScrollController();
+    SchedulerBinding.instance.addPostFrameCallback((Duration _) {
+      updateScrollController();
+    });
 
     Instances.eventBus
       ..on<CourseScheduleRefreshEvent>().listen((event) {
@@ -69,46 +104,86 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       });
   }
 
+  /// Update week switcher scroll controller with current week.
+  /// 以当前周更新周数切换器的位置
   void updateScrollController() {
     if (coursesProvider.firstLoaded) {
-      final week = dateProvider.currentWeek;
+      final int week = dateProvider.currentWeek;
       weekScrollController ??= ScrollController(
         initialScrollOffset: week != null
-            ? math.max(
-                0, (week - 0.5) * suSetWidth(weekSize) - Screens.width / 2)
+            ? math.max(0, (week - 0.5) * weekSize.w - Screens.width / 2)
             : 0.0,
       );
     }
   }
 
+  /// Scroll to specified week.
+  /// 周数切换器滚动到指定周
   void scrollToWeek(int week) {
     currentWeek = week;
     if (mounted) setState(() {});
     if (weekScrollController?.hasClients ?? false) {
       weekScrollController.animateTo(
-        math.max(0, (week - 0.5) * suSetWidth(weekSize) - Screens.width / 2),
-        duration: const Duration(milliseconds: 300),
+        math.max(0, (week - 0.5) * weekSize.w - Screens.width / 2),
+        duration: animateDuration,
         curve: Curves.ease,
       );
     }
   }
 
-  void showRemarkDetail(context) {
-    final provider = Provider.of<CoursesProvider>(context, listen: false);
+  /// Show remark detail.
+  /// 显示班级备注详情
+  void showRemarkDetail(BuildContext context) {
     ConfirmationDialog.show(
       context,
       title: '班级备注',
-      content: '${provider.remark}',
+      content: '${context.read<CoursesProvider>().remark}',
       cancelLabel: '返回',
     );
   }
 
-  void showWeekWidget() {
-    coursesProvider.showWeek = !showWeek;
-    Instances.appsPageStateKey.currentState.setState(() {});
+  /// Listener for pointer move.
+  /// 触摸点移动时的监听
+  ///
+  /// Sum delta in the event to update week switcher's height.
+  /// 将事件的位移与动画控制器的值相加，变换切换器的高度
+  void weekSwitcherPointerMoveListener(PointerMoveEvent event) {
+    weekSwitcherAnimationController.value += event.delta.dy;
   }
 
-  int maxWeekDay() {
+  /// Listener for pointer up.
+  /// 触摸点抬起时的监听
+  ///
+  /// When the pointer is up, calculate current height's distance between 0
+  /// and the switcher's max height. if current height was under 1/2 of the
+  /// max height, then collapse the widget. Otherwise expand it.
+  /// 当触摸点抬起时，计算当前切换器的高度偏差。
+  /// 如果小于最大高度的二分之一，则收缩部件，反之扩大。
+  void weekSwitcherPointerUpListener(PointerUpEvent event) {
+    final double percent = math.max(
+      0.000001,
+      math.min(
+        0.999999,
+        weekSwitcherAnimationController.value / weekSwitcherHeight,
+      ),
+    );
+    final double currentHeight = weekSwitcherAnimationController.value;
+    if (currentHeight < weekSwitcherHeight / 2) {
+      weekSwitcherAnimationController.animateTo(
+        0,
+        duration: animateDuration * percent,
+      );
+    } else {
+      weekSwitcherAnimationController.animateTo(
+        weekSwitcherHeight,
+        duration: animateDuration * (percent - 0.5),
+      );
+    }
+  }
+
+  /// Calculate courses max weekday.
+  /// 计算最晚的一节课在周几
+  int get maxWeekDay {
     int _maxWeekday = 5;
     for (final count in courses[6].keys) {
       if (courses[6][count].isNotEmpty) {
@@ -125,20 +200,33 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     return _maxWeekday;
   }
 
-  Widget _week(context, int index) {
+  String get _month => DateFormat('MMM', 'zh_CN').format(
+        now.add(selectedWeekDaysDuration).subtract((now.weekday - 1).days),
+      );
+  String _weekday(int i) => DateFormat('EEE', 'zh_CN').format(
+        now.add(selectedWeekDaysDuration).subtract((now.weekday - 1 - i).days),
+      );
+  String _date(int i) => DateFormat('MM/dd').format(
+        now.add(selectedWeekDaysDuration).subtract((now.weekday - 1 - i).days),
+      );
+
+  /// Week widget in week switcher.
+  /// 周数切换器内的周数组件
+  Widget _week(BuildContext context, int index) {
     return InkWell(
       onTap: () {
         scrollToWeek(index + 1);
       },
       child: Container(
-        width: suSetWidth(weekSize),
-        padding: EdgeInsets.all(suSetWidth(10.0)),
+        width: weekSize.w,
+        padding: EdgeInsets.all(10.0.w),
         child: Selector<DateProvider, int>(
-          selector: (_, provider) => provider.currentWeek,
-          builder: (_, week, __) {
+          selector: (BuildContext _, DateProvider provider) =>
+              provider.currentWeek,
+          builder: (BuildContext _, int week, Widget __) {
             return DecoratedBox(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(suSetWidth(20.0)),
+                borderRadius: BorderRadius.circular(20.0.w),
                 border: (week == index + 1 && currentWeek != week)
                     ? Border.all(
                         color: currentThemeColor.withOpacity(0.35),
@@ -156,14 +244,14 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                       TextSpan(text: '第'),
                       TextSpan(
                         text: '${index + 1}',
-                        style: TextStyle(fontSize: suSetSp(30.0)),
+                        style: TextStyle(fontSize: 30.0.sp),
                       ),
                       TextSpan(text: '周'),
                     ],
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2
-                        .copyWith(fontSize: suSetSp(18.0)),
+                        .copyWith(fontSize: 18.0.w),
                   ),
                 ),
               ),
@@ -174,27 +262,36 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     );
   }
 
+  /// Remark widget.
+  /// 课程备注部件
   Widget get remarkWidget => GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => showRemarkDetail(context),
         child: Container(
           width: Screens.width,
-          constraints: BoxConstraints(
-            maxHeight: suSetHeight(54.0),
-          ),
+          constraints: BoxConstraints(maxHeight: 54.0.h),
           child: Stack(
             children: <Widget>[
-              AnimatedOpacity(
-                duration: showWeekDuration,
-                opacity: showWeek ? 1.0 : 0.0,
-                child: SizedBox.expand(
-                  child: Container(color: Theme.of(context).primaryColor),
-                ),
+              AnimatedBuilder(
+                animation: weekSwitcherAnimationController,
+                builder: (BuildContext _, Widget child) {
+                  final double percent = moreThanZero(
+                        math.min(weekSwitcherHeight,
+                            weekSwitcherAnimationController.value),
+                      ) /
+                      weekSwitcherHeight;
+                  return Opacity(
+                    opacity: percent,
+                    child: SizedBox.expand(
+                      child: Container(color: Theme.of(context).primaryColor),
+                    ),
+                  );
+                },
               ),
               AnimatedContainer(
-                duration: showWeekDuration,
+                duration: animateDuration,
                 padding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(30.0),
+                  horizontal: 30.0.w,
                 ),
                 child: Center(
                   child: Selector<CoursesProvider, String>(
@@ -209,7 +306,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                           TextSpan(text: '$remark'),
                         ],
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontSize: suSetSp(20.0),
+                              fontSize: 20.0.sp,
                             ),
                       ),
                       textAlign: TextAlign.center,
@@ -224,68 +321,58 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         ),
       );
 
-  Widget weekSelection(context) => AnimatedContainer(
-        curve: showWeekCurve,
-        duration: const Duration(milliseconds: 300),
-        width: Screens.width,
-        height: showWeek ? suSetHeight(weekSize / 1.5) : 0.0,
-        color: Theme.of(context).primaryColor,
-        child: ListView.builder(
-          controller: weekScrollController,
-          physics: const ClampingScrollPhysics(),
-          scrollDirection: Axis.horizontal,
-          itemCount: 20,
-          itemBuilder: _week,
-        ),
-      );
+  /// Week switcher widget.
+  /// 周数切换器部件
+  Widget weekSelection(BuildContext context) {
+    return AnimatedBuilder(
+      animation: weekSwitcherAnimationController,
+      builder: (BuildContext _, Widget child) {
+        return Container(
+          width: Screens.width,
+          height: moreThanZero(
+            math.min(weekSwitcherHeight, weekSwitcherAnimationController.value),
+          ).toDouble(),
+          color: Theme.of(context).primaryColor,
+          child: ListView.builder(
+            controller: weekScrollController,
+            physics: const ClampingScrollPhysics(),
+            scrollDirection: Axis.horizontal,
+            itemCount: 20,
+            itemBuilder: _week,
+          ),
+        );
+      },
+    );
+  }
 
-  String _month() => DateFormat('MMM', 'zh_CN').format(
-        now
-            .add((7 * (currentWeek - dateProvider.currentWeek)).days)
-            .subtract((now.weekday - 1).days),
-      );
-  String _weekday(int i) => DateFormat('EEE', 'zh_CN').format(
-        now
-            .add((7 * (currentWeek - dateProvider.currentWeek)).days)
-            .subtract((now.weekday - 1 - i).days),
-      );
-  String _date(int i) => DateFormat('MM/dd').format(
-        now
-            .add((7 * (currentWeek - dateProvider.currentWeek)).days)
-            .subtract((now.weekday - 1 - i).days),
-      );
-
+  /// Current week's weekday indicator.
+  /// 本周的天数指示器
   Widget get weekDayIndicator => Container(
         color: Theme.of(context).canvasColor,
-        height: suSetHeight(indicatorHeight),
+        height: weekdayIndicatorHeight.h,
         child: Row(
           children: <Widget>[
             SizedBox(
               width: monthWidth,
               child: Center(
                 child: Text(
-                  '${_month().substring(0, _month().length - 1)}'
+                  '${_month.substring(0, _month.length - 1)}'
                   '\n'
-                  '${_month().substring(
-                    _month().length - 1,
-                    _month().length,
-                  )}',
-                  style: TextStyle(fontSize: suSetSp(18.0)),
+                  '${_month.substring(_month.length - 1, _month.length)}',
+                  style: TextStyle(fontSize: 18.0.sp),
                   textAlign: TextAlign.center,
                 ),
               ),
             ),
-            for (int i = 0; i < maxWeekDay(); i++)
+            for (int i = 0; i < maxWeekDay; i++)
               Expanded(
                 child: Container(
                   margin: EdgeInsets.symmetric(horizontal: 1.5),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+                    borderRadius: BorderRadius.circular(5.0.w),
                     color: DateFormat('MM/dd').format(
-                              now.subtract(
-                                  (7 * (currentWeek - dateProvider.currentWeek))
-                                          .days +
-                                      Duration(days: now.weekday - 1 - i)),
+                              now.subtract(selectedWeekDaysDuration +
+                                  (now.weekday - 1 - i).days),
                             ) ==
                             DateFormat('MM/dd').format(now)
                         ? currentThemeColor.withOpacity(0.35)
@@ -299,12 +386,12 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
                           _weekday(i),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: suSetSp(18.0),
+                            fontSize: 18.0.sp,
                           ),
                         ),
                         Text(
                           _date(i),
-                          style: TextStyle(fontSize: suSetSp(14.0)),
+                          style: TextStyle(fontSize: 14.0.sp),
                         ),
                       ],
                     ),
@@ -315,16 +402,51 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         ),
       );
 
-  Widget courseLineGrid(context) {
-    final double totalHeight = Screens.height -
-        Screens.topSafeHeight -
-        suSetHeight(kAppBarHeight + indicatorHeight);
+  /// Course time column widget on the left side.
+  /// 左侧的课时组件
+  Widget courseTimeColumn(int maxDay) {
+    return Container(
+      color: Theme.of(context).canvasColor,
+      width: monthWidth,
+      child: Column(
+        children: List<Widget>.generate(
+          maxDay,
+          (i) => Expanded(
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    (i + 1).toString(),
+                    style: TextStyle(
+                      fontSize: 17.0.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    CourseAPI.getCourseTime(i + 1),
+                    style: TextStyle(fontSize: 12.0.sp),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
+  /// Courses widgets.
+  /// 课程系列组件
+  Widget courseLineGrid(context) {
     bool hasEleven = false;
     int _maxCoursesPerDay = 8;
-    for (final day in courses.keys) {
-      final list9 = (courses[day][9] as List).cast<Course>();
-      final list11 = (courses[day][11] as List).cast<Course>();
+
+    /// Judge max courses per day.
+    /// 判断每天最多课时
+    for (final int day in courses.keys) {
+      final List<Course> list9 = (courses[day][9] as List).cast<Course>();
+      final List<Course> list11 = (courses[day][11] as List).cast<Course>();
       if (list9.isNotEmpty && _maxCoursesPerDay < 10) {
         _maxCoursesPerDay = 10;
       } else if (courses[day][9].isNotEmpty &&
@@ -337,41 +459,14 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         break;
       }
     }
+
     return Expanded(
-      child: Container(
+      child: ColoredBox(
         color: Theme.of(context).primaryColor,
         child: Row(
           children: <Widget>[
-            Container(
-              color: Theme.of(context).canvasColor,
-              width: monthWidth,
-              height: totalHeight,
-              child: Column(
-                children: List<Widget>.generate(
-                  _maxCoursesPerDay,
-                  (i) => Expanded(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            (i + 1).toString(),
-                            style: TextStyle(
-                                fontSize: suSetSp(17.0),
-                                fontWeight: FontWeight.bold),
-                          ),
-                          Text(
-                            CourseAPI.getCourseTime(i + 1),
-                            style: TextStyle(fontSize: suSetSp(12.0)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            for (int day = 1; day < maxWeekDay() + 1; day++)
+            courseTimeColumn(_maxCoursesPerDay),
+            for (int day = 1; day < maxWeekDay + 1; day++)
               Expanded(
                 child: Column(
                   children: <Widget>[
@@ -399,7 +494,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
           child: Text(
             '没有课的日子\n往往就是这么的朴实无华\n且枯燥\n😆',
             style: TextStyle(
-              fontSize: suSetSp(30.0),
+              fontSize: 30.0.sp,
             ),
             strutStyle: StrutStyle(
               height: 1.8,
@@ -413,7 +508,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         child: Center(
           child: Text(
             '课表看起来还未准备好\n不如到广场放松一下？\n🤒',
-            style: TextStyle(fontSize: suSetSp(30.0)),
+            style: TextStyle(fontSize: 30.0.sp),
             strutStyle: StrutStyle(height: 1.8),
             textAlign: TextAlign.center,
           ),
@@ -423,34 +518,41 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
-    return RefreshIndicator(
-      key: refreshIndicatorKey,
-      child: Container(
-        width: Screens.width,
-        constraints: BoxConstraints(maxWidth: Screens.width),
-        child: AnimatedCrossFade(
-          duration: 300.milliseconds,
-          crossFadeState: !firstLoaded
-              ? CrossFadeState.showFirst
-              : CrossFadeState.showSecond,
-          firstChild: SpinKitWidget(),
-          secondChild: Selector<CoursesProvider, String>(
-            selector: (_, provider) => provider.remark,
-            builder: (_, remark, __) => Column(
-              children: <Widget>[
-                if (remark != null) remarkWidget,
-                weekSelection(context),
-                if (firstLoaded && hasCourse && !showError) weekDayIndicator,
-                if (firstLoaded && hasCourse && !showError)
-                  courseLineGrid(context),
-                if (firstLoaded && !hasCourse && !showError) emptyTips,
-                if (firstLoaded && showError) errorTips,
-              ],
+    return Listener(
+      onPointerUp: weekSwitcherPointerUpListener,
+      onPointerMove: weekSwitcherPointerMoveListener,
+      child: RefreshIndicator(
+        key: refreshIndicatorKey,
+        onRefresh: coursesProvider.updateCourses,
+        child: Column(
+          children: <Widget>[
+            weekSelection(context),
+            Expanded(
+              child: AnimatedCrossFade(
+                duration: animateDuration,
+                crossFadeState: !firstLoaded
+                    ? CrossFadeState.showFirst
+                    : CrossFadeState.showSecond,
+                firstChild: SpinKitWidget(),
+                secondChild: Selector<CoursesProvider, String>(
+                  selector: (_, provider) => provider.remark,
+                  builder: (_, remark, __) => Column(
+                    children: <Widget>[
+                      if (remark != null) remarkWidget,
+                      if (firstLoaded && hasCourse && !showError)
+                        weekDayIndicator,
+                      if (firstLoaded && hasCourse && !showError)
+                        courseLineGrid(context),
+                      if (firstLoaded && !hasCourse && !showError) emptyTips,
+                      if (firstLoaded && showError) errorTips,
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ),
-      onRefresh: coursesProvider.updateCourses,
     );
   }
 }
@@ -487,12 +589,12 @@ class CourseWidget extends StatelessWidget {
         bottom: 1.5,
         left: 1.5,
         child: Container(
-          width: suSetWidth(24.0),
-          height: suSetHeight(24.0),
+          width: 24.0.w,
+          height: 24.0.h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-              topRight: Radius.circular(suSetWidth(10.0)),
-              bottomLeft: Radius.circular(suSetWidth(5.0)),
+              topRight: Radius.circular(10.0.w),
+              bottomLeft: Radius.circular(5.0.w),
             ),
             color: currentThemeColor.withOpacity(0.35),
           ),
@@ -506,7 +608,7 @@ class CourseWidget extends StatelessWidget {
                 )
                     ? Colors.grey
                     : Colors.black,
-                fontSize: suSetSp(12.0),
+                fontSize: 12.0.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -518,12 +620,12 @@ class CourseWidget extends StatelessWidget {
         bottom: 1.5,
         right: 1.5,
         child: Container(
-          width: suSetWidth(24.0),
-          height: suSetHeight(24.0),
+          width: 24.0.w,
+          height: 24.0.h,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(suSetWidth(10.0)),
-              bottomRight: Radius.circular(suSetWidth(5.0)),
+              topLeft: Radius.circular(10.0.w),
+              bottomRight: Radius.circular(5.0.w),
             ),
             color: currentThemeColor.withOpacity(0.35),
           ),
@@ -532,7 +634,7 @@ class CourseWidget extends StatelessWidget {
               '${courseList.length}',
               style: TextStyle(
                 color: Colors.black,
-                fontSize: suSetSp(14.0),
+                fontSize: 14.0.sp,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -563,7 +665,7 @@ class CourseWidget extends StatelessWidget {
                                 !isOutOfTerm
                             ? Colors.grey
                             : Colors.black,
-                        fontSize: suSetSp(18.0),
+                        fontSize: 18.0.sp,
                       ),
                 ),
                 overflow: TextOverflow.fade,
@@ -624,9 +726,9 @@ class CourseWidget extends StatelessWidget {
                         );
                       },
                       child: Container(
-                        padding: EdgeInsets.all(suSetWidth(8.0)),
+                        padding: EdgeInsets.all(8.0.w),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(suSetWidth(5.0)),
+                          borderRadius: BorderRadius.circular(5.0.w),
                           color: courseList.isNotEmpty
                               ? CourseAPI.inCurrentWeek(course,
                                           currentWeek: currentWeek) ||
@@ -754,7 +856,7 @@ class _CoursesDialogState extends State<CoursesDialog> {
                       '[自定义]',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: suSetSp(24.0),
+                        fontSize: 24.0.sp,
                         height: 1.5,
                       ),
                     ),
@@ -762,7 +864,7 @@ class _CoursesDialogState extends State<CoursesDialog> {
                     widget.courseList[index].name,
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: suSetSp(24.0),
+                      fontSize: 24.0.sp,
                       fontWeight: FontWeight.bold,
                       height: 1.5,
                     ),
@@ -777,7 +879,7 @@ class _CoursesDialogState extends State<CoursesDialog> {
                       '周',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: suSetSp(24.0),
+                        fontSize: 24.0.sp,
                         height: 1.5,
                       ),
                     ),
@@ -786,7 +888,7 @@ class _CoursesDialogState extends State<CoursesDialog> {
                       '📍${widget.courseList[index].location}',
                       style: TextStyle(
                         color: Colors.black,
-                        fontSize: suSetSp(24.0),
+                        fontSize: 24.0.sp,
                         height: 1.5,
                       ),
                     ),
@@ -825,13 +927,13 @@ class _CoursesDialogState extends State<CoursesDialog> {
 
   Widget courseDetail(Course course) {
     final style =
-        TextStyle(color: Colors.black, fontSize: suSetSp(24.0), height: 1.8);
+        TextStyle(color: Colors.black, fontSize: 24.0.sp, height: 1.8);
     return Container(
       width: double.maxFinite,
       height: double.maxFinite,
-      padding: EdgeInsets.all(suSetWidth(12.0)),
+      padding: EdgeInsets.all(12.0.w),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(suSetWidth(15.0)),
+        borderRadius: BorderRadius.circular(15.0.w),
         color: widget.courseList.isNotEmpty
             ? CourseAPI.inCurrentWeek(course,
                         currentWeek: widget.currentWeek) ||
@@ -848,7 +950,7 @@ class _CoursesDialogState extends State<CoursesDialog> {
             Text(
               '${widget.courseList[0].name}',
               style: style.copyWith(
-                fontSize: suSetSp(28.0),
+                fontSize: 28.0.sp,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
@@ -888,27 +990,27 @@ class _CoursesDialogState extends State<CoursesDialog> {
 
   Widget get deleteButton => MaterialButton(
         padding: EdgeInsets.zero,
-        minWidth: suSetWidth(60.0),
-        height: suSetWidth(60.0),
+        minWidth: 60.0.w,
+        height: 60.0.w,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Screens.width / 2),
         ),
         child: Icon(
           Icons.delete,
           color: Colors.black,
-          size: suSetWidth(32.0),
+          size: 32.0.w,
         ),
         onPressed: deleteCourse,
       );
 
   Widget get editButton => MaterialButton(
         padding: EdgeInsets.zero,
-        minWidth: suSetWidth(60.0),
-        height: suSetWidth(60.0),
+        minWidth: 60.0.w,
+        height: 60.0.w,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(Screens.width / 2),
         ),
-        child: Icon(Icons.edit, color: Colors.black, size: suSetWidth(32.0)),
+        child: Icon(Icons.edit, color: Colors.black, size: 32.0.w),
         onPressed: !deleting
             ? () {
                 showDialog(
@@ -935,7 +1037,7 @@ class _CoursesDialogState extends State<CoursesDialog> {
       children: <Widget>[
         SizedBox(
           width: Screens.width / 2,
-          height: suSetHeight(350.0),
+          height: 350.0.h,
           child: Stack(
             children: <Widget>[
               !isDetail ? coursesPage : courseDetail(firstCourse),
@@ -945,7 +1047,7 @@ class _CoursesDialogState extends State<CoursesDialog> {
                   data: Theme.of(context)
                       .copyWith(splashFactory: InkSplash.splashFactory),
                   child: Positioned(
-                    bottom: suSetHeight(10.0),
+                    bottom: 10.0.h,
                     left: Screens.width / 7,
                     right: Screens.width / 7,
                     child: Row(
@@ -953,7 +1055,7 @@ class _CoursesDialogState extends State<CoursesDialog> {
                       children: <Widget>[
                         deleting
                             ? SizedBox.fromSize(
-                                size: Size.square(suSetWidth(60.0)),
+                                size: Size.square(60.0.w),
                                 child: SpinKitWidget(size: 30),
                               )
                             : deleteButton,
@@ -1032,16 +1134,16 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
   }
 
   Widget get courseEditField => Container(
-        padding: EdgeInsets.all(suSetWidth(12.0)),
+        padding: EdgeInsets.all(12.0.w),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(suSetWidth(18.0)),
+          borderRadius: BorderRadius.circular(18.0.w),
           color: widget.course != null
               ? widget.course.color
                   .withOpacity(currentIsDark ? darkModeOpacity : 1.0)
               : Theme.of(context).dividerColor,
         ),
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: suSetHeight(30.0)),
+          padding: EdgeInsets.symmetric(vertical: 30.0.h),
           child: Center(
             child: ConstrainedBox(
               constraints: BoxConstraints(maxWidth: Screens.width / 2),
@@ -1053,7 +1155,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                   enabled: !loading,
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: suSetSp(26.0),
+                    fontSize: 26.0.sp,
                     height: 1.5,
                     textBaseline: TextBaseline.alphabetic,
                   ),
@@ -1064,7 +1166,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
                     hintText: '自定义内容',
                     hintStyle: TextStyle(
                       color: Colors.grey,
-                      fontSize: suSetSp(24.0),
+                      fontSize: 24.0.sp,
                       height: 1.5,
                       textBaseline: TextBaseline.alphabetic,
                     ),
@@ -1096,7 +1198,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
         data:
             Theme.of(context).copyWith(splashFactory: InkSplash.splashFactory),
         child: Positioned(
-          bottom: suSetHeight(8.0),
+          bottom: 8.0.h,
           left: Screens.width / 7,
           right: Screens.width / 7,
           child: Row(
@@ -1104,8 +1206,8 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
             children: <Widget>[
               MaterialButton(
                 padding: EdgeInsets.zero,
-                minWidth: suSetWidth(48.0),
-                height: suSetHeight(48.0),
+                minWidth: 48.0.w,
+                height: 48.0.h,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(Screens.width / 2),
                 ),
@@ -1136,7 +1238,7 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
       children: <Widget>[
         SizedBox(
           width: Screens.width / 2,
-          height: suSetHeight(370.0),
+          height: 370.0.h,
           child: Stack(
             children: <Widget>[
               courseEditField,
