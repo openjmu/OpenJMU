@@ -96,7 +96,10 @@ class FixedAppBar extends StatelessWidget {
       child: Stack(
         children: <Widget>[
           if (automaticallyImplyLeading && Navigator.of(context).canPop())
-            SizedBox(
+            PositionedDirectional(
+              top: 0.0,
+              bottom: 0.0,
+              start: 0.0,
               width: kMinInteractiveDimension,
               child: leading ?? const BackButton(),
             ),
@@ -130,8 +133,9 @@ class FixedAppBar extends StatelessWidget {
             const SizedBox(width: kMinInteractiveDimension)
           else if (actions?.isNotEmpty ?? false)
             PositionedDirectional(
+              top: 0.0,
+              bottom: 0.0,
               end: 0.0,
-              height: kToolbarHeight,
               child: Padding(
                 padding: actionsPadding ?? EdgeInsets.zero,
                 child: Row(mainAxisSize: MainAxisSize.min, children: actions),
