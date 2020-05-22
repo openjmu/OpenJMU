@@ -143,7 +143,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
     unawaited(
       Vibration.hasVibrator().then((bool hasVibrator) {
         if (hasVibrator) {
-          Vibration.vibrate();
+          Vibration.vibrate(duration: 100, intensities: <int>[100]);
         }
       }),
     );
@@ -184,7 +184,8 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
     }
   }
 
-  /// Initialize animation for
+  /// Initialize animation for grid shader.
+  /// 为网格效果初始化动画
   void initShaderAnimation() {
     shaderAnimationController = AnimationController(
       duration: 3.seconds,
@@ -202,6 +203,8 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
     });
   }
 
+  /// Switch user's qr code display status.
+  /// 切换用户二维码的显示状态
   void switchUserQrCodeDisplay() {
     setState(() {
       isDisplayingUserQrCode = !isDisplayingUserQrCode;
