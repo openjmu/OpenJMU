@@ -93,6 +93,7 @@ abstract class MessageResponse {
 }
 
 /// Requests.
+// ignore: camel_case_types
 class M_WY_VERIFY_CHECKCODE implements MessageRequest {
   @override
   List<int> requestBody() {
@@ -101,6 +102,7 @@ class M_WY_VERIFY_CHECKCODE implements MessageRequest {
   }
 }
 
+// ignore: camel_case_types
 class M_WY_MULTPOINT_LOGIN implements MessageRequest {
   @override
   List<int> requestBody() {
@@ -119,6 +121,7 @@ class M_WY_MULTPOINT_LOGIN implements MessageRequest {
   }
 }
 
+// ignore: camel_case_types
 class M_WY_OFFLINEMSG_ACK implements MessageRequest {
   final int messageId;
 
@@ -131,6 +134,7 @@ class M_WY_OFFLINEMSG_ACK implements MessageRequest {
   }
 }
 
+// ignore: camel_case_types
 class M_WY_OFFLINEMSG_ACK_ONE implements MessageRequest {
   final int messageId;
 
@@ -143,6 +147,7 @@ class M_WY_OFFLINEMSG_ACK_ONE implements MessageRequest {
   }
 }
 
+// ignore: camel_case_types
 class M_WY_MULTPOINT_MSG_ACK implements MessageRequest {
   final int friendId;
   final int friendMultiPortId;
@@ -165,6 +170,7 @@ class M_WY_MULTPOINT_MSG_ACK implements MessageRequest {
   }
 }
 
+// ignore: camel_case_types
 class M_WY_MULTPOINT_MSG_ACK_ONE implements MessageRequest {
   final int friendId;
   final int friendMultiPortId;
@@ -187,6 +193,7 @@ class M_WY_MULTPOINT_MSG_ACK_ONE implements MessageRequest {
   }
 }
 
+// ignore: camel_case_types
 class M_WY_MULTPOINT_NOTIFYSELF_MSG_ACKED implements MessageRequest {
   final int senderUid;
   final int ackId;
@@ -206,6 +213,7 @@ class M_WY_MULTPOINT_NOTIFYSELF_MSG_ACKED implements MessageRequest {
   }
 }
 
+// ignore: camel_case_types
 class M_WY_MSG implements MessageRequest {
   final int uid;
   final String type;
@@ -229,6 +237,7 @@ class M_WY_MSG implements MessageRequest {
 }
 
 /// Responses.
+// ignore: camel_case_types
 class R_WY_MSG implements MessageResponse {
   @override
   Map<String, dynamic> responseBody(List<int> response) {

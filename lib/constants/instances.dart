@@ -5,7 +5,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-import 'package:openjmu/pages/home/apps_page.dart';
 import 'package:openjmu/pages/home/course_schedule_page.dart';
 import 'package:openjmu/pages/home/school_work_page.dart';
 
