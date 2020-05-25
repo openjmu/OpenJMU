@@ -110,6 +110,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       weekScrollController ??= ScrollController(
         initialScrollOffset: week != null ? offset : 0.0,
       );
+
+      /// Theoretically it doesn't require setState here, but it only takes effect
+      /// if the setState is called. This needs more investigation.
       if (mounted) {
         setState(() {});
       }

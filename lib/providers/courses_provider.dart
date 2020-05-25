@@ -130,6 +130,9 @@ class CoursesProvider extends ChangeNotifier {
       Instances.courseSchedulePageStateKey.currentState
           ?.scrollToWeek(dateProvider.currentWeek);
     }
+    Instances
+        .courseSchedulePageStateKey.currentState.weekSwitcherAnimationController
+        .animateTo(0, duration: 300.milliseconds);
     try {
       final List<Response<String>> responses =
           await Future.wait<Response<String>>(
