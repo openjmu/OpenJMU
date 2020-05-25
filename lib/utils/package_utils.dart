@@ -5,7 +5,6 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:launch_review/launch_review.dart';
 import 'package:package_info/package_info.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -62,18 +61,18 @@ class PackageUtils {
     });
   }
 
-  static Future<void> _tryUpdate() async {
+  static Future<void> tryUpdate() async {
     if (Platform.isIOS) {
-      LaunchReview.launch(iOSAppId: '1459832676');
+      launch('https://itunes.apple.com/cn/app/id1459832676');
     } else {
       if (await canLaunch('coolmarket://apk/$packageName')) {
-        unawaited(launch('coolmarket://apk/$packageName'));
+        launch('coolmarket://apk/$packageName');
       } else {
-        unawaited(launch(
+        launch(
           'https://www.coolapk.com/apk/$packageName',
           forceSafariVC: false,
           forceWebView: false,
-        ));
+        );
       }
     }
   }
@@ -169,7 +168,7 @@ class PackageUtils {
             ),
             showConfirm: !event.forceUpdate,
             onConfirm: dismissAllToast,
-            onCancel: _tryUpdate,
+            onCancel: tryUpdate,
             confirmLabel: '下次一定',
             cancelLabel: '前往更新',
           ),

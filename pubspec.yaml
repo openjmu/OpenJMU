@@ -50,7 +50,6 @@ dependencies:
   image_picker: 0.6.6+4
   image_save: 3.0.0
   isolate: ^2.0.2
-  launch_review: 2.0.0
   like_button: ">=0.2.0 <2.0.0"
   multi_image_picker: 4.6.7
   oktoast: 2.3.2
