@@ -222,6 +222,13 @@
 			remoteGlobalIDString = 6F73B6C7971A37DCD5170ED89E3DF741;
 			remoteInfo = ZXingObjC;
 		};
+		FA5DE908247B707C006D45BB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = CD428E4805D0AA1AD9B767FB256A1819;
+			remoteInfo = assets_audio_player;
+		};
 		FA7BFF482354271300F18AC3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = ABC8B9AE22BE365C00F92406 /* Pods.xcodeproj */;
@@ -362,6 +369,7 @@
 		ABC8B9AF22BE365C00F92406 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				FA5DE909247B707C006D45BB /* assets_audio_player.framework */,
 				ABC8B9CD22BE365C00F92406 /* BSGridCollectionViewLayout.framework */,
 				ABC8B9CF22BE365C00F92406 /* BSImagePicker.framework */,
 				ABC8B9D122BE365C00F92406 /* BSImagePicker.bundle */,
@@ -693,6 +701,13 @@
 			remoteRef = FA5C2441247620FE00AF3BC3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		FA5DE909247B707C006D45BB /* assets_audio_player.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = assets_audio_player.framework;
+			remoteRef = FA5DE908247B707C006D45BB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		FA7BFF492354271300F18AC3 /* device_info.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -864,6 +879,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -918,6 +934,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
