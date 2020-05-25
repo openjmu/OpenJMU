@@ -230,6 +230,9 @@ class _PublishPostPageState extends State<PublishPostPage>
     /// 使用`forEach`而不是`for in`是因为`for in`会逐个执行，如果上一个请求耗费了很长时间，整个流程都将被
     /// 阻塞，而使用`forEach`会同时发起所有请求。
     selectedAssets.forEach((AssetEntity asset) async {
+      /// Make a data record first, in order to keep the sequence of the images.
+      /// 先创建数据条目，保证上传的图片的顺序。
+      uploadedAssetId[asset] = null;
       final CancelToken cancelToken = CancelToken();
       assetsUploadCancelTokens.add(cancelToken);
       final FormData formData = await PostAPI.createPostImageUploadForm(asset);
