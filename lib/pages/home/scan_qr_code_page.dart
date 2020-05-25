@@ -3,14 +3,12 @@
 /// [Date] 2020/5/12 16:05
 ///
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:r_scan/r_scan.dart';
 import 'package:vibration/vibration.dart';
@@ -214,12 +212,19 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   /// Scan QR code from file.
   /// 从文件中扫描二维码
   Future<void> scanFromFile() async {
-    final File file = await ImagePicker.pickImage(source: ImageSource.gallery);
-    if (file == null) {
+    final List<AssetEntity> entity = await AssetPicker.pickAssets(
+      context,
+      maxAssets: 1,
+      themeColor: currentThemeColor,
+      requestType: RequestType.image,
+    );
+    if (entity?.isEmpty ?? true) {
       return;
     }
     try {
-      final RScanResult result = await RScan.scanImagePath(file.path);
+      final RScanResult result = await RScan.scanImagePath(
+        (await entity.first.originFile).path,
+      );
       unawaited(onScan(result: result));
     } catch (e) {
       showToast('扫码出错');

@@ -48,7 +48,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
           child: SizedBox.fromSize(
             size: Size.square(116.0.w),
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                navigatorState.pushNamed(Routes.openjmuImageCrop);
+              },
               child: Stack(
                 children: <Widget>[
                   UserAPI.getAvatar(size: 116.0),

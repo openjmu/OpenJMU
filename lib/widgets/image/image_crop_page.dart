@@ -1,12 +1,13 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
@@ -24,26 +25,27 @@ class _ImageCropPageState extends State<ImageCropPage> {
   final GlobalKey<ExtendedImageEditorState> _editorKey =
       GlobalKey<ExtendedImageEditorState>();
   final LoadingDialogController _controller = LoadingDialogController();
-  File _file;
+  Uint8List _imageData;
   bool _cropping = false;
   bool firstLoad = true;
 
   @override
   void initState() {
-    _openImage().catchError((dynamic e) {});
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _file?.delete();
-    super.dispose();
+    SchedulerBinding.instance.addPostFrameCallback((Duration _) {
+      _openImage();
+    });
   }
 
   Future<void> _openImage() async {
-    final File file = await ImagePicker.pickImage(source: ImageSource.gallery);
-    if (file != null) {
-      _file = file;
+    final List<AssetEntity> entity = await AssetPicker.pickAssets(
+      context,
+      maxAssets: 1,
+      themeColor: currentThemeColor,
+      requestType: RequestType.image,
+    );
+    if (entity?.isNotEmpty ?? false) {
+      _imageData = await entity.first.originBytes;
     }
     if (mounted) {
       setState(() {});
@@ -123,8 +125,8 @@ class _ImageCropPageState extends State<ImageCropPage> {
     return Scaffold(
       body: FixedAppBarWrapper(
         appBar: FixedAppBar(
-          title: Text(_file == null ? '上传头像' : '裁剪头像'),
-          actions: _file != null
+          title: Text(_imageData == null ? '上传头像' : '裁剪头像'),
+          actions: _imageData != null
               ? <Widget>[
                   IconButton(
                     icon: Icon(Icons.check),
@@ -133,9 +135,9 @@ class _ImageCropPageState extends State<ImageCropPage> {
                 ]
               : null,
         ),
-        body: _file != null
-            ? ExtendedImage.file(
-                _file,
+        body: _imageData != null
+            ? ExtendedImage.memory(
+                _imageData,
                 fit: BoxFit.contain,
                 mode: ExtendedImageMode.editor,
                 enableLoadState: true,
@@ -175,7 +177,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
                 ),
               ),
       ),
-      bottomNavigationBar: _file != null
+      bottomNavigationBar: _imageData != null
           ? BottomAppBar(
               color: Theme.of(context).primaryColor,
               elevation: 0.0,

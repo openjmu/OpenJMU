@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:extended_text_field/extended_text_field.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 
 import 'package:openjmu/constants/constants.dart';
@@ -37,7 +36,7 @@ class CommentPositioned extends StatefulWidget {
 class CommentPositionedState extends State<CommentPositioned> {
   final TextEditingController _commentController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  File _image;
+  AssetEntity _image;
   int _imageID;
 
   Comment toComment;
@@ -73,21 +72,29 @@ class CommentPositionedState extends State<CommentPositioned> {
   }
 
   Future<void> _addImage() async {
-    final File file = await ImagePicker.pickImage(source: ImageSource.gallery);
-    if (file == null) {
+    final List<AssetEntity> entity = await AssetPicker.pickAssets(
+      context,
+      maxAssets: 1,
+      themeColor: currentThemeColor,
+      requestType: RequestType.image,
+    );
+    if (entity?.isEmpty ?? true) {
       return;
     }
 
-    _image = file;
+    _image = entity.first;
     if (mounted) {
       setState(() {});
     }
   }
 
-  FormData createForm(File file) => FormData.from(<String, dynamic>{
-        'image': UploadFileInfo(file, path.basename(file.path)),
-        'image_type': 0,
-      });
+  Future<FormData> createForm(AssetEntity entity) async {
+    final File file = await entity.originFile;
+    return FormData.from(<String, dynamic>{
+      'image': UploadFileInfo(file, path.basename(file.path)),
+      'image_type': 0,
+    });
+  }
 
   Future<Response<T>> getImageRequest<T>(FormData formData) async =>
       NetUtils.postWithCookieAndHeaderSet<T>(API.postUploadImage,
@@ -119,8 +126,9 @@ class CommentPositionedState extends State<CommentPositioned> {
             ? Container(
                 margin: EdgeInsets.only(right: suSetWidth(14.0)),
                 width: suSetWidth(70.0),
-                child: Image.file(
-                  _image,
+                height: suSetWidth(70.0),
+                child: Image(
+                  image: AssetEntityImageProvider(_image, thumbSize: 80),
                   fit: BoxFit.cover,
                 ),
               )
@@ -160,7 +168,7 @@ class CommentPositionedState extends State<CommentPositioned> {
       /// Sending image if it exist.
       if (_image != null) {
         final Map<String, dynamic> data =
-            (await getImageRequest<Map<String, dynamic>>(createForm(_image)))
+            (await getImageRequest<Map<String, dynamic>>(await createForm(_image)))
                 .data;
         _imageID = (data['image_id'] as String).toIntOrNull();
         content += ' |$_imageID| ';
@@ -215,35 +223,6 @@ class CommentPositionedState extends State<CommentPositioned> {
     }
   }
 
-  void insertText(String text) {
-    final TextEditingValue value = _commentController.value;
-    final int start = value.selection.baseOffset;
-    final int end = value.selection.extentOffset;
-    if (value.selection.isValid) {
-      String newText = '';
-      if (value.selection.isCollapsed) {
-        if (end > 0) {
-          newText += value.text.substring(0, end);
-        }
-        newText += text;
-        if (value.text.length > end) {
-          newText += value.text.substring(end, value.text.length);
-        }
-      } else {
-        newText = value.text.replaceRange(start, end, text);
-      }
-      setState(() {
-        _commentController.value = value.copyWith(
-          text: newText,
-          selection: value.selection.copyWith(
-            baseOffset: end + text.length,
-            extentOffset: end + text.length,
-          ),
-        );
-      });
-    }
-  }
-
   Widget emoticonPad(BuildContext context) {
     return EmotionPad(
       active: emoticonPadActive,
@@ -261,7 +240,11 @@ class CommentPositionedState extends State<CommentPositioned> {
       _focusNode.requestFocus();
       if (user != null) {
         Future<void>.delayed(250.milliseconds, () {
-          insertText('<M ${user.id}>@${user.nickname}<\/M>');
+          InputUtils.insertText(
+            text: '<M ${user.id}>@${user.nickname}<\/M>',
+            state: this,
+            controller: _commentController,
+          );
         });
       }
     });

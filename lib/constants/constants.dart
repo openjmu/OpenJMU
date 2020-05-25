@@ -21,6 +21,7 @@ export 'package:oktoast/oktoast.dart' hide showToast;
 export 'package:pedantic/pedantic.dart' show unawaited;
 export 'package:permission_handler/permission_handler.dart' show Permission;
 export 'package:url_launcher/url_launcher.dart';
+export 'package:wechat_assets_picker/wechat_assets_picker.dart' hide ImageFileType;
 
 export 'events.dart';
 export 'hive_boxes.dart';
