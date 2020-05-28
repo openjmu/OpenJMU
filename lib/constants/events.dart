@@ -4,158 +4,199 @@ import 'package:openjmu/constants/constants.dart';
 
 /// Event for testing.
 class TestEvent {
-  var content;
-  TestEvent({this.content});
+  const TestEvent({this.content});
+
+  final dynamic content;
 }
 
 class ConnectivityChangeEvent {
-  ConnectivityResult type;
-  ConnectivityChangeEvent(this.type);
+  const ConnectivityChangeEvent(this.type);
+
+  final ConnectivityResult type;
 }
 
 class ActionsEvent {
-  String type;
-  ActionsEvent(this.type);
+  const ActionsEvent(this.type);
+
+  final String type;
 }
 
 class LogoutEvent {}
 
 class TicketGotEvent {
-  bool isWizard; // 账号是否已通过新人引导
-  TicketGotEvent(this.isWizard);
+  const TicketGotEvent(this.isWizard);
+
+  final bool isWizard; // 账号是否已通过新人引导
 }
 
 class TicketFailedEvent {}
 
 class PostForwardedEvent {
-  int postId;
-  int forwards;
-  PostForwardedEvent(this.postId, this.forwards);
+  const PostForwardedEvent(this.postId, this.forwards);
+
+  final int postId;
+  final int forwards;
 }
 
 class PostForwardDeletedEvent {
-  int postId;
-  int forwards;
-  PostForwardDeletedEvent(this.postId, this.forwards);
+  const PostForwardDeletedEvent(this.postId, this.forwards);
+
+  final int postId;
+  final int forwards;
 }
 
 class PostCommentedEvent {
-  int postId;
-  PostCommentedEvent(this.postId);
+  const PostCommentedEvent(this.postId);
+
+  final int postId;
 }
 
 class PostCommentDeletedEvent {
-  int postId;
-  PostCommentDeletedEvent(this.postId);
+  const PostCommentDeletedEvent(this.postId);
+
+  final int postId;
 }
 
 class PostPraisedEvent {
-  int postId;
-  PostPraisedEvent(this.postId);
+  const PostPraisedEvent(this.postId);
+
+  final int postId;
 }
 
 class PostUnPraisedEvent {
-  int postId;
-  PostUnPraisedEvent(this.postId);
+  const PostUnPraisedEvent(this.postId);
+
+  final int postId;
 }
 
 class PostDeletedEvent {
-  int postId;
-  String page;
-  int index;
-  PostDeletedEvent(this.postId, this.page, this.index);
+  const PostDeletedEvent(
+    this.postId,
+    this.page,
+    this.index,
+  );
+
+  final int postId;
+  final String page;
+  final int index;
 }
 
 class TeamPostDeletedEvent {
-  int postId;
-  TeamPostDeletedEvent({this.postId});
+  const TeamPostDeletedEvent({
+    this.postId,
+  });
+
+  final int postId;
 }
 
 class TeamCommentDeletedEvent {
-  int postId;
-  int topPostId;
-  TeamCommentDeletedEvent({this.postId, this.topPostId});
+  const TeamCommentDeletedEvent({
+    this.postId,
+    this.topPostId,
+  });
+
+  final int postId;
+  final int topPostId;
 }
 
 class TeamPostCommentDeletedEvent {
-  int commentId;
-  int topPostId;
-  TeamPostCommentDeletedEvent({this.commentId, this.topPostId});
+  const TeamPostCommentDeletedEvent({
+    this.commentId,
+    this.topPostId,
+  });
+
+  final int commentId;
+  final int topPostId;
 }
 
 class ForwardInPostUpdatedEvent {
-  int postId, count;
-  ForwardInPostUpdatedEvent(this.postId, this.count);
+  const ForwardInPostUpdatedEvent(this.postId, this.count);
+
+  final int postId, count;
 }
 
 class CommentInPostUpdatedEvent {
-  int postId, count;
-  CommentInPostUpdatedEvent(this.postId, this.count);
+  const CommentInPostUpdatedEvent(this.postId, this.count);
+
+  final int postId, count;
 }
 
 class PraiseInPostUpdatedEvent {
-  int postId, count;
-  String type;
-  bool isLike;
-  PraiseInPostUpdatedEvent({this.postId, this.type, this.count, this.isLike});
+  const PraiseInPostUpdatedEvent({
+    this.postId,
+    this.type,
+    this.count,
+    this.isLike,
+  });
+
+  final int postId, count;
+  final String type;
+  final bool isLike;
 }
 
 class AvatarUpdatedEvent {}
 
 class SignatureUpdatedEvent {
-  String signature;
-  SignatureUpdatedEvent(this.signature);
+  const SignatureUpdatedEvent(this.signature);
+
+  final String signature;
 }
 
 class AddEmoticonEvent {
-  String emoticon;
-  String route;
-  AddEmoticonEvent(this.emoticon, this.route);
+  const AddEmoticonEvent(this.emoticon, this.route);
+
+  final String emoticon;
+  final String route;
 }
 
 class HasUpdateEvent {
-  HasUpdateEvent({
+  const HasUpdateEvent({
     this.forceUpdate,
     this.currentVersion,
     this.currentBuild,
     this.response,
   });
 
-  bool forceUpdate;
-  String currentVersion;
-  int currentBuild;
-  Map<String, dynamic> response;
+  final bool forceUpdate;
+  final String currentVersion;
+  final int currentBuild;
+  final Map<String, dynamic> response;
 }
 
 class OTAEvent {
-  dynamic otaEvent;
-  OTAEvent(this.otaEvent);
+  const OTAEvent(this.otaEvent);
+
+  final dynamic otaEvent;
 }
 
 class UserInfoGotEvent {
-  UserInfo userInfo;
-  UserInfoGotEvent(this.userInfo);
+  const UserInfoGotEvent(this.userInfo);
+
+  final UserInfo userInfo;
 }
 
 class BlacklistUpdateEvent {}
 
 class ScrollToTopEvent {
-  int tabIndex;
-  String type;
-  ScrollToTopEvent({this.tabIndex, this.type});
+  const ScrollToTopEvent({this.tabIndex, this.type});
+
+  final int tabIndex;
+  final String type;
 }
 
 class PostChangeEvent {
-  Post post;
-  bool remove;
   PostChangeEvent(this.post, [this.remove = false]);
+
+  final Post post;
+  final bool remove;
 }
 
 class CurrentWeekUpdatedEvent {}
 
 class AppCenterRefreshEvent {
-  int currentIndex;
-  AppCenterRefreshEvent(this.currentIndex);
+  const AppCenterRefreshEvent(this.currentIndex);
+
+  final int currentIndex;
 }
 
 class AppCenterSettingsUpdateEvent {}
@@ -163,22 +204,14 @@ class AppCenterSettingsUpdateEvent {}
 class CourseScheduleRefreshEvent {}
 
 class CoursePageShowWeekEvent {
-  bool show;
-  CoursePageShowWeekEvent(this.show);
+  const CoursePageShowWeekEvent(this.show);
+
+  final bool show;
 }
 
 /// Events for message
 class MessageReceivedEvent {
-  bool isSelf;
-  int type;
-  int senderUid;
-  String senderMultiPortId;
-  DateTime sendTime;
-  int messageId;
-  int ackId;
-  Map<String, dynamic> content;
-
-  MessageReceivedEvent({
+  const MessageReceivedEvent({
     this.isSelf = false,
     this.type,
     this.senderUid,
@@ -188,4 +221,13 @@ class MessageReceivedEvent {
     this.ackId,
     this.content,
   });
+
+  final bool isSelf;
+  final int type;
+  final int senderUid;
+  final String senderMultiPortId;
+  final DateTime sendTime;
+  final int messageId;
+  final int ackId;
+  final Map<String, dynamic> content;
 }

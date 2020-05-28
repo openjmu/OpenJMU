@@ -22,6 +22,14 @@ export 'package:pedantic/pedantic.dart' show unawaited;
 export 'package:permission_handler/permission_handler.dart' show Permission;
 export 'package:url_launcher/url_launcher.dart';
 
+export 'package:openjmu/openjmu_routes.dart' show Routes;
+export 'package:openjmu/openjmu_route_helper.dart';
+
+export '../api/api.dart';
+export '../extensions/extensions.e.dart';
+export '../model/models.dart';
+export '../providers/providers.dart';
+export '../utils/utils.dart';
 export 'events.dart';
 export 'hive_boxes.dart';
 export 'instances.dart';
@@ -29,14 +37,6 @@ export 'messages.dart';
 export 'resources.dart';
 export 'screens.dart';
 export 'widgets.dart';
-export 'package:openjmu/api/api.dart';
-export 'package:openjmu/extensions/extensions.e.dart';
-export 'package:openjmu/model/models.dart';
-export 'package:openjmu/providers/providers.dart';
-export 'package:openjmu/utils/utils.dart';
-
-export 'package:openjmu/openjmu_routes.dart' show Routes;
-export 'package:openjmu/openjmu_route_helper.dart';
 
 const double kAppBarHeight = 75.0;
 
@@ -47,14 +47,14 @@ class Constants {
   /// Set this to [false] before release.
   static bool get isDebug => !kReleaseMode && true;
 
-  static const quickActionsList = <String, String>{
+  static const Map<String, String> quickActionsList = <String, String>{
     'actions_home': '广场',
     'actions_apps': '应用',
     'actions_message': '消息',
     'actions_mine': '我的',
   };
 
-  static const developerList = <int>[
+  static const List<int> developerList = <int>[
     136172,
     182999,
     164466,
@@ -68,21 +68,21 @@ class Constants {
     162026,
   ];
 
-  static const endLineTag = '👀 没有更多了';
+  static const String endLineTag = '👀 没有更多了';
 
   /// Fow news list.
-  static final appId = Platform.isIOS ? 274 : 273;
-  static const apiKey = 'c2bd7a89a377595c1da3d49a0ca825d5';
-  static const cloudId = 'jmu';
-  static final deviceType = Platform.isIOS ? 'iPhone' : 'Android';
-  static const marketTeamId = 430;
-  static const unitCode = 'jmu';
-  static const unitId = 55;
+  static final int appId = Platform.isIOS ? 274 : 273;
+  static const String apiKey = 'c2bd7a89a377595c1da3d49a0ca825d5';
+  static const String cloudId = 'jmu';
+  static final String deviceType = Platform.isIOS ? 'iPhone' : 'Android';
+  static const int marketTeamId = 430;
+  static const String unitCode = 'jmu';
+  static const int unitId = 55;
 
-  static const postApiKeyAndroid = '1FD8506EF9FF0FAB7CAFEBB610F536A1';
-  static const postApiSecretAndroid = 'E3277DE3AED6E2E5711A12F707FA2365';
-  static const postApiKeyIOS = '3E63F9003DF7BE296A865910D8DEE630';
-  static const postApiSecretIOS = '773958E5CFE0FF8252808C417A8ECCAB';
+  static const String postApiKeyAndroid = '1FD8506EF9FF0FAB7CAFEBB610F536A1';
+  static const String postApiSecretAndroid = 'E3277DE3AED6E2E5711A12F707FA2365';
+  static const String postApiKeyIOS = '3E63F9003DF7BE296A865910D8DEE630';
+  static const String postApiSecretIOS = '773958E5CFE0FF8252808C417A8ECCAB';
 
   /// Request header for team.
   static Map<String, dynamic> get teamHeader => <String, dynamic>{
@@ -95,7 +95,7 @@ class Constants {
         'TAGID': 1,
       };
 
-  static Map<String, dynamic> loginClientInfo = {
+  static Map<String, dynamic> get loginClientInfo => <String, dynamic>{
     'appid': appId,
     if (Platform.isIOS) 'packetid': '',
     'platform': Platform.isIOS ? 40 : 30,
@@ -113,11 +113,11 @@ class Constants {
     String ticket,
   }) {
     assert(blowfish != null, 'blowfish cannot be null');
-    return {
+    return <String, dynamic>{
       'appid': appId,
       'blowfish': blowfish,
-      if (ticket != null) 'ticket': '$ticket',
-      if (username != null) 'account': '$username',
+      if (ticket != null) 'ticket': ticket,
+      if (username != null) 'account': username,
       if (password != null) 'password': '${sha1.convert(password.toUtf8())}',
       if (password != null) 'encrypt': 1,
       if (username != null) 'unitid': unitId,
@@ -127,13 +127,13 @@ class Constants {
   }
 
   static Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
-      [
+      <LocalizationsDelegate<dynamic>>[
         GlobalWidgetsLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ];
 
-  static Iterable<Locale> get supportedLocales => [
+  static Iterable<Locale> get supportedLocales => <Locale>[
         const Locale.fromSubtags(languageCode: 'zh'),
         const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
         const Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hant'),
