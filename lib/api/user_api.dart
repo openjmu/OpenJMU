@@ -15,8 +15,7 @@ class UserAPI {
 
   static List<Cookie> cookiesForJWGL;
 
-  static Map<String, BackpackItemType> backpackItemTypes =
-      <String, BackpackItemType>{};
+  static Map<String, BackpackItemType> backpackItemTypes = <String, BackpackItemType>{};
 
   static Future<Response<T>> login<T>(Map<String, dynamic> params) async {
     return NetUtils.tokenDio.post<T>(API.login, data: params);
@@ -84,88 +83,100 @@ class UserAPI {
     }
   }
 
-  static Future<Response<Map<String, dynamic>>> getStudentInfo(
-      {int uid}) async {
+  static Future<Response<Map<String, dynamic>>> getStudentInfo({
+    int uid,
+  }) async {
     return NetUtils.getWithCookieSet<Map<String, dynamic>>(
         API.studentInfo(uid: uid ?? currentUser.uid));
   }
 
-  static Future getLevel(int uid) {
+  static Future<Response<Map<String, dynamic>>> getLevel(int uid) {
     return NetUtils.getWithCookieSet(API.userLevel(uid: uid));
   }
 
-  static Future getTags(int uid) {
-    return NetUtils.getWithCookieAndHeaderSet(API.userTags, data: {'uid': uid});
+  static Future<Response<Map<String, dynamic>>> getTags(int uid) {
+    return NetUtils.getWithCookieAndHeaderSet(
+      API.userTags,
+      data: <String, dynamic>{'uid': uid},
+    );
   }
 
-  static Future getFans(int uid) {
+  static Future<Response<Map<String, dynamic>>> getFans(int uid) {
     return NetUtils.getWithCookieAndHeaderSet('${API.userFans}$uid');
   }
 
-  static Future getIdols(int uid) {
+  static Future<Response<Map<String, dynamic>>> getIdols(int uid) {
     return NetUtils.getWithCookieAndHeaderSet('${API.userIdols}$uid');
   }
 
-  static Future getFansList(int uid, int page) {
+  static Future<Response<Map<String, dynamic>>> getFansList(int uid, int page) {
     return NetUtils.getWithCookieAndHeaderSet(
       '${API.userFans}$uid/page/$page/page_size/20',
     );
   }
 
-  static Future getIdolsList(int uid, int page) {
+  static Future<Response<Map<String, dynamic>>> getIdolsList(int uid, int page) {
     return NetUtils.getWithCookieAndHeaderSet(
       '${API.userIdols}$uid/page/$page/page_size/20',
     );
   }
 
-  static Future getFansAndFollowingsCount(int uid) {
+  static Future<Response<Map<String, dynamic>>> getFansAndFollowingsCount(int uid) {
     return NetUtils.getWithCookieAndHeaderSet('${API.userFansAndIdols}$uid');
   }
 
   static Future<Response<Map<String, dynamic>>> getNotifications() async =>
       NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(API.postUnread);
 
-  static Future follow(int uid) async {
+  static Future<void> follow(int uid) async {
     try {
-      await NetUtils.postWithCookieAndHeaderSet('${API.userRequestFollow}$uid');
-      await NetUtils.postWithCookieAndHeaderSet(API.userFollowAdd,
-          data: {'fid': uid, 'tagid': 0});
+      await NetUtils.postWithCookieAndHeaderSet<dynamic>('${API.userRequestFollow}$uid');
+      await NetUtils.postWithCookieAndHeaderSet<dynamic>(
+        API.userFollowAdd,
+        data: <String, dynamic>{'fid': uid, 'tagid': 0},
+      );
     } catch (e) {
       trueDebugPrint('Failed when folloe: $e');
       showCenterErrorToast('关注失败');
     }
   }
 
-  static Future unFollow(int uid, {bool fromBlacklist = false}) async {
+  static Future<void> unFollow(int uid, {bool fromBlacklist = false}) async {
     try {
-      await NetUtils.deleteWithCookieAndHeaderSet(
-          '${API.userRequestFollow}$uid');
-      await NetUtils.postWithCookieAndHeaderSet(API.userFollowAdd,
-          data: {'fid': uid});
+      await NetUtils.deleteWithCookieAndHeaderSet<dynamic>(
+        '${API.userRequestFollow}$uid',
+      );
+      await NetUtils.postWithCookieAndHeaderSet<dynamic>(
+        API.userFollowAdd,
+        data: <String, dynamic>{'fid': uid},
+      );
     } catch (e) {
       trueDebugPrint('Failed when unfollow $uid: $e');
-      if (!fromBlacklist) showCenterErrorToast('取消关注失败');
+      if (!fromBlacklist) {
+        showCenterErrorToast('取消关注失败');
+      }
     }
   }
 
-  static Future setSignature(content) async {
+  static Future<Response<Map<String, dynamic>>> setSignature(
+    String content,
+  ) async {
     return NetUtils.postWithCookieAndHeaderSet(
       API.userSignature,
-      data: {'signature': content},
+      data: <String, dynamic>{'signature': content},
     );
   }
 
   static Future<Map<String, dynamic>> searchUser(String name) async {
-    Map<String, dynamic> users =
-        (await NetUtils.getWithCookieSet<Map<String, dynamic>>(
+    Map<String, dynamic> users = (await NetUtils.getWithCookieSet<Map<String, dynamic>>(
       API.searchUser,
       data: <String, dynamic>{'keyword': name},
     ))
-            .data;
+        .data;
     if (users['total'] == null) {
       users = <String, dynamic>{
         'total': 1,
-        'data': [users]
+        'data': <Map<String, dynamic>>[users]
       };
     }
     return users;
@@ -174,16 +185,14 @@ class UserAPI {
   /// 获取背包物品的类型
   static Future<void> getBackpackItemType() async {
     try {
-      final Map<String, dynamic> types =
-          (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
+      final Map<String, dynamic> types = (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
         API.backPackItemType,
         headers: <String, dynamic>{'CLOUDID': 'jmu'},
       ))
-              .data;
-      final List<dynamic> items = types['data'];
+          .data;
+      final List<dynamic> items = types['data'] as List<dynamic>;
       for (int i = 0; i < items.length; i++) {
-        final BackpackItemType item =
-            BackpackItemType.fromJson(items[i] as Map<String, dynamic>);
+        final BackpackItemType item = BackpackItemType.fromJson(items[i] as Map<String, dynamic>);
         backpackItemTypes['${item.type}'] = item;
       }
     } catch (e) {
@@ -194,16 +203,18 @@ class UserAPI {
   /// Blacklists.
   static final Set<BlacklistUser> blacklist = <BlacklistUser>{};
 
-  static Future<Response<Map<String, dynamic>>> getBlacklist(
-      {int pos, int size}) {
+  static Future<Response<Map<String, dynamic>>> getBlacklist({int pos, int size}) {
     return NetUtils.getWithCookieSet<Map<String, dynamic>>(
       API.blacklist(pos: pos, size: size),
     );
   }
 
-  static void confirmBlock(BuildContext context, BlacklistUser user) async {
-    final add = !UserAPI.blacklist.contains(user);
-    final confirm = await ConfirmationDialog.show(
+  static Future<void> confirmBlock(
+    BuildContext context,
+    BlacklistUser user,
+  ) async {
+    final bool add = !UserAPI.blacklist.contains(user);
+    final bool confirm = await ConfirmationDialog.show(
       context,
       title: '${add ? '加入' : '移出'}黑名单',
       content: '确定将此人${add ? '加入' : '移出'}黑名单吗?',
@@ -222,13 +233,15 @@ class UserAPI {
     if (blacklist.contains(user)) {
       showToast('仇恨值拉满啦！不要重复屏蔽噢~');
     } else {
-      NetUtils.postWithCookieSet(API.addToBlacklist, data: {'fid': user.uid})
-          .then((response) {
+      NetUtils.postWithCookieSet<Map<String, dynamic>>(
+        API.addToBlacklist,
+        data: <String, dynamic>{'fid': user.uid},
+      ).then((Response<Map<String, dynamic>> _) {
         blacklist.add(user);
         showToast('加入黑名单成功');
         Instances.eventBus.fire(BlacklistUpdateEvent());
         unFollow(user.uid, fromBlacklist: true);
-      }).catchError((e) {
+      }).catchError((dynamic e) {
         showToast('加入黑名单失败');
         trueDebugPrint('Add $user to blacklist failed : $e');
       });
@@ -239,20 +252,25 @@ class UserAPI {
     blacklist.remove(user);
     showToast('移出黑名单成功');
     Instances.eventBus.fire(BlacklistUpdateEvent());
-    NetUtils.postWithCookieSet(API.removeFromBlacklist, data: {'fid': user.uid})
-        .catchError((e) {
+    NetUtils.postWithCookieSet<dynamic>(
+      API.removeFromBlacklist,
+      data: <String, dynamic>{'fid': user.uid},
+    ).catchError((dynamic e) {
       showToast('移出黑名单失败');
       trueDebugPrint('Remove $user from blacklist failed: $e');
-      if (blacklist.contains(user)) blacklist.remove(user);
+      if (blacklist.contains(user)) {
+        blacklist.remove(user);
+      }
       Instances.eventBus.fire(BlacklistUpdateEvent());
     });
   }
 
   static void setBlacklist(List<dynamic> list) {
     if (list.isNotEmpty) {
-      for (final Map<dynamic, dynamic> person in list) {
-        final BlacklistUser user =
-            BlacklistUser.fromJson(person as Map<String, dynamic>);
+      for (final Map<dynamic, dynamic> person in list.cast<Map<dynamic, dynamic>>()) {
+        final BlacklistUser user = BlacklistUser.fromJson(
+          person as Map<String, dynamic>,
+        );
         blacklist.add(user);
       }
     }

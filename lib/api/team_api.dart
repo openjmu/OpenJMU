@@ -5,10 +5,10 @@ import 'package:openjmu/constants/constants.dart';
 class TeamPostAPI {
   const TeamPostAPI._();
 
-  static Future getPostList({
+  static Future<Response<Map<String, dynamic>>> getPostList({
     bool isMore = false,
     String lastTimeStamp,
-    additionAttrs,
+    Map<String, dynamic> additionAttrs,
   }) async {
     String _postUrl;
     if (isMore) {
@@ -25,15 +25,14 @@ class TeamPostAPI {
     );
   }
 
-  static Future<Response<Map<String, dynamic>>> getPostDetail(
-          {int id, int postType = 2}) async =>
+  static Future<Response<Map<String, dynamic>>> getPostDetail({int id, int postType = 2}) async =>
       NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(
         API.teamPostDetail(postId: id, postType: postType),
         headers: Constants.teamHeader,
       );
 
   static Map<String, dynamic> fileInfo(int fid) {
-    return {
+    return <String, dynamic>{
       'create_time': 0,
       'desc': '',
       'ext': '',
@@ -50,7 +49,7 @@ class TeamPostAPI {
     };
   }
 
-  static Future publishPost({
+  static Future<Response<Map<String, dynamic>>> publishPost({
     @required String content,
     List<Map<String, dynamic>> files,
     int postType = 2,
@@ -59,10 +58,10 @@ class TeamPostAPI {
   }) async =>
       NetUtils.postWithCookieAndHeaderSet(
         API.teamPostPublish,
-        data: {
+        data: <String, dynamic>{
           if (postType != 8) 'article': content,
           if (postType == 8) 'content': content,
-          if (postType != 8) 'file': [if (files != null) ...files],
+          if (postType != 8) 'file': <Map<String, dynamic>>[if (files != null) ...files],
           'latitude': 0,
           'longitude': 0,
           'post_type': postType,
@@ -85,8 +84,8 @@ class TeamPostAPI {
   /// Report content to specific account through message socket.
   ///
   /// Currently *145685* is '信息化中心用户服务'.
-  static Future reportPost(TeamPost post) async {
-    final message = '————集市内容举报————\n'
+  static Future<void> reportPost(TeamPost post) async {
+    final String message = '————集市内容举报————\n'
         '举报时间：${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}\n'
         '举报对象：${post.nickname}\n'
         '动态ＩＤ：${post.tid}\n'
@@ -116,22 +115,26 @@ class TeamPostAPI {
   /// 小于４天　：　n天前
   /// 大于４天　：　MM-dd
   /// 去年及以前：　yy-MM-dd
-  static String timeConverter(content) {
+  static String timeConverter(dynamic content) {
     final DateTime now = DateTime.now();
     DateTime origin;
     String time = '';
     if (content is TeamPost) {
       if (content.isReplied) {
         origin = DateTime.fromMillisecondsSinceEpoch(
-            int.parse(content.postInfo[0]['post_time']));
+          '${content.postInfo[0]['post_time']}'.toInt(),
+        );
         time += '回复于';
       } else {
         origin = content.postTime;
       }
-    } else {
+    } else if (content is DateTime) {
       origin = content;
     }
     assert(origin != null, 'time cannot be converted.');
+    if (origin == null) {
+      return null;
+    }
 
     String _formatToYear(DateTime date) {
       return DateFormat('yyyy-MM-dd').format(date);
@@ -166,7 +169,7 @@ class TeamPostAPI {
         headers: Constants.teamHeader,
       );
 
-  static Future getMentionedList({
+  static Future<Response<Map<String, dynamic>>> getMentionedList({
     int page = 1,
     int size = 20,
   }) async =>
@@ -177,23 +180,23 @@ class TeamPostAPI {
 }
 
 class TeamCommentAPI {
-  static getCommentInPostList({
+  static Future<Response<Map<String, dynamic>>> getCommentInPostList({
     int id,
     int page = 1,
     bool isComment = false,
   }) async =>
       NetUtils.getWithCookieAndHeaderSet(
-        '${API.teamPostCommentsList(
+        API.teamPostCommentsList(
           postId: id,
           page: page,
           regionType: isComment ? 256 : 128,
           postType: isComment ? 8 : 7,
           size: isComment ? 50 : 30,
-        )}',
+        ),
         headers: Constants.teamHeader,
       );
 
-  static Future publishComment({
+  static Future<Response<Map<String, dynamic>>> publishComment({
     @required String content,
     List<Map<String, dynamic>> files,
     int postType = 7,
@@ -202,7 +205,7 @@ class TeamCommentAPI {
   }) async =>
       NetUtils.postWithCookieAndHeaderSet(
         API.teamPostPublish,
-        data: {
+        data: <String, dynamic>{
           'article': content,
           'file': files,
           'latitude': 0,
@@ -215,7 +218,7 @@ class TeamCommentAPI {
         headers: Constants.teamHeader,
       );
 
-  static Future getReplyList({
+  static Future<Response<Map<String, dynamic>>> getReplyList({
     int page = 1,
     int size = 20,
   }) async =>
@@ -226,28 +229,31 @@ class TeamCommentAPI {
 }
 
 class TeamPraiseAPI {
-  static Future requestPraise(id, isPraise) async {
+  static Future<Response<Map<String, dynamic>>> requestPraise(
+    int id,
+    bool isPraise,
+  ) async {
     if (isPraise) {
-      return NetUtils.postWithCookieAndHeaderSet(
+      return NetUtils.postWithCookieAndHeaderSet<Map<String, dynamic>>(
         API.teamPostRequestPraise,
-        data: {
+        data: <String, dynamic>{
           'atype': 'p',
           'post_type': 2,
           'post_id': id,
         },
-      ).catchError((e) {
-        trueDebugPrint('${e.response['msg']}');
+      ).catchError((dynamic e) {
+        trueDebugPrint('${e?.response['msg']}');
       });
     } else {
-      return NetUtils.deleteWithCookieAndHeaderSet(
+      return NetUtils.deleteWithCookieAndHeaderSet<Map<String, dynamic>>(
         '${API.teamPostRequestUnPraise}/atype/p/post_type/2/post_id/$id',
-      ).catchError((e) {
-        trueDebugPrint('${e.response['msg']}');
+      ).catchError((dynamic e) {
+        trueDebugPrint('${e?.response['msg']}');
       });
     }
   }
 
-  static Future getPraiseList({
+  static Future<Response<Map<String, dynamic>>> getPraiseList({
     int page = 1,
     int size = 20,
   }) async =>

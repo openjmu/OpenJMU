@@ -36,15 +36,13 @@ class PostAPI {
         break;
       case 'user':
         if (isMore) {
-          _postUrl =
-              '${API.postListByUid}${additionAttrs['uid']}/id_max/$lastValue';
+          _postUrl = '${API.postListByUid}${additionAttrs['uid']}/id_max/$lastValue';
         } else {
           _postUrl = '${API.postListByUid}${additionAttrs['uid']}';
         }
         break;
       case 'search':
-        final String keyword =
-            Uri.encodeQueryComponent(additionAttrs['words'] as String);
+        final String keyword = Uri.encodeQueryComponent(additionAttrs['words'] as String);
         if (isMore) {
           _postUrl = '${API.postListByWords}$keyword/id_max/$lastValue';
         } else {
@@ -55,14 +53,14 @@ class PostAPI {
         if (isMore) {
           _postUrl = '${API.postListByMention}/id_max/$lastValue';
         } else {
-          _postUrl = '${API.postListByMention}';
+          _postUrl = API.postListByMention;
         }
         break;
     }
     return NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(_postUrl);
   }
 
-  static Future getForwardListInPost(
+  static Future<Response<Map<String, dynamic>>> getForwardListInPost(
     int postId, {
     bool isMore,
     int lastValue,
@@ -73,34 +71,37 @@ class PostAPI {
             : '${API.postForwardsList}$postId',
       );
 
-  static Future glancePost(int postId) {
-    return NetUtils.postWithCookieAndHeaderSet(
+  static Future<Response<Map<String, dynamic>>> glancePost(int postId) {
+    return NetUtils.postWithCookieAndHeaderSet<Map<String, dynamic>>(
       API.postGlance,
-      data: {
-        'tids': [postId]
+      data: <String, dynamic>{
+        'tids': <int>[postId]
       },
-    ).catchError((e) {
-      trueDebugPrint('${e.toString()}');
-      trueDebugPrint('${e.response}');
+    ).catchError((dynamic e) {
+      trueDebugPrint('$e');
+      trueDebugPrint('${e?.response}');
     });
   }
 
-  static Future deletePost(int postId) => NetUtils.deleteWithCookieAndHeaderSet(
+  static Future<Response<Map<String, dynamic>>> deletePost(
+    int postId,
+  ) =>
+      NetUtils.deleteWithCookieAndHeaderSet(
         '${API.postContent}/tid/$postId',
       );
 
-  static Future postForward(
+  static Future<Response<Map<String, dynamic>>> postForward(
     String content,
     int postId,
     bool replyAtTheMeanTime,
   ) async {
-    final Map<String, dynamic> data = {
+    final Map<String, dynamic> data = <String, dynamic>{
       'content': Uri.encodeFull(content),
       'root_tid': postId,
       'reply_flag': replyAtTheMeanTime ? 3 : 0,
     };
     return NetUtils.postWithCookieAndHeaderSet(
-      '${API.postRequestForward}',
+      API.postRequestForward,
       data: data,
     );
   }
@@ -109,7 +110,7 @@ class PostAPI {
   ///
   /// Currently *145685* is '信息化中心用户服务'.
   static Future<void> reportPost(Post post) async {
-    final message = '————微博内容举报————\n'
+    final String message = '————微博内容举报————\n'
         '举报时间：${DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now())}\n'
         '举报对象：${post.nickname}\n'
         '微博ＩＤ：${post.id}\n'
@@ -140,14 +141,15 @@ class PostAPI {
   /// 大于４天　：　MM-dd
   /// 去年及以前：　yy-MM-dd
   static String postTimeConverter(dynamic time) {
-    assert(time is DateTime || time is String,
-        'time must be DateTime or String type.');
+    assert(time is DateTime || time is String, 'time must be DateTime or String type.');
     final DateTime now = DateTime.now();
     DateTime origin;
     if (time is String) {
       origin = DateTime.tryParse(time);
-    } else {
+    } else if (time is DateTime) {
       origin = time;
+    } else {
+      return null;
     }
     assert(origin != null, 'time cannot be converted.');
 
@@ -179,8 +181,7 @@ class PostAPI {
 
   /// Create post publish request.
   /// 创建发布动态的请求
-  static Future<Response<Map<String, dynamic>>> publishPost(
-      Map<String, dynamic> content) async {
+  static Future<Response<Map<String, dynamic>>> publishPost(Map<String, dynamic> content) async {
     return await NetUtils.postWithCookieAndHeaderSet(
       API.postContent,
       data: content,
@@ -191,9 +192,11 @@ class PostAPI {
   /// 创建用于发布动态上传的图片的 [FormData]
   static Future<FormData> createPostImageUploadForm(AssetEntity asset) async {
     final Uint8List data = await asset.originBytes;
-    return FormData.from({
+    return FormData.from(<String, dynamic>{
       'image': UploadFileInfo.fromBytes(
-          data, asset.title ?? '${currentTimeStamp}.jpg'),
+        data,
+        asset.title ?? '$currentTimeStamp.jpg',
+      ),
       'image_type': 0,
     });
   }

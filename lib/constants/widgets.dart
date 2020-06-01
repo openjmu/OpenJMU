@@ -66,8 +66,11 @@ class TransparentRoute extends PageRoute<void> {
 
   @override
   Widget buildPage(
-      BuildContext context, Animation<double> _, Animation<double> __) {
-    final result = builder(context);
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
+    final Widget result = builder(context);
     return Semantics(
       scopesRoute: true,
       explicitChildNodes: true,
@@ -77,7 +80,9 @@ class TransparentRoute extends PageRoute<void> {
 }
 
 /// Max radius for border radius.
-const maxBorderRadius = BorderRadius.all(Radius.circular(999999));
+const BorderRadius maxBorderRadius = BorderRadius.all(
+  Radius.circular(999999),
+);
 
 /// Constant widgets.
 ///
@@ -87,10 +92,6 @@ const maxBorderRadius = BorderRadius.all(Radius.circular(999999));
 
 /// OpenJMU logo.
 class OpenJMULogo extends StatelessWidget {
-  final double width;
-  final double height;
-  final double radius;
-
   const OpenJMULogo({
     Key key,
     this.width = 80.0,
@@ -98,13 +99,20 @@ class OpenJMULogo extends StatelessWidget {
     this.radius = 0.0,
   }) : super(key: key);
 
+  final double width;
+  final double height;
+  final double radius;
+
   @override
   Widget build(BuildContext context) {
     return UnconstrainedBox(
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(suSetWidth(radius)),
-        child:
-            Image.asset(R.IMAGES_LOGO_1024_PNG, width: width, height: height),
+        borderRadius: BorderRadius.circular(radius.w),
+        child: Image.asset(
+          R.IMAGES_LOGO_1024_PNG,
+          width: width,
+          height: height,
+        ),
       ),
     );
   }
@@ -112,14 +120,14 @@ class OpenJMULogo extends StatelessWidget {
 
 /// Developer tag.
 class DeveloperTag extends StatelessWidget {
-  final EdgeInsetsGeometry padding;
-  final double height;
-
   const DeveloperTag({
     Key key,
     this.padding,
     this.height = 26.0,
   }) : super(key: key);
+
+  final EdgeInsetsGeometry padding;
+  final double height;
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +139,11 @@ class DeveloperTag extends StatelessWidget {
 }
 
 /// Common separator. Used in setting separate.
-Widget separator(context, {Color color, double height}) => DecoratedBox(
+Widget separator(
+  BuildContext context, {
+  Color color,
+  double height,
+}) => DecoratedBox(
       decoration: BoxDecoration(
         color: color ?? Theme.of(context).canvasColor,
       ),
@@ -146,7 +158,7 @@ Widget emptyDivider({double width, double height}) => SizedBox(
 
 /// Badge Icon. Used in notification.
 Widget badgeIcon({
-  @required content,
+  @required dynamic content,
   @required Widget icon,
   EdgeInsets padding,
   bool showBadge = true,
@@ -165,16 +177,16 @@ Widget badgeIcon({
 
 /// SpinKit widget
 class SpinKitWidget extends StatelessWidget {
-  final Color color;
-  final Duration duration;
-  final double size;
-
   const SpinKitWidget({
     Key key,
     this.color,
     this.duration = const Duration(milliseconds: 1500),
     this.size = 50.0,
   }) : super(key: key);
+
+  final Color color;
+  final Duration duration;
+  final double size;
 
   @override
   Widget build(BuildContext context) {
@@ -222,12 +234,12 @@ class PlatformProgressIndicator extends StatelessWidget {
 
 /// Load more indicator.
 class LoadMoreIndicator extends StatelessWidget {
-  final bool canLoadMore;
-
   const LoadMoreIndicator({
     Key key,
     this.canLoadMore = true,
   }) : super(key: key);
+
+  final bool canLoadMore;
 
   @override
   Widget build(BuildContext context) {
@@ -237,7 +249,7 @@ class LoadMoreIndicator extends StatelessWidget {
           ? Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                SpinKitWidget(size: 24.0),
+                SpinKitWidget(size: 32.0.w),
                 Text(
                   '　正在加载',
                   style: TextStyle(fontSize: suSetSp(18.0)),
@@ -262,13 +274,7 @@ class LoadMoreIndicator extends StatelessWidget {
 ///
 /// When the image matches the condition of long image and gif image, an indicator will be shown.
 class ScaledImage extends StatelessWidget {
-  final ui.Image image;
-  final int length;
-  final double num200;
-  final double num400;
-  final ExtendedTypedNetworkImageProvider provider;
-
-  ScaledImage({
+  const ScaledImage({
     @required this.image,
     @required this.length,
     @required this.num200,
@@ -276,7 +282,13 @@ class ScaledImage extends StatelessWidget {
     this.provider,
   });
 
-  Widget longImageIndicator(context) => Positioned(
+  final ui.Image image;
+  final int length;
+  final double num200;
+  final double num400;
+  final ExtendedTypedNetworkImageProvider provider;
+
+  Widget longImageIndicator(BuildContext context) => Positioned(
         right: suSetWidth(5.0),
         bottom: suSetWidth(5.0),
         child: ClipRRect(
@@ -304,7 +316,7 @@ class ScaledImage extends StatelessWidget {
         ),
       );
 
-  Widget gifImageIndicator(context) => Positioned(
+  Widget gifImageIndicator(BuildContext context) => Positioned(
         right: suSetWidth(5.0),
         bottom: suSetWidth(5.0),
         child: ClipRRect(
@@ -334,9 +346,9 @@ class ScaledImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ratio = image.height / image.width;
-    final color = currentIsDark ? Colors.black.withAlpha(50) : null;
-    final colorBlendMode = currentIsDark ? BlendMode.darken : BlendMode.srcIn;
+    final double ratio = image.height / image.width;
+    final ui.Color color = currentIsDark ? Colors.black.withAlpha(50) : null;
+    final ui.BlendMode colorBlendMode = currentIsDark ? BlendMode.darken : BlendMode.srcIn;
 
     Widget imageWidget;
     if (length == 1) {
@@ -350,8 +362,8 @@ class ScaledImage extends StatelessWidget {
           filterQuality: FilterQuality.none,
         );
       } else if (4 / 3 > ratio && ratio > 3 / 4) {
-        final maxValue = math.max(image.width, image.height);
-        final width = num400 * image.width / maxValue;
+        final int maxValue = math.max(image.width, image.height);
+        final double width = num400 * image.width / maxValue;
         imageWidget = ExtendedRawImage(
           image: image,
           width: math.min(width / 2, image.width.toDouble()),
@@ -396,7 +408,7 @@ class ScaledImage extends StatelessWidget {
         child: imageWidget,
       );
     } else {
-      imageWidget = SizedBox.shrink();
+      imageWidget = const SizedBox.shrink();
     }
 
     if (provider?.imageType == ImageFileType.gif) {
@@ -428,7 +440,6 @@ class NoSplashFactory extends InteractiveInkFeatureFactory {
     return NoSplash(
       controller: controller,
       referenceBox: referenceBox,
-      color: color,
       onRemoved: onRemoved,
     );
   }
@@ -438,7 +449,6 @@ class NoSplash extends InteractiveInkFeature {
   NoSplash({
     @required MaterialInkController controller,
     @required RenderBox referenceBox,
-    Color color,
     VoidCallback onRemoved,
   })  : assert(controller != null),
         assert(referenceBox != null),

@@ -3,52 +3,56 @@ import 'package:openjmu/constants/constants.dart';
 class PraiseAPI {
   const PraiseAPI._();
 
-  static getPraiseList(bool isMore, int lastValue) async =>
+  static Future<Response<Map<String, dynamic>>> getPraiseList(
+    bool isMore,
+    int lastValue,
+  ) async =>
       NetUtils.getWithCookieAndHeaderSet(
-        (isMore ?? false)
-            ? '${API.praiseList}/id_max/$lastValue'
-            : '${API.praiseList}',
+        (isMore ?? false) ? '${API.praiseList}/id_max/$lastValue' : API.praiseList,
       );
 
-  static getPraiseInPostList(postId, {bool isMore, int lastValue}) =>
+  static Future<Response<Map<String, dynamic>>> getPraiseInPostList(
+    int postId, {
+    bool isMore,
+    int lastValue,
+  }) =>
       NetUtils.getWithCookieAndHeaderSet(
         (isMore ?? false)
             ? '${API.postPraisesList}$postId/id_max/$lastValue'
             : '${API.postPraisesList}$postId',
       );
 
-  static Future requestPraise(id, isPraise) async {
+  static Future<Response<Map<String, dynamic>>> requestPraise(int id, bool isPraise) async {
     if (isPraise) {
-      return NetUtils.postWithCookieAndHeaderSet(
+      return NetUtils.postWithCookieAndHeaderSet<Map<String, dynamic>>(
         '${API.postRequestPraise}$id',
-      ).catchError((e) {
+      ).catchError((dynamic e) {
         trueDebugPrint('${e.response}');
       });
     } else {
-      return NetUtils.deleteWithCookieAndHeaderSet(
+      return NetUtils.deleteWithCookieAndHeaderSet<Map<String, dynamic>>(
         '${API.postRequestPraise}$id',
-      ).catchError((e) {
+      ).catchError((dynamic e) {
         trueDebugPrint('${e.response}');
       });
     }
   }
 
-  static Praise createPraiseInPost(itemData) {
-    final _avatar = '${API.userAvatar}'
+  static Praise createPraiseInPost(Map<String, dynamic> itemData) {
+    final String _avatar = '${API.userAvatar}'
         '?uid=${itemData['user']['uid']}'
         '&size=f152'
         '&_t=${DateTime.now().millisecondsSinceEpoch}';
-    final _praiseTime =
-        DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
-            .toString()
-            .substring(0, 16);
-    final _praise = Praise(
-      id: itemData['id'],
-      uid: itemData['user']['uid'],
+    final String _praiseTime = DateTime.fromMillisecondsSinceEpoch(
+      '${itemData['praise_time']}000'.toInt(),
+    ).toString().substring(0, 16);
+    final Praise _praise = Praise(
+      id: itemData['id'] as int,
+      uid: itemData['user']['uid'] as int,
       avatar: _avatar,
       postId: null,
       praiseTime: _praiseTime,
-      nickname: itemData['user']['nickname'],
+      nickname: itemData['user']['nickname']?.toString(),
       post: null,
       topicUid: null,
       topicNickname: null,
@@ -57,26 +61,25 @@ class PraiseAPI {
     return _praise;
   }
 
-  static Praise createPraise(itemData) {
-    final _avatar = '${API.userAvatar}'
+  static Praise createPraise(Map<String, dynamic> itemData) {
+    final String _avatar = '${API.userAvatar}'
         '?uid=${itemData['user']['uid']}'
         '&size=f152'
         '&_t=${DateTime.now().millisecondsSinceEpoch}';
-    final _praiseTime =
-        DateTime.fromMillisecondsSinceEpoch(itemData['praise_time'] * 1000)
-            .toString()
-            .substring(0, 16);
-    final _praise = Praise(
-      id: itemData['id'],
-      uid: itemData['user']['uid'],
+    final String _praiseTime = DateTime.fromMillisecondsSinceEpoch(
+      '${itemData['praise_time']}000'.toInt(),
+    ).toString().substring(0, 16);
+    final Praise _praise = Praise(
+      id: itemData['id'] as int,
+      uid: itemData['user']['uid'] as int,
       avatar: _avatar,
       postId: int.parse(itemData['topic']['tid'].toString()),
       praiseTime: _praiseTime,
-      nickname: itemData['user']['nickname'],
-      post: itemData['topic'],
+      nickname: itemData['user']['nickname']?.toString(),
+      post: itemData['topic'] as Map<String, dynamic>,
       topicUid: int.parse(itemData['topic']['user']['uid'].toString()),
-      topicNickname: itemData['topic']['user']['nickname'],
-      pics: itemData['topic']['image'],
+      topicNickname: itemData['topic']['user']['nickname']?.toString(),
+      pics: itemData['topic']['image'] as List<dynamic>,
     );
     return _praise;
   }

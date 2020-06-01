@@ -4,16 +4,19 @@ class SignAPI {
   const SignAPI._();
 
   static Future<void> requestSign() async =>
-      await NetUtils.postWithCookieAndHeaderSet(API.sign);
+      await NetUtils.postWithCookieAndHeaderSet<dynamic>(API.sign);
 
-  static Future getSignList() async => NetUtils.postWithCookieAndHeaderSet(
+  static Future<Response<Map<String, dynamic>>> getSignList() async =>
+      NetUtils.postWithCookieAndHeaderSet(
         API.signList,
-        data: {'signmonth': '${DateFormat('yyyy-MM').format(DateTime.now())}'},
+        data: <String, dynamic>{
+          'signmonth': DateFormat('yyyy-MM').format(DateTime.now()),
+        },
       );
 
-  static Future getTodayStatus() async =>
+  static Future<Response<Map<String, dynamic>>> getTodayStatus() async =>
       NetUtils.postWithCookieAndHeaderSet(API.signStatus);
 
-  static Future getSignSummary() async =>
+  static Future<Response<Map<String, dynamic>>> getSignSummary() async =>
       NetUtils.postWithCookieAndHeaderSet(API.signSummary);
 }
