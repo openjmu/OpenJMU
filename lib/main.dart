@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:device_info/device_info.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
@@ -284,7 +285,13 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   .copyWith(
             pageTransitionsTheme: PageTransitionsTheme(
               builders: <TargetPlatform, PageTransitionsBuilder>{
-                TargetPlatform.android: ZoomPageTransitionsBuilder(),
+                TargetPlatform.android: Platform.isAndroid &&
+                        (DeviceUtils.deviceInfo as AndroidDeviceInfo)
+                                .version
+                                .sdkInt >=
+                            29
+                    ? ZoomPageTransitionsBuilder()
+                    : FadeUpwardsPageTransitionsBuilder(),
               },
             ),
           );
