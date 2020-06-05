@@ -301,6 +301,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
             child: Theme(
               data: theme,
               child: OKToast(
+                position: ToastPosition.bottom,
                 child: MaterialApp(
                   navigatorKey: Instances.navigatorKey,
                   builder: (BuildContext c, Widget w) {
