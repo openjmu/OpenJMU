@@ -4,24 +4,27 @@
 ///
 part of 'models.dart';
 
+@immutable
 class BlacklistUser {
-  int uid;
-  String username;
+  const BlacklistUser({this.uid, this.username});
 
-  BlacklistUser({this.uid, this.username});
-
-  BlacklistUser.fromJson(Map<String, dynamic> json) {
-    uid = int.parse(json['uid'].toString());
-    username = json['username'].toString();
+  factory BlacklistUser.fromJson(Map<String, dynamic> json) {
+    return BlacklistUser(
+      uid: json['uid']?.toString()?.toInt(),
+      username: json['username']?.toString(),
+    );
   }
 
+  final int uid;
+  final String username;
+
   Map<String, dynamic> toJson() {
-    return {'uid': uid, 'username': username};
+    return <String, dynamic>{'uid': uid, 'username': username};
   }
 
   @override
   String toString() {
-    return 'BlacklistUser ${JsonEncoder.withIndent('  ').convert(toJson())}';
+    return 'BlacklistUser ${const JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 
   @override

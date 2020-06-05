@@ -168,7 +168,8 @@ class CommentPositionedState extends State<CommentPositioned> {
       /// Sending image if it exist.
       if (_image != null) {
         final Map<String, dynamic> data =
-            (await getImageRequest<Map<String, dynamic>>(await createForm(_image)))
+            (await getImageRequest<Map<String, dynamic>>(
+                    await createForm(_image)))
                 .data;
         _imageID = (data['image_id'] as String).toIntOrNull();
         content += ' |$_imageID| ';

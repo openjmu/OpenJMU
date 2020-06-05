@@ -25,7 +25,8 @@ class TeamPostAPI {
     );
   }
 
-  static Future<Response<Map<String, dynamic>>> getPostDetail({int id, int postType = 2}) async =>
+  static Future<Response<Map<String, dynamic>>> getPostDetail(
+          {int id, int postType = 2}) async =>
       NetUtils.getWithCookieAndHeaderSet<Map<String, dynamic>>(
         API.teamPostDetail(postId: id, postType: postType),
         headers: Constants.teamHeader,
@@ -61,7 +62,8 @@ class TeamPostAPI {
         data: <String, dynamic>{
           if (postType != 8) 'article': content,
           if (postType == 8) 'content': content,
-          if (postType != 8) 'file': <Map<String, dynamic>>[if (files != null) ...files],
+          if (postType != 8)
+            'file': <Map<String, dynamic>>[if (files != null) ...files],
           'latitude': 0,
           'longitude': 0,
           'post_type': postType,

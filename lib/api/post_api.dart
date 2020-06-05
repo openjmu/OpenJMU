@@ -36,13 +36,15 @@ class PostAPI {
         break;
       case 'user':
         if (isMore) {
-          _postUrl = '${API.postListByUid}${additionAttrs['uid']}/id_max/$lastValue';
+          _postUrl =
+              '${API.postListByUid}${additionAttrs['uid']}/id_max/$lastValue';
         } else {
           _postUrl = '${API.postListByUid}${additionAttrs['uid']}';
         }
         break;
       case 'search':
-        final String keyword = Uri.encodeQueryComponent(additionAttrs['words'] as String);
+        final String keyword =
+            Uri.encodeQueryComponent(additionAttrs['words'] as String);
         if (isMore) {
           _postUrl = '${API.postListByWords}$keyword/id_max/$lastValue';
         } else {
@@ -141,7 +143,8 @@ class PostAPI {
   /// 大于４天　：　MM-dd
   /// 去年及以前：　yy-MM-dd
   static String postTimeConverter(dynamic time) {
-    assert(time is DateTime || time is String, 'time must be DateTime or String type.');
+    assert(time is DateTime || time is String,
+        'time must be DateTime or String type.');
     final DateTime now = DateTime.now();
     DateTime origin;
     if (time is String) {
@@ -181,7 +184,8 @@ class PostAPI {
 
   /// Create post publish request.
   /// 创建发布动态的请求
-  static Future<Response<Map<String, dynamic>>> publishPost(Map<String, dynamic> content) async {
+  static Future<Response<Map<String, dynamic>>> publishPost(
+      Map<String, dynamic> content) async {
     return await NetUtils.postWithCookieAndHeaderSet(
       API.postContent,
       data: content,

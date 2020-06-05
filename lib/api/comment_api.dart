@@ -78,8 +78,10 @@ class CommentAPI {
     ).toString().substring(0, 16);
     final bool replyExist = itemData['to_reply']['exists'] == 1;
     final bool topicExist = itemData['to_topic']['exists'] == 1;
-    final Map<String, dynamic> replyData = itemData['to_reply']['reply'] as Map<String, dynamic>;
-    final Map<String, dynamic> topicData = itemData['to_topic']['topic'] as Map<String, dynamic>;
+    final Map<String, dynamic> replyData =
+        itemData['to_reply']['reply'] as Map<String, dynamic>;
+    final Map<String, dynamic> topicData =
+        itemData['to_topic']['topic'] as Map<String, dynamic>;
     final Comment _comment = Comment(
       id: itemData['rid']?.toString()?.toIntOrNull(),
       floor: null,
@@ -90,15 +92,20 @@ class CommentAPI {
       commentTime: _commentTime,
       from: itemData['from_string']?.toString(),
       toReplyExist: replyExist,
-      toReplyUid: replyExist ? int.parse(replyData['user']['uid'].toString()) : 0,
-      toReplyUserName: replyExist ? replyData['user']['nickname']?.toString() : null,
+      toReplyUid:
+          replyExist ? int.parse(replyData['user']['uid'].toString()) : 0,
+      toReplyUserName:
+          replyExist ? replyData['user']['nickname']?.toString() : null,
       toReplyContent: replyExist ? replyData['content']?.toString() : null,
       toTopicExist: topicExist,
       toTopicUid: topicExist ? topicData['user']['uid'].toString().toInt() : 0,
-      toTopicUserName: topicExist ? topicData['user']['nickname']?.toString() : null,
+      toTopicUserName:
+          topicExist ? topicData['user']['nickname']?.toString() : null,
       toTopicContent: (topicExist
-          ? itemData['to_topic']['topic']['article'] ?? itemData['to_topic']['topic']['content']
-          : null)?.toString(),
+              ? itemData['to_topic']['topic']['article'] ??
+                  itemData['to_topic']['topic']['content']
+              : null)
+          ?.toString(),
       post: itemData['to_topic']['topic'] != null
           ? Post.fromJson(itemData['to_topic']['topic'] as Map<String, dynamic>)
           : null,
@@ -115,7 +122,8 @@ class CommentAPI {
       '${itemData['post_time']}000'.toInt(),
     ).toString().substring(0, 16);
     final bool replyExist = itemData['to_reply']['exists'] == 1;
-    final Map<String, dynamic> replyData = itemData['to_reply']['reply'] as Map<String, dynamic>;
+    final Map<String, dynamic> replyData =
+        itemData['to_reply']['reply'] as Map<String, dynamic>;
     final Comment _comment = Comment(
       id: int.parse(itemData['rid'].toString()),
       floor: null,
@@ -126,8 +134,10 @@ class CommentAPI {
       commentTime: _commentTime,
       from: itemData['from_string']?.toString(),
       toReplyExist: replyExist,
-      toReplyUid: replyExist ? int.parse(replyData['user']['uid'].toString()) : 0,
-      toReplyUserName: replyExist ? replyData['user']['nickname'].toString() : null,
+      toReplyUid:
+          replyExist ? int.parse(replyData['user']['uid'].toString()) : 0,
+      toReplyUserName:
+          replyExist ? replyData['user']['nickname'].toString() : null,
       toReplyContent: replyExist ? replyData['content'].toString() : null,
       toTopicExist: false,
       toTopicUid: 0,

@@ -10,23 +10,6 @@ part of 'models.dart';
 /// [messageType] 消息类型, [sendTime] 发送时间, [read] 是否已读,
 @HiveType(typeId: HiveAdapterTypeIds.appMessage)
 class AppMessage with HiveObject {
-  @HiveField(0)
-  int appId;
-  @HiveField(1)
-  String permissionCode;
-  @HiveField(2)
-  int messageId;
-  @HiveField(3)
-  int messageType;
-  @HiveField(4)
-  DateTime sendTime;
-  @HiveField(5)
-  int ackId;
-  @HiveField(6)
-  String content;
-  @HiveField(7)
-  bool read;
-
   AppMessage({
     this.appId,
     this.permissionCode,
@@ -49,33 +32,51 @@ class AppMessage with HiveObject {
         content = content.replaceRange(i, i + 1, '');
       }
     }
-    final body = jsonDecode(content);
+    final Map<String, dynamic> body =
+        jsonDecode(content) as Map<String, dynamic>;
     return AppMessage(
-      appId: body['appid'],
-      permissionCode: body['permcode'],
+      appId: body['appid'] as int,
+      permissionCode: body['permcode']?.toString(),
       messageId: event.messageId,
-      messageType: body['msgtype'],
+      messageType: body['msgtype'] as int,
       sendTime: event.sendTime,
       ackId: event.ackId,
-      content: body['msgbody'],
+      content: body['msgbody']?.toString(),
     );
   }
 
   factory AppMessage.fromJson(Map<String, dynamic> json) {
     return AppMessage(
-      appId: json['appId'],
-      permissionCode: json['permissionCode'],
-      messageId: json['messageId'],
-      messageType: json['messageType'],
-      sendTime: DateTime.parse(json['sendTime']),
-      ackId: json['ackId'],
-      content: json['content'],
-      read: json['read'],
+      appId: json['appId'] as int,
+      permissionCode: json['permissionCode']?.toString(),
+      messageId: json['messageId'] as int,
+      messageType: json['messageType'] as int,
+      sendTime: DateTime.parse(json['sendTime']?.toString()),
+      ackId: json['ackId'] as int,
+      content: json['content']?.toString(),
+      read: json['read'] as bool,
     );
   }
 
+  @HiveField(0)
+  int appId;
+  @HiveField(1)
+  String permissionCode;
+  @HiveField(2)
+  int messageId;
+  @HiveField(3)
+  int messageType;
+  @HiveField(4)
+  DateTime sendTime;
+  @HiveField(5)
+  int ackId;
+  @HiveField(6)
+  String content;
+  @HiveField(7)
+  bool read;
+
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'appId': appId,
       'permissionCode': permissionCode,
       'messageId': messageId,
@@ -89,6 +90,6 @@ class AppMessage with HiveObject {
 
   @override
   String toString() {
-    return JsonEncoder.withIndent('  ').convert(toJson());
+    return const JsonEncoder.withIndent('  ').convert(toJson());
   }
 }

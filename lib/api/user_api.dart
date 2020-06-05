@@ -15,7 +15,8 @@ class UserAPI {
 
   static List<Cookie> cookiesForJWGL;
 
-  static Map<String, BackpackItemType> backpackItemTypes = <String, BackpackItemType>{};
+  static Map<String, BackpackItemType> backpackItemTypes =
+      <String, BackpackItemType>{};
 
   static Future<Response<T>> login<T>(Map<String, dynamic> params) async {
     return NetUtils.tokenDio.post<T>(API.login, data: params);
@@ -45,12 +46,12 @@ class UserAPI {
     return UserAvatar(uid: uid ?? currentUser.uid, size: size, timestamp: t);
   }
 
-  static ImageProvider getAvatarProvider({int uid, int t}) {
+  static ImageProvider getAvatarProvider({int uid, int t, int size}) {
     return ExtendedNetworkImageProvider(
       '${API.userAvatar}'
       '?uid=${uid ?? currentUser.uid}'
       '&_t=${t ?? avatarLastModified}'
-      '&size=f152',
+      '&size=f${size ?? 152}',
       cache: true,
       retries: 1,
     );
@@ -115,13 +116,15 @@ class UserAPI {
     );
   }
 
-  static Future<Response<Map<String, dynamic>>> getIdolsList(int uid, int page) {
+  static Future<Response<Map<String, dynamic>>> getIdolsList(
+      int uid, int page) {
     return NetUtils.getWithCookieAndHeaderSet(
       '${API.userIdols}$uid/page/$page/page_size/20',
     );
   }
 
-  static Future<Response<Map<String, dynamic>>> getFansAndFollowingsCount(int uid) {
+  static Future<Response<Map<String, dynamic>>> getFansAndFollowingsCount(
+      int uid) {
     return NetUtils.getWithCookieAndHeaderSet('${API.userFansAndIdols}$uid');
   }
 
@@ -130,7 +133,8 @@ class UserAPI {
 
   static Future<void> follow(int uid) async {
     try {
-      await NetUtils.postWithCookieAndHeaderSet<dynamic>('${API.userRequestFollow}$uid');
+      await NetUtils.postWithCookieAndHeaderSet<dynamic>(
+          '${API.userRequestFollow}$uid');
       await NetUtils.postWithCookieAndHeaderSet<dynamic>(
         API.userFollowAdd,
         data: <String, dynamic>{'fid': uid, 'tagid': 0},
@@ -168,11 +172,12 @@ class UserAPI {
   }
 
   static Future<Map<String, dynamic>> searchUser(String name) async {
-    Map<String, dynamic> users = (await NetUtils.getWithCookieSet<Map<String, dynamic>>(
+    Map<String, dynamic> users =
+        (await NetUtils.getWithCookieSet<Map<String, dynamic>>(
       API.searchUser,
       data: <String, dynamic>{'keyword': name},
     ))
-        .data;
+            .data;
     if (users['total'] == null) {
       users = <String, dynamic>{
         'total': 1,
@@ -185,14 +190,16 @@ class UserAPI {
   /// 获取背包物品的类型
   static Future<void> getBackpackItemType() async {
     try {
-      final Map<String, dynamic> types = (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
+      final Map<String, dynamic> types =
+          (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
         API.backPackItemType,
         headers: <String, dynamic>{'CLOUDID': 'jmu'},
       ))
-          .data;
+              .data;
       final List<dynamic> items = types['data'] as List<dynamic>;
       for (int i = 0; i < items.length; i++) {
-        final BackpackItemType item = BackpackItemType.fromJson(items[i] as Map<String, dynamic>);
+        final BackpackItemType item =
+            BackpackItemType.fromJson(items[i] as Map<String, dynamic>);
         backpackItemTypes['${item.type}'] = item;
       }
     } catch (e) {
@@ -203,7 +210,8 @@ class UserAPI {
   /// Blacklists.
   static final Set<BlacklistUser> blacklist = <BlacklistUser>{};
 
-  static Future<Response<Map<String, dynamic>>> getBlacklist({int pos, int size}) {
+  static Future<Response<Map<String, dynamic>>> getBlacklist(
+      {int pos, int size}) {
     return NetUtils.getWithCookieSet<Map<String, dynamic>>(
       API.blacklist(pos: pos, size: size),
     );
@@ -267,7 +275,8 @@ class UserAPI {
 
   static void setBlacklist(List<dynamic> list) {
     if (list.isNotEmpty) {
-      for (final Map<dynamic, dynamic> person in list.cast<Map<dynamic, dynamic>>()) {
+      for (final Map<dynamic, dynamic> person
+          in list.cast<Map<dynamic, dynamic>>()) {
         final BlacklistUser user = BlacklistUser.fromJson(
           person as Map<String, dynamic>,
         );

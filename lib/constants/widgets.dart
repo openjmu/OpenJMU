@@ -143,7 +143,8 @@ Widget separator(
   BuildContext context, {
   Color color,
   double height,
-}) => DecoratedBox(
+}) =>
+    DecoratedBox(
       decoration: BoxDecoration(
         color: color ?? Theme.of(context).canvasColor,
       ),
@@ -348,7 +349,8 @@ class ScaledImage extends StatelessWidget {
   Widget build(BuildContext context) {
     final double ratio = image.height / image.width;
     final ui.Color color = currentIsDark ? Colors.black.withAlpha(50) : null;
-    final ui.BlendMode colorBlendMode = currentIsDark ? BlendMode.darken : BlendMode.srcIn;
+    final ui.BlendMode colorBlendMode =
+        currentIsDark ? BlendMode.darken : BlendMode.srcIn;
 
     Widget imageWidget;
     if (length == 1) {

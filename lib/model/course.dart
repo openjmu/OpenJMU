@@ -16,6 +16,79 @@ part of 'models.dart';
 /// 以上两项用于编辑课程信息。由于课程表的数据错乱，需要保存原始数据，否则会造成编辑错误。
 @HiveType(typeId: HiveAdapterTypeIds.course)
 class Course {
+  Course({
+    @required this.isCustom,
+    this.name,
+    this.time,
+    this.location,
+    this.className,
+    this.teacher,
+    this.day,
+    this.startWeek,
+    this.endWeek,
+    this.classesName,
+    this.isEleven,
+    this.oddEven,
+    this.rawDay,
+    this.rawTime,
+  });
+
+  factory Course.fromJson(Map<String, dynamic> json, {bool isCustom = false}) {
+    json.forEach((String k, dynamic _) {
+      if (json[k] == '') {
+        json[k] = null;
+      }
+    });
+    final int _oddEven = !isCustom ? judgeOddEven(json) : null;
+    final List<String> weeks =
+        !isCustom ? (json['allWeek'] as String).split(' ')[0].split('-') : null;
+
+    String _name;
+    if (isCustom) {
+      try {
+        _name = Uri.decodeComponent(json['content']?.toString());
+      } catch (e) {
+        _name = json['content']?.toString();
+      }
+    } else {
+      _name = json['couName']?.toString() ?? '(空)';
+    }
+
+    String _time;
+    if (isCustom) {
+      _time = timeHandler(json['courseTime']);
+    } else {
+      _time = timeHandler(json['coudeTime']);
+    }
+
+    final Course _c = Course(
+      isCustom: isCustom,
+      name: _name,
+      time: _time,
+      location: json['couRoom']?.toString(),
+      className: json['className']?.toString(),
+      teacher: json['couTeaName']?.toString(),
+      day: json[isCustom ? 'courseDaytime' : 'couDayTime']
+          .toString()
+          .substring(0, 1)
+          .toInt(),
+      startWeek: !isCustom ? weeks[0].toInt() : null,
+      endWeek: !isCustom ? weeks[1].toInt() : null,
+      classesName:
+          !isCustom ? json['comboClassName']?.toString()?.split(',') : null,
+      isEleven: json['three'] == 'y',
+      oddEven: _oddEven,
+      rawDay:
+          json[isCustom ? 'courseDaytime' : 'couDayTime'].toString().toInt(),
+      rawTime: json[isCustom ? 'courseTime' : 'coudeTime'].toString(),
+    );
+    if (_c.isEleven && _c.time == '90') {
+      _c.time = '911';
+    }
+    uniqueColor(_c, CourseAPI.randomCourseColor());
+    return _c;
+  }
+
   @HiveField(0)
   bool isCustom;
   @HiveField(1)
@@ -46,29 +119,12 @@ class Course {
   String rawTime;
   Color color;
 
-  Course({
-    @required this.isCustom,
-    this.name,
-    this.time,
-    this.location,
-    this.className,
-    this.teacher,
-    this.day,
-    this.startWeek,
-    this.endWeek,
-    this.classesName,
-    this.isEleven,
-    this.oddEven,
-    this.rawDay,
-    this.rawTime,
-  });
-
   /// Whether we should use raw data to modify.
   bool get shouldUseRaw => day != rawDay || time != rawTime;
 
   static int judgeOddEven(Map<String, dynamic> json) {
     int _oddEven = 0;
-    final _split = (json['allWeek'] as String).split(' ');
+    final List<String> _split = (json['allWeek'] as String).split(' ');
     if (_split.length > 1) {
       switch (_split[1]) {
         case '单周':
@@ -80,57 +136,6 @@ class Course {
       }
     }
     return _oddEven;
-  }
-
-  factory Course.fromJson(Map<String, dynamic> json, {bool isCustom = false}) {
-    json.forEach((k, _) {
-      if (json[k] == '') json[k] = null;
-    });
-    final _oddEven = !isCustom ? judgeOddEven(json) : null;
-    final weeks =
-        !isCustom ? (json['allWeek'] as String).split(' ')[0].split('-') : null;
-
-    String _name;
-    if (isCustom) {
-      try {
-        _name = Uri.decodeComponent(json['content']);
-      } catch (e) {
-        _name = json['content'];
-      }
-    } else {
-      _name = json['couName'] ?? '(空)';
-    }
-
-    String _time;
-    if (isCustom) {
-      _time = timeHandler(json['courseTime']);
-    } else {
-      _time = timeHandler(json['coudeTime']);
-    }
-
-    final _c = Course(
-      isCustom: isCustom,
-      name: _name,
-      time: _time,
-      location: json['couRoom'],
-      className: json['className'],
-      teacher: json['couTeaName'],
-      day: json[isCustom ? 'courseDaytime' : 'couDayTime']
-          .toString()
-          .substring(0, 1)
-          .toInt(),
-      startWeek: !isCustom ? weeks[0].toInt() : null,
-      endWeek: !isCustom ? weeks[1].toInt() : null,
-      classesName: !isCustom ? json['comboClassName'].split(',') : null,
-      isEleven: json['three'] == 'y',
-      oddEven: _oddEven,
-      rawDay:
-          json[isCustom ? 'courseDaytime' : 'couDayTime'].toString().toInt(),
-      rawTime: json[isCustom ? 'courseTime' : 'coudeTime'].toString(),
-    );
-    if (_c.isEleven && _c.time == '90') _c.time = '911';
-    uniqueColor(_c, CourseAPI.randomCourseColor());
-    return _c;
   }
 
   static void uniqueColor(Course course, Color color) {
@@ -198,7 +203,7 @@ class Course {
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'isCustom': isCustom,
       'name': name,
       'time': time,
@@ -216,15 +221,16 @@ class Course {
 
   @override
   String toString() {
-    return 'Course ${JsonEncoder.withIndent('  ').convert(toJson())}';
+    return 'Course ${const JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 }
 
+@immutable
 class CourseColor {
-  String name;
-  Color color;
+  const CourseColor({this.name, this.color});
 
-  CourseColor({this.name, this.color});
+  final String name;
+  final Color color;
 
   @override
   bool operator ==(Object other) =>

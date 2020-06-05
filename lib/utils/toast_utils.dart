@@ -13,7 +13,6 @@ void showCenterToast(String text) {
 void showErrorToast(String text) {
   OKToast.showToast(
     text,
-    position: OKToast.ToastPosition.bottom,
     backgroundColor: Colors.redAccent,
   );
 }

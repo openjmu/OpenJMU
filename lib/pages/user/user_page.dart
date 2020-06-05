@@ -217,7 +217,7 @@ class _UserPageState extends State<UserPage>
                   : currentThemeColor.withOpacity(0.6),
           child: Text(
             isSelf
-                ? '编辑签名'
+                ? '编辑资料'
                 : _user.isFollowing
                     ? '已关注'
                     : '关注${_user.gender == 2 ? '她' : '他'}',
@@ -611,7 +611,8 @@ class _UserPageState extends State<UserPage>
                         SizedBox(
                           width: double.infinity,
                           child: Image(
-                            image: UserAPI.getAvatarProvider(uid: widget.uid),
+                            image: UserAPI.getAvatarProvider(
+                                uid: widget.uid, size: 600),
                             width: MediaQuery.of(context).size.width,
                             fit: BoxFit.fitWidth,
                           ),

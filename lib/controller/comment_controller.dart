@@ -12,17 +12,17 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/cards/comment_card.dart';
 
 class CommentController {
-  final String commentType;
-  final bool isMore;
-  final Function lastValue;
-  final Map<String, dynamic> additionAttrs;
-
   CommentController({
     @required this.commentType,
     @required this.isMore,
     @required this.lastValue,
     this.additionAttrs,
   });
+
+  final String commentType;
+  final bool isMore;
+  final Function lastValue;
+  final Map<String, dynamic> additionAttrs;
 
   _CommentListState _commentListState;
 
@@ -51,20 +51,20 @@ class CommentList extends StatefulWidget {
 
 class _CommentListState extends State<CommentList>
     with AutomaticKeepAliveClientMixin {
-  num _lastValue = 0;
+  int _lastValue = 0;
   bool _isLoading = false;
   bool _canLoadMore = true;
   bool _firstLoadComplete = false;
   bool _showLoading = true;
 
-  var _itemList;
+  dynamic _itemList;
 
   Widget _emptyChild;
   Widget _errorChild;
   bool error = false;
 
-  List<Comment> _commentList = [];
-  List<int> _idList = [];
+  final List<Comment> _commentList = <Comment>[];
+  final List<int> _idList = <int>[];
 
   @override
   bool get wantKeepAlive => true;
@@ -107,12 +107,12 @@ class _CommentListState extends State<CommentList>
     _refreshData();
   }
 
-  Future<Null> _loadData() async {
+  Future<void> _loadData() async {
     _firstLoadComplete = true;
     if (!_isLoading && _canLoadMore) {
       _isLoading = true;
 
-      Map result = (await CommentAPI.getCommentList(
+      final Map<String, dynamic> result = (await CommentAPI.getCommentList(
         widget.commentController.commentType,
         true,
         _lastValue,
@@ -120,10 +120,10 @@ class _CommentListState extends State<CommentList>
       ))
           .data;
 
-      List<Comment> commentList = [];
-      List _topics = result['replylist'];
-      int _total = int.parse(result['total'].toString());
-      int _count = int.parse(result['count'].toString());
+      final List<Comment> commentList = <Comment>[];
+      final List<dynamic> _topics = result['replylist'] as List<dynamic>;
+      final int _total = int.parse(result['total'].toString());
+      final int _count = int.parse(result['count'].toString());
 
       for (var commentData in _topics) {
         if (!UserAPI.blacklist.contains(jsonEncode({

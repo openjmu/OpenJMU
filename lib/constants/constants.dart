@@ -21,7 +21,8 @@ export 'package:oktoast/oktoast.dart' hide showToast;
 export 'package:pedantic/pedantic.dart' show unawaited;
 export 'package:permission_handler/permission_handler.dart' show Permission;
 export 'package:url_launcher/url_launcher.dart';
-export 'package:wechat_assets_picker/wechat_assets_picker.dart' hide ImageFileType;
+export 'package:wechat_assets_picker/wechat_assets_picker.dart'
+    hide ImageFileType;
 
 export 'package:openjmu/openjmu_routes.dart' show Routes;
 export 'package:openjmu/openjmu_route_helper.dart';
@@ -97,15 +98,15 @@ class Constants {
       };
 
   static Map<String, dynamic> get loginClientInfo => <String, dynamic>{
-    'appid': appId,
-    if (Platform.isIOS) 'packetid': '',
-    'platform': Platform.isIOS ? 40 : 30,
-    'platformver': Platform.isIOS ? '2.3.2' : '2.3.1',
-    'deviceid': DeviceUtils.deviceUuid,
-    'devicetype': deviceType,
-    'systype': '$deviceType OS',
-    'sysver': Platform.isIOS ? '12.2' : '9.0',
-  };
+        'appid': appId,
+        if (Platform.isIOS) 'packetid': '',
+        'platform': Platform.isIOS ? 40 : 30,
+        'platformver': Platform.isIOS ? '2.3.2' : '2.3.1',
+        'deviceid': DeviceUtils.deviceUuid,
+        'devicetype': deviceType,
+        'systype': '$deviceType OS',
+        'sysver': Platform.isIOS ? '12.2' : '9.0',
+      };
 
   static Map<String, dynamic> loginParams({
     @required String blowfish,

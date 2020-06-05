@@ -4,28 +4,36 @@
 ///
 part of 'models.dart';
 
+@immutable
 @HiveType(typeId: HiveAdapterTypeIds.changelog)
 class ChangeLog {
-  @HiveField(0)
-  String version;
-  @HiveField(1)
-  int buildNumber;
-  @HiveField(2)
-  String date;
-  @HiveField(3)
-  Map<String, dynamic> sections;
+  const ChangeLog({
+    this.version,
+    this.buildNumber,
+    this.date,
+    this.sections,
+  });
 
-  ChangeLog({this.version, this.buildNumber, this.date, this.sections});
-
-  ChangeLog.fromJson(Map<String, dynamic> json) {
-    version = json['version'];
-    buildNumber = json['buildNumber'];
-    date = json['date'];
-    sections = json['sections'];
+  factory ChangeLog.fromJson(Map<String, dynamic> json) {
+    return ChangeLog(
+      version: json['version']?.toString(),
+      buildNumber: json['buildNumber'] as int,
+      date: json['date']?.toString(),
+      sections: json['sections'] as Map<String, dynamic>,
+    );
   }
 
+  @HiveField(0)
+  final String version;
+  @HiveField(1)
+  final int buildNumber;
+  @HiveField(2)
+  final String date;
+  @HiveField(3)
+  final Map<String, dynamic> sections;
+
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'version': version,
       'buildNumber': buildNumber,
       'date': date,
@@ -35,7 +43,7 @@ class ChangeLog {
 
   @override
   String toString() {
-    return 'ChangeLog ${JsonEncoder.withIndent('  ').convert(toJson())}';
+    return 'ChangeLog ${const JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 
   @override

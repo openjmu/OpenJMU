@@ -4,6 +4,8 @@
 ///
 part of 'models.dart';
 
+// ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes
+
 class CloudSettingsModel extends JsonModel {
   CloudSettingsModel() {
     lastModified = DateTime.now();
@@ -14,13 +16,14 @@ class CloudSettingsModel extends JsonModel {
         (json['settings'] as Map<dynamic, dynamic>).cast<String, dynamic>();
     final CloudSettingsModel model = CloudSettingsModel()
       .._fontScale = '${settings[_fFontScale] ?? 1.0}'.toDouble()
-      .._hideShieldPost = settings[_fHideShieldPost] ?? true
-      .._homeSplashIndex = settings[_fHomeSplashIndex] ?? 0
-      .._launchFromSystemBrowser = settings[_fLaunchFromSystemBrowser] ?? false
-      .._newAppCenterIcon = settings[_fNewAppCenterIcon] ?? false
-      .._isDark = settings[_fIsDark] ?? false
-      .._amoledDark = settings[_fAMOLEDDark] ?? false
-      .._platformBrightness = settings[_fPlatformBrightness] ?? true
+      .._hideShieldPost = settings[_fHideShieldPost] as bool ?? true
+      .._homeSplashIndex = settings[_fHomeSplashIndex] as int ?? 0
+      .._launchFromSystemBrowser =
+          settings[_fLaunchFromSystemBrowser] as bool ?? false
+      .._newAppCenterIcon = settings[_fNewAppCenterIcon] as bool ?? false
+      .._isDark = settings[_fIsDark] as bool ?? false
+      .._amoledDark = settings[_fAMOLEDDark] as bool ?? false
+      .._platformBrightness = settings[_fPlatformBrightness] as bool ?? true
       ..lastModified = DateTime.fromMillisecondsSinceEpoch(
         '${json['last_modified']}000'.toInt(),
       );
@@ -84,7 +87,7 @@ class CloudSettingsModel extends JsonModel {
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'settings': <String, dynamic>{
-        _fFontScale: '${_fontScale}',
+        _fFontScale: _fontScale,
         _fHideShieldPost: _hideShieldPost,
         _fHomeSplashIndex: _homeSplashIndex,
         _fLaunchFromSystemBrowser: _launchFromSystemBrowser,

@@ -13,21 +13,21 @@ class BackpackItem {
     this.description,
   });
 
+  factory BackpackItem.fromJson(Map<String, dynamic> json) {
+    return BackpackItem(
+      id: json['itemid'] as int,
+      type: json['itemtype'] as int,
+      count: json['pack_num'] as int,
+      name: json['name']?.toString(),
+      description: json['desc']?.toString(),
+    );
+  }
+
   final int id;
   final int type;
   final int count;
   final String name;
   final String description;
-
-  factory BackpackItem.fromJson(Map<String, dynamic> json) {
-    return BackpackItem(
-      id: json['itemid'],
-      type: json['itemtype'],
-      count: json['pack_num'],
-      name: json['name'],
-      description: json['desc'],
-    );
-  }
 
   BackpackItemSpecialType get specialType {
     if (type == 10000) {
@@ -41,13 +41,15 @@ class BackpackItem {
 
   @override
   String toString() {
-    return 'BackpackItem ${JsonEncoder.withIndent('' '').convert({
-      'itemid': id,
-      'itemtype': type,
-      'pack_num': count,
-      'name': name,
-      'desc': description,
-    })}';
+    return 'BackpackItem ${const JsonEncoder.withIndent('' '').convert(
+      <String, dynamic>{
+        'itemid': id,
+        'itemtype': type,
+        'pack_num': count,
+        'name': name,
+        'desc': description,
+      },
+    )}';
   }
 }
 
@@ -59,28 +61,30 @@ class BackpackItemType {
     this.thankMessage,
   });
 
+  factory BackpackItemType.fromJson(Map<String, dynamic> json) {
+    return BackpackItemType(
+      name: json['title']?.toString(),
+      description: json['desc']?.toString(),
+      type: json['itemtype'] as int,
+      thankMessage: json['thankmsg'] as List<dynamic>,
+    );
+  }
+
   final String name;
   final String description;
   final int type;
   final List<dynamic> thankMessage;
 
-  factory BackpackItemType.fromJson(Map<String, dynamic> json) {
-    return BackpackItemType(
-      name: json['title'],
-      description: json['desc'],
-      type: json['itemtype'],
-      thankMessage: json['thankmsg'],
-    );
-  }
-
   @override
   String toString() {
-    return 'BackpackItemType ${JsonEncoder.withIndent('' '').convert({
-      'title': name,
-      'desc': description,
-      'itemtype': type,
-      'thankmsg': thankMessage,
-    })}';
+    return 'BackpackItemType ${const JsonEncoder.withIndent('' '').convert(
+      <String, dynamic>{
+        'title': name,
+        'desc': description,
+        'itemtype': type,
+        'thankmsg': thankMessage,
+      },
+    )}';
   }
 }
 

@@ -4,19 +4,8 @@
 ///
 part of 'models.dart';
 
+@immutable
 class News {
-  int id;
-  String title;
-  String summary;
-  String postTime;
-  int cover;
-  int relateTopicId;
-  int heat;
-  int praises;
-  int replies;
-  int glances;
-  bool isLiked;
-
   News({
     this.id,
     this.title,
@@ -34,8 +23,8 @@ class News {
   factory News.fromJson(Map<String, dynamic> json) {
     return News(
       id: int.parse(json['post_id'].toString()),
-      title: json['title'],
-      summary: json['summary'],
+      title: json['title']?.toString(),
+      summary: json['summary']?.toString(),
       postTime: DateTime.fromMillisecondsSinceEpoch(
         int.parse(json['post_time'].toString()),
       ).toString().substring(0, 16),
@@ -43,7 +32,7 @@ class News {
           ? int.parse(json['cover_img']['fid'].toString())
           : null,
       relateTopicId:
-          json['relate_topic'] != null && json['relate_topic'].isNotEmpty
+          (json['relate_topic'] as List<dynamic>)?.isNotEmpty ?? false
               ? int.parse(json['relate_topic'][0]['post_id'].toString())
               : null,
       heat: int.parse(json['heat'].toString()),
@@ -53,6 +42,18 @@ class News {
       isLiked: int.parse(json['praised'].toString()) == 1,
     );
   }
+
+  final int id;
+  final String title;
+  final String summary;
+  final String postTime;
+  final int cover;
+  final int relateTopicId;
+  final int heat;
+  final int praises;
+  final int replies;
+  final int glances;
+  final bool isLiked;
 
   @override
   bool operator ==(Object other) =>
