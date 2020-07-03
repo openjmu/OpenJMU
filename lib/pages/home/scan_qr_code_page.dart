@@ -52,7 +52,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   /// Whether the camera controller has been initialized.
   /// 判断相机控制器是否已初始化完成
   ///
-  /// Using it for widget initialize, or the widget will throw
+  /// Using it for the widget initialize, or the widget will throw
   /// calling on null error.
   /// 若不在判断后构建部件，会抛出空调用
   bool isCameraInitialized = false;
@@ -123,10 +123,10 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
 
   /// Callback for scanner result.
   /// 扫描得到结果时的回调
-  Future<void> onScan({RScanResult result}) async {
+  Future<void> onScan({RScanResult result, fromAlbum = false}) async {
     scanResult = result ?? _controller.result;
     if (scanResult == null) {
-      if (result != null) {
+      if (fromAlbum) {
         showToast('未从图片中扫描到结果');
       }
       return;
@@ -152,7 +152,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       Navigator.of(context).pop();
       unawaited(API.launchWeb(url: '${scanResult.message}'));
     } else if (API.schemeUserPage.stringMatch(scanResult.message) != null) {
-      /// Push to user page if a user scheme is detected.
+      /// Push to user page if a user scheme is being detect.
       /// 如果检测到用户scheme则跳转到用户页
       unawaited(Navigator.of(context).pushReplacementNamed(
         Routes.openjmuUser,
@@ -180,6 +180,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       }
       unawaited(_controller.startScan());
     }
+    _controller.result = null;
   }
 
   /// Initialize animation for grid shader.
@@ -209,7 +210,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
     });
   }
 
-  /// Scan QR code from file.
+  /// Scan QR code from the file.
   /// 从文件中扫描二维码
   Future<void> scanFromFile() async {
     final List<AssetEntity> entity = await AssetPicker.pickAssets(
@@ -225,7 +226,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       final RScanResult result = await RScan.scanImagePath(
         (await entity.first.originFile).path,
       );
-      unawaited(onScan(result: result));
+      unawaited(onScan(result: result, fromAlbum: true));
     } catch (e) {
       showToast('扫码出错');
     }
