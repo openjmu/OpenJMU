@@ -61,6 +61,7 @@ class DataUtils {
       );
       showToast('登录成功！');
       Instances.eventBus.fire(TicketGotEvent(isWizard));
+      initializeWebViewCookie();
       return true;
     } catch (e) {
       trueDebugPrint('Failed when login: $e');
@@ -114,6 +115,7 @@ class DataUtils {
         );
       }
       Instances.eventBus.fire(TicketGotEvent(isWizard));
+      initializeWebViewCookie();
     } catch (e) {
       trueDebugPrint('Error in recover login info: $e');
       Instances.eventBus.fire(TicketFailedEvent());
@@ -222,6 +224,37 @@ class DataUtils {
     UserAPI.currentUser.sid = response['sid'] as String;
     UserAPI.currentUser.ticket = response['sid'] as String;
     UserAPI.currentUser.uid = settingsBox.get(spUserUid) as int;
+  }
+
+  /// Initialize WebView's cookie with 'iPlanetDirectoryPro'.
+  /// 启动时通过 Session 初始化 WebView 的 Cookie
+  static void initializeWebViewCookie() {
+    final String url =
+        'http://sso.jmu.edu.cn/imapps/1900?sid=${currentUser.sid}';
+    NetUtils.head<dynamic>(url)
+        .then((Response<dynamic> response) {})
+        .catchError((dynamic e) {
+      if (e is DioError && e.response.statusCode == HttpStatus.movedTemporarily) {
+        final List<Cookie> cookies = NetUtils.cookieJar
+            .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'));
+        if (cookies.length == 1) {
+          final Cookie cookie = cookies[0];
+          Instances.webViewCookieManager.setCookie(
+            url: "${cookie.domain}${cookie.path}",
+            name: cookie.name,
+            value: cookie.value,
+            domain: cookie.domain,
+            path: cookie.path,
+            expiresDate: cookie.expires?.millisecondsSinceEpoch,
+            isSecure: cookie.secure,
+            maxAge: cookie.maxAge,
+          );
+        }
+        trueDebugPrint('Successfully initialize WebView\'s Cookie.');
+      } else {
+        trueDebugPrint('Error when initializing WebView\'s Cookie: $e');
+      }
+    });
   }
 
   /// 是否登录

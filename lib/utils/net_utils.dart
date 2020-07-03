@@ -84,11 +84,16 @@ class NetUtils {
     String url, {
     Map<String, dynamic> queryParameters,
     Map<String, dynamic> data,
+    Options options,
   }) async =>
       await dio.head<T>(
         url,
         data: data,
         queryParameters: queryParameters,
+        options: options ??
+            Options(
+              followRedirects: false,
+            ),
       );
 
   static Future<Response<T>> get<T>(String url,
