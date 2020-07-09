@@ -35,7 +35,7 @@ dependencies:
       url: https://github.com/AlexVincent525/flutter_displaymode.git
       ref: "538c10ff"
   flutter_icons: ^1.1.0
-  flutter_inappwebview: ^3.3.0+3
+  flutter_inappwebview: ^4.0.0+4
   flutter_local_notifications: 1.4.4+1
   flutter_native_image: ^0.0.5
   flutter_screenutil: ^1.1.0

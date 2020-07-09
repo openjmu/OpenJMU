@@ -404,6 +404,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
             clearCache: !widget.withCookie ?? false,
             horizontalScrollBarEnabled: false,
             javaScriptCanOpenWindowsAutomatically: true,
+            supportZoom: true,
             transparentBackground: true,
             useOnDownloadStart: true,
             useShouldOverrideUrlLoading: true,
@@ -422,7 +423,6 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
             mixedContentMode:
                 AndroidMixedContentMode.MIXED_CONTENT_ALWAYS_ALLOW,
             safeBrowsingEnabled: false,
-            supportZoom: true,
             useWideViewPort: true,
           ),
           ios: IOSInAppWebViewOptions(
@@ -436,11 +436,13 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
         ),
         onCreateWindow: (
           InAppWebViewController controller,
-          OnCreateWindowRequest onCreateWindowRequest,
-        ) {
-          if (Uri.tryParse(onCreateWindowRequest.url) != null) {
-            controller.loadUrl(url: onCreateWindowRequest.url);
+          CreateWindowRequest createWindowRequest,
+        ) async {
+          if (Uri.tryParse(createWindowRequest.url) != null) {
+            await controller.loadUrl(url: createWindowRequest.url);
+            return true;
           }
+          return false;
         },
         onLoadStart: (InAppWebViewController controller, String url) {
           trueDebugPrint('Webview onLoadStart: $url');
