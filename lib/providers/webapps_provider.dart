@@ -211,8 +211,10 @@ class WebAppsProvider extends ChangeNotifier {
   bool appFiltered(WebApp app) =>
       (!currentUser.isCY && app.code == '6101') ||
       (currentUser.isCY && app.code == '5001') ||
-      (app.code == '6501') ||
-      (app.code == '4001' && app.name == '集大通');
+      (app.code == '6501')
+//          ||
+//      (app.code == '4001' && app.name == '集大通')
+  ;
 
   final Map<String, String> categories = <String, String>{
 //    '10': '个人事务',

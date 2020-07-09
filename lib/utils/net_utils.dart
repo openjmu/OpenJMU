@@ -219,6 +219,11 @@ class NetUtils {
         ),
       );
 
+  /// For download progress, here we don't simply use the [dio.download],
+  /// because there's no file name provided. So in here we take two steps:
+  /// * Using [head] to get the 'content-disposition' in headers to determine
+  ///   the real file name of the attachment.
+  /// * Call [dio.download] to download the file with the real name.
   static Future<Response<dynamic>> download(
     String url, {
     Map<String, dynamic> data,
@@ -232,8 +237,32 @@ class NetUtils {
     if (isAllGranted) {
       showToast('开始下载...');
       trueDebugPrint('File start download: $url');
-      path = (await getExternalStorageDirectory()).path;
-      path += '/' + url.split('/').last.split('?').first;
+      path = '${(await getExternalStorageDirectory()).path}/';
+      try {
+        response = await head(
+          url,
+          data: data,
+          options: Options(
+            headers: headers ?? DataUtils.buildPostHeaders(currentUser.sid),
+          ),
+        );
+        String filename = response.headers
+            .value('content-disposition')
+            .split('; ')
+            .where((String element) => element.contains('filename'))
+            ?.first;
+        if (filename != null) {
+          final filenameReg = RegExp(r'filename=\"(.+)\"');
+          filename = filenameReg.allMatches(filename).first.group(1);
+          filename = Uri.decodeComponent(filename);
+          path += filename;
+        } else {
+          path += url.split('/').last.split('?').first;
+        }
+      } catch (e) {
+        trueDebugPrint('File download failed when fetching head: $e');
+        return null;
+      }
       try {
         response = await dio.download(
           url,
