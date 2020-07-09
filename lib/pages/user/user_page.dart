@@ -8,7 +8,6 @@ import 'package:flutter_icons/flutter_icons.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/dialogs/edit_signature_dialog.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
 
 @FFRoute(name: "openjmu://user", routeName: "用户页", argumentNames: ["uid"])
@@ -195,11 +194,7 @@ class _UserPageState extends State<UserPage>
           padding: EdgeInsets.symmetric(horizontal: suSetWidth(28.0)),
           onPressed: () {
             if (isSelf) {
-              showDialog<void>(
-                context: context,
-                builder: (BuildContext context) =>
-                    EditSignatureDialog(_user.signature),
-              );
+              navigatorState.pushNamed(Routes.openjmuEditProfilePage);
             } else {
               if (_user.isFollowing) {
                 UserAPI.unFollow(widget.uid);
@@ -476,63 +471,20 @@ class _UserPageState extends State<UserPage>
     );
   }
 
-  void avatarExtraActions(context) {
-    ConfirmationBottomSheet.show(
-      context,
-      children: <Widget>[
-        ConfirmationBottomSheetAction(
-          icon: Icon(Icons.account_circle),
-          text: '查看大头像',
-          onTap: () {
-            navigatorState.pushNamed(
-              Routes.openjmuImageViewer,
-              arguments: {
-                'index': 0,
-                'pics': [
-                  ImageBean(
-                    id: widget.uid,
-                    imageUrl: '${API.userAvatar}?'
-                        'uid=${widget.uid}'
-                        '&size=f640'
-                        '&_t=${UserAPI.avatarLastModified}',
-                  ),
-                ],
-                'heroPrefix': 'user-page-avatar-',
-              },
-            );
-          },
-        ),
-        ConfirmationBottomSheetAction(
-          icon: Icon(Icons.photo_library),
-          text: '更换头像',
-          onTap: () {
-            navigatorState.pushNamed(Routes.openjmuImageCrop).then((result) {
-              if (result != null && result) {
-                Instances.eventBus.fire(AvatarUpdatedEvent());
-              }
-            });
-          },
-        ),
-      ],
-    );
-  }
-
   void avatarTap(context) {
-    widget.uid == UserAPI.currentUser.uid
-        ? avatarExtraActions(context)
-        : navigatorState.pushNamed(
-            Routes.openjmuImageViewer,
-            arguments: {
-              'index': 0,
-              'pics': [
-                ImageBean(
-                  id: widget.uid,
-                  imageUrl: '${API.userAvatar}?uid=${widget.uid}&size=f640',
-                ),
-              ],
-              'needsClear': true,
-            },
-          );
+    navigatorState.pushNamed(
+      Routes.openjmuImageViewer,
+      arguments: <String, dynamic>{
+        'index': 0,
+        'pics': <ImageBean>[
+          ImageBean(
+            id: widget.uid,
+            imageUrl: '${API.userAvatar}?uid=${widget.uid}&size=f640',
+          ),
+        ],
+        'needsClear': true,
+      },
+    );
   }
 
   @mustCallSuper
