@@ -5,7 +5,9 @@
 import 'dart:math' as math;
 import 'dart:convert';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:extended_text/extended_text.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -147,9 +149,17 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
                   borderRadius: BorderRadius.circular(20.0),
                   color: Theme.of(context).canvasColor,
                 ),
-                child: SelectableText(
+                child: ExtendedText(
                   message.content,
+                  selectionEnabled: true,
                   style: TextStyle(fontSize: suSetSp(20.0)),
+                  specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
+                  onSpecialTextTap: (dynamic data) {
+                    API.launchWeb(
+                      url: data['content'] as String,
+                      title: '网页链接',
+                    );
+                  },
                 ),
               ),
             ),
@@ -249,5 +259,138 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
         ],
       ),
     );
+  }
+}
+
+class _LinkText extends SpecialText {
+  static String startKey = 'https://';
+  static const String endKey = ' ';
+
+  _LinkText(
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap,
+  )  : super(startKey, endKey, textStyle, onTap: onTap);
+
+  @override
+  TextSpan finishText() {
+    return TextSpan(
+      text: toString(),
+      style: textStyle?.copyWith(decoration: TextDecoration.underline),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          final Map<String, dynamic> data = <String, dynamic>{
+            'content': toString()
+          };
+          if (onTap != null) onTap(data);
+        },
+    );
+  }
+}
+
+class _LinkOlderText extends SpecialText {
+  static String startKey = 'http://';
+  static const String endKey = ' ';
+
+  _LinkOlderText(
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap,
+  )  : super(startKey, endKey, textStyle, onTap: onTap);
+
+  @override
+  TextSpan finishText() {
+    return TextSpan(
+      text: toString(),
+      style: textStyle?.copyWith(decoration: TextDecoration.underline),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          final Map<String, dynamic> data = <String, dynamic>{
+            'content': toString()
+          };
+          if (onTap != null) onTap(data);
+        },
+    );
+  }
+}
+
+class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
+  @override
+  TextSpan build(
+    String data, {
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap,
+  }) {
+    final linkRegExp = RegExp(
+      r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
+      r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)',
+    );
+
+    if (data == null || data == '') return null;
+    final inlineList = <InlineSpan>[];
+    if (linkRegExp.allMatches(data).isNotEmpty) {
+      final matches = linkRegExp.allMatches(data);
+      matches.forEach((match) {
+        data = data.replaceFirst(match.group(0), ' ${match.group(0)} ');
+      });
+    }
+
+    if (data.isNotEmpty) {
+      SpecialText specialText;
+      String textStack = '';
+      for (int i = 0; i < data.length; i++) {
+        String char = data[i];
+        textStack += char;
+        if (specialText != null) {
+          if (!specialText.isEnd(textStack)) {
+            specialText.appendContent(char);
+          } else {
+            inlineList.add(specialText.finishText());
+            specialText = null;
+            textStack = '';
+          }
+        } else {
+          specialText = createSpecialText(textStack,
+              textStyle: textStyle, onTap: onTap, index: i);
+          if (specialText != null) {
+            if (textStack.length - specialText.startFlag.length >= 0) {
+              textStack = textStack.substring(
+                  0, textStack.length - specialText.startFlag.length);
+              if (textStack.isNotEmpty) {
+                inlineList.add(TextSpan(text: textStack, style: textStyle));
+              }
+            }
+            textStack = '';
+          }
+        }
+      }
+
+      if (specialText != null) {
+        inlineList.add(TextSpan(
+            text: specialText.startFlag + specialText.getContent(),
+            style: textStyle));
+      } else if (textStack.isNotEmpty) {
+        inlineList.add(TextSpan(text: textStack, style: textStyle));
+      }
+    } else {
+      inlineList.add(TextSpan(text: data, style: textStyle));
+    }
+
+    return TextSpan(children: inlineList, style: textStyle);
+  }
+
+  @override
+  SpecialText createSpecialText(
+      String flag, {
+        TextStyle textStyle,
+        SpecialTextGestureTapCallback onTap,
+        int index,
+      }) {
+    if (flag?.isEmpty ?? true) return null;
+
+    if (isStart(flag, _LinkText.startKey)) {
+      return _LinkText(textStyle, onTap);
+    } else if (isStart(flag, _LinkOlderText.startKey)) {
+      return _LinkOlderText(textStyle, onTap);
+    }
+    return null;
   }
 }

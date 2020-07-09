@@ -185,7 +185,9 @@ class ConfirmationDialog extends StatelessWidget {
                       specialTextSpanBuilder: RegExpSpecialTextSpanBuilder(),
                       onSpecialTextTap: (dynamic data) {
                         API.launchWeb(
-                            url: data['content'] as String, title: '网页链接');
+                          url: data['content'] as String,
+                          title: '网页链接',
+                        );
                       },
                     ),
                   ),
