@@ -151,14 +151,11 @@ class CommentCard extends StatelessWidget {
         style: TextStyle(fontSize: suSetSp(21.0)),
         onSpecialTextTap: specialTextTapRecognizer,
         maxLines: 8,
-        overFlowTextSpan: OverFlowTextSpan(
-          children: <TextSpan>[
-            const TextSpan(text: ' ...'),
-            TextSpan(
-              text: '全文',
-              style: TextStyle(color: currentThemeColor),
-            ),
-          ],
+        overflowWidget: TextOverflowWidget(
+          child: Text(
+            '全文',
+            style: TextStyle(color: currentThemeColor),
+          ),
         ),
         specialTextSpanBuilder:
             StackSpecialTextSpanBuilder(widgetType: WidgetType.comment),

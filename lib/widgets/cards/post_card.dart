@@ -504,16 +504,13 @@ class _PostCardState extends State<PostCard> {
           style: TextStyle(fontSize: suSetSp(21.0)),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: widget.isDetail ?? false ? null : 8,
-          overFlowTextSpan: widget.isDetail ?? false
+          overflowWidget: widget.isDetail ?? false
               ? null
-              : OverFlowTextSpan(
-                  children: <TextSpan>[
-                    const TextSpan(text: ' ... '),
-                    TextSpan(
-                      text: '全文',
-                      style: TextStyle(color: currentThemeColor),
-                    ),
-                  ],
+              : TextOverflowWidget(
+                  child: Text(
+                    '全文',
+                    style: TextStyle(color: currentThemeColor),
+                  ),
                 ),
           specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
         ),
