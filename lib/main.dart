@@ -93,7 +93,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         currentContext.read<MessagesProvider>().initMessages();
         currentContext.read<NotificationProvider>().initNotification();
         currentContext.read<ReportRecordsProvider>().initRecords();
-        currentContext.read<SettingsProvider>().getCloudSettings();
+//        currentContext.read<SettingsProvider>().getCloudSettings();
         currentContext.read<SignProvider>().getSignStatus();
         currentContext.read<WebAppsProvider>().initApps();
         if (UserAPI.backpackItemTypes.isEmpty) {

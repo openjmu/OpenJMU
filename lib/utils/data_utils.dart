@@ -25,11 +25,11 @@ class DataUtils {
       blowfish: blowfish,
     );
     try {
-      final Map<String, dynamic> loginData =
-          (await UserAPI.login<Map<String, dynamic>>(params))
-              .data['data']; // Using xAuth.
 //      final Map<String, dynamic> loginData =
-//          (await UserAPI.login<Map<String, dynamic>>(params)).data; // Using 99.
+//          (await UserAPI.login<Map<String, dynamic>>(params))
+//              .data['data']; // Using xAuth.
+      final Map<String, dynamic> loginData =
+          (await UserAPI.login<Map<String, dynamic>>(params)).data; // Using 99.
       UserAPI.currentUser.sid = loginData['sid'] as String;
       UserAPI.currentUser.ticket = loginData['ticket'] as String;
       final Map<String, dynamic> user = ((await UserAPI.getUserInfo(
@@ -210,8 +210,8 @@ class DataUtils {
               .data;
       final DateTime _end = currentTime;
       trueDebugPrint('Done request new ticket in: ${_end.difference(_start)}');
-      updateSid(response['data']); // Using xAuth.
-//      updateSid(response); // Using 99.
+//      updateSid(response['data']); // Using xAuth.
+      updateSid(response); // Using 99.
       await getUserInfo();
       return true;
     } catch (e) {
