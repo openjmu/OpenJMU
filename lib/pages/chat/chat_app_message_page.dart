@@ -269,7 +269,7 @@ class _LinkText extends SpecialText {
   _LinkText(
     TextStyle textStyle,
     SpecialTextGestureTapCallback onTap,
-  )  : super(startKey, endKey, textStyle, onTap: onTap);
+  ) : super(startKey, endKey, textStyle, onTap: onTap);
 
   @override
   TextSpan finishText() {
@@ -294,7 +294,7 @@ class _LinkOlderText extends SpecialText {
   _LinkOlderText(
     TextStyle textStyle,
     SpecialTextGestureTapCallback onTap,
-  )  : super(startKey, endKey, textStyle, onTap: onTap);
+  ) : super(startKey, endKey, textStyle, onTap: onTap);
 
   @override
   TextSpan finishText() {
@@ -379,11 +379,11 @@ class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
 
   @override
   SpecialText createSpecialText(
-      String flag, {
-        TextStyle textStyle,
-        SpecialTextGestureTapCallback onTap,
-        int index,
-      }) {
+    String flag, {
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap,
+    int index,
+  }) {
     if (flag?.isEmpty ?? true) return null;
 
     if (isStart(flag, _LinkText.startKey)) {

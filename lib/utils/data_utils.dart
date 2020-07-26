@@ -234,25 +234,30 @@ class DataUtils {
     NetUtils.head<dynamic>(url)
         .then((Response<dynamic> response) {})
         .catchError((dynamic e) {
-      if (e is DioError && e.response.statusCode == HttpStatus.movedTemporarily) {
-        final List<Cookie> cookies = NetUtils.cookieJar
-            .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'));
-        if (cookies.length == 1) {
-          final Cookie cookie = cookies[0];
-          Instances.webViewCookieManager.setCookie(
-            url: "${cookie.domain}${cookie.path}",
-            name: cookie.name,
-            value: cookie.value,
-            domain: cookie.domain,
-            path: cookie.path,
-            expiresDate: cookie.expires?.millisecondsSinceEpoch,
-            isSecure: cookie.secure,
-            maxAge: cookie.maxAge,
-          );
+      try {
+        if (e is DioError &&
+            e.response.statusCode == HttpStatus.movedTemporarily) {
+          final List<Cookie> cookies = NetUtils.cookieJar
+              .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'));
+          if (cookies.length == 1) {
+            final Cookie cookie = cookies[0];
+            Instances.webViewCookieManager.setCookie(
+              url: "${cookie.domain}${cookie.path}",
+              name: cookie.name,
+              value: cookie.value,
+              domain: cookie.domain,
+              path: cookie.path,
+              expiresDate: cookie.expires?.millisecondsSinceEpoch,
+              isSecure: cookie.secure,
+              maxAge: cookie.maxAge,
+            );
+          }
+          trueDebugPrint('Successfully initialize WebView\'s Cookie.');
+        } else {
+          trueDebugPrint('Error when initializing WebView\'s Cookie: $e');
         }
-        trueDebugPrint('Successfully initialize WebView\'s Cookie.');
-      } else {
-        trueDebugPrint('Error when initializing WebView\'s Cookie: $e');
+      } catch (e) {
+        trueDebugPrint('Error when handling cookie response: $e');
       }
     });
   }

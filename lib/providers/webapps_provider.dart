@@ -216,7 +216,7 @@ class WebAppsProvider extends ChangeNotifier {
       (app.code == '6501')
 //          ||
 //      (app.code == '4001' && app.name == '集大通')
-  ;
+      ;
 
   final Map<String, String> categories = <String, String>{
 //    '10': '个人事务',

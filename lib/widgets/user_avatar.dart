@@ -8,12 +8,6 @@ import 'package:openjmu/openjmu_route_helper.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class UserAvatar extends StatelessWidget {
-  final double size;
-  final int uid;
-  final int timestamp;
-  final double radius;
-  final bool canJump;
-
   const UserAvatar({
     Key key,
     this.uid,
@@ -24,12 +18,17 @@ class UserAvatar extends StatelessWidget {
   })  : assert(radius == null || (radius != null && radius > 0.0)),
         super(key: key);
 
+  final double size;
+  final int uid;
+  final int timestamp;
+  final double radius;
+  final bool canJump;
+
   @override
   Widget build(BuildContext context) {
-    final _uid = uid ?? currentUser.uid;
-    return SizedBox(
-      width: suSetWidth(size),
-      height: suSetWidth(size),
+    final int _uid = uid ?? currentUser.uid;
+    return SizedBox.fromSize(
+      size: Size.square(size.w),
       child: GestureDetector(
         child: ClipRRect(
           borderRadius: radius != null
@@ -43,22 +42,24 @@ class UserAvatar extends StatelessWidget {
         ),
         onTap: canJump
             ? () {
-                final _routeSettings = ModalRoute.of(context).settings;
+                final RouteSettings _routeSettings =
+                    ModalRoute.of(context).settings;
+                final Map<String, dynamic> _routeArguments = <String, dynamic>{
+                  'uid': _uid,
+                };
                 if (_routeSettings is FFRouteSettings) {
-                  final settings =
-                      ModalRoute.of(context).settings as FFRouteSettings;
-                  if (settings.name != Routes.openjmuUser ||
-                      settings.arguments.toString() !=
-                          {'uid': _uid}.toString()) {
+                  if (_routeSettings.name != Routes.openjmuUserPage ||
+                      _routeSettings.arguments.toString() !=
+                          _routeArguments.toString()) {
                     navigatorState.pushNamed(
-                      Routes.openjmuUser,
-                      arguments: {'uid': _uid},
+                      Routes.openjmuUserPage,
+                      arguments: _routeArguments,
                     );
                   }
                 } else {
                   navigatorState.pushNamed(
-                    Routes.openjmuUser,
-                    arguments: {'uid': _uid},
+                    Routes.openjmuUserPage,
+                    arguments: _routeArguments,
                   );
                 }
               }
