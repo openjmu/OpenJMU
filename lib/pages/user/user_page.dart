@@ -1,94 +1,80 @@
+///
+/// [Author] Alex (https://github.com/AlexV525)
+/// [Date] 2020/7/24 13:40
+///
 import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pull_to_refresh_notification/pull_to_refresh_notification.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/widgets/image/image_viewer.dart';
+import 'package:openjmu/widgets/cards/post_card.dart';
 
-@FFRoute(name: "openjmu://user", routeName: "用户页", argumentNames: ["uid"])
+@FFRoute(
+  name: 'openjmu://user-page',
+  routeName: '用户页',
+  argumentNames: <String>['uid'],
+  argumentTypes: <String>['int'],
+)
 class UserPage extends StatefulWidget {
-  final int uid;
-
   const UserPage({
     Key key,
     @required this.uid,
-  }) : super(key: key);
+  })  : assert(uid != null),
+        super(key: key);
+
+  final int uid;
 
   @override
-  State<StatefulWidget> createState() => _UserPageState();
+  UserPageState createState() => UserPageState();
 }
 
-class _UserPageState extends State<UserPage>
-    with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
+class UserPageState extends State<UserPage>
+    with SingleTickerProviderStateMixin {
+  final List<String> tabList = <String>['动态', '黑名单'];
+  double get tabBarHeight => 56.0.h;
+  final List<Post> posts = <Post>[];
+  final List<UserTag> userTags = <UserTag>[];
 
-  UserInfo _user;
-  List<UserTag> _tags = [];
-  Widget _post;
-  String _fansCount, _idolsCount;
-  int userLevel;
+  TabController tabController;
 
-  bool isSelf = false;
-  bool isLoading = true;
-  bool showTitle = false;
-  bool refreshing = false;
+  UserLevelScore userLevelScore;
 
-  List<String> _tabList = ['动态', '黑名单'];
-  TabController _tabController;
-  PostController postController;
-  ScrollController _scrollController = ScrollController();
+  int total, userFans, userIdols;
+  bool get isFirstLoaded => total != null;
 
-  double get tabBarHeight => suSetHeight(56.0);
-  double expandedHeight = kAppBarHeight + suSetHeight(212.0);
+  int get count => posts.length;
+  int get lastId => posts.last?.id;
+
+  int get uid => widget.uid ?? currentUser.uid;
+  bool get isCurrentUser => uid == currentUser.uid;
+  bool get isFemale => (user?.gender == 2) ?? false;
+
+  final ScrollController scrollController = ScrollController();
+  double get expandedHeight =>
+      Screens.width / 1.25 + (isCurrentUser ? tabBarHeight : 0.0);
+  final StreamController<bool> titleAnimateStreamController =
+      StreamController<bool>.broadcast();
+  Stream<bool> get titleAnimateStream => titleAnimateStreamController.stream;
+
+  UserInfo user;
 
   @override
   void initState() {
     super.initState();
 
-    if (widget.uid == currentUser.uid) isSelf = true;
+    if (isCurrentUser) {
+      tabController = TabController(length: tabList.length, vsync: this);
+    }
 
-    if (isSelf) expandedHeight += tabBarHeight;
-
-    _tabController = TabController(length: _tabList.length, vsync: this);
-    postController = PostController(
-      postType: 'user',
-      isFollowed: false,
-      isMore: false,
-      lastValue: (int id) => id,
-      additionAttrs: {'uid': widget.uid},
-    );
-    _post = PostList(postController, needRefreshIndicator: false);
-
-    _fetchUserInformation(widget.uid);
-
-    Instances.eventBus
-      ..on<SignatureUpdatedEvent>().listen((event) {
-        Future.delayed(Duration(milliseconds: 2400), () {
-          _user.signature = event.signature;
-          if (this.mounted) setState(() {});
-        });
-      })
-      ..on<AvatarUpdatedEvent>().listen((event) {
-        UserAPI.updateAvatarProvider();
-        _fetchUserInformation(widget.uid);
-      })
-      ..on<BlacklistUpdateEvent>().listen((event) {
-        Future.delayed(const Duration(milliseconds: 250), () {
-          if (this.mounted) setState(() {});
-        });
-      });
+    loadData();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _scrollController
+    scrollController
       ..removeListener(listener)
       ..addListener(listener);
   }
@@ -96,382 +82,118 @@ class _UserPageState extends State<UserPage>
   @override
   void dispose() {
     super.dispose();
-    _scrollController?.dispose();
+    scrollController?.dispose();
   }
 
   void listener() {
-    double triggerHeight = expandedHeight - suSetHeight(20.0);
-    if (isSelf) triggerHeight -= tabBarHeight;
-
-    if (_scrollController.offset >= triggerHeight && !showTitle) {
-      setState(() {
-        showTitle = true;
-      });
-    } else if (_scrollController.offset < triggerHeight && showTitle) {
-      setState(() {
-        showTitle = false;
-      });
-    }
+    double triggerHeight = expandedHeight - kToolbarHeight;
+    if (isCurrentUser) triggerHeight -= tabBarHeight;
+    titleAnimateStreamController.add(scrollController.offset >= triggerHeight);
   }
 
-  Future<void> _fetchUserInformation(uid) async {
-    if (uid == UserAPI.currentUser.uid) {
-      _user = UserAPI.currentUser;
-    } else {
-      try {
-        final Map<String, dynamic> user =
+  Future<void> fetchUserInformation() async {
+    try {
+      if (uid == currentUser.uid) {
+        user = currentUser;
+      } else {
+        final Map<String, dynamic> _user =
             (await UserAPI.getUserInfo(uid: uid)).data;
-        _user = UserInfo.fromJson(user);
-      } catch (e) {
-        trueDebugPrint('Failed in fetching user information: $e');
-        return;
+        user = UserInfo.fromJson(_user);
       }
-    }
 
-    await Future.wait(
-      <Future>[
-        UserAPI.getLevel(uid).then((response) {
-          userLevel = int.parse(
-              response.data['score']['levelinfo']['level'].toString());
-        }),
-        UserAPI.getTags(uid).then((response) {
-          List tags = response.data['data'];
-          List<UserTag> _userTags = [];
-          tags.forEach((tag) {
-            _userTags.add(UserAPI.createUserTag(tag));
-          });
-          _tags = _userTags;
-        }),
-        _getCount(uid),
-      ],
-      eagerError: true,
-    ).catchError((e) {
-      trueDebugPrint('Failed when fetch user information: $e');
+      Future.wait(
+        <Future>[_getLevel(), _getTags(), _getFollowingCount()],
+        eagerError: true,
+      ).then((dynamic _) {
+        if (mounted) {
+          setState(() {});
+        }
+      });
+    } catch (e) {
+      trueDebugPrint('Failed in fetching user information: $e');
+      return;
+    }
+  }
+
+  Future<void> _getLevel() async {
+    final Response<Map<String, dynamic>> response = await UserAPI.getLevel(uid);
+    final Map<String, dynamic> data = response.data;
+    userLevelScore = UserLevelScore.fromJson(data['score']);
+  }
+
+  Future<void> _getTags() async {
+    final Response<Map<String, dynamic>> response = await UserAPI.getTags(uid);
+    final Map<String, dynamic> data = response.data;
+    final List<dynamic> tags = data['data'];
+    List<UserTag> _userTags = [];
+    tags.forEach((dynamic tag) {
+      _userTags.add(UserAPI.createUserTag(tag as Map<String, dynamic>));
     });
+    userTags
+      ..clear()
+      ..addAll(_userTags);
+  }
 
+  Future<void> _getFollowingCount() async {
+    final Response<Map<String, dynamic>> response =
+        await UserAPI.getFansAndFollowingsCount(uid);
+    final Map<String, dynamic> data = response.data;
+    user.isFollowing = data['is_following'] == 1;
+    userFans = data['fans'].toString().toInt();
+    userIdols = data['idols'].toString().toInt();
+  }
+
+  Future<bool> onRefresh() async {
+    try {
+      await loadData();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> loadData({bool isLoadMore = false}) {
+    return Future.wait<void>(
+      <Future>[
+        fetchUserInformation(),
+        PostAPI.getPostList(
+          'user',
+          false,
+          isLoadMore,
+          0,
+          additionAttrs: <String, dynamic>{'uid': uid},
+        ).then((Response<Map<String, dynamic>> response) {
+          addPostsData(response, isLoadMore: isLoadMore);
+        }),
+      ],
+    );
+  }
+
+  void addPostsData(
+    Response<Map<String, dynamic>> response, {
+    bool isLoadMore = false,
+  }) {
+    final Map<String, dynamic> data = response.data;
+    total = '${data['total']}'.toInt();
+    final List<Post> _postList =
+        (data['topics'] as List<dynamic>).map((dynamic element) {
+      final Map<String, dynamic> postData = element as Map<String, dynamic>;
+      final Post post = Post.fromJson(postData['topic']);
+      return post;
+    }).toList();
+    if (isLoadMore) {
+      posts.addAll(_postList);
+    } else {
+      posts
+        ..clear()
+        ..addAll(_postList);
+    }
     if (mounted) {
-      setState(() {
-        isLoading = false;
-        refreshing = false;
-      });
+      setState(() {});
     }
   }
 
-  Future<void> _getCount(id) async {
-    final data = (await UserAPI.getFansAndFollowingsCount(id)).data;
-    if (this.mounted) {
-      setState(() {
-        _user.isFollowing = data['is_following'] == 1;
-        _fansCount = data['fans'].toString();
-        _idolsCount = data['idols'].toString();
-      });
-    }
-  }
-
-  Widget avatar(context, double width) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => avatarTap(context),
-      child: SizedBox(
-        width: suSetWidth(width),
-        height: suSetWidth(width),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(width / 2),
-          child: Hero(
-            tag: 'user-page-avatar-${widget.uid}',
-            child: UserAvatar(uid: widget.uid, size: width, canJump: false),
-            placeholderBuilder: (_, __, child) => child,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget get followButton => Container(
-        height: suSetHeight(48.0),
-        padding: EdgeInsets.symmetric(horizontal: suSetWidth(4.0)),
-        child: FlatButton(
-          padding: EdgeInsets.symmetric(horizontal: suSetWidth(28.0)),
-          onPressed: () {
-            if (isSelf) {
-              navigatorState.pushNamed(Routes.openjmuEditProfilePage);
-            } else {
-              if (_user.isFollowing) {
-                UserAPI.unFollow(widget.uid);
-              } else {
-                UserAPI.follow(widget.uid);
-              }
-              _user.isFollowing = !_user.isFollowing;
-              if (mounted) setState(() {});
-            }
-          },
-          color: isSelf
-              ? Color(0x44ffffff)
-              : _user.isFollowing
-                  ? Color(0x44ffffff)
-                  : currentThemeColor.withOpacity(0.6),
-          child: Text(
-            isSelf
-                ? '编辑资料'
-                : _user.isFollowing
-                    ? '已关注'
-                    : '关注${_user.gender == 2 ? '她' : '他'}',
-            style: TextStyle(color: Colors.white, fontSize: suSetSp(20.0)),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(suSetWidth(32.0)),
-          ),
-        ),
-      );
-
-  Widget qrCode(context) => Container(
-        width: suSetHeight(48.0),
-        height: suSetHeight(48.0),
-        decoration:
-            BoxDecoration(color: Color(0x44ffffff), shape: BoxShape.circle),
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          child: Icon(
-            AntDesign.qrcode,
-            size: suSetWidth(26.0),
-            color: Colors.white,
-          ),
-          onTap: () {
-            navigatorState.pushNamed(Routes.openjmuUserQrCode);
-          },
-        ),
-      );
-
-  List<Widget> flexSpaceWidgets(context) => [
-        Padding(
-          padding: EdgeInsets.only(bottom: suSetHeight(12.0)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              avatar(context, 112.0),
-              Spacer(),
-              followButton,
-              if (isSelf) qrCode(context),
-            ],
-          ),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              _user.name,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: suSetSp(26.0),
-                fontWeight: FontWeight.bold,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-            emptyDivider(width: suSetWidth(8.0)),
-            DecoratedBox(
-              decoration: BoxDecoration(
-                color:
-                    _user.gender == 2 ? Colors.pinkAccent : Colors.blueAccent,
-                shape: BoxShape.circle,
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(suSetWidth(3.0)),
-                child: SvgPicture.asset(
-                  'assets/icons/gender/${_user.gender == 2 ? 'fe' : ''}male.svg',
-                  width: suSetWidth(20.0),
-                  height: suSetWidth(20.0),
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            emptyDivider(width: 8.0),
-            Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: suSetWidth(8.0),
-                vertical: suSetHeight(4.0),
-              ),
-              decoration: BoxDecoration(
-                color: Colors.redAccent,
-                borderRadius: BorderRadius.circular(suSetWidth(20.0)),
-              ),
-              child: Text(
-                ' Lv.$userLevel',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: suSetSp(16.0),
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-            ),
-            if (Constants.developerList.contains(_user.uid))
-              emptyDivider(width: 8.0),
-            if (Constants.developerList.contains(_user.uid))
-              DeveloperTag(
-                padding: EdgeInsets.symmetric(
-                  horizontal: suSetWidth(8.0),
-                  vertical: suSetHeight(4.0),
-                ),
-                height: 30.0,
-              ),
-          ],
-        ),
-        Text(
-          _user.signature ?? '这个人很懒，什么都没写',
-          style: TextStyle(
-            color: Colors.grey[350],
-            fontSize: suSetSp(19.0),
-          ),
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                navigatorState.pushNamed(
-                  Routes.openjmuUserlist,
-                  arguments: {'user': _user, 'type': 1},
-                );
-              },
-              child: RichText(
-                text: TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: _idolsCount,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: suSetSp(28.0),
-                      ),
-                    ),
-                    TextSpan(
-                      text: ' 关注',
-                      style: TextStyle(
-                          color: Colors.white, fontSize: suSetSp(19.0)),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            emptyDivider(width: 12.0),
-            GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                navigatorState.pushNamed(
-                  Routes.openjmuUserlist,
-                  arguments: {'user': _user, 'type': 2},
-                );
-              },
-              child: RichText(
-                text: TextSpan(
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: _fansCount,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: suSetSp(28.0),
-                      ),
-                    ),
-                    TextSpan(
-                      text: ' 粉丝',
-                      style: TextStyle(
-                          color: Colors.white, fontSize: suSetSp(19.0)),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
-        _tags?.isNotEmpty ?? false
-            ? SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  children: <Widget>[
-                    for (int i = 0; i < _tags.length; i++)
-                      Container(
-                        margin: EdgeInsets.only(right: suSetWidth(12.0)),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(suSetWidth(20.0)),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: suSetWidth(12.0),
-                              vertical: suSetHeight(1.0),
-                            ),
-                            decoration: BoxDecoration(
-                              color: Color(0x44ffffff),
-                            ),
-                            child: Text(
-                              _tags[i].name,
-                              style: TextStyle(
-                                  color: Colors.white, fontSize: suSetSp(18.0)),
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              )
-            : Text(
-                '${_user.gender == 2 ? '她' : '他'}还没有设置个性标签',
-                style:
-                    TextStyle(color: Colors.grey[350], fontSize: suSetSp(19.0)),
-              ),
-      ];
-
-  void removeFromBlacklist(context, BlacklistUser user) async {
-    final confirm = await ConfirmationDialog.show(
-      context,
-      title: '移出黑名单',
-      content: '确定不再屏蔽此人吗?',
-      showConfirm: true,
-    );
-    if (confirm) {
-      UserAPI.fRemoveFromBlacklist(user);
-    }
-  }
-
-  Widget blacklistUser(BlacklistUser user) {
-    return Padding(
-      padding: EdgeInsets.all(suSetWidth(8.0)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          UserAvatar(uid: user.uid, size: 64.0, canJump: false),
-          Text(
-            user.username,
-            style: TextStyle(fontSize: suSetSp(18.0)),
-            overflow: TextOverflow.ellipsis,
-          ),
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => removeFromBlacklist(context, user),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: suSetWidth(10.0),
-                vertical: suSetHeight(6.0),
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(suSetWidth(10.0)),
-                color: currentThemeColor.withAlpha(0x88),
-              ),
-              child: Text(
-                '移出黑名单',
-                style: TextStyle(fontSize: suSetSp(16.0)),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void avatarTap(context) {
+  void avatarTap() {
     navigatorState.pushNamed(
       Routes.openjmuImageViewer,
       arguments: <String, dynamic>{
@@ -487,391 +209,305 @@ class _UserPageState extends State<UserPage>
     );
   }
 
-  @mustCallSuper
-  Widget build(BuildContext context) {
-    super.build(context);
-    return Scaffold(
-      body: isLoading
-          ? SpinKitWidget()
-          : NestedScrollView(
-              controller: _scrollController,
-              headerSliverBuilder:
-                  (BuildContext context, bool innerBoxIsScrolled) => <Widget>[
-                SliverAppBar(
-                  title: showTitle
-                      ? GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onDoubleTap: () {
-                            _scrollController.animateTo(
-                              0.0,
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.ease,
-                            );
-                          },
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              UserAPI.getAvatar(size: 52.0, uid: widget.uid),
-                              emptyDivider(width: suSetWidth(8.0)),
-                              Text(
-                                _user.name,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyText2
-                                    .copyWith(
-                                      fontSize: suSetSp(23.0),
-                                    ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : null,
-                  actions: <Widget>[
-                    SizedBox(
-                      width: 56.0,
-                      child: refreshing
-                          ? Center(
-                              child: SizedBox.fromSize(
-                                size: Size.square(suSetWidth(36.0)),
-                                child: PlatformProgressIndicator(
-                                  strokeWidth: suSetWidth(6.0),
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                          : IconButton(
-                              icon: Icon(Icons.refresh),
-                              onPressed: () {
-                                _scrollController.animateTo(
-                                  0.0,
-                                  duration: Duration(milliseconds: 300),
-                                  curve: Curves.ease,
-                                );
-                                Future.delayed(Duration(milliseconds: 300), () {
-                                  refreshing = true;
-                                  if (mounted) setState(() {});
-                                  postController.reload();
-                                  _fetchUserInformation(widget.uid);
-                                });
-                              },
-                            ),
-                    )
-                  ],
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Stack(
-                      children: <Widget>[
-                        SizedBox(
-                          width: double.infinity,
-                          child: Image(
-                            image: UserAPI.getAvatarProvider(
-                                uid: widget.uid, size: 600),
-                            width: MediaQuery.of(context).size.width,
-                            fit: BoxFit.fitWidth,
-                          ),
-                        ),
-                        BackdropFilter(
-                          filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                          child:
-                              Container(color: Color.fromARGB(120, 50, 50, 50)),
-                        ),
-                        SafeArea(
-                          top: true,
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: suSetWidth(20.0)),
-                            child: Column(
-                              children: <Widget>[
-                                emptyDivider(height: kToolbarHeight + 4.0),
-                                ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  itemCount: flexSpaceWidgets(context).length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Padding(
-                                      padding: EdgeInsets.only(
-                                          bottom: suSetHeight(12.0)),
-                                      child: flexSpaceWidgets(context)[index],
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  bottom: isSelf
-                      ? PreferredSize(
-                          child: Container(
-                            height: suSetHeight(56.0),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(tabBarHeight / 3),
-                                topRight: Radius.circular(tabBarHeight / 3),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Flexible(
-                                  child: TabBar(
-                                    controller: _tabController,
-                                    isScrollable: true,
-                                    indicator: RoundedUnderlineTabIndicator(
-                                      borderSide: BorderSide(
-                                        color: currentThemeColor,
-                                        width: suSetHeight(2.5),
-                                      ),
-                                      width: suSetWidth(28.0),
-                                      insets: EdgeInsets.only(
-                                          bottom: suSetHeight(6.0)),
-                                    ),
-                                    labelStyle: TextStyle(
-                                      fontSize: suSetSp(20.0),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    unselectedLabelStyle: TextStyle(
-                                      fontSize: suSetSp(20.0),
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                    tabs: List<Tab>.generate(
-                                      _tabList.length,
-                                      (i) => Tab(text: _tabList.elementAt(i)),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          preferredSize: Size.fromHeight(tabBarHeight),
-                        )
-                      : null,
-                  expandedHeight: kToolbarHeight + expandedHeight,
-                  iconTheme: !showTitle
-                      ? Theme.of(context)
-                          .iconTheme
-                          .copyWith(color: Colors.white)
-                      : Theme.of(context).iconTheme,
-                  primary: true,
-                  centerTitle: true,
-                  pinned: true,
-                ),
-              ],
-              body: isSelf
-                  ? TabBarView(
-                      controller: _tabController,
-                      children: <Widget>[
-                        _post,
-                        UserAPI.blacklist.isNotEmpty
-                            ? GridView.count(
-                                crossAxisCount: 3,
-                                children: List<Widget>.generate(
-                                  UserAPI.blacklist.length,
-                                  (i) => blacklistUser(
-                                      UserAPI.blacklist.elementAt(i)),
-                                ),
-                              )
-                            : Center(
-                                child: Text(
-                                  '黑名单为空',
-                                  style: TextStyle(fontSize: suSetSp(20.0)),
-                                ),
-                              ),
-                      ],
-                    )
-                  : _post,
-            ),
+  void requestFollow() {
+    if (user.isFollowing) {
+      UserAPI.unFollow(uid);
+    } else {
+      UserAPI.follow(uid);
+    }
+    setState(() {
+      user.isFollowing = !user.isFollowing;
+    });
+  }
+
+  void removeFromBlacklist(context, BlacklistUser user) async {
+    final bool confirm = await ConfirmationDialog.show(
+      context,
+      title: '移出黑名单',
+      content: '确定不再屏蔽此人吗?',
+      showConfirm: true,
+    );
+    if (confirm) {
+      UserAPI.fRemoveFromBlacklist(user);
+    }
+  }
+
+  Widget get postList {
+    return ListView.builder(
+      padding: EdgeInsets.zero,
+      itemCount: total,
+      itemBuilder: (
+        BuildContext context,
+        int index,
+      ) {
+        return Container(
+          margin: index == 0 ? EdgeInsets.only(top: 10.0.h) : null,
+          padding: EdgeInsets.symmetric(
+            horizontal: 12.0.w,
+          ),
+          child: PostCard(
+            posts[index],
+            parentContext: context,
+            fromPage: 'user',
+          ),
+        );
+      },
     );
   }
-}
 
-@FFRoute(
-  name: "openjmu://userlist",
-  routeName: "用户列表页",
-  argumentNames: ["user", "type"],
-)
-class UserListPage extends StatefulWidget {
-  final UserInfo user;
-  final int type; // 0 is search, 1 is idols, 2 is fans.
-
-  UserListPage({
-    Key key,
-    @required this.user,
-    @required this.type,
-  }) : super(key: key);
-
-  @override
-  State createState() => _UserListState();
-}
-
-class _UserListState extends State<UserListPage> {
-  List _users = [];
-  List get users => _users.where((dynamic userData) {
-        return userData['user'] != null;
-      }).toList();
-
-  bool canLoadMore = false, isLoading = true;
-  int total, pages = 1;
-
-  @override
-  void initState() {
-    doUpdate(false);
-    super.initState();
-  }
-
-  void doUpdate(isMore) {
-    if (isMore) pages++;
-    switch (widget.type) {
-      case 1:
-        getIdolsList(pages, isMore);
-        break;
-      case 2:
-        getFansList(pages, isMore);
-        break;
-    }
-  }
-
-  void getIdolsList(page, isMore) {
-    UserAPI.getIdolsList(widget.user.uid, page).then((response) {
-      setUserList(response, isMore);
-    }).catchError((e) {
-      trueDebugPrint('Failed when getting idol list: $e');
-    });
-  }
-
-  void getFansList(page, isMore) {
-    UserAPI.getFansList(widget.user.uid, page).then((response) {
-      setUserList(response, isMore);
-    }).catchError((e) {
-      trueDebugPrint('Failed when getting fans list: $e');
-    });
-  }
-
-  void setUserList(response, isMore) {
-    List data;
-    switch (widget.type) {
-      case 1:
-        data = response.data['idols'];
-        break;
-      case 2:
-        data = response.data['fans'];
-        break;
-    }
-    int total = int.parse(response.data['total'].toString());
-    if (_users.length + data.length < total) canLoadMore = true;
-    List list = [];
-    for (int i = 0; i < data.length; i++) {
-      list.add(data[i]);
-    }
-    if (mounted) {
-      setState(() {
-        if (isMore) {
-          List _u = _users;
-          _u.addAll(list);
-          _users = _u;
+  Widget get placeHolderWidget {
+    return Center(
+      child: () {
+        if (total == 0) {
+          return Text(Constants.endLineTag);
         } else {
-          _users = list;
+          return SpinKitWidget();
         }
-        isLoading = false;
-      });
-    }
+      }(),
+    );
   }
 
-  Widget renderRow(context, i) {
-    int start = i * 2;
-    if (users != null && i + 1 == (users.length / 2).ceil() && canLoadMore) {
-      doUpdate(true);
-    }
+  Widget appbar(PullToRefreshScrollNotificationInfo info) {
+    /// Remember to add offset to the effect of zooming.
+    final double offset = info?.dragOffset ?? 0.0;
+
+    /// When we are dragging down the appbar, the [RefreshIndicatorMode] would be
+    /// [RefreshIndicatorMode.drag], at that time we need to display the indicator.
+    final bool shouldAnimateIndicator = info?.mode == RefreshIndicatorMode.drag;
+
+    /// Multiply a proper amount to the offset to get rotate value for the indicator.
+    final double indicatorRotateOffset = offset / Screens.width * 2;
+
+    return StreamBuilder<bool>(
+      initialData: false,
+      stream: titleAnimateStream,
+      builder: (BuildContext _, AsyncSnapshot<bool> data) {
+        final bool shouldTitleDisplay = data.data;
+        return SliverAppBar(
+          brightness: shouldTitleDisplay
+              ? context.themeData.brightness
+              : Brightness.dark,
+          expandedHeight: expandedHeight + offset,
+          elevation: 0.0,
+          pinned: true,
+          leading: BackButton(
+            color: shouldTitleDisplay ? null : Colors.white,
+          ),
+          actions: <Widget>[
+            if (info?.refreshWiget != null)
+              UnconstrainedBox(
+                child: RefreshProgressIndicator(
+                  value: shouldAnimateIndicator ? indicatorRotateOffset : null,
+                  valueColor: AlwaysStoppedAnimation<Color>(currentThemeColor),
+                  strokeWidth: 2.0,
+                ),
+              ),
+          ],
+          centerTitle: true,
+          title: AnimatedSwitcher(
+            duration: kThemeChangeDuration,
+            child: shouldTitleDisplay
+                ? appBarTitleWidget
+                : const SizedBox.shrink(),
+          ),
+          flexibleSpace: FlexibleSpaceBar(
+            collapseMode: CollapseMode.pin,
+            background: appBarBackgroundWidget,
+          ),
+          bottom: isCurrentUser ? userTabBar : null,
+        );
+      },
+    );
+  }
+
+  Widget get appBarTitleWidget {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
-        for (int j = start; j < start + 2 && j < users.length; j++)
-          userCard(context, users[j])
+        UserAPI.getAvatar(size: 36.0, uid: uid),
+        emptyDivider(width: 12.0.w),
+        Text(
+          user?.name ?? '',
+          style: TextStyle(
+            color: context.themeData.textTheme.bodyText1.color,
+            fontSize: 21.0.sp,
+          ),
+        ),
       ],
     );
   }
 
-  Widget userCard(context, userData) {
-    final Map<String, dynamic> _user = userData['user'];
-    String name = _user['nickname'];
-    if (name.length > 3) name = '${name.substring(0, 3)}...';
-    TextStyle _textStyle = TextStyle(fontSize: suSetSp(16.0));
-    return GestureDetector(
-      onTap: () {
-        navigatorState.pushNamed(
-          Routes.openjmuUser,
-          arguments: {'uid': int.parse(_user['uid'].toString())},
-        );
-      },
+  Widget get appBarBackgroundWidget {
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          top: 0,
+          left: 0.0,
+          right: 0.0,
+          child: Image(
+            image: UserAPI.getAvatarProvider(uid: uid, size: 640),
+            fit: BoxFit.cover,
+          ),
+        ),
+        ClipRect(
+          child: BackdropFilter(
+            filter: ui.ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
+            child: Container(color: Colors.black54),
+          ),
+        ),
+        Positioned(
+          top: Screens.topSafeHeight + kToolbarHeight,
+          left: 0.0,
+          right: 0.0,
+          height: Screens.width / 1.25 - kToolbarHeight,
+          child: userInfoWidget,
+        ),
+      ],
+    );
+  }
+
+  PreferredSizeWidget get userTabBar {
+    return PreferredSize(
       child: Container(
-        margin: EdgeInsets.fromLTRB(
-          suSetWidth(12.0),
-          suSetHeight(20.0),
-          suSetWidth(12.0),
-          0.0,
-        ),
-        padding: EdgeInsets.symmetric(
-          horizontal: suSetWidth(20.0),
-          vertical: suSetHeight(12.0),
-        ),
+        padding: EdgeInsets.symmetric(horizontal: 12.0),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(suSetWidth(16.0)),
-          color: Theme.of(context).canvasColor,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(18.0.w),
+            topRight: Radius.circular(18.0.w),
+          ),
+          color: context.themeData.primaryColor,
         ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            UserAPI.getAvatar(
-              size: 64.0,
-              uid: _user['uid'].toString().toInt(),
-            ),
-            SizedBox(width: suSetWidth(12.0)),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
+        alignment: AlignmentDirectional.centerStart,
+        child: TabBar(
+          controller: tabController,
+          isScrollable: true,
+          indicatorWeight: 4.0.h,
+          indicatorSize: TabBarIndicatorSize.label,
+          labelStyle: TextStyle(fontSize: 18.0.sp),
+          labelPadding: EdgeInsets.symmetric(horizontal: 12.0.w),
+          tabs: List<Tab>.generate(
+            tabList.length,
+            (int index) {
+              return Tab(
+                text: tabList[index],
+              );
+            },
+          ),
+        ),
+      ),
+      preferredSize: Size.fromHeight(tabBarHeight),
+    );
+  }
+
+  Widget get userInfoWidget {
+    return Container(
+      padding: EdgeInsets.only(
+        bottom: Screens.width * 0.04,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+            child: Row(
               children: <Widget>[
-                Column(
+                userAvatar,
+                const Spacer(),
+                if (isCurrentUser) editProfileButton,
+                if (isCurrentUser) qrCodeWidget,
+                if (!isCurrentUser && user != null) followButton,
+              ],
+            ),
+          ),
+          Row(
+            children: <Widget>[
+              usernameWidget,
+              if (Constants.developerList.contains(user?.uid ?? 0))
+                SizedBox(width: 8.0.w),
+              if (Constants.developerList.contains(user?.uid ?? 0))
+                DeveloperTag(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 8.0.w,
+                    vertical: 4.0.h,
+                  ),
+                  height: 32.0.h,
+                ),
+            ],
+          ),
+          signatureWidget,
+          if (user != null)
+            SizedBox(
+              height: 40.0.h,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
                   children: <Widget>[
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Text(
-                          name,
-                          style: TextStyle(fontSize: suSetSp(20.0)),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                    Divider(height: suSetHeight(6.0)),
-                    Row(
-                      children: <Widget>[
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text('关注', style: _textStyle),
-                            Divider(height: suSetHeight(4.0)),
-                            Text(userData['idols'], style: _textStyle),
-                          ],
-                        ),
-                        SizedBox(width: suSetWidth(6.0)),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text('粉丝', style: _textStyle),
-                            Divider(height: suSetHeight(4.0)),
-                            Text(userData['fans'], style: _textStyle),
-                          ],
-                        )
-                      ],
-                    )
+                    sexualWidget,
+                    levelWidget,
+                    if (userTags.isNotEmpty) ...tagsWidget,
                   ],
                 ),
-              ],
+              ),
+            )
+          else
+            const SizedBox.shrink(),
+          fansAndIdolsWidget,
+        ],
+      ),
+    );
+  }
+
+  Widget get userAvatar {
+    return GestureDetector(
+      onTap: avatarTap,
+      child: SizedBox.fromSize(
+        size: Size.square(Screens.width / 5),
+        child: Stack(
+          children: <Widget>[
+            Positioned.fill(
+              child: CircularProgressIndicator(
+                value: () {
+                  double value;
+                  if (userLevelScore == null ||
+                      (userLevelScore?.levelInfo ?? null) == null) {
+                    value = 0.0;
+                  } else {
+                    final int range = userLevelScore.levelInfo.maxScore -
+                        userLevelScore.levelInfo?.minScore;
+                    final int currentValue = userLevelScore.totalExp -
+                        userLevelScore.levelInfo.minScore;
+                    value = currentValue / range;
+                  }
+                  return value;
+                }(),
+                valueColor: AlwaysStoppedAnimation<Color>(currentThemeColor),
+                strokeWidth: 3.0,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.all(Screens.width * 0.01),
+              child: ClipOval(
+                child: Image(
+                  image: UserAPI.getAvatarProvider(uid: uid),
+                  frameBuilder: (
+                    BuildContext _,
+                    Widget child,
+                    int frame,
+                    bool wasSynchronouslyLoaded,
+                  ) {
+                    if (wasSynchronouslyLoaded) {
+                      return child;
+                    }
+                    return AnimatedOpacity(
+                      child: child,
+                      opacity: frame == null ? 0 : 1,
+                      duration: 1.seconds,
+                      curve: Curves.easeOut,
+                    );
+                  },
+                ),
+              ),
             ),
           ],
         ),
@@ -879,37 +515,355 @@ class _UserListState extends State<UserListPage> {
     );
   }
 
+  Widget get followButton {
+    return MaterialButton(
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      minWidth: 0.0,
+      height: 46.0.h,
+      padding: EdgeInsets.symmetric(
+        horizontal: 14.0.w,
+      ),
+      color: Colors.black26,
+      elevation: 0.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0.w),
+      ),
+      onPressed: requestFollow,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          if (!(user?.isFollowing ?? false)) ...<Widget>[
+            Icon(
+              Icons.add,
+              color: Colors.white,
+              size: 20.0.w,
+            ),
+            SizedBox(width: 6.0.w),
+          ],
+          Text(
+            '${(user?.isFollowing ?? false) ? '已' : ''}关注',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20.0.sp,
+              fontWeight: FontWeight.w500,
+              height: 1.25,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget get editProfileButton {
+    return Padding(
+      padding: EdgeInsets.only(right: 10.0.w),
+      child: MaterialButton(
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        minWidth: 0.0,
+        height: 46.0.h,
+        padding: EdgeInsets.symmetric(
+          horizontal: 14.0.w,
+        ),
+        color: Colors.black26,
+        elevation: 0.0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0.w),
+        ),
+        onPressed: () {
+          navigatorState.pushNamed(Routes.openjmuEditProfilePage);
+        },
+        child: Text(
+          '编辑资料',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20.0.sp,
+            fontWeight: FontWeight.w500,
+            height: 1.25,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget get qrCodeWidget {
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      child: SizedBox.fromSize(
+        size: Size.square(46.0.h),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: Colors.black26,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            AntDesign.qrcode,
+            size: 26.0.w,
+            color: Colors.white,
+          ),
+        ),
+      ),
+      onTap: () {
+        navigatorState.pushNamed(Routes.openjmuUserQrCode);
+      },
+    );
+  }
+
+  Widget get usernameWidget {
+    return Padding(
+      padding: EdgeInsets.only(left: 20.0.w),
+      child: Text(
+        user?.name ?? '',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 24.0.sp,
+          fontWeight: FontWeight.bold,
+        ),
+        textAlign: TextAlign.start,
+        maxLines: 1,
+        overflow: TextOverflow.fade,
+      ),
+    );
+  }
+
+  Widget get signatureWidget {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+      child: Text(
+        () {
+          if (user == null) {
+            return '';
+          } else {
+            return user.signature ?? '这个人很懒，什么都没写';
+          }
+        }(),
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18.0.sp,
+          fontWeight: FontWeight.w300,
+        ),
+        textAlign: TextAlign.start,
+        maxLines: 1,
+        overflow: TextOverflow.fade,
+      ),
+    );
+  }
+
+  Widget get sexualWidget {
+    return Container(
+      margin: EdgeInsets.only(left: 20.0.w),
+      decoration: BoxDecoration(
+        color: isFemale ? Colors.pinkAccent : Colors.blueAccent,
+        shape: BoxShape.circle,
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(3.0.w),
+        child: SvgPicture.asset(
+          'assets/icons/gender/${isFemale ? 'fe' : ''}male.svg',
+          width: 20.0.w,
+          height: 20.0.w,
+          color: Colors.white,
+        ),
+      ),
+    );
+  }
+
+  Widget get levelWidget {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8.0.w),
+      child: Center(
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: 8.0.w,
+            vertical: 4.0.h,
+          ),
+          decoration: BoxDecoration(
+            color: Colors.redAccent,
+            borderRadius: BorderRadius.circular(20.0.w),
+          ),
+          child: Text(
+            ' Lv.${userLevelScore?.levelInfo?.level ?? 0}',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16.0.sp,
+              fontWeight: FontWeight.w300,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> get tagsWidget {
+    return List<Widget>.generate(
+      userTags.length,
+      (int index) {
+        return Container(
+          margin: EdgeInsets.only(right: 12.0.w),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(20.0.w),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 12.0.w,
+                vertical: 1.0.h,
+              ),
+              color: Color(0x44ffffff),
+              child: Text(
+                userTags[index].name,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0.sp,
+                  fontWeight: FontWeight.w300,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget get fansAndIdolsWidget {
+    final TextStyle titleStyle = TextStyle(
+      color: Colors.white,
+      fontSize: 15.0.sp,
+    );
+    final TextStyle countStyle = TextStyle(
+      color: Colors.white,
+      fontSize: 28.0.sp,
+      fontStyle: FontStyle.italic,
+      fontWeight: FontWeight.w500,
+    );
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              navigatorState.pushNamed(
+                Routes.openjmuUserListPage,
+                arguments: <String, dynamic>{
+                  'user': user,
+                  'type': 1,
+                },
+              );
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text('关注', style: titleStyle),
+                SizedBox(width: 8.0.w),
+                Text('${userIdols ?? ''}', style: countStyle),
+              ],
+            ),
+          ),
+          SizedBox(width: 20.0.w),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () {
+              navigatorState.pushNamed(
+                Routes.openjmuUserListPage,
+                arguments: <String, dynamic>{
+                  'user': user,
+                  'type': 2,
+                },
+              );
+            },
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Text('粉丝', style: titleStyle),
+                SizedBox(width: 8.0.w),
+                Text('${userFans ?? ''}', style: countStyle),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget get banListWidget {
+    if (UserAPI.blacklist.isNotEmpty) {
+      return GridView.count(
+        crossAxisCount: 3,
+        children: List<Widget>.generate(
+          UserAPI.blacklist.length,
+          (i) => blacklistUser(UserAPI.blacklist.elementAt(i)),
+        ),
+      );
+    } else {
+      return Center(
+        child: Text(
+          '黑名单为空',
+          style: TextStyle(fontSize: 20.0.sp),
+        ),
+      );
+    }
+  }
+
+  Widget blacklistUser(BlacklistUser user) {
+    return Padding(
+      padding: EdgeInsets.all(8.0.w),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          UserAvatar(uid: user.uid, size: 64.0, canJump: false),
+          Text(
+            user.username,
+            style: TextStyle(fontSize: 18.0.sp),
+            overflow: TextOverflow.ellipsis,
+          ),
+          GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => removeFromBlacklist(context, user),
+            child: Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 10.0.w,
+                vertical: 6.0.h,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0.w),
+                color: currentThemeColor.withAlpha(0x88),
+              ),
+              child: Text(
+                '移出黑名单',
+                style: TextStyle(fontSize: 16.0.sp),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    String _type;
-    switch (widget.type) {
-      case 0:
-        _type = '用户';
-        break;
-      case 1:
-        _type = '关注';
-        break;
-      case 2:
-        _type = '粉丝';
-        break;
-    }
-    return Scaffold(
-      body: FixedAppBarWrapper(
-        appBar: FixedAppBar(title: Text('$_type列表')),
-        body: !isLoading
-            ? users?.isNotEmpty ?? false
-                ? ListView.builder(
-                    padding: EdgeInsets.zero,
-                    itemCount: (users.length / 2).ceil(),
-                    itemBuilder: (context, i) => renderRow(context, i),
-                  )
-                : Center(
-                    child: Text(
-                      '暂无内容',
-                      style: TextStyle(fontSize: suSetSp(20.0)),
-                    ),
-                  )
-            : SpinKitWidget(),
+    return Material(
+      child: PullToRefreshNotification(
+        color: Colors.blue,
+        pullBackOnRefresh: true,
+        onRefresh: onRefresh,
+        child: NestedScrollView(
+          controller: scrollController,
+          physics: total != null
+              ? const AlwaysScrollableClampingScrollPhysics()
+              : const NeverScrollableScrollPhysics(),
+          headerSliverBuilder: (BuildContext _, bool __) {
+            return <Widget>[PullToRefreshContainer(appbar)];
+          },
+          body: isCurrentUser
+              ? TabBarView(
+                  controller: tabController,
+                  children: <Widget>[
+                    if (total != null) postList else placeHolderWidget,
+                    if (isCurrentUser) banListWidget,
+                  ],
+                )
+              : total != null ? postList : placeHolderWidget,
+        ),
       ),
     );
   }
