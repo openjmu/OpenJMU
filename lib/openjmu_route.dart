@@ -24,9 +24,9 @@ import 'pages/settings/font_scale_page.dart';
 import 'pages/settings/settings_page.dart';
 import 'pages/settings/switch_start_up_page.dart';
 import 'pages/splash_page.dart';
-import 'pages/test/test_dashboard_page.dart';
 import 'pages/user/backpack_page.dart';
 import 'pages/user/edit_profile_page.dart';
+import 'pages/user/user_list_page.dart';
 import 'pages/user/user_page.dart';
 import 'pages/user/user_qrcode_page.dart';
 import 'widgets/dialogs/comment_positioned.dart';
@@ -40,11 +40,13 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   switch (name) {
     case 'openjmu://about':
       return RouteResult(
+        name: name,
         widget: AboutPage(),
         routeName: '关于页',
       );
     case 'openjmu://add-comment':
       return RouteResult(
+        name: name,
         widget: CommentPositioned(
           post: arguments['post'],
           comment: arguments['comment'],
@@ -54,6 +56,7 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case 'openjmu://add-forward':
       return RouteResult(
+        name: name,
         widget: ForwardPositioned(
           post: arguments['post'],
         ),
@@ -62,21 +65,25 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case 'openjmu://app-center-page':
       return RouteResult(
+        name: name,
         widget: AppCenterPage(),
         routeName: '应用中心',
       );
     case 'openjmu://backpack':
       return RouteResult(
+        name: name,
         widget: BackpackPage(),
         routeName: '背包页',
       );
     case 'openjmu://changelog-page':
       return RouteResult(
+        name: name,
         widget: ChangeLogPage(),
         routeName: '版本履历',
       );
     case 'openjmu://chat-app-message-page':
       return RouteResult(
+        name: name,
         widget: ChatAppMessagePage(
           app: arguments['app'],
         ),
@@ -84,16 +91,19 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case 'openjmu://edit-profile-page':
       return RouteResult(
+        name: name,
         widget: EditProfilePage(),
         routeName: '编辑资料页',
       );
     case 'openjmu://font-scale':
       return RouteResult(
+        name: name,
         widget: FontScalePage(),
         routeName: '更改字号页',
       );
     case 'openjmu://home':
       return RouteResult(
+        name: name,
         widget: MainPage(
           initAction: arguments['initAction'],
         ),
@@ -101,11 +111,13 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case 'openjmu://image-crop':
       return RouteResult(
+        name: name,
         widget: ImageCropPage(),
         routeName: '图片裁剪',
       );
     case 'openjmu://image-viewer':
       return RouteResult(
+        name: name,
         widget: ImageViewer(
           index: arguments['index'],
           pics: arguments['pics'],
@@ -118,6 +130,7 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case 'openjmu://inappbrowser':
       return RouteResult(
+        name: name,
         widget: InAppBrowserPage(
           url: arguments['url'],
           title: arguments['title'],
@@ -132,11 +145,13 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case 'openjmu://login':
       return RouteResult(
+        name: name,
         widget: LoginPage(),
         routeName: '登录页',
       );
     case 'openjmu://news-detail':
       return RouteResult(
+        name: name,
         widget: NewsDetailPage(
           news: arguments['news'],
         ),
@@ -144,6 +159,7 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case 'openjmu://notifications':
       return RouteResult(
+        name: name,
         widget: NotificationsPage(
           initialPage: arguments['initialPage'],
         ),
@@ -152,6 +168,7 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case 'openjmu://post-detail':
       return RouteResult(
+        name: name,
         widget: PostDetailPage(
           post: arguments['post'],
           index: arguments['index'],
@@ -162,21 +179,25 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case 'openjmu://publish-post':
       return RouteResult(
+        name: name,
         widget: PublishPostPage(),
         routeName: '发布动态',
       );
     case 'openjmu://publish-team-post':
       return RouteResult(
+        name: name,
         widget: PublishTeamPostPage(),
         routeName: '发布小组动态',
       );
     case 'openjmu://scan-qr-code':
       return RouteResult(
+        name: name,
         widget: ScanQrCodePage(),
         routeName: '扫描二维码',
       );
     case 'openjmu://search':
       return RouteResult(
+        name: name,
         widget: SearchPage(
           content: arguments['content'],
         ),
@@ -184,11 +205,13 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case 'openjmu://settings':
       return RouteResult(
+        name: name,
         widget: SettingsPage(),
         routeName: '设置页',
       );
     case 'openjmu://splash':
       return RouteResult(
+        name: name,
         widget: SplashPage(
           initAction: arguments['initAction'],
         ),
@@ -196,11 +219,13 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case 'openjmu://switch-startup':
       return RouteResult(
+        name: name,
         widget: SwitchStartUpPage(),
         routeName: '切换启动页',
       );
     case 'openjmu://team-post-detail':
       return RouteResult(
+        name: name,
         widget: TeamPostDetailPage(
           provider: arguments['provider'],
           type: arguments['type'],
@@ -208,18 +233,24 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         ),
         routeName: '小组动态详情页',
       );
-    case 'openjmu://test-dashboard':
-      return RouteResult(
-        widget: TestDashBoardPage(),
-        routeName: '测试首页',
-      );
     case 'openjmu://theme':
       return RouteResult(
+        name: name,
         widget: ChangeThemePage(),
         routeName: '更改主题',
       );
-    case 'openjmu://user':
+    case 'openjmu://user-list-page':
       return RouteResult(
+        name: name,
+        widget: UserListPage(
+          user: arguments['user'],
+          type: arguments['type'],
+        ),
+        routeName: '用户列表页',
+      );
+    case 'openjmu://user-page':
+      return RouteResult(
+        name: name,
         widget: UserPage(
           uid: arguments['uid'],
         ),
@@ -227,24 +258,18 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
       );
     case 'openjmu://user-qr-code':
       return RouteResult(
+        name: name,
         widget: UserQrCodePage(),
         routeName: '用户二维码页',
       );
-    case 'openjmu://userlist':
-      return RouteResult(
-        widget: UserListPage(
-          user: arguments['user'],
-          type: arguments['type'],
-        ),
-        routeName: '用户列表页',
-      );
     default:
-      return const RouteResult();
+      return const RouteResult(name: 'flutterCandies://notfound');
   }
 }
 
 class RouteResult {
   const RouteResult({
+    @required this.name,
     this.widget,
     this.showStatusBar = true,
     this.routeName = '',
@@ -252,6 +277,11 @@ class RouteResult {
     this.description = '',
     this.exts,
   });
+
+  /// The name of the route (e.g., "/settings").
+  ///
+  /// If null, the route is anonymous.
+  final String name;
 
   /// The Widget return base on route
   final Widget widget;

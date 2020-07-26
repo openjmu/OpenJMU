@@ -52,6 +52,8 @@ part 'user.dart';
 
 part 'user_info.dart';
 
+part 'user_level.dart';
+
 part 'user_tag.dart';
 
 part 'web_app.dart';

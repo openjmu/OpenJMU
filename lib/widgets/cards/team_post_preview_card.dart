@@ -232,7 +232,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           navigatorState.pushNamed(
-                            Routes.openjmuUser,
+                            Routes.openjmuUserPage,
                             arguments: <String, dynamic>{
                               'uid':
                                   (_post['user_info']['uid'] as String).toInt(),

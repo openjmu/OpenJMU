@@ -30,258 +30,262 @@ const List<String> routeNames = <String>[
   'openjmu://team-post-detail',
   'openjmu://test-dashboard',
   'openjmu://theme',
-  'openjmu://user',
+  'openjmu://user-list-page',
+  'openjmu://user-page',
   'openjmu://user-qr-code',
-  'openjmu://userlist'
 ];
 
 class Routes {
   const Routes._();
 
-  /// 关于页
+  /// '关于页'
   ///
-  /// [name] : openjmu://about
+  /// [name] : 'openjmu://about'
   ///
-  /// [routeName] : 关于页
+  /// [routeName] : '关于页'
   static const String openjmuAbout = 'openjmu://about';
 
-  /// 新增评论
+  /// '新增评论'
   ///
-  /// [name] : openjmu://add-comment
+  /// [name] : 'openjmu://add-comment'
   ///
-  /// [routeName] : 新增评论
+  /// [routeName] : '新增评论'
   ///
   /// [arguments] : [post, comment]
   ///
   /// [pageRouteType] : PageRouteType.transparent
   static const String openjmuAddComment = 'openjmu://add-comment';
 
-  /// 新增转发
+  /// '新增转发'
   ///
-  /// [name] : openjmu://add-forward
+  /// [name] : 'openjmu://add-forward'
   ///
-  /// [routeName] : 新增转发
+  /// [routeName] : '新增转发'
   ///
   /// [arguments] : [post]
   ///
   /// [pageRouteType] : PageRouteType.transparent
   static const String openjmuAddForward = 'openjmu://add-forward';
 
-  /// 应用中心
+  /// '应用中心'
   ///
-  /// [name] : openjmu://app-center-page
+  /// [name] : 'openjmu://app-center-page'
   ///
-  /// [routeName] : 应用中心
+  /// [routeName] : '应用中心'
   static const String openjmuAppCenterPage = 'openjmu://app-center-page';
 
-  /// 背包页
+  /// '背包页'
   ///
-  /// [name] : openjmu://backpack
+  /// [name] : 'openjmu://backpack'
   ///
-  /// [routeName] : 背包页
+  /// [routeName] : '背包页'
   static const String openjmuBackpack = 'openjmu://backpack';
 
-  /// 版本履历
+  /// '版本履历'
   ///
-  /// [name] : openjmu://changelog-page
+  /// [name] : 'openjmu://changelog-page'
   ///
-  /// [routeName] : 版本履历
+  /// [routeName] : '版本履历'
   static const String openjmuChangelogPage = 'openjmu://changelog-page';
 
-  /// 应用消息页
+  /// '应用消息页'
   ///
-  /// [name] : openjmu://chat-app-message-page
+  /// [name] : 'openjmu://chat-app-message-page'
   ///
-  /// [routeName] : 应用消息页
+  /// [routeName] : '应用消息页'
   ///
   /// [arguments] : [app]
   static const String openjmuChatAppMessagePage =
       'openjmu://chat-app-message-page';
 
-  /// 编辑资料页
+  /// '编辑资料页'
   ///
-  /// [name] : openjmu://edit-profile-page
+  /// [name] : 'openjmu://edit-profile-page'
   ///
-  /// [routeName] : 编辑资料页
+  /// [routeName] : '编辑资料页'
   static const String openjmuEditProfilePage = 'openjmu://edit-profile-page';
 
-  /// 更改字号页
+  /// '更改字号页'
   ///
-  /// [name] : openjmu://font-scale
+  /// [name] : 'openjmu://font-scale'
   ///
-  /// [routeName] : 更改字号页
+  /// [routeName] : '更改字号页'
   static const String openjmuFontScale = 'openjmu://font-scale';
 
-  /// 首页
+  /// '首页'
   ///
-  /// [name] : openjmu://home
+  /// [name] : 'openjmu://home'
   ///
-  /// [routeName] : 首页
+  /// [routeName] : '首页'
   ///
   /// [arguments] : [initAction]
   static const String openjmuHome = 'openjmu://home';
 
-  /// 图片裁剪
+  /// '图片裁剪'
   ///
-  /// [name] : openjmu://image-crop
+  /// [name] : 'openjmu://image-crop'
   ///
-  /// [routeName] : 图片裁剪
+  /// [routeName] : '图片裁剪'
   static const String openjmuImageCrop = 'openjmu://image-crop';
 
-  /// 图片浏览
+  /// '图片浏览'
   ///
-  /// [name] : openjmu://image-viewer
+  /// [name] : 'openjmu://image-viewer'
   ///
-  /// [routeName] : 图片浏览
+  /// [routeName] : '图片浏览'
   ///
   /// [arguments] : [index, pics, needsClear, post, heroPrefix]
   ///
   /// [pageRouteType] : PageRouteType.transparent
   static const String openjmuImageViewer = 'openjmu://image-viewer';
 
-  /// 网页浏览
+  /// '网页浏览'
   ///
-  /// [name] : openjmu://inappbrowser
+  /// [name] : 'openjmu://inappbrowser'
   ///
-  /// [routeName] : 网页浏览
+  /// [routeName] : '网页浏览'
   ///
   /// [arguments] : [url, title, app, withCookie, withAppBar, withAction, withScaffold, keepAlive]
   static const String openjmuInappbrowser = 'openjmu://inappbrowser';
 
-  /// 登录页
+  /// '登录页'
   ///
-  /// [name] : openjmu://login
+  /// [name] : 'openjmu://login'
   ///
-  /// [routeName] : 登录页
+  /// [routeName] : '登录页'
   static const String openjmuLogin = 'openjmu://login';
 
-  /// 新闻详情页
+  /// '新闻详情页'
   ///
-  /// [name] : openjmu://news-detail
+  /// [name] : 'openjmu://news-detail'
   ///
-  /// [routeName] : 新闻详情页
+  /// [routeName] : '新闻详情页'
   ///
   /// [arguments] : [news]
   static const String openjmuNewsDetail = 'openjmu://news-detail';
 
-  /// 通知页
+  /// '通知页'
   ///
-  /// [name] : openjmu://notifications
+  /// [name] : 'openjmu://notifications'
   ///
-  /// [routeName] : 通知页
+  /// [routeName] : '通知页'
   ///
   /// [arguments] : [initialPage]
   ///
   /// [pageRouteType] : PageRouteType.transparent
   static const String openjmuNotifications = 'openjmu://notifications';
 
-  /// 动态详情页
+  /// '动态详情页'
   ///
-  /// [name] : openjmu://post-detail
+  /// [name] : 'openjmu://post-detail'
   ///
-  /// [routeName] : 动态详情页
+  /// [routeName] : '动态详情页'
   ///
   /// [arguments] : [post, index, fromPage, parentContext]
   static const String openjmuPostDetail = 'openjmu://post-detail';
 
-  /// 发布动态
+  /// '发布动态'
   ///
-  /// [name] : openjmu://publish-post
+  /// [name] : 'openjmu://publish-post'
   ///
-  /// [routeName] : 发布动态
+  /// [routeName] : '发布动态'
   static const String openjmuPublishPost = 'openjmu://publish-post';
 
-  /// 发布小组动态
+  /// '发布小组动态'
   ///
-  /// [name] : openjmu://publish-team-post
+  /// [name] : 'openjmu://publish-team-post'
   ///
-  /// [routeName] : 发布小组动态
+  /// [routeName] : '发布小组动态'
   static const String openjmuPublishTeamPost = 'openjmu://publish-team-post';
 
-  /// 扫描二维码
+  /// '扫描二维码'
   ///
-  /// [name] : openjmu://scan-qr-code
+  /// [name] : 'openjmu://scan-qr-code'
   ///
-  /// [routeName] : 扫描二维码
+  /// [routeName] : '扫描二维码'
   static const String openjmuScanQrCode = 'openjmu://scan-qr-code';
 
-  /// 搜索页
+  /// '搜索页'
   ///
-  /// [name] : openjmu://search
+  /// [name] : 'openjmu://search'
   ///
-  /// [routeName] : 搜索页
+  /// [routeName] : '搜索页'
   ///
   /// [arguments] : [content]
   static const String openjmuSearch = 'openjmu://search';
 
-  /// 设置页
+  /// '设置页'
   ///
-  /// [name] : openjmu://settings
+  /// [name] : 'openjmu://settings'
   ///
-  /// [routeName] : 设置页
+  /// [routeName] : '设置页'
   static const String openjmuSettings = 'openjmu://settings';
 
-  /// 启动页
+  /// '启动页'
   ///
-  /// [name] : openjmu://splash
+  /// [name] : 'openjmu://splash'
   ///
-  /// [routeName] : 启动页
+  /// [routeName] : '启动页'
   ///
   /// [arguments] : [initAction]
   static const String openjmuSplash = 'openjmu://splash';
 
-  /// 切换启动页
+  /// '切换启动页'
   ///
-  /// [name] : openjmu://switch-startup
+  /// [name] : 'openjmu://switch-startup'
   ///
-  /// [routeName] : 切换启动页
+  /// [routeName] : '切换启动页'
   static const String openjmuSwitchStartup = 'openjmu://switch-startup';
 
-  /// 小组动态详情页
+  /// '小组动态详情页'
   ///
-  /// [name] : openjmu://team-post-detail
+  /// [name] : 'openjmu://team-post-detail'
   ///
-  /// [routeName] : 小组动态详情页
+  /// [routeName] : '小组动态详情页'
   ///
   /// [arguments] : [provider, type, postId]
   static const String openjmuTeamPostDetail = 'openjmu://team-post-detail';
 
-  /// 测试首页
+  /// '测试首页'
   ///
-  /// [name] : openjmu://test-dashboard
+  /// [name] : 'openjmu://test-dashboard'
   ///
-  /// [routeName] : 测试首页
+  /// [routeName] : '测试首页'
   static const String openjmuTestDashboard = 'openjmu://test-dashboard';
 
-  /// 更改主题
+  /// '更改主题'
   ///
-  /// [name] : openjmu://theme
+  /// [name] : 'openjmu://theme'
   ///
-  /// [routeName] : 更改主题
+  /// [routeName] : '更改主题'
   static const String openjmuTheme = 'openjmu://theme';
 
-  /// 用户页
+  /// '用户列表页'
   ///
-  /// [name] : openjmu://user
+  /// [name] : 'openjmu://user-list-page'
   ///
-  /// [routeName] : 用户页
-  ///
-  /// [arguments] : [uid]
-  static const String openjmuUser = 'openjmu://user';
-
-  /// 用户二维码页
-  ///
-  /// [name] : openjmu://user-qr-code
-  ///
-  /// [routeName] : 用户二维码页
-  static const String openjmuUserQrCode = 'openjmu://user-qr-code';
-
-  /// 用户列表页
-  ///
-  /// [name] : openjmu://userlist
-  ///
-  /// [routeName] : 用户列表页
+  /// [routeName] : '用户列表页'
   ///
   /// [arguments] : [user, type]
-  static const String openjmuUserlist = 'openjmu://userlist';
+  ///
+  /// [argumentTypes] : [UserInfo, int]
+  static const String openjmuUserListPage = 'openjmu://user-list-page';
+
+  /// '用户页'
+  ///
+  /// [name] : 'openjmu://user-page'
+  ///
+  /// [routeName] : '用户页'
+  ///
+  /// [arguments] : [uid]
+  ///
+  /// [argumentTypes] : [int]
+  static const String openjmuUserPage = 'openjmu://user-page';
+
+  /// '用户二维码页'
+  ///
+  /// [name] : 'openjmu://user-qr-code'
+  ///
+  /// [routeName] : '用户二维码页'
+  static const String openjmuUserQrCode = 'openjmu://user-qr-code';
 }

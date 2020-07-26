@@ -77,7 +77,7 @@ class SearchPageState extends State<SearchPage>
       }
       if (userList != null && userList.length == 1) {
         navigatorState.pushReplacementNamed(
-          Routes.openjmuUser,
+          Routes.openjmuUserPage,
           arguments: <String, dynamic>{'uid': userList[0].id},
         );
       }

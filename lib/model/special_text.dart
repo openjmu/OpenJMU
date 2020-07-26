@@ -506,7 +506,7 @@ void specialTextTapRecognizer(data) {
     );
   } else if (text.startsWith('@')) {
     navigatorState.pushNamed(
-      Routes.openjmuUser,
+      Routes.openjmuUserPage,
       arguments: <String, dynamic>{'uid': data['uid']},
     );
   } else if (text.startsWith('https://')) {
