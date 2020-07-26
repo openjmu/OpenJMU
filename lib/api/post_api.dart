@@ -73,8 +73,8 @@ class PostAPI {
             : '${API.postForwardsList}$postId',
       );
 
-  static Future<Response<Map<String, dynamic>>> glancePost(int postId) {
-    return NetUtils.postWithCookieAndHeaderSet<Map<String, dynamic>>(
+  static Future<Response<dynamic>> glancePost(int postId) {
+    return NetUtils.postWithCookieAndHeaderSet<dynamic>(
       API.postGlance,
       data: <String, dynamic>{
         'tids': <int>[postId]
