@@ -77,10 +77,11 @@ class DateProvider extends ChangeNotifier {
     try {
       DateTime _day;
       _day = box.get('startDate');
-      if (_day == null) {
-        final String result =
-            (await NetUtils.get<String>(API.firstDayOfTerm)).data;
-        _day = DateTime.parse(jsonDecode(result)['start'] as String);
+      final String result =
+          (await NetUtils.get<String>(API.firstDayOfTerm)).data;
+      final DateTime onlineDate = DateTime.parse(jsonDecode(result)['start'] as String);
+      if (_day != onlineDate) {
+        _day = onlineDate;
       }
       if (_startDate == null) {
         unawaited(updateStartDate(_day));
@@ -96,7 +97,7 @@ class DateProvider extends ChangeNotifier {
       }
 
       final int _w = -((_difference - 1) / 7).floor();
-      if (_currentWeek != _w && _w <= 20) {
+      if (_currentWeek != _w) {
         _currentWeek = _w;
         notifyListeners();
         Instances.eventBus.fire(CurrentWeekUpdatedEvent());

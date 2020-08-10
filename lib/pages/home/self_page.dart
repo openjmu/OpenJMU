@@ -493,7 +493,7 @@ class SelfPage extends StatelessWidget {
         selector: (BuildContext _, DateProvider provider) =>
             provider.currentWeek,
         builder: (BuildContext _, int currentWeek, Widget __) {
-          if (currentWeek != null && currentWeek <= 20) {
+          if (currentWeek != null) {
             return Container(
               padding: EdgeInsets.symmetric(
                 horizontal: 24.0.w,
@@ -510,11 +510,23 @@ class SelfPage extends StatelessWidget {
                     TextSpan(
                       text: '${DateFormat('EEE', 'zh_CN').format(now)}，',
                     ),
-                    if (currentWeek > 0)
+                    if (currentWeek > 0 && currentWeek <= 20)
                       TextSpan(children: <InlineSpan>[
                         const TextSpan(text: '第'),
                         TextSpan(
                           text: '${currentWeek}',
+                          style: TextStyle(
+                            color: currentThemeColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const TextSpan(text: '周'),
+                      ])
+                    else if (currentWeek >= 20)
+                      TextSpan(children: <InlineSpan>[
+                        const TextSpan(text: '放假的第'),
+                        TextSpan(
+                          text: '${currentWeek.abs() - 20}',
                           style: TextStyle(
                             color: currentThemeColor,
                             fontWeight: FontWeight.bold,
