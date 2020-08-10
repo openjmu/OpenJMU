@@ -1,4 +1,9 @@
-import 'package:flutter/foundation.dart';
+import 'dart:async';
+import 'dart:typed_data';
+
+import 'package:flutter/material.dart';
+import 'package:crypto/crypto.dart';
+import 'package:dio/dio.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -52,27 +57,46 @@ class TeamPostAPI {
 
   static Future<Response<Map<String, dynamic>>> publishPost({
     @required String content,
-    List<Map<String, dynamic>> files,
+    List<int> files,
     int postType = 2,
     int regionId = 430,
     int regionType = 8,
-  }) async =>
-      NetUtils.postWithCookieAndHeaderSet(
-        API.teamPostPublish,
-        data: <String, dynamic>{
-          if (postType != 8) 'article': content,
-          if (postType == 8) 'content': content,
-          if (postType != 8)
-            'file': <Map<String, dynamic>>[if (files != null) ...files],
-          'latitude': 0,
-          'longitude': 0,
-          'post_type': postType,
-          'region_id': regionId,
-          'region_type': regionType,
-          'template': 0
-        },
-        headers: Constants.teamHeader,
-      );
+  }) async {
+    return NetUtils.postWithCookieAndHeaderSet(
+      API.teamPostPublish,
+      data: <String, dynamic>{
+        if (postType != 8) 'article': content,
+        if (postType == 8) 'content': content,
+        if (postType != 8)
+          'file': <Map<String, dynamic>>[
+            ...files.map((int id) {
+              return <String, dynamic>{
+                'create_time': 0,
+                'desc': '',
+                'ext': '',
+                'fid': id,
+                'grid': 0,
+                'group': '',
+                'height': 0,
+                'length': 0,
+                'name': '',
+                'size': 0,
+                'source': '',
+                'type': '',
+                'width': 0,
+              };
+            }).toList(),
+          ],
+        'latitude': 0,
+        'longitude': 0,
+        'post_type': postType,
+        'region_id': regionId,
+        'region_type': regionType,
+        'template': 0
+      },
+      headers: Constants.teamHeader,
+    );
+  }
 
   static Future<Response<void>> deletePost({
     @required int postId,
@@ -179,6 +203,37 @@ class TeamPostAPI {
         API.teamMentionedList(page: page, size: size),
         headers: Constants.teamHeader,
       );
+
+  /// Create [FormData] for post's image upload.
+  /// 创建用于发布动态上传的图片的 [FormData]
+  static Future<FormData> createPostImageUploadForm(AssetEntity asset) async {
+    final Uint8List imageData = await asset.originBytes;
+    final String name = asset.title ?? '$currentTimeStamp.jpg';
+    final FormData formData = FormData.from({
+      'file': UploadFileInfo.fromBytes(imageData, name),
+      'type': 3,
+      'sid': UserAPI.currentUser.sid,
+      'id': 77,
+      'md5': md5.convert(imageData),
+      'path': '/${UserAPI.currentUser.uid}',
+      'name': name,
+      'set_default': 0,
+      'size': imageData.length,
+    });
+    return formData;
+  }
+
+  static Future<Response<Map<String, dynamic>>> createPostImageUploadRequest({
+    FormData formData,
+    CancelToken cancelToken,
+  }) {
+    return NetUtils.postWithCookieAndHeaderSet(
+      API.uploadFile,
+      data: formData,
+      cancelToken: cancelToken,
+      headers: Constants.teamHeader,
+    );
+  }
 }
 
 class TeamCommentAPI {
@@ -263,4 +318,5 @@ class TeamPraiseAPI {
         API.teamPraisedList(page: page, size: size),
         headers: Constants.teamHeader,
       );
+
 }

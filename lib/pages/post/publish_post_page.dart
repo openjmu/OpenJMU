@@ -8,12 +8,8 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:dio/dio.dart' show CancelToken, DioError, FormData;
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_text_field/extended_text_field.dart';
-import 'package:flutter_icons/flutter_icons.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/convention_dialog.dart';
@@ -252,7 +248,7 @@ class _PublishPostPageState extends State<PublishPostPage>
             '(${math.min(uploadedAssets + 1, imagesLength)}/$imagesLength)',
           );
 
-          /// Execute publish when all assets were uploaded.
+          /// Execute publish when all assets were upload.
           /// 所有图片上传完成时进行发布
           if (uploadedAssets == imagesLength) {
             unawaited(runPublishRequest());
@@ -437,7 +433,7 @@ class _PublishPostPageState extends State<PublishPostPage>
         ),
       );
 
-  /// Delete button for asset.
+  /// The delete button for assets.
   /// 资源的删除按钮
   Widget _assetDeleteButton(int index) {
     return GestureDetector(
@@ -574,7 +570,7 @@ class _PublishPostPageState extends State<PublishPostPage>
     );
   }
 
-  /// Button wrapper for toolbar.
+  /// Button wrapper for the toolbar.
   /// 工具栏按钮封装
   Widget _toolbarButton({
     VoidCallback onPressed,
@@ -594,7 +590,7 @@ class _PublishPostPageState extends State<PublishPostPage>
     );
   }
 
-  /// Toolbar for page.
+  /// Toolbar for the page.
   /// 工具栏
   Widget toolbar(context) {
     return Container(

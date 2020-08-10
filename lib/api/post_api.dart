@@ -210,8 +210,8 @@ class PostAPI {
   static Future<Response<dynamic>> createPostImageUploadRequest(
     FormData formData,
     CancelToken cancelToken,
-  ) async {
-    return await NetUtils.postWithCookieAndHeaderSet<dynamic>(
+  ) {
+    return NetUtils.postWithCookieAndHeaderSet<dynamic>(
       API.postUploadImage,
       data: formData,
       cancelToken: cancelToken,
