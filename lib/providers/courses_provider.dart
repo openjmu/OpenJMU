@@ -79,7 +79,6 @@ class CoursesProvider extends ChangeNotifier {
     _remark = _courseRemarkBox.get(currentUser.uid);
     if (_courses == null) {
       _courses = resetCourses(_courses);
-      updateCourses();
     } else {
       for (final Map<dynamic, dynamic> _map in _courses.values) {
         final Map<int, List<dynamic>> map = _map.cast<int, List<dynamic>>();
@@ -96,6 +95,7 @@ class CoursesProvider extends ChangeNotifier {
       }
       firstLoaded = true;
     }
+    updateCourses();
   }
 
   void unloadCourses() {
