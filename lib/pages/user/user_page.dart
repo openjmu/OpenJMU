@@ -526,20 +526,19 @@ class UserPageState extends State<UserPage>
       color: Colors.black26,
       elevation: 0.0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0.w),
+        borderRadius: BorderRadius.circular(14.0.w),
       ),
       onPressed: requestFollow,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          if (!(user?.isFollowing ?? false)) ...<Widget>[
-            Icon(
-              Icons.add,
-              color: Colors.white,
-              size: 20.0.w,
+          if (!(user?.isFollowing ?? false))
+            SvgPicture.asset(
+              R.ASSETS_ICONS_USER_FOLLOW_SVG,
+              width: 30.0.w,
+              height: 30.0.w,
+              fit: BoxFit.fill,
             ),
-            SizedBox(width: 6.0.w),
-          ],
           Text(
             '${(user?.isFollowing ?? false) ? '已' : ''}关注',
             style: TextStyle(
@@ -567,7 +566,7 @@ class UserPageState extends State<UserPage>
         color: Colors.black26,
         elevation: 0.0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.0.w),
+          borderRadius: BorderRadius.circular(14.0.w),
         ),
         onPressed: () {
           navigatorState.pushNamed(Routes.openjmuEditProfilePage);
@@ -595,10 +594,13 @@ class UserPageState extends State<UserPage>
             color: Colors.black26,
             shape: BoxShape.circle,
           ),
-          child: Icon(
-            AntDesign.qrcode,
-            size: 26.0.w,
-            color: Colors.white,
+          child: Center(
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_USER_QR_CODE_SVG,
+              width: 34.0.w,
+              height: 34.0.w,
+              fit: BoxFit.fill,
+            ),
           ),
         ),
       ),
