@@ -139,6 +139,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
               child: TextField(
                 controller: signatureController,
                 decoration: InputDecoration(
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: currentThemeColor),
+                  ),
                   contentPadding: EdgeInsets.only(bottom: 6.0.h),
                   isDense: true,
                 ),
