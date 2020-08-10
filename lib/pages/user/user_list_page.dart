@@ -113,7 +113,8 @@ class _UserListState extends State<UserListPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        for (int j = start; j < start + 2 && j < users.length; j++) userCard(context, users[j])
+        for (int j = start; j < start + 2 && j < users.length; j++)
+          userCard(context, users[j])
       ],
     );
   }

@@ -318,5 +318,4 @@ class TeamPraiseAPI {
         API.teamPraisedList(page: page, size: size),
         headers: Constants.teamHeader,
       );
-
 }

@@ -25,7 +25,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
     with AutomaticKeepAliveClientMixin {
   final TextEditingController textEditingController = TextEditingController();
   final LoadingDialogController loadingDialogController =
-  LoadingDialogController();
+      LoadingDialogController();
   final FocusNode focusNode = FocusNode();
   final double iconSize = 28.0.h;
 
@@ -159,7 +159,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
     } else {
       if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
         InputUtils.hideKeyboard().whenComplete(
-              () {
+          () {
             Future.delayed(300.milliseconds, null).whenComplete(change);
           },
         );
@@ -236,20 +236,23 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       uploadedAssetId[asset] = null;
       final CancelToken cancelToken = CancelToken();
       assetsUploadCancelTokens.add(cancelToken);
-      final FormData formData = await TeamPostAPI.createPostImageUploadForm(asset);
+      final FormData formData =
+          await TeamPostAPI.createPostImageUploadForm(asset);
       try {
-        final Map<String, dynamic> result = (await TeamPostAPI.createPostImageUploadRequest(
+        final Map<String, dynamic> result =
+            (await TeamPostAPI.createPostImageUploadRequest(
           formData: formData,
           cancelToken: cancelToken,
-        )).data;
+        ))
+                .data;
         uploadedAssetId[asset] = result['fid'].toString().toInt();
         ++uploadedAssets;
         loadingDialogController.updateText(
           '正在上传图片('
-              '${math.min(uploadedAssets + 1, imagesLength)}'
-              '/'
-              '$imagesLength'
-              ')',
+          '${math.min(uploadedAssets + 1, imagesLength)}'
+          '/'
+          '$imagesLength'
+          ')',
         );
 
         /// Execute publish when all assets were upload.
@@ -284,7 +287,8 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// 执行内容发布请求
   Future<void> runPublishRequest() async {
     String content;
-    if ((imagesLength != 0 && textEditingController.text == null) || filteredContent.isEmpty) {
+    if ((imagesLength != 0 && textEditingController.text == null) ||
+        filteredContent.isEmpty) {
       content = '分享图片~';
     } else {
       content = textEditingController.text;
@@ -293,7 +297,8 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       final Map<String, dynamic> response = (await TeamPostAPI.publishPost(
         content: content,
         files: uploadedAssetId.values.toList(),
-      )).data;
+      ))
+          .data;
       if (response['tid'] != null) {
         loadingDialogController.changeState(
           'success',
@@ -322,70 +327,70 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// Publish button.
   /// 发布按钮
   Widget get publishButton => MaterialButton(
-    color: currentThemeColor,
-    minWidth: suSetWidth(120.0),
-    height: suSetHeight(50.0),
-    padding: EdgeInsets.zero,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(suSetWidth(13.0)),
-    ),
-    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(right: suSetWidth(6.0)),
-          child: SvgPicture.asset(
-            R.ASSETS_ICONS_SEND_SVG,
-            height: suSetHeight(22.0),
-            color: Colors.white,
-          ),
+        color: currentThemeColor,
+        minWidth: suSetWidth(120.0),
+        height: suSetHeight(50.0),
+        padding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(suSetWidth(13.0)),
         ),
-        Text(
-          '发动态',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: suSetSp(20.0),
-            height: 1.24,
-          ),
+        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(right: suSetWidth(6.0)),
+              child: SvgPicture.asset(
+                R.ASSETS_ICONS_SEND_SVG,
+                height: suSetHeight(22.0),
+                color: Colors.white,
+              ),
+            ),
+            Text(
+              '发动态',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: suSetSp(20.0),
+                height: 1.24,
+              ),
+            ),
+          ],
         ),
-      ],
-    ),
-    onPressed: checkConvention,
-  );
+        onPressed: checkConvention,
+      );
 
   /// [TextField] for content.
   /// 内容输入区
   Widget get textField => Expanded(
-    child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20.0.w),
-      child: ExtendedTextField(
-        autofocus: false,
-        controller: textEditingController,
-        enabled: !isLoading,
-        focusNode: focusNode,
-        scrollPadding: EdgeInsets.zero,
-        specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
-        cursorColor: Theme.of(context).cursorColor,
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(top: 20.0.h),
-          border: InputBorder.none,
-          counterStyle: TextStyle(color: Colors.transparent),
-          hintText: '分享你的动态...',
-          hintStyle: TextStyle(
-            color: Colors.grey,
-            textBaseline: TextBaseline.alphabetic,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20.0.w),
+          child: ExtendedTextField(
+            autofocus: false,
+            controller: textEditingController,
+            enabled: !isLoading,
+            focusNode: focusNode,
+            scrollPadding: EdgeInsets.zero,
+            specialTextSpanBuilder: StackSpecialTextFieldSpanBuilder(),
+            cursorColor: Theme.of(context).cursorColor,
+            decoration: InputDecoration(
+              contentPadding: EdgeInsets.only(top: 20.0.h),
+              border: InputBorder.none,
+              counterStyle: TextStyle(color: Colors.transparent),
+              hintText: '分享你的动态...',
+              hintStyle: TextStyle(
+                color: Colors.grey,
+                textBaseline: TextBaseline.alphabetic,
+              ),
+            ),
+            buildCounter: emptyCounterBuilder,
+            style: currentTheme.textTheme.bodyText2.copyWith(
+              fontSize: 22.0.sp,
+              textBaseline: TextBaseline.alphabetic,
+            ),
+            maxLines: null,
           ),
         ),
-        buildCounter: emptyCounterBuilder,
-        style: currentTheme.textTheme.bodyText2.copyWith(
-          fontSize: 22.0.sp,
-          textBaseline: TextBaseline.alphabetic,
-        ),
-        maxLines: null,
-      ),
-    ),
-  );
+      );
 
   /// Selected asset image widget.
   /// 已选资源的单个图片组件
@@ -394,18 +399,18 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
     return GestureDetector(
       onTap: !isAssetListViewCollapsed
           ? () async {
-        final List<AssetEntity> result =
-        await AssetPickerViewer.pushToViewer(
-          context,
-          currentIndex: index,
-          assets: selectedAssets,
-          themeData: AssetPicker.themeData(currentThemeColor),
-        );
-        if (result != selectedAssets && result != null) {
-          selectedAssets = result;
-          if (mounted) setState(() {});
-        }
-      }
+              final List<AssetEntity> result =
+                  await AssetPickerViewer.pushToViewer(
+                context,
+                currentIndex: index,
+                assets: selectedAssets,
+                themeData: AssetPicker.themeData(currentThemeColor),
+              );
+              if (result != selectedAssets && result != null) {
+                selectedAssets = result;
+                if (mounted) setState(() {});
+              }
+            }
           : null,
       child: RepaintBoundary(
         child: ExtendedImage(
@@ -421,17 +426,17 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// Cover for error when there's any image failed in uploading.
   /// 图片上传失败时的错误遮罩
   Widget get uploadErrorCover => Positioned.fill(
-    child: Container(
-      color: Colors.white.withOpacity(0.7),
-      child: Center(
-        child: Icon(
-          Icons.error,
-          color: Colors.redAccent,
-          size: suSetWidth(40.0),
+        child: Container(
+          color: Colors.white.withOpacity(0.7),
+          child: Center(
+            child: Icon(
+              Icons.error,
+              color: Colors.redAccent,
+              size: suSetWidth(40.0),
+            ),
+          ),
         ),
-      ),
-    ),
-  );
+      );
 
   /// The delete button for assets.
   /// 资源的删除按钮
@@ -470,95 +475,95 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// Item shown when selected assets not reached maximum images length yet.
   /// 已选中图片数量未达到最大限制时，显示添加item。
   Widget get _assetAddItem => AnimatedContainer(
-    duration: kThemeAnimationDuration,
-    curve: Curves.easeInOut,
-    padding: EdgeInsets.symmetric(
-      horizontal: suSetWidth(8.0),
-      vertical: suSetWidth(16.0),
-    ),
-    child: AspectRatio(
-      aspectRatio: 1.0,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: pickAssets,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            shape: BoxShape.rectangle,
-            borderRadius: BorderRadius.circular(suSetWidth(10.0)),
-            color: currentIsDark ? Colors.grey[700] : Colors.white,
-          ),
-          child: Icon(
-            Icons.add,
-            size: suSetWidth(isAssetListViewCollapsed ? 20.0 : 50.0),
+        duration: kThemeAnimationDuration,
+        curve: Curves.easeInOut,
+        padding: EdgeInsets.symmetric(
+          horizontal: suSetWidth(8.0),
+          vertical: suSetWidth(16.0),
+        ),
+        child: AspectRatio(
+          aspectRatio: 1.0,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: pickAssets,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+                color: currentIsDark ? Colors.grey[700] : Colors.white,
+              ),
+              child: Icon(
+                Icons.add,
+                size: suSetWidth(isAssetListViewCollapsed ? 20.0 : 50.0),
+              ),
+            ),
           ),
         ),
-      ),
-    ),
-  );
+      );
 
   /// List view for assets.
   /// 已选资源的显示列表
   Widget get assetsListView => Align(
-    alignment: AlignmentDirectional.centerStart,
-    child: GestureDetector(
-      onTap: isAssetListViewCollapsed ? switchAssetsListCollapse : null,
-      child: AnimatedContainer(
-        curve: Curves.easeInOut,
-        duration: kThemeAnimationDuration,
-        height: selectedAssets.isNotEmpty
-            ? suSetHeight(isAssetListViewCollapsed ? 72.0 : 140.0)
-            : 0.0,
-        margin: EdgeInsets.all(
-            isAssetListViewCollapsed ? suSetWidth(12.0) : 0.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(
-            suSetWidth(isAssetListViewCollapsed ? 15.0 : 0.0),
-          ),
-          color: currentTheme.canvasColor,
-        ),
-        child: ListView.builder(
-          shrinkWrap: isAssetListViewCollapsed,
-          physics: const BouncingScrollPhysics(),
-          padding: EdgeInsets.symmetric(
-            horizontal: suSetWidth(8.0),
-          ),
-          scrollDirection: Axis.horizontal,
-          itemCount: math.min(
-              isAssetListViewCollapsed ? imagesLength : imagesLength + 1,
-              maxAssetsLength,
-          ),
-          itemBuilder: (BuildContext _, int index) {
-            if (index == imagesLength) {
-              return _assetAddItem;
-            }
-            return Padding(
+        alignment: AlignmentDirectional.centerStart,
+        child: GestureDetector(
+          onTap: isAssetListViewCollapsed ? switchAssetsListCollapse : null,
+          child: AnimatedContainer(
+            curve: Curves.easeInOut,
+            duration: kThemeAnimationDuration,
+            height: selectedAssets.isNotEmpty
+                ? suSetHeight(isAssetListViewCollapsed ? 72.0 : 140.0)
+                : 0.0,
+            margin: EdgeInsets.all(
+                isAssetListViewCollapsed ? suSetWidth(12.0) : 0.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                suSetWidth(isAssetListViewCollapsed ? 15.0 : 0.0),
+              ),
+              color: currentTheme.canvasColor,
+            ),
+            child: ListView.builder(
+              shrinkWrap: isAssetListViewCollapsed,
+              physics: const BouncingScrollPhysics(),
               padding: EdgeInsets.symmetric(
                 horizontal: suSetWidth(8.0),
-                vertical: suSetWidth(16.0),
               ),
-              child: AspectRatio(
-                aspectRatio: 1.0,
-                child: Stack(
-                  children: <Widget>[
-                    Positioned.fill(child: _assetWidget(index)),
-                    if (failedAssets
-                        .contains(selectedAssets.elementAt(index)))
-                      uploadErrorCover,
-                    if (!isAssetListViewCollapsed)
-                      Positioned(
-                        top: suSetWidth(6.0),
-                        right: suSetWidth(6.0),
-                        child: _assetDeleteButton(index),
-                      ),
-                  ],
-                ),
+              scrollDirection: Axis.horizontal,
+              itemCount: math.min(
+                isAssetListViewCollapsed ? imagesLength : imagesLength + 1,
+                maxAssetsLength,
               ),
-            );
-          },
+              itemBuilder: (BuildContext _, int index) {
+                if (index == imagesLength) {
+                  return _assetAddItem;
+                }
+                return Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: suSetWidth(8.0),
+                    vertical: suSetWidth(16.0),
+                  ),
+                  child: AspectRatio(
+                    aspectRatio: 1.0,
+                    child: Stack(
+                      children: <Widget>[
+                        Positioned.fill(child: _assetWidget(index)),
+                        if (failedAssets
+                            .contains(selectedAssets.elementAt(index)))
+                          uploadErrorCover,
+                        if (!isAssetListViewCollapsed)
+                          Positioned(
+                            top: suSetWidth(6.0),
+                            right: suSetWidth(6.0),
+                            child: _assetDeleteButton(index),
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
         ),
-      ),
-    ),
-  );
+      );
 
   /// Emoticon pad widget.
   /// 表情选择部件
@@ -597,7 +602,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
     return Container(
       margin: EdgeInsets.only(
         bottom:
-        !isEmoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
+            !isEmoticonPadActive ? MediaQuery.of(context).padding.bottom : 0.0,
       ),
       height: suSetHeight(60.0),
       child: Row(
