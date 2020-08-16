@@ -235,7 +235,7 @@ class UserPageState extends State<UserPage>
   Widget get postList {
     return ListView.builder(
       padding: EdgeInsets.zero,
-      itemCount: total,
+      itemCount: posts.length,
       itemBuilder: (
         BuildContext context,
         int index,

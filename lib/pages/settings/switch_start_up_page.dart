@@ -23,14 +23,6 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
             'index': settingsProvider.homeSplashIndex,
           },
         ],
-        [
-          for (int i = 0; i < pageTab.length; i++)
-            {
-              'name': MainPageState.pagesTitle[i],
-              'pages': pageTab[i],
-              'index': settingsProvider.homeStartUpIndex[i],
-            }
-        ],
       ];
   SettingsProvider settingsProvider;
 
