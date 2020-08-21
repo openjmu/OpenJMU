@@ -106,7 +106,7 @@ class AboutPage extends StatelessWidget {
           'OpenJmu',
           style: TextStyle(
             fontFamily: 'chocolate',
-            color: defaultColor,
+            color: defaultLightColor,
             fontSize: suSetSp(50.0),
           ),
         ),
@@ -183,7 +183,7 @@ class AboutPage extends StatelessWidget {
           margin: EdgeInsets.only(bottom: suSetHeight(10.0)),
           child: Text(
             '《用户协议》',
-            style: TextStyle(color: defaultColor, fontSize: suSetSp(18.0)),
+            style: TextStyle(color: defaultLightColor, fontSize: suSetSp(18.0)),
           ),
         ),
       );
@@ -195,7 +195,7 @@ class AboutPage extends StatelessWidget {
             TextSpan(
               text: 'OpenJmu Team',
               style: TextStyle(
-                color: defaultColor,
+                color: defaultLightColor,
                 fontFamily: 'chocolate',
                 fontSize: suSetSp(24.0),
               ),

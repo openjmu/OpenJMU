@@ -38,7 +38,7 @@ class LoginPageState extends State<LoginPage>
 
   /// Gradient for background transition.
   /// 背景渐变颜色组
-  List<Color> get colorGradient => <Color>[defaultColor, Colors.pink[400]];
+  List<Color> get colorGradient => <Color>[defaultLightColor, Colors.pink[400]];
 
   bool get loginButtonEnable => !(_login || _loginDisabled);
 
@@ -608,7 +608,8 @@ class LoginPageState extends State<LoginPage>
                   borderRadius: maxBorderRadius,
                   child: LinearProgressIndicator(
                     backgroundColor: Colors.grey[200],
-                    valueColor: AlwaysStoppedAnimation<Color>(defaultColor),
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(defaultLightColor),
                     value: _login ? null : 0.0,
                   ),
                 ),

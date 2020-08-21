@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -47,6 +47,8 @@ part 'team_notifications.dart';
 part 'team_post.dart';
 
 part 'team_post_comment.dart';
+
+part 'theme_group.dart';
 
 part 'user.dart';
 

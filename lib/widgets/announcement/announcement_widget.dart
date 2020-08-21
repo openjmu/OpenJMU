@@ -31,7 +31,7 @@ class AnnouncementWidget extends StatelessWidget {
         child: Text(
           '  ${provider.announcements[0]['title']}',
           style: TextStyle(
-            color: contentColor ?? defaultColor,
+            color: contentColor ?? defaultLightColor,
             fontSize: suSetSp(20.0),
           ),
           maxLines: 1,
@@ -74,7 +74,7 @@ class AnnouncementWidget extends StatelessWidget {
               borderRadius: radius != null
                   ? BorderRadius.circular(suSetWidth(radius))
                   : null,
-              color: (backgroundColor ?? defaultColor).withAlpha(0x44),
+              color: (backgroundColor ?? defaultLightColor).withAlpha(0x44),
             ),
             child: Row(
               children: <Widget>[

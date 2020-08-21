@@ -12,7 +12,7 @@ class ThemesProvider with ChangeNotifier {
     initTheme();
   }
 
-  Color _currentColor = defaultColor;
+  Color _currentColor = defaultLightColor;
   Color get currentColor => _currentColor;
   set currentColor(Color value) {
     assert(value != null);
@@ -63,7 +63,7 @@ class ThemesProvider with ChangeNotifier {
     HiveFieldUtils.setAMOLEDDark(false);
     HiveFieldUtils.setBrightnessDark(false);
     HiveFieldUtils.setBrightnessPlatform(true);
-    _currentColor = defaultColor;
+    _currentColor = defaultLightColor;
     _dark = false;
     _amoledDark = false;
     _platformBrightness = true;
@@ -130,12 +130,12 @@ class ThemesProvider with ChangeNotifier {
           secondaryVariant: currentColor,
           surface: Colors.white,
           background: Colors.grey[200],
-          error: defaultColor,
+          error: defaultLightColor,
           onPrimary: currentColor,
           onSecondary: currentColor,
           onSurface: Colors.white,
           onBackground: Colors.grey[200],
-          onError: defaultColor,
+          onError: defaultLightColor,
           brightness: Brightness.light,
         ),
         buttonColor: currentColor,
@@ -179,12 +179,12 @@ class ThemesProvider with ChangeNotifier {
           secondaryVariant: currentColor,
           surface: amoledDark ? Colors.black : Colors.grey[900],
           background: amoledDark ? Color(0xFF111111) : Colors.grey[850],
-          error: defaultColor,
+          error: defaultLightColor,
           onPrimary: currentColor,
           onSecondary: currentColor,
           onSurface: amoledDark ? Colors.black : Colors.grey[900],
           onBackground: amoledDark ? Color(0xFF111111) : Colors.grey[850],
-          onError: defaultColor,
+          onError: defaultLightColor,
           brightness: Brightness.dark,
         ),
         textTheme: TextTheme(
@@ -205,10 +205,8 @@ class ThemesProvider with ChangeNotifier {
       );
 }
 
-const defaultColor = Color(0xFFE5322D);
-
-final supportColors = <Color>[
-  defaultColor,
+final List<Color> supportColors = <Color>[
+  defaultLightColor,
   Colors.red[900],
   Colors.red[500],
   Colors.red[300],

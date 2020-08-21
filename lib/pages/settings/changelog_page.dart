@@ -268,7 +268,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
           Text(
             'Open The Sky',
             style: TextStyle(
-              color: defaultColor,
+              color: defaultLightColor,
               fontFamily: 'chocolate',
               fontSize: suSetSp(50.0),
             ),

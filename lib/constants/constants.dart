@@ -49,7 +49,7 @@ class Constants {
 
   /// For test page.
   /// Set this to [false] before release.
-  static bool get isDebug => !kReleaseMode && false;
+  static bool get isDebug => !kReleaseMode && true;
 
   static const Map<String, String> quickActionsList = <String, String>{
     'actions_home': '广场',
