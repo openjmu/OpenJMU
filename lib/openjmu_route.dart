@@ -37,6 +37,7 @@ import 'widgets/webview/in_app_webview.dart';
 
 // ignore_for_file: argument_type_not_assignable
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
+  arguments = arguments ?? <String, dynamic>{};
   switch (name) {
     case 'openjmu://about':
       return RouteResult(
@@ -261,6 +262,7 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
         name: name,
         widget: UserQrCodePage(),
         routeName: '用户二维码页',
+        pageRouteType: PageRouteType.transparent,
       );
     default:
       return const RouteResult(name: 'flutterCandies://notfound');

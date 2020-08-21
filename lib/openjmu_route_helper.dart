@@ -90,6 +90,7 @@ Route<dynamic> onGenerateRouteHelper(
   RouteSettings settings, {
   Widget notFoundFallback,
   Object arguments,
+  WidgetBuilder builder,
 }) {
   arguments ??= settings.arguments;
 
@@ -105,7 +106,7 @@ Route<dynamic> onGenerateRouteHelper(
       showStatusBar: routeResult.showStatusBar,
     );
   }
-  final Widget page = routeResult.widget ?? notFoundFallback;
+  Widget page = routeResult.widget ?? notFoundFallback;
   if (page == null) {
     throw Exception(
       '''Route "${settings.name}" returned null. Route Widget must never return null, 
@@ -119,6 +120,10 @@ Route<dynamic> onGenerateRouteHelper(
     if (builder != null) {
       return builder(page);
     }
+  }
+
+  if (builder != null) {
+    page = builder(page, routeResult);
   }
 
   switch (routeResult.pageRouteType) {
@@ -171,3 +176,6 @@ class FFRouteSettings extends RouteSettings {
   final String routeName;
   final bool showStatusBar;
 }
+
+/// Signature for a function that creates a widget, e.g.
+typedef WidgetBuilder = Widget Function(Widget child, RouteResult routeResult);

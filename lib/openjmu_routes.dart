@@ -28,7 +28,6 @@ const List<String> routeNames = <String>[
   'openjmu://splash',
   'openjmu://switch-startup',
   'openjmu://team-post-detail',
-  'openjmu://test-dashboard',
   'openjmu://theme',
   'openjmu://user-list-page',
   'openjmu://user-page',
@@ -246,13 +245,6 @@ class Routes {
   /// [arguments] : [provider, type, postId]
   static const String openjmuTeamPostDetail = 'openjmu://team-post-detail';
 
-  /// '测试首页'
-  ///
-  /// [name] : 'openjmu://test-dashboard'
-  ///
-  /// [routeName] : '测试首页'
-  static const String openjmuTestDashboard = 'openjmu://test-dashboard';
-
   /// '更改主题'
   ///
   /// [name] : 'openjmu://theme'
@@ -287,5 +279,7 @@ class Routes {
   /// [name] : 'openjmu://user-qr-code'
   ///
   /// [routeName] : '用户二维码页'
+  ///
+  /// [pageRouteType] : PageRouteType.transparent
   static const String openjmuUserQrCode = 'openjmu://user-qr-code';
 }
