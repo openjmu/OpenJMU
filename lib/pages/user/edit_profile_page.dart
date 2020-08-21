@@ -145,7 +145,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   contentPadding: EdgeInsets.only(bottom: 6.0.h),
                   isDense: true,
                 ),
-                maxLength: 30,
                 scrollPadding: EdgeInsets.zero,
               ),
             ),
