@@ -1,7 +1,7 @@
+import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:image_save/image_save.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -9,7 +9,11 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(name: 'openjmu://user-qr-code', routeName: '用户二维码页')
+@FFRoute(
+  name: 'openjmu://user-qr-code',
+  routeName: '用户二维码页',
+  pageRouteType: PageRouteType.transparent,
+)
 class UserQrCodePage extends StatefulWidget {
   @override
   _UserQrCodePageState createState() => _UserQrCodePageState();
@@ -18,6 +22,7 @@ class UserQrCodePage extends StatefulWidget {
 class _UserQrCodePageState extends State<UserQrCodePage> {
   final GlobalKey previewContainer = GlobalKey();
   bool isSaving = false;
+  double get minWidth => math.min(Screens.width, Screens.height);
 
   void saveToGallery() async {
     if (isSaving) {
@@ -52,67 +57,106 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
     }
   }
 
-  Widget get qrImage => QrImage(
+  Widget get usernameWidget {
+    return Flexible(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 10.0.w),
+        child: Text(
+          currentUser.name,
+          style: TextStyle(color: Colors.white, fontSize: 22.0.sp),
+          textAlign: TextAlign.left,
+          maxLines: 1,
+          overflow: TextOverflow.fade,
+        ),
+      ),
+    );
+  }
+
+  Widget get qrImage {
+    return Padding(
+      padding: EdgeInsets.all(minWidth / 20),
+      child: QrImage(
         version: 3,
-        data: 'openjmu://user/${currentUser.uid}',
+        data: '${Routes.openjmuUserPage}/${currentUser.uid}',
         padding: EdgeInsets.zero,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: context.themeData.colorScheme.surface,
+        foregroundColor: context.themeData.textTheme.bodyText2.color,
         embeddedImage: AssetImage(R.IMAGES_LOGO_1024_ROUNDED_PNG),
         embeddedImageStyle: QrEmbeddedImageStyle(
-          size: Size.square(suSetWidth(80.0)),
+          size: Size.square(minWidth * 0.1),
         ),
-      );
+      ),
+    );
+  }
+
+  Widget get saveButton {
+    return GestureDetector(
+      onTap: saveToGallery,
+      child: Container(
+        margin: EdgeInsets.only(top: minWidth / 10),
+        width: 80.0.w,
+        height: 80.0.w,
+        decoration: BoxDecoration(
+          color: context.themeData.canvasColor,
+          shape: BoxShape.circle,
+        ),
+        child: Center(
+          child: SvgPicture.asset(
+            R.ASSETS_ICONS_USER_SAVE_CODE_SVG,
+            color: context.themeData.dividerColor.withOpacity(0.3),
+            width: minWidth * 0.05,
+            height: minWidth * 0.05,
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final avatarSize = 64.0;
-    return Scaffold(
-      backgroundColor: Theme.of(context).canvasColor,
-      body: FixedAppBarWrapper(
-        appBar: FixedAppBar(
-          title: Text('二维码名片'),
-          actions: <Widget>[
-            IconButton(icon: Icon(Icons.save), onPressed: saveToGallery)
-          ],
-        ),
-        body: Center(
-          child: RepaintBoundary(
-            key: previewContainer,
-            child: Container(
-              margin: EdgeInsets.all(suSetWidth(40.0)),
-              padding: EdgeInsets.all(suSetWidth(36.0)),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(suSetWidth(20.0)),
-                color: Colors.grey[350],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Row(
-                    children: <Widget>[
-                      UserAvatar(size: avatarSize),
-                      Expanded(
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: suSetWidth(20.0)),
-                          child: Text(
-                            currentUser.name,
-                            style: TextStyle(
-                                color: Colors.black, fontSize: suSetSp(22.0)),
-                            textAlign: TextAlign.left,
-                          ),
+    return Material(
+      color: Colors.black54,
+      child: Stack(
+        children: [
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: Navigator.of(context).pop,
+            child: const SizedBox.expand(),
+          ),
+          Positioned.fill(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RepaintBoundary(
+                  key: previewContainer,
+                  child: Container(
+                    width: minWidth / 1.5,
+                    padding: EdgeInsets.all(25.0.w),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.0.w),
+                      color: context.themeData.colorScheme.surface,
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            UserAvatar(size: 64.0),
+                            usernameWidget,
+                            sexualWidget(margin: EdgeInsets.zero),
+                          ],
                         ),
-                      ),
-                    ],
+                        SizedBox(height: 30.0.w),
+                        qrImage,
+                      ],
+                    ),
                   ),
-                  SizedBox(height: suSetHeight(30.0)),
-                  qrImage,
-                ],
-              ),
+                ),
+                saveButton,
+              ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }

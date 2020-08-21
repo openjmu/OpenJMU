@@ -26,7 +26,8 @@ export 'package:wechat_assets_picker/wechat_assets_picker.dart'
     hide ImageFileType;
 
 export 'package:openjmu/openjmu_routes.dart' show Routes;
-export 'package:openjmu/openjmu_route_helper.dart';
+export 'package:openjmu/openjmu_route_helper.dart'
+    show onGenerateRouteHelper, FFNavigatorObserver, FFRouteSettings;
 
 export '../api/api.dart';
 export '../extensions/extensions.e.dart';
@@ -48,7 +49,7 @@ class Constants {
 
   /// For test page.
   /// Set this to [false] before release.
-  static bool get isDebug => !kReleaseMode && true;
+  static bool get isDebug => !kReleaseMode && false;
 
   static const Map<String, String> quickActionsList = <String, String>{
     'actions_home': '广场',

@@ -126,8 +126,8 @@ class PostSquarePage extends StatelessWidget {
           ),
         ),
         actions: <Widget>[
-          publishButton(context),
           notificationButton,
+          publishButton(context),
         ],
         actionsPadding: EdgeInsets.only(right: 20.0.w),
       ),

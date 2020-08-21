@@ -2,65 +2,63 @@
 /// [Author] Alex (https://github.com/AlexVincent525)
 /// [Date] 2020-03-09 20:39
 ///
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/manually_set_sid_dialog.dart';
 
 class SelfPage extends StatelessWidget {
-  List<List<Map<String, dynamic>>> get settingsSection =>
-      <List<Map<String, dynamic>>>[
-        [
-          {
-            'name': '背包',
-            'icon': R.ASSETS_ICONS_SELF_PAGE_BACKPACK_SVG,
-            'route': Routes.openjmuBackpack,
+  List<Map<String, dynamic>> get settingsSection => <Map<String, dynamic>>[
+        {
+          'name': '背包',
+          'icon': R.ASSETS_ICONS_SELF_PAGE_BACKPACK_SVG,
+          'route': Routes.openjmuBackpack,
+        },
+        {
+          'icon': R.ASSETS_ICONS_SELF_PAGE_NIGHT_MODE_SVG,
+          'name': '夜间模式',
+          'action': (BuildContext context) {
+            final ThemesProvider provider = context.read<ThemesProvider>();
+            if (!provider.platformBrightness) {
+              provider.dark = !provider.dark;
+            }
           },
-          {
-            'icon': R.ASSETS_ICONS_SELF_PAGE_CHANGE_THEME_SVG,
-            'name': '主题',
-            'route': Routes.openjmuTheme,
+        },
+        {
+          'icon': R.ASSETS_ICONS_SELF_PAGE_SCAN_CODE_SVG,
+          'name': '扫一扫',
+          'action': (BuildContext context) async {
+            if (await checkPermissions(<Permission>[Permission.camera])) {
+              unawaited(navigatorState.pushNamed(Routes.openjmuScanQrCode));
+            } else {
+              showToast('未获得相应权限');
+            }
           },
-          {
-            'icon': R.ASSETS_ICONS_SELF_PAGE_NIGHT_MODE_SVG,
-            'name': '夜间模式',
-            'action': (BuildContext context) {
-              final ThemesProvider provider = context.read<ThemesProvider>();
-              if (!provider.platformBrightness) {
-                provider.dark = !provider.dark;
-              }
-            },
-          },
-          {
-            'name': '偏好设置',
-            'icon': R.ASSETS_ICONS_SETTINGS_LINE_SVG,
-            'route': Routes.openjmuSettings,
-          },
-          {
-            'name': '关于OpenJMU',
-            'icon': R.ASSETS_ICONS_IDOLS_LINE_SVG,
-            'route': Routes.openjmuAbout,
-          },
-          {
-            'name': '退出登录',
-            'icon': R.ASSETS_ICONS_EXIT_LINE_SVG,
-            'action': (BuildContext context) {
-              UserAPI.logout(context);
-            },
-          },
-        ],
-        if (Constants.isDebug)
-          [
-            {
-              'name': '测试页',
-              'icon': R.ASSETS_ICONS_IDOLS_LINE_SVG,
-              'route': Routes.openjmuTestDashboard,
-            },
-          ],
+        },
+        {
+          'icon': R.ASSETS_ICONS_SELF_PAGE_SEARCH_SVG,
+          'name': '搜索',
+          'route': Routes.openjmuSearch,
+        },
+        {
+          'name': '偏好设置',
+          'icon': R.ASSETS_ICONS_SELF_PAGE_SETTINGS_SVG,
+          'route': Routes.openjmuSettings,
+        },
+        {
+          'name': '退出账号',
+          'icon': R.ASSETS_ICONS_SELF_PAGE_LOGOUT_SVG,
+          'action': UserAPI.logout,
+        },
       ];
 
   /// 顶部内容基础高度
-  double get headerHeight => 186.0;
+  double get headerHeight => 266.0;
+
+  /// 常用应用栏的高度
+  double get commonAppsHeight => 140.0;
 
   /// Handler for setting item.
   /// 设置项的回调处理
@@ -76,7 +74,7 @@ class SelfPage extends StatelessWidget {
   /// Wrapper for header.
   /// 顶部部件封装
   Widget headerWrapper({@required Widget child}) {
-    return SizedBox(
+    return Container(
       height: headerHeight.h,
       child: child,
     );
@@ -153,11 +151,8 @@ class SelfPage extends StatelessWidget {
     return Expanded(
       child: Container(
         width: double.maxFinite,
-        padding: EdgeInsets.symmetric(
-          horizontal: 32.0.w,
-          vertical: 20.0.w,
-        ),
-        color: currentTheme.canvasColor,
+        margin: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
+        padding: EdgeInsets.symmetric(horizontal: 20.0.w),
         child: child,
       ),
     );
@@ -166,122 +161,86 @@ class SelfPage extends StatelessWidget {
   /// 签到按钮
   Widget get signButton => Consumer<SignProvider>(
         builder: (BuildContext _, SignProvider provider, Widget __) {
-          return MaterialButton(
-            color: Colors.transparent,
-            elevation: 0.0,
-            highlightElevation: 0.0,
-            focusElevation: 0.0,
-            hoverElevation: 0.0,
-            height: 50.0.h,
-            padding: EdgeInsets.zero,
-            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                if (provider.isSigning)
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 6.0.w),
-                    width: 28.0.w,
-                    height: 28.0.w,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 3.0.w,
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                    ),
-                  )
-                else
-                  Container(
-                    margin: EdgeInsets.only(right: 6.0.w),
-                    child: provider.hasSigned
-                        ? Icon(
-                            Icons.location_on,
-                            color: Colors.white,
-                            size: 36.0.w,
-                          )
-                        : SvgPicture.asset(
-                            R.ASSETS_ICONS_SIGN_LINE_SVG,
-                            color: Colors.white,
-                            width: 28.0.w,
-                          ),
-                  ),
-                Text(
-                  '${provider.signedCount}',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0.sp,
-                    height: 1.24,
-                  ),
-                ),
-              ],
-            ),
-            onPressed: () {
+          return GestureDetector(
+            onTap: () {
               if (!provider.hasSigned) {
                 provider.requestSign();
               }
             },
+            child: Container(
+              width: 64.0.w,
+              height: 64.0.w,
+              decoration: BoxDecoration(
+                color: _.themeData.colorScheme.surface,
+                shape: BoxShape.circle,
+              ),
+              child: () {
+                Widget widget;
+                if (provider.isSigning) {
+                  widget = Padding(
+                    padding: EdgeInsets.all(18.0.w),
+                    child: PlatformProgressIndicator(
+                      strokeWidth: 4.0.w,
+                    ),
+                  );
+                } else {
+                  widget = Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if (provider.hasSigned) SizedBox(height: 2.0.w),
+                      SvgPicture.asset(
+                        provider.hasSigned
+                            ? R.ASSETS_ICONS_SELF_PAGE_SIGNED_SVG
+                            : R.ASSETS_ICONS_SELF_PAGE_UNSIGNED_SVG,
+                        color: currentThemeColor,
+                        width: provider.hasSigned ? 15.0.w : 24.0.w,
+                        height: provider.hasSigned ? 15.0.w : 24.0.w,
+                      ),
+                      if (provider.hasSigned)
+                        Padding(
+                          padding: EdgeInsets.only(top: 8.0.w),
+                          child: Text(
+                            '${provider.signedCount}',
+                            style: TextStyle(
+                              color: currentThemeColor,
+                              fontSize: 16.0.sp,
+                              fontWeight: FontWeight.bold,
+                              height: 1.0,
+                            ),
+                          ),
+                        ),
+                    ],
+                  );
+                }
+                return Center(child: widget);
+              }(),
+            ),
           );
         },
       );
 
-  /// 扫描二维码按钮
-  Widget get scanQrCodeButton => IconButton(
-        splashColor: Colors.white,
-        onPressed: () async {
-          if (await checkPermissions(<Permission>[Permission.camera])) {
-            unawaited(navigatorState.pushNamed(Routes.openjmuScanQrCode));
-          } else {
-            showToast('未获得相应权限');
-          }
-        },
-        icon: SvgPicture.asset(
-          R.ASSETS_ICONS_SELF_PAGE_SCAN_CODE_SVG,
-          color: Colors.white,
-          width: 56.0.w,
-        ),
-      );
-
-  /// Section view for settings.
-  /// 设置项的分区部件
-  Widget settingSectionListView(BuildContext context, int index) {
-    return ListView.builder(
-      padding: EdgeInsets.zero,
-      physics: const NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemCount: settingsSection[index].length,
-      itemBuilder: (BuildContext _, int itemIndex) =>
-          settingItem(context, index, itemIndex),
-    );
-  }
-
   /// Item view for setting.
   /// 设置项部件
-  Widget settingItem(BuildContext context, int sectionIndex, int itemIndex) {
-    final Map<String, dynamic> item = settingsSection[sectionIndex][itemIndex];
+  Widget settingItem(BuildContext context, int itemIndex) {
+    final Map<String, dynamic> item = settingsSection[itemIndex];
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       child: Container(
-        height: 58.0.h,
+        height: 42.0.h,
         child: Row(
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(left: 12.0.w, right: 24.0.w),
               child: SvgPicture.asset(
                 item['icon'] as String,
-                color: currentThemeColor,
-                width: 34.0.w,
+                color: context.themeData.dividerColor.withOpacity(0.3),
+                width: 42.0.w,
               ),
             ),
             Expanded(
               child: Text(
                 item['name'],
-                style: TextStyle(fontSize: 20.0.sp),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(right: 12.0.w),
-              child: SvgPicture.asset(
-                R.ASSETS_ICONS_ARROW_RIGHT_SVG,
-                color: Theme.of(context).dividerColor,
-                width: 24.0.w,
+                style: TextStyle(fontSize: 18.0.sp),
               ),
             ),
           ],
@@ -293,166 +252,158 @@ class SelfPage extends StatelessWidget {
     );
   }
 
-  /// Button to clear hive boxes.
-  /// 清除存储内容按钮
-  Widget clearBoxesButton(BuildContext context) => UnconstrainedBox(
-        child: Opacity(
-          opacity: 0.3,
-          child: Container(
-            margin: EdgeInsets.symmetric(vertical: 15.0.h),
-            padding: EdgeInsets.symmetric(
-              horizontal: 30.0.w,
-              vertical: 10.0.h,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: maxBorderRadius,
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  color: Colors.grey[currentIsDark ? 800 : 100],
-                  blurRadius: 6.0.h,
-                  offset: Offset(0, 6.0.h),
+  Widget get userInfoWidget {
+    return SizedBox(
+      height: (headerHeight - commonAppsHeight).h,
+      child: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: 24.0.w,
+          ),
+          child: Row(
+            children: <Widget>[
+              UserAvatar(size: 64.0),
+              SizedBox(width: 20.0.w),
+              Expanded(
+                child: Text(
+                  currentUser.name,
+                  style: TextStyle(
+                    fontSize: 23.0.sp,
+                    color: Colors.white,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
-              ],
-              color: Theme.of(context).primaryColor,
-            ),
-            child: GestureDetector(
-              onLongPress: () => HiveBoxes.clearAllBoxes(context: context),
-              child: Text(
-                '(DANGER)\n清除应用数据',
-                style: TextStyle(
-                  color: currentThemeColor,
-                  fontSize: 14.0.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
               ),
-            ),
+              signButton,
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
 
   /// Common apps section widget.
   /// 常用应用部件栏
   Widget commonApps(BuildContext context) => Container(
-        margin: EdgeInsets.symmetric(vertical: 10.0.h),
+        margin: EdgeInsets.symmetric(
+          horizontal: 15.0.w,
+        ),
+        height: commonAppsHeight.h,
+        padding: EdgeInsets.symmetric(vertical: 12.0.h),
         child: Consumer<WebAppsProvider>(
           builder: (BuildContext _, WebAppsProvider provider, Widget __) {
             final Set<WebApp> commonWebApps = provider.commonWebApps;
             return Material(
-              child: IntrinsicHeight(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 16.0.h),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            '常用应用',
-                            style: TextStyle(fontSize: 20.0.sp),
-                          ),
-                          allWebAppsButton(context),
-                        ],
-                      ),
-                    ),
+              borderRadius: BorderRadius.circular(20.0.w),
+              color: context.themeData.colorScheme.surface,
+              child: Row(
+                children: <Widget>[
+                  if (commonWebApps.isNotEmpty) ...<Widget>[
+                    ...List<Widget>.generate(commonWebApps.length, (int index) {
+                      return appWidget(commonWebApps, index);
+                    }),
+                  ] else
                     Expanded(
-                      child: Row(
-                        children: <Widget>[
-                          if (commonWebApps.isNotEmpty) ...<Widget>[
-                            ...List<Widget>.generate(commonWebApps.length,
-                                (int index) {
-                              final WebApp app = commonWebApps.elementAt(index);
-                              return Expanded(
-                                child: InkWell(
-                                  splashFactory: InkSplash.splashFactory,
-                                  onTap: () {
-                                    API.launchWeb(
-                                      url: app.replacedUrl,
-                                      app: app,
-                                    );
-                                  },
-                                  borderRadius: BorderRadius.circular(15.0.w),
-                                  child: Column(
-                                    children: <Widget>[
-                                      WebAppIcon(app: app, size: 84.0),
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.only(bottom: 14.0.sp),
-                                        child: Text(
-                                          app.name,
-                                          style: TextStyle(fontSize: 14.0.sp),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }),
-                            ...List<Widget>.generate(
-                              provider.maxCommonWebApps - commonWebApps.length,
-                              (int index) => const Spacer(),
+                      flex: 3,
+                      child: GestureDetector(
+                        onTap: () {
+                          navigatorState.pushNamed(Routes.openjmuAppCenterPage);
+                        },
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 20.0.h),
+                            child: Text(
+                              '常用应用会出现在这里\n点击右上按钮打开应用中心',
+                              style: TextStyle(fontSize: 16.0.sp),
+                              textAlign: TextAlign.center,
                             ),
-                          ] else
-                            Expanded(
-                              child: Center(
-                                child: Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(vertical: 20.0.h),
-                                  child: Text(
-                                    '常用应用会出现在这里\n点击右上按钮打开应用中心',
-                                    style: TextStyle(fontSize: 16.0.sp),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
+                          ),
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                  allWebAppsButton(context),
+                ],
               ),
             );
           },
         ),
       );
 
-  /// 前往应用中心的按钮
-  Widget allWebAppsButton(BuildContext context) => GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 8.0.h),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                '全部应用',
-                style: TextStyle(
-                  color: currentThemeColor,
-                  fontSize: 16.0.sp,
-                ),
+  Widget appWidget(Iterable<WebApp> apps, int index) {
+    final WebApp app = apps.elementAt(index);
+    return Expanded(
+      child: InkWell(
+        splashFactory: InkSplash.splashFactory,
+        onTap: () {
+          API.launchWeb(
+            url: app.replacedUrl,
+            app: app,
+          );
+        },
+        borderRadius: BorderRadius.circular(15.0.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            WebAppIcon(app: app, size: 72.0),
+            Padding(
+              padding: EdgeInsets.only(top: 4.0.sp, bottom: 8.0.sp),
+              child: Text(
+                app.name,
+                style: TextStyle(fontSize: 14.0.sp),
+                maxLines: 1,
+                overflow: TextOverflow.fade,
               ),
-              Icon(
-                Icons.arrow_right,
-                size: 18.0.w,
-                color: currentThemeColor,
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  /// 前往应用中心的按钮
+  Widget allWebAppsButton(BuildContext context) {
+    return Expanded(
+      child: InkWell(
+        splashFactory: InkSplash.splashFactory,
         onTap: () {
           navigatorState.pushNamed(Routes.openjmuAppCenterPage);
         },
-      );
-
-  /// Common divider widget.
-  /// 统一的分割线部件
-  Widget get divider => Container(
-        margin: EdgeInsets.symmetric(vertical: 20.0.h),
-        height: 2.0.h,
-        color: currentTheme.dividerColor,
-      );
+        borderRadius: BorderRadius.circular(15.0.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.all(8.0.w),
+              width: 56.0.w,
+              height: 56.0.w,
+              decoration: BoxDecoration(
+                color: context.themeData.canvasColor,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  R.ASSETS_ICONS_ARROW_RIGHT_SVG,
+                  width: 32.0.w,
+                  height: 32.0.w,
+                  color: currentThemeColor,
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 4.0.sp, bottom: 8.0.sp),
+              child: Text(
+                '全部应用',
+                style: TextStyle(fontSize: 14.0.sp),
+                maxLines: 1,
+                overflow: TextOverflow.fade,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   /// Current date tips.
   /// 当前日期问候
@@ -495,10 +446,8 @@ class SelfPage extends StatelessWidget {
         builder: (BuildContext _, int currentWeek, Widget __) {
           if (currentWeek != null) {
             return Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: 24.0.w,
-                vertical: 10.0.h,
-              ),
+              margin: EdgeInsets.only(bottom: 10.0.h),
+              padding: EdgeInsets.symmetric(vertical: 16.0.h),
               child: Text.rich(
                 TextSpan(
                   children: <TextSpan>[
@@ -552,7 +501,7 @@ class SelfPage extends StatelessWidget {
                       ),
                 ),
                 maxLines: 2,
-                textAlign: TextAlign.center,
+                textAlign: TextAlign.start,
               ),
             );
           } else {
@@ -567,52 +516,42 @@ class SelfPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: Screens.width * 0.8,
+      color: context.themeData.canvasColor,
       child: Column(
         children: <Widget>[
           headerWrapper(
-            child: Container(
-              padding: EdgeInsets.all(30.0.w),
-              color: currentThemeColor,
-              child: SafeArea(
-                child: Row(
-                  children: <Widget>[
-                    UserAvatar(size: 64.0),
-                    SizedBox(width: 20.0.w),
-                    Expanded(
-                      child: Text(
-                        currentUser.name,
-                        style: TextStyle(
-                          fontSize: 23.0.sp,
-                          color: Colors.white,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    signButton,
-                    scanQrCodeButton,
-                  ],
+            child: Stack(
+              children: [
+                Container(
+                  height: (headerHeight - commonAppsHeight / 2).h,
+                  color: currentThemeColor,
                 ),
-              ),
+                userInfoWidget,
+                Positioned(
+                  bottom: 0.0,
+                  left: 0.0,
+                  right: 0.0,
+                  child: commonApps(context),
+                ),
+              ],
             ),
           ),
           contentWrapper(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                commonApps(context),
-                divider,
                 Expanded(
                   child: ListView.separated(
-                    padding: EdgeInsets.zero,
-                    separatorBuilder: (BuildContext _, int __) =>
-                        separator(context),
+                    padding: EdgeInsets.symmetric(vertical: 12.0.w),
+                    separatorBuilder: (BuildContext _, int __) => separator(
+                      context,
+                      height: 24.0.h,
+                    ),
                     itemCount: settingsSection.length,
                     itemBuilder: (BuildContext _, int index) =>
-                        settingSectionListView(context, index),
+                        settingItem(context, index),
                   ),
                 ),
-                clearBoxesButton(context),
-                divider,
                 currentDay(context),
               ],
             ),
