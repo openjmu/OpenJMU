@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,7 +20,7 @@ class CommentController {
 
   final String commentType;
   final bool isMore;
-  final Function lastValue;
+  final int Function(int) lastValue;
   final Map<String, dynamic> additionAttrs;
 
   _CommentListState _commentListState;
@@ -57,7 +56,7 @@ class _CommentListState extends State<CommentList>
   bool _firstLoadComplete = false;
   bool _showLoading = true;
 
-  dynamic _itemList;
+  Widget _itemList;
 
   Widget _emptyChild;
   Widget _errorChild;
@@ -125,13 +124,18 @@ class _CommentListState extends State<CommentList>
       final int _total = int.parse(result['total'].toString());
       final int _count = int.parse(result['count'].toString());
 
-      for (var commentData in _topics) {
-        if (!UserAPI.blacklist.contains(jsonEncode({
-          'uid': commentData['reply']['user']['uid'].toString(),
-          'username': commentData['reply']['user']['nickname'],
-        }))) {
-          commentList.add(CommentAPI.createComment(commentData['reply']));
-          _idList.add(commentData['id']);
+      for (final dynamic data in _topics) {
+        final Map<String, dynamic> commentData = data as Map<String, dynamic>;
+        final BlacklistUser user = BlacklistUser.fromJson(
+          <String, dynamic>{
+            'uid': commentData['reply']['user']['uid'].toString(),
+            'username': commentData['reply']['user']['nickname'],
+          },
+        );
+        if (!UserAPI.blacklist.contains(user)) {
+          commentList.add(CommentAPI.createComment(
+              commentData['reply'] as Map<String, dynamic>));
+          _idList.add(commentData['id'] as int);
         }
       }
       _commentList.addAll(commentList);
@@ -150,14 +154,14 @@ class _CommentListState extends State<CommentList>
     }
   }
 
-  Future<Null> _refreshData() async {
+  Future<void> _refreshData() async {
     if (!_isLoading) {
       _isLoading = true;
       _commentList.clear();
 
       _lastValue = 0;
 
-      Map result = (await CommentAPI.getCommentList(
+      final Map<String, dynamic> result = (await CommentAPI.getCommentList(
         widget.commentController.commentType,
         false,
         _lastValue,
@@ -165,19 +169,24 @@ class _CommentListState extends State<CommentList>
       ))
           .data;
 
-      List<Comment> commentList = [];
-      List<int> idList = [];
-      List _topics = result['replylist'];
-      int _total = int.parse(result['total'].toString());
-      int _count = int.parse(result['count'].toString());
+      final List<Comment> commentList = <Comment>[];
+      final List<int> idList = <int>[];
+      final List<dynamic> _topics = result['replylist'] as List<dynamic>;
+      final int _total = result['total'].toString().toInt();
+      final int _count = result['count'].toString().toInt();
 
-      for (var commentData in _topics) {
-        if (!UserAPI.blacklist.contains(jsonEncode({
-          'uid': commentData['reply']['user']['uid'].toString(),
-          'username': commentData['reply']['user']['nickname'],
-        }))) {
-          commentList.add(CommentAPI.createComment(commentData['reply']));
-          idList.add(commentData['id']);
+      for (final dynamic data in _topics) {
+        final Map<String, dynamic> commentData = data as Map<String, dynamic>;
+        final BlacklistUser user = BlacklistUser.fromJson(
+          <String, dynamic>{
+            'uid': commentData['reply']['user']['uid'].toString(),
+            'username': commentData['reply']['user']['nickname'],
+          },
+        );
+        if (!UserAPI.blacklist.contains(user)) {
+          commentList.add(CommentAPI.createComment(
+              commentData['reply'] as Map<String, dynamic>));
+          idList.add(commentData['id'] as int);
         }
       }
       _commentList.addAll(commentList);
@@ -198,6 +207,7 @@ class _CommentListState extends State<CommentList>
   }
 
   @mustCallSuper
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     if (!_showLoading) {
@@ -206,7 +216,7 @@ class _CommentListState extends State<CommentList>
         _itemList = ExtendedListView.builder(
           padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
           itemCount: _commentList.length + 1,
-          itemBuilder: (context, index) {
+          itemBuilder: (BuildContext _, int index) {
             if (index == _commentList.length - 1) {
               _loadData();
             }
@@ -234,7 +244,7 @@ class _CommentListState extends State<CommentList>
       }
       return _body;
     } else {
-      return SpinKitWidget();
+      return const SpinKitWidget();
     }
   }
 }
@@ -248,14 +258,14 @@ class CommentListInPostController {
 }
 
 class CommentListInPost extends StatefulWidget {
-  final Post post;
-  final CommentListInPostController commentInPostController;
-
-  CommentListInPost(
+  const CommentListInPost(
     this.post,
     this.commentInPostController, {
     Key key,
   }) : super(key: key);
+
+  final Post post;
+  final CommentListInPostController commentInPostController;
 
   @override
   State createState() => CommentListInPostState();
@@ -263,7 +273,7 @@ class CommentListInPost extends StatefulWidget {
 
 class CommentListInPostState extends State<CommentListInPost>
     with AutomaticKeepAliveClientMixin {
-  final _comments = <Comment>[];
+  final List<Comment> _comments = <Comment>[];
 
   bool isLoading = true;
   bool canLoadMore = false;
@@ -289,15 +299,16 @@ class CommentListInPostState extends State<CommentListInPost>
     _refreshList();
   }
 
-  Future<void> confirmDelete(context, Comment comment) async {
-    final confirm = await ConfirmationDialog.show(
+  Future<void> confirmDelete(BuildContext context, Comment comment) async {
+    final bool confirm = await ConfirmationDialog.show(
       context,
       title: '删除评论',
       content: '是否确认删除这条评论?',
       showConfirm: true,
     );
     if (confirm) {
-      final _loadingDialogController = LoadingDialogController();
+      final LoadingDialogController _loadingDialogController =
+          LoadingDialogController();
       LoadingDialog.show(
         context,
         text: '正在删除评论',
@@ -319,7 +330,7 @@ class CommentListInPostState extends State<CommentListInPost>
     if (_comments.length >= index && _comments[index] != null) {
       navigatorState.pushNamed(
         Routes.openjmuAddComment,
-        arguments: {
+        arguments: <String, dynamic>{
           'post': widget.post,
           'comment': _comments?.elementAt(index),
         },
@@ -327,24 +338,24 @@ class CommentListInPostState extends State<CommentListInPost>
     }
   }
 
-  void showActions(context, int index) {
+  void showActions(BuildContext context, int index) {
     ConfirmationBottomSheet.show(
       context,
       children: <Widget>[
         if (_comments[index].fromUserUid == currentUser.uid ||
             widget.post.uid == currentUser.uid)
           ConfirmationBottomSheetAction(
-            icon: Icon(Icons.delete),
+            icon: const Icon(Icons.delete),
             text: '删除评论',
             onTap: () => confirmDelete(context, _comments[index]),
           ),
         ConfirmationBottomSheetAction(
-          icon: Icon(Icons.reply),
+          icon: const Icon(Icons.reply),
           text: '回复评论',
           onTap: () => replyTo(index),
         ),
         ConfirmationBottomSheetAction(
-          icon: Icon(Icons.report),
+          icon: const Icon(Icons.report),
           text: '复制评论',
           onTap: () {
             Clipboard.setData(ClipboardData(
@@ -357,86 +368,104 @@ class CommentListInPostState extends State<CommentListInPost>
     );
   }
 
-  Future<Null> _loadList() async {
+  Future<void> _loadList() async {
     isLoading = true;
     try {
-      final response = (await CommentAPI.getCommentInPostList(
+      final Map<String, dynamic> response =
+          (await CommentAPI.getCommentInPostList(
         widget.post.id,
         isMore: true,
         lastValue: lastValue,
       ))
-          ?.data;
-      final list = response['replylist'];
-      final total = response['total'] as int;
-      if (_comments.length + response['count'] as int < total) {
+              ?.data;
+      final List<Map<dynamic, dynamic>> list =
+          (response['replylist'] as List<dynamic>)
+              .cast<Map<dynamic, dynamic>>();
+      final int total = response['total'] as int;
+      if (_comments.length + (response['count'] as int) < total) {
         canLoadMore = true;
       } else {
         canLoadMore = false;
       }
 
-      list.forEach((comment) {
-        if (!UserAPI.blacklist.contains(jsonEncode({
-          'uid': comment['reply']['user']['uid'].toString(),
-          'username': comment['reply']['user']['nickname']
-        }))) {
+      for (final Map<dynamic, dynamic> comment in list) {
+        final BlacklistUser user = BlacklistUser.fromJson(
+          <String, dynamic>{
+            'uid': comment['reply']['user']['uid'].toString(),
+            'username': comment['reply']['user']['nickname']
+          },
+        );
+        if (!UserAPI.blacklist.contains(user)) {
           comment['reply']['post'] = widget.post;
-          _comments.add(CommentAPI.createCommentInPost(comment['reply']));
+          _comments.add(CommentAPI.createCommentInPost(
+              comment['reply'] as Map<String, dynamic>));
         }
-      });
+      }
 
       isLoading = false;
       lastValue = _comments.isEmpty ? 0 : _comments.last.id;
-      if (this.mounted) setState(() {});
+      if (mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
         trueDebugPrint('${e.response.data}');
       } else {
         trueDebugPrint('${e.request}');
-        trueDebugPrint('${e.message}');
+        trueDebugPrint(e.message);
       }
       return;
     }
   }
 
-  Future<Null> _refreshList() async {
+  Future<void> _refreshList() async {
     setState(() {
       isLoading = true;
     });
     _comments.clear();
     try {
-      final response =
-          (await CommentAPI.getCommentInPostList(widget.post.id))?.data;
-      final list = response['replylist'];
-      final total = response['total'] as int;
+      final Map<String, dynamic> response =
+          (await CommentAPI.getCommentInPostList(
+        widget.post.id,
+        isMore: true,
+        lastValue: lastValue,
+      ))
+              ?.data;
+      final List<Map<dynamic, dynamic>> list =
+          (response['replylist'] as List<dynamic>)
+              .cast<Map<dynamic, dynamic>>();
+      final int total = response['total'] as int;
       if (response['count'] as int < total) canLoadMore = true;
 
-      list.forEach((comment) {
-        if (!UserAPI.blacklist.contains(jsonEncode({
-          'uid': comment['reply']['user']['uid'].toString(),
-          'username': comment['reply']['user']['nickname']
-        }))) {
+      for (final Map<dynamic, dynamic> comment in list) {
+        final BlacklistUser user = BlacklistUser.fromJson(
+          <String, dynamic>{
+            'uid': comment['reply']['user']['uid'].toString(),
+            'username': comment['reply']['user']['nickname']
+          },
+        );
+        if (!UserAPI.blacklist.contains(user)) {
           comment['reply']['post'] = widget.post;
-          _comments.add(CommentAPI.createCommentInPost(comment['reply']));
+          _comments.add(CommentAPI.createCommentInPost(
+              comment['reply'] as Map<String, dynamic>));
         }
-      });
+      }
 
       isLoading = false;
       firstLoadComplete = true;
       lastValue = _comments.isEmpty ? 0 : _comments.last.id;
 
-      if (this.mounted) setState(() {});
+      if (mounted) setState(() {});
     } on DioError catch (e) {
       if (e.response != null) {
         trueDebugPrint('${e.response.data}');
       } else {
         trueDebugPrint('${e.request}');
-        trueDebugPrint('${e.message}');
+        trueDebugPrint(e.message);
       }
       return;
     }
   }
 
-  Widget getCommentNickname(context, comment) {
+  Widget getCommentNickname(BuildContext context, Comment comment) {
     return Text(
       comment.fromUserName,
       style: TextStyle(fontSize: suSetSp(20.0)),
@@ -452,7 +481,7 @@ class CommentListInPostState extends State<CommentListInPost>
     );
   }
 
-  Widget getExtendedText(context, content) {
+  Widget getExtendedText(BuildContext context, String content) {
     return ExtendedText(
       content != null ? '$content ' : null,
       style: TextStyle(fontSize: suSetSp(19.0)),
@@ -462,30 +491,31 @@ class CommentListInPostState extends State<CommentListInPost>
     );
   }
 
-  String replaceMentionTag(text) {
+  String replaceMentionTag(String text) {
     final RegExp mTagStartReg = RegExp(r'<M?\w+.*?\/?>');
     final RegExp mTagEndReg = RegExp(r'<\/M?\w+.*?\/?>');
-    final commentText = text
+    final String commentText = text
         .replaceAllMapped(mTagStartReg, (_) => '')
         .replaceAllMapped(mTagEndReg, (_) => '');
     return commentText;
   }
 
   @mustCallSuper
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return isLoading
-        ? SpinKitWidget()
+        ? const SpinKitWidget()
         : firstLoadComplete
             ? ExtendedListView.separated(
                 padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
-                separatorBuilder: (context, index) => Container(
+                separatorBuilder: (BuildContext _, int index) => Container(
                   color: Theme.of(context).dividerColor,
                   height: 1.0,
                 ),
                 itemCount: _comments.length + 1,
-                itemBuilder: (context, index) {
+                itemBuilder: (BuildContext _, int index) {
                   if (index == _comments.length - 1 && canLoadMore) {
                     _loadList();
                   }
@@ -495,7 +525,7 @@ class CommentListInPostState extends State<CommentListInPost>
                     );
                   } else if (index < _comments.length) {
                     if (_comments[index] == null) {
-                      return SizedBox.shrink();
+                      return const SizedBox.shrink();
                     }
                     return InkWell(
                       onTap: () => showActions(context, index),
@@ -562,10 +592,10 @@ class CommentListInPostState extends State<CommentListInPost>
                       ),
                     );
                   } else {
-                    return SizedBox.shrink();
+                    return const SizedBox.shrink();
                   }
                 },
               )
-            : LoadMoreIndicator(canLoadMore: false);
+            : const LoadMoreIndicator(canLoadMore: false);
   }
 }

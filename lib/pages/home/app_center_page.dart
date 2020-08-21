@@ -132,7 +132,8 @@ class AppCenterPage extends StatelessWidget {
                         },
                       ),
                       ...List.generate(
-                        provider.maxCommonWebApps - provider.commonWebApps.length,
+                        provider.maxCommonWebApps -
+                            provider.commonWebApps.length,
                         (int _) => Spacer(),
                       ),
                     ],
@@ -240,23 +241,23 @@ class AppCenterPage extends StatelessWidget {
       end: 20.0.w,
       child: isEditing
           ? Container(
-        width: 28.0.w,
-        height: 28.0.w,
-        decoration: BoxDecoration(
-          color: context.themeData.canvasColor,
-          shape: BoxShape.circle,
-        ),
-        child: Center(
-          child: SvgPicture.asset(
-            isCommon
-                ? R.ASSETS_ICONS_APP_CENTER_REMOVE_SVG
-                : R.ASSETS_ICONS_APP_CENTER_ADD_SVG,
-            color: iconTheme.color,
-            width: iconTheme.size,
-            height: iconTheme.size,
-          ),
-        ),
-      )
+              width: 28.0.w,
+              height: 28.0.w,
+              decoration: BoxDecoration(
+                color: context.themeData.canvasColor,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: SvgPicture.asset(
+                  isCommon
+                      ? R.ASSETS_ICONS_APP_CENTER_REMOVE_SVG
+                      : R.ASSETS_ICONS_APP_CENTER_ADD_SVG,
+                  color: iconTheme.color,
+                  width: iconTheme.size,
+                  height: iconTheme.size,
+                ),
+              ),
+            )
           : const SizedBox.shrink(),
     );
   }
@@ -264,7 +265,8 @@ class AppCenterPage extends StatelessWidget {
   /// 分类列表组件
   Widget getSectionColumn(BuildContext context, String name) {
     return Selector<WebAppsProvider, Map<String, Set<WebApp>>>(
-      selector: (BuildContext _, WebAppsProvider provider) => provider.appCategoriesList,
+      selector: (BuildContext _, WebAppsProvider provider) =>
+          provider.appCategoriesList,
       builder: (
         BuildContext _,
         Map<String, Set<WebApp>> appCategoriesList,
@@ -329,13 +331,15 @@ class AppCenterPage extends StatelessWidget {
       (WebAppsProvider provider) => provider.fetching,
     );
     return Selector<WebAppsProvider, bool>(
-      selector: (BuildContext _, WebAppsProvider provider) => provider.isEditingCommonApps,
+      selector: (BuildContext _, WebAppsProvider provider) =>
+          provider.isEditingCommonApps,
       builder: (BuildContext _, bool isEditingCommonApps, Widget __) {
         return WillPopScope(
           onWillPop: () {
             if (isEditingCommonApps) {
               context.read<WebAppsProvider>().saveCommonApps();
-              context.read<WebAppsProvider>().isEditingCommonApps = !isEditingCommonApps;
+              context.read<WebAppsProvider>().isEditingCommonApps =
+                  !isEditingCommonApps;
             }
             return Future.value(!isEditingCommonApps);
           },

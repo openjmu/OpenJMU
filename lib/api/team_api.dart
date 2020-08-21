@@ -209,7 +209,7 @@ class TeamPostAPI {
   static Future<FormData> createPostImageUploadForm(AssetEntity asset) async {
     final Uint8List imageData = await asset.originBytes;
     final String name = asset.title ?? '$currentTimeStamp.jpg';
-    final FormData formData = FormData.from({
+    final FormData formData = FormData.from(<String, dynamic>{
       'file': UploadFileInfo.fromBytes(imageData, name),
       'type': 3,
       'sid': UserAPI.currentUser.sid,

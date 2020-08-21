@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,12 +11,6 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/cards/post_card.dart';
 
 class PostController {
-  final String postType;
-  final bool isFollowed;
-  final bool isMore;
-  final Function lastValue;
-  final Map<String, dynamic> additionAttrs;
-
   PostController({
     @required this.postType,
     @required this.isFollowed,
@@ -26,9 +19,15 @@ class PostController {
     this.additionAttrs,
   });
 
+  final String postType;
+  final bool isFollowed;
+  final bool isMore;
+  final int Function(int) lastValue;
+  final Map<String, dynamic> additionAttrs;
+
   _PostListState _postListState;
 
-  Future reload() => _postListState._refreshData();
+  Future<void> reload() => _postListState._refreshData();
 }
 
 class PostList extends StatefulWidget {
@@ -63,8 +62,8 @@ class _PostListState extends State<PostList>
   Widget _errorChild;
   bool error = false;
 
-  List<int> _idList = [];
-  List<Post> _postList = [];
+  List<int> _idList = <int>[];
+  List<Post> _postList = <Post>[];
 
   @override
   bool get wantKeepAlive => true;
@@ -76,36 +75,40 @@ class _PostListState extends State<PostList>
     _scrollController = widget.scrollController;
 
     Instances.eventBus
-      ..on<ScrollToTopEvent>().listen((event) {
+      ..on<ScrollToTopEvent>().listen((ScrollToTopEvent event) {
         if (mounted &&
             ((event.tabIndex == 0 &&
                     widget.postController.postType == 'square') ||
                 (event.type == '首页')) &&
             _scrollController != null) {
-          if (_postList.length > 20) _postList = _postList.sublist(0, 20);
+          if (_postList.length > 20) {
+            _postList = _postList.sublist(0, 20);
+          }
           _scrollController.animateTo(
             0.0,
             curve: Curves.fastOutSlowIn,
             duration: kTabScrollDuration,
           );
-          Future.delayed(50.milliseconds, () {
+          Future<void>.delayed(50.milliseconds, () {
             refreshIndicatorKey.currentState.show();
           });
-          Future.delayed(500.milliseconds, () {
+          Future<void>.delayed(500.milliseconds, () {
             _refreshData(needLoader: true);
           });
         }
       })
-      ..on<PostChangeEvent>().listen((event) {
+      ..on<PostChangeEvent>().listen((PostChangeEvent event) {
         if (event.remove) {
-          _postList.removeWhere((post) => event.post.id == post.id);
+          _postList.removeWhere((Post post) => event.post.id == post.id);
         } else {
-          int index = _postList.indexOf(event.post);
-          _postList.replaceRange(index, index + 1, [event.post]);
+          final int index = _postList.indexOf(event.post);
+          _postList.replaceRange(index, index + 1, <Post>[event.post]);
         }
-        if (mounted) setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       })
-      ..on<PostDeletedEvent>().listen((event) {
+      ..on<PostDeletedEvent>().listen((PostDeletedEvent event) {
         trueDebugPrint(
             'PostDeleted: ${event.postId} / ${event.page} / ${event.index}');
         if ((event.page == widget.postController.postType) &&
@@ -113,7 +116,9 @@ class _PostListState extends State<PostList>
           _idList.removeAt(event.index);
           _postList.removeAt(event.index);
         }
-        if (mounted) setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       });
 
     _emptyChild = GestureDetector(
@@ -149,11 +154,11 @@ class _PostListState extends State<PostList>
     _refreshData();
   }
 
-  Future<Null> _loadData() async {
+  Future<void> _loadData() async {
     if (!_isLoading && _canLoadMore) {
       _isLoading = true;
     }
-    final result = (await PostAPI.getPostList(
+    final Map<String, dynamic> result = (await PostAPI.getPostList(
       widget.postController.postType,
       widget.postController.isFollowed,
       true,
@@ -162,20 +167,22 @@ class _PostListState extends State<PostList>
     ))
         .data;
 
-    List<Post> postList = [];
-    List _topics = result['topics'];
-    int _total = int.parse(result['total'].toString());
-    int _count = int.parse(result['count'].toString());
+    final List<Post> postList = <Post>[];
+    final List<Map<String, dynamic>> _topics =
+        (result['topics'] as List<dynamic>).cast<Map<String, dynamic>>();
+    final int _total = result['total'].toString().toInt();
+    final int _count = result['count'].toString().toInt();
 
-    for (var postData in _topics) {
-      if (!UserAPI.blacklist.contains(jsonEncode({
-        'uid': postData['topic']['user']['uid'].toString(),
-        'username': postData['topic']['user']['nickname'],
-      }))) {
-        postList.add(Post.fromJson(postData['topic']));
-        _idList.add(
-          postData['id'] is String ? int.parse(postData['id']) : postData['id'],
-        );
+    for (final Map<String, dynamic> postData in _topics) {
+      final BlacklistUser user = BlacklistUser.fromJson(
+        <String, dynamic>{
+          'uid': postData['topic']['user']['uid'].toString(),
+          'username': postData['topic']['user']['nickname'],
+        },
+      );
+      if (!UserAPI.blacklist.contains(user)) {
+        postList.add(Post.fromJson(postData['topic'] as Map<String, dynamic>));
+        _idList.add(postData['id'].toString().toInt());
       }
     }
     _postList.addAll(postList);
@@ -184,10 +191,12 @@ class _PostListState extends State<PostList>
     _canLoadMore = _idList.length < _total && _count != 0;
     _lastValue =
         _idList.isEmpty ? 0 : widget.postController.lastValue(_idList.last);
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
-  Future<Null> _refreshData({bool needLoader = false}) async {
+  Future<void> _refreshData({bool needLoader = false}) async {
     if (!_isLoading) {
       _isLoading = true;
     } else {
@@ -197,7 +206,7 @@ class _PostListState extends State<PostList>
     _lastValue = 0;
 
     try {
-      final result = (await PostAPI.getPostList(
+      final Map<String, dynamic> result = (await PostAPI.getPostList(
         widget.postController.postType,
         widget.postController.isFollowed,
         false,
@@ -206,24 +215,26 @@ class _PostListState extends State<PostList>
       ))
           .data;
 
-      List<Post> postList = [];
-      List<int> idList = [];
-      List _topics = result['topics'] ?? result['data'];
-      int _total = int.parse(result['total'].toString());
-      int _count = int.parse(result['count'].toString());
+      final List<Post> postList = <Post>[];
+      final List<int> idList = <int>[];
+      final List<Map<String, dynamic>> _topics =
+          ((result['topics'] ?? result['data']) as List<dynamic>)
+              .cast<Map<String, dynamic>>();
+      final int _total = result['total'].toString().toInt();
+      final int _count = result['count'].toString().toInt();
 
-      for (var postData in _topics) {
+      for (final dynamic postData in _topics) {
         if (postData['topic'] != null && postData != '') {
-          if (!UserAPI.blacklist.contains(jsonEncode({
-            'uid': postData['topic']['user']['uid'].toString(),
-            'username': postData['topic']['user']['nickname'],
-          }))) {
-            postList.add(Post.fromJson(postData['topic']));
-            idList.add(
-              postData['id'] is String
-                  ? int.parse(postData['id'])
-                  : postData['id'],
-            );
+          final BlacklistUser user = BlacklistUser.fromJson(
+            <String, dynamic>{
+              'uid': postData['topic']['user']['uid'].toString(),
+              'username': postData['topic']['user']['nickname'],
+            },
+          );
+          if (!UserAPI.blacklist.contains(user)) {
+            postList
+                .add(Post.fromJson(postData['topic'] as Map<String, dynamic>));
+            idList.add(postData['id'].toString().toInt());
           }
         }
       }
@@ -246,7 +257,9 @@ class _PostListState extends State<PostList>
     }
 
     _isLoading = false;
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -260,25 +273,31 @@ class _PostListState extends State<PostList>
         padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
         extendedListDelegate: ExtendedListDelegate(
           collectGarbage: (List<int> garbage) {
-            garbage.forEach((index) {
+            for (final int index in garbage) {
               if (_postList.length >= index + 1 && index < 4) {
-                final element = _postList.elementAt(index);
-                final pics = element.pics;
+                final Post element = _postList.elementAt(index);
+                final List<Map<String, dynamic>> pics = element.pics;
                 if (pics != null) {
-                  pics.forEach((pic) {
-                    ExtendedNetworkImageProvider(pic['image_thumb']).evict();
-                    ExtendedNetworkImageProvider(pic['image_middle']).evict();
-                    ExtendedNetworkImageProvider(pic['image_original']).evict();
-                  });
+                  for (final Map<String, dynamic> pic in pics) {
+                    ExtendedNetworkImageProvider(pic['image_thumb'] as String)
+                        .evict();
+                    ExtendedNetworkImageProvider(pic['image_middle'] as String)
+                        .evict();
+                    ExtendedNetworkImageProvider(
+                            pic['image_original'] as String)
+                        .evict();
+                  }
                 }
               }
-            });
+            }
           },
         ),
         controller: _scrollController,
         itemCount: _postList.length + 1,
-        itemBuilder: (context, index) {
-          if (index == _postList.length - 1 && _canLoadMore) _loadData();
+        itemBuilder: (BuildContext _, int index) {
+          if (index == _postList.length - 1 && _canLoadMore) {
+            _loadData();
+          }
           if (index == _postList.length) {
             return LoadMoreIndicator(canLoadMore: _canLoadMore);
           } else if (index < _postList.length) {
@@ -288,10 +307,10 @@ class _PostListState extends State<PostList>
               index: index,
               isDetail: false,
               parentContext: context,
-              key: ValueKey('post-key-${_postList[index].id}'),
+              key: ValueKey<String>('post-key-${_postList[index].id}'),
             );
           } else {
-            return SizedBox.shrink();
+            return const SizedBox.shrink();
           }
         },
       );
@@ -307,7 +326,7 @@ class _PostListState extends State<PostList>
         );
       }
     } else {
-      _body = SpinKitWidget();
+      _body = const SpinKitWidget();
     }
 
     return AnimatedSwitcher(duration: 500.milliseconds, child: _body);
@@ -323,14 +342,14 @@ class ForwardListInPostController {
 }
 
 class ForwardListInPost extends StatefulWidget {
-  final Post post;
-  final ForwardListInPostController forwardInPostController;
-
-  ForwardListInPost(
+  const ForwardListInPost(
     this.post,
     this.forwardInPostController, {
     Key key,
   }) : super(key: key);
+
+  final Post post;
+  final ForwardListInPostController forwardInPostController;
 
   @override
   State createState() => ForwardListInPostState();
@@ -338,7 +357,7 @@ class ForwardListInPost extends StatefulWidget {
 
 class ForwardListInPostState extends State<ForwardListInPost>
     with AutomaticKeepAliveClientMixin {
-  List<Post> _posts = [];
+  List<Post> _posts = <Post>[];
 
   bool isLoading = true;
   bool canLoadMore = false;
@@ -357,88 +376,110 @@ class ForwardListInPostState extends State<ForwardListInPost>
 
   void _refreshData() {
     isLoading = true;
-    _posts = [];
-    if (mounted) setState(() {});
+    _posts = <Post>[];
+    if (mounted) {
+      setState(() {});
+    }
     _refreshList();
   }
 
-  Future<Null> _loadList() async {
+  Future<void> _loadList() async {
     isLoading = true;
     try {
-      Map<String, dynamic> response = (await PostAPI.getForwardListInPost(
+      final Map<String, dynamic> response = (await PostAPI.getForwardListInPost(
         widget.post.id,
         isMore: true,
         lastValue: lastValue,
       ))
           ?.data;
-      List<dynamic> list = response['topics'];
-      int total = response['total'] as int;
-      if (_posts.length + response['count'] as int < total) {
+      final List<Map<String, dynamic>> list =
+          List<Map<String, dynamic>>.from(response['topics'] as List<dynamic>);
+      final int total = response['total'] as int;
+      if (_posts.length + (response['count'] as int) < total) {
         canLoadMore = true;
       } else {
         canLoadMore = false;
       }
-      list.forEach((post) {
-        if (!UserAPI.blacklist.contains(jsonEncode({
-          'uid': post['topic']['user']['uid'].toString(),
-          'username': post['topic']['user']['nickname'],
-        }))) {
-          _posts.add(Post.fromJson(post['topic']));
+      for (final Map<String, dynamic> post in list) {
+        final BlacklistUser user = BlacklistUser.fromJson(
+          <String, dynamic>{
+            'uid': post['topic']['user']['uid'].toString(),
+            'username': post['topic']['user']['nickname'],
+          },
+        );
+        if (!UserAPI.blacklist.contains(user)) {
+          _posts.add(Post.fromJson(post['topic'] as Map<String, dynamic>));
         }
-      });
+      }
       isLoading = false;
       lastValue = _posts.isEmpty ? 0 : _posts.last.id;
-      if (this.mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     } on DioError catch (e) {
       if (e.response != null) {
         trueDebugPrint('${e.response.data}');
       } else {
         trueDebugPrint('${e.request}');
-        trueDebugPrint('${e.message}');
+        trueDebugPrint(e.message);
       }
       return;
+    } catch (e) {
+      trueDebugPrint('Error when loading post list: $e');
     }
   }
 
-  Future<Null> _refreshList() async {
+  Future<void> _refreshList() async {
     isLoading = true;
     _posts.clear();
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
     try {
-      final response =
+      final Map<String, dynamic> response =
           (await PostAPI.getForwardListInPost(widget.post.id))?.data;
-      final list = response['topics'];
-      final total = response['total'] as int;
-      if (response['count'] as int < total) canLoadMore = true;
-      list.forEach((post) {
-        if (!UserAPI.blacklist.contains(jsonEncode({
-          'uid': post['topic']['user']['uid'].toString(),
-          'username': post['topic']['user']['nickname'],
-        }))) {
-          _posts.add(Post.fromJson(post['topic']));
+      final List<Map<String, dynamic>> list =
+          List<Map<String, dynamic>>.from(response['topics'] as List<dynamic>);
+      final int total = response['total'] as int;
+      if (response['count'] as int < total) {
+        canLoadMore = true;
+      }
+      for (final Map<String, dynamic> post in list) {
+        final BlacklistUser user = BlacklistUser.fromJson(
+          <String, dynamic>{
+            'uid': post['topic']['user']['uid'].toString(),
+            'username': post['topic']['user']['nickname'],
+          },
+        );
+        if (!UserAPI.blacklist.contains(user)) {
+          _posts.add(Post.fromJson(post['topic'] as Map<String, dynamic>));
         }
-      });
+      }
       isLoading = false;
       firstLoadComplete = true;
       lastValue = _posts.isEmpty ? 0 : _posts.last.id;
-      if (this.mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     } on DioError catch (e) {
       if (e.response != null) {
         trueDebugPrint('${e.response.data}');
       } else {
         trueDebugPrint('${e.request}');
-        trueDebugPrint('${e.message}');
+        trueDebugPrint(e.message);
       }
       return;
+    } catch (e) {
+      trueDebugPrint('Error when loading post list: $e');
     }
   }
 
-  Text getPostNickname(context, post) => Text(
+  Text getPostNickname(BuildContext context, Post post) => Text(
         post.nickname,
         style: TextStyle(fontSize: suSetSp(20.0)),
       );
 
-  Text getPostTime(context, Post post) {
+  Text getPostTime(BuildContext context, Post post) {
     return Text(
       PostAPI.postTimeConverter(post.postTime),
       style: Theme.of(context).textTheme.caption.copyWith(
@@ -447,28 +488,29 @@ class ForwardListInPostState extends State<ForwardListInPost>
     );
   }
 
-  Widget getExtendedText(context, content) => ExtendedText(
-        content != null ? '$content ' : null,
+  Widget getExtendedText(BuildContext context, String content) => ExtendedText(
+        content,
         style: TextStyle(fontSize: suSetSp(19.0)),
         onSpecialTextTap: specialTextTapRecognizer,
         specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       );
 
   @mustCallSuper
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return isLoading
-        ? SpinKitWidget()
+        ? const SpinKitWidget()
         : firstLoadComplete
             ? ExtendedListView.separated(
                 padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
-                separatorBuilder: (context, index) => Container(
+                separatorBuilder: (BuildContext _, int index) => Container(
                   color: Theme.of(context).dividerColor,
                   height: 1.0,
                 ),
                 itemCount: _posts.length + 1,
-                itemBuilder: (context, index) {
+                itemBuilder: (BuildContext _, int index) {
                   if (index == _posts.length - 1 && canLoadMore) {
                     _loadList();
                   }
@@ -524,10 +566,10 @@ class ForwardListInPostState extends State<ForwardListInPost>
                       ],
                     );
                   } else {
-                    return SizedBox.shrink();
+                    return const SizedBox.shrink();
                   }
                 },
               )
-            : LoadMoreIndicator(canLoadMore: false);
+            : const LoadMoreIndicator(canLoadMore: false);
   }
 }

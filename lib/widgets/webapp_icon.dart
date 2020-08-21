@@ -17,7 +17,8 @@ class WebAppIcon extends StatelessWidget {
 
   double get oldIconSize => size / 1.5;
 
-  String get iconPath => 'assets/icons/app-center/apps/${app.appId}-${app.code}.svg';
+  String get iconPath =>
+      'assets/icons/app-center/apps/${app.appId}-${app.code}.svg';
 
   String get oldIconUrl => '${API.webAppIcons}'
       'appid=${app.appId}'
