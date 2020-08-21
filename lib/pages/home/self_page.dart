@@ -234,13 +234,13 @@ class SelfPage extends StatelessWidget {
               child: SvgPicture.asset(
                 item['icon'] as String,
                 color: context.themeData.dividerColor.withOpacity(0.3),
-                width: 42.0.w,
+                width: 45.0.w,
               ),
             ),
             Expanded(
               child: Text(
                 item['name'],
-                style: TextStyle(fontSize: 18.0.sp),
+                style: TextStyle(fontSize: 20.0.sp),
               ),
             ),
           ],
@@ -350,7 +350,7 @@ class SelfPage extends StatelessWidget {
               padding: EdgeInsets.only(top: 4.0.sp, bottom: 8.0.sp),
               child: Text(
                 app.name,
-                style: TextStyle(fontSize: 14.0.sp),
+                style: TextStyle(fontSize: 16.0.sp),
                 maxLines: 1,
                 overflow: TextOverflow.fade,
               ),
@@ -394,7 +394,7 @@ class SelfPage extends StatelessWidget {
               padding: EdgeInsets.only(top: 4.0.sp, bottom: 8.0.sp),
               child: Text(
                 '全部应用',
-                style: TextStyle(fontSize: 14.0.sp),
+                style: TextStyle(fontSize: 16.0.sp),
                 maxLines: 1,
                 overflow: TextOverflow.fade,
               ),
@@ -497,10 +497,9 @@ class SelfPage extends StatelessWidget {
                       ]),
                   ],
                   style: Theme.of(context).textTheme.caption.copyWith(
-                        fontSize: 16.0.sp,
+                        fontSize: 18.0.sp,
                       ),
                 ),
-                maxLines: 2,
                 textAlign: TextAlign.start,
               ),
             );

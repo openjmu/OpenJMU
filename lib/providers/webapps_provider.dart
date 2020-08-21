@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 ///
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-08 15:54
@@ -24,7 +22,7 @@ class WebAppsProvider extends ChangeNotifier {
 
   Map<String, Set<WebApp>> get appCategoriesList => _appCategoriesList;
 
-  final int maxCommonWebApps = 4;
+  final int maxCommonWebApps = 3;
 
   Set<WebApp> _commonWebApps = <WebApp>{};
 
