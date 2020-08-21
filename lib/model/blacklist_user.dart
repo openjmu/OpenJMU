@@ -1,5 +1,5 @@
 ///
-/// [Author] Alex (https://github.com/AlexVincent525)
+/// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-02-16 22:02
 ///
 part of 'models.dart';

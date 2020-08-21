@@ -1,5 +1,5 @@
 ///
-/// [Author] Alex (https://github.com/AlexVincent525)
+/// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-03-11 09:53
 ///
 import 'dart:async';
