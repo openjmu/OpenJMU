@@ -634,13 +634,6 @@ class R {
   static const String ASSETS_ICONS_BOTTOM_NAVIGATION_SQUARE_SVG =
       'assets/icons/bottom-navigation/square.svg';
 
-  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/daymode-line.svg)
-  static const String ASSETS_ICONS_DAYMODE_LINE_SVG =
-      'assets/icons/daymode-line.svg';
-
-  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/exit-line.svg)
-  static const String ASSETS_ICONS_EXIT_LINE_SVG = 'assets/icons/exit-line.svg';
-
   /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/gender/female.svg)
   static const String ASSETS_ICONS_GENDER_FEMALE_SVG =
       'assets/icons/gender/female.svg';
@@ -657,10 +650,6 @@ class R {
   static const String ASSETS_ICONS_LIUYAN_LINE_SVG =
       'assets/icons/liuyan-line.svg';
 
-  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/nightmode-line.svg)
-  static const String ASSETS_ICONS_NIGHTMODE_LINE_SVG =
-      'assets/icons/nightmode-line.svg';
-
   /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/openjmu-team-badge.svg)
   static const String ASSETS_ICONS_OPENJMU_TEAM_BADGE_SVG =
       'assets/icons/openjmu-team-badge.svg';
@@ -668,6 +657,10 @@ class R {
   /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/post-actions/.DS_Store)
   static const String ASSETS_ICONS_POST_ACTIONS__DS_STORE =
       'assets/icons/post-actions/.DS_Store';
+
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/post-actions/add-to-block-list.svg)
+  static const String ASSETS_ICONS_POST_ACTIONS_ADD_TO_BLOCK_LIST_SVG =
+      'assets/icons/post-actions/add-to-block-list.svg';
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/post-actions/comment-fill.svg)
   static const String ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG =
@@ -677,23 +670,29 @@ class R {
   static const String ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG =
       'assets/icons/post-actions/forward-fill.svg';
 
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/post-actions/more.svg)
+  static const String ASSETS_ICONS_POST_ACTIONS_MORE_SVG =
+      'assets/icons/post-actions/more.svg';
+
   /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/post-actions/praise-fill.svg)
   static const String ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG =
       'assets/icons/post-actions/praise-fill.svg';
 
-  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/scan-line.svg)
-  static const String ASSETS_ICONS_SCAN_LINE_SVG = 'assets/icons/scan-line.svg';
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/post-actions/report.svg)
+  static const String ASSETS_ICONS_POST_ACTIONS_REPORT_SVG =
+      'assets/icons/post-actions/report.svg';
 
-  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/search.svg)
-  static const String ASSETS_ICONS_SEARCH_SVG = 'assets/icons/search.svg';
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/self-page/.DS_Store)
+  static const String ASSETS_ICONS_SELF_PAGE__DS_STORE =
+      'assets/icons/self-page/.DS_Store';
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/self-page/backpack.svg)
   static const String ASSETS_ICONS_SELF_PAGE_BACKPACK_SVG =
       'assets/icons/self-page/backpack.svg';
 
-  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/self-page/change-theme.svg)
-  static const String ASSETS_ICONS_SELF_PAGE_CHANGE_THEME_SVG =
-      'assets/icons/self-page/change-theme.svg';
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/self-page/logout.svg)
+  static const String ASSETS_ICONS_SELF_PAGE_LOGOUT_SVG =
+      'assets/icons/self-page/logout.svg';
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/self-page/night-mode.svg)
   static const String ASSETS_ICONS_SELF_PAGE_NIGHT_MODE_SVG =
@@ -703,12 +702,24 @@ class R {
   static const String ASSETS_ICONS_SELF_PAGE_SCAN_CODE_SVG =
       'assets/icons/self-page/scan-code.svg';
 
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/self-page/search.svg)
+  static const String ASSETS_ICONS_SELF_PAGE_SEARCH_SVG =
+      'assets/icons/self-page/search.svg';
+
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/self-page/settings.svg)
+  static const String ASSETS_ICONS_SELF_PAGE_SETTINGS_SVG =
+      'assets/icons/self-page/settings.svg';
+
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/self-page/signed.svg)
+  static const String ASSETS_ICONS_SELF_PAGE_SIGNED_SVG =
+      'assets/icons/self-page/signed.svg';
+
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/self-page/unsigned.svg)
+  static const String ASSETS_ICONS_SELF_PAGE_UNSIGNED_SVG =
+      'assets/icons/self-page/unsigned.svg';
+
   /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/send.svg)
   static const String ASSETS_ICONS_SEND_SVG = 'assets/icons/send.svg';
-
-  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/settings-line.svg)
-  static const String ASSETS_ICONS_SETTINGS_LINE_SVG =
-      'assets/icons/settings-line.svg';
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/settings/.DS_Store)
   static const String ASSETS_ICONS_SETTINGS__DS_STORE =
@@ -746,9 +757,6 @@ class R {
   static const String ASSETS_ICONS_SETTINGS_THEME_COLOR_SVG =
       'assets/icons/settings/theme_color.svg';
 
-  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/sign-line.svg)
-  static const String ASSETS_ICONS_SIGN_LINE_SVG = 'assets/icons/sign-line.svg';
-
   /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/test.svg)
   static const String ASSETS_ICONS_TEST_SVG = 'assets/icons/test.svg';
 
@@ -759,6 +767,10 @@ class R {
   /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/user/qr-code.svg)
   static const String ASSETS_ICONS_USER_QR_CODE_SVG =
       'assets/icons/user/qr-code.svg';
+
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/user/save-code.svg)
+  static const String ASSETS_ICONS_USER_SAVE_CODE_SVG =
+      'assets/icons/user/save-code.svg';
 
   /// ![preview](file:///Users/alex/Documents/OpenJMU/images/.DS_Store)
   static const String IMAGES__DS_STORE = 'images/.DS_Store';

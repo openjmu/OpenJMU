@@ -173,43 +173,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         ),
       );
 
-  /// Search bar for search pages.
-  /// 搜索框
-  Widget get searchBar => Padding(
-        padding: EdgeInsets.only(top: 20.0.h),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {
-            navigatorState.pushNamed(
-              Routes.openjmuSearch,
-              arguments: <String, dynamic>{'content': null},
-            );
-          },
-          child: Container(
-            height: 56.0.h,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0.w),
-              color: Theme.of(context).canvasColor,
-            ),
-            child: Row(
-              children: <Widget>[
-                const Spacer(),
-                AspectRatio(
-                  aspectRatio: 1.0,
-                  child: Center(
-                    child: SvgPicture.asset(
-                      R.ASSETS_ICONS_SEARCH_SVG,
-                      width: 24.0.w,
-                      color: currentThemeColor,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      );
-
   @override
   @mustCallSuper
   Widget build(BuildContext context) {

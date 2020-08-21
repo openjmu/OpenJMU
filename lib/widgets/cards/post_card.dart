@@ -589,7 +589,8 @@ class _PostCardState extends State<PostCard> {
       context,
       children: <Widget>[
         ConfirmationBottomSheetAction(
-          icon: Icon(Icons.visibility_off),
+          icon: SvgPicture.asset(
+              R.ASSETS_ICONS_POST_ACTIONS_ADD_TO_BLOCK_LIST_SVG),
           text: '${UserAPI.blacklist.contains(
             BlacklistUser(uid: widget.post.uid, username: widget.post.nickname),
           ) ? '移出' : '加入'}黑名单',
@@ -599,7 +600,7 @@ class _PostCardState extends State<PostCard> {
           ),
         ),
         ConfirmationBottomSheetAction(
-          icon: Icon(Icons.report),
+          icon: SvgPicture.asset(R.ASSETS_ICONS_POST_ACTIONS_REPORT_SVG),
           text: '举报动态',
           onTap: () => confirmReport(context),
         ),
