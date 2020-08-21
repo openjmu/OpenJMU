@@ -84,6 +84,7 @@ flutter:
     - assets/icons/
     - assets/icons/add-button/
     - assets/icons/app-center/
+    - assets/icons/app-center/apps/
     - assets/icons/bottom-navigation/
     - assets/icons/gender/
     - assets/icons/post-actions/
