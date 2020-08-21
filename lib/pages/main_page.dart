@@ -97,7 +97,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   /// Icon size for bottom navigation bar's item.
   /// 底部导航的图标大小
-  double get bottomBarIconSize => bottomBarHeight / 2.25;
+  double get bottomBarIconSize => bottomBarHeight / 1.75;
 
   @override
   bool get wantKeepAlive => true;
@@ -162,7 +162,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         selectedColor: currentThemeColor,
         itemFontSize: 16.0,
         onTabSelected: _selectedTab,
-        showText: true,
+        showText: false,
         initIndex: _currentIndex,
         items: List<FABBottomAppBarItem>.generate(
           pagesTitle.length,
