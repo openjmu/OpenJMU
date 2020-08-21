@@ -49,7 +49,6 @@ class UserPageState extends State<UserPage>
 
   int get uid => widget.uid ?? currentUser.uid;
   bool get isCurrentUser => uid == currentUser.uid;
-  bool get isFemale => (user?.gender == 2) ?? false;
 
   final ScrollController scrollController = ScrollController();
   double get expandedHeight =>
@@ -443,7 +442,7 @@ class UserPageState extends State<UserPage>
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: <Widget>[
-                    sexualWidget,
+                    sexualWidget(),
                     levelWidget,
                     if (userTags.isNotEmpty) ...tagsWidget,
                   ],
@@ -646,25 +645,6 @@ class UserPageState extends State<UserPage>
         textAlign: TextAlign.start,
         maxLines: 1,
         overflow: TextOverflow.fade,
-      ),
-    );
-  }
-
-  Widget get sexualWidget {
-    return Container(
-      margin: EdgeInsets.only(left: 20.0.w),
-      decoration: BoxDecoration(
-        color: isFemale ? Colors.pinkAccent : Colors.blueAccent,
-        shape: BoxShape.circle,
-      ),
-      child: Padding(
-        padding: EdgeInsets.all(3.0.w),
-        child: SvgPicture.asset(
-          'assets/icons/gender/${isFemale ? 'fe' : ''}male.svg',
-          width: 20.0.w,
-          height: 20.0.w,
-          color: Colors.white,
-        ),
       ),
     );
   }

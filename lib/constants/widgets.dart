@@ -142,7 +142,22 @@ class DeveloperTag extends StatelessWidget {
   }
 }
 
-/// Common separator. Used in setting separate.
+Widget sexualWidget({
+  double size = 28.0,
+  EdgeInsetsGeometry margin,
+}) {
+  final bool isFemale = (currentUser?.gender == 2) ?? false;
+  return Container(
+    margin: margin ?? EdgeInsets.only(left: 20.0.w),
+    child: SvgPicture.asset(
+      'assets/icons/gender/${isFemale ? 'fe' : ''}male.svg',
+      width: size.w,
+      height: size.w,
+    ),
+  );
+}
+
+/// A common separator. Used in setting separate.
 Widget separator(
   BuildContext context, {
   Color color,
