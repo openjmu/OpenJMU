@@ -42,7 +42,6 @@ fvm
 **/android/**/GeneratedPluginRegistrant.java
 
 # iOS/XCode related
-/ios/Flutter/flutter_export_environment.sh
 **/ios/**/*.mode1v3
 **/ios/**/*.mode2v3
 **/ios/**/*.moved-aside
@@ -61,11 +60,12 @@ fvm
 **/ios/.generated/
 **/ios/Flutter/App.framework
 **/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
 **/ios/Flutter/Generated.xcconfig
-**/ios/Flutter/flutter.podspec
 **/ios/Flutter/app.flx
 **/ios/Flutter/app.zip
 **/ios/Flutter/flutter_assets/
+**/ios/Flutter/flutter_export_environment.sh
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
 
@@ -73,7 +73,12 @@ fvm
 lib/generated_plugin_registrant.dart
 
 # Exceptions to above rules.
+!**/ios/**/default.mode1v3
+!**/ios/**/default.mode2v3
+!**/ios/**/default.pbxuser
+!**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+.env
 
 # Unpublic part.
 lib/api/api.dart
