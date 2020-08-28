@@ -423,12 +423,7 @@ class CommentListInPostState extends State<CommentListInPost>
     _comments.clear();
     try {
       final Map<String, dynamic> response =
-          (await CommentAPI.getCommentInPostList(
-        widget.post.id,
-        isMore: true,
-        lastValue: lastValue,
-      ))
-              ?.data;
+          (await CommentAPI.getCommentInPostList(widget.post.id))?.data;
       final List<Map<dynamic, dynamic>> list =
           (response['replylist'] as List<dynamic>)
               .cast<Map<dynamic, dynamic>>();
