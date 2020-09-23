@@ -28,7 +28,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
         ),
         child: Row(
           children: <Widget>[
-            UserAPI.getAvatar(uid: comment.uid, size: 48.0),
+            UserAPI.getAvatar(uid: comment.uid),
             SizedBox(width: suSetWidth(16.0)),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -39,15 +39,13 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
                     Text(
                       (comment.userInfo['nickname'] ?? comment.uid).toString(),
                       style: TextStyle(
-                        fontSize: suSetSp(22.0),
+                        fontSize: 20.0.sp,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     if (comment.uid == topPost.uid)
                       Container(
-                        margin: EdgeInsets.only(
-                          left: suSetWidth(10.0),
-                        ),
+                        margin: EdgeInsets.only(left: suSetWidth(10.0)),
                         padding: EdgeInsets.symmetric(
                           horizontal: suSetWidth(6.0),
                           vertical: suSetHeight(0.5),
@@ -59,7 +57,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
                         child: Text(
                           '楼主',
                           style: TextStyle(
-                            fontSize: suSetSp(12.0),
+                            fontSize: 12.0.sp,
                             color: Colors.white,
                             fontWeight: FontWeight.bold,
                           ),
@@ -140,7 +138,7 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
     return Text(
       '第${comment.floor}楼 · ${TeamPostAPI.timeConverter(comment.postTime)}',
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(18.0),
+            fontSize: 16.0.sp,
             fontWeight: FontWeight.normal,
           ),
     );
@@ -153,14 +151,17 @@ class TeamPostCommentPreviewCard extends StatelessWidget {
         child: ExtendedText(
           comment.content ?? '',
           style: TextStyle(
-            fontSize: suSetSp(21.0),
+            fontSize: 19.0.sp,
           ),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
           overflowWidget: TextOverflowWidget(
             child: Text(
               '全文',
-              style: TextStyle(color: currentThemeColor),
+              style: TextStyle(
+                color: currentThemeColor,
+                fontSize: 19.0.sp,
+              ),
             ),
           ),
           specialTextSpanBuilder: StackSpecialTextSpanBuilder(),

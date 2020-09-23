@@ -42,11 +42,11 @@ class _PostCardState extends State<PostCard> {
   final Color actionTextColorLight = const Color(0xffBDBDBD);
   final double contentPadding = 22.0;
 
-  TextStyle get subtitleStyle =>
-      TextStyle(color: Colors.grey, fontSize: suSetSp(18.0));
-  TextStyle get rootTopicTextStyle => TextStyle(fontSize: suSetSp(18.0));
-  TextStyle get rootTopicMentionStyle =>
-      TextStyle(color: Colors.blue, fontSize: suSetSp(18.0));
+  TextStyle get rootTopicTextStyle => TextStyle(fontSize: 18.0.sp);
+  TextStyle get rootTopicMentionStyle => TextStyle(
+        color: Colors.blue,
+        fontSize: 18.0.sp,
+      );
 
   @override
   void initState() {
@@ -87,7 +87,7 @@ class _PostCardState extends State<PostCard> {
         children: <Widget>[
           Text(
             '${post.nickname ?? post.uid}',
-            style: TextStyle(fontSize: suSetSp(22.0)),
+            style: TextStyle(fontSize: suSetSp(20.0)),
             textAlign: TextAlign.left,
           ),
           if (Constants.developerList.contains(post.uid))
@@ -104,30 +104,12 @@ class _PostCardState extends State<PostCard> {
       );
 
   Widget getPostInfo(Post post) {
-    return Text.rich(
-      TextSpan(
-        children: <InlineSpan>[
-          WidgetSpan(
-            alignment: ui.PlaceholderAlignment.middle,
-            child: Icon(
-              Icons.access_time,
-              color: Colors.grey,
-              size: suSetWidth(16.0),
-            ),
-          ),
-          TextSpan(text: ' ${PostAPI.postTimeConverter(post.postTime)}　'),
-          WidgetSpan(
-            alignment: ui.PlaceholderAlignment.middle,
-            child: Icon(
-              Icons.smartphone,
-              color: Colors.grey,
-              size: suSetWidth(16.0),
-            ),
-          ),
-          TextSpan(text: ' ${post.from}　'),
-        ],
+    return Text(
+      '${PostAPI.postTimeConverter(post.postTime)}  来自${post.from}客户端',
+      style: TextStyle(
+        color: Theme.of(context).textTheme.caption.color,
+        fontSize: 16.0.sp,
       ),
-      style: subtitleStyle,
     );
   }
 
@@ -501,7 +483,7 @@ class _PostCardState extends State<PostCard> {
               ),
         child: ExtendedText(
           content != null ? '$content ' : null,
-          style: TextStyle(fontSize: suSetSp(21.0)),
+          style: TextStyle(fontSize: 19.0.sp),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: widget.isDetail ?? false ? null : 8,
           overflowWidget: widget.isDetail ?? false
@@ -509,7 +491,10 @@ class _PostCardState extends State<PostCard> {
               : TextOverflowWidget(
                   child: Text(
                     '全文',
-                    style: TextStyle(color: currentThemeColor),
+                    style: TextStyle(
+                      color: currentThemeColor,
+                      fontSize: 19.0.sp,
+                    ),
                   ),
                 ),
           specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
@@ -672,6 +657,7 @@ class _PostCardState extends State<PostCard> {
                           margin: EdgeInsets.symmetric(
                             vertical: suSetHeight(10.0),
                           ),
+                          height: 50.h,
                           padding: EdgeInsets.symmetric(
                             horizontal: suSetWidth(contentPadding),
                           ),
@@ -684,7 +670,8 @@ class _PostCardState extends State<PostCard> {
                                     horizontal: suSetWidth(contentPadding),
                                   ),
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
@@ -716,7 +703,7 @@ class _PostCardState extends State<PostCard> {
                                       .textTheme
                                       .caption
                                       .copyWith(
-                                        fontSize: suSetSp(18.0),
+                                        fontSize: 16.0.sp,
                                       ),
                                 ),
                                 const Spacer(),

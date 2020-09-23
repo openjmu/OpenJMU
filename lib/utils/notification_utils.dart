@@ -24,8 +24,7 @@ class NotificationUtils {
   }
 
   static Future show(String title, String body) async {
-    final color =
-        Provider.of<ThemesProvider>(currentContext, listen: false).currentColor;
+    final color = currentThemeColor;
     final androidDetails = AndroidNotificationDetails(
       'openjmu_message_channel',
       '推送消息',

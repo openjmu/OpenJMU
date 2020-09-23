@@ -109,14 +109,15 @@ class _BackpackPageState extends State<BackpackPage> {
       children: <Widget>[
         Text(
           myItems[index].name,
-          style: TextStyle(fontSize: 26.0.sp),
+          style: TextStyle(fontSize: 24.0.sp),
           overflow: TextOverflow.ellipsis,
         ),
         SizedBox(height: 12.0.h),
         Text(
           myItems[index].description,
-          style:
-              Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 18.0.sp),
+          style: Theme.of(context).textTheme.bodyText2.copyWith(
+                fontSize: 18.0.sp,
+              ),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
@@ -142,7 +143,7 @@ class _BackpackPageState extends State<BackpackPage> {
             '${myItems[index].count > 99 ? '99+' : myItems[index].count}',
             style: TextStyle(
               fontSize: 18.0.sp,
-              color: Colors.white,
+              color: Colors.white70,
               fontWeight: FontWeight.bold,
             ),
             maxLines: 1,

@@ -172,7 +172,7 @@ class MentionText extends SpecialText {
       final int uid = getUidFromContent(mentionOriginalText);
       return TextSpan(
         text: mentionText,
-        style: textStyle?.copyWith(color: Colors.blue),
+        style: textStyle?.copyWith(color: Colors.blueAccent),
         recognizer: TapGestureRecognizer()
           ..onTap = () {
             final Map<String, dynamic> data = {

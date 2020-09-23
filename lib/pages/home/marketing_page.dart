@@ -145,7 +145,7 @@ class _MarketingPageState extends State<MarketingPage> {
                   alignment: Alignment.centerRight,
                   icon: SvgPicture.asset(
                     R.ASSETS_ICONS_LIUYAN_LINE_SVG,
-                    color: Theme.of(context).iconTheme.color.withOpacity(0.3),
+                    color: currentTheme.iconTheme.color,
                     width: suSetWidth(32.0),
                     height: suSetWidth(32.0),
                   ),
@@ -181,8 +181,8 @@ class _MarketingPageState extends State<MarketingPage> {
           ),
         ),
         actions: <Widget>[
-          publishButton,
           notificationButton,
+          publishButton,
         ],
         actionsPadding: EdgeInsets.only(right: 20.0.w),
       ),

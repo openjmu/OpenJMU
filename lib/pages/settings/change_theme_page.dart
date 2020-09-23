@@ -15,13 +15,14 @@ class ChangeThemePage extends StatelessWidget {
                 margin: EdgeInsets.all(suSetWidth(12.0)),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(suSetWidth(10.0)),
-                  color: supportColors[index],
+                  color: supportThemeGroups[index].lightThemeColor,
                 ),
               ),
               AnimatedOpacity(
                 duration: 100.milliseconds,
-                opacity:
-                    provider.currentColor == supportColors[index] ? 1.0 : 0.0,
+                opacity: provider.currentThemeGroup == supportThemeGroups[index]
+                    ? 1.0
+                    : 0.0,
                 child: Container(
                   margin: EdgeInsets.all(suSetWidth(12.0)),
                   decoration: BoxDecoration(
@@ -69,7 +70,7 @@ class ChangeThemePage extends StatelessWidget {
           padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
           gridDelegate:
               SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
-          itemCount: supportColors.length,
+          itemCount: supportThemeGroups.length,
           itemBuilder: colorItem,
         ),
       ),

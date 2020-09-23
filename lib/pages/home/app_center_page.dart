@@ -50,25 +50,25 @@ class AppCenterPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
-                Container(
-                  margin: EdgeInsets.all(8.0.w),
-                  width: 56.0.w,
-                  height: 56.0.w,
-                  decoration: BoxDecoration(
-                    color: context.themeData.canvasColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: SvgPicture.asset(
-                      R.ASSETS_ICONS_SEND_SVG,
-                      width: 24.0.w,
-                      height: 24.0.w,
-                      color: context.themeData.iconTheme.color.withOpacity(0.5),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.all(12.0.w),
+                    decoration: BoxDecoration(
+                      color: context.themeData.canvasColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Center(
+                      child: SvgPicture.asset(
+                        R.ASSETS_ICONS_SEND_SVG,
+                        width: 24.0.w,
+                        height: 24.0.w,
+                        color: context.themeData.iconTheme.color,
+                      ),
                     ),
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top: 4.0.sp, bottom: 8.0.sp),
+                  padding: EdgeInsets.only(bottom: 10.0.sp),
                   child: Text(
                     isEditing ? '完成' : '编辑',
                     style: TextStyle(fontSize: 18.0.sp),

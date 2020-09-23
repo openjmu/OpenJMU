@@ -8,11 +8,7 @@ import 'package:openjmu/constants/constants.dart';
 //import 'package:openjmu/pages/home/add_button_page.dart';
 
 class FABBottomAppBarItem {
-  String iconPath;
-  String text;
-  Widget child;
-
-  FABBottomAppBarItem({
+  const FABBottomAppBarItem({
     this.iconPath,
     this.text,
     this.child,
@@ -22,6 +18,10 @@ class FABBottomAppBarItem {
           'cannot set icon and child at the same time.',
         );
 
+  final String iconPath;
+  final String text;
+  final Widget child;
+
   @override
   String toString() {
     return 'FABBottomAppBarItem {iconPath: $iconPath, text: $text, child: $child}';
@@ -29,7 +29,7 @@ class FABBottomAppBarItem {
 }
 
 class FABBottomAppBar extends StatefulWidget {
-  FABBottomAppBar({
+  const FABBottomAppBar({
     this.items,
     this.centerItemText,
     this.height = 64.0,
@@ -42,9 +42,7 @@ class FABBottomAppBar extends StatefulWidget {
     this.onTabSelected,
     this.initIndex,
     this.showText = true,
-  }) {
-    assert(this.items.length == 2 || this.items.length == 4);
-  }
+  }) : assert(items.length == 2 || items.length == 4);
 
   final List<FABBottomAppBarItem> items;
   final String centerItemText;
@@ -132,19 +130,21 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                             firstChild: SvgPicture.asset(
                               item.iconPath,
                               color: widget.selectedColor,
-                              width: suSetWidth(widget.iconSize),
-                              height: suSetWidth(widget.iconSize),
+                              width: widget.iconSize.w,
+                              height: widget.iconSize.w,
                             ),
                             secondChild: SvgPicture.asset(
                               item.iconPath,
                               color: widget.color,
-                              width: suSetWidth(widget.iconSize),
-                              height: suSetWidth(widget.iconSize),
+                              width: widget.iconSize.w,
+                              height: widget.iconSize.w,
                             ),
                           )
                         : item.child,
                     if (widget.showText)
-                      SizedBox(height: suSetWidth(widget.iconSize / 8)),
+                      SizedBox(
+                        height: (widget.iconSize / 8).w,
+                      ),
                     if (widget.showText)
                       AnimatedCrossFade(
                         duration: 200.milliseconds,
@@ -183,8 +183,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                       child: ClipRRect(
                         borderRadius: maxBorderRadius,
                         child: Container(
-                          width: suSetWidth(12.0),
-                          height: suSetWidth(12.0),
+                          width: 12.0.w,
+                          height: 12.0.w,
                           color: widget.selectedColor,
                         ),
                       ),
@@ -203,8 +203,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                       child: ClipRRect(
                         borderRadius: maxBorderRadius,
                         child: Container(
-                          width: suSetWidth(12.0),
-                          height: suSetWidth(12.0),
+                          width: 12.0.w,
+                          height: 12.0.w,
                           color: widget.selectedColor,
                         ),
                       ),
@@ -223,8 +223,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                       child: ClipRRect(
                         borderRadius: maxBorderRadius,
                         child: Container(
-                          width: suSetWidth(12.0),
-                          height: suSetWidth(12.0),
+                          width: 12.0.w,
+                          height: 12.0.w,
                           color: widget.selectedColor,
                         ),
                       ),
@@ -241,14 +241,16 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
   @mustCallSuper
   Widget build(BuildContext context) {
     super.build(context);
-    List<Widget> items = List.generate(widget.items.length, (int index) {
-      return _buildTabItem(
-        item: widget.items[index],
-        index: index,
-        onPressed: _updateIndex,
-      );
-    });
-//    items.insert(items.length >> 1, _middleItem);
+    final List<Widget> items = List<Widget>.generate(
+      widget.items.length,
+      (int index) {
+        return _buildTabItem(
+          item: widget.items[index],
+          index: index,
+          onPressed: _updateIndex,
+        );
+      },
+    );
 
     Widget appBar = Row(
       mainAxisSize: MainAxisSize.max,
@@ -260,16 +262,17 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
     if (Platform.isIOS) {
       appBar = ClipRect(
         child: BackdropFilter(
-          filter:
-              ui.ImageFilter.blur(sigmaX: suSetSp(20.0), sigmaY: suSetSp(20.0)),
+          filter: ui.ImageFilter.blur(sigmaX: 20.0.w, sigmaY: 20.0.w),
           child: appBar,
         ),
       );
     }
 
     return BottomAppBar(
-        color: widget.backgroundColor,
-        shape: widget.notchedShape,
-        child: appBar);
+      elevation: 0.0,
+      color: widget.backgroundColor,
+      shape: widget.notchedShape,
+      child: appBar,
+    );
   }
 }

@@ -34,7 +34,8 @@ class WebAppIcon extends StatelessWidget {
       );
     } catch (e) {
       trueDebugPrint(
-          'Error when load webapp icon: $e.\nLoading fallback icon...');
+        'Error when load ${app.name}\'s icon: $e.\nLoading fallback icon...',
+      );
       return ExtendedImage.network(
         oldIconUrl,
         fit: BoxFit.fill,

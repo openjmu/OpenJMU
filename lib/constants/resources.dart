@@ -694,6 +694,10 @@ class R {
   static const String ASSETS_ICONS_SELF_PAGE__DS_STORE =
       'assets/icons/self-page/.DS_Store';
 
+  /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/self-page/avatar_corner.svg)
+  static const String ASSETS_ICONS_SELF_PAGE_AVATAR_CORNER_SVG =
+      'assets/icons/self-page/avatar_corner.svg';
+
   /// ![preview](file:///Users/alex/Documents/OpenJMU/assets/icons/self-page/backpack.svg)
   static const String ASSETS_ICONS_SELF_PAGE_BACKPACK_SVG =
       'assets/icons/self-page/backpack.svg';

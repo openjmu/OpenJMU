@@ -7,7 +7,7 @@ part of 'models.dart';
 const Color defaultLightColor = Color(0xfff44336);
 const Color defaultDarkColor = Color(0xffef5350);
 
-abstract class ThemeGroup {
+class ThemeGroup {
   const ThemeGroup({
     this.lightThemeColor = defaultLightColor,
     this.darkThemeColor = defaultDarkColor,
@@ -19,18 +19,23 @@ abstract class ThemeGroup {
   final Color lightPrimaryColor = Colors.white;
   final Color lightBackgroundColor = const Color(0xfff7f7f7);
   final Color lightIconUnselectedColor = const Color(0xffc4c4c4);
+  final Color lightDividerColor = const Color(0xffeaeaea);
   final Color lightPrimaryTextColor = const Color(0xff212121);
   final Color lightSecondaryTextColor = const Color(0xff757575);
 
   final Color darkPrimaryColor = const Color(0xff212121);
   final Color darkBackgroundColor = const Color(0xff424242);
   final Color darkIconUnselectedColor = const Color(0xff757575);
+  final Color darkDividerColor = const Color(0xff313131);
   final Color darkPrimaryTextColor = const Color(0xff9e9e9e);
   final Color darkSecondaryTextColor = const Color(0xff616161);
 
   final Color darkerPrimaryColor = Colors.black;
   final Color darkerBackgroundColor = const Color(0xff212121);
   final Color darkerIconUnselectedColor = const Color(0xff424242);
+  final Color darkerDividerColor = const Color(0xff313131);
   final Color darkerPrimaryTextColor = const Color(0xff616161);
   final Color darkerSecondaryTextColor = const Color(0xff424242);
 }
+
+const ThemeGroup defaultThemeGroup = const ThemeGroup();

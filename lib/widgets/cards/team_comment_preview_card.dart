@@ -32,10 +32,10 @@ class TeamCommentPreviewCard extends StatelessWidget {
         ),
         child: Row(
           children: <Widget>[
-            UserAPI.getAvatar(uid: provider.post.uid, size: 48.0),
+            UserAPI.getAvatar(uid: provider.post.uid),
             SizedBox(width: suSetWidth(16.0)),
             Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Row(
@@ -149,7 +149,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
     return Text(
       '第${post.floor}楼 · ${TeamPostAPI.timeConverter(post)}',
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(18.0),
+            fontSize: 16.0.sp,
             fontWeight: FontWeight.normal,
           ),
     );
@@ -163,15 +163,16 @@ class TeamCommentPreviewCard extends StatelessWidget {
           ),
           child: ExtendedText(
             post.content ?? '',
-            style: TextStyle(
-              fontSize: suSetSp(21.0),
-            ),
+            style: TextStyle(fontSize: 19.0.sp),
             onSpecialTextTap: specialTextTapRecognizer,
             maxLines: 8,
             overflowWidget: TextOverflowWidget(
               child: Text(
                 '全文',
-                style: TextStyle(color: currentThemeColor),
+                style: TextStyle(
+                  color: currentThemeColor,
+                  fontSize: 19.0.sp,
+                ),
               ),
             ),
             specialTextSpanBuilder: StackSpecialTextSpanBuilder(),

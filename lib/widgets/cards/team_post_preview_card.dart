@@ -106,7 +106,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                     Text(
                       post.nickname ?? post.uid.toString(),
                       style: TextStyle(
-                        fontSize: suSetSp(22.0),
+                        fontSize: 20.0.sp,
                         fontWeight: FontWeight.normal,
                       ),
                     ),
@@ -147,7 +147,7 @@ class TeamPostPreviewCard extends StatelessWidget {
     return Text(
       '${TeamPostAPI.timeConverter(post)}',
       style: Theme.of(context).textTheme.caption.copyWith(
-            fontSize: suSetSp(18.0),
+            fontSize: 16.0.sp,
             fontWeight: FontWeight.normal,
           ),
     );
@@ -157,7 +157,7 @@ class TeamPostPreviewCard extends StatelessWidget {
         padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
         child: ExtendedText(
           post.content ?? '',
-          style: TextStyle(fontSize: suSetSp(21.0)),
+          style: TextStyle(fontSize: 19.0.sp),
           onSpecialTextTap: specialTextTapRecognizer,
           maxLines: 8,
           overflowWidget: TextOverflowWidget(
@@ -245,12 +245,10 @@ class TeamPostPreviewCard extends StatelessWidget {
                       WidgetSpan(
                         alignment: ui.PlaceholderAlignment.middle,
                         child: Container(
-                          margin: EdgeInsets.symmetric(
-                            horizontal: suSetWidth(6.0),
-                          ),
+                          margin: EdgeInsets.symmetric(horizontal: 6.0.w),
                           padding: EdgeInsets.symmetric(
-                            horizontal: suSetWidth(6.0),
-                            vertical: suSetHeight(1.0),
+                            horizontal: 5.0.w,
+                            vertical: 0.5.h,
                           ),
                           decoration: BoxDecoration(
                             borderRadius:
@@ -260,7 +258,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                           child: Text(
                             '楼主',
                             style: TextStyle(
-                              fontSize: suSetSp(17.0),
+                              fontSize: 13.0.sp,
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
@@ -272,7 +270,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   ],
                 ),
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
-                      fontSize: suSetSp(19.0),
+                      fontSize: 17.0.sp,
                     ),
                 onSpecialTextTap: specialTextTapRecognizer,
                 maxLines: 3,

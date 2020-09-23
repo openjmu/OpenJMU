@@ -294,9 +294,14 @@ class SelfPage extends StatelessWidget {
         child: Consumer<WebAppsProvider>(
           builder: (BuildContext _, WebAppsProvider provider, Widget __) {
             final Set<WebApp> commonWebApps = provider.commonWebApps;
-            return Material(
-              borderRadius: BorderRadius.circular(20.0.w),
-              color: context.themeData.colorScheme.surface,
+            return Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: 10.0.w,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20.0.w),
+                color: context.themeData.colorScheme.surface,
+              ),
               child: Row(
                 children: <Widget>[
                   if (commonWebApps.isNotEmpty) ...<Widget>[
@@ -333,15 +338,14 @@ class SelfPage extends StatelessWidget {
   Widget appWidget(Iterable<WebApp> apps, int index) {
     final WebApp app = apps.elementAt(index);
     return Expanded(
-      child: InkWell(
-        splashFactory: InkSplash.splashFactory,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: () {
           API.launchWeb(
             url: app.replacedUrl,
             app: app,
           );
         },
-        borderRadius: BorderRadius.circular(15.0.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -496,7 +500,7 @@ class SelfPage extends StatelessWidget {
                         const TextSpan(text: '周'),
                       ]),
                   ],
-                  style: Theme.of(context).textTheme.caption.copyWith(
+                  style: Theme.of(context).textTheme.bodyText2.copyWith(
                         fontSize: 18.0.sp,
                       ),
                 ),

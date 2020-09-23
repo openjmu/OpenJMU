@@ -12,10 +12,6 @@ class PraiseCard extends StatelessWidget {
 
   final Praise praise;
 
-  final TextStyle subtitleStyle = TextStyle(
-    color: Colors.grey,
-    fontSize: suSetSp(18.0),
-  );
   final TextStyle rootTopicTextStyle = TextStyle(
     fontSize: suSetSp(18.0),
   );
@@ -29,7 +25,7 @@ class PraiseCard extends StatelessWidget {
         children: <Widget>[
           Text(
             '${praise.nickname ?? praise.uid}',
-            style: TextStyle(fontSize: suSetSp(22.0)),
+            style: TextStyle(fontSize: 20.0.sp),
             textAlign: TextAlign.left,
           ),
           if (Constants.developerList.contains(praise.uid))
@@ -45,17 +41,13 @@ class PraiseCard extends StatelessWidget {
         ],
       );
 
-  Row getPraiseInfo(Praise praise) {
-    return Row(
-      children: <Widget>[
-        Icon(
-          Icons.access_time,
-          color: Colors.grey,
-          size: suSetWidth(13.0),
-        ),
-        Text(' ${PostAPI.postTimeConverter(praise.praiseTime)}',
-            style: subtitleStyle),
-      ],
+  Widget getPraiseInfo(Praise praise) {
+    return Text(
+      '${PostAPI.postTimeConverter(praise.praiseTime)}',
+      style: TextStyle(
+        color: currentTheme.textTheme.caption.color,
+        fontSize: 16.0.sp,
+      ),
     );
   }
 
@@ -72,7 +64,7 @@ class PraiseCard extends StatelessWidget {
                 child: Text(
                   '赞了这条微博',
                   style: TextStyle(
-                    fontSize: suSetSp(21.0),
+                    fontSize: suSetSp(19.0),
                   ),
                 ),
               ),
@@ -107,14 +99,17 @@ class PraiseCard extends StatelessWidget {
   Widget getExtendedText(BuildContext context, String content) {
     return ExtendedText(
       content,
-      style: TextStyle(fontSize: suSetSp(21.0)),
+      style: TextStyle(fontSize: 19.0.sp),
       onSpecialTextTap: specialTextTapRecognizer,
       specialTextSpanBuilder: StackSpecialTextSpanBuilder(),
       maxLines: 8,
       overflowWidget: TextOverflowWidget(
         child: Text(
           '全文',
-          style: TextStyle(color: currentThemeColor),
+          style: TextStyle(
+            color: currentThemeColor,
+            fontSize: 19.0.sp,
+          ),
         ),
       ),
     );
@@ -142,21 +137,24 @@ class PraiseCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: suSetWidth(24.0),
+            Container(
+              margin: EdgeInsets.symmetric(
                 vertical: suSetHeight(12.0),
               ),
+              padding: EdgeInsets.symmetric(
+                horizontal: suSetWidth(24.0),
+              ),
+              height: 48.0.h,
               child: Row(
                 children: <Widget>[
-                  UserAPI.getAvatar(size: 54.0, uid: praise.uid),
+                  UserAPI.getAvatar(uid: praise.uid),
                   Expanded(
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: suSetWidth(16.0),
                       ),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           getPraiseNickname(context, praise),

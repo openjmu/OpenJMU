@@ -139,25 +139,41 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
 
   Widget cancelButton(BuildContext context) {
     return MaterialButton(
+      height: 105.h,
       elevation: 0.0,
       highlightElevation: 2.0,
       minWidth: Screens.width,
-      padding: EdgeInsets.all(suSetWidth(20.0)),
+      padding: EdgeInsets.zero,
       color: widget.backgroundColor ?? Theme.of(context).primaryColor,
       onPressed: () => Navigator.of(context).maybePop(false),
-      child: Container(
-        width: Screens.width,
-        height: suSetWidth(60.0),
-        decoration: BoxDecoration(
-          borderRadius: maxBorderRadius,
-          color: Theme.of(context).canvasColor,
-        ),
-        child: Center(
-          child: Text(
-            widget.cancelLabel ?? '取消',
-            style: TextStyle(fontSize: suSetSp(23.0)),
+      child: Stack(
+        overflow: Overflow.visible,
+        children: <Widget>[
+          Positioned(
+            top: -1.h,
+            left: 0.0,
+            right: 0.0,
+            height: 2.h,
+            child: ColoredBox(
+              color: widget.backgroundColor ?? Theme.of(context).primaryColor,
+            ),
           ),
-        ),
+          Container(
+            margin: EdgeInsets.all(suSetWidth(20.0)),
+            width: Screens.width,
+            height: suSetWidth(60.0),
+            decoration: BoxDecoration(
+              borderRadius: maxBorderRadius,
+              color: Theme.of(context).canvasColor,
+            ),
+            child: Center(
+              child: Text(
+                widget.cancelLabel ?? '取消',
+                style: TextStyle(fontSize: suSetSp(23.0)),
+              ),
+            ),
+          ),
+        ],
       ),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
     );

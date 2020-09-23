@@ -12,12 +12,13 @@ class ThemesProvider with ChangeNotifier {
     initTheme();
   }
 
-  Color _currentColor = defaultLightColor;
-  Color get currentColor => _currentColor;
-  set currentColor(Color value) {
+  ThemeGroup _currentThemeGroup = defaultThemeGroup;
+
+  ThemeGroup get currentThemeGroup => _currentThemeGroup;
+  set currentThemeGroup(ThemeGroup value) {
     assert(value != null);
-    if (_currentColor == value) return;
-    _currentColor = value;
+    if (_currentThemeGroup == value) return;
+    _currentThemeGroup = value;
     notifyListeners();
   }
 
@@ -51,8 +52,13 @@ class ThemesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void initTheme() {
-    _currentColor = supportColors[HiveFieldUtils.getColorThemeIndex()];
+  Future<void> initTheme() async {
+    int themeIndex = HiveFieldUtils.getColorThemeIndex();
+    if (themeIndex >= supportThemeGroups.length) {
+      HiveFieldUtils.setColorTheme(0);
+      themeIndex = 0;
+    }
+    _currentThemeGroup = supportThemeGroups[themeIndex];
     _dark = HiveFieldUtils.getBrightnessDark();
     _amoledDark = HiveFieldUtils.getAMOLEDDark();
     _platformBrightness = HiveFieldUtils.getBrightnessPlatform();
@@ -63,7 +69,7 @@ class ThemesProvider with ChangeNotifier {
     HiveFieldUtils.setAMOLEDDark(false);
     HiveFieldUtils.setBrightnessDark(false);
     HiveFieldUtils.setBrightnessPlatform(true);
-    _currentColor = defaultLightColor;
+    _currentThemeGroup = defaultThemeGroup;
     _dark = false;
     _amoledDark = false;
     _platformBrightness = true;
@@ -72,7 +78,7 @@ class ThemesProvider with ChangeNotifier {
 
   void updateThemeColor(int themeIndex) {
     HiveFieldUtils.setColorTheme(themeIndex);
-    currentColor = supportColors[themeIndex];
+    _currentThemeGroup = supportThemeGroups[themeIndex];
     notifyListeners();
   }
 
@@ -92,180 +98,161 @@ class ThemesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  ThemeData get lightTheme => ThemeData.light().copyWith(
+  ThemeData get lightTheme {
+    final Color currentColor = currentThemeGroup.lightThemeColor;
+    final Color primaryColor = currentThemeGroup.lightPrimaryColor;
+    final Color backgroundColor = currentThemeGroup.lightBackgroundColor;
+    final Color dividerColor = currentThemeGroup.lightDividerColor;
+    final Color primaryTextColor = currentThemeGroup.lightPrimaryTextColor;
+    final Color secondaryTextColor = currentThemeGroup.lightSecondaryTextColor;
+    return ThemeData.light().copyWith(
+      brightness: Brightness.light,
+      primaryColor: primaryColor,
+      primaryColorBrightness: Brightness.light,
+      primaryColorLight: primaryColor,
+      primaryColorDark: backgroundColor,
+      accentColor: currentColor,
+      accentColorBrightness: Brightness.light,
+      canvasColor: backgroundColor,
+      dividerColor: dividerColor,
+      scaffoldBackgroundColor: backgroundColor,
+      bottomAppBarColor: primaryColor,
+      cardColor: primaryColor,
+      highlightColor: Colors.transparent,
+      splashFactory: const NoSplashFactory(),
+      toggleableActiveColor: currentColor,
+      cursorColor: currentColor,
+      textSelectionColor: currentColor.withAlpha(100),
+      textSelectionHandleColor: currentColor,
+      indicatorColor: currentColor,
+      appBarTheme: AppBarTheme(brightness: Brightness.light, elevation: 0),
+      iconTheme: IconThemeData(color: secondaryTextColor),
+      primaryIconTheme: IconThemeData(color: secondaryTextColor),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        foregroundColor: primaryColor,
+        backgroundColor: currentColor,
+      ),
+      tabBarTheme: TabBarTheme(
+        indicatorSize: TabBarIndicatorSize.tab,
+        labelColor: primaryTextColor,
+        unselectedLabelColor: primaryTextColor,
+      ),
+      colorScheme: ColorScheme(
+        primary: currentColor,
+        primaryVariant: currentColor,
+        secondary: currentColor,
+        secondaryVariant: currentColor,
+        surface: Colors.white,
+        background: backgroundColor,
+        error: defaultLightColor,
+        onPrimary: currentColor,
+        onSecondary: currentColor,
+        onSurface: Colors.white,
+        onBackground: backgroundColor,
+        onError: defaultLightColor,
         brightness: Brightness.light,
-        primaryColor: Colors.white,
-        primaryColorBrightness: Brightness.light,
-        primaryColorLight: Colors.white,
-        primaryColorDark: Colors.white,
-        accentColor: currentColor,
-        accentColorBrightness: Brightness.light,
-        canvasColor: Colors.grey[200],
-        scaffoldBackgroundColor: Colors.white,
-        bottomAppBarColor: Colors.white,
-        cardColor: Colors.white,
-        highlightColor: Colors.transparent,
-        splashFactory: const NoSplashFactory(),
-        toggleableActiveColor: currentColor,
-        cursorColor: currentColor,
-        textSelectionColor: currentColor.withAlpha(100),
-        textSelectionHandleColor: currentColor,
-        indicatorColor: currentColor,
-        appBarTheme: AppBarTheme(brightness: Brightness.light, elevation: 1),
-        iconTheme: IconThemeData(color: Colors.black),
-        primaryIconTheme: IconThemeData(color: Colors.black),
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          foregroundColor: Colors.white,
-          backgroundColor: currentColor,
-        ),
-        tabBarTheme: TabBarTheme(
-          indicatorSize: TabBarIndicatorSize.tab,
-          labelColor: Colors.black,
-          unselectedLabelColor: Colors.black,
-        ),
-        colorScheme: ColorScheme(
-          primary: currentColor,
-          primaryVariant: currentColor,
-          secondary: currentColor,
-          secondaryVariant: currentColor,
-          surface: Colors.white,
-          background: Colors.grey[200],
-          error: defaultLightColor,
-          onPrimary: currentColor,
-          onSecondary: currentColor,
-          onSurface: Colors.white,
-          onBackground: Colors.grey[200],
-          onError: defaultLightColor,
-          brightness: Brightness.light,
-        ),
-        buttonColor: currentColor,
-      );
+      ),
+      buttonColor: currentColor,
+      textTheme: TextTheme(
+        bodyText1: TextStyle(color: secondaryTextColor),
+        bodyText2: TextStyle(color: primaryTextColor),
+        button: TextStyle(color: primaryTextColor),
+        caption: TextStyle(color: secondaryTextColor),
+        subtitle1: TextStyle(color: secondaryTextColor),
+        headline1: TextStyle(color: secondaryTextColor),
+        headline2: TextStyle(color: secondaryTextColor),
+        headline3: TextStyle(color: secondaryTextColor),
+        headline4: TextStyle(color: secondaryTextColor),
+        headline5: TextStyle(color: primaryTextColor),
+        headline6: TextStyle(color: primaryTextColor),
+        overline: TextStyle(color: primaryTextColor),
+      ),
+    );
+  }
 
-  ThemeData get darkTheme => ThemeData.dark().copyWith(
+  ThemeData get darkTheme {
+    final Color currentColor = currentThemeGroup.darkThemeColor;
+    final Color primaryColor = amoledDark
+        ? currentThemeGroup.darkerPrimaryColor
+        : currentThemeGroup.darkPrimaryColor;
+    final Color backgroundColor = amoledDark
+        ? currentThemeGroup.darkerBackgroundColor
+        : currentThemeGroup.darkBackgroundColor;
+    final Color dividerColor = amoledDark
+        ? currentThemeGroup.darkerDividerColor
+        : currentThemeGroup.darkDividerColor;
+    final Color primaryTextColor = amoledDark
+        ? currentThemeGroup.darkerPrimaryTextColor
+        : currentThemeGroup.darkPrimaryTextColor;
+    final Color secondaryTextColor = amoledDark
+        ? currentThemeGroup.darkerSecondaryTextColor
+        : currentThemeGroup.darkSecondaryTextColor;
+    return ThemeData.dark().copyWith(
+      brightness: Brightness.dark,
+      primaryColor: primaryColor,
+      primaryColorBrightness: Brightness.dark,
+      primaryColorLight: backgroundColor,
+      primaryColorDark: primaryColor,
+      accentColor: currentColor,
+      accentColorBrightness: Brightness.dark,
+      canvasColor: backgroundColor,
+      dividerColor: dividerColor,
+      scaffoldBackgroundColor: backgroundColor,
+      bottomAppBarColor: primaryColor,
+      cardColor: primaryColor,
+      highlightColor: Colors.transparent,
+      splashFactory: const NoSplashFactory(),
+      toggleableActiveColor: currentColor,
+      cursorColor: currentColor,
+      textSelectionColor: currentColor.withAlpha(100),
+      textSelectionHandleColor: currentColor,
+      indicatorColor: currentColor,
+      appBarTheme: AppBarTheme(brightness: Brightness.dark, elevation: 0),
+      iconTheme: IconThemeData(color: secondaryTextColor),
+      primaryIconTheme: IconThemeData(color: secondaryTextColor),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        foregroundColor: Colors.black,
+        backgroundColor: currentColor,
+      ),
+      tabBarTheme: TabBarTheme(
+        indicatorSize: TabBarIndicatorSize.tab,
+        labelColor: primaryTextColor,
+        unselectedLabelColor: primaryTextColor,
+      ),
+      colorScheme: ColorScheme(
+        primary: currentColor,
+        primaryVariant: currentColor,
+        secondary: currentColor,
+        secondaryVariant: currentColor,
+        surface: primaryColor,
+        background: backgroundColor,
+        error: defaultLightColor,
+        onPrimary: currentColor,
+        onSecondary: currentColor,
+        onSurface: primaryColor,
+        onBackground: backgroundColor,
+        onError: defaultLightColor,
         brightness: Brightness.dark,
-        primaryColor: amoledDark ? Colors.black : Colors.grey[900],
-        primaryColorBrightness: Brightness.dark,
-        primaryColorLight: amoledDark ? Colors.black : Colors.grey[900],
-        primaryColorDark: amoledDark ? Colors.black : Colors.grey[900],
-        accentColor: currentColor,
-        accentColorBrightness: Brightness.dark,
-        canvasColor: amoledDark ? Color(0xFF111111) : Colors.grey[850],
-        scaffoldBackgroundColor: amoledDark ? Colors.black : Colors.grey[900],
-        bottomAppBarColor: amoledDark ? Colors.black : Colors.grey[900],
-        cardColor: amoledDark ? Colors.black : Colors.grey[900],
-        highlightColor: Colors.transparent,
-        splashFactory: const NoSplashFactory(),
-        toggleableActiveColor: currentColor,
-        cursorColor: currentColor,
-        textSelectionColor: currentColor.withAlpha(100),
-        textSelectionHandleColor: currentColor,
-        indicatorColor: currentColor,
-        appBarTheme: AppBarTheme(brightness: Brightness.dark, elevation: 0),
-        iconTheme: IconThemeData(color: Colors.grey[350]),
-        primaryIconTheme: IconThemeData(color: Colors.grey[350]),
-        floatingActionButtonTheme: FloatingActionButtonThemeData(
-          foregroundColor: Colors.black,
-          backgroundColor: currentColor,
-        ),
-        tabBarTheme: TabBarTheme(
-          indicatorSize: TabBarIndicatorSize.tab,
-          labelColor: Colors.grey[200],
-          unselectedLabelColor: Colors.grey[200],
-        ),
-        colorScheme: ColorScheme(
-          primary: currentColor,
-          primaryVariant: currentColor,
-          secondary: currentColor,
-          secondaryVariant: currentColor,
-          surface: amoledDark ? Colors.black : Colors.grey[900],
-          background: amoledDark ? Color(0xFF111111) : Colors.grey[850],
-          error: defaultLightColor,
-          onPrimary: currentColor,
-          onSecondary: currentColor,
-          onSurface: amoledDark ? Colors.black : Colors.grey[900],
-          onBackground: amoledDark ? Color(0xFF111111) : Colors.grey[850],
-          onError: defaultLightColor,
-          brightness: Brightness.dark,
-        ),
-        textTheme: TextTheme(
-          bodyText1: TextStyle(color: Colors.grey[500]),
-          bodyText2: TextStyle(color: Colors.grey[350]),
-          button: TextStyle(color: Colors.grey[350]),
-          caption: TextStyle(color: Colors.grey[500]),
-          subtitle1: TextStyle(color: Colors.grey[500]),
-          headline1: TextStyle(color: Colors.grey[500]),
-          headline2: TextStyle(color: Colors.grey[500]),
-          headline3: TextStyle(color: Colors.grey[500]),
-          headline4: TextStyle(color: Colors.grey[500]),
-          headline5: TextStyle(color: Colors.grey[350]),
-          headline6: TextStyle(color: Colors.grey[350]),
-          overline: TextStyle(color: Colors.grey[350]),
-        ),
-        buttonColor: currentColor,
-      );
+      ),
+      textTheme: TextTheme(
+        bodyText1: TextStyle(color: secondaryTextColor),
+        bodyText2: TextStyle(color: primaryTextColor),
+        button: TextStyle(color: primaryTextColor),
+        caption: TextStyle(color: secondaryTextColor),
+        subtitle1: TextStyle(color: secondaryTextColor),
+        headline1: TextStyle(color: secondaryTextColor),
+        headline2: TextStyle(color: secondaryTextColor),
+        headline3: TextStyle(color: secondaryTextColor),
+        headline4: TextStyle(color: secondaryTextColor),
+        headline5: TextStyle(color: primaryTextColor),
+        headline6: TextStyle(color: primaryTextColor),
+        overline: TextStyle(color: primaryTextColor),
+      ),
+      buttonColor: currentColor,
+    );
+  }
 }
 
-final List<Color> supportColors = <Color>[
-  defaultLightColor,
-  Colors.red[900],
-  Colors.red[500],
-  Colors.red[300],
-  Colors.pink[900],
-  Colors.pink[700],
-  Colors.pink[500],
-  Colors.pink[400],
-  Colors.purple[900],
-  Colors.purple[700],
-  Colors.purple[500],
-  Colors.purple[400],
-  Colors.deepPurple[900],
-  Colors.deepPurple[700],
-  Colors.deepPurple[500],
-  Colors.deepPurple[400],
-  Colors.indigo[900],
-  Colors.indigo[700],
-  Colors.indigo[500],
-  Colors.indigo[400],
-  Colors.blue[900],
-  Colors.blue[700],
-  Colors.blue[500],
-  Colors.blue[400],
-  Colors.lightBlue[900],
-  Colors.lightBlue[700],
-  Colors.lightBlue[500],
-  Colors.lightBlue[400],
-  Colors.cyan[900],
-  Colors.cyan[700],
-  Colors.cyan[500],
-  Colors.cyan[400],
-  Colors.teal[900],
-  Colors.teal[700],
-  Colors.teal[500],
-  Colors.teal[400],
-  Colors.green[900],
-  Colors.green[700],
-  Colors.green[500],
-  Colors.green[400],
-  Colors.lightGreen[900],
-  Colors.lightGreen[700],
-  Colors.lightGreen[500],
-  Colors.lightGreen[400],
-  Colors.lime[900],
-  Colors.lime[700],
-  Colors.lime[500],
-  Colors.lime[400],
-  Colors.yellow[900],
-  Colors.yellow[700],
-  Colors.yellow[500],
-  Colors.yellow[400],
-  Colors.orange[900],
-  Colors.orange[700],
-  Colors.orange[500],
-  Colors.orange[400],
-  Colors.deepOrange[900],
-  Colors.deepOrange[700],
-  Colors.deepOrange[500],
-  Colors.deepOrange[400],
-  Colors.grey[800],
-  Colors.grey[700],
+final List<ThemeGroup> supportThemeGroups = <ThemeGroup>[
+  const ThemeGroup(), // This is the default theme group.
 ];

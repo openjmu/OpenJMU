@@ -19,7 +19,7 @@ class FixedAppBar extends StatelessWidget {
     this.centerTitle = true,
     this.automaticallyImplyActions = true,
     this.backgroundColor,
-    this.elevation = 2.0,
+    this.elevation = 0.0,
     this.actions,
     this.actionsPadding,
     this.height,

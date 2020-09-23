@@ -55,7 +55,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
             UserAPI.getAvatar(uid: post.uid),
             SizedBox(width: suSetWidth(16.0)),
             Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Row(

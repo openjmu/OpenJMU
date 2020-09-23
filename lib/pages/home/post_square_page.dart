@@ -70,7 +70,7 @@ class PostSquarePage extends StatelessWidget {
                   alignment: Alignment.centerRight,
                   icon: SvgPicture.asset(
                     R.ASSETS_ICONS_LIUYAN_LINE_SVG,
-                    color: currentTheme.iconTheme.color.withOpacity(0.3),
+                    color: currentTheme.iconTheme.color,
                     width: suSetWidth(32.0),
                     height: suSetWidth(32.0),
                   ),
@@ -104,18 +104,13 @@ class PostSquarePage extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(right: 10.0.w),
-                      height: 48.0.w,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: List<Widget>.generate(3, (int _) {
-                          return Container(
-                            width: 18.0.w,
-                            height: 3.0.h,
-                            color: context.themeData.dividerColor,
-                          );
-                        }),
+                    Padding(
+                      padding: EdgeInsets.only(left: 12.0.w, right: 10.0.w),
+                      child: SvgPicture.asset(
+                        R.ASSETS_ICONS_SELF_PAGE_AVATAR_CORNER_SVG,
+                        color: currentTheme.iconTheme.color,
+                        width: 8.0.w,
+                        height: 20.0.w,
                       ),
                     ),
                     UserAvatar(size: 54.0, canJump: false)

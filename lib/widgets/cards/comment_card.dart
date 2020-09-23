@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:extended_text/extended_text.dart';
@@ -14,11 +12,11 @@ class CommentCard extends StatelessWidget {
 
   final Comment comment;
 
-  TextStyle get subtitleStyle =>
-      TextStyle(color: Colors.grey, fontSize: suSetSp(18.0));
   TextStyle get rootTopicTextStyle => TextStyle(fontSize: suSetSp(18.0));
-  TextStyle get rootTopicMentionStyle =>
-      TextStyle(color: Colors.blue, fontSize: suSetSp(18.0));
+  TextStyle get rootTopicMentionStyle => TextStyle(
+        color: Colors.blue,
+        fontSize: suSetSp(18.0),
+      );
   Color get subIconColor => Colors.grey;
 
   Widget getCommentNickname(BuildContext context) {
@@ -26,7 +24,7 @@ class CommentCard extends StatelessWidget {
       children: <Widget>[
         Text(
           '${comment.fromUserName ?? comment.fromUserUid}',
-          style: TextStyle(fontSize: suSetSp(22.0)),
+          style: TextStyle(fontSize: 20.0.sp),
           textAlign: TextAlign.left,
         ),
         if (Constants.developerList.contains(comment.fromUserUid))
@@ -44,30 +42,13 @@ class CommentCard extends StatelessWidget {
   }
 
   Widget get getCommentInfo {
-    return Text.rich(
-      TextSpan(
-        children: <InlineSpan>[
-          WidgetSpan(
-            alignment: ui.PlaceholderAlignment.middle,
-            child: Icon(
-              Icons.access_time,
-              color: Colors.grey,
-              size: suSetWidth(16.0),
-            ),
-          ),
-          TextSpan(text: ' ${PostAPI.postTimeConverter(comment.commentTime)}　'),
-          WidgetSpan(
-            alignment: ui.PlaceholderAlignment.middle,
-            child: Icon(
-              Icons.smartphone,
-              color: Colors.grey,
-              size: suSetWidth(16.0),
-            ),
-          ),
-          TextSpan(text: ' ${comment.from}　'),
-        ],
+    return Text(
+      '${PostAPI.postTimeConverter(comment.commentTime)}  '
+      '来自${comment.from}客户端',
+      style: TextStyle(
+        color: currentTheme.textTheme.caption.color,
+        fontSize: 16.0.sp,
       ),
-      style: subtitleStyle,
     );
   }
 
@@ -107,7 +88,7 @@ class CommentCard extends StatelessWidget {
         margin: EdgeInsets.all(suSetWidth(16.0)),
         padding: EdgeInsets.all(suSetWidth(10.0)),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+          borderRadius: BorderRadius.circular(10.0.w),
           color: Theme.of(context).canvasColor,
         ),
         child: Column(
@@ -132,7 +113,7 @@ class CommentCard extends StatelessWidget {
         child: Text(
           '该条微博已被屏蔽或删除',
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.white70,
             fontSize: suSetSp(20.0),
           ),
         ),
@@ -148,13 +129,16 @@ class CommentCard extends StatelessWidget {
           : EdgeInsets.symmetric(horizontal: suSetWidth(24.0)),
       child: ExtendedText(
         content != null ? '$content ' : null,
-        style: TextStyle(fontSize: suSetSp(21.0)),
+        style: TextStyle(fontSize: 19.0.sp),
         onSpecialTextTap: specialTextTapRecognizer,
         maxLines: 8,
         overflowWidget: TextOverflowWidget(
           child: Text(
             '全文',
-            style: TextStyle(color: currentThemeColor),
+            style: TextStyle(
+              color: currentThemeColor,
+              fontSize: 19.0.sp,
+            ),
           ),
         ),
         specialTextSpanBuilder:

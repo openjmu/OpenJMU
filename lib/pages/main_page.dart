@@ -33,18 +33,13 @@ class MainPage extends StatefulWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(right: 10.0.w),
-            height: 48.0.w,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: List<Widget>.generate(3, (int _) {
-                return Container(
-                  width: 18.0.w,
-                  height: 3.0.h,
-                  color: context.themeData.dividerColor,
-                );
-              }),
+          Padding(
+            padding: EdgeInsets.only(left: 12.0.w, right: 10.0.w),
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_SELF_PAGE_AVATAR_CORNER_SVG,
+              color: currentTheme.iconTheme.color,
+              width: 8.0.w,
+              height: 20.0.w,
             ),
           ),
           UserAvatar(size: 54.0, canJump: false)
@@ -155,7 +150,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   /// Bottom navigation bar.
   /// 底部导航栏
   Widget get bottomNavigationBar => FABBottomAppBar(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: Theme.of(context).primaryColor,
         color: Colors.grey[600].withOpacity(currentIsDark ? 0.8 : 0.4),
         height: bottomBarHeight,
         iconSize: bottomBarIconSize,

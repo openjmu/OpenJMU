@@ -114,7 +114,7 @@ class DismissWrapperState extends State<DismissWrapper>
         child: Container(
           width: Screens.width,
           padding: widget.padding ??
-              EdgeInsets.symmetric(horizontal: suSetWidth(20.0)),
+              EdgeInsets.symmetric(horizontal: 20.w).copyWith(bottom: 2.h),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(suSetWidth(24.0)),
