@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
-//import 'package:openjmu/pages/home/add_button_page.dart';
 
 class FABBottomAppBarItem {
   const FABBottomAppBarItem({
@@ -268,11 +267,21 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
       );
     }
 
-    return BottomAppBar(
-      elevation: 0.0,
-      color: widget.backgroundColor,
-      shape: widget.notchedShape,
-      child: appBar,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: context.themeData.dividerColor,
+            spreadRadius: 1.w,
+          ),
+        ],
+      ),
+      child: BottomAppBar(
+        elevation: 0.0,
+        color: widget.backgroundColor,
+        shape: widget.notchedShape,
+        child: appBar,
+      ),
     );
   }
 }
