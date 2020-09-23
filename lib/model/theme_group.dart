@@ -38,4 +38,4 @@ class ThemeGroup {
   final Color darkerSecondaryTextColor = const Color(0xff424242);
 }
 
-const ThemeGroup defaultThemeGroup = const ThemeGroup();
+const ThemeGroup defaultThemeGroup = ThemeGroup();

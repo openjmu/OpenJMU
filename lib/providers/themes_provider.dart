@@ -254,5 +254,5 @@ class ThemesProvider with ChangeNotifier {
 }
 
 final List<ThemeGroup> supportThemeGroups = <ThemeGroup>[
-  const ThemeGroup(), // This is the default theme group.
+  defaultThemeGroup, // This is the default theme group.
 ];
