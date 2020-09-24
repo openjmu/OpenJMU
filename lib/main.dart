@@ -310,7 +310,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                       behavior: const NoGlowScrollBehavior(),
                       child: NoScaleTextWidget(child: w),
                     );
-                    if (Screens.topSafeHeight == 44.0) {
+                    if (Platform.isIOS && Screens.topSafeHeight == 44.0) {
                       widget = Stack(
                         children: <Widget>[
                           Positioned.fill(child: widget),
