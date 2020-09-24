@@ -1,35 +1,232 @@
+///
+/// [Author] Alex (https://github.com/AlexV525)
+/// [Date] 2020-09-23 16:36
+///
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(name: "openjmu://settings", routeName: "设置页")
+import '../main_page.dart';
+
+@FFRoute(name: 'openjmu://settings', routeName: '设置页')
 class SettingsPage extends StatelessWidget {
-  List<List<Map<String, dynamic>>> get pageSection => [
-        [
-          {
-            'icon': R.ASSETS_ICONS_SETTINGS_NIGHT_MODE_SVG,
-            'name': '夜间模式',
-            'description': '减轻眩光，提升夜间使用体验',
-            'widget': Consumer<ThemesProvider>(
-              builder: (_, provider, __) {
-                return CustomSwitch(
-                  activeColor: currentThemeColor,
-                  value: provider.dark,
-                  onChanged: !provider.platformBrightness
-                      ? (bool value) => provider.dark = value
-                      : null,
-                );
-              },
+  const SettingsPage({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FixedAppBarWrapper(
+        appBar: FixedAppBar(title: Text('设置')),
+        body: ListView(
+          padding: EdgeInsets.symmetric(vertical: 10.w),
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 15.w),
+              child: FlutterLogo(
+                size: 36.w,
+                colors: context.themeData.accentColor.swatch,
+                style: FlutterLogoStyle.horizontal,
+              ),
             ),
-          },
-          {
-            'icon': R.ASSETS_ICONS_SETTINGS_FOLLOW_SYSTEM_SVG,
-            'name': '跟随系统夜间模式',
-            'description': '夜间模式将跟随系统主题切换',
-            'level': 2,
-            'widget': Consumer<ThemesProvider>(
-              builder: (_, provider, __) {
+            _AboutCard(),
+            _NightModeCard(),
+            _ThemeCard(),
+            _StartPageCard(),
+            _EnhanceCard(),
+            _DataCleaningCard(),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _AboutCard extends StatelessWidget {
+  const _AboutCard({Key key}) : super(key: key);
+
+  Future<void> showDebugInfoDialog(BuildContext context) async {
+    final String info = '[uid      ] ${currentUser.uid}\n'
+        '[sid      ] ${currentUser.sid}\n'
+        '[ticket   ] ${currentUser.ticket}\n'
+        '[workId   ] ${currentUser.workId}\n'
+        '[uuid     ] ${DeviceUtils.deviceUuid}\n'
+        '${DeviceUtils.devicePushToken != null ? '[pushToken] ${DeviceUtils.devicePushToken}\n' : ''}'
+        '[model    ] ${DeviceUtils.deviceModel}';
+    final List<String> list = info.split('\n');
+    final bool shouldCopy = await ConfirmationDialog.show(
+      context,
+      title: '调试信息',
+      showConfirm: true,
+      confirmLabel: '复制',
+      cancelLabel: '返回',
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 20.h),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: List<Widget>.generate(list.length, (i) {
+            return Text.rich(
+              TextSpan(
+                children: List<InlineSpan>.generate(list[i].length, (j) {
+                  return WidgetSpan(
+                    alignment: ui.PlaceholderAlignment.middle,
+                    child: Text(
+                      list[i].substring(j, j + 1),
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontFamily: 'JetBrains Mono',
+                      ),
+                    ),
+                  );
+                }),
+              ),
+              textAlign: TextAlign.left,
+            );
+          }),
+        ),
+      ),
+    );
+    if (shouldCopy) {
+      unawaited(Clipboard.setData(ClipboardData(text: info)));
+      showToast('已复制到剪贴板');
+    }
+  }
+
+  Widget logoItemWidget(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 16.h),
+      height: 64.w,
+      child: Row(
+        children: <Widget>[
+          GestureDetector(
+            onDoubleTap: () => showDebugInfoDialog(context),
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: CircleAvatar(
+                backgroundImage: AssetImage(R.IMAGES_LOGO_1024_PNG),
+              ),
+            ),
+          ),
+          SizedBox(width: 20.w),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'OPENJMU',
+                  style: TextStyle(
+                    fontSize: 21.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  'V${PackageUtils.version}',
+                  style: context.themeData.textTheme.caption.copyWith(
+                    fontSize: 17.sp,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          MaterialButton(
+            minWidth: 84.w,
+            height: 60.w,
+            elevation: 0.0,
+            color: context.themeData.canvasColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15.w),
+            ),
+            onPressed: () {
+              PackageUtils.checkUpdate(isManually: true);
+            },
+            child: Text(
+              '检查更新',
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _SettingsCard(
+      children: <Widget>[
+        logoItemWidget(context),
+        _SettingItemWidget(
+          item: _SettingItem(
+            name: '吐个槽',
+            description: '意见反馈',
+            onTap: () {
+              API.launchWeb(url: API.complaints, title: '吐个槽');
+            },
+          ),
+        ),
+        _SettingItemWidget(
+          item: _SettingItem(
+            name: '新版本更新了什么？',
+            description: '版本履历',
+            route: Routes.openjmuChangelogPage,
+          ),
+        ),
+        _SettingItemWidget(
+          item: _SettingItem(
+            name: '前往官网',
+            description: 'openjmu.jmu.edu.cn',
+            hideArrow: true,
+            onTap: () {
+              API.launchWeb(url: API.homePage, title: 'OpenJMU');
+            },
+          ),
+        ),
+        _SettingItemWidget(
+          item: _SettingItem(
+            name: '许可证信息',
+            onTap: () {
+              showLicensePage(
+                context: context,
+                applicationName: 'OpenJMU',
+                applicationVersion:
+                    '${PackageUtils.version}+${PackageUtils.buildNumber}',
+                applicationIcon: Padding(
+                  padding: EdgeInsets.all(20.w),
+                  child: Image.asset(
+                    R.IMAGES_LOGO_1024_ROUNDED_PNG,
+                    width: Screens.width / 5,
+                  ),
+                ),
+                applicationLegalese: '© 2020 The OpenJMU Team',
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _NightModeCard extends StatelessWidget {
+  const _NightModeCard({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _SettingsCard(
+      title: '夜间模式',
+      children: <Widget>[
+        _SettingItemWidget(
+          item: _SettingItem(
+            name: '夜间模式跟随系统',
+            widget: Consumer<ThemesProvider>(
+              builder: (BuildContext _, ThemesProvider provider, Widget __) {
                 return CustomSwitch(
                   activeColor: currentThemeColor,
                   value: provider.platformBrightness,
@@ -38,77 +235,69 @@ class SettingsPage extends StatelessWidget {
                 );
               },
             ),
-          },
-          {
-            'icon': R.ASSETS_ICONS_SETTINGS_AMOLED_BLACK_SVG,
-            'name': 'AMOLED 黑',
-            'description': '更深的背景颜色，节省电量',
-            'level': 2,
-            'widget': Consumer<ThemesProvider>(
-              builder: (_, provider, __) {
+          ),
+        ),
+        _SettingItemWidget(
+          item: _SettingItem(
+            name: '更深的黑',
+            widget: Consumer<ThemesProvider>(
+              builder: (BuildContext _, ThemesProvider provider, Widget __) {
                 return CustomSwitch(
                   activeColor: currentThemeColor,
                   value: provider.amoledDark,
-                  onChanged: currentIsDark
-                      ? (bool value) => provider.amoledDark = value
-                      : null,
+                  onChanged: (bool value) => provider.amoledDark = value,
                 );
               },
             ),
-          },
-        ],
-        [
-          {
-            'icon': R.ASSETS_ICONS_SETTINGS_THEME_COLOR_SVG,
-            'name': '切换主题',
-            'description': '多彩颜色，丰富你的界面',
-            'widget': Container(
-              decoration: BoxDecoration(
-                color: currentThemeColor,
-                shape: BoxShape.circle,
-              ),
-              width: suSetWidth(iconSize),
-              height: suSetWidth(iconSize),
-            ),
-            'route': Routes.openjmuTheme,
-          },
-          {
-            'icon': R.ASSETS_ICONS_SETTINGS_LAUNCH_PAGE_SVG,
-            'name': '启动页设置',
-            'description': '选择您偏好的启动页面',
-            'route': Routes.openjmuSwitchStartup,
-          },
-          if (currentUser.isTeacher)
-            {
-              'icon': R.ASSETS_ICONS_SETTINGS_NEW_ICONS_SVG,
-              'name': '应用中心新图标',
-              'description': '全新图标设计，简洁直达',
-              'widget': Selector<SettingsProvider, bool>(
-                selector: (_, provider) => provider.newAppCenterIcon,
-                builder: (_, newAppCenterIcon, __) {
-                  return CustomSwitch(
-                    activeColor: currentThemeColor,
-                    value: newAppCenterIcon,
-                    onChanged: (bool value) async {
-                      await HiveFieldUtils.setEnabledNewAppsIcon(value);
-                    },
-                  );
-                },
-              ),
-            },
-          {
-            'icon': R.ASSETS_ICONS_SETTINGS_FONT_SIZE_SVG,
-            'name': '字体大小调节',
-            'description': '调整字体大小以获得最佳阅读体验',
-            'route': Routes.openjmuFontScale,
-          },
-          {
-            'icon': R.ASSETS_ICONS_SETTINGS_HIDE_BLOCKED_SVG,
-            'name': '隐藏屏蔽的动态',
-            'description': '广场中被屏蔽的动态将被隐藏',
-            'widget': Selector<SettingsProvider, bool>(
-              selector: (_, provider) => provider.hideShieldPost,
-              builder: (_, hideShieldPost, __) {
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _StartPageCard extends StatelessWidget {
+  const _StartPageCard({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _SettingsCard(
+      title: '启动页设置',
+      children: <Widget>[
+        _SettingItemWidget(
+          item: _SettingItem(
+            name: '主页',
+            description: MainPageState.pagesTitle[
+                context.watch<SettingsProvider>().homeStartUpIndex[0]],
+            route: Routes.openjmuSwitchStartup,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EnhanceCard extends StatelessWidget {
+  const _EnhanceCard({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _SettingsCard(
+      title: '体验优化',
+      children: <Widget>[
+        _SettingItemWidget(
+          item: _SettingItem(
+            name: '字体大小调整',
+            route: Routes.openjmuFontScale,
+          ),
+        ),
+        _SettingItemWidget(
+          item: _SettingItem(
+            name: '隐藏被屏蔽的动态',
+            widget: Selector<SettingsProvider, bool>(
+              selector: (BuildContext _, SettingsProvider provider) =>
+                  provider.hideShieldPost,
+              builder: (BuildContext _, bool hideShieldPost, Widget __) {
                 return CustomSwitch(
                   activeColor: currentThemeColor,
                   value: hideShieldPost,
@@ -118,195 +307,247 @@ class SettingsPage extends StatelessWidget {
                 );
               },
             ),
-          },
-          if (Constants.developerList.contains(currentUser.uid))
-            {
-              'icon': R.ASSETS_ICONS_SETTINGS_HIDE_BLOCKED_SVG,
-              'name': '使用系统浏览器',
-              'description': '应用及网页将通过系统自带浏览器打开',
-              'widget': Selector<SettingsProvider, bool>(
-                selector: (_, provider) => provider.launchFromSystemBrowser,
-                builder: (_, launchFromSystemBrowser, __) {
-                  return CustomSwitch(
-                    activeColor: currentThemeColor,
-                    value: launchFromSystemBrowser,
-                    onChanged: (bool value) async {
-                      await HiveFieldUtils.setLaunchFromSystemBrowser(value);
-                    },
-                  );
-                },
+          ),
+        ),
+        if (!currentUser.isTeacher)
+          _SettingItemWidget(
+            item: _SettingItem(
+              name: '应用中心新图标',
+              description: '全新图标设计',
+              widget: Padding(
+                padding: EdgeInsets.only(left: 16.w),
+                child: Selector<SettingsProvider, bool>(
+                  selector: (_, provider) => provider.newAppCenterIcon,
+                  builder: (_, newAppCenterIcon, __) {
+                    return CustomSwitch(
+                      activeColor: currentThemeColor,
+                      value: newAppCenterIcon,
+                      onChanged: (bool value) async {
+                        await HiveFieldUtils.setEnabledNewAppsIcon(value);
+                      },
+                    );
+                  },
+                ),
               ),
+            ),
+          ),
+        _SettingItemWidget(
+          item: _SettingItem(
+            name: '在系统浏览器打开网页',
+            widget: Selector<SettingsProvider, bool>(
+              selector: (BuildContext _, SettingsProvider provider) =>
+                  provider.launchFromSystemBrowser,
+              builder:
+                  (BuildContext _, bool launchFromSystemBrowser, Widget __) {
+                return CustomSwitch(
+                  activeColor: currentThemeColor,
+                  value: launchFromSystemBrowser,
+                  onChanged: (bool value) async {
+                    await HiveFieldUtils.setLaunchFromSystemBrowser(value);
+                  },
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ThemeCard extends StatelessWidget {
+  const _ThemeCard({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _SettingsCard(
+      title: '主题设置',
+      children: <Widget>[
+        Selector<ThemesProvider, ThemeGroup>(
+          selector: (BuildContext _, ThemesProvider provider) =>
+              provider.currentThemeGroup,
+          builder: (BuildContext _, ThemeGroup currentThemeGroup, Widget __) {
+            return GridView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 6,
+                mainAxisSpacing: 20.w,
+                crossAxisSpacing: 20.w,
+              ),
+              itemCount: supportThemeGroups.length,
+              itemBuilder: (BuildContext _, int index) {
+                final ThemeGroup theme = supportThemeGroups[index];
+                final bool isSelected = currentThemeGroup == theme;
+                return GestureDetector(
+                  onTap: () {
+                    if (!isSelected) {
+                      context.read<ThemesProvider>().updateThemeColor(index);
+                    }
+                  },
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: theme.lightThemeColor,
+                      shape: BoxShape.circle,
+                    ),
+                    child: AnimatedOpacity(
+                      duration: kThemeChangeDuration,
+                      opacity: isSelected ? 1.0 : 0.0,
+                      child: Icon(Icons.check, color: Colors.white, size: 30.w),
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _DataCleaningCard extends StatelessWidget {
+  const _DataCleaningCard({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return _SettingsCard(
+      title: '数据清理',
+      children: <Widget>[
+        _SettingItemWidget(
+          item: _SettingItem(
+            name: '清理缓存数据',
+            onTap: () {
+              HiveBoxes.clearCacheBoxes(context: context);
             },
+          ),
+        ),
+        _SettingItemWidget(
+          item: _SettingItem(
+            name: '清理应用数据',
+            onTap: () {
+              HiveBoxes.clearAllBoxes(context: context);
+            },
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SettingsCard extends StatelessWidget {
+  const _SettingsCard({
+    Key key,
+    @required this.children,
+    this.title,
+  })  : assert(children != null),
+        super(key: key);
+
+  final String title;
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20.w, vertical: 10.w),
+      padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 20.w),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15.w),
+        color: context.themeData.cardColor,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          if (title != null)
+            Padding(
+              padding: EdgeInsets.only(bottom: 15.w),
+              child: Text(
+                title,
+                style: TextStyle(color: currentThemeColor, fontSize: 18.sp),
+              ),
+            ),
+          ...children,
         ],
-      ];
+      ),
+    );
+  }
+}
+
+class _SettingItemWidget extends StatelessWidget {
+  const _SettingItemWidget({
+    Key key,
+    @required this.item,
+  })  : assert(item != null),
+        super(key: key);
+
+  final _SettingItem item;
 
   double get iconSize => 36.0;
 
-  Widget settingItem({context, int index, int sectionIndex}) {
-    final page = pageSection[sectionIndex][index];
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      child: Padding(
-        padding: EdgeInsets.symmetric(
-          vertical: suSetHeight(
-              page['level'] == null || page['level'] == 1 ? 16.0 : 0.0),
-        ),
+      child: SizedBox(
+        height: 68.w,
         child: Row(
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(
-                left: suSetWidth(((page['level'] ?? 1) - 1) * iconSize / 4),
-                right: suSetWidth(iconSize / 2),
-              ),
-              child: page['level'] == null || page['level'] == 1
-                  ? SvgPicture.asset(
-                      page['icon'] as String,
-                      width: suSetWidth(iconSize),
-                      height: suSetWidth(iconSize),
-                    )
-                  : null,
-            ),
             Expanded(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    '${page['name']}',
-                    style: TextStyle(
-                      fontSize: suSetSp(
-                        page['level'] == null || page['level'] == 1
-                            ? 25.0
-                            : 21.0,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    '${page['description']}',
-                    style: Theme.of(context).textTheme.caption.copyWith(
-                          fontSize: suSetSp(
-                            page['level'] == null || page['level'] == 1
-                                ? 18.0
-                                : 16.0,
-                          ),
-                        ),
-                  ),
-                ],
+              child: Text(
+                item.name,
+                style: TextStyle(fontSize: 22.sp),
+                maxLines: 1,
+                overflow: TextOverflow.fade,
               ),
             ),
-            if (page['widget'] != null)
-              Transform.scale(
-                scale: 1 - (page['level'] ?? 0) * 0.1,
-                child: page['widget'],
+            if (item.description != null)
+              Text(
+                item.description,
+                style: context.themeData.textTheme.caption
+                    .copyWith(fontSize: 22.sp),
+                maxLines: 1,
+                overflow: TextOverflow.fade,
               ),
-            if (page['route'] != null)
+            if (item.widget != null) item.widget,
+            if ((item.route != null || item.onTap != null) && !item.hideArrow)
               Container(
-                margin: EdgeInsets.only(left: suSetWidth(16.0)),
-                width: 50.0,
-                height: 28.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(suSetWidth(20.0)),
-                  color: Theme.of(context).dividerColor,
-                ),
+                margin: EdgeInsets.only(left: 16.w),
+                width: (iconSize / 1.25).w / 2,
+                height: (iconSize / 1.25).w,
                 child: SvgPicture.asset(
                   R.ASSETS_ICONS_ARROW_RIGHT_SVG,
-                  color: Colors.white.withOpacity(0.9),
-                  width: suSetSp(iconSize / 1.25),
-                  height: suSetSp(iconSize / 1.25),
+                  color: context.themeData.iconTheme.color,
+                  fit: BoxFit.cover,
                 ),
               ),
           ],
         ),
       ),
       onTap: () {
-        if (page['onTap'] != null) page['onTap']();
-        if (page['route'] != null) {
-          navigatorState.pushNamed(page['route']);
+        item.onTap?.call();
+        if (item.route != null) {
+          navigatorState.pushNamed(item.route);
         }
-        return null;
       },
     );
   }
+}
 
-  Widget pageSelectionItem({
-    context,
-    sectionIndex,
-    page,
-    pageIndex,
-    index,
-    selectedIndex,
-  }) {
-    return GestureDetector(
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).dividerColor),
-          borderRadius: BorderRadius.circular(suSetSp(10.0)),
-        ),
-        child: Center(
-          child: Text(
-            '${page['pages'][index]}',
-            style: TextStyle(fontSize: suSetSp(20.0)),
-          ),
-        ),
-      ),
-      onTap: () {},
-    );
-  }
+class _SettingItem {
+  const _SettingItem({
+    this.name,
+    this.description,
+    this.widget,
+    this.route,
+    this.onTap,
+    this.hideArrow = false,
+  });
 
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-//        context.read<SettingsProvider>().uploadCloudSettings();
-        return true;
-      },
-      child: Scaffold(
-        body: FixedAppBarWrapper(
-          appBar: FixedAppBar(
-            title: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  '偏好设置',
-                  style: Theme.of(context).textTheme.headline6.copyWith(
-                        fontSize: suSetSp(26.0),
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                Text(
-                  '管理您的应用偏好设置',
-                  style: Theme.of(context).textTheme.caption.copyWith(
-                        fontSize: suSetSp(18.0),
-                      ),
-                ),
-              ],
-            ),
-            elevation: 0.0,
-          ),
-          body: ListView.separated(
-            padding: EdgeInsets.symmetric(
-              horizontal: suSetWidth(40.0),
-            ),
-            separatorBuilder: (context, index) => separator(
-              context,
-              color: Colors.transparent,
-              height: 20.0,
-            ),
-            itemCount: pageSection.length,
-            itemBuilder: (context, sectionIndex) => ListView.builder(
-              padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: pageSection[sectionIndex].length,
-              itemBuilder: (context, index) => settingItem(
-                context: context,
-                index: index,
-                sectionIndex: sectionIndex,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+  final String name;
+  final String description;
+  final Widget widget;
+  final String route;
+  final VoidCallback onTap;
+  final bool hideArrow;
 }

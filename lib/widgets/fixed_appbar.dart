@@ -183,7 +183,11 @@ class FixedAppBarWrapper extends StatelessWidget {
             left: 0.0,
             right: 0.0,
             bottom: 0.0,
-            child: body,
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: true,
+              child: body,
+            ),
           ),
           Positioned(
             top: 0.0,
