@@ -21,8 +21,7 @@ class UserPage extends StatefulWidget {
   const UserPage({
     Key key,
     @required this.uid,
-  })  : assert(uid != null),
-        super(key: key);
+  })  : super(key: key);
 
   final int uid;
 
@@ -126,7 +125,7 @@ class UserPageState extends State<UserPage>
     final List<dynamic> tags = data['data'];
     List<UserTag> _userTags = [];
     tags.forEach((dynamic tag) {
-      _userTags.add(UserAPI.createUserTag(tag as Map<String, dynamic>));
+      _userTags.add(UserTag.fromJson(tag as Map<String, dynamic>));
     });
     userTags
       ..clear()

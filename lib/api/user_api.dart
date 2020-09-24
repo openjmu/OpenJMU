@@ -34,11 +34,6 @@ class UserAPI {
     }
   }
 
-  static UserTag createUserTag(Map<String, dynamic> tagData) => UserTag(
-        id: tagData['id'] as int,
-        name: tagData['tagname'] as String,
-      );
-
   /// Update cache network image provider after avatar is updated.
   static int avatarLastModified = currentTimeStamp;
 

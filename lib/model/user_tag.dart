@@ -10,6 +10,13 @@ part of 'models.dart';
 class UserTag {
   const UserTag({this.id, this.name});
 
+  factory UserTag.fromJson(Map<String, dynamic> json) {
+    return UserTag(
+      id: json['id'] as int,
+      name: json['tagname'] as String,
+    );
+  }
+
   final int id;
   final String name;
 
