@@ -233,7 +233,7 @@ class SelfPage extends StatelessWidget {
               padding: EdgeInsets.only(left: 12.0.w, right: 24.0.w),
               child: SvgPicture.asset(
                 item['icon'] as String,
-                color: context.themeData.dividerColor.withOpacity(0.3),
+                color: context.themeData.iconTheme.color.withOpacity(0.5),
                 width: 45.0.w,
               ),
             ),
@@ -262,7 +262,12 @@ class SelfPage extends StatelessWidget {
           ),
           child: Row(
             children: <Widget>[
-              UserAvatar(size: 64.0),
+              ClipOval(
+                child: Image(
+                  image: UserAPI.getAvatarProvider(),
+                  height: (headerHeight - commonAppsHeight).h,
+                ),
+              ),
               SizedBox(width: 20.0.w),
               Expanded(
                 child: Text(
