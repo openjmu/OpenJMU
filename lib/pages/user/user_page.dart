@@ -459,55 +459,30 @@ class UserPageState extends State<UserPage>
   Widget get userAvatar {
     return GestureDetector(
       onTap: avatarTap,
-      child: SizedBox.fromSize(
-        size: Size.square(Screens.width / 5),
-        child: Stack(
-          children: <Widget>[
-            Positioned.fill(
-              child: CircularProgressIndicator(
-                value: () {
-                  double value;
-                  if (userLevelScore == null ||
-                      (userLevelScore?.levelInfo ?? null) == null) {
-                    value = 0.0;
-                  } else {
-                    final int range = userLevelScore.levelInfo.maxScore -
-                        userLevelScore.levelInfo?.minScore;
-                    final int currentValue = userLevelScore.totalExp -
-                        userLevelScore.levelInfo.minScore;
-                    value = currentValue / range;
-                  }
-                  return value;
-                }(),
-                valueColor: AlwaysStoppedAnimation<Color>(currentThemeColor),
-                strokeWidth: 3.0,
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.all(Screens.width * 0.01),
-              child: ClipOval(
-                child: Image(
-                  image: UserAPI.getAvatarProvider(uid: uid),
-                  frameBuilder: (
-                    BuildContext _,
-                    Widget child,
-                    int frame,
-                    bool wasSynchronouslyLoaded,
-                  ) {
-                    if (wasSynchronouslyLoaded) {
-                      return child;
-                    }
-                    return AnimatedOpacity(
-                      child: child,
-                      opacity: frame == null ? 0 : 1,
-                      duration: 1.seconds,
-                      curve: Curves.easeOut,
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
+      child: Container(
+        width: Screens.width / 5,
+        height: Screens.width / 5,
+        padding: EdgeInsets.all(Screens.width * 0.01),
+        child: ClipOval(
+          child: Image(
+            image: UserAPI.getAvatarProvider(uid: uid),
+            frameBuilder: (
+              BuildContext _,
+              Widget child,
+              int frame,
+              bool wasSynchronouslyLoaded,
+            ) {
+              if (wasSynchronouslyLoaded) {
+                return child;
+              }
+              return AnimatedOpacity(
+                child: child,
+                opacity: frame == null ? 0 : 1,
+                duration: 1.seconds,
+                curve: Curves.easeOut,
+              );
+            },
+          ),
         ),
       ),
     );
