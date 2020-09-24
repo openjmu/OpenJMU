@@ -2,7 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-03-09 20:39
 ///
-import 'dart:ui';
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 
@@ -267,7 +267,7 @@ class SelfPage extends StatelessWidget {
               ClipOval(
                 child: Image(
                   image: UserAPI.getAvatarProvider(),
-                  height: (headerHeight - commonAppsHeight).h,
+                  height: math.min(64.w, (headerHeight - commonAppsHeight).h),
                 ),
               ),
               SizedBox(width: 20.0.w),
