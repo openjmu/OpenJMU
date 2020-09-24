@@ -2,6 +2,8 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-01-13 10:59
 ///
+import 'package:device_info/device_info.dart';
+
 import 'package:openjmu/constants/constants.dart';
 
 class HiveFieldUtils {
@@ -40,8 +42,24 @@ class HiveFieldUtils {
   static bool getAMOLEDDark() => _box?.get(amoledDark) as bool ?? false;
 
   /// 获取设置的跟随系统夜间模式
-  static bool getBrightnessPlatform() =>
-      _box?.get(brightnessPlatform) as bool ?? true;
+  static bool getBrightnessPlatform() {
+    bool value = false;
+    if (DeviceUtils.deviceInfo is IosDeviceInfo) {
+      final double version =
+          (DeviceUtils.deviceInfo as IosDeviceInfo).systemVersion.toDouble();
+      if (version >= 13.0) {
+        value = true;
+      }
+    } else if (DeviceUtils.deviceInfo is AndroidDeviceInfo) {
+      final int sdk =
+          (DeviceUtils.deviceInfo as AndroidDeviceInfo).version.sdkInt;
+      if (sdk >= 29) {
+        value = true;
+      }
+    }
+    value = _box?.get(brightnessPlatform) as bool ?? value;
+    return value;
+  }
 
   /// 设置选择的主题色
   static Future<void> setColorTheme(int value) async =>

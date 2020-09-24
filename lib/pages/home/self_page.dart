@@ -23,6 +23,8 @@ class SelfPage extends StatelessWidget {
             final ThemesProvider provider = context.read<ThemesProvider>();
             if (!provider.platformBrightness) {
               provider.dark = !provider.dark;
+            } else {
+              showToast('已跟随系统夜间模式设置\n可在设置中关闭');
             }
           },
         },

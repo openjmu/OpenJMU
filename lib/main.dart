@@ -277,10 +277,10 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
           SettingsProvider settingsProvider,
           Widget __,
         ) {
-          final isDark = themesProvider.platformBrightness
+          final bool isDark = themesProvider.platformBrightness
               ? _platformBrightness == Brightness.dark
               : themesProvider.dark;
-          final theme =
+          final ThemeData theme =
               (isDark ? themesProvider.darkTheme : themesProvider.lightTheme)
                   .copyWith(
             pageTransitionsTheme: PageTransitionsTheme(
