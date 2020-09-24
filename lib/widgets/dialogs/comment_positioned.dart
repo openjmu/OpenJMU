@@ -128,7 +128,10 @@ class CommentPositionedState extends State<CommentPositioned> {
                 width: suSetWidth(70.0),
                 height: suSetWidth(70.0),
                 child: Image(
-                  image: AssetEntityImageProvider(_image, thumbSize: 80),
+                  image: AssetEntityImageProvider(
+                    _image,
+                    thumbSize: <int>[80, 80],
+                  ),
                   fit: BoxFit.cover,
                 ),
               )

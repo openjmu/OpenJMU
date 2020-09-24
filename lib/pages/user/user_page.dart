@@ -293,7 +293,7 @@ class UserPageState extends State<UserPage>
             color: shouldTitleDisplay ? null : Colors.white,
           ),
           actions: <Widget>[
-            if (info?.refreshWiget != null)
+            if (info?.refreshWidget != null)
               UnconstrainedBox(
                 child: RefreshProgressIndicator(
                   value: shouldAnimateIndicator ? indicatorRotateOffset : null,
