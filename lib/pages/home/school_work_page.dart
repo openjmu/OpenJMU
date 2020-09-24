@@ -71,14 +71,10 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
 
   Widget get _appBar => FixedAppBar(
         automaticallyImplyLeading: false,
-        title: Padding(
+        title: Container(
+          alignment: AlignmentDirectional.centerStart,
           padding: EdgeInsets.only(right: 20.0.w),
-          child: Row(
-            children: <Widget>[
-              MainPage.selfPageOpener(context),
-              const Spacer(),
-            ],
-          ),
+          child: MainPage.selfPageOpener,
         ),
         actions: <Widget>[
           _refreshIcon,
@@ -100,6 +96,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
 
   Widget get switchButton => MaterialButton(
         color: currentThemeColor,
+        elevation: 0.0,
         minWidth: suSetWidth(currentIndex == 0 ? 100.0 : 120.0),
         height: suSetHeight(50.0),
         padding: EdgeInsets.zero,

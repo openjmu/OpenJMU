@@ -84,41 +84,6 @@ class _MarketingPageState extends State<MarketingPage> {
     }
   }
 
-  Widget get publishButton => MaterialButton(
-        color: currentThemeColor,
-        minWidth: suSetWidth(120.0),
-        height: suSetHeight(50.0),
-        padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(suSetWidth(13.0)),
-        ),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(right: suSetWidth(6.0)),
-              child: SvgPicture.asset(
-                R.ASSETS_ICONS_SEND_SVG,
-                height: suSetHeight(22.0),
-                color: Colors.white,
-              ),
-            ),
-            Text(
-              '发动态',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: suSetSp(20.0),
-                height: 1.24,
-              ),
-            ),
-          ],
-        ),
-        onPressed: () {
-          navigatorState.pushNamed(Routes.openjmuPublishTeamPost);
-        },
-      );
-
   Widget get notificationButton => Consumer<NotificationProvider>(
         builder: (_, provider, __) {
           return SizedBox(
@@ -170,19 +135,14 @@ class _MarketingPageState extends State<MarketingPage> {
       appBar: FixedAppBar(
         automaticallyImplyLeading: false,
         elevation: 1.0,
-        title: Padding(
+        title: Container(
+          alignment: AlignmentDirectional.centerStart,
           padding: EdgeInsets.only(right: 20.0.w),
-          child: Row(
-            children: <Widget>[
-              MainPage.selfPageOpener(context),
-              const Spacer(),
-              notificationButton,
-            ],
-          ),
+          child: MainPage.selfPageOpener,
         ),
         actions: <Widget>[
           notificationButton,
-          publishButton,
+          MainPage.publishButton(Routes.openjmuPublishTeamPost),
         ],
         actionsPadding: EdgeInsets.only(right: 20.0.w),
       ),
@@ -210,7 +170,8 @@ class _MarketingPageState extends State<MarketingPage> {
                       value: TeamPostProvider(posts.elementAt(index)),
                       child: TeamPostPreviewCard(
                         key: ValueKey(
-                            'marketPost-${posts.elementAt(index).tid}'),
+                          'marketPost-${posts.elementAt(index).tid}',
+                        ),
                       ),
                     );
                   },

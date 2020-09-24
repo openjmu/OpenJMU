@@ -27,24 +27,61 @@ class MainPage extends StatefulWidget {
 
   /// Widget that placed in main page to open the self page.
   /// 首页顶栏左上角打开个人页的封装部件
-  static Widget selfPageOpener(BuildContext context) {
+  static Widget get selfPageOpener {
     return GestureDetector(
       onTap: Instances.mainPageScaffoldKey.currentState.openDrawer,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(left: 12.0.w, right: 10.0.w),
+            padding: EdgeInsets.only(left: 20.w, right: 5.0.w),
             child: SvgPicture.asset(
               R.ASSETS_ICONS_SELF_PAGE_AVATAR_CORNER_SVG,
               color: currentTheme.iconTheme.color,
-              width: 8.0.w,
-              height: 20.0.w,
+              height: 15.w,
             ),
           ),
           UserAvatar(size: 54.0, canJump: false)
         ],
       ),
+    );
+  }
+
+  static Widget publishButton(String route) {
+    return MaterialButton(
+      color: currentThemeColor,
+      elevation: 0.0,
+      minWidth: suSetWidth(120.0),
+      height: suSetHeight(50.0),
+      padding: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(suSetWidth(13.0)),
+      ),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(right: suSetWidth(6.0)),
+            child: SvgPicture.asset(
+              R.ASSETS_ICONS_SEND_SVG,
+              height: suSetHeight(22.0),
+              color: Colors.white,
+            ),
+          ),
+          Text(
+            '发动态',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: suSetSp(20.0),
+              height: 1.24,
+            ),
+          ),
+        ],
+      ),
+      onPressed: () {
+        navigatorState.pushNamed(route);
+      },
     );
   }
 }

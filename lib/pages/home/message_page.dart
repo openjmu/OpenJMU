@@ -34,7 +34,7 @@ class MessagePageState extends State<MessagePage>
 
   Widget get _tabBar => Row(
         children: <Widget>[
-          Expanded(child: MainPage.selfPageOpener(context)),
+          Expanded(child: MainPage.selfPageOpener),
           Expanded(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),

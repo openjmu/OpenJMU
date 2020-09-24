@@ -6,43 +6,10 @@ import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
+import '../main_page.dart';
+
 class PostSquarePage extends StatelessWidget {
   const PostSquarePage({Key key}) : super(key: key);
-
-  Widget publishButton(BuildContext context) => MaterialButton(
-        color: currentThemeColor,
-        minWidth: suSetWidth(120.0),
-        height: suSetHeight(50.0),
-        padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(suSetWidth(13.0)),
-        ),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Padding(
-              padding: EdgeInsets.only(right: suSetWidth(6.0)),
-              child: SvgPicture.asset(
-                R.ASSETS_ICONS_SEND_SVG,
-                height: suSetHeight(22.0),
-                color: Colors.white,
-              ),
-            ),
-            Text(
-              '发动态',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: suSetSp(20.0),
-                height: 1.24,
-              ),
-            ),
-          ],
-        ),
-        onPressed: () {
-          Navigator.of(context).pushNamed(Routes.openjmuPublishPost);
-        },
-      );
 
   Widget get notificationButton => Consumer<NotificationProvider>(
         builder: (_, provider, __) {
@@ -95,34 +62,14 @@ class PostSquarePage extends StatelessWidget {
       appBar: FixedAppBar(
         automaticallyImplyLeading: false,
         elevation: 1.0,
-        title: Padding(
+        title: Container(
+          alignment: AlignmentDirectional.centerStart,
           padding: EdgeInsets.only(right: 20.0.w),
-          child: Row(
-            children: <Widget>[
-              GestureDetector(
-                onTap: Instances.mainPageScaffoldKey.currentState.openDrawer,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(left: 12.0.w, right: 10.0.w),
-                      child: SvgPicture.asset(
-                        R.ASSETS_ICONS_SELF_PAGE_AVATAR_CORNER_SVG,
-                        color: currentTheme.iconTheme.color,
-                        width: 8.0.w,
-                        height: 20.0.w,
-                      ),
-                    ),
-                    UserAvatar(size: 54.0, canJump: false)
-                  ],
-                ),
-              ),
-            ],
-          ),
+          child: MainPage.selfPageOpener,
         ),
         actions: <Widget>[
           notificationButton,
-          publishButton(context),
+          MainPage.publishButton(Routes.openjmuPublishPost),
         ],
         actionsPadding: EdgeInsets.only(right: 20.0.w),
       ),
