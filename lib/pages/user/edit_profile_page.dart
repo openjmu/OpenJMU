@@ -19,10 +19,28 @@ class _EditProfilePageState extends State<EditProfilePage> {
     text: currentUser.signature ?? '快来填写你的签名吧~',
   );
 
-  final Widget saveButton = IconButton(
-    icon: Icon(Icons.save),
-    onPressed: () {},
-  );
+  Widget get saveButton {
+    return IconButton(
+      icon: Icon(Icons.save),
+      onPressed: () {
+        final LoadingDialogController controller = LoadingDialogController();
+        LoadingDialog.show(
+          context,
+          controller: controller,
+          text: '正在更新签名',
+        );
+        if (signatureController.text != currentUser.signature) {
+          UserAPI.setSignature(signatureController.text)
+              .then((Response<Map<String, dynamic>> response) {
+            controller.changeState('success', '更新成功');
+          }).catchError((dynamic e) {
+            trueDebugPrint('Error when update signature: $e');
+            controller.changeState('failed', '更新失败');
+          });
+        }
+      },
+    );
+  }
 
   /// Avatar backdrop widget.
   /// 头像背景部件

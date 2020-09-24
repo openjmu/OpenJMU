@@ -11,11 +11,11 @@ import 'package:openjmu/widgets/dialogs/manually_set_sid_dialog.dart';
 
 class SelfPage extends StatelessWidget {
   List<Map<String, dynamic>> get settingsSection => <Map<String, dynamic>>[
-        {
-          'name': '背包',
-          'icon': R.ASSETS_ICONS_SELF_PAGE_BACKPACK_SVG,
-          'route': Routes.openjmuBackpack,
-        },
+        // {
+        //   'name': '背包',
+        //   'icon': R.ASSETS_ICONS_SELF_PAGE_BACKPACK_SVG,
+        //   'route': Routes.openjmuBackpack,
+        // },
         {
           'icon': R.ASSETS_ICONS_SELF_PAGE_NIGHT_MODE_SVG,
           'name': '夜间模式',
@@ -264,10 +264,15 @@ class SelfPage extends StatelessWidget {
           ),
           child: Row(
             children: <Widget>[
-              ClipOval(
-                child: Image(
-                  image: UserAPI.getAvatarProvider(),
-                  height: math.min(64.w, (headerHeight - commonAppsHeight).h),
+              GestureDetector(
+                onTap: () {
+                  navigatorState.pushNamed(Routes.openjmuUserPage);
+                },
+                child: ClipOval(
+                  child: Image(
+                    image: UserAPI.getAvatarProvider(),
+                    height: math.min(64.w, (headerHeight - commonAppsHeight).h),
+                  ),
                 ),
               ),
               SizedBox(width: 20.0.w),
