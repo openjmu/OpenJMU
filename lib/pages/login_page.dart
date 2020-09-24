@@ -372,8 +372,7 @@ class LoginPageState extends State<LoginPage>
             return Container(
               margin: EdgeInsets.symmetric(vertical: suSetHeight(15.0)),
               child: AnnouncementWidget(
-                contentColor: Colors.white,
-                backgroundColor: Colors.grey[850],
+                backgroundColor: Colors.black26,
                 radius: 10.0,
               ),
             );

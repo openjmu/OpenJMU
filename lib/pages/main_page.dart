@@ -167,22 +167,33 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
 
   /// Announcement widget.
   /// 公告组件
-  Widget get announcementWidget => Selector<SettingsProvider, bool>(
-        selector: (_, SettingsProvider provider) =>
-            provider.announcementsUserEnabled,
-        builder: (_, bool announcementsUserEnabled, __) {
-          if (announcementsUserEnabled) {
-            return AnnouncementWidget(
-              gap: 24.0,
-              canClose: true,
-              backgroundColor: currentThemeColor,
-              contentColor: currentThemeColor,
-            );
-          } else {
-            return const SizedBox.shrink();
-          }
-        },
-      );
+  Widget get announcementWidget {
+    return Positioned(
+      bottom: 0.0,
+      left: 0.0,
+      right: 0.0,
+      child: Padding(
+        padding: EdgeInsets.all(20.w),
+        child: Selector<SettingsProvider, bool>(
+          selector: (BuildContext _, SettingsProvider provider) =>
+              provider.announcementsUserEnabled,
+          builder: (BuildContext _, bool announcementsUserEnabled, Widget __) {
+            if (announcementsUserEnabled) {
+              return AnnouncementWidget(
+                height: 72.w,
+                gap: 24.0,
+                canClose: true,
+                backgroundColor: currentThemeColor,
+                radius: 15.w,
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
+          },
+        ),
+      ),
+    );
+  }
 
   /// Bottom navigation bar.
   /// 底部导航栏
@@ -220,18 +231,16 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
       },
       child: Scaffold(
         key: Instances.mainPageScaffoldKey,
-        body: Column(
+        body: Stack(
           children: <Widget>[
-            Expanded(
-              child: IndexedStack(
-                children: <Widget>[
-                  const PostSquarePage(),
-                  const MarketingPage(),
-                  SchoolWorkPage(key: Instances.schoolWorkPageStateKey),
-                  const MessagePage(),
-                ],
-                index: _currentIndex,
-              ),
+            IndexedStack(
+              children: <Widget>[
+                const PostSquarePage(),
+                const MarketingPage(),
+                SchoolWorkPage(key: Instances.schoolWorkPageStateKey),
+                const MessagePage(),
+              ],
+              index: _currentIndex,
             ),
             announcementWidget,
           ],

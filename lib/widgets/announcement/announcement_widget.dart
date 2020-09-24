@@ -8,6 +8,7 @@ class AnnouncementWidget extends StatelessWidget {
     Key key,
     this.contentColor,
     this.backgroundColor,
+    this.height,
     this.gap,
     this.radius,
     this.canClose = false,
@@ -15,24 +16,25 @@ class AnnouncementWidget extends StatelessWidget {
 
   final Color contentColor;
   final Color backgroundColor;
+  final double height;
   final double gap;
   final double radius;
   final bool canClose;
 
   IconThemeData get iconTheme => IconThemeData(
-        color: contentColor ?? currentThemeColor,
-        size: suSetWidth(26.0),
+        color: contentColor ?? Colors.white,
+        size: 26.w,
       );
 
   Widget title(SettingsProvider provider) {
     return Expanded(
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: suSetWidth(6.0)),
+        margin: EdgeInsets.symmetric(horizontal: 6.w),
         child: Text(
           '  ${provider.announcements[0]['title']}',
           style: TextStyle(
-            color: contentColor ?? defaultLightColor,
-            fontSize: suSetSp(20.0),
+            color: contentColor ?? Colors.white,
+            fontSize: 20.sp,
           ),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
@@ -62,37 +64,43 @@ class AnnouncementWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SettingsProvider>(
-      builder: (_, SettingsProvider provider, __) {
+      builder: (BuildContext _, SettingsProvider provider, Widget __) {
         return GestureDetector(
+          onTap: () {
+            final Map<String, dynamic> data =
+                provider.announcements[0].cast<String, dynamic>();
+            ConfirmationDialog.show(
+              context,
+              title: data['title'] as String,
+              content: data['content'] as String,
+              cancelLabel: '朕已阅',
+            );
+          },
           behavior: HitTestBehavior.translucent,
           child: Container(
+            height: height,
             padding: EdgeInsets.symmetric(
-              horizontal: suSetWidth(gap ?? 15.0),
-              vertical: suSetHeight(10.0),
+              horizontal: (gap ?? 15.0).w,
+              vertical: 10.h,
             ),
             decoration: BoxDecoration(
               borderRadius: radius != null
                   ? BorderRadius.circular(suSetWidth(radius))
                   : null,
-              color: (backgroundColor ?? defaultLightColor).withAlpha(0x44),
+              color: backgroundColor ?? defaultLightColor,
             ),
             child: Row(
               children: <Widget>[
-                Icon(Icons.notifications_active,
-                    color: iconTheme.color, size: iconTheme.size),
+                Icon(
+                  Icons.notifications_active,
+                  color: iconTheme.color,
+                  size: iconTheme.size,
+                ),
                 title(provider),
                 actionIcon(context, provider),
               ],
             ),
           ),
-          onTap: () {
-            final Map<String, dynamic> data =
-                provider.announcements[0].cast<String, dynamic>();
-            ConfirmationDialog.show(context,
-                title: data['title'] as String,
-                content: data['content'] as String,
-                cancelLabel: '朕已阅');
-          },
         );
       },
     );
