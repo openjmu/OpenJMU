@@ -63,7 +63,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         padding: EdgeInsets.symmetric(horizontal: 10.0.w),
         child: Text(
           currentUser.name,
-          style: TextStyle(color: Colors.white, fontSize: 22.0.sp),
+          style: TextStyle(fontSize: 22.0.sp),
           textAlign: TextAlign.left,
           maxLines: 1,
           overflow: TextOverflow.fade,
@@ -103,7 +103,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         child: Center(
           child: SvgPicture.asset(
             R.ASSETS_ICONS_USER_SAVE_CODE_SVG,
-            color: context.themeData.dividerColor.withOpacity(0.3),
+            color: context.themeData.iconTheme.color,
             width: minWidth * 0.05,
             height: minWidth * 0.05,
           ),
