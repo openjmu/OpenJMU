@@ -215,6 +215,7 @@ class _CommentListState extends State<CommentList>
       if (_firstLoadComplete) {
         _itemList = ExtendedListView.builder(
           padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
+          extendedListDelegate: const ExtendedListDelegate(),
           itemCount: _commentList.length + 1,
           itemBuilder: (BuildContext _, int index) {
             if (index == _commentList.length - 1) {
@@ -505,6 +506,7 @@ class CommentListInPostState extends State<CommentListInPost>
             ? ExtendedListView.separated(
                 padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
+                extendedListDelegate: const ExtendedListDelegate(),
                 separatorBuilder: (BuildContext _, int index) => Container(
                   color: Theme.of(context).dividerColor,
                   height: 1.0,

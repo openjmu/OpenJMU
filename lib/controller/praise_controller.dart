@@ -171,6 +171,7 @@ class _PraiseListState extends State<PraiseList>
       if (_firstLoadComplete) {
         _itemList = ExtendedListView.builder(
           padding: EdgeInsets.symmetric(vertical: suSetWidth(6.0)),
+          extendedListDelegate: const ExtendedListDelegate(),
           itemBuilder: (context, index) {
             if (index == _praiseList.length) {
               if (this._canLoadMore) {
@@ -370,6 +371,7 @@ class PraiseListInPostState extends State<PraiseListInPost>
                   color: Theme.of(context).dividerColor,
                   height: suSetHeight(1.0),
                 ),
+                extendedListDelegate: const ExtendedListDelegate(),
                 itemCount: _praises.length + 1,
                 itemBuilder: (context, index) {
                   if (index == _praises.length - 1 && canLoadMore) {

@@ -505,6 +505,7 @@ class ForwardListInPostState extends State<ForwardListInPost>
             ? ExtendedListView.separated(
                 padding: EdgeInsets.zero,
                 physics: const NeverScrollableScrollPhysics(),
+                extendedListDelegate: const ExtendedListDelegate(),
                 separatorBuilder: (BuildContext _, int index) => Container(
                   color: Theme.of(context).dividerColor,
                   height: 1.0,
