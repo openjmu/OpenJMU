@@ -306,10 +306,19 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   navigatorKey: Instances.navigatorKey,
                   builder: (BuildContext c, Widget w) {
                     ScreenUtil.init(c, allowFontScaling: true);
-                    return ScrollConfiguration(
+                    Widget widget = ScrollConfiguration(
                       behavior: const NoGlowScrollBehavior(),
                       child: NoScaleTextWidget(child: w),
                     );
+                    if (Screens.topSafeHeight == 44.0) {
+                      widget = Stack(
+                        children: <Widget>[
+                          Positioned.fill(child: widget),
+                          const _HiddenLogo(),
+                        ],
+                      );
+                    }
+                    return widget;
                   },
                   title: 'OpenJMU',
                   theme: theme,
@@ -327,6 +336,31 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _HiddenLogo extends StatelessWidget {
+  const _HiddenLogo({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PositionedDirectional(
+      top: 0.0,
+      start: 0.0,
+      end: 0.0,
+      height: 30.0,
+      child: Center(
+        child: Text(
+          'OpenJmu',
+          style: TextStyle(
+            color: defaultLightColor,
+            fontFamily: 'chocolate',
+            fontSize: 26.0,
+            inherit: false,
+          ),
+        ),
       ),
     );
   }
