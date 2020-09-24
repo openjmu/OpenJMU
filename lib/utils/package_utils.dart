@@ -26,7 +26,7 @@ class PackageUtils {
     _packageInfo = await PackageInfo.fromPlatform();
   }
 
-  static void checkUpdate({bool fromHome = false}) {
+  static void checkUpdate({bool isManually = false}) {
     NetUtils.get<String>(API.checkUpdate).then((Response<String> response) {
       final Map<String, dynamic> data =
           jsonDecode(response.data) as Map<String, dynamic>;
@@ -47,7 +47,7 @@ class PackageUtils {
           response: data,
         ));
       } else {
-        if (fromHome) {
+        if (isManually) {
           showToast('已更新为最新版本');
         }
       }
@@ -55,7 +55,7 @@ class PackageUtils {
       remoteBuildNumber = _remoteBuild;
     }).catchError((dynamic e) {
       trueDebugPrint('Failed when checking update: $e');
-      if (!fromHome) {
+      if (!isManually) {
         Future<void>.delayed(30.seconds, checkUpdate);
       }
     });

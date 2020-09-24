@@ -32,7 +32,7 @@ class AboutPage extends StatelessWidget {
           {
             'name': '检查新版本',
             'onTap': () {
-              PackageUtils.checkUpdate(fromHome: true);
+              PackageUtils.checkUpdate(isManually: true);
             },
           }
       ];
