@@ -15,6 +15,7 @@ class ThemesProvider with ChangeNotifier {
   ThemeGroup _currentThemeGroup = defaultThemeGroup;
 
   ThemeGroup get currentThemeGroup => _currentThemeGroup;
+
   set currentThemeGroup(ThemeGroup value) {
     assert(value != null);
     if (_currentThemeGroup == value) return;
@@ -23,7 +24,9 @@ class ThemesProvider with ChangeNotifier {
   }
 
   bool _dark = false;
+
   bool get dark => _dark;
+
   set dark(bool value) {
     assert(value != null);
     if (_dark == value) return;
@@ -33,7 +36,9 @@ class ThemesProvider with ChangeNotifier {
   }
 
   bool _amoledDark = false;
+
   bool get amoledDark => _amoledDark;
+
   set amoledDark(bool value) {
     assert(value != null);
     if (_amoledDark == value) return;
@@ -43,7 +48,9 @@ class ThemesProvider with ChangeNotifier {
   }
 
   bool _platformBrightness = true;
+
   bool get platformBrightness => _platformBrightness;
+
   set platformBrightness(bool value) {
     assert(value != null);
     if (_platformBrightness == value) return;
@@ -255,4 +262,32 @@ class ThemesProvider with ChangeNotifier {
 
 final List<ThemeGroup> supportThemeGroups = <ThemeGroup>[
   defaultThemeGroup, // This is the default theme group.
+  ThemeGroup(
+    lightThemeColor: const Color(0xfff06292),
+    darkThemeColor: const Color(0xfff06292),
+  ),
+  ThemeGroup(
+    lightThemeColor: const Color(0xffab47bc),
+    darkThemeColor: const Color(0xffab47bc),
+  ),
+  ThemeGroup(
+    lightThemeColor: const Color(0xff1e88e5),
+    darkThemeColor: const Color(0xff1e88e5),
+  ),
+  ThemeGroup(
+    lightThemeColor: const Color(0xff00bcd4),
+    darkThemeColor: const Color(0xff00bcd4),
+  ),
+  ThemeGroup(
+    lightThemeColor: const Color(0xff009688),
+    darkThemeColor: const Color(0xff009688),
+  ),
+  ThemeGroup(
+    lightThemeColor: const Color(0xfffdd835),
+    darkThemeColor: const Color(0xfffdd835),
+  ),
+  ThemeGroup(
+    lightThemeColor: const Color(0xffff7043),
+    darkThemeColor: const Color(0xffff7043),
+  ),
 ];
