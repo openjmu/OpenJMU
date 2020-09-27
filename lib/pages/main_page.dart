@@ -47,12 +47,74 @@ class MainPage extends StatefulWidget {
     );
   }
 
+  static Widget notificationButton({
+    BuildContext context,
+    bool isTeam = false,
+  }) {
+    return Consumer<NotificationProvider>(
+      builder: (BuildContext _, NotificationProvider provider, Widget __) {
+        return SizedBox(
+          width: 56.w,
+          child: Stack(
+            overflow: Overflow.visible,
+            children: <Widget>[
+              Positioned(
+                top: (kToolbarHeight / 5).h,
+                right: 2.w,
+                child: Visibility(
+                  visible: isTeam
+                      ? provider.showTeamNotification
+                      : provider.showNotification,
+                  child: ClipRRect(
+                    borderRadius: maxBorderRadius,
+                    child: Container(
+                      width: 12.w,
+                      height: 12.w,
+                      color: currentThemeColor,
+                    ),
+                  ),
+                ),
+              ),
+              MaterialButton(
+                elevation: 0.0,
+                minWidth: 56.w,
+                height: 56.w,
+                padding: EdgeInsets.zero,
+                color: context.themeData.canvasColor,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(suSetWidth(13.0)),
+                ),
+                child: SvgPicture.asset(
+                  R.ASSETS_ICONS_LIUYAN_LINE_SVG,
+                  color: currentTheme.iconTheme.color,
+                  width: suSetWidth(32.0),
+                  height: suSetWidth(32.0),
+                ),
+                onPressed: () async {
+                  provider.stopNotification();
+                  await navigatorState.pushNamed(
+                    Routes.openjmuNotifications,
+                    arguments: <String, dynamic>{
+                      'initialPage': isTeam ? '集市' : '广场',
+                    },
+                  );
+                  provider.initNotification();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   static Widget publishButton(String route) {
     return MaterialButton(
       color: currentThemeColor,
       elevation: 0.0,
       minWidth: suSetWidth(120.0),
-      height: suSetHeight(50.0),
+      height: 56.w,
       padding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(suSetWidth(13.0)),

@@ -84,51 +84,6 @@ class _MarketingPageState extends State<MarketingPage> {
     }
   }
 
-  Widget get notificationButton => Consumer<NotificationProvider>(
-        builder: (_, provider, __) {
-          return SizedBox(
-            width: suSetWidth(60.0),
-            child: Stack(
-              overflow: Overflow.visible,
-              children: <Widget>[
-                Positioned(
-                  top: suSetHeight(kToolbarHeight / 5),
-                  right: suSetWidth(2.0),
-                  child: Visibility(
-                    visible: provider.showTeamNotification,
-                    child: ClipRRect(
-                      borderRadius: maxBorderRadius,
-                      child: Container(
-                        width: suSetWidth(12.0),
-                        height: suSetWidth(12.0),
-                        color: currentThemeColor,
-                      ),
-                    ),
-                  ),
-                ),
-                IconButton(
-                  alignment: Alignment.centerRight,
-                  icon: SvgPicture.asset(
-                    R.ASSETS_ICONS_LIUYAN_LINE_SVG,
-                    color: currentTheme.iconTheme.color,
-                    width: suSetWidth(32.0),
-                    height: suSetWidth(32.0),
-                  ),
-                  onPressed: () async {
-                    provider.stopNotification();
-                    await navigatorState.pushNamed(
-                      Routes.openjmuNotifications,
-                      arguments: <String, dynamic>{'initialPage': '集市'},
-                    );
-                    provider.initNotification();
-                  },
-                ),
-              ],
-            ),
-          );
-        },
-      );
-
   @override
   Widget build(BuildContext context) {
     return FixedAppBarWrapper(
@@ -141,7 +96,8 @@ class _MarketingPageState extends State<MarketingPage> {
           child: MainPage.selfPageOpener,
         ),
         actions: <Widget>[
-          notificationButton,
+          MainPage.notificationButton(context: context, isTeam: false),
+          SizedBox(width: 10.w),
           MainPage.publishButton(Routes.openjmuPublishTeamPost),
         ],
         actionsPadding: EdgeInsets.only(right: 20.0.w),
