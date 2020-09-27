@@ -57,8 +57,8 @@ dependencies:
   quick_actions: ^0.4.0+9
   r_scan:
     git:
-      url: https://github.com/rhymelph/r_scan.git
-      ref: "ccdf16e"
+      url: https://github.com/CaiJingLong/r_scan.git
+      ref: d2f1849f365a1d716d0ade34cfc401f1d6b3d56d
   url_launcher: 5.7.1
   uuid: 2.2.2
   vibration: 1.5.0
