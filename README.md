@@ -10,11 +10,10 @@
 
 Rebuild from [JiDaTong](http://99.jmu.edu.cn/) client using [Flutter](https://flutter.dev/).
 
-**注意：由于登录体系不对外公开，如果您非本校（集美大学）成员，以克隆、编译或下载APP的方式使用APP均无法正常使用。**
+**注意：由于登录体系不对外公开，如果您非本校（集美大学）成员，以任何方式均无法正常登录。**
 
-**Notice: Due to non-public user service, you can't use this app
-normally after you clone/build/download if you are not a member of JMU
-(JiMei University).**
+**Notice: Due to non-public user service, you can't login to this app
+if you are not a member of JMU (JiMei University).**
 
 [更新日志](CHANGELOG.md)
 
