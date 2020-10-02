@@ -107,9 +107,6 @@ class ImageViewerState extends State<ImageViewer>
           ?.elementAt(1)
           ?.split('=')
           ?.elementAt(1);
-      final String fileExtension = filename
-          ?.substring(filename?.lastIndexOf('.'), (filename?.length) ?? 0 + 1)
-          ?.replaceAll('.', '');
       final Response<List<int>> response =
           await NetUtils.getBytes<List<int>>(url);
       final bool success = await ImageSave.saveImageToSandbox(

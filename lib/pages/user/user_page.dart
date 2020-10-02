@@ -199,7 +199,7 @@ class UserPageState extends State<UserPage>
         'pics': <ImageBean>[
           ImageBean(
             id: widget.uid,
-            imageUrl: '${API.userAvatar}?uid=${widget.uid}&size=f640',
+            imageUrl: '${API.userAvatar}?uid=$uid&size=f640',
           ),
         ],
         'needsClear': true,
