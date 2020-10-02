@@ -100,9 +100,8 @@ class ImageViewerState extends State<ImageViewer>
 
   Future<void> _downloadImage(String url) async {
     try {
-      final Response<List<int>> response =
-          await NetUtils.getBytes<List<int>>(url);
-      final String filename = response.headers
+      final Response<dynamic> head = await NetUtils.head(url);
+      final String filename = head.headers
           .value('Content-Disposition')
           ?.split('; ')
           ?.elementAt(1)
@@ -111,17 +110,16 @@ class ImageViewerState extends State<ImageViewer>
       final String fileExtension = filename
           ?.substring(filename?.lastIndexOf('.'), (filename?.length) ?? 0 + 1)
           ?.replaceAll('.', '');
-      if (filename != null && fileExtension != null) {
-        final bool success = await ImageSave.saveImage(
-          Uint8List.fromList(response.data),
-          fileExtension,
-          albumName: 'OpenJMU',
-        );
-        if (success) {
-          showCenterToast('图片已保存至相册');
-        } else {
-          showErrorToast('图片保存失败');
-        }
+      final Response<List<int>> response =
+          await NetUtils.getBytes<List<int>>(url);
+      final bool success = await ImageSave.saveImageToSandbox(
+        Uint8List.fromList(response.data),
+        filename ?? '$currentTimeStamp.jpg',
+      );
+      if (success) {
+        showCenterToast('图片已保存至相册');
+      } else {
+        showErrorToast('图片保存失败');
       }
     } on PlatformException catch (error) {
       showErrorToast(error.message);
@@ -501,6 +499,7 @@ class ViewAppBar extends StatelessWidget {
 
 class ImageBean {
   const ImageBean({this.id, this.imageUrl, this.imageThumbUrl, this.postId});
+
   final int id;
   final String imageUrl;
   final String imageThumbUrl;
