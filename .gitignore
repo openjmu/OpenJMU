@@ -81,7 +81,6 @@ lib/generated_plugin_registrant.dart
 .env
 
 # Unpublic part.
-lib/api/api.dart
 lib/constants/cerstar_configs.dart
 lib/pages/test
 /release/
