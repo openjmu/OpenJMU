@@ -24,20 +24,13 @@ class SettingsPage extends StatelessWidget {
         body: ListView(
           padding: EdgeInsets.symmetric(vertical: 10.w),
           children: <Widget>[
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 15.w),
-              child: FlutterLogo(
-                size: 36.w,
-                colors: context.themeData.accentColor.swatch,
-                style: FlutterLogoStyle.horizontal,
-              ),
-            ),
             _AboutCard(),
             _NightModeCard(),
             _ThemeCard(),
             _StartPageCard(),
             _EnhanceCard(),
             _DataCleaningCard(),
+            _FlutterBrandingWidget(),
           ],
         ),
       ),
@@ -309,7 +302,7 @@ class _EnhanceCard extends StatelessWidget {
             ),
           ),
         ),
-        if (!currentUser.isTeacher)
+        if (currentUser.isTeacher)
           _SettingItemWidget(
             item: _SettingItem(
               name: '应用中心新图标',
@@ -434,6 +427,31 @@ class _DataCleaningCard extends StatelessWidget {
     );
   }
 }
+
+class _FlutterBrandingWidget extends StatelessWidget {
+  const _FlutterBrandingWidget({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          'Made by ',
+          style: TextStyle(
+            fontSize: 23.sp,
+            fontWeight: FontWeight.w200,
+          ),
+        ),
+        FlutterLogo(
+          size: 100.w,
+          style: FlutterLogoStyle.horizontal,
+        ),
+      ],
+    );
+  }
+}
+
 
 class _SettingsCard extends StatelessWidget {
   const _SettingsCard({
