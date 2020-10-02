@@ -213,6 +213,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   /// Scan QR code from the file.
   /// 从文件中扫描二维码
   Future<void> scanFromFile() async {
+    unawaited(_controller.stopScan());
     final List<AssetEntity> entity = await AssetPicker.pickAssets(
       context,
       maxAssets: 1,
@@ -229,6 +230,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       unawaited(onScan(result: result, fromAlbum: true));
     } catch (e) {
       showToast('扫码出错');
+      unawaited(_controller.startScan());
     }
   }
 
