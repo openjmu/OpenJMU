@@ -9,17 +9,12 @@ part of 'models.dart';
 /// [latestNotify] 最新的通知内容类型,
 /// [mention] @人计数, [reply] 评论计数, [praise] 点赞计数
 class TeamNotifications {
-  String latestNotify;
-  int mention, reply, praise;
-
-  TeamNotifications({
+  const TeamNotifications({
     this.latestNotify,
     this.mention = 0,
     this.reply = 0,
     this.praise = 0,
   });
-
-  int get total => mention + reply + praise;
 
   factory TeamNotifications.fromJson(Map<String, dynamic> json) {
     return TeamNotifications(
@@ -30,8 +25,27 @@ class TeamNotifications {
     );
   }
 
+  TeamNotifications copyWith({
+    String latestNotify,
+    int mention,
+    int reply,
+    int praise,
+  }) {
+    return TeamNotifications(
+      latestNotify: latestNotify ?? this.latestNotify,
+      mention: mention ?? this.mention,
+      reply: reply ?? this.reply,
+      praise: praise ?? this.praise,
+    );
+  }
+
+  final String latestNotify;
+  final int mention, reply, praise;
+
+  int get total => mention + reply + praise;
+
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'latest_u': latestNotify,
       'mention': mention,
       'reply': reply,
@@ -51,6 +65,6 @@ class TeamNotifications {
 
   @override
   String toString() {
-    return JsonEncoder.withIndent('  ').convert(toJson());
+    return const JsonEncoder.withIndent('  ').convert(toJson());
   }
 }

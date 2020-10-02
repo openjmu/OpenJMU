@@ -8,8 +8,6 @@ part of 'models.dart';
 ///
 /// [at] @人计数, [comment] 评论计数, [praise] 点赞计数, [fans] 新粉丝计数
 class Notifications {
-  int at, comment, praise, fans;
-
   Notifications({
     this.at = 0,
     this.comment = 0,
@@ -17,20 +15,41 @@ class Notifications {
     this.fans = 0,
   });
 
-  int get total => at + comment + praise;
-
   factory Notifications.fromJson(Map<String, dynamic> json) {
     return Notifications(
-      at: int.parse(json['t_at'].toString()) +
-          int.parse(json['cmt_at'].toString()),
-      comment: int.parse(json['cmt'].toString()),
-      praise: int.parse(json['t_praised'].toString()),
-      fans: int.parse(json['fans'].toString()),
+      at: json['t_at'].toString().toInt() +
+          json['cmt_at'].toString().toInt(),
+      comment: json['cmt'].toString().toInt(),
+      praise: json['t_praised'].toString().toInt(),
+      fans: json['fans'].toString().toInt(),
     );
   }
 
+  Notifications copyWith({
+    int at,
+    int comment,
+    int praise,
+    int fans,
+  }) {
+    return Notifications(
+      at: at ?? this.at,
+      comment: comment ?? this.comment,
+      praise: praise ?? this.praise,
+      fans: fans ?? this.fans,
+    );
+  }
+
+  final int at, comment, praise, fans;
+
+  int get total => at + comment + praise;
+
   Map<String, dynamic> toJson() {
-    return {'at': at, 'comment': comment, 'praise': praise, 'fans': praise};
+    return <String, dynamic>{
+      'at': at,
+      'comment': comment,
+      'praise': praise,
+      'fans': fans,
+    };
   }
 
   @override
@@ -45,6 +64,6 @@ class Notifications {
 
   @override
   String toString() {
-    return JsonEncoder.withIndent('  ').convert(toJson());
+    return const JsonEncoder.withIndent('  ').convert(toJson());
   }
 }

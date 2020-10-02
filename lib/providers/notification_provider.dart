@@ -13,14 +13,20 @@ class NotificationProvider extends ChangeNotifier {
 
   Notifications get notifications => _notifications;
 
-  set notifications(Notifications notifications) {
-    final shouldNotifyListeners = this.notifications != notifications;
-    this.notifications
-      ..at = notifications.at
-      ..comment = notifications.comment
-      ..praise = notifications.praise
-      ..fans = notifications.fans;
-    if (shouldNotifyListeners) notifyListeners();
+  set notifications(Notifications value) {
+    if (value == null) {
+      return;
+    }
+    final bool shouldNotifyListeners = notifications != value;
+    _notifications = Notifications(
+      at: value.at,
+      comment: value.comment,
+      praise: value.praise,
+      fans: value.fans,
+    );
+    if (shouldNotifyListeners) {
+      notifyListeners();
+    }
   }
 
   TeamNotifications _teamNotifications = TeamNotifications();
@@ -28,8 +34,20 @@ class NotificationProvider extends ChangeNotifier {
   TeamNotifications get teamNotifications => _teamNotifications;
 
   set teamNotifications(TeamNotifications value) {
+    if (notifications == null) {
+      return;
+    }
     _teamNotifications = value;
-    notifyListeners();
+    final bool shouldNotifyListeners = notifications != value;
+    _teamNotifications = TeamNotifications(
+      latestNotify: value.latestNotify,
+      mention: value.mention,
+      reply: value.reply,
+      praise: value.praise,
+    );
+    if (shouldNotifyListeners) {
+      notifyListeners();
+    }
   }
 
   bool get showNotification => notifications.total > 0;
@@ -75,7 +93,7 @@ class NotificationProvider extends ChangeNotifier {
   void _getSquareNotification(Timer _) {
     UserAPI.getNotifications().then((Response<Map<String, dynamic>> response) {
       final Notifications notification = Notifications.fromJson(response.data);
-      updateNotification(notification);
+      notifications = notification;
       if (_ == null) {
         trueDebugPrint('Updated notifications with :$notification');
       }
@@ -89,7 +107,7 @@ class NotificationProvider extends ChangeNotifier {
         .then((Response<Map<String, dynamic>> response) {
       final TeamNotifications notification =
           TeamNotifications.fromJson(response.data);
-      updateTeamNotification(notification);
+      teamNotifications = notification;
       if (_ == null) {
         trueDebugPrint('Updated team notifications with: $notification');
       }
@@ -98,66 +116,41 @@ class NotificationProvider extends ChangeNotifier {
     });
   }
 
-  void updateNotification(Notifications notification) {
-    final shouldNotifyListeners = this.notifications != notification;
-    _notifications
-      ..at = notification.at
-      ..comment = notification.comment
-      ..praise = notification.praise
-      ..fans = notification.fans;
-    if (shouldNotifyListeners && notificationTimer != null) {
-      notifyListeners();
-    }
-  }
-
-  void updateTeamNotification(TeamNotifications teamNotification) {
-    final shouldNotifyListeners = this.teamNotifications != teamNotification;
-    this.teamNotifications
-      ..latestNotify = teamNotification.latestNotify
-      ..mention = teamNotification.mention
-      ..reply = teamNotification.reply
-      ..praise = teamNotification.praise;
-    if (shouldNotifyListeners && notificationTimer != null) {
-      notifyListeners();
-    }
-  }
-
   void readMention() {
-    notifications.at = 0;
-    notifyListeners();
+    notifications = notifications.copyWith(at: 0);
   }
 
   void readReply() {
-    notifications.comment = 0;
-    notifyListeners();
+    notifications = notifications.copyWith(comment: 0);
   }
 
   void readPraise() {
-    notifications.praise = 0;
-    notifyListeners();
+    notifications = notifications.copyWith(praise: 0);
   }
 
   void readFans() {
-    notifications.fans = 0;
-    notifyListeners();
+    notifications = notifications.copyWith(fans: 0);
   }
 
   void readTeamMention() {
-    teamNotifications.mention = 0;
-    teamNotifications.latestNotify = 'mention';
-    notifyListeners();
+    teamNotifications = teamNotifications.copyWith(
+      mention: 0,
+      latestNotify: 'mention',
+    );
   }
 
   void readTeamReply() {
-    teamNotifications.reply = 0;
-    teamNotifications.latestNotify = 'reply';
-    notifyListeners();
+    teamNotifications = teamNotifications.copyWith(
+      reply: 0,
+      latestNotify: 'reply',
+    );
   }
 
   void readTeamPraise() {
-    teamNotifications.praise = 0;
-    teamNotifications.latestNotify = 'praise';
-    notifyListeners();
+    teamNotifications = teamNotifications.copyWith(
+      praise: 0,
+      latestNotify: 'praise',
+    );
   }
 
   @override
