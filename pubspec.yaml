@@ -29,7 +29,7 @@ dependencies:
   extended_tabs: ^0.2.2
   extended_nested_scroll_view: ^1.0.0
   extended_text: 4.0.0
-  extended_text_field: 4.0.0
+  extended_text_field: 5.0.0
   flutter_displaymode: ^0.1.0
   flutter_icons: ^1.1.0
   flutter_inappwebview: ^4.0.0+4
@@ -62,7 +62,7 @@ dependencies:
   url_launcher: 5.7.2
   uuid: 2.2.2
   vibration: 1.6.1
-  wechat_assets_picker: ^4.2.1
+  wechat_assets_picker: ^4.2.2
 
 dev_dependencies:
   build_runner: any
