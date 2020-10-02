@@ -295,7 +295,7 @@ class NotificationsPageState extends State<NotificationsPage>
     return PraiseList(
       PraiseController(
         isMore: false,
-        lastValue: (Praise praise) => praise.id,
+        lastValue: (int id) => id,
       ),
       needRefreshIndicator: false,
     );
