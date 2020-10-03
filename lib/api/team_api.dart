@@ -68,25 +68,23 @@ class TeamPostAPI {
         if (postType != 8) 'article': content,
         if (postType == 8) 'content': content,
         if (postType != 8)
-          'file': <Map<String, dynamic>>[
-            ...files.map((int id) {
-              return <String, dynamic>{
-                'create_time': 0,
-                'desc': '',
-                'ext': '',
-                'fid': id,
-                'grid': 0,
-                'group': '',
-                'height': 0,
-                'length': 0,
-                'name': '',
-                'size': 0,
-                'source': '',
-                'type': '',
-                'width': 0,
-              };
-            }).toList(),
-          ],
+          'file': files?.map((int id) {
+            return <String, dynamic>{
+              'create_time': 0,
+              'desc': '',
+              'ext': '',
+              'fid': id,
+              'grid': 0,
+              'group': '',
+              'height': 0,
+              'length': 0,
+              'name': '',
+              'size': 0,
+              'source': '',
+              'type': '',
+              'width': 0,
+            };
+          })?.toList(),
         'latitude': 0,
         'longitude': 0,
         'post_type': postType,
