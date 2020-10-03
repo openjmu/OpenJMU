@@ -51,6 +51,7 @@ class API {
   static const String upApiHost = 'https://upapi.jmu.edu.cn';
   static const String jwglHost = 'http://jwgls.jmu.edu.cn';
   static const String labsHost = 'http://labs.jmu.edu.cn';
+  static const String webVpnHost = 'webvpn.jmu.edu.cn';
   static const String pushHost = 'http://push.openjmu.xyz:8787';
 
   static const String pushUpload = '$pushHost/push'; // 上传推送信息
@@ -285,6 +286,20 @@ class API {
   static final RegExp urlReg =
       RegExp(r'(https?)://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]');
   static final RegExp schemeUserPage = RegExp(r'^openjmu://user/*');
+
+  /// 将域名替换为 WebVPN 映射的二级域名
+  ///
+  /// 例如：http://labs.jmu.edu.cn
+  /// 结果：https://labs-jmu-edu-cn.webvpn.jmu.edu.cn
+  static String replaceWithWebVPN(String url) {
+    trueDebugPrint('Replacing url: $url');
+    final Uri previousUri = Uri.parse(url);
+    final String concatHost = previousUri.host.replaceAll('.', '-');
+    final String joinedHost = 'https://$concatHost.${API.webVpnHost}';
+    final String replacedUrl = url.replaceAll(API.labsHost, joinedHost);
+    trueDebugPrint('Replaced with: $replacedUrl');
+    return replacedUrl;
+  }
 
   static Future<void> launchWeb({
     @required String url,

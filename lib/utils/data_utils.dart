@@ -25,9 +25,6 @@ class DataUtils {
       blowfish: blowfish,
     );
     try {
-//      final Map<String, dynamic> loginData =
-//          (await UserAPI.login<Map<String, dynamic>>(params))
-//              .data['data']; // Using xAuth.
       final Map<String, dynamic> loginData =
           (await UserAPI.login<Map<String, dynamic>>(params)).data; // Using 99.
       UserAPI.currentUser.sid = loginData['sid'] as String;
@@ -59,10 +56,14 @@ class DataUtils {
         ((await UserAPI.getBlacklist()).data['users'] as List<dynamic>)
             .cast<Map<dynamic, dynamic>>(),
       );
-      showToast('登录成功！');
-      Instances.eventBus.fire(TicketGotEvent(isWizard));
-      initializeWebViewCookie();
-      return true;
+      final bool isCookieInitialized = await initializeWebViewCookie();
+      if (isCookieInitialized) {
+        showToast('登录成功！');
+        Instances.eventBus.fire(TicketGotEvent(isWizard));
+      } else {
+        showToast('登录失败');
+      }
+      return isCookieInitialized;
     } catch (e) {
       trueDebugPrint('Failed when login: $e');
       showToast('登录失败');
@@ -114,8 +115,10 @@ class DataUtils {
               .cast<Map<dynamic, dynamic>>(),
         );
       }
-      Instances.eventBus.fire(TicketGotEvent(isWizard));
-      initializeWebViewCookie();
+      final bool isCookieInitialized = await initializeWebViewCookie();
+      if (isCookieInitialized) {
+        Instances.eventBus.fire(TicketGotEvent(isWizard));
+      }
     } catch (e) {
       trueDebugPrint('Error in recover login info: $e');
       Instances.eventBus.fire(TicketFailedEvent());
@@ -210,7 +213,6 @@ class DataUtils {
               .data;
       final DateTime _end = currentTime;
       trueDebugPrint('Done request new ticket in: ${_end.difference(_start)}');
-//      updateSid(response['data']); // Using xAuth.
       updateSid(response); // Using 99.
       await getUserInfo();
       return true;
@@ -228,19 +230,21 @@ class DataUtils {
 
   /// Initialize WebView's cookie with 'iPlanetDirectoryPro'.
   /// 启动时通过 Session 初始化 WebView 的 Cookie
-  static void initializeWebViewCookie() {
+  static Future<bool> initializeWebViewCookie() async {
     final String url =
-        'http://sso.jmu.edu.cn/imapps/1900?sid=${currentUser.sid}';
-    NetUtils.head<dynamic>(url)
-        .then((Response<dynamic> response) {})
-        .catchError((dynamic e) {
+        'http://sso.jmu.edu.cn/imapps/2190?sid=${currentUser.sid}';
+    try {
+      await NetUtils.head<dynamic>(url);
+      trueDebugPrint('Cookie response didn\'t return 302.');
+      return false;
+    } on DioError catch (dioError) {
       try {
-        if (e is DioError &&
-            e.response.statusCode == HttpStatus.movedTemporarily) {
-          final List<Cookie> cookies = NetUtils.cookieJar
+        if (dioError.response.statusCode == HttpStatus.movedTemporarily) {
+          final List<Cookie> mainSiteCookies = NetUtils.cookieJar
               .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'));
-          if (cookies.length == 1) {
-            final Cookie cookie = cookies[0];
+          final List<Cookie> vpnCookies =
+              NetUtils.cookieJar.loadForRequest(Uri.parse(API.webVpnHost));
+          <Cookie>[...mainSiteCookies, ...vpnCookies].forEach((Cookie cookie) {
             Instances.webViewCookieManager.setCookie(
               url: "${cookie.domain}${cookie.path}",
               name: cookie.name,
@@ -251,15 +255,23 @@ class DataUtils {
               isSecure: cookie.secure,
               maxAge: cookie.maxAge,
             );
-          }
+          });
           trueDebugPrint('Successfully initialize WebView\'s Cookie.');
+          return true;
         } else {
-          trueDebugPrint('Error when initializing WebView\'s Cookie: $e');
+          trueDebugPrint(
+            'Error when initializing WebView\'s Cookie: $dioError',
+          );
+          return false;
         }
       } catch (e) {
         trueDebugPrint('Error when handling cookie response: $e');
+        return false;
       }
-    });
+    } catch (e) {
+      trueDebugPrint('Error when handling cookie response: $e');
+      return false;
+    }
   }
 
   /// 是否登录

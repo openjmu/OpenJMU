@@ -38,15 +38,43 @@ class CourseAPI {
 
   static Set<CourseColor> coursesUniqueColor = <CourseColor>{};
 
-  static Future<Response<String>> getCourse() async => NetUtils.get(
-        API.courseScheduleCourses,
+  static Future<Response<String>> getCourse({
+    bool isOuterNetwork = false,
+  }) async {
+    final String url = isOuterNetwork
+        ? API.replaceWithWebVPN(API.courseScheduleCourses)
+        : API.courseScheduleCourses;
+    if (isOuterNetwork) {
+      return NetUtils.getWithCookieSet(
+        url,
         data: <String, dynamic>{'sid': currentUser.sid},
+        cookies: NetUtils.convertWebViewCookies(
+          await Instances.webViewCookieManager.getCookies(url: url),
+        ),
       );
+    } else {
+      return NetUtils.get(url, data: <String, dynamic>{'sid': currentUser.sid});
+    }
+  }
 
-  static Future<Response<String>> getRemark() async => NetUtils.get(
-        API.courseScheduleClassRemark,
+  static Future<Response<String>> getRemark({
+    bool isOuterNetwork = false,
+  }) async {
+    final String url = isOuterNetwork
+        ? API.replaceWithWebVPN(API.courseScheduleClassRemark)
+        : API.courseScheduleClassRemark;
+    if (isOuterNetwork) {
+      return NetUtils.getWithCookieSet(
+        url,
         data: <String, dynamic>{'sid': currentUser.sid},
+        cookies: NetUtils.convertWebViewCookies(
+          await Instances.webViewCookieManager.getCookies(url: url),
+        ),
       );
+    } else {
+      return NetUtils.get(url, data: <String, dynamic>{'sid': currentUser.sid});
+    }
+  }
 
   static String getCourseTime(int courseIndex) {
     final TimeOfDay time = courseTime[courseIndex][0];

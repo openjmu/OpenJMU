@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart' as webView
+    show Cookie;
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -77,6 +79,19 @@ class NetUtils {
         return e;
       },
     ));
+  }
+
+  static List<Cookie> convertWebViewCookies(List<webView.Cookie> cookies) {
+    trueDebugPrint('Replacing cookies: $cookies');
+    final List<Cookie> replacedCookies = cookies.map((webView.Cookie cookie) {
+      return Cookie(cookie.name, cookie.value)
+        ..domain = cookie.domain
+        ..httpOnly = cookie.isHttpOnly ?? false
+        ..secure = cookie.isSecure ?? false
+        ..path = cookie.path;
+    }).toList();
+    trueDebugPrint('Replaced cookies: $replacedCookies');
+    return replacedCookies;
   }
 
   /// Get header only.

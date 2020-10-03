@@ -3,6 +3,7 @@
 /// [Date] 2020-01-14 16:22
 ///
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 
@@ -123,7 +124,7 @@ class CoursesProvider extends ChangeNotifier {
     return courses;
   }
 
-  Future<void> updateCourses() async {
+  Future<void> updateCourses({bool isOuterNetwork = false}) async {
     final DateProvider dateProvider =
         Provider.of<DateProvider>(currentContext, listen: false);
     if (dateProvider.currentWeek != null) {
@@ -140,8 +141,8 @@ class CoursesProvider extends ChangeNotifier {
       final List<Response<String>> responses =
           await Future.wait<Response<String>>(
         <Future<Response<String>>>[
-          CourseAPI.getCourse(),
-          CourseAPI.getRemark(),
+          CourseAPI.getCourse(isOuterNetwork: isOuterNetwork),
+          CourseAPI.getRemark(isOuterNetwork: isOuterNetwork),
         ],
       );
       await courseResponseHandler(responses[0]);
@@ -160,6 +161,11 @@ class CoursesProvider extends ChangeNotifier {
 
       // ignore: invalid_use_of_protected_member
       Instances.courseSchedulePageStateKey.currentState?.setState(() {});
+    } on DioError catch (dioError) {
+      if (!isOuterNetwork &&
+          dioError.response.statusCode == HttpStatus.forbidden) {
+        updateCourses(isOuterNetwork: true);
+      }
     } catch (e) {
       trueDebugPrint('Error when updating course: $e');
       if (!firstLoaded && dateProvider.currentWeek != null) {
