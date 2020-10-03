@@ -44,6 +44,9 @@ class AppCenterPage extends StatelessWidget {
           return InkWell(
             splashFactory: InkSplash.splashFactory,
             onTap: () {
+              if (isEditing) {
+                context.read<WebAppsProvider>().saveCommonApps();
+              }
               context.read<WebAppsProvider>().isEditingCommonApps = !isEditing;
             },
             borderRadius: BorderRadius.circular(15.0.w),
@@ -52,7 +55,7 @@ class AppCenterPage extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: Container(
-                    margin: EdgeInsets.all(12.0.w),
+                    margin: EdgeInsets.all(6.w),
                     decoration: BoxDecoration(
                       color: context.themeData.canvasColor,
                       shape: BoxShape.circle,
@@ -68,10 +71,10 @@ class AppCenterPage extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(bottom: 10.0.sp),
+                  padding: EdgeInsets.symmetric(vertical: 10.sp),
                   child: Text(
                     isEditing ? '完成' : '编辑',
-                    style: TextStyle(fontSize: 18.0.sp),
+                    style: TextStyle(fontSize: 18.sp),
                     maxLines: 1,
                     overflow: TextOverflow.fade,
                   ),
@@ -134,7 +137,7 @@ class AppCenterPage extends StatelessWidget {
                       ...List.generate(
                         provider.maxCommonWebApps -
                             provider.commonWebApps.length,
-                        (int _) => Spacer(),
+                        (int _) => const Spacer(),
                       ),
                     ],
                     editingButton(context)
@@ -176,12 +179,12 @@ class AppCenterPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: <Widget>[
                     Expanded(child: WebAppIcon(app: webApp, size: 72.0)),
-                    Container(
-                      margin: EdgeInsets.symmetric(vertical: 10.0.sp),
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: 10.sp),
                       child: Text(
                         webApp.name,
                         style: Theme.of(context).textTheme.bodyText2.copyWith(
-                              fontSize: 18.0.sp,
+                              fontSize: 18.sp,
                               fontWeight: FontWeight.normal,
                             ),
                         maxLines: 1,
