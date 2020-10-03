@@ -12,7 +12,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:quick_actions/quick_actions.dart';
 
 import 'package:openjmu/constants/constants.dart' hide PageRouteType;
@@ -22,11 +22,7 @@ import 'package:openjmu/pages/no_route_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  if (!kIsWeb) {
-    final dir = await getApplicationDocumentsDirectory();
-    Hive.init(dir.path);
-  }
-
+  await Hive.initFlutter();
   await HiveBoxes.openBoxes();
   await DeviceUtils.initDeviceInfo();
   await PackageUtils.initPackageInfo();

@@ -48,7 +48,6 @@ dependencies:
   oktoast: 2.3.2
   open_file: 3.0.1
   package_info: ^0.4.3
-  path_provider: 1.6.18
   permission_handler: 5.0.1+1
   provider: ^4.3.2+2
   pull_to_refresh_notification: ^1.1.2
