@@ -2,19 +2,23 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
 @FFRoute(
-    name: "openjmu://news-detail", routeName: "新闻详情页", argumentNames: ["news"])
+  name: "openjmu://news-detail",
+  routeName: "新闻详情页",
+  argumentNames: ["news"],
+)
 class NewsDetailPage extends StatefulWidget {
-  final News news;
-
   const NewsDetailPage({
     Key key,
     this.news,
   }) : super(key: key);
+
+  final News news;
 
   @override
   State<StatefulWidget> createState() => _NewsDetailPageState();
@@ -28,6 +32,12 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
   void initState() {
     super.initState();
     getNewsContent();
+  }
+
+  @override
+  void dispose() {
+    SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
+    super.dispose();
   }
 
   void getNewsContent() async {
@@ -56,13 +66,20 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     return FixedAppBarWrapper(
       appBar: FixedAppBar(title: Text(widget.news.title)),
       body: (pageContent != null && _contentLoaded)
-          ? WebviewScaffold(
-              url: pageContent,
-              allowFileURLs: true,
-              enableAppScheme: true,
-              withJavascript: true,
-              withLocalStorage: true,
-              resizeToAvoidBottomInset: true,
+          ? InAppWebView(
+              initialUrl: pageContent,
+              initialOptions: InAppWebViewGroupOptions(
+                crossPlatform: InAppWebViewOptions(
+                  applicationNameForUserAgent: 'openjmu-webview',
+                  horizontalScrollBarEnabled: false,
+                  javaScriptCanOpenWindowsAutomatically: true,
+                  supportZoom: true,
+                  transparentBackground: true,
+                  useOnDownloadStart: true,
+                  useShouldOverrideUrlLoading: true,
+                  verticalScrollBarEnabled: false,
+                ),
+              ),
             )
           : SpinKitWidget(),
     );
