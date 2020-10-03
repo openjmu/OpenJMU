@@ -42,6 +42,7 @@ class UserPageState extends State<UserPage>
 
   int total, userFans, userIdols;
   bool get isFirstLoaded => total != null;
+  bool get canLoadMorePost => posts.length < total;
 
   int get count => posts.length;
   int get lastId => posts.last?.id;
@@ -79,8 +80,8 @@ class UserPageState extends State<UserPage>
 
   @override
   void dispose() {
-    super.dispose();
     scrollController?.dispose();
+    super.dispose();
   }
 
   void listener() {
@@ -153,12 +154,12 @@ class UserPageState extends State<UserPage>
   Future<void> loadData({bool isLoadMore = false}) {
     return Future.wait<void>(
       <Future>[
-        fetchUserInformation(),
+        if (!isLoadMore) fetchUserInformation(),
         PostAPI.getPostList(
           'user',
           false,
           isLoadMore,
-          0,
+          posts.isNotEmpty ? posts.last.id : 0,
           additionAttrs: <String, dynamic>{'uid': uid},
         ).then((Response<Map<String, dynamic>> response) {
           addPostsData(response, isLoadMore: isLoadMore);
@@ -233,11 +234,17 @@ class UserPageState extends State<UserPage>
   Widget get postList {
     return ListView.builder(
       padding: EdgeInsets.zero,
-      itemCount: posts.length,
+      itemCount: posts.length + 1,
       itemBuilder: (
         BuildContext context,
         int index,
       ) {
+        if (index == posts.length) {
+          if (canLoadMorePost) {
+            loadData(isLoadMore: true);
+          }
+          return LoadMoreIndicator(canLoadMore: canLoadMorePost);
+        }
         return Container(
           margin: index == 0 ? EdgeInsets.only(top: 10.0.h) : null,
           padding: EdgeInsets.symmetric(
