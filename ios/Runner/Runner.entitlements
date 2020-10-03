@@ -6,6 +6,7 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
+		<string>appclips:open.jmu.Clip</string>
 		<string>applinks:openjmu.xyz</string>
 		<string>applinks:openjmu.jmu.edu.cn</string>
 	</array>

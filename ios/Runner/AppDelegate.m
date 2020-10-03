@@ -1,5 +1,5 @@
-#include "AppDelegate.h"
-#include "GeneratedPluginRegistrant.h"
+#import "AppDelegate.h"
+#import "GeneratedPluginRegistrant.h"
 #import <UserNotifications/UserNotifications.h>
 
 static NSString *const CHANNEL_NAME = @"cn.edu.jmu.openjmu/iOSPushToken";
@@ -22,9 +22,11 @@ static NSString *isAddToPushSuccess;
     return isAddToPushSuccess;
 }
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+- (BOOL)application:(UIApplication *)application
+    didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     [GeneratedPluginRegistrant registerWithRegistry:self];
-
+    // Override point for customization after application launch.
+    
     FlutterViewController *controller = (FlutterViewController *) self.window.rootViewController;
     FlutterMethodChannel *iOSTokenChannel = [FlutterMethodChannel methodChannelWithName:CHANNEL_NAME binaryMessenger:controller];
     [iOSTokenChannel setMethodCallHandler:^(FlutterMethodCall *call, FlutterResult result) {
@@ -93,26 +95,12 @@ static NSString *isAddToPushSuccess;
 
         [[UIApplication sharedApplication] registerForRemoteNotifications];
     }
-    return YES;
-}
-
-- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void (^)(NSArray<id <UIUserActivityRestoring>> *__nullable restorableObjects))restorationHandler {
-    if ([userActivity.activityType isEqualToString:NSUserActivityTypeBrowsingWeb]) {
-        NSURL *webpageURL = userActivity.webpageURL;
-        NSString *host = webpageURL.host;
-        if ([host isEqualToString:@"××××.openjmu.xyz"]) {
-            // 判断域名是自己的网站，进行我们需要的处理
-        } else {
-            [[UIApplication sharedApplication] openURL:webpageURL];
-        }
-    }
-    return YES;
+    return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
 #pragma mark - UNUserNotificationCenterDelegate
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center willPresentNotification:(UNNotification *)notification withCompletionHandler:(void (^)(UNNotificationPresentationOptions options))completionHandler {
-//    NSLog(@"%s", __func__);
     completionHandler(UNNotificationPresentationOptionBadge | UNNotificationPresentationOptionSound | UNNotificationPresentationOptionAlert);
 }
 
