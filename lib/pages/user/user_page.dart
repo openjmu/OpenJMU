@@ -448,7 +448,7 @@ class UserPageState extends State<UserPage>
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: <Widget>[
-                    sexualWidget(),
+                    sexualWidget(user: user),
                     levelWidget,
                     if (userTags.isNotEmpty) ...tagsWidget,
                   ],

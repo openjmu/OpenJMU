@@ -143,10 +143,11 @@ class DeveloperTag extends StatelessWidget {
 }
 
 Widget sexualWidget({
+  UserInfo user,
   double size = 28.0,
   EdgeInsetsGeometry margin,
 }) {
-  final bool isFemale = (currentUser?.gender == 2) ?? false;
+  final bool isFemale = ((user ?? currentUser)?.gender == 2) ?? false;
   return Container(
     margin: margin ?? EdgeInsets.only(left: 20.0.w),
     child: SvgPicture.asset(
