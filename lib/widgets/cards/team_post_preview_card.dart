@@ -56,7 +56,7 @@ class TeamPostPreviewCard extends StatelessWidget {
       context,
       children: <Widget>[
         ConfirmationBottomSheetAction(
-          icon: Icon(Icons.visibility_off),
+          icon: const Icon(Icons.visibility_off),
           text: '${UserAPI.blacklist.contains(
             BlacklistUser(uid: post.uid, username: post.nickname),
           ) ? '移出' : '加入'}黑名单',
@@ -66,7 +66,7 @@ class TeamPostPreviewCard extends StatelessWidget {
           ),
         ),
         ConfirmationBottomSheetAction(
-          icon: Icon(Icons.report),
+          icon: const Icon(Icons.report),
           text: '举报动态',
           onTap: () => confirmReport(context),
         ),
@@ -145,7 +145,7 @@ class TeamPostPreviewCard extends StatelessWidget {
 
   Widget _postTime(BuildContext context, TeamPost post) {
     return Text(
-      '${TeamPostAPI.timeConverter(post)}',
+      TeamPostAPI.timeConverter(post),
       style: Theme.of(context).textTheme.caption.copyWith(
             fontSize: 16.0.sp,
             fontWeight: FontWeight.normal,
@@ -228,7 +228,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                   prefixSpans: <InlineSpan>[
                     TextSpan(
                       text: '@${_post['user_info']['nickname']}',
-                      style: TextStyle(color: Colors.blue),
+                      style: const TextStyle(color: Colors.blue),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           navigatorState.pushNamed(
@@ -266,7 +266,9 @@ class TeamPostPreviewCard extends StatelessWidget {
                         ),
                       ),
                     const TextSpan(
-                        text: ': ', style: TextStyle(color: Colors.blue)),
+                      text: ': ',
+                      style: TextStyle(color: Colors.blue),
+                    ),
                   ],
                 ),
                 style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -274,7 +276,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                     ),
                 onSpecialTextTap: specialTextTapRecognizer,
                 maxLines: 3,
-                overflowWidget: TextOverflowWidget(
+                overflowWidget: const TextOverflowWidget(
                   child: Text('......'),
                 ),
               ),

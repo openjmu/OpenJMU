@@ -42,6 +42,8 @@ part 'praise.dart';
 
 part 'score.dart';
 
+part 'team_mention.dart';
+
 part 'team_notifications.dart';
 
 part 'team_post.dart';
