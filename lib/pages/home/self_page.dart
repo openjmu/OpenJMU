@@ -368,7 +368,7 @@ class SelfPage extends StatelessWidget {
                 app.name,
                 style: TextStyle(fontSize: 16.0.sp),
                 maxLines: 1,
-                overflow: TextOverflow.fade,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
