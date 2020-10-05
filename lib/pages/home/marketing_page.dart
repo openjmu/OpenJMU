@@ -96,7 +96,7 @@ class _MarketingPageState extends State<MarketingPage> {
           child: MainPage.selfPageOpener,
         ),
         actions: <Widget>[
-          MainPage.notificationButton(context: context, isTeam: false),
+          MainPage.notificationButton(context: context, isTeam: true),
           SizedBox(width: 10.w),
           MainPage.publishButton(Routes.openjmuPublishTeamPost),
         ],

@@ -58,23 +58,6 @@ class MainPage extends StatefulWidget {
           child: Stack(
             overflow: Overflow.visible,
             children: <Widget>[
-              Positioned(
-                top: (kToolbarHeight / 5).h,
-                right: 2.w,
-                child: Visibility(
-                  visible: isTeam
-                      ? provider.showTeamNotification
-                      : provider.showNotification,
-                  child: ClipRRect(
-                    borderRadius: maxBorderRadius,
-                    child: Container(
-                      width: 12.w,
-                      height: 12.w,
-                      color: currentThemeColor,
-                    ),
-                  ),
-                ),
-              ),
               MaterialButton(
                 elevation: 0.0,
                 minWidth: 56.w,
@@ -101,6 +84,23 @@ class MainPage extends StatefulWidget {
                   );
                   provider.initNotification();
                 },
+              ),
+              Positioned(
+                top: (kToolbarHeight / 5).h,
+                right: 2.w,
+                child: Visibility(
+                  visible: isTeam
+                      ? provider.showTeamNotification
+                      : provider.showNotification,
+                  child: ClipRRect(
+                    borderRadius: maxBorderRadius,
+                    child: Container(
+                      width: 12.w,
+                      height: 12.w,
+                      color: currentThemeColor,
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
