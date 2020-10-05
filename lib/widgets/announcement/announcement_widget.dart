@@ -22,7 +22,7 @@ class AnnouncementWidget extends StatelessWidget {
   final bool canClose;
 
   IconThemeData get iconTheme => IconThemeData(
-        color: contentColor ?? Colors.white,
+        color: contentColor ?? currentIsDark ? Colors.white70 : Colors.white,
         size: 26.w,
       );
 
@@ -33,7 +33,8 @@ class AnnouncementWidget extends StatelessWidget {
         child: Text(
           '  ${provider.announcements[0]['title']}',
           style: TextStyle(
-            color: contentColor ?? Colors.white,
+            color:
+                contentColor ?? currentIsDark ? Colors.white70 : Colors.white,
             fontSize: 20.sp,
           ),
           maxLines: 1,
