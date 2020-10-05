@@ -20,15 +20,15 @@ Color get currentThemeColor => currentTheme.accentColor;
 
 bool get currentIsDark => currentBrightness == Brightness.dark;
 
-num lessThanOne(num value) => math.min(1, value);
+T lessThanOne<T extends num>(T value) => math.min(1 as T, value);
 
-num lessThanZero(num value) => math.min(0, value);
+T lessThanZero<T extends num>(T value) => math.min(0 as T, value);
 
-num moreThanOne(num value) => math.max(1, value);
+T moreThanOne<T extends num>(T value) => math.max(1 as T, value);
 
-num moreThanZero(num value) => math.max(0, value);
+T moreThanZero<T extends num>(T value) => math.max(0 as T, value);
 
-num betweenZeroAndOne(num value) => moreThanZero(lessThanOne(value));
+T betweenZeroAndOne<T extends num>(T value) => moreThanZero(lessThanOne(value));
 
 DateTime get currentTime => DateTime.now();
 
