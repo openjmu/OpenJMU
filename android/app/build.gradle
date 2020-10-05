@@ -111,7 +111,7 @@ task copyRelease {
                 rename { destinationFileName }
             }
         }
-        println("Release file copied to ${destinationPath}/${destinationFileName} .")
+        println("\nRelease file copied to ${destinationPath}/${destinationFileName} .")
     }
 }
 
