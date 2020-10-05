@@ -8,6 +8,7 @@ part of 'models.dart';
 ///
 /// [latestNotify] 最新的通知内容类型,
 /// [mention] @人计数, [reply] 评论计数, [praise] 点赞计数
+@immutable
 class TeamNotifications {
   const TeamNotifications({
     this.latestNotify,
@@ -18,7 +19,7 @@ class TeamNotifications {
 
   factory TeamNotifications.fromJson(Map<String, dynamic> json) {
     return TeamNotifications(
-      latestNotify: json['latest_u'],
+      latestNotify: json['latest_u'] as String,
       mention: int.parse(json['mention'].toString()),
       reply: int.parse(json['reply'].toString()),
       praise: int.parse(json['praise'].toString()),

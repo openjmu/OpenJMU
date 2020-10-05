@@ -23,80 +23,72 @@ class Post {
     this.category,
     this.content,
     this.pics,
+    this.rootTopic,
+    this.isDefaultAvatar,
     this.forwards,
     this.comments,
     this.praises,
-    this.rootTopic,
     this.isLike = false,
-    this.isDefaultAvatar,
   });
 
-  Post.fromJson(Map<String, dynamic> json) {
-    json.forEach((k, v) {
-      if (json[k] == '' || json[k] == <dynamic>[]) json[k] = null;
+  factory Post.fromJson(Map<String, dynamic> json) {
+    json.forEach((String k, dynamic v) {
+      if (json[k] == '' || json[k] == <dynamic>[]) {
+        json[k] = null;
+      }
     });
-    Map<String, dynamic> _user = json['user'];
-    _user.forEach((k, v) {
-      if (_user[k] == '') _user[k] = null;
+    final Map<String, dynamic> _user = json['user'] as Map<String, dynamic>;
+    _user.forEach((String k, dynamic v) {
+      if (_user[k] == '') {
+        _user[k] = null;
+      }
     });
 
-    final _avatar = '${API.userAvatar}'
+    final String _avatar = '${API.userAvatar}'
         '?uid=${_user['uid']}'
         '&size=f152'
         '&_t=${DateTime.now().millisecondsSinceEpoch}';
-    final _postTime = DateTime.fromMillisecondsSinceEpoch(
-      int.parse(json['post_time']) * 1000,
+    final String _postTime = DateTime.fromMillisecondsSinceEpoch(
+      json['post_time'].toString().toInt() * 1000,
     ).toString().substring(0, 16);
-
-    id = int.parse(json['tid'].toString());
-    uid = int.parse(json['uid'].toString());
-    nickname = _user['nickname'] ?? _user['uid'].toString();
-    avatar = _avatar;
-    postTime = _postTime;
-    from = json['from_string'];
-    glances = int.parse(json['glances'].toString());
-    category = json['category'];
-    content = json['article'] ?? json['content'];
-    pics = (json['image'] as List<dynamic>)?.cast<Map<String, dynamic>>();
-    forwards = int.parse(json['forwards'].toString());
-    comments = int.parse(json['replys'].toString());
-    praises = int.parse(json['praises']);
-    rootTopic = json['root_topic'];
-    isLike = int.parse(json['praised'].toString()) == 1;
-    isDefaultAvatar = _user['sysavatar'] == 1;
+    return Post(
+      id: int.parse(json['tid'].toString()),
+      uid: int.parse(json['uid'].toString()),
+      nickname: (_user['nickname'] ?? _user['uid']).toString(),
+      avatar: _avatar,
+      postTime: _postTime,
+      from: json['from_string'] as String,
+      glances: int.parse(json['glances'].toString()),
+      category: json['category'] as String,
+      content: (json['article'] ?? json['content']) as String,
+      pics: (json['image'] as List<dynamic>)?.cast<Map<String, dynamic>>(),
+      forwards: json['forwards'].toString().toInt(),
+      comments: json['replys'].toString().toInt(),
+      rootTopic: json['root_topic'] as Map<String, dynamic>,
+      isDefaultAvatar: _user['sysavatar'] == 1,
+      praises: int.parse(json['praises'].toString()),
+      isLike: int.parse(json['praised'].toString()) == 1,
+    );
   }
 
-  int id;
-  int uid;
-  String nickname;
-  String avatar;
-  String postTime;
-  String from;
-  int glances;
-  String category;
-  String content;
-  List<Map<String, dynamic>> pics;
+  final int id;
+  final int uid;
+  final String nickname;
+  final String avatar;
+  final String postTime;
+  final String from;
+  final int glances;
+  final String category;
+  final String content;
+  final List<Map<String, dynamic>> pics;
+  final bool isDefaultAvatar;
+  final Map<String, dynamic> rootTopic;
   int forwards;
   int comments;
   int praises;
   bool isLike;
-  bool isDefaultAvatar;
-  Map<String, dynamic> rootTopic;
 
   bool get isShield => content == '此微博已经被屏蔽';
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Post && runtimeType == other.runtimeType && id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
-
-  @override
-  String toString() {
-    return 'Post ${const JsonEncoder.withIndent(' ').convert(toJson())}';
-  }
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -110,12 +102,25 @@ class Post {
       'category': category,
       'content': content,
       'pics': pics,
+      'rootTopic': rootTopic,
+      'isDefaultAvatar': isDefaultAvatar,
       'forwards': forwards,
       'comments': comments,
       'praises': praises,
-      'rootTopic': rootTopic,
       'isLike': isLike,
-      'isDefaultAvatar': isDefaultAvatar,
     };
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Post && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
+  @override
+  String toString() {
+    return 'Post ${const JsonEncoder.withIndent(' ').convert(toJson())}';
   }
 }
