@@ -16,9 +16,9 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/image/image_gesture_detector.dart';
 
 @FFRoute(
-  name: "openjmu://image-viewer",
-  routeName: "图片浏览",
-  argumentNames: ["index", "pics", "needsClear", "post", "heroPrefix"],
+  name: 'openjmu://image-viewer',
+  routeName: '图片浏览',
+  argumentNames: <String>['index', 'pics', 'needsClear', 'post', 'heroPrefix'],
   pageRouteType: PageRouteType.transparent,
 )
 class ImageViewer extends StatefulWidget {
@@ -100,7 +100,7 @@ class ImageViewerState extends State<ImageViewer>
 
   Future<void> _downloadImage(String url) async {
     try {
-      final Response<dynamic> head = await NetUtils.head(url);
+      final Response<dynamic> head = await NetUtils.head<dynamic>(url);
       final String filename = head.headers
           .value('Content-Disposition')
           ?.split('; ')
@@ -156,7 +156,7 @@ class ImageViewerState extends State<ImageViewer>
       context,
       children: <Widget>[
         ConfirmationBottomSheetAction(
-          icon: Icon(Icons.save_alt),
+          icon: const Icon(Icons.save_alt),
           text: '保存图片',
           onTap: () async {
             final bool isAllGranted = await checkPermissions(<Permission>[
@@ -371,7 +371,7 @@ class ImageList extends StatelessWidget {
         top: suSetHeight(16.0),
         bottom: Screens.bottomSafeHeight + suSetHeight(16.0),
       ),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.bottomCenter,
           end: Alignment.topCenter,
@@ -448,7 +448,7 @@ class ViewAppBar extends StatelessWidget {
       child: Container(
         height: Screens.topSafeHeight + suSetHeight(kAppBarHeight),
         padding: EdgeInsets.only(top: Screens.topSafeHeight),
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
@@ -459,7 +459,7 @@ class ViewAppBar extends StatelessWidget {
           children: <Widget>[
             IconButton(
               color: Colors.white,
-              icon: Icon(Icons.arrow_back),
+              icon: const Icon(Icons.arrow_back),
               onPressed: Navigator.of(context).pop,
             ),
             Expanded(
@@ -484,7 +484,7 @@ class ViewAppBar extends StatelessWidget {
             if (onMoreClicked != null)
               IconButton(
                 color: Colors.white,
-                icon: Icon(Icons.more_vert),
+                icon: const Icon(Icons.more_vert),
                 onPressed: onMoreClicked,
               ),
           ],
