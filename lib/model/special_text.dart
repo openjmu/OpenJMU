@@ -11,10 +11,11 @@ import 'package:openjmu/constants/constants.dart';
 ///
 /// e.g. 'https://wb.jmu.edu.cn/r/wXn'
 class LinkText extends SpecialText {
-  LinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
-      : super(' ', ' ', textStyle, onTap: onTap);
-
-  final String startFlag = API.wbHost;
+  LinkText(
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap, {
+    String linkHost,
+  }) : super(linkHost ?? API.wbHost, ' ', textStyle, onTap: onTap);
 
   @override
   InlineSpan finishText() {
@@ -22,8 +23,12 @@ class LinkText extends SpecialText {
       alignment: ui.PlaceholderAlignment.middle,
       child: GestureDetector(
         onTap: () {
-          final Map<String, dynamic> data = {'content': toString()};
-          if (onTap != null) onTap(data);
+          final Map<String, dynamic> data = <String, dynamic>{
+            'content': toString(),
+          };
+          if (onTap != null) {
+            onTap(data);
+          }
         },
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -50,11 +55,10 @@ class LinkText extends SpecialText {
 ///
 /// e.g. 'http://wb.jmu.edu.cn/r/wXn'
 class LinkOlderText extends LinkText {
-  LinkOlderText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
-      : super(textStyle, onTap);
-
-  @override
-  final String startFlag = API.wbHostWithoutHttps;
+  LinkOlderText(
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap,
+  ) : super(textStyle, onTap, linkHost: API.wbHostWithoutHttps);
 }
 
 /// Forum link text class.
@@ -62,11 +66,10 @@ class LinkOlderText extends LinkText {
 ///
 /// e.g. 'https://forum99.jmu.edu.cn/.....'
 class ForumLinkText extends LinkText {
-  ForumLinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
-      : super(textStyle, onTap);
-
-  @override
-  final String startFlag = API.forum99Host;
+  ForumLinkText(
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap,
+  ) : super(textStyle, onTap, linkHost: API.forum99Host);
 }
 
 /// Older forum link text class.
@@ -74,11 +77,10 @@ class ForumLinkText extends LinkText {
 ///
 /// e.g. 'http://forum99.jmu.edu.cn/.....'
 class ForumLinkOlderText extends LinkText {
-  ForumLinkOlderText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
-      : super(textStyle, onTap);
-
-  @override
-  final String startFlag = API.forum99HostWithoutHttps;
+  ForumLinkOlderText(
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap,
+  ) : super(textStyle, onTap, linkHost: API.forum99HostWithoutHttps);
 }
 
 /// Mention someone text class.
@@ -86,9 +88,12 @@ class ForumLinkOlderText extends LinkText {
 ///
 /// e.g. '<M 123456>测试</M>'
 class MentionText extends SpecialText {
-  MentionText(TextStyle textStyle, SpecialTextGestureTapCallback onTap,
-      {this.start, this.type})
-      : super(startKey, endKey, textStyle, onTap: onTap);
+  MentionText(
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap, {
+    this.start,
+    this.type,
+  }) : super(startKey, endKey, textStyle, onTap: onTap);
 
   static const String startKey = '<M';
   static const String endKey = '<\/M>';
@@ -104,7 +109,7 @@ class MentionText extends SpecialText {
 
   /// Get UID from content.
   /// 从内容中提取UID
-  int getUidFromContent(content) {
+  int getUidFromContent(String content) {
     final Iterable<Match> matches = mTagStartReg.allMatches(content);
     String result;
     for (final Match m in matches) {
@@ -115,7 +120,7 @@ class MentionText extends SpecialText {
 
   /// Get content without start/end tag.
   /// 获取去除tag的内容
-  String removeTagsFromContent(content) {
+  String removeTagsFromContent(String content) {
     content = content.replaceAllMapped(mTagStartReg, (_) => '');
     content = content.replaceAllMapped(mTagEndReg, (_) => '');
     return content;
@@ -158,7 +163,7 @@ class MentionText extends SpecialText {
                 ),
               ),
               Text(
-                '${mentionText.substring(1, mentionText.length)}',
+                mentionText.substring(1, mentionText.length),
                 style: textStyle?.copyWith(
                   fontSize: suSetSp(17.0),
                   color: Colors.white,
@@ -175,11 +180,13 @@ class MentionText extends SpecialText {
         style: textStyle?.copyWith(color: Colors.blueAccent),
         recognizer: TapGestureRecognizer()
           ..onTap = () {
-            final Map<String, dynamic> data = {
+            final Map<String, dynamic> data = <String, dynamic>{
               'content': mentionText,
               'uid': uid
             };
-            if (onTap != null) onTap(data);
+            if (onTap != null) {
+              onTap(data);
+            }
           },
       );
     }
@@ -191,11 +198,15 @@ class MentionText extends SpecialText {
 ///
 /// e.g. '#OpenJMU#'
 class PoundText extends SpecialText {
-  PoundText(TextStyle textStyle, SpecialTextGestureTapCallback onTap,
-      {this.start, this.type})
-      : super(flag, flag, textStyle, onTap: onTap);
+  PoundText(
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap, {
+    this.start,
+    this.type,
+  }) : super(flag, flag, textStyle, onTap: onTap);
 
   static const String flag = '#';
+
   final int start;
   final BuilderType type;
 
@@ -219,7 +230,7 @@ class PoundText extends SpecialText {
             color: Colors.grey[200],
           ),
           child: Text(
-            '$poundText',
+            poundText,
             style: textStyle?.copyWith(
               fontSize: suSetSp(17.0),
               color: Colors.black,
@@ -233,8 +244,12 @@ class PoundText extends SpecialText {
         style: textStyle?.copyWith(color: Colors.orangeAccent),
         recognizer: TapGestureRecognizer()
           ..onTap = () {
-            final Map<String, dynamic> data = {'content': toString()};
-            if (onTap != null) onTap(data);
+            final Map<String, dynamic> data = <String, dynamic>{
+              'content': toString(),
+            };
+            if (onTap != null) {
+              onTap(data);
+            }
           },
       );
     }
@@ -256,7 +271,7 @@ class EmoticonText extends SpecialText {
 
   @override
   InlineSpan finishText() {
-    final key = toString();
+    final String key = toString();
     if (EmoticonUtils.emoticonMap.containsKey(key)) {
       final double size =
           30.0 / 27.0 * ((textStyle != null) ? textStyle.fontSize : 17);
@@ -307,6 +322,7 @@ class ImageText extends SpecialText {
   }) : super(flag, flag, textStyle, onTap: onTap);
 
   static const String flag = '|';
+
   final int start;
   final BuilderType builderType;
   final WidgetType widgetType;
@@ -317,10 +333,10 @@ class ImageText extends SpecialText {
 
   @override
   InlineSpan finishText() {
-    final imageText = toString();
-    final imageId = getImageIdFromContent(imageText);
+    final String imageText = toString();
+    final int imageId = getImageIdFromContent(imageText);
 
-    InlineSpan span = TextSpan(
+    final InlineSpan span = TextSpan(
       children: <InlineSpan>[
         WidgetSpan(
           alignment: ui.PlaceholderAlignment.middle,
@@ -334,11 +350,13 @@ class ImageText extends SpecialText {
           text: ' 查看图片',
           recognizer: TapGestureRecognizer()
             ..onTap = () {
-              final Map<String, dynamic> data = {
+              final Map<String, dynamic> data = <String, dynamic>{
                 'content': toString(),
                 'image': imageId
               };
-              if (onTap != null) onTap(data);
+              if (onTap != null) {
+                onTap(data);
+              }
             },
         ),
       ],
@@ -372,22 +390,24 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     TextStyle textStyle,
     SpecialTextGestureTapCallback onTap,
   }) {
-    if (data == null || data == '') return null;
+    if (data == null || data == '') {
+      return null;
+    }
     final List<InlineSpan> inlineList = <InlineSpan>[];
 
     /// Replace all links at the first time, prevent strange links recognized.
     /// 根据正则替换可识别的链接，防止奇怪的链接被解析。
     if (linkRegExp.allMatches(data).isNotEmpty) {
       final Iterable<RegExpMatch> matches = linkRegExp.allMatches(data);
-      matches.forEach((match) {
+      for (final RegExpMatch match in matches) {
         data = data.replaceFirst(match.group(0), ' ${match.group(0)} ');
-      });
+      }
     }
     if (data.isNotEmpty) {
       SpecialText specialText;
       String textStack = '';
       for (int i = 0; i < data.length; i++) {
-        final char = data[i];
+        final String char = data[i];
         textStack += char;
         if (specialText != null) {
           if (!specialText.isEnd(textStack)) {
@@ -427,8 +447,12 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     } else {
       inlineList.add(TextSpan(text: data, style: textStyle));
     }
-    if (prefixSpans != null) inlineList.insertAll(0, prefixSpans);
-    if (suffixSpans != null) inlineList.addAll(suffixSpans);
+    if (prefixSpans != null) {
+      inlineList.insertAll(0, prefixSpans);
+    }
+    if (suffixSpans != null) {
+      inlineList.addAll(suffixSpans);
+    }
     return TextSpan(children: inlineList, style: textStyle);
   }
 
@@ -439,7 +463,9 @@ class StackSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     SpecialTextGestureTapCallback onTap,
     int index,
   }) {
-    if (flag == null || flag == '') return null;
+    if (flag == null || flag == '') {
+      return null;
+    }
 
     if (isStart(flag, MentionText.startKey)) {
       return MentionText(textStyle, onTap, type: BuilderType.extendedText);
@@ -471,14 +497,15 @@ class StackSpecialTextFieldSpanBuilder extends SpecialTextSpanBuilder {
     SpecialTextGestureTapCallback onTap,
     int index,
   }) {
-    if (flag == null || flag == '') return null;
+    if (flag == null || flag == '') {
+      return null;
+    }
 
     if (isStart(flag, MentionText.startKey)) {
       return MentionText(
         textStyle, onTap,
-        start: index -
-            (MentionText.startKey.length -
-                1), // Using minus to keep position correct.
+        // Using minus to keep position correct.
+        start: index - (MentionText.startKey.length - 1),
         type: BuilderType.extendedTextField,
       );
     } else if (isStart(flag, PoundText.flag)) {
@@ -495,7 +522,7 @@ class StackSpecialTextFieldSpanBuilder extends SpecialTextSpanBuilder {
 enum BuilderType { extendedText, extendedTextField }
 enum WidgetType { post, comment }
 
-void specialTextTapRecognizer(data) {
+void specialTextTapRecognizer(dynamic data) {
   final String text = data['content'] as String;
   if (text.startsWith('#')) {
     navigatorState.pushNamed(
