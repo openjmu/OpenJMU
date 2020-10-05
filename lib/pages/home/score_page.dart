@@ -6,8 +6,18 @@ import 'package:flutter/gestures.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class ScorePage extends StatelessWidget {
+  void gotoEvaluate() {
+    String url;
+    if (UserAPI.currentUser.isCY) {
+      url = 'http://cyjwgl.jmu.edu.cn/';
+    } else {
+      url = 'http://sso.jmu.edu.cn/imapps/1070?sid=${currentUser.sid}';
+    }
+    API.launchWeb(url: url, title: '教学评测');
+  }
+
   Widget errorWidget(ScoresProvider provider) {
-    final error = provider.errorString;
+    final String error = provider.errorString;
 
     String result;
     if (error.contains('The method \'transform\' was called on null')) {
@@ -19,43 +29,35 @@ class ScorePage extends StatelessWidget {
     return Center(
       child: Text(
         result,
-        style:
-            TextStyle(fontSize: suSetSp(23.0), fontWeight: FontWeight.normal),
+        style: TextStyle(
+          fontSize: 23.sp,
+          fontWeight: FontWeight.normal,
+        ),
         textAlign: TextAlign.center,
       ),
     );
-  }
-
-  void gotoEvaluate() {
-    String url;
-    if (UserAPI.currentUser.isCY) {
-      url = 'http://cyjwgl.jmu.edu.cn/';
-    } else {
-      url = 'http://sso.jmu.edu.cn/imapps/1070?sid=${currentUser.sid}';
-    }
-    API.launchWeb(url: url, title: '教学评测');
   }
 
   Widget get noScoreWidget => Center(
         child: Text(
           '暂时还没有你的成绩\n🤔',
           textAlign: TextAlign.center,
-          style: TextStyle(fontSize: suSetSp(30.0)),
+          style: TextStyle(fontSize: 30.0.sp),
         ),
       );
 
-  Widget evaluateTips(context) {
-    final dot = Container(
-      margin: EdgeInsets.symmetric(horizontal: suSetWidth(30.0)),
-      width: suSetWidth(14.0),
-      height: suSetHeight(14.0),
+  Widget evaluateTips(BuildContext context) {
+    final Widget dot = Container(
+      margin: EdgeInsets.symmetric(horizontal: 30.w),
+      width: 14.w,
+      height: 14.h,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Theme.of(context).textTheme.caption.color,
       ),
     );
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: suSetHeight(12.0)),
+      padding: EdgeInsets.symmetric(vertical: 12.0.h),
       child: Row(
         children: <Widget>[
           dot,
@@ -63,22 +65,22 @@ class ScorePage extends StatelessWidget {
             child: Text.rich(
               TextSpan(
                 children: <InlineSpan>[
-                  TextSpan(text: '请及时完成 '),
+                  const TextSpan(text: '请及时完成 '),
                   TextSpan(
                     text: '教学评测',
-                    style: TextStyle(
+                    style: const TextStyle(
                       decoration: TextDecoration.underline,
                       fontWeight: FontWeight.bold,
                     ),
                     recognizer: TapGestureRecognizer()..onTap = gotoEvaluate,
                   ),
-                  TextSpan(text: ' (校园内网)\n未教学评测的科目成绩将不予显示'),
+                  const TextSpan(text: ' (校园内网)\n未教学评测的科目成绩将不予显示'),
                 ],
               ),
               style: Theme.of(context)
                   .textTheme
                   .caption
-                  .copyWith(fontSize: suSetSp(19.0)),
+                  .copyWith(fontSize: 19.0.sp),
               textAlign: TextAlign.center,
             ),
           ),
@@ -88,21 +90,21 @@ class ScorePage extends StatelessWidget {
     );
   }
 
-  Widget _term(context, String term, int index) {
-    String _term = term.toString();
-    int currentYear = int.parse(_term.substring(0, 4));
-    int currentTerm = int.parse(_term.substring(4, 5));
+  Widget _term(BuildContext context, String term, int index) {
+    final String _term = term;
+    final int currentYear = _term.substring(0, 4).toInt();
+    final int currentTerm = _term.substring(4, 5).toInt();
     return Consumer<ScoresProvider>(
-      builder: (_, provider, __) {
-        final selectedTerm = provider.selectedTerm;
+      builder: (BuildContext _, ScoresProvider provider, Widget __) {
+        final String selectedTerm = provider.selectedTerm;
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => provider.selectTerm(index),
           child: AnimatedContainer(
             duration: 200.milliseconds,
-            margin: EdgeInsets.all(suSetWidth(6.0)),
+            margin: EdgeInsets.all(6.0.w),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(suSetWidth(15.0)),
+              borderRadius: BorderRadius.circular(15.0.w),
               boxShadow: <BoxShadow>[
                 BoxShadow(
                     blurRadius: 5.0, color: Theme.of(context).canvasColor),
@@ -112,7 +114,7 @@ class ScorePage extends StatelessWidget {
                   : Theme.of(context).canvasColor,
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: suSetSp(8.0)),
+              padding: EdgeInsets.symmetric(horizontal: 8.0.sp),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -127,7 +129,7 @@ class ScorePage extends StatelessWidget {
                               .color
                               .withOpacity(0.3),
                       fontWeight: FontWeight.bold,
-                      fontSize: suSetSp(18.0),
+                      fontSize: 18.0.sp,
                     ),
                   ),
                   Text(
@@ -141,7 +143,7 @@ class ScorePage extends StatelessWidget {
                               .color
                               .withOpacity(0.3),
                       fontWeight: FontWeight.bold,
-                      fontSize: suSetSp(20.0),
+                      fontSize: 20.0.sp,
                     ),
                   ),
                 ],
@@ -154,22 +156,23 @@ class ScorePage extends StatelessWidget {
   }
 
   Widget get termsWidget => Container(
-        padding: EdgeInsets.symmetric(vertical: suSetHeight(5.0)),
+        padding: EdgeInsets.symmetric(vertical: 5.0.h),
         width: Screens.width,
-        height: suSetHeight(86.0),
+        height: 86.0.h,
         child: Center(
           child: Selector<ScoresProvider, List<String>>(
-            selector: (_, provider) => provider.terms,
-            builder: (context, terms, __) {
+            selector: (BuildContext _, ScoresProvider provider) =>
+                provider.terms,
+            builder: (BuildContext context, List<String> terms, Widget __) {
               return ListView.builder(
                 padding: EdgeInsets.zero,
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: terms.length + 2,
-                itemBuilder: (context, index) {
+                itemBuilder: (BuildContext context, int index) {
                   if (index == 0 || index == terms.length + 1) {
-                    return SizedBox(width: suSetWidth(10.0));
+                    return SizedBox(width: 10.0.w);
                   } else {
                     return _term(
                       context,
@@ -184,86 +187,81 @@ class ScorePage extends StatelessWidget {
         ),
       );
 
-  Widget _name(context, Score score) {
+  Widget _name(BuildContext context, Score score) {
     return Text(
-      '${score.courseName}',
-      style: Theme.of(context)
-          .textTheme
-          .headline6
-          .copyWith(fontSize: suSetSp(24.0)),
+      score.courseName,
+      style: Theme.of(context).textTheme.headline6.copyWith(fontSize: 24.0.sp),
       overflow: TextOverflow.ellipsis,
     );
   }
 
-  Widget _score(context, Score score) {
+  Widget _score(BuildContext context, Score score) {
     return Text.rich(
       TextSpan(
         children: <TextSpan>[
           TextSpan(
-            text: '${score.score}',
+            text: score.score,
             style: TextStyle(
-              fontSize: suSetSp(36.0),
+              fontSize: 36.0.sp,
               fontWeight: FontWeight.bold,
               color: !score.isPass
                   ? Colors.red
                   : Theme.of(context).textTheme.headline6.color,
             ),
           ),
-          TextSpan(text: ' / '),
+          const TextSpan(text: ' / '),
           TextSpan(text: '${score.scorePoint}'),
         ],
-        style: Theme.of(context)
-            .textTheme
-            .subtitle2
-            .copyWith(fontSize: suSetSp(20.0)),
+        style:
+            Theme.of(context).textTheme.subtitle2.copyWith(fontSize: 20.0.sp),
       ),
     );
   }
 
-  Widget _timeAndPoint(context, Score score) {
+  Widget _timeAndPoint(BuildContext context, Score score) {
     return Text(
       '学时: ${score.creditHour}　'
       '学分: ${score.credit.toStringAsFixed(1)}',
-      style: Theme.of(context)
-          .textTheme
-          .bodyText2
-          .copyWith(fontSize: suSetSp(20.0)),
+      style: Theme.of(context).textTheme.bodyText2.copyWith(fontSize: 20.0.sp),
     );
   }
 
-  Widget get scoreGrid => Selector<ScoresProvider, List<Score>>(
-        selector: (_, provider) => provider.filteredScores,
-        builder: (context, filteredScores, __) {
-          return GridView.count(
-            padding: EdgeInsets.zero,
-            crossAxisCount: 2,
-            childAspectRatio: 1.5,
-            children: List<Widget>.generate(
-              filteredScores.length,
-              (i) => Card(
-                child: Padding(
-                  padding: EdgeInsets.all(suSetWidth(12.0)),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      _name(context, filteredScores[i]),
-                      _score(context, filteredScores[i]),
-                      _timeAndPoint(context, filteredScores[i]),
-                    ],
-                  ),
+  Widget get scoreGrid {
+    return Selector<ScoresProvider, List<Score>>(
+      selector: (BuildContext _, ScoresProvider provider) =>
+          provider.filteredScores,
+      builder: (BuildContext context, List<Score> filteredScores, Widget __) {
+        return GridView.count(
+          padding: EdgeInsets.zero,
+          crossAxisCount: 2,
+          childAspectRatio: 1.5,
+          children: List<Widget>.generate(
+            filteredScores.length,
+            (int i) => Card(
+              child: Padding(
+                padding: EdgeInsets.all(12.0.w),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    _name(context, filteredScores[i]),
+                    _score(context, filteredScores[i]),
+                    _timeAndPoint(context, filteredScores[i]),
+                  ],
                 ),
               ),
             ),
-          );
-        },
-      );
+          ),
+        );
+      },
+    );
+  }
 
-  Widget refreshIndicator(context) {
+  Widget refreshIndicator(BuildContext context) {
     return Positioned.fill(
       child: ClipRect(
         child: BackdropFilter(
           filter: ui.ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-          child: AbsorbPointer(child: SpinKitWidget()),
+          child: const AbsorbPointer(child: SpinKitWidget()),
         ),
       ),
     );
@@ -272,32 +270,33 @@ class ScorePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<ScoresProvider>(
-      builder: (_, provider, __) {
+      builder: (BuildContext _, ScoresProvider provider, Widget __) {
         return Stack(
           children: <Widget>[
-            !provider.loaded
-                ? SpinKitWidget()
-                : Column(
-                    children: <Widget>[
-                      Expanded(
-                        child: provider.loadError
-                            ? errorWidget(provider)
-                            : provider.hasScore
-                                ? Column(
-                                    children: <Widget>[
-                                      if (provider.terms != null) termsWidget,
-                                      Expanded(
-                                        child: provider.filteredScores != null
-                                            ? scoreGrid
-                                            : noScoreWidget,
-                                      ),
-                                    ],
-                                  )
-                                : noScoreWidget,
-                      ),
-                      evaluateTips(context),
-                    ],
+            if (provider.loaded)
+              Column(
+                children: <Widget>[
+                  Expanded(
+                    child: provider.loadError
+                        ? errorWidget(provider)
+                        : provider.hasScore
+                            ? Column(
+                                children: <Widget>[
+                                  if (provider.terms != null) termsWidget,
+                                  Expanded(
+                                    child: provider.filteredScores != null
+                                        ? scoreGrid
+                                        : noScoreWidget,
+                                  ),
+                                ],
+                              )
+                            : noScoreWidget,
                   ),
+                  evaluateTips(context),
+                ],
+              )
+            else
+              const SpinKitWidget(),
             if (provider.loaded && provider.loading) refreshIndicator(context),
           ],
         );

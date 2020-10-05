@@ -118,8 +118,8 @@ class ScoresProvider extends ChangeNotifier {
     try {
       _socket?.add(jsonEncode(<String, dynamic>{
         'uid': '${currentUser.uid}',
-        'sid': '${currentUser.sid}',
-        'workid': '${currentUser.workId}',
+        'sid': currentUser.sid,
+        'workid': currentUser.workId,
       }).toUtf8());
     } catch (e) {
       if (e.toString().contains('StreamSink is closed')) {

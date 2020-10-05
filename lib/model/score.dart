@@ -8,22 +8,10 @@ part of 'models.dart';
 ///
 /// [code] 课程代码, [courseName] 课程名称, [score] 成绩, [termId] 学年学期,
 /// [credit] 学分, [creditHour] 学时
+@immutable
 @HiveType(typeId: HiveAdapterTypeIds.score)
 class Score {
-  @HiveField(0)
-  String code;
-  @HiveField(1)
-  String courseName;
-  @HiveField(2)
-  String score;
-  @HiveField(3)
-  String termId;
-  @HiveField(4)
-  double credit;
-  @HiveField(5)
-  double creditHour;
-
-  Score({
+  const Score({
     this.code,
     this.courseName,
     this.score,
@@ -31,6 +19,30 @@ class Score {
     this.credit,
     this.creditHour,
   });
+
+  factory Score.fromJson(Map<String, dynamic> json) {
+    return Score(
+      code: json['code'] as String,
+      courseName: json['courseName'] as String,
+      score: json['score'] as String,
+      termId: json['termId'] as String,
+      credit: (json['credit'] as String).toDouble(),
+      creditHour: (json['creditHour'] as String).toDouble(),
+    );
+  }
+
+  @HiveField(0)
+  final String code;
+  @HiveField(1)
+  final String courseName;
+  @HiveField(2)
+  final String score;
+  @HiveField(3)
+  final String termId;
+  @HiveField(4)
+  final double credit;
+  @HiveField(5)
+  final double creditHour;
 
   bool get isPass {
     bool _isPass;
@@ -50,10 +62,13 @@ class Score {
 
   double get scorePoint {
     double _scorePoint;
-    if (double.tryParse(score) != null) {
-      score = double.parse(score).toStringAsFixed(1);
-      _scorePoint = (double.parse(score) - 50) / 10;
-      if (_scorePoint < 1.0) _scorePoint = 0.0;
+    if (score.toDoubleOrNull() != null) {
+      final String oneDigitScoreString = score.toDouble().toStringAsFixed(1);
+      final double oneDigitScore = oneDigitScoreString.toDouble();
+      _scorePoint = (oneDigitScore - 50) / 10;
+      if (_scorePoint < 1.0) {
+        _scorePoint = 0.0;
+      }
     } else {
       if (fiveBandScale.containsKey(score)) {
         _scorePoint = fiveBandScale[score]['point'];
@@ -66,19 +81,8 @@ class Score {
     return _scorePoint;
   }
 
-  factory Score.fromJson(Map<String, dynamic> json) {
-    return Score(
-      code: json['code'],
-      courseName: json['courseName'],
-      score: json['score'],
-      termId: json['termId'],
-      credit: double.parse(json['credit']),
-      creditHour: double.parse(json['creditHour']),
-    );
-  }
-
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'code': code,
       'courseName': courseName,
       'termId': termId,
@@ -90,6 +94,6 @@ class Score {
 
   @override
   String toString() {
-    return 'Score ${JsonEncoder.withIndent('  ').convert(toJson())}';
+    return 'Score ${const JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 }
