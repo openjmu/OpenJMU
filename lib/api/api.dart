@@ -326,8 +326,8 @@ class API {
     } else {
       trueDebugPrint('Launching web: $uri');
       return navigatorState.pushNamed(
-        Routes.openjmuInappbrowser,
-        arguments: {
+        Routes.openjmuInAppWebview,
+        arguments: <String, dynamic>{
           'url': uri,
           'title': title ?? '',
           'app': app,

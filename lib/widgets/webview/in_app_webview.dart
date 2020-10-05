@@ -10,7 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:openjmu/constants/constants.dart';
 
 @FFRoute(
-  name: 'openjmu://inappbrowser',
+  name: 'openjmu://in-app-webview',
   routeName: '网页浏览',
   argumentNames: [
     'url',
@@ -23,8 +23,8 @@ import 'package:openjmu/constants/constants.dart';
     'keepAlive',
   ],
 )
-class InAppBrowserPage extends StatefulWidget {
-  const InAppBrowserPage({
+class InAppWebViewPage extends StatefulWidget {
+  const InAppWebViewPage({
     Key key,
     @required this.url,
     this.title,
@@ -46,18 +46,18 @@ class InAppBrowserPage extends StatefulWidget {
   final bool keepAlive;
 
   @override
-  _InAppBrowserPageState createState() => _InAppBrowserPageState();
+  _InAppWebViewPageState createState() => _InAppWebViewPageState();
 }
 
-class _InAppBrowserPageState extends State<InAppBrowserPage>
+class _InAppWebViewPageState extends State<InAppWebViewPage>
     with AutomaticKeepAliveClientMixin {
-  StreamController<double> progressController =
+  final StreamController<double> progressController =
       StreamController<double>.broadcast();
 
   InAppWebViewController _webViewController;
   String title = '', url = 'about:blank';
 
-  String get urlDomain => Uri.parse(url).host;
+  String get urlDomain => Uri.parse(url).host ?? url;
 
   @override
   bool get wantKeepAlive => widget.keepAlive ?? false;
@@ -74,20 +74,18 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
     }
 
     Instances.eventBus
-      ..on<CourseScheduleRefreshEvent>()
-          .listen((CourseScheduleRefreshEvent event) {
-        if (mounted) {
-          loadCourseSchedule();
-        }
-      });
+        .on<CourseScheduleRefreshEvent>()
+        .listen((CourseScheduleRefreshEvent event) {
+      if (mounted) {
+        loadCourseSchedule();
+      }
+    });
   }
 
   @override
   void dispose() {
     SystemChannels.textInput.invokeMethod<void>('TextInput.hide');
-    progressController.close().whenComplete(() {
-      progressController = null;
-    });
+    progressController.close();
     super.dispose();
   }
 
@@ -132,7 +130,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
       context,
       title: '跳转外部应用',
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
+        padding: EdgeInsets.symmetric(vertical: 20.h),
         child: Text.rich(
           TextSpan(
             children: <InlineSpan>[
@@ -140,7 +138,9 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
               TextSpan(
                 text: '$applicationLabel',
                 style: TextStyle(
-                    fontSize: suSetSp(20.0), fontWeight: FontWeight.bold),
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ],
           ),
@@ -154,13 +154,10 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
   }
 
   Widget get _domainProvider => Padding(
-        padding: EdgeInsets.only(bottom: suSetHeight(10.0)),
+        padding: EdgeInsets.only(bottom: 10.h),
         child: Text(
           '网页由 $urlDomain 提供',
-          style: Theme.of(context)
-              .textTheme
-              .caption
-              .copyWith(fontSize: suSetSp(18.0)),
+          style: Theme.of(context).textTheme.caption.copyWith(fontSize: 18.sp),
         ),
       );
 
@@ -171,11 +168,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
     VoidCallback onTap,
   }) {
     return Container(
-      margin: EdgeInsets.only(
-        left: suSetWidth(30.0),
-        top: suSetHeight(10.0),
-        bottom: suSetHeight(10.0),
-      ),
+      margin: EdgeInsets.symmetric(vertical: 10.h).copyWith(left: 30.w),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -187,22 +180,20 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
                   }
                 : null,
             child: Container(
-              width: suSetWidth(64.0),
-              height: suSetWidth(64.0),
+              width: 64.w,
+              height: 64.w,
               decoration: BoxDecoration(
                 color: Theme.of(context).canvasColor,
-                borderRadius: BorderRadius.circular(suSetWidth(16.0)),
+                borderRadius: BorderRadius.circular(16.w),
               ),
-              child: Center(child: Icon(icon, size: suSetWidth(30.0))),
+              child: Center(child: Icon(icon, size: 30.w)),
             ),
           ),
-          SizedBox(height: suSetHeight(10.0)),
+          SizedBox(height: 10.h),
           Text(
             text,
-            style: Theme.of(context)
-                .textTheme
-                .caption
-                .copyWith(fontSize: suSetSp(15.0)),
+            style:
+                Theme.of(context).textTheme.caption.copyWith(fontSize: 15.sp),
           ),
         ],
       ),
@@ -213,27 +204,27 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
     showModalBottomSheet<void>(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(suSetWidth(20.0)),
-          topRight: Radius.circular(suSetWidth(20.0)),
+          topLeft: Radius.circular(20.w),
+          topRight: Radius.circular(20.w),
         ),
       ),
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Theme.of(context).cardColor,
       context: context,
       builder: (_) {
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             Container(
-              margin: EdgeInsets.only(top: suSetHeight(16.0)),
-              width: suSetWidth(40.0),
-              height: suSetHeight(8.0),
+              margin: EdgeInsets.only(top: 16.h),
+              width: 40.w,
+              height: 8.w,
               decoration: BoxDecoration(
                 borderRadius: maxBorderRadius,
                 color: Theme.of(context).iconTheme.color.withOpacity(0.7),
               ),
             ),
             Container(
-              margin: EdgeInsets.symmetric(vertical: suSetHeight(10.0)),
+              margin: EdgeInsets.symmetric(vertical: 10.h),
               child: Row(
                 children: <Widget>[
                   _moreAction(
@@ -271,72 +262,76 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
     }
   }
 
-  PreferredSizeWidget get appBar => PreferredSize(
-        preferredSize: Size.fromHeight(suSetHeight(kAppBarHeight)),
-        child: Container(
-          height: Screens.topSafeHeight + suSetHeight(kAppBarHeight),
-          padding: EdgeInsets.only(top: Screens.topSafeHeight),
-          child: Stack(
-            children: <Widget>[
-              SizedBox(
-                height: suSetHeight(kAppBarHeight),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: Icon(Icons.close),
-                      onPressed: Navigator.of(context).pop,
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          if (widget.app != null)
-                            WebAppIcon(app: widget.app, size: 60.0),
-                          Flexible(
-                            child: Text(
-                              title,
-                              style: TextStyle(fontSize: suSetSp(22.0)),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+  PreferredSizeWidget get appBar {
+    return PreferredSize(
+      preferredSize: Size.fromHeight(kAppBarHeight.h),
+      child: Container(
+        padding: EdgeInsets.only(top: Screens.topSafeHeight),
+        height: Screens.topSafeHeight + kAppBarHeight.h,
+        color: currentTheme.cardColor,
+        child: Stack(
+          children: <Widget>[
+            SizedBox(
+              height: kAppBarHeight.h,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(Icons.close),
+                    onPressed: Navigator.of(context).pop,
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        if (widget.app != null)
+                          WebAppIcon(app: widget.app, size: 60.0),
+                        Flexible(
+                          child: Text(
+                            title,
+                            style: TextStyle(fontSize: 22.0.sp),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: Icon(Icons.more_horiz),
-                      onPressed: () => showMore(context),
-                    ),
-                  ],
-                ),
+                  ),
+                  IconButton(
+                    padding: EdgeInsets.zero,
+                    icon: Icon(Icons.more_horiz),
+                    onPressed: () => showMore(context),
+                  ),
+                ],
               ),
-              progressBar,
-            ],
-          ),
-        ),
-      );
-
-  Widget get progressBar => Positioned(
-        left: 0.0,
-        right: 0.0,
-        bottom: 0.0,
-        child: SizedBox(
-          height: suSetHeight(2.0),
-          child: StreamBuilder<double>(
-            initialData: 0.0,
-            stream: progressController.stream,
-            builder: (BuildContext context, AsyncSnapshot<double> data) =>
-                LinearProgressIndicator(
-              backgroundColor: Theme.of(context).primaryColor,
-              value: data.data,
             ),
-          ),
+            progressBar,
+          ],
         ),
-      );
+      ),
+    );
+  }
+
+  Widget get progressBar {
+    return Positioned(
+      left: 0.0,
+      right: 0.0,
+      bottom: 0.0,
+      height: 2.w,
+      child: StreamBuilder<double>(
+        initialData: 0.0,
+        stream: progressController.stream,
+        builder: (BuildContext context, AsyncSnapshot<double> data) {
+          return LinearProgressIndicator(
+            backgroundColor: Theme.of(context).primaryColor,
+            value: data.data,
+          );
+        },
+      ),
+    );
+  }
 
   Widget get refreshIndicator => const Center(
         child: Padding(
@@ -352,7 +347,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
   List<Widget> get persistentFooterButtons => <Widget>[
         SizedBox(
           width: Screens.width,
-          height: suSetHeight(32.0),
+          height: 32.w,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -362,7 +357,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
                 icon: Icon(
                   Icons.keyboard_arrow_left,
                   color: currentThemeColor,
-                  size: suSetWidth(32.0),
+                  size: 32.w,
                 ),
                 onPressed: _webViewController?.goBack,
               ),
@@ -371,7 +366,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
                 icon: Icon(
                   Icons.keyboard_arrow_right,
                   color: currentThemeColor,
-                  size: suSetWidth(32.0),
+                  size: 32.w,
                 ),
                 onPressed: _webViewController?.goForward,
               ),
@@ -380,7 +375,7 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
                 icon: Icon(
                   Icons.refresh,
                   color: currentThemeColor,
-                  size: suSetWidth(32.0),
+                  size: 32.w,
                 ),
                 onPressed: _webViewController?.reload,
               ),
@@ -410,7 +405,6 @@ class _InAppBrowserPageState extends State<InAppBrowserPage>
             useShouldOverrideUrlLoading: true,
             verticalScrollBarEnabled: false,
           ),
-          // TODO(AlexVincent525): Currently zoom control in android was broken, need to find the root cause.
           android: AndroidInAppWebViewOptions(
             allowFileAccessFromFileURLs: true,
             allowUniversalAccessFromFileURLs: true,
