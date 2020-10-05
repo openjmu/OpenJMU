@@ -13,6 +13,9 @@ import 'package:openjmu/constants/constants.dart';
 class NetUtils {
   const NetUtils._();
 
+  static const bool _isProxyEnabled = false;
+  static const String _proxyDestination = 'PROXY 127.0.0.1:8765';
+
   static final Dio dio = Dio();
   static final Dio tokenDio = Dio();
 
@@ -41,7 +44,9 @@ class NetUtils {
   static void initConfig() {
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
-//      client.findProxy = (uri) => 'PROXY 192.168.0.106:8888';
+      if (_isProxyEnabled) {
+        client.findProxy = (uri) => _proxyDestination;
+      }
       client.badCertificateCallback =
           (X509Certificate _, String __, int ___) => true;
     };
@@ -61,7 +66,9 @@ class NetUtils {
     ));
     (tokenDio.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (HttpClient client) {
-//      client.findProxy = (uri) => 'PROXY 192.168.0.106:8888';
+      if (_isProxyEnabled) {
+        client.findProxy = (uri) => _proxyDestination;
+      }
       client.badCertificateCallback =
           (X509Certificate _, String __, int ___) => true;
     };
