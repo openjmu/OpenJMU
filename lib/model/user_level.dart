@@ -4,6 +4,7 @@
 ///
 part of 'models.dart';
 
+@immutable
 class UserLevelScore {
   const UserLevelScore({
     this.uid,
@@ -14,23 +15,25 @@ class UserLevelScore {
     this.levelInfo,
   });
 
+  factory UserLevelScore.fromJson(Map<String, dynamic> json) {
+    return UserLevelScore(
+      uid: json['uid'] as int,
+      signStatus: json['signstatus'] as int,
+      lotteryChance: json['lotterychance'] as int,
+      totalExp: json['totalexp'] as int,
+      totalMoney: json['totalmoney'] as int,
+      levelInfo: UserLevelInfo.fromJson(
+        json['levelinfo'] as Map<String, dynamic>,
+      ),
+    );
+  }
+
   final int uid;
   final int signStatus;
   final int lotteryChance;
   final int totalExp;
   final int totalMoney;
   final UserLevelInfo levelInfo;
-
-  factory UserLevelScore.fromJson(Map<String, dynamic> json) {
-    return UserLevelScore(
-      uid: json['uid'],
-      signStatus: json['signstatus'],
-      lotteryChance: json['lotterychance'],
-      totalExp: json['totalexp'],
-      totalMoney: json['totalmoney'],
-      levelInfo: UserLevelInfo.fromJson(json['levelinfo']),
-    );
-  }
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
@@ -68,6 +71,7 @@ class UserLevelScore {
 /// 用户等级实体
 ///
 /// [level] 等级, [minScore] 等级下限, [maxScore] 等级上限
+@immutable
 class UserLevelInfo {
   const UserLevelInfo({
     this.level,
@@ -75,17 +79,17 @@ class UserLevelInfo {
     this.maxScore,
   });
 
+  factory UserLevelInfo.fromJson(Map<String, dynamic> json) {
+    return UserLevelInfo(
+      level: json['level'] as int,
+      minScore: json['minscore'] as int,
+      maxScore: json['maxscore'] as int,
+    );
+  }
+
   final int level;
   final int minScore;
   final int maxScore;
-
-  factory UserLevelInfo.fromJson(Map<String, dynamic> json) {
-    return UserLevelInfo(
-      level: json['level'],
-      minScore: json['minscore'],
-      maxScore: json['maxscore'],
-    );
-  }
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
