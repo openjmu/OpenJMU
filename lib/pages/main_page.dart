@@ -34,7 +34,7 @@ class MainPage extends StatefulWidget {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Padding(
-            padding: EdgeInsets.only(left: 20.w, right: 5.0.w),
+            padding: EdgeInsets.only(left: 15.w, right: 10.w),
             child: SvgPicture.asset(
               R.ASSETS_ICONS_SELF_PAGE_AVATAR_CORNER_SVG,
               color: currentTheme.iconTheme.color,
