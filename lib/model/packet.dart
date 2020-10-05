@@ -9,13 +9,7 @@ part of 'models.dart';
 /// [status] 状态码, [command] 命令,
 /// [sequence] 包序, [length] 包体长度, [content] 内容,
 class Packet {
-  int status;
-  int command;
-  int sequence;
-  int length;
-  List<int> content;
-
-  Packet({
+  const Packet({
     this.status,
     this.command,
     this.sequence,
@@ -33,8 +27,24 @@ class Packet {
     );
   }
 
+  Packet combinedWith(Packet packet) {
+    return Packet(
+      status: packet.status,
+      command: packet.command,
+      sequence: packet.sequence,
+      length: length + packet.length,
+      content: <int>[...content, ...packet.content],
+    );
+  }
+
+  final int status;
+  final int command;
+  final int sequence;
+  final int length;
+  final List<int> content;
+
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'status': status,
       'command': '0x${command.toRadixString(16)}',
       'sequence': sequence,
@@ -45,6 +55,6 @@ class Packet {
 
   @override
   String toString() {
-    return 'Packet ${JsonEncoder.withIndent('  ').convert(toJson())}';
+    return 'Packet ${const JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 }

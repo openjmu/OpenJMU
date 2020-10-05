@@ -20,12 +20,12 @@ class MessageUtils {
   /// Buffer zone for packets.
   ///
   /// Here the buffer zone will store packets for each command.
-  /// Since packets came with sequence, whether the packets has contained all
+  /// Since packets came with sequence, whether packets have contained all
   /// of the content or not, there'll be only one command at the same time.
-  /// So through this buffer zone, packets can be combined together.
+  /// So through this buffer zone, packets can be combined.
   static Map<int, Packet> packageBufferZone = <int, Packet>{};
 
-  /// Socket for message.
+  /// Socket for messages.
   static Socket messageSocket;
 
   /// Sequence locally. It's auto increment when sending message.
@@ -34,7 +34,7 @@ class MessageUtils {
   /// Timer for keep alive.
   static Timer messageKeepAliveTimer;
 
-  /// Message observer list. Methods can subscribe and receive callback.
+  /// Message observer list. Methods can subscribe and receive callbacks.
   static ObserverList<Function(MessageReceivedEvent)> messageListeners =
       ObserverList<Function(MessageReceivedEvent)>();
 
@@ -81,7 +81,7 @@ class MessageUtils {
     return _uc.asUint8List();
   }
 
-  /// Convert a integer to unsigned integer in specific radix.
+  /// Convert a integer to unsigned integer in the specific radix.
   static Uint8List commonUint(int value, int radix) {
     final UintConverter _uc = UintConverter();
     _uc.add(value, radix);
@@ -121,7 +121,7 @@ class MessageUtils {
     return result;
   }
 
-  /// Return a integer from bytes with fixed radix.
+  /// Return a integer from bytes with the fixed radix.
   static int getPackageUint(List<int> data, int radix) {
     assert(radix % 8 == 0);
     final ByteData byteData = ByteData.view(Uint8List.fromList(data).buffer);
@@ -140,8 +140,10 @@ class MessageUtils {
 
   /// Return a map which included a string and length of the string.
   ///
-  /// Structure like:
-  /// {'length': 233, 'content': 'some words...'}
+  /// The structure would be: {
+  ///   'length': 233,
+  ///   'content': 'some words...'
+  /// }
   static Map<String, dynamic> getPackageString(List<int> data) {
     final ByteData byteData =
         ByteData.view(Uint8List.fromList(data.sublist(0, 2)).buffer);
@@ -156,7 +158,7 @@ class MessageUtils {
 
   /// Socket buffered method.
   ///
-  /// Using this method to buffer bytes from socket, with fixed rules.
+  /// Using this method to buffer bytes from the socket, with fixed rules.
   static void bufferedStream(List<int> bytes, {bool addBytes = true}) {
     // Whether bytes should add to buffer.
     if (addBytes) {
@@ -190,15 +192,10 @@ class MessageUtils {
   static void bufferedPacket(Packet packet) {
     // See if the command have buffered packet.
     if (packageBufferZone[packet.command] != null) {
-      final Packet _tempPacket = packageBufferZone[packet.command];
-      // Combine two packet to one.
-      _tempPacket
-        ..status = packet.status
-        ..command = packet.command
-        ..sequence = packet.sequence
-        ..length += packet.length
-        ..content.addAll(packet.content);
-      // Send combined packet to buffered zone.
+      // Combine two packets to one.
+      final Packet _tempPacket =
+          packageBufferZone[packet.command].combinedWith(packet);
+      // Send the combined packet to buffered zone.
       packageBufferZone[packet.command] = _tempPacket;
     } else {
       packageBufferZone[packet.command] = packet;
@@ -207,14 +204,14 @@ class MessageUtils {
     final int status = packageBufferZone[packet.command].status;
     if (status == 200 || status == 0) {
       commandHandler(packageBufferZone[packet.command]);
-      // Clear buffer after handle.
+      // Clear buffer after handled.
       packageBufferZone[packet.command] = null;
     }
   }
 
   /// Handler for each command.
   ///
-  /// The handler can handle specific command with custom callback.
+  /// The handler can handle specific command with a custom callback.
   /// What you need is to handler the command you want to.
   static void commandHandler(Packet packet) {
     if (logMessageSocketPacket) {
@@ -265,18 +262,23 @@ class MessageUtils {
 
   /// Send Methods.
   ///
-  /// These methods included semantic void to call package add.
+  /// These methods included the semantic void to call package add.
   static void sendCheckCodeVerify() => addPackage(
         'WY_VERIFY_CHECKCODE',
         M_WY_VERIFY_CHECKCODE(),
       );
+
   static void sendMultiPortLogin() => addPackage(
         'WY_MULTPOINT_LOGIN',
         M_WY_MULTPOINT_LOGIN(),
       );
+
   static void sendLogout() => addPackage('WY_LOGOUT');
+
   static void sendKeepAlive(dynamic _) => addPackage('WY_KEEPALIVE');
+
   static void sendGetOfflineMessage() => addPackage('WY_GET_OFFLINEMSG');
+
   static void sendTextMessage(String message, int uid) {
     addPackage(
       'WY_MSG',
@@ -417,8 +419,8 @@ class UintWrapper {
 /// Converter for [UintWrapper].
 ///
 /// The main purpose for the converter is to produce a [Uint8List]. Each
-/// wrapper will be converted to bytes and combined together. To create a
-/// bytes list, construct a [UintConverter] at first, then add wrappers.
+/// wrapper will be converted to bytes and combined. To create a bytes list,
+/// construct a [UintConverter] at first, then add wrappers.
 class UintConverter {
   final List<UintWrapper> numbers = <UintWrapper>[];
 
