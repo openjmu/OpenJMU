@@ -204,7 +204,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
                 ),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(suSetWidth(15.0)),
-                  color: Theme.of(context).canvasColor,
+                  color: Theme.of(context).cardColor,
                 ),
                 child: SingleChildScrollView(
                   padding: EdgeInsets.all(suSetWidth(20.0)),
