@@ -57,8 +57,8 @@ class WebAppsProvider extends ChangeNotifier {
   }
 
   /// 获取当前用户的App列表
-  Future<dynamic> getAppList() async =>
-      NetUtils.getWithCookieSet<dynamic>(API.webAppLists);
+  Future<Response<List<dynamic>>> getAppList() async =>
+      NetUtils.getWithCookieSet<List<dynamic>>(API.webAppLists);
 
   /// 初始化App列表
   void initApps() {
@@ -114,12 +114,13 @@ class WebAppsProvider extends ChangeNotifier {
     final Map<String, Set<WebApp>> _tempCategoryList = <String, Set<WebApp>>{
       for (final String key in categories.keys) key: <WebApp>{},
     };
-    final List<Map<String, dynamic>> data =
-        ((await getAppList()).data as List<dynamic>)
-            .cast<Map<String, dynamic>>();
+    final List<Map<dynamic, dynamic>> data =
+        (await getAppList()).data.cast<Map<dynamic, dynamic>>();
 
     for (int i = 0; i < data.length; i++) {
-      final WebApp _app = appWrapper(WebApp.fromJson(data[i]));
+      final WebApp _app = appWrapper(WebApp.fromJson(
+        data[i] as Map<String, dynamic>,
+      ));
       if (_app.name?.isNotEmpty ?? false) {
         if (!appFiltered(_app)) {
           _tempSet.add(_app);

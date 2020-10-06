@@ -103,15 +103,17 @@ class NotificationProvider extends ChangeNotifier {
   }
 
   void _getTeamNotification(Timer _) {
-    TeamPostAPI.getNotifications()
-        .then((Response<Map<String, dynamic>> response) {
-      final TeamNotifications notification =
-          TeamNotifications.fromJson(response.data);
-      teamNotifications = notification;
-      if (_ == null) {
-        trueDebugPrint('Updated team notifications with: $notification');
-      }
-    }).catchError((dynamic e) {
+    TeamPostAPI.getNotifications().then(
+      (Response<Map<String, dynamic>> response) {
+        final TeamNotifications notification = TeamNotifications.fromJson(
+          response.data,
+        );
+        teamNotifications = notification;
+        if (_ == null) {
+          trueDebugPrint('Updated team notifications with: $notification');
+        }
+      },
+    ).catchError((dynamic e) {
       trueDebugPrint('Error when getting team notification: $e');
     });
   }
