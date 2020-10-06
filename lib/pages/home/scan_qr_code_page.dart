@@ -123,7 +123,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
 
   /// Callback for scanner result.
   /// 扫描得到结果时的回调
-  Future<void> onScan({RScanResult result, fromAlbum = false}) async {
+  Future<void> onScan({RScanResult result, bool fromAlbum = false}) async {
     scanResult = result ?? _controller.result;
     if (scanResult == null) {
       if (fromAlbum) {
@@ -150,7 +150,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       /// Launch web page if a common url was detected.
       /// 如果检测到常见的url格式内容则打开网页
       Navigator.of(context).pop();
-      unawaited(API.launchWeb(url: '${scanResult.message}'));
+      unawaited(API.launchWeb(url: scanResult.message));
     } else if (API.schemeUserPage.stringMatch(scanResult.message) != null) {
       /// Push to user page if a user scheme is being detect.
       /// 如果检测到用户scheme则跳转到用户页
@@ -168,14 +168,14 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       final bool needCopy = await ConfirmationDialog.show(
         context,
         title: '扫码结果',
-        content: '${scanResult.message}',
+        content: scanResult.message,
         showConfirm: true,
         confirmLabel: '复制',
         cancelLabel: '返回',
       );
       if (needCopy) {
         unawaited(
-          Clipboard.setData(ClipboardData(text: '${scanResult.message}')),
+          Clipboard.setData(ClipboardData(text: scanResult.message)),
         );
       }
       unawaited(_controller.startScan());
@@ -197,7 +197,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       ..addListener(() {
         shaderTranslateStream.add(shaderAnimation.value);
       });
-    SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
       shaderAnimationController.repeat();
     });
   }
@@ -237,7 +237,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
   /// Animating shader grid layout.
   /// 闪烁格子布局
   Widget get animatingGrid => Positioned.fill(
-        child: StreamBuilder(
+        child: StreamBuilder<double>(
           initialData: 0.0,
           stream: shaderTranslateStream.stream,
           builder: (BuildContext _, AsyncSnapshot<double> data) {
@@ -252,7 +252,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
                     currentThemeColor,
                     Colors.transparent,
                   ],
-                  stops: <double>[0.0, 0.75, 0.99, 1.0],
+                  stops: const <double>[0.0, 0.75, 0.99, 1.0],
                   transform: GradientTranslateTransform(
                     Offset(0, data.data),
                   ),
@@ -283,7 +283,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(bottom: 24.0),
+                padding: const EdgeInsets.only(bottom: 24.0),
                 child: Text(
                   '我的二维码',
                   style: TextStyle(fontSize: 24.0.sp, color: Colors.white),
@@ -294,7 +294,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
                   borderRadius: BorderRadius.circular(25.0),
                   color: Colors.white,
                 ),
-                padding: EdgeInsets.all(24.0),
+                padding: const EdgeInsets.all(24.0),
                 child: QrImage(
                   version: 3,
                   data: 'openjmu://user/${currentUser.uid}',
@@ -316,7 +316,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
       );
 
   /// 返回键
-  Widget get backButton => BackButton(color: Colors.white);
+  Widget get backButton => const BackButton(color: Colors.white);
 
   /// 个人码按钮
   Widget get selfQrCodeButton => PositionedDirectional(
@@ -330,7 +330,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Icon(Icons.person, color: Colors.white, size: 20.0),
+                const Icon(Icons.person, color: Colors.white, size: 20.0),
                 Text('个人码', style: buttonTextStyle),
               ],
             ),
@@ -350,7 +350,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                Icon(Icons.perm_media, color: Colors.white, size: 20.0),
+                const Icon(Icons.perm_media, color: Colors.white, size: 20.0),
                 Text('相册', style: buttonTextStyle),
               ],
             ),
@@ -393,7 +393,7 @@ class _ScanQrCodePageState extends State<ScanQrCodePage>
 }
 
 class GradientTranslateTransform extends GradientTransform {
-  GradientTranslateTransform(this.offset);
+  const GradientTranslateTransform(this.offset);
 
   final Offset offset;
 
