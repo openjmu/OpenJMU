@@ -37,9 +37,9 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
     TeamPostAPI.getMentionedList(page: page).then(
       (Response<Map<String, dynamic>> response) {
         final Map<String, dynamic> data = response.data;
-        for (final Map<String, dynamic> item
-            in data['list'] as List<Map<String, dynamic>>) {
-          mentionedList.add(TeamMentionItem.fromJson(item));
+        for (final dynamic item in data['list'] as List<dynamic>) {
+          final Map<String, dynamic> _item = item as Map<String, dynamic>;
+          mentionedList.add(TeamMentionItem.fromJson(_item));
         }
         total = data['total'].toString().toIntOrNull();
         canLoadMore = data['count'].toString().toIntOrNull() == 0;
@@ -181,8 +181,7 @@ class _TeamMentionListPageState extends State<TeamMentionListPage> {
               vertical: suSetHeight(8.0),
             ),
             decoration: BoxDecoration(
-              borderRadius:
-              BorderRadius.circular(suSetWidth(10.0)),
+              borderRadius: BorderRadius.circular(suSetWidth(10.0)),
               color: Theme.of(context).cardColor,
             ),
             child: Column(

@@ -128,6 +128,9 @@ class _PostCardState extends State<PostCard> {
       );
 
   Widget getRootPost(BuildContext context, Map<String, dynamic> rootTopic) {
+    if (rootTopic['topic'] is List && rootTopic['exists'] == 0) {
+      rootTopic['topic'] = null;
+    }
     final Map<String, dynamic> content =
         rootTopic['topic'] as Map<String, dynamic>;
     if (rootTopic['exists'] == 1) {
