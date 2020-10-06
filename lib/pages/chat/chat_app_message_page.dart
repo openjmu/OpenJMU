@@ -2,8 +2,8 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2019-11-01 14:12
 ///
-import 'dart:math' as math;
 import 'dart:convert';
+import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -12,24 +12,24 @@ import 'package:extended_text/extended_text.dart';
 import 'package:openjmu/constants/constants.dart';
 
 @FFRoute(
-  name: "openjmu://chat-app-message-page",
-  routeName: "应用消息页",
-  argumentNames: ["app"],
+  name: 'openjmu://chat-app-message-page',
+  routeName: '应用消息页',
+  argumentNames: <String>['app'],
 )
 class ChatAppMessagePage extends StatefulWidget {
-  final WebApp app;
-
   const ChatAppMessagePage({
     @required this.app,
     Key key,
   }) : super(key: key);
+
+  final WebApp app;
 
   @override
   _ChatAppMessagePageState createState() => _ChatAppMessagePageState();
 }
 
 class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
-  final _scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   bool shrinkWrap = true;
 
@@ -41,95 +41,93 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
     messagesProvider = Provider.of<MessagesProvider>(context, listen: false);
   }
 
-  Widget get topBar => FixedAppBar(
-        title: Padding(
-          padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    WebAppIcon(size: 60.0, app: widget.app),
-                    Text(
-                      widget.app.name,
-                      style: TextStyle(fontWeight: FontWeight.w500),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
-  Widget get bottomBar => Theme(
-        data:
-            Theme.of(context).copyWith(splashFactory: InkSplash.splashFactory),
-        child: Container(
-          margin: EdgeInsets.only(
-            bottom: math.max(MediaQuery.of(context).padding.bottom, 34.0),
-          ),
-          child: UnconstrainedBox(
-            child: MaterialButton(
-              shape: RoundedRectangleBorder(borderRadius: maxBorderRadius),
-              padding: EdgeInsets.all(suSetHeight(10.0)),
-              highlightElevation: 4.0,
-              color: currentThemeColor,
-              child: Center(
-                child: Text(
-                  '前往应用',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: suSetSp(22.0),
-                  ),
-                ),
-              ),
-              onPressed: () {
-                API.launchWeb(url: widget.app.replacedUrl, app: widget.app);
-              },
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
-          ),
-        ),
-      );
-
-  Widget get messageList => Expanded(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+  Widget get topBar {
+    return FixedAppBar(
+      title: Padding(
+        padding: EdgeInsets.symmetric(vertical: suSetHeight(4.0)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Flexible(
-              child: Consumer<MessagesProvider>(
-                builder: (_, provider, __) {
-                  final messages = provider.appsMessages[widget.app.appId];
-                  return ListView.builder(
-                    padding: EdgeInsets.zero,
-                    controller: _scrollController,
-                    shrinkWrap: shrinkWrap,
-                    reverse: true,
-                    itemCount: messages.length,
-                    itemBuilder: (_, i) {
-                      tryDecodeContent(messages[i]);
-                      return messageWidget(messages[i]);
-                    },
-                  );
-                },
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  WebAppIcon(size: 60.0, app: widget.app),
+                  Text(
+                    widget.app.name,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                ],
               ),
             ),
           ],
         ),
-      );
+      ),
+    );
+  }
+
+  Widget get bottomBar {
+    return Theme(
+      data: Theme.of(context).copyWith(splashFactory: InkSplash.splashFactory),
+      child: Container(
+        margin: EdgeInsets.only(
+          bottom: math.max(MediaQuery.of(context).padding.bottom, 34.0),
+        ),
+        child: UnconstrainedBox(
+          child: MaterialButton(
+            shape: const RoundedRectangleBorder(borderRadius: maxBorderRadius),
+            padding: EdgeInsets.all(suSetHeight(10.0)),
+            highlightElevation: 4.0,
+            color: currentThemeColor,
+            child: Center(
+              child: Text(
+                '前往应用',
+                style: TextStyle(color: Colors.white, fontSize: 22.sp),
+              ),
+            ),
+            onPressed: () {
+              API.launchWeb(url: widget.app.replacedUrl, app: widget.app);
+            },
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget get messageList {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Flexible(
+            child: Consumer<MessagesProvider>(
+              builder: (_, MessagesProvider provider, __) {
+                final List<AppMessage> messages =
+                    provider.appsMessages[widget.app.appId] as List<AppMessage>;
+                return ListView.builder(
+                  padding: EdgeInsets.zero,
+                  controller: _scrollController,
+                  shrinkWrap: shrinkWrap,
+                  reverse: true,
+                  itemCount: messages.length,
+                  itemBuilder: (_, int i) {
+                    tryDecodeContent(messages[i]);
+                    return messageWidget(messages[i]);
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget messageWidget(AppMessage message) {
     return Container(
-      margin: EdgeInsets.only(
-        left: 8.0,
-        right: 40.0,
-        top: 8.0,
-        bottom: 8.0,
-      ),
+      margin: const EdgeInsets.all(8.0).copyWith(right: 40),
       width: Screens.width,
       child: Align(
         alignment: Alignment.centerLeft,
@@ -166,7 +164,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
             Padding(
               padding: EdgeInsets.only(left: suSetWidth(8.0)),
               child: Text(
-                '${timeHandler(message.sendTime)}',
+                timeHandler(message.sendTime),
                 style: TextStyle(
                   color: Theme.of(context)
                       .textTheme
@@ -184,7 +182,7 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
   }
 
   String timeHandler(DateTime dateTime) {
-    final now = DateTime.now();
+    final DateTime now = currentTime;
     String time = '';
     if (dateTime.day == now.day &&
         dateTime.month == now.month &&
@@ -198,10 +196,10 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
     return time;
   }
 
-  void judgeShrink(context) {
+  void judgeShrink(BuildContext context) {
     if (_scrollController.hasClients) {
-      final maxExtent = _scrollController.position.maxScrollExtent;
-      final limitExtent = 50.0;
+      final double maxExtent = _scrollController.position.maxScrollExtent;
+      const double limitExtent = 50.0;
       if (maxExtent > limitExtent && shrinkWrap) {
         shrinkWrap = false;
       } else if (maxExtent <= limitExtent && !shrinkWrap) {
@@ -211,8 +209,10 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
   }
 
   void judgeMessageConfirm() {
-    final messages = messagesProvider.appsMessages[widget.app.appId];
-    final unreadMessages = messages.where((appMessage) {
+    final List<AppMessage> messages =
+        messagesProvider.appsMessages[widget.app.appId] as List<AppMessage>;
+    final List<AppMessage> unreadMessages =
+        messages.where((AppMessage appMessage) {
       return !appMessage.read;
     })?.toList();
     if (unreadMessages.isNotEmpty) {
@@ -222,24 +222,29 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
         unreadMessages.removeLast();
       }
       if (unreadMessages.isNotEmpty) {
-        final message = unreadMessages[0];
+        final AppMessage message = unreadMessages[0];
         if (message.ackId != null && message.ackId != 0) {
           MessageUtils.sendConfirmMessage(ackId: message.ackId);
         }
-        if (!message.read) message.read = true;
+        if (!message.read) {
+          message.read = true;
+        }
       }
-      unreadMessages.forEach((message) {
+      for (final AppMessage message in unreadMessages) {
         message.read = true;
-      });
+      }
     }
     messagesProvider.saveAppsMessages();
   }
 
   void tryDecodeContent(AppMessage message) {
     try {
-      final content = jsonDecode(message.content);
-      message.content = content['content'];
-      if (mounted) setState(() {});
+      final Map<String, dynamic> content =
+          jsonDecode(message.content) as Map<String, dynamic>;
+      message.content = content['content'] as String;
+      if (mounted) {
+        setState(() {});
+      }
     } catch (e) {
       return;
     }
@@ -262,14 +267,13 @@ class _ChatAppMessagePageState extends State<ChatAppMessagePage> {
   }
 }
 
-class _LinkText extends SpecialText {
-  static String startKey = 'https://';
-  static const String endKey = ' ';
-
+class _LinkText extends LinkText {
   _LinkText(
     TextStyle textStyle,
     SpecialTextGestureTapCallback onTap,
-  ) : super(startKey, endKey, textStyle, onTap: onTap);
+  ) : super(textStyle, onTap, linkHost: startKey);
+
+  static const String startKey = 'https://';
 
   @override
   TextSpan finishText() {
@@ -281,20 +285,21 @@ class _LinkText extends SpecialText {
           final Map<String, dynamic> data = <String, dynamic>{
             'content': toString()
           };
-          if (onTap != null) onTap(data);
+          if (onTap != null) {
+            onTap(data);
+          }
         },
     );
   }
 }
 
-class _LinkOlderText extends SpecialText {
-  static String startKey = 'http://';
-  static const String endKey = ' ';
-
+class _LinkOlderText extends LinkText {
   _LinkOlderText(
     TextStyle textStyle,
     SpecialTextGestureTapCallback onTap,
-  ) : super(startKey, endKey, textStyle, onTap: onTap);
+  ) : super(textStyle, onTap, linkHost: startKey);
+
+  static const String startKey = 'http://';
 
   @override
   TextSpan finishText() {
@@ -306,7 +311,9 @@ class _LinkOlderText extends SpecialText {
           final Map<String, dynamic> data = <String, dynamic>{
             'content': toString()
           };
-          if (onTap != null) onTap(data);
+          if (onTap != null) {
+            onTap(data);
+          }
         },
     );
   }
@@ -319,25 +326,27 @@ class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     TextStyle textStyle,
     SpecialTextGestureTapCallback onTap,
   }) {
-    final linkRegExp = RegExp(
+    final RegExp linkRegExp = RegExp(
       r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
       r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)',
     );
 
-    if (data == null || data == '') return null;
-    final inlineList = <InlineSpan>[];
+    if (data == null || data == '') {
+      return null;
+    }
+    final List<InlineSpan> inlineList = <InlineSpan>[];
     if (linkRegExp.allMatches(data).isNotEmpty) {
-      final matches = linkRegExp.allMatches(data);
-      matches.forEach((match) {
+      final Iterable<RegExpMatch> matches = linkRegExp.allMatches(data);
+      for (final RegExpMatch match in matches) {
         data = data.replaceFirst(match.group(0), ' ${match.group(0)} ');
-      });
+      }
     }
 
     if (data.isNotEmpty) {
       SpecialText specialText;
       String textStack = '';
       for (int i = 0; i < data.length; i++) {
-        String char = data[i];
+        final String char = data[i];
         textStack += char;
         if (specialText != null) {
           if (!specialText.isEnd(textStack)) {
@@ -384,7 +393,9 @@ class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     SpecialTextGestureTapCallback onTap,
     int index,
   }) {
-    if (flag?.isEmpty ?? true) return null;
+    if (flag?.isEmpty ?? true) {
+      return null;
+    }
 
     if (isStart(flag, _LinkText.startKey)) {
       return _LinkText(textStyle, onTap);
