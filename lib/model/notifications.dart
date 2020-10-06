@@ -7,8 +7,9 @@ part of 'models.dart';
 /// 通知实体
 ///
 /// [at] @人计数, [comment] 评论计数, [praise] 点赞计数, [fans] 新粉丝计数
+@immutable
 class Notifications {
-  Notifications({
+  const Notifications({
     this.at = 0,
     this.comment = 0,
     this.praise = 0,
@@ -17,8 +18,7 @@ class Notifications {
 
   factory Notifications.fromJson(Map<String, dynamic> json) {
     return Notifications(
-      at: json['t_at'].toString().toInt() +
-          json['cmt_at'].toString().toInt(),
+      at: json['t_at'].toString().toInt() + json['cmt_at'].toString().toInt(),
       comment: json['cmt'].toString().toInt(),
       praise: json['t_praised'].toString().toInt(),
       fans: json['fans'].toString().toInt(),

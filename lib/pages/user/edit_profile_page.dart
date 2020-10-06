@@ -21,7 +21,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   Widget get saveButton {
     return IconButton(
-      icon: Icon(Icons.save),
+      icon: const Icon(Icons.save),
       onPressed: () {
         final LoadingDialogController controller = LoadingDialogController();
         LoadingDialog.show(
@@ -54,7 +54,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         BackdropFilter(
           filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(
-            color: Color.fromARGB(120, 50, 50, 50),
+            color: const Color.fromARGB(120, 50, 50, 50),
           ),
         ),
       ];

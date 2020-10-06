@@ -5,8 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class EmoticonUtils {
-  static final String _emoticonFilePath = 'assets/emotion-icons';
-  static final Map<String, String> emoticonMap = {
+  const EmoticonUtils._();
+
+  static const String _emoticonFilePath = 'assets/emotion-icons';
+
+  static final Map<String, String> emoticonMap = <String, String>{
     '[微笑2]': '$_emoticonFilePath/weixiao2.png',
     '[撇嘴1]': '$_emoticonFilePath/piezui1.png',
     '[色4]': '$_emoticonFilePath/se4.png',
@@ -149,11 +152,11 @@ class EmotionPad extends StatelessWidget {
       color: Theme.of(context).canvasColor,
       child: GridView.builder(
         padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 6,
         ),
         itemCount: EmoticonUtils.emoticonMap.values.length,
-        itemBuilder: (context, index) => IconButton(
+        itemBuilder: (_, int index) => IconButton(
           icon: Column(
             children: <Widget>[
               Expanded(

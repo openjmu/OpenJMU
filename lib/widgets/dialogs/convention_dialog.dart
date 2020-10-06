@@ -65,14 +65,16 @@ class _ConventionDialogState extends State<ConventionDialog> {
       );
 
   Widget get confirmTips => Text.rich(
-        TextSpan(children: <InlineSpan>[
-          TextSpan(text: '发布动态前，请确认您已阅读并知晓'),
-          TextSpan(
-            text: '《集大通平台公约》',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          TextSpan(text: '，且发布的内容符合公约要求。'),
-        ]),
+        const TextSpan(
+          children: <InlineSpan>[
+            TextSpan(text: '发布动态前，请确认您已阅读并知晓'),
+            TextSpan(
+              text: '《集大通平台公约》',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            TextSpan(text: '，且发布的内容符合公约要求。'),
+          ],
+        ),
         style: TextStyle(
           fontSize: suSetSp(18.0),
           fontWeight: FontWeight.normal,
@@ -94,20 +96,20 @@ class _ConventionDialogState extends State<ConventionDialog> {
   Widget get conventionContent => Text.rich(
         TextSpan(
           children: <InlineSpan>[
-            TextSpan(
+            const TextSpan(
               text: '　集大通平台广告泛滥、不宜帖子频现，'
                   '给用户正常浏览带来了严重影响，'
                   '为了消除此现象带来的不良用户体验，'
                   '拟进一步加强和规范集大通平台的管理措施。规定如下：\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '一、集大通平台全区\n',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            TextSpan(
+            const TextSpan(
               text: '　禁止发布以下内容信息，形式包括但不限于文字、图片、链接、二维码：\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '　1、 违反法律法规、公序良俗及学校规章制度的信息，'
                   '包括但不限于\n'
                   '　(1) 违反宪法确定的基本原则的；\n'
@@ -124,27 +126,27 @@ class _ConventionDialogState extends State<ConventionDialog> {
                   '国家政策、政府通知、公序良俗等禁止的内容；\n'
                   '　(12) 本平台认为不利于平台生态、可能给平台造成损失的内容。\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '　2、针对特定用户或群体（包括但不限于种族、国籍、'
                   '宗教信仰、政治立场、身份职业、出身地区、兴趣爱好），'
                   '发布具有挑衅性质、攻击性质（包括但不限于明示与暗示的歧视、'
                   '嘲讽、贬低、挑衅、辱骂）的内容，或存在煽动他人进行上述行为的情况；\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '　3、单一用户或多用户恶意在短时间内发送多条相同或者类似内容，'
                   '包括但不限于刷屏、灌水、刷评论，但在某些活动的气氛烘托下，'
                   '多用户发送相同内容，属于共同的情感表达，不属于恶意刷屏\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '二、微博广场首页\n',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            TextSpan(
+            const TextSpan(
               text: '　1、禁止发布链接、二维码。用户若是需要在微博广场首页发布合规的链接、二维码，'
                   '如用于课题研究的问卷调查、教程、统一考试的报名查询链接等，'
                   '需要向“集大阿通”报备审核后方可发布。\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '　2、禁止发布以下内容信息，形式包括但不限于文字、图片：'
                   '任何性质的广告，包括但不限于兼职、招聘、家教、赞助、拼单、'
                   '票务、加盟、有偿回收、买卖物品、二手交易、电话卡推广、'
@@ -152,7 +154,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
                   '非校内注册组织宣传、红包码、平台推广码或链接，'
                   '以及请求以上内容的信息。\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '　用户若需要发布此类信息，请移步',
             ),
             TextSpan(
@@ -162,60 +164,60 @@ class _ConventionDialogState extends State<ConventionDialog> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            TextSpan(
+            const TextSpan(
               text: '区。微博广场仅供用户发布生活动态、心得分享等普通消息，'
                   '以及官方组织发布通知公告、校内注册的社团协会/部门发布不含赞助信息的宣传。\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '三、违反公约的处罚规定：\n',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            TextSpan(
+            const TextSpan(
               text: '　1、违反规定的帖子，发现后将予屏蔽；\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '　2、再次违规者，将予禁言一周；\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '　3、严重违规者，将予无限期禁言；\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '　4、对于频频违规或严重违规发帖的同学，以及涉及前述“一、中的1.和2.”的同学，'
                   '将报请辅导员协助处理，若不知悔改，将禁止其使用集大通/OpenJMU。\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '　用户被禁言期满后，需经个人申请（私信“网络中心用户服务”帐号，保证不再违规）方能解禁。'
                   '被无限期禁言者至少须在三个月后经书面申请，经确认认识到位后方可解禁，'
                   '认识不到位者不能解禁。禁言不影响集大通其他功能的使用。\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '四、有效举报的奖励：\n',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            TextSpan(
+            const TextSpan(
               text: '　对于有效举报将以送花作为奖励。\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '　举报方法：',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
-            TextSpan(
+            const TextSpan(
               text: '点击内容右上角的按钮，点击“举报动态”。\n',
             ),
-            TextSpan(
+            const TextSpan(
               text: '\n　如有更好的建议，欢迎私信“网络中心用户服务”帐号'
                   '（关注办法详见：',
             ),
             TextSpan(
               text: 'http://net.jmu.edu.cn/info/1309/2518.htm',
-              style: TextStyle(decoration: TextDecoration.underline),
+              style: const TextStyle(decoration: TextDecoration.underline),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   API.launchWeb(
                       url: 'http://net.jmu.edu.cn/info/1309/2518.htm');
                 },
             ),
-            TextSpan(
+            const TextSpan(
               text: '），期待大家共同维护我们良好和谐的校园网络社交环境。',
             ),
           ],
@@ -255,7 +257,7 @@ class _ConventionDialogState extends State<ConventionDialog> {
               : null,
           child: Text(
             () {
-              final String s = '确认无误';
+              const String s = '确认无误';
               if (canSend) {
                 return s;
               } else {

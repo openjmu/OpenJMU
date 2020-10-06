@@ -39,7 +39,7 @@ class TeamPostProvider extends ChangeNotifier {
     post.isLike = false;
     if (post.praisor != null) {
       post.praisor.removeWhere(
-        (Map user) => user['uid'] == UserAPI.currentUser.uid,
+        (Map<dynamic, dynamic> user) => user['uid'] == UserAPI.currentUser.uid,
       );
     }
     notifyListeners();

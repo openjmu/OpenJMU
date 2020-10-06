@@ -84,10 +84,10 @@ class WebApp {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is WebApp &&
-              runtimeType == other.runtimeType &&
-              appId == other.appId &&
-              code == other.code;
+      other is WebApp &&
+          runtimeType == other.runtimeType &&
+          appId == other.appId &&
+          code == other.code;
 
   @override
   int get hashCode => appId.hashCode ^ code.hashCode;

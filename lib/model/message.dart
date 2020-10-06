@@ -14,21 +14,6 @@ part of 'models.dart';
 /// [content] 内容
 @HiveType(typeId: HiveAdapterTypeIds.message)
 class Message with HiveObject {
-  @HiveField(0)
-  int type;
-  @HiveField(1)
-  int senderUid;
-  @HiveField(2)
-  String senderMultiPortId;
-  @HiveField(3)
-  DateTime sendTime;
-  @HiveField(4)
-  int ackId;
-  @HiveField(5)
-  Map<String, dynamic> content;
-  @HiveField(6)
-  bool read;
-
   Message({
     this.type,
     this.senderUid,
@@ -50,5 +35,20 @@ class Message with HiveObject {
     );
   }
 
-  bool get isSelf => this.senderUid == currentUser.uid;
+  @HiveField(0)
+  int type;
+  @HiveField(1)
+  int senderUid;
+  @HiveField(2)
+  String senderMultiPortId;
+  @HiveField(3)
+  DateTime sendTime;
+  @HiveField(4)
+  int ackId;
+  @HiveField(5)
+  Map<String, dynamic> content;
+  @HiveField(6)
+  bool read;
+
+  bool get isSelf => senderUid == currentUser.uid;
 }

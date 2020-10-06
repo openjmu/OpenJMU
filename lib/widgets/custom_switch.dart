@@ -12,14 +12,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 
 class CustomSwitch extends StatefulWidget {
-  final bool value;
-  final ValueChanged<bool> onChanged;
-  final Color activeColor;
-  final DragStartBehavior dragStartBehavior;
-
-  final double trackWidth;
-  final double trackHeight;
-
   const CustomSwitch({
     Key key,
     @required this.value,
@@ -31,6 +23,14 @@ class CustomSwitch extends StatefulWidget {
   })  : assert(value != null),
         assert(dragStartBehavior != null),
         super(key: key);
+
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final Color activeColor;
+  final DragStartBehavior dragStartBehavior;
+
+  final double trackWidth;
+  final double trackHeight;
 
   @override
   _CustomSwitchState createState() => _CustomSwitchState();
@@ -195,28 +195,41 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
   }
 
   double _trackWidth;
+
   double get trackWidth => _trackWidth;
+
   set trackWidth(double value) {
     assert(value != null);
-    if (value == _trackWidth) return;
+    if (value == _trackWidth) {
+      return;
+    }
     _trackWidth = value;
     markNeedsPaint();
   }
 
   double _trackHeight;
+
   double get trackHeight => _trackHeight;
+
   set trackHeight(double value) {
     assert(value != null);
-    if (value == _trackHeight) return;
+    if (value == _trackHeight) {
+      return;
+    }
     _trackHeight = value;
     markNeedsPaint();
   }
 
   double get _kTrackWidth => trackWidth;
+
   double get _kTrackHeight => trackHeight;
+
   double get _kTrackRadius => trackHeight / 2.0;
+
   double get _kTrackInnerStart => _kTrackHeight / 1.4;
+
   double get _kTrackInnerEnd => _kTrackWidth - _kTrackInnerStart;
+
   double get _kTrackInnerLength => _kTrackInnerEnd - _kTrackInnerStart;
 
   AnimationController _positionController;
@@ -227,9 +240,12 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
 
   bool get value => _value;
   bool _value;
+
   set value(bool value) {
     assert(value != null);
-    if (value == _value) return;
+    if (value == _value) {
+      return;
+    }
     _value = value;
     markNeedsSemanticsUpdate();
     _position
@@ -244,9 +260,12 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
 
   TickerProvider get vsync => _vsync;
   TickerProvider _vsync;
+
   set vsync(TickerProvider value) {
     assert(value != null);
-    if (value == _vsync) return;
+    if (value == _vsync) {
+      return;
+    }
     _vsync = value;
     _positionController.resync(vsync);
     _reactionController.resync(vsync);
@@ -254,26 +273,35 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
 
   Color get activeColor => _activeColor;
   Color _activeColor;
+
   set activeColor(Color value) {
     assert(value != null);
-    if (value == _activeColor) return;
+    if (value == _activeColor) {
+      return;
+    }
     _activeColor = value;
     markNeedsPaint();
   }
 
   Color get trackColor => _trackColor;
   Color _trackColor;
+
   set trackColor(Color value) {
     assert(value != null);
-    if (value == _trackColor) return;
+    if (value == _trackColor) {
+      return;
+    }
     _trackColor = value;
     markNeedsPaint();
   }
 
   ValueChanged<bool> get onChanged => _onChanged;
   ValueChanged<bool> _onChanged;
+
   set onChanged(ValueChanged<bool> value) {
-    if (value == _onChanged) return;
+    if (value == _onChanged) {
+      return;
+    }
     final bool wasInteractive = isInteractive;
     _onChanged = value;
     if (wasInteractive != isInteractive) {
@@ -284,17 +312,23 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
 
   TextDirection get textDirection => _textDirection;
   TextDirection _textDirection;
+
   set textDirection(TextDirection value) {
     assert(value != null);
-    if (_textDirection == value) return;
+    if (_textDirection == value) {
+      return;
+    }
     _textDirection = value;
     markNeedsPaint();
   }
 
   DragStartBehavior get dragStartBehavior => _drag.dragStartBehavior;
+
   set dragStartBehavior(DragStartBehavior value) {
     assert(value != null);
-    if (_drag.dragStartBehavior == value) return;
+    if (_drag.dragStartBehavior == value) {
+      return;
+    }
     _drag.dragStartBehavior = value;
   }
 
@@ -345,7 +379,9 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
   }
 
   void _handleTapDown(TapDownDetails details) {
-    if (isInteractive) _reactionController.forward();
+    if (isInteractive) {
+      _reactionController.forward();
+    }
   }
 
   void _handleTap() {
@@ -356,11 +392,15 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
   }
 
   void _handleTapUp(TapUpDetails details) {
-    if (isInteractive) _reactionController.reverse();
+    if (isInteractive) {
+      _reactionController.reverse();
+    }
   }
 
   void _handleTapCancel() {
-    if (isInteractive) _reactionController.reverse();
+    if (isInteractive) {
+      _reactionController.reverse();
+    }
   }
 
   void _handleDragStart(DragStartDetails details) {
@@ -426,7 +466,9 @@ class _RenderCustomSwitch extends RenderConstrainedBox {
   void describeSemanticsConfiguration(SemanticsConfiguration config) {
     super.describeSemanticsConfiguration(config);
 
-    if (isInteractive) config.onTap = _handleTap;
+    if (isInteractive) {
+      config.onTap = _handleTap;
+    }
 
     config.isEnabled = isInteractive;
     config.isToggled = _value;

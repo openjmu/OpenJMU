@@ -13,7 +13,7 @@ class Messages {
     'port': 7777,
   };
 
-  static Map<String, int> messageCommands = {
+  static Map<String, int> messageCommands = <String, int>{
     'WY_VERIFY_CHECKCODE': 0x75, // Session验证
     'WY_MULTPOINT_LOGIN': 0x9000, // 用户登陆
     'WY_LOGOUT': 0x9, // 用户退出
@@ -29,7 +29,7 @@ class Messages {
     'WY_OL_NUM': 0x28, // 获取在线人数
   };
 
-  static const Map<String, int> PRPL_91U_MSG_TYPE = {
+  static const Map<String, int> PRPL_91U_MSG_TYPE = <String, int>{
     'MSG_A2A': 0, // 普通聊天
     'MSG_AUTH_ACCEPTED': 1, // 加好友验证通过
     'MSG_AUTH_REJECTED': 3, // 加好友拒绝验证
@@ -56,7 +56,7 @@ class Messages {
     'MSG_NOOP': 255,
   };
 
-  static const Map<String, int> _GroupType = {
+  static const Map<String, int> _GroupType = <String, int>{
     'GROUP_TYPE_NORMAL': 0, // 普通群
     'GROUP_TYPE_CHATROOM': 1, // 聊天室
     'GROUP_TYPE_DISCUSS': 2, // 讨论组
@@ -74,21 +74,17 @@ class Messages {
     'GROUP_TYPE_FLAG_NEWUAP': 0x3000, // NEWUAP
   };
 
-  static final String inputting = 'inputing now';
+  static const String inputting = 'inputing now';
 }
 
-///
 /// 命令请求内容体抽象类
 /// [requestBody] 请求内容生成方法，重写并调用该方法获得转换内容
-///
 abstract class MessageRequest {
   List<int> requestBody();
 }
 
-///
 /// 命令接收内容体抽象类
 /// [responseBody] 接收内容解析方法，重写并调用该方法获得实际内容
-///
 abstract class MessageResponse {
   Map<String, dynamic> responseBody(List<int> response);
 }
@@ -97,7 +93,7 @@ abstract class MessageResponse {
 class M_WY_VERIFY_CHECKCODE implements MessageRequest {
   @override
   List<int> requestBody() {
-    final result = MessageUtils.commonString(UserAPI.currentUser.sid);
+    final List<int> result = MessageUtils.commonString(UserAPI.currentUser.sid);
     return result;
   }
 }
@@ -105,59 +101,66 @@ class M_WY_VERIFY_CHECKCODE implements MessageRequest {
 class M_WY_MULTPOINT_LOGIN implements MessageRequest {
   @override
   List<int> requestBody() {
-    final result = [
-      ...MessageUtils.commonUint(1, 16), // 状态值
-      ...MessageUtils.commonString(ascii.decode([0, 0, 0, 0x24, 0])), // 状态描述
-      ...MessageUtils.commonUint(1, 8), // 是否多点登录 (0/1)
+    final List<int> result = <int>[
+      // 状态值
+      ...MessageUtils.commonUint(1, 16),
+      // 状态描述
+      ...MessageUtils.commonString(ascii.decode(<int>[0, 0, 0, 0x24, 0])),
+      // 是否多点登录 (0/1)
+      ...MessageUtils.commonUint(1, 8),
+      // 登录点描述
       ...MessageUtils.commonString(
         '${Constants.appId}|${DeviceUtils.deviceModel}|||V',
-      ), // 登录点描述
-      ...MessageUtils.commonUint(1, 16), // (可选，默认0) 心跳检测频率 = n * 60
-      ...MessageUtils.commonUint(55, 32), // 单位id (55)
-      ...MessageUtils.commonUint(1, 8), // 是否移动端 (0/1)
+      ),
+      // (可选，默认0) 心跳检测频率 = n * 60
+      ...MessageUtils.commonUint(1, 16),
+      // 单位id (55)
+      ...MessageUtils.commonUint(55, 32),
+      // 是否移动端 (0/1)
+      ...MessageUtils.commonUint(1, 8),
     ];
     return result;
   }
 }
 
 class M_WY_OFFLINEMSG_ACK implements MessageRequest {
-  final int messageId;
+  const M_WY_OFFLINEMSG_ACK({this.messageId});
 
-  M_WY_OFFLINEMSG_ACK({this.messageId});
+  final int messageId;
 
   @override
   List<int> requestBody() {
-    final result = MessageUtils.commonUint(messageId, 64);
+    final List<int> result = MessageUtils.commonUint(messageId, 64);
     return result;
   }
 }
 
 class M_WY_OFFLINEMSG_ACK_ONE implements MessageRequest {
-  final int messageId;
+  const M_WY_OFFLINEMSG_ACK_ONE({this.messageId});
 
-  M_WY_OFFLINEMSG_ACK_ONE({this.messageId});
+  final int messageId;
 
   @override
   List<int> requestBody() {
-    final result = MessageUtils.commonUint(messageId, 64);
+    final List<int> result = MessageUtils.commonUint(messageId, 64);
     return result;
   }
 }
 
 class M_WY_MULTPOINT_MSG_ACK implements MessageRequest {
+  const M_WY_MULTPOINT_MSG_ACK({
+    @required this.ackId,
+    this.friendId = 0,
+    this.friendMultiPortId = 0,
+  });
+
   final int friendId;
   final int friendMultiPortId;
   final int ackId;
 
-  M_WY_MULTPOINT_MSG_ACK({
-    this.friendId = 0,
-    this.friendMultiPortId = 0,
-    @required this.ackId,
-  });
-
   @override
   List<int> requestBody() {
-    final result = [
+    final List<int> result = <int>[
       ...MessageUtils.commonUint(friendId, 64),
       ...MessageUtils.commonUint(friendMultiPortId, 64),
       ...MessageUtils.commonUint(ackId, 64),
@@ -167,19 +170,19 @@ class M_WY_MULTPOINT_MSG_ACK implements MessageRequest {
 }
 
 class M_WY_MULTPOINT_MSG_ACK_ONE implements MessageRequest {
+  const M_WY_MULTPOINT_MSG_ACK_ONE({
+    @required this.ackId,
+    this.friendId = 0,
+    this.friendMultiPortId = 0,
+  });
+
   final int friendId;
   final int friendMultiPortId;
   final int ackId;
 
-  M_WY_MULTPOINT_MSG_ACK_ONE({
-    this.friendId = 0,
-    this.friendMultiPortId = 0,
-    @required this.ackId,
-  });
-
   @override
   List<int> requestBody() {
-    final result = [
+    final List<int> result = <int>[
       ...MessageUtils.commonUint(friendId, 64),
       ...MessageUtils.commonUint(friendMultiPortId, 64),
       ...MessageUtils.commonUint(ackId, 64),
@@ -189,17 +192,17 @@ class M_WY_MULTPOINT_MSG_ACK_ONE implements MessageRequest {
 }
 
 class M_WY_MULTPOINT_NOTIFYSELF_MSG_ACKED implements MessageRequest {
+  const M_WY_MULTPOINT_NOTIFYSELF_MSG_ACKED({
+    @required this.ackId,
+    this.senderUid = 0,
+  });
+
   final int senderUid;
   final int ackId;
 
-  M_WY_MULTPOINT_NOTIFYSELF_MSG_ACKED({
-    this.senderUid = 0,
-    @required this.ackId,
-  });
-
   @override
   List<int> requestBody() {
-    final result = [
+    final List<int> result = <int>[
       ...MessageUtils.commonUint(senderUid, 64),
       ...MessageUtils.commonUint(ackId, 64),
     ];
@@ -208,22 +211,22 @@ class M_WY_MULTPOINT_NOTIFYSELF_MSG_ACKED implements MessageRequest {
 }
 
 class M_WY_MSG implements MessageRequest {
-  final int uid;
-  final String type;
-  final String message;
-
-  M_WY_MSG({
+  const M_WY_MSG({
     @required this.type,
     @required this.uid,
     @required this.message,
   });
 
+  final int uid;
+  final String type;
+  final String message;
+
   @override
   List<int> requestBody() {
-    final result = [
+    final List<int> result = <int>[
       ...MessageUtils.commonUint(Messages.PRPL_91U_MSG_TYPE[type], 8),
       ...MessageUtils.commonUint(uid, 64),
-      ...MessageUtils.commonString('$message'),
+      ...MessageUtils.commonString(message),
     ];
     return result;
   }

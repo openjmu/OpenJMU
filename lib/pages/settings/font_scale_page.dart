@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(name: "openjmu://font-scale", routeName: "更改字号页")
+@FFRoute(name: 'openjmu://font-scale', routeName: '更改字号页')
 class FontScalePage extends StatefulWidget {
   @override
   _FontScalePageState createState() => _FontScalePageState();
 }
 
 class _FontScalePageState extends State<FontScalePage> {
-  final baseFontSize = 24.0;
+  final double baseFontSize = 24.0;
   SettingsProvider settingsProvider;
 
   List<double> scaleRange;
@@ -18,8 +18,10 @@ class _FontScalePageState extends State<FontScalePage> {
   @override
   void initState() {
     super.initState();
-    settingsProvider =
-        Provider.of<SettingsProvider>(currentContext, listen: false);
+    settingsProvider = Provider.of<SettingsProvider>(
+      currentContext,
+      listen: false,
+    );
     scaleRange = settingsProvider.fontScaleRange;
     scale = settingsProvider.fontScale;
   }
@@ -72,8 +74,10 @@ class _FontScalePageState extends State<FontScalePage> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 20.0),
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8.0,
+                        horizontal: 20.0,
+                      ),
                       child: Row(
                         children: <Widget>[
                           Expanded(

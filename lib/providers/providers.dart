@@ -27,7 +27,8 @@ ChangeNotifierProvider<T> buildProvider<T extends ChangeNotifier>(T value) {
 
 List<SingleChildWidget> get providers => _providers;
 
-final List<ChangeNotifierProvider> _providers = [
+final List<ChangeNotifierProvider<dynamic>> _providers =
+    <ChangeNotifierProvider<dynamic>>[
   buildProvider<CoursesProvider>(CoursesProvider()),
   buildProvider<DateProvider>(DateProvider()),
   buildProvider<MessagesProvider>(MessagesProvider()),

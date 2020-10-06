@@ -187,7 +187,7 @@ class DataUtils {
   /// 清除登录信息
   static Future<void> clearLoginInfo() async {
     final String workId = settingsBox.get(spUserWorkId) as String;
-    UserAPI.currentUser = UserInfo();
+    UserAPI.currentUser = const UserInfo();
     await settingsBox.clear();
     await settingsBox.put(spUserWorkId, workId);
   }
@@ -250,9 +250,13 @@ class DataUtils {
               .loadForRequest(Uri.parse('http://www.jmu.edu.cn/'));
           final List<Cookie> vpnCookies =
               NetUtils.cookieJar.loadForRequest(Uri.parse(API.webVpnHost));
-          <Cookie>[...mainSiteCookies, ...vpnCookies].forEach((Cookie cookie) {
+          final List<Cookie> cookies = <Cookie>[
+            ...mainSiteCookies,
+            ...vpnCookies,
+          ];
+          for (final Cookie cookie in cookies) {
             Instances.webViewCookieManager.setCookie(
-              url: "${cookie.domain}${cookie.path}",
+              url: '${cookie.domain}${cookie.path}',
               name: cookie.name,
               value: cookie.value,
               domain: cookie.domain,
@@ -261,7 +265,7 @@ class DataUtils {
               isSecure: cookie.secure,
               maxAge: cookie.maxAge,
             );
-          });
+          }
           trueDebugPrint('Successfully initialize WebView\'s Cookie.');
           return true;
         } else {

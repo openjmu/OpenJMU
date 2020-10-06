@@ -145,7 +145,7 @@ class _AddingButtonPageState extends State<AddingButtonPage>
       _popButtonController?.stop();
       _popButtonOpacityController?.stop();
     }
-    final double rotateDegree = 45 * (math.pi / 180) * 3;
+    const double rotateDegree = 45 * (math.pi / 180) * 3;
 
     _popButtonController = AnimationController(
       duration: _animateDuration.milliseconds,

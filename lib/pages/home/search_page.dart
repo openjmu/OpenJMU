@@ -6,7 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/cards/post_card.dart';
 
-@FFRoute(name: 'openjmu://search', routeName: '搜索页', argumentNames: ['content'])
+@FFRoute(
+  name: 'openjmu://search',
+  routeName: '搜索页',
+  argumentNames: <String>['content'],
+)
 class SearchPage extends StatefulWidget {
   const SearchPage({this.content});
 
@@ -202,7 +206,7 @@ class SearchPageState extends State<SearchPage>
               autofocus: _autoFocus && !_loaded,
               controller: _controller,
               cursorColor: currentThemeColor,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
                 contentPadding: EdgeInsets.zero,
                 hintText: '输入要搜索的内容...',
@@ -285,7 +289,7 @@ class SearchPageState extends State<SearchPage>
     super.build(context);
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kAppBarHeight),
+        preferredSize: const Size.fromHeight(kAppBarHeight),
         child: SafeArea(
           top: true,
           child: Padding(

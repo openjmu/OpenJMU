@@ -15,56 +15,72 @@ class SettingsProvider extends ChangeNotifier {
 
   // Fow start index.
   int _homeSplashIndex = 0;
+
   int get homeSplashIndex => _homeSplashIndex;
+
   set homeSplashIndex(int value) {
     _homeSplashIndex = value;
     notifyListeners();
   }
 
   List<int> _homeStartUpIndex = <int>[0, 0, 0];
+
   List<int> get homeStartUpIndex => _homeStartUpIndex;
+
   set homeStartUpIndex(List<int> value) {
     _homeStartUpIndex = List<int>.from(value);
     notifyListeners();
   }
 
-  List<Map> _announcements = <Map>[];
-  List<Map> get announcements => _announcements;
-  set announcements(List<Map> value) {
-    _announcements = List<Map>.from(value);
+  List<Map<dynamic, dynamic>> _announcements = <Map<dynamic, dynamic>>[];
+
+  List<Map<dynamic, dynamic>> get announcements => _announcements;
+
+  set announcements(List<Map<dynamic, dynamic>> value) {
+    _announcements = List<Map<dynamic, dynamic>>.from(value);
     notifyListeners();
   }
 
   bool _announcementsEnabled = false;
+
   bool get announcementsEnabled => _announcementsEnabled;
+
   set announcementsEnabled(bool value) {
     _announcementsEnabled = value;
     notifyListeners();
   }
 
   bool _announcementsUserEnabled = false;
+
   bool get announcementsUserEnabled => _announcementsUserEnabled;
+
   set announcementsUserEnabled(bool value) {
     _announcementsUserEnabled = value;
     notifyListeners();
   }
 
   bool _newAppCenterIcon = false;
+
   bool get newAppCenterIcon => _newAppCenterIcon;
+
   set newAppCenterIcon(bool value) {
     _newAppCenterIcon = value;
     notifyListeners();
   }
 
   bool _hideShieldPost = true;
+
   bool get hideShieldPost => _hideShieldPost;
+
   set hideShieldPost(bool value) {
     _hideShieldPost = value;
     notifyListeners();
   }
 
   bool _launchFromSystemBrowser = false;
+
   bool get launchFromSystemBrowser => _launchFromSystemBrowser;
+
   set launchFromSystemBrowser(bool value) {
     assert(value != null);
     if (_launchFromSystemBrowser == value) {
@@ -76,7 +92,9 @@ class SettingsProvider extends ChangeNotifier {
 
   final List<double> fontScaleRange = <double>[0.6, 1.4];
   double _fontScale = 1.0;
+
   double get fontScale => _fontScale;
+
   set fontScale(double value) {
     _fontScale = value;
     notifyListeners();
@@ -113,7 +131,8 @@ class SettingsProvider extends ChangeNotifier {
       final Map<String, dynamic> data =
           jsonDecode((await NetUtils.get<String>(API.announcement)).data)
               as Map<String, dynamic>;
-      _announcements = (data['announcements'] as List<dynamic>).cast<Map>();
+      _announcements = (data['announcements'] as List<dynamic>)
+          .cast<Map<dynamic, dynamic>>();
       _announcementsEnabled = data['enabled'] as bool;
       _announcementsUserEnabled = _announcementsEnabled;
       notifyListeners();

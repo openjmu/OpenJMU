@@ -2,6 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-01-06 11:33
 ///
+// ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes
 part of 'models.dart';
 
 enum TeamPostType { post, comment }
@@ -70,15 +71,18 @@ class TeamPost {
       category: json['category'] as String,
       content: json['content'] as String,
       article: json['article'] as String,
-      pics: (json['file_info'] as List)?.cast<Map>(),
-      postInfo: (json['post_info'] as List)?.cast<Map>(),
+      pics: (json['file_info'] as List<dynamic>)?.cast<Map<dynamic, dynamic>>(),
+      postInfo:
+          (json['post_info'] as List<dynamic>)?.cast<Map<dynamic, dynamic>>(),
       userInfo: _user,
-      replyInfo: (json['reply_info'] as List)?.cast<Map>(),
+      replyInfo:
+          (json['reply_info'] as List<dynamic>)?.cast<Map<dynamic, dynamic>>(),
       repliesCount: json['replys'].toString().toIntOrNull(),
       praisesCount: json['praises'].toString().toIntOrNull(),
       glances: json['glances'].toString().toIntOrNull(),
       isLike: json['praised'].toString().toIntOrNull() == 1,
-      praisor: (json['praisor'] as List)?.cast<Map>(),
+      praisor:
+          (json['praisor'] as List<dynamic>)?.cast<Map<dynamic, dynamic>>(),
       heat: json['heat'].toString().toDoubleOrNull(),
       floor: json['floor'].toString().toIntOrNull(),
       unitId: json['unit_id'].toString().toIntOrNull(),
@@ -94,15 +98,15 @@ class TeamPost {
   final String title;
   final String content;
   final String article;
-  final List<Map> pics;
-  final List<Map> postInfo;
+  final List<Map<dynamic, dynamic>> pics;
+  final List<Map<dynamic, dynamic>> postInfo;
   final Map<String, dynamic> userInfo;
-  final List<Map> replyInfo;
+  final List<Map<dynamic, dynamic>> replyInfo;
   int repliesCount;
   int praisesCount;
   int glances;
   bool isLike;
-  final List<Map> praisor;
+  final List<Map<dynamic, dynamic>> praisor;
   final double heat;
   final int floor;
   final int unitId;

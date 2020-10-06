@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class NotificationProvider extends ChangeNotifier {
-  Notifications _notifications = Notifications();
+  Notifications _notifications = const Notifications();
 
   Notifications get notifications => _notifications;
 
@@ -29,16 +29,16 @@ class NotificationProvider extends ChangeNotifier {
     }
   }
 
-  TeamNotifications _teamNotifications = TeamNotifications();
+  TeamNotifications _teamNotifications = const TeamNotifications();
 
   TeamNotifications get teamNotifications => _teamNotifications;
 
   set teamNotifications(TeamNotifications value) {
-    if (notifications == null) {
+    if (value == null) {
       return;
     }
     _teamNotifications = value;
-    final bool shouldNotifyListeners = notifications != value;
+    final bool shouldNotifyListeners = _teamNotifications != value;
     _teamNotifications = TeamNotifications(
       latestNotify: value.latestNotify,
       mention: value.mention,

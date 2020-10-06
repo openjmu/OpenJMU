@@ -18,7 +18,7 @@ set currentUser(UserInfo user) {
 class UserAPI {
   const UserAPI._();
 
-  static UserInfo currentUser = UserInfo();
+  static UserInfo currentUser = const UserInfo();
 
   static List<Cookie> cookiesForJWGL;
 

@@ -1,8 +1,8 @@
 import 'dart:isolate';
 import 'dart:typed_data';
 import 'package:flutter/material.dart' hide Image;
-import "package:isolate/load_balancer.dart";
-import "package:isolate/isolate_runner.dart";
+import 'package:isolate/load_balancer.dart';
+import 'package:isolate/isolate_runner.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:image/image.dart';
 import 'package:image_editor/image_editor.dart';

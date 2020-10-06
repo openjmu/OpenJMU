@@ -18,7 +18,9 @@ class ThemesProvider with ChangeNotifier {
 
   set currentThemeGroup(ThemeGroup value) {
     assert(value != null);
-    if (_currentThemeGroup == value) return;
+    if (_currentThemeGroup == value) {
+      return;
+    }
     _currentThemeGroup = value;
     notifyListeners();
   }
@@ -29,7 +31,9 @@ class ThemesProvider with ChangeNotifier {
 
   set dark(bool value) {
     assert(value != null);
-    if (_dark == value) return;
+    if (_dark == value) {
+      return;
+    }
     HiveFieldUtils.setBrightnessDark(value);
     _dark = value;
     notifyListeners();
@@ -41,7 +45,9 @@ class ThemesProvider with ChangeNotifier {
 
   set amoledDark(bool value) {
     assert(value != null);
-    if (_amoledDark == value) return;
+    if (_amoledDark == value) {
+      return;
+    }
     HiveFieldUtils.setAMOLEDDark(value);
     _amoledDark = value;
     notifyListeners();
@@ -53,7 +59,9 @@ class ThemesProvider with ChangeNotifier {
 
   set platformBrightness(bool value) {
     assert(value != null);
-    if (_platformBrightness == value) return;
+    if (_platformBrightness == value) {
+      return;
+    }
     HiveFieldUtils.setBrightnessPlatform(value);
     _platformBrightness = value;
     notifyListeners();
@@ -132,7 +140,10 @@ class ThemesProvider with ChangeNotifier {
       textSelectionColor: currentColor.withAlpha(100),
       textSelectionHandleColor: currentColor,
       indicatorColor: currentColor,
-      appBarTheme: AppBarTheme(brightness: Brightness.light, elevation: 0),
+      appBarTheme: const AppBarTheme(
+        brightness: Brightness.light,
+        elevation: 0,
+      ),
       iconTheme: IconThemeData(color: secondaryTextColor),
       primaryIconTheme: IconThemeData(color: secondaryTextColor),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -214,7 +225,10 @@ class ThemesProvider with ChangeNotifier {
       textSelectionColor: currentColor.withAlpha(100),
       textSelectionHandleColor: currentColor,
       indicatorColor: currentColor,
-      appBarTheme: AppBarTheme(brightness: Brightness.dark, elevation: 0),
+      appBarTheme: const AppBarTheme(
+        brightness: Brightness.dark,
+        elevation: 0,
+      ),
       iconTheme: IconThemeData(color: secondaryTextColor),
       primaryIconTheme: IconThemeData(color: secondaryTextColor),
       floatingActionButtonTheme: FloatingActionButtonThemeData(
@@ -262,32 +276,32 @@ class ThemesProvider with ChangeNotifier {
 
 final List<ThemeGroup> supportThemeGroups = <ThemeGroup>[
   defaultThemeGroup, // This is the default theme group.
-  ThemeGroup(
-    lightThemeColor: const Color(0xfff06292),
-    darkThemeColor: const Color(0xfff06292),
+  const ThemeGroup(
+    lightThemeColor: Color(0xfff06292),
+    darkThemeColor: Color(0xfff06292),
   ),
-  ThemeGroup(
-    lightThemeColor: const Color(0xffab47bc),
-    darkThemeColor: const Color(0xffab47bc),
+  const ThemeGroup(
+    lightThemeColor: Color(0xffab47bc),
+    darkThemeColor: Color(0xffab47bc),
   ),
-  ThemeGroup(
-    lightThemeColor: const Color(0xff1e88e5),
-    darkThemeColor: const Color(0xff1e88e5),
+  const ThemeGroup(
+    lightThemeColor: Color(0xff1e88e5),
+    darkThemeColor: Color(0xff1e88e5),
   ),
-  ThemeGroup(
-    lightThemeColor: const Color(0xff00bcd4),
-    darkThemeColor: const Color(0xff00bcd4),
+  const ThemeGroup(
+    lightThemeColor: Color(0xff00bcd4),
+    darkThemeColor: Color(0xff00bcd4),
   ),
-  ThemeGroup(
-    lightThemeColor: const Color(0xff009688),
-    darkThemeColor: const Color(0xff009688),
+  const ThemeGroup(
+    lightThemeColor: Color(0xff009688),
+    darkThemeColor: Color(0xff009688),
   ),
-  ThemeGroup(
-    lightThemeColor: const Color(0xfffdd835),
-    darkThemeColor: const Color(0xfffdd835),
+  const ThemeGroup(
+    lightThemeColor: Color(0xfffdd835),
+    darkThemeColor: Color(0xfffdd835),
   ),
-  ThemeGroup(
-    lightThemeColor: const Color(0xffff7043),
-    darkThemeColor: const Color(0xffff7043),
+  const ThemeGroup(
+    lightThemeColor: Color(0xffff7043),
+    darkThemeColor: Color(0xffff7043),
   ),
 ];

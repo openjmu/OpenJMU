@@ -13,10 +13,15 @@ class PackageUtils {
   const PackageUtils._();
 
   static PackageInfo _packageInfo;
+
   static PackageInfo get packageInfo => _packageInfo;
+
   static String get version => _packageInfo.version;
+
   static int get buildNumber => _packageInfo.buildNumber.toIntOrNull();
+
   static String get appName => _packageInfo.appName;
+
   static String get packageName => _packageInfo.packageName;
 
   static String remoteVersion = version;
@@ -30,7 +35,9 @@ class PackageUtils {
     NetUtils.get<String>(API.checkUpdate).then((Response<String> response) {
       final Map<String, dynamic> data =
           jsonDecode(response.data) as Map<String, dynamic>;
-      updateChangelog((data['changelog'] as List<dynamic>).cast<Map>());
+      updateChangelog(
+        (data['changelog'] as List<dynamic>).cast<Map<dynamic, dynamic>>(),
+      );
       final int _currentBuild = buildNumber;
       final int _remoteBuild = data['buildNumber'].toString().toIntOrNull();
       final String _currentVersion = version;
@@ -133,12 +140,14 @@ class PackageUtils {
                     if (!event.forceUpdate)
                       Center(
                         child: Container(
-                          margin:
-                              EdgeInsets.symmetric(vertical: suSetHeight(6.0)),
+                          margin: EdgeInsets.symmetric(
+                            vertical: suSetHeight(6.0),
+                          ),
                           child: MaterialButton(
                             color: currentThemeColor,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: maxBorderRadius),
+                            shape: const RoundedRectangleBorder(
+                              borderRadius: maxBorderRadius,
+                            ),
                             onPressed: () {
                               dismissAllToast();
                               navigatorState
@@ -192,7 +201,7 @@ class PackageUtils {
     );
   }
 
-  static Future<void> updateChangelog(List<Map> data) async {
+  static Future<void> updateChangelog(List<Map<dynamic, dynamic>> data) async {
     final Box<ChangeLog> box = HiveBoxes.changelogBox;
     final List<ChangeLog> logs = data
         .map((Map<dynamic, dynamic> log) =>

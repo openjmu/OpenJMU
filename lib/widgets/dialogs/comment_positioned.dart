@@ -16,7 +16,7 @@ import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 @FFRoute(
   name: 'openjmu://add-comment',
   routeName: '新增评论',
-  argumentNames: ['post', 'comment'],
+  argumentNames: <String>['post', 'comment'],
   pageRouteType: PageRouteType.transparent,
 )
 class CommentPositioned extends StatefulWidget {
@@ -57,12 +57,11 @@ class CommentPositionedState extends State<CommentPositioned> {
         toComment = widget.comment;
       });
     }
-    _commentController
-      ..addListener(() {
-        setState(() {
-          commentContent = _commentController.text;
-        });
+    _commentController.addListener(() {
+      setState(() {
+        commentContent = _commentController.text;
       });
+    });
   }
 
   @override
@@ -130,7 +129,7 @@ class CommentPositionedState extends State<CommentPositioned> {
                 child: Image(
                   image: AssetEntityImageProvider(
                     _image,
-                    thumbSize: <int>[80, 80],
+                    thumbSize: const <int>[80, 80],
                   ),
                   fit: BoxFit.cover,
                 ),

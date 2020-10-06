@@ -370,8 +370,9 @@ class NotificationsPageState extends State<NotificationsPage>
       );
 
   Widget getActionIcon(int sectionIndex, int actionIndex) {
-    final Map<String, dynamic> item =
-        actions[sectionIndex].values.elementAt(0)['content'][actionIndex] as Map<String, dynamic>;
+    final Map<String, dynamic> item = actions[sectionIndex]
+        .values
+        .elementAt(0)['content'][actionIndex] as Map<String, dynamic>;
     final String icon = item['icon'] as String;
     final int index = item['index'] as int;
     return AnimatedCrossFade(
@@ -434,9 +435,13 @@ class NotificationsPageState extends State<NotificationsPage>
             index: _mentionIndex,
             children: <Widget>[
               NestedScrollViewInnerScrollPositionKeyWidget(
-                  const Key('List-0-2-0'), postByMention,),
+                const Key('List-0-2-0'),
+                postByMention,
+              ),
               NestedScrollViewInnerScrollPositionKeyWidget(
-                  const Key('List-0-2-1'), commentByMention,),
+                const Key('List-0-2-1'),
+                commentByMention,
+              ),
             ],
           ),
         ),
@@ -507,7 +512,8 @@ class NotificationsPageState extends State<NotificationsPage>
                           ),
                           color: Theme.of(context).primaryColor,
                         ),
-                        child: Row(children: <Widget>[const Spacer(), actionBar]),
+                        child:
+                            Row(children: <Widget>[const Spacer(), actionBar]),
                       ),
                       Expanded(
                         child: IndexedStack(

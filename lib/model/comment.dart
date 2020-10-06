@@ -8,8 +8,9 @@ part of 'models.dart';
 ///
 /// [id] 评论id, [fromUserUid] 评论uid, [fromUserName] 评论用户名, [fromUserAvatar] 评论用户头像
 /// [content] 评论内容, [commentTime] 评论时间, [from] 来源
+@immutable
 class Comment {
-  Comment({
+  const Comment({
     this.id,
     this.floor,
     this.fromUserUid,
@@ -29,30 +30,56 @@ class Comment {
     this.post,
   });
 
-  int id, fromUserUid, floor;
-  String fromUserName;
-  String fromUserAvatar;
-  String content;
-  String commentTime;
-  String from;
+  final int id, fromUserUid, floor;
+  final String fromUserName;
+  final String fromUserAvatar;
+  final String content;
+  final String commentTime;
+  final String from;
 
-  bool toReplyExist, toTopicExist;
-  int toReplyUid, toTopicUid;
-  String toReplyUserName, toTopicUserName;
-  String toReplyContent, toTopicContent;
+  final bool toReplyExist, toTopicExist;
+  final int toReplyUid, toTopicUid;
+  final String toReplyUserName, toTopicUserName;
+  final String toReplyContent, toTopicContent;
 
-  Post post;
+  final Post post;
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'id': id,
+      'fromUserUid': fromUserUid,
+      'floor': floor,
+      'fromUserName': fromUserName,
+      'fromUserAvatar': fromUserAvatar,
+      'content': content,
+      'commentTime': commentTime,
+      'from': from,
+      'toReplyExist': toReplyExist,
+      'toTopicExist': toTopicExist,
+      'toReplyUid': toReplyUid,
+      'toTopicUid': toTopicUid,
+      'toReplyUserName': toReplyUserName,
+      'toTopicUserName': toTopicUserName,
+      'toReplyContent': toReplyContent,
+      'toTopicContent': toTopicContent,
+      'post': post,
+    };
+  }
 
   @override
   String toString() {
-    return 'Comment{id: $id, fromUserUid: $fromUserUid, floor: $floor, fromUserName: $fromUserName, fromUserAvatar: $fromUserAvatar, content: $content, commentTime: $commentTime, from: $from, toReplyExist: $toReplyExist, toTopicExist: $toTopicExist, toReplyUid: $toReplyUid, toTopicUid: $toTopicUid, toReplyUserName: $toReplyUserName, toTopicUserName: $toTopicUserName, toReplyContent: $toReplyContent, toTopicContent: $toTopicContent, post: $post}';
+    return 'Comment ${const JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Comment && runtimeType == other.runtimeType && id == other.id;
+      other is Comment &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          fromUserUid == other.fromUserUid &&
+          floor == other.floor;
 
   @override
-  int get hashCode => id.hashCode;
+  int get hashCode => hashValues(id, fromUserUid, floor);
 }

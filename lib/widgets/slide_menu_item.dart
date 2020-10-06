@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:openjmu/constants/constants.dart';
 
 class SlideMenuItem extends StatelessWidget {
-  SlideMenuItem({
+  const SlideMenuItem({
     Key key,
     @required this.child,
     @required this.onTap,
@@ -33,13 +33,6 @@ class SlideMenuItem extends StatelessWidget {
 }
 
 class SlideItem extends StatelessWidget {
-  final ScrollController _controller = ScrollController();
-  final Widget child;
-  final List<SlideMenuItem> menu;
-  final List<Widget> children = [];
-  final double height;
-  final GestureTapCallback onTap;
-
   SlideItem({
     @required this.child,
     @required this.menu,
@@ -60,23 +53,31 @@ class SlideItem extends StatelessWidget {
             : null,
         child: SizedBox(width: Screens.width, child: child),
       ))
-      ..addAll(menu
-          .map(
-            (w) => GestureDetector(
-              child: w,
-              onTap: () {
-                w.onTap();
-                dismiss();
-              },
-            ),
-          )
-          .toList());
+      ..addAll(
+        menu
+            .map((SlideMenuItem item) => GestureDetector(
+                  child: item,
+                  onTap: () {
+                    item.onTap();
+                    dismiss();
+                  },
+                ))
+            .toList(),
+      );
   }
+
+  final ScrollController _controller = ScrollController();
+  final Widget child;
+  final List<SlideMenuItem> menu;
+  final double height;
+  final GestureTapCallback onTap;
+
+  final List<Widget> children = <Widget>[];
 
   void dismiss() {
     _controller.animateTo(
       0,
-      duration: Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 100),
       curve: Curves.linear,
     );
   }
@@ -84,7 +85,7 @@ class SlideItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Listener(
-      onPointerUp: (d) {
+      onPointerUp: (_) {
         if (_controller.offset < (Screens.width / 5) * menu.length / 4) {
           _controller.animateTo(
             0,
@@ -100,7 +101,7 @@ class SlideItem extends StatelessWidget {
         }
       },
       child: ScrollConfiguration(
-        behavior: NoGlowScrollBehavior(),
+        behavior: const NoGlowScrollBehavior(),
         child: SingleChildScrollView(
           physics: const ClampingScrollPhysics(),
           scrollDirection: Axis.horizontal,

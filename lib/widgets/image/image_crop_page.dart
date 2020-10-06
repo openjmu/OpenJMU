@@ -15,7 +15,7 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/loading_dialog.dart';
 import 'package:openjmu/widgets/image/image_crop_helper.dart';
 
-@FFRoute(name: "openjmu://image-crop", routeName: "图片裁剪")
+@FFRoute(name: 'openjmu://image-crop', routeName: '图片裁剪')
 class ImageCropPage extends StatefulWidget {
   @override
   _ImageCropPageState createState() => _ImageCropPageState();
@@ -129,7 +129,7 @@ class _ImageCropPageState extends State<ImageCropPage> {
           actions: _imageData != null
               ? <Widget>[
                   IconButton(
-                    icon: Icon(Icons.check),
+                    icon: const Icon(Icons.check),
                     onPressed: () => _cropImage(context),
                   ),
                 ]
@@ -185,21 +185,21 @@ class _ImageCropPageState extends State<ImageCropPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   IconButton(
-                    icon: Icon(Icons.image),
+                    icon: const Icon(Icons.image),
                     onPressed: _openImage,
                   ),
                   IconButton(
-                    icon: Icon(Icons.refresh),
+                    icon: const Icon(Icons.refresh),
                     onPressed: resetCrop,
                   ),
                   IconButton(
-                    icon: Icon(Icons.rotate_left),
+                    icon: const Icon(Icons.rotate_left),
                     onPressed: () {
                       rotateRightCrop(false);
                     },
                   ),
                   IconButton(
-                    icon: Icon(Icons.rotate_right),
+                    icon: const Icon(Icons.rotate_right),
                     onPressed: () {
                       rotateRightCrop(true);
                     },

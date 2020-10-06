@@ -36,7 +36,7 @@ class UserAvatar extends StatelessWidget {
               : maxBorderRadius,
           child: FadeInImage(
             fadeInDuration: 150.milliseconds,
-            placeholder: AssetImage(R.ASSETS_AVATAR_PLACEHOLDER_PNG),
+            placeholder: const AssetImage(R.ASSETS_AVATAR_PLACEHOLDER_PNG),
             image: UserAPI.getAvatarProvider(uid: _uid),
           ),
         ),

@@ -405,7 +405,9 @@ class CommentListInPostState extends State<CommentListInPost>
 
       isLoading = false;
       lastValue = _comments.isEmpty ? 0 : _comments.last.id;
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     } on DioError catch (e) {
       if (e.response != null) {
         trueDebugPrint('${e.response.data}');
@@ -429,7 +431,9 @@ class CommentListInPostState extends State<CommentListInPost>
           (response['replylist'] as List<dynamic>)
               .cast<Map<dynamic, dynamic>>();
       final int total = response['total'] as int;
-      if (response['count'] as int < total) canLoadMore = true;
+      if (response['count'] as int < total) {
+        canLoadMore = true;
+      }
 
       for (final Map<dynamic, dynamic> comment in list) {
         final BlacklistUser user = BlacklistUser.fromJson(
@@ -449,7 +453,9 @@ class CommentListInPostState extends State<CommentListInPost>
       firstLoadComplete = true;
       lastValue = _comments.isEmpty ? 0 : _comments.last.id;
 
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     } on DioError catch (e) {
       if (e.response != null) {
         trueDebugPrint('${e.response.data}');

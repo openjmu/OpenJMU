@@ -8,9 +8,9 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:openjmu/constants/constants.dart';
 
 @FFRoute(
-  name: "openjmu://news-detail",
-  routeName: "新闻详情页",
-  argumentNames: ["news"],
+  name: 'openjmu://news-detail',
+  routeName: '新闻详情页',
+  argumentNames: <String>['news'],
 )
 class NewsDetailPage extends StatefulWidget {
   const NewsDetailPage({
@@ -40,8 +40,11 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
     super.dispose();
   }
 
-  void getNewsContent() async {
-    final data = (await NewsAPI.getNewsContent(newsId: widget.news.id)).data;
+  Future<void> getNewsContent() async {
+    final Map<String, dynamic> data = (await NewsAPI.getNewsContent(
+      newsId: widget.news.id,
+    ))
+        .data;
     pageContent = '''<!DOCTYPE html>
                 <html>
                     <head>
@@ -58,7 +61,9 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
       encoding: Encoding.getByName('utf-8'),
     ).toString();
     _contentLoaded = true;
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   @override
@@ -81,7 +86,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                 ),
               ),
             )
-          : SpinKitWidget(),
+          : const SpinKitWidget(),
     );
   }
 }

@@ -250,7 +250,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                           prefixSpans: <InlineSpan>[
                             TextSpan(
                               text: '@${_post['user']['nickname']}',
-                              style: TextStyle(color: Colors.blue),
+                              style: const TextStyle(color: Colors.blue),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   navigatorState.pushNamed(
@@ -289,7 +289,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                            TextSpan(
+                            const TextSpan(
                               text: ': ',
                               style: TextStyle(color: Colors.blue),
                             ),

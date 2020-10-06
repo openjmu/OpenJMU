@@ -6,7 +6,7 @@ part of 'models.dart';
 
 @immutable
 class News {
-  News({
+  const News({
     this.id,
     this.title,
     this.summary,

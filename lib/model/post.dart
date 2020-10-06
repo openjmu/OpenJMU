@@ -2,6 +2,7 @@
 /// [Author] Alex (https://github.com/AlexV525)
 /// [Date] 2020-01-06 11:31
 ///
+// ignore_for_file: avoid_equals_and_hash_code_on_mutable_classes
 part of 'models.dart';
 
 /// 动态实体
@@ -114,10 +115,13 @@ class Post {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Post && runtimeType == other.runtimeType && id == other.id;
+      other is Post &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          uid == other.uid;
 
   @override
-  int get hashCode => id.hashCode;
+  int get hashCode => hashValues(id, uid);
 
   @override
   String toString() {

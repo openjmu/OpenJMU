@@ -8,7 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:device_info/device_info.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hive/hive.dart';
@@ -19,7 +18,7 @@ import 'package:openjmu/constants/constants.dart' hide PageRouteType;
 import 'package:openjmu/pages/splash_page.dart';
 import 'package:openjmu/pages/no_route_page.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
@@ -29,7 +28,7 @@ void main() async {
   NetUtils.initConfig();
   NotificationUtils.initSettings();
 
-  await SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
@@ -47,7 +46,7 @@ class OpenJMUApp extends StatefulWidget {
 }
 
 class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
-  StreamSubscription connectivitySubscription;
+  StreamSubscription<ConnectivityResult> connectivitySubscription;
 
   int initAction;
 
@@ -77,7 +76,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         Connectivity().onConnectivityChanged.listen(connectivityHandler);
 
     Instances.eventBus
-      ..on<TicketGotEvent>().listen((event) {
+      ..on<TicketGotEvent>().listen((TicketGotEvent event) {
         initPushService();
         MessageUtils.initMessageSocket();
         if (!currentUser.isTeacher) {
@@ -96,11 +95,11 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
           UserAPI.getBackpackItemType();
         }
       })
-      ..on<LogoutEvent>().listen((event) {
+      ..on<LogoutEvent>().listen((LogoutEvent event) {
         navigatorState.pushNamedAndRemoveUntil(
           Routes.openjmuLogin,
           (_) => false,
-          arguments: {'initAction': initAction},
+          arguments: <String, dynamic>{'initAction': initAction},
         );
         if (!currentUser.isTeacher) {
           if (!currentUser.isPostgraduate) {
@@ -114,16 +113,17 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
         currentContext.read<SignProvider>().resetSignStatus();
         currentContext.read<WebAppsProvider>().unloadApps();
         UserAPI.backpackItemTypes.clear();
-        Future.delayed(250.milliseconds, () {
+        Future<void>.delayed(250.milliseconds, () {
           currentContext.read<ThemesProvider>().resetTheme();
           currentContext.read<SettingsProvider>().reset();
         });
         DataUtils.logout();
       })
-      ..on<ActionsEvent>().listen((event) {
-        initAction = Constants.quickActionsList.keys.toList().indexOf(Constants
-            .quickActionsList.keys
-            .firstWhere((action) => action == event.type));
+      ..on<ActionsEvent>().listen((ActionsEvent event) {
+        initAction = Constants.quickActionsList.keys.toList().indexOf(
+              Constants.quickActionsList.keys
+                  .firstWhere((String action) => action == event.type),
+            );
       })
       ..on<HasUpdateEvent>().listen(PackageUtils.showUpdateDialog);
 
@@ -151,32 +151,36 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
 
   @override
   void didChangePlatformBrightness() {
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
-  void tryRecoverLoginInfo() async {
+  Future<void> tryRecoverLoginInfo() async {
     if (DataUtils.isLogin()) {
       DataUtils.recoverLoginInfo();
     } else {
       Instances.eventBus.fire(TicketFailedEvent());
     }
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void initQuickActions() {
-    final quickActions = QuickActions();
-    quickActions.initialize((String shortcutType) {
-      trueDebugPrint('QuickActions triggered: $shortcutType');
-      Instances.eventBus.fire(ActionsEvent(shortcutType));
-    });
-    quickActions.setShortcutItems(List<ShortcutItem>.generate(
-      Constants.quickActionsList.length,
-      (index) => ShortcutItem(
-        type: Constants.quickActionsList.keys.elementAt(index),
-        icon: Constants.quickActionsList.keys.elementAt(index),
-        localizedTitle: Constants.quickActionsList.values.elementAt(index),
-      ),
-    ));
+    QuickActions()
+      ..initialize((String shortcutType) {
+        trueDebugPrint('QuickActions triggered: $shortcutType');
+        Instances.eventBus.fire(ActionsEvent(shortcutType));
+      })
+      ..setShortcutItems(List<ShortcutItem>.generate(
+        Constants.quickActionsList.length,
+        (int index) => ShortcutItem(
+          type: Constants.quickActionsList.keys.elementAt(index),
+          icon: Constants.quickActionsList.keys.elementAt(index),
+          localizedTitle: Constants.quickActionsList.values.elementAt(index),
+        ),
+      ));
   }
 
   void connectivityHandler(ConnectivityResult result) {
@@ -234,7 +238,7 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
             child: Container(
               width: Screens.width / 2,
               height: Screens.width / 2,
-              padding: EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(20.0),
               decoration: BoxDecoration(
                 color: Theme.of(context).canvasColor,
                 shape: BoxShape.circle,
@@ -279,15 +283,9 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
           final ThemeData theme =
               (isDark ? themesProvider.darkTheme : themesProvider.lightTheme)
                   .copyWith(
-            pageTransitionsTheme: PageTransitionsTheme(
+            pageTransitionsTheme: const PageTransitionsTheme(
               builders: <TargetPlatform, PageTransitionsBuilder>{
-                TargetPlatform.android: Platform.isAndroid &&
-                        (DeviceUtils.deviceInfo as AndroidDeviceInfo)
-                                .version
-                                .sdkInt >=
-                            29
-                    ? ZoomPageTransitionsBuilder()
-                    : FadeUpwardsPageTransitionsBuilder(),
+                TargetPlatform.android: ZoomPageTransitionsBuilder(),
               },
             ),
           );
@@ -319,7 +317,9 @@ class OpenJMUAppState extends State<OpenJMUApp> with WidgetsBindingObserver {
                   title: 'OpenJMU',
                   theme: theme,
                   home: SplashPage(initAction: initAction),
-                  navigatorObservers: [FFNavigatorObserver()],
+                  navigatorObservers: <NavigatorObserver>[
+                    FFNavigatorObserver()
+                  ],
                   onGenerateRoute: (RouteSettings settings) =>
                       onGenerateRouteHelper(
                     settings,
@@ -342,7 +342,7 @@ class _HiddenLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PositionedDirectional(
+    return const PositionedDirectional(
       top: 0.0,
       start: 0.0,
       end: 0.0,

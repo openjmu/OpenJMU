@@ -72,11 +72,11 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
           autofocus: true,
           controller: _textEditingController,
           cursorColor: currentThemeColor,
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             border: InputBorder.none,
             contentPadding: EdgeInsets.zero,
             hintText: '请输入名字进行搜索',
-            hintStyle: const TextStyle(textBaseline: TextBaseline.alphabetic),
+            hintStyle: TextStyle(textBaseline: TextBaseline.alphabetic),
           ),
           textInputAction: TextInputAction.search,
           style: Theme.of(context).textTheme.bodyText2.copyWith(
@@ -197,7 +197,7 @@ class EditSignatureDialogState extends State<MentionPeopleDialog> {
                 right: suSetWidth(20.0),
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
-                  child: Icon(Icons.close),
+                  child: const Icon(Icons.close),
                   onTap: Navigator.of(context).pop,
                 ),
               ),

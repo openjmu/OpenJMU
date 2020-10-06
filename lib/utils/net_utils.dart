@@ -14,7 +14,7 @@ class NetUtils {
   const NetUtils._();
 
   static const bool _isProxyEnabled = false;
-  static const String _proxyDestination = 'PROXY 127.0.0.1:8765';
+  static const String _proxyDestination = 'PROXY 111.2.16.184:5554';
 
   static final Dio dio = Dio();
   static final Dio tokenDio = Dio();

@@ -4,6 +4,7 @@
 ///
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:openjmu/constants/constants.dart';
@@ -11,21 +12,29 @@ import 'package:openjmu/constants/constants.dart';
 class NotificationUtils {
   const NotificationUtils._();
 
-  static final plugin = FlutterLocalNotificationsPlugin();
+  static final FlutterLocalNotificationsPlugin plugin =
+      FlutterLocalNotificationsPlugin();
 
   static void initSettings() {
-    final _settingsAndroid = AndroidInitializationSettings('ic_stat_name');
-    final _settingsIOS = IOSInitializationSettings(
+    const AndroidInitializationSettings _settingsAndroid =
+        AndroidInitializationSettings('ic_stat_name');
+    const IOSInitializationSettings _settingsIOS = IOSInitializationSettings(
       onDidReceiveLocalNotification: _onReceive,
     );
-    final _settings = InitializationSettings(_settingsAndroid, _settingsIOS);
-    NotificationUtils.plugin
-        .initialize(_settings, onSelectNotification: _onSelect);
+    const InitializationSettings _settings = InitializationSettings(
+      _settingsAndroid,
+      _settingsIOS,
+    );
+    NotificationUtils.plugin.initialize(
+      _settings,
+      onSelectNotification: _onSelect,
+    );
   }
 
-  static Future show(String title, String body) async {
-    final color = currentThemeColor;
-    final androidDetails = AndroidNotificationDetails(
+  static Future<void> show(String title, String body) async {
+    final Color color = currentThemeColor;
+    final AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
       'openjmu_message_channel',
       '推送消息',
       '通知接收到的消息',
@@ -34,23 +43,24 @@ class NotificationUtils {
       color: color,
       ticker: 'ticker',
     );
-    final iOSDetails = IOSNotificationDetails();
-    final _details = NotificationDetails(androidDetails, iOSDetails);
+    const IOSNotificationDetails iOSDetails = IOSNotificationDetails();
+    final NotificationDetails _details =
+        NotificationDetails(androidDetails, iOSDetails);
     await NotificationUtils.plugin.show(0, title, body, _details);
   }
 
-  static Future cancelAll() async {
-    await NotificationUtils.plugin.cancelAll();
+  static Future<void> cancelAll() {
+    return NotificationUtils.plugin.cancelAll();
   }
 
-  static Future _onReceive(
+  static Future<void> _onReceive(
     int id,
     String title,
     String body,
     String payload,
   ) async {}
 
-  static Future _onSelect(String payload) async {
+  static Future<void> _onSelect(String payload) async {
     if (payload != null) {
       trueDebugPrint('notification payload: ' + payload);
     }

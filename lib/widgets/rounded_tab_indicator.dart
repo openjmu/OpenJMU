@@ -5,11 +5,6 @@
 import 'package:flutter/material.dart';
 
 class RoundedUnderlineTabIndicator extends Decoration {
-  final BorderSide borderSide;
-  final EdgeInsetsGeometry insets;
-  final double radius;
-  final double width;
-
   const RoundedUnderlineTabIndicator({
     this.borderSide = const BorderSide(width: 2.0, color: Colors.white),
     this.insets = EdgeInsets.zero,
@@ -17,6 +12,11 @@ class RoundedUnderlineTabIndicator extends Decoration {
     this.width,
   })  : assert(borderSide != null),
         assert(insets != null);
+
+  final BorderSide borderSide;
+  final EdgeInsetsGeometry insets;
+  final double radius;
+  final double width;
 
   @override
   Decoration lerpFrom(Decoration a, double t) {
@@ -56,10 +56,7 @@ class RoundedUnderlineTabIndicator extends Decoration {
 }
 
 class _RoundedUnderlinePainter extends BoxPainter {
-  final double radius;
-  final double width;
-
-  _RoundedUnderlinePainter(
+  const _RoundedUnderlinePainter(
     this.decoration,
     VoidCallback onChanged, {
     @required this.radius,
@@ -67,9 +64,13 @@ class _RoundedUnderlinePainter extends BoxPainter {
   })  : assert(decoration != null),
         super(onChanged);
 
+  final double radius;
+  final double width;
+
   final RoundedUnderlineTabIndicator decoration;
 
   BorderSide get borderSide => decoration.borderSide;
+
   EdgeInsetsGeometry get insets => decoration.insets;
 
   RRect _indicatorRectFor(Rect rect, TextDirection textDirection) {

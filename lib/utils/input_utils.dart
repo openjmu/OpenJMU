@@ -49,8 +49,10 @@ class InputUtils {
           extentOffset: end + (selectionOffset ?? text.length),
         ),
       );
-      // ignore: invalid_use_of_protected_member
-      if (state?.mounted ?? false) state.setState(() {});
+      if (state?.mounted ?? false) {
+        // ignore: invalid_use_of_protected_member
+        state.setState(() {});
+      }
     }
     return controller.text.length;
   }

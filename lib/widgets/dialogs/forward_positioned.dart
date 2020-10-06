@@ -15,9 +15,9 @@ import 'package:openjmu/widgets/rounded_check_box.dart';
 import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 
 @FFRoute(
-  name: "openjmu://add-forward",
-  routeName: "新增转发",
-  argumentNames: ["post"],
+  name: 'openjmu://add-forward',
+  routeName: '新增转发',
+  argumentNames: <String>['post'],
   pageRouteType: PageRouteType.transparent,
 )
 class ForwardPositioned extends StatefulWidget {

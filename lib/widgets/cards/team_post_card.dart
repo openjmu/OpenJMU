@@ -101,7 +101,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
 
   Widget _postTime(BuildContext context) {
     return Text(
-      '${TeamPostAPI.timeConverter(post)}',
+      TeamPostAPI.timeConverter(post),
       style: Theme.of(context).textTheme.caption.copyWith(
             fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
@@ -166,7 +166,7 @@ class _TeamPostCardState extends State<TeamPostCard> {
             Routes.openjmuImageViewer,
             arguments: <String, dynamic>{
               'index': index,
-              'pics': post.pics.map<ImageBean>((Map f) {
+              'pics': post.pics.map<ImageBean>((Map<dynamic, dynamic> f) {
                 final int imageId = f['fid'].toString().toInt();
                 final String imageUrl = API.teamFile(fid: imageId);
                 return ImageBean(
@@ -253,7 +253,8 @@ class _TeamPostCardState extends State<TeamPostCard> {
                     '${<String>[
                       ...post.praisor
                           .sublist(0, math.min(post.praisor.length, 3))
-                          .map((Map userInfo) => userInfo['nickname'] as String)
+                          .map((Map<dynamic, dynamic> userInfo) =>
+                              userInfo['nickname'] as String)
                           .toList()
                     ].join('、')}'
                     '${post.praisesCount > 3 ? '等${post.praisesCount}人' : ''}'

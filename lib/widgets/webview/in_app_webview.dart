@@ -12,7 +12,7 @@ import 'package:openjmu/constants/constants.dart';
 @FFRoute(
   name: 'openjmu://in-app-webview',
   routeName: '网页浏览',
-  argumentNames: [
+  argumentNames: <String>[
     'url',
     'title',
     'app',
@@ -136,7 +136,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
             children: <InlineSpan>[
               const TextSpan(text: '即将打开应用\n'),
               TextSpan(
-                text: '$applicationLabel',
+                text: applicationLabel,
                 style: TextStyle(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.bold,
@@ -144,7 +144,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
               ),
             ],
           ),
-          style: TextStyle(fontWeight: FontWeight.normal),
+          style: const TextStyle(fontWeight: FontWeight.normal),
           textAlign: TextAlign.center,
         ),
       ),
@@ -278,7 +278,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
                 children: <Widget>[
                   IconButton(
                     padding: EdgeInsets.zero,
-                    icon: Icon(Icons.close),
+                    icon: const Icon(Icons.close),
                     onPressed: Navigator.of(context).pop,
                   ),
                   Expanded(
@@ -301,7 +301,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
                   ),
                   IconButton(
                     padding: EdgeInsets.zero,
-                    icon: Icon(Icons.more_horiz),
+                    icon: const Icon(Icons.more_horiz),
                     onPressed: () => showMore(context),
                   ),
                 ],
@@ -463,7 +463,7 @@ class _InAppWebViewPageState extends State<InAppWebViewPage>
           if (mounted) {
             setState(() {});
           }
-          Future.delayed(500.milliseconds, () {
+          Future<void>.delayed(500.milliseconds, () {
             progressController?.add(0.0);
           });
         },

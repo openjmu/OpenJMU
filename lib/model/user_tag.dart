@@ -7,6 +7,7 @@ part of 'models.dart';
 /// 用户个性标签
 ///
 /// [id] 标签id, [name] 名称
+@immutable
 class UserTag {
   const UserTag({this.id, this.name});
 

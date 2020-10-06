@@ -20,10 +20,10 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: FixedAppBarWrapper(
-        appBar: FixedAppBar(title: Text('设置')),
+        appBar: const FixedAppBar(title: Text('设置')),
         body: ListView(
           padding: EdgeInsets.symmetric(vertical: 10.w),
-          children: <Widget>[
+          children: const <Widget>[
             _AboutCard(),
             _NightModeCard(),
             _ThemeCard(),
@@ -61,10 +61,10 @@ class _AboutCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: List<Widget>.generate(list.length, (i) {
+          children: List<Widget>.generate(list.length, (int i) {
             return Text.rich(
               TextSpan(
-                children: List<InlineSpan>.generate(list[i].length, (j) {
+                children: List<InlineSpan>.generate(list[i].length, (int j) {
                   return WidgetSpan(
                     alignment: ui.PlaceholderAlignment.middle,
                     child: Text(
@@ -97,7 +97,7 @@ class _AboutCard extends StatelessWidget {
         children: <Widget>[
           GestureDetector(
             onDoubleTap: () => showDebugInfoDialog(context),
-            child: AspectRatio(
+            child: const AspectRatio(
               aspectRatio: 1,
               child: CircleAvatar(
                 backgroundImage: AssetImage(R.IMAGES_LOGO_1024_PNG),
@@ -164,7 +164,7 @@ class _AboutCard extends StatelessWidget {
             },
           ),
         ),
-        _SettingItemWidget(
+        const _SettingItemWidget(
           item: _SettingItem(
             name: '新版本更新了什么？',
             description: '版本履历',
@@ -278,7 +278,7 @@ class _EnhanceCard extends StatelessWidget {
     return _SettingsCard(
       title: '体验优化',
       children: <Widget>[
-        _SettingItemWidget(
+        const _SettingItemWidget(
           item: _SettingItem(
             name: '字体大小调整',
             route: Routes.openjmuFontScale,
@@ -310,8 +310,9 @@ class _EnhanceCard extends StatelessWidget {
               widget: Padding(
                 padding: EdgeInsets.only(left: 16.w),
                 child: Selector<SettingsProvider, bool>(
-                  selector: (_, provider) => provider.newAppCenterIcon,
-                  builder: (_, newAppCenterIcon, __) {
+                  selector: (_, SettingsProvider provider) =>
+                      provider.newAppCenterIcon,
+                  builder: (_, bool newAppCenterIcon, __) {
                     return CustomSwitch(
                       activeColor: currentThemeColor,
                       value: newAppCenterIcon,
@@ -451,7 +452,6 @@ class _FlutterBrandingWidget extends StatelessWidget {
     );
   }
 }
-
 
 class _SettingsCard extends StatelessWidget {
   const _SettingsCard({

@@ -189,7 +189,7 @@ class _AppMessagePreviewWidgetState extends State<AppMessagePreviewWidget>
                       ],
                     ),
                     Text(
-                      '${widget.message.content}',
+                      widget.message.content ?? '',
                       style: Theme.of(context).textTheme.bodyText2.copyWith(
                             color: Theme.of(context)
                                 .textTheme

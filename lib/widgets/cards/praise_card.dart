@@ -43,7 +43,7 @@ class PraiseCard extends StatelessWidget {
 
   Widget getPraiseInfo(Praise praise) {
     return Text(
-      '${PostAPI.postTimeConverter(praise.praiseTime)}',
+      PostAPI.postTimeConverter(praise.praiseTime),
       style: TextStyle(
         color: currentTheme.textTheme.caption.color,
         fontSize: 16.0.sp,

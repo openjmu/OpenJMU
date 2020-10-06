@@ -10,7 +10,7 @@ import 'package:openjmu/pages/home/self_page.dart';
 @FFRoute(
   name: 'openjmu://home',
   routeName: '首页',
-  argumentNames: ['initAction'],
+  argumentNames: <String>['initAction'],
 )
 class MainPage extends StatefulWidget {
   const MainPage({
@@ -41,7 +41,7 @@ class MainPage extends StatefulWidget {
               height: 15.w,
             ),
           ),
-          UserAvatar(size: 54.0, canJump: false)
+          const UserAvatar(size: 54.0, canJump: false)
         ],
       ),
     );
@@ -207,23 +207,26 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         Provider.of<SettingsProvider>(currentContext, listen: false)
             .homeSplashIndex;
 
-    Instances.eventBus
-      ..on<ActionsEvent>().listen((ActionsEvent event) {
-        /// Listen to actions event to react with quick actions both on Android and iOS.
-        /// 监听原生捷径时间以切换页面
-        final int index =
-            Constants.quickActionsList.keys.toList().indexOf(event.type);
-        if (index != -1) {
-          _selectedTab(index);
-          if (mounted) setState(() {});
+    Instances.eventBus.on<ActionsEvent>().listen((ActionsEvent event) {
+      /// Listen to actions event to react with quick actions both on Android and iOS.
+      /// 监听原生捷径时间以切换页面
+      final int index =
+          Constants.quickActionsList.keys.toList().indexOf(event.type);
+      if (index != -1) {
+        _selectedTab(index);
+        if (mounted) {
+          setState(() {});
         }
-      });
+      }
+    });
   }
 
   /// Method to update index.
   /// 切换页面方法
   void _selectedTab(int index) {
-    if (index == _currentIndex) return;
+    if (index == _currentIndex) {
+      return;
+    }
     setState(() => _currentIndex = index);
   }
 

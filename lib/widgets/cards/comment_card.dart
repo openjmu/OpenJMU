@@ -183,12 +183,12 @@ class CommentCard extends StatelessWidget {
               comment.post.uid == currentUser.uid)
             ConfirmationBottomSheetAction(
               text: '删除评论',
-              icon: Icon(Icons.delete),
+              icon: const Icon(Icons.delete),
               onTap: () => confirmDelete(context),
             ),
           ConfirmationBottomSheetAction(
             text: '回复评论',
-            icon: Icon(Icons.reply),
+            icon: const Icon(Icons.reply),
             onTap: () => navigatorState.pushNamed(
               Routes.openjmuAddComment,
               arguments: <String, dynamic>{
@@ -199,7 +199,7 @@ class CommentCard extends StatelessWidget {
           ),
           ConfirmationBottomSheetAction(
             text: '查看动态',
-            icon: Icon(Icons.pageview),
+            icon: const Icon(Icons.pageview),
             onTap: () => navigatorState.pushNamed(
               Routes.openjmuPostDetail,
               arguments: <String, dynamic>{

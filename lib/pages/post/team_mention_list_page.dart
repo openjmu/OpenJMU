@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:extended_text/extended_text.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/pages/post/team_post_detail_page.dart';
 
 class TeamMentionListPage extends StatefulWidget {
   @override

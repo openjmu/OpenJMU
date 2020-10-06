@@ -198,8 +198,7 @@ class CoursesProvider extends ChangeNotifier {
     }
     _courses = _s;
     await _courseBox.delete(currentUser.uid);
-    await _courseBox.put(
-        currentUser.uid, Map<int, Map<int, dynamic>>.from(_s));
+    await _courseBox.put(currentUser.uid, Map<int, Map<int, dynamic>>.from(_s));
   }
 
   Future<void> remarkResponseHandler(Response<String> response) async {

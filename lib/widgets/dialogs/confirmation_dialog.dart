@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
-import 'package:openjmu/constants/constants.dart' hide LinkText;
+import 'package:openjmu/constants/constants.dart';
 import 'package:extended_text/extended_text.dart';
 import 'package:extended_text_library/extended_text_library.dart';
 
@@ -177,7 +177,7 @@ class ConfirmationDialog extends StatelessWidget {
                     padding: contentPadding ??
                         EdgeInsets.symmetric(vertical: suSetHeight(20.0)),
                     child: ExtendedText(
-                      '$content',
+                      content,
                       style: TextStyle(
                           fontSize: suSetSp(20.0),
                           fontWeight: FontWeight.normal),
@@ -207,12 +207,13 @@ class ConfirmationDialog extends StatelessWidget {
   }
 }
 
-class LinkText extends SpecialText {
-  static String startKey = 'https://';
-  static const String endKey = ' ';
+class _LinkText extends LinkText {
+  _LinkText(
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap,
+  ) : super(textStyle, onTap, linkHost: startKey);
 
-  LinkText(TextStyle textStyle, SpecialTextGestureTapCallback onTap)
-      : super(startKey, endKey, textStyle, onTap: onTap);
+  static const String startKey = 'https://';
 
   @override
   TextSpan finishText() {
@@ -224,7 +225,35 @@ class LinkText extends SpecialText {
           final Map<String, dynamic> data = <String, dynamic>{
             'content': toString()
           };
-          if (onTap != null) onTap(data);
+          if (onTap != null) {
+            onTap(data);
+          }
+        },
+    );
+  }
+}
+
+class _LinkOldText extends LinkText {
+  _LinkOldText(
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap,
+  ) : super(textStyle, onTap, linkHost: startKey);
+
+  static const String startKey = 'http://';
+
+  @override
+  TextSpan finishText() {
+    return TextSpan(
+      text: toString(),
+      style: textStyle?.copyWith(decoration: TextDecoration.underline),
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          final Map<String, dynamic> data = <String, dynamic>{
+            'content': toString()
+          };
+          if (onTap != null) {
+            onTap(data);
+          }
         },
     );
   }
@@ -232,26 +261,32 @@ class LinkText extends SpecialText {
 
 class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
   @override
-  TextSpan build(String data,
-      {TextStyle textStyle, SpecialTextGestureTapCallback onTap}) {
-    final linkRegExp =
-        RegExp(r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
-            r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)');
+  TextSpan build(
+    String data, {
+    TextStyle textStyle,
+    SpecialTextGestureTapCallback onTap,
+  }) {
+    final RegExp linkRegExp = RegExp(
+      r'https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\'
+      r'.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)',
+    );
 
-    if (data == null || data == '') return null;
-    final inlineList = <InlineSpan>[];
+    if (data == null || data == '') {
+      return null;
+    }
+    final List<InlineSpan> inlineList = <InlineSpan>[];
     if (linkRegExp.allMatches(data).isNotEmpty) {
-      final matches = linkRegExp.allMatches(data);
-      matches.forEach((match) {
+      final Iterable<RegExpMatch> matches = linkRegExp.allMatches(data);
+      for (final RegExpMatch match in matches) {
         data = data.replaceFirst(match.group(0), ' ${match.group(0)} ');
-      });
+      }
     }
 
     if (data.isNotEmpty) {
       SpecialText specialText;
       String textStack = '';
       for (int i = 0; i < data.length; i++) {
-        String char = data[i];
+        final String char = data[i];
         textStack += char;
         if (specialText != null) {
           if (!specialText.isEnd(textStack)) {
@@ -262,12 +297,18 @@ class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
             textStack = '';
           }
         } else {
-          specialText = createSpecialText(textStack,
-              textStyle: textStyle, onTap: onTap, index: i);
+          specialText = createSpecialText(
+            textStack,
+            textStyle: textStyle,
+            onTap: onTap,
+            index: i,
+          );
           if (specialText != null) {
             if (textStack.length - specialText.startFlag.length >= 0) {
               textStack = textStack.substring(
-                  0, textStack.length - specialText.startFlag.length);
+                0,
+                textStack.length - specialText.startFlag.length,
+              );
               if (textStack.isNotEmpty) {
                 inlineList.add(TextSpan(text: textStack, style: textStyle));
               }
@@ -279,8 +320,9 @@ class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
 
       if (specialText != null) {
         inlineList.add(TextSpan(
-            text: specialText.startFlag + specialText.getContent(),
-            style: textStyle));
+          text: specialText.startFlag + specialText.getContent(),
+          style: textStyle,
+        ));
       } else if (textStack.isNotEmpty) {
         inlineList.add(TextSpan(text: textStack, style: textStyle));
       }
@@ -298,10 +340,14 @@ class RegExpSpecialTextSpanBuilder extends SpecialTextSpanBuilder {
     SpecialTextGestureTapCallback onTap,
     int index,
   }) {
-    if (flag?.isEmpty ?? true) return null;
+    if (flag?.isEmpty ?? true) {
+      return null;
+    }
 
-    if (isStart(flag, LinkText.startKey)) {
-      return LinkText(textStyle, onTap);
+    if (isStart(flag, _LinkText.startKey)) {
+      return _LinkText(textStyle, onTap);
+    } else if (isStart(flag, _LinkOldText.startKey)) {
+      return _LinkOldText(textStyle, onTap);
     }
     return null;
   }

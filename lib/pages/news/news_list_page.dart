@@ -230,7 +230,7 @@ class NewsListPageState extends State<NewsListPage>
                           final News element = newsList.elementAt(index);
                           ExtendedNetworkImageProvider(
                             '${API.showFile}${element.cover}'
-                                '/sid/${UserAPI.currentUser.sid}',
+                            '/sid/${UserAPI.currentUser.sid}',
                           ).evict();
                         }
                       }

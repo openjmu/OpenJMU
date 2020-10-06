@@ -72,15 +72,16 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
     _selectedIndex = widget.initIndex ??
         Provider.of<SettingsProvider>(currentContext, listen: false)
             .homeSplashIndex;
-    Instances.eventBus
-      ..on<ActionsEvent>().listen((event) {
-        final index =
-            Constants.quickActionsList.keys.toList().indexOf(event.type);
-        if (index != -1) {
-          _selectedIndex = index;
-          if (mounted) setState(() {});
+    Instances.eventBus.on<ActionsEvent>().listen((ActionsEvent event) {
+      final int index =
+          Constants.quickActionsList.keys.toList().indexOf(event.type);
+      if (index != -1) {
+        _selectedIndex = index;
+        if (mounted) {
+          setState(() {});
         }
-      });
+      }
+    });
     super.initState();
   }
 
@@ -120,52 +121,38 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    item.child == null
-                        ? AnimatedCrossFade(
-                            duration: 200.milliseconds,
-                            crossFadeState: _selectedIndex == index
-                                ? CrossFadeState.showFirst
-                                : CrossFadeState.showSecond,
-                            firstChild: SvgPicture.asset(
-                              item.iconPath,
-                              color: widget.selectedColor,
-                              width: widget.iconSize.w,
-                              height: widget.iconSize.w,
-                            ),
-                            secondChild: SvgPicture.asset(
-                              item.iconPath,
-                              color: widget.color,
-                              width: widget.iconSize.w,
-                              height: widget.iconSize.w,
-                            ),
-                          )
-                        : item.child,
-                    if (widget.showText)
-                      SizedBox(
-                        height: (widget.iconSize / 8).w,
-                      ),
-                    if (widget.showText)
-                      AnimatedCrossFade(
-                        duration: 200.milliseconds,
-                        crossFadeState: _selectedIndex == index
-                            ? CrossFadeState.showFirst
-                            : CrossFadeState.showSecond,
-                        firstChild: Text(
-                          item.text,
-                          style: TextStyle(
+                    item.child ??
+                        AnimatedCrossFade(
+                          duration: 200.milliseconds,
+                          crossFadeState: _selectedIndex == index
+                              ? CrossFadeState.showFirst
+                              : CrossFadeState.showSecond,
+                          firstChild: SvgPicture.asset(
+                            item.iconPath,
                             color: widget.selectedColor,
-                            fontSize: suSetSp(widget.itemFontSize),
-                            fontWeight: FontWeight.normal,
+                            width: widget.iconSize.w,
+                            height: widget.iconSize.w,
                           ),
-                        ),
-                        secondChild: Text(
-                          item.text,
-                          style: TextStyle(
+                          secondChild: SvgPicture.asset(
+                            item.iconPath,
                             color: widget.color,
-                            fontSize: suSetSp(widget.itemFontSize),
-                            fontWeight: FontWeight.normal,
+                            width: widget.iconSize.w,
+                            height: widget.iconSize.w,
                           ),
                         ),
+                    if (widget.showText)
+                      SizedBox(height: (widget.iconSize / 8).w),
+                    if (widget.showText)
+                      AnimatedDefaultTextStyle(
+                        duration: 200.milliseconds,
+                        style: TextStyle(
+                          color: _selectedIndex == index
+                              ? widget.selectedColor
+                              : widget.color,
+                          fontSize: suSetSp(widget.itemFontSize),
+                          fontWeight: FontWeight.normal,
+                        ),
+                        child: Text(item.text),
                       ),
                   ],
                 ),
@@ -173,7 +160,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
             ),
             if (index == 0)
               Consumer<NotificationProvider>(
-                builder: (_, provider, __) {
+                builder: (_, NotificationProvider provider, __) {
                   return Positioned(
                     top: widget.height / 8,
                     right: Screens.width / widget.items.length / 5,
@@ -193,7 +180,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
               ),
             if (index == 1)
               Consumer<NotificationProvider>(
-                builder: (_, provider, __) {
+                builder: (_, NotificationProvider provider, __) {
                   return Positioned(
                     top: widget.height / 8,
                     right: Screens.width / widget.items.length / 5,
@@ -213,7 +200,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
               ),
             if (index == 3)
               Consumer<MessagesProvider>(
-                builder: (_, provider, __) {
+                builder: (_, MessagesProvider provider, __) {
                   return Positioned(
                     top: widget.height / 6,
                     right: Screens.width / widget.items.length / 5,
@@ -238,6 +225,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
   }
 
   @mustCallSuper
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     final List<Widget> items = List<Widget>.generate(

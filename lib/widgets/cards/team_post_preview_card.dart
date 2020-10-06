@@ -16,7 +16,6 @@ import 'package:like_button/like_button.dart';
 import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/controller/extended_typed_network_image_provider.dart';
 import 'package:openjmu/widgets/image/image_viewer.dart';
-import 'package:openjmu/pages/post/team_post_detail_page.dart';
 
 class TeamPostPreviewCard extends StatelessWidget {
   const TeamPostPreviewCard({@required Key key}) : super(key: key);

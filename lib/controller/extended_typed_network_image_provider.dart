@@ -6,6 +6,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/painting.dart';
+// ignore: implementation_imports
 import 'package:extended_image_library/src/_network_image_io.dart';
 
 class ExtendedTypedNetworkImageProvider extends ExtendedNetworkImageProvider {
@@ -23,7 +24,7 @@ class ExtendedTypedNetworkImageProvider extends ExtendedNetworkImageProvider {
   ImageFileType _getType(Uint8List data) {
     ImageFileType _type;
     if (data != null) {
-      final c = data.elementAt(0);
+      final int c = data.elementAt(0);
       switch (c) {
         case 0xFF:
           _type = ImageFileType.jpg;

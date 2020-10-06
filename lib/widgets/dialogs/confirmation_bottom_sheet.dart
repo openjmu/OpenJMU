@@ -212,7 +212,7 @@ class ConfirmationBottomSheetState extends State<ConfirmationBottomSheet> {
                         children: widget.content != null
                             ? <Widget>[
                                 Text(
-                                  '${widget.content}',
+                                  widget.content,
                                   style: TextStyle(fontSize: suSetSp(20.0)),
                                   textAlign: TextAlign.center,
                                 ),

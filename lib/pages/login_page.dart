@@ -94,8 +94,8 @@ class LoginPageState extends State<LoginPage>
 
     /// Bind text fields listener.
     /// 绑定输入部件的监听
-    _usernameController..addListener(usernameListener);
-    _passwordController..addListener(passwordListener);
+    _usernameController.addListener(usernameListener);
+    _passwordController.addListener(passwordListener);
   }
 
   @override
@@ -371,7 +371,7 @@ class LoginPageState extends State<LoginPage>
           if (announcementEnabled) {
             return Container(
               margin: EdgeInsets.symmetric(vertical: suSetHeight(15.0)),
-              child: AnnouncementWidget(
+              child: const AnnouncementWidget(
                 backgroundColor: Colors.black26,
                 radius: 10.0,
               ),
@@ -434,7 +434,7 @@ class LoginPageState extends State<LoginPage>
                 keyboardType: TextInputType.number,
                 enabled: !_login,
                 scrollPadding: EdgeInsets.zero,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.zero,
                   isDense: true,
@@ -480,7 +480,7 @@ class LoginPageState extends State<LoginPage>
                 },
                 enabled: !_login,
                 scrollPadding: EdgeInsets.zero,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.zero,
                   isDense: true,
@@ -510,8 +510,6 @@ class LoginPageState extends State<LoginPage>
 
   /// Agreement checkbox.
   /// 用户协议复选框
-  ///
-  /// TODO(Alex): Need time to customize with background and size.
   Widget get agreementCheckbox => SizedBox.fromSize(
         size: Size.square(suSetWidth(60.0)),
         child: RoundedCheckbox(
@@ -538,9 +536,7 @@ class LoginPageState extends State<LoginPage>
             const TextSpan(text: '登录即代表您同意'),
             TextSpan(
               text: '《用户协议》',
-              style: TextStyle(
-                decoration: TextDecoration.underline,
-              ),
+              style: const TextStyle(decoration: TextDecoration.underline),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   API.launchWeb(
@@ -607,8 +603,9 @@ class LoginPageState extends State<LoginPage>
                   borderRadius: maxBorderRadius,
                   child: LinearProgressIndicator(
                     backgroundColor: Colors.grey[200],
-                    valueColor:
-                        AlwaysStoppedAnimation<Color>(defaultLightColor),
+                    valueColor: const AlwaysStoppedAnimation<Color>(
+                      defaultLightColor,
+                    ),
                     value: _login ? null : 0.0,
                   ),
                 ),
@@ -704,7 +701,11 @@ class WhiteTextSelectionControls extends ExtendedMaterialTextSelectionControls {
   final double _kHandleSize = 22.0;
 
   @override
-  Widget buildHandle(BuildContext _, TextSelectionHandleType type, double __) {
+  Widget buildHandle(
+    BuildContext context,
+    TextSelectionHandleType type,
+    double textHeight,
+  ) {
     final Widget handle = SizedBox(
       width: _kHandleSize,
       height: _kHandleSize,
