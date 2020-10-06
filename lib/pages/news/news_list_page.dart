@@ -28,8 +28,8 @@ class NewsListPageState extends State<NewsListPage>
 
   @override
   void initState() {
-    getNewsList(isLoadMore: false);
     super.initState();
+    getNewsList(isLoadMore: false);
   }
 
   @override
@@ -41,26 +41,28 @@ class NewsListPageState extends State<NewsListPage>
   Future<void> getNewsList({bool isLoadMore}) async {
     if (!_isLoading) {
       _isLoading = true;
-      if (!isLoadMore) lastTimeStamp = 0;
-      final _url = API.newsList(
+      if (!isLoadMore) {
+        lastTimeStamp = 0;
+      }
+      final String _url = API.newsList(
         maxTimeStamp: isLoadMore ? lastTimeStamp : null,
       );
-      Map<String, dynamic> data = (await NetUtils.getWithHeaderSet(
+      final Map<String, dynamic> data =
+          (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
         _url,
         headers: Constants.teamHeader,
       ))
-          .data;
+              .data;
 
-      List<News> _newsList = [];
-      final _news = data['data'];
-      int _total = int.parse(data['total'].toString());
-      int _count = int.parse(data['count'].toString());
-      int _lastTimeStamp = int.parse(data['min_ts'].toString());
+      final List<News> _newsList = <News>[];
+      final List<dynamic> _news = data['data'] as List<dynamic>;
+      final int _total = data['total'].toString().toInt();
+      final int _count = data['count'].toString().toInt();
+      final int _lastTimeStamp = data['min_ts'].toString().toInt();
 
-      for (var newsData in _news) {
-        if (newsData != null && newsData != '') {
-          _newsList.add(News.fromJson(newsData));
-        }
+      for (final dynamic _newsData in _news) {
+        final Map<String, dynamic> newsData = _newsData as Map<String, dynamic>;
+        _newsList.add(News.fromJson(newsData));
       }
       if (isLoadMore) {
         newsList.addAll(_newsList);
@@ -73,7 +75,9 @@ class NewsListPageState extends State<NewsListPage>
       _isLoading = false;
       _canLoadMore = newsList.length < _total && _count != 0;
       lastTimeStamp = _lastTimeStamp;
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -97,10 +101,7 @@ class NewsListPageState extends State<NewsListPage>
             ),
             child: Text(
               '专题',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: suSetSp(18.0),
-              ),
+              style: TextStyle(color: Colors.white, fontSize: suSetSp(18.0)),
             ),
           ),
       ],
@@ -113,10 +114,7 @@ class NewsListPageState extends State<NewsListPage>
         Expanded(
           child: Text(
             news.summary,
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: suSetSp(16.0),
-            ),
+            style: TextStyle(color: Colors.grey, fontSize: suSetSp(16.0)),
             overflow: TextOverflow.ellipsis,
           ),
         ),
@@ -131,10 +129,7 @@ class NewsListPageState extends State<NewsListPage>
           padding: EdgeInsets.zero,
           child: Text(
             news.postTime,
-            style: TextStyle(
-              color: Colors.grey,
-              fontSize: suSetSp(14.0),
-            ),
+            style: TextStyle(color: Colors.grey, fontSize: suSetSp(14.0)),
           ),
         ),
         Expanded(
@@ -143,10 +138,7 @@ class NewsListPageState extends State<NewsListPage>
             children: <Widget>[
               Text(
                 '${news.glances} ',
-                style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: suSetSp(14.0),
-                ),
+                style: TextStyle(color: Colors.grey, fontSize: suSetSp(14.0)),
               ),
               Icon(
                 Icons.remove_red_eye,
@@ -161,15 +153,15 @@ class NewsListPageState extends State<NewsListPage>
   }
 
   Widget coverImg(News news) {
-    final imageUrl =
+    final String imageUrl =
         '${API.showFile}${news.cover}/sid/${UserAPI.currentUser.sid}';
-    ImageProvider coverImg = ExtendedNetworkImageProvider(imageUrl);
+    final ImageProvider coverImg = ExtendedNetworkImageProvider(imageUrl);
     return SizedBox(
       width: suSetSp(80.0),
       height: suSetSp(80.0),
       child: FadeInImage(
         fadeInDuration: 100.milliseconds,
-        placeholder: AssetImage(R.ASSETS_AVATAR_PLACEHOLDER_PNG),
+        placeholder: const AssetImage(R.ASSETS_AVATAR_PLACEHOLDER_PNG),
         image: coverImg,
         fit: BoxFit.cover,
       ),
@@ -184,7 +176,7 @@ class NewsListPageState extends State<NewsListPage>
         onTap: () {
           navigatorState.pushNamed(
             Routes.openjmuNewsDetail,
-            arguments: {'news': news},
+            arguments: <String, dynamic>{'news': news},
           );
         },
         child: Row(
@@ -192,18 +184,13 @@ class NewsListPageState extends State<NewsListPage>
           children: <Widget>[
             Expanded(
               child: Padding(
-                padding: EdgeInsets.fromLTRB(
-                  suSetSp(4.0),
-                  suSetSp(4.0),
-                  suSetSp(10.0),
-                  suSetSp(4.0),
-                ),
+                padding: EdgeInsets.all(4.w).copyWith(right: 10.w),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     getTitle(news),
                     getSummary(news),
-                    Expanded(child: SizedBox()),
+                    const Spacer(),
                     getInfo(news),
                   ],
                 ),
@@ -226,6 +213,7 @@ class NewsListPageState extends State<NewsListPage>
   }
 
   @mustCallSuper
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     if (!_showLoading) {
@@ -233,42 +221,42 @@ class NewsListPageState extends State<NewsListPage>
         return RefreshIndicator(
           onRefresh: () => getNewsList(isLoadMore: false),
           child: newsList.isEmpty
-              ? SizedBox()
+              ? const SizedBox.shrink()
               : ExtendedListView.separated(
                   extendedListDelegate: ExtendedListDelegate(
                     collectGarbage: (List<int> garbage) {
-                      garbage.forEach((index) {
+                      for (final int index in garbage) {
                         if (newsList.length >= index + 1) {
-                          final element = newsList.elementAt(index);
+                          final News element = newsList.elementAt(index);
                           ExtendedNetworkImageProvider(
                             '${API.showFile}${element.cover}'
-                            '/sid/${UserAPI.currentUser.sid}',
+                                '/sid/${UserAPI.currentUser.sid}',
                           ).evict();
                         }
-                      });
+                      }
                     },
                   ),
                   shrinkWrap: true,
                   controller: _scrollController,
-                  separatorBuilder: (context, index) =>
+                  separatorBuilder: (BuildContext context, int index) =>
                       separator(context, height: 1.0),
                   itemCount: newsList.length + 1,
-                  itemBuilder: (context, index) {
+                  itemBuilder: (_, int index) {
                     if (index == newsList.length) {
                       return LoadMoreIndicator(canLoadMore: _canLoadMore);
                     } else if (index < newsList.length) {
                       return newsItem(newsList[index]);
                     } else {
-                      return SizedBox.shrink();
+                      return const SizedBox.shrink();
                     }
                   },
                 ),
         );
       } else {
-        return SpinKitWidget();
+        return const SpinKitWidget();
       }
     } else {
-      return Center(child: SpinKitWidget());
+      return const Center(child: SpinKitWidget());
     }
   }
 }
