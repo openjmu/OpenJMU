@@ -15,7 +15,7 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/dialogs/convention_dialog.dart';
 import 'package:openjmu/widgets/dialogs/mention_people_dialog.dart';
 
-@FFRoute(name: "openjmu://publish-team-post", routeName: "发布小组动态")
+@FFRoute(name: 'openjmu://publish-team-post', routeName: '发布小组动态')
 class PublishTeamPostPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => PublishTeamPostPageState();
@@ -92,10 +92,14 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
         context: context,
         builder: (BuildContext context) => MentionPeopleDialog(),
       );
-      if (focusNode.canRequestFocus) focusNode.requestFocus();
+      if (focusNode.canRequestFocus) {
+        focusNode.requestFocus();
+      }
       if (result != null) {
-        Future.delayed(250.milliseconds, () {
-          if (focusNode.canRequestFocus) focusNode.requestFocus();
+        Future<void>.delayed(250.milliseconds, () {
+          if (focusNode.canRequestFocus) {
+            focusNode.requestFocus();
+          }
           InputUtils.insertText(
             text: '<M ${result.id}>@${result.nickname}<\/M>',
             state: this,
@@ -123,7 +127,9 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
     );
     if (result != selectedAssets && result != null) {
       selectedAssets = List<AssetEntity>.from(result);
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -139,7 +145,9 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   /// 执行 [build] 时更新 [maximumKeyboardHeight] 以获得最高键盘高度
   void updateKeyboardHeight(BuildContext context) {
     final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-    if (keyboardHeight > 0) isEmoticonPadActive = false;
+    if (keyboardHeight > 0) {
+      isEmoticonPadActive = false;
+    }
 
     if (maximumKeyboardHeight !=
         math.max(maximumKeyboardHeight, keyboardHeight)) {
@@ -152,7 +160,9 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
   void updateEmoticonPadStatus(BuildContext context, bool active) {
     final VoidCallback change = () {
       isEmoticonPadActive = active;
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     };
     if (isEmoticonPadActive) {
       change();
@@ -160,7 +170,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
         InputUtils.hideKeyboard().whenComplete(
           () {
-            Future.delayed(300.milliseconds, null).whenComplete(change);
+            Future<void>.delayed(300.milliseconds, null).whenComplete(change);
           },
         );
       } else {
@@ -226,61 +236,67 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       failedAssets.clear();
     });
 
-    /// Using `forEach` instead of `for in` is that `for in` will execute one by one, and stuck if
-    /// the previous request takes a long duration. `forEach` will send requests at the same time.
-    /// 使用`forEach`而不是`for in`是因为`for in`会逐个执行，如果上一个请求耗费了很长时间，整个流程都将被
-    /// 阻塞，而使用`forEach`会同时发起所有请求。
-    selectedAssets.forEach((AssetEntity asset) async {
-      /// Make a data record first, in order to keep the sequence of the images.
-      /// 先创建数据条目，保证上传的图片的顺序。
-      uploadedAssetId[asset] = null;
-      final CancelToken cancelToken = CancelToken();
-      assetsUploadCancelTokens.add(cancelToken);
-      final FormData formData =
-          await TeamPostAPI.createPostImageUploadForm(asset);
-      try {
-        final Map<String, dynamic> result =
-            (await TeamPostAPI.createPostImageUploadRequest(
-          formData: formData,
-          cancelToken: cancelToken,
-        ))
-                .data;
-        uploadedAssetId[asset] = result['fid'].toString().toInt();
-        ++uploadedAssets;
-        loadingDialogController.updateText(
-          '正在上传图片('
-          '${math.min(uploadedAssets + 1, imagesLength)}'
-          '/'
-          '$imagesLength'
-          ')',
-        );
+    /// Using `forEach` instead of `for in` is that `for in` will execute
+    /// one by one, and stuck if the previous request takes a long duration.
+    /// `forEach` will send requests at the same time.
+    /// 使用`forEach`而不是`for in`是因为`for in`会逐个执行，
+    /// 如果上一个请求耗费了很长时间，整个流程都将被 阻塞，
+    /// 而使用`forEach`会同时发起所有请求。
+    selectedAssets.forEach(assetsUploadRequest);
+  }
 
-        /// Execute publish when all assets were upload.
-        /// 所有图片上传完成时进行发布
-        if (uploadedAssets == imagesLength) {
-          unawaited(runPublishRequest());
-        }
-      } catch (e) {
-        isLoading = false; // 停止Loading
-        uploadedAssets = 0; // 上传清零
-        failedAssets.add(asset); // 添加失败entity
-        loadingDialogController.changeState('failed', '图片上传失败'); // 改变dialog状态
+  Future<void> assetsUploadRequest(AssetEntity asset) async {
+    /// Make a data record first, in order to keep the sequence of the images.
+    /// 先创建数据条目，保证上传的图片的顺序。
+    uploadedAssetId[asset] = null;
+    final CancelToken cancelToken = CancelToken();
+    assetsUploadCancelTokens.add(cancelToken);
+    final FormData formData =
+        await TeamPostAPI.createPostImageUploadForm(asset);
+    try {
+      final Map<String, dynamic> result =
+          (await TeamPostAPI.createPostImageUploadRequest(
+        formData: formData,
+        cancelToken: cancelToken,
+      ))
+              .data;
+      uploadedAssetId[asset] = result['fid'].toString().toInt();
+      ++uploadedAssets;
+      loadingDialogController.updateText(
+        '正在上传图片('
+        '${math.min(uploadedAssets + 1, imagesLength)}'
+        '/'
+        '$imagesLength'
+        ')',
+      );
 
-        /// Cancel all request and clear token list.
-        /// 取消所有的上传请求并清空所有cancel token
-        assetsUploadCancelTokens
-          ..forEach((CancelToken token) => token?.cancel())
-          ..clear();
-
-        if (mounted) setState(() {});
-
-        trueDebugPrint('Error when trying upload images: $e');
-        if (e is DioError) {
-          trueDebugPrint('${e.response.data}');
-        }
-        trueDebugPrint('Images requests will be all cancelled.');
+      /// Execute publish when all assets were upload.
+      /// 所有图片上传完成时进行发布
+      if (uploadedAssets == imagesLength) {
+        unawaited(runPublishRequest());
       }
-    });
+    } catch (e) {
+      isLoading = false; // 停止Loading
+      uploadedAssets = 0; // 上传清零
+      failedAssets.add(asset); // 添加失败entity
+      loadingDialogController.changeState('failed', '图片上传失败');
+
+      /// Cancel all request and clear token list.
+      /// 取消所有的上传请求并清空所有cancel token
+      assetsUploadCancelTokens
+        ..forEach((CancelToken token) => token?.cancel())
+        ..clear();
+
+      if (mounted) {
+        setState(() {});
+      }
+
+      trueDebugPrint('Error when trying upload images: $e');
+      if (e is DioError) {
+        trueDebugPrint('${e.response.data}');
+      }
+      trueDebugPrint('Images requests will be all cancelled.');
+    }
   }
 
   /// Execute post content publish request.
@@ -314,7 +330,9 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
       trueDebugPrint(e);
     } finally {
       isLoading = false;
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -375,9 +393,9 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
             decoration: InputDecoration(
               contentPadding: EdgeInsets.only(top: 20.0.h),
               border: InputBorder.none,
-              counterStyle: TextStyle(color: Colors.transparent),
+              counterStyle: const TextStyle(color: Colors.transparent),
               hintText: '分享你的动态...',
-              hintStyle: TextStyle(
+              hintStyle: const TextStyle(
                 color: Colors.grey,
                 textBaseline: TextBaseline.alphabetic,
               ),
@@ -408,7 +426,9 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
               );
               if (result != selectedAssets && result != null) {
                 selectedAssets = result;
-                if (mounted) setState(() {});
+                if (mounted) {
+                  setState(() {});
+                }
               }
             }
           : null,
@@ -598,7 +618,7 @@ class PublishTeamPostPageState extends State<PublishTeamPostPage>
 
   /// Toolbar for the page.
   /// 工具栏
-  Widget toolbar(context) {
+  Widget toolbar(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(
         bottom:

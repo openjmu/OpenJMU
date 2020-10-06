@@ -77,10 +77,14 @@ class _PublishPostPageState extends State<PublishPostPage>
         context: context,
         builder: (BuildContext context) => MentionPeopleDialog(),
       );
-      if (focusNode.canRequestFocus) focusNode.requestFocus();
+      if (focusNode.canRequestFocus) {
+        focusNode.requestFocus();
+      }
       if (result != null) {
-        Future.delayed(250.milliseconds, () {
-          if (focusNode.canRequestFocus) focusNode.requestFocus();
+        Future<void>.delayed(250.milliseconds, () {
+          if (focusNode.canRequestFocus) {
+            focusNode.requestFocus();
+          }
           InputUtils.insertText(
             text: '<M ${result.id}>@${result.nickname}<\/M>',
             state: this,
@@ -104,7 +108,9 @@ class _PublishPostPageState extends State<PublishPostPage>
     );
     if (result != selectedAssets && result != null) {
       selectedAssets = List<AssetEntity>.from(result);
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -124,7 +130,9 @@ class _PublishPostPageState extends State<PublishPostPage>
   /// 执行 [build] 时更新 [maximumKeyboardHeight] 以获得最高键盘高度
   void updateKeyboardHeight(BuildContext context) {
     final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
-    if (keyboardHeight > 0) isEmoticonPadActive = false;
+    if (keyboardHeight > 0) {
+      isEmoticonPadActive = false;
+    }
 
     if (maximumKeyboardHeight !=
         math.max(maximumKeyboardHeight, keyboardHeight)) {
@@ -137,7 +145,9 @@ class _PublishPostPageState extends State<PublishPostPage>
   void updateEmoticonPadStatus(BuildContext context, bool active) {
     final VoidCallback change = () {
       isEmoticonPadActive = active;
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     };
     if (isEmoticonPadActive) {
       change();
@@ -145,7 +155,7 @@ class _PublishPostPageState extends State<PublishPostPage>
       if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
         InputUtils.hideKeyboard().whenComplete(
           () {
-            Future.delayed(300.milliseconds, null).whenComplete(change);
+            Future<void>.delayed(300.milliseconds, null).whenComplete(change);
           },
         );
       } else {
@@ -212,71 +222,80 @@ class _PublishPostPageState extends State<PublishPostPage>
   /// Execute images upload requests.
   /// 执行图片上传请求
   ///
-  /// This method doesn't required to be [Future], just run them with [Iterable.forEach] and
-  /// using [CancelToken] (Completer) to control requests' cancel when one of them failed.
-  /// 该方法不需要声明为 [Future]，只需要使用 forEach 调用异步方法，并且使用 [CancelToken] 来控制
-  /// 请求。为了避免过多状态导致的意外结果，当任意资源上传失败时，就立刻取消所有请求，要求用户处理。
+  /// This method doesn't required to be [Future],
+  /// just run them with [Iterable.forEach] and using [CancelToken] (Completer)
+  /// to control requests' cancel when one of them failed.
+  /// 该方法不需要声明为 [Future]，只需要使用 forEach 调用异步方法，
+  /// 并且使用 [CancelToken] 来控制 请求。
+  /// 为了避免过多状态导致的意外结果，当任意资源上传失败时，就取消所有请求，要求用户处理。
   void runImagesRequests() {
     setState(() {
       failedAssets.clear();
     });
 
-    /// Using `forEach` instead of `for in` is that `for in` will execute one by one, and stuck if
-    /// the previous request takes a long duration. `forEach` will send requests at the same time.
-    /// 使用`forEach`而不是`for in`是因为`for in`会逐个执行，如果上一个请求耗费了很长时间，整个流程都将被
-    /// 阻塞，而使用`forEach`会同时发起所有请求。
-    selectedAssets.forEach((AssetEntity asset) async {
-      /// Make a data record first, in order to keep the sequence of the images.
-      /// 先创建数据条目，保证上传的图片的顺序。
-      uploadedAssetId[asset] = null;
-      final CancelToken cancelToken = CancelToken();
-      assetsUploadCancelTokens.add(cancelToken);
-      final FormData formData = await PostAPI.createPostImageUploadForm(asset);
-      try {
-        /// Here we should check the `runtimeType` of the result. If the asset has been uploaded
-        /// successfully, it should be a `Map<String, dynamic>`, otherwise it's a `String` or null.
-        /// 此处我们需要检查返回数据的类型，如果上传成功，返回的类型是应该是`Map<String, dynamic>`，否则会是
-        /// `String`或空值。
-        final dynamic result =
-            (await PostAPI.createPostImageUploadRequest(formData, cancelToken))
-                .data;
-        if (result is Map<String, dynamic>) {
-          uploadedAssetId[asset] = result['image_id'].toString().toInt();
-          ++uploadedAssets;
-          loadingDialogController.updateText(
-            '正在上传图片'
-            '(${math.min(uploadedAssets + 1, imagesLength)}/$imagesLength)',
-          );
+    /// Using `forEach` instead of `for in` is that `for in` will execute
+    /// one by one, and stuck if the previous request takes a long duration.
+    /// `forEach` will send requests at the same time.
+    /// 使用`forEach`而不是`for in`是因为`for in`会逐个执行，
+    /// 如果上一个请求耗费了很长时间，整个流程都将被 阻塞，
+    /// 而使用`forEach`会同时发起所有请求。
+    selectedAssets.forEach(assetsUploadRequest);
+  }
 
-          /// Execute publish when all assets were upload.
-          /// 所有图片上传完成时进行发布
-          if (uploadedAssets == imagesLength) {
-            unawaited(runPublishRequest());
-          }
-        } else {
-          throw Error.safeToString('Asset ${asset.id} upload failed');
+  Future<void> assetsUploadRequest(AssetEntity asset) async {
+    /// Make a data record first, in order to keep the sequence of the images.
+    /// 先创建数据条目，保证上传的图片的顺序。
+    uploadedAssetId[asset] = null;
+    final CancelToken cancelToken = CancelToken();
+    assetsUploadCancelTokens.add(cancelToken);
+    final FormData formData = await PostAPI.createPostImageUploadForm(asset);
+    try {
+      /// Here we should check the `runtimeType` of the result. If the asset
+      /// has been uploaded successfully, it should be a `Map<String, dynamic>`.
+      /// Otherwise, it's a `String` or null.
+      /// 此处我们需要检查返回数据的类型，如果上传成功，
+      /// 返回的类型是应该是 `Map<String, dynamic>`，否则会是 `String` 或空值。
+      final dynamic result =
+          (await PostAPI.createPostImageUploadRequest(formData, cancelToken))
+              .data;
+      if (result is Map<String, dynamic>) {
+        uploadedAssetId[asset] = result['image_id'].toString().toInt();
+        ++uploadedAssets;
+        loadingDialogController.updateText(
+          '正在上传图片'
+          '(${math.min(uploadedAssets + 1, imagesLength)}/$imagesLength)',
+        );
+
+        /// Execute publish when all assets were upload.
+        /// 所有图片上传完成时进行发布
+        if (uploadedAssets == imagesLength) {
+          unawaited(runPublishRequest());
         }
-      } catch (e) {
-        isLoading = false; // 停止Loading
-        uploadedAssets = 0; // 上传清零
-        failedAssets.add(asset); // 添加失败entity
-        loadingDialogController.changeState('failed', '图片上传失败'); // 改变dialog状态
-
-        /// Cancel all request and clear token list.
-        /// 取消所有的上传请求并清空所有cancel token
-        assetsUploadCancelTokens
-          ..forEach((CancelToken token) => token?.cancel())
-          ..clear();
-
-        if (mounted) setState(() {});
-
-        trueDebugPrint('Error when trying upload images: $e');
-        if (e is DioError) {
-          trueDebugPrint('${e.response.data}');
-        }
-        trueDebugPrint('Images requests will be all cancelled.');
+      } else {
+        throw Error.safeToString('Asset ${asset.id} upload failed');
       }
-    });
+    } catch (e) {
+      isLoading = false; // 停止Loading
+      uploadedAssets = 0; // 上传清零
+      failedAssets.add(asset); // 添加失败entity
+      loadingDialogController.changeState('failed', '图片上传失败');
+
+      /// Cancel all request and clear token list.
+      /// 取消所有的上传请求并清空所有cancel token
+      assetsUploadCancelTokens
+        ..forEach((CancelToken token) => token?.cancel())
+        ..clear();
+
+      if (mounted) {
+        setState(() {});
+      }
+
+      trueDebugPrint('Error when trying upload images: $e');
+      if (e is DioError) {
+        trueDebugPrint('${e.response.data}');
+      }
+      trueDebugPrint('Images requests will be all cancelled.');
+    }
   }
 
   /// Execute post content publish request.
@@ -309,7 +328,9 @@ class _PublishPostPageState extends State<PublishPostPage>
       loadingDialogController.changeState('failed', '动态发布失败');
     } finally {
       isLoading = false;
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -370,9 +391,9 @@ class _PublishPostPageState extends State<PublishPostPage>
             decoration: InputDecoration(
               contentPadding: EdgeInsets.only(top: 20.0.h),
               border: InputBorder.none,
-              counterStyle: TextStyle(color: Colors.transparent),
+              counterStyle: const TextStyle(color: Colors.transparent),
               hintText: '分享你的动态...',
-              hintStyle: TextStyle(
+              hintStyle: const TextStyle(
                 color: Colors.grey,
                 textBaseline: TextBaseline.alphabetic,
               ),
@@ -403,7 +424,9 @@ class _PublishPostPageState extends State<PublishPostPage>
               );
               if (result != selectedAssets && result != null) {
                 selectedAssets = result;
-                if (mounted) setState(() {});
+                if (mounted) {
+                  setState(() {});
+                }
               }
             }
           : null,
@@ -592,7 +615,7 @@ class _PublishPostPageState extends State<PublishPostPage>
 
   /// Toolbar for the page.
   /// 工具栏
-  Widget toolbar(context) {
+  Widget toolbar(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(
         bottom:
