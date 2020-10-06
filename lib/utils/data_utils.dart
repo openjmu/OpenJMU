@@ -25,17 +25,17 @@ class DataUtils {
       blowfish: blowfish,
     );
     try {
-      final Map<String, dynamic> loginData =
-          (await UserAPI.login<Map<String, dynamic>>(params)).data; // Using 99.
+      final Map<String, dynamic> loginData = (await UserAPI.login(params)).data;
       currentUser = currentUser.copyWith(
         sid: loginData['sid'] as String,
         ticket: loginData['ticket'] as String,
       );
-      final Map<String, dynamic> user = ((await UserAPI.getUserInfo(
-        uid: loginData['uid'].toString().toInt(),
-      ) as Response<dynamic>)
-              .data as Map<dynamic, dynamic>)
-          .cast<String, dynamic>();
+      final Response<dynamic> userInfoResponse = await UserAPI.getUserInfo(
+        uid: loginData['uid'] as int,
+      ) as Response<dynamic>;
+      final Map<String, dynamic> user =
+          (userInfoResponse.data as Map<dynamic, dynamic>)
+              .cast<String, dynamic>();
       final Map<String, dynamic> userInfo = <String, dynamic>{
         'sid': loginData['sid'],
         'uid': loginData['uid'],

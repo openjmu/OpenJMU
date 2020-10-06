@@ -166,8 +166,13 @@ class UserInfo {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is UserInfo && runtimeType == other.runtimeType && uid == other.uid;
+      other is UserInfo &&
+          runtimeType == other.runtimeType &&
+          sid == other.sid &&
+          uid == other.uid &&
+          ticket == other.ticket &&
+          blowfish == other.blowfish;
 
   @override
-  int get hashCode => uid.hashCode;
+  int get hashCode => hashValues(sid, uid, ticket, blowfish);
 }

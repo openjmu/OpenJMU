@@ -80,9 +80,6 @@ class NetUtils {
           trueDebugPrint('Request data: ${e.request.data}');
           trueDebugPrint('TokenDio error: ${e.message}');
         }
-        if (e?.response?.statusCode == 401) {
-          updateTicket();
-        }
         return e;
       },
     ));

@@ -9,7 +9,7 @@ import 'package:openjmu/widgets/user_avatar.dart';
 UserInfo get currentUser => UserAPI.currentUser;
 
 set currentUser(UserInfo user) {
-  if (user == null || user == currentUser) {
+  if (user == null) {
     return;
   }
   UserAPI.currentUser = user;
@@ -25,8 +25,10 @@ class UserAPI {
   static Map<String, BackpackItemType> backpackItemTypes =
       <String, BackpackItemType>{};
 
-  static Future<Response<T>> login<T>(Map<String, dynamic> params) async {
-    return NetUtils.tokenDio.post<T>(API.login, data: params);
+  static Future<Response<Map<String, dynamic>>> login(
+    Map<String, dynamic> params,
+  ) {
+    return NetUtils.tokenDio.post(API.login, data: params);
   }
 
   static Future<void> logout(BuildContext context) async {
