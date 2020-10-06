@@ -137,7 +137,7 @@ class UserPageState extends State<UserPage>
     final Response<Map<String, dynamic>> response =
         await UserAPI.getFansAndFollowingsCount(uid);
     final Map<String, dynamic> data = response.data;
-    user.isFollowing = data['is_following'] == 1;
+    user = user.copyWith(isFollowing: data['is_following'] == 1);
     userFans = data['fans'].toString().toInt();
     userIdols = data['idols'].toString().toInt();
   }
@@ -215,7 +215,7 @@ class UserPageState extends State<UserPage>
       UserAPI.follow(uid);
     }
     setState(() {
-      user.isFollowing = !user.isFollowing;
+      user = user.copyWith(isFollowing: !user.isFollowing);
     });
   }
 

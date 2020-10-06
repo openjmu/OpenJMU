@@ -9,24 +9,9 @@ part of 'models.dart';
 /// [sid] 用户token, [ticket] 用户用于更新token的凭证, [blowfish] 用户设备随机uuid,
 /// [uid] 用户uid, [unitId] 组织/学校id, [workId] 工号/学号, [classId] 班级id,
 /// [name] 名字, [signature] 签名, [gender] 性别, [isFollowing] 是否已关注
+@immutable
 class UserInfo {
-  /// For Login Process
-  String sid;
-  String ticket;
-  String blowfish;
-  bool isTeacher;
-
-  /// Common Object
-  int uid;
-  int unitId;
-  int classId;
-  int gender;
-  String name;
-  String signature;
-  String workId;
-  bool isFollowing;
-
-  UserInfo({
+  const UserInfo({
     this.sid,
     this.uid,
     this.name,
@@ -42,27 +27,75 @@ class UserInfo {
   });
 
   factory UserInfo.fromJson(Map<String, dynamic> json) {
-    json.forEach((k, v) {
-      if (json[k] == '') json[k] = null;
+    json.forEach((String k, dynamic v) {
+      if (json[k] == '') {
+        json[k] = null;
+      }
     });
     return UserInfo(
-      sid: json['sid'],
-      uid: json['uid'],
-      name: json['username'] ?? json['uid'].toString(),
-      signature: json['signature'],
-      ticket: json['ticket'],
-      blowfish: json['blowfish'],
-      isTeacher: json['isTeacher'] ?? int.parse(json['type'].toString()) == 1,
-      unitId: json['unitId'] ?? json['unitid'],
+      sid: json['sid'] as String,
+      uid: json['uid'] as int,
+      name: (json['username'] ?? json['uid']).toString(),
+      signature: json['signature'] as String,
+      ticket: json['ticket'] as String,
+      blowfish: json['blowfish'] as String,
+      isTeacher: (json['isTeacher'] ?? json['type'].toString().toInt()) == 1,
+      unitId: (json['unitId'] ?? json['unitid']) as int,
       workId: (json['workId'] ?? json['workid'] ?? json['uid']).toString(),
       classId: (json['classId'] ?? json['classid'])?.toString()?.toInt(),
-      gender: int.parse(json['gender'].toString()),
+      gender: json['gender'].toString().toInt(),
       isFollowing: false,
     );
   }
 
+  UserInfo copyWith({
+    String sid,
+    String ticket,
+    String blowfish,
+    bool isTeacher,
+    int uid,
+    int unitId,
+    int classId,
+    int gender,
+    String name,
+    String signature,
+    String workId,
+    bool isFollowing,
+  }) {
+    return UserInfo(
+      sid: sid ?? this.sid,
+      ticket: ticket ?? this.ticket,
+      blowfish: blowfish ?? this.blowfish,
+      isTeacher: isTeacher ?? this.isTeacher,
+      uid: uid ?? this.uid,
+      unitId: unitId ?? this.unitId,
+      classId: classId ?? this.classId,
+      gender: gender ?? this.gender,
+      name: name ?? this.name,
+      signature: signature ?? this.signature,
+      workId: workId ?? this.workId,
+      isFollowing: isFollowing ?? this.isFollowing,
+    );
+  }
+
+  /// For Login Process
+  final String sid;
+  final String ticket;
+  final String blowfish;
+  final bool isTeacher;
+
+  /// Common Object
+  final int uid;
+  final int unitId;
+  final int classId;
+  final int gender;
+  final String name;
+  final String signature;
+  final String workId;
+  final bool isFollowing;
+
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'sid': sid,
       'uid': uid,
       'name': name,
@@ -83,7 +116,7 @@ class UserInfo {
 
   @override
   String toString() {
-    return 'UserInfo ${JsonEncoder.withIndent('  ').convert(toJson())}';
+    return 'UserInfo ${const JsonEncoder.withIndent('  ').convert(toJson())}';
   }
 
   String get genderText => gender == 2 ? '女' : '男';
@@ -94,8 +127,10 @@ class UserInfo {
       return false;
     } else {
       final int code = int.tryParse(workId.substring(4, 6));
-      if (code == null) return false;
-      return (code >= 10 && code <= 19);
+      if (code == null) {
+        return false;
+      }
+      return code >= 10 && code <= 19;
     }
   }
 
@@ -105,8 +140,10 @@ class UserInfo {
       return false;
     } else {
       final int code = int.tryParse(workId.substring(4, 6));
-      if (code == null) return false;
-      return (code >= 30 && code <= 39);
+      if (code == null) {
+        return false;
+      }
+      return code >= 30 && code <= 39;
     }
   }
 
@@ -116,8 +153,10 @@ class UserInfo {
       return false;
     } else {
       final int code = int.tryParse(workId.substring(4, 6));
-      if (code == null) return false;
-      return (code >= 41 && code <= 45);
+      if (code == null) {
+        return false;
+      }
+      return code >= 41 && code <= 45;
     }
   }
 

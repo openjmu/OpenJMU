@@ -8,6 +8,13 @@ import 'package:openjmu/widgets/user_avatar.dart';
 
 UserInfo get currentUser => UserAPI.currentUser;
 
+set currentUser(UserInfo user) {
+  if (user == null || user == currentUser) {
+    return;
+  }
+  UserAPI.currentUser = user;
+}
+
 class UserAPI {
   const UserAPI._();
 
@@ -112,14 +119,17 @@ class UserAPI {
   }
 
   static Future<Response<Map<String, dynamic>>> getIdolsList(
-      int uid, int page) {
+    int uid,
+    int page,
+  ) {
     return NetUtils.getWithCookieAndHeaderSet(
       '${API.userIdols}$uid/page/$page/page_size/20',
     );
   }
 
   static Future<Response<Map<String, dynamic>>> getFansAndFollowingsCount(
-      int uid) {
+    int uid,
+  ) {
     return NetUtils.getWithCookieAndHeaderSet('${API.userFansAndIdols}$uid');
   }
 
@@ -205,8 +215,10 @@ class UserAPI {
   /// Blacklists.
   static final Set<BlacklistUser> blacklist = <BlacklistUser>{};
 
-  static Future<Response<Map<String, dynamic>>> getBlacklist(
-      {int pos, int size}) {
+  static Future<Response<Map<String, dynamic>>> getBlacklist({
+    int pos,
+    int size,
+  }) {
     return NetUtils.getWithCookieSet<Map<String, dynamic>>(
       API.blacklist(pos: pos, size: size),
     );

@@ -27,8 +27,10 @@ class DataUtils {
     try {
       final Map<String, dynamic> loginData =
           (await UserAPI.login<Map<String, dynamic>>(params)).data; // Using 99.
-      UserAPI.currentUser.sid = loginData['sid'] as String;
-      UserAPI.currentUser.ticket = loginData['ticket'] as String;
+      currentUser = currentUser.copyWith(
+        sid: loginData['sid'] as String,
+        ticket: loginData['ticket'] as String,
+      );
       final Map<String, dynamic> user = ((await UserAPI.getUserInfo(
         uid: loginData['uid'].toString().toInt(),
       ) as Response<dynamic>)
@@ -97,7 +99,9 @@ class DataUtils {
 
   static void recoverLoginInfo() {
     final Map<String, dynamic> info = getSpTicket();
-    UserAPI.currentUser.ticket = info['ticket'] as String;
+    currentUser = currentUser.copyWith(
+      ticket: info['ticket'] as String,
+    );
   }
 
   static Future<void> reFetchTicket() async {
@@ -223,9 +227,11 @@ class DataUtils {
   }
 
   static void updateSid(Map<String, dynamic> response) {
-    UserAPI.currentUser.sid = response['sid'] as String;
-    UserAPI.currentUser.ticket = response['sid'] as String;
-    UserAPI.currentUser.uid = settingsBox.get(spUserUid) as int;
+    currentUser = currentUser.copyWith(
+      sid: response['sid'] as String,
+      ticket: response['sid'] as String,
+      uid: settingsBox.get(spUserUid) as int,
+    );
   }
 
   /// Initialize WebView's cookie with 'iPlanetDirectoryPro'.

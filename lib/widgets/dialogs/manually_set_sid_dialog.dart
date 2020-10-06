@@ -31,9 +31,9 @@ class _ManuallySetSidDialogState extends State<ManuallySetSidDialog> {
   }
 
   void updateSid(BuildContext context) {
-    UserAPI.currentUser.sid = sid;
+    currentUser = currentUser.copyWith(sid: sid);
     Navigator.of(context).pop();
-    trueDebugPrint('${UserAPI.currentUser}');
+    trueDebugPrint('$currentUser');
   }
 
   @override
