@@ -16,7 +16,8 @@ class MessagePage extends StatefulWidget {
 
 class MessagePageState extends State<MessagePage>
     with TickerProviderStateMixin {
-  final _messageScrollController = ScrollController();
+  final ScrollController _messageScrollController = ScrollController();
+
 //  TabController _tabController;
 
 //  @override
@@ -32,42 +33,43 @@ class MessagePageState extends State<MessagePage>
 //    );
 //  }
 
-  Widget get _tabBar => Row(
-        children: <Widget>[
-          Expanded(child: MainPage.selfPageOpener),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
-              child: Center(
-                child: Consumer<MessagesProvider>(
-                  builder: (_, provider, __) {
-                    return Stack(
-                      overflow: Overflow.visible,
-                      children: <Widget>[
-                        Positioned(
-                          top: suSetHeight(kToolbarHeight / 4),
-                          right: -suSetWidth(10.0),
-                          child: Visibility(
-                            visible: provider.unreadCount > 0,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(100),
-                              child: Container(
-                                width: suSetWidth(12.0),
-                                height: suSetWidth(12.0),
-                                color: currentThemeColor,
-                              ),
+  Widget get _tabBar {
+    return Row(
+      children: <Widget>[
+        Expanded(child: MainPage.selfPageOpener),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: suSetWidth(16.0)),
+            child: Center(
+              child: Consumer<MessagesProvider>(
+                builder: (_, MessagesProvider provider, __) {
+                  return Stack(
+                    overflow: Overflow.visible,
+                    children: <Widget>[
+                      Positioned(
+                        top: suSetHeight(kToolbarHeight / 4),
+                        right: -suSetWidth(10.0),
+                        child: Visibility(
+                          visible: provider.unreadCount > 0,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(100),
+                            child: Container(
+                              width: suSetWidth(12.0),
+                              height: suSetWidth(12.0),
+                              color: currentThemeColor,
                             ),
                           ),
                         ),
-                        Text(
-                          '通知',
-                          style: MainPageState.tabUnselectedTextStyle,
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                      ),
+                      Text(
+                        '通知',
+                        style: MainPageState.tabUnselectedTextStyle,
+                      ),
+                    ],
+                  );
+                },
               ),
+            ),
 //              child: TabBar(
 //                isScrollable: true,
 //                indicator: RoundedUnderlineTabIndicator(
@@ -113,20 +115,26 @@ class MessagePageState extends State<MessagePage>
 //                ],
 //                controller: _tabController,
 //              ),
-            ),
           ),
-          const Spacer(),
-        ],
-      );
+        ),
+        const Spacer(),
+      ],
+    );
+  }
 
   Widget get _messageList => Consumer2<MessagesProvider, WebAppsProvider>(
-        builder: (context, messageProvider, webAppsProvider, _) {
-          final shouldDisplayAppsMessages =
+        builder: (
+          _,
+          MessagesProvider messageProvider,
+          WebAppsProvider webAppsProvider,
+          __,
+        ) {
+          final bool shouldDisplayAppsMessages =
               (messageProvider.appsMessages?.isNotEmpty ?? false) &&
                   (webAppsProvider.apps?.isNotEmpty ?? false);
 //          final shouldDisplayPersonalMessages =
 //            messageProvider.personalMessages.isNotEmpty;
-          final shouldDisplayMessages = shouldDisplayAppsMessages
+          final bool shouldDisplayMessages = shouldDisplayAppsMessages
 //                ||
 //                shouldDisplayPersonalMessages
               ;
@@ -156,11 +164,12 @@ class MessagePageState extends State<MessagePage>
               if (shouldDisplayAppsMessages)
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final _list = messageProvider.appsMessages;
-                      final _index = _list.keys.length - 1 - index;
-                      final appId = _list.keys.elementAt(_index);
-                      final AppMessage message = _list[appId][0];
+                    (_, int index) {
+                      final Map<int, List<dynamic>> _list =
+                          messageProvider.appsMessages;
+                      final int _index = _list.keys.length - 1 - index;
+                      final int appId = _list.keys.elementAt(_index);
+                      final AppMessage message = _list[appId][0] as AppMessage;
                       return SlideItem(
                         menu: <SlideMenuItem>[
                           deleteWidget(messageProvider, appId),
@@ -199,7 +208,7 @@ class MessagePageState extends State<MessagePage>
         },
       );
 
-  Widget deleteWidget(MessagesProvider provider, int appId) {
+  SlideMenuItem deleteWidget(MessagesProvider provider, int appId) {
     return SlideMenuItem(
       onTap: () {
         provider.deleteFromAppsMessages(appId);
