@@ -28,12 +28,12 @@ class CoursesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Map<int, Map<dynamic, dynamic>> _courses;
+  Map<int, Map<int, dynamic>> _courses;
 
-  Map<int, Map<dynamic, dynamic>> get courses => _courses;
+  Map<int, Map<int, dynamic>> get courses => _courses;
 
-  set courses(Map<int, Map<dynamic, dynamic>> value) {
-    _courses = <int, Map<dynamic, dynamic>>{...value};
+  set courses(Map<int, Map<int, dynamic>> value) {
+    _courses = <int, Map<int, dynamic>>{...value};
     notifyListeners();
   }
 
@@ -75,13 +75,15 @@ class CoursesProvider extends ChangeNotifier {
 
   void initCourses() {
     now = DateTime.now();
-    _courses =
-        _courseBox.get(currentUser.uid)?.cast<int, Map<dynamic, dynamic>>();
+    _courses = _courseBox
+        .get(currentUser.uid)
+        ?.cast<int, Map<dynamic, dynamic>>()
+        ?.cast<int, Map<int, dynamic>>();
     _remark = _courseRemarkBox.get(currentUser.uid);
     if (_courses == null) {
-      _courses = resetCourses(_courses);
+      _courses = resetCourses();
     } else {
-      for (final Map<dynamic, dynamic> _map in _courses.values) {
+      for (final Map<int, dynamic> _map in _courses.values) {
         final Map<int, List<dynamic>> map = _map.cast<int, List<dynamic>>();
         final List<List<dynamic>> lists =
             map.values?.toList()?.cast<List<dynamic>>();
@@ -108,16 +110,15 @@ class CoursesProvider extends ChangeNotifier {
     _now = null;
   }
 
-  Map<int, Map<dynamic, dynamic>> resetCourses(
-      Map<int, Map<dynamic, dynamic>> courses) {
-    courses = <int, Map<dynamic, dynamic>>{
+  Map<int, Map<int, dynamic>> resetCourses() {
+    final Map<int, Map<int, dynamic>> courses = <int, Map<int, dynamic>>{
       for (int i = 1; i < 7 + 1; i++)
-        i: <dynamic, dynamic>{
+        i: <int, dynamic>{
           for (int i = 1; i < maxCoursesPerDay + 1; i++) i: <dynamic>[],
         },
     };
     for (final int key in courses.keys) {
-      courses[key] = <dynamic, dynamic>{
+      courses[key] = <int, dynamic>{
         for (int i = 1; i < maxCoursesPerDay + 1; i++) i: <dynamic>[],
       };
     }
@@ -181,8 +182,8 @@ class CoursesProvider extends ChangeNotifier {
         jsonDecode(response.data) as Map<String, dynamic>;
     final List<dynamic> _courseList = data['courses'] as List<dynamic>;
     final List<dynamic> _customCourseList = data['othCase'] as List<dynamic>;
-    Map<int, Map<dynamic, dynamic>> _s;
-    _s = resetCourses(_s);
+    Map<int, Map<int, dynamic>> _s;
+    _s = resetCourses();
     _hasCourses = _courseList.isNotEmpty || _customCourseList.isNotEmpty;
     for (final dynamic course in _courseList) {
       final Course _c = Course.fromJson(course as Map<String, dynamic>);
@@ -198,7 +199,7 @@ class CoursesProvider extends ChangeNotifier {
     _courses = _s;
     await _courseBox.delete(currentUser.uid);
     await _courseBox.put(
-        currentUser.uid, Map<int, Map<dynamic, dynamic>>.from(_s));
+        currentUser.uid, Map<int, Map<int, dynamic>>.from(_s));
   }
 
   Future<void> remarkResponseHandler(Response<String> response) async {
@@ -215,7 +216,7 @@ class CoursesProvider extends ChangeNotifier {
     }
   }
 
-  void addCourse(Course course, Map<int, Map<dynamic, dynamic>> courses) {
+  void addCourse(Course course, Map<int, Map<int, dynamic>> courses) {
     final int courseDay = course.day;
     final int courseTime = course.time.toInt();
     assert(courseDay != null && courseTime != null);
@@ -228,9 +229,9 @@ class CoursesProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> setCourses(Map<int, Map<dynamic, dynamic>> courses) async {
+  Future<void> setCourses(Map<int, Map<int, dynamic>> courses) async {
     await _courseBox.put(currentUser.uid, courses);
-    _courses = Map<int, Map<dynamic, dynamic>>.from(courses);
+    _courses = Map<int, Map<int, dynamic>>.from(courses);
   }
 
   Future<void> setRemark(String value) async {
