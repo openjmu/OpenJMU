@@ -121,6 +121,7 @@ class HiveBoxes {
       await reportRecordBox?.clear();
       await scoresBox?.clear();
       await webAppsBox?.clear();
+      await webAppsCommonBox?.clear();
       await settingsBox?.clear();
       await startWeekBox?.clear();
       trueDebugPrint('Boxes cleared');
