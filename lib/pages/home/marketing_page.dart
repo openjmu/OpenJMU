@@ -18,11 +18,11 @@ class MarketingPage extends StatefulWidget {
 }
 
 class _MarketingPageState extends State<MarketingPage> {
-  final _scrollController = ScrollController();
-  final _refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
+  final ScrollController _scrollController = ScrollController();
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = GlobalKey();
 
   bool loaded = false, loading = true, canLoadMore = true;
-  Set<TeamPost> posts = {};
+  Set<TeamPost> posts = <TeamPost>{};
   String lastTimeStamp;
 
   @override
@@ -31,34 +31,36 @@ class _MarketingPageState extends State<MarketingPage> {
     getPostList();
 
     Instances.eventBus
-      ..on<ScrollToTopEvent>().listen((event) {
-        if (this.mounted && ((event.tabIndex == 0) || (event.type == '首页'))) {
+      ..on<ScrollToTopEvent>().listen((ScrollToTopEvent event) {
+        if (mounted && (event.tabIndex == 1 && event.type == '集市')) {
           _scrollController.jumpTo(0.0);
-          Future.delayed(const Duration(milliseconds: 50), () {
+          Future<void>.delayed(const Duration(milliseconds: 50), () {
             _refreshIndicatorKey.currentState.show();
           });
         }
       })
-      ..on<TeamPostDeletedEvent>().listen((event) {
-        posts.removeWhere((post) => post.tid == event.postId);
-        if (mounted) setState(() {});
+      ..on<TeamPostDeletedEvent>().listen((TeamPostDeletedEvent event) {
+        posts.removeWhere((TeamPost post) => post.tid == event.postId);
+        if (mounted) {
+          setState(() {});
+        }
       });
   }
 
   void collectGarbageHandler(List<int> garbage) {
-    garbage.forEach((index) {
+    for (final int index in garbage) {
       if (posts.length >= index + 1 && index < 4) {
-        final element = posts.elementAt(index);
-        final pics = element.pics;
+        final TeamPost element = posts.elementAt(index);
+        final List<Map<dynamic, dynamic>> pics = element.pics;
         if (pics != null) {
-          pics.forEach((pic) {
+          for (final Map<dynamic, dynamic> pic in pics) {
             ExtendedNetworkImageProvider(
               API.teamFile(fid: int.parse(pic['fid'].toString())),
             ).evict();
-          });
+          }
         }
       }
-    });
+    }
   }
 
   Future<void> getPostList({bool more = false}) async {
@@ -68,19 +70,24 @@ class _MarketingPageState extends State<MarketingPage> {
         lastTimeStamp: lastTimeStamp,
       ))
           .data;
-      lastTimeStamp = data['min_ts'];
-      if (!more) posts.clear();
+      lastTimeStamp = data['min_ts'] as String;
+      if (!more) {
+        posts.clear();
+      }
       if (data['data'] != null) {
-        data['data'].forEach((postData) {
-          final post = TeamPost.fromJson(postData);
+        for (final dynamic _data in data['data'] as List<dynamic>) {
+          final Map<String, dynamic> postData = _data as Map<String, dynamic>;
+          final TeamPost post = TeamPost.fromJson(postData);
           posts.add(post);
-        });
+        }
       }
       loaded = true;
     } catch (e) {
       trueDebugPrint('Get market post list failed: $e');
     } finally {
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -122,17 +129,17 @@ class _MarketingPageState extends State<MarketingPage> {
                     if (index == posts.length) {
                       return LoadMoreIndicator(canLoadMore: canLoadMore);
                     }
-                    return ChangeNotifierProvider.value(
+                    return ChangeNotifierProvider<TeamPostProvider>.value(
                       value: TeamPostProvider(posts.elementAt(index)),
                       child: TeamPostPreviewCard(
-                        key: ValueKey(
+                        key: ValueKey<String>(
                           'marketPost-${posts.elementAt(index).tid}',
                         ),
                       ),
                     );
                   },
                 )
-              : SpinKitWidget(),
+              : const SpinKitWidget(),
         ),
       ),
     );

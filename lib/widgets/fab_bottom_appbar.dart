@@ -85,7 +85,7 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
   }
 
   void _updateIndex(int index) {
-    if (_selectedIndex == 0 && index == 0) {
+    if (index <= 1 && index == _selectedIndex) {
       Instances.eventBus.fire(
         ScrollToTopEvent(
           tabIndex: index,

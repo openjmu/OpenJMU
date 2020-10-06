@@ -78,8 +78,8 @@ class _PostListState extends State<PostList>
       ..on<ScrollToTopEvent>().listen((ScrollToTopEvent event) {
         if (mounted &&
             ((event.tabIndex == 0 &&
-                    widget.postController.postType == 'square') ||
-                (event.type == '首页')) &&
+                    widget.postController.postType == 'square') &&
+                event.type == '广场') &&
             _scrollController != null) {
           if (_postList.length > 20) {
             _postList = _postList.sublist(0, 20);
