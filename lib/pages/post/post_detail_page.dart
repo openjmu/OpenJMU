@@ -9,22 +9,22 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/widgets/cards/post_card.dart';
 
 @FFRoute(
-  name: "openjmu://post-detail",
-  routeName: "动态详情页",
-  argumentNames: ["post", "index", "fromPage", "parentContext"],
+  name: 'openjmu://post-detail',
+  routeName: '动态详情页',
+  argumentNames: <String>['post', 'index', 'fromPage', 'parentContext'],
 )
 class PostDetailPage extends StatefulWidget {
-  final Post post;
-  final int index;
-  final String fromPage;
-  final BuildContext parentContext;
-
   const PostDetailPage({
     @required this.post,
     this.index,
     this.fromPage,
     this.parentContext,
   });
+
+  final Post post;
+  final int index;
+  final String fromPage;
+  final BuildContext parentContext;
 
   @override
   State<StatefulWidget> createState() {
@@ -33,13 +33,15 @@ class PostDetailPage extends StatefulWidget {
 }
 
 class PostDetailPageState extends State<PostDetailPage> {
-  final forwardListInPostController = ForwardListInPostController();
-  final commentListInPostController = CommentListInPostController();
+  final ForwardListInPostController forwardListInPostController =
+      ForwardListInPostController();
+  final CommentListInPostController commentListInPostController =
+      CommentListInPostController();
 
-  final iconSize = 26.0;
-  final actionFontSize = 20.0;
-  final sectionButtonWidth = 92.0;
-  final activeColor = currentThemeColor;
+  final double iconSize = 26.0;
+  final double actionFontSize = 20.0;
+  final double sectionButtonWidth = 92.0;
+  final Color activeColor = currentThemeColor;
 
   TextStyle get textActiveStyle => TextStyle(
         color: Colors.white,
@@ -86,93 +88,82 @@ class PostDetailPageState extends State<PostDetailPage> {
     PostAPI.glancePost(widget.post.id);
 
     Instances.eventBus
-      ..on<PostDeletedEvent>().listen((event) {
-        if (this.mounted && event.postId == widget.post.id) {
-          Future.delayed(2200.milliseconds, () {
+      ..on<PostDeletedEvent>().listen((PostDeletedEvent event) {
+        if (mounted && event.postId == widget.post.id) {
+          Future<void>.delayed(2200.milliseconds, () {
             navigatorState.pop(true);
           });
         }
       })
-      ..on<PostForwardedEvent>().listen((event) {
-        if (this.mounted &&
-            event.postId == widget.post.id &&
-            this.forwards != null) {
+      ..on<PostForwardedEvent>().listen((PostForwardedEvent event) {
+        if (mounted && event.postId == widget.post.id && forwards != null) {
           setState(() {
-            this.forwards++;
+            forwards++;
           });
           forwardListInPostController.reload();
         }
       })
-      ..on<PostForwardDeletedEvent>().listen((event) {
-        if (this.mounted &&
-            event.postId == widget.post.id &&
-            this.forwards != null) {
+      ..on<PostForwardDeletedEvent>().listen((PostForwardDeletedEvent event) {
+        if (mounted && event.postId == widget.post.id && forwards != null) {
           setState(() {
-            this.forwards--;
+            forwards--;
           });
           forwardListInPostController.reload();
         }
       })
-      ..on<PostCommentedEvent>().listen((event) {
-        if (this.mounted &&
-            event.postId == widget.post.id &&
-            this.comments != null) {
+      ..on<PostCommentedEvent>().listen((PostCommentedEvent event) {
+        if (mounted && event.postId == widget.post.id && comments != null) {
           setState(() {
-            this.comments++;
+            comments++;
           });
           commentListInPostController.reload();
         }
       })
-      ..on<PostCommentDeletedEvent>().listen((event) {
-        if (this.mounted &&
-            event.postId == widget.post.id &&
-            this.comments != null) {
+      ..on<PostCommentDeletedEvent>().listen((PostCommentDeletedEvent event) {
+        if (mounted && event.postId == widget.post.id && comments != null) {
           setState(() {
-            this.comments--;
+            comments--;
           });
           commentListInPostController.reload();
         }
       })
-      ..on<ForwardInPostUpdatedEvent>().listen((event) {
-        if (this.mounted &&
-            event.postId == widget.post.id &&
-            this.forwards != null) {
-          if (event.count < this.forwards) {
-            Instances.eventBus
-                .fire(PostForwardDeletedEvent(widget.post.id, event.count));
+      ..on<ForwardInPostUpdatedEvent>()
+          .listen((ForwardInPostUpdatedEvent event) {
+        if (mounted && event.postId == widget.post.id && forwards != null) {
+          if (event.count < forwards) {
+            Instances.eventBus.fire(
+              PostForwardDeletedEvent(widget.post.id, event.count),
+            );
           }
           setState(() {
-            this.forwards = event.count;
+            forwards = event.count;
           });
         }
       })
-      ..on<CommentInPostUpdatedEvent>().listen((event) {
-        if (this.mounted &&
-            event.postId == widget.post.id &&
-            this.comments != null) {
+      ..on<CommentInPostUpdatedEvent>()
+          .listen((CommentInPostUpdatedEvent event) {
+        if (mounted && event.postId == widget.post.id && comments != null) {
           setState(() {
-            this.comments = event.count;
+            comments = event.count;
           });
         }
       })
-      ..on<PraiseInPostUpdatedEvent>().listen((event) {
-        if (this.mounted &&
-            event.postId == widget.post.id &&
-            this.praises != null) {
+      ..on<PraiseInPostUpdatedEvent>().listen((PraiseInPostUpdatedEvent event) {
+        if (mounted && event.postId == widget.post.id && praises != null) {
           setState(() {
-            this.praises = event.count;
+            praises = event.count;
           });
         }
       });
   }
 
-  void setTabIndex(index) {
+  void setTabIndex(int index) {
     setState(() {
       _tabIndex = index;
     });
   }
 
-  void setCurrentTabActive(context, index, tab) {
+  void setCurrentTabActive(BuildContext context, int index, String tab) {
     setState(() {
       _tabIndex = index;
 
@@ -190,7 +181,7 @@ class PostDetailPageState extends State<PostDetailPage> {
           fromPage: widget.fromPage,
           isDetail: true,
           parentContext: widget.parentContext,
-          key: ValueKey('post-key-${widget.post.id}'),
+          key: ValueKey<String>('post-key-${widget.post.id}'),
         ),
       );
 
@@ -204,15 +195,16 @@ class PostDetailPageState extends State<PostDetailPage> {
         onPressed: () => postExtraActions(context),
       );
 
-  Future<void> confirmDelete(context) async {
-    final confirm = await ConfirmationDialog.show(
+  Future<void> confirmDelete(BuildContext context) async {
+    final bool confirm = await ConfirmationDialog.show(
       context,
       title: '删除动态',
       content: '是否确认删除这条动态?',
       showConfirm: true,
     );
     if (confirm) {
-      final _loadingDialogController = LoadingDialogController();
+      final LoadingDialogController _loadingDialogController =
+          LoadingDialogController();
       LoadingDialog.show(
         context,
         controller: _loadingDialogController,
@@ -232,7 +224,7 @@ class PostDetailPageState extends State<PostDetailPage> {
     }
   }
 
-  void postExtraActions(context) {
+  void postExtraActions(BuildContext context) {
     ConfirmationBottomSheet.show(
       context,
       children: <Widget>[
@@ -241,7 +233,7 @@ class PostDetailPageState extends State<PostDetailPage> {
           username: widget.post.nickname,
         )))
           ConfirmationBottomSheetAction(
-            icon: Icon(Icons.visibility_off),
+            icon: const Icon(Icons.visibility_off),
             text: '${UserAPI.blacklist.contains(
               BlacklistUser(
                   uid: widget.post.uid, username: widget.post.nickname),
@@ -253,7 +245,7 @@ class PostDetailPageState extends State<PostDetailPage> {
             ),
           ),
         ConfirmationBottomSheetAction(
-          icon: Icon(Icons.report),
+          icon: const Icon(Icons.report),
           text: '举报动态',
           onTap: () => confirmReport(context),
         ),
@@ -261,17 +253,19 @@ class PostDetailPageState extends State<PostDetailPage> {
     );
   }
 
-  void confirmReport(context) async {
-    final confirm = await ConfirmationDialog.show(
+  Future<void> confirmReport(BuildContext context) async {
+    final bool confirm = await ConfirmationDialog.show(
       context,
       title: '举报动态',
       content: '确定举报该条动态吗?',
       showConfirm: true,
     );
     if (confirm) {
-      final provider =
-          Provider.of<ReportRecordsProvider>(context, listen: false);
-      final canReport = await provider.addRecord(widget.post.id);
+      final ReportRecordsProvider provider = Provider.of<ReportRecordsProvider>(
+        context,
+        listen: false,
+      );
+      final bool canReport = await provider.addRecord(widget.post.id);
       if (canReport) {
         unawaited(PostAPI.reportPost(widget.post));
         showToast('举报成功');
@@ -328,7 +322,7 @@ class PostDetailPageState extends State<PostDetailPage> {
       );
 
   Widget get toolbar {
-    final bodyTextTheme = Theme.of(context).textTheme.bodyText2;
+    final TextStyle bodyTextStyle = Theme.of(context).textTheme.bodyText2;
     return Container(
       height: Screens.bottomSafeHeight + suSetHeight(70.0),
       padding: EdgeInsets.only(bottom: Screens.bottomSafeHeight),
@@ -342,18 +336,17 @@ class PostDetailPageState extends State<PostDetailPage> {
               onPressed: () {
                 navigatorState.pushNamed(
                   Routes.openjmuAddForward,
-                  arguments: {'post': widget.post},
+                  arguments: <String, dynamic>{'post': widget.post},
                 );
               },
               icon: SvgPicture.asset(
                 R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
-                color: bodyTextTheme.color,
+                color: bodyTextStyle.color,
                 width: suSetWidth(iconSize),
               ),
               label: Text(
                 '转发',
-                style:
-                    bodyTextTheme.copyWith(fontSize: suSetSp(actionFontSize)),
+                style: bodyTextStyle.copyWith(fontSize: actionFontSize.sp),
               ),
               splashColor: Colors.grey,
             ),
@@ -363,18 +356,17 @@ class PostDetailPageState extends State<PostDetailPage> {
               onPressed: () {
                 navigatorState.pushNamed(
                   Routes.openjmuAddComment,
-                  arguments: {'post': widget.post},
+                  arguments: <String, dynamic>{'post': widget.post},
                 );
               },
               icon: SvgPicture.asset(
                 R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
-                color: bodyTextTheme.color,
+                color: bodyTextStyle.color,
                 width: suSetWidth(iconSize),
               ),
               label: Text(
                 '评论',
-                style:
-                    bodyTextTheme.copyWith(fontSize: suSetSp(actionFontSize)),
+                style: bodyTextStyle.copyWith(fontSize: actionFontSize.sp),
               ),
               splashColor: Colors.grey,
             ),
@@ -388,9 +380,9 @@ class PostDetailPageState extends State<PostDetailPage> {
               ),
               countBuilder: (int count, bool isLiked, String text) => Text(
                 count > 0 ? text : '赞',
-                style: bodyTextTheme.copyWith(
-                  color: isLiked ? currentThemeColor : bodyTextTheme.color,
-                  fontSize: suSetSp(actionFontSize),
+                style: bodyTextStyle.copyWith(
+                  color: isLiked ? currentThemeColor : bodyTextStyle.color,
+                  fontSize: actionFontSize.sp,
                 ),
               ),
               bubblesColor: BubblesColor(
@@ -399,7 +391,7 @@ class PostDetailPageState extends State<PostDetailPage> {
               ),
               likeBuilder: (bool isLiked) => SvgPicture.asset(
                 R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
-                color: isLiked ? currentThemeColor : bodyTextTheme.color,
+                color: isLiked ? currentThemeColor : bodyTextStyle.color,
                 width: suSetWidth(iconSize),
               ),
               likeCount: widget.post.isLike
@@ -421,20 +413,22 @@ class PostDetailPageState extends State<PostDetailPage> {
 
   Future<bool> onLikeButtonTap(bool isLiked) {
     final Completer<bool> completer = Completer<bool>();
-    int id = widget.post.id;
+    final int id = widget.post.id;
 
     widget.post.isLike = !widget.post.isLike;
     !isLiked ? widget.post.praises++ : widget.post.praises--;
     completer.complete(!isLiked);
 
-    PraiseAPI.requestPraise(id, !isLiked).then((response) {
-      Instances.eventBus.fire(PraiseInPostUpdatedEvent(
-        postId: widget.post.id,
-        count: praises,
-        type: 'square',
-        isLike: !isLiked,
-      ));
-    }).catchError((e) {
+    PraiseAPI.requestPraise(id, !isLiked).then(
+      (Response<Map<String, dynamic>> response) {
+        Instances.eventBus.fire(PraiseInPostUpdatedEvent(
+          postId: widget.post.id,
+          count: praises,
+          type: 'square',
+          isLike: !isLiked,
+        ));
+      },
+    ).catchError((dynamic e) {
       isLiked ? widget.post.praises++ : widget.post.praises--;
       completer.complete(isLiked);
       return completer.future;
@@ -448,21 +442,22 @@ class PostDetailPageState extends State<PostDetailPage> {
     return Scaffold(
       body: FixedAppBarWrapper(
         appBar: FixedAppBar(
-          title: Text('动态正文'),
+          title: const Text('动态正文'),
           actions: <Widget>[
-            widget.post.uid == currentUser.uid
-                ? deleteButton
-                : postActionButton,
+            if (widget.post.uid == currentUser.uid)
+              deleteButton
+            else
+              postActionButton,
           ],
         ),
         body: Column(
           children: <Widget>[
             Expanded(
               child: ScrollConfiguration(
-                behavior: NoGlowScrollBehavior(),
+                behavior: const NoGlowScrollBehavior(),
                 child: NestedScrollView(
                   physics: const ClampingScrollPhysics(),
-                  headerSliverBuilder: (_, __) => [
+                  headerSliverBuilder: (_, __) => <Widget>[
                     SliverToBoxAdapter(child: _post),
                     SliverPersistentHeader(
                       delegate: CommonSliverPersistentHeaderDelegate(
@@ -493,13 +488,13 @@ class PostDetailPageState extends State<PostDetailPage> {
 
 class CommonSliverPersistentHeaderDelegate
     extends SliverPersistentHeaderDelegate {
-  final Widget child;
-  final double height;
-
   CommonSliverPersistentHeaderDelegate({
     @required this.child,
     @required this.height,
   });
+
+  final Widget child;
+  final double height;
 
   @override
   double get minExtent => height;
