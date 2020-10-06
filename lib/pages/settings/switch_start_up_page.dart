@@ -5,21 +5,23 @@ import 'package:openjmu/constants/constants.dart';
 import 'package:openjmu/pages/main_page.dart';
 import 'package:openjmu/pages/home/school_work_page.dart';
 
-@FFRoute(name: "openjmu://switch-startup", routeName: "切换启动页")
+@FFRoute(name: 'openjmu://switch-startup', routeName: '切换启动页')
 class SwitchStartUpPage extends StatefulWidget {
   @override
   _SwitchStartUpPageState createState() => _SwitchStartUpPageState();
 }
 
 class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
-  List<List<String>> get pageTab => [
-        List.from(SchoolWorkPageState.tabs),
+  List<List<String>> get pageTab => <List<String>>[
+        List<String>.from(SchoolWorkPageState.tabs),
       ];
-  List<List<Map<String, dynamic>>> get pageSection => [
-        [
-          {
+
+  List<List<Map<String, dynamic>>> get pageSection =>
+      <List<Map<String, dynamic>>>[
+        <Map<String, dynamic>>[
+          <String, dynamic>{
             'name': '启动页',
-            'pages': List.from(MainPageState.pagesTitle),
+            'pages': List<String>.from(MainPageState.pagesTitle),
             'index': settingsProvider.homeSplashIndex,
           },
         ],
@@ -29,12 +31,14 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
   @override
   void initState() {
     super.initState();
-    settingsProvider =
-        Provider.of<SettingsProvider>(currentContext, listen: false);
+    settingsProvider = Provider.of<SettingsProvider>(
+      currentContext,
+      listen: false,
+    );
   }
 
-  Widget settingItem(context, index, sectionIndex) {
-    final page = pageSection[sectionIndex][index];
+  Widget settingItem(BuildContext context, int index, int sectionIndex) {
+    final Map<String, dynamic> page = pageSection[sectionIndex][index];
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       child: Container(
@@ -73,15 +77,17 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
       ),
       onTap: () async {
         await showSelection(context, sectionIndex, page, index);
-        Future.delayed(1.seconds, () {
-          if (mounted) setState(() {});
+        Future<void>.delayed(1.seconds, () {
+          if (mounted) {
+            setState(() {});
+          }
         });
       },
     );
   }
 
   Widget pageSelectionItem(
-    context, {
+    BuildContext context, {
     int sectionIndex,
     Map<String, dynamic> page,
     int pageIndex,
@@ -105,7 +111,9 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
         if (page['name'] == '启动页') {
           HiveFieldUtils.setHomeSplashIndex(index);
         } else {
-          final _list = List<int>.from(settingsProvider.homeStartUpIndex);
+          final List<int> _list = List<int>.from(
+            settingsProvider.homeStartUpIndex,
+          );
           _list[pageIndex] = index;
           HiveFieldUtils.setHomeStartUpIndex(_list);
         }
@@ -114,10 +122,15 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
     );
   }
 
-  Future showSelection(context, sectionIndex, page, pageIndex) async {
+  Future<void> showSelection(
+    BuildContext context,
+    int sectionIndex,
+    Map<String, dynamic> page,
+    int pageIndex,
+  ) async {
     return showModalBottomSheet(
       context: context,
-      builder: (context) {
+      builder: (BuildContext context) {
         return Padding(
           padding: EdgeInsets.symmetric(
             vertical: suSetSp(20.0),
@@ -143,14 +156,14 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
                 crossAxisSpacing: suSetSp(12.0),
                 childAspectRatio: 2.1,
                 children: List<Widget>.generate(
-                  page['pages'].length,
-                  (i) => pageSelectionItem(
+                  (page['pages'] as List<String>).length,
+                  (int i) => pageSelectionItem(
                     context,
                     sectionIndex: sectionIndex,
                     page: page,
                     pageIndex: pageIndex,
                     index: i,
-                    selectedIndex: page['index'],
+                    selectedIndex: page['index'] as int,
                   ),
                 ),
               ),
@@ -161,8 +174,13 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
     );
   }
 
-  List newPageSection(sectionIndex, pageIndex, index) {
-    List<List<Map<String, dynamic>>> _section = List.from(pageSection);
+  List<List<Map<String, dynamic>>> newPageSection(
+    int sectionIndex,
+    int pageIndex,
+    int index,
+  ) {
+    final List<List<Map<String, dynamic>>> _section =
+        List<List<Map<String, dynamic>>>.from(pageSection);
     _section[sectionIndex][pageIndex]['index'] = index;
     return _section;
   }
@@ -194,18 +212,18 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
         ),
         body: ListView.separated(
           padding: EdgeInsets.symmetric(horizontal: suSetSp(40.0)),
-          separatorBuilder: (context, index) => separator(
+          separatorBuilder: (_, int index) => separator(
             context,
             color: Colors.transparent,
             height: 20.0,
           ),
           itemCount: pageSection.length,
-          itemBuilder: (context, sectionIndex) => ListView.builder(
+          itemBuilder: (_, int sectionIndex) => ListView.builder(
             padding: EdgeInsets.zero,
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: pageSection[sectionIndex].length,
-            itemBuilder: (context, index) => settingItem(
+            itemBuilder: (_, int index) => settingItem(
               context,
               index,
               sectionIndex,
