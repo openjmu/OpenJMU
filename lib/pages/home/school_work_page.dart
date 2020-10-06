@@ -14,15 +14,15 @@ class SchoolWorkPage extends StatefulWidget {
 
 class SchoolWorkPageState extends State<SchoolWorkPage>
     with TickerProviderStateMixin, AutomaticKeepAliveClientMixin {
-  static List<String> get tabs => [
+  static List<String> get tabs => <String>[
         if (!(currentUser?.isPostgraduate ?? false)) '课程表',
         if (!((currentUser?.isTeacher ?? false) ||
             (currentUser?.isPostgraduate ?? false)))
           '成绩',
       ];
 
-  final refreshIndicatorKey = GlobalKey<RefreshIndicatorState>();
-  final _scrollController = ScrollController();
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey();
+  final ScrollController _scrollController = ScrollController();
 
   int currentIndex = 0;
 
@@ -39,28 +39,27 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
     ).homeStartUpIndex[1];
 
     Instances.eventBus
-      ..on<ScrollToTopEvent>().listen((event) {
-        if (mounted && event.tabIndex == 1) {
-          _scrollController.animateTo(0,
-              duration: 500.milliseconds, curve: Curves.ease);
-        }
-      })
-      ..on<AppCenterRefreshEvent>().listen((event) {
-        switch (tabs[event.currentIndex]) {
-          case '课程表':
-            Instances.eventBus.fire(CourseScheduleRefreshEvent());
-            break;
-          case '成绩':
-            Provider.of<ScoresProvider>(currentContext, listen: false)
-                .requestScore();
-            break;
-          case '应用':
-            if (_scrollController.hasClients) _scrollController.jumpTo(0.0);
-            refreshIndicatorKey.currentState?.show();
-            break;
-        }
-        if (mounted) setState(() {});
-      });
+        .on<AppCenterRefreshEvent>()
+        .listen((AppCenterRefreshEvent event) {
+      switch (tabs[event.currentIndex]) {
+        case '课程表':
+          Instances.eventBus.fire(CourseScheduleRefreshEvent());
+          break;
+        case '成绩':
+          Provider.of<ScoresProvider>(currentContext, listen: false)
+              .requestScore();
+          break;
+        case '应用':
+          if (_scrollController.hasClients) {
+            _scrollController.jumpTo(0.0);
+          }
+          refreshIndicatorKey.currentState?.show();
+          break;
+      }
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -69,7 +68,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
     super.dispose();
   }
 
-  Widget get _appBar => FixedAppBar(
+  FixedAppBar get _appBar => FixedAppBar(
         automaticallyImplyLeading: false,
         title: Container(
           alignment: AlignmentDirectional.centerStart,
@@ -137,6 +136,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
       );
 
   @mustCallSuper
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
@@ -144,8 +144,8 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
       body: FixedAppBarWrapper(
         appBar: _appBar,
         body: Selector<ThemesProvider, bool>(
-          selector: (_, provider) => provider.dark,
-          builder: (_, dark, __) {
+          selector: (_, ThemesProvider provider) => provider.dark,
+          builder: (_, bool isDark, __) {
             return IndexedStack(
               index: currentIndex,
               children: <Widget>[
@@ -155,7 +155,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
                           ? InAppWebViewPage(
                               url: '${API.courseScheduleTeacher}'
                                   '?sid=${currentUser.sid}'
-                                  '&night=${dark ? 1 : 0}',
+                                  '&night=${isDark ? 1 : 0}',
                               title: '课程表',
                               withAppBar: false,
                               withAction: false,
@@ -164,7 +164,7 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
                           : CourseSchedulePage(
                               key: Instances.courseSchedulePageStateKey,
                             )
-                      : SizedBox.shrink(),
+                      : const SizedBox.shrink(),
                 if (tabs.contains('成绩')) ScorePage(),
               ],
             );
