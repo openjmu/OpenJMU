@@ -42,6 +42,7 @@ class _PostCardState extends State<PostCard> {
   final double contentPadding = 22.0;
 
   TextStyle get rootTopicTextStyle => TextStyle(fontSize: 18.0.sp);
+
   TextStyle get rootTopicMentionStyle => TextStyle(
         color: Colors.blue,
         fontSize: 18.0.sp,
@@ -127,7 +128,8 @@ class _PostCardState extends State<PostCard> {
       );
 
   Widget getRootPost(BuildContext context, Map<String, dynamic> rootTopic) {
-    dynamic content = rootTopic['topic'];
+    final Map<String, dynamic> content =
+        rootTopic['topic'] as Map<String, dynamic>;
     if (rootTopic['exists'] == 1) {
       if (content['article'] == '此微博已经被屏蔽' ||
           content['content'] == '此微博已经被屏蔽') {

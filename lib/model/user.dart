@@ -8,16 +8,9 @@ part of 'models.dart';
 ///
 /// [id] 用户id, [nickname] 名称, [gender] 性别, [topics] 动态数, [latestTid] 最新动态id
 /// [fans] 粉丝数, [idols] 关注数, [isFollowing] 是否已关注
+@immutable
 class User {
-  int id;
-  String nickname;
-  int gender;
-  int topics;
-  int latestTid;
-  int fans, idols;
-  bool isFollowing;
-
-  User({
+  const User({
     this.id,
     this.nickname,
     this.gender,
@@ -30,31 +23,30 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: int.parse(json['uid'].toString()),
-      nickname: json['nickname'] ??
-          json['username'] ??
-          json['name'] ??
-          json['uid'].toString(),
-      gender: json['gender'] ?? 0,
-      topics: json['topics'] ?? 0,
-      latestTid: json['latest_tid'],
-      fans: json['fans'] ?? 0,
-      idols: json['idols'] ?? 0,
+      id: json['uid'].toString().toInt(),
+      nickname:
+          (json['nickname'] ?? json['username'] ?? json['name'] ?? json['uid'])
+              .toString(),
+      gender: json['gender'] as int ?? 0,
+      topics: json['topics'] as int ?? 0,
+      latestTid: json['latest_tid'] as int,
+      fans: json['fans'] as int ?? 0,
+      idols: json['idols'] as int ?? 0,
       isFollowing: json['is_following'] == 1,
     );
   }
 
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is User && runtimeType == other.runtimeType && id == other.id;
+  final int id;
+  final String nickname;
+  final int gender;
+  final int topics;
+  final int latestTid;
+  final int idols;
+  final int fans;
+  final bool isFollowing;
 
-  @override
-  int get hashCode => id.hashCode;
-
-  @override
-  String toString() {
-    return 'User ${JsonEncoder.withIndent('' '').convert({
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
       'id': id,
       'nickname': nickname,
       'gender': gender,
@@ -63,6 +55,22 @@ class User {
       'fans': fans,
       'idols': idols,
       'isFollowing': isFollowing,
-    })}';
+    };
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is User &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          latestTid == other.latestTid;
+
+  @override
+  int get hashCode => hashValues(id, latestTid);
+
+  @override
+  String toString() {
+    return 'User ${const JsonEncoder.withIndent('' '').convert(toJson())}';
   }
 }

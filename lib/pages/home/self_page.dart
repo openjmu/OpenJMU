@@ -16,7 +16,7 @@ class SelfPage extends StatelessWidget {
         //   'icon': R.ASSETS_ICONS_SELF_PAGE_BACKPACK_SVG,
         //   'route': Routes.openjmuBackpack,
         // },
-        {
+        <String, dynamic>{
           'icon': R.ASSETS_ICONS_SELF_PAGE_NIGHT_MODE_SVG,
           'name': '夜间模式',
           'action': (BuildContext context) {
@@ -28,7 +28,7 @@ class SelfPage extends StatelessWidget {
             }
           },
         },
-        {
+        <String, dynamic>{
           'icon': R.ASSETS_ICONS_SELF_PAGE_SCAN_CODE_SVG,
           'name': '扫一扫',
           'action': (BuildContext context) async {
@@ -39,17 +39,17 @@ class SelfPage extends StatelessWidget {
             }
           },
         },
-        {
+        <String, dynamic>{
           'icon': R.ASSETS_ICONS_SELF_PAGE_SEARCH_SVG,
           'name': '搜索',
           'route': Routes.openjmuSearch,
         },
-        {
+        <String, dynamic>{
           'name': '偏好设置',
           'icon': R.ASSETS_ICONS_SELF_PAGE_SETTINGS_SVG,
           'route': Routes.openjmuSettings,
         },
-        {
+        <String, dynamic>{
           'name': '退出账号',
           'icon': R.ASSETS_ICONS_SELF_PAGE_LOGOUT_SVG,
           'action': UserAPI.logout,
@@ -127,7 +127,7 @@ class SelfPage extends StatelessWidget {
                 ),
               ),
               Text(
-                '${currentUser.workId}',
+                currentUser.workId,
                 style: TextStyle(
                   color: Colors.white54,
                   fontSize: 24.0.sp,
@@ -188,7 +188,7 @@ class SelfPage extends StatelessWidget {
                 } else {
                   widget = Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: <Widget>[
                       if (provider.hasSigned) SizedBox(height: 2.0.w),
                       SvgPicture.asset(
                         provider.hasSigned
@@ -241,7 +241,7 @@ class SelfPage extends StatelessWidget {
             ),
             Expanded(
               child: Text(
-                item['name'],
+                item['name'] as String,
                 style: TextStyle(fontSize: 20.0.sp),
               ),
             ),
@@ -447,7 +447,7 @@ class SelfPage extends StatelessWidget {
     return GestureDetector(
       onLongPress: () {
         if (Constants.isDebug) {
-          showDialog(
+          showDialog<void>(
             context: context,
             barrierDismissible: true,
             builder: (BuildContext _) => ManuallySetSidDialog(),
@@ -479,7 +479,7 @@ class SelfPage extends StatelessWidget {
                       TextSpan(children: <InlineSpan>[
                         const TextSpan(text: '第'),
                         TextSpan(
-                          text: '${currentWeek}',
+                          text: '$currentWeek',
                           style: TextStyle(
                             color: currentThemeColor,
                             fontWeight: FontWeight.bold,
@@ -536,7 +536,7 @@ class SelfPage extends StatelessWidget {
         children: <Widget>[
           headerWrapper(
             child: Stack(
-              children: [
+              children: <Widget>[
                 Container(
                   height: (headerHeight - commonAppsHeight / 2).h,
                   color: currentThemeColor,

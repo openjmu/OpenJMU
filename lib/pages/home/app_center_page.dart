@@ -106,7 +106,7 @@ class AppCenterPage extends StatelessWidget {
             color: context.themeData.colorScheme.surface,
           ),
           child: Column(
-            children: [
+            children: <Widget>[
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -122,7 +122,7 @@ class AppCenterPage extends StatelessWidget {
                         ),
                       )
                     else ...<Widget>[
-                      ...List.generate(
+                      ...List<Widget>.generate(
                         provider.commonWebApps.length,
                         (int index) {
                           return Expanded(
@@ -134,7 +134,7 @@ class AppCenterPage extends StatelessWidget {
                           );
                         },
                       ),
-                      ...List.generate(
+                      ...List<Widget>.generate(
                         provider.maxCommonWebApps -
                             provider.commonWebApps.length,
                         (int _) => const Spacer(),
@@ -305,7 +305,7 @@ class AppCenterPage extends StatelessWidget {
                   ),
                 ),
                 GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 4,
                     childAspectRatio: 1,
                   ),
@@ -344,7 +344,7 @@ class AppCenterPage extends StatelessWidget {
               context.read<WebAppsProvider>().isEditingCommonApps =
                   !isEditingCommonApps;
             }
-            return Future.value(!isEditingCommonApps);
+            return Future<bool>.value(!isEditingCommonApps);
           },
           child: Scaffold(
             backgroundColor: Color.lerp(
@@ -353,11 +353,12 @@ class AppCenterPage extends StatelessWidget {
               0.5,
             ),
             body: FixedAppBarWrapper(
-              appBar: FixedAppBar(
+              appBar: const FixedAppBar(
                 elevation: 0.0,
                 title: Text('应用中心'),
               ),
-              body: fetching ? SpinKitWidget() : categoryListView(context),
+              body:
+                  fetching ? const SpinKitWidget() : categoryListView(context),
             ),
           ),
         );

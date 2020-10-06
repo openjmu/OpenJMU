@@ -185,15 +185,13 @@ class WebAppsProvider extends ChangeNotifier {
     _commonWebApps.clear();
   }
 
-  WebApp get webVPN {
-    return WebApp(
-      appId: 666666,
-      code: '666666',
-      name: '校内资源访问',
-      url: 'http://webvpn.jmu.edu.cn/',
-      menuType: 'A4',
-    );
-  }
+  final WebApp webVPN = const WebApp(
+    appId: 666666,
+    code: '666666',
+    name: '校内资源访问',
+    url: 'http://webvpn.jmu.edu.cn/',
+    menuType: 'A4',
+  );
 
   WebApp appWrapper(WebApp app) {
 //    debugPrint('${app.code}-${app.name}');

@@ -21,10 +21,11 @@ class AnnouncementWidget extends StatelessWidget {
   final double radius;
   final bool canClose;
 
-  IconThemeData get iconTheme => IconThemeData(
-        color: contentColor ?? currentIsDark ? Colors.white70 : Colors.white,
-        size: 26.w,
-      );
+  Color get adaptiveColor =>
+      contentColor ?? (currentIsDark ? Colors.white70 : Colors.white);
+
+  IconThemeData get iconTheme =>
+      IconThemeData(color: adaptiveColor, size: 26.w);
 
   Widget title(SettingsProvider provider) {
     return Expanded(
@@ -32,11 +33,7 @@ class AnnouncementWidget extends StatelessWidget {
         margin: EdgeInsets.symmetric(horizontal: 6.w),
         child: Text(
           '  ${provider.announcements[0]['title']}',
-          style: TextStyle(
-            color:
-                contentColor ?? currentIsDark ? Colors.white70 : Colors.white,
-            fontSize: 20.sp,
-          ),
+          style: TextStyle(color: adaptiveColor, fontSize: 20.sp),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
@@ -52,7 +49,10 @@ class AnnouncementWidget extends StatelessWidget {
               onTap: () {
                 provider.announcementsUserEnabled = false;
               },
-              child: IconTheme(data: iconTheme, child: Icon(Icons.close)),
+              child: IconTheme(
+                data: iconTheme,
+                child: const Icon(Icons.close),
+              ),
             )
           : SvgPicture.asset(
               R.ASSETS_ICONS_ARROW_RIGHT_SVG,
