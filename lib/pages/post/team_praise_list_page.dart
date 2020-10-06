@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:extended_text/extended_text.dart';
 
 import 'package:openjmu/constants/constants.dart';
-import 'package:openjmu/pages/post/team_post_detail_page.dart';
 
 class TeamPraiseListPage extends StatefulWidget {
   @override
@@ -22,31 +21,40 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
 
   int page = 1, total;
 
-  List<TeamPraiseItem> praiseList = [];
+  List<TeamPraiseItem> praiseList = <TeamPraiseItem>[];
 
   @override
   void initState() {
     super.initState();
-    if (_shouldInit) loadList();
+    if (_shouldInit) {
+      loadList();
+    }
     _shouldInit = false;
   }
 
   void loadList({bool loadMore = false}) {
-    if (loadMore) ++page;
-    TeamPraiseAPI.getPraiseList(page: page).then((response) {
-      final data = response.data;
-      data['list'].forEach((item) {
-        praiseList.add(TeamPraiseItem.fromJson(item));
-      });
-      total = int.tryParse(data['total'].toString());
-      canLoadMore = int.tryParse(data['count'].toString()) == 0;
-    }).whenComplete(() {
+    if (loadMore) {
+      ++page;
+    }
+    TeamPraiseAPI.getPraiseList(page: page).then(
+      (Response<Map<String, dynamic>> response) {
+        final Map<String, dynamic> data = response.data;
+        for (final dynamic _item in data['list']) {
+          final Map<String, dynamic> item = _item as Map<String, dynamic>;
+          praiseList.add(TeamPraiseItem.fromJson(item));
+        }
+        total = int.tryParse(data['total'].toString());
+        canLoadMore = int.tryParse(data['count'].toString()) == 0;
+      },
+    ).whenComplete(() {
       loading = false;
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
-  Widget _header(context, int index, TeamPraiseItem item) {
+  Widget _header(BuildContext context, int index, TeamPraiseItem item) {
     return Container(
       height: suSetHeight(80.0),
       padding: EdgeInsets.symmetric(
@@ -77,12 +85,12 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                           ),
                         ),
                       ),
-                    Spacer(),
+                    const Spacer(),
                     _postTime(context, item.time),
                   ],
                 ),
                 Text(
-                  praiseList[index].scope['name'],
+                  praiseList[index].scope['name'] as String,
                   style: TextStyle(color: Colors.blue, fontSize: suSetSp(17.0)),
                 ),
               ],
@@ -93,9 +101,9 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
     );
   }
 
-  Widget _postTime(context, DateTime postTime) {
-    final now = DateTime.now();
-    DateTime _postTime = postTime;
+  Widget _postTime(BuildContext context, DateTime postTime) {
+    final DateTime now = currentTime;
+    final DateTime _postTime = postTime;
     String time = '';
     if (_postTime.day == now.day &&
         _postTime.month == now.month &&
@@ -107,7 +115,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
       time += DateFormat('yyyy-MM-dd HH:mm').format(_postTime);
     }
     return Text(
-      '$time',
+      time,
       style: Theme.of(context).textTheme.caption.copyWith(
             fontSize: suSetSp(18.0),
             fontWeight: FontWeight.normal,
@@ -120,7 +128,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
         child: Text.rich(
           TextSpan(
             children: <InlineSpan>[
-              TextSpan(text: '赞了我的帖子 '),
+              const TextSpan(text: '赞了我的帖子 '),
               WidgetSpan(
                 alignment: ui.PlaceholderAlignment.middle,
                 child: Icon(
@@ -160,6 +168,58 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
         ),
       );
 
+  Widget praiseItemBuilder(BuildContext context, int index) {
+    if (index == praiseList.length - 1 && canLoadMore) {
+      loadList(loadMore: true);
+    }
+    if (index == praiseList.length) {
+      return LoadMoreIndicator(canLoadMore: canLoadMore);
+    }
+    final TeamPraiseItem item = praiseList.elementAt(index);
+    final TeamPostProvider provider = TeamPostProvider(item.post);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            navigatorState.pushNamed(
+              Routes.openjmuTeamPostDetail,
+              arguments: <String, dynamic>{
+                'provider': provider,
+                'type': TeamPostType.post,
+              },
+            );
+          },
+          child: Container(
+            margin: EdgeInsets.symmetric(
+              horizontal: suSetWidth(12.0),
+              vertical: suSetHeight(6.0),
+            ),
+            padding: EdgeInsets.symmetric(
+              horizontal: suSetWidth(24.0),
+              vertical: suSetHeight(8.0),
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(suSetWidth(10.0)),
+              color: Theme.of(context).cardColor,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                _header(context, index, item),
+                _content(item),
+                _rootContent(item),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -169,58 +229,7 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
               ? ListView.builder(
                   padding: EdgeInsets.zero,
                   itemCount: praiseList.length + 1,
-                  itemBuilder: (_, index) {
-                    if (index == praiseList.length - 1 && canLoadMore) {
-                      loadList(loadMore: true);
-                    }
-                    if (index == praiseList.length) {
-                      return LoadMoreIndicator(canLoadMore: canLoadMore);
-                    }
-                    final item = praiseList.elementAt(index);
-                    final provider = TeamPostProvider(item.post);
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: () {
-                            navigatorState.pushNamed(
-                              Routes.openjmuTeamPostDetail,
-                              arguments: {
-                                'provider': provider,
-                                'type': TeamPostType.post,
-                              },
-                            );
-                          },
-                          child: Container(
-                            margin: EdgeInsets.symmetric(
-                              horizontal: suSetWidth(12.0),
-                              vertical: suSetHeight(6.0),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: suSetWidth(24.0),
-                              vertical: suSetHeight(8.0),
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.circular(suSetWidth(10.0)),
-                              color: Theme.of(context).cardColor,
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                _header(context, index, item),
-                                _content(item),
-                                _rootContent(item),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+                  itemBuilder: praiseItemBuilder,
                 )
               : Center(
                   child: Text(
@@ -231,20 +240,14 @@ class _TeamPraiseListPageState extends State<TeamPraiseListPage> {
                     ),
                   ),
                 )
-          : SpinKitWidget(),
+          : const SpinKitWidget(),
     );
   }
 }
 
+@immutable
 class TeamPraiseItem {
-  TeamPost post;
-  String from;
-  DateTime time;
-  Map scope;
-  int fromUserId;
-  String fromUsername;
-
-  TeamPraiseItem({
+  const TeamPraiseItem({
     this.post,
     this.from,
     this.time,
@@ -254,21 +257,30 @@ class TeamPraiseItem {
   });
 
   factory TeamPraiseItem.fromJson(Map<String, dynamic> json) {
-    final post = TeamPost.fromJson(json['post_info']);
-    final user = json['user_info'];
+    final TeamPost post =
+        TeamPost.fromJson(json['post_info'] as Map<String, dynamic>);
+    final Map<String, dynamic> user = json['user_info'] as Map<String, dynamic>;
     return TeamPraiseItem(
       post: post,
-      from: json['from'],
+      from: json['from'] as String,
       time: DateTime.fromMillisecondsSinceEpoch(
-          int.parse(json['post_time'].toString())),
-      scope: json['post_info']['scope'],
-      fromUserId: int.parse(user['uid'].toString()),
-      fromUsername: user['nickname'],
+        json['post_time'].toString().toInt(),
+      ),
+      scope: json['post_info']['scope'] as Map<String, dynamic>,
+      fromUserId: user['uid'].toString().toInt(),
+      fromUsername: user['nickname'] as String,
     );
   }
 
+  final TeamPost post;
+  final String from;
+  final DateTime time;
+  final Map<String, dynamic> scope;
+  final int fromUserId;
+  final String fromUsername;
+
   Map<String, dynamic> toJson() {
-    return {
+    return <String, dynamic>{
       'post': post,
       'from': from,
       'time': time.toString(),
@@ -280,6 +292,6 @@ class TeamPraiseItem {
 
   @override
   String toString() {
-    return JsonEncoder.withIndent('  ').convert(toJson());
+    return const JsonEncoder.withIndent('  ').convert(toJson());
   }
 }
