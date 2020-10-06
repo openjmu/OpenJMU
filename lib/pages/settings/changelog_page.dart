@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
-@FFRoute(name: "openjmu://changelog-page", routeName: "版本履历")
+@FFRoute(name: 'openjmu://changelog-page', routeName: '版本履历')
 class ChangeLogPage extends StatefulWidget {
   @override
   _ChangeLogPageState createState() => _ChangeLogPageState();
@@ -19,7 +19,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
   final PageController _pageController = PageController();
   double _currentPage = 0.0;
 
-  Set changeLogs = HiveBoxes.changelogBox.values.toSet();
+  final Set<ChangeLog> changeLogs = HiveBoxes.changelogBox.values.toSet();
   bool error = false;
   bool displayBack = true;
   bool animating = false;
@@ -31,26 +31,32 @@ class _ChangeLogPageState extends State<ChangeLogPage>
   @override
   void initState() {
     super.initState();
-    if (changeLogs == null) PackageUtils.checkUpdate();
+    if (changeLogs == null) {
+      PackageUtils.checkUpdate();
+    }
   }
 
   void blurAnimate(bool forward) {
     animating = forward;
-    if (mounted) setState(() {});
+    if (mounted) {
+      setState(() {});
+    }
 
     _blurOpacityController =
         AnimationController(duration: 1.seconds, vsync: this);
-    final _blurOpacityCurve = CurvedAnimation(
+    final CurvedAnimation _blurOpacityCurve = CurvedAnimation(
       parent: _blurOpacityController,
       curve: Curves.ease,
     );
-    _blurOpacityAnimation = Tween(
+    _blurOpacityAnimation = Tween<double>(
       begin: forward ? 0.0 : _blurOpacity,
       end: forward ? 1.0 : 0.0,
     ).animate(_blurOpacityCurve)
       ..addListener(() {
         _blurOpacity = _blurOpacityAnimation.value;
-        if (mounted) setState(() {});
+        if (mounted) {
+          setState(() {});
+        }
       });
 
     _blurOpacityController
@@ -66,10 +72,10 @@ class _ChangeLogPageState extends State<ChangeLogPage>
           hoverElevation: 0.0,
           focusElevation: 0.0,
           color: currentThemeColor.withOpacity(0.2),
-          shape: RoundedRectangleBorder(borderRadius: maxBorderRadius),
+          shape: const RoundedRectangleBorder(borderRadius: maxBorderRadius),
           onPressed: () {
             blurAnimate(true);
-            Future.delayed(3.seconds, () {
+            Future<void>.delayed(3.seconds, () {
               blurAnimate(false);
             });
             _pageController.animateToPage(
@@ -123,14 +129,14 @@ class _ChangeLogPageState extends State<ChangeLogPage>
       margin: EdgeInsets.symmetric(horizontal: suSetWidth(40.0)),
       child: Column(
         children: <Widget>[
-          log.buildNumber == PackageUtils.buildNumber
-              ? Expanded(
-                  flex: 3,
-                  child: Center(
-                      child: Text('📍',
-                          style: TextStyle(fontSize: suSetSp(40.0)))),
-                )
-              : Spacer(flex: 2),
+          if (log.buildNumber == PackageUtils.buildNumber)
+            Expanded(
+              flex: 3,
+              child: Center(
+                  child: Text('📍', style: TextStyle(fontSize: suSetSp(40.0)))),
+            )
+          else
+            const Spacer(flex: 2),
           versionInfo(log),
           SizedBox(height: suSetHeight(12.0)),
           Row(
@@ -141,7 +147,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
               buildNumberInfo(log),
             ],
           ),
-          Spacer(flex: 2),
+          const Spacer(flex: 2),
         ],
       ),
     );
@@ -149,7 +155,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
 
   Widget versionInfo(ChangeLog log) {
     return Text(
-      '${log.version}',
+      log.version,
       style: Theme.of(context).textTheme.headline6.copyWith(
             fontSize: suSetSp(
                 log.buildNumber == PackageUtils.buildNumber ? 45.0 : 50.0),
@@ -161,16 +167,18 @@ class _ChangeLogPageState extends State<ChangeLogPage>
   Widget dateInfo(ChangeLog log) {
     return Text(
       '${log.date} ',
-      style:
-          Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(20.0)),
+      style: Theme.of(context).textTheme.caption.copyWith(
+            fontSize: suSetSp(20.0),
+          ),
     );
   }
 
   Widget buildNumberInfo(ChangeLog log) {
     return Text(
       '(${log.buildNumber})',
-      style:
-          Theme.of(context).textTheme.caption.copyWith(fontSize: suSetSp(20.0)),
+      style: Theme.of(context).textTheme.caption.copyWith(
+            fontSize: suSetSp(20.0),
+          ),
     );
   }
 
@@ -187,9 +195,12 @@ class _ChangeLogPageState extends State<ChangeLogPage>
             height: Screens.height / 6,
             child: Row(
               children: <Widget>[
-                index == 0 ? Spacer() : _logLine(true),
+                if (index != 0) _logLine(true) else const Spacer(),
                 _logVersion(log),
-                index == changeLogs.length - 1 ? Spacer() : _logLine(false),
+                if (index != changeLogs.length - 1)
+                  _logLine(false)
+                else
+                  const Spacer(),
               ],
             ),
           ),
@@ -224,7 +235,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
       TextSpan(
         children: List<TextSpan>.generate(
           sections.keys.length,
-          (i) => contentColumn(sections, i),
+          (int i) => contentColumn(sections, i),
         ),
       ),
       style: Theme.of(context)
@@ -235,14 +246,14 @@ class _ChangeLogPageState extends State<ChangeLogPage>
   }
 
   TextSpan contentColumn(Map<String, dynamic> sections, int index) {
-    final name = sections.keys.elementAt(index);
+    final String name = sections.keys.elementAt(index);
     return TextSpan(
       children: List<TextSpan>.generate(
-        sections[name].length + 1,
-        (j) => j == 0
+        (sections[name] as List<String>).length + 1,
+        (int j) => j == 0
             ? TextSpan(
                 text: '[$name]\n',
-                style: TextStyle(fontWeight: FontWeight.bold),
+                style: const TextStyle(fontWeight: FontWeight.bold),
               )
             : TextSpan(
                 text: '${j == 1 ? '\n' : ''}'
@@ -290,14 +301,18 @@ class _ChangeLogPageState extends State<ChangeLogPage>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
-            SpinKitWidget(),
+            const SpinKitWidget(),
             SizedBox(height: suSetHeight(40.0)),
             Text.rich(
               TextSpan(
                 children: <InlineSpan>[
-                  TextSpan(text: '履历跑得太快，程序已经追不上它了...待会儿它就会回来的\n'),
+                  const TextSpan(
+                    text: '履历跑得太快，程序已经追不上它了...待会儿它就会回来的\n',
+                  ),
                   TextSpan(
-                      text: '🚀', style: TextStyle(fontSize: suSetSp(50.0))),
+                    text: '🚀',
+                    style: TextStyle(fontSize: suSetSp(50.0)),
+                  ),
                 ],
               ),
               style: TextStyle(fontSize: suSetSp(25.0)),
@@ -315,60 +330,72 @@ class _ChangeLogPageState extends State<ChangeLogPage>
               sigmaX: 2.0 * _blurOpacity,
               sigmaY: 2.0 * _blurOpacity,
             ),
-            child: Text(' '),
+            child: const Text(' '),
           ),
         ),
       );
+
+  Widget logWidgetBuilder({
+    int index,
+    BoxConstraints constraints,
+  }) {
+    if (index != changeLogs.length) {
+      return detailWidget(
+        index,
+        changeLogs.elementAt(index),
+        parallaxOffset: constraints.maxWidth / 2.0 * (index - _currentPage),
+      );
+    } else {
+      return startWidget;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FixedAppBarWrapper(
-        appBar: FixedAppBar(title: Text('版本履历')),
+        appBar: const FixedAppBar(title: Text('版本履历')),
         body: Stack(
           children: <Widget>[
             Positioned.fill(
               child: changeLogs != null
                   ? LayoutBuilder(
-                      builder: (context, constraints) => NotificationListener(
-                        onNotification: (ScrollNotification notification) {
-                          _currentPage = _pageController.page;
-                          if (notification.metrics.axisDirection ==
-                                  AxisDirection.right &&
-                              _currentPage > 2.0) {
-                            displayBack = false;
-                          } else {
-                            displayBack = true;
-                          }
-                          if (mounted) setState(() {});
-                          return true;
-                        },
-                        child: Column(
-                          children: <Widget>[
-                            goBackButton,
-                            Expanded(
-                              child: PageView.custom(
-                                controller: _pageController,
-                                physics: const BouncingScrollPhysics(),
-                                childrenDelegate: SliverChildBuilderDelegate(
-                                  (BuildContext _, int index) =>
-                                      index == changeLogs.length
-                                          ? startWidget
-                                          : detailWidget(
-                                              index,
-                                              changeLogs.elementAt(index),
-                                              parallaxOffset:
-                                                  constraints.maxWidth /
-                                                      2.0 *
-                                                      (index - _currentPage),
-                                            ),
-                                  childCount: changeLogs.length + 1,
+                      builder: (_, BoxConstraints constraints) {
+                        return NotificationListener<ScrollNotification>(
+                          onNotification: (ScrollNotification notification) {
+                            _currentPage = _pageController.page;
+                            if (notification.metrics.axisDirection ==
+                                    AxisDirection.right &&
+                                _currentPage > 2.0) {
+                              displayBack = false;
+                            } else {
+                              displayBack = true;
+                            }
+                            if (mounted) {
+                              setState(() {});
+                            }
+                            return true;
+                          },
+                          child: Column(
+                            children: <Widget>[
+                              goBackButton,
+                              Expanded(
+                                child: PageView.custom(
+                                  controller: _pageController,
+                                  physics: const BouncingScrollPhysics(),
+                                  childrenDelegate: SliverChildBuilderDelegate(
+                                    (_, int index) => logWidgetBuilder(
+                                      index: index,
+                                      constraints: constraints,
+                                    ),
+                                    childCount: changeLogs.length + 1,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
+                            ],
+                          ),
+                        );
+                      },
                     )
                   : emptyTips,
             ),
