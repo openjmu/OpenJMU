@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart' as webView
+import 'package:flutter_inappwebview/flutter_inappwebview.dart' as web_view
     show Cookie;
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
@@ -45,7 +45,7 @@ class NetUtils {
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       if (_isProxyEnabled) {
-        client.findProxy = (uri) => _proxyDestination;
+        client.findProxy = (_) => _proxyDestination;
       }
       client.badCertificateCallback =
           (X509Certificate _, String __, int ___) => true;
@@ -67,7 +67,7 @@ class NetUtils {
     (tokenDio.httpClientAdapter as DefaultHttpClientAdapter)
         .onHttpClientCreate = (HttpClient client) {
       if (_isProxyEnabled) {
-        client.findProxy = (uri) => _proxyDestination;
+        client.findProxy = (_) => _proxyDestination;
       }
       client.badCertificateCallback =
           (X509Certificate _, String __, int ___) => true;
@@ -88,10 +88,10 @@ class NetUtils {
     ));
   }
 
-  static List<Cookie> convertWebViewCookies(List<webView.Cookie> cookies) {
+  static List<Cookie> convertWebViewCookies(List<web_view.Cookie> cookies) {
     trueDebugPrint('Replacing cookies: $cookies');
-    final List<Cookie> replacedCookies = cookies.map((webView.Cookie cookie) {
-      return Cookie(cookie.name, cookie.value)
+    final List<Cookie> replacedCookies = cookies.map((web_view.Cookie cookie) {
+      return Cookie(cookie.name, cookie.value?.toString())
         ..domain = cookie.domain
         ..httpOnly = cookie.isHttpOnly ?? false
         ..secure = cookie.isSecure ?? false
@@ -261,7 +261,7 @@ class NetUtils {
       trueDebugPrint('File start download: $url');
       path = '${(await getExternalStorageDirectory()).path}/';
       try {
-        response = await head(
+        response = await head<void>(
           url,
           data: data,
           options: Options(
@@ -274,7 +274,7 @@ class NetUtils {
             .where((String element) => element.contains('filename'))
             ?.first;
         if (filename != null) {
-          final filenameReg = RegExp(r'filename=\"(.+)\"');
+          final RegExp filenameReg = RegExp(r'filename=\"(.+)\"');
           filename = filenameReg.allMatches(filename).first.group(1);
           filename = Uri.decodeComponent(filename);
           path += filename;

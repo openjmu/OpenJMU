@@ -4,7 +4,6 @@
 // **************************************************************************
 // ignore_for_file: argument_type_not_assignable
 const List<String> routeNames = <String>[
-  'openjmu://about',
   'openjmu://add-comment',
   'openjmu://add-forward',
   'openjmu://app-center-page',
@@ -29,7 +28,6 @@ const List<String> routeNames = <String>[
   'openjmu://splash',
   'openjmu://switch-startup',
   'openjmu://team-post-detail',
-  'openjmu://theme',
   'openjmu://user-list-page',
   'openjmu://user-page',
   'openjmu://user-qr-code',
@@ -37,13 +35,6 @@ const List<String> routeNames = <String>[
 
 class Routes {
   const Routes._();
-
-  /// '关于页'
-  ///
-  /// [name] : 'openjmu://about'
-  ///
-  /// [routeName] : '关于页'
-  static const String openjmuAbout = 'openjmu://about';
 
   /// '新增评论'
   ///
@@ -245,13 +236,6 @@ class Routes {
   ///
   /// [arguments] : [provider, type, postId]
   static const String openjmuTeamPostDetail = 'openjmu://team-post-detail';
-
-  /// '更改主题'
-  ///
-  /// [name] : 'openjmu://theme'
-  ///
-  /// [routeName] : '更改主题'
-  static const String openjmuTheme = 'openjmu://theme';
 
   /// '用户列表页'
   ///

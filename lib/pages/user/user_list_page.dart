@@ -26,8 +26,10 @@ class UserListPage extends StatefulWidget {
 }
 
 class _UserListState extends State<UserListPage> {
-  final List<Map<String, dynamic>> _users = [];
-  List get users => _users.where((Map<String, dynamic> userData) {
+  final List<Map<String, dynamic>> _users = <Map<String, dynamic>>[];
+
+  List<Map<String, dynamic>> get users =>
+      _users.where((Map<String, dynamic> userData) {
         return userData['user'] != null;
       }).toList();
 
@@ -40,8 +42,10 @@ class _UserListState extends State<UserListPage> {
     doUpdate(false);
   }
 
-  void doUpdate(isMore) {
-    if (isMore) pages++;
+  void doUpdate(bool isMore) {
+    if (isMore) {
+      pages++;
+    }
     switch (widget.type) {
       case 1:
         getIdolsList(pages, isMore);
@@ -52,45 +56,43 @@ class _UserListState extends State<UserListPage> {
     }
   }
 
-  void getIdolsList(page, isMore) {
-    UserAPI.getIdolsList(
-      widget.user.uid,
-      page,
-    ).then((Response<Map<String, dynamic>> response) {
-      setUserList(response, isMore);
-    }).catchError((dynamic e) {
+  void getIdolsList(int page, bool isMore) {
+    UserAPI.getIdolsList(widget.user.uid, page).then(
+      (Response<Map<String, dynamic>> response) {
+        setUserList(response, isMore);
+      },
+    ).catchError((dynamic e) {
       trueDebugPrint('Failed when getting idol list: $e');
     });
   }
 
-  void getFansList(page, isMore) {
-    UserAPI.getFansList(
-      widget.user.uid,
-      page,
-    ).then((Response<Map<String, dynamic>> response) {
-      setUserList(response, isMore);
-    }).catchError((dynamic e) {
+  void getFansList(int page, bool isMore) {
+    UserAPI.getFansList(widget.user.uid, page).then(
+      (Response<Map<String, dynamic>> response) {
+        setUserList(response, isMore);
+      },
+    ).catchError((dynamic e) {
       trueDebugPrint('Failed when getting fans list: $e');
     });
   }
 
-  void setUserList(response, isMore) {
-    List data;
+  void setUserList(Response<Map<String, dynamic>> response, bool isMore) {
+    List<dynamic> data;
     switch (widget.type) {
       case 1:
-        data = response.data['idols'];
+        data = response.data['idols'] as List<dynamic>;
         break;
       case 2:
-        data = response.data['fans'];
+        data = response.data['fans'] as List<dynamic>;
         break;
     }
     final int total = response.data['total'].toString().toInt();
     if (_users.length + data.length < total) {
       canLoadMore = true;
     }
-    final List<Map<String, dynamic>> list = [];
+    final List<Map<String, dynamic>> list = <Map<String, dynamic>>[];
     for (int i = 0; i < data.length; i++) {
-      list.add(data[i]);
+      list.add(data[i] as Map<String, dynamic>);
     }
     if (isMore) {
       _users.addAll(list);
@@ -105,7 +107,7 @@ class _UserListState extends State<UserListPage> {
     }
   }
 
-  Widget renderRow(context, i) {
+  Widget renderRow(BuildContext context, int i) {
     final int start = i * 2;
     if (users != null && i + 1 == (users.length / 2).ceil() && canLoadMore) {
       doUpdate(true);
@@ -119,10 +121,10 @@ class _UserListState extends State<UserListPage> {
     );
   }
 
-  Widget userCard(context, userData) {
-    final Map<String, dynamic> _user = userData['user'];
+  Widget userCard(BuildContext context, Map<String, dynamic> userData) {
+    final Map<String, dynamic> _user = userData['user'] as Map<String, dynamic>;
     String name;
-    name = _user['nickname'];
+    name = _user['nickname'] as String;
     if (name.length > 3) {
       name = '${name.substring(0, 3)}...';
     }
@@ -131,16 +133,13 @@ class _UserListState extends State<UserListPage> {
       onTap: () {
         navigatorState.pushNamed(
           Routes.openjmuUserPage,
-          arguments: {'uid': int.parse(_user['uid'].toString())},
+          arguments: <String, dynamic>{
+            'uid': int.parse(_user['uid'].toString()),
+          },
         );
       },
       child: Container(
-        margin: EdgeInsets.fromLTRB(
-          12.0.w,
-          20.0.h,
-          12.0.w,
-          0.0,
-        ),
+        margin: EdgeInsets.symmetric(horizontal: 12.w).copyWith(top: 20.h),
         padding: EdgeInsets.symmetric(
           horizontal: 20.0.w,
           vertical: 12.0.h,
@@ -183,7 +182,10 @@ class _UserListState extends State<UserListPage> {
                           children: <Widget>[
                             Text('关注', style: _textStyle),
                             Divider(height: 4.0.h),
-                            Text(userData['idols'], style: _textStyle),
+                            Text(
+                              userData['idols'] as String,
+                              style: _textStyle,
+                            ),
                           ],
                         ),
                         SizedBox(width: 6.0.w),
@@ -192,7 +194,10 @@ class _UserListState extends State<UserListPage> {
                           children: <Widget>[
                             Text('粉丝', style: _textStyle),
                             Divider(height: 4.0.h),
-                            Text(userData['fans'], style: _textStyle),
+                            Text(
+                              userData['fans'] as String,
+                              style: _textStyle,
+                            ),
                           ],
                         )
                       ],
@@ -229,7 +234,7 @@ class _UserListState extends State<UserListPage> {
                 ? ListView.builder(
                     padding: EdgeInsets.zero,
                     itemCount: (users.length / 2).ceil(),
-                    itemBuilder: (context, i) => renderRow(context, i),
+                    itemBuilder: renderRow,
                   )
                 : Center(
                     child: Text(
@@ -237,7 +242,7 @@ class _UserListState extends State<UserListPage> {
                       style: TextStyle(fontSize: 20.0.sp),
                     ),
                   )
-            : SpinKitWidget(),
+            : const SpinKitWidget(),
       ),
     );
   }

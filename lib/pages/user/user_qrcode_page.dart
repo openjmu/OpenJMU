@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
@@ -22,9 +23,10 @@ class UserQrCodePage extends StatefulWidget {
 class _UserQrCodePageState extends State<UserQrCodePage> {
   final GlobalKey previewContainer = GlobalKey();
   bool isSaving = false;
+
   double get minWidth => math.min(Screens.width, Screens.height);
 
-  void saveToGallery() async {
+  Future<void> saveToGallery() async {
     if (isSaving) {
       return;
     }
@@ -38,14 +40,18 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         showToast('未获得存储权限');
         return;
       }
-      RenderRepaintBoundary boundary =
-          previewContainer.currentContext.findRenderObject();
-      ui.Image image = await boundary.toImage(
+      final RenderRepaintBoundary boundary = previewContainer.currentContext
+          .findRenderObject() as RenderRepaintBoundary;
+      final ui.Image image = await boundary.toImage(
         pixelRatio: ui.window.devicePixelRatio,
       );
-      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      final result =
-          await ImageSave.saveImage(byteData.buffer.asUint8List(), "png");
+      final ByteData byteData = await image.toByteData(
+        format: ui.ImageByteFormat.png,
+      );
+      final bool result = await ImageSave.saveImage(
+        byteData.buffer.asUint8List(),
+        'png',
+      );
       if (result != null) {
         showToast('保存成功');
       } else {
@@ -81,7 +87,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
         padding: EdgeInsets.zero,
         backgroundColor: context.themeData.colorScheme.surface,
         foregroundColor: context.themeData.textTheme.bodyText2.color,
-        embeddedImage: AssetImage(R.IMAGES_LOGO_1024_ROUNDED_PNG),
+        embeddedImage: const AssetImage(R.IMAGES_LOGO_1024_ROUNDED_PNG),
         embeddedImageStyle: QrEmbeddedImageStyle(
           size: Size.square(minWidth * 0.1),
         ),
@@ -117,7 +123,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
     return Material(
       color: Colors.black54,
       child: Stack(
-        children: [
+        children: <Widget>[
           GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: Navigator.of(context).pop,
@@ -126,7 +132,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
           Positioned.fill(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: <Widget>[
                 RepaintBoundary(
                   key: previewContainer,
                   child: Container(
@@ -141,7 +147,7 @@ class _UserQrCodePageState extends State<UserQrCodePage> {
                       children: <Widget>[
                         Row(
                           children: <Widget>[
-                            UserAvatar(size: 64.0),
+                            const UserAvatar(size: 64.0),
                             usernameWidget,
                             sexualWidget(margin: EdgeInsets.zero),
                           ],

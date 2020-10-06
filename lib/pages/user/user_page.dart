@@ -21,7 +21,7 @@ class UserPage extends StatefulWidget {
   const UserPage({
     Key key,
     @required this.uid,
-  })  : super(key: key);
+  }) : super(key: key);
 
   final int uid;
 
@@ -32,6 +32,7 @@ class UserPage extends StatefulWidget {
 class UserPageState extends State<UserPage>
     with SingleTickerProviderStateMixin {
   final List<String> tabList = <String>['动态', '黑名单'];
+
   double get tabBarHeight => 56.0.h;
   final List<Post> posts = <Post>[];
   final List<UserTag> userTags = <UserTag>[];
@@ -41,20 +42,26 @@ class UserPageState extends State<UserPage>
   UserLevelScore userLevelScore;
 
   int total, userFans, userIdols;
+
   bool get isFirstLoaded => total != null;
+
   bool get canLoadMorePost => posts.length < total;
 
   int get count => posts.length;
+
   int get lastId => posts.last?.id;
 
   int get uid => widget.uid ?? currentUser.uid;
+
   bool get isCurrentUser => uid == currentUser.uid;
 
   final ScrollController scrollController = ScrollController();
+
   double get expandedHeight =>
       Screens.width / 1.25 + (isCurrentUser ? tabBarHeight : 0.0);
   final StreamController<bool> titleAnimateStreamController =
       StreamController<bool>.broadcast();
+
   Stream<bool> get titleAnimateStream => titleAnimateStreamController.stream;
 
   UserInfo user;
@@ -86,7 +93,9 @@ class UserPageState extends State<UserPage>
 
   void listener() {
     double triggerHeight = expandedHeight - kToolbarHeight;
-    if (isCurrentUser) triggerHeight -= tabBarHeight;
+    if (isCurrentUser) {
+      triggerHeight -= tabBarHeight;
+    }
     titleAnimateStreamController.add(scrollController.offset >= triggerHeight);
   }
 
@@ -96,12 +105,12 @@ class UserPageState extends State<UserPage>
         user = currentUser;
       } else {
         final Map<String, dynamic> _user =
-            (await UserAPI.getUserInfo(uid: uid)).data;
+            (await UserAPI.getUserInfo(uid: uid)).data as Map<String, dynamic>;
         user = UserInfo.fromJson(_user);
       }
 
-      Future.wait(
-        <Future>[_getLevel(), _getTags(), _getFollowingCount()],
+      Future.wait<void>(
+        <Future<dynamic>>[_getLevel(), _getTags(), _getFollowingCount()],
         eagerError: true,
       ).then((dynamic _) {
         if (mounted) {
@@ -117,17 +126,19 @@ class UserPageState extends State<UserPage>
   Future<void> _getLevel() async {
     final Response<Map<String, dynamic>> response = await UserAPI.getLevel(uid);
     final Map<String, dynamic> data = response.data;
-    userLevelScore = UserLevelScore.fromJson(data['score']);
+    userLevelScore = UserLevelScore.fromJson(
+      data['score'] as Map<String, dynamic>,
+    );
   }
 
   Future<void> _getTags() async {
     final Response<Map<String, dynamic>> response = await UserAPI.getTags(uid);
     final Map<String, dynamic> data = response.data;
-    final List<dynamic> tags = data['data'];
-    List<UserTag> _userTags = [];
-    tags.forEach((dynamic tag) {
+    final List<dynamic> tags = data['data'] as List<dynamic>;
+    final List<UserTag> _userTags = <UserTag>[];
+    for (final dynamic tag in tags) {
       _userTags.add(UserTag.fromJson(tag as Map<String, dynamic>));
-    });
+    }
     userTags
       ..clear()
       ..addAll(_userTags);
@@ -153,7 +164,7 @@ class UserPageState extends State<UserPage>
 
   Future<void> loadData({bool isLoadMore = false}) {
     return Future.wait<void>(
-      <Future>[
+      <Future<dynamic>>[
         if (!isLoadMore) fetchUserInformation(),
         PostAPI.getPostList(
           'user',
@@ -161,7 +172,7 @@ class UserPageState extends State<UserPage>
           isLoadMore,
           posts.isNotEmpty ? posts.last.id : 0,
           additionAttrs: <String, dynamic>{'uid': uid},
-        ).then((Response<Map<String, dynamic>> response) {
+        ).then<void>((Response<Map<String, dynamic>> response) {
           addPostsData(response, isLoadMore: isLoadMore);
         }),
       ],
@@ -177,7 +188,9 @@ class UserPageState extends State<UserPage>
     final List<Post> _postList =
         (data['topics'] as List<dynamic>).map((dynamic element) {
       final Map<String, dynamic> postData = element as Map<String, dynamic>;
-      final Post post = Post.fromJson(postData['topic']);
+      final Post post = Post.fromJson(
+        postData['topic'] as Map<String, dynamic>,
+      );
       return post;
     }).toList();
     if (isLoadMore) {
@@ -219,7 +232,10 @@ class UserPageState extends State<UserPage>
     });
   }
 
-  void removeFromBlacklist(context, BlacklistUser user) async {
+  Future<void> removeFromBlacklist(
+    BuildContext context,
+    BlacklistUser user,
+  ) async {
     final bool confirm = await ConfirmationDialog.show(
       context,
       title: '移出黑名单',
@@ -264,9 +280,9 @@ class UserPageState extends State<UserPage>
     return Center(
       child: () {
         if (total == 0) {
-          return Text(Constants.endLineTag);
+          return const Text(Constants.endLineTag);
         } else {
-          return SpinKitWidget();
+          return const SpinKitWidget();
         }
       }(),
     );
@@ -374,7 +390,7 @@ class UserPageState extends State<UserPage>
   PreferredSizeWidget get userTabBar {
     return PreferredSize(
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(18.0.w),
@@ -570,7 +586,7 @@ class UserPageState extends State<UserPage>
       child: SizedBox.fromSize(
         size: Size.square(46.0.h),
         child: DecoratedBox(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.black26,
             shape: BoxShape.circle,
           ),
@@ -670,7 +686,7 @@ class UserPageState extends State<UserPage>
                 horizontal: 12.0.w,
                 vertical: 1.0.h,
               ),
-              color: Color(0x44ffffff),
+              color: const Color(0x44ffffff),
               child: Text(
                 userTags[index].name,
                 style: TextStyle(
@@ -754,7 +770,7 @@ class UserPageState extends State<UserPage>
         crossAxisCount: 3,
         children: List<Widget>.generate(
           UserAPI.blacklist.length,
-          (i) => blacklistUser(UserAPI.blacklist.elementAt(i)),
+          (int i) => blacklistUser(UserAPI.blacklist.elementAt(i)),
         ),
       );
     } else {
@@ -825,7 +841,9 @@ class UserPageState extends State<UserPage>
                     if (isCurrentUser) banListWidget,
                   ],
                 )
-              : total != null ? postList : placeHolderWidget,
+              : total != null
+                  ? postList
+                  : placeHolderWidget,
         ),
       ),
     );

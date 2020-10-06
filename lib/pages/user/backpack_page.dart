@@ -12,8 +12,8 @@ class BackpackPage extends StatefulWidget {
 }
 
 class _BackpackPageState extends State<BackpackPage> {
-  final Map<String, String> _header = {'CLOUDID': 'jmu'};
-  final List<BackpackItem> myItems = [];
+  final Map<String, String> _header = <String, String>{'CLOUDID': 'jmu'};
+  final List<BackpackItem> myItems = <BackpackItem>[];
 
   bool isLoading = true;
 
@@ -25,23 +25,28 @@ class _BackpackPageState extends State<BackpackPage> {
 
   /// 获取背包内的物品
   void getBackpackItem() {
-    Future.wait(<Future>[getMyItems(), getMyGiftBox()]).catchError((dynamic e) {
+    Future.wait<void>(
+      <Future<dynamic>>[getMyItems(), getMyGiftBox()],
+    ).catchError((dynamic e) {
       trueDebugPrint('Get backpack item error: $e');
     }).whenComplete(() {
       isLoading = false;
-      if (mounted) setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
   /// 获取我的背包
   Future<void> getMyItems() async {
-    final List<dynamic> items = (await NetUtils.getWithHeaderSet(
+    final List<dynamic> items =
+        (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
       API.backPackMyItemList(),
       headers: _header,
     ))
-        .data['data'];
+            .data['data'] as List<dynamic>;
     for (int i = 0; i < items.length; i++) {
-      final Map<String, dynamic> _item = items[i];
+      final Map<String, dynamic> _item = items[i] as Map<String, dynamic>;
       _item['name'] = UserAPI.backpackItemTypes['${_item['itemtype']}'].name;
       _item['desc'] =
           UserAPI.backpackItemTypes['${_item['itemtype']}'].description;
@@ -51,18 +56,20 @@ class _BackpackPageState extends State<BackpackPage> {
 
   /// 获取我的礼品盒
   Future<void> getMyGiftBox() async {
-    final Map<String, dynamic> items = (await NetUtils.getWithHeaderSet(
+    final Map<String, dynamic> items =
+        (await NetUtils.getWithHeaderSet<Map<String, dynamic>>(
       API.backPackReceiveList(),
       headers: _header,
     ))
-        .data;
+            .data;
     print(items);
   }
 
   /// 使用指定物品
   Future<void> useItem(BackpackItem item) async {
     try {
-      final Map<String, dynamic> result = (await NetUtils.postWithHeaderSet(
+      final Map<String, dynamic> result =
+          (await NetUtils.postWithHeaderSet<Map<String, dynamic>>(
         API.useBackpackItem,
         queryParameters: <String, dynamic>{
           'cuid': currentUser.uid,
@@ -74,7 +81,7 @@ class _BackpackPageState extends State<BackpackPage> {
         },
         headers: _header,
       ))
-          .data;
+              .data;
       print(result);
       print(result['itemid_num'] as int);
       print(result['getitems'][0]['count'] as int);
@@ -93,7 +100,7 @@ class _BackpackPageState extends State<BackpackPage> {
         padding: EdgeInsets.all(30.0.w),
         child: ExtendedImage.network(
           API.backPackItemIcon(itemType: myItems[index].type),
-          headers: {'CLOUDID': 'jmu'}, // REQUIRED. 必需
+          headers: _header,
           fit: BoxFit.fitHeight,
         ),
       ),
@@ -186,13 +193,13 @@ class _BackpackPageState extends State<BackpackPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).canvasColor,
       body: FixedAppBarWrapper(
-        appBar: FixedAppBar(title: Text('背包')),
+        appBar: const FixedAppBar(title: Text('背包')),
         body: isLoading
-            ? Center(child: SpinKitWidget())
+            ? const Center(child: SpinKitWidget())
             : ListView.builder(
                 padding: EdgeInsets.symmetric(vertical: 10.0.w),
                 itemCount: myItems.length,
-                itemBuilder: (context, index) => backpackItem(context, index),
+                itemBuilder: backpackItem,
               ),
       ),
     );

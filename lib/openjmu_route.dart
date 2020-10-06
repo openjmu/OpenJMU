@@ -18,8 +18,6 @@ import 'pages/post/post_detail_page.dart';
 import 'pages/post/publish_post_page.dart';
 import 'pages/post/publish_team_post_page.dart';
 import 'pages/post/team_post_detail_page.dart';
-import 'pages/settings/about_page.dart';
-import 'pages/settings/change_theme_page.dart';
 import 'pages/settings/changelog_page.dart';
 import 'pages/settings/font_scale_page.dart';
 import 'pages/settings/settings_page.dart';
@@ -39,12 +37,6 @@ import 'widgets/webview/in_app_webview.dart';
 RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
   arguments = arguments ?? const <String, dynamic>{};
   switch (name) {
-    case 'openjmu://about':
-      return RouteResult(
-        name: name,
-        widget: AboutPage(),
-        routeName: '关于页',
-      );
     case 'openjmu://add-comment':
       return RouteResult(
         name: name,
@@ -233,12 +225,6 @@ RouteResult getRouteResult({String name, Map<String, dynamic> arguments}) {
           postId: arguments['postId'],
         ),
         routeName: '小组动态详情页',
-      );
-    case 'openjmu://theme':
-      return RouteResult(
-        name: name,
-        widget: ChangeThemePage(),
-        routeName: '更改主题',
       );
     case 'openjmu://user-list-page':
       return RouteResult(
