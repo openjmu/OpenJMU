@@ -20,13 +20,17 @@ Color get currentThemeColor => currentTheme.accentColor;
 
 bool get currentIsDark => currentBrightness == Brightness.dark;
 
-T lessThanOne<T extends num>(T value) => math.min(1 as T, value);
+T lessThanOne<T extends num>(T value) =>
+    math.min((value is int ? 1 : 1.0) as T, value);
 
-T lessThanZero<T extends num>(T value) => math.min(0 as T, value);
+T lessThanZero<T extends num>(T value) =>
+    math.min((value is int ? 0 : 0.0) as T, value);
 
-T moreThanOne<T extends num>(T value) => math.max(1 as T, value);
+T moreThanOne<T extends num>(T value) =>
+    math.max((value is int ? 1 : 1.0) as T, value);
 
-T moreThanZero<T extends num>(T value) => math.max(0 as T, value);
+T moreThanZero<T extends num>(T value) =>
+    math.max((value is int ? 0 : 0.0) as T, value);
 
 T betweenZeroAndOne<T extends num>(T value) => moreThanZero(lessThanOne(value));
 
