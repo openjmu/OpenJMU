@@ -18,7 +18,7 @@ import 'package:openjmu/pages/post/team_reply_list_page.dart';
 @FFRoute(
   name: 'openjmu://notifications',
   routeName: '通知页',
-  argumentNames: ['initialPage'],
+  argumentNames: <String>['initialPage'],
   pageRouteType: PageRouteType.transparent,
 )
 class NotificationsPage extends StatefulWidget {
@@ -45,27 +45,28 @@ class NotificationsPageState extends State<NotificationsPage>
 
   double get shouldPopOffset => maximumSheetHeight / 2;
 
-  List<Map<String, Map<String, dynamic>>> get actions => [
-        {
-          '广场': {
+  List<Map<String, Map<String, dynamic>>> get actions =>
+      <Map<String, Map<String, dynamic>>>[
+        <String, Map<String, dynamic>>{
+          '广场': <String, dynamic>{
             'icon': R.ASSETS_ICONS_ADD_BUTTON_GUANGCHANG_SVG,
             'notification': notificationProvider.notifications,
-            'content': [
-              {
+            'content': <Map<String, dynamic>>[
+              <String, dynamic>{
                 'icon': R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
                 'field': notificationProvider.notifications.praise,
                 'action': notificationProvider.readPraise,
                 'select': selectSquareIndex,
                 'index': _squareIndex,
               },
-              {
+              <String, dynamic>{
                 'icon': R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
                 'field': notificationProvider.notifications.comment,
                 'action': notificationProvider.readReply,
                 'select': selectSquareIndex,
                 'index': _squareIndex,
               },
-              {
+              <String, dynamic>{
                 'icon': R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
                 'field': notificationProvider.notifications.at,
                 'action': notificationProvider.readMention,
@@ -75,26 +76,26 @@ class NotificationsPageState extends State<NotificationsPage>
             ],
           },
         },
-        {
-          '集市': {
+        <String, Map<String, dynamic>>{
+          '集市': <String, dynamic>{
             'icon': R.ASSETS_ICONS_ADD_BUTTON_JISHI_SVG,
             'notification': notificationProvider.teamNotifications,
-            'content': [
-              {
+            'content': <Map<String, dynamic>>[
+              <String, dynamic>{
                 'icon': R.ASSETS_ICONS_POST_ACTIONS_PRAISE_FILL_SVG,
                 'field': notificationProvider.teamNotifications.praise,
                 'action': notificationProvider.readTeamPraise,
                 'select': selectTeamIndex,
                 'index': _teamIndex,
               },
-              {
+              <String, dynamic>{
                 'icon': R.ASSETS_ICONS_POST_ACTIONS_COMMENT_FILL_SVG,
                 'field': notificationProvider.teamNotifications.reply,
                 'action': notificationProvider.readTeamReply,
                 'select': selectTeamIndex,
                 'index': _teamIndex,
               },
-              {
+              <String, dynamic>{
                 'icon': R.ASSETS_ICONS_POST_ACTIONS_FORWARD_FILL_SVG,
                 'field': notificationProvider.teamNotifications.mention,
                 'action': notificationProvider.readTeamMention,
@@ -106,7 +107,7 @@ class NotificationsPageState extends State<NotificationsPage>
         },
       ];
 
-  List<String> get squareMentionActions => ['动态', '评论'];
+  List<String> get squareMentionActions => <String>['动态', '评论'];
 
   final ScrollController scrollController = ScrollController();
   AnimationController backgroundOpacityController;
@@ -126,7 +127,7 @@ class NotificationsPageState extends State<NotificationsPage>
     scrollController.addListener(() {
       backgroundOpacityController.value =
           scrollController.offset / maximumSheetHeight * maximumOpacity;
-      final canJump = scrollController.offset < maximumSheetHeight &&
+      final bool canJump = scrollController.offset < maximumSheetHeight &&
           !tapping &&
           !animating;
       if (canJump) {
@@ -227,9 +228,9 @@ class NotificationsPageState extends State<NotificationsPage>
         duration: math
             .max(
                 50,
-                ((maximumSheetHeight - scrollController.offset) /
+                (maximumSheetHeight - scrollController.offset) /
                     maximumSheetHeight *
-                    300))
+                    300)
             .milliseconds,
         curve: Curves.easeOut,
       );
@@ -246,7 +247,7 @@ class NotificationsPageState extends State<NotificationsPage>
       await scrollController.animateTo(
         0,
         duration: math
-            .max(50, (scrollController.offset / maximumSheetHeight * 250))
+            .max(50, scrollController.offset / maximumSheetHeight * 250)
             .milliseconds,
         curve: Curves.easeOut,
       );
@@ -341,8 +342,9 @@ class NotificationsPageState extends State<NotificationsPage>
               children: List<Widget>.generate(
                 (actions[i][key]['content'] as List<dynamic>).length,
                 (int j) {
-                  final Map<String, dynamic> item =
-                      actions[i].values.elementAt(0)['content'][j];
+                  final Map<String, dynamic> item = actions[i]
+                      .values
+                      .elementAt(0)['content'][j] as Map<String, dynamic>;
                   final int count = item['field'] as int;
                   return GestureDetector(
                     behavior: HitTestBehavior.opaque,
@@ -369,7 +371,7 @@ class NotificationsPageState extends State<NotificationsPage>
 
   Widget getActionIcon(int sectionIndex, int actionIndex) {
     final Map<String, dynamic> item =
-        actions[sectionIndex].values.elementAt(0)['content'][actionIndex];
+        actions[sectionIndex].values.elementAt(0)['content'][actionIndex] as Map<String, dynamic>;
     final String icon = item['icon'] as String;
     final int index = item['index'] as int;
     return AnimatedCrossFade(
@@ -432,9 +434,9 @@ class NotificationsPageState extends State<NotificationsPage>
             index: _mentionIndex,
             children: <Widget>[
               NestedScrollViewInnerScrollPositionKeyWidget(
-                  Key('List-0-2-0'), postByMention),
+                  const Key('List-0-2-0'), postByMention,),
               NestedScrollViewInnerScrollPositionKeyWidget(
-                  Key('List-0-2-1'), commentByMention),
+                  const Key('List-0-2-1'), commentByMention,),
             ],
           ),
         ),
@@ -467,8 +469,8 @@ class NotificationsPageState extends State<NotificationsPage>
             child: NestedScrollView(
               controller: scrollController,
               physics: const BouncingScrollPhysics(),
-              headerSliverBuilder: (BuildContext _, bool __) {
-                return [
+              headerSliverBuilder: (_, __) {
+                return <Widget>[
                   SliverToBoxAdapter(
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
@@ -505,7 +507,7 @@ class NotificationsPageState extends State<NotificationsPage>
                           ),
                           color: Theme.of(context).primaryColor,
                         ),
-                        child: Row(children: [const Spacer(), actionBar]),
+                        child: Row(children: <Widget>[const Spacer(), actionBar]),
                       ),
                       Expanded(
                         child: IndexedStack(
@@ -515,11 +517,11 @@ class NotificationsPageState extends State<NotificationsPage>
                               index: _squareIndex,
                               children: <Widget>[
                                 NestedScrollViewInnerScrollPositionKeyWidget(
-                                  Key('List-0-0'),
+                                  const Key('List-0-0'),
                                   praiseList,
                                 ),
                                 NestedScrollViewInnerScrollPositionKeyWidget(
-                                  Key('List-0-1'),
+                                  const Key('List-0-1'),
                                   commentByReply,
                                 ),
                                 mentionList,
@@ -529,15 +531,15 @@ class NotificationsPageState extends State<NotificationsPage>
                               index: _teamIndex,
                               children: <Widget>[
                                 NestedScrollViewInnerScrollPositionKeyWidget(
-                                  Key('List-1-0'),
+                                  const Key('List-1-0'),
                                   TeamPraiseListPage(),
                                 ),
                                 NestedScrollViewInnerScrollPositionKeyWidget(
-                                  Key('List-1-1'),
+                                  const Key('List-1-1'),
                                   TeamReplyListPage(),
                                 ),
                                 NestedScrollViewInnerScrollPositionKeyWidget(
-                                  Key('List-1-2'),
+                                  const Key('List-1-2'),
                                   TeamMentionListPage(),
                                 ),
                               ],
