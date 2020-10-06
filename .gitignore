@@ -45,6 +45,7 @@ app.*.map.json
 
 # Cutsom part.
 .env
+ExportOptions.plist
 lib/constants/cerstar_configs.dart
 lib/pages/test
 /release/
