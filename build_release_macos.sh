@@ -23,7 +23,7 @@ xcodebuild -workspace ios/Runner.xcworkspace \
   -quiet
 
 # Export IPA
-xcodebuild -exportArchive -archivePath release/Runner.xcarchive \
+xcodebuild -exportArchive -archivePath build/ios/Runner.xcarchive \
   -exportOptionsPlist ExportOptions.plist \
   -exportPath release/"Runner $curtime" \
   -quiet
