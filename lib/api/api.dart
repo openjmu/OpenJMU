@@ -35,6 +35,8 @@ class API {
       '?uid=${currentUser.uid}'
       '&name=${currentUser.name}'
       '&workId=${currentUser.workId}'; // 吐个槽
+  static const String statusWebsite =
+      'https://status.openjmu.xyz/'; // 服务状态
 
   /// Hosts.
   /// 域名

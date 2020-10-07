@@ -89,6 +89,23 @@ class _AboutCard extends StatelessWidget {
     }
   }
 
+  void gotoLicensePage(BuildContext context) {
+    showLicensePage(
+      context: context,
+      applicationName: 'OpenJMU',
+      applicationVersion:
+      '${PackageUtils.version}+${PackageUtils.buildNumber}',
+      applicationIcon: Padding(
+        padding: EdgeInsets.all(20.w),
+        child: Image.asset(
+          R.IMAGES_LOGO_1024_ROUNDED_PNG,
+          width: Screens.width / 5,
+        ),
+      ),
+      applicationLegalese: '© 2020 The OpenJMU Team',
+    );
+  }
+
   Widget logoItemWidget(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 16.h),
@@ -118,7 +135,7 @@ class _AboutCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'V${PackageUtils.version}',
+                  'V${PackageUtils.version}+${PackageUtils.buildNumber}',
                   style: context.themeData.textTheme.caption.copyWith(
                     fontSize: 17.sp,
                   ),
@@ -155,13 +172,20 @@ class _AboutCard extends StatelessWidget {
     return _SettingsCard(
       children: <Widget>[
         logoItemWidget(context),
+        const _SettingItemWidget(
+          item: _SettingItem(
+            name: '运行状态',
+            description: '看看是谁宕机了 🐶',
+            url: API.statusWebsite,
+            urlTitle: 'OpenJMU状态',
+          ),
+        ),
         _SettingItemWidget(
           item: _SettingItem(
             name: '吐个槽',
             description: '意见反馈',
-            onTap: () {
-              API.launchWeb(url: API.complaints, title: '吐个槽');
-            },
+            url: API.complaints,
+            urlTitle: '吐个槽',
           ),
         ),
         const _SettingItemWidget(
@@ -171,35 +195,19 @@ class _AboutCard extends StatelessWidget {
             route: Routes.openjmuChangelogPage,
           ),
         ),
-        _SettingItemWidget(
+        const _SettingItemWidget(
           item: _SettingItem(
             name: '前往官网',
             description: 'openjmu.jmu.edu.cn',
             hideArrow: true,
-            onTap: () {
-              API.launchWeb(url: API.homePage, title: 'OpenJMU');
-            },
+            url: API.homePage,
+            urlTitle: 'OpenJMU',
           ),
         ),
         _SettingItemWidget(
           item: _SettingItem(
             name: '许可证信息',
-            onTap: () {
-              showLicensePage(
-                context: context,
-                applicationName: 'OpenJMU',
-                applicationVersion:
-                    '${PackageUtils.version}+${PackageUtils.buildNumber}',
-                applicationIcon: Padding(
-                  padding: EdgeInsets.all(20.w),
-                  child: Image.asset(
-                    R.IMAGES_LOGO_1024_ROUNDED_PNG,
-                    width: Screens.width / 5,
-                  ),
-                ),
-                applicationLegalese: '© 2020 The OpenJMU Team',
-              );
-            },
+            onTap: () => gotoLicensePage(context),
           ),
         ),
       ],
@@ -546,6 +554,8 @@ class _SettingItemWidget extends StatelessWidget {
         item.onTap?.call();
         if (item.route != null) {
           navigatorState.pushNamed(item.route);
+        } else if (item.url != null) {
+          API.launchWeb(url: item.url, title: item.urlTitle);
         }
       },
     );
@@ -560,6 +570,8 @@ class _SettingItem {
     this.route,
     this.onTap,
     this.hideArrow = false,
+    this.url,
+    this.urlTitle = '',
   });
 
   final String name;
@@ -568,4 +580,6 @@ class _SettingItem {
   final String route;
   final VoidCallback onTap;
   final bool hideArrow;
+  final String url;
+  final String urlTitle;
 }
