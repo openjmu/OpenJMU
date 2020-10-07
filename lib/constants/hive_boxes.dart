@@ -85,7 +85,7 @@ class HiveBoxes {
         context,
         title: '清除缓存数据',
         showConfirm: true,
-        content: '清除缓存会清除包括课程表数据、成绩和学期起始日的数据。\n确定继续吗？',
+        content: '清除缓存会清除包括课程表、成绩和学期起始日的缓存数据。确定继续吗？',
       );
     }
     if (confirm) {
@@ -108,7 +108,7 @@ class HiveBoxes {
         context,
         title: '清除应用数据',
         showConfirm: true,
-        content: '清除数据会将您的所有应用内容（包括设置、应用消息）清除。\n确定继续吗？',
+        content: '清除数据会将所有应用内容（包括设置、应用消息）清除。确定继续吗？',
       );
     }
     if (confirm) {
