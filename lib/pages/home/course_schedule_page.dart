@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
+double get _dialogWidth => 300.w;
+double get _dialogHeight => 380.w;
+
 class CourseSchedulePage extends StatefulWidget {
   const CourseSchedulePage({@required Key key}) : super(key: key);
 
@@ -15,8 +18,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     with AutomaticKeepAliveClientMixin, TickerProviderStateMixin {
   /// Refresh indicator key to refresh courses display.
   /// 用于显示课表刷新状态的的刷新指示器Key
-  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
+  final GlobalKey<RefreshIndicatorState> refreshIndicatorKey = GlobalKey();
 
   /// Duration for any animation.
   /// 所有动画/过渡的时长
@@ -112,7 +114,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
       );
   }
 
-  /// Update week switcher scroll controller with current week.
+  /// Update week switcher scroll controller with the current week.
   /// 以当前周更新周数切换器的位置
   void updateScrollController() {
     if (coursesProvider.firstLoaded) {
@@ -122,8 +124,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         initialScrollOffset: week != null ? offset : 0.0,
       );
 
-      /// Theoretically it doesn't require setState here, but it only takes effect
-      /// if the setState is called. This needs more investigation.
+      /// Theoretically it doesn't require setState here, but it only
+      /// takes effect if the setState is called.
+      /// This needs more investigation.
       if (mounted) {
         setState(() {});
       }
@@ -169,9 +172,9 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   /// Listener for pointer up.
   /// 触摸点抬起时的监听
   ///
-  /// When the pointer is up, calculate current height's distance between 0
-  /// and the switcher's max height. if current height was under 1/2 of the
-  /// max height, then collapse the widget. Otherwise expand it.
+  /// When the pointer is up, calculate current height's distance between 0 and
+  /// the switcher's max height. if current height was under 1/2 of the
+  /// max height, then collapse the widget. Otherwise, expand it.
   /// 当触摸点抬起时，计算当前切换器的高度偏差。
   /// 如果小于最大高度的二分之一，则收缩部件，反之扩大。
   void weekSwitcherPointerUpListener(PointerUpEvent event) {
@@ -370,7 +373,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
     );
   }
 
-  /// Current week's weekday indicator.
+  /// The current week's weekday indicator.
   /// 本周的天数指示器
   Widget get weekDayIndicator => Container(
         color: Theme.of(context).canvasColor,
@@ -877,26 +880,24 @@ class _CoursesDialogState extends State<CoursesDialog> {
 
   bool get isOutOfTerm => widget.currentWeek < 1 || widget.currentWeek > 20;
 
-  Widget courseContent(int index) => Stack(
+  Widget courseContent(int index) {
+    final Course course = widget.courseList[index];
+    return Card(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15.0),
+      ),
+      child: Stack(
         children: <Widget>[
-          Container(
+          courseColorIndicator(course),
+          Padding(
             padding: const EdgeInsets.all(20.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15.0),
-              color: widget.courseList.isNotEmpty
-                  ? CourseAPI.inCurrentWeek(widget.courseList[index],
-                              currentWeek: widget.currentWeek) ||
-                          isOutOfTerm
-                      ? widget.courseList[index].color
-                          .withOpacity(currentIsDark ? darkModeOpacity : 1.0)
-                      : Colors.grey
-                  : null,
-            ),
             child: Center(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  if (widget.courseList[index].isCustom)
+                  if (course.isCustom)
                     Text(
                       '[自定义]',
                       style: TextStyle(
@@ -906,7 +907,7 @@ class _CoursesDialogState extends State<CoursesDialog> {
                       ),
                     ),
                   Text(
-                    widget.courseList[index].name,
+                    course.name,
                     style: TextStyle(
                       color: Colors.black,
                       fontSize: 24.0.sp,
@@ -915,12 +916,12 @@ class _CoursesDialogState extends State<CoursesDialog> {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  if (!widget.courseList[index].isCustom)
+                  if (!course.isCustom)
                     Text(
                       '📅 '
-                      '${widget.courseList[index].startWeek}'
+                      '${course.startWeek}'
                       '-'
-                      '${widget.courseList[index].endWeek}'
+                      '${course.endWeek}'
                       '周',
                       style: TextStyle(
                         color: Colors.black,
@@ -928,9 +929,9 @@ class _CoursesDialogState extends State<CoursesDialog> {
                         height: 1.5,
                       ),
                     ),
-                  if (widget.courseList[index].location != null)
+                  if (course.location != null)
                     Text(
-                      '📍${widget.courseList[index].location}',
+                      '📍${course.location}',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 24.0.sp,
@@ -948,7 +949,9 @@ class _CoursesDialogState extends State<CoursesDialog> {
             child: Icon(Icons.more_horiz),
           ),
         ],
-      );
+      ),
+    );
+  }
 
   Widget get coursesPage => PageView.builder(
         controller: PageController(viewportFraction: 0.8),
@@ -982,13 +985,6 @@ class _CoursesDialogState extends State<CoursesDialog> {
       padding: EdgeInsets.all(12.0.w),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15.0.w),
-        color: widget.courseList.isNotEmpty
-            ? CourseAPI.inCurrentWeek(course,
-                        currentWeek: widget.currentWeek) ||
-                    isOutOfTerm
-                ? course.color.withOpacity(currentIsDark ? 0.85 : 1.0)
-                : Colors.grey
-            : null,
       ),
       child: Center(
         child: Column(
@@ -1073,6 +1069,23 @@ class _CoursesDialogState extends State<CoursesDialog> {
             : null,
       );
 
+  Positioned courseColorIndicator(Course course) {
+    return Positioned(
+      left: 0.0,
+      right: 0.0,
+      height: 30.w,
+      child: ColoredBox(
+        color: widget.courseList.isNotEmpty
+            ? CourseAPI.inCurrentWeek(course,
+                        currentWeek: widget.currentWeek) ||
+                    isOutOfTerm
+                ? course.color.withOpacity(currentIsDark ? 0.85 : 1.0)
+                : Colors.grey
+            : null,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final bool isDetail = widget.courseList.length == 1;
@@ -1081,39 +1094,48 @@ class _CoursesDialogState extends State<CoursesDialog> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(15.0),
       ),
+      titlePadding: EdgeInsets.zero,
       contentPadding: EdgeInsets.zero,
       children: <Widget>[
-        SizedBox(
-          width: Screens.width / 2,
-          height: 350.0.h,
-          child: Stack(
-            children: <Widget>[
-              if (isDetail) courseDetail(firstCourse) else coursesPage,
-              closeButton(context),
-              if (isDetail && widget.courseList[0].isCustom)
-                Theme(
-                  data: Theme.of(context)
-                      .copyWith(splashFactory: InkSplash.splashFactory),
-                  child: Positioned(
-                    bottom: 10.0.h,
-                    left: Screens.width / 7,
-                    right: Screens.width / 7,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: <Widget>[
-                        if (deleting)
-                          SizedBox.fromSize(
-                            size: Size.square(60.0.w),
-                            child: const SpinKitWidget(size: 30),
-                          )
-                        else
-                          deleteButton,
-                        editButton,
-                      ],
+        Card(
+          clipBehavior: Clip.antiAliasWithSaveLayer,
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.w),
+          ),
+          child: SizedBox(
+            width: _dialogWidth,
+            height: _dialogHeight,
+            child: Stack(
+              children: <Widget>[
+                if (isDetail) courseColorIndicator(firstCourse),
+                if (isDetail) courseDetail(firstCourse) else coursesPage,
+                if (!isDetail) closeButton(context),
+                if (isDetail && widget.courseList[0].isCustom)
+                  Theme(
+                    data: Theme.of(context)
+                        .copyWith(splashFactory: InkSplash.splashFactory),
+                    child: Positioned(
+                      bottom: 10.0.h,
+                      left: Screens.width / 7,
+                      right: Screens.width / 7,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          if (deleting)
+                            SizedBox.fromSize(
+                              size: Size.square(60.0.w),
+                              child: const SpinKitWidget(size: 30),
+                            )
+                          else
+                            deleteButton,
+                          editButton,
+                        ],
+                      ),
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ],
@@ -1295,8 +1317,8 @@ class _CourseEditDialogState extends State<CourseEditDialog> {
       contentPadding: EdgeInsets.zero,
       children: <Widget>[
         SizedBox(
-          width: Screens.width / 2,
-          height: 370.0.h,
+          width: _dialogWidth,
+          height: _dialogHeight,
           child: Stack(
             children: <Widget>[
               courseEditField,

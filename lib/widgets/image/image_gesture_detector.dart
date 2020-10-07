@@ -29,15 +29,16 @@ class ImageGestureDetector extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: onTap ?? () {
-        if ((enableTapPop ?? false) && context != null) {
-          imageViewerState.pop();
-          if (heroPrefix != null) {
-            slidePageKey.currentState.popPage();
-          }
-          Navigator.pop(context);
-        }
-      },
+      onTap: onTap ??
+          () {
+            if ((enableTapPop ?? false) && context != null) {
+              imageViewerState.pop();
+              if (heroPrefix != null) {
+                slidePageKey.currentState.popPage();
+              }
+              Navigator.pop(context);
+            }
+          },
       onLongPress: onLongPress,
       child: child,
     );

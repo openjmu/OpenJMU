@@ -75,9 +75,8 @@ class CoursesProvider extends ChangeNotifier {
 
   void initCourses() {
     now = DateTime.now();
-    _courses = _courseBox
-        .get(currentUser.uid)
-        ?.cast<int, Map<dynamic, dynamic>>();
+    _courses =
+        _courseBox.get(currentUser.uid)?.cast<int, Map<dynamic, dynamic>>();
     _remark = _courseRemarkBox.get(currentUser.uid);
     if (_courses == null) {
       _courses = resetCourses();
