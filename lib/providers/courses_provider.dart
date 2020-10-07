@@ -28,12 +28,12 @@ class CoursesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Map<int, Map<int, dynamic>> _courses;
+  Map<int, Map<dynamic, dynamic>> _courses;
 
-  Map<int, Map<int, dynamic>> get courses => _courses;
+  Map<int, Map<dynamic, dynamic>> get courses => _courses;
 
-  set courses(Map<int, Map<int, dynamic>> value) {
-    _courses = <int, Map<int, dynamic>>{...value};
+  set courses(Map<int, Map<dynamic, dynamic>> value) {
+    _courses = <int, Map<dynamic, dynamic>>{...value};
     notifyListeners();
   }
 
@@ -77,13 +77,12 @@ class CoursesProvider extends ChangeNotifier {
     now = DateTime.now();
     _courses = _courseBox
         .get(currentUser.uid)
-        ?.cast<int, Map<dynamic, dynamic>>()
-        ?.cast<int, Map<int, dynamic>>();
+        ?.cast<int, Map<dynamic, dynamic>>();
     _remark = _courseRemarkBox.get(currentUser.uid);
     if (_courses == null) {
       _courses = resetCourses();
     } else {
-      for (final Map<int, dynamic> _map in _courses.values) {
+      for (final Map<dynamic, dynamic> _map in _courses.values) {
         final Map<int, List<dynamic>> map = _map.cast<int, List<dynamic>>();
         final List<List<dynamic>> lists =
             map.values?.toList()?.cast<List<dynamic>>();

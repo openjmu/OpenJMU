@@ -56,7 +56,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
 
   DateTime get now => coursesProvider.now;
 
-  Map<int, Map<int, dynamic>> get courses => coursesProvider.courses;
+  Map<int, Map<dynamic, dynamic>> get courses => coursesProvider.courses;
 
   DateProvider get dateProvider => currentContext.read<DateProvider>();
 
@@ -206,7 +206,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   /// 计算最晚的一节课在周几
   int get maxWeekDay {
     int _maxWeekday = 5;
-    for (final int count in courses[6].keys) {
+    for (final int count in courses[6].keys.cast<int>()) {
       if ((courses[6][count] as List<dynamic>).isNotEmpty) {
         if (_maxWeekday != 7) {
           _maxWeekday = 6;
@@ -214,7 +214,7 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
         break;
       }
     }
-    for (final int count in courses[7].keys) {
+    for (final int count in courses[7].keys.cast<int>()) {
       if ((courses[7][count] as List<dynamic>).isNotEmpty) {
         _maxWeekday = 7;
         break;
