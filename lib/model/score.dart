@@ -44,6 +44,11 @@ class Score {
   @HiveField(5)
   final double creditHour;
 
+  /// Replace `XX.00` to `XX`.
+  String get formattedScore {
+    return score.removeSuffix('.00');
+  }
+
   bool get isPass {
     bool _isPass;
     if (double.tryParse(score) != null) {

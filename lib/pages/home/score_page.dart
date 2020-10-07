@@ -200,7 +200,7 @@ class ScorePage extends StatelessWidget {
       TextSpan(
         children: <TextSpan>[
           TextSpan(
-            text: score.score,
+            text: score.formattedScore,
             style: TextStyle(
               fontSize: 36.0.sp,
               fontWeight: FontWeight.bold,
