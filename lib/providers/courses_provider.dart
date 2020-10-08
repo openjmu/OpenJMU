@@ -55,7 +55,7 @@ class CoursesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool _hasCourses = true;
+  bool _hasCourses = false;
 
   bool get hasCourses => _hasCourses;
 
@@ -73,11 +73,25 @@ class CoursesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// 当前的错误是否为外网访问
+  bool _isOuterError = false;
+
+  bool get isOuterError => _isOuterError;
+
+  set isOuterError(bool value) {
+    if (value == _isOuterError) {
+      return;
+    }
+    _isOuterError = value;
+    notifyListeners();
+  }
+
   void initCourses() {
     now = DateTime.now();
     _courses =
         _courseBox.get(currentUser.uid)?.cast<int, Map<dynamic, dynamic>>();
     _remark = _courseRemarkBox.get(currentUser.uid);
+    _hasCourses = _courses != null;
     if (_courses == null) {
       _courses = resetCourses();
     } else {
@@ -166,11 +180,17 @@ class CoursesProvider extends ChangeNotifier {
         updateCourses(isOuterNetwork: true);
       }
     } catch (e) {
-      trueDebugPrint('Error when updating course: $e');
+      _showError = !_hasCourses; // 有课则不显示错误
+      if (isOuterNetwork && e is FormatException) {
+        trueDebugPrint('Displaying courses from cache...');
+        _isOuterError = true;
+      } else {
+        trueDebugPrint('Error when updating course: $e');
+        _isOuterError = false;
+      }
       if (!firstLoaded && dateProvider.currentWeek != null) {
         _firstLoaded = true;
       }
-      _showError = true;
       notifyListeners();
     }
   }

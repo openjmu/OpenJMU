@@ -14,6 +14,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  animations: 1.1.2
   badges: 1.1.3
   connectivity: ^0.4.9+3
   cookie_jar: 1.0.1

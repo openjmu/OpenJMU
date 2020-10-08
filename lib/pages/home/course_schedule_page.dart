@@ -1,10 +1,12 @@
 import 'dart:math' as math;
 
+import 'package:animations/animations.dart';
 import 'package:flutter/material.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
 double get _dialogWidth => 300.w;
+
 double get _dialogHeight => 380.w;
 
 class CourseSchedulePage extends StatefulWidget {
@@ -545,39 +547,94 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Listener(
-      onPointerUp: weekSwitcherPointerUpListener,
-      onPointerMove: weekSwitcherPointerMoveListener,
-      child: RefreshIndicator(
-        key: refreshIndicatorKey,
-        onRefresh: coursesProvider.updateCourses,
-        child: Column(
-          children: <Widget>[
-            weekSelection(context),
-            Expanded(
-              child: AnimatedCrossFade(
-                duration: animateDuration,
-                crossFadeState: !firstLoaded
-                    ? CrossFadeState.showFirst
-                    : CrossFadeState.showSecond,
-                firstChild: const SpinKitWidget(),
-                secondChild: Selector<CoursesProvider, String>(
-                  selector: (_, CoursesProvider provider) => provider.remark,
-                  builder: (_, String remark, __) => Column(
-                    children: <Widget>[
-                      if (remark != null) remarkWidget,
-                      if (firstLoaded && hasCourse && !showError)
-                        weekDayIndicator,
-                      if (firstLoaded && hasCourse && !showError)
-                        courseLineGrid(context),
-                      if (firstLoaded && !hasCourse && !showError) emptyTips,
-                      if (firstLoaded && showError) errorTips,
-                    ],
+    return Stack(
+      children: <Widget>[
+        Listener(
+          onPointerUp: weekSwitcherPointerUpListener,
+          onPointerMove: weekSwitcherPointerMoveListener,
+          child: RefreshIndicator(
+            key: refreshIndicatorKey,
+            onRefresh: coursesProvider.updateCourses,
+            child: Column(
+              children: <Widget>[
+                weekSelection(context),
+                Expanded(
+                  child: AnimatedCrossFade(
+                    duration: animateDuration,
+                    crossFadeState: !firstLoaded
+                        ? CrossFadeState.showFirst
+                        : CrossFadeState.showSecond,
+                    firstChild: const SpinKitWidget(),
+                    secondChild: Column(
+                      children: <Widget>[
+                        if (context.select<CoursesProvider, String>(
+                                (CoursesProvider p) => p.remark) !=
+                            null)
+                          remarkWidget,
+                        if (firstLoaded && hasCourse && !showError)
+                          weekDayIndicator,
+                        if (firstLoaded && hasCourse && !showError)
+                          courseLineGrid(context),
+                        if (firstLoaded && !hasCourse && !showError) emptyTips,
+                        if (firstLoaded && showError) errorTips,
+                      ],
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
+        ),
+        if (context.select<CoursesProvider, bool>(
+            (CoursesProvider p) => p.isOuterError))
+          Positioned(
+            right: 10.w,
+            top: 10.w,
+            child: FloatingActionButton(
+              heroTag: 'CoursesOuterNetworkErrorFAB',
+              onPressed: () {
+                showModal<void>(
+                  context: context,
+                  builder: (_) => const _CourseOuterNetworkErrorDialog(),
+                );
+              },
+              tooltip: '无法获取最新课表',
+              mini: true,
+              child: Icon(Icons.warning, size: 28.w, color: Colors.white),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _CourseOuterNetworkErrorDialog extends StatelessWidget {
+  const _CourseOuterNetworkErrorDialog({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Card(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15.0),
+        ),
+        child: Container(
+          width: _dialogWidth,
+          height: _dialogHeight / 2,
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              Icon(Icons.signal_wifi_off, size: 42.w),
+              Text(
+                '由于外网网络限制\n无法访问课表数据\n请连接校园网后重试',
+                style: TextStyle(fontSize: 20.sp),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -602,7 +659,7 @@ class CourseWidget extends StatelessWidget {
   bool get isOutOfTerm => currentWeek < 1 || currentWeek > 20;
 
   void showCoursesDetail(BuildContext context) {
-    showDialog<void>(
+    showModal<void>(
       context: context,
       builder: (BuildContext _) => CoursesDialog(
         courseList: courseList,
@@ -760,13 +817,12 @@ class CourseWidget extends StatelessWidget {
                         }
                       },
                       onLongPress: () {
-                        showDialog<void>(
+                        showModal<void>(
                           context: context,
                           builder: (BuildContext context) => CourseEditDialog(
                             course: null,
                             coordinate: coordinate,
                           ),
-                          barrierDismissible: false,
                         );
                       },
                       child: Container(
@@ -822,7 +878,7 @@ class _CoursesDialogState extends State<CoursesDialog> {
   bool deleting = false;
 
   void showCoursesDetail(BuildContext context, Course course) {
-    showDialog<void>(
+    showModal<void>(
       context: context,
       builder: (BuildContext context) => CoursesDialog(
         courseList: <Course>[course],
@@ -1057,13 +1113,12 @@ class _CoursesDialogState extends State<CoursesDialog> {
         child: Icon(Icons.edit, color: Colors.black, size: 32.0.w),
         onPressed: !deleting
             ? () {
-                showDialog<void>(
+                showModal<void>(
                   context: context,
                   builder: (_) => CourseEditDialog(
                     course: widget.courseList[0],
                     coordinate: widget.coordinate,
                   ),
-                  barrierDismissible: false,
                 );
               }
             : null,
