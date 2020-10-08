@@ -93,8 +93,7 @@ class _AboutCard extends StatelessWidget {
     showLicensePage(
       context: context,
       applicationName: 'OpenJMU',
-      applicationVersion:
-      '${PackageUtils.version}+${PackageUtils.buildNumber}',
+      applicationVersion: '${PackageUtils.version}+${PackageUtils.buildNumber}',
       applicationIcon: Padding(
         padding: EdgeInsets.all(20.w),
         child: Image.asset(
