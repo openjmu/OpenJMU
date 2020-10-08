@@ -249,7 +249,7 @@ class _ChangeLogPageState extends State<ChangeLogPage>
     final String name = sections.keys.elementAt(index);
     return TextSpan(
       children: List<TextSpan>.generate(
-        (sections[name] as List<String>).length + 1,
+        (sections[name] as List<dynamic>).length + 1,
         (int j) => j == 0
             ? TextSpan(
                 text: '[$name]\n',
