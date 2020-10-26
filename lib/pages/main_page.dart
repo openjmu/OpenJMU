@@ -313,6 +313,7 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
         drawer: SelfPage(),
         drawerEdgeDragWidth: Screens.width * 0.0666,
         bottomNavigationBar: bottomNavigationBar,
+        resizeToAvoidBottomInset: false,
       ),
     );
   }

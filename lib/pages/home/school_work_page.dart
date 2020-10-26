@@ -139,9 +139,9 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Scaffold(
-      backgroundColor: Theme.of(context).canvasColor,
-      body: FixedAppBarWrapper(
+    return ColoredBox(
+      color: Theme.of(context).canvasColor,
+      child: FixedAppBarWrapper(
         appBar: _appBar,
         body: Selector<ThemesProvider, bool>(
           selector: (_, ThemesProvider provider) => provider.dark,
