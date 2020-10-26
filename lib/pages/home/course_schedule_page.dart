@@ -618,7 +618,7 @@ class _CourseOuterNetworkErrorDialog extends StatelessWidget {
         clipBehavior: Clip.antiAliasWithSaveLayer,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
+          borderRadius: BorderRadius.circular(10.w),
         ),
         child: Container(
           width: _dialogWidth,
@@ -660,13 +660,29 @@ class CourseWidget extends StatelessWidget {
 
   void showCoursesDetail(BuildContext context) {
     showModal<void>(
-      context: context,
-      builder: (BuildContext _) => CoursesDialog(
-        courseList: courseList,
-        currentWeek: currentWeek,
-        coordinate: coordinate,
-      ),
-    );
+        context: context,
+        builder: (BuildContext _) {
+          if (courseList.length == 1) {
+            if (courseList[0].isCustom) {
+              return _CustomCourseDetailDialog(
+                course: courseList[0],
+                currentWeek: currentWeek,
+                coordinate: coordinate,
+              );
+            } else {
+              return _CourseDetailDialog(
+                course: courseList[0],
+                currentWeek: currentWeek,
+              );
+            }
+          } else {
+            return _CourseListDialog(
+              courseList: courseList,
+              currentWeek: currentWeek,
+              coordinate: coordinate,
+            );
+          }
+        });
   }
 
   Widget courseCustomIndicator(Course course) {
@@ -857,8 +873,8 @@ class CourseWidget extends StatelessWidget {
   }
 }
 
-class CoursesDialog extends StatefulWidget {
-  const CoursesDialog({
+class _CourseListDialog extends StatefulWidget {
+  const _CourseListDialog({
     Key key,
     @required this.courseList,
     @required this.currentWeek,
@@ -870,141 +886,82 @@ class CoursesDialog extends StatefulWidget {
   final List<int> coordinate;
 
   @override
-  _CoursesDialogState createState() => _CoursesDialogState();
+  _CourseListDialogState createState() => _CourseListDialogState();
 }
 
-class _CoursesDialogState extends State<CoursesDialog> {
+class _CourseListDialogState extends State<_CourseListDialog> {
   final double darkModeOpacity = 0.85;
   bool deleting = false;
-
-  void showCoursesDetail(BuildContext context, Course course) {
-    showModal<void>(
-      context: context,
-      builder: (BuildContext context) => CoursesDialog(
-        courseList: <Course>[course],
-        currentWeek: widget.currentWeek,
-        coordinate: widget.coordinate,
-      ),
-    );
-  }
-
-  void deleteCourse() {
-    setState(() {
-      deleting = true;
-    });
-    final Course _course = widget.courseList[0];
-    Future.wait<Response<Map<String, dynamic>>>(
-      <Future<Response<Map<String, dynamic>>>>[
-        CourseAPI.setCustomCourse(<String, dynamic>{
-          'content': Uri.encodeComponent(''),
-          'couDayTime': _course.day,
-          'coudeTime': _course.time,
-        }),
-        if (_course.shouldUseRaw)
-          CourseAPI.setCustomCourse(<String, dynamic>{
-            'content': Uri.encodeComponent(''),
-            'couDayTime': _course.rawDay,
-            'coudeTime': _course.rawTime,
-          }),
-      ],
-      eagerError: true,
-    ).then((List<Response<Map<String, dynamic>>> responses) {
-      bool isOk = true;
-      for (final Response<Map<String, dynamic>> response in responses) {
-        if (!(response.data['isOk'] as bool)) {
-          isOk = false;
-          break;
-        }
-      }
-      if (isOk) {
-        navigatorState.popUntil((_) => _.isFirst);
-        Instances.eventBus.fire(CourseScheduleRefreshEvent());
-        Future<void>.delayed(400.milliseconds, () {
-          widget.courseList.removeAt(0);
-        });
-      }
-    }).catchError((dynamic e) {
-      showToast('删除课程失败');
-      trueDebugPrint('Failed in deleting custom course: $e');
-    }).whenComplete(() {
-      deleting = false;
-      if (mounted) {
-        setState(() {});
-      }
-    });
-  }
 
   bool get isOutOfTerm => widget.currentWeek < 1 || widget.currentWeek > 20;
 
   Widget courseContent(int index) {
     final Course course = widget.courseList[index];
-    return Card(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: Stack(
-        children: <Widget>[
-          courseColorIndicator(course),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  if (course.isCustom)
-                    Text(
-                      '[自定义]',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24.0.sp,
-                        height: 1.5,
-                      ),
-                    ),
-                  Text(
-                    course.name,
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 24.0.sp,
-                      fontWeight: FontWeight.bold,
-                      height: 1.5,
-                    ),
-                    textAlign: TextAlign.center,
+    return Center(
+      child: Card(
+        clipBehavior: Clip.antiAliasWithSaveLayer,
+        margin: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.w),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              if (course.isCustom)
+                Text(
+                  '[自定义]',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24.0.sp,
+                    height: 1.5,
                   ),
-                  if (!course.isCustom)
-                    Text(
-                      '📅 '
-                      '${course.startWeek}'
-                      '-'
-                      '${course.endWeek}'
-                      '周',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24.0.sp,
-                        height: 1.5,
+                ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 16.w),
+                child: Stack(
+                  children: <Widget>[
+                    _CourseColorIndicator(
+                      course: course,
+                      currentWeek: widget.currentWeek,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 24.w),
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          course.name,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 22.sp,
+                            fontWeight: FontWeight.bold,
+                            height: 1.5,
+                          ),
+                        ),
                       ),
                     ),
-                  if (course.location != null)
-                    Text(
-                      '📍${course.location}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 24.0.sp,
-                        height: 1.5,
-                      ),
-                    ),
-                ],
+                  ],
+                ),
               ),
-            ),
+              if (!course.isCustom) ...<Widget>[
+                if (course.location != null)
+                  _CourseInfoRowWidget(
+                    name: '教室',
+                    value: course.location,
+                  ),
+                _CourseInfoRowWidget(
+                  name: '教师',
+                  value: course.teacher,
+                ),
+                _CourseInfoRowWidget(
+                  name: '周数',
+                  value: '${course.startWeek}-${course.endWeek}周',
+                ),
+              ],
+            ],
           ),
-          const Positioned(
-            left: 0.0,
-            right: 0.0,
-            bottom: 0.0,
-            child: Icon(Icons.more_horiz),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -1016,12 +973,18 @@ class _CoursesDialogState extends State<CoursesDialog> {
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: 10.0,
+              horizontal: 10.w,
               vertical: 0.2 * 0.7 * Screens.height / 3 + 10.0,
             ),
             child: GestureDetector(
               onTap: () {
-                showCoursesDetail(context, widget.courseList[index]);
+                showModal<void>(
+                  context: context,
+                  builder: (_) => _CourseDetailDialog(
+                    course: widget.courseList[index],
+                    currentWeek: widget.currentWeek,
+                  ),
+                );
               },
               child: courseContent(index),
             ),
@@ -1040,7 +1003,7 @@ class _CoursesDialogState extends State<CoursesDialog> {
       height: double.maxFinite,
       padding: EdgeInsets.all(12.0.w),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15.0.w),
+        borderRadius: BorderRadius.circular(10.w),
       ),
       child: Center(
         child: Column(
@@ -1048,7 +1011,7 @@ class _CoursesDialogState extends State<CoursesDialog> {
           children: <Widget>[
             if (course.isCustom) Text('[自定义]', style: style),
             Text(
-              widget.courseList[0].name,
+              course.name,
               style: style.copyWith(
                 fontSize: 28.0.sp,
                 fontWeight: FontWeight.bold,
@@ -1079,30 +1042,6 @@ class _CoursesDialogState extends State<CoursesDialog> {
     );
   }
 
-  Widget closeButton(BuildContext context) => Positioned(
-        top: 0.0,
-        right: 0.0,
-        child: IconButton(
-          icon: const Icon(Icons.close, color: Colors.black),
-          onPressed: Navigator.of(context).pop,
-        ),
-      );
-
-  Widget get deleteButton => MaterialButton(
-        padding: EdgeInsets.zero,
-        minWidth: 60.0.w,
-        height: 60.0.w,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(Screens.width / 2),
-        ),
-        child: Icon(
-          Icons.delete,
-          color: Colors.black,
-          size: 32.0.w,
-        ),
-        onPressed: deleteCourse,
-      );
-
   Widget get editButton => MaterialButton(
         padding: EdgeInsets.zero,
         minWidth: 60.0.w,
@@ -1124,76 +1063,393 @@ class _CoursesDialogState extends State<CoursesDialog> {
             : null,
       );
 
-  Positioned courseColorIndicator(Course course) {
+  Widget courseColorIndicator(Course course) {
     return Positioned(
+      top: 0.0,
+      bottom: 0.0,
       left: 0.0,
-      right: 0.0,
-      height: 30.w,
-      child: ColoredBox(
-        color: widget.courseList.isNotEmpty
-            ? CourseAPI.inCurrentWeek(course,
-                        currentWeek: widget.currentWeek) ||
-                    isOutOfTerm
-                ? course.color.withOpacity(currentIsDark ? 0.85 : 1.0)
-                : Colors.grey
-            : null,
+      width: 10.w,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: maxBorderRadius,
+          color: widget.courseList.isNotEmpty
+              ? CourseAPI.inCurrentWeek(course,
+                          currentWeek: widget.currentWeek) ||
+                      isOutOfTerm
+                  ? course.color.withOpacity(currentIsDark ? 0.85 : 1.0)
+                  : Colors.grey
+              : null,
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final bool isDetail = widget.courseList.length == 1;
-    final Course firstCourse = widget.courseList[0];
-    return SimpleDialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      titlePadding: EdgeInsets.zero,
-      contentPadding: EdgeInsets.zero,
-      children: <Widget>[
-        Card(
+    return Material(
+      type: MaterialType.transparency,
+      child: Center(
+        child: Card(
           clipBehavior: Clip.antiAliasWithSaveLayer,
           margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.w),
+            borderRadius: BorderRadius.circular(10.w),
           ),
           child: SizedBox(
-            width: _dialogWidth,
-            height: _dialogHeight,
-            child: Stack(
-              children: <Widget>[
-                if (isDetail) courseColorIndicator(firstCourse),
-                if (isDetail) courseDetail(firstCourse) else coursesPage,
-                if (!isDetail) closeButton(context),
-                if (isDetail && widget.courseList[0].isCustom)
-                  Theme(
-                    data: Theme.of(context)
-                        .copyWith(splashFactory: InkSplash.splashFactory),
-                    child: Positioned(
-                      bottom: 10.0.h,
-                      left: Screens.width / 7,
-                      right: Screens.width / 7,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: <Widget>[
-                          if (deleting)
-                            SizedBox.fromSize(
-                              size: Size.square(60.0.w),
-                              child: const SpinKitWidget(size: 30),
-                            )
-                          else
-                            deleteButton,
-                          editButton,
-                        ],
+            width: _dialogWidth + 90.w,
+            height: _dialogHeight + 50.w,
+            child: coursesPage,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CourseColorIndicator extends StatelessWidget {
+  const _CourseColorIndicator({
+    Key key,
+    @required this.course,
+    @required this.currentWeek,
+  }) : super(key: key);
+
+  final Course course;
+  final int currentWeek;
+
+  bool get isOutOfTerm => currentWeek < 1 || currentWeek > 20;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      top: 0.0,
+      bottom: 0.0,
+      left: 0.0,
+      width: 8.w,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: maxBorderRadius,
+          color: CourseAPI.inCurrentWeek(course, currentWeek: currentWeek) ||
+                  isOutOfTerm
+              ? course.color.withOpacity(currentIsDark ? 0.85 : 1.0)
+              : Colors.grey,
+        ),
+      ),
+    );
+  }
+}
+
+class _CourseInfoRowWidget extends StatelessWidget {
+  const _CourseInfoRowWidget({
+    Key key,
+    @required this.name,
+    @required this.value,
+  })  : assert(name != null),
+        assert(value != null),
+        super(key: key);
+
+  final String name;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTextStyle(
+      style: context.themeData.textTheme.caption.copyWith(fontSize: 18.sp),
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 8.w),
+        child: Row(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(right: 15.w),
+              child: Text(name),
+            ),
+            Expanded(
+              child: Text(
+                value,
+                style: TextStyle(
+                  color: context.themeData.textTheme.bodyText2.color,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CourseDetailDialog extends StatelessWidget {
+  const _CourseDetailDialog({
+    Key key,
+    @required this.course,
+    @required this.currentWeek,
+  }) : super(key: key);
+
+  final Course course;
+  final int currentWeek;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      type: MaterialType.transparency,
+      child: Center(
+        child: Container(
+          width: _dialogWidth,
+          padding: EdgeInsets.all(30.w),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10.w),
+            color: context.themeData.colorScheme.surface,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(bottom: 16.w),
+                child: Stack(
+                  children: <Widget>[
+                    _CourseColorIndicator(
+                      course: course,
+                      currentWeek: currentWeek,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 24.w),
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        child: Text(
+                          course.name,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 22.sp,
+                            fontWeight: FontWeight.bold,
+                            height: 1.5,
+                          ),
+                        ),
                       ),
                     ),
+                  ],
+                ),
+              ),
+              if (course.location != null)
+                _CourseInfoRowWidget(
+                  name: '教室',
+                  value: course.location,
+                ),
+              _CourseInfoRowWidget(
+                name: '教师',
+                value: course.teacher,
+              ),
+              _CourseInfoRowWidget(
+                name: '周数',
+                value: course.weekDurationString,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CustomCourseDetailDialog extends StatefulWidget {
+  const _CustomCourseDetailDialog({
+    Key key,
+    @required this.course,
+    @required this.currentWeek,
+    @required this.coordinate,
+  })  : assert(course != null),
+        assert(currentWeek != null),
+        super(key: key);
+
+  final Course course;
+  final int currentWeek;
+  final List<int> coordinate;
+
+  @override
+  _CustomCourseDetailDialogState createState() =>
+      _CustomCourseDetailDialogState();
+}
+
+class _CustomCourseDetailDialogState extends State<_CustomCourseDetailDialog> {
+  bool deleting = false;
+
+  Course get course => widget.course;
+
+  int get currentWeek => widget.currentWeek;
+
+  void deleteCourse() {
+    setState(() {
+      deleting = true;
+    });
+    final Course _course = widget.course;
+    Future.wait<Response<Map<String, dynamic>>>(
+      <Future<Response<Map<String, dynamic>>>>[
+        CourseAPI.setCustomCourse(<String, dynamic>{
+          'content': Uri.encodeComponent(''),
+          'couDayTime': _course.day,
+          'coudeTime': _course.time,
+        }),
+        if (_course.shouldUseRaw)
+          CourseAPI.setCustomCourse(<String, dynamic>{
+            'content': Uri.encodeComponent(''),
+            'couDayTime': _course.rawDay,
+            'coudeTime': _course.rawTime,
+          }),
+      ],
+      eagerError: true,
+    ).then((List<Response<Map<String, dynamic>>> responses) {
+      bool isOk = true;
+      for (final Response<Map<String, dynamic>> response in responses) {
+        if (!(response.data['isOk'] as bool)) {
+          isOk = false;
+          break;
+        }
+      }
+      if (isOk) {
+        navigatorState.popUntil((_) => _.isFirst);
+        Instances.eventBus.fire(CourseScheduleRefreshEvent());
+      }
+    }).catchError((dynamic e) {
+      showToast('删除课程失败');
+      trueDebugPrint('Failed in deleting custom course: $e');
+    }).whenComplete(() {
+      deleting = false;
+      if (mounted) {
+        setState(() {});
+      }
+    });
+  }
+
+  Widget closeButton(BuildContext context) {
+    return IconButton(
+      padding: EdgeInsets.zero,
+      icon: const Icon(Icons.close),
+      iconSize: 30.w,
+      onPressed: Navigator.of(context).pop,
+      constraints: BoxConstraints(minWidth: 30.w),
+    );
+  }
+
+  Widget get editButton {
+    return MaterialButton(
+      elevation: 0.0,
+      highlightElevation: 0.0,
+      focusElevation: 0.0,
+      hoverElevation: 0.0,
+      disabledElevation: 0.0,
+      padding: EdgeInsets.zero,
+      minWidth: double.maxFinite,
+      height: 64.w,
+      color: Colors.grey[500],
+      child: Text(
+        '编辑',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18.sp,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      onPressed: () {
+        showModal<void>(
+          context: context,
+          builder: (_) => CourseEditDialog(
+            course: course,
+            coordinate: widget.coordinate,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget get deleteButton {
+    return MaterialButton(
+      elevation: 0.0,
+      highlightElevation: 0.0,
+      focusElevation: 0.0,
+      hoverElevation: 0.0,
+      disabledElevation: 0.0,
+      padding: EdgeInsets.zero,
+      minWidth: double.maxFinite,
+      height: 64.w,
+      color: defaultLightColor,
+      child: Text(
+        '删除',
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 18.sp,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+      onPressed: deleteCourse,
+    );
+  }
+
+  Widget header(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 20.w),
+      child: Row(
+        children: <Widget>[
+          Text('自定义课程', style: TextStyle(fontSize: 20.sp)),
+          const Spacer(),
+          closeButton(context),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      type: MaterialType.transparency,
+      child: Center(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10.w),
+          child: SizedBox(
+            width: _dialogWidth,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Container(
+                  color: context.themeData.colorScheme.surface,
+                  padding: EdgeInsets.all(30.w),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      header(context),
+                      Padding(
+                        padding: EdgeInsets.only(bottom: 16.w),
+                        child: Stack(
+                          children: <Widget>[
+                            _CourseColorIndicator(
+                              course: course,
+                              currentWeek: currentWeek,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 24.w),
+                              child: Align(
+                                alignment: AlignmentDirectional.centerStart,
+                                child: Text(
+                                  course.name,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 22.sp,
+                                    fontWeight: FontWeight.bold,
+                                    height: 1.5,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
+                ),
+                editButton,
+                deleteButton,
               ],
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }

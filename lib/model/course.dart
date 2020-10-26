@@ -122,6 +122,9 @@ class Course {
   /// Whether we should use raw data to modify.
   bool get shouldUseRaw => day != rawDay || time != rawTime;
 
+  String get weekDurationString => '$startWeek-$endWeek'
+      '${oddEven == 1 ? '单' : oddEven == 2 ? '双' : ''}周';
+
   static int judgeOddEven(Map<String, dynamic> json) {
     int _oddEven = 0;
     final List<String> _split = (json['allWeek'] as String).split(' ');
