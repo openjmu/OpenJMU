@@ -169,14 +169,14 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
           if (!loadMore) {
             list.clear();
           }
-          data['data'].forEach((Map<String, dynamic> post) {
+          data['data'].forEach((dynamic post) {
             dynamic _post;
             switch (widget.type) {
               case TeamPostType.post:
-                _post = TeamPost.fromJson(post);
+                _post = TeamPost.fromJson(post as Map<String, dynamic>);
                 break;
               case TeamPostType.comment:
-                _post = TeamPostComment.fromJson(post);
+                _post = TeamPostComment.fromJson(post as Map<String, dynamic>);
                 break;
             }
             list.add(_post);
