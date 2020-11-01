@@ -258,7 +258,7 @@ class TeamPostPreviewCard extends StatelessWidget {
                             '楼主',
                             style: TextStyle(
                               fontSize: 13.0.sp,
-                              color: Colors.white,
+                              color: adaptiveButtonColor(),
                               fontWeight: FontWeight.bold,
                             ),
                           ),

@@ -64,7 +64,7 @@ class TeamCommentPreviewCard extends StatelessWidget {
                           '楼主',
                           style: TextStyle(
                             fontSize: suSetSp(12.0),
-                            color: Colors.white,
+                            color: adaptiveButtonColor(),
                             fontWeight: FontWeight.bold,
                           ),
                         ),

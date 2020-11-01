@@ -82,71 +82,6 @@ class SelfPage extends StatelessWidget {
     );
   }
 
-  /// School card widget.
-  /// 校园卡部件
-  Widget get userCard => Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-          padding: EdgeInsets.all(25.0.w),
-          width: Screens.width * 0.7,
-          height: (headerHeight - 20.0).h - Screens.topSafeHeight,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(25.0.w),
-              topRight: Radius.circular(25.0.w),
-            ),
-            color: currentThemeColor,
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: <Color>[
-                Color.fromRGBO(94, 121, 136, 1.0),
-                Color.fromRGBO(53, 70, 78, 1.0),
-              ],
-            ),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              SizedBox(
-                height: 40.0.h,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SvgPicture.asset(
-                      R.IMAGES_JMU_NAME_SVG,
-                      color: const Color(0xffffcb28),
-                    ),
-                    ClipRRect(
-                      borderRadius: maxBorderRadius,
-                      child: Image.asset(R.IMAGES_LOGO_1024_PNG),
-                    ),
-                  ],
-                ),
-              ),
-              Text(
-                currentUser.workId,
-                style: TextStyle(
-                  color: Colors.white54,
-                  fontSize: 24.0.sp,
-                  fontFamily: 'JetBrains Mono',
-                  letterSpacing: 4.0.sp,
-                  shadows: <Shadow>[
-                    Shadow(
-                      blurRadius: 10.0,
-                      color: Colors.black26,
-                      offset: Offset(4.0.w, 4.0.w),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
   /// Wrapper for content.
   /// 内容部件封装
   Widget contentWrapper({@required Widget child}) {
@@ -281,7 +216,7 @@ class SelfPage extends StatelessWidget {
                   currentUser.name,
                   style: TextStyle(
                     fontSize: 23.0.sp,
-                    color: Colors.white,
+                    color: adaptiveButtonColor(),
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

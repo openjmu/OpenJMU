@@ -5,14 +5,18 @@ import 'package:connectivity/connectivity.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-import 'package:openjmu/pages/home/course_schedule_page.dart';
-import 'package:openjmu/pages/home/school_work_page.dart';
+import '../pages/home/course_schedule_page.dart';
+import '../pages/home/school_work_page.dart';
+import 'constants.dart';
 
 NavigatorState get navigatorState => Instances.navigatorKey.currentState;
 
 BuildContext get currentContext => navigatorState.context;
 
 ThemeData get currentTheme => Theme.of(currentContext);
+
+ThemeGroup get currentThemeGroup =>
+    currentContext.read<ThemesProvider>().currentThemeGroup;
 
 Brightness get currentBrightness => currentTheme.brightness;
 

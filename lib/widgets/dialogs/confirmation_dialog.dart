@@ -135,7 +135,7 @@ class ConfirmationDialog extends StatelessWidget {
         child: Text(
           cancelLabel,
           style: TextStyle(
-            color: Colors.white,
+            color: adaptiveButtonColor(),
             fontSize: suSetSp(22.0),
             fontWeight: FontWeight.bold,
           ),

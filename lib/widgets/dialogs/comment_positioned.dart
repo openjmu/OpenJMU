@@ -259,6 +259,7 @@ class CommentPositionedState extends State<CommentPositioned> {
           children: <Widget>[
             RoundedCheckbox(
               activeColor: currentThemeColor,
+              checkColor: adaptiveButtonColor(),
               value: forwardAtTheMeanTime,
               onChanged: (bool value) {
                 setState(() {

@@ -224,6 +224,21 @@ class _NightModeCard extends StatelessWidget {
       children: <Widget>[
         _SettingItemWidget(
           item: _SettingItem(
+            name: '夜间模式',
+            widget: Consumer<ThemesProvider>(
+              builder: (BuildContext _, ThemesProvider provider, Widget __) {
+                return CustomSwitch(
+                  activeColor: currentThemeColor,
+                  value: provider.dark,
+                  onChanged: (bool value) =>
+                      provider.dark = value,
+                );
+              },
+            ),
+          ),
+        ),
+        _SettingItemWidget(
+          item: _SettingItem(
             name: '夜间模式跟随系统',
             widget: Consumer<ThemesProvider>(
               builder: (BuildContext _, ThemesProvider provider, Widget __) {
@@ -232,20 +247,6 @@ class _NightModeCard extends StatelessWidget {
                   value: provider.platformBrightness,
                   onChanged: (bool value) =>
                       provider.platformBrightness = value,
-                );
-              },
-            ),
-          ),
-        ),
-        _SettingItemWidget(
-          item: _SettingItem(
-            name: '更深的黑',
-            widget: Consumer<ThemesProvider>(
-              builder: (BuildContext _, ThemesProvider provider, Widget __) {
-                return CustomSwitch(
-                  activeColor: currentThemeColor,
-                  value: provider.amoledDark,
-                  onChanged: (bool value) => provider.amoledDark = value,
                 );
               },
             ),
@@ -364,10 +365,8 @@ class _ThemeCard extends StatelessWidget {
     return _SettingsCard(
       title: '主题设置',
       children: <Widget>[
-        Selector<ThemesProvider, ThemeGroup>(
-          selector: (BuildContext _, ThemesProvider provider) =>
-              provider.currentThemeGroup,
-          builder: (BuildContext _, ThemeGroup currentThemeGroup, Widget __) {
+        Consumer<ThemesProvider>(
+          builder: (_, ThemesProvider provider, __) {
             return GridView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -379,16 +378,18 @@ class _ThemeCard extends StatelessWidget {
               itemCount: supportThemeGroups.length,
               itemBuilder: (BuildContext _, int index) {
                 final ThemeGroup theme = supportThemeGroups[index];
-                final bool isSelected = currentThemeGroup == theme;
+                final bool isSelected = provider.currentThemeGroup == theme;
                 return GestureDetector(
                   onTap: () {
                     if (!isSelected) {
-                      context.read<ThemesProvider>().updateThemeColor(index);
+                      provider.updateThemeColor(index);
                     }
                   },
                   child: DecoratedBox(
                     decoration: BoxDecoration(
-                      color: theme.lightThemeColor,
+                      color: currentIsDark
+                          ? theme.darkThemeColor
+                          : theme.lightThemeColor,
                       shape: BoxShape.circle,
                     ),
                     child: AnimatedOpacity(

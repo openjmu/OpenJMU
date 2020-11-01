@@ -39,20 +39,6 @@ class ThemesProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool _amoledDark = false;
-
-  bool get amoledDark => _amoledDark;
-
-  set amoledDark(bool value) {
-    assert(value != null);
-    if (_amoledDark == value) {
-      return;
-    }
-    HiveFieldUtils.setAMOLEDDark(value);
-    _amoledDark = value;
-    notifyListeners();
-  }
-
   bool _platformBrightness = true;
 
   bool get platformBrightness => _platformBrightness;
@@ -75,18 +61,15 @@ class ThemesProvider with ChangeNotifier {
     }
     _currentThemeGroup = supportThemeGroups[themeIndex];
     _dark = HiveFieldUtils.getBrightnessDark();
-    _amoledDark = HiveFieldUtils.getAMOLEDDark();
     _platformBrightness = HiveFieldUtils.getBrightnessPlatform();
   }
 
   void resetTheme() {
     HiveFieldUtils.setColorTheme(0);
-    HiveFieldUtils.setAMOLEDDark(false);
     HiveFieldUtils.setBrightnessDark(false);
     HiveFieldUtils.setBrightnessPlatform(true);
     _currentThemeGroup = defaultThemeGroup;
     _dark = false;
-    _amoledDark = false;
     _platformBrightness = true;
     notifyListeners();
   }
@@ -105,10 +88,8 @@ class ThemesProvider with ChangeNotifier {
 
   Future<void> syncFromCloudSettings(CloudSettingsModel model) async {
     _dark = model.isDark;
-    _amoledDark = model.amoledDark;
     _platformBrightness = model.platformBrightness;
     await HiveFieldUtils.setBrightnessDark(_dark);
-    await HiveFieldUtils.setAMOLEDDark(_amoledDark);
     await HiveFieldUtils.setBrightnessPlatform(_platformBrightness);
     notifyListeners();
   }
@@ -190,21 +171,11 @@ class ThemesProvider with ChangeNotifier {
 
   ThemeData get darkTheme {
     final Color currentColor = currentThemeGroup.darkThemeColor;
-    final Color primaryColor = amoledDark
-        ? currentThemeGroup.darkerPrimaryColor
-        : currentThemeGroup.darkPrimaryColor;
-    final Color backgroundColor = amoledDark
-        ? currentThemeGroup.darkerBackgroundColor
-        : currentThemeGroup.darkBackgroundColor;
-    final Color dividerColor = amoledDark
-        ? currentThemeGroup.darkerDividerColor
-        : currentThemeGroup.darkDividerColor;
-    final Color primaryTextColor = amoledDark
-        ? currentThemeGroup.darkerPrimaryTextColor
-        : currentThemeGroup.darkPrimaryTextColor;
-    final Color secondaryTextColor = amoledDark
-        ? currentThemeGroup.darkerSecondaryTextColor
-        : currentThemeGroup.darkSecondaryTextColor;
+    final Color primaryColor = currentThemeGroup.darkPrimaryColor;
+    final Color backgroundColor = currentThemeGroup.darkBackgroundColor;
+    final Color dividerColor = currentThemeGroup.darkDividerColor;
+    final Color primaryTextColor = currentThemeGroup.darkPrimaryTextColor;
+    final Color secondaryTextColor = currentThemeGroup.darkSecondaryTextColor;
     return ThemeData.dark().copyWith(
       brightness: Brightness.dark,
       primaryColor: primaryColor,
@@ -278,30 +249,32 @@ final List<ThemeGroup> supportThemeGroups = <ThemeGroup>[
   defaultThemeGroup, // This is the default theme group.
   const ThemeGroup(
     lightThemeColor: Color(0xfff06292),
-    darkThemeColor: Color(0xfff06292),
+    darkThemeColor: Color(0xffcc537c),
   ),
   const ThemeGroup(
-    lightThemeColor: Color(0xffab47bc),
-    darkThemeColor: Color(0xffab47bc),
+    lightThemeColor: Color(0xffba68c8),
+    darkThemeColor: Color(0xff9e58aa),
   ),
   const ThemeGroup(
-    lightThemeColor: Color(0xff1e88e5),
-    darkThemeColor: Color(0xff1e88e5),
+    lightThemeColor: Color(0xff2196f3),
+    darkThemeColor: Color(0xff1c7ece),
   ),
   const ThemeGroup(
     lightThemeColor: Color(0xff00bcd4),
-    darkThemeColor: Color(0xff00bcd4),
+    darkThemeColor: Color(0xff00a0b4),
   ),
   const ThemeGroup(
-    lightThemeColor: Color(0xff009688),
-    darkThemeColor: Color(0xff009688),
+    lightThemeColor: Color(0xff26a69a),
+    darkThemeColor: Color(0xff208d83),
   ),
   const ThemeGroup(
-    lightThemeColor: Color(0xfffdd835),
-    darkThemeColor: Color(0xfffdd835),
+    lightThemeColor: Color(0xffffeb3b),
+    darkThemeColor: Color(0xffd9c832),
+    lightButtonTextColor: Colors.black,
+    darkButtonTextColor: Colors.black,
   ),
   const ThemeGroup(
     lightThemeColor: Color(0xffff7043),
-    darkThemeColor: Color(0xffff7043),
+    darkThemeColor: Color(0xffd95f39),
   ),
 ];

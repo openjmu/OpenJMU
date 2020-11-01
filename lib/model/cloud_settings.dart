@@ -22,7 +22,6 @@ class CloudSettingsModel extends JsonModel {
           settings[_fLaunchFromSystemBrowser] as bool ?? false
       .._newAppCenterIcon = settings[_fNewAppCenterIcon] as bool ?? false
       .._isDark = settings[_fIsDark] as bool ?? false
-      .._amoledDark = settings[_fAMOLEDDark] as bool ?? false
       .._platformBrightness = settings[_fPlatformBrightness] as bool ?? true
       ..lastModified = DateTime.fromMillisecondsSinceEpoch(
         '${json['last_modified']}000'.toInt(),
@@ -41,7 +40,6 @@ class CloudSettingsModel extends JsonModel {
       .._launchFromSystemBrowser = settingsProvider.launchFromSystemBrowser
       .._newAppCenterIcon = settingsProvider.newAppCenterIcon
       .._isDark = themesProvider.dark
-      .._amoledDark = themesProvider.amoledDark
       .._platformBrightness = themesProvider.platformBrightness;
   }
 
@@ -51,7 +49,6 @@ class CloudSettingsModel extends JsonModel {
   static const String _fLaunchFromSystemBrowser = 'launch_from_system_browser';
   static const String _fNewAppCenterIcon = 'new_app_center_icon';
   static const String _fIsDark = 'theme_is_dark';
-  static const String _fAMOLEDDark = 'theme_amoled_dark';
   static const String _fPlatformBrightness = 'theme_platform_brightness';
 
   double _fontScale = 1.0;
@@ -72,9 +69,6 @@ class CloudSettingsModel extends JsonModel {
   bool _isDark = false;
   bool get isDark => _isDark;
 
-  bool _amoledDark = false;
-  bool get amoledDark => _amoledDark;
-
   bool _platformBrightness = true;
   bool get platformBrightness => _platformBrightness;
 
@@ -93,7 +87,6 @@ class CloudSettingsModel extends JsonModel {
         _fLaunchFromSystemBrowser: _launchFromSystemBrowser,
         _fNewAppCenterIcon: _newAppCenterIcon,
         _fIsDark: _isDark,
-        _fAMOLEDDark: _amoledDark,
         _fPlatformBrightness: _platformBrightness,
       },
       'last_modified':
@@ -112,7 +105,6 @@ class CloudSettingsModel extends JsonModel {
           _launchFromSystemBrowser == other._launchFromSystemBrowser &&
           _newAppCenterIcon == other._newAppCenterIcon &&
           _isDark == other._isDark &&
-          _amoledDark == other._amoledDark &&
           _platformBrightness == other._platformBrightness;
 
   @override
@@ -123,6 +115,5 @@ class CloudSettingsModel extends JsonModel {
       _launchFromSystemBrowser.hashCode ^
       _newAppCenterIcon.hashCode ^
       _isDark.hashCode ^
-      _amoledDark.hashCode ^
       _platformBrightness.hashCode;
 }

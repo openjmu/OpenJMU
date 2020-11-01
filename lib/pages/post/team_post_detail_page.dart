@@ -461,7 +461,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
           child: Center(
             child: Icon(
               Icons.add_circle_outline,
-              color: Colors.white,
+              color: adaptiveButtonColor(),
               size: suSetWidth(28.0),
             ),
           ),
@@ -488,7 +488,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                   ? const PlatformProgressIndicator()
                   : Icon(
                       Icons.send,
-                      color: Colors.white,
+                      color: adaptiveButtonColor(),
                       size: suSetWidth(28.0),
                     ),
             ),
@@ -501,13 +501,14 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
         duration: const Duration(milliseconds: 100),
         curve: Curves.fastOutSlowIn,
         width: Screens.width,
-        height: showExtendedPad ? Screens.width / 5 : 0.0,
+        height: showExtendedPad ? Screens.width / 4 : 0.0,
         child: Center(
           child: GridView.builder(
             physics: const NeverScrollableScrollPhysics(),
             padding: EdgeInsets.zero,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 5,
+              childAspectRatio: 0.8,
             ),
             itemCount: extendedFeature.length,
             itemBuilder: (BuildContext context, int index) {
@@ -527,6 +528,7 @@ class TeamPostDetailPageState extends State<TeamPostDetailPage> {
                       child: Icon(
                         extendedFeature[index]['icon'] as IconData,
                         size: suSetWidth(26.0),
+                        color: adaptiveButtonColor(),
                       ),
                     ),
                     Text(

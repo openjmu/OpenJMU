@@ -17,7 +17,6 @@ class HiveFieldUtils {
   static final Box<dynamic> _box = HiveBoxes.settingsBox;
 
   static const String brightnessDark = 'theme_brightness';
-  static const String amoledDark = 'theme_AMOLEDDark';
   static const String colorThemeIndex = 'theme_colorThemeIndex';
   static const String brightnessPlatform = 'theme_brightness_platform';
   static const String settingHomeSplashIndex = 'setting_home_splash_index';
@@ -37,9 +36,6 @@ class HiveFieldUtils {
 
   /// 获取设置的夜间模式
   static bool getBrightnessDark() => _box?.get(brightnessDark) as bool ?? false;
-
-  /// 获取设置的AMOLED夜间模式
-  static bool getAMOLEDDark() => _box?.get(amoledDark) as bool ?? false;
 
   /// 获取设置的跟随系统夜间模式
   static bool getBrightnessPlatform() {
@@ -68,10 +64,6 @@ class HiveFieldUtils {
   /// 设置选择的夜间模式
   static Future<void> setBrightnessDark(bool value) async =>
       await _box?.put(brightnessDark, value);
-
-  /// 设置AMOLED夜间模式
-  static Future<void> setAMOLEDDark(bool value) async =>
-      await _box?.put(amoledDark, value);
 
   /// 设置跟随系统的夜间模式
   static Future<void> setBrightnessPlatform(bool value) async =>

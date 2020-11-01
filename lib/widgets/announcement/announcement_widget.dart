@@ -21,16 +21,20 @@ class AnnouncementWidget extends StatelessWidget {
   final double radius;
   final bool canClose;
 
-  Color get adaptiveColor =>
-      contentColor ?? (currentIsDark ? Colors.white70 : Colors.white);
+  Color get adaptiveColor {
+    if (contentColor != null) {
+      return contentColor;
+    }
+    return adaptiveButtonColor(Colors.white70);
+  }
 
   IconThemeData get iconTheme =>
       IconThemeData(color: adaptiveColor, size: 26.w);
 
   Widget title(SettingsProvider provider) {
     return Expanded(
-      child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 6.w),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 6.w),
         child: Text(
           '  ${provider.announcements[0]['title']}',
           style: TextStyle(color: adaptiveColor, fontSize: 20.sp),

@@ -44,7 +44,7 @@ class PostDetailPageState extends State<PostDetailPage> {
   final Color activeColor = currentThemeColor;
 
   TextStyle get textActiveStyle => TextStyle(
-        color: Colors.white,
+        color: adaptiveButtonColor(),
         fontSize: suSetSp(20.0),
         fontWeight: FontWeight.bold,
       );

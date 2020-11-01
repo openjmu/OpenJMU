@@ -111,13 +111,13 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
               child: SvgPicture.asset(
                 R.ASSETS_ICONS_BOTTOM_NAVIGATION_SCHOOL_WORK_SVG,
                 height: suSetHeight(22.0),
-                color: Colors.white,
+                color: adaptiveButtonColor(),
               ),
             ),
             Text(
               currentIndex == 0 ? '成绩' : '课程表',
               style: TextStyle(
-                color: Colors.white,
+                color: adaptiveButtonColor(),
                 fontSize: suSetSp(20.0),
                 height: 1.24,
               ),

@@ -113,33 +113,24 @@ class MainPage extends StatefulWidget {
     return MaterialButton(
       color: currentThemeColor,
       elevation: 0.0,
-      minWidth: suSetWidth(120.0),
+      minWidth: 100.w,
       height: 56.w,
       padding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(suSetWidth(13.0)),
       ),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(right: suSetWidth(6.0)),
-            child: SvgPicture.asset(
-              R.ASSETS_ICONS_SEND_SVG,
-              height: suSetHeight(22.0),
-              color: Colors.white,
-            ),
-          ),
-          Text(
+      child: Consumer<ThemesProvider>(
+        builder: (_, ThemesProvider provider, __) {
+          return Text(
             '发动态',
             style: TextStyle(
-              color: Colors.white,
+              color: adaptiveButtonColor(),
               fontSize: suSetSp(20.0),
               height: 1.24,
             ),
-          ),
-        ],
+          );
+        },
       ),
       onPressed: () {
         navigatorState.pushNamed(route);

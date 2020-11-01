@@ -600,7 +600,10 @@ class CourseSchedulePageState extends State<CourseSchedulePage>
               },
               tooltip: '无法获取最新课表',
               mini: true,
-              child: Icon(Icons.warning, size: 28.w, color: Colors.white),
+              child: Icon(
+                Icons.warning, size: 28.w,
+                color: adaptiveButtonColor(),
+              ),
             ),
           ),
       ],
