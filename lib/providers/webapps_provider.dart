@@ -135,12 +135,6 @@ class WebAppsProvider extends ChangeNotifier {
       }
     }
 
-    /// Temporary add web vpn to apps list.
-    final WebApp _webVpnApp = webVPN;
-    _tempAllSet.add(_webVpnApp);
-    _tempCategoryList[_webVpnApp.menuType].add(_webVpnApp);
-    _tempSet.add(_webVpnApp);
-
     if (_tempAllSet.toString() != _allWebApps.toString()) {
       _displayedWebApps = Set<WebApp>.from(_tempSet);
       _allWebApps = Set<WebApp>.from(_tempAllSet);
@@ -185,14 +179,6 @@ class WebAppsProvider extends ChangeNotifier {
     _appCategoriesList.clear();
     _commonWebApps.clear();
   }
-
-  final WebApp webVPN = const WebApp(
-    appId: 666666,
-    code: '666666',
-    name: '校内资源访问',
-    url: 'http://webvpn.jmu.edu.cn/',
-    menuType: 'A4',
-  );
 
   WebApp appWrapper(WebApp app) {
 //    debugPrint('${app.code}-${app.name}');
