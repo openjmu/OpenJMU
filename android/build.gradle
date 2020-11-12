@@ -3,10 +3,7 @@ buildscript {
     repositories {
         google()
         jcenter()
-        maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
-        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
     }
-
     dependencies {
         classpath 'com.android.tools.build:gradle:3.6.3'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -17,8 +14,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-        maven { url 'http://maven.aliyun.com/nexus/content/groups/public' }
-        maven { url 'http://maven.aliyun.com/nexus/content/repositories/jcenter' }
     }
 }
 
