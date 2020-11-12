@@ -228,7 +228,7 @@ class _NightModeCard extends StatelessWidget {
             widget: Consumer<ThemesProvider>(
               builder: (BuildContext _, ThemesProvider provider, Widget __) {
                 return CustomSwitch(
-                  activeColor: currentThemeColor,
+                  activeColor: context.themeData.accentColor,
                   value: provider.dark,
                   onChanged: (bool value) =>
                       provider.dark = value,
@@ -243,7 +243,7 @@ class _NightModeCard extends StatelessWidget {
             widget: Consumer<ThemesProvider>(
               builder: (BuildContext _, ThemesProvider provider, Widget __) {
                 return CustomSwitch(
-                  activeColor: currentThemeColor,
+                  activeColor: context.themeData.accentColor,
                   value: provider.platformBrightness,
                   onChanged: (bool value) =>
                       provider.platformBrightness = value,
@@ -300,7 +300,7 @@ class _EnhanceCard extends StatelessWidget {
                   provider.hideShieldPost,
               builder: (BuildContext _, bool hideShieldPost, Widget __) {
                 return CustomSwitch(
-                  activeColor: currentThemeColor,
+                  activeColor: context.themeData.accentColor,
                   value: hideShieldPost,
                   onChanged: (bool value) async {
                     await HiveFieldUtils.setEnabledHideShieldPost(value);
@@ -322,7 +322,7 @@ class _EnhanceCard extends StatelessWidget {
                       provider.newAppCenterIcon,
                   builder: (_, bool newAppCenterIcon, __) {
                     return CustomSwitch(
-                      activeColor: currentThemeColor,
+                      activeColor: context.themeData.accentColor,
                       value: newAppCenterIcon,
                       onChanged: (bool value) async {
                         await HiveFieldUtils.setEnabledNewAppsIcon(value);
@@ -342,7 +342,7 @@ class _EnhanceCard extends StatelessWidget {
               builder:
                   (BuildContext _, bool launchFromSystemBrowser, Widget __) {
                 return CustomSwitch(
-                  activeColor: currentThemeColor,
+                  activeColor: context.themeData.accentColor,
                   value: launchFromSystemBrowser,
                   onChanged: (bool value) async {
                     await HiveFieldUtils.setLaunchFromSystemBrowser(value);
