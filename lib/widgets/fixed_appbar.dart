@@ -19,7 +19,7 @@ class FixedAppBar extends StatelessWidget {
     this.centerTitle = true,
     this.automaticallyImplyActions = true,
     this.backgroundColor,
-    this.elevation = 0.0,
+    this.elevation,
     this.actions,
     this.actionsPadding,
     this.height,
@@ -72,6 +72,10 @@ class FixedAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isDark = context.select<ThemesProvider, bool>(
+      (ThemesProvider p) => p.dark,
+    );
+
     Widget _title = title;
     if (centerTitle) {
       _title = Center(child: _title);
@@ -81,15 +85,6 @@ class FixedAppBar extends StatelessWidget {
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       height: (height ?? kAppBarHeight).h + MediaQuery.of(context).padding.top,
       decoration: BoxDecoration(
-        boxShadow: elevation > 0
-            ? <BoxShadow>[
-                BoxShadow(
-                  color: const Color(0x0d000000),
-                  blurRadius: elevation * 1.0,
-                  offset: Offset(0, elevation * 2.0),
-                ),
-              ]
-            : null,
         color: (backgroundColor ?? Theme.of(context).primaryColor)
             .withOpacity(blurRadius > 0.0 ? 0.90 : 1.0),
       ),
@@ -152,7 +147,11 @@ class FixedAppBar extends StatelessWidget {
         ),
       );
     }
-    return Material(type: MaterialType.transparency, child: child);
+    return Material(
+      color: Colors.transparent,
+      elevation: elevation ?? (isDark ? 0 : 1.w),
+      child: child,
+    );
   }
 }
 
@@ -189,12 +188,7 @@ class FixedAppBarWrapper extends StatelessWidget {
               child: body,
             ),
           ),
-          Positioned(
-            top: 0.0,
-            left: 0.0,
-            right: 0.0,
-            child: appBar,
-          ),
+          Positioned(top: 0.0, left: 0.0, right: 0.0, child: appBar),
         ],
       ),
     );

@@ -54,7 +54,6 @@ class _FontScalePageState extends State<FontScalePage> {
                 ),
               ],
             ),
-            elevation: 0.0,
           ),
           body: Column(
             children: <Widget>[

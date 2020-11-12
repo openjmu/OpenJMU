@@ -208,7 +208,6 @@ class _SwitchStartUpPageState extends State<SwitchStartUpPage> {
               ),
             ],
           ),
-          elevation: 0.0,
         ),
         body: ListView.separated(
           padding: EdgeInsets.symmetric(horizontal: suSetSp(40.0)),

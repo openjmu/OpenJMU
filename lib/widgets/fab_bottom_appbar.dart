@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:openjmu/constants/constants.dart';
 
@@ -255,21 +254,15 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
       );
     }
 
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-            color: context.themeData.dividerColor,
-            spreadRadius: 1.w,
-          ),
-        ],
-      ),
-      child: BottomAppBar(
-        elevation: 0.0,
-        color: widget.backgroundColor,
-        shape: widget.notchedShape,
-        child: appBar,
-      ),
+    final bool isDark = context.select<ThemesProvider, bool>(
+      (ThemesProvider p) => p.dark,
+    );
+
+    return BottomAppBar(
+      elevation: isDark ? 0 : 10.w,
+      color: widget.backgroundColor,
+      shape: widget.notchedShape,
+      child: appBar,
     );
   }
 }

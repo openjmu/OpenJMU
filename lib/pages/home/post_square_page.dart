@@ -16,7 +16,6 @@ class PostSquarePage extends StatelessWidget {
     return FixedAppBarWrapper(
       appBar: FixedAppBar(
         automaticallyImplyLeading: false,
-        elevation: 1.0,
         title: Container(
           alignment: AlignmentDirectional.centerStart,
           padding: EdgeInsets.only(right: 20.0.w),
