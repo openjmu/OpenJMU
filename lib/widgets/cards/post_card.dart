@@ -694,6 +694,12 @@ class _PostCardState extends State<PostCard> {
                         ),
                         getPostContent(context, post),
                         getPostImages(context, post),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20.w,
+                          ).copyWith(top: 12.w),
+                          child: Divider(thickness: 1.w, height: 1.w),
+                        ),
                         Container(
                           margin: EdgeInsets.only(top: suSetHeight(6.0)),
                           height: suSetHeight(44.0),
