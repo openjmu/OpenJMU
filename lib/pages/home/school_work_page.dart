@@ -93,47 +93,36 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
         ),
       );
 
-  Widget get switchButton => MaterialButton(
-        color: currentThemeColor,
-        elevation: 0.0,
-        minWidth: suSetWidth(currentIndex == 0 ? 100.0 : 120.0),
-        height: suSetHeight(50.0),
-        padding: EdgeInsets.zero,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(suSetWidth(13.0)),
+  Widget get switchButton {
+    return MaterialButton(
+      color: currentThemeColor,
+      elevation: 0.0,
+      minWidth: 100.w,
+      height: 56.w,
+      padding: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(suSetWidth(13.0)),
+      ),
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      child: Text(
+        currentIndex == 0 ? '成绩' : '课程表',
+        style: TextStyle(
+          color: adaptiveButtonColor(),
+          fontSize: suSetSp(20.0),
+          height: 1.24,
         ),
-        materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(right: suSetWidth(6.0)),
-              child: SvgPicture.asset(
-                R.ASSETS_ICONS_BOTTOM_NAVIGATION_SCHOOL_WORK_SVG,
-                height: suSetHeight(22.0),
-                color: adaptiveButtonColor(),
-              ),
-            ),
-            Text(
-              currentIndex == 0 ? '成绩' : '课程表',
-              style: TextStyle(
-                color: adaptiveButtonColor(),
-                fontSize: suSetSp(20.0),
-                height: 1.24,
-              ),
-            ),
-          ],
-        ),
-        onPressed: () {
-          setState(() {
-            if (currentIndex == 0) {
-              currentIndex = 1;
-            } else {
-              currentIndex = 0;
-            }
-          });
-        },
-      );
+      ),
+      onPressed: () {
+        setState(() {
+          if (currentIndex == 0) {
+            currentIndex = 1;
+          } else {
+            currentIndex = 0;
+          }
+        });
+      },
+    );
+  }
 
   @mustCallSuper
   @override
