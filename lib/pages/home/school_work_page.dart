@@ -77,21 +77,29 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
         ),
         actions: <Widget>[
           _refreshIcon,
+          SizedBox(width: 10.w),
           switchButton,
         ],
         actionsPadding: EdgeInsets.only(right: 20.0.w),
       );
 
-  Widget get _refreshIcon => SizedBox(
-        width: suSetWidth(60.0),
-        child: IconButton(
-          alignment: Alignment.centerRight,
-          icon: Icon(Icons.refresh, size: suSetWidth(32.0)),
-          onPressed: () {
-            Instances.eventBus.fire(AppCenterRefreshEvent(currentIndex));
-          },
-        ),
-      );
+  Widget get _refreshIcon {
+    return MaterialButton(
+      elevation: 0.0,
+      minWidth: 56.w,
+      height: 56.w,
+      padding: EdgeInsets.zero,
+      color: context.themeData.canvasColor,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(suSetWidth(13.0)),
+      ),
+      child: Icon(Icons.refresh, size: 32.w),
+      onPressed: () {
+        Instances.eventBus.fire(AppCenterRefreshEvent(currentIndex));
+      },
+    );
+  }
 
   Widget get switchButton {
     return MaterialButton(
@@ -105,11 +113,12 @@ class SchoolWorkPageState extends State<SchoolWorkPage>
       ),
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
       child: Text(
-        currentIndex == 0 ? '成绩' : '课程表',
+        currentIndex == 0 ? '成绩单' : '课程表',
         style: TextStyle(
           color: adaptiveButtonColor(),
           fontSize: suSetSp(20.0),
           height: 1.24,
+          fontWeight: FontWeight.bold,
         ),
       ),
       onPressed: () {

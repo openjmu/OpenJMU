@@ -136,7 +136,7 @@ class DeveloperTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SvgPicture.asset(
-      R.ASSETS_ICONS_OPENJMU_TEAM_BADGE_SVG,
+      R.ASSETS_ICONS_TEAM_BADGE_SVG,
       height: suSetHeight(height),
     );
   }

@@ -85,7 +85,8 @@ class FixedAppBar extends StatelessWidget {
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       height: (height ?? kAppBarHeight).h + MediaQuery.of(context).padding.top,
       decoration: BoxDecoration(
-        color: (backgroundColor ?? Theme.of(context).primaryColor)
+        color: (backgroundColor ??
+                (isDark ? Colors.black : Theme.of(context).primaryColor))
             .withOpacity(blurRadius > 0.0 ? 0.90 : 1.0),
       ),
       child: Stack(

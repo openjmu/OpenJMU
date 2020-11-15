@@ -260,7 +260,8 @@ class FABBottomAppBarState extends State<FABBottomAppBar>
 
     return BottomAppBar(
       elevation: isDark ? 0 : 10.w,
-      color: widget.backgroundColor,
+      color: widget.backgroundColor ??
+          (isDark ? Colors.black : Theme.of(context).primaryColor),
       shape: widget.notchedShape,
       child: appBar,
     );

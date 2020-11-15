@@ -69,10 +69,9 @@ class MainPage extends StatefulWidget {
                   borderRadius: BorderRadius.circular(suSetWidth(13.0)),
                 ),
                 child: SvgPicture.asset(
-                  R.ASSETS_ICONS_LIUYAN_LINE_SVG,
+                  R.ASSETS_ICONS_NOTIFICATION_SVG,
                   color: currentTheme.iconTheme.color,
-                  width: suSetWidth(32.0),
-                  height: suSetWidth(32.0),
+                  width: 24.w,
                 ),
                 onPressed: () async {
                   provider.stopNotification();
@@ -128,6 +127,7 @@ class MainPage extends StatefulWidget {
               color: adaptiveButtonColor(),
               fontSize: suSetSp(20.0),
               height: 1.24,
+              fontWeight: FontWeight.bold,
             ),
           ),
           onPressed: () {
@@ -254,7 +254,6 @@ class MainPageState extends State<MainPage> with AutomaticKeepAliveClientMixin {
   /// Bottom navigation bar.
   /// 底部导航栏
   Widget get bottomNavigationBar => FABBottomAppBar(
-        backgroundColor: Theme.of(context).primaryColor,
         color: Colors.grey[600].withOpacity(currentIsDark ? 0.8 : 0.4),
         height: bottomBarHeight,
         iconSize: bottomBarIconSize,
