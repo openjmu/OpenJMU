@@ -13,7 +13,7 @@ import 'package:openjmu/constants/constants.dart';
 class NetUtils {
   const NetUtils._();
 
-  static const bool _isProxyEnabled = true;
+  static const bool _isProxyEnabled = false;
   static const String _proxyDestination = 'PROXY 192.168.0.101:8118';
 
   static final Dio dio = Dio();
